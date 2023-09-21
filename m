@@ -2,267 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467A77AA18B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87177AA1C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbjIUVDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        id S232216AbjIUVFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbjIUVC7 (ORCPT
+        with ESMTP id S232492AbjIUVEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:02:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDF64EC8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 984F5C3278F;
-        Thu, 21 Sep 2023 10:15:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695291338;
-        bh=jFAqRCOVnDBQwszMKppgpfrfYXgx2S1l2UVTVChzJ6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FB4UmtJMfn+nsX5DZ3qo2JYzuPEw/NKKLuoRNU1w4rR862MDRN47bHTygae5k0amd
-         oZFJeZk6psc3v49kSRgSuKWnb6qSVKyWIinaBQSDn8SnNX157QjRg+M7ghCNAs3yIU
-         ddyCNZdvngVyPb/heuhDlL/snul1qeJW5/53Yr5XQMnxSg0nftB0P18lUPoG8WAeur
-         RATGdFpyQDj/qc5sLQfrnbG7H8S0URXgZ05YATQsuMLKwjM6cQVpwfw2AHy0km/r03
-         Eso5n0WarjMTlhsqZh/NdkDgeUkgZbhiyBsuJ+tCvNZQCrUQgDenOwzJfsS63ybdQ3
-         Z28EfOHcPvUig==
-Date:   Thu, 21 Sep 2023 11:15:32 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen Wang <unicornxw@gmail.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, devicetree@vger.kernel.org,
-        emil.renner.berthing@canonical.com, guoren@kernel.org,
-        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>,
-        Inochi Amaoto <inochiama@outlook.com>
-Subject: Re: [PATCH v2 09/11] riscv: dts: add initial SOPHGO SG2042 SoC
- device tree
-Message-ID: <20230921-d2db829b289c937081dc8a72@fedora>
-References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
- <ffe6a61a8879232aea7b86ff8aee5d681c6bd287.1695189879.git.wangchen20@iscas.ac.cn>
- <20230920-financial-declared-7b4b4baae517@wendy>
- <CAHAQgRBmUtyz-U+1Fu9qdvyhMuSzg+o4MMbTV9duUXsoSoPqUQ@mail.gmail.com>
+        Thu, 21 Sep 2023 17:04:33 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03D0C1130
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:18:13 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-404fbfac998so14804485e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695320292; x=1695925092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4cxYqhV2vF1/qTyjoXVFQ+TzTovUXbNHaLzLCCyWR1E=;
+        b=Qlq9zJXDeIS16JGmR4ffI0Da3hcLbJhDHM/9qXAnkOw5RuBkYa1soaX9tNq0HZ4uYY
+         3F0gbBhXJB0WsWUzmpNsMhLABSRjf/iZDbpMLCB4MVRm7o1ePzlh6nQkbfP/iCyN42cg
+         FLYMQUzRLCxvFN2oD61BRbYSQJ1gr1O2j4DO1jna6KIPaMO7OyaBBJpkEwTeJQdzfn1l
+         9ts1wnH1mUmz7wlKJGDRwbKApIK4it9lXkt+vOjRNSKIOwtL7i0gAv544Q8oCuz1nWhg
+         IbzBoG2SRNojyfZJgyolTsS8EfvgWF2ymg91xz3E5DBeixn9Pay+ZG23QD7esRpsg4et
+         EjfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695320292; x=1695925092;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4cxYqhV2vF1/qTyjoXVFQ+TzTovUXbNHaLzLCCyWR1E=;
+        b=VvPD/8OEZCchNrVmwyLI2jgDANBZsL14OHsHmg5KJiLYsB6zP5XIGAPk3E5Y0yspfY
+         uF8yUKf5CP+X/W02g3+FRiaVD+dZC2915ZqjI9uZ1go8akSR9BJirbjBSdoJjyoVNWM+
+         1QjbxgWIvVew/RthMOKPyDTPm+kwt64nyyndNKH9Td2JaWhz2uYeC2PezKrTaHUoZElA
+         33B+SDkA1eLD6uAcJzJZoyUOZw4JcfsbFuayH/T7d5bW/j2NjmWif5YUYPRXkZPKkMYP
+         A/4b9hS3L7jSWPGgsjDjUH9L+9rXcquJp9H3nGWVGR10UGVXCvMzCZEmKiK5Lhpm9iY+
+         1l9g==
+X-Gm-Message-State: AOJu0Yxd8yeVwysFpAZVjz4uGxk6DE1cJz4HHkGmhlfqWfsmj+7/4ny2
+        rI/sodPUfMoY3Y6H8X1diROvaE8y6VjuBcJYmiiNuUF6
+X-Google-Smtp-Source: AGHT+IGvFbJ6Db71oV5a8RSKNQD5duku5npuZ17s6sJi9JPyuKunEwciIHFTyflTn2v/2DkUgSn7gA==
+X-Received: by 2002:a17:907:75f2:b0:9ae:567f:6f78 with SMTP id jz18-20020a17090775f200b009ae567f6f78mr2060971ejc.19.1695291586361;
+        Thu, 21 Sep 2023 03:19:46 -0700 (PDT)
+Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id s2-20020a170906354200b0098ec690e6d7sm814062eja.73.2023.09.21.03.19.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 03:19:46 -0700 (PDT)
+Message-ID: <50814314-55a3-6cff-2e9e-2abf93fa5f1b@blackwall.org>
+Date:   Thu, 21 Sep 2023 13:19:44 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fmkZD3PJDOz3F1Rh"
-Content-Disposition: inline
-In-Reply-To: <CAHAQgRBmUtyz-U+1Fu9qdvyhMuSzg+o4MMbTV9duUXsoSoPqUQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH net-next v4 5/6] net: bridge: Add a configurable default
+ FDB learning limit
+Content-Language: en-US
+To:     Johannes Nixdorf <jnixdorf-oss@avm.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
+ <20230919-fdb_limit-v4-5-39f0293807b8@avm.de>
+ <cc14cd4a-f3bb-3d6f-5b38-ec73cad32570@blackwall.org>
+ <ZQv5aNbgqxCuOKyr@u-jnixdorf.ads.avm.de>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <ZQv5aNbgqxCuOKyr@u-jnixdorf.ads.avm.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/21/23 11:06, Johannes Nixdorf wrote:
+> On Wed, Sep 20, 2023 at 02:00:27PM +0300, Nikolay Aleksandrov wrote:
+>> On 9/19/23 11:12, Johannes Nixdorf wrote:
+>>> Add a Kconfig option to configure a default FDB learning limit system
+>>> wide, so a distributor building a special purpose kernel can limit all
+>>> created bridges by default.
+>>>
+>>> The limit is only a soft default setting and overrideable on a per bridge
+>>> basis using netlink.
+>>>
+>>> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+>>> ---
+>>>    net/bridge/Kconfig     | 13 +++++++++++++
+>>>    net/bridge/br_device.c |  2 ++
+>>>    2 files changed, 15 insertions(+)
+>>>
+>>> diff --git a/net/bridge/Kconfig b/net/bridge/Kconfig
+>>> index 3c8ded7d3e84..c0d9c08088c4 100644
+>>> --- a/net/bridge/Kconfig
+>>> +++ b/net/bridge/Kconfig
+>>> @@ -84,3 +84,16 @@ config BRIDGE_CFM
+>>>    	  Say N to exclude this support and reduce the binary size.
+>>>    	  If unsure, say N.
+>>> +
+>>> +config BRIDGE_DEFAULT_FDB_MAX_LEARNED
+>>> +	int "Default FDB learning limit"
+>>> +	default 0
+>>> +	depends on BRIDGE
+>>> +	help
+>>> +	  Sets a default limit on the number of learned FDB entries on
+>>> +	  new bridges. This limit can be overwritten via netlink on a
 
---fmkZD3PJDOz3F1Rh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+overwritten doesn't sound good, how about This limit can be set (or changed)
 
-On Thu, Sep 21, 2023 at 05:56:28PM +0800, Chen Wang wrote:
-> Regards,
->=20
-> unicornx
->=20
-> Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=
-=8820=E6=97=A5=E5=91=A8=E4=B8=89 16:58=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > Yo,
-> >
-> > On Wed, Sep 20, 2023 at 02:40:32PM +0800, Chen Wang wrote:
-> > > Milk-V Pioneer motherboard is powered by SOPHON's SG2042.
-> > >
-> > > SG2042 is server grade chip with high performance, low power
-> > > consumption and high data throughput.
-> > > Key features:
-> > > - 64 RISC-V cpu cores which implements IMAFDC
-> >
-> > That's not quite true though, is it?
->=20
-> The cpu cores of SG2042 is c902 from T-HEAD, it supports vector, but
-> it's v0.7, not official v1.0. If we declare it as supporting
-> v-extension, the latest kernel(since 6.5) will issue rvv1.0
-> instructions during booting and make c902 crash. So we have to remove
-> "v" from the capability of ISA to pass the booting of machine. You can
-> check the "riscv,isa =3D "rv64imafdc";" in DTS.
+>>> +	  per bridge basis.
+>>> +
+>>> +	  The default of 0 disables the limit.
+>>> +
+>>> +	  If unsure, say 0.
+>>> diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+>>> index 9a5ea06236bd..3214391c15a0 100644
+>>> --- a/net/bridge/br_device.c
+>>> +++ b/net/bridge/br_device.c
+>>> @@ -531,6 +531,8 @@ void br_dev_setup(struct net_device *dev)
+>>>    	br->bridge_ageing_time = br->ageing_time = BR_DEFAULT_AGEING_TIME;
+>>>    	dev->max_mtu = ETH_MAX_MTU;
+>>> +	br->fdb_max_learned = CONFIG_BRIDGE_DEFAULT_FDB_MAX_LEARNED;
+>>> +
+>>>    	br_netfilter_rtable_init(br);
+>>>    	br_stp_timer_init(br);
+>>>    	br_multicast_init(br);
+>>>
+>>
+>> This one I'm not sure about at all. Distributions can just create the bridge
+>> with a predefined limit. This is not flexible and just adds
+>> one more kconfig option that is rather unnecessary. Why having a kconfig
+>> knob is better than bridge creation time limit setting? You still have
+>> to create the bridge, so why not set the limit then?
+> 
+> The problem I'm trying to solve here are unaware applications. Assuming
+> this change lands in the next Linux release there will still be quite
+> some time until the major applications that create bridges (distribution
+> specific or common network management tools, the container solution of
+> they day, for embedded some random vendor tools, etc.) will pick it
+> up. In this series I chose a default of 0 to not break existing setups
+> that rely on some arbitrary amount of FDB entries, so those unaware
+> applications will create bridges without limits. I added the Kconfig
+> setting so someone who knows their use cases can still set a more fitting
+> default limit.
+> 
+> More specifically to our use case as an embedded vendor that builds their
+> own kernels and knows they have no use case that requires huge FDB tables,
+> the kernel config allows us to set a safe default limit before starting
+> to teach all our applications and our upstream vendors' code about the
+> new netlink attribute. As this patch is relatively simple, we can also
+> keep it downstream if there is opposition to it here though.
 
-I know all of this, not my first rodeo looking at stuff using T-Head
-cores ;)
-What I meant was, imafdc is only a subset of what is supported,
-there are other things like the T-Head bitmanip extensions too, right?
-I'm not asking for it to be listed in the devicetree (yet), just
-actually curious what else is on the c920 as I do not speak a language
-that allows me to read the documentation for the cpu that I have been
-able to find online.
+I'm not strongly against, just IMO it is unnecessary. I won't block the 
+set because of this, but it would be nice to get input from others as
+well. If you can recompile your kernel to set a limit, it should be 
+easier to change your app to set the same limit via netlink, but I'm not 
+familiar with your use case.
 
-> > > - 4 cores per cluster, 16 clusters on chip
-> > > - ......
-> >
-> > What's a "....."? ;)
-> I just cited a description from TRM of SG2042 and it looks too long. I
-> will give a better description here and avoid using "......" in the
-> next revision.
->=20
-> >
-> > >
-> > > More info is available at [1].
-> > >
-> > > [1]: https://en.sophgo.com/product/introduce/sg2042.html
-> >
-> > Link: please.
-> >
-> > > Currently only support booting into console with only uart,
-> > > other features will be added soon later.
-> > >
-> > > Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
-> > > Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
-> > > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> > > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.c=
-om>
-> > > Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
-> >
-> > There are 4 sign-offs here. Surely some of these should be
-> > co-developed-bys?
-> >
-> > > +             cpu0: cpu@0 {
-> > > +                     compatible =3D "thead,c920", "riscv";
-> > > +                     device_type =3D "cpu";
-> > > +                     riscv,isa =3D "rv64imafdc";
-> >
-> > Please also add riscv,isa-base & riscv,isa-extensions.
-> >
-> > > +                     reg =3D <0>;
-> > > +                     i-cache-block-size =3D <64>;
-> > > +                     i-cache-size =3D <65536>;
-> > > +                     i-cache-sets =3D <512>;
-> > > +                     d-cache-block-size =3D <64>;
-> > > +                     d-cache-size =3D <65536>;
-> > > +                     d-cache-sets =3D <512>;
-> > > +                     next-level-cache =3D <&l2_cache0>;
-> > > +                     mmu-type =3D "riscv,sv39";
-> > > +
-> > > +                     cpu0_intc: interrupt-controller {
-> > > +                             compatible =3D "riscv,cpu-intc";
-> > > +                             interrupt-controller;
-> > > +                             #interrupt-cells =3D <1>;
-> > > +                     };
-> > > +             };
-> >
-> > > diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot=
-/dts/sophgo/sg2042.dtsi
-> > > new file mode 100644
-> > > index 000000000000..747fd9764c95
-> > > --- /dev/null
-> > > +++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-> > > @@ -0,0 +1,439 @@
-> > > +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> >
-> > You should add () around the GPL-2.0 OR MIT.
-> >
-> > > +/*
-> > > + * Copyright (C) 2022 Sophgo Technology Inc. All rights reserved.
-> > > + */
-> > > +
-> > > +/dts-v1/;
-> > > +#include <dt-bindings/interrupt-controller/irq.h>
-> > > +
-> > > +#include "sg2042-cpus.dtsi"
-> > > +
-> > > +#define SOC_PERIPHERAL_IRQ(nr) (nr)
-> >
-> > Why? What does this do? Where was it copied from?
-> >
-> It should be unnecessary=EF=BC=8C I will remove it in the next revision.
->=20
-> > > +
-> > > +/ {
-> > > +     compatible =3D "sophgo,sg2042";
-> > > +     #address-cells =3D <2>;
-> > > +     #size-cells =3D <2>;
-> > > +     dma-noncoherent;
-> > > +
-> > > +     aliases {
-> > > +             serial0 =3D &uart0;
-> > > +     };
-> > > +
-> > > +     /* the mem node will be updated by ZSBL. */
-> >
-> > huh? So these are random numbers below? Either put something useful here
-> > or delete it please.
->=20
-> The memory for SG2042 is not fixed, the bootloader will detect memory
-> installed on board during booting and fill the actual address and size
-> in the memory node. The comment " /* the mem node will be updated by
-> ZSBL. */" is telling this.
-
-Yes, I read the comment!
-
-> We write memory nodes like this to make them act just as placeholders
-> and the value is by default written as zero.
-
-Why knowingly add something that is wrong, rather than omitting them
-entirely?
-
-Thanks,
-Conor.
-
->=20
->=20
-> >
-> > > +     memory@0 {
-> > > +             device_type =3D "memory";
-> > > +             reg =3D <0x00000000 0x00000000 0x00000000 0x00000000>;
-> > > +     };
-> > > +
-> > > +     memory@1 {
-> > > +             device_type =3D "memory";
-> > > +             reg =3D <0x00000000 0x00000001 0x00000000 0x00000000>;
-> > > +     };
-> > > +
-> > > +     memory@2 {
-> > > +             device_type =3D "memory";
-> > > +             reg =3D <0x00000000 0x00000002 0x00000000 0x00000000>;
-> > > +     };
-> > > +
-> > > +     memory@3 {
-> > > +             device_type =3D "memory";
-> > > +             reg =3D <0x00000000 0x00000003 0x00000000 0x00000000>;
-> > > +     };
-> >
-> > > +     soc: soc {
-> > > +             compatible =3D "simple-bus";
-> > > +             #address-cells =3D <2>;
-> > > +             #size-cells =3D <2>;
-> > > +             ranges;
-> > > +
-> > > +             clint_mswi: interrupt-controller@7094000000 {
-> > > +                     compatible =3D "sophgo,sg2042-clint-mswi", "the=
-ad,c900-clint-mswi";
-> > > +                     reg =3D <0x00000070 0x94000000 0x00000000 0x000=
-04000>;
-> >
-> > & nak to this without further explanation!
-> >
-> > Thanks,
-> > Conor.
-> >
-
---fmkZD3PJDOz3F1Rh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQwXwQAKCRB4tDGHoIJi
-0jl6AQCO0iHjWqM9oAoOC3vM0RKXtmi36doTgL/y4uLTh6RcxgEApx827mJwlqM+
-T2Mfp1BE1i0rJvGerwlfpLGvc4y8Pws=
-=djLA
------END PGP SIGNATURE-----
-
---fmkZD3PJDOz3F1Rh--
