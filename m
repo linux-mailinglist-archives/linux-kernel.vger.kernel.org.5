@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 646CD7A9E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784BA7A9E1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjIUTzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        id S231299AbjIUT4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbjIUTye (ORCPT
+        with ESMTP id S229936AbjIUT4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:54:34 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56797803FC
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:02:00 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c0327b75dso17245137b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:01:59 -0700 (PDT)
+        Thu, 21 Sep 2023 15:56:12 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35CDC06AD
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:04:30 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-658220cf800so6857186d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:04:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695322919; x=1695927719; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5idGDJHajfRBbMuSzPd4i5/t54vfHNdbr48RChRWzqM=;
-        b=2BooiXDRdGdVMAlVcBWQCNkTEkbZrHYrWY31LpUZEk3fc9eDkThZx1AwQUhKMDHkf5
-         UEyShVv3rLaiV+P0txfMCu8MFamgMEoSeykzTzRYfhJiK7l3FTwudW7TF2GY6cMIItPu
-         mapw67pjL/Xp6/6FZWKO4aDatRspS7w3PvHw5jx+fYJzj3jiq7O10CBFxYbRTpZvkvKO
-         C2UAyiwt4K87AE6oq/qeak2O6pgrFVjeVTPo7Sbv1PJyk5ia01xFsOHhPoGnk6TJRTWW
-         uj4QSq4wDmgUk9K61I2I/5B6GmcisxUc0apclpo1nVwVDm0qZVujLDa51jAfqqcswzI2
-         UNtg==
+        d=ziepe.ca; s=google; t=1695323069; x=1695927869; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=72sbDhRS8Dzkt1xA5dO7DmLpaXJoMznOGL4Bfx40IFU=;
+        b=lcSn07ZfRebL+MTEvtj5ds+YV5g4X76pT1gAMkbcUTsGegcBlk2DVhxhjZFuq18HLP
+         hO/bsL+oE5edIMYHwGPeHtuCX8tYam9IFrirTTc2VoGrvehugqzLMstOiU32D8SCBcEz
+         4yYlnpgePhpcr3yDi3PbEXU+ze5sSJN6m2XswVDtnRD8G5pJR3P8KtEy9v//nJEYr1WT
+         7c7EyVmXXrfjsXyeZCHvsC+cObV5uXHYRopUulJXFAs/DJpd/5YWmcFljZU6A9eEjXEB
+         o1ChTLWSXqpe2V3ZUuyFvkSDU9QxO1w/fpqRKyDqGiHOdokekiXz3imHjBg+itAbof8z
+         TiRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695322919; x=1695927719;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5idGDJHajfRBbMuSzPd4i5/t54vfHNdbr48RChRWzqM=;
-        b=YoS++JbXKOKSDFefQKbfy5TrKBBFO6j78aKvysutL+vedRZCa3y252UMHHqke0AHE/
-         T+KbyoUlLc5P2p9uX91ZIZ08Od7qnuszYsUAsqq1iBGhuv0T6UkuTBY8W+ztY5mz1Y71
-         acxi5eRlazxIVCuaswQFkdKnGNAD/613LzFbVLKhmJhTzgZK/zAJGrWWuMunTKQiT2/V
-         R4lh5MtRLLwQbEOE+ANi+fmwaKWu5A1z7nH0UUR37qBK9HguRjtsXIcfT1154B6QWkP9
-         ccEr6Cf06T9KTPN7tYWqQBOmHj/QMmxwOUmfxj3pf3W9VxxeVXWtjz0FyjxBOvPmAPkC
-         DOHw==
-X-Gm-Message-State: AOJu0YxSuiBGu8mYFkc5y8geKpa7hwxuCrxnuoDzDs0wTmnBuQ+5Ct9E
-        pFvrkcj/4dkI7p3jC4KiChJsx4PS6JIa0g==
-X-Google-Smtp-Source: AGHT+IGiWhkZQI2qsIIIWvhihaksfZHxJa3nw+xhY08FFXLOqY3cnBSLU1oGhU9kfs+YQ6I22pIVz3FchgxXQA==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a05:6902:a84:b0:d7b:94f5:1301 with SMTP
- id cd4-20020a0569020a8400b00d7b94f51301mr93080ybb.9.1695322919028; Thu, 21
- Sep 2023 12:01:59 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 19:01:56 +0000
-In-Reply-To: <20230920132545.56834-2-wuyun.abel@bytedance.com>
-Mime-Version: 1.0
-References: <20230920132545.56834-1-wuyun.abel@bytedance.com> <20230920132545.56834-2-wuyun.abel@bytedance.com>
-Message-ID: <20230921190156.s4oygohw4hud42tx@google.com>
-Subject: Re: [PATCH net-next 2/2] sock: Fix improper heuristic on raising memory
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Glauber Costa <glommer@parallels.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujtsu.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695323069; x=1695927869;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=72sbDhRS8Dzkt1xA5dO7DmLpaXJoMznOGL4Bfx40IFU=;
+        b=qLqwufF4vME0NRVeC62jhDW0kwnLCBlI1+FuKhljR3qCZrbKSltSx8/Tw6siSLJ2iF
+         2hf9neOaZirqkPNIKMwtHXHcgNp4lNs6VsEzrmaEBbkZ3gZdCDQZwsnDn9ltRIolHDby
+         J1hC0uQlAl54VSlB6V4GKcSdRmaQ3zv3Aq6y+fS4xePbay3YHq0J3IO1cheKHKOcROfH
+         CAgh66WN+A74YvUolElYXApKkoKVdnalu+KFTPX3bVOW72b02IP7oiNpVaC7EvBr6lUR
+         63sKr+gMnL5r9pmU2QC2+CplB2nQxfL0TRtQ9VnEoPj5uGxHCLf2pHLe4XK3IILBvIcJ
+         PPhA==
+X-Gm-Message-State: AOJu0YzUoTZkqoo6KwIOslgyP/TkRMGYaLSdLM4CjeriGwqrWdF9hCRc
+        2BBtwe096qED9+PJcf5P/xc3lA==
+X-Google-Smtp-Source: AGHT+IH13k+gaZje9K+RHnKkR06Ap+odjdEBfUpCNJgKS/I8QTQFYuTV8YnbuGPHw9wUe5fDUUE36A==
+X-Received: by 2002:a05:6214:2a82:b0:656:3035:1b65 with SMTP id jr2-20020a0562142a8200b0065630351b65mr655517qvb.3.1695323069061;
+        Thu, 21 Sep 2023 12:04:29 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id c11-20020a0cd60b000000b00659ab059d73sm553412qvj.0.2023.09.21.12.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 12:04:28 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qjOyR-000TZ1-JK;
+        Thu, 21 Sep 2023 16:04:27 -0300
+Date:   Thu, 21 Sep 2023 16:04:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tina Zhang <tina.zhang@intel.com>
+Cc:     Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Michael Shavit <mshavit@google.com>,
+        Vasant Hegde <vasant.hegde@amd.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/6] mm: Add structure to keep sva information
+Message-ID: <20230921190427.GA13795@ziepe.ca>
+References: <20230912125936.722348-1-tina.zhang@intel.com>
+ <20230912125936.722348-5-tina.zhang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912125936.722348-5-tina.zhang@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:25:41PM +0800, Abel Wu wrote:
-> Before sockets became aware of net-memcg's memory pressure since
-> commit e1aab161e013 ("socket: initial cgroup code."), the memory
-> usage would be granted to raise if below average even when under
-> protocol's pressure. This provides fairness among the sockets of
-> same protocol.
+On Tue, Sep 12, 2023 at 08:59:34PM +0800, Tina Zhang wrote:
+> Introduce iommu_mm_data structure to keep sva information (pasid and the
+> related sva domains). Add iommu_mm pointer, pointing to an instance of
+> iommu_mm_data structure, to mm.
 > 
-> That commit changes this because the heuristic will also be
-> effective when only memcg is under pressure which makes no sense.
-> Fix this by skipping this heuristic when under memcg pressure.
-> 
-> Fixes: e1aab161e013 ("socket: initial cgroup code.")
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
+> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
 > ---
->  net/core/sock.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 379eb8b65562..ef5cf6250f17 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -3093,8 +3093,16 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
->  	if (sk_has_memory_pressure(sk)) {
->  		u64 alloc;
->  
-> -		if (!sk_under_memory_pressure(sk))
-> +		if (memcg && mem_cgroup_under_socket_pressure(memcg))
-> +			goto suppress_allocation;
-> +
-> +		if (!sk_under_global_memory_pressure(sk))
->  			return 1;
+>  include/linux/iommu.h    | 5 +++++
+>  include/linux/mm_types.h | 2 ++
+>  2 files changed, 7 insertions(+)
 
-I am onboard with replacing sk_under_memory_pressure() with
-sk_under_global_memory_pressure(). However suppressing on memcg pressure
-is a behavior change from status quo and need more thought and testing.
+This is not a great way to structure the patches
 
-I think there are three options for this hunk:
+This patch should move the pasid into the struct and do all the
+infrastructure to allocate/free the struct.
 
-1. proposed patch
-2. Consider memcg pressure only for !in_softirq().
-3. Don't consider memcg pressure at all.
+The next patch should just add the list head to the now existing struct:
 
-All three options are behavior change from the status quo but with
-different risk levels. (1) may reintroduce the regression fixed by
-720ca52bcef22 ("net-memcg: avoid stalls when under memory pressure").
-(2) is more inlined with 720ca52bcef22. (3) has the risk to making memcg
-limits ineffective.
+> +struct iommu_mm_data {
+> +	u32			pasid;
+> +	struct list_head	sva_domains;
+> +};
 
-IMHO we should go with (2) as there is already a precedence in
-720ca52bcef22.
+The code looks fine though
 
-thanks,
-Shakeel
+Jason
