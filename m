@@ -2,129 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0267AA26D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35AF7AA263
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbjIUVQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S232759AbjIUVQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233208AbjIUVP0 (ORCPT
+        with ESMTP id S232779AbjIUVOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:15:26 -0400
-Received: from zproxy1.foxvalley.net (zimbra.foxvalley.net [212.78.26.134])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id D404FE8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:54 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zproxy1.foxvalley.net (Postfix) with ESMTP id 2A62040F77;
-        Thu, 21 Sep 2023 12:07:53 -0500 (CDT)
-Received: from zproxy1.foxvalley.net ([127.0.0.1])
- by localhost (zproxy1.foxvalley.net [127.0.0.1]) (amavis, port 10032)
- with ESMTP id tbEKxAVC-3K1; Thu, 21 Sep 2023 12:07:52 -0500 (CDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zproxy1.foxvalley.net (Postfix) with ESMTP id CF66040FD4;
-        Thu, 21 Sep 2023 12:07:52 -0500 (CDT)
-X-Virus-Scanned: amavis at zproxy1.foxvalley.net
-Received: from zproxy1.foxvalley.net ([127.0.0.1])
- by localhost (zproxy1.foxvalley.net [127.0.0.1]) (amavis, port 10026)
- with ESMTP id aywR0xM1fnbl; Thu, 21 Sep 2023 12:07:52 -0500 (CDT)
-Received: from [192.168.1.3] (unknown [161.97.241.227])
-        by zproxy1.foxvalley.net (Postfix) with ESMTPSA id 8208A40F77;
-        Thu, 21 Sep 2023 12:07:52 -0500 (CDT)
-Message-ID: <bc40a671-29f6-b897-1562-8dd48a01cbbf@foxvalley.net>
-Date:   Thu, 21 Sep 2023 11:07:50 -0600
+        Thu, 21 Sep 2023 17:14:50 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6077173A;
+        Thu, 21 Sep 2023 10:09:36 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LF7SUj001730;
+        Thu, 21 Sep 2023 17:09:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=5dKSzsyZM5JPtVbo5DfS/qJ3ZHwTE1rMzD1SnxB46FA=;
+ b=ie1HxowFegRzzkWhYjJZ0E65hkj437NXMRkZbWJYHZUfm+VEKpKdstevytrL44zX35jR
+ ukS4Gw9L0WHaBJuG52a+uAOJ+9nHGE4v0mCReVJ0RhR0H8nOgGq+a2mieUkjrJJMxx+s
+ ij3oETuUSIHuwjGZXzmE1mpcgONyVylToul6LQ3AhG0IA9ryVWxg8d+vOCkkxuSLsvSe
+ vbohb6q5W9FEG9jc67IstvSq3Uvh8WfZMn2zSYFBhNVxWM7bfTKydowR3Pr9eFXHSnq1
+ 4cl71pcf38W09fZs9SxwrbMoOV34URjixneGaiN2m+idRaK2Zv00c+14/xM4Eq1ceo+K mw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8892252q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 17:09:30 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38LH9TWu030076
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 17:09:29 GMT
+Received: from [10.71.115.175] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 21 Sep
+ 2023 10:09:28 -0700
+Message-ID: <63c9ced1-6204-88e9-1dae-2979388bbc67@quicinc.com>
+Date:   Thu, 21 Sep 2023 10:09:21 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v1] arch/x86: port I/O tracing on x86
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
+ runtime-suspend-on-usb-suspend property
 Content-Language: en-US
-From:   Dan Raymond <draymond@foxvalley.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com
-References: <14c27df7-12a3-e432-a741-17672185c092@foxvalley.net>
- <20230919194337.GC424@noisy.programming.kicks-ass.net>
- <a5c505d1-730c-912c-3c83-1df83d8e264b@foxvalley.net>
- <20230919211214.GE424@noisy.programming.kicks-ass.net>
- <ac03a0cf-d699-47bc-bc14-f030fa2408d2@foxvalley.net>
- <818a0e52-2727-5bf1-0081-53322630e9bc@foxvalley.net>
-In-Reply-To: <818a0e52-2727-5bf1-0081-53322630e9bc@foxvalley.net>
-Content-Type: text/plain; charset=UTF-8
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Roger Quadros <rogerq@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        <quic_kriskura@quicinc.com>
+References: <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
+ <a0a6c561-6319-00ba-c6db-f1dec9f0f0aa@quicinc.com>
+ <5dfae814-7233-eb1f-cae7-f335e54ce1b6@linaro.org>
+ <cf0227c8-cd02-81b6-9e13-2e7fe6f505f2@kernel.org>
+ <20230826015257.mbogiefsbz5474ft@synopsys.com>
+ <afd4843b-427a-8535-78e2-f81879378371@linaro.org>
+ <969988f6-f01f-0e31-6a98-7d02c5a3a4ad@quicinc.com>
+ <20230830013739.srnh2uyhly66yvu2@synopsys.com>
+ <d30a8d6a-236a-b6eb-76d7-115cc9950ce1@quicinc.com>
+ <6f70a710-c409-23c0-890b-370ccd23e088@linaro.org>
+ <20230831030134.z46fjwyr6edl3t7x@synopsys.com>
+ <cea3472a-e9f7-39cb-419c-d042b3bf0682@linaro.org>
+From:   Elson Serrao <quic_eserrao@quicinc.com>
+In-Reply-To: <cea3472a-e9f7-39cb-419c-d042b3bf0682@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: leAIDSd3QKQtagJEXnzmzO_uHngggWLO
+X-Proofpoint-ORIG-GUID: leAIDSd3QKQtagJEXnzmzO_uHngggWLO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-21_14,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309210148
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/2023 4:43 PM, Dan Raymond wrote:
-> On 9/19/2023 3:31 PM, Dan Raymond wrote:
->> On 9/19/2023 3:12 PM, Peter Zijlstra wrote:
->>>>> This means I can no longer use early_console->write() to print to my
->>>>> early_serial_console.
+
+
+On 8/30/2023 11:29 PM, Krzysztof Kozlowski wrote:
+> On 31/08/2023 05:01, Thinh Nguyen wrote:
+>> On Wed, Aug 30, 2023, Krzysztof Kozlowski wrote:
+>>> On 30/08/2023 06:31, Elson Serrao wrote:
 >>>>
->>>> Why not?  Did you try it?
+>>>>
+>>>> On 8/29/2023 6:37 PM, Thinh Nguyen wrote:
+>>>>> Just want to clarify, there are dwc3 properties and there are dt binding
+>>>>> properties. Often the case that dt binding matches 1-to-1 with dwc3
+>>>>> driver property. Now, we need to enhance the checkers so that the dwc3
+>>>>> driver property to match cases where it is platform specific and through
+>>>>> compatible string.
+>>>>>
+>>>>
+>>>> Thank you for the clarification Thinh.
+>>>> To confirm, we would need to modify the driver to parse a new compatible
+>>>> string (say "snps,dwc3-ext-wakeup") and add .data field so that the
+>>>> driver is aware that this particular platform supports external wakeup
+>>>> detection.Right ?
 >>>
->>> I have tried debugging the kernel for the last 15+ years. The only
->>> reliable way to get something out of the machine is outb on the serial
->>> port. Anything else is a waste of time..
+>>> No, it's not then platform specific. You said it depends on each
+>>> platform. Platform is Qualcomm SM8450 for example.
 >>>
->>> Adding tracing to it (which relies on RCU, which might not be alive at
->>> this point) which might itself be the problem, is a total no-go.
->>>
->>> You do not wreck early_serial_console.
 >>
->> But you didn't try my patch to see if it "wrecks" early_serial_console.
->> I doubt it has any impact there because it does not get compiled into
->> boot code.  Notice the BOOT_COMPRESSED_MISC_H and BOOT_BOOT_H checks.
+>> Hi Elson,
 >>
->> I don't understand your general objection.  The kernel already has
->> tracing for memory mapped I/O which includes serial ports.  This patch
->> just extends that to include port I/O.
-> 
-> Another point: The tracing infrastructure uses RCU for management of
-> trace buffers.  If you don't explicitly enable portio tracing nothing
-> will get written to the trace buffers.  Nothing extra will be done
-> during outb() except for a quick check to see that tracing is disabled.
-> This check took only a few clock cycles on average during my testing.
-> This should be fine even during early boot.
+>> Use the compatible string of your platform.
+>>
+>> e.g.
+>> if (dev->of_node) {
+>> 	struct device_node *parent = of_get_parent(dev->of_node);
+>>
+>> 	dwc->no_disconnect_on_usb_suspend =
+>> 		of_device_is_compatible(parent, "qcom,your-compatible-string") ||
+>> 		of_device_is_compatible(parent, "some-other-platform");
+>> }
+>>
+>> You need to enhance dwc3_get_properties(). This may get big as dwc3 adds
+>> more properties. Perhaps you can help come up with ideas to keep this
+>> clean. Perhaps we can separate this out of dwc3 core.c?
 
-Tracing is enabled/disabled by modifying the code segment at runtime.
-To demonstrate this point:
+HI Thinh
 
-# grep do_trace_portio_write /proc/kallsyms
-c13800d0 T do_trace_portio_write
-c1915fd0 r __ksymtab_do_trace_portio_write
-c19231b5 r __kstrtabns_do_trace_portio_write
-c192ca4d r __kstrtab_do_trace_portio_write
+Apologies for the delayed response.
+Series 
+https://patchwork.kernel.org/project/linux-usb/cover/1655094654-24052-1-git-send-email-quic_kriskura@quicinc.com/ 
+from Krishna K, introduced a dt property 'wakeup-source' which indicates 
+a platforms capability to handle wakeup interrupts. Based on this 
+property, glue drivers can inform dwc3 core that the device is wakeup 
+capable through device_init_wakeup(). For example dwc3-qcom driver 
+informs it like below as per the implementation done in the above series
 
-# hexdump -C -s 0x013800d0 /dev/mem | head -1
-013800d0  3e 8d 74 26 00 c3 8d b4  26 00 00 00 00 8d 76 00  |>.t&....&.....v.|
+	wakeup_source = of_property_read_bool(dev->of_node, "wakeup-source");
+	device_init_wakeup(&pdev->dev, wakeup_source);
+	device_init_wakeup(&qcom->dwc3->dev, wakeup_source);
 
-# echo 1 > /sys/kernel/tracing/events/portio/portio_write/enable
-# hexdump -C -s 0x013800d0 /dev/mem | head -1
-013800d0  e9 0b 00 00 00 c3 8d b4  26 00 00 00 00 8d 76 00  |........&.....v.|
+The dwc3 core now can access this info through 
+device_may_wakeup(dwc->dev) while checking for bus suspend scenario to 
+know whether the platform is capable of detecting wakeup.
 
-Disassembling this shows what changed:
+Please let me know your thoughts on this approach.
 
-# echo "0: 3e 8d 74 26 00 c3" | xxd -r > a.out
-# objdump -D -b binary -m i386
-...
-00000000 <.data>:
-   0:   3e 8d 74 26 00          lea    %ds:0x0(%esi,%eiz,1),%esi
-   5:   c3                      ret
+Thanks
+Elson
 
-# echo "0: e9 0b 00 00 00 c3" | xxd -r > a.out
-# objdump -D -b binary -m i386
-...
-00000000 <.data>:
-   0:   e9 0b 00 00 00          jmp    0x10
-   5:   c3                      ret
-
-The 'lea' instruction is a nop so when tracing is disabled this function
-does nothing.  When tracing is enabled the 'jmp' instruction transfers
-control past the 'ret' instruction to the tracing logic.
