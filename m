@@ -2,144 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AEC7A9DE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330BA7A9D87
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjIUTur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
+        id S230314AbjIUTjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbjIUTuh (ORCPT
+        with ESMTP id S230011AbjIUTi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:50:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD886116502
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:36:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0242C433C8;
-        Thu, 21 Sep 2023 19:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695324987;
-        bh=yWgtFNgkqgWjEXgwCB6SqgQ53emC6ZvfBAx69yUw5yQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dmdu9ccaG6RwZLCVtqnwk4lho3W9T0um4xSuX6SBZFvkcezG0GoeVUuDvwdVYyX1L
-         jpPrS/Ng5UuimZZ4Q8Fjrl91XBGaUaJJSTES1g6xikPjOEmKa7VALkPLGOtMj156Nh
-         LJunk2N4sHsrbeUQADAKcpe2iL1QypPJ39BTJCHTAnCp5wbJpuVCf8tivsEiNK5Ysv
-         A3edupwAMRy33tMf0/y7DE74FIFZCLg2QX3qkO02/R/URkT57uLE4wd1S3G7macte3
-         rwtDRwTYyqk12u3zUrXSmd/fcdFcOjWm3x8gFufQxlhUIheFMzUzFidLx+zHJ7Gj6I
-         0q2BFIEB+PTFg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Huan Yang <link@vivo.com>
-Cc:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org (open list),
-        damon@lists.linux.dev (open list:DATA ACCESS MONITOR),
-        linux-mm@kvack.org (open list:DATA ACCESS MONITOR),
-        opensource.kernel@vivo.com
-Subject: Re: [RFC 0/2] Damos filter cleanup code and implement workingset
-Date:   Thu, 21 Sep 2023 19:36:25 +0000
-Message-Id: <20230921193625.99617-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230919095237.26613-1-link@vivo.com>
-References: 
+        Thu, 21 Sep 2023 15:38:56 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4DB19E;
+        Thu, 21 Sep 2023 12:36:55 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BBC0BFF805;
+        Thu, 21 Sep 2023 19:36:51 +0000 (UTC)
+Message-ID: <8418e275-7d9a-56b7-0b3f-11f4ddcaaa7b@ovn.org>
+Date:   Thu, 21 Sep 2023 21:37:44 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     i.maximets@ovn.org, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
+        Eelco Chaudron <echaudro@redhat.com>
+Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>
+References: <20230921190429.1970766-1-i.maximets@ovn.org>
+ <CANn89iJeAFBKF=5=VjO4pZWT0-o5GrTZhZvDD4OGBt5U27P+LA@mail.gmail.com>
+From:   Ilya Maximets <i.maximets@ovn.org>
+Subject: Re: [PATCH net-next] openvswitch: reduce stack usage in
+ do_execute_actions
+In-Reply-To: <CANn89iJeAFBKF=5=VjO4pZWT0-o5GrTZhZvDD4OGBt5U27P+LA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: i.maximets@ovn.org
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huan,
+On 9/21/23 21:08, Eric Dumazet wrote:
+> On Thu, Sep 21, 2023 at 9:03 PM Ilya Maximets <i.maximets@ovn.org> wrote:
+>>
+>> do_execute_actions() function can be called recursively multiple
+>> times while executing actions that require pipeline forking or
+>> recirculations.  It may also be re-entered multiple times if the packet
+>> leaves openvswitch module and re-enters it through a different port.
+>>
+>> Currently, there is a 256-byte array allocated on stack in this
+>> function that is supposed to hold NSH header.  Compilers tend to
+>> pre-allocate that space right at the beginning of the function:
+>>
+>>      a88:       48 81 ec b0 01 00 00    sub    $0x1b0,%rsp
+>>
+>> NSH is not a very common protocol, but the space is allocated on every
+>> recursive call or re-entry multiplying the wasted stack space.
+>>
+>> Move the stack allocation to push_nsh() function that is only used
+>> if NSH actions are actually present.  push_nsh() is also a simple
+>> function without a possibility for re-entry, so the stack is returned
+>> right away.
+>>
+>> With this change the preallocated space is reduced by 256 B per call:
+>>
+>>      b18:       48 81 ec b0 00 00 00    sub    $0xb0,%rsp
+>>
+>> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+>> ---
+>>  net/openvswitch/actions.c | 20 +++++++++-----------
+>>  1 file changed, 9 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+>> index 5f8094acd056..80cc5c512d7b 100644
+>> --- a/net/openvswitch/actions.c
+>> +++ b/net/openvswitch/actions.c
+>> @@ -312,10 +312,16 @@ static int push_eth(struct sk_buff *skb, struct sw_flow_key *key,
+>>  }
+>>
+>>  static int push_nsh(struct sk_buff *skb, struct sw_flow_key *key,
+>> -                   const struct nshhdr *nh)
+>> +                   const struct nlattr *a)
+> 
+> Presumably this function should be inlined. (one caller only)
+> 
+> I would add noinline_for_stack to make sure the compiler will not play
+> games with this attempt.
 
-
-First of all, thank you for this patch.  I have some high level comments and
-questions as below.
-
-On Tue, 19 Sep 2023 17:52:33 +0800 Huan Yang <link@vivo.com> wrote:
-
-> Now damos support filter contains two type.
-> The first is scheme filter which will invoke each scheme apply,
-> second is scheme action filter, which will filter out unwanted action.
-
-IMHO, that's not clear definition of the types.  Conceptually, all the filters
-are same.  Nonetheless, they are having different behaviors because they are
-handled in different layer depending on which layer is more efficient to handle
-those[1].
-
-I agree this is complicated and a bit verbose explanation, but I don't feel
-your scheme vs action definition is making it easier to understand.
+Yeah, good point!  I didn't see it being inlined in my testing, but it's
+better to be sure.  I'll post v2 with a flag.
 
 > 
-> But this implement is scattered in different implementations
+>>  {
+>> +       u8 buffer[NSH_HDR_MAX_LEN];
+>> +       struct nshhdr *nh = (struct nshhdr *)buffer;
+>>         int err;
+>>
+>> +       err = nsh_hdr_from_nlattr(a, nh, NSH_HDR_MAX_LEN);
+>> +       if (err)
+>> +               return err;
+>> +
+>>         err = nsh_push(skb, nh);
+>>         if (err)
+>>                 return err;
+>> @@ -1439,17 +1445,9 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
+>>                         err = pop_eth(skb, key);
+>>                         break;
+>>
+>> -               case OVS_ACTION_ATTR_PUSH_NSH: {
+>> -                       u8 buffer[NSH_HDR_MAX_LEN];
+>> -                       struct nshhdr *nh = (struct nshhdr *)buffer;
+>> -
+>> -                       err = nsh_hdr_from_nlattr(nla_data(a), nh,
+>> -                                                 NSH_HDR_MAX_LEN);
+>> -                       if (unlikely(err))
+>> -                               break;
+>> -                       err = push_nsh(skb, key, nh);
+>> +               case OVS_ACTION_ATTR_PUSH_NSH:
+>> +                       err = push_nsh(skb, key, nla_data(a));
+>>                         break;
+>> -               }
+>>
+>>                 case OVS_ACTION_ATTR_POP_NSH:
+>>                         err = pop_nsh(skb, key);
+>> --
+>> 2.41.0
+>>
 
-Indeed the implementation is scattered in core layer and the ops layer
-depending on the filter types.  But I think this is needed for efficient
-handling of those.
-
-> and hard to reuse or extend.
-
-From your first patch, which extending the filter, the essential change for the
-extension is adding another enum to 'enum damos_filter_type' (1 line) and
-addition of switch case in '__damos_pa_filter_out()' (3 lines).  I don't think
-it looks too complicated.  If you're saying it was hard to understand which
-part really need to be modifed, I think that makes sense.  But in the case,
-we might need more comments rather than structural change.
-
-> 
-> This patchset clean up those filter code, move into filter.c and add header
-> to expose filter func.(patch 2)
-
-Again, I agree more code cleanup is needed.  But I'm not sure if this is the
-right way.  Especially, I'm unsure if it really need to have a dedicated file.
-To my humble eyes, it doesn't look like making code clearly easier to read
-compared to the current version.  This is probably because I don't feel your
-scheme vs action definition is clear to understand.  Neither it is
-deduplicating code.  The patch adds lines more that deleted ones, according to
-its diffstat.  For the reason, I don't see clear benefit of this change.  I
-might be biased, having NIH (Not Invented Here) sindrome, or missing something.
-Please let me know if so.
-
-> And add a new filter "workingset" to protect workingset page.
-
-Can you explain expected use cases of this new filter type in more detail?
-Specifically, for what scheme action and under what situation this new filter
-type will be needed?  If you have some test data for the use case and could
-share it, it would be very helpful for me to understand why it is needed.
-
-> 
-> Do we need this and cleanup it?
-
-I think I cannot answer for now, and your further clarification and patient
-explanation could be helpful.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/tree/Documentation/mm/damon/design.rst?h=mm-everything-2023-09-20-19-38#n400
-
-
-Thanks,
-SJ
-
-> 
-> Huan Yang (2):
->   mm/damos/filter: Add workingset page filter
->   mm/damos/filter: Damos filter cleanup
-> 
->  include/linux/damon.h    |  62 +-----------------
->  mm/damon/Makefile        |   2 +-
->  mm/damon/core-test.h     |   7 ++
->  mm/damon/core.c          |  93 ++++-----------------------
->  mm/damon/filter.c        | 135 +++++++++++++++++++++++++++++++++++++++
->  mm/damon/filter.h        | 119 ++++++++++++++++++++++++++++++++++
->  mm/damon/paddr.c         |  29 +++------
->  mm/damon/reclaim.c       |  48 +++++++++++---
->  mm/damon/sysfs-schemes.c |   1 +
->  9 files changed, 325 insertions(+), 171 deletions(-)
->  create mode 100644 mm/damon/filter.c
->  create mode 100644 mm/damon/filter.h
-> 
-> -- 
-> 2.34.1
-> 
-> 
