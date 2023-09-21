@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB237A9F4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5BE7A9F97
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjIUUU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        id S230505AbjIUUYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbjIUUUA (ORCPT
+        with ESMTP id S231833AbjIUUYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:20:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A97F835
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695317040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8073cadbomZvzn1x3/jFCjzqqbS1eUbDSTmbFgCsS0=;
-        b=ail57T0wAXAFyCDL691B7TuGjUyUx+JIdmcEVYJf5ApJj5tTEZHLWHxkHHSHxIq5pmuDGR
-        kQxcTsb68F7K41Lw1YOlRCe1hFCDIXS4nRi85WBDVfE6DFvz9ijP1FwXq5vAvJ9WBui2ib
-        IuctH1p2C9RZNUYvtUWpsfWuxt3Cw8A=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-198-hYUE15ZtOPKP46EnavZSnA-1; Thu, 21 Sep 2023 03:55:19 -0400
-X-MC-Unique: hYUE15ZtOPKP46EnavZSnA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9ae5f4ebe7eso12546266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 00:55:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695282918; x=1695887718;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M8073cadbomZvzn1x3/jFCjzqqbS1eUbDSTmbFgCsS0=;
-        b=j8BVUmF4aCU0VkluNxWS2f7UoMFN81Beofl90xnWcivVsrXCeD+qkWWzF9PmaK54k2
-         tlHvabSEXt+nkRg/Zj3iyn5uASmWJEW2AExZ0WizSQD6zjqTR/AkTN50Lr1TEGhw8h4H
-         WtF6sjcKSeyRe0SffXcJ92A/fKDYOrRMDEyWYXgtHiS+5SqPHyKzrG+uEsxkzgz3SnZN
-         68Rdy/OF+qRtjlFW/PpMp17J6JS8yKWGTxP+Laxk56cVkWIZVZiXcdh0JsyvFM1cbSAe
-         rf2/JQZgPVflCptjY9Ddy98SYL1zhifMSLX4O6SQBWQl4mFLHCz192dopEw3BgUjVtsi
-         yjhQ==
-X-Gm-Message-State: AOJu0YyKvrcUyjHxgNPcjcDBGcUhSsiQmEbeMlhiMYbk5h2aEOjHuJAp
-        D8gQ9Y3rd418czA6koTuqOezVOF8vVZVWobpI3NBucPVubS+nsR9v1iOz/nw6ZjZi/OoPk4KAlF
-        VTLhBPLUxtPUPRAhCGLZqAsLX
-X-Received: by 2002:a17:906:d3:b0:9a1:d915:6372 with SMTP id 19-20020a17090600d300b009a1d9156372mr3807375eji.4.1695282917999;
-        Thu, 21 Sep 2023 00:55:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGSF1UlZO3avrXPLFXBb/vxNsqsACyKLXNET84ThtyZNLMmNfBCh4PTxsgjk9xoZz4KcuIv7Q==
-X-Received: by 2002:a17:906:d3:b0:9a1:d915:6372 with SMTP id 19-20020a17090600d300b009a1d9156372mr3807366eji.4.1695282917682;
-        Thu, 21 Sep 2023 00:55:17 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-251-4.dyn.eolo.it. [146.241.251.4])
-        by smtp.gmail.com with ESMTPSA id y4-20020a17090614c400b00992b510089asm647510ejc.84.2023.09.21.00.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 00:55:17 -0700 (PDT)
-Message-ID: <9eac9749406d91fd42520479b4c463417717246f.camel@redhat.com>
-Subject: Re: [PATCH 2/2] net: stmmac: dwmac-stm32: refactor clock config
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Christophe Roullier <christophe.roullier@st.com>
-Date:   Thu, 21 Sep 2023 09:55:15 +0200
-In-Reply-To: <20230919164535.128125-4-ben.wolsieffer@hefring.com>
-References: <20230919164535.128125-2-ben.wolsieffer@hefring.com>
-         <20230919164535.128125-4-ben.wolsieffer@hefring.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 21 Sep 2023 16:24:06 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8886A199D;
+        Thu, 21 Sep 2023 10:23:15 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D52BE66072BD;
+        Thu, 21 Sep 2023 08:55:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695282949;
+        bh=WiT2aa8Rhk3aS7e7dZ1mtGJrKI4vTo0qji3osRdEPc4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Zhmj7ZlENxigYQSiBMNrhhDc3znNJb6e3KXnfU9zYJCvR6zs4dSBACc7Ck1CvAzbi
+         6hQx5bcxvlG4do+a2qAwpSzXiNcQT5ZJGHgGDCPaCasLDRqMVVSXU8CUybcobIsyCJ
+         2YlAo+iObbdEFviGeos7ADDrGmcuzZi5h5c6TLc8ZLdX0b/tmfuu+0mee7gIMv+7IW
+         x6A7Kvc+NnFHqigaVBGfAFbQy5SEFsHdcQF0NCbJ+9w6pt3KXfwgrvg7y2bY8xSnQ+
+         VHG6xP02c5eBfzU4n8qoi7LViqLAmfNcN7fhP09ASdjF7eCv2B+FZrzg1CTPTgryG4
+         8wiGhfzQ8wxTQ==
+Message-ID: <31fbdae8-d41c-358b-c8ea-6ee31b158dfd@collabora.com>
+Date:   Thu, 21 Sep 2023 09:55:46 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 2/4] dt-bindings: thermal: mediatek: Add LVTS thermal
+ sensors for mt7988
+Content-Language: en-US
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230920175001.47563-1-linux@fw-web.de>
+ <20230920175001.47563-3-linux@fw-web.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230920175001.47563-3-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-19 at 12:45 -0400, Ben Wolsieffer wrote:
-> Currently, clock configuration is spread throughout the driver and
-> partially duplicated for the STM32MP1 and STM32 MCU variants. This makes
-> it difficult to keep track of which clocks need to be enabled or disabled
-> in various scenarios.
->=20
-> This patch adds symmetric stm32_dwmac_clk_enable/disable() functions
-> that handle all clock configuration, including quirks required while
-> suspending or resuming. syscfg_clk and clk_eth_ck are not present on
-> STM32 MCUs, but it is fine to try to configure them anyway since NULL
-> clocks are ignored.
->=20
-> Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Il 20/09/23 19:49, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> Add sensor constants for MT7988.
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-This patch is for net-next, while the previous one targets the -net
-tree: you can't bundle them in a single series. Please re-post the
-first one individually, specifying the target tree into the subj.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-If there is a code dependency, you can post this one for net-next,
-after -net is merged back into -net-next (Usually within a week since
-the net patch is applied).
-
-Cheers,
-
-Paolo
+> ---
+> v2:
+> - new patch (moved from driver code to binding header)
+> - give sensors more meaningful names
+> ---
+>   include/dt-bindings/thermal/mediatek,lvts-thermal.h | 9 +++++++++
+>   1 file changed, 9 insertions(+)
+> 
+> diff --git a/include/dt-bindings/thermal/mediatek,lvts-thermal.h b/include/dt-bindings/thermal/mediatek,lvts-thermal.h
+> index 8fa5a46675c4..8c1fdc18cf34 100644
+> --- a/include/dt-bindings/thermal/mediatek,lvts-thermal.h
+> +++ b/include/dt-bindings/thermal/mediatek,lvts-thermal.h
+> @@ -7,6 +7,15 @@
+>   #ifndef __MEDIATEK_LVTS_DT_H
+>   #define __MEDIATEK_LVTS_DT_H
+>   
+> +#define MT7988_CPU_0		0
+> +#define MT7988_CPU_1		1
+> +#define MT7988_ETH2P5G_0	2
+> +#define MT7988_ETH2P5G_1	3
+> +#define MT7988_TOPS_0		4
+> +#define MT7988_TOPS_1		5
+> +#define MT7988_ETHWARP_0	6
+> +#define MT7988_ETHWARP_1	7
+> +
+>   #define MT8195_MCU_BIG_CPU0     0
+>   #define MT8195_MCU_BIG_CPU1     1
+>   #define MT8195_MCU_BIG_CPU2     2
 
