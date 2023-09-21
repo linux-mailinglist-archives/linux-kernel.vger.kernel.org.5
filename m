@@ -2,210 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AAC7A9ECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490F37A9F56
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjIUUMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        id S231585AbjIUUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjIUUMK (ORCPT
+        with ESMTP id S231580AbjIUUUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:12:10 -0400
-X-Greylist: delayed 878 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Sep 2023 10:11:11 PDT
-Received: from mail-4321.protonmail.ch (mail-4321.protonmail.ch [185.70.43.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684FC7EF0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1695314667; x=1695573867;
-        bh=gXaY4Zv4HDR4uGZnzyupeALs2dkkGXlQjy8jeXvNVlw=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=GB4ECG/+Nzk/b3PoIxrDUCBZU/m0ZTreA/vs+tlToWDPx1DcR0eDzH0fqm2EQZNhy
-         t1/uWGmwn9gCVoTO4YDHNPNe/rKf2Vx5FhnbwisTxOQ1fBK+obT7bUx5qTGH1qzZGM
-         Sk3w3KZH84tQWYBM/V+oD3sbl0qU2eebE0TL6GqyjkY/+hjQZzwf+p6D9OR8w9AS2w
-         HIBghWvZspT2wD0uTYL5jBDgZQ/iiHoNgasuCAgdDF1ajP6FaqH/SGuxXAjzQ/L4o4
-         kl8KP0XTCHRddAYmLdjZw/37Q1d7QF6boBpt4cgVEUiWnp5/uX9E0i4g0tEK9iuQkK
-         SbuL+7gsr4MOA==
-Date:   Thu, 21 Sep 2023 16:43:55 +0000
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Turritopsis Dohrnii Teo En Ming <tdtem@protonmail.com>
-Cc:     "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
-Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kernel 4.19.191+
-Message-ID: <SQ5WZyOZAzTQRUbRLZI1Z6vc0fBFwkFXjONxUOz-2fJRgU5G4N87Pb16CcvM8iyDgnHew6d0Hg924ubTesDAfFpNc6Fz_98PPxVtO6a0rwg=@protonmail.com>
-Feedback-ID: 80245632:user:proton
+        Thu, 21 Sep 2023 16:20:51 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89E34F933
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:18 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c008042211so20400621fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695316516; x=1695921316; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dFcwkCsyNvb3+F2dBflUU/e2F/txYXL9uZkq7j4g1FI=;
+        b=wdF2OsQpDO8CaaI+CjYLhKaPJgdE+ZAkmkgRCfRpUi3L/+/AHl16BBz9sOb72x91DW
+         W8Yj2YDh9dacDQWDFTZTNHcCJZt9/CkgqH5/5+pfBdEWgtZ48mZO4rKpVsTbKG9NAGCX
+         lNdr+ve1E1ZMvVIW1UW+z8GU6ZV+ru+o3YSJFq7s0/+LylyhWMaQwRl4+MS/ZS4bTIUj
+         bL3LFWHWMctNbWIv+ML6irjYGOU3QFzcNC+yOov6HxygK73SCEeJZyFqybiR/cPy8uWZ
+         PW6crdhOV1m/jgPRTsjebimVWy/0m/f1GyOj+qLbvFSYhmmfz9HMiouL6Q7rUERg1IjW
+         Gyhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316516; x=1695921316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dFcwkCsyNvb3+F2dBflUU/e2F/txYXL9uZkq7j4g1FI=;
+        b=pSMlcVJs8IIAwDxpC89FcdVDohP/RLsJXmOTZDRdo8pFQecCeYuLVZpA0w0X7eQDTT
+         uSWvo0TXQPCOpQwpeXkXoXuCQO3uJFKTu429W5DkDIZrJ90MTVJ/OkaEzs32+m4U6jEH
+         Qlj9DvcyIbdJuvrNd3kB9eg5VjzZwjBFxfi9ewl+HLmLHiMto0mpMDHnB23avKFzG57T
+         0elR28jAeoGfrafAqWZ0tjQ1ObBCI2vTDPGVS3eHGJTtuwfkuRNUmcXOhOCusj18dMk5
+         cFle9MDPPMLPUu/GtS+84wu1NIkzYAS13N3x+RphiNZE4+kgPafrbmIO+5fpjsTbEFWR
+         Rf0Q==
+X-Gm-Message-State: AOJu0YxI4lgsdhcjlO+BiuvWsbZcIjnvlxsjKVgeHT7gRaOI3pLpqn1h
+        uNsOmsJOS0GRaQpdLR1QK02zUkGr0ZE57KC2cX5nK2NUMcKhNlpx
+X-Google-Smtp-Source: AGHT+IFNezL7iZrcu9U0R/PCxUbFl1VTTxffcH3c3kpwj9r61fMAUV/sWK+nSgSyoGMEtsvb1Pu8+P6qFlABdx1A6ro=
+X-Received: by 2002:a2e:3306:0:b0:2bc:dfab:5dc8 with SMTP id
+ d6-20020a2e3306000000b002bcdfab5dc8mr4897815ljc.37.1695314735888; Thu, 21 Sep
+ 2023 09:45:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230920193801.3035093-1-evan@rivosinc.com> <20230920-98a392b40f88c69e852e2c88@fedora>
+ <CAOnJCUK7KTO0n_8wDYDxh2ULtEvMWF-re2dEX6nng_tX1AGgPw@mail.gmail.com>
+ <CALs-HsuurXBZ2p=jYKvPq6ZMScugm5rBchttD6Wv9Mtupfx3NQ@mail.gmail.com>
+ <CAOnJCU+YNOzw39JMjWmJFHY5QjcRrKEwULo+d9WhPfv7TejpbQ@mail.gmail.com>
+ <CALs-HsvvnMFErCtShB-30xO8LR4M03riYomZy3FnvEghRua_3g@mail.gmail.com> <a94490f6b1dd43d5985a8b14aa93bd27@AcuMS.aculab.com>
+In-Reply-To: <a94490f6b1dd43d5985a8b14aa93bd27@AcuMS.aculab.com>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Thu, 21 Sep 2023 09:44:59 -0700
+Message-ID: <CALs-Hsuuhmtg54TRSBtGFR9QGH4LWuO4TxUsg3NVzoPj3g6HzQ@mail.gmail.com>
+Subject: Re: [PATCH v2] RISC-V: Probe misaligned access speed in parallel
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Atish Patra <atishp@atishpatra.org>,
+        Conor Dooley <conor@kernel.org>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Marc Zyngier <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on Li=
-nux kernel 4.19.191+
+On Thu, Sep 21, 2023 at 3:22=E2=80=AFAM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> ...
+> > > For probing alignment speed, you just care about running it on that
+> > > cpu. Correct ?
+> >
+> > For this we care both about not migrating to other CPUs, and also
+> > secondarily minimizing disturbances while the test is being run.
+> > Usually I equate pre-emption with migration, but in this case I think
+> > the worker threads are bound to that CPU. So I'll keep the
+> > preempt_disable/enable where it is, since it's harmless for CPUs other
+> > than 0, but useful for 0. I also like it for readability as it
+> > highlights the critical section (as a reader, "is preemption disabled"
+> > would be one of my first questions when studying this).
+>
+> You need to disable pre-emption to get any kind of meaningful answer.
+>
+> But why do you need to run the test on more than the boot cpu?
+> If you've a heterogenous mix of cpu any code that looks at the answer
+> is going to behave incorrectly unless it has also disabled pre-emption
+> or is bound to a cpu.
 
-Good day from Singapore,
+I don't think it's safe to assume misaligned access speed is the same
+across all cores. In a big.little combination I can easily imagine the
+big cores having fast misaligned access and the slow cores not having
+it (though hopefully the slow cores don't kick it to firmware). Since
+this info is presented to usermode per-cpu, I'd like it to be correct.
 
-I have just bought vivo V25 Pro 5G (12 GB + 256 GB) Starlight Black Android=
- Mobile Phone for SGD$600 on 15 Sep 2023 Friday.
+>
+> One obvious use of the result is to setup some static branches.
+> But that assumes all cpu are the same.
 
-My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kerne=
-l 4.19.191+. Are there any severe/critical security vulnerabilities in Linu=
-x kernel 4.19.191+ that will allow government-sponsored or state-backed hac=
-kers or Advanced Persistent Threats (APTs) to take over absolute control of=
- my brand new vivo mobile phone? Can I download, compile and install the la=
-test Linux kernel 6.5.4 from sources on my brand new vivo mobile phone by m=
-yself? I would like to know how I can do it.
+Right, this could be used to set up static branches, or in an ifunc
+selector. This is why we provide pre-computed answers for "all CPUs"
+in hwprobe. If the situation I describe above did happen, code asking
+on behalf of all CPUs would come back "unknown", which is true (though
+would probably default to the byte-copy version). More specific
+environments might choose to curate their scheduling a bit more, and
+this info per-core would be useful there.
 
-Details are as follows.
-
-Retail Shop: @ Ang Mo Kio Central
-Purchase Time: Around 7 PM in the evening, PayNow record of SGD$600 shows 7=
-.13 PM Singapore Time
-
-Model: V2158
-RAM: 12 GB
-ROM: 256 GB
-Color: Starlight Black
-Checker: *****406
-Manufacturing Date?: 2022.09.28
-
-Funtouch OS 13
-
-Processor:
-Mediatek
-3.0 GHz
-Dimensity 1300=20
-Octa-core
-
-RAM:
-12.00+8.00 GB
-
-Android version:
-13
-
-Phone storage:
-256 GB
-
-Status
-=3D=3D=3D=3D=3D=3D
-
-IMEI (sim slot 1)
-868*********994
-
-IMEI (sim slot 2)
-868*********986
-
-IMEI SV
-34
-
-MEID:
-**********4AF0
-
-Serial Number: 10A*********12Z
-
-Other number: 6 93**** ***973
-
-Software information
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-OS version
-Funtouch OS 13 Global
-
-Hardware version
-MP_0.1
-
-Build number
-PD2204BF_EX_A_13.1.13.12.W20
-
-Baseband version
-MOLY.NR15.R3.TC19.PR4.SP.V1.P74
-
-LINUX Kernel version
-4.19.191+
-#1 Mon Jul 17 17:58:52 CST 2023
-
-Compile time
-Jul 17, 2023 17:29:43
-
-Android security update
-July 1, 2023
-
-Google Play system update
-July 1, 2022
-
-Phone/device price: one time payment of SGD$600 (I had thought of paying us=
-ing Atome 3 monthly installments of SGD$216 but decided against it eventual=
-ly)=20
-Other items: Screen Protective Membrane $20 + camera lens protective cover =
-$10 + shock resistant phone cover $20: SGD$50
-Grand Total: SGD$650
-
-Full phone specifications - vivo V25 Pro 5G: https://www.gsmarena.com/vivo_=
-v25_pro-11771.php
-
-I have decided to buy this vivo mobile phone because my Samsung Galaxy A32 =
-5G mobile phone SGD$338 has now become extremely slow in performance and la=
-gs like hell. Maybe too many apps were installed.
-Opening and using apps is now a slow and painful experience. The phone came=
-ra is even worse. Taking a photo or selfie takes 2-3 seconds. If you move t=
-he phone by a bit before the 3 seconds is up, your photo or selfie will tur=
-n out very blur. So you need to set a timer of 2 seconds when you take a se=
-lfie or photo. Taking videos with the phone camera is also very laggy and c=
-hoppy. The recorded video will turn out to be choppy.
-
-I had bought the Samsung Galaxy A32 5G mobile phone SGD$338 on 6 Oct 2021. =
-I have used the Samsung mobile phone for 1 year 11 months 10 days [ALMOST 2=
- YEARS] (as of 16 Sep 2023 Sat) and it is getting slower and slower by the =
-day. Maybe the Singapore Government had planted a spyware and/or rootkit on=
- my Samsung mobile phone.
-
-I need to ask manufacturer Samsung why my Samsung mobile phone is getting s=
-o slow and laggy. Is it because it is too cheap and too low end??
-
-I certainly hope my brand new vivo mobile phone is a good purchase and it w=
-ill last me for another 5-6 years without getting slow and laggy.
-
-My bank balance as of 22 Sep 2023 Friday is SGD$3,592. I am 45 years old. T=
-hat is all and everything I have, besides a HDB 2-room RENTAL flat under th=
-e Public Rental Housing Scheme meant for the EXTREMELY POOR in Singapore.
-
-The Michael Kors private event at Mandarin Gallery Orchard Singapore on 21 =
-Sep 2023 Thursday at 7.30 PM Singapore Time is the very 1st event where I h=
-ave taken lots of selfies and lots of Full HD videos with this brand new vi=
-vo mobile phone. I must say taking selfies with the front camera is very fa=
-st. I am able to take 3-4 selfies in quick succession. There is no lag at a=
-ll. Female celebrities who grace this event are XinLin Khaw, He Ying Ying, =
-and Hazelle Teo to name a few.
-
-Regards,
-
-Mr. Turritopsis Dohrnii Teo En Ming
-Targeted Individual in Singapore
-Blogs:
-https://tdtemcerts.blogspot.com
-https://tdtemcerts.wordpress.com
-GIMP also stands for Government-Induced Medical Problems.
-
-Bachelor of Engineering (2nd Class Lower Honors) degree in Mechanical Engin=
-eering with Aerospace Specialization, National University of Singapore (Gra=
-duated December 2006)
-Diploma in Mechatronics Engineering, Singapore Polytechnic (Graduated 1998)
-Diploma in Computer Networking, Singapore Polytechnic (Graduated 2017)
-Studied CCNA and CISSP 5-day boot camps at NTUC Learning Hub in Singapore
-GCE "O" Level Top Student Year 1994, Ahmad Ibrahim Secondary School, Singap=
-ore
-I have setup, configured and deployed 22 Fortigate firewalls for 20 compani=
-es/organizations in Singapore so far (as of 22 Sep 2023 Fri)
-EOF
-
-
-
-
-Sent with Proton Mail secure email.
+-Evan
