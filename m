@@ -2,114 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 560C37B65FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CE77B66D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239828AbjJCKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S239714AbjJCKzz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 06:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbjJCKCd (ORCPT
+        with ESMTP id S231555AbjJCKzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:02:33 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66A191;
-        Tue,  3 Oct 2023 03:02:30 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso1139507a12.0;
-        Tue, 03 Oct 2023 03:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696327349; x=1696932149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0D9ErtnzA2GpIpQYRTV/PEhl9qcHXadLDJ8uRkyriWg=;
-        b=c7/VYGxgZ0CqBogVAf9FH8yWKciLCMyxiT1iAy2uaE/2n7pmYp6pKvY8WGaQhxHY6k
-         3TMHbTaKDiDYEZ/EgxWsmWgVorfWrWsWgye3DCh1T+gp0P3rPdd/rTVNj88IAra21Hx1
-         Qf8cROXy3nEi3/QK5DGNNDyKOvR3QuIJc7aD7sBy8Hhz/ic+0RyLxgFVOxGTGtdN0nFd
-         mT4YjS5c9MSJlsw732OURb3Rne5f6DtfVE0E9oPjKd40a2oeIv1EVw0TtDKgddN0Vxud
-         xxU0Cqbz0l2AjrzkwXT/g+4oJfpfdXxEUZCTxP8z7PgUa1Y8QR95M3XFotco9uZ2P8cK
-         B2gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696327349; x=1696932149;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0D9ErtnzA2GpIpQYRTV/PEhl9qcHXadLDJ8uRkyriWg=;
-        b=wHXu4Lbr+n9+4HnI2QObbs+D7ojWx6V6r0hhKvLLgvXf02FvrsgsF7ljO2PL/osgEG
-         Jyx35vWGSVgC4u6ZcOxGfSsEIxA+RkSkeH7ly/QAb2BwJySJCf5migN3+iJMc17tRCYQ
-         yn6TeTCT1FMQ3S1UGOCMu07YEb2opSqFUtxjFcRhJcLfuuSdgCq8WfHGpsotT91m0Sl2
-         9dKMRtCn0CiaBvG6h36OyRbEvwYPPyDbECPatCagRFlfX/cmDb6098IPUpuLtbcoYKCA
-         p5ZME9x6XDidXhbfC8BOpLOtNmGeajLQ5i1Ue1prMdPNmKw0zSF+ms5xyVZbQpPy6Bc0
-         +YgQ==
-X-Gm-Message-State: AOJu0Yz6A2MOWFG2BSUuUiOCmjVlqixloTh9G9mMFfpKIyHhvqCgmHoU
-        9Uh7TVkmpVj8Q7CWZq0l1XdLQno2/ws=
-X-Google-Smtp-Source: AGHT+IH0k5yMa/0iYCiPQ1fuG/HKEuGdzG1sxKEBA5/Y49MjGitabCCmKzp2v1l1prAMschwvTRcUQ==
-X-Received: by 2002:a05:6402:1257:b0:530:77e6:849f with SMTP id l23-20020a056402125700b0053077e6849fmr12709177edw.27.1696327348717;
-        Tue, 03 Oct 2023 03:02:28 -0700 (PDT)
-Received: from sauvignon.fi.muni.cz (laomedon.fi.muni.cz. [147.251.42.107])
-        by smtp.gmail.com with ESMTPSA id s7-20020aa7c547000000b0052595b17fd4sm607137edr.26.2023.10.03.03.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 03:02:28 -0700 (PDT)
-From:   Milan Broz <gmazyland@gmail.com>
-To:     linux-block@vger.kernel.org
-Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        Milan Broz <gmazyland@gmail.com>,
-        Ondrej Kozina <okozina@redhat.com>
-Subject: [PATCH] block: Fix regression in sed-opal for a saved key.
-Date:   Tue,  3 Oct 2023 12:02:09 +0200
-Message-ID: <20231003100209.380037-1-gmazyland@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 3 Oct 2023 06:55:54 -0400
+Received: from mail.netsabolivia.com (unknown [201.222.118.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD8AAC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:55:50 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.netsabolivia.com (Postfix) with ESMTP id 86E1660B0DE44;
+        Thu, 21 Sep 2023 13:02:05 -0400 (-04)
+X-Virus-Scanned: amavisd-new at netsabolivia.com
+Received: from mail.netsabolivia.com ([127.0.0.1])
+        by localhost (netsabolivia.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hNVr4qWY4Zrs; Thu, 21 Sep 2023 13:02:04 -0400 (-04)
+Received: from [192.168.3.2] (unknown [102.165.193.4])
+        by mail.netsabolivia.com (Postfix) with ESMTPSA id 552F560BCD3ED;
+        Thu, 21 Sep 2023 07:13:26 -0400 (-04)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: PROJECT FUNDING / BUSINESS PLAN
+To:     Recipients <info@hot163.com>
+From:   "Christo Smit" <info@hot163.com>
+Date:   Thu, 21 Sep 2023 07:13:17 -0400
+Reply-To: christosmit67@yahoo.com
+X-Antivirus: Avast (VPS 230921-0, 20/9/2023), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20230921170205.86E1660B0DE44@mail.netsabolivia.com>
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_80,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        SPF_HELO_NONE,SPF_NONE,SUBJ_ALL_CAPS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
-introduced the use of keyring for sed-opal.
+I am contacting you concerning funding for your businessproject and possible investment in your Country. I work as a financial consultant and adviser to a group of investors/private lenders and consortium of High Net worth individuals,cooperate bodies and officials who want to invest in your country by proxy.
 
-Unfortunately, there is also a possibility to save
-the Opal key used in opal_lock_unlock().
+Basically, my principals are interested in partnership, business expansion and relocating business interesting in the following sectors: Medical and Health care projects, Real estate projects, Mining projects, Agricultural projects, Renewable energy projects, start-up projects, Transportation, Trading, Soft tech Constructing
+etc.
 
-This patch switches the order of operation, so the cached
-key is used instead of failure for opal_get_key.
+Our loan terms are 3% interest rate per annum (Negotiable), time duration is 10 years (Negotiable) and 1 year grace period (Negotiable). We can work on equity terms/ profit sharing basis and possible joint venture(JV)
 
-The problem was found by the cryptsetup Opal test recently
-added to the cryptsetup tree.
+Kindly indicate your interest for more details. 
 
-Fixes: 3bfeb6125664 ("block: sed-opal: keyring support for SED keys")
-Tested-by: Ondrej Kozina <okozina@redhat.com>
-Signed-off-by: Milan Broz <gmazyland@gmail.com>
----
- block/sed-opal.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/block/sed-opal.c b/block/sed-opal.c
-index 6d7f25d1711b..04f38a3f5d95 100644
---- a/block/sed-opal.c
-+++ b/block/sed-opal.c
-@@ -2888,12 +2888,11 @@ static int opal_lock_unlock(struct opal_dev *dev,
- 	if (lk_unlk->session.who > OPAL_USER9)
- 		return -EINVAL;
- 
--	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
--	if (ret)
--		return ret;
- 	mutex_lock(&dev->dev_lock);
- 	opal_lock_check_for_saved_key(dev, lk_unlk);
--	ret = __opal_lock_unlock(dev, lk_unlk);
-+	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
-+	if (!ret)
-+		ret = __opal_lock_unlock(dev, lk_unlk);
- 	mutex_unlock(&dev->dev_lock);
- 
- 	return ret;
--- 
-2.42.0
-
+Yours Sincerely,
+Christo Smit
