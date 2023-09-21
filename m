@@ -2,207 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E257A98C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA517A971A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjIURxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S230293AbjIURLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbjIURwf (ORCPT
+        with ESMTP id S230517AbjIURKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:52:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F0A566D5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695316681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TlC67XxjnP+ZVW2NhM88mr2tYX+uJkcJVmDqrakHLxg=;
-        b=VU2LT1mz5JbntVTGf/ZCuhURAY0yN0iDepEZ/jNpIn2EZzhx9v8drAs6xhHKEbxT0aoojT
-        /PS+WiCetrv8E5/KKCa/elPi8FGVnH6fPlyfjvgFyEb7i+vJlrQIFaySlqxY5A9T/AQqod
-        V1zec4+gT5J7K6KSn8D4Ua2/yTVKJTQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-UZPwVDKVOYeOMyvXxZ7hyg-1; Thu, 21 Sep 2023 10:02:34 -0400
-X-MC-Unique: UZPwVDKVOYeOMyvXxZ7hyg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-320004980a2so640488f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 07:02:31 -0700 (PDT)
+        Thu, 21 Sep 2023 13:10:04 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13984422C;
+        Thu, 21 Sep 2023 10:05:23 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5029ace4a28so2809471e87.1;
+        Thu, 21 Sep 2023 10:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695315877; x=1695920677; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DbpJd4TlttID0l3bQ6gXNygoHh+Zdpn8YAWj7L1EOlo=;
+        b=Vj3m0EK/Ep2N6DY3rDrQ29AYnbDuzj2R7fTZqosBoSvqCPPllEVaCvUrJIDV0hlnqZ
+         O23drNHfgD30NRm8ZpzVwNeQ8Shgw441L1exN1jJQKkUm4rPcwK0No4kOkeR1JfGH/cn
+         JdDsmdH6aJWscQq6ZNxYjZDZ3VDEXQsZBQNZdKTg/vOAt0LENXzVsI2/U8X+h0tDey2y
+         I8OKOkIS7s+O/XxCevvzInKemj1XqJcjwcuxUuYcyiMx1EgP1c+4u8eEFdSWNCr8F7J7
+         MzX3303eQUA+tbmq3LH0yRLGKEuEW5aBDadW+fmeErWmZQ9enHd4n2MOlQBOhkjihtyA
+         etYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695304949; x=1695909749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TlC67XxjnP+ZVW2NhM88mr2tYX+uJkcJVmDqrakHLxg=;
-        b=LNZkKNVG7yizjwzZNWzoFZDxxKLBMXz6X/+ute6ISXv+28ZTBwBwIb+Zy8vZleE7g9
-         GDBXEsR0qIvjA8W8cxGo7lazSxgn/l0bb1i714TO8YSWmcFyU8W4nwVgHqOjsz2vAhaa
-         cengJxG1Y0R3DMkqvZHlYIeDVVVtsHH9750XO/Bp1Ek/6V6KMnY60pT9XprRC2Jbo14Q
-         x/nbP4q3XdGYCeEdTpLKzdyHlcPflMXKfxV7VmlVcuchWpmreo/hqhsdbcWnVpnd8Ksg
-         UXihBD26aTECmbTZSHQzYOMGL0RaZSUnUYvAO9xXwjUP+EkrEnFbNqNgZpCjg/xxTumx
-         Oc8w==
-X-Gm-Message-State: AOJu0Yxa1drOwA3GTZmi0NS7NZ9RJddlwT+hnCpykSdNo6HwsRQojl8g
-        a2VHLQ9TuxlKGXUEFIaRW3YfYQcCqlgXq64U02+9M3S0e5EEtbM7v1DIcBEaYmPkqB1blKEVq/y
-        UN9ZTPsjJO5GzGx1NLI6oa1QHXyfIvulLUhRBKQvk7a3DlQVQkB0=
-X-Received: by 2002:a5d:6909:0:b0:31f:f1f4:ca8e with SMTP id t9-20020a5d6909000000b0031ff1f4ca8emr5334191wru.36.1695304949267;
-        Thu, 21 Sep 2023 07:02:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHNTL6nYnReHMxIE2eeSXN3WfDyrQQNkn8rAgYHxF7+Q3qpnqcBEXgV8EV9/Y02we+Lvs9Dzqktaq7bM20Yrgk=
-X-Received: by 2002:a5d:6909:0:b0:31f:f1f4:ca8e with SMTP id
- t9-20020a5d6909000000b0031ff1f4ca8emr5334163wru.36.1695304948913; Thu, 21 Sep
- 2023 07:02:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695315877; x=1695920677;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DbpJd4TlttID0l3bQ6gXNygoHh+Zdpn8YAWj7L1EOlo=;
+        b=BYg9GVpBwzpZR6FB/bH5SXynbkwRnXSfI88QNwExTLw33760NKpRDdAhqh+RYBQskk
+         /dpAFnw+PfDhE1zgt9C4LZUNVn4sWg9fn1rgjQsve/96eIje+/KfhtcDBPAX+imXagRD
+         T+KYzxBQ1FyBnRkgZ4Cn3vOrwe4/TjofMcaQIofvSClLRjSBSBFkjwKwSNsfAYDDploZ
+         FodN6wqCnyDIAL9YunbxGEEPJ7MhcQbd1yudK6GwTSBKZgHbOqFu6cQDIYRlPOSOxHob
+         AvYLGsnBQzDDQZNymJ9F4If3fXkW11QLUWZYGc+4ciDppj0FNbZ4RCPbuuIc3WLxk6ts
+         BtHA==
+X-Gm-Message-State: AOJu0YyXJwNjM6X6j2GLiFmiZITNUJgjZnVbsgZQg3II3hVcyK+9GraE
+        t6C3C0C32zM8oCmICHH5fEll5j4ocbfD4BP/dzdwA7EeCJyOkQ==
+X-Google-Smtp-Source: AGHT+IE1KOxnoJ8Dtiuq6fGQ8Gz6dgvRl31PPpM1LU0cBGpeJzEJQRYPmrKH0hixzkxaFTqGaWwzDvHY5pgwL992Nts=
+X-Received: by 2002:adf:edc2:0:b0:313:e391:e492 with SMTP id
+ v2-20020adfedc2000000b00313e391e492mr4706951wro.17.1695305672878; Thu, 21 Sep
+ 2023 07:14:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-5-lulu@redhat.com>
- <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com>
-In-Reply-To: <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com>
-From:   Cindy Lu <lulu@redhat.com>
-Date:   Thu, 21 Sep 2023 22:01:46 +0800
-Message-ID: <CACLfguW3NS_4+YhqTtGqvQb70mVazGVfheryHx4aCBn+=Skf9w@mail.gmail.com>
-Subject: Re: [RFC v2 4/4] vduse: Add new ioctl VDUSE_GET_RECONNECT_INFO
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
-        xieyongji@bytedance.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        stable@vger.kernel.org
+From:   Hao Peng <flyingpenghao@gmail.com>
+Date:   Thu, 21 Sep 2023 22:14:21 +0800
+Message-ID: <CAPm50aK-aODN8gbaxazqsNXwEciU1WdRom33h3zOnQLTBEKu1Q@mail.gmail.com>
+Subject: [PATCH v2] KVM: x86: Use octal for file permission
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 4:49=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
-ote:
->
-> On Tue, Sep 12, 2023 at 11:01=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote=
-:
-> >
-> > In VDUSE_GET_RECONNECT_INFO, the Userspace App can get the map size
-> > and The number of mapping memory pages from the kernel. The userspace
-> > App can use this information to map the pages.
-> >
-> > Signed-off-by: Cindy Lu <lulu@redhat.com>
-> > ---
-> >  drivers/vdpa/vdpa_user/vduse_dev.c | 15 +++++++++++++++
-> >  include/uapi/linux/vduse.h         | 15 +++++++++++++++
-> >  2 files changed, 30 insertions(+)
-> >
-> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_use=
-r/vduse_dev.c
-> > index 680b23dbdde2..c99f99892b5c 100644
-> > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > @@ -1368,6 +1368,21 @@ static long vduse_dev_ioctl(struct file *file, u=
-nsigned int cmd,
-> >                 ret =3D 0;
-> >                 break;
-> >         }
-> > +       case VDUSE_GET_RECONNECT_INFO: {
-> > +               struct vduse_reconnect_mmap_info info;
-> > +
-> > +               ret =3D -EFAULT;
-> > +               if (copy_from_user(&info, argp, sizeof(info)))
-> > +                       break;
-> > +
-> > +               info.size =3D PAGE_SIZE;
-> > +               info.max_index =3D dev->vq_num + 1;
-> > +
-> > +               if (copy_to_user(argp, &info, sizeof(info)))
-> > +                       break;
-> > +               ret =3D 0;
-> > +               break;
-> > +       }
-> >         default:
-> >                 ret =3D -ENOIOCTLCMD;
-> >                 break;
-> > diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
-> > index d585425803fd..ce55e34f63d7 100644
-> > --- a/include/uapi/linux/vduse.h
-> > +++ b/include/uapi/linux/vduse.h
-> > @@ -356,4 +356,19 @@ struct vhost_reconnect_vring {
-> >         _Bool avail_wrap_counter;
-> >  };
-> >
-> > +/**
-> > + * struct vduse_reconnect_mmap_info
-> > + * @size: mapping memory size, always page_size here
-> > + * @max_index: the number of pages allocated in kernel,just
-> > + * use for check
-> > + */
-> > +
-> > +struct vduse_reconnect_mmap_info {
-> > +       __u32 size;
-> > +       __u32 max_index;
-> > +};
->
-> One thing I didn't understand is that, aren't the things we used to
-> store connection info belong to uAPI? If not, how can we make sure the
-> connections work across different vendors/implementations. If yes,
-> where?
->
-> Thanks
->
-The process for this reconnecttion  is
-A.The first-time connection
-1> The userland app checks if the device exists
-2>  use the ioctl to create the vduse device
-3> Mapping the kernel page to userland and save the
-App-version/features/other information to this page
-4>  if the Userland app needs to exit, then the Userland app will only
-unmap the page and then exit
+From: Peng Hao <flyingpeng@tencent.com>
 
-B, the re-connection
-1> the userland app finds the device is existing
-2> Mapping the kernel page to userland
-3> check if the information in shared memory is satisfied to
-reconnect,if ok then continue to reconnect
-4> continue working
+Improve code readability and checkpatch warnings:
+  WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider
+using octal permissions '0444'.
 
- For now these information are all from userland,So here the page will
-be maintained by the userland App
-in the previous code we only saved the api-version by uAPI .  if  we
-need to support reconnection maybe we need to add 2 new uAPI for this,
-one of the uAPI is to save the reconnect  information and another is
-to get the information
+Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+---
+ arch/x86/kvm/svm/svm.c |  2 +-
+ arch/x86/kvm/vmx/vmx.c | 20 ++++++++++----------
+ arch/x86/kvm/x86.c     | 18 +++++++++---------
+ 3 files changed, 20 insertions(+), 20 deletions(-)
 
-maybe something like
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index f283eb47f6ac..ee6542e8837a 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -199,7 +199,7 @@ module_param_named(npt, npt_enabled, bool, 0444);
 
-struct vhost_reconnect_data {
-uint32_t version;
-uint64_t features;
-uint8_t status;
-struct virtio_net_config config;
-uint32_t nr_vrings;
-};
+ /* allow nested virtualization in KVM/SVM */
+ static int nested = true;
+-module_param(nested, int, S_IRUGO);
++module_param(nested, int, 0444);
 
-#define VDUSE_GET_RECONNECT_INFO _IOR (VDUSE_BASE, 0x1c, struct
-vhost_reconnect_data)
+ /* enable/disable Next RIP Save */
+ int nrips = true;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index af73d5d54ec8..c1e2d80377e3 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -82,28 +82,28 @@ bool __read_mostly enable_vpid = 1;
+ module_param_named(vpid, enable_vpid, bool, 0444);
 
-#define VDUSE_SET_RECONNECT_INFO  _IOWR(VDUSE_BASE, 0x1d, struct
-vhost_reconnect_data)
+ static bool __read_mostly enable_vnmi = 1;
+-module_param_named(vnmi, enable_vnmi, bool, S_IRUGO);
++module_param_named(vnmi, enable_vnmi, bool, 0444);
 
-Thanks
-Cindy
+ bool __read_mostly flexpriority_enabled = 1;
+-module_param_named(flexpriority, flexpriority_enabled, bool, S_IRUGO);
++module_param_named(flexpriority, flexpriority_enabled, bool, 0444);
 
+ bool __read_mostly enable_ept = 1;
+-module_param_named(ept, enable_ept, bool, S_IRUGO);
++module_param_named(ept, enable_ept, bool, 0444);
 
+ bool __read_mostly enable_unrestricted_guest = 1;
+ module_param_named(unrestricted_guest,
+-                       enable_unrestricted_guest, bool, S_IRUGO);
++                       enable_unrestricted_guest, bool, 0444);
 
+ bool __read_mostly enable_ept_ad_bits = 1;
+-module_param_named(eptad, enable_ept_ad_bits, bool, S_IRUGO);
++module_param_named(eptad, enable_ept_ad_bits, bool, 0444);
 
-> > +
-> > +#define VDUSE_GET_RECONNECT_INFO \
-> > +       _IOWR(VDUSE_BASE, 0x1b, struct vduse_reconnect_mmap_info)
-> > +
-> >  #endif /* _UAPI_VDUSE_H_ */
-> > --
-> > 2.34.3
-> >
->
+ static bool __read_mostly emulate_invalid_guest_state = true;
+-module_param(emulate_invalid_guest_state, bool, S_IRUGO);
++module_param(emulate_invalid_guest_state, bool, 0444);
 
+ static bool __read_mostly fasteoi = 1;
+-module_param(fasteoi, bool, S_IRUGO);
++module_param(fasteoi, bool, 0444);
+
+-module_param(enable_apicv, bool, S_IRUGO);
++module_param(enable_apicv, bool, 0444);
+
+ bool __read_mostly enable_ipiv = true;
+ module_param(enable_ipiv, bool, 0444);
+@@ -114,10 +114,10 @@ module_param(enable_ipiv, bool, 0444);
+  * use VMX instructions.
+  */
+ static bool __read_mostly nested = 1;
+-module_param(nested, bool, S_IRUGO);
++module_param(nested, bool, 0444);
+
+ bool __read_mostly enable_pml = 1;
+-module_param_named(pml, enable_pml, bool, S_IRUGO);
++module_param_named(pml, enable_pml, bool, 0444);
+
+ static bool __read_mostly error_on_inconsistent_vmcs_config = true;
+ module_param(error_on_inconsistent_vmcs_config, bool, 0444);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e3412091505d..8c1190a5d09b 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -145,21 +145,21 @@ EXPORT_STATIC_CALL_GPL(kvm_x86_get_cs_db_l_bits);
+ EXPORT_STATIC_CALL_GPL(kvm_x86_cache_reg);
+
+ static bool __read_mostly ignore_msrs = 0;
+-module_param(ignore_msrs, bool, S_IRUGO | S_IWUSR);
++module_param(ignore_msrs, bool, 0644);
+
+ bool __read_mostly report_ignored_msrs = true;
+-module_param(report_ignored_msrs, bool, S_IRUGO | S_IWUSR);
++module_param(report_ignored_msrs, bool, 0644);
+ EXPORT_SYMBOL_GPL(report_ignored_msrs);
+
+ unsigned int min_timer_period_us = 200;
+-module_param(min_timer_period_us, uint, S_IRUGO | S_IWUSR);
++module_param(min_timer_period_us, uint, 0644);
+
+ static bool __read_mostly kvmclock_periodic_sync = true;
+-module_param(kvmclock_periodic_sync, bool, S_IRUGO);
++module_param(kvmclock_periodic_sync, bool, 0444);
+
+ /* tsc tolerance in parts per million - default to 1/2 of the NTP threshold */
+ static u32 __read_mostly tsc_tolerance_ppm = 250;
+-module_param(tsc_tolerance_ppm, uint, S_IRUGO | S_IWUSR);
++module_param(tsc_tolerance_ppm, uint, 0644);
+
+ /*
+  * lapic timer advance (tscdeadline mode only) in nanoseconds.  '-1' enables
+@@ -168,13 +168,13 @@ module_param(tsc_tolerance_ppm, uint, S_IRUGO | S_IWUSR);
+  * tuning, i.e. allows privileged userspace to set an exact advancement time.
+  */
+ static int __read_mostly lapic_timer_advance_ns = -1;
+-module_param(lapic_timer_advance_ns, int, S_IRUGO | S_IWUSR);
++module_param(lapic_timer_advance_ns, int, 0644);
+
+ static bool __read_mostly vector_hashing = true;
+-module_param(vector_hashing, bool, S_IRUGO);
++module_param(vector_hashing, bool, 0444);
+ bool __read_mostly enable_vmware_backdoor = false;
+-module_param(enable_vmware_backdoor, bool, S_IRUGO);
++module_param(enable_vmware_backdoor, bool, 0444);
+ EXPORT_SYMBOL_GPL(enable_vmware_backdoor);
+
+ /*
+@@ -186,7 +186,7 @@ static int __read_mostly force_emulation_prefix;
+ module_param(force_emulation_prefix, int, 0644);
+
+ int __read_mostly pi_inject_timer = -1;
+-module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
++module_param(pi_inject_timer, bint, 0644);
+
+ /* Enable/disable PMU virtualization */
+ bool __read_mostly enable_pmu = true;
+--
+2.31.1
