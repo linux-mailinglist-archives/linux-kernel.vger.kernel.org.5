@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9897AA2D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104507AA210
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjIUVew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
+        id S232136AbjIUVMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbjIUVeG (ORCPT
+        with ESMTP id S230389AbjIUVLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:34:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A68855AD6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94BADC3278E;
-        Thu, 21 Sep 2023 10:11:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695291104;
-        bh=AdutLBV21eG6/I5c7ck2kz5+kkufzxzMbnOhofwlRNc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FWi/MotY0IkufMUjM3uKZhdm+J7+OHxVMKxpp9S4ULn+0QBoAqNetS57FJt/Z82Jj
-         O4jZOEpZ3K3DMsxVN+AsCK9an9VanRO9LUCPf2MBL+cJpjENamWN9SyImsDiZcXI9M
-         m/tL9UhfOGgSLpLh2gRs6oovaNH1q5HV9y/R/oWLEwq2s5zLxtdLlG9agn0VqQhJiG
-         4zdLRFTvjZau67sD0cWB/t3ORDx8iPIqHJOL3U47iHQx+k5Fv7q0/+lvXkWbeAnYgD
-         B8+L/gxKzFZDKtMqiOqOSatrbOTGqf6csrNnPMWYgsj50Ls9fgs4iFIk4auWYhyVOr
-         x+I/nBQXLndPw==
-Date:   Thu, 21 Sep 2023 12:11:39 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fang Xiang <fangxiang3@xiaomi.com>
-Subject: Re: [PATCH v2 0/2] irqchip/gic-v3: Enable non-coherent GIC designs
- probing
-Message-ID: <ZQwW286bqB8dE2XN@lpieralisi>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20230906094139.16032-1-lpieralisi@kernel.org>
- <6f94c6d38f00031bf7c59e0cb8baf04c@kernel.org>
- <ZPhhMvyx8lChHE0v@lpieralisi>
+        Thu, 21 Sep 2023 17:11:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35E3DA0C3C;
+        Thu, 21 Sep 2023 10:57:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B63E61595;
+        Thu, 21 Sep 2023 03:12:48 -0700 (PDT)
+Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 366B93F59C;
+        Thu, 21 Sep 2023 03:12:11 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 11:12:09 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+Subject: Re: [PATCH 0/4] consolidate and cleanup CPU capacity
+Message-ID: <ZQwW+XoOFqvyuQ63@arm.com>
+References: <20230901130312.247719-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZPhhMvyx8lChHE0v@lpieralisi>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230901130312.247719-1-vincent.guittot@linaro.org>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 01:23:30PM +0200, Lorenzo Pieralisi wrote:
-> On Wed, Sep 06, 2023 at 10:52:01AM +0100, Marc Zyngier wrote:
-> > On 2023-09-06 10:41, Lorenzo Pieralisi wrote:
-> > > This series is v2 of a previous version[1].
-> > > 
-> > > v1 -> v2:
-> > > 	- Updated DT bindings as per feedback
-> > > 	- Updated patch[2] to use GIC quirks infrastructure
-> > > 
-> > > [1]
-> > > https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
-> > > 
-> > > Original cover letter
-> > > ---
-> > > The GICv3 architecture specifications provide a means for the
-> > > system programmer to set the shareability and cacheability
-> > > attributes the GIC components (redistributors and ITSes) use
-> > > to drive memory transactions.
-> > > 
-> > > Albeit the architecture give control over shareability/cacheability
-> > > memory transactions attributes (and barriers), it is allowed to
-> > > connect the GIC interconnect ports to non-coherent memory ports
-> > > on the interconnect, basically tying off shareability/cacheability
-> > > "wires" and de-facto making the redistributors and ITSes non-coherent
-> > > memory observers.
-> > > 
-> > > This series aims at starting a discussion over a possible solution
-> > > to this problem, by adding to the GIC device tree bindings the
-> > > standard dma-noncoherent property. The GIC driver uses the property
-> > > to force the redistributors and ITSes shareability attributes to
-> > > non-shareable, which consequently forces the driver to use CMOs
-> > > on GIC memory tables.
-> > > 
-> > > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-> > > on the generic DT dma-coherent/non-coherent property management layer
-> > > (of_dma_is_coherent()) which would default all GIC designs in the field
-> > > as non-coherent; it has to rely on ad-hoc dma-noncoherent property
-> > > handling.
-> > > 
-> > > When a consistent approach is agreed upon for DT an equivalent binding
-> > > will
-> > > be put forward for ACPI based systems.
-> > 
-> > What is the plan for this last point? I'd like to see at least
-> > a proposal before taking this series in.
+On Friday 01 Sep 2023 at 15:03:08 (+0200), Vincent Guittot wrote:
+> This is the 1st part of consolidating how the max compute capacity is
+> used in the scheduler and how we calculate the frequency for a level of
+> utilization.
 > 
-> Absolutely, I am starting a thread on related MADT changes, should not
-> take too long.
+> Fix some unconsistancy when computing frequency for an utilization. There
+> can be a mismatch between energy model and schedutil.
 
-Quick update, bindings filed, I will code against it but we should
-not merge anything till it is approved (could be missing v6.7 timeline).
+There are a few more pieces of functionality that would be worth
+consolidating in this set as well, if you'd like to consider them:
 
-https://bugzilla.tianocore.org/show_bug.cgi?id=4557
+- arch_set_freq_scale() still uses policy->cpuinfo.max_freq. It might be
+  good to use the boot time stored max_freq here as well. Given that
+  arch_scale_cpu_capacity() would be based on that stored value, if
+  arch_scale_freq_capacity() ends up using a different value, it could
+  have interesting effects on the utilization signals in case of
+  boosting.
 
-Lorenzo
+- As Pierre mentioned in a previous comment, there is already a
+  cpufreq_get_hw_max_freq() weak function that returns
+  policy->cpuinfo.max_freq and it's only used at boot time by 
+  the setup code for AMU use for frequency invariance. I'm tempted to
+  suggest to use this to initialize what is now "freq_factor" as my
+  intention when I created that function was to provide platform
+  providers with the possibility to implement their own and decide on
+  the frequency they choose as their maximum. This could have been an
+  arch_ function as well, but as you mentioned before, mobile and server
+  platforms might want to choose different maximum values even if they
+  are using the same architecture.
+
+Thanks,
+Ionela.
+
+> 
+> Next step will be to make a difference between the original
+> max compute capacity of a CPU and what is currently available when
+> there is a capping applying forever (i.e. seconds or more).
+> 
+> Vincent Guittot (4):
+>   sched: consolidate and cleanup access to CPU's max compute capacity
+>   topology: add a new arch_scale_freq_reference
+>   cpufreq/schedutil: use a fixed reference frequency
+>   energy_model: use a fixed reference frequency
+> 
+>  arch/arm/include/asm/topology.h   |  1 +
+>  arch/arm64/include/asm/topology.h |  1 +
+>  arch/riscv/include/asm/topology.h |  1 +
+>  drivers/base/arch_topology.c      |  9 +++------
+>  include/linux/arch_topology.h     |  7 +++++++
+>  include/linux/energy_model.h      | 20 +++++++++++++++++---
+>  kernel/sched/core.c               |  2 +-
+>  kernel/sched/cpudeadline.c        |  2 +-
+>  kernel/sched/cpufreq_schedutil.c  | 29 +++++++++++++++++++++++++++--
+>  kernel/sched/deadline.c           |  4 ++--
+>  kernel/sched/fair.c               | 18 ++++++++----------
+>  kernel/sched/rt.c                 |  2 +-
+>  kernel/sched/sched.h              |  6 ------
+>  kernel/sched/topology.c           |  7 +++++--
+>  14 files changed, 75 insertions(+), 34 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
+> 
