@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F267AA2BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CF67AA2D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjIUVd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S231923AbjIUVgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbjIUVdN (ORCPT
+        with ESMTP id S231437AbjIUVfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:33:13 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2067.outbound.protection.outlook.com [40.92.90.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36044B15F7;
-        Thu, 21 Sep 2023 14:09:21 -0700 (PDT)
+        Thu, 21 Sep 2023 17:35:47 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2104.outbound.protection.outlook.com [40.92.90.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2091BE8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 14:10:12 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RIK/aou300ANbOM+c0HfLH0k/e6VyzXzbUaQJ/Zbn1kD7XrVAzcNknt8fIbq9kmeq8GYQomZ8y4c6gHoXzOwuZD3WVJCFaq1u966Pm4rmgoiBvbVfhx+A1+k8ATrEh2FI2CrrGAURhIqlzN6w4USL222iJUKR0dPo+bgcF/vKfoby9kCjYHeAIL/SIy8k2sOemSnBV/I2CmsZlrLx338e8K/x3Xewldz9y3Rt4FGa/6Eo3SrMHR2TaRAJwDXKAzSw89+AwFjHQ2bWvRfJViaeDkKz1tdSGGNHajy6tf0fwrHCSF1FtFnURiHCEbuqW7vqGogz8HX+hApl3ct2sz8Sg==
+ b=hDa+n+e4DYRiSXPVUQE00pw1I7Y1jubWy46ces6d/PwNArCdOUY74wKPYBmCidrZM9zSkTynuCE83H391LevjXhaRArgIdyP6SQZWRFDHXw/7J6rs1mJ4zaNbcYTCRdcHCaCMEmybINoxbP3jJ3sIQ7niMHsgVMFGMQXP1atKufeJ/pnni/52gXmeZVgTmc+b0ZDC97NX9gYaYA0g9zIFUTuTFzPm1Dr1bqWOMj4bImT3thkoH9P0kSMw0lIw+uWSpRf8VD7CAuV1x3F0wiGB56h+cYNM9br3xnH+j1OvP4e9lhEc15VqLn8VMorEyXFo50EMMHoBIzkmwyfjy7IeA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IXRwHGBZPslqxScX8SAhmlZ5qGHbOKg7G2XwmGhIRy4=;
- b=Hhg+oMVa41JUk6GjZIoiHqQbaoWAhl42FDqGWOewduSZo35q5TGfGLP7I/FUZNDjtqHlV++m64HEl1W+WB4TsgvqmeGZGss/rSYqrP+DCwDpic/ozKDifsj9IdcbjwguEPoFAskQ4DaPeJxeGy/ic0AvoKLGU/cHQ0TWkiuYRcMt0qUw5JgxKZVnhc0VklxwnsHnGm2zxYnEtHg1ipnG96wwrMPF/YUbbozQttc5mmT4uN7Beb6O0Z8Q3DegJr+iAQMMjcQW3mLbrOqj5v5Z8gjHTHHbCbW5jbHF9C2LEgA6o2Ms4JIwI8zcUs6vHIL3jYr+J1lZiFfSHLqDtefdQw==
+ bh=3YBPE6cOtHUURX0jo96vmHb09B8MS47PJFdnT/MIalk=;
+ b=Qv5rbJcCH1697EVfdAQXN1WdgkZbwuyEYwZsZfvg54JLhCgaav7ifCQrAziy2VCEGnqGaDq2VJzXhwMuM7eOczPz2cuKv5MCnMUqrLY/OGvmec8QqU30xwg3kq0u22N7rRq7HaOlxW1Cf3U2EjfJOofBDJlIfN3S+O/0GYBPk3o7MgprjQsFyZPgf/WZLN8KD5CKvqO58zOj/CtqUhz5WFEOYmOxol+ZzCWFUQhpA57YEDrZJKgHnFBaxD7p99NTeBLcdrGSQVuQvao3ILE2wl2o7HQpXbsbJ7JcUzaeSmrzMiB8hIBbUyWh/mrZATjPgjE6Q3Ug/hZOGQUYIMJw3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
  by PA4PR02MB7134.eurprd02.prod.outlook.com (2603:10a6:102:10e::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Thu, 21 Sep
- 2023 21:09:18 +0000
+ 2023 21:10:10 +0000
 Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
  ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
  ([fe80::b753:178a:394e:af8e%6]) with mapi id 15.20.6792.026; Thu, 21 Sep 2023
- 21:09:18 +0000
-Date:   Thu, 21 Sep 2023 22:09:16 +0100
+ 21:10:10 +0000
+Date:   Thu, 21 Sep 2023 22:10:07 +0100
 From:   Cameron Williams <cang1@live.co.uk>
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, sudipm.mukherjee@gmail.com,
-        gregkh@linuxfoundation.org
-Subject: [PATCH 1/4] PCI: Add device IDs for Brainboxes/Intashield PX/UC/UP
- cards
-Message-ID: <DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+To:     sudipm.mukherjee@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 2/4] parport_pc: Add support for Brainboxes parallel cards
+Message-ID: <DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-TMN:  [ENOxRf0JsgXwZQaAyKCwWrJE4hv3P/H9]
-X-ClientProxiedBy: DUZPR01CA0006.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:3c3::13) To DU0PR02MB7899.eurprd02.prod.outlook.com
+X-TMN:  [o9xGZXMkAFpYebJgkXu1Dao2SuKayldC]
+X-ClientProxiedBy: DU7PR01CA0008.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:50f::29) To DU0PR02MB7899.eurprd02.prod.outlook.com
  (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <ZQyw_JWDO9akO7YT@CHIHIRO>
+X-Microsoft-Original-Message-ID: <ZQyxL7md2HQGLMYe@CHIHIRO>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|PA4PR02MB7134:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3693ad88-e628-4f7c-6c1c-08dbbae704e6
+X-MS-Office365-Filtering-Correlation-Id: 5e053e9d-5888-4dd7-cb2b-08dbbae72381
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oKPcQulvrSt1iZjbPKRTE0hp9UmDNxSEsJcVyCgVO+ZVROfxeuQRIZuI2YcFZU0pZMlB8MtU7HAeInt5NnyBT4r/CjUAsyxhRWgIZ4vzwN0ILThhb/kLprYtkS0GgIsmxnLSBVdpI34T6HOh0pkepLA+Z8jTiOZINy3Z1U4olUxd/WtUJ3ha5uAw3NG9P5g0eoPV0SMNLmSHB3DEmF59qxy93ia8YsaSmEqG2CaS390Ptpmo4deAacgoDg4tBqtlvsA01UEivMRMnrfA4rIcvAFwixgG0qo2G8uBJtqC548DJQGhr/u0ssmAQ/03ADfh+D1BZcnHvB6+dUbt3gT0oJ/TUKCyo266JybJaA5xWv2p33L3+i0ngrRgk3A8IMIIYJ2FyhehOCuRXTYRSTk8VsN5ukxdyL0cmp4ot9hYq37jsKKioqj+68q/0p8HEmAP2uXsxTcMXHXtVqttLBbcWSWJnCmA3U2FtxJ4yVPJHy1jTUhuhgxYGuT2EZeLr5b/FFOt5JrX/swEsKPvEc11+dKG6Zc6i9nnWA3xoBZIsiC2uQugdmI06GNcSxMgNcFY
+X-Microsoft-Antispam-Message-Info: cKDh42rgddn8VXWociqp/MrJ508VOIcU2Bm7XztLFpT3P6PO52lCF/0VFXGjERDcj76RRpTG/cmJesuyS+OToccXIKabsNULUvQgCFnkUiEnZoWs1mCYuwYrqGGhhBwUP+4PDJiGjs77lXasARdc1xlHFW85LnLTU/YLQYUCbiCXipqg/nTr5UFF4q+yWEaLfsrzCWEdNxzC+0WU/noabw7nP4g4gf8n5nFn+F2ruQaNsdSah0Ehie9yBMFu+1H7MeBj2jQlyRA/a/D+mgYHzMEzNGFBqJolm2I06FrASTgiQavX/HFfcgQGTpV0F9FkbcTGuWTjaRSID+7YJpMoyjC33gQHiFiuhayMi9NDWDZjVBOvS1QFvSA2ISMu1Zas0w9VKYlsRUkXvoMIAWhp4vcHHoYfONHxkWjd9gdFSuDUmboS3dALd7eoZ/mNxM4CzE2yTPBM0lRcSQQ+2XcoMACG2+hMy0jw7k73zvr+7FVqWib1cZTtJVoWpkUDwCyKJLQG751oK/Uu/Ihpdh54B2UvYxxU8jEy83Rdb4eUEwJ1yY4RUJRSW3wB7Iqhp4tu
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TA2Jn0SBwPWEYYq/o98SiEkKJlpaB0n/2semwOL/Ev+GHIuAeB+Y96W8zmyY?=
- =?us-ascii?Q?1kd75rtGbqX4FEGZkfBBLOv7rrEddu+ylqBoCw95XCtI3v/O/yokFvXYvVTx?=
- =?us-ascii?Q?aUkO4eJyhi+LeuwbutpQvQ/VhvzpqPGw7F9n9CyNA2zJHNNxW3TQYL9Xu1QR?=
- =?us-ascii?Q?TWN1n3TS6ajZFJdcNlNnugwbj6fKWYi0A3g0v8yHQaS5WOliJ97IH0ra9g38?=
- =?us-ascii?Q?gKTDd6XRKrm0JCMpDFfNlsh0BEVbQgxNNEBvL1IMEl4DFvep8b//X7UhxUam?=
- =?us-ascii?Q?9j4Y6gR4nmFYGr7WRD+cU/p1bits9wF2T2txBv6Lm0D9p1P/obpvn8Hv/NiE?=
- =?us-ascii?Q?f+HHm9nvnaPKEKUvo7FAIYM/lc/Zeses6wd60oq/6o7k+5HbOJu2fPkUVWaI?=
- =?us-ascii?Q?GDxyNk4lxisVaICRN7h7Oev++GIDDLpRostYHCE9BT5jvdM8UcsGPdH5XQ/Y?=
- =?us-ascii?Q?xTP6mtNlZ7vffmYPTOF5IK24yEWSyekfSco8QpS8zcbKoMn8k7U45/X69xDs?=
- =?us-ascii?Q?fhMoUfBEvM6goU6pA0QxxAxv3PyX3rrYWR3HkqvOAXWg+JVTsSKqW51p153T?=
- =?us-ascii?Q?luCTUOGn4ZZhaUdZM3OgiH7j8cvsHauJuArCq4iDAw7Eb4Aho0KNGNBRqisF?=
- =?us-ascii?Q?ox5luicu689fM09P/BmQK+M3r8/x+dOV98wBCMJgmS0Hb7buHcjsnFUtFB8A?=
- =?us-ascii?Q?eszSPKNy4QG55i5rgbwoeB4BEUPMBMG3aoX8o6njj19i1E+XANfRKvEHUtMJ?=
- =?us-ascii?Q?YvH9bfZPDqHtnnxpJA3FwuYoIKIEHyYm+bslNDNyuW5ZP9j2x+oAdWX9wHNA?=
- =?us-ascii?Q?g3tn/eNR1C4XhS9uiA6bTVhQyMw1uzIYUB1nu8NDe9VNMK+CcZJuKA27mFt7?=
- =?us-ascii?Q?Mp00juqr7gMQqmVFmFJGocHpUvIESzsWj5zClfl5HKTnqm9WMGUtd9SbV5sy?=
- =?us-ascii?Q?4y91cHsDX2sZAFn7O21PajWMnfiFYRUfKgkHCkenwCSouXKsRrLpTzIqC7P8?=
- =?us-ascii?Q?yi/GWxZFCzXJ5av5gHabKSS2MgP3rbGx/YOKC42JO8LNSh3EouxK7zXSUiV+?=
- =?us-ascii?Q?BQ75J3jgBrzpYy9JeG8afORLO4QYgnx8xyk/a0xZEndortumUT3StMNrigtP?=
- =?us-ascii?Q?dcnK4/4HLM2wGjmpAvO2nPSb/OnUreeZT4Fh9jU+VWiOLyNslIOb5cUoLhur?=
- =?us-ascii?Q?Cds05LKD98Qnop13KLbNjrhgP/y+o4wYQHgV+w=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YelAVUryeNTn4uY6bqlkTeKrW7wM6m+49Fla0pAgE+YNlcOYUG7gOyJ8hZRH?=
+ =?us-ascii?Q?7pOq0zLVNyzV5EAjze0ZG437lTit6APt7p9I29PwXzQyQytQLsGPDKBLpVHq?=
+ =?us-ascii?Q?Zo8bwKtqVtfIdAgwk+2G5ZORdcX/HOD19S3sQzh6HBzfHom7jlY2bLW8+gO7?=
+ =?us-ascii?Q?uQ5EmN+fuao55pilMKi/4EKtLNGlscSn5eMR4sjS6QtLZZPd+bIh5ob2W+rI?=
+ =?us-ascii?Q?3um+kbo4WB/16BNSYf12jsbYg8cLmKezFhOTQmR26JvBkpYV3UfF6HCHxbU5?=
+ =?us-ascii?Q?o2VX0y4FoLme+2j1ojBCvvy2wJ6Cn+rLTIEyvz1AMwRx5xm1Ge++i0lBn4ls?=
+ =?us-ascii?Q?5DDVK27dDoIvTA41KrJ2YH2H4GN39X37Un2gu4dtF0HERqCYR1vUuJG/JLeh?=
+ =?us-ascii?Q?v24hpf3MXk0lCFZG4QtCbU42IdHF0A15eX7+e66r/Di/0/AhD851uxscA2H4?=
+ =?us-ascii?Q?gMBrjgtcO+GadrRQFkaVNzdTLV5FnKeIFXc17zNYviHBvnjlCXI2p7xcx9hf?=
+ =?us-ascii?Q?gVWFQdvz9qAYGwtcFj6XB3YCdQjvINQnbBoMkiXr/A1R08EOyrWFjjJjgUqL?=
+ =?us-ascii?Q?GXZ9+488G9xZsSm1QvsOa6+kLcU32uAoxNdSLZG+k98X3zTpiz//prkM3wf6?=
+ =?us-ascii?Q?EcXsD4SrvyXs/3Fiux10+41IVGCFmXfWEUTs8GACgUPKxrFp0aO6x8zDvryo?=
+ =?us-ascii?Q?0jDjSBQnMNTwagqOGGMrU7cuQyuo57GPVREbTlIo7hR+wxdk6gCEks6Lj8Oc?=
+ =?us-ascii?Q?PSJBxxCuohdGpCZyf9orX+7zig9Car8uGZDlMWPtyqmsBKdzPAQL7ukJ+UJW?=
+ =?us-ascii?Q?YXI9q+6CTqHjEW5b+jtktKna0i3Q9x+9Bw+e44CY9kLPQe7/pAyyGK05ScvV?=
+ =?us-ascii?Q?ZEIMi6I++w6eiJj4x5yuOaqh4hhu+6CSOLCyImENVAzBPPzm92Lhr9F6VVza?=
+ =?us-ascii?Q?8Kokl2IsQWEnK7J4Ac/IBItMe/dtcd8YTET+TaJ2qBwyc/UzT8JSgUVdjP28?=
+ =?us-ascii?Q?Af8h6xdyHSWA4WFSRWSqY1uqgVjYhU2IyK6bmP8+7hcFuwruKQ5/8JqYxE4z?=
+ =?us-ascii?Q?/jMA3+sMi3VJpXEWu1wQqAXEtHKihJfW3HsjWq5jkYHZrTrA5CtAIOnOqby/?=
+ =?us-ascii?Q?AgIEtyOaJUoOGIr0IBBWSTPggJbouzPWh4CLU+7iFlY2743Wvupr6qIIHLBw?=
+ =?us-ascii?Q?1u4EcJ6/mjp2b5cvhlF8Iq0yiFnQfQSM+OKGFw=3D=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3693ad88-e628-4f7c-6c1c-08dbbae704e6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e053e9d-5888-4dd7-cb2b-08dbbae72381
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 21:09:18.8460
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 21:10:10.6132
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -97,128 +94,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device IDs for PCI/PCIe serial cards manufactured by
-Brainboxes (IS/IX/UC/UP/PX).
-Apologies if this file isn't strictly for your tree. All trees
-I am sending this patch series to use these PCI IDs, I was unsure
-if this was the correct way to go about it, and better safe than
-sorry. Thank you for understanding and please disregard if
-its not required.
+Add support for the Intashield IX-500/IX550
+Brainboxes UC-146/UC-157, PX-146/PX-157, PX-203
+and PX-475
 
 Signed-off-by: Cameron Williams <cang1@live.co.uk>
 ---
- include/linux/pci_ids.h | 95 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+ drivers/parport/parport_pc.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 5fb3d4c393a9..82a64459c20e 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -1920,9 +1920,104 @@
- #define PCI_VENDOR_ID_DOMEX		0x134a
- #define PCI_DEVICE_ID_DOMEX_DMX3191D	0x0001
+diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
+index 1f236aaf7867..95bb5134696f 100644
+--- a/drivers/parport/parport_pc.c
++++ b/drivers/parport/parport_pc.c
+@@ -2658,6 +2658,8 @@ enum parport_pc_pci_cards {
+ 	asix_ax99100,
+ 	quatech_sppxp100,
+ 	wch_ch382l,
++	brainboxes_uc146,
++	brainboxes_px203,
+ };
  
-+/* Intashield or Brainboxes */
- #define PCI_VENDOR_ID_INTASHIELD	0x135a
-+#define PCI_DEVICE_ID_INTASHIELD_UC268	0x0841
-+#define PCI_DEVICE_ID_INTASHIELD_UC257	0x0861 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC257R3	0x0862 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC257R4	0x0863 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC279	0x0881
-+#define PCI_DEVICE_ID_INTASHIELD_UC313	0x08a1 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC313R3	0x08a2 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC313R4	0x08a3 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC310	0x08c1
-+#define PCI_DEVICE_ID_INTASHIELD_UC302	0x08e1 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC302R3	0x08e2 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC302R4	0x08e3 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC431	0x0901
-+#define PCI_DEVICE_ID_INTASHIELD_UC420	0x0921
-+#define PCI_DEVICE_ID_INTASHIELD_UP400	0x0941
-+#define PCI_DEVICE_ID_INTASHIELD_UP376	0x0961
-+#define PCI_DEVICE_ID_INTASHIELD_UC475	0x0981 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC475R3	0x0982 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC607	0x09a1 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC607R3	0x09a2 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC607R4	0x09a3 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC324	0x0a61
-+#define PCI_DEVICE_ID_INTASHIELD_UC357	0x0a81 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC357R3	0x0a82 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC357R4	0x0a83 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC246	0x0aa1 /* Revision 2*/
-+#define PCI_DEVICE_ID_INTASHIELD_UC246R3	0x0aa2	/* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP189	0x0ac1 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP189R3	0x0ac2 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP189R4	0x0ac3 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC346	0x0b01 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC346R3	0x0b02 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP200	0x0b21 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP200R3	0x0b22 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP200R4	0x0b23 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC101	0x0ba1
-+#define PCI_DEVICE_ID_INTASHIELD_UC203	0x0bc1 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC203R3	0x0bc2 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC146	0x0be1 /* Revision 2*/
-+#define PCI_DEVICE_ID_INTASHIELD_UC146R3	0x0be2 /* Revision 3*/
-+#define PCI_DEVICE_ID_INTASHIELD_UP869	0x0c01 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP869R3	0x0c02 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP869R4	0x0c03 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP880	0x0c21 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP880R3	0x0c22 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_UP880R4	0x0c23 /* Revision 4 */
-+#define PCI_DEVICE_ID_INTASHIELD_UC368	0x0c41
-+#define PCI_DEVICE_ID_INTASHIELD_UC253	0x0ca1
-+#define PCI_DEVICE_ID_INTASHIELD_UC260	0x0d21
-+#define PCI_DEVICE_ID_INTASHIELD_UC836	0x0d41
-+#define PCI_DEVICE_ID_INTASHIELD_IS100	0x0d60
- #define PCI_DEVICE_ID_INTASHIELD_IS200	0x0d80
-+#define PCI_DEVICE_ID_INTASHIELD_IS300	0x0da0
- #define PCI_DEVICE_ID_INTASHIELD_IS400	0x0dc0
-+#define PCI_DEVICE_ID_INTASHIELD_IS500	0x0de0
-+#define PCI_DEVICE_ID_INTASHIELD_PX279	0x0e41
-+#define PCI_DEVICE_ID_INTASHIELD_UC414	0x0e61
-+#define PCI_DEVICE_ID_INTASHIELD_PX420	0x4000 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX431	0x4001 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX820	0x4002 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX831	0x4003 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX235	0x4004 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX101	0x4005 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX257	0x4006 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX257LPT	0x4007 /* Revision 2 LPT port */
-+#define PCI_DEVICE_ID_INTASHIELD_PX835	0x4008 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX857	0x4009 /* Revision 2 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX260	0x400a
-+#define PCI_DEVICE_ID_INTASHIELD_PX320	0x400b
-+#define PCI_DEVICE_ID_INTASHIELD_PX313	0x400c
-+#define PCI_DEVICE_ID_INTASHIELD_PX310	0x400e
-+#define PCI_DEVICE_ID_INTASHIELD_PX346	0x400f
-+#define PCI_DEVICE_ID_INTASHIELD_PX368	0x4010
-+#define PCI_DEVICE_ID_INTASHIELD_PX420R3	0x4011 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX431R3	0x4012 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX820R3	0x4013 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX257R3	0x4015 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX831R3	0x4014 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX235R3	0x4016 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX835R3	0x4017 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX857R3	0x4018 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX101R3	0x4019 /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX146	0x401c
-+#define PCI_DEVICE_ID_INTASHIELD_PX475	0x401d
-+#define PCI_DEVICE_ID_INTASHIELD_PX803R3	0x401e /* Revision 3 */
-+#define PCI_DEVICE_ID_INTASHIELD_PX475LPT   0x401f /* LPT port */
-+#define PCI_DEVICE_ID_INTASHIELD_XC157	0x4020
-+#define PCI_DEVICE_ID_INTASHIELD_XC475	0x4021
-+#define PCI_DEVICE_ID_INTASHIELD_XC475LPT	0x4022 /* LPT port */
-+#define PCI_DEVICE_ID_INTASHIELD_XC235	0x4026
-+#define PCI_DEVICE_ID_INTASHIELD_IX100	0x4027
-+#define PCI_DEVICE_ID_INTASHIELD_IX200	0x4028
-+#define PCI_DEVICE_ID_INTASHIELD_IX400	0x4029
-+#define PCI_DEVICE_ID_INTASHIELD_IX500	0x402a
-+#define PCI_DEVICE_ID_INTASHIELD_PX263	0x402c
-+#define PCI_DEVICE_ID_INTASHIELD_PX272	0x4100
  
- #define PCI_VENDOR_ID_QUATECH		0x135C
- #define PCI_DEVICE_ID_QUATECH_QSC100	0x0010
+@@ -2737,6 +2739,8 @@ static struct parport_pc_pci {
+ 	/* asix_ax99100 */		{ 1, { { 0, 1 }, } },
+ 	/* quatech_sppxp100 */		{ 1, { { 0, 1 }, } },
+ 	/* wch_ch382l */		{ 1, { { 2, -1 }, } },
++	/* brainboxes_uc146 */	{ 1, { { 3, -1 }, } },
++	/* brainboxes_px203 */	{ 1, { { 0, -1 }, } },
+ };
+ 
+ static const struct pci_device_id parport_pc_pci_tbl[] = {
+@@ -2833,6 +2837,23 @@ static const struct pci_device_id parport_pc_pci_tbl[] = {
+ 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, quatech_sppxp100 },
+ 	/* WCH CH382L PCI-E single parallel port card */
+ 	{ 0x1c00, 0x3050, 0x1c00, 0x3050, 0, 0, wch_ch382l },
++	/* Brainboxes IX-500/550 */
++	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_IX500,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, oxsemi_pcie_pport },
++	/* Brainboxes UC-146/UC-157 */
++	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC146,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc146 },
++	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC146R3,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc146 },
++	/* Brainboxes PX-146/PX-157 */
++	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_PX146,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, oxsemi_pcie_pport },
++	/* Brainboxes PX-203 */
++	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_PX257LPT,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_px203 },
++	/* Brainboxes PX-475 */
++	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_PX475LPT,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, oxsemi_pcie_pport },
+ 	{ 0, } /* terminate list */
+ };
+ MODULE_DEVICE_TABLE(pci, parport_pc_pci_tbl);
 -- 
 2.42.0
 
