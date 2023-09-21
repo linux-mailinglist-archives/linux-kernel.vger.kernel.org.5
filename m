@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6DF7AA00A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D487A9F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjIUUaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
+        id S229716AbjIUUQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbjIUUac (ORCPT
+        with ESMTP id S230369AbjIUUP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:30:32 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA86B905FD
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:46:52 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-274800b0216so894932a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695318412; x=1695923212; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2Sd4hbhBemt6+PvRvK/BENUnRBVZPSiTQthHgyMmLUc=;
-        b=ZvxswE2AnZy+bjBY+Uu8tHr8gMH2o82Ao997Nte5s90/C8v7gx8bNuyjkScxBV8gXL
-         P9rpzdQjKyg7XUjUJ6vEK9bRbAZI4oGatkDKkXi3U6v4oCTubvVswCPOvY7mRrUHg4or
-         qv4WPakU8QY5xYz5mCloH8TzSFUdPThdS9hnsJe84C0BXotdbgLN6XzlfxdPHhI8cDie
-         dZCH7eRYj93vxOsGsY/bDjmt73jlt+U98EMN1Z2s7IQDzZJluAU6aHl7KeZf9bzTLrDl
-         GoxSiJJWiOQyjfXta65jfsc/XPWDhF71IMHfOJfuHaekdvTmBNG2OYDgS67OQRRY74lr
-         XhYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318412; x=1695923212;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2Sd4hbhBemt6+PvRvK/BENUnRBVZPSiTQthHgyMmLUc=;
-        b=DvpPGXhWoaHnbi+kHnn1jZf4ZWm2Y/f0gfis+V5ShmHekCMqdY1bpGC8EHnNb0Ji0Z
-         Zjd2BWi+FYrYnn0KU5LRDJ/Sw1UhMp/8HJT+mPrlBsQeREn+lzplqE1nKLzlBU0pLuCw
-         IXWQKeFQ1eKXVYFt09UiCEh85mdr+SuLDX09iZXtzAjfyOkiG44fNOREo/1NawZulAZE
-         R9R8r3m1Kc/Gqf1sLm14ui6xwnbUx+H1JcrRCwGr8G86TbbfweO5AoYtRox0E3rHthFv
-         N4ZRTMbvE0bzhxr0C0/c9cS58pAiBb+USvHv2iuXdes2jMGsLTIDMTSXBgDSVo0RmUmc
-         dW0A==
-X-Gm-Message-State: AOJu0YxQn0Enmd0FI3Z6j7Dhad1ySKjutkVUk+vYRs+XBPheX1Zg8rOY
-        0tdLQPIct2N3VS+H/krT89ZdeIri1GjZbczdcA==
-X-Google-Smtp-Source: AGHT+IFWNDtLo6T7hYyWkvIRT0T2ceJhA1446eNRT+1I3X5gzOavUskQ6j/Bys+UNNJrmi11oEd2CYMw2JNr7ecfxQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:b149:0:b0:59b:ebe0:9fd6 with SMTP
- id p70-20020a81b149000000b0059bebe09fd6mr74612ywh.6.1695281787226; Thu, 21
- Sep 2023 00:36:27 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 07:36:26 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAHnyC2UC/x3NywrCMBBG4VcpWTswbbygryIiuUzsv3AsE2mV0
- nc3uPw256yuikGqu3SrM5lR8dKGfte5NAZ9CCE3u4EHz+ehp/o2TdOXsmEWqwQtUMSgmcaFYPk ZCHvGckehREfvuUQ+8ClH16KTScHnP7zetu0HJ/831YAAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695281786; l=1647;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=azwE+ZmdRI6O/nQsHa387F2VcNjnWz4bpJZWNz8mYqI=; b=4HCFbh7ZqzydD1p5IcPfSFx7e/laNJU8kusftwlxw5oJi2KxF9BHvAMRI3p7BtcLKVqzigrTX
- NHT8RDtFa++CJFD7cM80Ms7NYhx6XCn7cRz+AXha7ug2OLfrzDgoGS5
-X-Mailer: b4 0.12.3
-Message-ID: <20230921-strncpy-drivers-infiniband-hw-irdma-i40iw_if-c-v1-1-22d87aef7186@google.com>
-Subject: [PATCH] RDMA/irdma: replace deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 16:15:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7F258C35
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+u8izbFoLuSllLM08vr13/32lSsiAXqYRiVuRRRYEco=; b=PMfJj393Wz9Y804NH1wze3V/3m
+        YH94qJXXDishs6R1SVcVEn9yysvAEeQfoSHI+2GctOlEkNA7UUatT/vLnY0q51P93fbF13Mhmren+
+        I+HNxsXPYzx/vylWKvSTasRGz/zvoP6cACVn/WmTEV4XU88++Y4IB89e1ygs93+RnIUFPgr16KxyK
+        ojWg5jgy6QWOsZZXC1LRUXRP7CI8DwgV/xKDFS/HVMv+sse/fOWNEdh6Me2gZjGF2pyjCw2fp8LcW
+        cYYikEL8LUoIBawaCDDaZU2lC0eW1vjOoqARBSUWWoPlszeDVRu6k61oTG7eIT4Yr61Xm2zQTII3Q
+        TZXHYyRA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qjEKk-00FDkE-1Z;
+        Thu, 21 Sep 2023 07:42:48 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 985EA3002E3; Thu, 21 Sep 2023 09:42:47 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 09:42:47 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] locking/semaphore: Use wake_q to wake up processes
+ outside lock critical section
+Message-ID: <20230921074247.GC14803@noisy.programming.kicks-ass.net>
+References: <20220909192848.963982-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220909192848.963982-1-longman@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1]
-and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Fri, Sep 09, 2022 at 03:28:48PM -0400, Waiman Long wrote:
+> It was found that a circular lock dependency can happen with the
+> following locking sequence:
+> 
+>    +--> (console_sem).lock --> &p->pi_lock --> &rq->__lock --+
+>    |                                                         |
+>    +---------------------------------------------------------+
+> 
+> The &p->pi_lock --> &rq->__lock sequence is very common in all the
+> task_rq_lock() calls.
+> 
+> The &rq->__lock --> (console_sem).lock sequence happens when the
+> scheduler code calling printk() or more likely the various WARN*()
+> macros while holding the rq lock. The (console_sem).lock is actually
+> a raw spinlock guarding the semaphore. In the particular lockdep splat
+> that I saw, it was caused by SCHED_WARN_ON() call in update_rq_clock().
+> To work around this locking sequence, we may have to ban all WARN*()
+> calls when the rq lock is held, which may be too restrictive, or we
+> may have to add a WARN_DEFERRED() call and modify all the call sites
+> to use it.
 
-A suitable replacement is `strscpy_pad` due to the fact that it
-guarantees NUL-termination on the destination buffer.
+No, this is all because printk() is pure garbage -- but I believe it's
+being worked on.
 
-It is unclear to me whether `i40iw_client.name` requires NUL-padding but
-have opted to keep the NUL-padding behavior that strncpy provides to
-ensure no functional change.
+And I despise that whole deferred thing -- that's just worse garbage.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested
----
- drivers/infiniband/hw/irdma/i40iw_if.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you map printk to early_printk none of this is a problem (and this is
+what i've been doing for something close to a decade).
 
-diff --git a/drivers/infiniband/hw/irdma/i40iw_if.c b/drivers/infiniband/hw/irdma/i40iw_if.c
-index 4053ead32416..adbea33bf5b7 100644
---- a/drivers/infiniband/hw/irdma/i40iw_if.c
-+++ b/drivers/infiniband/hw/irdma/i40iw_if.c
-@@ -186,7 +186,7 @@ static int i40iw_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 							       aux_dev);
- 	struct i40e_info *cdev_info = i40e_adev->ldev;
- 
--	strncpy(i40iw_client.name, "irdma", I40E_CLIENT_STR_LENGTH);
-+	strscpy_pad(i40iw_client.name, "irdma", I40E_CLIENT_STR_LENGTH);
- 	i40e_client_device_register(cdev_info, &i40iw_client);
- 
- 	return 0;
+Printk should not do synchronous, or in-context, printing to non-atomic
+consoles. Doubly so when atomic console are actually available.
 
----
-base-commit: 2cf0f715623872823a72e451243bbf555d10d032
-change-id: 20230921-strncpy-drivers-infiniband-hw-irdma-i40iw_if-c-6330fb0507db
+As long as it does this printk is fundamentally unreliable and any of
+these hacks are just that.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+> Even then, a deferred printk or WARN function may still call
+> console_trylock() which may, in turn, calls up_console_sem() leading
+> to this locking sequence.
+> 
+> The other ((console_sem).lock --> &p->pi_lock) locking sequence
+> was caused by the fact that the semaphore up() function is calling
+> wake_up_process() while holding the semaphore raw spinlock. This lockiing
+> sequence can be easily eliminated by moving the wake_up_processs()
+> call out of the raw spinlock critical section using wake_q which is
+> what this patch implements. That is the easiest and the most certain
+> way to break this circular locking sequence.
 
+So I don't mind the patch, but I hate everything about your
+justification for it.
