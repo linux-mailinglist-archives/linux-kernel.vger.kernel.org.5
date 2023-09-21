@@ -2,152 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BFC7A9995
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06127A9996
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjIUSQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S230118AbjIUSQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbjIUSPa (ORCPT
+        with ESMTP id S230217AbjIUSPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:15:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33AE885D05;
-        Thu, 21 Sep 2023 10:37:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AC3114BF;
-        Thu, 21 Sep 2023 02:20:19 -0700 (PDT)
-Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E5C33F59C;
-        Thu, 21 Sep 2023 02:19:41 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 10:19:40 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, conor.dooley@microchip.com,
-        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
-Subject: Re: [PATCH 3/4] cpufreq/schedutil: use a fixed reference frequency
-Message-ID: <ZQwKnnXbjLOYUSjO@arm.com>
-References: <20230901130312.247719-1-vincent.guittot@linaro.org>
- <20230901130312.247719-4-vincent.guittot@linaro.org>
+        Thu, 21 Sep 2023 14:15:51 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36270A5D6B
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:59:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rrqvl1R3Dz4xPd;
+        Thu, 21 Sep 2023 19:33:23 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     christophe.leroy@csgroup.eu, Yuan Tan <tanyuan@tinylab.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        falcon@tinylab.org, w@1wt.eu, linux@weissschuh.net
+In-Reply-To: <cover.1694685860.git.tanyuan@tinylab.org>
+References: <cover.1694685860.git.tanyuan@tinylab.org>
+Subject: Re: (subset) [PATCH v3 0/3] Kconfig: Add dependencies of POWER_RESET for pmac32
+Message-Id: <169528860031.876432.1342566431743164769.b4-ty@ellerman.id.au>
+Date:   Thu, 21 Sep 2023 19:30:00 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230901130312.247719-4-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 01 Sep 2023 at 15:03:11 (+0200), Vincent Guittot wrote:
-> cpuinfo_max_freq can change at runtime because of boost as example. This
-> implies that the value could not be the same than the one that has been
-> used when computing the capacity of a CPU.
+On Thu, 14 Sep 2023 18:09:55 +0800, Yuan Tan wrote:
+> These patches are to add dependencies of POWER_RESET for pmac32.
 > 
-> The new arch_scale_freq_ref() returns a fixed and coherent frequency
-> reference that can be used when computing a frequency based on utilization.
+> As I have to use "savedefconfig" on the latest branch of different
+> architectures, I am sending separate patches for each architecture in v3.
 > 
-> Use this arch_scale_freq_ref() when available and fallback to
-> cpuinfo.max_freq otherwise.
+> To simplify the enablement of the poweroff support, selecting the
+> required options for CONFIG_POWER_RESET=y may make many people happy
+> especially when they are using a customized config (maybe tinyconfig
+> based) for a target qemu board. Without normal poweroff support from the
+> kernel side, qemu will simply hang[1] there after a 'poweroff' command,
+> which is a very bad experience for the automatical tests.
 > 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/cpufreq_schedutil.c | 29 +++++++++++++++++++++++++++--
->  1 file changed, 27 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 4492608b7d7f..9996ef429e2b 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -114,6 +114,31 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
->  	}
->  }
->  
-> +#ifdef arch_scale_freq_ref
-> +/**
-> + * arch_scale_freq_ref_policy - get the reference frequency of a given CPU that
-> + * has been used to correlate frequency and compute capacity.
-> + * @cpu: the CPU in question.
-> + *
-> + * Return: the reference CPU frequency.
-> + */
-> +static __always_inline
-> +unsigned long  arch_scale_freq_ref_policy(struct cpufreq_policy *policy)
+> [...]
 
-This should not be an arch_ function as it's only a wrapper over an
-arch_ function and not a function that different architectures might
-implement differently usually in architecture specific code.
+Patches 2 and 3 applied to powerpc/next.
 
-> +{
-> +	return arch_scale_freq_ref(policy->cpu);
+[2/3] Kconfig: Add dependencies of POWER_RESET for pmac32
+      https://git.kernel.org/powerpc/c/a3ef2fef198c25c1d9ac6ff89fd50230e9507207
+[3/3] powerpc/config: Simplify pmac32_defconfig
+      https://git.kernel.org/powerpc/c/f84b727d132c39c70208503e60149af6dd5a217f
 
-It might make it easier to read if arch_scale_freq_ref() had a default
-implementation that returned 0.
-
-Then this code would simply become:
-
-freq = arch_scale_freq_ref(policy->cpu);
-if (freq)
-	return freq;
-else if (arch_scale_freq_invariant())
-	return ..
-..
-
-This approach is similar to the use of arch_freq_get_on_cpu() in
-cpufreq.c, and, as there, having a chosen maximum frequency of 0 would
-not be a valid value.
-
-> +}
-> +#else
-> +static __always_inline
-> +unsigned long  arch_scale_freq_ref_policy(struct cpufreq_policy *policy)
-> +{
-> +	if (arch_scale_freq_invariant())
-> +		return policy->cpuinfo.max_freq;
-> +
-> +
-> +	return policy->cur;
-> +}
-> +#endif
-> +
->  /**
->   * get_next_freq - Compute a new frequency for a given cpufreq policy.
->   * @sg_policy: schedutil policy object to compute the new frequency for.
-> @@ -139,11 +164,11 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
->  static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->  				  unsigned long util, unsigned long max)
->  {
-> +	unsigned int freq;
->  	struct cpufreq_policy *policy = sg_policy->policy;
-> -	unsigned int freq = arch_scale_freq_invariant() ?
-> -				policy->cpuinfo.max_freq : policy->cur;
->  
->  	util = map_util_perf(util);
-> +	freq = arch_scale_freq_ref_policy(policy);
-
-Given its single use here, it would likely be better to place the code
-above directly here, rather than create a wrapper over a few lines of
-code.
-
-Hope it helps,
-Ionela.
-
->  	freq = map_util_freq(util, freq, max);
->  
->  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> -- 
-> 2.34.1
-> 
-> 
+cheers
