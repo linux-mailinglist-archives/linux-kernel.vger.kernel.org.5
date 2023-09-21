@@ -2,152 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A887AA4F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E377AA4E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbjIUW00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S232900AbjIUWZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjIUWZg (ORCPT
+        with ESMTP id S231221AbjIUWZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:25:36 -0400
-X-Greylist: delayed 3334 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Sep 2023 10:59:07 PDT
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [104.207.131.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90313A59C5;
-        Thu, 21 Sep 2023 10:59:06 -0700 (PDT)
-Received: from spock.localnet (unknown [94.142.239.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 206D3150AC2D;
-        Thu, 21 Sep 2023 07:02:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1695272574;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CBBr2jfDzLMCIhDU0Px248rD/FOXEfErM7/x99M3aDM=;
-        b=GLaqSqG4vq2RFzSGUNB2nPqN50JbIQHga5A+ZnDQ/pAvQdCnf1TdR4oZPjneXPUjbkJssh
-        NewB0E7ctuCiZaYC0f+Mvif8TAXhgY7vzca3GrvyUJrzFGCXj0rSgdp1M/dhyYwQerXSyJ
-        dqRjguWNaJQwTrl8VyJBhSwjfIudnJs=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-wireless@vger.kernel.org
-Cc:     Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] wifi: mt76: mt7915: remove VHT160 capability on MT7915
-Date:   Thu, 21 Sep 2023 07:02:41 +0200
-Message-ID: <12289744.O9o76ZdvQC@natalenko.name>
-In-Reply-To: <20230726091704.25795-1-nbd@nbd.name>
-References: <20230726091704.25795-1-nbd@nbd.name>
+        Thu, 21 Sep 2023 18:25:28 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EFBAD19;
+        Thu, 21 Sep 2023 10:06:01 -0700 (PDT)
+X-UUID: 7195e40a583f11eea33bb35ae8d461a2-20230921
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=gq8s2Npu2Vz0jwf1wrspqegc3TXAG46Dv16VsHzTy3g=;
+        b=KzzZkDuwt0Ry8r+qO1pKqh4ILb4hUyRyvZNIt7g0SGVuRAZLd4qlbQ2pl/s+4pkpue6gylOs36/8xqSR+6n0vPe2g0zrwsRZdMEtDzqnmCDF+5SqO+S6QZtLjfPM/gUx4n1rTuOuvUqMmCwRWwOGCJYBQX7DkYlqIQKga8HVtS8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:d0280e8a-49b8-4675-b692-fcc3e7382504,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:621d48c3-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 7195e40a583f11eea33bb35ae8d461a2-20230921
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+        (envelope-from <chun-jen.tseng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 803014075; Thu, 21 Sep 2023 13:26:40 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 21 Sep 2023 13:26:39 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 21 Sep 2023 13:26:39 +0800
+From:   Mark Tseng <chun-jen.tseng@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Roger Lu <roger.lu@mediatek.com>,
+        Kevin Hilman <khilman@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <chun-jen.tseng@mediatek.com>
+Subject: [PATCH v4 3/3] soc: mediatek: svs: Add support for voltage bins
+Date:   Thu, 21 Sep 2023 13:26:37 +0800
+Message-ID: <20230921052637.30444-4-chun-jen.tseng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230921052637.30444-1-chun-jen.tseng@mediatek.com>
+References: <20230921052637.30444-1-chun-jen.tseng@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart5713149.DvuYhMxLoT";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart5713149.DvuYhMxLoT
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-wireless@vger.kernel.org
-Date: Thu, 21 Sep 2023 07:02:41 +0200
-Message-ID: <12289744.O9o76ZdvQC@natalenko.name>
-In-Reply-To: <20230726091704.25795-1-nbd@nbd.name>
-References: <20230726091704.25795-1-nbd@nbd.name>
-MIME-Version: 1.0
+Add support voltage bins turn point
 
-Hello Felix.
+Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
+---
+ drivers/soc/mediatek/mtk-svs.c | 57 +++++++++++++++++++++++++++++++---
+ 1 file changed, 53 insertions(+), 4 deletions(-)
 
-On st=C5=99eda 26. =C4=8Dervence 2023 11:17:02 CEST Felix Fietkau wrote:
-> The IEEE80211_VHT_CAP_EXT_NSS_BW value already indicates support for half=
-=2DNSS
-> 160 MHz support, so it is wrong to also advertise full 160 MHz support.
->=20
-> Fixes: c2f73eacee3b ("wifi: mt76: mt7915: add back 160MHz channel width s=
-upport for MT7915")
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
-> ---
->  drivers/net/wireless/mediatek/mt76/mt7915/init.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/n=
-et/wireless/mediatek/mt76/mt7915/init.c
-> index ee976657bfc3..78552f10b377 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-> +++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-> @@ -414,7 +414,6 @@ mt7915_init_wiphy(struct mt7915_phy *phy)
->  			if (!dev->dbdc_support)
->  				vht_cap->cap |=3D
->  					IEEE80211_VHT_CAP_SHORT_GI_160 |
-> -					IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ |
->  					FIELD_PREP(IEEE80211_VHT_CAP_EXT_NSS_BW_MASK, 1);
->  		} else {
->  			vht_cap->cap |=3D
->=20
-
-=46or some reason this got backported into the stable kernel:
-
-```
-$ git log --oneline v6.5.2..v6.5.4 -- drivers/net/wireless/mediatek/mt76/mt=
-7915/
-c43017fbebcc3 wifi: mt76: mt7915: fix power-limits while chan_switch
-edb1afe042c74 wifi: mt76: mt7915: fix tlv length of mt7915_mcu_get_chan_mib=
-_info
-9ec0dec0baea3 wifi: mt76: mt7915: remove VHT160 capability on MT7915
-0e61f73e6ebc0 wifi: mt76: mt7915: fix capabilities in non-AP mode
-6bce28ce28390 wifi: mt76: mt7915: fix command timeout in AP stop period
-7af917d4864c6 wifi: mt76: mt7915: rework tx bytes counting when WED is acti=
-ve
-feae00c6468ce wifi: mt76: mt7915: rework tx packets counting when WED is ac=
-tive
-70bbcc4ad6544 wifi: mt76: mt7915: fix background radar event being blocked
-```
-
-and this broke my mt7915-based AP.
-
-However, if I remove `[VT160]` capability from the hostapd config, things g=
-o back to normal. It does seem that 160 MHz still works even.
-
-Is this expected?
-
-Please check.
-
-Thanks.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart5713149.DvuYhMxLoT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmULznEACgkQil/iNcg8
-M0vrVxAAr2A2S5y3K3KZCf6eC4XHPkTxvLb/VNZfY4NVE+mHkgFZU9lFxYIw5D6y
-XxfukONRVtusbi5M2gHCGPQEpNCAeSr2P9P/v8KRaYOoT54lrOvQquyliuoujuYC
-jeO2XtIJUWxIpz5+BoXYrroD7z5k9sHIXf/xDuAmHa2IGy/bpU6yYb1V+dwEvzbi
-43QoscmGzjAbZvrZiufetU3hUq4/oyZycwdUDK0/9cbEliQ8NkM6JiTFBQylgnmP
-NI2iy0SZlHVcf/AWgps6TZwx3Frb12OvNAmnGWga2axpkXRm5pPkFEjxOreLteps
-uSFcV12ZmTEsaHsAQOd+demq75/H3f9tJPMy1gz06oixO/3k9tUpdxVNiFgOuyg9
-iKGUWTb5ETjufpJe6dpnnuhpHU2i+npAgs0tf8gVux/DZncvYbaYxb6iEIefwfXk
-yUENnOzfud2aEFM/WJ8W9B8X+qGzsJD17YKV0VYKi0M6BQRdGFKP82EWAoTizTPj
-0oSswygE9pf9ApswpOm0kq+3/iywejIchCNNjNFxvlrIMZCTtUSBeoUdNGitzcjE
-7qOtBUpB5TikczCJt5ut4R9i51xCRrRi681XGx89zepc42DwpSj5qkORYOkGtWap
-e8C01yUtMwdenAIJBYikBhNLtilZYg6epSuf7HhpGcn7fQDXwTM=
-=VAkp
------END PGP SIGNATURE-----
-
---nextPart5713149.DvuYhMxLoT--
-
-
+diff --git a/drivers/soc/mediatek/mtk-svs.c b/drivers/soc/mediatek/mtk-svs.c
+index d2ae0b0cf95a..f31e3bedff50 100644
+--- a/drivers/soc/mediatek/mtk-svs.c
++++ b/drivers/soc/mediatek/mtk-svs.c
+@@ -407,6 +407,7 @@ struct svs_platform_data {
+  * @dcbdet: svs efuse data
+  * @dcmdet: svs efuse data
+  * @turn_pt: 2-line turn point tells which opp_volt calculated by high/low bank
++ * @vbin_turn_pt: voltage bin turn point helps know which svsb_volt should be overridden
+  * @type: bank type to represent it is 2-line (high/low) bank or 1-line bank
+  *
+  * Svs bank will generate suitalbe voltages by below general math equation
+@@ -469,6 +470,7 @@ struct svs_bank {
+ 	u32 dcbdet;
+ 	u32 dcmdet;
+ 	u32 turn_pt;
++	u32 vbin_turn_pt;
+ 	u32 type;
+ };
+ 
+@@ -751,11 +753,12 @@ static int svs_status_debug_show(struct seq_file *m, void *v)
+ 
+ 	ret = thermal_zone_get_temp(svsb->tzd, &tzone_temp);
+ 	if (ret)
+-		seq_printf(m, "%s: temperature ignore, turn_pt = %u\n",
+-			   svsb->name, svsb->turn_pt);
++		seq_printf(m, "%s: temperature ignore, vbin_turn_pt = %u, turn_pt = %u\n",
++			   svsb->name, svsb->vbin_turn_pt, svsb->turn_pt);
+ 	else
+-		seq_printf(m, "%s: temperature = %d, turn_pt = %u\n",
+-			   svsb->name, tzone_temp, svsb->turn_pt);
++		seq_printf(m, "%s: temperature = %d, vbin_turn_pt = %u, turn_pt = %u\n",
++			   svsb->name, tzone_temp, svsb->vbin_turn_pt,
++			   svsb->turn_pt);
+ 
+ 	for (i = 0; i < svsb->opp_count; i++) {
+ 		opp = dev_pm_opp_find_freq_exact(svsb->opp_dev,
+@@ -952,6 +955,29 @@ static void svs_get_bank_volts_v3(struct svs_platform *svsp)
+ 	for (i = opp_start; i < opp_stop; i++)
+ 		if (svsb->volt_flags & SVSB_REMOVE_DVTFIXED_VOLT)
+ 			svsb->volt[i] -= svsb->dvt_fixed;
++
++	/* For voltage bin support */
++	if (svsb->opp_dfreq[0] > svsb->freq_base) {
++		svsb->volt[0] = svs_opp_volt_to_bank_volt(svsb->opp_dvolt[0],
++							  svsb->volt_step,
++							  svsb->volt_base);
++
++		/* Find voltage bin turn point */
++		for (i = 0; i < svsb->opp_count; i++) {
++			if (svsb->opp_dfreq[i] <= svsb->freq_base) {
++				svsb->vbin_turn_pt = i;
++				break;
++			}
++		}
++
++		/* Override svs bank voltages */
++		for (i = 1; i < svsb->vbin_turn_pt; i++)
++			svsb->volt[i] = interpolate(svsb->freq_pct[0],
++						    svsb->freq_pct[svsb->vbin_turn_pt],
++						    svsb->volt[0],
++						    svsb->volt[svsb->vbin_turn_pt],
++						    svsb->freq_pct[i]);
++	}
+ }
+ 
+ static void svs_set_bank_freq_pct_v3(struct svs_platform *svsp)
+@@ -1069,6 +1095,29 @@ static void svs_get_bank_volts_v2(struct svs_platform *svsp)
+ 
+ 	for (i = 0; i < svsb->opp_count; i++)
+ 		svsb->volt[i] += svsb->volt_od;
++
++	/* For voltage bin support */
++	if (svsb->opp_dfreq[0] > svsb->freq_base) {
++		svsb->volt[0] = svs_opp_volt_to_bank_volt(svsb->opp_dvolt[0],
++							  svsb->volt_step,
++							  svsb->volt_base);
++
++		/* Find voltage bin turn point */
++		for (i = 0; i < svsb->opp_count; i++) {
++			if (svsb->opp_dfreq[i] <= svsb->freq_base) {
++				svsb->vbin_turn_pt = i;
++				break;
++			}
++		}
++
++		/* Override svs bank voltages */
++		for (i = 1; i < svsb->vbin_turn_pt; i++)
++			svsb->volt[i] = interpolate(svsb->freq_pct[0],
++						    svsb->freq_pct[svsb->vbin_turn_pt],
++						    svsb->volt[0],
++						    svsb->volt[svsb->vbin_turn_pt],
++						    svsb->freq_pct[i]);
++	}
+ }
+ 
+ static void svs_set_bank_freq_pct_v2(struct svs_platform *svsp)
+-- 
+2.18.0
 
