@@ -2,88 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 883377AA03D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9367AA150
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjIUUe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
+        id S232168AbjIUVAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbjIUUd5 (ORCPT
+        with ESMTP id S229878AbjIUU7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:33:57 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708146634B;
-        Thu, 21 Sep 2023 10:34:05 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LCdiUV001393;
-        Thu, 21 Sep 2023 14:02:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=aW/fwfZocgTth6z4aNCdXloyBlreCQz+qRL+1DZ+eOE=;
- b=DPyXz2vDVzYlblxwK9q/IRxTLMqQ8I//t7K9GQKSeUv8psj6cBJIuCOVlkP4ng45hXj4
- 0eO6PwuipAxnxgSBMTkiVW+vsG+FBaTL3vbk5h8YuX/lapu+TCY3LnANsVfARG4vzYlL
- g+58Ya5dldNo4nbcacxKlyaYLFXdRH0ytfhBsIK3m2/ia9aS7QdEn7WgwFxvbib9esHM
- T5wZOEkQekK1F10p2WYWoUq+6tB9VEsOxhryYvKHGNjB+agKoEkh3pD/DMWUnqWgraFY
- i28bjCgMrqezVzpeULyFPXix0v/yvOmSX4gMCh7CK6KYFsEBzldXWo2/Ds6JADx0njay iw== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8dds97wb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 14:02:23 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38LE2MOS012607
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 14:02:22 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 21 Sep 2023 07:02:21 -0700
-Date:   Thu, 21 Sep 2023 07:02:20 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Can Guo <quic_cang@quicinc.com>, <quic_nguyenb@quicinc.com>,
-        <quic_nitirawa@quicinc.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>
-Subject: Re: [PATCH 4/6] phy: qualcomm: phy-qcom-qmp-ufs: Move data structs
- and setting tables to header
-Message-ID: <20230921140220.GK1487598@hu-bjorande-lv.qualcomm.com>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-5-git-send-email-quic_cang@quicinc.com>
- <CAA8EJpoWnXeJKPB04kJW6Qo7ifAnt1u2ZSiq+W2HWOez=hi5gA@mail.gmail.com>
- <20230919121524.GD4732@thinkpad>
- <CAA8EJpoqRBxS7HJrFdRAvv677hKJw+d_K+fN_4ABDrj+68r28w@mail.gmail.com>
- <20230920101923.GG4732@thinkpad>
+        Thu, 21 Sep 2023 16:59:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEEB93C4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bwElb4FLHLZ9yVB+qHk0J5FYWrvoWV55wBsQBNN8sAY=; b=pvGPTKPEGtYqOyvHoagN3qNrrb
+        dk2R5HiXs14CSj9t1+6Qjc+gDQ4J2InblgCeijvlWQsB/k4+ruherBwVZB1LIwFFqZkNl6x7aeyPH
+        cHtUebsI/yK7nlZpk+XseYH7cwt4EIvLRpTd36h9xD+lh4wUmnKsHYoSXFFdgYE2axqMJKmC8hwWe
+        xVNlbmRG9udcVV7qd4MkJbjQQC/E67v9c8M0cFPzUfS/TaDbWcAbX1nxsJR5jCvewTVXuJ+Og4FXt
+        jEnOcIVYxz211XYyjD0X2oQyxiEBjSkB/4WANeGgnyhggpefEura3QRkI2peXAZ8m6ZcK5bwE60EU
+        b4Pyi3DA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qjKHm-00CFbR-Hq; Thu, 21 Sep 2023 14:04:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3C0D03002E3; Thu, 21 Sep 2023 16:04:06 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 16:04:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] seqlock: simplify SEQCOUNT_LOCKNAME()
+Message-ID: <20230921140406.GF14803@noisy.programming.kicks-ass.net>
+References: <20230913154907.GA26210@redhat.com>
+ <20230913154953.GA26242@redhat.com>
+ <20230916085117.GA35156@noisy.programming.kicks-ass.net>
+ <20230921114826.GA20728@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230920101923.GG4732@thinkpad>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: YfF4KqDFNxfWFXT8NoXbB-7rgmKu3PLk
-X-Proofpoint-ORIG-GUID: YfF4KqDFNxfWFXT8NoXbB-7rgmKu3PLk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-21_12,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0 adultscore=0
- bulkscore=0 mlxlogscore=809 malwarescore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309210121
+In-Reply-To: <20230921114826.GA20728@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,15 +61,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 12:19:23PM +0200, Manivannan Sadhasivam wrote:
-[..]
-> Btw, why do we have "phy-qcom" prefix inside drivers/phy/qualcomm/?
+On Thu, Sep 21, 2023 at 01:48:26PM +0200, Oleg Nesterov wrote:
+> On 09/16, Peter Zijlstra wrote:
+> >
+> > On Wed, Sep 13, 2023 at 05:49:53PM +0200, Oleg Nesterov wrote:
+> > > 1. Kill the "lockmember" argument. It is always s->lock plus
+> > >    __seqprop_##lockname##_sequence() already uses s->lock and
+> > >    ignores "lockmember".
+> > >
+> > > 2. Kill the "lock_acquire" argument. __seqprop_##lockname##_sequence()
+> > >    can use the same "lockbase" prefix for _lock and _unlock.
+> > >
+> > > Apart from line numbers, gcc -E outputs the same code.
+> >
+> > With seqlock_ww_mutex gone, yes this is a nice cleanup.
 > 
+> Thanks.
+> 
+> Can you look at 2/5? To me it looks like a good cleanup too.
+> I am going to resend 1/5 and 2/5, as no one is interested in
+> stats_lock change.
 
-That would be a historical artifact, but it does provide nice
-namespacing for the generated .ko files - and iirc mkinitcpio doesn't
-automatically pick these up, so changing it would cause issues for our
-users.
-
-Regards,
-Bjorn
+2 seems okay. Will need a new changelog without the rest thouhg. Perhaps
+talk about how it perserves the constness instead?
