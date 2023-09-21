@@ -2,215 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D877A9097
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 03:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A08C7A909A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 03:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjIUBmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 21:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
+        id S229743AbjIUBnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 21:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjIUBmV (ORCPT
+        with ESMTP id S229560AbjIUBnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 21:42:21 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FB8A9;
-        Wed, 20 Sep 2023 18:42:15 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-45274236ef6so228622137.3;
-        Wed, 20 Sep 2023 18:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695260534; x=1695865334; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6KMWbUCoc8DexqhlNXXHeZryH/GRdUKaDnFHjWc3FE=;
-        b=ZG+uxVGTNoec2F1DRYV+KAFSq8gvUvWhkGt7jwsk1LXbvsuS7aqhfIFdWwR8JHieG8
-         CDZSVq4NEFGj0K3T8d7DXT/RdTmiCH85dIt3zBxfh9/07qgmusLkaM66Ar56p7PKUBtP
-         u6miHIkAUp1Cjwd1J6h9MnXZ6EhGulqsND5PG885KCHeQ78mwKu4dzItyBdF8dEyhj4K
-         yBezvWoL3kdlMAyptBYuqEg2WRDD4b5p38qDs7ERgJVPXNs3iDFKzqBVdbgdeWOBRTcf
-         KU9aE0oInpnprV5p0dZIWwj6lpimJByOCN6rG6z4dRN9XLtXMxkeimo+mUm1dat5A3aN
-         OG3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695260534; x=1695865334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H6KMWbUCoc8DexqhlNXXHeZryH/GRdUKaDnFHjWc3FE=;
-        b=oLMCqhperk5GHFH4OeE883EIJT33i6PJGCaV4jXbNRtYcYcXz3+clvEo1g/BtwuZdM
-         F+d67qFTbgaE45uDIr6+l+7xzqjPl8/h5AWm0fnhe1eQ5F61P6+Ii0XWxNRcEGgM9+N6
-         8tlbgWYXSqhqJ84d59HAjJep0G59vGfR8f5yEJBPA/AOafcus47nTEIazgwan4UhAWxe
-         ABoyouyr2RmAdPceJK+LXGFCAsSC6OjzRqsI4ei8jaK1xF8+qYdTrtwCwZeReJmDi6Kp
-         W0msuTLRm79mpCgo8uFLf0cG+YiWR79Sauh+5346fv7aYm7W086n5obPWG3N+VzOHdp6
-         0WTQ==
-X-Gm-Message-State: AOJu0YyxEDJquWEfKEliTy102b3zOsgU7zms5LvZ1XOIheoVZ5YsM7mz
-        nEdYlawnVn/HOtK1YI+GuW4Gh36cuWGFmSVYkH6kP+4lUjc=
-X-Google-Smtp-Source: AGHT+IGhUv2dofXRRvk+v04KQPgPqGj0mSgPd7rUNFQSwkimFZX6QPpBdNLjU73ehVmIVd3ohLqREmv57V1ivXknYh4=
-X-Received: by 2002:a67:bc09:0:b0:44e:d6c3:51d4 with SMTP id
- t9-20020a67bc09000000b0044ed6c351d4mr4625646vsn.18.1695260534071; Wed, 20 Sep
- 2023 18:42:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <108791.1695199151@warthog.procyon.org.uk> <650af9a2aa74_37bf362941f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <650af9a2aa74_37bf362941f@willemb.c.googlers.com.notmuch>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 20 Sep 2023 21:41:38 -0400
-Message-ID: <CAF=yD-K07q_ygjRrsau3fPWX4==WPjEtZN1y3eZUTABYaG0vWg@mail.gmail.com>
-Subject: Re: [PATCH net v2] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
-To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org
-Cc:     syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 20 Sep 2023 21:43:02 -0400
+Received: from out-211.mta0.migadu.com (out-211.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB29AF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 18:42:55 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695260570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qt4/u/Z/9S9BRMM2co5Z0O1C9g/l+Q+KFSOnwWrp7+U=;
+        b=ttwwEhnqBeL3QRFwp7bl2WRZqLoKC7YJBXDbCmduHiU3UvLiww7rYeJs2Vb1fFIZKhscLa
+        G0AyDyy2LtV/mC2Q0KcDupuJM2iuvRCV6NmqkWBSafKLgr+nxU3ft9IG3u0l2RMS9QffLw
+        07/i1VGAWivqpI3aHNmOkKgcSm2OPE8=
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 6/8] hugetlb: batch PMD split for bulk vmemmap dedup
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <257b5833-5aaf-4748-a576-7610bd36e632@oracle.com>
+Date:   Thu, 21 Sep 2023 09:42:10 +0800
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <98613579-0644-4532-8DCC-D4BA7183AB15@linux.dev>
+References: <20230918230202.254631-1-mike.kravetz@oracle.com>
+ <20230918230202.254631-7-mike.kravetz@oracle.com>
+ <9c627733-e6a2-833b-b0f9-d59552f6ab0d@linux.dev>
+ <d8ca9ff5-3160-49a1-947a-de4998887dce@oracle.com>
+ <07192BE2-C66E-4F74-8F76-05F57777C6B7@linux.dev>
+ <d1c4ee80-2096-4949-af9f-d55dcac071cb@oracle.com>
+ <83B874B6-FF22-4588-90A9-31644D598032@linux.dev>
+ <5bd9c4f5-3411-4327-a495-ce6672150977@oracle.com>
+ <A8712DC1-7A22-4A59-BB2C-F7089D8FCC16@linux.dev>
+ <257b5833-5aaf-4748-a576-7610bd36e632@oracle.com>
+To:     Joao Martins <joao.m.martins@oracle.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 9:54=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> David Howells wrote:
-> > Including the transhdrlen in length is a problem when the packet is
-> > partially filled (e.g. something like send(MSG_MORE) happened previousl=
-y)
-> > when appending to an IPv4 or IPv6 packet as we don't want to repeat the
-> > transport header or account for it twice.  This can happen under some
-> > circumstances, such as splicing into an L2TP socket.
-> >
-> > The symptom observed is a warning in __ip6_append_data():
-> >
-> >     WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_appen=
-d_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
-> >
-> > that occurs when MSG_SPLICE_PAGES is used to append more data to an alr=
-eady
-> > partially occupied skbuff.  The warning occurs when 'copy' is larger th=
-an
-> > the amount of data in the message iterator.  This is because the reques=
-ted
-> > length includes the transport header length when it shouldn't.  This ca=
-n be
-> > triggered by, for example:
-> >
-> >         sfd =3D socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
-> >         bind(sfd, ...); // ::1
-> >         connect(sfd, ...); // ::1 port 7
-> >         send(sfd, buffer, 4100, MSG_MORE);
-> >         sendfile(sfd, dfd, NULL, 1024);
-> >
-> > Fix this by deducting transhdrlen from length in ip{,6}_append_data() r=
-ight
-> > before we clear transhdrlen if there is already a packet that we're goi=
-ng
-> > to try appending to.
-> >
-> > Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
-> > Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com=
-/
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > cc: Eric Dumazet <edumazet@google.com>
-> > cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> > cc: "David S. Miller" <davem@davemloft.net>
-> > cc: David Ahern <dsahern@kernel.org>
-> > cc: Paolo Abeni <pabeni@redhat.com>
-> > cc: Jakub Kicinski <kuba@kernel.org>
-> > cc: netdev@vger.kernel.org
-> > cc: bpf@vger.kernel.org
-> > cc: syzkaller-bugs@googlegroups.com
-> > Link: https://lore.kernel.org/r/75315.1695139973@warthog.procyon.org.uk=
-/ # v1
-> > ---
-> >  net/ipv4/ip_output.c  |    1 +
-> >  net/ipv6/ip6_output.c |    1 +
-> >  2 files changed, 2 insertions(+)
-> >
-> > diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> > index 4ab877cf6d35..9646f2d9afcf 100644
-> > --- a/net/ipv4/ip_output.c
-> > +++ b/net/ipv4/ip_output.c
-> > @@ -1354,6 +1354,7 @@ int ip_append_data(struct sock *sk, struct flowi4=
- *fl4,
-> >               if (err)
-> >                       return err;
-> >       } else {
-> > +             length -=3D transhdrlen;
-> >               transhdrlen =3D 0;
-> >       }
-> >
-> > diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> > index 54fc4c711f2c..6a4ce7f622e9 100644
-> > --- a/net/ipv6/ip6_output.c
-> > +++ b/net/ipv6/ip6_output.c
-> > @@ -1888,6 +1888,7 @@ int ip6_append_data(struct sock *sk,
-> >               length +=3D exthdrlen;
-> >               transhdrlen +=3D exthdrlen;
-> >       } else {
-> > +             length -=3D transhdrlen;
-> >               transhdrlen =3D 0;
-> >       }
-> >
->
-> Definitely a much simpler patch, thanks.
->
-> So the current model is that callers with non-zero transhdrlen always
-> pass to __ip_append_data payload length + transhdrlen.
->
-> I do see that udp does this: ulen +=3D sizeof(struct udphdr); This calls
-> ip_make_skb if not corked, but directly ip_append_data if corked.
->
-> Then __ip_append_data will use transhdrlen in its packet calculations,
-> and reset that to zero after allocating the first new skb.
->
-> So if corked *and* fragmentation, which would cause a new skb to be
-> allocated, the next skb would incorrectly reserve udp header space,
-> because the second __ip_append_data call will again pass transhdrlen.
-> If so, then this patch fixes that. But that has never been reported,
-> so I'm most likely misreading some part..
 
-This works today because udp only includes transhdrlen if not corked.
-In udpv6_sendmsg:
 
-        if (up->pending) {
-                       ...
-                       goto do_append_data;
-        }
-        ulen +=3D sizeof(struct udphdr);
+> On Sep 20, 2023, at 18:39, Joao Martins <joao.m.martins@oracle.com> =
+wrote:
+>=20
+> On 20/09/2023 03:47, Muchun Song wrote:
+>>> On Sep 19, 2023, at 23:09, Joao Martins <joao.m.martins@oracle.com> =
+wrote:
+>>> On 19/09/2023 09:57, Muchun Song wrote:
+>>>>> On Sep 19, 2023, at 16:55, Joao Martins =
+<joao.m.martins@oracle.com> wrote:
+>>>>> On 19/09/2023 09:41, Muchun Song wrote:
+>>>>>>> On Sep 19, 2023, at 16:26, Joao Martins =
+<joao.m.martins@oracle.com> wrote:
+>>>>>>> On 19/09/2023 07:42, Muchun Song wrote:
+>>>>>>>> On 2023/9/19 07:01, Mike Kravetz wrote:
+>>>>>>>>>   list_for_each_entry(folio, folio_list, lru) {
+>>>>>>>>>       int ret =3D __hugetlb_vmemmap_optimize(h, &folio->page,
+>>>>>>>>>                               &vmemmap_pages);
+>>>>>>>>=20
+>>>>>>>> This is unlikely to be failed since the page table allocation
+>>>>>>>> is moved to the above=20
+>>>>>>>=20
+>>>>>>>> (Note that the head vmemmap page allocation
+>>>>>>>> is not mandatory).=20
+>>>>>>>=20
+>>>>>>> Good point that I almost forgot
+>>>>>>>=20
+>>>>>>>> So we should handle the error case in the above
+>>>>>>>> splitting operation.
+>>>>>>>=20
+>>>>>>> But back to the previous discussion in v2... the thinking was =
+that /some/ PMDs
+>>>>>>> got split, and say could allow some PTE remapping to occur and =
+free some pages
+>>>>>>> back (each page allows 6 more splits worst case). Then the next
+>>>>>>> __hugetlb_vmemmap_optimize() will have to split PMD pages again =
+for those
+>>>>>>> hugepages that failed the batch PMD split (as we only defer the =
+PTE remap tlb
+>>>>>>> flush in this stage).
+>>>>>>=20
+>>>>>> Oh, yes. Maybe we could break the above traversal as early as =
+possible
+>>>>>> once we enter an ENOMEM?
+>>>>>>=20
+>>>>>=20
+>>>>> Sounds good -- no point in keep trying to split if we are failing =
+with OOM.
+>>>>>=20
+>>>>> Perhaps a comment in both of these clauses (the early break on =
+split and the OOM
+>>>>> handling in batch optimize) could help make this clear.
+>>>>=20
+>>>> Make sense.
+>>>=20
+>>> These are the changes I have so far for this patch based on the =
+discussion so
+>>> far. For next one it's at the end:
+>>=20
+>> Code looks good to me. One nit below.
+>>=20
+> Thanks
+>=20
+>>>=20
+>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>> index e8bc2f7567db..d9c6f2cf698c 100644
+>>> --- a/mm/hugetlb_vmemmap.c
+>>> +++ b/mm/hugetlb_vmemmap.c
+>>> @@ -27,7 +27,8 @@
+>>> * @reuse_addr:                the virtual address of the @reuse_page =
+page.
+>>> * @vmemmap_pages:     the list head of the vmemmap pages that can be =
+freed
+>>> *                     or is mapped from.
+>>> - * @flags:             used to modify behavior in bulk operations
+>>> + * @flags:             used to modify behavior in vmemmap page =
+table walking
+>>> + *                     operations.
+>>> */
+>>> struct vmemmap_remap_walk {
+>>>       void                    (*remap_pte)(pte_t *pte, unsigned long =
+addr,
+>>> @@ -36,6 +37,8 @@ struct vmemmap_remap_walk {
+>>>       struct page             *reuse_page;
+>>>       unsigned long           reuse_addr;
+>>>       struct list_head        *vmemmap_pages;
+>>> +
+>>> +/* Skip the TLB flush when we split the PMD */
+>>> #define VMEMMAP_SPLIT_NO_TLB_FLUSH     BIT(0)
+>>>       unsigned long           flags;
+>>> };
+>>> @@ -132,7 +135,7 @@ static int vmemmap_pmd_range(pud_t *pud, =
+unsigned long addr,
+>>>               int ret;
+>>>=20
+>>>               ret =3D split_vmemmap_huge_pmd(pmd, addr & PMD_MASK,
+>>> -                               walk->flags & =
+VMEMMAP_SPLIT_NO_TLB_FLUSH);
+>>> +                               !(walk->flags & =
+VMEMMAP_SPLIT_NO_TLB_FLUSH));
+>>>               if (ret)
+>>>                       return ret;
+>>>=20
+>>> @@ -677,13 +680,13 @@ void hugetlb_vmemmap_optimize(const struct =
+hstate *h,
+>>> struct page *head)
+>>>       free_vmemmap_page_list(&vmemmap_pages);
+>>> }
+>>>=20
+>>> -static void hugetlb_vmemmap_split(const struct hstate *h, struct =
+page *head)
+>>> +static int hugetlb_vmemmap_split(const struct hstate *h, struct =
+page *head)
+>>> {
+>>>       unsigned long vmemmap_start =3D (unsigned long)head, =
+vmemmap_end;
+>>>       unsigned long vmemmap_reuse;
+>>>=20
+>>>       if (!vmemmap_should_optimize(h, head))
+>>> -               return;
+>>> +               return 0;
+>>>=20
+>>>       vmemmap_end     =3D vmemmap_start + hugetlb_vmemmap_size(h);
+>>>       vmemmap_reuse   =3D vmemmap_start;
+>>> @@ -693,7 +696,7 @@ static void hugetlb_vmemmap_split(const struct =
+hstate *h,
+>>> struct page *head)
+>>>        * Split PMDs on the vmemmap virtual address range =
+[@vmemmap_start,
+>>>        * @vmemmap_end]
+>>>        */
+>>> -       vmemmap_remap_split(vmemmap_start, vmemmap_end, =
+vmemmap_reuse);
+>>> +       return vmemmap_remap_split(vmemmap_start, vmemmap_end, =
+vmemmap_reuse);
+>>> }
+>>>=20
+>>> void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct =
+list_head
+>>> *folio_list)
+>>> @@ -701,8 +704,18 @@ void hugetlb_vmemmap_optimize_folios(struct =
+hstate *h,
+>>> struct list_head *folio_l
+>>>       struct folio *folio;
+>>>       LIST_HEAD(vmemmap_pages);
+>>>=20
+>>> -       list_for_each_entry(folio, folio_list, lru)
+>>> -               hugetlb_vmemmap_split(h, &folio->page);
+>>> +       list_for_each_entry(folio, folio_list, lru) {
+>>> +               int ret =3D hugetlb_vmemmap_split(h, &folio->page);
+>>> +
+>>> +               /*
+>>> +                * Spliting the PMD requires allocating a page, thus =
+lets fail
+>>                      ^^^^                                 ^^^
+>>                    Splitting                           page table =
+page
+>>=20
+>> I'd like to specify the functionality of the allocated page.
+>>=20
+> OK
+>=20
+>>> +                * early once we encounter the first OOM. No point =
+in retrying
+>>> +                * as it can be dynamically done on remap with the =
+memory
+>>> +                * we get back from the vmemmap deduplication.
+>>> +                */
+>>> +               if (ret =3D=3D -ENOMEM)
+>>> +                       break;
+>>> +       }
+>>>=20
+>>>       flush_tlb_all();
+>>>=20
+>>> For patch 7, I only have commentary added derived from this earlier =
+discussion
+>>> above:
+>>>=20
+>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>> index d9c6f2cf698c..f6a1020a4b6a 100644
+>>> --- a/mm/hugetlb_vmemmap.c
+>>> +++ b/mm/hugetlb_vmemmap.c
+>>> @@ -40,6 +40,8 @@ struct vmemmap_remap_walk {
+>>>=20
+>>> /* Skip the TLB flush when we split the PMD */
+>>> #define VMEMMAP_SPLIT_NO_TLB_FLUSH     BIT(0)
+>>> +/* Skip the TLB flush when we remap the PTE */
+>>> #define VMEMMAP_REMAP_NO_TLB_FLUSH     BIT(1)
+>>>       unsigned long           flags;
+>>> };
+>>>=20
+>>> @@ -721,19 +739,28 @@ void hugetlb_vmemmap_optimize_folios(struct =
+hstate *h,
+>>> struct list_head *folio_l
+>>>=20
+>>>       list_for_each_entry(folio, folio_list, lru) {
+>>>               int ret =3D __hugetlb_vmemmap_optimize(h, =
+&folio->page,
+>>>                                              &vmemmap_pages,
+>>>                                              =
+VMEMMAP_REMAP_NO_TLB_FLUSH);
+>>>=20
+>>>               /*
+>>>                * Pages to be freed may have been accumulated.  If we
+>>>                * encounter an ENOMEM,  free what we have and try =
+again.
+>>> +                * This can occur in the case that both spliting =
+fails
+>>                                                            ^^^
+>>                                                         splitting
+>>=20
+>=20
+> ok
+>=20
+>>> +                * halfway and head page allocation also failed. In =
+this
+>>                                 ^^^^^^^
+>>                            head vmemmap page
+>>=20
+> ok
+>=20
+>> Otherwise:
+>>=20
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+>>=20
+>=20
+> Thanks, I assume that's for both patches?
 
-So ip6_append_data is called with ulen =3D=3D len once data is pending, so
-subtracting transhdrlen (which is still sizeof(udphdr)) would not be
-correct.
+Yes. Thanks.
 
-l2tp_ip6_sendmsg more or less follows udpv6_sendmsg, but it
-unconditionally sets ulen =3D len + transhdrlen. So maybe the fix is in
-L2TP:
+>=20
+>> Thanks.
+>>=20
+>>> +                * case __hugetlb_vmemmap_optimize() would free =
+memory
+>>> +                * allowing more vmemmap remaps to occur.
+>>>                */
+>>>               if (ret =3D=3D -ENOMEM && !list_empty(&vmemmap_pages)) =
+{
 
-+++ b/net/l2tp/l2tp_ip6.c
-@@ -507,7 +507,6 @@ static int l2tp_ip6_sendmsg(struct sock *sk,
-struct msghdr *msg, size_t len)
-         */
-        if (len > INT_MAX - transhdrlen)
-                return -EMSGSIZE;
--       ulen =3D len + transhdrlen;
 
-        /* Mirror BSD error message compatibility */
-        if (msg->msg_flags & MSG_OOB)
-@@ -628,6 +627,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk,
-struct msghdr *msg, size_t len)
-
- back_from_confirm:
-        lock_sock(sk);
-+       ulen =3D len + skb_queue_empty(&sk->sk_write_queue) ? transhdrlen :=
- 0;
-
-As said, only raw, udp and l2p can possibly pass MSG_MORE and so cause
-secondary invocations of ip6_append_data for the same send. With raw
-passing transhdrlen 0, and udp as discussed above, we only have to
-consider l2tp.
