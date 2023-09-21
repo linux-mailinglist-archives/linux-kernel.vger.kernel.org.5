@@ -2,245 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7895D7A9E33
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB787A9A37
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjIUT6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
+        id S230302AbjIUSh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjIUT6b (ORCPT
+        with ESMTP id S230098AbjIUSgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:58:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E559561C8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 877151476;
-        Wed, 20 Sep 2023 21:21:49 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.32.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 30C173F59C;
-        Wed, 20 Sep 2023 21:21:09 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC RESEND 6/7] coresight: stm: Move ACPI support from AMBA driver to platform driver
-Date:   Thu, 21 Sep 2023 09:50:39 +0530
-Message-Id: <20230921042040.1334641-7-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921042040.1334641-1-anshuman.khandual@arm.com>
-References: <20230921042040.1334641-1-anshuman.khandual@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 14:36:48 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C40DB649
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:32:39 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59eea906b40so18811267b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695321158; x=1695925958; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KBlJtLtsdI3hK0QdaI1JvF2kBovJQMFIeF0KITJB/xY=;
+        b=nOPHjrqBIGpQvEbyjHLhjS5j3oSFzKWpRTNcXv3ZiTZ1QUn6QonySbCQLpW7zhr5cV
+         8hSf6ZQZoaw3bkIxeWhJpBzVvtdJ5XIEnqJDx9i6edYps8+9FgYx3cM7ZfwQQV6oo6nN
+         +TbOf+P6/LCHwpAwxjbpvAzFFD8e9YFpK4ZkU1zXxLKYg6YToajfXo1DPzS0YeBBZfF/
+         +WPpNCcN5zZ96FrI7H8YCktWklcudsIv52xBup4Zs27ucI6cmf1q4QIcx3am0n2RvedR
+         X73itWfmcZW8FkDxPgES7hO3rnlBSQLglRatZCLQfoZcfQLZOfX+iOhGArxc9j80PmcC
+         q4IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695321158; x=1695925958;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KBlJtLtsdI3hK0QdaI1JvF2kBovJQMFIeF0KITJB/xY=;
+        b=YrIg83NqjqOWRqFXyhQA767Ruo/nE32HEE7MyMMGTVSKkyM9Rr7p9AEccCPXZ9A4PX
+         NGHoauhDkFMCkX68pkjcJhX6R/6XL4mHSw/lRFWUaiV7eZcSfpMfDNnKzW1oD9/2DV/I
+         Oo+1rGpizm/MNmI2hYeHxuV/8w3DlOdHa/VFQvx4Adfim861sciKqGJihNgmboC7iw9h
+         shfEcPm00OnpsgqJUgA4zSXILCbYY6sM/7/9aVoVXEsA/SCJcR+ba+cr99sbl9wd66YF
+         iX124s6bZZKeAIsH3wvx27+5uwcmYQLazr0KTIDdbYmU50uXCEIrasoHcp6kEoUUTlop
+         joSg==
+X-Gm-Message-State: AOJu0Yx97i+qV5Hz4HlWQV2icnw4YlilKJaWsk1gGx86xRU/bAbsNUBB
+        QvdwstRQUnpq2Fttmxmn7HVaY6Pg6P5xWtAqIA==
+X-Google-Smtp-Source: AGHT+IHI098EEpqO6htZ6MTc85xWWh3YpKsnqENPUYf7F/xvLGI92lITJbHV0USw1ADPIZbp1s0JkljinpuKkIaDuQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:4082:0:b0:d80:1391:1f1 with SMTP
+ id n124-20020a254082000000b00d80139101f1mr63208yba.1.1695272040719; Wed, 20
+ Sep 2023 21:54:00 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 04:54:00 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAGfMC2UC/x2NSwqEMBAFryK9tsEkw4BeRVzk05nphVG6RRTx7
+ gZ3VbV47wIlYVIYmguEdlZeShXTNhD/vvwIOVUH21nX9dagblLiemIS3kkUmRf0KdY+O/tSRBN y777+k3MIUJdWoczH+zJO9/0A10IdAXUAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695272040; l=2097;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=wxLohCJ8OZyT4ckFvNL/ySlACAagL4RRycYgRdRDcQE=; b=FJozEDATUZfUMAdvAUx5oyW6ZiVUThemIA/jnMSx8yNUj5AxeA4RjStYDSxol7J7+D4rXF5CQ
+ KDXN5IlUqusC1qJ5YHBdUIOWRiGU0IIeYHvhB5gxVpdkMBQYmxwb0L3
+X-Mailer: b4 0.12.3
+Message-ID: <20230921-strncpy-drivers-iio-adc-stm32-adc-c-v1-1-c50eca098597@google.com>
+Subject: [PATCH] iio: adc: stm32-adc: replace deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the stm devices in the platform driver, which can then be
-used on ACPI based platforms. This change would now allow runtime power
-management for ACPI based systems. The driver would try to enable the APB
-clock if available.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+We should prefer more robust and less ambiguous string interfaces.
+
+We expect adc->chan_name[val] to be NUL-terminated based on ch_name's
+use within functions that expect NUL-terminated strings like strncmp and
+printf-likes:
+| 	if (!strncmp(stm32_adc_ic[i].name, ch_name, STM32_ADC_CH_SZ)) {
+| 		/* Check internal channel availability */
+| 		switch (i) {
+| 		case STM32_ADC_INT_CH_VDDCORE:
+| 			if (!adc->cfg->regs->or_vddcore.reg)
+| 				dev_warn(&indio_dev->dev,
+| 					 "%s channel not available\n", ch_name);
+...
+
+There is no evidence that NUL-padding is needed either.
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding. If, for any reason, NUL-padding _is_
+required we should go for `strscpy_pad`.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- drivers/acpi/arm64/amba.c                   |  1 -
- drivers/hwtracing/coresight/coresight-stm.c | 80 ++++++++++++++++++---
- 2 files changed, 71 insertions(+), 10 deletions(-)
+Note: build-tested
+---
+ drivers/iio/adc/stm32-adc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index 6980502b7868..ebc866518057 100644
---- a/drivers/acpi/arm64/amba.c
-+++ b/drivers/acpi/arm64/amba.c
-@@ -22,7 +22,6 @@
- static const struct acpi_device_id amba_id_list[] = {
- 	{"ARMH0061", 0}, /* PL061 GPIO Device */
- 	{"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
--	{"ARMHC502", 0}, /* ARM CoreSight STM */
- 	{"ARMHC503", 0}, /* ARM CoreSight Debug */
- 	{"", 0},
- };
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index a1c27c901ad1..7311b6d3039b 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -29,6 +29,8 @@
- #include <linux/perf_event.h>
- #include <linux/pm_runtime.h>
- #include <linux/stm.h>
-+#include <linux/platform_device.h>
-+#include <linux/acpi.h>
- 
- #include "coresight-priv.h"
- #include "coresight-trace-id.h"
-@@ -132,6 +134,7 @@ DEFINE_CORESIGHT_DEVLIST(stm_devs, "stm");
- struct stm_drvdata {
- 	void __iomem		*base;
- 	struct clk		*atclk;
-+	struct clk		*pclk;
- 	struct coresight_device	*csdev;
- 	spinlock_t		spinlock;
- 	struct channel_space	chs;
-@@ -804,14 +807,12 @@ static void stm_init_generic_data(struct stm_drvdata *drvdata,
- 	drvdata->stm.set_options = stm_generic_set_options;
- }
- 
--static int stm_probe(struct amba_device *adev, const struct amba_id *id)
-+static int __stm_probe(struct device *dev, struct resource *res, void *dev_caps)
- {
- 	int ret, trace_id;
- 	void __iomem *base;
--	struct device *dev = &adev->dev;
- 	struct coresight_platform_data *pdata = NULL;
- 	struct stm_drvdata *drvdata;
--	struct resource *res = &adev->res;
- 	struct resource ch_res;
- 	struct coresight_desc desc = { 0 };
- 
-@@ -823,12 +824,16 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	if (!drvdata)
- 		return -ENOMEM;
- 
--	drvdata->atclk = devm_clk_get(&adev->dev, "atclk"); /* optional */
-+	drvdata->atclk = devm_clk_get(dev, "atclk"); /* optional */
- 	if (!IS_ERR(drvdata->atclk)) {
- 		ret = clk_prepare_enable(drvdata->atclk);
- 		if (ret)
- 			return ret;
- 	}
-+
-+	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
-+	if (IS_ERR(drvdata->pclk))
-+		return -ENODEV;
- 	dev_set_drvdata(dev, drvdata);
- 
- 	base = devm_ioremap_resource(dev, res);
-@@ -876,7 +881,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 		ret = PTR_ERR(pdata);
- 		goto stm_unregister;
- 	}
--	adev->dev.platform_data = pdata;
-+	dev->platform_data = pdata;
- 
- 	desc.type = CORESIGHT_DEV_TYPE_SOURCE;
- 	desc.subtype.source_subtype = CORESIGHT_DEV_SUBTYPE_SOURCE_SOFTWARE;
-@@ -897,10 +902,10 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	}
- 	drvdata->traceid = (u8)trace_id;
- 
--	pm_runtime_put(&adev->dev);
-+	pm_runtime_put(dev);
- 
- 	dev_info(&drvdata->csdev->dev, "%s initialized\n",
--		 (char *)coresight_get_uci_data(id));
-+		 (char *)dev_caps);
- 	return 0;
- 
- cs_unregister:
-@@ -911,9 +916,14 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	return ret;
- }
- 
--static void stm_remove(struct amba_device *adev)
-+static int stm_probe(struct amba_device *adev, const struct amba_id *id)
-+{
-+	return __stm_probe(&adev->dev, &adev->res, coresight_get_uci_data(id));
-+}
-+
-+static void __stm_remove(struct device *dev)
- {
--	struct stm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-+	struct stm_drvdata *drvdata = dev_get_drvdata(dev);
- 
- 	coresight_trace_id_put_system_id(drvdata->traceid);
- 	coresight_unregister(drvdata->csdev);
-@@ -921,6 +931,11 @@ static void stm_remove(struct amba_device *adev)
- 	stm_unregister_device(&drvdata->stm);
- }
- 
-+static void stm_remove(struct amba_device *adev)
-+{
-+	__stm_remove(&adev->dev);
-+}
-+
- #ifdef CONFIG_PM
- static int stm_runtime_suspend(struct device *dev)
- {
-@@ -929,6 +944,8 @@ static int stm_runtime_suspend(struct device *dev)
- 	if (drvdata && !IS_ERR(drvdata->atclk))
- 		clk_disable_unprepare(drvdata->atclk);
- 
-+	if (drvdata && !IS_ERR(drvdata->pclk))
-+		clk_disable_unprepare(drvdata->pclk);
- 	return 0;
- }
- 
-@@ -939,6 +956,8 @@ static int stm_runtime_resume(struct device *dev)
- 	if (drvdata && !IS_ERR(drvdata->atclk))
- 		clk_prepare_enable(drvdata->atclk);
- 
-+	if (drvdata && !IS_ERR(drvdata->pclk))
-+		clk_prepare_enable(drvdata->pclk);
- 	return 0;
- }
- #endif
-@@ -969,6 +988,49 @@ static struct amba_driver stm_driver = {
- 
- module_amba_driver(stm_driver);
- 
-+static int stm_platform_probe(struct platform_device *pdev)
-+{
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	int ret = 0;
-+
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
-+	ret = __stm_probe(&pdev->dev, res, NULL);
-+	if (ret) {
-+		pm_runtime_put_noidle(&pdev->dev);
-+		pm_runtime_disable(&pdev->dev);
-+	}
-+	return ret;
-+}
-+
-+static int stm_platform_remove(struct platform_device *pdev)
-+{
-+	__stm_remove(&pdev->dev);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id stm_acpi_ids[] = {
-+	{"ARMHC502", 0}, /* ARM CoreSight STM */
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, stm_acpi_ids);
-+#endif
-+
-+static struct platform_driver stm_platform_driver = {
-+	.probe	= stm_platform_probe,
-+	.remove	= stm_platform_remove,
-+	.driver	= {
-+		.name			= "coresight-stm-platform",
-+		.acpi_match_table	= ACPI_PTR(stm_acpi_ids),
-+		.suppress_bind_attrs	= true,
-+		.pm			= &stm_dev_pm_ops,
-+	},
-+};
-+module_platform_driver(stm_platform_driver);
-+
- MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
- MODULE_DESCRIPTION("Arm CoreSight System Trace Macrocell driver");
- MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index f7613efb870d..9cdcf396d901 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -2209,7 +2209,7 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+ 				ret = -EINVAL;
+ 				goto err;
+ 			}
+-			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
++			strscpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+ 			ret = stm32_adc_populate_int_ch(indio_dev, name, val);
+ 			if (ret == -ENOENT)
+ 				continue;
+
+---
+base-commit: 2cf0f715623872823a72e451243bbf555d10d032
+change-id: 20230921-strncpy-drivers-iio-adc-stm32-adc-c-1bf936a4ffbb
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
