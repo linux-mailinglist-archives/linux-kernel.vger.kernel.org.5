@@ -2,95 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3D17AA14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1291F7AA2C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjIUVAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
+        id S230034AbjIUVe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjIUU7v (ORCPT
+        with ESMTP id S229826AbjIUVeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:59:51 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85714A7B75
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:14:00 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so2728924a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695320038; x=1695924838; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BdRKt7DZk+jjVJa9+TmUISsmxBaFaLipfQVb6i5Sv3Q=;
-        b=XbwT5QKgT1we4HrmUiVOWKvW9ZL2hTUY6XazTxCRlpYQmcTYFl5zpwHhXvhNKlKhPk
-         1sTrTBx8YUAfcpDLTbDtjIIHs6mGfA3N3mySkDkuFVH+PMbpz8LiBKrJegbfD2tVTBx7
-         s+X52NF3LgTMEavnhab1PmheGAL0uNywOWH4U6cPqOjxDwfToI6TWGOdbDKTYECxkl3l
-         HvuTLoscEOsa1AeBKjq5Jczf0jDx2B1EBdIUEE82YpoI/e3AgdAZOwc0QJVfEXtPt+Z0
-         w5c+arsHTmH+IGWFt7cyMG72oJkKQJkbSaUh7sQnrghxhouud1+gXRwbglOEZWVMo4CT
-         v8dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320038; x=1695924838;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BdRKt7DZk+jjVJa9+TmUISsmxBaFaLipfQVb6i5Sv3Q=;
-        b=VDXFPoutk0re4jg2zXS3gI2mOMkvjd+4W+oxOG8WoLDQb+MO1yexVIqL7FqgqK7V3K
-         oQ87f1OYfKspOS7TMmJv5+5BPid8PD0b31+GApaPrYU0BIbOi+BM13vK3KQQ3d/9Sd5E
-         wUqLcgA4ZS30WlHna/zieahkth32ysbhylkXfSa6XIM4dHkOzr/rTXLsUsTovfqDE8HQ
-         YxlsF3GrOa3jysraXaUzzHrhyTv40O1FJ6KD3azPZG81Dqe801C1vruJXvEfp0Fa0C+X
-         WqVtjVsxcdLMgwjY9mcaGFMhv3FMUX4D5lYIw/3V7JGmWAZi8N5JPWlqvIJJLCPId1wz
-         XOjA==
-X-Gm-Message-State: AOJu0Yxr8bVJJKdTRvP0DCHAn5eg8qCvNfSguOlL4DxECBqVqn1JLFum
-        /HmI5MmElzihZ58FaXCnKzkdSx0UetmOloQUZoU=
-X-Google-Smtp-Source: AGHT+IEpwsRPhWLHd8PAT2dNP1MXglwufqkS9mIHN4cKFywtNIagh0BRbKUXzIfYEo4aQy+U7dfSAQ==
-X-Received: by 2002:a17:907:d690:b0:9ad:8a96:ad55 with SMTP id wf16-20020a170907d69000b009ad8a96ad55mr10998951ejc.14.1695299572903;
-        Thu, 21 Sep 2023 05:32:52 -0700 (PDT)
-Received: from [172.20.41.70] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id x18-20020a1709065ad200b0097073f1ed84sm991732ejs.4.2023.09.21.05.32.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 05:32:52 -0700 (PDT)
-Message-ID: <5a2ee8c1-6058-ee65-7959-d191c075748e@linaro.org>
-Date:   Thu, 21 Sep 2023 14:32:49 +0200
+        Thu, 21 Sep 2023 17:34:01 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8355A023;
+        Thu, 21 Sep 2023 10:20:52 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8B8D55C018C;
+        Thu, 21 Sep 2023 08:36:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 21 Sep 2023 08:36:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1695299763; x=1695386163; bh=rfl8F4CyNg3EmdUb8W4wwAH01ChxlJcbD3i
+        dNI4QWvg=; b=CLqK/AzUzlihIUEIkRgqLCdvU8tzTIpAOMw5hKZhxE01Ge51xg2
+        2jCOE9K9QR6N6ztyc/j1IUTWivE81Sb76k76zGPK+OlFaGSQUK7g459EL0mvtzV9
+        De84R3Aq6eyiIR3obtPlzrgGqgbU9nzaQ1jc+vA3xa5eWQgf6nDwQHYHTiMmZLvY
+        w8r4EXIcolN6vknBc0GGhNtmcSuX1CqVLzUO8BRlr45cMMkw0pJ+huyP6jkOJ/wy
+        KRZC9F/Ck7fi9CB3WSXoGvA7PpldGPUIogFya/mJXYBwEBLzwA5ZVX/9YMyPtZd8
+        2iAIHEVUnynDhjmPR2dp3Q6mO3wRGEUzEZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1695299763; x=1695386163; bh=rfl8F4CyNg3EmdUb8W4wwAH01ChxlJcbD3i
+        dNI4QWvg=; b=lrJvS4taD7NXi0UngiiQWgJPZG/9nl1RR4Zm568zJy4dKiKUdwg
+        GnGIAKZcRi6uy8MwejlGFToZREYG0qfAEBWVD3KXym7s7kQ898i1ERDHd/HJ5KFK
+        VtUKJSiVbmGiq/6m6ImrPpFydTkgw0kA79Dbf/52ewGWKB8BUsHhoUQetI2vEtCo
+        cwsnew5CHFvKKU1ymcYt3DuksV+eWVULeU3/JeUOPTbd1cmLUZgzDJIMardnRtmr
+        HEorNcoQBuArlGPdkZnVlzFZHy4YyD/y1VnBjHvaZNWuJ9GJyYH7tzdsztPguEuz
+        PM7OSYvmub+E4xGiSM5znbNf/w9zN0du3Bg==
+X-ME-Sender: <xms:szgMZerFD3cDdzbMpqdWkeBo_o4GjwGsiaiFw0_ovlYLssYO1oO8xQ>
+    <xme:szgMZcqcNYUMYA75wjJAdJdYr91_9igGKS7weGVGCG_J6QNlD-PAcHeu3HPOjlY6K
+    auquRheKJIO>
+X-ME-Received: <xmr:szgMZTOWSZBOicA-4Z3GL_tie9c2zfn6SSTN6DZK3SJT3ajfmzD7DnV6U_9tAeELpHk8uAEntHcfnb3zHeKa5vxQ9OM-xQ52xByUUrjDVmBfPp0oWtQK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epuefhueeiieejueevkefgiedtteehgfdutdelfffhleeflefhudeuvdefhfeghfehnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:szgMZd4xLoISHGLy4q-1FvPtPHzJ76hIxbRdY_rzPx1dUArKGOMgXQ>
+    <xmx:szgMZd5zZKfKY6FcEqR9gfbKnSZ2k5uRGUJKM9DkiXtSK9fWQ0dgZA>
+    <xmx:szgMZdhlbVuvE6wcaIpPCZj_Tje7ahxZ3cAIO0wYbilLkJdhVnWfKg>
+    <xmx:szgMZbRcg-V4gVaPPSxuDkVT8thJyJmeK7USR1ZFRDlv65ldCatUsA>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 21 Sep 2023 08:35:59 -0400 (EDT)
+Message-ID: <df932642-4c78-768d-2f6d-aaa9ae960c8f@themaw.net>
+Date:   Thu, 21 Sep 2023 20:35:56 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH 3/6] vlynq: remove bus driver
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/8] autofs - convert to to use mount api
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bill O'Donnell <billodo@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>
+References: <169527971702.27328.16272807830250040704.stgit@donald.themaw.net>
+ <20230921-altpapier-knien-1dd29cd78a2f@brauner>
 Content-Language: en-US
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
- <20230920201035.3445-4-wsa+renesas@sang-engineering.com>
- <30279c62-c80b-330f-260f-0c64a7893555@linaro.org> <ZQwxwUm3HbqqwEzb@shikoro>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <ZQwxwUm3HbqqwEzb@shikoro>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <20230921-altpapier-knien-1dd29cd78a2f@brauner>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/9/23 14:06, Wolfram Sang wrote:
-> On Thu, Sep 21, 2023 at 12:37:54PM +0200, Philippe Mathieu-Daudé wrote:
->> On 20/9/23 22:10, Wolfram Sang wrote:
->>> There are no users with a vlynq_driver in the Kernel tree. Also, only
->>> the AR7 platform ever initialized a VLYNQ bus, but AR7 is going to be
->>> removed from the Kernel. OpenWRT had some out-of-tree drivers which they
->>> probably intended to upport, but AR7 devices are even there not
->>
->> Typo "support".
-> 
-> "support" would also fit, but we use the term "upporting" frequently to
-> express that we want to bring some code from downstream to upstream.
 
-Oh I see, thanks, TIL :)
+On 21/9/23 17:13, Christian Brauner wrote:
+> On Thu, Sep 21, 2023 at 03:03:26PM +0800, Ian Kent wrote:
+>> There was a patch from David Howells to convert autofs to use the mount
+>> api but it was never merged.
+>>
+>> I have taken David's patch and refactored it to make the change easier
+>> to review in the hope of having it merged.
+>>
+>> Signed-off-by: Ian Kent <raven@themaw.net>
+>> ---
+>>
+>> Ian Kent (8):
+>>        autofs: refactor autofs_prepare_pipe()
+>>        autofs: add autofs_parse_fd()
+>>        autofs - refactor super block info init
+>>        autofs: reformat 0pt enum declaration
+>>        autofs: refactor parse_options()
+>>        autofs: validate protocol version
+>>        autofs: convert autofs to use the new mount api
+>>        autofs: fix protocol sub version setting
+>>
+> Yeah sure, but I only see 4 patches on the list? Is my setup broken or
+> did you accidently forget to send some patches?
+
+Sorry, but no, my email has gone very pair shaped.
+
+
+The above send failed part way through and I haven't been able to send
+
+anything via the command line since. I'm guessing the email app I'm
+
+using to send this will work and the other email accounts I use will
+
+probably work from an app too but the command line is broken for some
+
+unknown reason.
+
+
+Please ignore these, I'll send them when I can get my problem fixed ...
+
+*sigh*!
+
+
+Ian
 
