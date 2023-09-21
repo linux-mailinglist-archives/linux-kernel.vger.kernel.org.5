@@ -2,105 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 895EA7A9A63
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5FE7A9E0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjIUSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        id S230306AbjIUTyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjIUSiO (ORCPT
+        with ESMTP id S229660AbjIUTyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:38:14 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9261D66C0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:27:14 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso166198566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:27:14 -0700 (PDT)
+        Thu, 21 Sep 2023 15:54:08 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334BDD7DAB
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:14 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79f8df47bfbso10250039f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=grsecurity.net; s=grsec; t=1695320833; x=1695925633; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w+HrO7ldsgAqMO34/GLDqrs/oKiBjOHaDyijQN4RwUM=;
-        b=augSRktSCZNcD6JNpeM2IqVcSMln2gwUUSbOJ9F4R+5+sYBocI3a9jgU2g5v5xTwgU
-         OsGN2VM0OExTpCtZFqPwSr7RJL335s16i6sHbme1HROuv3G0T3+X7fNbk1pDXE2/oWhe
-         /fIBtYpmHCdAvVxEidnLA3jOVd7iZGg2zTXSppwX9kGJPQDGwN1pZrOjXsr386CPqNtI
-         7oj+VypYWgqP6W85ryX0aw1MnLUM67hhRqDb2MPe73QKsXzgVyr7NPZgQaCVUTBlO8SY
-         SeK73q75ooMbBaXoSGeP9iDfEV5IfqdsYHyCj+y6ZSYLdG7CwMUi/EpPe64GN/dsEJqA
-         qc9w==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695320953; x=1695925753; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n7GcjJMAhJ6aBbgmYVJaY498tX8EJz+zoUNU1lZL1rI=;
+        b=ngZqedEV7ZMStk8XskreSyJNHKF8ywnk9yqbagMHECW5e7nf71QmJ9f4u2B/GxJV+e
+         0PzpBsyZZUVloGZml7PmeG7m5AUyyH3n6g+kTY3N98jlL46WUctlIc8CA6KvXf7RNDG6
+         IV+lQeLpNf78+FCoCaJ5nS1UiVDwJCiRfs1yvL52RPYNGtMduQfXbOruOKKoc3821PAk
+         XYwW5MHqL2b5aBjoaCAJs1/4oaS6QaIdr9u1WHHL48lyY+YVkpytAKPah9XWLe8qgawH
+         KGWvDZED9FWVbElHgPY34xO6t2bRbdZdRkY4sMAS1AaJSRYjt6oehEn5DTXJkGGPSXdV
+         mSoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320833; x=1695925633;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w+HrO7ldsgAqMO34/GLDqrs/oKiBjOHaDyijQN4RwUM=;
-        b=gKVHOFr9mzCndh/sLoW9HwqLRB4nXtBq8u4zI0AlWRpHm1DpZQgcCcQAWkwQFhyDlq
-         vuGzxd1KY6x/4sHcVJ5f+jQQjfJNOV40aBi6RIci1ncS00uoLjmRAr+ZfjWZ7J/h3I5X
-         tn/QwZDitUZH19v2x8ku/tUVynG1Upw7rI9SfrjXhbju/em/NxM6j93+5o7QoWqmsk4J
-         M8CeIgrO9lrCx/vS2ZUPS3gK2oFFRwm7qZSvVpxOGoaEWbtmrCqFTGcxpsh9R8U34tLr
-         GEO6wH2S203iGS+iYcEr9V6oGhqaSSZOcs1K0VqVYcU/7M+6C0qLKQXSQt0wQoSqL+5T
-         e4QQ==
-X-Gm-Message-State: AOJu0YwoW5gliuT0vneVvmbPInqvLtfw8vmXHymfeQ+uuJdRErHUk8Tn
-        8tBYp+MUOP9vjDgWcB52M3MuLw==
-X-Google-Smtp-Source: AGHT+IFoiM8ZrUT3KpUeDhjFlq2CsLrGEc9c8+nNF8YnzwiEcwY3AeVRUIhAlkjNH2m5vxDQXIrgqg==
-X-Received: by 2002:a17:906:2ce:b0:9a5:846d:d81f with SMTP id 14-20020a17090602ce00b009a5846dd81fmr4951426ejk.17.1695320833244;
-        Thu, 21 Sep 2023 11:27:13 -0700 (PDT)
-Received: from ?IPV6:2003:f6:af0b:f500:9282:fc17:35d3:acf0? (p200300f6af0bf5009282fc1735d3acf0.dip0.t-ipconnect.de. [2003:f6:af0b:f500:9282:fc17:35d3:acf0])
-        by smtp.gmail.com with ESMTPSA id k19-20020a170906159300b00985ed2f1584sm1405990ejd.187.2023.09.21.11.27.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 11:27:12 -0700 (PDT)
-Message-ID: <49e81d87-baee-4ba5-873c-ba32615beab0@grsecurity.net>
-Date:   Thu, 21 Sep 2023 20:27:09 +0200
+        d=1e100.net; s=20230601; t=1695320953; x=1695925753;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n7GcjJMAhJ6aBbgmYVJaY498tX8EJz+zoUNU1lZL1rI=;
+        b=C6WducnHDRHrDUE/eWyARaQ/PLS2kzOJOrDMK68XRnty/D743ROXpiX4rLmf3Dgb2w
+         XfiIXxgMwI78gfIDUh1l3j06zLM4017htyRjcGASI34A3Wv0XXot1CALRz+TXhYAG5xA
+         w4xOZZE4qlyF7Bbc+ixXHV2omTOBm2bXWG02hDdnWPu3Dm6XKBYtIVnc6/URhpuV2fZ/
+         xr9VSXX4ZiAFCXAsoOdMAgp23tvrPhKidy62FvD8qMM+cuquLfT2pdfCjhVKnLjwBRVN
+         WWQaSJnz4UhCYqPlJQtkj7MEWBtDQxh6ZHRwWzE2zncdVlwSqsJoZ30jtjNr1xHodb5w
+         zxxg==
+X-Gm-Message-State: AOJu0Yw77k/7BrrRWepQcsS6Tfs/OK8rf4+LdUnt9UoZE5hF9zSfxY4p
+        xz3W233Q6eTs0AuX8/RZ1wmJqw==
+X-Google-Smtp-Source: AGHT+IHE7Lk9+sqMzkjjeGzrzHe84uoDOIyaaU24bCU7dQoZLk/cH/1sZHIUid/9ym+MM1zqX21qAw==
+X-Received: by 2002:a92:dc08:0:b0:34f:a4f0:4fc4 with SMTP id t8-20020a92dc08000000b0034fa4f04fc4mr7234640iln.2.1695320953475;
+        Thu, 21 Sep 2023 11:29:13 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id o25-20020a02c6b9000000b0042b227eb1ddsm500441jan.55.2023.09.21.11.29.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 11:29:12 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de
+Subject: [PATCHSET v5] Add io_uring futex/futexv support
+Date:   Thu, 21 Sep 2023 12:29:00 -0600
+Message-Id: <20230921182908.160080-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] x86/hyperv: Remove hv_vtl_early_init initcall
-Content-Language: en-US, de-DE
-To:     Saurabh Sengar <ssengar@linux.microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikelley@microsoft.com
-Cc:     ssengar@microsoft.com
-References: <1695185552-19910-1-git-send-email-ssengar@linux.microsoft.com>
-From:   Mathias Krause <minipli@grsecurity.net>
-In-Reply-To: <1695185552-19910-1-git-send-email-ssengar@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missed it in my review, but the kernel bot already noticed it, so....
+Hi,
 
-On 20.09.23 06:52, Saurabh Sengar wrote:
-> [...]
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index 033b53f993c6..83019c3aaae9 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -340,8 +340,10 @@ static inline u64 hv_get_non_nested_register(unsigned int reg) { return 0; }
->  
->  #ifdef CONFIG_HYPERV_VTL_MODE
->  void __init hv_vtl_init_platform(void);
-> +int __init hv_vtl_early_init(void);
->  #else
->  static inline void __init hv_vtl_init_platform(void) {}
-> +static int __init hv_vtl_early_init(void) {}
+This patchset adds support for first futex wake and wait, and then
+futexv.
 
-static inline
+For both wait/wake/waitv, we support the bitset variant, as the
+"normal" variants can be easily implemented on top of that.
 
->  #endif
->  
->  #include <asm-generic/mshyperv.h>
+PI and requeue are not supported through io_uring, just the above
+mentioned parts. This may change in the future, but in the spirit
+of keeping this small (and based on what people have been asking for),
+this is what we currently have.
 
-Thanks,
-Mathias
+When I did these patches, I forgot that Pavel had previously posted a
+futex variant for io_uring. The major thing that had been holding me
+back from people asking about futexes and io_uring, is that I wanted
+to do this what I consider the right way - no usage of io-wq or thread
+offload, an actually async implementation that is efficient to use
+and don't rely on a blocking thread for futex wait/waitv. This is what
+this patchset attempts to do, while being minimally invasive on the
+futex side. I believe the diffstat reflects that.
+
+As far as I can recall, the first request for futex support with
+io_uring came from Andres Freund, working on postgres. His aio rework
+of postgres was one of the early adopters of io_uring, and futex
+support was a natural extension for that. This is relevant from both
+a usability point of view, as well as for effiency and performance.
+In Andres's words, for the former:
+
+"Futex wait support in io_uring makes it a lot easier to avoid deadlocks
+in concurrent programs that have their own buffer pool: Obviously pages in
+the application buffer pool have to be locked during IO. If the initiator
+of IO A needs to wait for a held lock B, the holder of lock B might wait
+for the IO A to complete.  The ability to wait for a lock and IO
+completions at the same time provides an efficient way to avoid such
+deadlocks."
+
+and in terms of effiency, even without unlocking the full potential yet,
+Andres says:
+
+"Futex wake support in io_uring is useful because it allows for more
+efficient directed wakeups.  For some "locks" postgres has queues
+implemented in userspace, with wakeup logic that cannot easily be
+implemented with FUTEX_WAKE_BITSET on a single "futex word" (imagine
+waiting for journal flushes to have completed up to a certain point). Thus
+a "lock release" sometimes need to wake up many processes in a row.  A
+quick-and-dirty conversion to doing these wakeups via io_uring lead to a
+3% throughput increase, with 12% fewer context switches, albeit in a
+fairly extreme workload."
+
+Some basic io_uring futex support and test cases are available in the
+liburing 'futex' branch:
+
+https://git.kernel.dk/cgit/liburing/log/?h=futex
+
+testing all of the variants. I originally wrote this code about a
+month ago and Andres has been using it with postgres, and I'm not
+aware of any bugs in it. That's not to say it's perfect, obviously,
+and I welcome some feedback so we can move this forward and hash out
+any potential issues.
+
+In terms of testing, there's a functionality and beat-up test case
+in liburing, and I've run all the ltp futex test cases as well to
+ensure we didn't inadvertently break anything. It's also been in
+linux-next for a long time and haven't heard any complaints.
+
+ include/linux/io_uring_types.h |   5 +
+ include/uapi/linux/io_uring.h  |   4 +
+ io_uring/Makefile              |   1 +
+ io_uring/cancel.c              |   5 +
+ io_uring/cancel.h              |   4 +
+ io_uring/futex.c               | 376 +++++++++++++++++++++++++++++++++
+ io_uring/futex.h               |  36 ++++
+ io_uring/io_uring.c            |   7 +
+ io_uring/opdef.c               |  34 +++
+ kernel/futex/futex.h           |  20 ++
+ kernel/futex/requeue.c         |   3 +-
+ kernel/futex/syscalls.c        |  18 +-
+ kernel/futex/waitwake.c        |  49 +++--
+ 13 files changed, 535 insertions(+), 27 deletions(-)
+
+You can also find the code here:
+
+https://git.kernel.dk/cgit/linux/log/?h=io_uring-futex
+
+V5:
+- Rebase on PeterZ's futex2 changes. Pulled in the tip locking/core
+  branch.
+- Shuffle order of some io_uring patchsets, which changed the value
+  of the futex opcodes.
+
+V4:
+- Refactor the prep setup so it's fully independent between the vectoed
+  and non-vectored futex handling.
+- Ensure we -EINVAL any futex/futexv wait/waitv that specifies unused
+  fields.
+- Fix a comment typo
+- Update the patches from Peter.
+- Fix two kerneldoc warnings
+- Add a prep patch moving FUTEX2_MASK to futex.h
+
+-- 
+Jens Axboe
+
+
