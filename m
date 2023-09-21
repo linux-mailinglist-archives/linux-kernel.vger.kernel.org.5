@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FA37AA268
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECE17A9EEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbjIUVQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32944 "EHLO
+        id S231311AbjIUUOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233259AbjIUVPb (ORCPT
+        with ESMTP id S231305AbjIUUNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:15:31 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB6CE38A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:51 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32179d3c167so1058875f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:51 -0700 (PDT)
+        Thu, 21 Sep 2023 16:13:52 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83123FEAA1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:13:53 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-503012f4e71so3038987e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695316070; x=1695920870; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tJ24ZdmC3+/lt3MKiQj6DVhfuE70M1LQ8RFFhKZZS5Q=;
-        b=m4h5oNxEhFnt0KEqrQrm+goetHUSxIGXh/x7Rql3jDFVzUBo9iwyXN9lwuOMWZq4+f
-         4ZFg5fdh7R+bNKsvbe92Lex2ggGf4rUOTPh6/cJsynoeGLRs1p8i2xIpN4QrRW8Mx82u
-         0MsjIhNvMEHgv0FGZ70O7uB9nGee8s4DRKrzu/xjMrs62nf17A60GynHraNFe69uvb96
-         S8Gt6tWIJ4fSwL2Pc4wMK77EtFknr0biiMO92AZ1vblILT+qYAO8WqSRAZr2diPcuxkc
-         0CrIen+N2CNdl0gPQ0cEtZg3lgzOsZp/Dd0SrdojryXrbe0aheV32H7pSMOcDOxg+JUb
-         r/kw==
+        d=linaro.org; s=google; t=1695323632; x=1695928432; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TXv2swyixrrXvv0zGvrj0+c4WbYkAz74mw7u1eEONl8=;
+        b=UnsvEVNvPOzDaYap1N0ht8Ttyx99Tuo0mw7lDizBmjJgsezUig9nYX1cgglSABr/rh
+         rSQv2ZvBASr3AgEngN7yTaqjtUjZyDDgA730JNstHGKkGkYUrrT5NebmMB8aYmt8Wnx3
+         39WJmsrY6wqzul3P5ass+oJG4X35iu5JiGDouCp89owhyFGlL+WqKQDhNt2zW+jmeAbb
+         W2pNosbXzlQoItqmVsXZBJ/eldGM/Uud+Vggs46pTCjdDPHiTXBKMg11lkt2Ex83/V+l
+         FX9XQbh7K6pSLfXNUTGU1y8oX3yiSwFD3NcnNsSYshUszyongC+3s1ReB7ob3cDESUlW
+         3bKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316070; x=1695920870;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tJ24ZdmC3+/lt3MKiQj6DVhfuE70M1LQ8RFFhKZZS5Q=;
-        b=kRQ6NexjWc4vRoHCro7Qm+llCVZkz8y0m/skrCLqS5uHnJwUeN0SQFMo0id1PdsJyR
-         fzdsi+GTQA63ec56nqTrCSg7oQPLjqXpY8j+B/nmpF4eDPZ3aG4z0k5Y3tskirBQTZ00
-         U69NvMJKcy5TFOLGHdHfJzVuvZ32Fg+V4rJ3XPS/maDTQ9KIyBiilmteNwWJh1LiYBgZ
-         zXYdhqReITHgr9XcoaE5XV3OJ+b4uPg50pMFSicSnMQ899sodmlcOAmFGpNOEQrTj9yR
-         gGWlmUhSNLYZFZ+eV/39Ijg6cwwQd2Z/ahWoGy/5FBUa0rG8OLV9SHT+ZWlVWXXD6xw8
-         x3hQ==
-X-Gm-Message-State: AOJu0YwQSRH5tzAh0gVjPj/s086rwvSge+rIDzXkXRVgMjzskzIb0zs9
-        8shQ7oZ2P/sD+kXABBUXOK1mwejVuIjOI3kG
-X-Google-Smtp-Source: AGHT+IGs0qtNZWOH6DxXm1gSJbUU3dEbdkMCJibtY+QMhmhM5rkk01C+bRPoVqBat+5lBt7WZgRGKw==
-X-Received: by 2002:a05:6512:110e:b0:503:7dd:7ebc with SMTP id l14-20020a056512110e00b0050307dd7ebcmr5159929lfg.18.1695279520238;
-        Wed, 20 Sep 2023 23:58:40 -0700 (PDT)
-Received: from ?IPV6:2600:1700:7c80:b060::49? ([2600:1700:7c80:b060::49])
-        by smtp.gmail.com with ESMTPSA id 8-20020ac24848000000b00500a467914esm167556lfy.38.2023.09.20.23.58.38
+        d=1e100.net; s=20230601; t=1695323632; x=1695928432;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TXv2swyixrrXvv0zGvrj0+c4WbYkAz74mw7u1eEONl8=;
+        b=WPRUHjv1Ggk8FXFhq7L0+2YV4KGQ1bdNsn6x77YQWwtYOfLN/9FilfVyUpY5L4S0wY
+         El5KpGXJTRkfe/hzZPfYL5KfRvQjFdEd4/0wKSHiBxWTwFCIfFfObYKvZQyZxlvBvR38
+         6Xy0K7AhPcJg9FAMHtCHMb7OtZvizorN05DcOS/Q0Zr3kUqkoBtrc7QiP+VVdeRxvFgc
+         xSnPxikMq41aegHvZWJ4zr5f+5aFpZImM0VUhtMTtJJeOnEHfwfFhQgffXTWK83T1/xr
+         zEx2+pnbnV9zPY9ZCIOWZlBVdBDhUdtJYtDwSC5c8EhfZ4wlxLWHLTbPfiiE+n2p0Reg
+         lcwg==
+X-Gm-Message-State: AOJu0YyxEMOZOhJ0P3U5SLJ2+kbywvBXPLG328P4fmyjuFcNHh4RLUlj
+        t/JTH1X5uimE0Vtr6SrHV/44xCRiSs8rkaTa8RPD5w==
+X-Google-Smtp-Source: AGHT+IF33ZszVwsMibxsoJczJ31Md6SkIWFl+NgIPjyaeu55oxkozMwjQ2+h4m7DsUHVeCJrMeMh0Q==
+X-Received: by 2002:a50:ec83:0:b0:531:1f3b:cb47 with SMTP id e3-20020a50ec83000000b005311f3bcb47mr7302479edr.0.1695279710178;
+        Thu, 21 Sep 2023 00:01:50 -0700 (PDT)
+Received: from [172.20.15.189] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id m26-20020a056402051a00b00532d2b5126bsm389571edv.94.2023.09.21.00.01.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 23:58:39 -0700 (PDT)
-Message-ID: <348823a2-af40-42d5-af30-dc00eaf1d90a@gmail.com>
-Date:   Thu, 21 Sep 2023 02:58:37 -0400
+        Thu, 21 Sep 2023 00:01:49 -0700 (PDT)
+Message-ID: <8f24963f-a016-3095-29da-a2fcae5ec9eb@linaro.org>
+Date:   Thu, 21 Sep 2023 09:01:50 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/3] drm/msm/dpu: Fix SC7280 PP length
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230921-topic-7280_dpu-v1-0-6912a97183d5@linaro.org>
+ <20230921-topic-7280_dpu-v1-1-6912a97183d5@linaro.org>
+ <3b23270c-ec89-2177-8252-6ccaf58d37ac@quicinc.com>
 Content-Language: en-US
-To:     linux-kernel@vger.kernel.org
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-From:   Abelardo Ricart <aricart@gmail.com>
-Subject: [PATCHv2] ALSA: hda/realtek: Add quirk for ASUS ROG G533Q
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <3b23270c-ec89-2177-8252-6ccaf58d37ac@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same quirk applied to the ASUS G533Z is also applicable to the ASUS
-G533Q (of which I am an owner and have thus tested). Resubmitted for
-e-mail formatting issue.
 
-Signed-off-by: Abelardo Ricart <aricart@gmail.com>
----
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b7e78bfcffd8..7bb3c1e05bf2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9781,6 +9781,7 @@ static const struct snd_pci_quirk 
-alc269_fixup_tbl[] = {
-SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V", 
-ALC285_FIXUP_ASUS_HEADSET_MIC),
-SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook 
-UX31A",ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
-SND_PCI_QUIRK(0x1043, 0x1573, "ASUS GZ301V", 
-ALC285_FIXUP_ASUS_HEADSET_MIC),
-+ SND_PCI_QUIRK(0x1043, 0x1602, "ASUS ROG Strix G15 
-(G533Q)",ALC285_FIXUP_ASUS_G533Z_PINS),
-SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
-SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", 
-ALC287_FIXUP_CS35L41_I2C_2),
-SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
+
+On 9/21/23 01:41, Abhinav Kumar wrote:
+> 
+> 
+> On 9/20/2023 3:46 PM, Konrad Dybcio wrote:
+>> Commit 194347df5844 ("drm/msm/dpu: inline DSC_BLK and DSC_BLK_1_2
+>> macros") unrolled a macro incorrectly. Fix that.
+>>
+> 
+> No, its correct from what i can tell.
+> 
+> Before inlining it was using PP_BLK_DITHER macro and not PP_BLK.
+> 
+> PP_BLK_DITHER has a len of 0 and not 0xd4.
+> 
+> Hence I cannot see whats wrong here.
+Right, I misread the thing..
+
+Konrad
