@@ -2,161 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D517A968D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F1C7A97BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbjIURCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
+        id S230151AbjIUR1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjIURCW (ORCPT
+        with ESMTP id S229813AbjIUR0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:02:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D2526B1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695315698; x=1726851698;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mbUdodE1BmLOs31TQrxblmvCAcsSquPUpWxbLRjO6lY=;
-  b=dW3kcFBCbahTFxZA9KHQY4JIeRtMGAJ0srhP/zW0+B6Fi2PZELnWNfbu
-   slHZ6n756iCQ1Zyp9iUfYJpyzYonc0tR/fQpz8tH2UXVHz5ZQVsK6jhGG
-   hQ9UURlJBtVzmHZJ9M3lST7MEJ0lpVIJtKwHqWUBLrrEp27gjPNEpVjrN
-   Tyrx7ODjNU6jNNjPYRrPYkAbgUDK+5cS+0ng/Z65LI5KYaOxcVc/hG1aT
-   5rRMYp/VYJyO9W9kiHo6zKIuT9Nl+n2W6fzi0Xs7cmYjGitVVQefPeGdB
-   shDMnulA++kSQ18OWtwi9BlS6eXRvyEtPKsTj8bm8NDmFwb8QIMGXnCt6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="466782206"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="466782206"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 02:54:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="740556538"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="740556538"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 21 Sep 2023 02:54:18 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjGO0-0009qK-1b;
-        Thu, 21 Sep 2023 09:54:16 +0000
-Date:   Thu, 21 Sep 2023 17:54:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        "open list:FREESCALE eDMA DRIVER" <imx@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 1/1] dmaengine: fsl-dma: fix DMA error when enabling sg
- if 'DONE' bit is set
-Message-ID: <202309211717.aYksVles-lkp@intel.com>
-References: <20230920203741.3184727-1-Frank.Li@nxp.com>
+        Thu, 21 Sep 2023 13:26:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70867358A;
+        Thu, 21 Sep 2023 10:03:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D694C32782;
+        Thu, 21 Sep 2023 09:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695290096;
+        bh=AAkcEZ8SOnbyAVmoBkWR8hTOYh67xx0DW3GiCa+pnsk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=a8m2Dv3U6PR5d6/4NRo3l0dnC/OEkxMLBJlKn2U6YDSXQWR8Fvc/uf9KQdMF0JlDX
+         /5wg6DVZnHSxPF308rv3bIlxOBQqtogUEfmupzBCPD7EtLqIz0cIke6Td/xtykEX5N
+         HyIhHaGimgYJ055R1LqPOQ+M2GE/HTLxFRNce5OMy2Ud+urKOqXSAM+lPb+2wKxIiw
+         219RWFkKtbyMvae/++P+jio0zrDhp9w4DCAXCbaKqIVI7spzZ443GJNh4n0W1yS7Dy
+         yZ3AqPiFaiyWGlxbFrPPrmVFK5K9P0zc5UQl3oNnaNbNoK66pulup+33yCpwjX48/8
+         MshfmXESiBnuw==
+Message-ID: <19d2bc5c-2662-6ed8-cc3d-7efb82fd1825@kernel.org>
+Date:   Thu, 21 Sep 2023 11:54:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920203741.3184727-1-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/2] dt-bindings: media: imx-jpeg: Assign slot for imx
+ jpeg encoder/decoder
+To:     Ming Qian <ming.qian@nxp.com>, mirela.rabulea@oss.nxp.com,
+        robh+dt@kernel.org, shawnguo@kernel.org
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+        linux-imx@nxp.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230921063620.22962-1-ming.qian@nxp.com>
+ <20230921063620.22962-2-ming.qian@nxp.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230921063620.22962-2-ming.qian@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+On 21/09/2023 08:36, Ming Qian wrote:
+> There are total 4 slots available in the IP,
+> and we only need to use one slot in one os,
+> assign a single slot,
+> configure interrupt and power domain only for 1 slot,
+> not for the all 4 slots.
 
-kernel test robot noticed the following build warnings:
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc2 next-20230921]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-dma-fix-DMA-error-when-enabling-sg-if-DONE-bit-is-set/20230921-043838
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230920203741.3184727-1-Frank.Li%40nxp.com
-patch subject: [PATCH 1/1] dmaengine: fsl-dma: fix DMA error when enabling sg if 'DONE' bit is set
-config: i386-randconfig-062-20230921 (https://download.01.org/0day-ci/archive/20230921/202309211717.aYksVles-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230921/202309211717.aYksVles-lkp@intel.com/reproduce)
+Please kindly resend and include all necessary To/Cc entries.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309211717.aYksVles-lkp@intel.com/
+> 
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> ---
+>  .../bindings/media/nxp,imx8-jpeg.yaml         | 40 ++++++++-----------
+>  1 file changed, 16 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> index 3d9d1db37040..5f0e2fc1ea9c 100644
+> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> @@ -32,25 +32,27 @@ properties:
+>      maxItems: 1
+>  
+>    interrupts:
+> -    description: |
+> -      There are 4 slots available in the IP, which the driver may use
+> -      If a certain slot is used, it should have an associated interrupt
+> -      The interrupt with index i is assumed to be for slot i
+> -    minItems: 1               # At least one slot is needed by the driver
+> -    maxItems: 4               # The IP has 4 slots available for use
+> +    description:
+> +      Interrupt number for slot
+> +    maxItems: 1
+>  
+>    power-domains:
+>      description:
+>        List of phandle and PM domain specifier as documented in
+>        Documentation/devicetree/bindings/power/power_domain.txt
+> -    minItems: 2               # Wrapper and 1 slot
+> -    maxItems: 5               # Wrapper and 4 slots
+> +    minItems: 1               # VPUMIX
+> +    maxItems: 2               # Wrapper and 1 slot
+> +
+> +  slot:
+> +    description:
+> +      Integer number of slot index used. the value range is from 0 to 3
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/dma/fsl-edma-common.c:76:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:93:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:96:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:98:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:100:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:125:19: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:131:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:134:9: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/dma/fsl-edma-common.c:463:21: sparse: sparse: restricted __le16 degrades to integer
-   drivers/dma/fsl-edma-common.c:465:21: sparse: sparse: restricted __le16 degrades to integer
-   drivers/dma/fsl-edma-common.c:466:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/dma/fsl-edma-common.c:466:17: sparse: sparse: cast removes address space '__iomem' of expression
+Don't you have here obvious errors reported by testing? Did you test this?
 
-vim +463 drivers/dma/fsl-edma-common.c
+Best regards,
+Krzysztof
 
-   422	
-   423	static void fsl_edma_set_tcd_regs(struct fsl_edma_chan *fsl_chan,
-   424					  struct fsl_edma_hw_tcd *tcd)
-   425	{
-   426		u16 csr = 0;
-   427	
-   428		/*
-   429		 * TCD parameters are stored in struct fsl_edma_hw_tcd in little
-   430		 * endian format. However, we need to load the TCD registers in
-   431		 * big- or little-endian obeying the eDMA engine model endian,
-   432		 * and this is performed from specific edma_write functions
-   433		 */
-   434		edma_write_tcdreg(fsl_chan, 0, csr);
-   435	
-   436		edma_write_tcdreg(fsl_chan, tcd->saddr, saddr);
-   437		edma_write_tcdreg(fsl_chan, tcd->daddr, daddr);
-   438	
-   439		edma_write_tcdreg(fsl_chan, tcd->attr, attr);
-   440		edma_write_tcdreg(fsl_chan, tcd->soff, soff);
-   441	
-   442		edma_write_tcdreg(fsl_chan, tcd->nbytes, nbytes);
-   443		edma_write_tcdreg(fsl_chan, tcd->slast, slast);
-   444	
-   445		edma_write_tcdreg(fsl_chan, tcd->citer, citer);
-   446		edma_write_tcdreg(fsl_chan, tcd->biter, biter);
-   447		edma_write_tcdreg(fsl_chan, tcd->doff, doff);
-   448	
-   449		edma_write_tcdreg(fsl_chan, tcd->dlast_sga, dlast_sga);
-   450	
-   451		if (fsl_chan->is_sw) {
-   452			csr = le16_to_cpu(tcd->csr);
-   453			csr |= EDMA_TCD_CSR_START;
-   454			tcd->csr = cpu_to_le16(csr);
-   455		}
-   456	
-   457		/*
-   458		 * Must clear CHn_CSR[DONE] bit before enable TCDn_CSR[ESG] at EDMAv3
-   459		 * eDMAv4 have not such requirement.
-   460		 * Change MLINK need clear CHn_CSR[DONE] for both eDMAv3 and eDMAv4.
-   461		 */
-   462		if (((fsl_edma_drvflags(fsl_chan) & FSL_EDMA_DRV_CLEAR_DONE_E_SG) &&
- > 463			(tcd->csr & EDMA_TCD_CSR_E_SG)) ||
-   464		    ((fsl_edma_drvflags(fsl_chan) & FSL_EDMA_DRV_CLEAR_DONE_E_LINK) &&
-   465			(tcd->csr & EDMA_TCD_CSR_E_LINK)))
-   466			edma_writel_chreg(fsl_chan, edma_readl_chreg(fsl_chan, ch_csr), ch_csr);
-   467	
-   468	
-   469		edma_write_tcdreg(fsl_chan, tcd->csr, csr);
-   470	}
-   471	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
