@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 056897A9786
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D5A7A97FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjIURYy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 13:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        id S229456AbjIUR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjIURY2 (ORCPT
+        with ESMTP id S230307AbjIUR2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:24:28 -0400
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D2819B4;
-        Thu, 21 Sep 2023 10:09:37 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-34f6ce577a4so3741275ab.3;
-        Thu, 21 Sep 2023 10:09:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316176; x=1695920976;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5HYwGTI/K3y+X5a5etQVgBzGES/Yd2WtGgSCOPcsNEI=;
-        b=r5S/Qy7SeynG1xjJWEDKgYT+o6dWRZnER3SylCxk27tm9MiiZ1qSMHqqKdHljrkTqH
-         d2PgkM7OrEy5s+npMGLRxuvV3h/QGxFpjxTpL/7h2V5uV1L7jbkF8spIa1CdJAACVs1d
-         h6+enlNC8Ivbr7kGJyxHrc+GAkzK/RlKVk2mQpmdNXNrFhFeGB26xOl/lsqRbQl4F3Vy
-         opAMJe0xuxdKtxMVfk0DkmkQhZuZ84+VLIBDjK959MDt0MEEU0ss/L7YpXKUEbfeArDK
-         K8mAA7GSsPTmONIERe+VFno87mD/a0Hb8yrD60buVJEm9Bjnce3RFRpcPfhSlUUIKsTd
-         ITVQ==
-X-Gm-Message-State: AOJu0Ywz1rkIVYyTQeKxdtJ9sfaD+vnfGV5C+ga6h8UmfYLxi2sTMpA+
-        Q2VE+Ojm53Qpl4phXlR9vKRFET73CnbmsJB3
-X-Google-Smtp-Source: AGHT+IG1SAsdr7OPjWMbeexcN/QMSjtdBRnDhBKSkhmAy69v8Y8E4xym73cC+3y98NwzomUw442ElQ==
-X-Received: by 2002:a81:b40d:0:b0:59b:54b5:7d66 with SMTP id h13-20020a81b40d000000b0059b54b57d66mr6233999ywi.34.1695308591131;
-        Thu, 21 Sep 2023 08:03:11 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id h144-20020a816c96000000b00583d44b4b30sm368103ywc.99.2023.09.21.08.03.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 08:03:11 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59c2ca01f27so12899837b3.2;
-        Thu, 21 Sep 2023 08:03:10 -0700 (PDT)
-X-Received: by 2002:a81:8385:0:b0:57a:2f01:31d7 with SMTP id
- t127-20020a818385000000b0057a2f0131d7mr6057323ywf.1.1695308590791; Thu, 21
- Sep 2023 08:03:10 -0700 (PDT)
+        Thu, 21 Sep 2023 13:28:34 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702334F3AE;
+        Thu, 21 Sep 2023 10:15:58 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38LB4M0P001980;
+        Thu, 21 Sep 2023 17:06:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=3TMA1x9
+        FuXniAWJkqPGs7vBSLWsQf/CGt0HLqhBW5IA=; b=NJmMKWjCNJtH6fcmDfxlUWn
+        M5UP8/Js1p0XhnooZBBrNrbSeIN0zwzSrZwWYPL5DWnnib2CFrAqKabflPLCLkrz
+        vSEbTlPuKlTyfZLw6pWGtQRJemUSAAph7OeXO87/vNg3WWHrucEKkLBMMkggpUTI
+        a5QFzq+lUnbs4P+jaR/2XikhpNHBYiVueLOE+UFksZ30oyAZYMBLRnN7n5W2NeVR
+        qDEA9p1VH6D89lHm5tYUAQPQmc9dk2UEeWbpzgkMWPr7RzFrS4h1XrR8mYaRHTE2
+        3pN+2kCOYLu/KuGAS/Plw7ZHpm5CG8xPS9CheoSOIXX/7FbL43aeSxwxYIc59eg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t5nx0u3fy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 17:06:52 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7CF01100064;
+        Thu, 21 Sep 2023 17:06:51 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 754EA252250;
+        Thu, 21 Sep 2023 17:06:51 +0200 (CEST)
+Received: from localhost (10.201.21.249) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
+ 2023 17:06:48 +0200
+From:   Christophe Roullier <christophe.roullier@foss.st.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Christophe Roullier <christophe.roullier@foss.st.com>
+CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/7] Series to deliver Ethernets for STM32MP13
+Date:   Thu, 21 Sep 2023 17:06:15 +0200
+Message-ID: <20230921150622.599232-1-christophe.roullier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-37-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20230912045157.177966-37-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Sep 2023 17:02:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW9Aj+sjka0n2fN4ME5YcqHSzsRrwEgSaBt-20SfGWr2Q@mail.gmail.com>
-Message-ID: <CAMuHMdW9Aj+sjka0n2fN4ME5YcqHSzsRrwEgSaBt-20SfGWr2Q@mail.gmail.com>
-Subject: Re: [PATCH 36/37] arm64: dts: renesas: r9a08g045s33-smarc: add
- initial device tree for RZ/G3S SMARC EVK board
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.249]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-21_13,2023-09-21_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+STM32MP13 is STM32 SOC with 2 GMACs instances
+This board have 2 RMII phy:
+  -Ethernet1: RMII with crystal
+  -Ethernet2: RMII without crystal
+Rework dwmac glue to simplify management for next stm32
 
-On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add initial device tree for RZ/G3S SMARC EVK board.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Christophe Roullier (7):
+  dt-bindings: net: add STM32MP13 compatible in documentation for stm32
+  net: ethernet: stmmac: rework glue to simplify management for next
+    stm32
+  net: ethernet: stmmac: add management of stm32mp13 for stm32
+  ARM: dts: stm32: add ethernet1 and ethernet2 support on stm32mp13
+  ARM: dts: stm32: add ethernet1/2 RMII pins for STM32MP13F-DK board
+  ARM: dts: stm32: add ethernet1 and ethernet2 for STM32MP135F-DK board
+  ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
 
-Thanks for your patch!
-
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dts
-> @@ -0,0 +1,17 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +/*
-> + * Device Tree Source for the RZ/G3S SMARC EVK board
-> + *
-> + * Copyright (C) 2023 Renesas Electronics Corp.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "r9a08g045s33.dtsi"
-> +#include "rzg3s-smarc-som.dtsi"
-> +#include "rzg3s-smarc.dtsi"
-> +
-> +/ {
-> +       model = "Renesas SMARC EVK version 2 based on r9a08g045s33";
-> +       compatible = "renesas,smarc2-evk", "renesas,r9a08g045s33", "renesas,r9a08g045";
-> +};
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Of course any updates to the DT bindings should be reflected here.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+ .../devicetree/bindings/net/stm32-dwmac.yaml  | 140 +++++++++--
+ arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi   |  71 ++++++
+ arch/arm/boot/dts/st/stm32mp131.dtsi          |  31 +++
+ arch/arm/boot/dts/st/stm32mp133.dtsi          |  30 +++
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts       |  48 ++++
+ arch/arm/configs/multi_v7_defconfig           |   1 +
+ .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 226 +++++++++++++-----
+ 7 files changed, 459 insertions(+), 88 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
