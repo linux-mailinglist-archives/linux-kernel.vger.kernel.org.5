@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B2A7A9A53
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9916E7A9E5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbjIUSiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
+        id S231409AbjIUUAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbjIUShl (ORCPT
+        with ESMTP id S229619AbjIUUAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:37:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0DAB15D1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=8FiCh+y4E98Zo5U/kfJCKQic4u/7gML7qDt1+4wDSpY=; b=tAOCSic5y8jvDpvNEmQ4NqIRs0
-        4Qco9h11XXnRRSnU+USX+S+phHeRZ8pKrsu2PO79KxZPYHOliEqro20YVk7rbOkkrODLYBHCQuD8B
-        DkotQB8dcqdq0DWlMmkR+776bOQw3ncssEdXKj9xoKYw0VpwyPSNcoGWhX2ftPT+aYRvhKrJnWmNc
-        tkPkO/G42fcV936P7EwsBdjqGtYLYBjtokIwQCcxOqC8CwXQmbbzmhK10YN/OOB+4/R64mth2bzSi
-        iciso8WQib+fFk13ZBcxtl39u3KMWDKZPrlxP9AC2ulZiRj/QxRHvYil5AM24d6zJM3DLkw2iR+wt
-        rCyMHy7Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qjLiM-00Ceec-EW; Thu, 21 Sep 2023 15:35:38 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E62783002E3; Thu, 21 Sep 2023 17:35:37 +0200 (CEST)
-Date:   Thu, 21 Sep 2023 17:35:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] x86/speculation, objtool: Use absolute relocations for
- annotations
-Message-ID: <20230921153537.GG14803@noisy.programming.kicks-ass.net>
-References: <20230920001728.1439947-1-maskray@google.com>
- <20230921072655.GA14803@noisy.programming.kicks-ass.net>
- <CAFP8O3+_8H+fetuoqwwcfqJLNtYmpsWZhY2arD7HMuPmcN+X_g@mail.gmail.com>
+        Thu, 21 Sep 2023 16:00:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E545AA99
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695317353; x=1726853353;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uzDkfWXeowTfu3zdB2+xHFSe333dlATcO9CRMMxZdao=;
+  b=XiQgDmBV4sSA3VCGkDrTzNwDhL7ywVHpxHY4aSRZMKpDhPHyQs3/ZgRT
+   ZGm3V/LMyTtgx3OGP/FnhZ6OfsTm0+BioUJ40GJXYOKIgNlZ218KRt2ZF
+   rMOhRItLcDA9Oyc6tLTkOj/p8XuagabTfZyGIMGPatVV/9ibjC5X+lcXz
+   kZ/+Pf4NyGCip8qyQgyFJnyQ3f2T0hx6zp7p1nH/Suz0OcfwZeeWQplGo
+   dofoqki37R2qVm2FkO/hBT9OQzflC3ld2SJ6kj7Vm7eK2aW+IrytCPPq3
+   SRCvus6233MVUt0wqJkHwZQFc5cPjpNxw0P/Elf6izmpEGfxo6YG8cVFk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="411497381"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="411497381"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 08:36:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="862522382"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="862522382"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 08:36:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qjLjK-0000000Gwxq-22aH;
+        Thu, 21 Sep 2023 18:36:38 +0300
+Date:   Thu, 21 Sep 2023 18:36:38 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()
+Message-ID: <ZQxjBkFZV5T6BELA@smile.fi.intel.com>
+References: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
+ <202309211632.67e4c1e0-oliver.sang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3+_8H+fetuoqwwcfqJLNtYmpsWZhY2arD7HMuPmcN+X_g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <202309211632.67e4c1e0-oliver.sang@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 12:58:13AM -0700, Fangrui Song wrote:
-> On Thu, Sep 21, 2023 at 12:26 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Sep 19, 2023 at 05:17:28PM -0700, Fangrui Song wrote:
-> > > .discard.retpoline_safe sections do not have the SHF_ALLOC flag.  These
-> > > sections referencing text sections' STT_SECTION symbols with PC-relative
-> > > relocations like R_386_PC32 [0] is conceptually not suitable.  Newer
-> > > LLD will report warnings for REL relocations even for relocatable links
-> > > [1].
-> > >
-> > >     ld.lld: warning: vmlinux.a(drivers/i2c/busses/i2c-i801.o):(.discard.retpoline_safe+0x120): has non-ABS relocation R_386_PC32 against symbol ''
-> >
-> > What, why ?!? Please explain more.
+On Thu, Sep 21, 2023 at 09:34:13PM +0800, kernel test robot wrote:
 > 
-> This can be read as a pedantic warning from the linker.
+> Hello,
 > 
-> A location relocated by an R_386_PC32 relocation in
-> .discard.retpoline_safe records an offset from the current location
-> (non-allocable) to an text symbol.
-> This offset is conceptually not suitable: in the ELF object file
-> format's model, the non-SHF_ALLOC section is not part of the memory
-> image, so
-> we cannot say that the offset from the non-memory thing to a text
-> symbol is a fixed value.
+> kernel test robot noticed "WARNING:at_fs/sysfs/file.c:#sysfs_emit" on:
+> 
+> commit: d4004295e5502a1eb3e361e97ea4dd1686046af6 ("[PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()")
+> url: https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/params-Introduce-the-param_unknown_fn-type/20230912-231033
+> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> patch link: https://lore.kernel.org/all/20230912150551.401537-1-andriy.shevchenko@linux.intel.com/
+> patch subject: [PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()
+> 
+> in testcase: trinity
+> version: trinity-i386-abe9de86-1_20230429
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	group: group-04
+> 	nr_groups: 5
 
-Bah, so why has this worked at all then? Clearly the linkers aren't very
-strict about things.
 
-Anyway, I think what we want is to just mark the section SHF_ALLOC. The
-reason is that one of the plans we have is to collapse all the different
-annotations into a single section and then have something like:
+> what we observed is this issue doesn't always happen. we run the test upon
+> this commit almost 500 times, it happened 42 times.
+> however, the parent keeps clean.
+> 
+>         v6.6-rc1 d4004295e5502a1eb3e361e97ea
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :497          8%          42:496   dmesg.EIP:sysfs_emit
+>            :497          8%          42:496   dmesg.WARNING:at_fs/sysfs/file.c:#sysfs_emit
 
-	struct objtoo_annotation {
-		s32 location;
-		u32 type;
-	}
+Cool! I will check this, thank you for the report.
 
-So that we can easily extend the annotations and don't need to add
-yet-another-section-reader-function to objtool.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-This is just one of the things we've not gotten around to yet. But as
-is, we have:
 
-	.discard.unreachable
-	.discard.reachable
-	.discard.func_stack_frame_non_standard
-	.discard.ignore_alts
-	.discard.unwind_hints
-	.discard.noendbr
-	.discard.retpoline_safe
-	.discard.instr_end
-	.discard.instr_begin
-	.discard.validate_unret
-	.discard.intra_function_calls
-
-And with the exception of unwind_hints, they're all just trivial
-location things.
-
-The very last thing we need is yet more of that.
-
-If we were to use absolute things, we get 12 byte entries and while that
-probably wouldn't spell the end of the world, why make thing larger than
-they have to be.
-
-After all, its not like any of this actually survives the final link.
