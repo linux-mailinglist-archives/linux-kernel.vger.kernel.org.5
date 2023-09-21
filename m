@@ -2,58 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9367AA150
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC647A9F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjIUVAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S231176AbjIUUSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbjIUU7x (ORCPT
+        with ESMTP id S231526AbjIUUST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:59:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEEB93C4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bwElb4FLHLZ9yVB+qHk0J5FYWrvoWV55wBsQBNN8sAY=; b=pvGPTKPEGtYqOyvHoagN3qNrrb
-        dk2R5HiXs14CSj9t1+6Qjc+gDQ4J2InblgCeijvlWQsB/k4+ruherBwVZB1LIwFFqZkNl6x7aeyPH
-        cHtUebsI/yK7nlZpk+XseYH7cwt4EIvLRpTd36h9xD+lh4wUmnKsHYoSXFFdgYE2axqMJKmC8hwWe
-        xVNlbmRG9udcVV7qd4MkJbjQQC/E67v9c8M0cFPzUfS/TaDbWcAbX1nxsJR5jCvewTVXuJ+Og4FXt
-        jEnOcIVYxz211XYyjD0X2oQyxiEBjSkB/4WANeGgnyhggpefEura3QRkI2peXAZ8m6ZcK5bwE60EU
-        b4Pyi3DA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qjKHm-00CFbR-Hq; Thu, 21 Sep 2023 14:04:06 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3C0D03002E3; Thu, 21 Sep 2023 16:04:06 +0200 (CEST)
-Date:   Thu, 21 Sep 2023 16:04:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] seqlock: simplify SEQCOUNT_LOCKNAME()
-Message-ID: <20230921140406.GF14803@noisy.programming.kicks-ass.net>
-References: <20230913154907.GA26210@redhat.com>
- <20230913154953.GA26242@redhat.com>
- <20230916085117.GA35156@noisy.programming.kicks-ass.net>
- <20230921114826.GA20728@redhat.com>
+        Thu, 21 Sep 2023 16:18:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FCD448C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695316944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SqoOPgme4Uuv5hKrBPiJj6+uKIVnMHAtPkgpqGU6vG4=;
+        b=TWSl9O1w12Vb7S1rK8jOQ2jInvDieEPYn6pKYNPhtnAjjJWk+qv/l0/C8DuFONBAD6C3G+
+        ESWMVUXoHaikX0GET0GHeoz9I8lMWIliQMXsomQ3ar0Xg5VHn/yFFqdYw3vfM8wx0phtkf
+        qrmINJbr79d1gq02jPCDqVlFyBexVWg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-541-7zhZSFnVOCC5QKAshlgMWQ-1; Thu, 21 Sep 2023 10:07:01 -0400
+X-MC-Unique: 7zhZSFnVOCC5QKAshlgMWQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31fd48da316so676890f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 07:07:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695305219; x=1695910019;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SqoOPgme4Uuv5hKrBPiJj6+uKIVnMHAtPkgpqGU6vG4=;
+        b=GJyUHc1dmUvZ92jL7JT0/GeDh5XU3SMgW5W4CZS7/9EY6YHSiY9D5jrFPMiPM4bn3n
+         u9uICpmT3ZdLM1rGDnSopCqc76KbCuiToDOIt32/+fgEcDKsJnQqQ2JmZNwJUBioLg7g
+         Vpgyo12qW2lmXJPHkzsgJ066nDmlWgtzAPz1t9Z0A+6VBLToZPRvPdukf7Do5N/SrtxC
+         7w9IszXzPTXDCAkuStv1GQxYQyskZ1uni63Vc+YrKSBrmC5ATxIMkEpbLsQ06WQCNbMQ
+         e7sfh1InXVcVCkTm1d54Ejyn+tF7DbbTIASVcNCtpNnxPB1biL/Ja4mMQCSTLEEydomZ
+         DqMg==
+X-Gm-Message-State: AOJu0Yz650Vg/k2UxpMQgQoAyH07ISezeJhsem1VA6E2gsTnp8eTheOU
+        v8VNh6hvXkFvaXIux9gupqotFtSY+vEy/RGWYru6novsEmErkFjxmHcmOu2W+bfTie4OAavvf9T
+        eae1XRCh+cbMWscB2oj7wgdNuMGxRVLXG4VZtGpS7
+X-Received: by 2002:adf:e604:0:b0:319:7c7d:8d1 with SMTP id p4-20020adfe604000000b003197c7d08d1mr4559820wrm.44.1695305219572;
+        Thu, 21 Sep 2023 07:06:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEc9cPDe47gAzDmyMLuyvubfic4IfTmoR2y3Zwjncq14ViwH92x3CA0CL7uTBYmXwPLmcQOAKYKkzdqCkjcTCA=
+X-Received: by 2002:adf:e604:0:b0:319:7c7d:8d1 with SMTP id
+ p4-20020adfe604000000b003197c7d08d1mr4559793wrm.44.1695305219207; Thu, 21 Sep
+ 2023 07:06:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921114826.GA20728@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-2-lulu@redhat.com>
+ <CACGkMEuwjga949gGBKyZozfppMa2UF5mu8wuk4o88Qi6GthtXw@mail.gmail.com>
+In-Reply-To: <CACGkMEuwjga949gGBKyZozfppMa2UF5mu8wuk4o88Qi6GthtXw@mail.gmail.com>
+From:   Cindy Lu <lulu@redhat.com>
+Date:   Thu, 21 Sep 2023 22:06:16 +0800
+Message-ID: <CACLfguUu83eYPr=yaSMEAm77igOvdc1ZF-LPNPRcbKrg1OsbUA@mail.gmail.com>
+Subject: Re: [RFC v2 1/4] vduse: Add function to get/free the pages for reconnection
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
+        xieyongji@bytedance.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,26 +80,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 01:48:26PM +0200, Oleg Nesterov wrote:
-> On 09/16, Peter Zijlstra wrote:
+On Mon, Sep 18, 2023 at 4:41=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
+ote:
+>
+> On Tue, Sep 12, 2023 at 11:00=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote=
+:
 > >
-> > On Wed, Sep 13, 2023 at 05:49:53PM +0200, Oleg Nesterov wrote:
-> > > 1. Kill the "lockmember" argument. It is always s->lock plus
-> > >    __seqprop_##lockname##_sequence() already uses s->lock and
-> > >    ignores "lockmember".
-> > >
-> > > 2. Kill the "lock_acquire" argument. __seqprop_##lockname##_sequence()
-> > >    can use the same "lockbase" prefix for _lock and _unlock.
-> > >
-> > > Apart from line numbers, gcc -E outputs the same code.
+> > Add the function vduse_alloc_reconnnect_info_mem
+> > and vduse_alloc_reconnnect_info_mem
+> > In this 2 function, vduse will get/free (vq_num + 1)*page
+> > Page 0 will be used to save the reconnection information, The
+> > Userspace App will maintain this. Page 1 ~ vq_num + 1 will save
+> > the reconnection information for vqs.
+>
+> Please explain why this is needed instead of only describing how it is
+> implemented. (Code can explain itself).
+>
 > >
-> > With seqlock_ww_mutex gone, yes this is a nice cleanup.
-> 
-> Thanks.
-> 
-> Can you look at 2/5? To me it looks like a good cleanup too.
-> I am going to resend 1/5 and 2/5, as no one is interested in
-> stats_lock change.
+> > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > ---
+> >  drivers/vdpa/vdpa_user/vduse_dev.c | 86 ++++++++++++++++++++++++++++++
+> >  1 file changed, 86 insertions(+)
+> >
+> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_use=
+r/vduse_dev.c
+> > index 26b7e29cb900..4c256fa31fc4 100644
+> > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > @@ -30,6 +30,10 @@
+> >  #include <uapi/linux/virtio_blk.h>
+> >  #include <linux/mod_devicetable.h>
+> >
+> > +#ifdef CONFIG_X86
+> > +#include <asm/set_memory.h>
+> > +#endif
+> > +
+> >  #include "iova_domain.h"
+> >
+> >  #define DRV_AUTHOR   "Yongji Xie <xieyongji@bytedance.com>"
+> > @@ -41,6 +45,23 @@
+> >  #define VDUSE_IOVA_SIZE (128 * 1024 * 1024)
+> >  #define VDUSE_MSG_DEFAULT_TIMEOUT 30
+> >
+> > +/* struct vdpa_reconnect_info save the page information for reconnecti=
+on
+> > + * kernel will init these information while alloc the pages
+> > + * and use these information to free the pages
+> > + */
+> > +struct vdpa_reconnect_info {
+> > +       /* Offset (within vm_file) in PAGE_SIZE,
+> > +        * this just for check, not using
+> > +        */
+> > +       u32 index;
+> > +       /* physical address for this page*/
+> > +       phys_addr_t addr;
+> > +       /* virtual address for this page*/
+> > +       unsigned long vaddr;
+>
+> If it could be switched by virt_to_phys() why duplicate those fields?
+>
+yes will remove this part
+Thanks
+Cindy
+> > +       /* memory size, here always page_size*/
+> > +       phys_addr_t size;
+>
+> If it's always PAGE_SIZE why would we have this?
+will remove this
+Thanks
+Cindy
+>
+> > +};
+> > +
+> >  struct vduse_virtqueue {
+> >         u16 index;
+> >         u16 num_max;
+> > @@ -57,6 +78,7 @@ struct vduse_virtqueue {
+> >         struct vdpa_callback cb;
+> >         struct work_struct inject;
+> >         struct work_struct kick;
+> > +       struct vdpa_reconnect_info reconnect_info;
+> >  };
+> >
+> >  struct vduse_dev;
+> > @@ -106,6 +128,7 @@ struct vduse_dev {
+> >         u32 vq_align;
+> >         struct vduse_umem *umem;
+> >         struct mutex mem_lock;
+> > +       struct vdpa_reconnect_info reconnect_status;
+> >  };
+> >
+> >  struct vduse_dev_msg {
+> > @@ -1030,6 +1053,65 @@ static int vduse_dev_reg_umem(struct vduse_dev *=
+dev,
+> >         return ret;
+> >  }
+> >
+> > +int vduse_alloc_reconnnect_info_mem(struct vduse_dev *dev)
+> > +{
+> > +       struct vdpa_reconnect_info *info;
+> > +       struct vduse_virtqueue *vq;
+> > +       void *addr;
+> > +
+> > +       /*page 0 is use to save status,dpdk will use this to save the i=
+nformation
+> > +        *needed in reconnection,kernel don't need to maintain this
+> > +        */
+> > +       info =3D &dev->reconnect_status;
+> > +       addr =3D (void *)get_zeroed_page(GFP_KERNEL);
+> > +       if (!addr)
+> > +               return -1;
+>
+> -ENOMEM?
+>
+sure will change this
+Thanks
+Cidny
+> Thanks
+>
 
-2 seems okay. Will need a new changelog without the rest thouhg. Perhaps
-talk about how it perserves the constness instead?
