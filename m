@@ -2,182 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0757A95F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CA77A982E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjIUQ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 12:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        id S230056AbjIURcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjIUQ4r (ORCPT
+        with ESMTP id S230081AbjIURcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 12:56:47 -0400
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2066.outbound.protection.outlook.com [40.107.249.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D209196;
-        Thu, 21 Sep 2023 09:56:28 -0700 (PDT)
-Received: from PAXPR04MB8376.eurprd04.prod.outlook.com (2603:10a6:102:1bf::11)
- by GVXPR04MB10046.eurprd04.prod.outlook.com (2603:10a6:150:112::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 21 Sep
- 2023 16:23:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aZxRD2j797bEs4bd1mIG7D3F2lOb92s4MIxWp+NlxLGI2Qy0B2KKvFPHe1UKwvOSK2EZUTkJNsVY3yTix8T1UajQiqbNurdDJQF6PhbO511o0d0/zi6H7GmSG/3pt5TlgxufdaYFjltF19L1cCKu/tEan62cQzpD706q1HKTjUVVhhnzbkALNrclKVndlO5yUOv1iwxl9kyQcK42D0MBPXU3oyIVT4BT9KI6cWJwLWgXW4pgUU0MviUPnPNLgla7s7WjTnzYI18AGyKP+TUSDBFE0BzyvCNYkKEN2pLAarkUnIg4LEY16MgXgvcRwN1LjrOEAALqz2GKCHClo0CFhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/w4+6L5OnO0MSGurjdET7KtBJjK42HGTO+AkrCjCYtE=;
- b=nc2OfAot6FHIwzPpWuf4/xX4+YaoDxQ4PmdmU6kJGv4077jCxWlkceb4rrxZPVahXWzBXIPw70g1EOPsygjAjqtVNKpv1R2+axRLdaaQBs2m2PHuVa+pcYc8qBAbJ3JoqJjXJEjrEc9eH0eMOfwpotpZgjAxLF5NzNTsPVE4m5lYGVYaUGI19SV+n0H5aWwWQJD8X/yXNF2+R/khRrTWJ9/SdOdHmR5+na92KDXhy1jVotvDyN9KiKlku6lWU4Id6GAAyxBrgac0XOfOy0BVorRkbbbZvzFZA/QVLhaYGLKHR1jTE0KcPBBrOo6D3bEXM00kD8VH7uow9GyA8a+XHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/w4+6L5OnO0MSGurjdET7KtBJjK42HGTO+AkrCjCYtE=;
- b=kXoW6m0EGo4k7g7o7xVIab97k8p8Skx7JEAQNzcu6cXslgkvlnxaCmctDWaAzPC821dqDUzi7QzioJ1idoQLPo3R6gHVtAnFxQjWC1WB83WzKGInp3BQ5dqMeA17t/hrVhkmoZ64/ylUXTpSHZRjFc7kDeGS7EFP5urtFoahIXgeA+CGY6Xxr3S4hO7IKpDzFrFXQKNsUbkw556hXAXkU/SCVVtFA7x8g/+hMQWT0G98B5xJmojM8+jmpkK0/4ZnQ3noQtUj16K6BLF12qfEd3CpO+7Y744h53FIOV/FlOeUfLApo7qqydFZN1uWcRbMYf9HZmPxZR1Wrm7L5El/aQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by PAXPR04MB8376.eurprd04.prod.outlook.com (2603:10a6:102:1bf::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.19; Thu, 21 Sep
- 2023 06:07:48 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6813.017; Thu, 21 Sep 2023
- 06:07:48 +0000
-Message-ID: <587bcb4e-dc09-4c89-3c8d-ab2b7b75e40e@suse.com>
-Date:   Thu, 21 Sep 2023 09:07:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v10 16/38] x86/ptrace: Add FRED additional information to
- the pt_regs structure
-Content-Language: en-US
-To:     "Li, Xin3" <xin3.li@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-17-xin3.li@intel.com>
- <336f77d6-1d94-d2b7-f429-855bfbc3f271@suse.com>
- <SA1PR11MB6734182B172E9204CD11688CA8F9A@SA1PR11MB6734.namprd11.prod.outlook.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <SA1PR11MB6734182B172E9204CD11688CA8F9A@SA1PR11MB6734.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VE1PR08CA0032.eurprd08.prod.outlook.com
- (2603:10a6:803:104::45) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Thu, 21 Sep 2023 13:32:03 -0400
+Received: from smtp-190e.mail.infomaniak.ch (smtp-190e.mail.infomaniak.ch [IPv6:2001:1600:4:17::190e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD8F10919;
+        Thu, 21 Sep 2023 10:07:32 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RrlY55m19zMqhBY;
+        Thu, 21 Sep 2023 06:16:57 +0000 (UTC)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RrlY35QQvz3f;
+        Thu, 21 Sep 2023 08:16:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1695277017;
+        bh=JPGqIw4NybtPv8UXpkiwD6sCB9HCR+gM6q1qZN9IqXk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YchhqMwoEcrcTmhUUQ9lpZZ8cs3lJqNM4E1jZL1qt4XqjlAFav6irE0qMM/KUEjor
+         M88gN/aDWfE3sWP2nf+DSZjStURCumnvl9CRZ9cj1Y2e4+jYZTFjqbRgUx3GL5+xMj
+         oNyd2c6uILdSsyYJu/YaEeK46TOeELV0lOaM0bdo=
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Ben Scarlato <akhna@google.com>,
+        =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+        Jeff Xu <jeffxu@google.com>,
+        Jorge Lucangeli Obes <jorgelo@google.com>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [RFC PATCH v1 0/7] Landlock audit support
+Date:   Thu, 21 Sep 2023 08:16:34 +0200
+Message-ID: <20230921061641.273654-1-mic@digikod.net>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|PAXPR04MB8376:EE_|GVXPR04MB10046:EE_
-X-MS-Office365-Filtering-Correlation-Id: bbbad59e-4526-496a-92a9-08dbba69144d
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9rxboVQCj+gtokA45ZnPVyBxkkioB8gnKUGxYl/zFbqafDvUqga4juKE9zlUT/lVyiEpT06mYViFgTzrBdj92Vp82rzmj/QVb+PKJKXi2wwb3m+j5sXFoDKwi1pDNuIZ7NW4z4SqcQzA8XRv2unu43kwukRjWwTP9SsTnXdJXywnG9netSyFpLcY61Hf6Ld+RsHOs1d2xnlvqR6r3dCWNXhTu4IM5udl/02oXh3CIHKCtkTzmGnAME+Y0wqK8GnOlicPo4Hd1pJ3oxcZK+8B7VUhsguCB2YFOtbA/MLSuP1Of6dzvB+tVkUaWpagjidj7zofiB0VxlS/jJ0jlB0P2kQLD0HIHTqOktuut/O6nGXdUWo+2OSzsr5sscXnCauhJ3ebXdjItr9K2bR32s2xE1VdnVEw5Ynm6fodWn7NzzamrQ/lcj5EaYDWRVPGQJouuM/WQdMvC06Cp9DAcPajNI37ithETy+QjOB88wgYmTS44S1qnmSKY8S4L3BUZzG24hdtJDMGijQxjc4poY5gcFdDxELbZmbBzGCuJToj64deAcTf6ZyA6z3f2XD2D1rr55s6mOI2EhiL3HPcMPLjUZyYVZEoKrsOdNyUgeL8OwF8NOaEMyULhMyRguOZBJJhT+zpUBd+yYjhF5RJDXDnMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(136003)(366004)(396003)(451199024)(186009)(1800799009)(41300700001)(2616005)(5660300002)(4744005)(26005)(2906002)(7416002)(86362001)(31696002)(36756003)(38100700002)(4326008)(8936002)(8676002)(83380400001)(6506007)(478600001)(6512007)(6666004)(6486002)(110136005)(316002)(31686004)(66476007)(66556008)(66946007)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bzVoa3ZKbm9VbWcrWGdjbk5JU09OOHF1Q1dyeXdnT3UyclFGSW4zMDJHQlJX?=
- =?utf-8?B?Z2tOOU0wTitsYWpOTk0wcTRJbnAyU0VsOEVJb1lITmk4KzZqdWVMNkVZL3FJ?=
- =?utf-8?B?STRjYW1aazlsSEw1RFZTS1VkeVdNQlQ5Ykx6TTlCbG9DWTQrQkV2SjFSaTJi?=
- =?utf-8?B?cnU0Y2hURVVhS3hzbmswdHRBT3UvR0NBbm1RbEk2U2l6bzh2UVdkZHpmSEtt?=
- =?utf-8?B?VkhlQ0lGQi9BdXJQcXZyVUpyLysxZ3BQOUxFRE9CR0xONUpWMys3a2lhUFl4?=
- =?utf-8?B?SStqWFVTQVdNbngyUlRHdVRRa3p4cnJvY3Y3SGFremxRNjViRWVCOGNsaGhD?=
- =?utf-8?B?RGFLL2lLR2REQzYvZnl4eTd5N1BJbisyMUZndVZuU1pRVm5EemM3cmUzMGsr?=
- =?utf-8?B?bUxpNG9kcDVmSXdxOFNNSXRLeTM5eEVpUHVzNUw3T0NaVlh6V3NCRkpmNDEr?=
- =?utf-8?B?bk9VMG5JMERmTnFDZGtVUDg1LzVXakY3eW13VFJLNnZuY29Qam5kSWd3V0ZY?=
- =?utf-8?B?UWRKeXpVY0syMHBHZEhJWkpvTjQ5OE5zVEZ1elJJNllNVWIwVEliUlhJdUQ1?=
- =?utf-8?B?ekk3aU51WHZ4V2M2cW8xOExVd2xKemdCdnFaME50MURQdkNlV0c3VlNobEtO?=
- =?utf-8?B?WVFvNFpXdWtrTlNDVDVYenhRSi9pSnBBbzJXTk9McUdFN0hSaFQ5R3J1aWJJ?=
- =?utf-8?B?WkJWWDE4VUFuWWVQU1ZFajdabzNsUEZqc0xlVWhObC93K1NTbThiS05wUkow?=
- =?utf-8?B?RXpSS3dKWVkwM0JiQ21Ea1VyNUtQeWl3ZjZuZDIwQVBSYzVpRU1acUpIQkxE?=
- =?utf-8?B?ZlZvQitNVXFCQjE3ZUtIT2w3RGhkekVSZFpWTnFzUkQwa2dvVW9Nd3hCTGxE?=
- =?utf-8?B?ZEs2TEl6L1ozdVJtU1hIQjZTY1JhR015ZFF6MjBVa2xta1RFaHlsRitVSzJV?=
- =?utf-8?B?aE9wTXppcHZ5VG11SldCVHdWdUhqajUwZTBMK2JlK2h0dE0zZUlxdVlPR1c3?=
- =?utf-8?B?UEpkeU01TkZnYTZpODZEQU00M3ZRNUxHMStGUHlTc29TOXNsUncvWGVTYWVh?=
- =?utf-8?B?VDJLYStSVTlYcE9NellJcE05UEtJeTZRNzVleFphRHo2VStQVE40c2c4cmxQ?=
- =?utf-8?B?empubmk1QjRHcHRPZHFqS1diREQ5eUhNYmhoVGNXMmRXYlZoSGRTUzlod004?=
- =?utf-8?B?c2VqT1lWR2haS0h3bWFVYkhpSTdDWXk5NVBTd3A5ZC9pSFMrbTdnUnlOci9h?=
- =?utf-8?B?b1lPNUg3WU15MVlHVXZZelJqL25vMEk0UHQwOUZvaENCL1pndFlrNmQ3U1hR?=
- =?utf-8?B?YkpiNzJIQVpaSUZQUlo4YU5TbmpsbzBHK0ptUmFoaE8zRkhCSXQzTnlia3kx?=
- =?utf-8?B?VjNIVUE5WmRjRE5tRFBjemd6RklsODFDd0MzQ2k1YnpsMkJyZWNUZjdaa3A2?=
- =?utf-8?B?Vm5FWDM3U01qUWJ6aWhYalhoaTk0YktPVHRnSHFGVytvaDh5d29KMzM3YXBp?=
- =?utf-8?B?Ym5lTEZTWm9nSmFJY1hIcjI2VFVUMFZ0RTh6M3RwRlFKM3JjaXEzOGNDVFBa?=
- =?utf-8?B?S3RGaUtOYzVPemRIUyt2M1EyU1B4OFA4RVZaMWgrVTErd1RxSEZvRWpJWThJ?=
- =?utf-8?B?QjJCS203Sm9BdVdWVFVQaDhBbHV6U2dtVkh1YzNqRmFadGtSTG9vOEZUeEJX?=
- =?utf-8?B?dGFVaE5xRmhvZ0NFU0RjOVZKWWx2RGJMWEhyTDU1UHd1TU1rRks5aXUwbmpX?=
- =?utf-8?B?MHBmMHhHU3dtZ1ZCbnIvSEUwTkcxRnNza3pwbitoWU9hbU1mTCt2UnB5M04v?=
- =?utf-8?B?dEx3QlRvWThWMGRlUjdJRWp6cUxLQW1OS296MVJKQmxvTzZFanFXNGZCUGls?=
- =?utf-8?B?dzljNFdPNmYzSThyYWplL2RWWGFUbTJibDNyOGRVYVJCcFRnQ3dBdDE0UEY0?=
- =?utf-8?B?aWFBdXp5alBwQlo0a083VWprbEF6emNkVU9kYWRHVXh1YVlxQzVHYjc3R1Iz?=
- =?utf-8?B?YWxuVXY2UTd5K3IvRlRDY3RlUjFkZ1Fqa25qOTRXaEVOejBYcUdwdUdpSG5j?=
- =?utf-8?B?dzN1SG4vVnpOOXBNN1hCTTdyMUZBcXNRWm9ia2s5Sm5CNmcwZjZhekN3M0pV?=
- =?utf-8?Q?kFF+xE79XfvOhYdsRGRdkpe68?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bbbad59e-4526-496a-92a9-08dbba69144d
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 06:07:47.9543
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rsAdWXztiG7H8jg7+cjILghyegTFb/fSi+fAL8klpbiiOUnNa0hs3cL8rf8PFJ0YloUcfSlV/4n5eUl/DyZliA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8376
-X-OriginatorOrg: suse.com
-X-Spam-Status: No, score=-1.7 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+This patch series adds basic audit support to Landlock for most actions.
+Logging denied requests is useful for different use cases:
+* app developers: to ease and speed up sandboxing support
+* power users: to understand denials
+* sysadmins: to look for users' issues
+* tailored distro maintainers: to get usage metrics from their fleet
+* security experts: to detect attack attempts
+
+To make logs useful, they need to contain the most relevant Landlock
+domain that denied an action, and the reason. This translates to the
+latest nested domain and the related missing access rights.
+
+Two "Landlock permissions" are used to describe mandatory restrictions
+enforced on all domains:
+* fs_layout: change the view of filesystem with mount operations.
+* ptrace: tamper with a process.
+
+Here is an example of logs, result of the sandboxer activity:
+tid=267 comm="sandboxer" op=create-ruleset ruleset=1 handled_access_fs=execute,write_file,read_file,read_dir,remove_dir,remove_file,make_char,make_dir,make_reg,make_sock,make_fifo,make_block,make_sym,refer,truncate
+tid=267 comm="sandboxer" op=restrict-self domain=2 ruleset=1 parent=0
+op=release-ruleset ruleset=1
+tid=267 comm="bash" domain=2 op=open errno=13 missing-fs-accesses=write_file,read_file missing-permission= path="/dev/tty" dev="devtmpfs" ino=9
+tid=268 comm="ls" domain=2 op=open errno=13 missing-fs-accesses=read_dir missing-permission= path="/" dev="vda2" ino=256
+tid=269 comm="touch" domain=2 op=mknod errno=13 missing-fs-accesses=make_reg missing-permission= path="/" dev="vda2" ino=256
+tid=270 comm="umount" domain=2 op=umount errno=1 missing-fs-accesses= missing-permission=fs_layout name="/" dev="tmpfs" ino=1
+tid=271 comm="strace" domain=2 op=ptrace errno=1 missing-fs-accesses= missing-permission=ptrace opid=1 ocomm="systemd"
+
+As highlighted in comments, support for audit is not complete yet with
+this series: some actions are not logged (e.g. file reparenting), and
+rule additions are not logged neither.
+
+I'm also not sure if we need to have seccomp-like features such as
+SECCOMP_FILTER_FLAG_LOG, SECCOMP_RET_LOG, and
+/proc/sys/kernel/seccomp/actions_logged
+
+I'd like to get some early feedback on this proposal.
+
+This series is based on v6.6-rc2
+
+Regards,
+
+Mickaël Salaün (7):
+  lsm: Add audit_log_lsm_data() helper
+  landlock: Factor out check_access_path()
+  landlock: Log ruleset creation and release
+  landlock: Log domain creation and enforcement
+  landlock: Log file-related requests
+  landlock: Log mount-related requests
+  landlock: Log ptrace requests
+
+ include/linux/lsm_audit.h    |   2 +
+ include/uapi/linux/audit.h   |   1 +
+ security/landlock/Makefile   |   2 +
+ security/landlock/audit.c    | 283 +++++++++++++++++++++++++++++++++++
+ security/landlock/audit.h    |  88 +++++++++++
+ security/landlock/fs.c       | 169 ++++++++++++++++-----
+ security/landlock/ptrace.c   |  47 +++++-
+ security/landlock/ruleset.c  |   6 +
+ security/landlock/ruleset.h  |  10 ++
+ security/landlock/syscalls.c |  12 ++
+ security/lsm_audit.c         |  26 ++--
+ 11 files changed, 595 insertions(+), 51 deletions(-)
+ create mode 100644 security/landlock/audit.c
+ create mode 100644 security/landlock/audit.h
 
 
-On 20.09.23 г. 20:23 ч., Li, Xin3 wrote:
->>> +struct fred_ss {
->>> +	u64	ss	: 16,	// SS selector
->>
->> Is this structure conformant to the return state as described in FRED 5.0?
->>
->> — The stack segment of the interrupted context, 64 bits formatted as follows:
->>
->> • Bits 15:0 contain the SS selector. < - WE HAVE THIS
->>
->> • Bits 31:16 are not currently defined and will be zero until they are.
-> 
-> Where did you download the FRED 5.0 spec from?
-> 
-> Mine says bit 16 is sti, bit 17 for sw initiated events and bit 18 is NMI.
-> 
-> I guess you have FRED 3.0 spec, no?
-Doh you are right, I was looking at the wrong version of the document 
-.... sorry for the noise.
-> 
->>   < - MISSING > hole?
->>
->>> +		sti	:  1,	// STI state < -
->>> +		swevent	:  1,	// Set if syscall, sysenter or INT n
->>> +		nmi	:  1,	// Event is NMI type
->>> +			: 13,
->   
+base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+-- 
+2.42.0
+
