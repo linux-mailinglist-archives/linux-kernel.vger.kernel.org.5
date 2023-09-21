@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C51717A9FC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD127AA0D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbjIUU1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
+        id S232462AbjIUUsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231866AbjIUU1Q (ORCPT
+        with ESMTP id S230439AbjIUUsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:27:16 -0400
+        Thu, 21 Sep 2023 16:48:25 -0400
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7A51F26;
-        Thu, 21 Sep 2023 10:23:57 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38LAxpKM001781;
-        Thu, 21 Sep 2023 17:06:53 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E961790A71;
+        Thu, 21 Sep 2023 10:47:09 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38LATD9S031087;
+        Thu, 21 Sep 2023 17:08:04 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=0VUKdAaSXm7Howm9XkOWAHruu18FxRlOmQhy2i7q6Fs=; b=HG
-        2Fm5GJ+DmQKU8R7/HIrmgiFlZWXTpFXF9h+G5SWBe7blveet5AIg+y7v2SgddVqB
-        Md0JV+2ZAzrcQi7sI1YthVjquldc6sCXudfVDbyA77kLd0lVcWPi7PJoveka/Slb
-        K5hQKcSX0SCb9DtlA4B4wt37Mzg81tXJ3s4HiogRDs+vfUAIafqByVdJn8Xobydo
-        Czi0V81Pk0gmw25UTqn85K7E80+ueDKykHYJUFf0SMJcgiW8EZeHGCIT3EnG7KHp
-        qPQqaoVg3+Cz+itL73qSQdRI6YtiYrTK+7Cz8Sm54PAz051ydGRCUH1RkZZEzFSp
-        OYqBZVkT2Vxq9kGVyOnw==
+        selector1; bh=DaNcFv3F7lcl33eD683tXuCPbabyLWEwzze4nvIxM/8=; b=XO
+        y4ozePFttTWxeHAcdMkAgbXLjFbOV1OH4Sf5ShbBEhn+nMJc8p5/nF2WeR8aOcV+
+        xbk2iGu/S7HpGoTmoInzdC+GQMGdSw58C/kkyR8i+GwQF2vnpvjHysn1lW130P6d
+        bTJSD7eEnGxpiZaxdq3ooUm6PiZJx5vcjv+hR4Ab4v264CQOwczjJ9tSIfhkW2hj
+        WWKiQFx2SRGWACPBH5w3pG6xSEag6tSGxu2mHyVZnQMAePHvIq5GcDJcpNYOhl90
+        Nm5XNT5HaPw8OovO6u2wGnoaBfltiTBz+TAbBFg++qhVwD+7aiSd3uVNDfsQqXBw
+        7v0P2RZA8FlimjUdo2Ew==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t5nx0u3g3-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t51sfn3nf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 17:06:53 +0200 (MEST)
+        Thu, 21 Sep 2023 17:08:04 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C2BBB100057;
-        Thu, 21 Sep 2023 17:06:52 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C8CC0100058;
+        Thu, 21 Sep 2023 17:08:03 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BA93A252250;
-        Thu, 21 Sep 2023 17:06:52 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BC2BF257A80;
+        Thu, 21 Sep 2023 17:08:03 +0200 (CEST)
 Received: from localhost (10.201.21.249) by SHFDAG1NODE2.st.com (10.75.129.70)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
- 2023 17:06:51 +0200
+ 2023 17:08:03 +0200
 From:   Christophe Roullier <christophe.roullier@foss.st.com>
 To:     "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -61,9 +61,9 @@ CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4/7] ARM: dts: stm32: add ethernet1 and ethernet2 support on stm32mp13
-Date:   Thu, 21 Sep 2023 17:06:19 +0200
-Message-ID: <20230921150622.599232-5-christophe.roullier@foss.st.com>
+Subject: [PATCH 6/7] ARM: dts: stm32: add ethernet1 and ethernet2 for STM32MP135F-DK board
+Date:   Thu, 21 Sep 2023 17:06:21 +0200
+Message-ID: <20230921150622.599232-7-christophe.roullier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230921150622.599232-1-christophe.roullier@foss.st.com>
 References: <20230921150622.599232-1-christophe.roullier@foss.st.com>
@@ -85,97 +85,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both instances ethernet based on GMAC SNPS IP on stm32mp13.
-GMAC IP version is SNPS 4.20.
+Add dual Ethernet:
+-Ethernet1: RMII with crystal
+-Ethernet2: RMII without crystal
+
+With Ethernet1, we can performed WoL from PHY instead of GMAC point of view.
+(in this case IRQ for WoL is managed as wakeup pin and configured
+in OS secure).
 
 Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
 ---
- arch/arm/boot/dts/st/stm32mp131.dtsi | 31 ++++++++++++++++++++++++++++
- arch/arm/boot/dts/st/stm32mp133.dtsi | 30 +++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+)
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 48 +++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index ac90fcbf0c09..d8339eea05d5 100644
---- a/arch/arm/boot/dts/st/stm32mp131.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1296,6 +1296,37 @@ sdmmc2: mmc@58007000 {
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index eea740d097c7..1316cc16f8dd 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -19,6 +19,8 @@ / {
+ 	compatible = "st,stm32mp135f-dk", "st,stm32mp135";
  
-+		ethernet1: ethernet@5800a000 {
-+			compatible = "st,stm32mp13-dwmac", "snps,dwmac-4.20a";
-+			reg = <0x5800a000 0x2000>;
-+			reg-names = "stmmaceth";
-+			interrupts-extended = <&intc GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&exti 68 1>;
-+			interrupt-names = "macirq", "eth_wake_irq";
-+			clock-names = "stmmaceth",
-+				      "mac-clk-tx",
-+				      "mac-clk-rx",
-+				      "ethstp",
-+				      "eth-ck";
-+			clocks = <&rcc ETH1MAC>,
-+				 <&rcc ETH1TX>,
-+				 <&rcc ETH1RX>,
-+				 <&rcc ETH1STP>,
-+				 <&rcc ETH1CK_K>;
-+			st,syscon = <&syscfg 0x4 0xff0000>;
-+			snps,mixed-burst;
-+			snps,pbl = <2>;
-+			snps,axi-config = <&stmmac_axi_config_1>;
-+			snps,tso;
-+			status = "disabled";
-+
-+			stmmac_axi_config_1: stmmac-axi-config {
-+				snps,wr_osr_lmt = <0x7>;
-+				snps,rd_osr_lmt = <0x7>;
-+				snps,blen = <0 0 0 0 16 8 4>;
-+			};
-+		};
-+
- 		usbh_ohci: usb@5800c000 {
- 			compatible = "generic-ohci";
- 			reg = <0x5800c000 0x1000>;
-diff --git a/arch/arm/boot/dts/st/stm32mp133.dtsi b/arch/arm/boot/dts/st/stm32mp133.dtsi
-index df451c3c2a26..aee855cd2f36 100644
---- a/arch/arm/boot/dts/st/stm32mp133.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp133.dtsi
-@@ -64,5 +64,35 @@ channel@18 {
- 				};
- 			};
- 		};
-+
-+		ethernet2: ethernet@5800e000 {
-+			compatible = "st,stm32mp13-dwmac", "snps,dwmac-4.20a";
-+			reg = <0x5800e000 0x2000>;
-+			reg-names = "stmmaceth";
-+			interrupts-extended = <&intc GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq";
-+			clock-names = "stmmaceth",
-+				      "mac-clk-tx",
-+				      "mac-clk-rx",
-+				      "ethstp",
-+				      "eth-ck";
-+			clocks = <&rcc ETH2MAC>,
-+				 <&rcc ETH2TX>,
-+				 <&rcc ETH2RX>,
-+				 <&rcc ETH2STP>,
-+				 <&rcc ETH2CK_K>;
-+			st,syscon = <&syscfg 0x4 0xff000000>;
-+			snps,mixed-burst;
-+			snps,pbl = <2>;
-+			snps,axi-config = <&stmmac_axi_config_2>;
-+			snps,tso;
-+			status = "disabled";
-+
-+			stmmac_axi_config_2: stmmac-axi-config {
-+				snps,wr_osr_lmt = <0x7>;
-+				snps,rd_osr_lmt = <0x7>;
-+				snps,blen = <0 0 0 0 16 8 4>;
-+			};
-+		};
+ 	aliases {
++		ethernet0 = &ethernet1;
++		ethernet1 = &ethernet2;
+ 		serial0 = &uart4;
+ 		serial1 = &usart1;
+ 		serial2 = &uart8;
+@@ -93,6 +95,52 @@ channel@12 {
  	};
  };
+ 
++&ethernet1 {
++	status = "okay";
++	pinctrl-0 = <&eth1_rmii_pins_a>;
++	pinctrl-1 = <&eth1_rmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
++	phy-mode = "rmii";
++	max-speed = <100>;
++	phy-handle = <&phy0_eth1>;
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy0_eth1: ethernet-phy@0 {
++			compatible = "ethernet-phy-id0007.c131";
++			reset-gpios =  <&mcp23017 9 GPIO_ACTIVE_LOW>;
++			reg = <0>;
++			wakeup-source;
++		};
++	};
++};
++
++&ethernet2 {
++	status = "okay";
++	pinctrl-0 = <&eth2_rmii_pins_a>;
++	pinctrl-1 = <&eth2_rmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
++	phy-mode = "rmii";
++	max-speed = <100>;
++	phy-handle = <&phy0_eth2>;
++	st,ext-phyclk;
++	phy-supply = <&scmi_v3v3_sw>;
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++		phy0_eth2: ethernet-phy@0 {
++			compatible = "ethernet-phy-id0007.c131";
++			reset-gpios = <&mcp23017 10 GPIO_ACTIVE_LOW>;
++			reg = <0>;
++		};
++	};
++};
++
+ &i2c1 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c1_pins_a>;
 -- 
 2.25.1
 
