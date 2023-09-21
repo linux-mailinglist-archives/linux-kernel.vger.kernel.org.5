@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E8F7A9AF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B139A7A9B34
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjIUSwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S229672AbjIUSzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjIUSv0 (ORCPT
+        with ESMTP id S229924AbjIUSzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:51:26 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4745AA85
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:36:03 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98377c5d53eso155534566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695321361; x=1695926161; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
-         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KjZaZ7zAEzwqaT5nxaHvHNLjCmzhZbs2PkjAyL466o4=;
-        b=NDMUw4rt+MCc6fC1bFq4UED7xj4PbRsgt8jYpNkHM5a8GT6A/7TwBaIMdh2xS1zMVh
-         F5R0vWzm5eUBCYZTbMl18Opr3tfOYIbWn0SP0zlXkNkp29MKQfdFCqUYEet1RQuCz+OH
-         HWGfY1uiEudDYpAhcBG5l5Jw2JRBG3CSln5WmS2UgRxeStMiLvmVM2ex5z4S/+ukJNG4
-         f0mKmRxhxPyUUrQ6MAeu5leM+Sxf1IQ/zbAgBstgHB7cjOtbfSh5kgl187XHZCyGhXVJ
-         I02wBFt1e5SAo+jpUC78+CjvffKid346iQL/unVg8dS+B6ShFkYvLgs5HlS99PT6VQB3
-         Frzg==
+        Thu, 21 Sep 2023 14:55:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0C79239D
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695318852;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4DhnAZiF0wr2DyC1BVNbdftxhtvdS4hZnADLGNEsyns=;
+        b=C6oMlSj9vOvxLSKftHLwlmBqSH9mfnbibIKCcRyuWq2kMSl3perHsIEMANlP4OAB9q02l0
+        U53EhspPJEKKdXzbdSlCb0U4SErqTh5yX+RtWwa6uckLUVgfXBlWIK6uiw6z0+0FhBPn1f
+        Kzu07Di+u2uf6Q1adbaf88UtcUqO4BI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-448-I6tKz-3LONKqeHIperPg6w-1; Thu, 21 Sep 2023 04:25:19 -0400
+X-MC-Unique: I6tKz-3LONKqeHIperPg6w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40474e7323dso5407435e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 01:25:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321361; x=1695926161;
-        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
-         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KjZaZ7zAEzwqaT5nxaHvHNLjCmzhZbs2PkjAyL466o4=;
-        b=WlHfFVFgjv89smGZQ3oOTKwohEE8GekMgWtTcYZoJAMtK5Ol40M5Z+yJVjoBFkkkXj
-         QtW/pv/Qjuvbt6ycJYwkj++eHAmktsiHhKyR+7ADGcR/Zbvb65blDa+BKGbR7odjLj0W
-         6NDN6Lfji7jTW3cFeC9bZc5WalSHzg0uWcGoaDQP4fKWuxoI6Av+6u74A48MkAs8xm5G
-         X1gpREMwun8S4sT2Rd2vjb/LzZe5S0Q5hSu7wvIxHAdWbloNvxX//YpZa5sQHbN7EfAL
-         lEQKQCdMvx4tnxzA4dKw2IhGRH6uxEnED90foIVQbfmDk4k0g01nUtVFgrJq4Bqm7Aq1
-         6UXg==
-X-Gm-Message-State: AOJu0Yza41Y/zjTCn7TOweWZYrfDoxipH5Cum4Ca43Hn1hHf7f2wTTJg
-        lN33yAHkgx93nzCWG2CIqDEJkdFCkoGc312d
-X-Google-Smtp-Source: AGHT+IGT63FwGKdynnM2iEy/g6DQL7yDfrmNAZ1/rqqsjMjHjUOOYUOpBD2RAr8FsqOin8zAXkzHtQ==
-X-Received: by 2002:a2e:874f:0:b0:2be:4d40:f833 with SMTP id q15-20020a2e874f000000b002be4d40f833mr4315798ljj.18.1695284702608;
-        Thu, 21 Sep 2023 01:25:02 -0700 (PDT)
-Received: from ?IPv6:2600:1700:7c80:b060::49? ([2600:1700:7c80:b060::49])
-        by smtp.gmail.com with ESMTPSA id r24-20020a2e9958000000b002b6e15ccf88sm219377ljj.135.2023.09.21.01.25.01
+        d=1e100.net; s=20230601; t=1695284718; x=1695889518;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4DhnAZiF0wr2DyC1BVNbdftxhtvdS4hZnADLGNEsyns=;
+        b=tWLxW9v6r7UcBv7ujHDWuD3TpuzU8e2n2WjlMKjo8oFWAJdT4pFj/zGEAiZP/sVaIb
+         mUOfwYb5TjP+2EN/qpdIS915/bC21DTE1nqWytKzE/+J7AlBg+HE52BR5Ub270zVDE0F
+         KRILP0vmzq7yYFD9bLfwcbC2TJmin0Q2N26vFSvJQ7CWNt2aBIeGKzTkanUKUm/csuqT
+         yd/zXydJgRgnSwufe5xdXuYKrKXrXt66uPa8SAq6V/Uda6PMhIO8GJ7gjDdf2iat57kv
+         v+1n2rF3Gwb3eBgTNgwgh6wLvTkbasRx28ieN+WAw4jcmFcDEc1HMjz1QcNew/NgzadA
+         6fQw==
+X-Gm-Message-State: AOJu0YxCWgJGurpjcjE3tWGyuvLoTwR4p8LGH2tiJAJQWdPUU7RAKYbS
+        TkfTlL9abOE+4vJfcA5Fcm9wZBX2jS0Fi4R/tz4QmH2mJtPT1MNkU3Qw/xoL6MwBstU0Nyjlhn4
+        /UWl30GzqiLuZod3spcn+Im5t
+X-Received: by 2002:a05:600c:2058:b0:3fe:207c:1aea with SMTP id p24-20020a05600c205800b003fe207c1aeamr4169771wmg.23.1695284718639;
+        Thu, 21 Sep 2023 01:25:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHMlLW9jOSs0MCkR9x1s1+0fp5+Yk4QxI0G/9XOImPxYltcXjOlbzST6Z0ZyPnmg3ZZkvlI6Q==
+X-Received: by 2002:a05:600c:2058:b0:3fe:207c:1aea with SMTP id p24-20020a05600c205800b003fe207c1aeamr4169758wmg.23.1695284718288;
+        Thu, 21 Sep 2023 01:25:18 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id v14-20020a05600c444e00b0040535648639sm797911wmn.36.2023.09.21.01.25.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 01:25:02 -0700 (PDT)
-Message-ID: <bd1a20e08c492c2543006e4edcba3b025c527066.camel@gmail.com>
-Subject: [PATCHv4] ALSA: hda/realtek: Add quirk for ASUS ROG G533Q
-From:   Unknown <aricart@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Date:   Thu, 21 Sep 2023 04:24:59 -0400
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Thu, 21 Sep 2023 01:25:18 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
+ drm_*_helper_funcs callbacks
+In-Reply-To: <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
+References: <20230914195138.1518065-1-javierm@redhat.com>
+ <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
+ <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
+ <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
+ <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
+ <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
+Date:   Thu, 21 Sep 2023 10:25:17 +0200
+Message-ID: <875y44kk5u.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same quirk applied to the ASUS G533Z is also applicable to the ASUS G53=
-3Q (of which I am an owner and have thus tested).
+Maxime Ripard <mripard@kernel.org> writes:
 
-Signed-off-by: Abelardo Ricart <aricart@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Thu, Sep 21, 2023 at 09:57:22AM +0200, Geert Uytterhoeven wrote:
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b7e78bfcffd8..7bb3c1e05bf2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9781,6 +9781,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
-=3D {
- 	SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V", ALC285_FIXUP_ASUS_HEADSET_MI=
-C),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_Z=
-ENBOOK_UX31A),
- 	SND_PCI_QUIRK(0x1043, 0x1573, "ASUS GZ301V", ALC285_FIXUP_ASUS_HEADSET_MI=
-C),
-+	SND_PCI_QUIRK(0x1043, 0x1602, "ASUS ROG Strix G15 (G533Q)", ALC285_FIXUP_=
-ASUS_G533Z_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK)=
-,
- 	SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", ALC287_FIXUP_CS35L41_I2C_=
-2),
- 	SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
---=20
-2.42.0
+[...]
+
+>> Anything else confuses the casual reader. Perhaps the real question is whether
+>> the structures should have "helper" in their name in the first place?
+>
+> Those structures are meant for functions used by the helpers, they are not
+> helper functions.
+>
+
+Ah, that makes more sense. I wasn't aware of that.
+
+If that's the case, then the split makes more sense to me now.
+
+> Maxime
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
