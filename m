@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8A07A9E85
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B68F7A9A65
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjIUUCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        id S230063AbjIUSjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbjIUUCV (ORCPT
+        with ESMTP id S230338AbjIUSi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:02:21 -0400
+        Thu, 21 Sep 2023 14:38:29 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2B935A4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:27:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E268DA238
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:31:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695317221;
+        s=mimecast20190719; t=1695321114;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ezr0+JdqWLObeUgH87ZU7ZI/AoX/QkG2cOlcCw4fJa4=;
-        b=c87VRnF9l5/513PkAAUPLQu2THUKUZ1pdUQsv+/Loce797Gp6yyj/FGbI7LkmtjcIwxBNU
-        9x5fuVXalelenTIXNKxIFnRjOaScwI8TLnN8Eyd6Bzaqi0xiuosyplr5zBvDYH/HPy8S1q
-        eFtoaCp2nEdFIlhM6XhAs8MBqolJVvE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=tSWZutc0jBg4LRB6lh/PjnElphckaTmoFsFbI4z61RQ=;
+        b=cf65wbhNJu3YB7vhxk/UPAI5cg+vUIQDhh1Ou/ekyP4W+TzZEmtZzz0HHcKzUeBIRr+BH0
+        TUpvP4gHXxQPxYIpFfHA7rcHQvtRyPZA7+cYx4AcBIJTlyW6PRgnfzeop4Slda8tOdWpAo
+        sj8IVawDCOt+YFGFCUFh3yeY4UjBcPM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-PlYDha2cP0Cen4LznMc6qA-1; Thu, 21 Sep 2023 06:02:36 -0400
-X-MC-Unique: PlYDha2cP0Cen4LznMc6qA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-320004980a2so499535f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 03:02:36 -0700 (PDT)
+ us-mta-526-fUim78EzNEKKlMGC_ZynhQ-1; Thu, 21 Sep 2023 06:05:17 -0400
+X-MC-Unique: fUim78EzNEKKlMGC_ZynhQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31ffa4da0f5so502850f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 03:05:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695290555; x=1695895355;
+        d=1e100.net; s=20230601; t=1695290716; x=1695895516;
         h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
          :content-language:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ezr0+JdqWLObeUgH87ZU7ZI/AoX/QkG2cOlcCw4fJa4=;
-        b=LXcSQca0IAOeThzuufBYU7+ltQHLCMcpuWFRGGYFAwQRkfZVTncQEMh7l9TG27daI8
-         lCKyAlsd6TBaZ1jh1FVnv7MBxygAvKafb/WznzAOTxp7DidkxwjIW3QPWKD9frM/cIqb
-         2UJBn0g4k5/iBgllPnn9QH1fIBe2aGQ4QaP+xp4Jeae9IjVQqFcwMhKqLdNtCrfr/uOf
-         qgdn6ugOGoAuhWxt0nXgo6gy9hPVtDCD4erFxxyEGsI+ByWHwn44Fn3uhdY1Lo+fyueT
-         ZZ3P/WekGKuL7Pu2cdGIlpcSj6ZruRkOByTj4L0+hfEh7MEcgf6thNZol83AB4JVo+wA
-         5u9Q==
-X-Gm-Message-State: AOJu0Yz9i/dd4SA9c89nKllSgR47T/pxP8Yu/ApXJeDKLkBDrEy5Vgno
-        MVSbU9F+QM6s/K8tRjEbXuH6EEoPnlcntWI5IViL7Lo5CvDI7m8nDkjqrZht0B/VJ0hxVT491HI
-        +G6MZ1xz9ugZZTF755S+8cu5R
-X-Received: by 2002:a5d:4fcd:0:b0:319:6327:6adb with SMTP id h13-20020a5d4fcd000000b0031963276adbmr4150482wrw.70.1695290555387;
-        Thu, 21 Sep 2023 03:02:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHKn3U8phEp2lRVhfBVwCapzkAkvov2pptdEyYRJgbLZYSOWwWAIC6sYPl2VmGkNW3jTQt3ew==
-X-Received: by 2002:a5d:4fcd:0:b0:319:6327:6adb with SMTP id h13-20020a5d4fcd000000b0031963276adbmr4150457wrw.70.1695290555045;
-        Thu, 21 Sep 2023 03:02:35 -0700 (PDT)
+        bh=tSWZutc0jBg4LRB6lh/PjnElphckaTmoFsFbI4z61RQ=;
+        b=f6OhMAkIhZ6JIsjBDRFdcoVvlPAZYY5Zu0dJIuM28qeAmxFlLMJVgTmseVPyx/F/EL
+         g3xAMQpnNOGFpAz1E5IJ+ixc4DOlXYWzOgkhCvGXgtRhx2qxGPyZR0Uk3WR2aqpP/3kb
+         L+AOj9xn8IAnawpBLmsmVuCF/qdAHKzIHcSkImdidhYUBJlQJs0CojrWzYMwxxZSNVdT
+         UCrCaAuZO64524fX/4VKN8TOw2zqBR5A0M2I6K9aaySYVIoeEzNQh4IIXg1Ybn+/+E6L
+         dnUIGtaQXSVizqlK44kkECH7c0kZhBBauIaBfjMNciXadzVKNU1qCAoGPv8ZhU7xoa2B
+         q0vw==
+X-Gm-Message-State: AOJu0YwV6EYT98tbCLkl5EK6k+lRvl3RgflS+8hBhFizdhMf9ns2xsH6
+        v+BhdN5jJ2GkSLIhFbaG0rmGiOt/7u7H+aS1hCBOjwC4JSRabRZG8imwDurnbnj9qq8k/1RqmRG
+        6ld8rT/OJyshF97ZGzWWJqMBT
+X-Received: by 2002:adf:e70b:0:b0:31f:b364:a6ba with SMTP id c11-20020adfe70b000000b0031fb364a6bamr4691477wrm.52.1695290716199;
+        Thu, 21 Sep 2023 03:05:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFb+xpkOukKwFUqxDHZtMEtfwl9qISBYPAa6ay6agAbXJC9Ql0Yok8DkWeufmD4yqy0T55nBg==
+X-Received: by 2002:adf:e70b:0:b0:31f:b364:a6ba with SMTP id c11-20020adfe70b000000b0031fb364a6bamr4691458wrm.52.1695290715836;
+        Thu, 21 Sep 2023 03:05:15 -0700 (PDT)
 Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id p5-20020a5d4585000000b0031ad5470f89sm1311972wrq.18.2023.09.21.03.02.33
+        by smtp.googlemail.com with ESMTPSA id i9-20020a5d6309000000b003214fc12a30sm1298462wru.106.2023.09.21.03.05.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 03:02:34 -0700 (PDT)
-Message-ID: <9ebf281f-7379-ba37-2867-8918da813c19@redhat.com>
-Date:   Thu, 21 Sep 2023 12:02:33 +0200
+        Thu, 21 Sep 2023 03:05:15 -0700 (PDT)
+Message-ID: <01cf00ad-0461-d72f-4b0d-d2093628049d@redhat.com>
+Date:   Thu, 21 Sep 2023 12:05:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
@@ -69,11 +69,11 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Yiwei Zhang <zzyiwei@google.com>,
         Paul Hsia <paulhsia@google.com>
 References: <20230916003916.2545000-1-seanjc@google.com>
- <20230916003916.2545000-4-seanjc@google.com>
+ <20230916003916.2545000-2-seanjc@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 3/3] KVM: x86/mmu: Stop zapping invalidated TDP MMU roots
- asynchronously
-In-Reply-To: <20230916003916.2545000-4-seanjc@google.com>
+Subject: Re: [PATCH 1/3] KVM: x86/mmu: Open code walking TDP MMU roots for
+ mmu_notifier's zap SPTEs
+In-Reply-To: <20230916003916.2545000-2-seanjc@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -87,43 +87,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 9/16/23 02:39, Sean Christopherson wrote:
-> +		if (!root->tdp_mmu_scheduled_root_to_zap)
-> +			continue;
-> +
-> +		root->tdp_mmu_scheduled_root_to_zap = false;
+> Use the "inner" TDP MMU root walker when zapping SPTEs in response to an
+> mmu_notifier invalidation instead of invoking kvm_tdp_mmu_zap_leafs().
+> This will allow reworking for_each_tdp_mmu_root_yield_safe() to do more
+> work, and to also make it usable in more places, without increasing the
+> number of params to the point where it adds no value.
+> 
+> The mmu_notifier path is a bit of a special snowflake, e.g. it zaps only a
+> single address space (because it's per-slot), and can't always yield.
+> 
+> Drop the @can_yield param from tdp_mmu_zap_leafs() as its sole remaining
+> caller unconditionally passes "true".
 
-This is protected by slots_lock... tricky.
+Slightly rewritten commit log:
 
-Worth squashing in a comment and also a small update to another comment:
+---
+The mmu_notifier path is a bit of a special snowflake, e.g. it zaps only a
+single address space (because it's per-slot), and can't always yield.
+Because of this, it calls kvm_tdp_mmu_zap_leafs() in ways that no one
+else does.
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 93b9d50c24ad..decc1f153669 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -60,6 +60,8 @@ struct kvm_mmu_page {
-  	bool unsync;
-  	union {
-  		u8 mmu_valid_gen;
-+
-+		/* Only accessed under slots_lock.  */
-  		bool tdp_mmu_scheduled_root_to_zap;
-  	};
-  
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index ca3304c2c00c..070ee5b2c271 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -246,7 +246,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
-  	 * by a memslot update or by the destruction of the VM.  Initialize the
-  	 * refcount to two; one reference for the vCPU, and one reference for
-  	 * the TDP MMU itself, which is held until the root is invalidated and
--	 * is ultimately put by tdp_mmu_zap_root_work().
-+	 * is ultimately put by kvm_tdp_mmu_zap_invalidated_roots().
-  	 */
-  	refcount_set(&root->tdp_mmu_root_count, 2);
-  
+Iterate manually over the leafs in response to an mmu_notifier
+invalidation, instead of invoking kvm_tdp_mmu_zap_leafs().  Drop the
+@can_yield param from kvm_tdp_mmu_zap_leafs() as its sole remaining
+caller unconditionally passes "true".
+---
+
+and using the "__" macro can be moved to the second patch.
 
 Paolo
-
-> +		KVM_BUG_ON(!root->role.invalid, kvm);
 
