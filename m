@@ -2,166 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114457AA3BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFF37AA3BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjIUVzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S232659AbjIUVz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbjIUVzf (ORCPT
+        with ESMTP id S233117AbjIUVzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:55:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF59268B;
-        Thu, 21 Sep 2023 14:52:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F141C433C7;
-        Thu, 21 Sep 2023 21:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695333163;
-        bh=NTAFR578UzDwqvs2i4ooBKtvlj/FAAfa/TDohcND/ps=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=tSv58fX4rgoT5MYYQHvquhnl4/cItfTC3vQVAoiE1T5bpAWTEyRuvbOL2+SfjX1To
-         ym7q3ByyPsVAzzX3Jw1JOr42zULob1th/6f5I8bvMb0d8/MxiaGUGMyjH5KDt/wza2
-         Y17f+v22fwxB/qdzyqkg027OFSixhJuTZQgFNOGK3j9kc396bMtRILz291YtClj+RZ
-         TFhyHC84ztlKulj3Gw8GFhX/x8XmAtvf/ItwSLYDK2evIVNr4w10qV4aQb3ZIknvNo
-         XXeoh1ZwMnf3jc2N2HkjkFUvQGSRE4kJs8QLvA5n/Oj3vjpEfN9lNE9eHd8M/GL2nZ
-         FfHdGGCbxWnuQ==
-Date:   Thu, 21 Sep 2023 16:52:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        gregkh@linuxfoundation.org, Linux PCI <linux-pci@vger.kernel.org>,
-        mahesh@linux.ibm.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        bhelgaas@google.com, "james.morse@arm.com" <james.morse@arm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "lenb@kernel.org" <lenb@kernel.org>
-Subject: Re: Questions: Should kernel panic when PCIe fatal error occurs?
-Message-ID: <20230921215241.GA337765@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d84b6d17-7fe9-222a-c874-798af4d9faea@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 21 Sep 2023 17:55:40 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B779008
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 14:53:19 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c577fea3dcso12002135ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 14:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695333199; x=1695937999; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YKedUbEi3B4plTooYCB0IKgIV3PycN404RmnO3IuMFM=;
+        b=FlFywrXNo8pt0M7BkGTPu/YBFaZ8cFrCflUdyIS2JhrANUQAlS+fVmKFc0oynyRuNu
+         gik6QINZKtrEhc56ySwdyIrnhj5DQchxj01WAhtasJTBrOUd+N/RaE4ucbUDwEgLMJ0m
+         64gZbhblWUB4KtbnrNOLsQZQ+6t3Op6YnfOMoNHV2b2iLCxNlaDlz9NPOcriowvduXgC
+         J641nC9uCd0O1GdN/U7d1l2TpVR8m1uvuP155XW4/qUWaKNepoHZewQryUdCCSYj2BG2
+         2Ixe2sE6APsJHiL1UXambg5driKpj5apowXUcy5q2owoNNvBLp5atZLuQILlINnOl26h
+         EyMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695333199; x=1695937999;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YKedUbEi3B4plTooYCB0IKgIV3PycN404RmnO3IuMFM=;
+        b=iKn95RH1jStdG0ikCWIb6jTZ2qSoeksaJgLJdoyVsHFKkxhbVKjvmw+zEvSyIEp8d2
+         619sUmGRIlrL1dJMBJ23oIfDPfUEKdsW+BzMPjSGus/xov8sZJW/4wxLbGlNkSveKWnA
+         ioib+GLrtmn3vZkDXi/XG5JHOOqLSpdHLB4jTQsm/ubEOOu6+4p611Id8q4+lxOeJ8Gh
+         L4IXSm4VNhO7/PUUjxIv8LME4e5mvnVUPs6vIA7XjbG0CtDxV5evDJnLdGoCM88+/16b
+         8fskRX81mEgsF5lltFcXDh4R9sgJzWhusZjtPSH08d8eHeLY7qiVTe+OwKnU2FHbyS2b
+         0CCg==
+X-Gm-Message-State: AOJu0Yx5z75dmUAx7J3Eja3r4wRpoqA3bbMmSYwmusxCfXenkYdTfcvS
+        p/37uP3XCSBPyyJfQVyL5vz2sAuXL/c=
+X-Google-Smtp-Source: AGHT+IFzpB0LUmWG0P0jdo//QZ+1d5YUq5/bmYYJ0ADm2c6dVlI9n2014z9qeg4Uv/czKyKiUqWrALehVMY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:facd:b0:1c5:746f:efb3 with SMTP id
+ ld13-20020a170902facd00b001c5746fefb3mr67381plb.9.1695333199087; Thu, 21 Sep
+ 2023 14:53:19 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 14:53:17 -0700
+In-Reply-To: <363c4ac28af93aa96a52f897d2fe5c7ec013f746.1695327124.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1695327124.git.isaku.yamahata@intel.com> <363c4ac28af93aa96a52f897d2fe5c7ec013f746.1695327124.git.isaku.yamahata@intel.com>
+Message-ID: <ZQy7TcPZvpQ7ns5n@google.com>
+Subject: Re: [RFC PATCH v2 4/6] KVM: gmem: Add ioctl to inject memory failure
+ on guest memfd
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 08:10:19PM +0800, Shuai Xue wrote:
-> On 2023/9/21 07:02, Bjorn Helgaas wrote:
-> > On Mon, Sep 18, 2023 at 05:39:58PM +0800, Shuai Xue wrote:
-> ...
+On Thu, Sep 21, 2023, isaku.yamahata@intel.com wrote:
+> +	if (!pfn_valid(pfn))
+> +		return -ENXIO;
+> +	return memory_failure(pfn, MF_SW_SIMULATED);
 
-> > I guess your point is that for CPER_SEV_FATAL errors, the APEI/GHES
-> > path always panics but the native path never does, and that maybe both
-> > paths should work the same way?
-> 
-> Yes, exactly. Both OS native and APEI/GHES firmware first are notifications
-> used to handles PCIe AER errors, and IMHO, they should ideally work in the
-> same way.
+memory_failure is defined iff CONFIG_MEMORY_FAILURE=y.  All of this code would
+need to be conditioned on that (in addition to the injection configs).
 
-I agree, that would be nice, but the whole point of the APEI/GHES
-functionality is vendor value-add, so I'm not sure we can achieve that
-ideal.
-
-> ...
-> As a result, AER driver only does recovery for non-fatal PCIe error.
-
-This is only true for the APEI/GHES path, right?  For *native* AER
-handling, we attempt recovery for both fatal and non-fatal errors.
-
-> > It doesn't seem like the native path should always panic.  If we can
-> > tell that data was corrupted, we may want to panic, but otherwise I
-> > don't think we should crash the entire system even if some device is
-> > permanently broken.
-> 
-> Got it. But how can we tell if the data is corrupted with OS native?
-
-I naively expect that by PCIe protocol, corrupted DLLPs or TLPs
-detected by CRC, sequence number errors, etc, would be discarded
-before corrupting memory, so I doubt we'd get an uncorrectable error
-that means "sorry, I just corrupted your data."
-
-But DPC is advertised as "avoiding the potential spread of any data
-corruption," so there must be some mechanisms of corruption, and since
-DPC is triggered by either ERR_FATAL or ERR_NONFATAL, I guess maybe
-the errors could tell us something.  I'm going to quit speculating
-because I obviously don't know enough about this area.
-
-> >> However, I have changed my mind on this issue as I encounter a case where
-> >> a error propagation is detected due to fatal DLLP (Data Link Protocol
-> >> Error) error. A DLLP error occurred in the Compute node, causing the
-> >> node to panic because `struct acpi_hest_generic_status::error_severity` was
-> >> set as CPER_SEV_FATAL. However, data corruption was still detected in the
-> >> storage node by CRC.
-> > 
-> > The only mention of Data Link Protocol Error that looks relevant is
-> > PCIe r6.0, sec 3.6.2.2, which basically says a DLLP with an unexpected
-> > Sequence Number should be discarded:
-> > 
-> >   For Ack and Nak DLLPs, the following steps are followed (see Figure
-> >   3-21):
-> > 
-> >     - If the Sequence Number specified by the AckNak_Seq_Num does not
-> >       correspond to an unacknowledged TLP, or to the value in
-> >       ACKD_SEQ, the DLLP is discarded
-> > 
-> >       - This is a Data Link Protocol Error, which is a reported error
-> > 	associated with the Port (see Section 6.2).
-> > 
-> > So data from that DLLP should not have made it to memory, although of
-> > course the DMA may not have been completed.  But it sounds like you
-> > did see corrupted data written to memory?
-> 
-> The storage node use RDMA to directly access remote compute node.
-> And a error detected by CRC in the storage node. So I suspect yes.
-
-When doing the CRC, can you distinguish between corrupted data and
-data that was not written because a DMA was only partially completed?
-
-> ...
-> I tried to inject Data Link Protocol Error on some platform. The mechanism
-> behind is that rootport controls the sequence number of the specific TLPs
-> and ACK/NAK DLLPs. Data Link Protocol Error will be detected at the Rx side
-> of ACK/NAK DLLPs.
-> 
-> In such case, NIC and NVMe recovered on fatal and non-fatal DLLP
-> errors.
-
-I'm guessing this error injection directly writes the AER status bit,
-which would probably only test the reporting (sending an ERR_FATAL
-message), AER interrupt generation, firmware or OS interrupt handling,
-etc.
-
-It probably would not actually generate a DLLP with a bad sequence
-number, so it probably does not test the hardware behavior of
-discarding the DLLP if the sequence number is bad.  Just my guess
-though.
-
-> ...
-> My point is that how kernel could recover from non-fatal and fatal
-> errors in firmware first without DPC? If CPER_SEV_FATAL is used to
-> report fatal PCIe error, kernel will panic in APEI/GHES driver.
-
-The platform decides whether to use CPER_SEV_FATAL, so we can't change
-that.  We *could* change whether Linux panics when the platform says
-an error is CPER_SEV_FATAL.  That happens in drivers/acpi, so it's
-really up to Rafael.
-
-Personally I would want to hear from vendors who use the APEI/GHES
-path.  Poking around the web for logs that mention HEST and related
-things, it looks like at least Dell, HP, and Lenovo use it.  And there
-are drivers/acpi/apei commits from nxp.com, alibaba.com, amd.com,
-arm.com huawei.com, etc., so some of them probably care, too.
-
-Bjorn
+address_space_operations.error_remove_page() arguably should be conditioned on
+that as well, but that's a much bigger change and not a problem that needs to be
+solved anytime soon.
