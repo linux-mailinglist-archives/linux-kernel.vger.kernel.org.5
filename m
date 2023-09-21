@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D02C7AA23C
+	by mail.lfdr.de (Postfix) with ESMTP id 460F37AA23B
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbjIUVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
+        id S232339AbjIUVOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjIUVNU (ORCPT
+        with ESMTP id S232490AbjIUVNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:13:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74695A9F4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A30C3277D;
-        Thu, 21 Sep 2023 09:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695289075;
-        bh=f0hMerwRhx/1AQZRWpVJNP5Dke4BMcZtppjsfSmRH0I=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=kHPfPTO2JHn/nno2XF9xqccLf8ZLsXKtGAYzlcrNiiC+tgoXkVBfRENP+YB1U6rlI
-         ggtEC3/3s8YEZXSBrY0+Q1uvJfmAmL9oXmfO4xBN5H47SXqOd/kEVpzjNEo9w0jHnV
-         P1GzoopstKYbmX/sDs3DdqpDoNUc+cJthz+usVFJGAzCdYkXn0Byqt+YBSZ2EiGOug
-         aFxhACmSDPkEdtrKbWW5DtTEn0w4DppE8fmGl8xcKtNN0OF2mzUhOnmFalFrwLWVtW
-         lXsMuy78wLUMmdU8T2VzTDl5aj2l9SY9kIFTfhuXjJqAPzQov+m/RUBYt/DEh5pcc3
-         DSnga4THCyy2w==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        rdunlap@infradead.org
-In-Reply-To: <20230920160401.854052-1-ckeepax@opensource.cirrus.com>
-References: <20230920160401.854052-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] soundwire: bus: Make IRQ handling conditionally
- built
-Message-Id: <169528907320.97239.11506619845267367958.b4-ty@kernel.org>
-Date:   Thu, 21 Sep 2023 11:37:53 +0200
+        Thu, 21 Sep 2023 17:13:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0F898A47;
+        Thu, 21 Sep 2023 10:56:48 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 09:37:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695289076;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=ohayujW0N2DSkocg5TGyWYnk4n1dvuW85t/hn7PIhc4=;
+        b=4qt3bAcwaQGtRF0jw4eGPyvul6mxWLSwTdOSMnhzVY+8ebKGQdmdtZAyM2+E6s6wwNrEPy
+        GDyHAkPoGz/lD9pMdp3x4lyo8hbxbih6AjMHqBgvue/Su4MAlxxhCmnYQ/fbLut9W9zDjf
+        r6ssbsoAWtC6JXdotPOjHLhjgEqbH7UsYmjq0F37zjn8VvmCXfNnUVFyuu2JhsAU+WMMsC
+        kn2frCNME05jt1TEEbikP+O5+undHQn9VgEDQ6X7GhMnjQL6GEY44KN/Ul5LtpxJepWWxx
+        OkEVoaXtZlSCVHYKUjiqtT0knnDoGzHexI1dqyG9mjeBlCAPUQ6+QwNVf/Ns/A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695289076;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=ohayujW0N2DSkocg5TGyWYnk4n1dvuW85t/hn7PIhc4=;
+        b=pWStOUfdAwNW2KKMT7mNmLJ0s0XBWcM1iaYqePk4SnYh5F7Ng0L/NEbEM+vfBVH5XDLmD1
+        yi8nIQM8S9a9kkBw==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/headers: Standardize the <linux/sched/smt.h>
+ header guard #endif
+Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
+Message-ID: <169528907596.27769.4921292372528142067.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the sched/core branch of tip:
 
-On Wed, 20 Sep 2023 17:04:01 +0100, Charles Keepax wrote:
-> SoundWire has provisions for a simple callback for the IRQ handling so
-> has no hard dependency on IRQ_DOMAIN, but the recent addition of IRQ
-> handling was causing builds without IRQ_DOMAIN to fail. Resolve this by
-> moving the IRQ handling into its own file and only add it to the build
-> when IRQ_DOMAIN is included in the kernel.
-> 
-> 
-> [...]
+Commit-ID:     1632d47fae2f2d229dd432854c4443ebb0bb27a4
+Gitweb:        https://git.kernel.org/tip/1632d47fae2f2d229dd432854c4443ebb0bb27a4
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Thu, 21 Sep 2023 11:28:48 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 21 Sep 2023 11:28:48 +02:00
 
-Applied, thanks!
+sched/headers: Standardize the <linux/sched/smt.h> header guard #endif
 
-[1/1] soundwire: bus: Make IRQ handling conditionally built
-      commit: 3b6c4a11bf2b810f772f5c2c1ef6eef3fc268246
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/sched/smt.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
--- 
-~Vinod
-
-
+diff --git a/include/linux/sched/smt.h b/include/linux/sched/smt.h
+index 59d3736..fb1e295 100644
+--- a/include/linux/sched/smt.h
++++ b/include/linux/sched/smt.h
+@@ -17,4 +17,4 @@ static inline bool sched_smt_active(void) { return false; }
+ 
+ void arch_smt_update(void);
+ 
+-#endif
++#endif /* _LINUX_SCHED_SMT_H */
