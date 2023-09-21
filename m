@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8957A96C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7907A9719
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjIURAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        id S230284AbjIURLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjIURAd (ORCPT
+        with ESMTP id S229640AbjIURJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:00:33 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8241732;
-        Thu, 21 Sep 2023 09:59:47 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-658967a5334so6909476d6.0;
-        Thu, 21 Sep 2023 09:59:47 -0700 (PDT)
+        Thu, 21 Sep 2023 13:09:38 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9178876A1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:24 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bbbe81185dso4387181fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695315578; x=1695920378; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=gmail.com; s=20230601; t=1695315908; x=1695920708; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9CKMGYQM2xSphxnd7h9aDjiueXWWZ1DAS0m32zMMcFc=;
-        b=ihh+vfMTouVZ4kHkqz55JUi5Kad8Ns9leVA3naA7SvvDm91N5GY8MF+0yi1Zo7p36V
-         JJNO6Zewwfl/9Z9O3PbbN+vyOY7dMi9fkPOH4D+e1kWGz2pUNhbk+BEy0KfbhU4P20hk
-         itubwbdxsknJ7AK3Z37xgRkOTvzaBZZEcHiWMrUGUoJaUIPfD1Q8vmq8KxwjkOOJNjRe
-         I5lpP4KjeFVNZIJHTkEyfcCLLoIy9mnoRplD5N+VwjaZxV79B5Jn7fonvrO/3613Xo9d
-         RrEyBLj67mBCgg8zQ7CzR3IQ2DKbm+I7+VKKVIBAiKBXpBzwLfDZXzb0yCOJ1xKoXmtD
-         oSiA==
+        bh=RYno1ZJZxkD4vk/Haa7DuZReObG5ynelS4rpVSOvG3w=;
+        b=cE3lBHkIoTd/Qe6w/1BDT3n9LewhwyqvLqO0b+H4IPHOw5KP2XMCRYaqNhELLgYFYP
+         FkxU9RfMrMW6q593uwOBo5zoe4nTisLBuWIjhel3zJbRh6tS5DHn7LlhU3LlG6hjJNqA
+         rtuMQE2Kx6wwWoEjzzS7zsERRU3JwSkd0ZIW7vT2V8dR/O/di7PS2BMDlobpq8WPEvkc
+         J8psNLsILWC3UUFHiDaPT9qYbCzqDXKXB0LaSMOaH7PJA6btyuP7CXwCNjBYfSxHJLwB
+         VsfIOPPHOBQ6QWO+ZkuIbeqOMcheT/Ad1m0o/Ag45emw80qonQawgPyTqkEVq8iS3QsE
+         uYgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695315578; x=1695920378;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=1e100.net; s=20230601; t=1695315908; x=1695920708;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9CKMGYQM2xSphxnd7h9aDjiueXWWZ1DAS0m32zMMcFc=;
-        b=RAQL5Q7a4qAX2/ga0fSJ8fIy7U06DMgaAVoo2m1lxgrHrMTwEpFYby8W0R8oWNC1mo
-         33c1KT1OyUFVd1dKCDle8rDqOTU8iIfb62dLg24g08g6U5m69D8C8S0Kg+HDGHl7rUtf
-         kDSEqidJtna2cSfFbSPBUSe73HVcxLNKA4xhwD9grXLW1HeW8qRr3rcnOh3DDZggHkHE
-         0o0qrUBl6uqnypO4twVqrr2AuDltzen8cXO00e80wxflKM3gdghId+37TnogBmN6Q2DG
-         +Qxv++KqVMte862zOOSE7jbELLu9bO8MjqB6FNcQBSUY1ra5D7X/TNJsSWljr26xXQlR
-         CPbg==
-X-Gm-Message-State: AOJu0Yxqjj6/ajPZs5csuA1THyTx1v++H/qdeZD7sEGAFsv2zPAXFoyH
-        VGeXxD0aBMEbZ0OqXTRSqoCwAltQ3bU=
-X-Google-Smtp-Source: AGHT+IEmzTMKRhsDTL1/zowyo19aKrYc25ObOXG2WI+wl+UKZIdrPvY/3Opqv8v4tLPBXfzLLH8Tbg==
-X-Received: by 2002:a5d:8b0b:0:b0:780:bf50:32ce with SMTP id k11-20020a5d8b0b000000b00780bf5032cemr6171170ion.19.1695311738591;
-        Thu, 21 Sep 2023 08:55:38 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id eh24-20020a056638299800b0041d73d0a412sm436805jab.19.2023.09.21.08.55.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 08:55:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 21 Sep 2023 08:55:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.4 000/367] 5.4.257-rc1 review
-Message-ID: <8c686e7b-a770-4336-a047-4f2e2739405f@roeck-us.net>
-References: <20230920112858.471730572@linuxfoundation.org>
+        bh=RYno1ZJZxkD4vk/Haa7DuZReObG5ynelS4rpVSOvG3w=;
+        b=KgIrku7X4iskMic+2cYdWOJ2EsHjs8u50sRlq5bOgk9sPke72G9IK2Hb/3pLosZPJk
+         cL5cfiGqvcz5vA+it4Vi/wgoZiSKtMMZ5lZ4cPQ0mUZqywTtcwWapfCcQH5Zd/D59a2q
+         tTzPH3IRCJ/Ava/dUMAKHAUKAN4fCz3HAB3NdExw6E7r0+N40vpxLxLb+mwK8RxCao63
+         tGh0ENZmZfjwW3/OHzQDpTlFZrfe2dF5r7p/VcS9lA377w5S7Zf+yCVm6k1o5NJIxXRi
+         dMJLGQFYvhEigphMScLkagbK38xHXwOVNlRYzoLIUVlIa6co7ovePP4OWl5HIRE35vKH
+         6kvA==
+X-Gm-Message-State: AOJu0YyCdXmov2B3eoMXJaRzH2p38V6jwYm5QbsWpUcTSkBRr7aFba+r
+        tKrG+T2Vx4eiv/WL1e5v1peBo3DoAZxqoQ==
+X-Google-Smtp-Source: AGHT+IG9d1svIapCRWcs3sULEe5wW0jguhBJFgzhPLiS72gscJIBp0Qmm+cDiXey5SMrS/Zkpe+Wtg==
+X-Received: by 2002:a05:6402:2695:b0:521:f2a7:d57a with SMTP id w21-20020a056402269500b00521f2a7d57amr5463731edd.2.1695311763759;
+        Thu, 21 Sep 2023 08:56:03 -0700 (PDT)
+Received: from [192.168.0.102] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id n26-20020a056402061a00b005313c60165asm1028680edv.77.2023.09.21.08.56.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 08:56:03 -0700 (PDT)
+Message-ID: <13773b73-147e-6e52-64c9-bedd1bf826f8@gmail.com>
+Date:   Thu, 21 Sep 2023 17:56:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 00/11] Staging: rtl8192e: Function and Variable rename
+ series
+To:     Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+        anjan@momi.ca
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230921032515.96152-1-tdavies@darkphysics.net>
+Content-Language: en-US
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20230921032515.96152-1-tdavies@darkphysics.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 01:26:17PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.257 release.
-> There are 367 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 9/21/23 05:25, Tree Davies wrote:
+> This series fixes 11 checkpatch Avoid Camelcase issues throughout the
+> driver.
 > 
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
+> Thank you in advance to reviewers
+> Tree
+> 
+> Tree Davies (11):
+>    Staging: rtl8192e: Rename variable Time
+>    Staging: rtl8192e: Rename variable pAdmittedBa
+>    Staging: rtl8192e: Rename variable pPendingBa
+>    Staging: rtl8192e: Rename variable Dst
+>    Staging: rtl8192e: Rename variable pPendingBA
+>    Staging: rtl8192e: Rename variable Addr
+>    Staging: rtl8192e: Rename variable pStatusCode
+>    Staging: rtl8192e: Rename variable Policy
+>    Staging: rtl8192e: Rename function GetTs()
+>    Staging: rtl8192e: Rename function TSInitialize
+>    Staging: rtl8192e: Rename variable StatusCode
+> 
+>   drivers/staging/rtl8192e/rtl819x_BAProc.c | 74 +++++++++++------------
+>   drivers/staging/rtl8192e/rtl819x_TS.h     |  2 +-
+>   drivers/staging/rtl8192e/rtl819x_TSProc.c | 36 +++++------
+>   drivers/staging/rtl8192e/rtllib.h         |  8 +--
+>   drivers/staging/rtl8192e/rtllib_module.c  |  2 +-
+>   drivers/staging/rtl8192e/rtllib_rx.c      |  4 +-
+>   drivers/staging/rtl8192e/rtllib_tx.c      |  4 +-
+>   7 files changed, 65 insertions(+), 65 deletions(-)
 > 
 
-Build results:
-	total: 154 pass: 152 fail: 2
-Failed builds:
-	i386:tools/perf
-	x86_64:tools/perf
-Qemu test results:
-	total: 464 pass: 464 fail: 0
 
-libbpf.c: In function ‘bpf_object__close’:
-libbpf.c:4205:15: error: ‘struct bpf_object’ has no member named ‘btf_vmlinux’
-
-Old question: Should we stop build testing perf on older kernels ?
-If so, why are perf patches backported ?
-
-Guenter
+Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
