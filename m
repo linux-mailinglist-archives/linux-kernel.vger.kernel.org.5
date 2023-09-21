@@ -2,415 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCE97A9652
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DB17A96C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjIURCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S230171AbjIURGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjIURCF (ORCPT
+        with ESMTP id S229887AbjIURGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:02:05 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on20621.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe59::621])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225A41BEE
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:01:05 -0700 (PDT)
+        Thu, 21 Sep 2023 13:06:16 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20631.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C483AA3;
+        Thu, 21 Sep 2023 10:03:38 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sr1chrbSX5xXCVs8QGN7EZkz5BgXEheTlZOJCs7iA8E22bB+X2rHkFC9kq4nh4zHyP9ICwSOGO9Iit7acFeQkcDxquNX5NkqPN2w6Mg7kqQbY/wjavNeVh+8IQNI0H+Veo4C+L2vor5J5Jh51ALGinXo14+GOMvF7Q2cGRP8SZtvurdQEswFEen+S0hYyoDVhbmzGToR8KWADzTI6lnz/AuFXjUbqBQgYOqM8f/dcho/Tkr8nSCIVVJnVooyN9WwowPIjy5V3THwxhvxfXfyORU4miLmgxwxOyFPYbJWQjgHOctR194hpuhpsOGddmNE0HqHZB8Vbo9iWVOIO5sk5g==
+ b=PpsIH/PyJtcpkfTy3EaupRsDiqd4tpFV7adWTZVZSGKBBBsULGXU9d4CfZuX2CqjGig6F4+VB2W4yhk3ptL5w8HKPF2FzrK3exTCCmm2WgNJr6StS2DvuOCMn9L7VvQIuFA2ue5WkdDGiRJM4nBOc/v8bLnqFUf/MZN/9pxeePFcO1X8PUxecBkHgYO+QyouWKjtluUtr8iLP3vwlGX5hRkbY0OYmA3S5Blau+GQT8v4c8ZUT19OAH5CUwspm23i0O7mWZelOziBhaWkN3gXAJjYp3QExyp2Ey0Ec82iCQWnIhfL8kZxBIn2Hpp2BYShanaJZiZh9jhM571rk2y+SA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pAxdiemL9ALE2T5cw2zVd2S9bFZ5b+bFw0Ye6sNp4ek=;
- b=SqvoqFRHKQCTakA+FnYmsX0ZGYhvw+tT0uLOXZRHQFqjWeqjeEHodGJt7lGtVlwie3HrRssp8c/0FZU5A1aLtd348psKeu+S5ZSb+TqO4k7TmLf8L54rxRqt+ug2qZZpyjXMh3RxJ8QrpPDh2HYDilMo/NTCSs0BpIs0dYFibeVu5P/5lFpScNpLX0PzPPFdbZRuLg7PhqTvTC85ktTiyGwM33UQPkjG5JO622b11g/5RNshsCmOc6JkyHD4scokxN49ES2/l4pRlMRYRHMqVTScjyyrl7XCU4H8QlgQI9+JxOtoxAz4lPCXx8PaH8gGgb0uvGAXjmbqsqfc8Ey2dA==
+ bh=3cPEHB5LjyA/fSD+lXgZfp1anV7Rsug8ukJ6Kk3FHIs=;
+ b=lLw1z//ysSks8+qT8LJUHH7XADkQIq9GFMWAMrQv1JDTAjDimj8ePWErse9eKzGwOxqGOlEX6v7NcUPugCaoITKv3T4xhIzw0Coc3LuceSJrNwh2Ng6TI1PoezANUY6EFMLcUTgkobsHdyuu4PDNhuHCDzAXhj79SfvDKJDZSccpfaA7b1be7vkKdZjAGtrQpqVsTQCgY2bf6ASAoeDpfNXMwc2wxeH05jO2N3aCqqwjp9bWJ3ZFE0JQJXGv6k1h3avLeQ3Fzoe7GiTH0IT4U26ZwAnfD1rMHs7yEsg//ZSWMPbRff0z5LaIUmxDwFXmlW3of6RvZNMA1l4PZ8hhSg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pAxdiemL9ALE2T5cw2zVd2S9bFZ5b+bFw0Ye6sNp4ek=;
- b=J44Flfz2v91MciXVgMSgZjuvwAsaVAWkj9M8cObx90WCp+qPQos4zJmcRmWERfHuWzyL7ny1ObBSskj+p5tNK52jkxuGOGjBliSyNmcAJymN3Pwyb5cB0YxdG0kbGJqQ35x2YVKo8EMCRbBcMmjS9Yo/XL2n4E7ApW16d+RxvbbwXqYJ7L456V0o4QqOAcLcYcJpDp61jY/Ka4aSxHXGV8PU1b73GSJ3Yav/aC4/5MlL3cq9WlTiggwGcRuU9O1OxuRm8AJTJ8xiizdsoOyuyz4j5vEAfsvLaj6dyrMV/ddPj5yCT+abQCCbkTBLc7PM1g4QD5h5B1amWMXt5BrRDg==
+ bh=3cPEHB5LjyA/fSD+lXgZfp1anV7Rsug8ukJ6Kk3FHIs=;
+ b=h/B4pKyK0DqFlomSSEGHsv8pcJyUZFhMLJg8g1EM7cK7y/76nTsCUhLVuKLfldhNuj8x/PfLGzPS0utB3AxG9RpYb9PPdLWU40euDpcsAW4PKPte5uA7wkimC1aACYK35yOeyUxk+51QrORKop0VV28StzEaTYkIikpj8jnMZH0=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- DS7PR12MB5813.namprd12.prod.outlook.com (2603:10b6:8:75::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.28; Thu, 21 Sep 2023 14:47:26 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::4b09:197c:609a:1013%7]) with mapi id 15.20.6792.026; Thu, 21 Sep 2023
- 14:47:26 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
-Date:   Thu, 21 Sep 2023 10:47:23 -0400
-X-Mailer: MailMate (1.14r5984)
-Message-ID: <4466F447-43D3-43CD-8930-FBE9A49028BA@nvidia.com>
-In-Reply-To: <505e7f55-f63a-b33d-aa10-44de16d2d3cc@redhat.com>
-References: <a88b7339-beab-37c6-7d32-0292b325916d@suse.cz>
- <20230918145204.GB16104@cmpxchg.org> <20230918174037.GA112714@monkey>
- <20230919064914.GA124289@cmpxchg.org> <20230919184731.GC112714@monkey>
- <C416A861-44D3-46E7-B756-63DA3731FC1E@nvidia.com>
- <20230920003239.GD112714@monkey>
- <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
- <bc4bd049-1e29-0f23-cca6-493abb5e774f@suse.cz>
- <20230920134811.GB124289@cmpxchg.org> <20230920160400.GC124289@cmpxchg.org>
- <762CA634-053A-41DD-8ED7-895374640858@nvidia.com>
- <D4F59724-61EB-4DA5-94DF-59E79F0F1FB3@nvidia.com>
- <505e7f55-f63a-b33d-aa10-44de16d2d3cc@redhat.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_7E985CA9-4D60-4CCD-A67E-47FBE228E5CB_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL6PEPF00013E04.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:22e:400:0:1001:0:19) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
+ by DM4PR12MB7647.namprd12.prod.outlook.com (2603:10b6:8:105::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Thu, 21 Sep
+ 2023 14:49:35 +0000
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::ee63:b5d6:340c:63b2]) by PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::ee63:b5d6:340c:63b2%5]) with mapi id 15.20.6813.017; Thu, 21 Sep 2023
+ 14:49:34 +0000
+Message-ID: <b1461a22-a919-d6c5-c0c1-07ed69f3c54e@amd.com>
+Date:   Thu, 21 Sep 2023 07:49:32 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH vfio 3/3] pds/vfio: Fix possible sleep while in atomic
+ context
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Brett Creeley <brett.creeley@amd.com>, yishaih@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+        dan.carpenter@linaro.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shannon.nelson@amd.com
+References: <20230914191540.54946-1-brett.creeley@amd.com>
+ <20230914191540.54946-4-brett.creeley@amd.com>
+ <20230914163837.07607d8a.alex.williamson@redhat.com>
+ <20230919185938.GU13795@ziepe.ca>
+Content-Language: en-US
+From:   Brett Creeley <bcreeley@amd.com>
+In-Reply-To: <20230919185938.GU13795@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PH8PR22CA0003.namprd22.prod.outlook.com
+ (2603:10b6:510:2d1::6) To PH0PR12MB7982.namprd12.prod.outlook.com
+ (2603:10b6:510:28d::5)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|DS7PR12MB5813:EE_
-X-MS-Office365-Filtering-Correlation-Id: dcaa22fe-27de-40ca-c406-08dbbab1ac19
+X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|DM4PR12MB7647:EE_
+X-MS-Office365-Filtering-Correlation-Id: d035e5a3-091e-4431-accb-08dbbab1f8b4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vh7Go5nQWYk2ZXcZ9xATgRW41Vavr4xgDVJ63HJKhI7kyo//gigxuMLROnq++w+y2ZjLOl2M/P75+OsAW1pNdj4mfxVRqp2Pe2NNfbInoBWO7rcs1TN7SSjGcjCX6BZlxV8DRw/uzgc8bll4FU+WueRElJrvgF7nfLh6KF98buN+tfI43thcrw6kO3dYXwt5F/ZlwJsrWWXN6XpQ5l8602p3vMzTmfYK77zmhASjdNNcKdJodH/xvYczLEJVcUsKZENGiz595LIzyfnEe/mx1tZpIavt2rYWG8m0bVbI90FD1SodPRoISG1eyKIJrZWLdGOYBKyDHZeYN2PIHg1u5IeQLGm6rP+2cbU0yF7k7mOisAuw0XcXjlaxHSsD9nnSo3JetJ7WKqQnQzLyr3ohqqnAc5kWZ1B7QMnC2snfquLOVkAClj2KeOdqo4AsCkGQY1R2COTjMLFBvLg6WsmflNqc2JT7E7I8wx0VmbBXTvqsxIXXfbf3m+NNAOYbo0+dKzKYTD2w63eWO2lyslagMKY0869faXq5caKO6JRwxP8AYstTX6jvnsyBm+UgBwKdqrzXX5j+BN5dW4LSNN//lmHaFyJyIRT6dv7ya0zeJN9te5XDEpfTNuJkQKvMrkXm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(396003)(136003)(186009)(1800799009)(451199024)(6486002)(6666004)(53546011)(6506007)(478600001)(83380400001)(33656002)(36756003)(86362001)(38100700002)(2906002)(2616005)(41300700001)(26005)(6512007)(4326008)(54906003)(8936002)(66556008)(235185007)(5660300002)(7416002)(8676002)(6916009)(66946007)(316002)(66476007)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: ZjiO3TRZb+lzi7JmV7xo1fE9LpPmXJnv1WCEWDVHq/U2f6hVb3SSxPGMiiv/qfm9YsXmiw3mo2W/vu52Bs5lTmewuVQv/8TBl9eciPDG7wkdQjQ5DAJFsN3ntJG/qV0Ds9dJrp1Q9DgG0CrmdaXObYQZtJgMVUKXhXVglK/eu+w5gNx4ytgBRrNmVKFVvqd43Ha+WaiPEr2cEHLet+/8eBvXMSiGci6s2k7yhCuzUsT0kx+EIeJkb+w9+7GbnDvGxL8cL1VE0fYW7jLO4JMVvwQAeEo5EyJaC1FzCI+kc1NbTIp3kF1iSfeWE+InaUlHVNs7WG+NVUMAlUoAR3dYjwSBFsB2n5g36D852ZMI9AhQMzsSxjVTtvpIZpu2rMEEKmjccyzCDvYvHwjYeurMWwJeJ9lZhvmDv44ZTmhOBNR48fU5AZBkdOKi0NDVqH9LNU6JBHpjB9ukiU5RAYCJsKTRSwnKmkAD/XCcHzXCVtvQVzUNlcezU53qAm4kkSdBT+Te/e34Oi4bj42f/q6RS15TI65vDQwv1r9EDQc4RtAMgiOf9Bal91ZbuXv/MDlRU107uIRAsoQ3LHmYzOF/n8dSmLWQdpQgfJXuTWFhCp9fILCUgIEwtQ3h7rEYYmTDhEZKbUI+VXOly9ErJBAU/w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(376002)(346002)(1800799009)(186009)(451199024)(66476007)(31696002)(41300700001)(66556008)(316002)(66946007)(8676002)(8936002)(4326008)(6486002)(478600001)(53546011)(6506007)(966005)(6512007)(110136005)(83380400001)(26005)(5660300002)(2616005)(2906002)(38100700002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AnKv2GbeczUmINCEvtJqcK0bZAHAZ6CjkCR4NHrxEnZKtlWcqH9l9Fjvz+4F?=
- =?us-ascii?Q?Vi61GfSzko5bvy+jh3cM3vPSCPVOA7FN1MsQfPHGNet9s91CEq9tn89kcpWQ?=
- =?us-ascii?Q?44P5IdJW4cVCxxqz3ik0S8Yv9q9fTGc1VAgh+rkYoaYQsrQLF8QuQOisZuy3?=
- =?us-ascii?Q?MPrszRvnSeI2dC1E19uVN54969GxsusnoK06r2DZz11pUvIVh13IFLnJkpJA?=
- =?us-ascii?Q?r5qIA02caY8gZh1mM6LAeCu0X9EtWtl/o3Cs9sFgiDhvDCzeL7qPzDcobyl2?=
- =?us-ascii?Q?hTRRJ5gGUUUeWLgkoJWVBVnIZ3t0yZ2cnZGyw0sZEt+LONjn1KgjhCCcvWts?=
- =?us-ascii?Q?IYFDmwYKT8qKf16FsShtJ+8Hpmd1TvvNuSBGSdXpSa657s4C0CnViJ+bvSRW?=
- =?us-ascii?Q?pIWlpiZYJc7qIvxWNsbzJb7gz4phkYSBDAD4Ry9iJ/jSdLcpvUonn2gVeUol?=
- =?us-ascii?Q?ZLtZhE/5j0dTEMxC03zc1p5ooeOxAcocfWBwBTCTPSBtrnbqyjej7F97yfie?=
- =?us-ascii?Q?JF0GQL9PSVnb9Y2VurgezA178GBybFZmUkYwsEnadE/6iRFnWtkq+tnqucwJ?=
- =?us-ascii?Q?IV/k6JHWmGEVtuMFFO53ebYRK9Igr62QqXszlDITvDKcSxov7lhewVqfq2i6?=
- =?us-ascii?Q?qNJRjUtCyOPILvMQA5BTX9DST/UgWk+439IsI1w2YrmbNFVrY4O45tei9WCU?=
- =?us-ascii?Q?2fRnIYKgfhJkAc/PKj+E9MYre1KL7GxGmZxLST4c+CgcCHwlCRN6SzhzU5fM?=
- =?us-ascii?Q?ziyJzIki722MxFG662bfxNgKEBkU3D4LruZDu8AU6fVgEHhZI73Ji1dtjvnq?=
- =?us-ascii?Q?TU2D0jXtPvH/gNiFzHK+rD+yRysdkNYsSaTHe+hVyAakAl2wc2gNMmLnVouL?=
- =?us-ascii?Q?ZGdPayxLYhzdg6TbAoq7TWp9PP2zBf+ggVAzGlnz5NKkEueRGMJc804BxD07?=
- =?us-ascii?Q?SuIDq9A9jG7Tjoixmf+rA88qLO10y33vHrGFffz/w26NjFjida68GRugb4No?=
- =?us-ascii?Q?ST/n5Lg5vkpOarQk8sOWJcfcVNZvoP05YAG3sfrBLvIuo7NgqKe86nINCXNk?=
- =?us-ascii?Q?3yfUUsD7sHzuBn4Pz31eUbHE5zVp5az5wTpEGGxad0KIwdeXjjd8UzoihKSf?=
- =?us-ascii?Q?pIjx5I97LN6P9rRKjIruOlHKlqM+zefXjsRMM1Vvv4PcHwoCzJOxeWWJhSAj?=
- =?us-ascii?Q?j3GrtmCdwTiafV3BegwxjOYcY0/APcOlh6vm+Tzzy5DCp+NE8xX0NDbuIiKD?=
- =?us-ascii?Q?LPPo12jDrkkaPwnwAnYAVGtYAYgoocLUw5p9VK+c+rk0VCVcMdehoDBSEpXR?=
- =?us-ascii?Q?/69MoUUlrXzwyUFbAgi/9S0YBofFSD8h/M0sDMywGcE1s4yJPiTwx9ivQZf3?=
- =?us-ascii?Q?BSE3dQduxD/IM+jL217rHZpKe7APyGrNzfwMYwu0TvzN/YSl8qhP4pw6eo0O?=
- =?us-ascii?Q?7hGRYbqjHx9rjKGaPkZP/7v36hlMBW6HYU0TqHhyh7bIVJeKPEatxS9MqDhA?=
- =?us-ascii?Q?ArFdW/wqep6+UPzZ4oQGdUtezdmlHYpBnvwa9E/NOwSkP/zRh3K0yimPAom8?=
- =?us-ascii?Q?2PedrZkJml5xua1G1lU=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcaa22fe-27de-40ca-c406-08dbbab1ac19
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Ulh2K2F2WStNRVl6YlpOME8vcjA4QzgwU1I3Z2RUSTdXNG4yVWVyczFndWtm?=
+ =?utf-8?B?ZWlZa1AzNGtEcHJrVlE0OStMbWNOUk5RNC9rSmRmN3k2SVFxWjFLZ3hNRU51?=
+ =?utf-8?B?SlVmNTFVdG41UmI5ME5QYmxNM3AwK2YrNXdhQjlEazRhcVc3QnNueFYxK1Rw?=
+ =?utf-8?B?aU90bmE2UklFS3BHRHBtTW9tU1NveWZsekRPTnJybzdEcWYrbWtWZ0NCVkhk?=
+ =?utf-8?B?NEMvWnhadVZLRi9lc0R2SFNGTzB2OWFTYVRYOTFsa3R5Q3Q2dU1HVHZKZ1oz?=
+ =?utf-8?B?Yjkva1FON0kvcmxiL0JqdXBUYXYybUtUa1hEYWJaTUdCNkxvRnZGdTNWN25U?=
+ =?utf-8?B?NW9MdEJ1VFBldy8yRmdIZkZ3bXlhaGRUbmE3cVg4U25LZ1krTHZsVEdCWTBB?=
+ =?utf-8?B?V3ZLd2tySUxLMXdaOGZLeTNBL1ozaFhPd21GOGd0Z2Y2SzhIR0V0b2pQaVMy?=
+ =?utf-8?B?YzdkYnFIWm1hanBtaUU1THlIUklPUDBjTGNEWUtEVnFlM3BhMHcvS3QzM0Vx?=
+ =?utf-8?B?S1hDVWQ4TGFRcFcwTUIyZUNqY0tzKzduTy9iazRhZCtuS3JwaFJ6ZDVLM0NT?=
+ =?utf-8?B?bTYrallHZmxSUVg3cktpYlQ4UzU0R3Z1VHZqT2V5N2NrSWVlc1RBTmx0dHdn?=
+ =?utf-8?B?S3ZGdGVaSVo2aHhGSHdSREI3aFFBWUtBbndZRjhSTXhEQWhTbkZTNTM5Mm94?=
+ =?utf-8?B?NnhLZkJVaEd4T3ZQdmMwTmVQRTdrRWhWWTIwUE1PeFVBYzFZcGFVTGlPYVZx?=
+ =?utf-8?B?YlgwNWI0aHRDK0RuQmVnMjZCWnkwUzhrSWZLWVdLMFFGMDJlb2FPZ24xYnJI?=
+ =?utf-8?B?VlJnTk9qeWhBZlZoNHpjV2JCdUhwNjFmTXNVa2ppbFBJdnhMa3dJbWJYNTU3?=
+ =?utf-8?B?b3lJeUFsaXRjYkk1YkpoTHlHcE14dnE0UXBUcXRHU3FHcFdpSmxkbnVQNXZi?=
+ =?utf-8?B?RWdCRHQySzFXZ1RjUUczSHhLWU03ZFB1R0ZWb3JpaW1HSEp6Q0I4ZGgzWXNn?=
+ =?utf-8?B?V25YZTBVZzlINHpOSS85MnZEc3pHOG9MZnhKSERRZVU5Y1hpZHYrb2ZXcTdt?=
+ =?utf-8?B?VGlmcWxZSW9iR3pVelo3QXBPZW00aFY3U0hPbzkwNFZFK2dNTk10OE12QzJq?=
+ =?utf-8?B?Q3lFWVZLZEZCdUk5R3dFSHBOYklxRy9tVGE1R0tpN1RnSGt2UGNkdGFqR080?=
+ =?utf-8?B?L2JTLzd0SGRUNTR5VlR0bnpGZ1YvOTAwaFd5VC9zWXYxbHFqVGttdnN3VVJt?=
+ =?utf-8?B?b1A3VER3aU4rbTBIZjRsSWs0MTlwN1E4eklzaXQrejliQjBnWHEzOXQwbExk?=
+ =?utf-8?B?UVlobHcxSnhiQ1lmVkorbERzZ1RKTk9BUjZpdDRza0tTQ3JOT0VNeTlqMmZt?=
+ =?utf-8?B?d3E5SjhUTmxZcExCbnh6TzJUUzZmTUtIbHVrSGF0c1pGaU45bFE2QVZVcmpx?=
+ =?utf-8?B?ZUJXbGpTRDBNZitOdndjUStrUy9oVEhxQVhDTnh1bEkxa0Y4RWc5WWdSakJL?=
+ =?utf-8?B?Qk12bmIvTk94MHJqeVdUVmhaUnFUMVdXMGY2QURiZGJOL3g5cGE1bzVtSUVr?=
+ =?utf-8?B?Vk9ocUdQMm9nRkpYaU5vYXk4eUdqVUNabHZ6T1RDWmdKeElWRkVFa1NWY0JQ?=
+ =?utf-8?B?Y1gxd2dKdWRMQzFmTGlocE9tY0ozb2pTb0Y1dWw0MGtXVmM4WTBGa0VQeEJJ?=
+ =?utf-8?B?Um5Zdkx4aDZJMjdBdTFGb2NOdlVvemIvL3NrWGRpUjAvVTFKUFRVc1hDcDRQ?=
+ =?utf-8?B?eTFNeml1cUx3WTFZRURtRVpkbXNoaXN5Yjd5MmJBUVRNZnhCVXdVc1ZZYlFj?=
+ =?utf-8?B?U21aTFBFeFFDSlI5UldVYWF5SWMvVjJick9NWkdHQ3VEZTJSUGRBQXdlL3lT?=
+ =?utf-8?B?a25CaXpUT2JGaWVGQ2VQa1RwekZtRHNlNW50RHNMdzQ5ZE1WNmN3NjMrOWsv?=
+ =?utf-8?B?NUY5cTRRUlZpRWxLSUkzQTJ4RW9VUThRVk5XTWY3dDFMUWVnWGFWbnJ3UXNG?=
+ =?utf-8?B?Z09WTExCUlRtcEFPWUhObEpHTzFQVmJEWU1jMG1ia1RCRkpBTkdrOUE2RnZk?=
+ =?utf-8?B?WlFaYTZUQXd0bE0wdlN6Q3kveGFFRENCQ1FBUFBDWVpSS0lSZFdSS1JPdzJT?=
+ =?utf-8?Q?95OC6xTJ8EmP+8XFPYh+jcQkG?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d035e5a3-091e-4431-accb-08dbbab1f8b4
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 14:47:26.3552
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 14:49:34.8830
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 059o1p0tZgrvwQdjAE7ddhZBNAOErM4+F1GKtP69K1mi1H3+fPgS56RkOInE/69R
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5813
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+X-MS-Exchange-CrossTenant-UserPrincipalName: SNcNhlhHse/4EwA33YA1ie00G4SdRRhwhWKjaDC+IejJzhRTYffuevH33RNFvC1QmPWw2E1wb0hKwlWVOY9a4w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7647
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_7E985CA9-4D60-4CCD-A67E-47FBE228E5CB_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On 21 Sep 2023, at 6:19, David Hildenbrand wrote:
-
-> On 21.09.23 04:31, Zi Yan wrote:
->> On 20 Sep 2023, at 13:23, Zi Yan wrote:
+On 9/19/2023 11:59 AM, Jason Gunthorpe wrote:
+> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+> 
+> 
+> On Thu, Sep 14, 2023 at 04:38:37PM -0600, Alex Williamson wrote:
+>> On Thu, 14 Sep 2023 12:15:40 -0700
+>> Brett Creeley <brett.creeley@amd.com> wrote:
 >>
->>> On 20 Sep 2023, at 12:04, Johannes Weiner wrote:
+>>> The driver could possibly sleep while in atomic context resulting
+>>> in the following call trace while CONFIG_DEBUG_ATOMIC_SLEEP=y is
+>>> set:
 >>>
->>>> On Wed, Sep 20, 2023 at 09:48:12AM -0400, Johannes Weiner wrote:
->>>>> On Wed, Sep 20, 2023 at 08:07:53AM +0200, Vlastimil Babka wrote:
->>>>>> On 9/20/23 03:38, Zi Yan wrote:
->>>>>>> On 19 Sep 2023, at 20:32, Mike Kravetz wrote:
->>>>>>>
->>>>>>>> On 09/19/23 16:57, Zi Yan wrote:
->>>>>>>>> On 19 Sep 2023, at 14:47, Mike Kravetz wrote:
->>>>>>>>>
->>>>>>>>>> 	--- a/mm/page_alloc.c
->>>>>>>>>> 	+++ b/mm/page_alloc.c
->>>>>>>>>> 	@@ -1651,8 +1651,13 @@ static bool prep_move_freepages_block(=
-struct zone *zone, struct page *page,
->>>>>>>>>>   		end =3D pageblock_end_pfn(pfn) - 1;
->>>>>>>>>>
->>>>>>>>>>   		/* Do not cross zone boundaries */
->>>>>>>>>> 	+#if 0
->>>>>>>>>>   		if (!zone_spans_pfn(zone, start))
->>>>>>>>>> 			start =3D zone->zone_start_pfn;
->>>>>>>>>> 	+#else
->>>>>>>>>> 	+	if (!zone_spans_pfn(zone, start))
->>>>>>>>>> 	+		start =3D pfn;
->>>>>>>>>> 	+#endif
->>>>>>>>>> 	 	if (!zone_spans_pfn(zone, end))
->>>>>>>>>> 	 		return false;
->>>>>>>>>> 	I can still trigger warnings.
->>>>>>>>>
->>>>>>>>> OK. One thing to note is that the page type in the warning chan=
-ged from
->>>>>>>>> 5 (MIGRATE_ISOLATE) to 0 (MIGRATE_UNMOVABLE) with my suggested =
-change.
->>>>>>>>>
->>>>>>>>
->>>>>>>> Just to be really clear,
->>>>>>>> - the 5 (MIGRATE_ISOLATE) warning was from the __alloc_pages cal=
-l path.
->>>>>>>> - the 0 (MIGRATE_UNMOVABLE) as above was from the alloc_contig_r=
-ange call
->>>>>>>>    path WITHOUT your change.
->>>>>>>>
->>>>>>>> I am guessing the difference here has more to do with the alloca=
-tion path?
->>>>>>>>
->>>>>>>> I went back and reran focusing on the specific migrate type.
->>>>>>>> Without your patch, and coming from the alloc_contig_range call =
-path,
->>>>>>>> I got two warnings of 'page type is 0, passed migratetype is 1' =
-as above.
->>>>>>>> With your patch I got one 'page type is 0, passed migratetype is=
- 1'
->>>>>>>> warning and one 'page type is 1, passed migratetype is 0' warnin=
-g.
->>>>>>>>
->>>>>>>> I could be wrong, but I do not think your patch changes things.
->>>>>>>
->>>>>>> Got it. Thanks for the clarification.
->>>>>>>>
->>>>>>>>>>
->>>>>>>>>> One idea about recreating the issue is that it may have to do =
-with size
->>>>>>>>>> of my VM (16G) and the requested allocation sizes 4G.  However=
-, I tried
->>>>>>>>>> to really stress the allocations by increasing the number of h=
-ugetlb
->>>>>>>>>> pages requested and that did not help.  I also noticed that I =
-only seem
->>>>>>>>>> to get two warnings and then they stop, even if I continue to =
-run the
->>>>>>>>>> script.
->>>>>>>>>>
->>>>>>>>>> Zi asked about my config, so it is attached.
->>>>>>>>>
->>>>>>>>> With your config, I still have no luck reproducing the issue. I=
- will keep
->>>>>>>>> trying. Thanks.
->>>>>>>>>
->>>>>>>>
->>>>>>>> Perhaps try running both scripts in parallel?
->>>>>>>
->>>>>>> Yes. It seems to do the trick.
->>>>>>>
->>>>>>>> Adjust the number of hugetlb pages allocated to equal 25% of mem=
-ory?
->>>>>>>
->>>>>>> I am able to reproduce it with the script below:
->>>>>>>
->>>>>>> while true; do
->>>>>>>   echo 4 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepa=
-ges&
->>>>>>>   echo 2048 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepa=
-ges&
->>>>>>>   wait
->>>>>>>   echo 0 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages=
+>>> [  227.229806] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:283
+>>> [  227.229818] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 2817, name: bash
+>>> [  227.229824] preempt_count: 1, expected: 0
+>>> [  227.229827] RCU nest depth: 0, expected: 0
+>>> [  227.229832] CPU: 5 PID: 2817 Comm: bash Tainted: G S         OE      6.6.0-rc1-next-20230911 #1
+>>> [  227.229839] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 01/23/2021
+>>> [  227.229843] Call Trace:
+>>> [  227.229848]  <TASK>
+>>> [  227.229853]  dump_stack_lvl+0x36/0x50
+>>> [  227.229865]  __might_resched+0x123/0x170
+>>> [  227.229877]  mutex_lock+0x1e/0x50
+>>> [  227.229891]  pds_vfio_put_lm_file+0x1e/0xa0 [pds_vfio_pci]
+>>> [  227.229909]  pds_vfio_put_save_file+0x19/0x30 [pds_vfio_pci]
+>>> [  227.229923]  pds_vfio_state_mutex_unlock+0x2e/0x80 [pds_vfio_pci]
+>>> [  227.229937]  pci_reset_function+0x4b/0x70
+>>> [  227.229948]  reset_store+0x5b/0xa0
+>>> [  227.229959]  kernfs_fop_write_iter+0x137/0x1d0
+>>> [  227.229972]  vfs_write+0x2de/0x410
+>>> [  227.229986]  ksys_write+0x5d/0xd0
+>>> [  227.229996]  do_syscall_64+0x3b/0x90
+>>> [  227.230004]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>>> [  227.230017] RIP: 0033:0x7fb202b1fa28
+>>> [  227.230023] Code: 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 8d 05 15 4d 2a 00 8b 00 85 c0 75 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 49 89 d4 55
+>>> [  227.230028] RSP: 002b:00007fff6915fbd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>>> [  227.230036] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fb202b1fa28
+>>> [  227.230040] RDX: 0000000000000002 RSI: 000055f3834d5aa0 RDI: 0000000000000001
+>>> [  227.230044] RBP: 000055f3834d5aa0 R08: 000000000000000a R09: 00007fb202b7fae0
+>>> [  227.230047] R10: 000000000000000a R11: 0000000000000246 R12: 00007fb202dc06e0
+>>> [  227.230050] R13: 0000000000000002 R14: 00007fb202dbb860 R15: 0000000000000002
+>>> [  227.230056]  </TASK>
+> 
+> I usually encourage people to trim the oops, remove the time stamp at least.
 
->>>>>>>   echo 0 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepa=
-ges
->>>>>>> done
->>>>>>>
->>>>>>> I will look into the issue.
->>>>>
->>>>> Nice!
->>>>>
->>>>> I managed to reproduce it ONCE, triggering it not even a second aft=
-er
->>>>> starting the script. But I can't seem to do it twice, even after
->>>>> several reboots and letting it run for minutes.
->>>>
->>>> I managed to reproduce it reliably by cutting the nr_hugepages
->>>> parameters respectively in half.
->>>>
->>>> The one that triggers for me is always MIGRATE_ISOLATE. With some
->>>> printk-tracing, the scenario seems to be this:
->>>>
->>>> #0                                                   #1
->>>> start_isolate_page_range()
->>>>    isolate_single_pageblock()
->>>>      set_migratetype_isolate(tail)
->>>>        lock zone->lock
->>>>        move_freepages_block(tail) // nop
->>>>        set_pageblock_migratetype(tail)
->>>>        unlock zone->lock
->>>>                                                       del_page_from_=
-freelist(head)
->>>>                                                       expand(head, h=
-ead_mt)
->>>>                                                         WARN(head_mt=
- !=3D tail_mt)
->>>>      start_pfn =3D ALIGN_DOWN(MAX_ORDER_NR_PAGES)
->>>>      for (pfn =3D start_pfn, pfn < end_pfn)
->>>>        if (PageBuddy())
->>>>          split_free_page(head)
->>>>
->>>> IOW, we update a pageblock that isn't MAX_ORDER aligned, then drop t=
-he
->>>> lock. The move_freepages_block() does nothing because the PageBuddy(=
-)
->>>> is set on the pageblock to the left. Once we drop the lock, the budd=
-y
->>>> gets allocated and the expand() puts things on the wrong list. The
->>>> splitting code that handles MAX_ORDER blocks runs *after* the tail
->>>> type is set and the lock has been dropped, so it's too late.
+Makes sense. I will remember that going forward. Thanks for the suggestion.
+
+Brett
+
 >>>
->>> Yes, this is the issue I can confirm as well. But it is intentional t=
-o enable
->>> allocating a contiguous range at pageblock granularity instead of MAX=
-_ORDER
->>> granularity. With your changes below, it no longer works, because if =
-there
->>> is an unmovable page in
->>> [ALIGN_DOWN(start_pfn, MAX_ORDER_NR_PAGES), pageblock_start_pfn(start=
-_pfn)),
->>> the allocation fails but it would succeed in current implementation.
+>>> This can happen if pds_vfio_put_restore_file() and/or
+>>> pds_vfio_put_save_file() grab the mutex_lock(&lm_file->lock)
+>>> while the spin_lock(&pds_vfio->reset_lock) is held, which can
+>>> happen during while calling pds_vfio_state_mutex_unlock().
 >>>
->>> I think a proper fix would be to make move_freepages_block() split th=
-e
->>> MAX_ORDER page and put the split pages in the right migratetype free =
-lists.
+>>> Fix this by releasing the spin_unlock(&pds_vfio->reset_lock) before
+>>> calling pds_vfio_put_restore_file() and pds_vfio_put_save_file() and
+>>> re-acquiring spin_lock(&pds_vfio->reset_lock) after the previously
+>>> mentioned functions are called to protect setting the subsequent
+>>> state/deferred reset settings.
 >>>
->>> I am working on that.
+>>> The only possible concerns are other threads that may call
+>>> pds_vfio_put_restore_file() and/or pds_vfio_put_save_file(). However,
+>>> those paths are already protected by the state mutex_lock().
 >>
->> After spending half a day on this, I think it is much harder than I th=
-ought
->> to get alloc_contig_range() working with the freelist migratetype hygi=
-ene
->> patchset. Because alloc_contig_range() relies on racy migratetype chan=
-ges:
+>> Is there another viable solution to change reset_lock to a mutex?
 >>
->> 1. pageblocks in the range are first marked as MIGRATE_ISOLATE to prev=
-ent
->> another parallel isolation, but they are not moved to the MIGRATE_ISOL=
-ATE
->> free list yet.
+>> I think this is the origin of this algorithm:
 >>
->> 2. later in the process, isolate_freepages_range() is used to actually=
- grab
->> the free pages.
+>> https://lore.kernel.org/all/20211019191025.GA4072278@nvidia.com/
 >>
->> 3. there was no problem when alloc_contig_range() works on MAX_ORDER a=
-ligned
->> ranges, since MIGRATE_ISOLATE cannot be set in the middle of free page=
-s or
->> in-use pages. But it is not the case when alloc_contig_range() work on=
+>> But it's not clear to me why Jason chose an example with a spinlock and
+>> if some subtlety here requires it.  Thanks,
+> 
+> I think there was no specific reason it must be a spinlock
+> 
+> Certainly I'm not feeling comfortable just unlocking and relocking
+> like that. It would need a big explanation why it is safe in a
+> comment.
 
->> pageblock aligned ranges. Now during isolation phase, free or in-use p=
-ages
->> will need to be split to get their subpages into the right free lists.=
+This follows the example in mlx5vf_state_mutex_unlock(), which releases 
+the spinlock before calling mlx5vf_disable_fds().
 
->>
->> 4. the hardest case is when a in-use page sits across two pageblocks, =
-currently,
->> the code just isolate one pageblock, migrate the page, and let split_f=
-ree_page()
->> to correct the free list later. But to strictly enforce freelist migra=
-tetype
->> hygiene, extra work is needed at free page path to split the free page=
- into
->> the right freelists.
->>
->> I need more time to think about how to get alloc_contig_range() proper=
-ly.
->> Help is needed for the bullet point 4.
->
->
-> I once raised that we should maybe try making MIGRATE_ISOLATE a flag th=
-at preserves the original migratetype. Not sure if that would help here i=
-n any way.
+However, there is a small difference where 
+pds_vfio->deferred_reset_state could change in the window where the 
+reset_lock isn't held. It seems this can be fixed this by a local 
+deferred_reset_state in pds_vfio_state_mutex_unlock() that I set before 
+unlocking to clear the fds.
 
-I have that in my backlog since you asked and have been delaying it. ;) H=
-opefully
-I can do it after I fix this. That change might or might not help only if=
- we make
-some redesign on how migratetype is managed. If MIGRATE_ISOLATE does not
-overwrite existing migratetype, the code might not need to split a page a=
-nd move
-it to MIGRATE_ISOLATE freelist?
+Thanks,
 
-The fundamental issue in alloc_contig_range() is that to work at
-pageblock level, a page (>pageblock_order) can have one part is isolated =
-and
-the rest is a different migratetype. {add_to,move_to,del_page_from}_free_=
-list()
-now checks first pageblock migratetype, so such a page needs to be remove=
-d
-from its free_list, set MIGRATE_ISOLATE on one of the pageblock, split, a=
-nd
-finally put back to multiple free lists. This needs to be done at isolati=
-on stage
-before free pages are removed from their free lists (the stage after isol=
-ation).
-If MIGRATE_ISOLATE is a separate flag and we are OK with leaving isolated=
- pages
-in their original migratetype and check migratetype before allocating a p=
-age,
-that might help. But that might add extra work (e.g., splitting a partial=
-ly
-isolated free page before allocation) in the really hot code path, which =
-is not
-desirable.
-
->
-> The whole alloc_contig_range() implementation is quite complicated and =
-hard to grasp. If we could find ways to clean all that up and make it eas=
-ier to understand and play along, that would be nice.
-
-I will try my best to simplify it.
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_7E985CA9-4D60-4CCD-A67E-47FBE228E5CB_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmUMV3sPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUEQ8QAKSi9HcR5gM6ZA890hm8JjxH2Ufw8/Fp3gqX
-gqrMAxnIXk9M8thblHLkbD5wjMefVPixGDmsPzdX9VG9JuLC/snXcr6//9v00Uas
-F3t+Z2HL5iyp70SDa91BCLrtZfLPNkgGGwdQze0uh5KDtzNgW7wd3A8UjgmvmIN0
-/cDARmmLk0NkU98clejJ0x+VZy7WKM+uFhu61BXbdOagz+o8okJSCDFdw85vachp
-EKPmSD2Q7Bfoh9Cy3EHo+rZYy1JDqB5uVn8niTN2DdYI66KPk+FZwQ5btAHbjoYh
-HV3526iU0Ki7rqDpXV2JTe8bnY6KSt2rYNLNDZ+hpfE1Dff9Je8bL5sghngUBJIP
-cdcFiez3gVh6lD+2R33lnyqdfVUhlerIjGAwRWBF5LmkKAbQ+Jqx5epfvuz1yTAy
-q77fIojiG+agCsfJponExHzQ4yxIXLRumTUkE11VDKQuQY7q2yOgIOUuBrCvAE1o
-WnCVd1+MpJFIguxLDJGEgYyMgdtJ/t2VJPhLla9ZYD6o8kEylMuLkvFvd87ZqF1v
-FA7/hNQ7NgfkhB5Fbz1lI3U0IzRltR84jm7ZT7GbVnFfB1V3gKU0x6RSIprdB294
-D1FbLxwTzNmtN+G3pXwWunuzs69krJ5wynuF/xmnogJBjM4u0o6a7QNsnbT4qqDL
-czgo4byl
-=PzJr
------END PGP SIGNATURE-----
-
---=_MailMate_7E985CA9-4D60-4CCD-A67E-47FBE228E5CB_=--
+Brett
+> 
+> Jason
