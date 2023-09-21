@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B377A9E76
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F3A7A9E6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjIUUB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S231186AbjIUUB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbjIUUB1 (ORCPT
+        with ESMTP id S231414AbjIUUAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:01:27 -0400
+        Thu, 21 Sep 2023 16:00:52 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4790C55AF7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4350555AF5
         for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:37 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3C3312FC;
-        Wed, 20 Sep 2023 21:21:37 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B6C1474;
+        Wed, 20 Sep 2023 21:21:46 -0700 (PDT)
 Received: from a077893.arm.com (unknown [10.163.32.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2D6613F59C;
-        Wed, 20 Sep 2023 21:20:57 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 49B483F59C;
+        Wed, 20 Sep 2023 21:21:06 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
 Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         James Clark <james.clark@arm.com>,
         Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC RESEND 2/7] coresight: funnel: Move ACPI support from AMBA driver to platform driver
-Date:   Thu, 21 Sep 2023 09:50:35 +0530
-Message-Id: <20230921042040.1334641-3-anshuman.khandual@arm.com>
+Subject: [RFC RESEND 5/7] coresight: tmc: Move ACPI support from AMBA driver to platform driver
+Date:   Thu, 21 Sep 2023 09:50:38 +0530
+Message-Id: <20230921042040.1334641-6-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230921042040.1334641-1-anshuman.khandual@arm.com>
 References: <20230921042040.1334641-1-anshuman.khandual@arm.com>
@@ -44,173 +44,246 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the dynamic funnel device in the platform driver, which can
-then be used on ACPI based platforms. This change would allow runtime power
-management for ACPI based systems.
-
-The driver would try to enable the APB clock if available. Also, rename the
-code to reflect the fact that it now handles both static and dynamic
-funnels.
+Add support for the tmc devices in the platform driver, which can then be
+used on ACPI based platforms. This change would now allow runtime power
+management for ACPI based systems. The driver would try to enable the APB
+clock if available.
 
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/acpi/arm64/amba.c                     |  1 -
- .../hwtracing/coresight/coresight-funnel.c    | 49 ++++++++++++-------
- 2 files changed, 30 insertions(+), 20 deletions(-)
+ drivers/acpi/arm64/amba.c                     |   2 -
+ .../hwtracing/coresight/coresight-tmc-core.c  | 127 +++++++++++++++---
+ drivers/hwtracing/coresight/coresight-tmc.h   |   1 +
+ 3 files changed, 113 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index ac59ce50de07..18aa41d91729 100644
+index 8e1783166c33..6980502b7868 100644
 --- a/drivers/acpi/arm64/amba.c
 +++ b/drivers/acpi/arm64/amba.c
-@@ -28,7 +28,6 @@ static const struct acpi_device_id amba_id_list[] = {
- 	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
- 	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
- 	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
--	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
+@@ -22,10 +22,8 @@
+ static const struct acpi_device_id amba_id_list[] = {
+ 	{"ARMH0061", 0}, /* PL061 GPIO Device */
+ 	{"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
+-	{"ARMHC501", 0}, /* ARM CoreSight ETR */
+ 	{"ARMHC502", 0}, /* ARM CoreSight STM */
+ 	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+-	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
  	{"", 0},
  };
  
-diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-index b8e150e45b27..b4984596738c 100644
---- a/drivers/hwtracing/coresight/coresight-funnel.c
-+++ b/drivers/hwtracing/coresight/coresight-funnel.c
-@@ -43,6 +43,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
- struct funnel_drvdata {
- 	void __iomem		*base;
- 	struct clk		*atclk;
-+	struct clk		*pclk;
- 	struct coresight_device	*csdev;
- 	unsigned long		priority;
- 	spinlock_t		spinlock;
-@@ -236,6 +237,10 @@ static int funnel_probe(struct device *dev, struct resource *res)
- 			return ret;
- 	}
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+index c106d142e632..510481ea635c 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-core.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+@@ -23,6 +23,8 @@
+ #include <linux/of.h>
+ #include <linux/coresight.h>
+ #include <linux/amba/bus.h>
++#include <linux/platform_device.h>
++#include <linux/acpi.h>
  
-+	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
+ #include "coresight-priv.h"
+ #include "coresight-tmc.h"
+@@ -429,24 +431,17 @@ static u32 tmc_etr_get_max_burst_size(struct device *dev)
+ 	return burst_size;
+ }
+ 
+-static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
++static int __tmc_probe(struct device *dev, struct resource *res, void *dev_caps)
+ {
+ 	int ret = 0;
+ 	u32 devid;
+ 	void __iomem *base;
+-	struct device *dev = &adev->dev;
+ 	struct coresight_platform_data *pdata = NULL;
+-	struct tmc_drvdata *drvdata;
+-	struct resource *res = &adev->res;
++	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
+ 	struct coresight_desc desc = { 0 };
+ 	struct coresight_dev_list *dev_list = NULL;
+ 
+ 	ret = -ENOMEM;
+-	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+-	if (!drvdata)
+-		goto out;
+-
+-	dev_set_drvdata(dev, drvdata);
+ 
+ 	/* Validity for the resource is already checked by the AMBA core */
+ 	base = devm_ioremap_resource(dev, res);
+@@ -487,8 +482,7 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+ 		desc.type = CORESIGHT_DEV_TYPE_SINK;
+ 		desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
+ 		desc.ops = &tmc_etr_cs_ops;
+-		ret = tmc_etr_setup_caps(dev, devid,
+-					 coresight_get_uci_data(id));
++		ret = tmc_etr_setup_caps(dev, devid, dev_caps);
+ 		if (ret)
+ 			goto out;
+ 		idr_init(&drvdata->idr);
+@@ -519,7 +513,7 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+ 		ret = PTR_ERR(pdata);
+ 		goto out;
+ 	}
+-	adev->dev.platform_data = pdata;
++	dev->platform_data = pdata;
+ 	desc.pdata = pdata;
+ 
+ 	drvdata->csdev = coresight_register(&desc);
+@@ -535,11 +529,23 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+ 	if (ret)
+ 		coresight_unregister(drvdata->csdev);
+ 	else
+-		pm_runtime_put(&adev->dev);
++		pm_runtime_put(dev);
+ out:
+ 	return ret;
+ }
+ 
++static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
++{
++	struct tmc_drvdata *drvdata;
++
++	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	amba_set_drvdata(adev, drvdata);
++	return __tmc_probe(&adev->dev, &adev->res, coresight_get_uci_data(id));
++}
++
+ static void tmc_shutdown(struct amba_device *adev)
+ {
+ 	unsigned long flags;
+@@ -562,9 +568,9 @@ static void tmc_shutdown(struct amba_device *adev)
+ 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+ }
+ 
+-static void tmc_remove(struct amba_device *adev)
++static void __tmc_remove(struct device *dev)
+ {
+-	struct tmc_drvdata *drvdata = dev_get_drvdata(&adev->dev);
++	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
+ 
+ 	/*
+ 	 * Since misc_open() holds a refcount on the f_ops, which is
+@@ -575,6 +581,11 @@ static void tmc_remove(struct amba_device *adev)
+ 	coresight_unregister(drvdata->csdev);
+ }
+ 
++static void tmc_remove(struct amba_device *adev)
++{
++	__tmc_remove(&adev->dev);
++}
++
+ static const struct amba_id tmc_ids[] = {
+ 	CS_AMBA_ID(0x000bb961),
+ 	/* Coresight SoC 600 TMC-ETR/ETS */
+@@ -602,6 +613,92 @@ static struct amba_driver tmc_driver = {
+ 
+ module_amba_driver(tmc_driver);
+ 
++static int tmc_platform_probe(struct platform_device *pdev)
++{
++	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	struct tmc_drvdata *drvdata;
++	int ret = 0;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
 +	if (IS_ERR(drvdata->pclk))
 +		return -ENODEV;
 +
- 	/*
- 	 * Map the device base for dynamic-funnel, which has been
- 	 * validated by AMBA core.
-@@ -298,6 +303,9 @@ static int funnel_runtime_suspend(struct device *dev)
- 	if (drvdata && !IS_ERR(drvdata->atclk))
- 		clk_disable_unprepare(drvdata->atclk);
- 
-+	if (drvdata && !IS_ERR(drvdata->pclk))
-+		clk_disable_unprepare(drvdata->pclk);
++	if (res) {
++		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
++		if (IS_ERR(drvdata->base)) {
++			clk_put(drvdata->pclk);
++			return PTR_ERR(drvdata->base);
++		}
++	}
 +
- 	return 0;
- }
- 
-@@ -308,6 +316,8 @@ static int funnel_runtime_resume(struct device *dev)
- 	if (drvdata && !IS_ERR(drvdata->atclk))
- 		clk_prepare_enable(drvdata->atclk);
- 
-+	if (drvdata && !IS_ERR(drvdata->pclk))
++	dev_set_drvdata(&pdev->dev, drvdata);
++	pm_runtime_get_noresume(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
++	ret = __tmc_probe(&pdev->dev, res, NULL);
++	if (ret) {
++		pm_runtime_put_noidle(&pdev->dev);
++		pm_runtime_disable(&pdev->dev);
++	}
++	return ret;
++}
++
++static int tmc_platform_remove(struct platform_device *pdev)
++{
++	__tmc_remove(&pdev->dev);
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int tmc_runtime_suspend(struct device *dev)
++{
++	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
++
++	if (drvdata->pclk && !IS_ERR(drvdata->pclk))
++		clk_disable_unprepare(drvdata->pclk);
++	return 0;
++}
++
++static int tmc_runtime_resume(struct device *dev)
++{
++	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
++
++	if (drvdata->pclk && !IS_ERR(drvdata->pclk))
 +		clk_prepare_enable(drvdata->pclk);
- 	return 0;
- }
- #endif
-@@ -316,16 +326,16 @@ static const struct dev_pm_ops funnel_dev_pm_ops = {
- 	SET_RUNTIME_PM_OPS(funnel_runtime_suspend, funnel_runtime_resume, NULL)
- };
- 
--static int static_funnel_probe(struct platform_device *pdev)
-+static int funnel_platform_probe(struct platform_device *pdev)
- {
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	int ret;
- 
- 	pm_runtime_get_noresume(&pdev->dev);
- 	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 
--	/* Static funnel do not have programming base */
--	ret = funnel_probe(&pdev->dev, NULL);
-+	ret = funnel_probe(&pdev->dev, res);
- 
- 	if (ret) {
- 		pm_runtime_put_noidle(&pdev->dev);
-@@ -335,37 +345,38 @@ static int static_funnel_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int static_funnel_remove(struct platform_device *pdev)
-+static int funnel_platform_remove(struct platform_device *pdev)
- {
- 	funnel_remove(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	return 0;
- }
- 
--static const struct of_device_id static_funnel_match[] = {
-+static const struct of_device_id funnel_match[] = {
- 	{.compatible = "arm,coresight-static-funnel"},
- 	{}
- };
- 
--MODULE_DEVICE_TABLE(of, static_funnel_match);
-+MODULE_DEVICE_TABLE(of, funnel_match);
- 
- #ifdef CONFIG_ACPI
--static const struct acpi_device_id static_funnel_ids[] = {
--	{"ARMHC9FE", 0},
-+static const struct acpi_device_id funnel_acpi_ids[] = {
-+	{"ARMHC9FE", 0}, /* ARM Coresight Static Funnel */
-+	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
- 	{},
- };
- 
--MODULE_DEVICE_TABLE(acpi, static_funnel_ids);
-+MODULE_DEVICE_TABLE(acpi, funnel_acpi_ids);
- #endif
- 
--static struct platform_driver static_funnel_driver = {
--	.probe          = static_funnel_probe,
--	.remove          = static_funnel_remove,
--	.driver         = {
--		.name   = "coresight-static-funnel",
-+static struct platform_driver funnel_driver = {
-+	.probe	= funnel_platform_probe,
-+	.remove	= funnel_platform_remove,
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops tmc_dev_pm_ops = {
++	SET_RUNTIME_PM_OPS(tmc_runtime_suspend, tmc_runtime_resume, NULL)
++};
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id tmc_acpi_ids[] = {
++	{"ARMHC501", 0}, /* ARM CoreSight ETR */
++	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, tmc_acpi_ids);
++#endif
++
++static struct platform_driver tmc_platform_driver = {
++	.probe	= tmc_platform_probe,
++	.remove	= tmc_platform_remove,
 +	.driver	= {
-+		.name   = "coresight-funnel",
- 		/* THIS_MODULE is taken care of by platform_driver_register() */
--		.of_match_table = static_funnel_match,
--		.acpi_match_table = ACPI_PTR(static_funnel_ids),
-+		.of_match_table = funnel_match,
-+		.acpi_match_table = ACPI_PTR(funnel_acpi_ids),
- 		.pm	= &funnel_dev_pm_ops,
- 		.suppress_bind_attrs = true,
- 	},
-@@ -413,7 +424,7 @@ static int __init funnel_init(void)
- {
- 	int ret;
- 
--	ret = platform_driver_register(&static_funnel_driver);
-+	ret = platform_driver_register(&funnel_driver);
- 	if (ret) {
- 		pr_info("Error registering platform driver\n");
- 		return ret;
-@@ -422,7 +433,7 @@ static int __init funnel_init(void)
- 	ret = amba_driver_register(&dynamic_funnel_driver);
- 	if (ret) {
- 		pr_info("Error registering amba driver\n");
--		platform_driver_unregister(&static_funnel_driver);
-+		platform_driver_unregister(&funnel_driver);
- 	}
- 
- 	return ret;
-@@ -430,7 +441,7 @@ static int __init funnel_init(void)
- 
- static void __exit funnel_exit(void)
- {
--	platform_driver_unregister(&static_funnel_driver);
-+	platform_driver_unregister(&funnel_driver);
- 	amba_driver_unregister(&dynamic_funnel_driver);
- }
- 
++		.name			= "coresight-tmc-platform",
++		.acpi_match_table	= ACPI_PTR(tmc_acpi_ids),
++		.suppress_bind_attrs	= true,
++		.pm			= &tmc_dev_pm_ops,
++	},
++};
++module_platform_driver(tmc_platform_driver);
++
+ MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
+ MODULE_DESCRIPTION("Arm CoreSight Trace Memory Controller driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/hwtracing/coresight/coresight-tmc.h b/drivers/hwtracing/coresight/coresight-tmc.h
+index 0ee48c5ba764..193af5959f2c 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc.h
++++ b/drivers/hwtracing/coresight/coresight-tmc.h
+@@ -189,6 +189,7 @@ struct etr_buf {
+  * @perf_buf:	PERF buffer for ETR.
+  */
+ struct tmc_drvdata {
++	struct clk		*pclk;
+ 	void __iomem		*base;
+ 	struct coresight_device	*csdev;
+ 	struct miscdevice	miscdev;
 -- 
 2.25.1
 
