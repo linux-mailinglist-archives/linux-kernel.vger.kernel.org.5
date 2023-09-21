@@ -2,53 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D57937AA489
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B297AA4EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbjIUWLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        id S233281AbjIUWZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjIUWLZ (ORCPT
+        with ESMTP id S232913AbjIUWZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:11:25 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8A5AF6B1;
-        Thu, 21 Sep 2023 11:07:26 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id f5571a811c8c5fc5; Thu, 21 Sep 2023 20:07:25 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 85623664EBE;
-        Thu, 21 Sep 2023 20:07:24 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 09/13] thermal: core: Rename trip point index function arguments in governors
-Date:   Thu, 21 Sep 2023 19:58:32 +0200
-Message-ID: <3719288.MHq7AAxBmi@kreacher>
-In-Reply-To: <1957441.PYKUYFuaPT@kreacher>
-References: <1957441.PYKUYFuaPT@kreacher>
+        Thu, 21 Sep 2023 18:25:32 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1A1A5464
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:58:53 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34fa117f92bso13155ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695319133; x=1695923933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f9SVUFZn2boEnF5GwKRdG3SSt8HtSOHZO4l12UhiSWo=;
+        b=McMMAWGfHhqPUhzXpT7VHiRtKNmFAh+12xLXkk5gZY39LZlcGl+G+OiI5SUfm8i0Wh
+         0dKn/HaR6jiMhBQOqve2b+V63UtmkR1KaFSeum9XR2V9pu2wK4JL8Q/tnBBV+cgP4fF1
+         YD6MX95A5zylakzf2NmBOHb0wsdZ1zsyK8mha5CzUgMhrTYlcjph9v38hXgyY260ehSh
+         Q/qThmz0mB7BXSHWrulsVUAThft4cjZ04gZfdTtSiGuDPS8PVzUkEGU2RTbfvXQyz8jS
+         3h4G4d600YDR+8AqrDZ+ucpypXYfkU7Eqfbt9OLaOsnnsumJn3i7hKjlOHWdvlwhIWOT
+         zPBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695319133; x=1695923933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f9SVUFZn2boEnF5GwKRdG3SSt8HtSOHZO4l12UhiSWo=;
+        b=b46oPIZCK9NwDO2GsDjJNNEZxvOFx8xnDVtcKbgn2Hiiij/dNvxRsgwbbxdeasbILS
+         XkMMbMOb1EjckR0lPfhxob0A3MrXxPnSc5LXsGPVTWPG3o1ehhPU2i7a9tlb2ycemwzx
+         zC1M01+EgEk4HLp9n1umbnDR7LPcDKffcfWecvhUpnGgitpFfFcXfjWSluqITxga/VaP
+         aAJhAagVcVgxF4C/0Cee7xk2YIMfxDsZysUTGwJ43lkh4o1lzSQCjI3Y9jmmKHC1J3us
+         FOsKu0VnE7HLKJHcN7NRkR5BCqTyJMyeNXQkdz9VYvXLoZIJDk1fno8SQTK6LfzD96Lc
+         byiA==
+X-Gm-Message-State: AOJu0YxZ/xy3hCXIQG2k9JSJ9teN93f/bB2hi5HJAfjGoX+gL4Qew8cq
+        EJY/aRyRwHNDb1oCxH7oRSJl9dlgfK0vqn4hDqb9
+X-Google-Smtp-Source: AGHT+IHn3jby0f9lrLxQXMCYIcclXtaVrAkIXpzr0C33TkWnHakXxvV7Um0L9DLm0Wo7YYavt5pjNW6jZDyfCtBiki8=
+X-Received: by 2002:a05:6e02:156d:b0:346:1ca6:c27a with SMTP id
+ k13-20020a056e02156d00b003461ca6c27amr292898ilu.13.1695319132831; Thu, 21 Sep
+ 2023 10:58:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+ <20230911125936.10648-13-yunfei.dong@mediatek.com> <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
+ <d4cedcb0-32ed-495d-a8cd-a635d5105824@xs4all.nl> <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
+ <bafc37e8-96e8-41c0-b805-c6477f0d7c4a@xs4all.nl> <CA+ddPcN6EaFERC60_Z_-ZmWzqyUEwxiDCZwt_U6Y-gpaAu76tA@mail.gmail.com>
+ <ff7aa575-c820-4dfa-853f-77438b8b149a@xs4all.nl> <b7d661637eacbda3e83d192b1126fc3970c4f50d.camel@collabora.com>
+ <c3d14f64-bf04-46b9-ac7b-af7ef9014335@xs4all.nl> <CA+ddPcPbox=mknpmDkwfYTfDMca49wU10SNF3mJspYu=5T64FQ@mail.gmail.com>
+ <c7cd83c49a9226e72c272365653dc8b998b6adcb.camel@collabora.com>
+In-Reply-To: <c7cd83c49a9226e72c272365653dc8b998b6adcb.camel@collabora.com>
+From:   Jeffrey Kardatzke <jkardatzke@google.com>
+Date:   Thu, 21 Sep 2023 10:58:38 -0700
+Message-ID: <CA+ddPcPm4aZ9LKu1D1rO3qguPN7E7jbnXTOqdjYCtDm7sk4nzw@mail.gmail.com>
+Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to decoder driver
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= 
+        <Yunfei.Dong@mediatek.com>,
+        "nhebert@chromium.org" <nhebert@chromium.org>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "nfraprado@collabora.com" <nfraprado@collabora.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "frkoenig@chromium.org" <frkoenig@chromium.org>,
+        "stevecho@chromium.org" <stevecho@chromium.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@chromium.org" <hsinyi@chromium.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhn
- thgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,141 +96,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Sep 21, 2023 at 8:46=E2=80=AFAM Nicolas Dufresne
+<nicolas.dufresne@collabora.com> wrote:
+>
+> Le mercredi 20 septembre 2023 =C3=A0 11:20 -0700, Jeffrey Kardatzke a =C3=
+=A9crit :
+> > > >
+> > > > Also, regarding MTK, these are stateless decoders. I think it would=
+ be nice to
+> > > > show use example code that can properly parse the un-encrypted head=
+er, pass the
+> > > > data to the decryptor and decode. There is a bit of mechanic in the=
+re that lacks
+> > > > clarification, a reference implementation would clearly help. Final=
+ly, does this
+> > > > platform offers some clearkey implementation (or other alternative)=
+ so we can do
+> > > > validation and regression testing? It would be very unfortunate to =
+add feature
+> > > > upstream that can only be tested by proprietary CDM software.
+> > >
+> >
+> > It would be possible to use this with clearkey w/ some additional work
+> > on our end. If this is then part of the public ChromiumOS build, would
+> > that be satisfactory? (the TEE would have some binary blob components
+> > like firmware does though)
+>
+> From my point of view, this would fully cover my concern. To clarify this
+> concern, the  decryption into secure memory currently only ever take plac=
+e in
+> proprietary code that implements the protection (Widewine CDM). With clea=
+r key,
+> we can have an open source CDM (made for testing purpose) so that we don'=
+t have
+> to have hidden code to test the entire pipeline. So appart from the TEE
+> firmware, which is just a firmware like all the others, we could have ope=
+n
+> source tests in kernelCI and other CI, and we could extend these test to
+> eventually support other vendors.
+>
+> Note that currently, with other proposal, one could allocate and fill a n=
+ormal
+> buffer, and "secure" that buffer to test the CODECs and display, but on t=
+his
+> specific architecture, with the limitation on the number of secure region=
+s, this
+> feature isn't available.
+>
+> Alternatives to this end-to-end solution, we could consider a TA (Trusted
+> Application) that simply copy data from a untrusted chunk of memory into =
+a
+> trusted chunk of memory. That seems like a cross-platform solution. It wo=
+uld be
+> even better if this get standardized in TEEs for course (or at least requ=
+ired
+> with all secure memory implementation). Then copying from untrusted to tr=
+usted
+> could easily become an ioctl generic to all TEE drivers. That to me would=
+ be
+> equally acceptable, and perhaps easier to use.
+>
+> Nicolas
 
-Rename function argumets used for passing trip point indices in thermal
-governors and in the .throttle() callback to "trip_index" to avoid
-confusion with trip pointer names.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_bang_bang.c  |    4 ++--
- drivers/thermal/gov_step_wise.c  |   16 ++++++++--------
- drivers/thermal/gov_user_space.c |    6 +++---
- include/linux/thermal.h          |    2 +-
- 4 files changed, 14 insertions(+), 14 deletions(-)
-
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -199,7 +199,7 @@ struct thermal_governor {
- 	char name[THERMAL_NAME_LENGTH];
- 	int (*bind_to_tz)(struct thermal_zone_device *tz);
- 	void (*unbind_from_tz)(struct thermal_zone_device *tz);
--	int (*throttle)(struct thermal_zone_device *tz, int trip);
-+	int (*throttle)(struct thermal_zone_device *tz, int trip_index);
- 	struct list_head	governor_list;
- };
- 
-Index: linux-pm/drivers/thermal/gov_user_space.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_user_space.c
-+++ linux-pm/drivers/thermal/gov_user_space.c
-@@ -25,11 +25,11 @@ static int user_space_bind(struct therma
- /**
-  * notify_user_space - Notifies user space about thermal events
-  * @tz: thermal_zone_device
-- * @trip: trip point index
-+ * @trip_index: trip point index
-  *
-  * This function notifies the user space through UEvents.
-  */
--static int notify_user_space(struct thermal_zone_device *tz, int trip)
-+static int notify_user_space(struct thermal_zone_device *tz, int trip_index)
- {
- 	char *thermal_prop[5];
- 	int i;
-@@ -38,7 +38,7 @@ static int notify_user_space(struct ther
- 
- 	thermal_prop[0] = kasprintf(GFP_KERNEL, "NAME=%s", tz->type);
- 	thermal_prop[1] = kasprintf(GFP_KERNEL, "TEMP=%d", tz->temperature);
--	thermal_prop[2] = kasprintf(GFP_KERNEL, "TRIP=%d", trip);
-+	thermal_prop[2] = kasprintf(GFP_KERNEL, "TRIP=%d", trip_index);
- 	thermal_prop[3] = kasprintf(GFP_KERNEL, "EVENT=%d", tz->notify_event);
- 	thermal_prop[4] = NULL;
- 	kobject_uevent_env(&tz->device.kobj, KOBJ_CHANGE, thermal_prop);
-Index: linux-pm/drivers/thermal/gov_bang_bang.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_bang_bang.c
-+++ linux-pm/drivers/thermal/gov_bang_bang.c
-@@ -89,14 +89,14 @@ static int thermal_zone_trip_update(stru
-  *     (trip_temp - hyst) so that the fan gets turned off again.
-  *
-  */
--static int bang_bang_control(struct thermal_zone_device *tz, int trip)
-+static int bang_bang_control(struct thermal_zone_device *tz, int trip_index)
- {
- 	struct thermal_instance *instance;
- 	int ret;
- 
- 	lockdep_assert_held(&tz->lock);
- 
--	ret = thermal_zone_trip_update(tz, trip);
-+	ret = thermal_zone_trip_update(tz, trip_index);
- 	if (ret)
- 		return ret;
- 
-Index: linux-pm/drivers/thermal/gov_step_wise.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_step_wise.c
-+++ linux-pm/drivers/thermal/gov_step_wise.c
-@@ -68,23 +68,23 @@ static unsigned long get_target_state(st
- 	return next_target;
- }
- 
--static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip_id)
-+static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip_index)
- {
--	const struct thermal_trip *trip = &tz->trips[trip_id];
-+	const struct thermal_trip *trip = &tz->trips[trip_index];
- 	enum thermal_trend trend;
- 	struct thermal_instance *instance;
- 	bool throttle = false;
- 	int old_target;
- 
--	trend = get_tz_trend(tz, trip_id);
-+	trend = get_tz_trend(tz, trip_index);
- 
- 	if (tz->temperature >= trip->temperature) {
- 		throttle = true;
--		trace_thermal_zone_trip(tz, trip_id, trip->type);
-+		trace_thermal_zone_trip(tz, trip_index, trip->type);
- 	}
- 
- 	dev_dbg(&tz->device, "Trip%d[type=%d,temp=%d]:trend=%d,throttle=%d\n",
--		trip_id, trip->type, trip->temperature, trend, throttle);
-+		trip_index, trip->type, trip->temperature, trend, throttle);
- 
- 	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
- 		if (instance->trip != trip)
-@@ -120,7 +120,7 @@ static void thermal_zone_trip_update(str
- /**
-  * step_wise_throttle - throttles devices associated with the given zone
-  * @tz: thermal_zone_device
-- * @trip: trip point index
-+ * @trip_index: trip point index
-  *
-  * Throttling Logic: This uses the trend of the thermal zone to throttle.
-  * If the thermal zone is 'heating up' this throttles all the cooling
-@@ -128,13 +128,13 @@ static void thermal_zone_trip_update(str
-  * step. If the zone is 'cooling down' it brings back the performance of
-  * the devices by one step.
-  */
--static int step_wise_throttle(struct thermal_zone_device *tz, int trip)
-+static int step_wise_throttle(struct thermal_zone_device *tz, int trip_index)
- {
- 	struct thermal_instance *instance;
- 
- 	lockdep_assert_held(&tz->lock);
- 
--	thermal_zone_trip_update(tz, trip);
-+	thermal_zone_trip_update(tz, trip_index);
- 
- 	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
- 		thermal_cdev_update(instance->cdev);
-
-
-
+It's very likely for the clearkey implementation that I would just
+have it copying the data from a non-secure to secure buffer in a TA.
+We would never do that in production of course, but for testing images
+that would suffice.
