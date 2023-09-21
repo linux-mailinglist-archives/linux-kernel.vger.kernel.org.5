@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448D97AA0C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9987AA141
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbjIUUsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S232070AbjIUVAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbjIUUsZ (ORCPT
+        with ESMTP id S232398AbjIUU7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:48:25 -0400
-Received: from mail-oi1-x249.google.com (mail-oi1-x249.google.com [IPv6:2607:f8b0:4864:20::249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F0B9280A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:48:45 -0700 (PDT)
-Received: by mail-oi1-x249.google.com with SMTP id 5614622812f47-3adbcfd059aso1744845b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:48:45 -0700 (PDT)
+        Thu, 21 Sep 2023 16:59:41 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7654D83F62
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:18 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so1160127a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695318525; x=1695923325; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wz9DrRdcdVVuAipyFL7+yUJ9r1lHv1bDpxPkFxDk1Ys=;
-        b=OJMlhkKR1I+UDMSPZvsRWNOqeJK7nBF/NcFbN6EHRR0q3q96Yt/7OaPuxORzqHLYHZ
-         D0Sd4e/Xub912jW0cOlqRYI9uXa8LE1HwJts3KCJ7tSs8DFZQ9M9dl9YOQR5Ekm2Ge1a
-         0FG6zoptouzK8g07hy/zw15oKBpVY3viWhqCtPwysnjMyoyLHGWv3aM3527hvjUrj+5/
-         yYP2rpN4mQ1PgEpr9mBq9HZbSUCopa7C0EQ0gIGcVOhJKa0gKGpJ+ab8/iUaw5K45iOj
-         dhoZlVFqjiUe4qVBuXWX30Oxn/JJFuIHRnDLm+7lVyRlTWbdzYyI2yo9zN3dRD3io28N
-         PNIw==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695317837; x=1695922637; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ABe5lag05JGrRRfK6Q7TQU2Nmk4xnwbIxqigvQsoK2A=;
+        b=JwnjnrHShjI6zRawKAxhSBYdz0O8VDXWCPifpp0aJh6MB5rBHny5X7xZ6Fwt+Vqs54
+         WCqs7RvvHfI4Zbnn2Ku/ujq6x1HWvXgsgBWOe5EXga6gm7+4mo2TXPMxkBjMxDO1MZUc
+         F5rRDNz2EgN4J3DZbLv2wh52gvJGdPkhH8M/ZP0qYVkUT3MGYs3WVPJ08IjpV5f/KVxP
+         VznYp+xMVWezX97qBFKlSKBuWlfDRz9uGDXFDzsPbZp3ODRCOt8bJt3Dwvac8+c8WGnX
+         FiJYIB0ZZRWc23ugs+gUVak+WjN52RT/hS4yW6EoxwORyQccZ1JSV/lSrFj8tRSdef3z
+         SboQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318525; x=1695923325;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wz9DrRdcdVVuAipyFL7+yUJ9r1lHv1bDpxPkFxDk1Ys=;
-        b=kZ5ejE7jWaH7uEAU0UHSupXzNVO4L1ZbAsCQv3y0oI+TCC1yu8nixtmf2xwKrqhLjI
-         73h+p3bzigQVJ2bpfvuVCb2yvCp1/T7FH01BBoi8n0yfm7mPk1CuXTqbPiNaj/G1cMlW
-         8SywZpFvEZWR9CGb2EHxN7Je69ZtRYCyOoIVW+3uFYlWWYlSICtIoTPTJJhqkXC+Pk61
-         3RjOQt2jcPPNpiv21SxRthmRJOZSm6vD7zZla5279v8GRykbgT6/fHvXENfJyDAH9+G2
-         Q6X4hCgcYWl+0mAtOGA/ioJPp9oQf9Jat9sewGjo3wPpG2GVMYYqBgngNOEdoOOVlxVd
-         8naA==
-X-Gm-Message-State: AOJu0YzIYpIY8O2aPK19kdoNtoxAJGRq3xAdIe5V1UVl4HPR9cLuCCtB
-        M236U2pmmyb3LL7sheQamjFxy80pRKk=
-X-Google-Smtp-Source: AGHT+IGUFnCnwTB8D/pvi+zCV50rb2MP1v9iWe+0I6TPrLEdJFPDsHjmkXHNGKAnIJkUwJqPY2g2IiDhfbg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1704:b0:d64:f7ec:6d5d with SMTP id
- by4-20020a056902170400b00d64f7ec6d5dmr84990ybb.10.1695306762523; Thu, 21 Sep
- 2023 07:32:42 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 14:32:41 +0000
-In-Reply-To: <adebc422-2937-48d7-20c1-aef2dc1ac436@redhat.com>
-Mime-Version: 1.0
-References: <20230916003916.2545000-1-seanjc@google.com> <20230916003916.2545000-3-seanjc@google.com>
- <adebc422-2937-48d7-20c1-aef2dc1ac436@redhat.com>
-Message-ID: <ZQxUCc3BEHA91FgY@google.com>
-Subject: Re: [PATCH 2/3] KVM: x86/mmu: Take "shared" instead of "as_id" TDP
- MMU's yield-safe iterator
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pattara Teerapong <pteerapong@google.com>,
-        David Stevens <stevensd@google.com>,
-        Yiwei Zhang <zzyiwei@google.com>,
-        Paul Hsia <paulhsia@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695317837; x=1695922637;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ABe5lag05JGrRRfK6Q7TQU2Nmk4xnwbIxqigvQsoK2A=;
+        b=Q201OU4CdWct1J2hAlCuopthuipnbI92x8+kf8GeT6jMZhPJ7gmR2/LXDYmygHVKz8
+         +wMdIUU2I4X1i/otzKeGcmruAjH/e9j5skNn/9nujkugGgQuTslMa9RgK50C5gIkTRvK
+         UCzYF+2i0Ue2tSKHiivN500N5BZ2geYx6TcwUTNicjPlQhNzsObY04CCbaUKbpgIPCe3
+         pr6CVxMyTwzLm6ZHSHDKBojV0he/93P9HjsKhGlcZN4472hitJca01KDRCplL+2lt4qz
+         OFxp8Hei2o6C8mL8wm86VmVTzhA3YPU5rbq+5PJWdt0OIFeFMv1eE1uYV6wx7j8UOJ95
+         4tXw==
+X-Gm-Message-State: AOJu0YzmVAi8K4wGvqpy+ll85rdftRov74pe08P78S7dpxINWwGbVY4x
+        ZgbJgeKwV0+D09o8A++HFqgiMqKRsCdzTTXTR+c=
+X-Google-Smtp-Source: AGHT+IGjoyNrvxCOmiRU6T/l2zYW9m8AVBU3LbyVShNlB4GekcqlT9pPNTweRl3dmSDWyO+BQzflag==
+X-Received: by 2002:a17:906:20dd:b0:9ad:cb02:275f with SMTP id c29-20020a17090620dd00b009adcb02275fmr5307075ejc.34.1695306773342;
+        Thu, 21 Sep 2023 07:32:53 -0700 (PDT)
+Received: from [127.0.1.1] ([93.5.22.158])
+        by smtp.googlemail.com with ESMTPSA id lt12-20020a170906fa8c00b009a219ecbaf1sm1153327ejb.85.2023.09.21.07.32.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 07:32:52 -0700 (PDT)
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+Date:   Thu, 21 Sep 2023 16:32:42 +0200
+Subject: [PATCH v5 3/7] arm64: dts: mediatek: add apu support for mt8365
+ SoC
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230207-iommu-support-v5-3-fa6f03680832@baylibre.com>
+References: <20230207-iommu-support-v5-0-fa6f03680832@baylibre.com>
+In-Reply-To: <20230207-iommu-support-v5-0-fa6f03680832@baylibre.com>
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alexandre Mergnat <amergnat@baylibre.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1174; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=LNi5XTwnw6k3l6Q87CyTgWzrlVLjaNEqurZKDlk2veo=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBlDFQP6GqJjbLUqKqxj6xy8Bno/ClUvJYLrn3Hmj6Z
+ WRq+RVyJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZQxUDwAKCRArRkmdfjHURbzXEA
+ CtoPjBUH3xYFYAKUMiNcdHOWrnTKIIVSJ1nCZqaEtp4uzw7YjrnDFm97+Xjuu2+We3fpcQh5rfUhYw
+ sPyIKuzpBGukYrCyg1cntaJFnWj7zkuv5tm01rIhDSb9cvfIesD6Wgybc4c9xkvuufeAPSaCeamCUz
+ 6XKAk8oIdSwhXp2ZJEqjCfb8Jq1tq7XbtAU5EsNDm+YQdBRVmTESdE0p0z4fG12A1RSBoHDQkJ8ijo
+ P2fbCbDjkeu6h0xg5dMIFwNbJH2JwCr4DraiG6jZ93u22kqyaC/ROO9iQKJgRR/0YB/pCHHP6cV7/V
+ OZkxUkgLQaYd4dbZuxcw+30vhbMp3emKzdz79kYDtRtLJmDOhwD1R9BKAcO02Dbk4iw8XoePlfM4Hp
+ qfMoX8zqKIVMWXXawqQUW74VBHelwGLmlFN4xEKBpB7G3q3fOr4zYGaVbddNoBC89lqFldbBxyAzwU
+ qOQVRnIGbxtDEk3QP3Sl3fUZQR+naiUGD+2aUFpRP4K0yAOTqKgJQY2qtQPEs69zlj+RUH05ssfKC9
+ Pza9sw4vljuxaR3KeKHzgsCsf/jmjP7vyPNPyEzOLyosR3g8gUvKKeiFzPQO6jPCpQrjt4ViZkv2II
+ L23fuNQtT5JgfO60FwIvZvGiCWxWkrCQ5kc61MjwKwJmFbVD4HU4D8E6uLEQ==
+X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
+ fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023, Paolo Bonzini wrote:
-> On 9/16/23 02:39, Sean Christopherson wrote:
-> > Replace the address space ID in for_each_tdp_mmu_root_yield_safe() with a
-> > shared (vs. exclusive) param, and have the walker iterate over all address
-> > spaces as all callers want to process all address spaces.  Drop the @as_id
-> > param as well as the manual address space iteration in callers.
-> > 
-> > Add the @shared param even though the two current callers pass "false"
-> > unconditionally, as the main reason for refactoring the walker is to
-> > simplify using it to zap invalid TDP MMU roots, which is done with
-> > mmu_lock held for read.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> 
-> You konw what, I don't really like the "bool shared" arguments anymore.
+AI Processor Unit System (APUSYS) is a highly efficient computing unit
+system which is most suitable for AI/CV algorithms. It includes one
+programmable AI processor (Cadence VP6) for both AI and CV algorithms,
+and an eDMA engine for data movement between external DRAM and VP6
+internal memory.
 
-Yeah, I don't like the "shared" arguments either.  Never did, but they are necessary
-for some paths, and I don't see an obviously better solution. :-/
+For more detail, ask Mediatek for the MT8365 AIoT application processor
+functional specification.
 
-> For example, neither tdp_mmu_next_root nor kvm_tdp_mmu_put_root need to know
-> if the lock is taken for read or write; protection is achieved via RCU and
-> tdp_mmu_pages_lock.  It's more self-documenting to remove the argument and
-> assert that the lock is taken.
-> 
-> Likewise, the argument is more or less unnecessary in the
-> for_each_*_tdp_mmu_root_yield_safe() macros.  Many users check for the lock
-> before calling it; and all of them either call small functions that do the
-> check, or end up calling tdp_mmu_set_spte_atomic() and
-> tdp_mmu_iter_set_spte(), so the per-iteration checks are also overkill.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8365.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Agreed.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
+index f9cddce5bd9d..c3ad7cbc89ab 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8365.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
+@@ -615,6 +615,12 @@ camsys: syscon@15000000 {
+ 			reg = <0 0x15000000 0 0x1000>;
+ 			#clock-cells = <1>;
+ 		};
++
++		apu: syscon@19020000 {
++			compatible = "mediatek,mt8365-apu", "syscon";
++			reg = <0 0x19020000 0 0x1000>;
++			#clock-cells = <1>;
++		};
+ 	};
  
-> It may be useful to a few assertions to make up for the lost check before
-> the first execution of the body of for_each_*_tdp_mmu_root_yield_safe(), but
-> even this is more for documentation reasons than to catch actual bugs.
+ 	timer {
 
-I think it's more than sufficient, arguably even better, to document which paths
-*require* mmu_lock be held for read vs. write, and which paths work with either.
+-- 
+2.25.1
 
-> I'll send a v2.
-
-Can we do a cleanup of the @shared arguments on top?  I would like to keep the
-diff reasonably small to minimize the v6.1 backport.
