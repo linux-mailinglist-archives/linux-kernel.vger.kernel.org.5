@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B837A97C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D33C7A97A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjIUR1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
+        id S229862AbjIUR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjIUR1K (ORCPT
+        with ESMTP id S229688AbjIUR0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:27:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1C510FA;
-        Thu, 21 Sep 2023 10:03:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3CF6C4E764;
-        Thu, 21 Sep 2023 14:29:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695306586;
-        bh=HPNrgxZmgDrK/7v8w1qWsE4OijoieBpRZDKxz/upQ20=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BtH1ChD9v3Lhaimr7O4iFGTSAiQZu4lSCYhz2K+x9Z7DmqGsODmZnFO/tEo9Exnqg
-         XUwyIE3AqFA+nQy8qDyspp+6lU7AUcELyyug+/MvtklzQXMYaqklyBqyEZJ77MSuky
-         Ux8t6gzVFuD1ZGdYO4lK8+01rMNheQ0tM1Q+R2S1fhB3vGirg63wf6bzm/2Rj6Amn/
-         mIC6CrR/HVJWhV2tlZWo2R2QxmbJ7X3PLl3iPHUCJtkg/Tc+AWQtrRxh01+DRtPJN6
-         66R9mxWdzrQs0mKX2s2AvYOImdFD0sj+55fMAxD9KMhUOkEO/K9uRsU9j4Cc/9ELRd
-         h3AZ8hq1/2hfw==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230830-topic-eusb2_override-v2-0-7d8c893d93f6@linaro.org>
-References: <20230830-topic-eusb2_override-v2-0-7d8c893d93f6@linaro.org>
-Subject: Re: [PATCH v2 0/4] EUSB2 repeater init sequence override
-Message-Id: <169530658362.106263.16903519035871193100.b4-ty@kernel.org>
-Date:   Thu, 21 Sep 2023 16:29:43 +0200
+        Thu, 21 Sep 2023 13:26:03 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DEA4F387
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:17 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-307d20548adso1082102f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695317115; x=1695921915; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DpJ/97G25b6TPjTn6QzU+EXfaLRmUn9TD44GKiLbxUc=;
+        b=XEkjCMU3aqZK8Juq/KEZbqWpqTZUK4nPDVl6zK9EYVnBBf/8LQkH52rFQQTOjUX0no
+         KhX2ruLvQ9yRA4GACbmmZNCKAGHLUqiPA80bFbjI0T0MF9geukksqtVxOI+CE9+Ask2k
+         r7AwnKSThwwslEpFKo+c6mLlDyEQL7iAxZjP+H4kYFk9M+DhwBEZqq6Z6aDnVthN7V0p
+         a2t5lkzKhNqX81827FI1BC87LpJjJKQ6dPeMri2yopZ7rbl02ifAwV/r0hyPZP2jwFzC
+         Ss+LOBlVh2IYBy8CecHLZAUyCw2K4V1LsW27f/D9MHeRJfrTPypErZd5V0cRcKKw0aQ/
+         sM+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695317115; x=1695921915;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DpJ/97G25b6TPjTn6QzU+EXfaLRmUn9TD44GKiLbxUc=;
+        b=lOAy/HJd8Cd34MXDksdPGCQD9No7E8ltxGivL+49C+PvVpClREWV6OXpra8yyF55Uw
+         IMQwbC+yAhoZevfKSGccPz4XfB7Bc1LQKPEC1j73pMDx5kEmJg+pICCCRVfkXuRMnrkD
+         Dmte84JJvZz8egCktf/zvdzMxj+JtmpDyEIO3nH6By2MUvYUymda9vVAiHgpvLa+MLzj
+         FmKCAqAxKcs+J4tDMcvbjBDhFmMsnmY9uGOH03nh/o/H0f3X3mIF7yzNp5AMpdVnj6DE
+         S//81Z3Pzx/DHGNa111SVWaW1HkeEaS/6zWpac5j6Klob4zzcfBk4RWDBY9BAlnqAPKm
+         oNAg==
+X-Gm-Message-State: AOJu0Ywslw2TigMRChyxJ3CgJSnTU09wwbVS4WpbN4uSncsdFNyZ3BJr
+        6L94Mlg5qPAP6/JAjm/3fW836mwJe3vPTTM7G8Oe4bSjk60Zrf8G7TxHDA==
+X-Google-Smtp-Source: AGHT+IFTxMHPC95KiOI2z0xWTy4CeTB0NUWNRpnxeR4sjTTRwKDyfOkzMakcC+k0ZCF0c3b4q1acDPb+GMi6CilNLCU=
+X-Received: by 2002:a05:6512:110e:b0:503:7dd:7ebc with SMTP id
+ l14-20020a056512110e00b0050307dd7ebcmr6385076lfg.18.1695306665262; Thu, 21
+ Sep 2023 07:31:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230825112633.236607-1-ulf.hansson@linaro.org> <20230825112633.236607-12-ulf.hansson@linaro.org>
+In-Reply-To: <20230825112633.236607-12-ulf.hansson@linaro.org>
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Thu, 21 Sep 2023 16:30:48 +0200
+Message-ID: <CAKohponrQRm5xP4Ahei7ZnSmfdsLk+6tFD+7mXZ_c23pEP+x9w@mail.gmail.com>
+Subject: Re: [PATCH v3 11/13] cpufreq: scmi: Add support to parse domain-id
+ using #power-domain-cells
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 13 Sep 2023 11:53:22 +0200, Konrad Dybcio wrote:
-> The EUSB2 repeater goes through a tuning sequence as part of its
-> initialization. This series ensures the tuning is "clean" and can be
-> overridden for devices that need it.
-> 
-> 
-
-Applied, thanks!
-
-[1/4] dt-bindings: phy: qcom,snps-eusb2-repeater: Add magic tuning overrides
-      commit: 2da73b4e0cf1d9847483fe474ce27af987bfb614
-[2/4] phy: qualcomm: phy-qcom-eusb2-repeater: Use regmap_fields
-      commit: dcc8a942852f00845e75c49ca8a7a6865d6b669d
-[3/4] phy: qualcomm: phy-qcom-eusb2-repeater: Zero out untouched tuning regs
-      commit: af1c6ec341c3a1cc396784b2ce4619aec7be3e34
-[4/4] phy: qualcomm: phy-qcom-eusb2-repeater: Add tuning overrides
-      commit: 05733bd60f7aa4f260a2837574555bbd3b847cca
-
-Best regards,
--- 
-~Vinod
+On Fri, 25 Aug 2023 at 13:27, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> The performance domain-id can be described in DT using the power-domains
+> property or the clock property. The latter is already supported, so let's
+> add support for the power-domains too.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>
+> Changes in v3:
+>         - Move to get the power-domain index from power-domain-names.
+>
+> ---
+>  drivers/cpufreq/scmi-cpufreq.c | 25 +++++++++++++++++++------
+>  1 file changed, 19 insertions(+), 6 deletions(-)
 
 
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
