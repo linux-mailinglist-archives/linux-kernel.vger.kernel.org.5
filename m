@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9E57A9DC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B637A9D99
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjIUTr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        id S230135AbjIUTmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjIUTrQ (ORCPT
+        with ESMTP id S230054AbjIUTmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:47:16 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836DCA239E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:30 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-577fb90bb76so797268a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:30 -0700 (PDT)
+        Thu, 21 Sep 2023 15:42:01 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064B07D96
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:33 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso1228090b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695324510; x=1695929310; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695324512; x=1695929312; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EjE+v7+9YV8M91Wchnv2I6StT/F66BSqTQ0jlAjsGeo=;
-        b=Bz1MvDOX7w4+rP0FNtborBxKeiu3FaZeNyukwwR+dENSq0XFjkS3x58nk6JLljhkut
-         9Bf5b1xmPqCpm0hKi/d5PjJfmXDqp1C++oies7+hAuEvwdeDvUD+M9+tjdhGOuIU4DWz
-         mbPP0JazvVEMqW6y57JGa1DfJhLXtbTvLXRAY=
+        bh=cZtAYqJWE7JpdsZxb5rfWkU3kZ2lTrkKomU0ysGX5d0=;
+        b=ToDHSlZL2ePyl5Fy5MYy4QymnfmjAzXN7tA6azG2N3WLAFyjK8LPmf1PxPBfFsYVBk
+         +MLMjrmk98l21JXBPpSX5nh491HXyHEENNsNXlfTDFTWo/c/0/2moZAj3+rejToe5VIB
+         5tX0fiqCKBhcmDoNIqvpYmXyP3YqeouI5xEUo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695324510; x=1695929310;
+        d=1e100.net; s=20230601; t=1695324512; x=1695929312;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EjE+v7+9YV8M91Wchnv2I6StT/F66BSqTQ0jlAjsGeo=;
-        b=sEHVOZ55Vqy1DsHbgRndFo5jgJ5Wb4EEIs5YgE+FnsR60Svx7brQVVqUrNOEfRpWGY
-         KL8T0p2xzQFYcr3Kwh2TM+FcjDishqiRXHmPnku7P3Y/YX95WfNQcWv98/MFXgIFSQQK
-         WJvqArh5+anY+LEOrqYaB3OEvlhlIItOLOPLKzv1znd0h1CkVZDp2z484bwj9GcVg2xQ
-         Yzdj2lKP/lcEu9C3Zw8MuWOyApD4XucqmCt/4H+PbSX1/rHR+JaR9sJfruvEgVv70F2A
-         Exr0z7mkrVWbDcEj6nVxFnhjU0Hil+o8tFYYDQam5Q+WYaXl+CibaBC+2pSHYgFo4X2r
-         OS+g==
-X-Gm-Message-State: AOJu0YwWnkhOqGQzMnzqmbV0fLmarb7fHaa/pMJL0TPoFxM88sNdCPxf
-        ubbxvJKNjQEk8LpmEuU66OP1GQ==
-X-Google-Smtp-Source: AGHT+IE+we6oLujL1MkhnRpx7DOVM1KJZ/SsmSrAejYsuJZcNIFP8yRibQZNs1+sdIdQDwROK48mpw==
-X-Received: by 2002:a05:6a20:840d:b0:154:6480:83b4 with SMTP id c13-20020a056a20840d00b00154648083b4mr7513077pzd.14.1695324509805;
-        Thu, 21 Sep 2023 12:28:29 -0700 (PDT)
+        bh=cZtAYqJWE7JpdsZxb5rfWkU3kZ2lTrkKomU0ysGX5d0=;
+        b=R82AALYUmsAXkgtdJfoaqQj5iZlN57VJ8I+oljXEDDOKloza8zum7WheeaXjNC/dDI
+         Nyloph3lk4P82bDekdEHy1HsOx9pKUN1i8fLrMDnA/dCF75+ra2IIvOWvJuK0y5YlgBx
+         VsgwmGQy2vUybk/TW8mvTNHjCxgP2lEcdHw7n/RZVfCkAa/5TgVJtboajQmvKjVrn/qQ
+         fseybIjn5IzUmvIAwNllJkXHA8jltTXOK9mqazn/xEb3i3WrJ7EimvHwdTvMx0rpV37I
+         Ga24cSrSgLpozEaMvV2xHIlpT8XTzbDyGfVCa9sV5C1dK8a955L21t2pXZj1Bi7GKaMz
+         NiKA==
+X-Gm-Message-State: AOJu0YzuM0zl1iIkA7Rg7dfh72S64lnOz26ktAQGZFlMUvY/WuiIi/V2
+        EM09RdXtxDMzHBFqLK69jYI3pA==
+X-Google-Smtp-Source: AGHT+IFLfEFOKyhwKb3FZnAY6hGcxUNsWis48sb0QkS+Rc27anChCNA3mxZflSD413ezokJ4zowvTw==
+X-Received: by 2002:a05:6a20:7f93:b0:152:6b63:f1e5 with SMTP id d19-20020a056a207f9300b001526b63f1e5mr8883328pzj.38.1695324512344;
+        Thu, 21 Sep 2023 12:28:32 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:e6ed:6d49:f262:8041])
-        by smtp.gmail.com with ESMTPSA id w8-20020a1709029a8800b001b9f032bb3dsm1892875plp.3.2023.09.21.12.28.27
+        by smtp.gmail.com with ESMTPSA id w8-20020a1709029a8800b001b9f032bb3dsm1892875plp.3.2023.09.21.12.28.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 12:28:28 -0700 (PDT)
+        Thu, 21 Sep 2023 12:28:30 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>, airlied@gmail.com,
-        daniel@ffwll.ch, jonathanh@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        mperttunen@nvidia.com, thierry.reding@gmail.com
-Subject: [RFT PATCH v2 05/12] drm/tegra: Call drm_atomic_helper_shutdown() at shutdown time
-Date:   Thu, 21 Sep 2023 12:26:48 -0700
-Message-ID: <20230921122641.RFT.v2.5.Ifb4450979b62976fd5a98847dade2e5b377d47c8@changeid>
+Cc:     Douglas Anderson <dianders@chromium.org>, abrodkin@synopsys.com,
+        airlied@gmail.com, daniel@ffwll.ch, linux-kernel@vger.kernel.org
+Subject: [RFT PATCH v2 06/12] drm/arcpgu: Call drm_atomic_helper_shutdown() at shutdown time
+Date:   Thu, 21 Sep 2023 12:26:49 -0700
+Message-ID: <20230921122641.RFT.v2.6.I8a0a246fea222059881d01a8fff2adcf7ef3d7a4@changeid>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 In-Reply-To: <20230921192749.1542462-1-dianders@chromium.org>
 References: <20230921192749.1542462-1-dianders@chromium.org>
@@ -63,8 +61,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,33 +86,33 @@ This commit is only compile-time tested.
 
 (no changes since v1)
 
- drivers/gpu/drm/tegra/drm.c | 6 ++++++
+ drivers/gpu/drm/tiny/arcpgu.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
-index ff36171c8fb7..ce2d4153f7bd 100644
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -1312,6 +1312,11 @@ static int host1x_drm_remove(struct host1x_device *dev)
+diff --git a/drivers/gpu/drm/tiny/arcpgu.c b/drivers/gpu/drm/tiny/arcpgu.c
+index e5b10e41554a..c1e851c982e4 100644
+--- a/drivers/gpu/drm/tiny/arcpgu.c
++++ b/drivers/gpu/drm/tiny/arcpgu.c
+@@ -414,6 +414,11 @@ static int arcpgu_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static void host1x_drm_shutdown(struct host1x_device *dev)
++static void arcpgu_shutdown(struct platform_device *pdev)
 +{
-+	drm_atomic_helper_shutdown(dev_get_drvdata(&dev->dev));
++	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
 +}
 +
- #ifdef CONFIG_PM_SLEEP
- static int host1x_drm_suspend(struct device *dev)
- {
-@@ -1380,6 +1385,7 @@ static struct host1x_driver host1x_drm_driver = {
- 	},
- 	.probe = host1x_drm_probe,
- 	.remove = host1x_drm_remove,
-+	.shutdown = host1x_drm_shutdown,
- 	.subdevs = host1x_drm_subdevs,
- };
- 
+ static const struct of_device_id arcpgu_of_table[] = {
+ 	{.compatible = "snps,arcpgu"},
+ 	{}
+@@ -424,6 +429,7 @@ MODULE_DEVICE_TABLE(of, arcpgu_of_table);
+ static struct platform_driver arcpgu_platform_driver = {
+ 	.probe = arcpgu_probe,
+ 	.remove = arcpgu_remove,
++	.shutdown = arcpgu_shutdown,
+ 	.driver = {
+ 		   .name = "arcpgu",
+ 		   .of_match_table = arcpgu_of_table,
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
