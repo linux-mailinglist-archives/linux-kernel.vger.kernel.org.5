@@ -2,48 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9D07A9FFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831637AA1C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbjIUU32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        id S232516AbjIUVGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbjIUU3H (ORCPT
+        with ESMTP id S232614AbjIUVEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:29:07 -0400
+        Thu, 21 Sep 2023 17:04:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD8880F94;
-        Thu, 21 Sep 2023 10:36:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A17C2BCFE;
-        Thu, 21 Sep 2023 09:13:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FBB7B95D;
+        Thu, 21 Sep 2023 10:37:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C52C8C32777;
+        Thu, 21 Sep 2023 09:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695287623;
-        bh=q2nhZdZLMhYsgMyxe8nWUqtPJJSWYahI8Lr6GNIBT08=;
+        s=k20201202; t=1695287817;
+        bh=L+vZhOZ+kADCdlkNh/ewNubAwKMK2F34h8/SL9SRhQE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z87N/f3S15x2plk1l4lRfyhavKz2IPlPrEe0n53pLdrguqLTt3q2ferBn0MvbaZyL
-         XgKc5FJxx+MHtO94ZxeAA9Y08GTz79Yj6Pmv5JE9LTlvanUgBGJ60UUxWqwET016kT
-         cxXCVfpydzG+QAWdmq6za+YvIY3m7wH+hJDxkaZL38SyoDzAXntAz0DaCciH7hsPB7
-         iCWLxfqcDRVYtbDhpFg5u9KjLgchQbB7Vh7RiNt7153NUGKo6c9lIIjei3XhHnC7IX
-         p6cgV1bDik2OqtQ+JBf3OJxfIMPvtXVEfvqpL7Gkv7s427bp8RAEP5BGyp9GfiBrra
-         tkdAWS7vhQyyA==
-Date:   Thu, 21 Sep 2023 11:13:38 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
-        autofs mailing list <autofs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bill O'Donnell <billodo@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 0/8] autofs - convert to to use mount api
-Message-ID: <20230921-altpapier-knien-1dd29cd78a2f@brauner>
-References: <169527971702.27328.16272807830250040704.stgit@donald.themaw.net>
+        b=aKwFLd0jXAMRuLlul0c7VWcfGPByInmWP9KdPOz1MKQ1gd5QXckHnTdP0YYEeWceh
+         DjIlUty4xIaEJqfl0PTnLlfU0/Zm4fyf7hSugAD4u6Khs3T+6FEI4TmOSSvndtfNoA
+         FcRl75SSu//v5N6Yzm/5uTnBvmUsX4yRIs21Af8BYv0RL2fUSqeNpPbp7e3fnJ5nyL
+         lPDqaFY2VXA9FG/KtikMTNuYOiiiNQapMA+/jEdL/LghBhbOMJtNXaO+70IMbKn8ew
+         8jJwFAp5GrxCTtKnjoH8V9/nMZStYWqRv/TVdfgVRbrUyDhlb2d/K43pTqtedLCYT5
+         0RbVJIPSbCGiA==
+Date:   Thu, 21 Sep 2023 10:16:52 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: thermal: mediatek: Add LVTS thermal
+ sensors for mt7988
+Message-ID: <20230921-552234bd29791cbdcd037a2c@fedora>
+References: <20230920175001.47563-1-linux@fw-web.de>
+ <20230920175001.47563-3-linux@fw-web.de>
+ <31fbdae8-d41c-358b-c8ea-6ee31b158dfd@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Yu54HnRP5ZgUSnoq"
 Content-Disposition: inline
-In-Reply-To: <169527971702.27328.16272807830250040704.stgit@donald.themaw.net>
+In-Reply-To: <31fbdae8-d41c-358b-c8ea-6ee31b158dfd@collabora.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,26 +65,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 03:03:26PM +0800, Ian Kent wrote:
-> There was a patch from David Howells to convert autofs to use the mount
-> api but it was never merged.
-> 
-> I have taken David's patch and refactored it to make the change easier
-> to review in the hope of having it merged.
-> 
-> Signed-off-by: Ian Kent <raven@themaw.net>
-> ---
-> 
-> Ian Kent (8):
->       autofs: refactor autofs_prepare_pipe()
->       autofs: add autofs_parse_fd()
->       autofs - refactor super block info init
->       autofs: reformat 0pt enum declaration
->       autofs: refactor parse_options()
->       autofs: validate protocol version
->       autofs: convert autofs to use the new mount api
->       autofs: fix protocol sub version setting
-> 
 
-Yeah sure, but I only see 4 patches on the list? Is my setup broken or
-did you accidently forget to send some patches?
+--Yu54HnRP5ZgUSnoq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Sep 21, 2023 at 09:55:46AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 20/09/23 19:49, Frank Wunderlich ha scritto:
+> > From: Frank Wunderlich <frank-w@public-files.de>
+> >=20
+> > Add sensor constants for MT7988.
+> >=20
+> > Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+>=20
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+
+--Yu54HnRP5ZgUSnoq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQwJ/gAKCRB4tDGHoIJi
+0miwAQCKJ0wVlAlz1nuHioGwDLUxrjxPyHOl3leR4myna8AQdAD/eX7X9YhwjllL
+Nsb24tuvDQAHgMvN/gj+zYyrG9Nevw0=
+=7RDp
+-----END PGP SIGNATURE-----
+
+--Yu54HnRP5ZgUSnoq--
