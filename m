@@ -2,96 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA747A982F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B8C7A98A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjIURcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S229852AbjIURuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjIURcE (ORCPT
+        with ESMTP id S230014AbjIURuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:32:04 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65E05267
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:08:19 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso12592645e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695316098; x=1695920898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uEg9oi9fsFQj5N/t7+XiCLJ8W8KXemvDmRrScebryl0=;
-        b=An+cvqqTVdQXoWYKWdEkiRWAvhV+NSUK15kKeNySLtRPEg1NVxRzYm4KK9P6qAlY6l
-         YyK5bJ6dKIWL29LsOGZII8yEdmzgr0xr0KI1XiKieBoNnW7Cfz9lBZTFzlkVSjg5LvBP
-         loh4w5uj9+QmvP4tWvibTaMgkgv/uZqcZKK8MMbmP5pBOYudQCO36zVRkZjgA8bfVzzv
-         GsHAwZRzDUmXewMaS048n78j2e934xa1rnZ+5PQlKCIIx4dwO3snAFHLGBLjAEpZ4kII
-         Hv5g5Jb4YvKS7fobsPGgLne3l8rpxK8ZnxW7OPsKU/+tUQdu6wgZBIUXMvNimnAY+XXb
-         +94A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316098; x=1695920898;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uEg9oi9fsFQj5N/t7+XiCLJ8W8KXemvDmRrScebryl0=;
-        b=Bgc3Ejoft6NTmjHfptAzVWoQz6QQfXMJklbBg0k8wbRG5JPJ1OaYI29VM2AowmfIe3
-         E0XAl+GCi93OATFPSkMre18MO7/CmF4CZa+ag7m9A+ggH5bydsKB3N9DLwPMGDGSOlSN
-         NZqDjYeG/3B+OS9M6+0lnFtrQG8Vu5ircOQ/4TeWTp2s39xAa9UKbf47yM0LHBKWZYgQ
-         gn0myMiGtnaKm8ULAqBFVS4NamQwzMUvA5jlHhNW5jKgDzGPZJ8iLIOYszX0gV7WKsQB
-         NVHiPA7+N13b1O3aegL7MAjDFk2LPnU2WJnCcS5jXABVBPZU8R9ZSjoB1r/GW+ZjSpm+
-         VGCg==
-X-Gm-Message-State: AOJu0YyqQTUgVhA4WnRWU+0kuqHaRuZ9BE/Au+up4cv+hOLoHWZZHySj
-        Q4VtcAGTA1PXUjHnpNI7d71/cJl139eueQtGO73dbA==
-X-Google-Smtp-Source: AGHT+IHQrrrIHyHEDSkfYu9SO7d0pvsOVdZ1oGCXmoscM6UKG4H7ogFMpzJNut6Kcge3kLh4skQepQ==
-X-Received: by 2002:a2e:86d6:0:b0:2bc:cc1a:139c with SMTP id n22-20020a2e86d6000000b002bccc1a139cmr4675996ljj.11.1695297522786;
-        Thu, 21 Sep 2023 04:58:42 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id h10-20020a17090634ca00b00997e00e78e6sm931391ejb.112.2023.09.21.04.58.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 04:58:41 -0700 (PDT)
-Message-ID: <707f3f85-d38d-f112-16a7-2c602c453298@linaro.org>
-Date:   Thu, 21 Sep 2023 13:58:41 +0200
+        Thu, 21 Sep 2023 13:50:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 467AD72AE
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4D7D165C;
+        Thu, 21 Sep 2023 05:08:12 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C1D73F5A1;
+        Thu, 21 Sep 2023 05:07:34 -0700 (PDT)
+Message-ID: <ba2432e4-cfa9-62a8-626e-97aab44c9ffe@arm.com>
+Date:   Thu, 21 Sep 2023 13:07:29 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/5] dt-bindings: phy: qcom,qmp-usb: Add SDX75 USB3 PHY
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
-        quic_wcheng@quicinc.com, dmitry.baryshkov@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kernel@quicinc.com
-References: <1695291692-18850-1-git-send-email-quic_rohiagar@quicinc.com>
- <1695291692-18850-3-git-send-email-quic_rohiagar@quicinc.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1695291692-18850-3-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] ARM: vfp: Add vudot opcode to VFP undef hook
+Content-Language: en-GB
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Cc:     amit.kachhap@arm.com, angelogioacchino.delregno@collabora.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux@armlinux.org.uk,
+        matthias.bgg@gmail.com, yj.chiang@mediatek.com
+References: <170e8577-42c9-b72f-60c7-80141f379ec4@arm.com>
+ <20230921021350.28283-1-mark-pk.tsai@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230921021350.28283-1-mark-pk.tsai@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 12:21, Rohit Agarwal wrote:
-> Add dt-bindings for USB3 PHY found on Qualcomm SDX75.
+On 21/09/2023 3:13 am, Mark-PK Tsai wrote:
+>> On 2023-09-20 09:39, Mark-PK Tsai wrote:
+>>> Add vudot opcode to the VFP undef hook to fix the
+>>> potentially undefined instruction error when the
+>>> user space executes vudot instruction.
+>>
+>> Did the kernel expose a hwcap to say that the dot product extension is
+>> supported? I'm pretty sure it didn't, so why would userspace expect this
+>> to work? ;)
 > 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
+> The hwcap for dotprod has been exported since commit:
+> 
+> 62ea0d873af3 ARM: 9269/1: vfp: Add hwcap for FEAT_DotProd
+> 
+>>
+>> IIRC Amit was looking at defining the hwcaps to align with arm64 compat,
+>> but I believe that series faltered since most of them weren't actually
+>> needed (and I think at that point it was still missing the VFP support
+>> code parts). It would be nice if someone could pick up and combine both
+> 
+> Were the mentioned series related to this commit?
+> 
+> 62ea0d873af3 ARM: 9269/1: vfp: Add hwcap for FEAT_DotProd
 
+Oh, that did get merged? My apologies, I grepped for the hwcaps in 
+arch/arm but somehow failed to spot that some definitions did exist, so 
+assumed it hadn't been; not sure what went wrong there :(
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In that case, we definitely want this tagged as a fix, and to make sure 
+we double-check for any equivalent fixes still needed for the other 
+features too. Sorry again for the confusion.
 
-Best regards,
-Krzysztof
+>> efforts and get this done properly; fill in *all* the hwcaps and
+>> relevant handling for extensions which Cortex-A55 supports (since
+>> there's definitely more than just VUDOT), and then hopefully we're done
+>> for good.
+> 
+> Agree.
+> 
+>>
+>>> Before this commit, kernel didn't handle the undef exception
+>>> caused by vudot and didn't enable VFP in lazy VFP context
+>>> switch code like other NEON instructions.
+>>> This led to the occurrence of the undefined instruction
+>>> error as following:
+>>>
+>>> [  250.741238 ] 0904 (26902): undefined instruction: pc=004014ec
+>>> ...
+>>> [  250.741287 ] PC is at 0x4014ec
+>>> [  250.741298 ] LR is at 0xb677874f
+>>> [  250.741303 ] pc : [<004014ec>]    lr : [<b677874f>]    psr: 80070010
+>>> [  250.741309 ] sp : beffedb0  ip : b67d7864  fp : beffee58
+>>> [  250.741314 ] r10: 00000000  r9 : 00000000  r8 : 00000000
+>>> [  250.741319 ] r7 : 00000001  r6 : 00000001  r5 : beffee90  r4 : 00401470
+>>> [  250.741324 ] r3 : beffee20  r2 : beffee30  r1 : beffee40  r0 : 004003a8
+>>> [  250.741331 ] Flags: Nzcv  IRQs on  FIQs on  Mode USER_32  ISA ARM Segment user
+>>> [  250.741339 ] Control: 10c5383d  Table: 32d0406a  DAC: 00000055
+>>> [  250.741348 ] Code: f4434aef f4610aef f4622aef f4634aef (fc620df4)
+>>>
+>>> Below is the assembly of the user program:
+>>>
+>>> 0x4014dc <+108>: vst1.64 {d20, d21}, [r3:128]
+>>> 0x4014e0 <+112>: vld1.64 {d16, d17}, [r1:128]
+>>> 0x4014e4 <+116>: vld1.64 {d18, d19}, [r2:128]
+>>> 0x4014e8 <+120>: vld1.64 {d20, d21}, [r3:128] --> switch out
+>>> 0x4014ec <+124>: vudot.u8 q8, q9, q10         <-- switch in, and FPEXC.EN = 0
+>>>                                                     SIGILL(illegal instruction)
+>>>
+>>> Link: https://services.arm.com/support/s/case/5004L00000XsOjP
+>>
+>> Linking to your private support case is not useful to upstream. Even I
+>> can't open that link.
+> 
+> I thought that maybe someone in arm need this.
+> But it seems a bit noisy so I will remove the link from v2.
 
+Yeah, even within Arm most of us don't have permission to access the 
+support system.
+
+Cheers,
+Robin.
+
+>>
+>>> Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+>>> ---
+>>>    arch/arm/vfp/vfpmodule.c | 12 ++++++++++++
+>>>    1 file changed, 12 insertions(+)
+>>>
+>>> diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
+>>> index 7e8773a2d99d..7eab8d1019d2 100644
+>>> --- a/arch/arm/vfp/vfpmodule.c
+>>> +++ b/arch/arm/vfp/vfpmodule.c
+>>> @@ -788,6 +788,12 @@ static struct undef_hook neon_support_hook[] = {{
+>>>    	.cpsr_mask	= PSR_T_BIT,
+>>>    	.cpsr_val	= 0,
+>>>    	.fn		= vfp_support_entry,
+>>> +}, {
+>>> +	.instr_mask	= 0xffb00000,
+>>> +	.instr_val	= 0xfc200000,
+>>> +	.cpsr_mask	= PSR_T_BIT,
+>>> +	.cpsr_val	= 0,
+>>> +	.fn		= vfp_support_entry,
+>>>    }, {
+>>>    	.instr_mask	= 0xef000000,
+>>>    	.instr_val	= 0xef000000,
+>>> @@ -800,6 +806,12 @@ static struct undef_hook neon_support_hook[] = {{
+>>>    	.cpsr_mask	= PSR_T_BIT,
+>>>    	.cpsr_val	= PSR_T_BIT,
+>>>    	.fn		= vfp_support_entry,
+>>> +}, {
+>>> +	.instr_mask	= 0xffb00000,
+>>> +	.instr_val	= 0xfc200000,
+>>> +	.cpsr_mask	= PSR_T_BIT,
+>>> +	.cpsr_val	= PSR_T_BIT,
+>>> +	.fn		= vfp_support_entry,
+>>
+>> Why have two entries conditional on each possible value of one bit for
+>> otherwise identical encodings? Surely it suffices to set both cpsr_mask
+>> and cpsr_val to 0?
+> 
+> You're right.
+> I will set both cpsr_mask and cpsr_val to 0 and use single entry,
+> as you suggested, in the v2 patch.
+> 
+> Thanks.
+> 
+>>
+>> Thanks,
+>> Robin.
+>>
+>>>    }};
+>>>    
+>>>    static struct undef_hook vfp_support_hook = {
