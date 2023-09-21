@@ -2,161 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A92547AA225
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B727AA1DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbjIUVNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        id S229783AbjIUVHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbjIUVMY (ORCPT
+        with ESMTP id S232577AbjIUVF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:12:24 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5078E98A72;
-        Thu, 21 Sep 2023 10:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=etZ2gpA0uz+JRPag03uqb6cfh/kPa8Z3gAMOKitX9GI=; b=XJFeAWsJK6qNPSOEXR7+0kE+V4
-        4M/gOJKBPlGa+X30hfCd+WanZJzjvHIg3FOF+0PiDMyYKdq2GmP3ET7jaqP+coWsJhapZAKkw8XBp
-        YXoEu+OSuRKJy8kMvQA+1uK6bnykQqT3wiDi16tAorZtuVizYtC0+q1DOQqAlh1wAjC8THQ5j1tBb
-        n/IVlVmgzyC3E/JOKzyKNxwUAzemhr/7mg2Mnn9ljY2801G2xkTtLiqJpDZMyMiXD40F4Rjw8bpZ1
-        iLzGICk+q44J1b1OKypm+kQ/qteOXGLyEtKJFXgJpGWWDjwMCPUvm9uR4EZYSUOWmQK0fR8ZT1pgq
-        aMWFFDyg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46552)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qjJuR-0004g0-21;
-        Thu, 21 Sep 2023 14:39:59 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qjJuO-0003aT-Te; Thu, 21 Sep 2023 14:39:56 +0100
-Date:   Thu, 21 Sep 2023 14:39:56 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
-Message-ID: <ZQxHrPS5C13SfTfA@shell.armlinux.org.uk>
-References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
- <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
- <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+        Thu, 21 Sep 2023 17:05:59 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF75B72D43;
+        Thu, 21 Sep 2023 10:32:58 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59c0b9ad491so15172187b3.1;
+        Thu, 21 Sep 2023 10:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695317572; x=1695922372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/rpm5+JLYJmdv53YiNxNC9Ky9+Imr89A4Evb+6bL1iE=;
+        b=Flx5EW7wFBjZUe1NhWFh+LImbCdTDbFcuzsXq79Jf8xW1byqhHIaw0kK0z7+7QjeGF
+         g+x15/vREBN5YW18KdE1mP9fbpOAmtodCKc6407EyW2Va3qmGJnFfAxM+4NLRqqPocd3
+         jxIX17DsEMYBR2cuTyi2gVUWDaAhe1GrSAnKclgmbvvrSuFW4ZeAw5SHV94CJZ0vsV9d
+         2Gyih907SOL9CponoCo4/H6AQvHiMIzzyyzBUS8MPZeNqZocUYFF8qqiKrBh+WAV8wWx
+         q5vWR9fHV0NrXIiyoBpEFwgUO6ZBissYY0DvKwqed5Q2Rtzx+wKeBzhG3wkPy7720ZtE
+         GJHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695317572; x=1695922372;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/rpm5+JLYJmdv53YiNxNC9Ky9+Imr89A4Evb+6bL1iE=;
+        b=TYJk+acLKVAn9x0YtOdtVd7/iyp5ZypRIF0RDaR3atLWu79dAprhQx78Z9yTmzpL0W
+         3YjuG6V5xSqh2mFr/ZyKUv7VixxG+szYwVYesuuh6TMkI55AiB5/mVZ53Cod/w4+NvC8
+         SfTe7gLr1h2B/tzV+YU+2CdpQkmdmADFQ+lQNhP32efUqHMX1N+ExnXK5M5DGOEmBqcN
+         H6Wf7kzcn1JI2/WpDK6ep5Oul/91RX1QCOFK+bSf253H9rlGc5cg3qxNJC+8IH0EXNfP
+         gz9M5G5tIjD6vjPBDfoc8XvUj9NDusOVgfJ+to3PA+XtJDTp35g7hqylv0Lqc0cGWlZd
+         lEpQ==
+X-Gm-Message-State: AOJu0Yx3NOGDLcm7242ock28MGkdO7hXUwocvVf+xIkoupP8KMVGwepu
+        hDBvYQvksy1TFw7cnWyWRIDSE6xoq1RklsPVxWH/fNSP
+X-Google-Smtp-Source: AGHT+IGIIZWD7Q1hxOFFNiQrY1guGCVYQP0GsAOt+m86LmLPjHCrGLS7jwLW+qpsBYUIZB1XkJ4C92WYSDgjdG9MBZc=
+X-Received: by 2002:a05:6870:1481:b0:1c0:f8a7:ec14 with SMTP id
+ k1-20020a056870148100b001c0f8a7ec14mr5497639oab.57.1695303666009; Thu, 21 Sep
+ 2023 06:41:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn> <c6aea83bb1df563b1f2a66c5f230c3861aed1e15.1695189879.git.wangchen20@iscas.ac.cn>
+ <20230920-arrival-bonanza-e335686420f4@wendy> <CAHAQgRDh72FLQPOFzn2rhsWmOOaLUO0sKyJwJQBG0Z7qZN_YLw@mail.gmail.com>
+ <20230921-1ae70cfdbf983e011d5b6754@fedora>
+In-Reply-To: <20230921-1ae70cfdbf983e011d5b6754@fedora>
+From:   Chen Wang <unicornxw@gmail.com>
+Date:   Thu, 21 Sep 2023 21:40:55 +0800
+Message-ID: <CAHAQgRAmO6-aoCM6LALO5+B5N=_=-jD-JrJ0X50avc0_dJy3TQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/11] dt-bindings: riscv: add sophgo sg2042 bindings
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Conor Dooley <conor.dooley@microchip.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, devicetree@vger.kernel.org,
+        emil.renner.berthing@canonical.com, guoren@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 08:25:05PM +0800, Choong Yong Liang wrote:
-> 
-> 
-> On 4/8/2023 8:04 pm, Andrew Lunn wrote:
-> > On Fri, Aug 04, 2023 at 04:45:22PM +0800, Choong Yong Liang wrote:
-> > > Intel platforms’ integrated Gigabit Ethernet controllers support
-> > > 2.5Gbps mode statically using BIOS programming. In the current
-> > > implementation, the BIOS menu provides an option to select between
-> > > 10/100/1000Mbps and 2.5Gbps modes. Based on the selection, the BIOS
-> > > programs the Phase Lock Loop (PLL) registers. The BIOS also read the
-> > > TSN lane registers from Flexible I/O Adapter (FIA) block and provided
-> > > 10/100/1000Mbps/2.5Gbps information to the stmmac driver. But
-> > > auto-negotiation between 10/100/1000Mbps and 2.5Gbps is not allowed.
-> > > The new proposal is to support auto-negotiation between 10/100/1000Mbps
-> > > and 2.5Gbps . Auto-negotiation between 10, 100, 1000Mbps will use
-> > > in-band auto negotiation. Auto-negotiation between 10/100/1000Mbps and
-> > > 2.5Gbps will work as the following proposed flow, the stmmac driver reads
-> > > the PHY link status registers then identifies the negotiated speed.
-> > > Based on the speed stmmac driver will identify TSN lane registers from
-> > > FIA then send IPC command to the Power Management controller (PMC)
-> > > through PMC driver/API. PMC will act as a proxy to programs the
-> > > PLL registers.
-> > 
-> > Have you considered using out of band for all link modes? You might
-> > end up with a cleaner architecture, and not need any phylink/phylib
-> > hacks.
-> > 
-> > 	Andrew
-> Hi Andrew,
-> 
-> After conducting a comprehensive study, it seems that implementing
-> out-of-band for all link modes might not be feasible. I may have missed some
-> key aspects during my analysis.
+Regards,
 
-You need to provide details of why you think it's not feasible, because
-you're making those reading your message have to guess.
+unicornx
 
-We _do_ have cases where this is already supported. The DM7052 SFP
-module for example has a BCM84881 PHY on board that has no in-band
-support, so always has to use out-of-band. This module supports 10G,
-5G, 2.5G, 1G, 100M and 10M speeds. It switches its interface between
-10G, 2500base-X and SGMII mode. It's been supported in Linux for a
-while with MAC/PCS that implement phylink _correctly_.
+Conor Dooley <conor@kernel.org> =E4=BA=8E2023=E5=B9=B49=E6=9C=8821=E6=97=A5=
+=E5=91=A8=E5=9B=9B 20:18=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, Sep 21, 2023 at 06:21:08PM +0800, Chen Wang wrote:
+> > Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=
+=8820=E6=97=A5=E5=91=A8=E4=B8=89 16:29=E5=86=99=E9=81=93=EF=BC=9A
+> > > On Wed, Sep 20, 2023 at 02:37:51PM +0800, Chen Wang wrote:
+> > > > Add DT binding documentation for the Sophgo SG2042 Soc [1] and the
+> > > > Milk-V Pioneer board [2].
+> > > >
+> > > > [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> > > > [2]: https://milkv.io/pioneer
+> > >
+> > > Again, link tags please.
+> > >
+> > > > Acked-by: Chao Wei <chao.wei@sophgo.com>
+> > > > Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > > Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> > > > ---
+> > > >  .../devicetree/bindings/riscv/sophgo.yaml     | 28 +++++++++++++++=
+++++
+> > > >  MAINTAINERS                                   |  7 +++++
+> > > >  2 files changed, 35 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/riscv/sophgo.=
+yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/=
+Documentation/devicetree/bindings/riscv/sophgo.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..82468ae915db
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+> > > > @@ -0,0 +1,28 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/riscv/sophgo.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Sophgo SoC-based boards
+> > > > +
+> > > > +maintainers:
+> > > > +  - Chao Wei <chao.wei@sophgo.com>
+> > > > +  - Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > > +
+> > > > +description:
+> > > > +  Sophgo SoC-based boards
+> > > > +
+> > > > +properties:
+> > > > +  $nodename:
+> > > > +    const: '/'
+> > > > +  compatible:
+> > > > +    oneOf:
+> > > > +      - items:
+> > > > +          - enum:
+> > > > +              - milkv,pioneer
+> > > > +          - const: sophgo,sg2042
+> > > > +
+> > > > +additionalProperties: true
+> > > > +
+> > > > +...
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > index 90f13281d297..b74d505003e2 100644
+> > > > --- a/MAINTAINERS
+> > > > +++ b/MAINTAINERS
+> > > > @@ -20063,6 +20063,13 @@ F:   drivers/char/sonypi.c
+> > > >  F:   drivers/platform/x86/sony-laptop.c
+> > > >  F:   include/linux/sony-laptop.h
+> > > >
+> > > > +SOPHGO DEVICETREES
+> > > > +M:   Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > > +M:   Chao Wei <chao.wei@sophgo.com>
+> > > > +S:   Maintained
+> > > > +F:   Documentation/devicetree/bindings/riscv/sophgo.yaml
+> > >
+> > > > +F:   arch/riscv/boot/dts/sophgo/
+> > >
+> > > Firstly, this directory does not exist at the time of this patch, so =
+it
+> > > should not be added here, but rather at the time that you create it.
+> > >
+> > > Secondly, are Xiaoguang Xing and Chao Wei going to monitor the lists =
+&
+> > > apply patches for these files? If so, you should add a git tree here
+> > > that they will apply patches to & add to linux-next. Also, I'd really
+> > > like to see some on-list signs of life from these people, otherwise
+> > > I'd rather see your name here instead of theirs.
+> > >
+> > > If they don't intend reviewing/testing/applying patches, I can do it =
+as
+> > > a last resort but I would rather that someone who specifically cares =
+for
+> > > this hardware does it.
+> >
+> > Please allow me to explain first. As a community volunteer, I actually
+> > had full discussions and testing with Sophgo people when submitting
+> > patches, so I added tag such "Acked-by: Xiaoguang Xing ..." to the
+> > signature part of most patches. Also if you think a formal email is
+> > required, I will talk them to send it.
+>
+> No, I'm okay with the acks that are on these patches. I just want to
+> make sure that those who are acking know why they are & am wondering why
+> your name is not there, seeing as you're the one who has submitted these
+> patches.
+>
+> > As for the issue of MAINTAINERS, I discussed it with the people from
+> > Sophgo. They (including me also) feel that we are not very familiar
+> > with the community process (especially as maintainer, and actually I
+> > modify the file MAINTAINERS is just to suppress warning information
+> > when running checkpatch.pl), so we sincerely hope to invite you, Mr.
+> > Conor,
+>
+> Oh god, there's no need to call me "Mr. Conor". Conor will do perfectly
+> fine!
+>
+> > to help us for a period of time on maintenance work, including
+> > checking relevant patches, merging and submitting PRs, we will learn
+> > together with you for a while, and then take over this part of the
+> > work when we become familiar with it. We know that you are also very
+> > busy at work, especially if you don't have the hardware at hand. I
+> > have the hardware here and I can take the responsibility to run
+> > testing. What do you think? I'm waiting for your reply. Thanks in
+> > advance.
+>
+> That seems fine to me. In that case, you should add yourself to the
+> MAINTAINERS entry.
+>
+> Thanks,
+> Conor.
 
-I wouldn't call stmmac a proper phylink implementation, especially
-when it comes to switching between different interfaces.
-
-My attempt at starting to clean up the stmmac code was thwarted by
-niggly review comments (over whether %u or %d should be used to print
-a _signed integer_ that stmmac stupidly implicitly casts to an unsigned
-integer. That lead me to decide that stmmac was beyond being cleaned
-up, so I junked the large patch set of improvements that I had - along
-with multiple issues that I had found in the driver.
-
-Someone else needs to sort stmmac out, and I suspect that may be a
-pre-requisit for your changes so that stmmac operates _correctly_ with
-phylink.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Okay=EF=BC=8CI will add it in next revision, thank you again.
