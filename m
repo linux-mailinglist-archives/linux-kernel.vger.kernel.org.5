@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9367A9F67
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573CC7AA264
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbjIUUVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S232777AbjIUVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjIUUVS (ORCPT
+        with ESMTP id S232924AbjIUVPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:21:18 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33DD902E;
-        Thu, 21 Sep 2023 10:23:14 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 67FCB6607285;
-        Thu, 21 Sep 2023 08:18:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695280681;
-        bh=u+SDF/PNL5Ju2+whiov9Et6DghwzY6lUPs+GJOtpLPk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RL8DToJNQahbJaZooqiEqG8PJe63aN8SdCp6AfAplEVykYDHO7c3GVAVMpGB74dO1
-         a5ljz6v7vbGTqnOhJTDOy+iZi8ldmc5h69baoWulk54LbBJ2OtyWvia73/YgSrfm0K
-         UXtHYcmXE3SqUiD4Ba/G7UShpSWFNS7VPSOAlEs30TiabER69pZBp//qX6uDlfMUZz
-         QHc73AxBFMZrr+ZKUj0fc5FgjLSR/mCImmoC+umJnrzk5NBKZGapn8MryzY8H0Llpz
-         t2MFNh8zL5BcMRX26UpBymze5ym+bTB2AeWN2l7BbGDmJSM0hcJ6lx2S0wrEHr181F
-         pDDJWBQ8q0ugA==
-Message-ID: <c9780f70-62b5-e151-0ac6-11d97a694439@collabora.com>
-Date:   Thu, 21 Sep 2023 09:17:57 +0200
+        Thu, 21 Sep 2023 17:15:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D65AD196;
+        Thu, 21 Sep 2023 11:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IJC++WD0SC98QqOfTgTMoqC7V5g4Fi6TJ28HDArhxHI=; b=g1wOKXuddKHSozH+mqGV7jLWcQ
+        v6y6qb70UgITOIa9uHUC+ALF/c/Ie5E02Jdg2PM+/KPhifEZaox2ZU+qvOo7C82fC7ZOoem2OlTF+
+        a2gTB7oGGBzcKZg1dJrxMHKX4sKcV9XhJ+tTGx4fiBnrC9k6sErNt94pluDhrwkpfi7fMLznf789G
+        RgX9hV0Nr+mNnn5ezqDzpX1SrQI2pa0BoSMTyZvBidgSxtSXfI6bQYi4/3rFWbOax+1Hk0rD39Ccu
+        geqYCvZM6j36HoZXuJC2RUYm2PES0f7LqUPfm28KJ9HufAdlm/Ujrp5bA4N2NL7rYtH04zO785+91
+        h3cD8TNw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qjDz0-005MVd-1M;
+        Thu, 21 Sep 2023 07:20:18 +0000
+Date:   Thu, 21 Sep 2023 00:20:18 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Pankaj Raghav <p.raghav@samsung.com>,
+        Pankaj Raghav <kernel@pankajraghav.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        da.gomez@samsung.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
+        gost.dev@samsung.com, riteshh@linux.ibm.com
+Subject: Re: [RFC 00/23] Enable block size > page size in XFS
+Message-ID: <ZQvussaZsqZNSc3d@bombadil.infradead.org>
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+ <ZQd4IPeVI+o6M38W@dread.disaster.area>
+ <ZQewKIfRYcApEYXt@bombadil.infradead.org>
+ <CGME20230918050749eucas1p13c219481b4b08c1d58e90ea70ff7b9c8@eucas1p1.samsung.com>
+ <ZQfbHloBUpDh+zCg@dread.disaster.area>
+ <806df723-78cf-c7eb-66a6-1442c02126b3@samsung.com>
+ <ZQuxvAd2lxWppyqO@bombadil.infradead.org>
+ <ZQvNVAfZMjE3hgmN@bombadil.infradead.org>
+ <ZQvczBjY4vTLJFBp@dread.disaster.area>
+ <ZQvuNaYIukAnlEDM@bombadil.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] remoteproc: mediatek: Refactor single core check and fix
- retrocompatibility
-To:     Laura Nao <laura.nao@collabora.com>
-Cc:     andersson@kernel.org, kernel@collabora.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, mathieu.poirier@linaro.org,
-        matthias.bgg@gmail.com, tinghan.shen@mediatek.com,
-        wenst@chromium.org
-References: <20230919092336.51007-1-angelogioacchino.delregno@collabora.com>
- <20230920150332.318851-1-laura.nao@collabora.com>
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230920150332.318851-1-laura.nao@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQvuNaYIukAnlEDM@bombadil.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 20/09/23 17:03, Laura Nao ha scritto:
-> On 9/19/23 11:23, AngeloGioacchino Del Regno wrote:
->> In older devicetrees we had the ChromeOS EC in a node called "cros-ec"
->> instead of the newer "cros-ec-rpmsg", but this driver is now checking
->> only for the latter, breaking compatibility with those.
->>
->> Besides, we can check if the SCP is single or dual core by simply
->> walking through the children of the main SCP node and checking if
->> if there's more than one "mediatek,scp-core" compatible node.
->>
->> Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-core SCP")
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>    drivers/remoteproc/mtk_scp.c | 18 +++++++-----------
->>    1 file changed, 7 insertions(+), 11 deletions(-)
->>
-> 
-> Tested on asurada (spherion) and jacuzzi (juniper). The issue was detected by KernelCI, so:
-> 
-> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> Tested-by: Laura Nao <laura.nao@collabora.com>
-> 
+On Thu, Sep 21, 2023 at 12:18:13AM -0700, Luis Chamberlain wrote:
+> When we first started this work we simply thought it was impossible.
 
-Thanks for pointing out the correct Reported-by tag! :-)
+*not possible*
 
-Cheers,
-Angelo
-
+  Luis
