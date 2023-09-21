@@ -2,45 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C7F7A912F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 05:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DB77A9139
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 05:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjIUDQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 23:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
+        id S229533AbjIUDVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 23:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjIUDQH (ORCPT
+        with ESMTP id S229445AbjIUDVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 23:16:07 -0400
-X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 20:15:58 PDT
-Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB96ED;
-        Wed, 20 Sep 2023 20:15:58 -0700 (PDT)
-Received: from ssh248.corpemail.net
-        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id QCJ00047;
-        Thu, 21 Sep 2023 11:14:47 +0800
-Received: from localhost.localdomain (10.180.205.246) by
- jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
- 15.1.2507.32; Thu, 21 Sep 2023 11:14:47 +0800
-From:   Andy Shen Shen <shengaoya@inspur.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <robh@kernel.org>
-CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andy Shen Shen <shengaoya@inspur.com>
-Subject: [PATCH] iio: adc: for kernel comment
-Date:   Thu, 21 Sep 2023 11:14:44 +0800
-Message-ID: <20230921031444.63594-1-shengaoya@inspur.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 20 Sep 2023 23:21:31 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D69F4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 20:21:25 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fcb4dc8a9so413961b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 20:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=darkphysics.net; s=google; t=1695266485; x=1695871285; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qhhsMMDhQSZIy566QGTwti8rilWTQdvE2G3gWQD5Qks=;
+        b=JcBUeO+dqpflWIbA1aVoCMCKtRtWO4vJWaGol4UN2eXo21gsTAcsUKfi1mvaDnQ+O/
+         OrnqqpUbwiwGBphIJ0KNwKwUfCus6DS2NITvULPr83y69weUoYiOGsfkgJvVgxSq5eUJ
+         VIMxVyZbhrdBH42SyU4WFj1nnMIAIBX9NAMJNNsVgrvlh5OiAB1kapBM43vRf6GGulbT
+         rUMMCFVXhxkKTLF4l22lV1fFAyViIbD9E9bMcGyqs2teBL0xeyL0YNFwioXAYNc69AiH
+         +175ImA9HqagpQzf6mQXHTNtwXAlhjHgdJDXs8iubfxZ3fuPZnJMxcRcTcTbrr7e+9yV
+         8dUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695266485; x=1695871285;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qhhsMMDhQSZIy566QGTwti8rilWTQdvE2G3gWQD5Qks=;
+        b=I6+FSev2S59uzWKC/EXF7+RgU8ASw2v8Wjwbfx85YUJ6H7fZkDdNzGy/+KxvSd4Xuq
+         UWNjKVXxnaMIKEyRXGlrik8KoAm7e1lvojhTtC31ykXm0JV71o/85mksAoTeFnSSTtRk
+         QyjJytRix8od1ntMN3JY44CyDroPYd1B/ixwBcvTyBf1u7nCtl/dNvlcuBa+DeNpPLvz
+         XoCU5FchZ14w7X5/QGfiQwBlwwIbqj7olTB0nluVtwrlUwQN1gqYZzcmJLcjXafh4vUS
+         BRjhPW5IFAJCy1q9CIp8nuBXlz5M1vp15YA8ncT+fxW4m/YNNBWqH42v6FnK+7tTQ+wk
+         3KHQ==
+X-Gm-Message-State: AOJu0Yya/NN2PaYZSX9oOquIbm1a3we7bx5hyAkszopayYBmPXJEZTsH
+        KwSTI2Ra6kwR1asE47vk2hj9ig==
+X-Google-Smtp-Source: AGHT+IGGT/F8gUARgyincCxZ2iNYBJvBvEjQ22OUCDRfBrm/wh9EI+6L84NqgYuwEmURClbgfJC01w==
+X-Received: by 2002:a05:6a00:9a0:b0:690:d413:ee0f with SMTP id u32-20020a056a0009a000b00690d413ee0fmr5388825pfg.2.1695266485075;
+        Wed, 20 Sep 2023 20:21:25 -0700 (PDT)
+Received: from basil.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
+        by smtp.gmail.com with ESMTPSA id p14-20020a62ab0e000000b0068e49cb1692sm237324pff.1.2023.09.20.20.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 20:21:24 -0700 (PDT)
+From:   Tree Davies <tdavies@darkphysics.net>
+To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Tree Davies <tdavies@darkphysics.net>
+Subject: [PATCH 00/11] Staging: rtl8192e: Function and Variable rename series
+Date:   Wed, 20 Sep 2023 20:25:04 -0700
+Message-ID: <20230921032515.96152-1-tdavies@darkphysics.net>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.180.205.246]
-tUid:   20239211114473753a10c5d5c4983b2e6654ef98be0c0
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NO_DNS_FOR_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,26 +70,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In line 460 of the palmas_gpadc.c file, fix kernel comment errors.
+This series fixes 11 checkpatch Avoid Camelcase issues throughout the 
+driver.
 
-Signed-off-by: Andy Shen Shen <shengaoya@inspur.com>
----
- drivers/iio/adc/palmas_gpadc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you in advance to reviewers
+Tree
 
-diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
-index e202ea18af10..203cbbc70719 100644
---- a/drivers/iio/adc/palmas_gpadc.c
-+++ b/drivers/iio/adc/palmas_gpadc.c
-@@ -457,7 +457,7 @@ static int palmas_gpadc_get_calibrated_code(struct palmas_gpadc *adc,
-  *
-  * The gain error include both gain error, as specified in the datasheet, and
-  * the gain error drift. These paramenters vary depending on device and whether
-- * the the channel is calibrated (trimmed) or not.
-+ * the channel is calibrated (trimmed) or not.
-  */
- static int palmas_gpadc_threshold_with_tolerance(int val, const int INL,
- 						 const int gain_error,
+Tree Davies (11):
+  Staging: rtl8192e: Rename variable Time
+  Staging: rtl8192e: Rename variable pAdmittedBa
+  Staging: rtl8192e: Rename variable pPendingBa
+  Staging: rtl8192e: Rename variable Dst
+  Staging: rtl8192e: Rename variable pPendingBA
+  Staging: rtl8192e: Rename variable Addr
+  Staging: rtl8192e: Rename variable pStatusCode
+  Staging: rtl8192e: Rename variable Policy
+  Staging: rtl8192e: Rename function GetTs()
+  Staging: rtl8192e: Rename function TSInitialize
+  Staging: rtl8192e: Rename variable StatusCode
+
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 74 +++++++++++------------
+ drivers/staging/rtl8192e/rtl819x_TS.h     |  2 +-
+ drivers/staging/rtl8192e/rtl819x_TSProc.c | 36 +++++------
+ drivers/staging/rtl8192e/rtllib.h         |  8 +--
+ drivers/staging/rtl8192e/rtllib_module.c  |  2 +-
+ drivers/staging/rtl8192e/rtllib_rx.c      |  4 +-
+ drivers/staging/rtl8192e/rtllib_tx.c      |  4 +-
+ 7 files changed, 65 insertions(+), 65 deletions(-)
+
 -- 
-2.31.1
+2.39.2
 
