@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2E87AA592
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6264D7AA59D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229490AbjIUXYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 19:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        id S229745AbjIUX15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 19:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjIUXYu (ORCPT
+        with ESMTP id S229509AbjIUX1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 19:24:50 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986158F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:24:44 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5924b2aac52so22106687b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695338684; x=1695943484; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ozojjeDqt9jaFatqJpOSpW8v9ZUkx8fhl+FoZ/aOyeg=;
-        b=YKu+ic6C4aA+MjBP+i5JluClBzt3SVtmfWjbl3RPi4KfqB9/Cflo+525/egPqpvWUc
-         9qRnckj8CHy4YBjVc0Wc+vMnPKhUnWiyIzTQwd11z9YE79kdBNBFV/LAWVMResdSScXB
-         tN0EgURLE6+t+c1i7WrXmQcLNhKHTse7thMU7dTqNai9qn+ikzDwA7EWjKxBGruX6W6e
-         B4OCyI/zogf2S1eNFq3yGcRe2l94QMBfy4NHg4gm4IYVG8fNJVxkJd7sOviUNUQcV5TI
-         93DYt/3+vqpvtYAthq6anXYBngc7IS4fnIZfSxiMMn4vP39rE+EgwbX3kiEVzdrRRVOL
-         EjFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695338684; x=1695943484;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ozojjeDqt9jaFatqJpOSpW8v9ZUkx8fhl+FoZ/aOyeg=;
-        b=NpEA0JAHcj725Tut7Mdd0PCwO3pLeEE7HoCtBg9uV0bu4Og750HSGzU0qG8PCu5gbF
-         nKcphkBXXVkpndqnickCjzSsalSPt+XFQmgfs+BxWY+DdGvJThgp4IkIk7kSsR8EB37e
-         JQszm3aylabn/EZv32GtA9fI94LW6r+35KgvRhFRKB8DoPIldWdUi05uEdfb8k4UkO3P
-         8KjFAzM5AeoKhaijq2ObmhDuFRv/RnLNJsY8KSfeDM4LNf5JMVWDV6Qq8m93BfKUQZaM
-         qrFJ8IJVqxLVFqpi/eu3kqvWxzrgRJBiKV2M68vjdHXvpWuN2lqYNRcIuZTRTZcF202G
-         Hwjg==
-X-Gm-Message-State: AOJu0Yz1tm0/bqg1+glA7gbwJAF6POasBKsbnEwbVaz3Br/SsbDUcHfw
-        n0LkXAvlYYl92q/KU2GsxJft65UW2kw=
-X-Google-Smtp-Source: AGHT+IF7yzjwgk5NW8qDUnHyfNzrq08FNgz+/mDFh7qp0go0unUn02BgCRowFMh78V09XOcBBXlgDQB4Wpg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:b628:0:b0:59b:e684:3c76 with SMTP id
- u40-20020a81b628000000b0059be6843c76mr104384ywh.2.1695338683860; Thu, 21 Sep
- 2023 16:24:43 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 16:24:42 -0700
-In-Reply-To: <ZQwJtbXrXH/wPxpd@jiechen-ubuntu-dev>
+        Thu, 21 Sep 2023 19:27:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C5F8F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:27:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786FDC433C8;
+        Thu, 21 Sep 2023 23:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1695338869;
+        bh=SJbxiQb0unKA+nMj2mRavTDir6g83Ub6YVE1qG4Rjns=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oNLDJ5/1ert+fipFAqVCBE140YejWbtzCnP3HKI6PchHFLLHn3KPqD86onbbwNuQ2
+         zvLy5pP+yrLkXEXKb1D0eq9MXQ8BmPW7/D6azUQsFeNbwK+NP7ySXNUHezM7O5PKzK
+         PHI1/5FErfcroy0Vvda8f9adqRLTIj+H3GLapQu4=
+Date:   Thu, 21 Sep 2023 16:27:48 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, pedro.falcato@gmail.com,
+        stable <stable@kernel.org>
+Subject: Re: [PATCH 0/2] maple_tree: Fix mas_prev() state regression.
+Message-Id: <20230921162748.a85eb5af766e0662e4f22a5e@linux-foundation.org>
+In-Reply-To: <ZQyYH+5pnDc1KYj0@casper.infradead.org>
+References: <20230921181236.509072-1-Liam.Howlett@oracle.com>
+        <20230921112521.fc07c658804f4e188179da77@linux-foundation.org>
+        <20230921185330.j5jw3oms4tc6crkf@revolver>
+        <ZQyYH+5pnDc1KYj0@casper.infradead.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-References: <20230919234951.3163581-1-seanjc@google.com> <SA1PR11MB5923CE0CA793FF8B63DFDAEBBFF9A@SA1PR11MB5923.namprd11.prod.outlook.com>
- <ZQrsdOTPtSEhXpFT@google.com> <ZQwJtbXrXH/wPxpd@jiechen-ubuntu-dev>
-Message-ID: <ZQzQum0Ulz+b19iu@google.com>
-Subject: Re: [ANNOUNCE] PUCK Agenda - 2023.09.20 - No Topic (Office Hours)
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Chen CJ <jason.cj.chen@intel.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023, Jason Chen CJ wrote:
-> On Wed, Sep 20, 2023 at 12:59:11PM +0000, Sean Christopherson wrote:
-> > On Wed, Sep 20, 2023, Chen, Jason CJ wrote:
-> > > Hi, Sean,
-> > > 
-> > > Do you think we can have a quick sync about the re-assess for pKVM on x86?
+On Thu, 21 Sep 2023 20:23:11 +0100 Matthew Wilcox <willy@infradead.org> wrote:
+
+> > > It isn't clear what are the user-visible effects of this flaw?  Please
+> > > send this along and I'll paste it in.
 > > 
-> > Yes, any topic is fair game.
+> > 
+> > User may notice that mas_prev() or mas_next() calls that result in going
+> > outside of the limit passed to the call will cause incorrect returns on
+> > subsequent calls using that maple state, such as mas_find() skipping an
+> > entry.
 > 
-> thanks, Sean! Then if possible, could we do the quick sync next week?
+> When Andrew says "User visible" he means "userspace visible".  Not
+> "in kernel user visible".  What are the _consequences_.
 
-No, as called out in the agenda I am unavailable/OOO the next three weeks.
+Thanks ;)
 
-My apologies for being unresponsive to your pings, I am bogged down with non-upstream
-stuff at the moment.  It will likely be several weeks before I can take an in-depth
-look, as I need to get going on a few things for v6.7 (vPMU fixes in particular).
+We have a Link:
+(https://gist.github.com/heatd/85d2971fae1501b55b6ea401fbbe485b) but it
+takes us to the reproducer code.  If it took us to Pedro's initial bug
+report then the sun would shine and birds would sing.
+
+
+
