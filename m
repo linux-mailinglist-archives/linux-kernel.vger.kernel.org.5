@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FD67AA317
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDF77A9F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjIUVqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        id S231345AbjIUUQs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 16:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232446AbjIUVq2 (ORCPT
+        with ESMTP id S230378AbjIUUQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:46:28 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8449566E6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:27:12 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so7973175e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695317230; x=1695922030; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vwmvG5vLsSx5qVJpIDAQauKd5SFkomPYwP2Gxr7JRg4=;
-        b=gSVMNjJRXZ/EmuC2kgnI3jWjP6kcO7FB7Cejq/hIIFRG4jxbM1nKE/16O9uOS7xpAV
-         5Y9a6ddiQgb03assn8G2TGfvsLR6g5WUsbX6fobYJALWGLm9QTJbM679b0fA+Xtp/MQ4
-         jrKsG/IsptJZ/mTnemrtUYTElFkf+5qyGEhgLHqiSTMw8QOorhWP81fXcrJangT45TuA
-         RUxX+gPhbpvD5UUgWBC1wQMvz3/KVNQf25A5B0sdjKOPJcNHrPexIxzMGZzPPL2h9B8Q
-         Jx7KTej6c8PWMsx8UommQSbhqGdoUo/eL4uGbhP896v2iz6AQ6wHN9d4Vp8qOZzNisIk
-         hOnw==
+        Thu, 21 Sep 2023 16:16:27 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAA4BF11A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:54:30 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bdcbde9676so812751a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:54:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317230; x=1695922030;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vwmvG5vLsSx5qVJpIDAQauKd5SFkomPYwP2Gxr7JRg4=;
-        b=ac8lyQJfGc/98w8JzxnBiW4WidwzQmfQ3noWGT53Tb70BL/eTB0sVN3Re7YwgTEzFu
-         mT6/ZX/3bwfVEhBvCvSflXJ2Q1812v/3ezXAQNQlVOXvIh6A6nJdEe9Yl4sP3HSipCua
-         mhRC69jVsfQJbl/bLnL4YydLmBN9C5ldz41gdEQbeieUVJl1p6OcTYZCikbNc0H0dHic
-         M66bivFQIyDTE4uYy3qYfvcFZXChSV1jYjDAA6RCxRklkdtz0XM9TkEcrX7b3Ispre3M
-         1VFkkBth9CbqNh/OlA2Vn84at+C4q28xRaF8jm4fyuZZ+Ret4ROKNp+s6DF4yOk6acnC
-         P5sQ==
-X-Gm-Message-State: AOJu0YwNnyCFcNOIC9m9m+QRNiv+ecf6uoXZaB2uPwt+sJAGYmxtgUSq
-        nowpYnp79n1Lppr3T/FybYP4bmiMIa6cs5thF3yj3KoF
-X-Google-Smtp-Source: AGHT+IFhVm19T+LegUcKx3F6tIXfI3FFKdbMKTy0n/7EXfRWUf6QpqiIp9wLl2V2H4TrPU4Mt8A7rQ==
-X-Received: by 2002:a2e:b608:0:b0:2bc:b54b:c03f with SMTP id r8-20020a2eb608000000b002bcb54bc03fmr4204197ljn.5.1695279878602;
-        Thu, 21 Sep 2023 00:04:38 -0700 (PDT)
-Received: from [172.20.15.189] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id b18-20020a170906039200b009ae5674825asm590222eja.47.2023.09.21.00.04.37
+        d=1e100.net; s=20230601; t=1695322465; x=1695927265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IrvL93JjA1OfTIMuGz/cONlaf0wwFcM6NEpdJQ6xEag=;
+        b=dGzfOYDnLAtvz2o6gJnE+qwk0W0PVPHRnVDZKnVn/ocjg6+G+v3cO5iI205ivMtp68
+         A6rVg/GqrWD5tlMzxevXvaeBZbaG5CKVn28TITyBBiG1VGO8zcpJy0m45cWfTRbbYlV+
+         jQHfrpocBWv+woupkBWlrHNuEqYgDATZ4dfVAseUA/SLQE2RybXVilrFdwoCsTyMZdfX
+         yl0mWzJiz/JGt0NBOG01tw0D8AakcQ0Olim4wxjUaU4txqozvwE+uDHYvhnTrAq7RhRq
+         0yyASS5pLQS8DUrpBxjOOGg/ZFeQdnT1Z4jv4XHWSxyVmuorxjmbuTtHrf4eLN/2jPcD
+         ontA==
+X-Gm-Message-State: AOJu0Yzh2vkiMuM9CXAXegxYdBMoNaPkfpvputZcch0d93gMlz2/f0l4
+        snr57JA7HTrJEw3wmolbp2zBjMY4iy6jo9SZ
+X-Google-Smtp-Source: AGHT+IFiiH//fzFHIRnfdIr37MFf5uK+krOwnNhvdWeRJHzlP3+9eddii6fTcgNAv7C4wXoGbPpBGg==
+X-Received: by 2002:a0d:fa42:0:b0:589:f9f0:2e8c with SMTP id k63-20020a0dfa42000000b00589f9f02e8cmr4780619ywf.48.1695280124425;
+        Thu, 21 Sep 2023 00:08:44 -0700 (PDT)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id t186-20020a0deac3000000b00583b40d907esm194734ywe.16.2023.09.21.00.08.43
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 00:04:38 -0700 (PDT)
-Message-ID: <ce67c10d-a589-dc2e-76cf-fb5cfaa48c66@linaro.org>
-Date:   Thu, 21 Sep 2023 09:04:39 +0200
+        Thu, 21 Sep 2023 00:08:44 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-59c0442a359so7858087b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 00:08:43 -0700 (PDT)
+X-Received: by 2002:a81:8385:0:b0:57a:2f01:31d7 with SMTP id
+ t127-20020a818385000000b0057a2f0131d7mr4953764ywf.1.1695280123148; Thu, 21
+ Sep 2023 00:08:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/3] drm/msm/dpu: Add missing DPU_DSC_OUTPUT_CTRL to
- SC7280
-Content-Language: en-US
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230921-topic-7280_dpu-v1-0-6912a97183d5@linaro.org>
- <20230921-topic-7280_dpu-v1-2-6912a97183d5@linaro.org>
- <444d125c-2a87-3bae-6ea0-b76dffeb63ef@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <444d125c-2a87-3bae-6ea0-b76dffeb63ef@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <202309192013.vI4DKHmw-lkp@intel.com> <CAL_JsqJ0BoR7Dan3=oyWPa6HU3YV=eOFTO5fx7u5zz2i=eB-jQ@mail.gmail.com>
+ <a57afd40-71a2-aa68-84cb-44d2a88a1e2b@roeck-us.net> <CAL_JsqJYPJVTxH=d5nYK78+ZWhZAfh4VhEyBLqzyg4MzMhrX0g@mail.gmail.com>
+ <194e2d22-9eff-ec6c-9bc9-13b62bda870a@roeck-us.net> <CAL_JsqKcD4AttSVUEi5zuF8S1E4xNdqdZVKiHmk0r79SRW5Cqw@mail.gmail.com>
+ <ad1f36ab-29a6-98b6-8782-3980323760e1@roeck-us.net>
+In-Reply-To: <ad1f36ab-29a6-98b6-8782-3980323760e1@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 21 Sep 2023 09:08:30 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXsiSfp3DGnLXfuENVLOdG91a+GXj3+g9p8Yp6aGTuqDQ@mail.gmail.com>
+Message-ID: <CAMuHMdXsiSfp3DGnLXfuENVLOdG91a+GXj3+g9p8Yp6aGTuqDQ@mail.gmail.com>
+Subject: Re: arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0
+ is outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]'}
+To:     Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Günter, Rob,
 
+CC Michael
 
-On 9/21/23 02:01, Abhinav Kumar wrote:
-> 
-> 
-> On 9/20/2023 3:46 PM, Konrad Dybcio wrote:
->> DPU_DSC_OUTPUT_CTRL should be enabled for all platforms with a CTL
->> CFG 1.0.0. SC7280 is one of them. Add it.
->>
-> 
-> sc7280 and all other chipsets using DSC 1.2 use dpu_hw_dsc_init_1_2 and 
-> not dpu_hw_dsc_init.
-> 
-> dpu_hw_dsc_init_1_2 assigns the dsc_bind_pingpong_blk op by default.
-> 
-> So this change is not needed.
-Gah, I don't like that we do it behind the scenes but I agree it's a NOP..
+On Wed, Sep 20, 2023 at 11:09 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 9/20/23 09:20, Rob Herring wrote:
+> [....]
+>
+> >>
+> >> Sure, but I still argue that this isn't worth it for drivers like this one.
+> >> Are you going to submit a fix ? Because otherwise I'll submit a patch
+> >> to drop COMPILE_TEST from MACHZ_WDT.
 
-Konrad
+I think dropping COMPILE_TEST from MACHZ_WDT is the right thing to do
+anyway.  Unlike most other drivers, this is not a driver that can be
+compiled in, and doesn't do anything if the hardware is not present.
+In fact it is a very dangerous driver: its probe function "reads" the
+ZF version register, but that involves doing an unconditional write,
+which might crash any non-X86 system.
+
+IMHO a driver must not be enabled for compile-testing if its presence
+can harm the system.
+
+> > I honestly don't know what the fix is. There's a compiler flag to
+> > allow 0 address, but that seems like a big hammer. From what I read on
+> > the fix for gcc-12, we shouldn't be getting this, but I haven't
+> > confirmed. I was hoping for comment from Geert as the issue doesn't
+> > appear to be the driver, but the arch code.
+
+Well, Atari ROM port ISA accesses are really weird, due to the really
+weird way the bus is wired to the address/data lines...
+The issue is that gcc considers accessing these addresses as "not
+done"...
+
+> > Furthermore, I just built the same HEAD and config as reported and
+> > don't see this error. I'm using kernel.org nolibc gcc 13.2.0 which
+> > should be the same version.
+>
+> Exactly my point. So now we are stuck with a report like this on a
+> driver which probably has 0 users and we don't know how to fix it,
+> all to get the benefit of being able to compile it for an architecture
+> and platform which will never use it.
+>
+> I seem to recall similar errors with m68k and COMPILE_TEST last time
+> I tried to enable it on watchdog drivers, so I am not sure if this is
+> entirely new.
+
+Probably not.
+
+Michael: original build failure report in
+https://lore.kernel.org/r/202309192013.vI4DKHmw-lkp@intel.com/
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
