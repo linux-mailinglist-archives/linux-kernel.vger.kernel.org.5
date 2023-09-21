@@ -2,557 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 157FA7A9F49
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B277AA211
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjIUUUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        id S232467AbjIUVMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbjIUUTr (ORCPT
+        with ESMTP id S231891AbjIUVLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:19:47 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0347E6D;
-        Thu, 21 Sep 2023 10:27:17 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38LAbQXB000605;
-        Thu, 21 Sep 2023 15:05:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:from:to:cc:references
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=6AqLoXGPw7uz+MC875pyy/CFwU0aSTYkKoYlw6xBWX4=; b=mB
-        25njK8Gur3NgJGNDx+kSRRxV5OS5Gco3JgR8uUL8irSAI6edIf1xgh4xuRJ7lg8Q
-        u+xOeXasTpuG3NvrD7zXkkKu2erHG7XyTo2M5pFfM8CBoNTAeuqkRsKh8qkHedx9
-        d10c2omsz7hckGVKZG5bb2yVN7q6JNkA2ctvB00TVwUEZovz9/fqawGiSjueXHlP
-        BJnq7jRbecupE231QgbIXpjCCToDihe2gJX9m0fxNNJcd2ZKSPjIaV5RqqhVnKDj
-        uuaTGSndM7arlgozzb4APdAeojyoCzHmW4WczJ01AiJcF+Cu/oARtZSpdtVT8mDn
-        Ef3zxDF5suSKG1KoyrJA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t51sfmkjg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 15:05:03 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7E7BD100057;
-        Thu, 21 Sep 2023 15:05:02 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 63366233C62;
-        Thu, 21 Sep 2023 15:05:02 +0200 (CEST)
-Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
- 2023 15:05:01 +0200
-Message-ID: <36253b17-0892-83f7-2f17-367298246d8b@foss.st.com>
-Date:   Thu, 21 Sep 2023 15:05:01 +0200
+        Thu, 21 Sep 2023 17:11:25 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB15A0F5C;
+        Thu, 21 Sep 2023 10:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xOUC0XEpooWY3ocUiPMl1wGP/+abFgU7mgV5A8cPiqQ=; b=ODXexeYs4hjxZmP4XDsimLt1ld
+        jIwXZ/SwJiN6T30MyTq0ozuGsVwAlUmQ8pwWTywvlnYMbx1IMxWubKbuPfadGgQSSIwH2gOsziYuk
+        h8UzpIEg6Fx2rEs96em6OXLOt3bTLyZudculxw+sa7cI5L0MrWuJXCDldONkubQeiF8MPWRXXILOw
+        ms9C4a92EZbyFjqDktlKpykZteXPXIeDVYXx8ZFIhFlbLXVU/GkWNJz8PE7sH1u/G7q7kSpl4yMa4
+        M60CIhQ4+qem2OfbubuoCyOBvPAuNp7QyPRs02HeqgsV3QwKKWx1h9aZn1hxlMHCxIebWKmwVabxV
+        WckeWJ0g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54502)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qjJP5-0004aS-1s;
+        Thu, 21 Sep 2023 14:07:35 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qjJOR-0003YC-Nd; Thu, 21 Sep 2023 14:06:55 +0100
+Date:   Thu, 21 Sep 2023 14:06:55 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        David E Box <david.e.box@intel.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v3 2/5] net: pcs: xpcs: combine C37 SGMII AN and
+ 2500BASEX for Intel mGbE controller
+Message-ID: <ZQw/7/3jOJf7BOPt@shell.armlinux.org.uk>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-3-yong.liang.choong@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 3/8] tools/counter: add a flexible watch events tool
-Content-Language: en-US
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     William Breathitt Gray <william.gray@linaro.org>
-CC:     <lee@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230829134029.2402868-1-fabrice.gasnier@foss.st.com>
- <20230829134029.2402868-4-fabrice.gasnier@foss.st.com>
- <ZQdOcDQR6qONmmnR@fedora> <7aa66ac8-eceb-2f6e-960b-2c4dac9f595e@foss.st.com>
-In-Reply-To: <7aa66ac8-eceb-2f6e-960b-2c4dac9f595e@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.59]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-21_11,2023-09-21_01,2023-05-22_02
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230921121946.3025771-3-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 17:37, Fabrice Gasnier wrote:
-> On 9/17/23 21:07, William Breathitt Gray wrote:
->> On Tue, Aug 29, 2023 at 03:40:24PM +0200, Fabrice Gasnier wrote:
->>> This adds a new counter tool to be able to test various watch events.
->>> A flexible watch array can be populated from command line, each field
->>> may be tuned with a dedicated command line argument.
->>> Each argument can be repeated several times: each time it gets repeated,
->>> a corresponding new watch element is allocated.
->>>
->>> It also comes with a simple default watch (to monitor overflows), used
->>> when no watch parameters are provided.
->>>
->>> The print_usage() routine proposes another example, from the command line,
->>> which generates a 2 elements watch array, to monitor:
->>> - overflow events
->>> - capture events, on channel 3, that reads read captured data by
->>>   specifying the component id (capture3_component_id being 7 here).
->>>
->>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
->>
->> Hi Fabrice,
->>
->> This is great idea, it'll make it so much easier to test out drivers
->> so I'm excited! :-)
+On Thu, Sep 21, 2023 at 08:19:43PM +0800, Choong Yong Liang wrote:
+> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
 > 
-> Hi William,
+> This commit introduces xpcs_sgmii_2500basex_features[] that combine
+> xpcs_sgmii_features[] and xpcs_2500basex_features[] for Intel mGbE
+> controller that desire to interchange the speed mode of
+> 10/100/1000/2500Mbps at runtime.
 > 
-> Thanks
-> 
->>
->> This is a new tool, so would you add a MAINTAINERS entry for the
->> counter_watch_events.c file?
-> 
-> I haven't thought about it.
-> I can add a MAINTAINERS entry, yes!
-> Who would you suggest ?
-> 
->>
->> More comments inline below.
->>
->>> ---
->>>  tools/counter/Build                  |   1 +
->>>  tools/counter/Makefile               |   8 +-
->>>  tools/counter/counter_watch_events.c | 348 +++++++++++++++++++++++++++
->>>  3 files changed, 356 insertions(+), 1 deletion(-)
->>>  create mode 100644 tools/counter/counter_watch_events.c
->>>
->>> diff --git a/tools/counter/Build b/tools/counter/Build
->>> index 33f4a51d715e..4bbadb7ec93a 100644
->>> --- a/tools/counter/Build
->>> +++ b/tools/counter/Build
->>> @@ -1 +1,2 @@
->>>  counter_example-y += counter_example.o
->>> +counter_watch_events-y += counter_watch_events.o
->>> diff --git a/tools/counter/Makefile b/tools/counter/Makefile
->>> index b2c2946f44c9..00e211edd768 100644
->>> --- a/tools/counter/Makefile
->>> +++ b/tools/counter/Makefile
->>> @@ -14,7 +14,7 @@ MAKEFLAGS += -r
->>>  
->>>  override CFLAGS += -O2 -Wall -g -D_GNU_SOURCE -I$(OUTPUT)include
->>>  
->>> -ALL_TARGETS := counter_example
->>> +ALL_TARGETS := counter_example counter_watch_events
->>>  ALL_PROGRAMS := $(patsubst %,$(OUTPUT)%,$(ALL_TARGETS))
->>>  
->>>  all: $(ALL_PROGRAMS)
->>> @@ -31,6 +31,12 @@ $(OUTPUT)include/linux/counter.h: ../../include/uapi/linux/counter.h
->>>  
->>>  prepare: $(OUTPUT)include/linux/counter.h
->>>  
->>> +COUNTER_WATCH_EVENTS := $(OUTPUT)counter_watch_events.o
->>> +$(COUNTER_WATCH_EVENTS): prepare FORCE
->>> +	$(Q)$(MAKE) $(build)=counter_watch_events
->>> +$(OUTPUT)counter_watch_events: $(COUNTER_WATCH_EVENTS)
->>> +	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
->>> +
->>
->> Move this below the COUNTER_EXAMPLE block just so we can keep the
->> recipes in alphabetical order.
-> 
-> Ack, will update it.
-> 
->>
->>>  COUNTER_EXAMPLE := $(OUTPUT)counter_example.o
->>>  $(COUNTER_EXAMPLE): prepare FORCE
->>>  	$(Q)$(MAKE) $(build)=counter_example
->>> diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
->>> new file mode 100644
->>> index 000000000000..7f73a1519d8e
->>> --- /dev/null
->>> +++ b/tools/counter/counter_watch_events.c
->>> @@ -0,0 +1,348 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/* Counter - Test various watch events in a userspace application
->>
->> "Counter" should be "Counter Watch Events" (or "counter_watch_events").
->>
->>> + * inspired by counter_example.c
->>
->> No need to mention counter_example.c, this utility does far more than
->> and bares little resemblance at this point to counter_example.c which is
->> really just a bare minimal example of watching Counter events.
-> 
-> Ack
-> 
->>
->>> + */
->>> +
->>> +#include <errno.h>
->>> +#include <fcntl.h>
->>> +#include <getopt.h>
->>> +#include <linux/counter.h>
->>> +#include <stdlib.h>
->>> +#include <stdio.h>
->>> +#include <string.h>
->>> +#include <sys/ioctl.h>
->>> +#include <unistd.h>
->>> +
->>> +#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
->>
->> My initial reaction was that this macro is already exposed in some
->> header for us, but my local /usr/include/linux/kernel.h file doesn't
->> appear to bare it so I guess not. Perhaps it'll be fine for our needs --
->> I think the only difference between this ARRAY_SIZE and the Linux kernel
->> one is the addition of __must_be_array(x).
-> 
-> I had the same reaction when trying to use it. Then, I figured out
-> several tools redefine this macro.
-> Digging further, I just found out some tools have in their Makefile CFLAGS:
-> -I$(srctree)/tools/include
-> and include from there: <linux/kernel.h>
-> 
-> I'll update the Makefile in v2, and remove this definition from here.
-> 
->>
->>> +
->>> +static struct counter_watch simple_watch[] = {
->>> +	{
->>> +		/* Component data: Count 0 count */
->>> +		.component.type = COUNTER_COMPONENT_COUNT,
->>> +		.component.scope = COUNTER_SCOPE_COUNT,
->>> +		.component.parent = 0,
->>> +		/* Event type: Index */
->>> +		.event = COUNTER_EVENT_OVERFLOW_UNDERFLOW,
->>
->> There's a bit of confusion here. The comment says the event type is
->> INDEX, but the structure event type is set for OVERFLOW_UNDERFLOW; also,
->> the commit description states that we're monitoring "overflows" which
->> implies to me the OVERFLOW event type. So which of the three is it?
-> 
-> Ah yes, It's a mix of bad copy paste and updates. I'll fix it.
-> 
->>
->>> +		/* Device event channel 0 */
->>> +		.channel = 0,
->>> +	},
->>> +};
->>> +
->>> +static int find_match_or_number_from_array(char *arg, const char * const str[], int sz, __u8 *val)
->>> +{
->>> +	unsigned int i;
->>> +	char *dummy;
->>> +	unsigned long idx;
->>> +	int ret;
->>> +
->>> +	for (i = 0; i < sz; i++) {
->>> +		ret = strncmp(arg, str[i], strlen(str[i]));
->>> +		if (!ret && strlen(str[i]) == strlen(arg)) {
->>> +			*val = i;
->>> +			return 0;
->>> +		}
->>
->> This has several strlen calls so I wonder if it's more wasteful than it
->> needs to me. I suppose the compiler would optimize this away, but I
->> think there is an alternative solution.
->>
->> We're checking for an exact match, so you don't need the string length.
->> Instead, you can compare each character, break when characters differ,
->> or return 0 when you reached the null byte for both. So something like
->> this:
->>
->>     for (j = 0; arg[j] == str[i][j]; j++) {
->>             /* If we reached the end of the strings */
->>             if (arg[j] == '\0') {
->>                     *val = i;
->>                     return 0;
->>             }
->>     }
->>     /* Strings do not match; continue to the next string */
->>
->> We end up with the same number of lines, so I'll leave it up to you
->> whether you want to use this solution, or if you consider the existing
->> code clearer read.
-> 
-> I'll look forward in the direction you propose. First, we need to
-> confirm in which form the arguments can be expected. It depends on your
-> proposal to use a --watch string formatted arguments.
-> 
->>
->>> +	}
->>> +
->>> +	/* fallback to number */
->>
->> I'm not sure it makes sense to support numbers. Although it's true that
->> the component type, component scope, and event type are passed as __u8
->> values, users are expected to treat those values are opaque and pass
->> them via the respective enum constants. Since we don't guarantee that
->> the specific enum constant values will remain consistent between kernel
->> versions, I don't think it's a good idea to give to users that sort of
->> implication by allowing them to use raw numbers for configuration
->> selection.
-> 
-> Ack, I can remove this.
-> 
-> I'm a bit surprised by this statement. I may be wrong... I'd expect a
-> userland binary to be compatible when updating to a newer kernel: e.g.
-> user API (ABI?) definitions to be stable (including enum constants) ?
-> 
->>
->>> +	idx = strtoul(optarg, &dummy, 10);
->>> +	if (!errno) {
->>> +		if (idx >= sz)
->>> +			return -EINVAL;
->>> +		*val = idx;
->>> +		return 0;
->>> +	}
->>> +
->>> +	return -errno;
->>> +}
->>> +
->>> +static const char * const counter_event_type_name[] = {
->>> +	"COUNTER_EVENT_OVERFLOW",
->>> +	"COUNTER_EVENT_UNDERFLOW",
->>> +	"COUNTER_EVENT_OVERFLOW_UNDERFLOW",
->>> +	"COUNTER_EVENT_THRESHOLD",
->>> +	"COUNTER_EVENT_INDEX",
->>> +	"COUNTER_EVENT_CHANGE_OF_STATE",
->>> +	"COUNTER_EVENT_CAPTURE",
->>> +};
->>> +
->>> +static int counter_arg_to_event_type(char *arg, __u8 *event)
->>> +{
->>> +	return find_match_or_number_from_array(arg, counter_event_type_name,
->>> +					       ARRAY_SIZE(counter_event_type_name), event);
->>> +}
->>> +
->>> +static const char * const counter_component_type_name[] = {
->>> +	"COUNTER_COMPONENT_NONE",
->>> +	"COUNTER_COMPONENT_SIGNAL",
->>> +	"COUNTER_COMPONENT_COUNT",
->>> +	"COUNTER_COMPONENT_FUNCTION",
->>> +	"COUNTER_COMPONENT_SYNAPSE_ACTION",
->>> +	"COUNTER_COMPONENT_EXTENSION",
->>> +};
->>> +
->>> +static int counter_arg_to_component_type(char *arg, __u8 *type)
->>> +{
->>> +	return find_match_or_number_from_array(arg, counter_component_type_name,
->>> +					       ARRAY_SIZE(counter_component_type_name), type);
->>> +}
->>> +
->>> +static const char * const counter_scope_name[] = {
->>> +	"COUNTER_SCOPE_DEVICE",
->>> +	"COUNTER_SCOPE_SIGNAL",
->>> +	"COUNTER_SCOPE_COUNT",
->>> +};
->>> +
->>> +static int counter_arg_to_scope(char *arg, __u8 *type)
->>> +{
->>> +	return find_match_or_number_from_array(arg, counter_scope_name,
->>> +					       ARRAY_SIZE(counter_scope_name), type);
->>> +}
->>> +
->>> +static void print_usage(void)
->>> +{
->>> +	fprintf(stderr, "Usage: counter_watch_events [options]...\n"
->>> +		"Test various watch events for given counter device\n"
->>> +		"  --channel -c <n>\n"
->>> +		"        Set watch.channel\n"
->>> +		"  --debug -d\n"
->>> +		"        Prints debug information\n"
->>> +		"  --event -e <number or counter_event_type string>\n"
->>> +		"        Sets watch.event\n"
->>> +		"  --help -h\n"
->>> +		"        Prints usage\n"
->>> +		"  --device-num -n <n>\n"
->>> +		"        Set device number (/dev/counter<n>, default to 0)\n"
->>> +		"  --id -i <n>\n"
->>> +		"        Set watch.component.id\n"
->>> +		"  --loop -l <n>\n"
->>> +		"        Loop for a number of events (forever if n < 0)\n"
->>> +		"  --parent -p <n>\n"
->>> +		"        Set watch.component.parent number\n"
->>> +		"  --scope -s <number or counter_scope string>\n"
->>> +		"        Set watch.component.scope\n"
->>> +		"  --type -t <number or counter_component_type string>\n"
->>> +		"        Set watch.component.type\n"
->>> +		"\n"
->>> +		"Example with two watched events:\n\n"
->>> +		"counter_watch_events -d \\\n"
->>> +		"\t-t COUNTER_COMPONENT_COUNT -s COUNTER_SCOPE_COUNT"
->>> +		" -e COUNTER_EVENT_OVERFLOW_UNDERFLOW -i 0 -c 0 \\\n"
->>> +		"\t-t COUNTER_COMPONENT_EXTENSION -s COUNTER_SCOPE_COUNT"
->>> +		" -e COUNTER_EVENT_CAPTURE -i 7 -c 3\n"
->>> +		);
->>> +}
->>
->> Are you following any particular convention for the usage description? I
->> wonder if there is a particular preferred standard for command-line
->> interface descriptions. A quick search brought up a few, such as the
->> POSIX Utility Conventions[^1] and docopt[^2].
->>
->> One improvement I would recommend here is to put the short form of the
->> option before the long form and separate them with a command to make it
->> clearer (e.g. "-h, --help").
->>
->> [^1] https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
->> [^2] http://docopt.org
-> 
-> Thanks for pointing this! So definitely a good pointer, and suggestion
-> to look at!
-> 
-> I'll try to improve in v2.
-> 
->>
->>> +
->>> +static void print_watch(struct counter_watch *watch, int nwatch)
->>> +{
->>> +	int i;
->>> +
->>> +	/* prints the watch array in C-like structure */
->>> +	printf("watch[%d] = {\n", nwatch);
->>> +	for (i = 0; i < nwatch; i++) {
->>> +		printf(" [%d] =\t{\n"
->>> +		       "\t\t.component.type = %s\n"
->>> +		       "\t\t.component.scope = %s\n"
->>> +		       "\t\t.component.parent = %d\n"
->>> +		       "\t\t.component.id = %d\n"
->>> +		       "\t\t.event = %s\n"
->>> +		       "\t\t.channel = %d\n"
->>> +		       "\t},\n",
->>> +		       i,
->>> +		       counter_component_type_name[watch[i].component.type],
->>> +		       counter_scope_name[watch[i].component.scope],
->>> +		       watch[i].component.parent,
->>> +		       watch[i].component.id,
->>> +		       counter_event_type_name[watch[i].event],
->>> +		       watch[i].channel);
->>> +	}
->>> +	printf("};\n");
->>> +}
->>> +
->>> +static const struct option longopts[] = {
->>> +	{ "channel",		required_argument, 0, 'c' },
->>> +	{ "debug",		no_argument,       0, 'd' },
->>> +	{ "event",		required_argument, 0, 'e' },
->>> +	{ "help",		no_argument,       0, 'h' },
->>> +	{ "device-num",		required_argument, 0, 'n' },
->>> +	{ "id",			required_argument, 0, 'i' },
->>> +	{ "loop",		required_argument, 0, 'l' },
->>> +	{ "parent",		required_argument, 0, 'p' },
->>> +	{ "scope",		required_argument, 0, 's' },
->>> +	{ "type",		required_argument, 0, 't' },
->>> +	{ },
->>> +};
->>> +
->>> +int main(int argc, char **argv)
->>> +{
->>> +	int c, fd, i, ret;
->>> +	struct counter_event event_data;
->>> +	char *device_name = NULL;
->>> +	int debug = 0, loop = -1;
->>> +	char *dummy;
->>> +	int dev_num = 0, nwatch = 0, ncfg[] = {0, 0, 0, 0, 0, 0};
->>> +	int num_chan = 0, num_evt = 0, num_id = 0, num_p = 0, num_s = 0, num_t = 0;
->>> +	struct counter_watch *watches;
->>> +
->>> +	/*
->>> +	 * 1st pass: count events configurations number to allocate the watch array.
->>> +	 * Each watch argument can be repeated several times: each time it gets repeated,
->>> +	 * a corresponding watch is allocated (and configured) in 2nd pass.
->>> +	 */
->>
->> It feels a somewhat prone to error (at least cumbersome) to populate
-> 
-> Yes, this could be error prone. This is also why I added a print of the
-> gathered arguments when using --debug option.
-> Perhaps this could be better to always print it (e.g. print_watch()) ?
-> 
->> each watch via individual arguments for each field. Since a watch always
->> has these fields, perhaps instead we could pass some format string that
->> represents a watch, and deliminate watches via commas. For example, we
->> could have --watch="cco00,ecc73" to represent the two watches in the
->> usage example.
-> 
-> I like the idea, to concatenate as a string. With current approach, the
-> command line quickly becomes very long.
-> 
-> It makes it obvious in your example, that two watches are used, and no
-> argument is omitted.
-> On the opposite, each argument isn't very easy to understand compared to
-> plain text definition.
-> 
->>
->> Of course, we'd need to define a more robust format string convention
->> than in my example to ensure the correct configuration is properly
-> 
-> Indeed, by using a single letter, we could face limitations (ex:
-> overflow, underflow, overflow_underflow, which letter for the 3rd here?)
-> 
-> If we go this way, probably need to brainstorm a bit.
-> 
->> communicated. What do you think, would this approach would make things
->> simpler, or just more complicated in the end?
-> 
-> I'm not 100% sure if some helpers like getopt() will help here? So, I
-> guess this could be more complicated. This may also be against the
-> guideline "options should be preceded by the '-' delimiter character."
-> in [^1] (Ok, this would rather be the --watch option, fed with watch data.)
-> 
-> Would you have suggestions regarding possible helpers ? Or do you have
-> in mind some others tools that already adopted such approach ?
+> Also, we introduce xpcs_config_aneg_c37_sgmii_2500basex() function
 
+Clause 37... SGMII? 2500base-X? Technically, clause 37 doesn't cover
+2500base-X.
 
-Hi William,
-
-I've prototyped something to follow your suggestion regarding --watch=
-string arguments. This may endup in more easy to read, and hopefully
-simpler approach :-).
-
-I'll post a V2 soon for this series (removing some patches that seems
-already applied), or just this tool.
-
-Thanks,
-Fabrice
-
+> which is called by the xpcs_do_config() with the new AN mode:
+> DW_SGMII_2500BASEX, and this new function will proceed next-level
+> calling to perform C37 SGMII AN/2500BASEX configuration based on
+> the PHY interface updated by PHY driver.
 > 
->>
->>> +	while ((c = getopt_long(argc, argv, "c:de:hn:i:l:p:s:t:", longopts, NULL)) != -1) {
->>> +		switch (c) {
->>> +		case 'c':
->>> +			ncfg[0]++;
->>> +			break;
->>> +		case 'e':
->>> +			ncfg[1]++;
->>> +			break;
->>> +		case 'i':
->>> +			ncfg[2]++;
->>> +			break;
->>> +		case 'p':
->>> +			ncfg[3]++;
->>> +			break;
->>> +		case 's':
->>> +			ncfg[4]++;
->>> +			break;
->>> +		case 't':
->>> +			ncfg[5]++;
->>> +			break;
->>> +		};
->>> +	};
->>> +
->>> +	for (i = 0; i < ARRAY_SIZE(ncfg); i++)
->>> +		if (ncfg[i] > nwatch)
->>> +			nwatch = ncfg[i];
->>> +
->>> +	if (nwatch) {
->>> +		watches = calloc(nwatch, sizeof(*watches));
->>
->> We need to check if calloc fails, right?
+> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
+> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> ---
+>  drivers/net/pcs/pcs-xpcs.c   | 72 ++++++++++++++++++++++++++++++------
+>  include/linux/pcs/pcs-xpcs.h |  1 +
+>  2 files changed, 62 insertions(+), 11 deletions(-)
 > 
-> Yes, you're right, will fix this too.
+> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+> index 4dbc21f604f2..60d90191677d 100644
+> --- a/drivers/net/pcs/pcs-xpcs.c
+> +++ b/drivers/net/pcs/pcs-xpcs.c
+> @@ -104,6 +104,21 @@ static const int xpcs_2500basex_features[] = {
+>  	__ETHTOOL_LINK_MODE_MASK_NBITS,
+>  };
+>  
+> +static const int xpcs_sgmii_2500basex_features[] = {
+> +	ETHTOOL_LINK_MODE_Pause_BIT,
+> +	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+> +	ETHTOOL_LINK_MODE_Autoneg_BIT,
+> +	ETHTOOL_LINK_MODE_10baseT_Half_BIT,
+> +	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+> +	ETHTOOL_LINK_MODE_100baseT_Half_BIT,
+> +	ETHTOOL_LINK_MODE_100baseT_Full_BIT,
+> +	ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
+> +	ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
+
+The connected PHY could be one that supports 1000baseX as well.
+
+> +	ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
+> +	ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
+> +	__ETHTOOL_LINK_MODE_MASK_NBITS,
+> +};
+> +
+>  static const phy_interface_t xpcs_usxgmii_interfaces[] = {
+>  	PHY_INTERFACE_MODE_USXGMII,
+>  };
+> @@ -133,6 +148,12 @@ static const phy_interface_t xpcs_2500basex_interfaces[] = {
+>  	PHY_INTERFACE_MODE_MAX,
+>  };
+>  
+> +static const phy_interface_t xpcs_sgmii_2500basex_interfaces[] = {
+> +	PHY_INTERFACE_MODE_SGMII,
+> +	PHY_INTERFACE_MODE_2500BASEX,
+> +	PHY_INTERFACE_MODE_MAX,
+> +};
+> +
+>  enum {
+>  	DW_XPCS_USXGMII,
+>  	DW_XPCS_10GKR,
+> @@ -141,6 +162,7 @@ enum {
+>  	DW_XPCS_SGMII,
+>  	DW_XPCS_1000BASEX,
+>  	DW_XPCS_2500BASEX,
+> +	DW_XPCS_SGMII_2500BASEX,
+>  	DW_XPCS_INTERFACE_MAX,
+>  };
+>  
+> @@ -290,6 +312,7 @@ static int xpcs_soft_reset(struct dw_xpcs *xpcs,
+>  	case DW_AN_C37_SGMII:
+>  	case DW_2500BASEX:
+>  	case DW_AN_C37_1000BASEX:
+> +	case DW_SGMII_2500BASEX:
+>  		dev = MDIO_MMD_VEND2;
+>  		break;
+>  	default:
+> @@ -748,6 +771,8 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs,
+>  	if (xpcs->dev_flag == DW_DEV_TXGBE)
+>  		ret |= DW_VR_MII_DIG_CTRL1_PHY_MODE_CTRL;
+>  
+> +	/* Disable 2.5G GMII for SGMII C37 mode */
+> +	ret &= ~DW_VR_MII_DIG_CTRL1_2G5_EN;
+
+Do you know that this is correct for every user of this function?
+
+>  	ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -848,6 +873,26 @@ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
+>  	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
+>  }
+>  
+> +static int xpcs_config_aneg_c37_sgmii_2500basex(struct dw_xpcs *xpcs,
+> +						unsigned int neg_mode,
+> +						phy_interface_t interface)
+> +{
+> +	int ret = -EOPNOTSUPP;
+> +
+> +	switch (interface) {
+> +	case PHY_INTERFACE_MODE_SGMII:
+> +		ret = xpcs_config_aneg_c37_sgmii(xpcs, neg_mode);
+> +		break;
+> +	case PHY_INTERFACE_MODE_2500BASEX:
+> +		ret = xpcs_config_2500basex(xpcs);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+>  		   const unsigned long *advertising, unsigned int neg_mode)
+>  {
+> @@ -890,6 +935,12 @@ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+>  		if (ret)
+>  			return ret;
+>  		break;
+> +	case DW_SGMII_2500BASEX:
+> +		ret = xpcs_config_aneg_c37_sgmii_2500basex(xpcs, neg_mode,
+> +							   interface);
+> +		if (ret)
+> +			return ret;
+> +		break;
+>  	default:
+>  		return -1;
+>  	}
+> @@ -1114,6 +1165,11 @@ static void xpcs_get_state(struct phylink_pcs *pcs,
+>  		}
+>  		break;
+>  	case DW_AN_C37_SGMII:
+> +	case DW_SGMII_2500BASEX:
+> +		/* 2500BASEX is not supported for in-band AN mode. */
+> +		if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
+> +			break;
+> +
+>  		ret = xpcs_get_state_c37_sgmii(xpcs, state);
+>  		if (ret) {
+>  			pr_err("xpcs_get_state_c37_sgmii returned %pe\n",
+> @@ -1266,23 +1322,17 @@ static const struct xpcs_compat synopsys_xpcs_compat[DW_XPCS_INTERFACE_MAX] = {
+>  		.num_interfaces = ARRAY_SIZE(xpcs_10gbaser_interfaces),
+>  		.an_mode = DW_10GBASER,
+>  	},
+> -	[DW_XPCS_SGMII] = {
+> -		.supported = xpcs_sgmii_features,
+> -		.interface = xpcs_sgmii_interfaces,
+> -		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_interfaces),
+> -		.an_mode = DW_AN_C37_SGMII,
+> -	},
+
+Doesn't this break SGMII-only support (those using DW_XPCS_SGMII) ?
+
+>  	[DW_XPCS_1000BASEX] = {
+>  		.supported = xpcs_1000basex_features,
+>  		.interface = xpcs_1000basex_interfaces,
+>  		.num_interfaces = ARRAY_SIZE(xpcs_1000basex_interfaces),
+>  		.an_mode = DW_AN_C37_1000BASEX,
+>  	},
+> -	[DW_XPCS_2500BASEX] = {
+> -		.supported = xpcs_2500basex_features,
+> -		.interface = xpcs_2500basex_interfaces,
+> -		.num_interfaces = ARRAY_SIZE(xpcs_2500basex_interfaces),
+> -		.an_mode = DW_2500BASEX,
+
+Doesn't this break 2500base-X only support (those using
+DW_XPCS_2500BASEX)?
+
+> +	[DW_XPCS_SGMII_2500BASEX] = {
+> +		.supported = xpcs_sgmii_2500basex_features,
+> +		.interface = xpcs_sgmii_2500basex_interfaces,
+> +		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_2500basex_features),
+> +		.an_mode = DW_SGMII_2500BASEX,
+>  	},
+>  };
+>  
+> diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
+> index da3a6c30f6d2..f075d2fca54a 100644
+> --- a/include/linux/pcs/pcs-xpcs.h
+> +++ b/include/linux/pcs/pcs-xpcs.h
+> @@ -19,6 +19,7 @@
+>  #define DW_2500BASEX			3
+>  #define DW_AN_C37_1000BASEX		4
+>  #define DW_10GBASER			5
+> +#define DW_SGMII_2500BASEX		6
+>  
+>  /* device vendor OUI */
+>  #define DW_OUI_WX			0x0018fc80
+> -- 
+> 2.25.1
 > 
-> Thanks for reviewing!
-> Best regards,
-> Fabrice
 > 
->>
->> William Breathitt Gray 
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
