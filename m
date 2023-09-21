@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C527AA4B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A2E7AA4DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjIUWP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S232319AbjIUWXI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 18:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjIUWPP (ORCPT
+        with ESMTP id S232007AbjIUWWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:15:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671A999;
-        Thu, 21 Sep 2023 15:15:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DFB4C433B6;
-        Thu, 21 Sep 2023 22:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695334508;
-        bh=j+YpilMLGCC5ERDcgjdZY/UEYbvSwBxJ4mCRlrG3+go=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L+gPhURipQCVv5lQ6lMZEeHafe2Map2Z3SouhfPMvOq3LIN5npAvywgTLrdsrYoDw
-         lcSQt8Ka8fmcf1d8ZM8qIlXPNumlpX3JZKdESMC/KpenaIBv7uGMi+LUkvfCfO+Vlt
-         Ms3BphwgqclEjVmwfHiEkkrb7+Ta8zh3Ag+RqoFwGGlsIzXfHKrtVOjxsaXB9alIhH
-         JK+MwyCKXlDL+alHW9KkokkF6FFQuanhqMW2Sdmh2NRZkCVnTo9ppIcJLwe1SwZkYz
-         JQdTcMm4ZdnaSVT+CVcsNzzz7DKO5EXfQ9zO0FIrMF11/hIqK2vZeqyr2ZUZVULtBX
-         NHK7vuo8iml0w==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50337b43ee6so2384844e87.3;
-        Thu, 21 Sep 2023 15:15:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz6LQ7OFX4l8PRAF6m5TPSjW+jAccwG8ucpwcrP41ii8KG8riIo
-        p5zrHoy/uro0IDaCuObv8tfVteYpmks0JnVOHoE=
-X-Google-Smtp-Source: AGHT+IEOsdVYa+3bdtK+lEO/ooz4+HKzafq7xPbE1njdx3C8+57KFx3hJ2XTTULe0kNONSMtwPONNYKDgjY7yPaLcMU=
-X-Received: by 2002:a05:6512:3254:b0:503:1c07:f7f9 with SMTP id
- c20-20020a056512325400b005031c07f7f9mr5552939lfr.29.1695334506735; Thu, 21
- Sep 2023 15:15:06 -0700 (PDT)
+        Thu, 21 Sep 2023 18:22:51 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE3994
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 15:22:30 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-195-nCruYfTANVavYpk8gD9WoQ-1; Thu, 21 Sep 2023 23:22:12 +0100
+X-MC-Unique: nCruYfTANVavYpk8gD9WoQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Sep
+ 2023 23:22:11 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 21 Sep 2023 23:22:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bjorn Helgaas' <helgaas@kernel.org>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+CC:     "lenb@kernel.org" <lenb@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mahesh@linux.ibm.com" <mahesh@linux.ibm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: RE: Questions: Should kernel panic when PCIe fatal error occurs?
+Thread-Topic: Questions: Should kernel panic when PCIe fatal error occurs?
+Thread-Index: AQHZ7Bag+I9/7O2gw0aXfXPFoWr8dLAl2OAA
+Date:   Thu, 21 Sep 2023 22:22:11 +0000
+Message-ID: <625cdd6c55994bf3a50efd8f79680029@AcuMS.aculab.com>
+References: <e486db16-d36d-9e14-4f10-dc755c0ef97d@linux.alibaba.com>
+ <20230920230257.GA280837@bhelgaas>
+In-Reply-To: <20230920230257.GA280837@bhelgaas>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20230918072955.2507221-1-rppt@kernel.org> <20230918072955.2507221-3-rppt@kernel.org>
-In-Reply-To: <20230918072955.2507221-3-rppt@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 21 Sep 2023 15:14:54 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7y2T+tajK71NfYhquhGJKpLpL+EoxxzqrVhEuAamDH3w@mail.gmail.com>
-Message-ID: <CAPhsuW7y2T+tajK71NfYhquhGJKpLpL+EoxxzqrVhEuAamDH3w@mail.gmail.com>
-Subject: Re: [PATCH v3 02/13] mm: introduce execmem_text_alloc() and execmem_free()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 12:30=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wr=
-ote:
->
-[...]
-> +
-> +/**
-> + * enum execmem_type - types of executable memory ranges
-> + *
-> + * There are several subsystems that allocate executable memory.
-> + * Architectures define different restrictions on placement,
-> + * permissions, alignment and other parameters for memory that can be us=
-ed
-> + * by these subsystems.
-> + * Types in this enum identify subsystems that allocate executable memor=
-y
-> + * and let architectures define parameters for ranges suitable for
-> + * allocations by each subsystem.
-> + *
-> + * @EXECMEM_DEFAULT: default parameters that would be used for types tha=
-t
-> + * are not explcitly defined.
-> + * @EXECMEM_MODULE_TEXT: parameters for module text sections
-> + * @EXECMEM_KPROBES: parameters for kprobes
-> + * @EXECMEM_FTRACE: parameters for ftrace
-> + * @EXECMEM_BPF: parameters for BPF
-> + * @EXECMEM_TYPE_MAX:
-> + */
-> +enum execmem_type {
-> +       EXECMEM_DEFAULT,
+> It would be nice if they worked the same, but I suspect that vendors
+> may rely on the fact that CPER_SEV_FATAL forces a restart/panic as
+> part of their system integrity story.
 
-I found EXECMEM_DEFAULT more confusing than helpful.
+The file system errors created by a panic (especially an NMI panic)
+could easily be more problematic than a failed PCIe data transfer.
+Evan a read that returned ~0u - which can be checked for.
 
-Song
+Panicking a system that is converting TDM telephony to RTP for the
+911 emergency service because a PCIe cable/riser connecting one of the
+TDM board has become loose doesn't seem ideal.
+(Or because the TDM board's fpga has decided it isn't going to respond
+to any accesses until the BARs are setup again...)
 
-> +       EXECMEM_MODULE_TEXT =3D EXECMEM_DEFAULT,
-> +       EXECMEM_KPROBES,
-> +       EXECMEM_FTRACE,
-> +       EXECMEM_BPF,
-> +       EXECMEM_TYPE_MAX,
-> +};
-> +
-[...]
+The system can carry on with some TDM connections disabled - but that
+is ok because they are all duplicated in case a cable gets cuit.
+
+(Yes - that is a live system...)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
