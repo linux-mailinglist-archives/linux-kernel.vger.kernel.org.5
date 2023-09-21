@@ -2,99 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B277AA211
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81ED7AA003
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbjIUVMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        id S231990AbjIUU3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbjIUVLZ (ORCPT
+        with ESMTP id S232098AbjIUU3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:11:25 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB15A0F5C;
-        Thu, 21 Sep 2023 10:57:07 -0700 (PDT)
+        Thu, 21 Sep 2023 16:29:07 -0400
+Received: from mx01lb.world4you.com (mx01lb.world4you.com [81.19.149.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1275579E07;
+        Thu, 21 Sep 2023 10:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xOUC0XEpooWY3ocUiPMl1wGP/+abFgU7mgV5A8cPiqQ=; b=ODXexeYs4hjxZmP4XDsimLt1ld
-        jIwXZ/SwJiN6T30MyTq0ozuGsVwAlUmQ8pwWTywvlnYMbx1IMxWubKbuPfadGgQSSIwH2gOsziYuk
-        h8UzpIEg6Fx2rEs96em6OXLOt3bTLyZudculxw+sa7cI5L0MrWuJXCDldONkubQeiF8MPWRXXILOw
-        ms9C4a92EZbyFjqDktlKpykZteXPXIeDVYXx8ZFIhFlbLXVU/GkWNJz8PE7sH1u/G7q7kSpl4yMa4
-        M60CIhQ4+qem2OfbubuoCyOBvPAuNp7QyPRs02HeqgsV3QwKKWx1h9aZn1hxlMHCxIebWKmwVabxV
-        WckeWJ0g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54502)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qjJP5-0004aS-1s;
-        Thu, 21 Sep 2023 14:07:35 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qjJOR-0003YC-Nd; Thu, 21 Sep 2023 14:06:55 +0100
-Date:   Thu, 21 Sep 2023 14:06:55 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        David E Box <david.e.box@intel.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v3 2/5] net: pcs: xpcs: combine C37 SGMII AN and
- 2500BASEX for Intel mGbE controller
-Message-ID: <ZQw/7/3jOJf7BOPt@shell.armlinux.org.uk>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
- <20230921121946.3025771-3-yong.liang.choong@linux.intel.com>
+        d=sw-optimization.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=uWSGtFxKnBKnhVYiDE/lsVnxy+izTRoeGGy7oLS7gp0=; b=o9g3g1Ww8VyAo3/Fq3eApNecfT
+        eN2lYgN12+FcwHgtVLUWAq44WebW9FCgj+5rjbmY5BYlaDpI2M29+/uxQYi9Gb8ie1ZaAtBdSu5J5
+        VfMHifOsRBFtLlFaRKlnART7OkX/1o4Lgva4w+GyjIdc98pJGu9IXCpPtaXkXbhsViuE=;
+Received: from [195.192.57.194] (helo=[192.168.0.20])
+        by mx01lb.world4you.com with esmtpa (Exim 4.96)
+        (envelope-from <eas@sw-optimization.com>)
+        id 1qjJOm-0000JQ-0B;
+        Thu, 21 Sep 2023 15:07:16 +0200
+Message-ID: <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
+Date:   Thu, 21 Sep 2023 15:07:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921121946.3025771-3-yong.liang.choong@linux.intel.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
+To:     Olivier Dautricourt <olivierdautricourt@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
+References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
+Content-Language: de-DE
+From:   Eric Schwarz <eas@sw-optimization.com>
+In-Reply-To: <20230920200636.32870-3-olivierdautricourt@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,206 +56,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 08:19:43PM +0800, Choong Yong Liang wrote:
-> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
-> 
-> This commit introduces xpcs_sgmii_2500basex_features[] that combine
-> xpcs_sgmii_features[] and xpcs_2500basex_features[] for Intel mGbE
-> controller that desire to interchange the speed mode of
-> 10/100/1000/2500Mbps at runtime.
-> 
-> Also, we introduce xpcs_config_aneg_c37_sgmii_2500basex() function
+Hello Olivier,
 
-Clause 37... SGMII? 2500base-X? Technically, clause 37 doesn't cover
-2500base-X.
+thanks for following up on my comment first. I really appreciate. - I 
+don't have access to the hardware anymore, so I cannot test changes myself.
 
-> which is called by the xpcs_do_config() with the new AN mode:
-> DW_SGMII_2500BASEX, and this new function will proceed next-level
-> calling to perform C37 SGMII AN/2500BASEX configuration based on
-> the PHY interface updated by PHY driver.
+This patch addresses IMHO three fixes. - Shouldn't it be split up into 
+three small junks so one could also later work w/ git bisect / separate 
+ack's? - That way it is an all or nothing thing. Please regard this 
+remark as cosmetics.
+
+Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
+> Sparse complains because we first take the lock in msgdma_tasklet -> move
+> locking to msgdma_chan_desc_cleanup.
+> In consequence, move calling of msgdma_chan_desc_cleanup outside of the
+> critical section of function msgdma_tasklet.
 > 
-> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
-> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> Use spin_unlock_irqsave/restore instead of just spinlock/unlock to keep
+> state of irqs while executing the callbacks.
+
+What about the locking in the IRQ handler msgdma_irq_handler() itself? - 
+Shouldn't spin_unlock_irqsave/restore() be used there as well instead of 
+just spinlock/unlock()?
+
+> Remove list_del call in msgdma_chan_desc_cleanup, this should be the role
+> of msgdma_free_descriptor. In consequence replace list_add_tail with
+> list_move_tail in msgdma_free_descriptor. This fixes the path:
+> msgdma_free_chan_resources -> msgdma_free_descriptors ->
+> msgdma_free_desc_list -> msgdma_free_descriptor
+> which does __not__ seems to free correctly the descriptors as firsts nodes
+> where not removed from the specified list.
+>
+s/__not__/_not_/
+s/seems/seem/
+s/firsts/first/ => Actually I would omit it.
+s/where/were/
+
+"Fixes: <12 digits git hash> ("commit-message")" is missing [1] isn't it?
+
+[1] 
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+
+> Signed-off-by: Olivier Dautricourt <olivierdautricourt@gmail.com>
 > ---
->  drivers/net/pcs/pcs-xpcs.c   | 72 ++++++++++++++++++++++++++++++------
->  include/linux/pcs/pcs-xpcs.h |  1 +
->  2 files changed, 62 insertions(+), 11 deletions(-)
+> Following Eric Schwarz comments on altera-msgdma driver not having some
+> of the fixes made to zynqmp-dma driver (which msgdma driver is based on):
+> This patch should address at least the spinlock part, it __has not__ been
+> tested yet so please don't accept it right away. I'm in the process of
+> getting a new hardware to test with. Meanwhile it is open to reviews
+> and even better if someone is able to test it.
 > 
-> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-> index 4dbc21f604f2..60d90191677d 100644
-> --- a/drivers/net/pcs/pcs-xpcs.c
-> +++ b/drivers/net/pcs/pcs-xpcs.c
-> @@ -104,6 +104,21 @@ static const int xpcs_2500basex_features[] = {
->  	__ETHTOOL_LINK_MODE_MASK_NBITS,
->  };
->  
-> +static const int xpcs_sgmii_2500basex_features[] = {
-> +	ETHTOOL_LINK_MODE_Pause_BIT,
-> +	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
-> +	ETHTOOL_LINK_MODE_Autoneg_BIT,
-> +	ETHTOOL_LINK_MODE_10baseT_Half_BIT,
-> +	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
-> +	ETHTOOL_LINK_MODE_100baseT_Half_BIT,
-> +	ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-> +	ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
-> +	ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-
-The connected PHY could be one that supports 1000baseX as well.
-
-> +	ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
-> +	ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
-> +	__ETHTOOL_LINK_MODE_MASK_NBITS,
-> +};
-> +
->  static const phy_interface_t xpcs_usxgmii_interfaces[] = {
->  	PHY_INTERFACE_MODE_USXGMII,
->  };
-> @@ -133,6 +148,12 @@ static const phy_interface_t xpcs_2500basex_interfaces[] = {
->  	PHY_INTERFACE_MODE_MAX,
->  };
->  
-> +static const phy_interface_t xpcs_sgmii_2500basex_interfaces[] = {
-> +	PHY_INTERFACE_MODE_SGMII,
-> +	PHY_INTERFACE_MODE_2500BASEX,
-> +	PHY_INTERFACE_MODE_MAX,
-> +};
-> +
->  enum {
->  	DW_XPCS_USXGMII,
->  	DW_XPCS_10GKR,
-> @@ -141,6 +162,7 @@ enum {
->  	DW_XPCS_SGMII,
->  	DW_XPCS_1000BASEX,
->  	DW_XPCS_2500BASEX,
-> +	DW_XPCS_SGMII_2500BASEX,
->  	DW_XPCS_INTERFACE_MAX,
->  };
->  
-> @@ -290,6 +312,7 @@ static int xpcs_soft_reset(struct dw_xpcs *xpcs,
->  	case DW_AN_C37_SGMII:
->  	case DW_2500BASEX:
->  	case DW_AN_C37_1000BASEX:
-> +	case DW_SGMII_2500BASEX:
->  		dev = MDIO_MMD_VEND2;
->  		break;
->  	default:
-> @@ -748,6 +771,8 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs,
->  	if (xpcs->dev_flag == DW_DEV_TXGBE)
->  		ret |= DW_VR_MII_DIG_CTRL1_PHY_MODE_CTRL;
->  
-> +	/* Disable 2.5G GMII for SGMII C37 mode */
-> +	ret &= ~DW_VR_MII_DIG_CTRL1_2G5_EN;
-
-Do you know that this is correct for every user of this function?
-
->  	ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
->  	if (ret < 0)
->  		return ret;
-> @@ -848,6 +873,26 @@ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
->  	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
->  }
->  
-> +static int xpcs_config_aneg_c37_sgmii_2500basex(struct dw_xpcs *xpcs,
-> +						unsigned int neg_mode,
-> +						phy_interface_t interface)
-> +{
-> +	int ret = -EOPNOTSUPP;
-> +
-> +	switch (interface) {
-> +	case PHY_INTERFACE_MODE_SGMII:
-> +		ret = xpcs_config_aneg_c37_sgmii(xpcs, neg_mode);
-> +		break;
-> +	case PHY_INTERFACE_MODE_2500BASEX:
-> +		ret = xpcs_config_2500basex(xpcs);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
->  		   const unsigned long *advertising, unsigned int neg_mode)
->  {
-> @@ -890,6 +935,12 @@ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
->  		if (ret)
->  			return ret;
->  		break;
-> +	case DW_SGMII_2500BASEX:
-> +		ret = xpcs_config_aneg_c37_sgmii_2500basex(xpcs, neg_mode,
-> +							   interface);
-> +		if (ret)
-> +			return ret;
-> +		break;
->  	default:
->  		return -1;
->  	}
-> @@ -1114,6 +1165,11 @@ static void xpcs_get_state(struct phylink_pcs *pcs,
->  		}
->  		break;
->  	case DW_AN_C37_SGMII:
-> +	case DW_SGMII_2500BASEX:
-> +		/* 2500BASEX is not supported for in-band AN mode. */
-> +		if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
-> +			break;
-> +
->  		ret = xpcs_get_state_c37_sgmii(xpcs, state);
->  		if (ret) {
->  			pr_err("xpcs_get_state_c37_sgmii returned %pe\n",
-> @@ -1266,23 +1322,17 @@ static const struct xpcs_compat synopsys_xpcs_compat[DW_XPCS_INTERFACE_MAX] = {
->  		.num_interfaces = ARRAY_SIZE(xpcs_10gbaser_interfaces),
->  		.an_mode = DW_10GBASER,
->  	},
-> -	[DW_XPCS_SGMII] = {
-> -		.supported = xpcs_sgmii_features,
-> -		.interface = xpcs_sgmii_interfaces,
-> -		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_interfaces),
-> -		.an_mode = DW_AN_C37_SGMII,
-> -	},
-
-Doesn't this break SGMII-only support (those using DW_XPCS_SGMII) ?
-
->  	[DW_XPCS_1000BASEX] = {
->  		.supported = xpcs_1000basex_features,
->  		.interface = xpcs_1000basex_interfaces,
->  		.num_interfaces = ARRAY_SIZE(xpcs_1000basex_interfaces),
->  		.an_mode = DW_AN_C37_1000BASEX,
->  	},
-> -	[DW_XPCS_2500BASEX] = {
-> -		.supported = xpcs_2500basex_features,
-> -		.interface = xpcs_2500basex_interfaces,
-> -		.num_interfaces = ARRAY_SIZE(xpcs_2500basex_interfaces),
-> -		.an_mode = DW_2500BASEX,
-
-Doesn't this break 2500base-X only support (those using
-DW_XPCS_2500BASEX)?
-
-> +	[DW_XPCS_SGMII_2500BASEX] = {
-> +		.supported = xpcs_sgmii_2500basex_features,
-> +		.interface = xpcs_sgmii_2500basex_interfaces,
-> +		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_2500basex_features),
-> +		.an_mode = DW_SGMII_2500BASEX,
->  	},
->  };
->  
-> diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
-> index da3a6c30f6d2..f075d2fca54a 100644
-> --- a/include/linux/pcs/pcs-xpcs.h
-> +++ b/include/linux/pcs/pcs-xpcs.h
-> @@ -19,6 +19,7 @@
->  #define DW_2500BASEX			3
->  #define DW_AN_C37_1000BASEX		4
->  #define DW_10GBASER			5
-> +#define DW_SGMII_2500BASEX		6
->  
->  /* device vendor OUI */
->  #define DW_OUI_WX			0x0018fc80
-> -- 
-> 2.25.1
+>   drivers/dma/altera-msgdma.c | 16 ++++++++++------
+>   1 file changed, 10 insertions(+), 6 deletions(-)
 > 
-> 
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
+> index 4153c2edb049..c39937bfcdf1 100644
+> --- a/drivers/dma/altera-msgdma.c
+> +++ b/drivers/dma/altera-msgdma.c
+> @@ -233,7 +233,7 @@ static void msgdma_free_descriptor(struct msgdma_device *mdev,
+>   	struct msgdma_sw_desc *child, *next;
+>   
+>   	mdev->desc_free_cnt++;
+> -	list_add_tail(&desc->node, &mdev->free_list);
+> +	list_move_tail(&desc->node, &mdev->free_list);
+>   	list_for_each_entry_safe(child, next, &desc->tx_list, node) {
+>   		mdev->desc_free_cnt++;
+>   		list_move_tail(&child->node, &mdev->free_list);
+> @@ -583,22 +583,25 @@ static void msgdma_issue_pending(struct dma_chan *chan)
+>   static void msgdma_chan_desc_cleanup(struct msgdma_device *mdev)
+>   {
+>   	struct msgdma_sw_desc *desc, *next;
+> +	unsigned long irqflags;
+> +
+> +	spin_lock_irqsave(&mdev->lock, irqflags);
+>   
+>   	list_for_each_entry_safe(desc, next, &mdev->done_list, node) {
+>   		struct dmaengine_desc_callback cb;
+>   
+> -		list_del(&desc->node);
+> -
+>   		dmaengine_desc_get_callback(&desc->async_tx, &cb);
+>   		if (dmaengine_desc_callback_valid(&cb)) {
+> -			spin_unlock(&mdev->lock);
+> +			spin_unlock_irqrestore(&mdev->lock, irqflags);
+>   			dmaengine_desc_callback_invoke(&cb, NULL);
+> -			spin_lock(&mdev->lock);
+> +			spin_lock_irqsave(&mdev->lock, irqflags);
+>   		}
+>   
+>   		/* Run any dependencies, then free the descriptor */
+>   		msgdma_free_descriptor(mdev, desc);
+>   	}
+> +
+> +	spin_unlock_irqrestore(&mdev->lock, irqflags);
+>   }
+>   
+>   /**
+> @@ -713,10 +716,11 @@ static void msgdma_tasklet(struct tasklet_struct *t)
+>   		}
+>   
+>   		msgdma_complete_descriptor(mdev);
+> -		msgdma_chan_desc_cleanup(mdev);
+>   	}
+>   
+>   	spin_unlock_irqrestore(&mdev->lock, flags);
+> +
+> +	msgdma_chan_desc_cleanup(mdev);
+>   }
+>   
+>   /**
