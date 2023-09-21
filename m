@@ -2,93 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AAD7A9EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1464F7A9FA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbjIUUFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
+        id S231745AbjIUUZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjIUUFc (ORCPT
+        with ESMTP id S231896AbjIUUYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:05:32 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094E74006B
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:58:40 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-414ba610766so90891cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695326319; x=1695931119; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4FfisnjYNsOL8cGxpX9K2HnFfkT4nFMBwQIPYmNAGaM=;
-        b=DohyFrj5ueb5UIv15uZCeZD62asacUfPm4Fwbouisr2CHv2+V4pzfby22+TCYL9O4o
-         LpmEc+ap+fcvDVBqB73CX9ahfdy8fCqJXIOsioTGGUZB666VpC2w5X5qsm94GC0GMHqw
-         9KLX0aVF1DsLDmfjTJ8wsf8gh+AlhAVCUYLpI1G+9tVJm/lQjwzaX1J88UpXdri/3wkf
-         gyfbiOcbUVwdJ+0WLRTA2UXeXuvHSLi56pv6/v36Qjj+JwPvCxiBfa11aVfqWgQN0GZB
-         LpgHPmSzYAp6zdjFNHqlkZgLS/Vxw916p5s3yKbyRBrCHwSiovUvUb3BvE/eCXtUOhpG
-         gv+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695326319; x=1695931119;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4FfisnjYNsOL8cGxpX9K2HnFfkT4nFMBwQIPYmNAGaM=;
-        b=BxlsM/eMGRF5HGQVfrJ/+oovmhLi+vNTE5g8w1wmxU4AznaSQoeqeDcZSKEfKLxxFt
-         Y/ziXsHb+VhszJcVc6FMHdiFK31fsATN7Os9ECMpybCsAKzKlFCMWGCTVFxzgt73cCNe
-         +kkcpwRZ8++sF5hiS6C48wLbklaceqHgv/0UQkXdLrOjOUWJDYRmo3MeYo6T3QPK5pZN
-         X13yNh1LT/spzpo2hSO7yWPY2Mw/zatcMe/3Ro+OhipYacg8cJwWwZ+E+uIitdAI8llf
-         rVKRslQDbiUBXzgyzXpB6Qlp69ptIfWg59xoKsHqP4jzR99jGtdcQcA2XXAVnc6a80Ov
-         JFFw==
-X-Gm-Message-State: AOJu0Yy2mSlytrZdb8aG5943dYjogM5zDXWbJ5RAihiMcd0tO67BzEZh
-        ucIuo4Hrw8n+w5Hxp6N8jnW313QePYcwBmxIFXgNQg==
-X-Google-Smtp-Source: AGHT+IGJ6jwXUXExcyx4muo67lAz2nyvdpM5sjjvIUw3AuPhH7KtatRQfNyEvOVD8w/QtrqegvvcUU5CU/+Dkj3DoD4=
-X-Received: by 2002:a05:622a:4d1:b0:3de:1aaa:42f5 with SMTP id
- q17-20020a05622a04d100b003de1aaa42f5mr1926qtx.15.1695326318747; Thu, 21 Sep
- 2023 12:58:38 -0700 (PDT)
+        Thu, 21 Sep 2023 16:24:45 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F67C4C1C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:04:40 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id jPuaqsc4hWkeLjPuaqqtyH; Thu, 21 Sep 2023 22:04:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695326674;
+        bh=pgVovfgULLuIhHghHoiORjK2SMAEHL0Uj/DD3vZku1U=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=VycdaZQ+0TA5bG9VG8uVWgoDY5dWp3W3qbrI62siiyl3WzJ/IKbczu2rVGt82EpBD
+         8Bfc7RkJQB5nZKYY2kJDkqjhG1sEjfcTxKjpv4+ei1yeRaK0D3dbiIeIt1ZiJqCGF7
+         dAyXxtK02y1SFHlgx7tqV0AKykLGPo7tdc+fPcGyhop1kOEU7837rN3UjXjyB4QPmm
+         E7vfhv1T7y9azS+yHgvTHnb11jY1esCHDK798pxwRoUjs5RNsSbkQfxS+Puc3cRfjy
+         r2lTWgCTF8ysgh8MxiqwjQG8nR0aF9V9wENah4iyLRXsP43db8WWpz3kS0YLLid20P
+         5dB93JYy3cRRg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 21 Sep 2023 22:04:34 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <c6f07289-2e69-fab4-32dc-46fe5e5713e7@wanadoo.fr>
+Date:   Thu, 21 Sep 2023 22:04:31 +0200
 MIME-Version: 1.0
-References: <20230921194314.1976605-1-i.maximets@ovn.org>
-In-Reply-To: <20230921194314.1976605-1-i.maximets@ovn.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 21 Sep 2023 21:58:27 +0200
-Message-ID: <CANn89iJxrsgeS_FOivxPdYLhPyLC6Lo8VBzLjdx9-mQKXxqjwA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] openvswitch: reduce stack usage in do_execute_actions
-To:     Ilya Maximets <i.maximets@ovn.org>
-Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
-        Eelco Chaudron <echaudro@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Content-Language: fr
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        imx@lists.linux.dev, Rob Herring <robh@kernel.org>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Roy Zang <roy.zang@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linuxppc-dev@lists.ozlabs.org>, Mingkai Hu <mingkai.hu@nxp.com>,
+        Christoph Hellwig <hch@infradead.org>
+References: <20230921153702.3281289-1-Frank.Li@nxp.com>
+ <925da248-f582-6dd5-57ab-0fadc4e84f9e@wanadoo.fr>
+ <ZQyM+9uxFoX5TgPa@lizhi-Precision-Tower-5810>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <ZQyM+9uxFoX5TgPa@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 9:42=E2=80=AFPM Ilya Maximets <i.maximets@ovn.org> =
-wrote:
->
-> do_execute_actions() function can be called recursively multiple
-> times while executing actions that require pipeline forking or
-> recirculations.  It may also be re-entered multiple times if the packet
-> leaves openvswitch module and re-enters it through a different port.
->
-> Currently, there is a 256-byte array allocated on stack in this
-> function that is supposed to hold NSH header.  Compilers tend to
-> pre-allocate that space right at the beginning of the function:
->
->      a88:       48 81 ec b0 01 00 00    sub    $0x1b0,%rsp
->
-> NSH is not a very common protocol, but the space is allocated on every
-> recursive call or re-entry multiplying the wasted stack space.
->
+Le 21/09/2023 à 20:35, Frank Li a écrit :
+> On Thu, Sep 21, 2023 at 07:59:51PM +0200, Christophe JAILLET wrote:
+>> Le 21/09/2023 à 17:37, Frank Li a écrit :
+>>> From: Guanhua Gao <guanhua.gao@nxp.com>
+>>>
+>>> Set DMA mask and coherent DMA mask to enable 64-bit addressing.
+>>>
+>>> Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
+>>> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>>> ---
+>>>    drivers/pci/controller/dwc/pci-layerscape-ep.c | 5 +++++
+>>>    1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+>>> index de4c1758a6c33..6fd0dea38a32c 100644
+>>> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+>>> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+>>> @@ -249,6 +249,11 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+>>>    	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+>>> +	/* set 64-bit DMA mask and coherent DMA mask */
+>>> +	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)))
+>>> +		if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32)))
+>>
+>> As stated in [1], dma_set_mask() with a 64-bit mask will never
+>> fail if dev->dma_mask is non-NULL.
+>>
+>> So, if it fails, the 32 bits case will also fail for the same reason.
+>> There is no need for the 2nd test.
+>>
+>>
+>> See [1] for Christoph Hellwig comment about it.
+> 
+> I don't think it is true. the below is dma_set_mask()'s implementation
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+I'll try to recollect a more detailled explanation from Christoph.
+
+I also checked all paths some times ago, and the conclusion was that if 
+dma_set_mask(64) failed, dma_set_mask(32) would fail for the exact same 
+reasons.
+
+I'll try to find the corresponding mail and come back to you.
+
+I don't thing that implementation details have changed since that times, 
+so the conclusion should still be valid.
+
+Adding Christoph in cc, if he wants to give another look at it, or if he 
+beats me finding the 1 or 2 years old mails.
+
+CJ
+
+> 
+> int dma_set_mask(struct device *dev, u64 mask)
+> {
+> 	/*
+> 	 * Truncate the mask to the actually supported dma_addr_t width to
+> 	 * avoid generating unsupportable addresses.
+> 	 */
+> 	mask = (dma_addr_t)mask;
+> 
+> 	if (!dev->dma_mask || !dma_supported(dev, mask))
+> 				^^^^^^^
+> 		return -EIO;
+> 
+> 	arch_dma_set_mask(dev, mask);
+> 	*dev->dma_mask = mask;
+> 	return 0;
+> }
+> 
+> dma_supported() may return failiure.
+> 
+> static int dma_supported(struct device *dev, u64 mask)
+> {
+> 	const struct dma_map_ops *ops = get_dma_ops(dev);
+> 
+> 	/*
+> 	 * ->dma_supported sets the bypass flag, so we must always call
+> 	 * into the method here unless the device is truly direct mapped.
+> 	 */
+> 	if (!ops)
+> 		return dma_direct_supported(dev, mask);
+> 	if (!ops->dma_supported)
+> 		return 1;
+> 	return ops->dma_supported(dev, mask);
+>                      ^^^^^^
+> 			DMA driver or IOMMU driver may return failure.
+> }
+> 
+>   
+> Frank
+> 
+>>
+>> CJ
+>>
+>>
+>> [1]: https://lkml.org/lkml/2021/6/7/398
+>>
+>>> +			return -EIO;
+>>> +
+>>>    	platform_set_drvdata(pdev, pcie);
+>>>    	ret = dw_pcie_ep_init(&pci->ep);
+>>
+> 
+
