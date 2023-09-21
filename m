@@ -2,48 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F557A90BF
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC77A90C1
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjIUB65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 21:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S229754AbjIUCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjIUB64 (ORCPT
+        with ESMTP id S229603AbjIUCAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 21:58:56 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84FE5B7;
-        Wed, 20 Sep 2023 18:58:47 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8Cxc_BVowtl1XEqAA--.16276S3;
-        Thu, 21 Sep 2023 09:58:45 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxK9xSowtlX_wMAA--.26148S3;
-        Thu, 21 Sep 2023 09:58:44 +0800 (CST)
-Subject: Re: [PATCH v2] usb: xhci-plat: fix usb disconnect issue after s4
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230809095826.18183-1-zhuyinbo@loongson.cn>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <4862ba2c-fa6b-de12-2ad9-4099d2eddbb1@loongson.cn>
-Date:   Thu, 21 Sep 2023 09:58:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 20 Sep 2023 22:00:50 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E8ABB;
+        Wed, 20 Sep 2023 19:00:41 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38L20TwjC2067081, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38L20TwjC2067081
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Sep 2023 10:00:30 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 21 Sep 2023 10:00:30 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 21 Sep 2023 10:00:29 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c]) by
+ RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c%5]) with mapi id
+ 15.01.2375.007; Thu, 21 Sep 2023 10:00:29 +0800
+From:   =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 0/7] Add pinctrl driver support for Realtek DHC SoCs
+Thread-Topic: [PATCH v3 0/7] Add pinctrl driver support for Realtek DHC SoCs
+Thread-Index: AQHZ6uG6NRO6y7T0o0yihmgUFfWH/bAjCcYAgAAARoCAAXsAQA==
+Date:   Thu, 21 Sep 2023 02:00:29 +0000
+Message-ID: <b160be5e1b1a4b589ca9bb383b104a23@realtek.com>
+References: <20230919101117.4097-1-tychang@realtek.com>
+ <CACRpkdYtGhhNuBnP0MvMKiqP=wPsv=5K_ZBaWcgW3sssLrm2aQ@mail.gmail.com>
+ <CACRpkda_EVEOP=LCjiBcSgPY7-mU9ENiOcw5taskL7TcwkMkCw@mail.gmail.com>
+In-Reply-To: <CACRpkda_EVEOP=LCjiBcSgPY7-mU9ENiOcw5taskL7TcwkMkCw@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.181.166]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20230809095826.18183-1-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxK9xSowtlX_wMAA--.26148S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,83 +71,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Friendly ping ?
-
-
-ÔÚ 2023/8/9 ÏÂÎç5:58, Yinbo Zhu Ð´µÀ:
-> The xhci retaining bogus hardware states cause usb disconnect devices
-> connected before hibernation(s4) and refer to the commit 'f3d478858be
-> ("usb: ohci-platform: fix usb disconnect issue after s4")' which set
-> flag "hibernated" as true when resume-from-hibernation and that the
-> drivers will reset the hardware to get rid of any existing state and
-> make sure resume from hibernation re-enumerates everything for xhci.
-> 
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-> ---
-> Change in v2:
-> 		1. Add CONFIG_PM_SLEEP in xhci_plat_pm_ops that for fix
-> 		   compile issue when CONFIG_PM not enable.
-> 
->   drivers/usb/host/xhci-plat.c | 24 ++++++++++++++++++++----
->   1 file changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> index 28218c8f1837..112468fdcca2 100644
-> --- a/drivers/usb/host/xhci-plat.c
-> +++ b/drivers/usb/host/xhci-plat.c
-> @@ -451,7 +451,7 @@ static int __maybe_unused xhci_plat_suspend(struct device *dev)
->   	return 0;
->   }
->   
-> -static int __maybe_unused xhci_plat_resume(struct device *dev)
-> +static int __maybe_unused xhci_plat_resume_common(struct device *dev, struct pm_message pmsg)
->   {
->   	struct usb_hcd	*hcd = dev_get_drvdata(dev);
->   	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
-> @@ -466,7 +466,7 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
->   	if (ret)
->   		return ret;
->   
-> -	ret = xhci_resume(xhci, PMSG_RESUME);
-> +	ret = xhci_resume(xhci, pmsg);
->   	if (ret)
->   		return ret;
->   
-> @@ -477,6 +477,16 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
->   	return 0;
->   }
->   
-> +static int __maybe_unused xhci_plat_resume(struct device *dev)
-> +{
-> +	return xhci_plat_resume_common(dev, PMSG_RESUME);
-> +}
-> +
-> +static int __maybe_unused xhci_plat_restore(struct device *dev)
-> +{
-> +	return xhci_plat_resume_common(dev, PMSG_RESTORE);
-> +}
-> +
->   static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
->   {
->   	struct usb_hcd  *hcd = dev_get_drvdata(dev);
-> @@ -499,8 +509,14 @@ static int __maybe_unused xhci_plat_runtime_resume(struct device *dev)
->   }
->   
->   const struct dev_pm_ops xhci_plat_pm_ops = {
-> -	SET_SYSTEM_SLEEP_PM_OPS(xhci_plat_suspend, xhci_plat_resume)
-> -
-> +#ifdef CONFIG_PM_SLEEP
-> +	.suspend = xhci_plat_suspend,
-> +	.resume = xhci_plat_resume,
-> +	.freeze = xhci_plat_suspend,
-> +	.thaw = xhci_plat_resume,
-> +	.poweroff = xhci_plat_suspend,
-> +	.restore = xhci_plat_restore,
-> +#endif
->   	SET_RUNTIME_PM_OPS(xhci_plat_runtime_suspend,
->   			   xhci_plat_runtime_resume,
->   			   NULL)
-> 
-
+SGkgTGludXMsDQoNCj4NCj5PbiBXZWQsIFNlcCAyMCwgMjAyMyBhdCAxOjA44oCvUE0gTGludXMg
+V2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPiB3cm90ZToNCj4NCj4+IEFsbCBwYXRj
+aGVzIGxvb2sgZ29vZCwgYmluZGluZ3MgYXJlIHJldmlld2VkIGJ5IFJvYiwgbXkgY29tbWVudHMN
+Cj4+IGFkZHJlc3NlZDogcGF0Y2hlcyBhcHBsaWVkIGZvciBrZXJuZWwgdjYuNiENCj4NCj5Tb3Jy
+eSwga2VybmVsIHY2LjcgYXQgdGhpcyBwb2ludCBvYnZpb3VzbHkuIEkgY2FuJ3Qga2VlcCBudW1i
+ZXJzIGluIG15IGhlYWQNCj5wcm9wZXJseSA6Lw0KPg0KPllvdXJzLA0KPkxpbnVzIFdhbGxlaWoN
+Cg0KSSBhcHByZWNpYXRlIGl0ISBUaGFuayB5b3UgZm9yIHRoZSByZXZpZXchDQoNClRoYW5rcywN
+ClR6dXlpIENoYW5nDQo=
