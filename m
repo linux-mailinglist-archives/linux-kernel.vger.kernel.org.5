@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1C27A99B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37387A9B97
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjIUSRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35794 "EHLO
+        id S230205AbjIUTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjIUSRM (ORCPT
+        with ESMTP id S229865AbjIUTCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:17:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A4E7E7CB
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695318645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7gLU3+rfv3HHSp+DEvudAw0y1szA/aWbZkWDtyEikvk=;
-        b=BmdLBp92AbesraJKxWOI5+H/820A4lB+1b1x8zs2XvUGvN0zea9QXWaWG6ymOhD4U5vcYs
-        csmgy4I3oW4awRrFDu8NqlnDEIZt9gzIs7JCQoTpJI6qgqbQXxN8sMcxWijogbR2TiPfTo
-        PPRADXtohV3MzQKIY/LUzxvobqH38Y4=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-435-Xj1ewyqlPTaFsdRgSQSXgA-1; Thu, 21 Sep 2023 10:35:35 -0400
-X-MC-Unique: Xj1ewyqlPTaFsdRgSQSXgA-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2a7a6393ba6so2289111fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 07:35:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695306933; x=1695911733;
-        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
-         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7gLU3+rfv3HHSp+DEvudAw0y1szA/aWbZkWDtyEikvk=;
-        b=jYdTSA3xPQ83bKAyAlhr7zSCbKkTuTk1bHKxJAf+UuyO0XpgkaBGZXdNB1+tOoU7I3
-         gc1YyonvB7ZTlydZNrzGSHPrUss2e0BMMcG+WLW9GqVJW9SGypDtpXF0iL15iyS0ovOd
-         2c/fEO9i9lES7TyY1qAoL7AlNT+0xlTPQeNkNrueOZj7qyRCHnhmbTJ/3OWyLL0iAmwK
-         0Wd5JyuOlSiDUiILOts/OqYA6OG1Uci4DD6MCp3BwYFflxpc0kegcHT2CjVqjNE9YVJO
-         syvkq09vLpe9ts4uv6BwZ4yNFj18nJRhNRpj1X7jKHzrr2FQJHr590+fhZEUsJsZERhh
-         3s5g==
-X-Gm-Message-State: AOJu0YygzpNjQ8Gxb1amG/tF60L9jAyNExgRPhqSNElVLG7gaulsXZme
-        HiM1s/XUvm9cLi30saD/ZppW/wJ7mi9Z76Y9fEYvSX3O/3qnKTP/pJxCFD0uWLfwZiR2zS0JcG+
-        SPvEfCDV4FoMmXaLYTdfAnCOiB27rxiIQQ7w=
-X-Received: by 2002:a2e:a60a:0:b0:2bf:eafb:3442 with SMTP id v10-20020a2ea60a000000b002bfeafb3442mr4138861ljp.3.1695306933631;
-        Thu, 21 Sep 2023 07:35:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFuAp7m0hjif9+lpPxXN9OH1XssIg13XiXVjnldMBJ6IlMoqth3cyfJJFOhFSvkHo1V5fnjJQ==
-X-Received: by 2002:a2e:a60a:0:b0:2bf:eafb:3442 with SMTP id v10-20020a2ea60a000000b002bfeafb3442mr4138856ljp.3.1695306933291;
-        Thu, 21 Sep 2023 07:35:33 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-251-4.dyn.eolo.it. [146.241.251.4])
-        by smtp.gmail.com with ESMTPSA id j8-20020a170906474800b0099297c99314sm1126843ejs.113.2023.09.21.07.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:35:32 -0700 (PDT)
-Message-ID: <a15822902e9e751b982a07621d180e3fa00353d4.camel@redhat.com>
-Subject: Re:  [GIT PULL] Networking for 6.6-rc3
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        Thu, 21 Sep 2023 15:02:09 -0400
+Received: from icts-p-cavspool-1.kulnet.kuleuven.be (icts-p-cavspool-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB988CC93;
+        Thu, 21 Sep 2023 10:42:40 -0700 (PDT)
+Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:134])
+        by icts-p-cavspool-1.kulnet.kuleuven.be (Postfix) with ESMTP id 7757D29BF;
+        Thu, 21 Sep 2023 16:36:59 +0200 (CEST)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 14592134.A48E4
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:140:242:ac11:1d])
+        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 14592134;
+        Thu, 21 Sep 2023 16:36:38 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1695306997;
+        bh=BlYdRr32xxxqfktzP+vlGnAtIlq3iaZb2FkzpNho4RU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=cShiXCCWe/OoXhNS8r6JSF7j3nH5EkpMOg+XanBJ0o+CM1MsZs+bS8+nZ9OD3zYiQ
+         MZ0ZAsWK/b6bQkiUPeYet8zdD+eId4xI46Ql4plR6m242BM9ExSO9tKvBAciVxigq8
+         2K5CpVDR5eyFarD+JDZO2BgTYHWDsRBJAA1bCvks=
+Received: from localhost.localdomain (ptr-82s0fs8p4onqm1q5sl7.18120a2.ip6.access.telenet.be [IPv6:2a02:1811:d31:8b00:c962:1db3:c9ed:fdfb])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id CEF58D4F38757;
+        Thu, 21 Sep 2023 16:36:37 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Thu, 21 Sep 2023 16:35:31 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+Cc:     dave.hansen@linux.intel.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH v6 02/13] selftests/sgx: Fix uninitialized pointer dereferences in encl_get_entry
+Date:   Thu, 21 Sep 2023 16:35:53 +0200
+Message-Id: <20230921143604.6561-3-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230921143604.6561-1-jo.vanbulck@cs.kuleuven.be>
+References: <20230921143604.6561-1-jo.vanbulck@cs.kuleuven.be>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Ensure sym_tab and sym_names are zero-initialized and add an early-out
+condition in the unlikely (erroneous) case that the enclave ELF file would
+not contain a symbol table.
 
-I noticed after sending the PR that since this morning I have email
-delivery problems with lore: "Recipient server unavailable or busy."=20
+This addresses -Werror=maybe-uninitialized compiler warnings for gcc -O2.
 
-That is likely something in between my corporate server and lore, as
-messages form other sources are reaching there.
+Fixes: 33c5aac3bf32 ("selftests/sgx: Test complete changing of page type flow")
+Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ tools/testing/selftests/sgx/load.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-I'm wondering is if my PR reached somehow your inbox and/or if I have
-to re-send it.
-
-Thanks!
-
-Paolo
+diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
+index 94bdeac1cf04..c9f658e44de6 100644
+--- a/tools/testing/selftests/sgx/load.c
++++ b/tools/testing/selftests/sgx/load.c
+@@ -136,11 +136,11 @@ static bool encl_ioc_add_pages(struct encl *encl, struct encl_segment *seg)
+  */
+ uint64_t encl_get_entry(struct encl *encl, const char *symbol)
+ {
++	Elf64_Sym *symtab = NULL;
++	char *sym_names = NULL;
+ 	Elf64_Shdr *sections;
+-	Elf64_Sym *symtab;
+ 	Elf64_Ehdr *ehdr;
+-	char *sym_names;
+-	int num_sym;
++	int num_sym = 0;
+ 	int i;
+ 
+ 	ehdr = encl->bin;
+@@ -161,6 +161,9 @@ uint64_t encl_get_entry(struct encl *encl, const char *symbol)
+ 		}
+ 	}
+ 
++	if (!symtab || !sym_names)
++		return 0;
++
+ 	for (i = 0; i < num_sym; i++) {
+ 		Elf64_Sym *sym = &symtab[i];
+ 
+-- 
+2.25.1
 
