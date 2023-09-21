@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FDF7AA27F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1D27AA14E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjIUVTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
+        id S231919AbjIUVAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232715AbjIUVTE (ORCPT
+        with ESMTP id S231365AbjIUU7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:19:04 -0400
-Received: from mail.avm.de (mail.avm.de [IPv6:2001:bf0:244:244::120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97F2A659B;
-        Thu, 21 Sep 2023 11:00:03 -0700 (PDT)
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-        by mail.avm.de (Postfix) with ESMTPS;
-        Thu, 21 Sep 2023 09:23:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-        t=1695281026; bh=MGHRpPfMK3dwPqFHNJENwclFJsK7s432jc0AWt8qpKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lMv+D89SeUIroDzj3vpDvYr7y3M0PoPLmr9tkOthBnQGSLo+hcx1XT9UFQM0hgSlH
-         xHaAXKtsZeL6XEjJmPq0Q4wHjoS0ePKH/Wgj4XjyHyUqWm4LTZ6KyEeZ6ykYL7Hb2p
-         9EHrhm5VgBl1R5uzbSvyn+aOT7kXqu9MTNT9n8oM=
-Received: from localhost (unknown [172.17.88.63])
-        by mail-auth.avm.de (Postfix) with ESMTPSA id E88A582147;
-        Thu, 21 Sep 2023 09:23:46 +0200 (CEST)
-Date:   Thu, 21 Sep 2023 09:23:46 +0200
-From:   Johannes Nixdorf <jnixdorf-oss@avm.de>
-To:     Nikolay Aleksandrov <razor@blackwall.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net-next v4 2/6] net: bridge: Set strict_start_type for
- br_policy
-Message-ID: <ZQvvgiz4rE8u6vba@u-jnixdorf.ads.avm.de>
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
- <20230919-fdb_limit-v4-2-39f0293807b8@avm.de>
- <1c12b8f2-b28b-f326-b24f-f1ea602832d7@blackwall.org>
+        Thu, 21 Sep 2023 16:59:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A994BBDF
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MEwOrql2CJ8ARZnwIYvEKozhyGDGiEqWcdZBHjO1eK4=; b=BKnAtAgBdBYP6A5mxCfLXR4gjN
+        A/aRGwIT14O8GtCkN+n6oFDsI5YuuzJAEZXUyPhAce1YRKe2OfmOIg8nIesAIAr+hVeP5ytMS//1V
+        YU1UH5bk/cTQATcd5xDpOQ/n9QtUq9i8EL1UEYxPkQxb6ecekqAKtPI1F7++7uZioqUMQfuNxD+3v
+        dAoQAvi4iDz+A8fT+taz6vE8je1IO24zLrnJGmxk3B3j1iQ2i4ISvdSFdzX5QoIai2sFzvcpP1Itm
+        W8J1R2tR98dAkWwcBtVyUhK+YBiPPO5h8JcHxy71u5oB9yvkccrG9zQrjedNEAXDkhK4HWT2NYkbj
+        vkq333pw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qjE5Q-00AXQj-Cs; Thu, 21 Sep 2023 07:26:56 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 915B23002E3; Thu, 21 Sep 2023 09:26:55 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 09:26:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fangrui Song <maskray@google.com>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] x86/speculation, objtool: Use absolute relocations for
+ annotations
+Message-ID: <20230921072655.GA14803@noisy.programming.kicks-ass.net>
+References: <20230920001728.1439947-1-maskray@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c12b8f2-b28b-f326-b24f-f1ea602832d7@blackwall.org>
-X-purgate-ID: 149429::1695281026-306BAD89-D1FD54B6/0/0
-X-purgate-type: clean
-X-purgate-size: 1728
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230920001728.1439947-1-maskray@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 01:46:02PM +0300, Nikolay Aleksandrov wrote:
-> On 9/19/23 11:12, Johannes Nixdorf wrote:
-> > Set any new attributes added to br_policy to be parsed strictly, to
-> > prevent userspace from passing garbage.
-> > 
-> > Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
-> > ---
-> >   net/bridge/br_netlink.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-> > index 10f0d33d8ccf..505683ef9a26 100644
-> > --- a/net/bridge/br_netlink.c
-> > +++ b/net/bridge/br_netlink.c
-> > @@ -1229,6 +1229,8 @@ static size_t br_port_get_slave_size(const struct net_device *brdev,
-> >   }
-> >   static const struct nla_policy br_policy[IFLA_BR_MAX + 1] = {
-> > +	[IFLA_BR_UNSPEC]	= { .strict_start_type =
-> > +				    IFLA_BR_MCAST_QUERIER_STATE + 1 },
-> >   	[IFLA_BR_FORWARD_DELAY]	= { .type = NLA_U32 },
-> >   	[IFLA_BR_HELLO_TIME]	= { .type = NLA_U32 },
-> >   	[IFLA_BR_MAX_AGE]	= { .type = NLA_U32 },
-> > 
+On Tue, Sep 19, 2023 at 05:17:28PM -0700, Fangrui Song wrote:
+> .discard.retpoline_safe sections do not have the SHF_ALLOC flag.  These
+> sections referencing text sections' STT_SECTION symbols with PC-relative
+> relocations like R_386_PC32 [0] is conceptually not suitable.  Newer
+> LLD will report warnings for REL relocations even for relocatable links
+> [1].
 > 
-> instead of IFLA_BR_MCAST_QUERIER_STATE + 1, why not move around the patch
-> and just use the new attribute name?
-> These are uapi, they won't change.
+>     ld.lld: warning: vmlinux.a(drivers/i2c/busses/i2c-i801.o):(.discard.retpoline_safe+0x120): has non-ABS relocation R_386_PC32 against symbol ''
 
-I wanted to avoid having a state between the two commits where the new
-attributes are already added, but not yet strictly verified. Otherwise
-they would present a slightly different UAPI at that one commit boundary
-than after this commit.
+What, why ?!? Please explain more.
 
-This is also not the only place in the kernel where strict_start_type
-is specified that way. See e.g. commit c00041cf1cb8 ("net: bridge: Set
-strict_start_type at two policies"), even though that seems mostly be
-done to turn on strict_start_type preemtively, not in the same series
-that adds the new attribute.
+> Switch to absolute relocations instead, which indicate link-time
+> addresses.  In a relocatable link, these addresses are also output
+> section offsets, used by checks in tools/objtool/check.c.  When linking
+> vmlinux, these .discard.* sections will be discarded, therefore it is
+> not a problem that R_X86_64_32 cannot represent a kernel address.
+> 
+> Alternatively, we could set the SHF_ALLOC flag for .discard.* sections,
+> but I think non-SHF_ALLOC for sections to be discarded makes more sense.
+> 
+> Note: if we decide to never support REL architectures (e.g. arm, i386),
+
+We have explicit support for REL (as opposed to RELA) architectures, so
+I don't think we can do that.
+
