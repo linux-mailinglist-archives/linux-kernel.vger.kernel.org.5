@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 496027A968A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C197A96C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjIURFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39374 "EHLO
+        id S230215AbjIURHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbjIURFA (ORCPT
+        with ESMTP id S230107AbjIURHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:05:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD803594;
-        Thu, 21 Sep 2023 10:03:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09295C611A1;
-        Thu, 21 Sep 2023 16:24:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695313466;
-        bh=hpue0sB74rS4F/criJlPgC2g4ffost9T7IkqkvG5o7M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MW1t3p6kmhqAnz3ktOUjYfePzkbrS8bYgELu1FgpNLdcvPH0EXT7frDVB+0wLM8Ar
-         TgU4d09o+oc5yn9Hem87L8fDUGdeZ+ffDr8ou91ViZlt8MuU599+KordOEBkonrN00
-         agkAaYF1ivB68+Dw+3HoMcZAXNoFTKovfovaQupnjKesckbwHO2foL12N61Ar3SSC6
-         LfSaoJWRPYE0elOWIWzsn30yFPdI7l90uuls0e0zNi/p6nONq/Whs+u63LlPNaIB6m
-         aqiGcs1Rkg5UpuUWi9rPDGEbihWrdLQpmy6hIlPtsKfVPZOIa1rGCCcI6Sa5PrBDmY
-         Takmdaw9N1Zlg==
-Received: (nullmailer pid 441560 invoked by uid 1000);
-        Thu, 21 Sep 2023 16:24:24 -0000
-Date:   Thu, 21 Sep 2023 11:24:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        hvilleneuve@dimonoff.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/4] dt-bindings: sc16is7xx: add vendor prefix to
- irda-mode-ports property
-Message-ID: <20230921162424.GA435508-robh@kernel.org>
-References: <20230920152015.1376838-1-hugo@hugovil.com>
- <20230920152015.1376838-4-hugo@hugovil.com>
+        Thu, 21 Sep 2023 13:07:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B370149FC
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85A24176A;
+        Thu, 21 Sep 2023 09:26:23 -0700 (PDT)
+Received: from [10.1.34.154] (XHFQ2J9959.cambridge.arm.com [10.1.34.154])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 408773F59C;
+        Thu, 21 Sep 2023 09:25:45 -0700 (PDT)
+Message-ID: <7aee2aeb-acb2-4fe3-90b5-3dd43ee855c2@arm.com>
+Date:   Thu, 21 Sep 2023 17:25:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920152015.1376838-4-hugo@hugovil.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: hugetlb: kill set_huge_swap_pte_at()
+Content-Language: en-GB
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, mike.kravetz@oracle.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20220626145717.53572-1-zhengqi.arch@bytedance.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20220626145717.53572-1-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 11:20:14AM -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 26/06/2022 15:57, Qi Zheng wrote:
+> The commit e5251fd43007 ("mm/hugetlb: introduce set_huge_swap_pte_at()
+> helper") add set_huge_swap_pte_at() to handle swap entries on
+> architectures that support hugepages consisting of contiguous ptes.
+> And currently the set_huge_swap_pte_at() is only overridden by arm64.
 > 
-> The NXP-specific "irda-mode-ports" property lacks a proper vendor
-> prefix. Add "nxp," prefix to comply with DT best practises.
+> The set_huge_swap_pte_at() provide a sz parameter to help determine
+> the number of entries to be updated. But in fact, all hugetlb swap
+> entries contain pfn information, so we can find the corresponding
+> folio through the pfn recorded in the swap entry, then the folio_size()
+> is the number of entries that need to be updated.
+> 
+> And considering that users will easily cause bugs by ignoring the
+> difference between set_huge_swap_pte_at() and set_huge_pte_at().
+> Let's handle swap entries in set_huge_pte_at() and remove the
+> set_huge_swap_pte_at(), then we can call set_huge_pte_at()
+> anywhere, which simplifies our coding.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-The opposite direction would be worth carrying in the driver, but I 
-don't think adding a vendor prefix is. I would just leave this as-is.
+Hi,
 
-Rob
+FYI, I discovered a bug in v6.6-rc1 that causes a kernel panic, which I believe
+is caused by this change. I've posted a fix along with a detailed explanation at
+[1].
+
+[1]
+https://lore.kernel.org/linux-arm-kernel/20230921162007.1630149-1-ryan.roberts@arm.com/
+
+Thanks,
+Ryan
+
