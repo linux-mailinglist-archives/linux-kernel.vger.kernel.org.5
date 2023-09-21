@@ -2,113 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C077AA274
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FADD7AA277
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232685AbjIUVRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S232679AbjIUVSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbjIUVRR (ORCPT
+        with ESMTP id S232586AbjIUVSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:17:17 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07DC4A336
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:40:42 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-573d44762e4so1034266a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695328842; x=1695933642; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wY7skFGSh9IgJDFkQorAIyBJ+qj/XXwmSoR+xsvLutM=;
-        b=UOaM2Rg6qraCS6wd+URfrumxXwnTkARTm/HgBSdVMTeJz6y1q8JILgq0ly6G6PZDNR
-         iLNELILd1EYsAMN/XbOiTJtI0OeIGmcsUUZHNf92/1hCBLk1hwxZ1+/AEBAJKBoJGoZl
-         wfvohXAhM7hMKimKCXSi4uSk7X5zUe/NcwBl7DLzJ6T6+VOTTysgMZy3urrEdfci8nC6
-         z10pWlDEmjX6I3QLmcNmogzzunYoZEqrexF8cQ4BpnP4vyJVPzZ/kKrh1WfMlA/g3r2q
-         dQT9Qif5xf6Ep4XNlr0VztqMn6/w6yxrPpxjn4559zievcRmX4mgoncw3WqyxM1RWU/l
-         VG+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695328842; x=1695933642;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wY7skFGSh9IgJDFkQorAIyBJ+qj/XXwmSoR+xsvLutM=;
-        b=pyug8etuG2NxCGoU6mYIfYSdLWLs9Lc/mP4DgPHMwdhO4Qfd3kFJuFTKHfBMoDAT9S
-         jpU85u6LoPGYKOE8J2FdeRgDcuSdWwG0BbfQ2D4dOPg3LOVV19ilP5ibB4oMnRp16Hhs
-         UByiFOz3Z0u7mcHid9N/DtSeUDM4FrTNHGfOec78eEKSBCOyBHXKpnwy2UiKVx7QtFsN
-         dhFvBG8kl9FyiljtrHTmOYvrIqiF9CXuhvxsjWb1EdbeVSFOySu1NLw59iBbhfcZHEMF
-         2gx6cJMGlp4ruZINlqjlfQSfU0ljm//ueObJqn0kjdbonGzuXPuDPjHMwFncfQC3IU5Z
-         r5iA==
-X-Gm-Message-State: AOJu0YxlTbTTZ2tii64ltVPqpujJ5qsydXEeqcmF6HC7S1gERm7KKleT
-        xpMJ9C5oSHX7O3A3ee3CuIwR2Q/zxYI=
-X-Google-Smtp-Source: AGHT+IE2K20JyCSxvBs9FX0l9CJg9tnhr+0tXhOs9dF7vlRV4Ygmc3v4TCO+SwF3JM+aWjkkBb9ehZqxmwE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3307:0:b0:56c:24c2:488d with SMTP id
- z7-20020a633307000000b0056c24c2488dmr80575pgz.4.1695328842280; Thu, 21 Sep
- 2023 13:40:42 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 13:40:40 -0700
-In-Reply-To: <26822c313754e03b2c393e6fdefe495f117bbfff.1695327124.git.isaku.yamahata@intel.com>
-Mime-Version: 1.0
-References: <cover.1695327124.git.isaku.yamahata@intel.com> <26822c313754e03b2c393e6fdefe495f117bbfff.1695327124.git.isaku.yamahata@intel.com>
-Message-ID: <ZQyqSI0HOmamJbWn@google.com>
-Subject: Re: [RFC PATCH v2 3/6] KVM: selftests: Add tests for punch hole on guest_memfd
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 17:18:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2733A25F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695328950; x=1726864950;
+  h=date:from:to:cc:subject:message-id;
+  bh=+mkX7hWJVhlkqr01vopzQEQsSTfLPFtFrosktve+6Tc=;
+  b=C78/Ob8OTvaZC/xQo3kZTWC5GgBYjJsknPA7za+hDl+MSS+7dQqp4NFZ
+   JuGQ3L7bguTXvMxuHzoiFPAE1pNJMWBLARKnFO8AlGv66j8Xar4nuK08A
+   FAxt9u/UNYIk0q1TaOQxMFY9dkhwhpBVNRFZM3werUlvOj8UKb06Ru5Go
+   AoHXOyXWqkjhzJ/hCWzgL9rEEd4zpWzD2oxhxCyutwVyEwFjSrml45OZI
+   bG1DGWe0Ib1jmjm9eb+b3vOWK29ZOtrsmuBwnE3vn/idDqIcHd1wHAgmE
+   KL9IY+vuTHGnLFjJJpjTyHkme1gX5KTiPSDN/a0xGlJZpE0k48p3IYdJT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="447137208"
+X-IronPort-AV: E=Sophos;i="6.03,166,1694761200"; 
+   d="scan'208";a="447137208"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 13:42:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="696906173"
+X-IronPort-AV: E=Sophos;i="6.03,166,1694761200"; 
+   d="scan'208";a="696906173"
+Received: from lkp-server02.sh.intel.com (HELO b77866e22201) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 21 Sep 2023 13:42:29 -0700
+Received: from kbuild by b77866e22201 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qjQVH-0000Nj-02;
+        Thu, 21 Sep 2023 20:42:27 +0000
+Date:   Fri, 22 Sep 2023 04:41:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/apic] BUILD SUCCESS
+ 57baabe36573c1dc22a53a9ceed748d3e28fe910
+Message-ID: <202309220433.b5iuRwnc-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Punch hole implies the region is zeroed out. Add tests if the punched
-> region has zero.
-> Oppertunistically Remove unused member, pattern, in guest_run_test().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
+branch HEAD: 57baabe36573c1dc22a53a9ceed748d3e28fe910  x86/platform/uv/apic: Clean up inconsistent indenting
 
-Heh, I didn't pretty much all the same stuff, except I opted to have
-SET_ATTRIBUTE instead of FALLOCATE_ONLY, e.g. in case we end up with a test that's
-wants a thrid flavor (or somehow neither?).
+elapsed time: 728m
 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  .../kvm/x86_64/private_mem_conversions_test.c | 26 ++++++++++++++-----
->  1 file changed, 20 insertions(+), 6 deletions(-)
-> 
+configs tested: 130
+configs skipped: 114
 
-...
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> @@ -156,6 +163,10 @@ static void guest_run_test(uint64_t base_gpa, bool do_fallocate)
->  
->  		if (size > PAGE_SIZE) {
->  			memset((void *)gpa, p2, PAGE_SIZE);
-> +
-> +			/* Test if punch hole results in zeroing page. */
-> +			guest_punch_hole_private(gpa, PAGE_SIZE);
-> +			memcmp_g(gpa, 0, PAGE_SIZE);
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230921   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                             pxa_defconfig   gcc  
+arm                   randconfig-001-20230921   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230921   gcc  
+i386         buildonly-randconfig-002-20230921   gcc  
+i386         buildonly-randconfig-003-20230921   gcc  
+i386         buildonly-randconfig-004-20230921   gcc  
+i386         buildonly-randconfig-005-20230921   gcc  
+i386         buildonly-randconfig-006-20230921   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230921   gcc  
+i386                  randconfig-002-20230921   gcc  
+i386                  randconfig-003-20230921   gcc  
+i386                  randconfig-004-20230921   gcc  
+i386                  randconfig-005-20230921   gcc  
+i386                  randconfig-006-20230921   gcc  
+i386                  randconfig-011-20230921   gcc  
+i386                  randconfig-012-20230921   gcc  
+i386                  randconfig-013-20230921   gcc  
+i386                  randconfig-014-20230921   gcc  
+i386                  randconfig-015-20230921   gcc  
+i386                  randconfig-016-20230921   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230921   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                      bmips_stb_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                       maple_defconfig   gcc  
+powerpc                     sequoia_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230921   gcc  
+riscv                          rv32_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                  randconfig-001-20230921   gcc  
+s390                       zfcpdump_defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          sdk7780_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230921   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230921   gcc  
+x86_64       buildonly-randconfig-002-20230921   gcc  
+x86_64       buildonly-randconfig-003-20230921   gcc  
+x86_64       buildonly-randconfig-004-20230921   gcc  
+x86_64       buildonly-randconfig-005-20230921   gcc  
+x86_64       buildonly-randconfig-006-20230921   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230921   gcc  
+x86_64                randconfig-002-20230921   gcc  
+x86_64                randconfig-003-20230921   gcc  
+x86_64                randconfig-004-20230921   gcc  
+x86_64                randconfig-005-20230921   gcc  
+x86_64                randconfig-006-20230921   gcc  
+x86_64                randconfig-011-20230921   gcc  
+x86_64                randconfig-012-20230921   gcc  
+x86_64                randconfig-013-20230921   gcc  
+x86_64                randconfig-014-20230921   gcc  
+x86_64                randconfig-015-20230921   gcc  
+x86_64                randconfig-016-20230921   gcc  
+x86_64                randconfig-071-20230921   gcc  
+x86_64                randconfig-072-20230921   gcc  
+x86_64                randconfig-073-20230921   gcc  
+x86_64                randconfig-074-20230921   gcc  
+x86_64                randconfig-075-20230921   gcc  
+x86_64                randconfig-076-20230921   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
 
-I added a dedicated sub-test to provide a bit more variety in the tests.  I highly
-doubt my version will ever find a bug that isn't caught by this approach, but if
-nothing else, it's nice to have a completely separate sub-test.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
