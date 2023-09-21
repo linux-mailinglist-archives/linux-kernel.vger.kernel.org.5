@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C7F7A9924
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AA87A9B74
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjIUSLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        id S230071AbjIUTBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjIUSK7 (ORCPT
+        with ESMTP id S230514AbjIUTBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:10:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049D086131;
-        Thu, 21 Sep 2023 10:37:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C308FC4E760;
-        Thu, 21 Sep 2023 14:26:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695306384;
-        bh=0xfghWMedoSlx/QEomZwRWfF6s+XXddyyG2dWRAjylE=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=EkLApXW1gXrwyAaIXHRdvTXv3SfUvQba44REO1oVauxSzObWcZRClxcVaX3xSHW/O
-         nrpPLOuOiJUiqfSRKgAtzd19NjihB40k3kdCJK2+nLFb4FC+npLKdx/UmBWqNnX3XF
-         hxbULxlQ5QL2yH4/2A/f8+f3x+DYBuxOljlIwYF2WD38uJYql5yIKTEImWMiU1BvE0
-         iaZocxM/PcdBS5anrbjt2lGNleLmYN1M+7LEGz8QJO1swuiAUO95JVAML1EqFHZTWQ
-         G2FCccazx7Wxo7e/1hGuvoInLJdbhJrs+9MzpKX1Hd9jx/ZIcdYSk1/n7DKUubo9c7
-         QeyJgOjNuLB2Q==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        kishon@kernel.org, Bo Liu <liubo03@inspur.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230912114646.8452-1-liubo03@inspur.com>
-References: <20230912114646.8452-1-liubo03@inspur.com>
-Subject: Re: [PATCH] phy: qualcomm: Fix typos in comments
-Message-Id: <169530638251.106093.8189249588604640066.b4-ty@kernel.org>
-Date:   Thu, 21 Sep 2023 16:26:22 +0200
+        Thu, 21 Sep 2023 15:01:10 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2886A7F37E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:35:36 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5031426b626so2049901e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695317734; x=1695922534; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=asW3V0UfBRcaqJZf0dqMocPiGq1jVGiQw3a4sepePiw=;
+        b=kRqjRoR6sabLPaxweF6dD0DwvFQxqg0LpZRsXKwZ+acivjv/s+cy5lwgN5dkAz9sVZ
+         Gf1XUZjOTm4udusbTlWN3FZ0ZzIsKTGMX25CA065sgAjUQ1cYMliOpCPPLVI83eLT2/g
+         c7GFySt9peEKsgtnkzgEyz1tp+PDyj9w+UgCuq2moyKZ7dQPHb+wPr7Xk6TWmIPob7gV
+         W44xE032+WmFCPHDGT03G9UKx1HuHHevlJeljmarweZ8ZG1N0eZ503yOmkSRCrquVWav
+         +UyzOZtPEKZ/4jPMl7RQBm7b+OFZDwOcAlhfm1k9hH1hurgCuPRXA+Z2uz4zgprCkE09
+         3ZkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695317734; x=1695922534;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=asW3V0UfBRcaqJZf0dqMocPiGq1jVGiQw3a4sepePiw=;
+        b=ojWTrjmBkzbUGr8EGVIlT+0LEjxEfiWAGuy7s3sTGh8PRNG7YTS3ejy0mVLNAWPi9s
+         eEQ+eR8EFiNjwZ4eQYmn67+bih/veYkwKLmHvVD2deHxdMacqkXfx0CegON9cdQdKoAw
+         YMHoIODyVxb77glUNrSA+wOxZm/i8lGDa4uxaZCm5IiFSuG26Yh7Ms1ypqRpr1G57/88
+         gaG21lL8fkcza2HD5bzy7Dhaxff/NaRTw/PSBYzv4RLVeorPL7YBa9yJiQZAIgs7AmRQ
+         FDW5ntkokVcmc/CEASJeeoRuPOzB1zp0pAwPU5aNlVhqrZut5it8U0ycsjVZe2U7bnza
+         RqeQ==
+X-Gm-Message-State: AOJu0YxodH1/sxdNwAZC22Lrn93+1jJG/Jp1SDxXLHxUHdyrttCKxdHI
+        cHeT03PuBEIDBV/stAUDJA5YS6el2WnusoeACcE0z51H4n2saPJzFfk=
+X-Google-Smtp-Source: AGHT+IHKm6xOhbvVAKAE+SKogQZbnbEOCIh1XMXLgsfBvyvWuPOrr7N8DqDuN/nUXgGvHylRHerRg2cumFt/fm+7dMg=
+X-Received: by 2002:a05:6512:3133:b0:4fd:d470:203b with SMTP id
+ p19-20020a056512313300b004fdd470203bmr4350086lfd.69.1695306540696; Thu, 21
+ Sep 2023 07:29:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+References: <20230825112633.236607-1-ulf.hansson@linaro.org> <20230825112633.236607-4-ulf.hansson@linaro.org>
+In-Reply-To: <20230825112633.236607-4-ulf.hansson@linaro.org>
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Thu, 21 Sep 2023 16:28:43 +0200
+Message-ID: <CAKohpo=qNen_D_8nKATwBJnN9frR3dmBtfajy3Gzw7QKfSRMjw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/13] cpufreq: scmi: Prepare to move OF parsing of
+ domain-id to cpufreq
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 25 Aug 2023 at 13:27, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> The OF parsing of the clock domain specifier seems to better belong in the
+> scmi cpufreq driver, rather than being implemented behind the generic
+> ->device_domain_id() perf protocol ops.
+>
+> To prepare to remove the ->device_domain_id() ops, let's implement the OF
+> parsing in the scmi cpufreq driver instead.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>
+> Changes in v3:
+>         - Re-based.
+>
+> ---
+>  drivers/cpufreq/scmi-cpufreq.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
 
-On Tue, 12 Sep 2023 07:46:46 -0400, Bo Liu wrote:
-> Fix typo in the description of the 'succesfully'.
-> 
-> 
-
-Applied, thanks!
-
-[1/1] phy: qualcomm: Fix typos in comments
-      commit: 11395c32f9e9e26f2f6281bd916a1161ba42ee6c
-
-Best regards,
--- 
-~Vinod
-
-
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
