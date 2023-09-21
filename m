@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E75C17A9BB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42A67A9B8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjIUTDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
+        id S230274AbjIUTCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjIUTDS (ORCPT
+        with ESMTP id S230018AbjIUTCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:03:18 -0400
+        Thu, 21 Sep 2023 15:02:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4BF80F98;
-        Thu, 21 Sep 2023 10:36:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F9BDC116AA;
-        Thu, 21 Sep 2023 08:03:43 +0000 (UTC)
-Message-ID: <fb74f6b8-3139-4652-b36a-1de396d0ca23@xs4all.nl>
-Date:   Thu, 21 Sep 2023 10:03:42 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C1E80FBE;
+        Thu, 21 Sep 2023 10:36:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7765CC116B3;
+        Thu, 21 Sep 2023 08:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695283446;
+        bh=ikVEGvz/AoDXxl7OJz8v3M6JEuj84GWYAzbM3pSuSfs=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=Q0AAb/hTsyZsWcttt+LH9287e9g6+ilMDd07ifknyZdtsttuFD/C7e8WN86RofEdm
+         UVMgUWeJlRHX1OVx0DTpFzJzn/OV51Ppg+FiMaRtZ55XYp0MY90NMR/KifyziH12cN
+         fY+4NSCJBY8omAlRFugv8mJ87l5UCi4RvZbpHJeyOcekfqgcDsGWuLI0hHWm4hpO3u
+         ixqDd/UTnuHp1aDa0bDudiQM+yPoqEahXZhOI1AvRrVtWpm1NSqqQ90jomTQdCDwVS
+         b1x+bH8jl7UBlk3Wxfu0SY+aur5ipB2vp+GmJgZGgehROHGImkqJ7iBSKcv+IT4mjc
+         81QyDj+54D/BA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 7/7] media: nuvoton: Add driver for NPCM video capture
- and encoding engine
-Content-Language: en-US, nl
-To:     Marvin Lin <milkfafa@gmail.com>, mchehab@kernel.org,
-        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        andrzej.p@collabora.com
-Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        kwliu@nuvoton.com, kflin@nuvoton.com
-References: <20230920022812.601800-1-milkfafa@gmail.com>
- <20230920022812.601800-8-milkfafa@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230920022812.601800-8-milkfafa@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] ath9k: clean up function ath9k_hif_usb_resume
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20230905013556.2595854-1-dzm91@hust.edu.cn>
+References: <20230905013556.2595854-1-dzm91@hust.edu.cn>
+To:     Dongliang Mu <dzm91@hust.edu.cn>
+Cc:     =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        hust-os-kernel-patches@googlegroups.com,
+        Dongliang Mu <dzm91@hust.edu.cn>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169528344376.1539628.7025381317587339647.kvalo@kernel.org>
+Date:   Thu, 21 Sep 2023 08:04:05 +0000 (UTC)
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marvin,
+Dongliang Mu <dzm91@hust.edu.cn> wrote:
 
-Just one small comment:
-
-On 20/09/2023 04:28, Marvin Lin wrote:
-> Add driver for Video Capture/Differentiation Engine (VCD) and Encoding
-> Compression Engine (ECE) present on Nuvoton NPCM SoCs. As described in
-> the datasheet NPCM750D_DS_Rev_1.0, the VCD can capture frames from
-> digital video input and compare two frames in memory, and then the ECE
-> can compress the frame data into HEXTILE format. This driver implements
-> V4L2 interfaces and provides user controls to support KVM feature, also
-> tested with VNC Viewer ver.6.22.826 and openbmc/obmc-ikvm.
+> In ath9k_hif_usb_resume, the error handling code calls
+> ath9k_hif_usb_dealloc_urbs twice in different paths.
 > 
-> Signed-off-by: Marvin Lin <milkfafa@gmail.com>
-> ---
->  MAINTAINERS                                 |   12 +
->  drivers/media/platform/Kconfig              |    1 +
->  drivers/media/platform/Makefile             |    1 +
->  drivers/media/platform/nuvoton/Kconfig      |   15 +
->  drivers/media/platform/nuvoton/Makefile     |    2 +
->  drivers/media/platform/nuvoton/npcm-regs.h  |  152 ++
->  drivers/media/platform/nuvoton/npcm-video.c | 1830 +++++++++++++++++++
->  7 files changed, 2013 insertions(+)
->  create mode 100644 drivers/media/platform/nuvoton/Kconfig
->  create mode 100644 drivers/media/platform/nuvoton/Makefile
->  create mode 100644 drivers/media/platform/nuvoton/npcm-regs.h
->  create mode 100644 drivers/media/platform/nuvoton/npcm-video.c
+> To unify the error handling code, we move the else branch before
+> the if branch and drop one level of indentation of the if branch.
 > 
+> In addition, move the ret variable at the end of variable declarations
+> to be reverse x-mas tree order.
+> 
+> Note that this patch does not incur any functionability change.
+> 
+> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+> Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-<snip>
+Patch applied to ath-next branch of ath.git, thanks.
 
-> diff --git a/drivers/media/platform/nuvoton/npcm-video.c b/drivers/media/platform/nuvoton/npcm-video.c
-> new file mode 100644
-> index 000000000000..aabb6077a128
-> --- /dev/null
-> +++ b/drivers/media/platform/nuvoton/npcm-video.c
-> @@ -0,0 +1,1830 @@
+dc73b2059354 wifi: ath9k: clean up function ath9k_hif_usb_resume
 
-<snip>
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20230905013556.2595854-1-dzm91@hust.edu.cn/
 
-> +
-> +/*
-> + * This control value is set when a buffer is dequeued by userspace, i.e. in
-> + * npcm_video_buf_finish function.
-> + */
-> +static const struct v4l2_ctrl_config npcm_ctrl_rect_count = {
-> +	.id = V4L2_CID_NPCM_RECT_COUNT,
-> +	.name = "NPCM Compressed Hextile Rectangle Count",
-
-This name is too long, it should be max 31 characters. Dropping the "Compressed " part
-might be best, I think that word isn't needed.
-
-> +	.type = V4L2_CTRL_TYPE_INTEGER,
-> +	.min = 0,
-> +	.max = (MAX_WIDTH / RECT_W) * (MAX_HEIGHT / RECT_H),
-> +	.step = 1,
-> +	.def = 0,
-> +};
-
-With this fixed, and the sparse warnings fixed, it should be ready for merging.
-
-Regards,
-
-	Hans
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
