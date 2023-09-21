@@ -2,50 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 364FB7AA4B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3DC7AA58E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbjIUWPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        id S230142AbjIUXUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 19:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233176AbjIUWPZ (ORCPT
+        with ESMTP id S229995AbjIUXUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:15:25 -0400
+        Thu, 21 Sep 2023 19:20:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D103183F5A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF65BC116B4;
-        Thu, 21 Sep 2023 08:12:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7462083326;
+        Thu, 21 Sep 2023 10:37:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7D23C116CB;
+        Thu, 21 Sep 2023 08:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695283948;
-        bh=KlK68PiRYmNjDZ522KXFD15kcxu9BDel8MdfKGOwXpE=;
+        s=k20201202; t=1695285550;
+        bh=SRktlw97rAUxXvmGZYe3/jusIyIMFE7ZdMCiBS5jEGw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q5ielep+830ry6o1O39pwOmhlA5Dd3vzUZcRQoBZJURr/+cc5DnJGolJiIRGB3lTJ
-         iWNjjS21c6r62YsrVzhW0MSOAQ6USouYky4eccKL6sMLbjkBTrt+m+3jyvSN1Zafbi
-         BOAcYc4p0z80XbHapFdPWD35auDsgaTgejgzPCkRx4t3O2+pK6bywzePrw7JZUQcVm
-         9GeO+E6zQV9frsiN8hyVHpuBXSjha7sFejhkqK4QbfugMrnEsRomrpEsF8RXwfmlB0
-         mUHjG9RzU2vUghmNAXZ43wF+IHJDZs8kabj0yg9bfiRPBtdItnHB4tq4rtRSoLS8lv
-         SAxdKepsipABg==
-Date:   Thu, 21 Sep 2023 10:12:24 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
- drm_*_helper_funcs callbacks
-Message-ID: <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
-References: <20230914195138.1518065-1-javierm@redhat.com>
- <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
- <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
- <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
- <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
+        b=crg4JG5LjedFtliw5QRvtI7SuUOmrrTBU+sHkBFQwYAKW8BwtVoP7z2ZeOOKtHjP7
+         1tCR0qfp2JfJ1IqYaY7uOBsOiTPTFP0I6ptfLB1BtsOZ1RPvio2SzKn7ueQona0vTj
+         WCcngKA0W+mDqjk30/xRyTNQFN80zqTumpd6YfSeEHlntqWw4CIipoM+j0dxDHPujl
+         NUKxajPOP7KzwemqUufWx4FlS/JXCg8xABT5xtQRUBeHWc8fFYH+LV7fYfoh7XUbgD
+         hW4/uMKVDOKp5KVyRlZouLkIZTcnEi99l4G3rR1Ryqa++3Lkls8uA5Ku3heJh5zPlb
+         JcM0+hhDpddiQ==
+Date:   Thu, 21 Sep 2023 10:39:01 +0200
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, quic_shazhuss@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v1 3/5] phy: qcom-qmp-pcie: add endpoint support for
+ sa8775p
+Message-ID: <20230921083901.GC2891@thinkpad>
+References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+ <1695218113-31198-4-git-send-email-quic_msarkar@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4d2dwrs5mcu6fwes"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1695218113-31198-4-git-send-email-quic_msarkar@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -56,87 +65,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 20, 2023 at 07:25:10PM +0530, Mrinmay Sarkar wrote:
+> Add support for dual lane end point mode PHY found on sa8755p platform.
+> 
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           | 41 ++++++++++++++++++++++
+>  drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h         |  2 ++
+>  drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v5.h |  1 +
+>  3 files changed, 44 insertions(+)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> index a63ca74..351047c 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> @@ -2147,6 +2147,38 @@ static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x4_pcie_rc_serdes_alt_tbl[]
+>  	QMP_PHY_INIT_CFG(QSERDES_V5_COM_CLK_SELECT, 0x34),
+>  };
+>  
+> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_BG_TIMER, 0x02),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_SYS_CLK_CTRL, 0x07),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_CP_CTRL_MODE0, 0x27),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_CP_CTRL_MODE1, 0x0a),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_RCTRL_MODE0, 0x17),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_RCTRL_MODE1, 0x19),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CCTRL_MODE0, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CCTRL_MODE1, 0x03),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_SYSCLK_EN_SEL, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN0_MODE0, 0xfb),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN1_MODE0, 0x01),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN0_MODE1, 0xfb),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN1_MODE1, 0x01),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CMN_MODE, 0x14),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP1_MODE0, 0xff),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP2_MODE0, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP1_MODE1, 0xff),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP2_MODE1, 0x09),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_DEC_START_MODE0, 0x19),
+> +	QMP_PHY_INIT_CFG(QSERDES_V5_COM_DEC_START_MODE1, 0x28),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl[] = {
+> +	QMP_PHY_INIT_CFG(QPHY_V5_20_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5, 0x08),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl[] = {
+> +	QMP_PHY_INIT_CFG(QPHY_V5_PCS_INSIG_MX_CTRL7, 0x00),
+> +	QMP_PHY_INIT_CFG(QPHY_V5_PCS_INSIG_SW_CTRL7, 0x00),
+> +};
+> +
+>  struct qmp_pcie_offsets {
+>  	u16 serdes;
+>  	u16 pcs;
+> @@ -3043,6 +3075,15 @@ static const struct qmp_phy_cfg sa8775p_qmp_gen4x2_pciephy_cfg = {
+>  		.pcs_misc_num	= ARRAY_SIZE(sa8775p_qmp_gen4_pcie_rc_pcs_misc_tbl),
+>  	},
+>  
+> +	.tbls_ep = &(const struct qmp_phy_cfg_tbls) {
+> +		.serdes		= sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl,
+> +		.serdes_num	= ARRAY_SIZE(sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl),
+> +		.pcs_misc	= sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl,
+> +		.pcs_misc_num	= ARRAY_SIZE(sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl),
+> +		.pcs		= sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl,
+> +		.pcs_num	= ARRAY_SIZE(sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl),
+> +	},
+> +
+>  	.reset_list		= sdm845_pciephy_reset_l,
+>  	.num_resets		= ARRAY_SIZE(sdm845_pciephy_reset_l),
+>  	.vreg_list		= qmp_phy_vreg_l,
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
+> index 36cc80b..2b33dc7 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
+> @@ -30,5 +30,7 @@
+>  #define QPHY_V5_PCS_EQ_CONFIG2				0x1e0
+>  #define QPHY_V5_PCS_EQ_CONFIG3				0x1e4
+>  #define QPHY_V5_PCS_EQ_CONFIG5				0x1ec
+> +#define QPHY_V5_PCS_INSIG_MX_CTRL7			0x07c
+> +#define QPHY_V5_PCS_INSIG_SW_CTRL7			0x060
 
---4d2dwrs5mcu6fwes
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sort the defines please, here and below.
 
-On Thu, Sep 21, 2023 at 09:57:22AM +0200, Geert Uytterhoeven wrote:
-> Hi Maxime,
->=20
-> On Thu, Sep 21, 2023 at 9:44=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
-> wrote:
-> > On Mon, Sep 18, 2023 at 09:19:07AM +0200, Javier Martinez Canillas wrot=
-e:
-> > > Thomas Zimmermann <tzimmermann@suse.de> writes:
-> > > > Am 14.09.23 um 21:51 schrieb Javier Martinez Canillas:
-> > > >> The driver uses a naming convention where functions for struct drm=
-_*_funcs
-> > > >> callbacks are named ssd130x_$object_$operation, while the callback=
-s for
-> > > >> struct drm_*_helper_funcs are named ssd130x_$object_helper_$operat=
-ion.
-> > > >>
-> > > >> The idea is that this helper_ prefix in the function names denote =
-that are
-> > > >> for struct drm_*_helper_funcs callbacks. This convention was copie=
-d from
-> > > >> other drivers, when ssd130x was written but Maxime pointed out tha=
-t is the
-> > > >> exception rather than the norm.
-> > > >
-> > > > I guess you found this in my code. I want to point out that I use t=
-he
-> > > > _helper infix to signal that these are callback for
-> > > > drm_primary_plane_helper_funcs and *not* drm_primary_plane_funcs. T=
-he
-> > > > naming is intentional.
-> > >
-> > > Yes, that's what tried to say in the commit message and indeed I got =
-the
-> > > convention from drivers in drivers/gpu/drm/tiny. In fact I believe th=
-ese
-> > > function names are since first iteration of the driver, when was mean=
-t to
-> > > be a tiny driver.
-> > >
-> > > According to Maxime it's the exception rather than the rule and sugge=
-sted
-> > > to change it, I don't really have a strong opinion on either naming T=
-BH.
-> >
-> > Maybe that's just me, but the helper in the name indeed throws me off. =
-In my
-> > mind, it's supposed to be used only for helpers, not functions implemen=
-ting the
-> > helpers hooks.
->=20
-> With several callbacks using the same (field) name, it is very helpful
-> to name the actual implementation by combining the struct type name
-> and the field name.
+- Mani
 
-I can't think of any (at least for a given object). Which one do you have in
-mind?
+>  
+>  #endif
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v5.h
+> index c8afdf7..ad587c8 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v5.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v5.h
+> @@ -120,5 +120,6 @@
+>  #define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE2_MODE1	0x1b8
+>  #define QSERDES_V5_COM_BIN_VCOCAL_HSCLK_SEL		0x1bc
+>  #define QSERDES_V5_COM_RESERVED_1			0x1c0
+> +#define QSERDES_V5_COM_PLL_CMN_MODE			0x1a0
+>  
+>  #endif
+> -- 
+> 2.7.4
+> 
 
-> Anything else confuses the casual reader. Perhaps the real question is wh=
-ether
-> the structures should have "helper" in their name in the first place?
-
-Those structures are meant for functions used by the helpers, they are not
-helper functions.
-
-Maxime
-
---4d2dwrs5mcu6fwes
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQv66AAKCRDj7w1vZxhR
-xaUuAP49Dk5XZHDwOEMvFpUNAd5qO3W2XesVv7Vgkx9mVzpbiAD9Fd8QBcyq7FrB
-lGErmbmSM6/2LttSu9BDRi/YKeTRbws=
-=fnWn
------END PGP SIGNATURE-----
-
---4d2dwrs5mcu6fwes--
+-- 
+மணிவண்ணன் சதாசிவம்
