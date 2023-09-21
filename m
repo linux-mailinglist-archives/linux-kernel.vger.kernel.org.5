@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5549F7A9E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646CD7A9E12
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbjIUT7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S230054AbjIUTzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjIUT6n (ORCPT
+        with ESMTP id S230494AbjIUTye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:58:43 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2689C72428;
-        Thu, 21 Sep 2023 11:56:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695322581; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Af0kNSkUIApYMW7jR2nJgT9wxojCBucsRZBp+Vb6ZVML328uVEZl5KWVRsSKfOK6Zc
-    TuZaZ7ubvcx5LgLED7ZxSDLa2o14HsCHKdTwGxay3BRGmsSTRhZB1bzSg9E4Ob6gbKGl
-    kSt4dPhoLexNS2MokU41DLXr5Eseun8dMKPLp6WJXmQA/oZlA/TcmZqabs58esg7yhIw
-    0bRgk1nf29CR239HnCR2I7/S95AKmyAL6l9aVKlQBIfWnuIp16cSyA4jzTl4z99zWd9k
-    flBByvs4zVVBjG1zNXR1EygkEnO27rTG1OFlqm4lk0+UbgDMtvohp9MEgmY79/Cd8As2
-    y3iA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695322581;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=k3VeNueovqwvAeOtbPbFknTbbRAKphS4vEK7X7L7wHQ=;
-    b=nkw01R8YKzWcEGXUkZE0Aa9OEk9EJm5Z4jWCK0bEHZwydEedD4cGi7vvqE/iRU4cDz
-    RGj61uvbMNM7faXDc4DHSbbXWCdnACI7fO+QMWQOHUvwXRksGIaaQIVXRsk29olAxWN0
-    gHYVdINPv20fMBF15pTPmb90oMpHHjbyN5W647pUYAh8/Ghvoee2UxSvKM7Fqy5k7WlD
-    WdUl/WIy4SMAvC7/x0WZK+/JJqTYZNhzhvBftdkRgKD1NHksRBe6eare4J8U/xXscjrK
-    3KWZfzf8ylgVdlWMtAuz2O5Ow1+MAn1dgJgaomLW4WToK2R2+n457HRlETluZlFpk3/1
-    CXEA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695322581;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=k3VeNueovqwvAeOtbPbFknTbbRAKphS4vEK7X7L7wHQ=;
-    b=gRHNOThj80hRmZu8wjSMrj7VUOETuBnVzKvrP7QAvOraydeZbgqD76K+VC22QDJ+yj
-    IcAeLyRd30/dQgU6RdxGcG3n8GhGVbvwpid1atSfQxgWijC+fxEMP1H18bsTAOE2e/nB
-    6c030PQJ0WAV1jL5kt8ek2PNNPXap2UTdPt7wYiV3PdanLd1i6wRs1m7akt2Zn7TfrPp
-    ntNY5sFIawnqP6QGYKQ9wqAxHkSRTjKc6ypFIO7dLTbqysF23ecqwrqJJaqeW0Ohk9q2
-    z4v73x9kRnXC2hv8vZ8PYrthvxShZ6uvwfeb/ypXLzGaVWUzqWu8h0SwXaOdLGbZOcKz
-    GDgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695322581;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=k3VeNueovqwvAeOtbPbFknTbbRAKphS4vEK7X7L7wHQ=;
-    b=6hjDRegVapE8eu7LZIqKREGbBd4zQ9AaSG6c2gICci7xyO7AxzmQrIoB8f+uwdZ0oB
-    craDQmTjPX36s3LNJsAg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4p39TY="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z8LIuKRRz
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 21 Sep 2023 20:56:20 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Thu, 21 Sep 2023 20:56:04 +0200
-Subject: [PATCH 1/3] arm64: dts: qcom: msm8916-samsung-gt5: Enable GPU
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230921-msm8916-rmem-fixups-v1-1-34d2b6e721cf@gerhold.net>
-References: <20230921-msm8916-rmem-fixups-v1-0-34d2b6e721cf@gerhold.net>
-In-Reply-To: <20230921-msm8916-rmem-fixups-v1-0-34d2b6e721cf@gerhold.net>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 21 Sep 2023 15:54:34 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56797803FC
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:02:00 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c0327b75dso17245137b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:01:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695322919; x=1695927719; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5idGDJHajfRBbMuSzPd4i5/t54vfHNdbr48RChRWzqM=;
+        b=2BooiXDRdGdVMAlVcBWQCNkTEkbZrHYrWY31LpUZEk3fc9eDkThZx1AwQUhKMDHkf5
+         UEyShVv3rLaiV+P0txfMCu8MFamgMEoSeykzTzRYfhJiK7l3FTwudW7TF2GY6cMIItPu
+         mapw67pjL/Xp6/6FZWKO4aDatRspS7w3PvHw5jx+fYJzj3jiq7O10CBFxYbRTpZvkvKO
+         C2UAyiwt4K87AE6oq/qeak2O6pgrFVjeVTPo7Sbv1PJyk5ia01xFsOHhPoGnk6TJRTWW
+         uj4QSq4wDmgUk9K61I2I/5B6GmcisxUc0apclpo1nVwVDm0qZVujLDa51jAfqqcswzI2
+         UNtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695322919; x=1695927719;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5idGDJHajfRBbMuSzPd4i5/t54vfHNdbr48RChRWzqM=;
+        b=YoS++JbXKOKSDFefQKbfy5TrKBBFO6j78aKvysutL+vedRZCa3y252UMHHqke0AHE/
+         T+KbyoUlLc5P2p9uX91ZIZ08Od7qnuszYsUAsqq1iBGhuv0T6UkuTBY8W+ztY5mz1Y71
+         acxi5eRlazxIVCuaswQFkdKnGNAD/613LzFbVLKhmJhTzgZK/zAJGrWWuMunTKQiT2/V
+         R4lh5MtRLLwQbEOE+ANi+fmwaKWu5A1z7nH0UUR37qBK9HguRjtsXIcfT1154B6QWkP9
+         ccEr6Cf06T9KTPN7tYWqQBOmHj/QMmxwOUmfxj3pf3W9VxxeVXWtjz0FyjxBOvPmAPkC
+         DOHw==
+X-Gm-Message-State: AOJu0YxSuiBGu8mYFkc5y8geKpa7hwxuCrxnuoDzDs0wTmnBuQ+5Ct9E
+        pFvrkcj/4dkI7p3jC4KiChJsx4PS6JIa0g==
+X-Google-Smtp-Source: AGHT+IGiWhkZQI2qsIIIWvhihaksfZHxJa3nw+xhY08FFXLOqY3cnBSLU1oGhU9kfs+YQ6I22pIVz3FchgxXQA==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a05:6902:a84:b0:d7b:94f5:1301 with SMTP
+ id cd4-20020a0569020a8400b00d7b94f51301mr93080ybb.9.1695322919028; Thu, 21
+ Sep 2023 12:01:59 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 19:01:56 +0000
+In-Reply-To: <20230920132545.56834-2-wuyun.abel@bytedance.com>
+Mime-Version: 1.0
+References: <20230920132545.56834-1-wuyun.abel@bytedance.com> <20230920132545.56834-2-wuyun.abel@bytedance.com>
+Message-ID: <20230921190156.s4oygohw4hud42tx@google.com>
+Subject: Re: [PATCH net-next 2/2] sock: Fix improper heuristic on raising memory
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Breno Leitao <leitao@debian.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Glauber Costa <glommer@parallels.com>,
+        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujtsu.com>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the GPU for the msm8916-samsung-gt58 and gt510 tablets now that
-they have display panels enabled in the device tree. This was missed
-when the GPU was disabled by default because the change was not applied
-yet.
+On Wed, Sep 20, 2023 at 09:25:41PM +0800, Abel Wu wrote:
+> Before sockets became aware of net-memcg's memory pressure since
+> commit e1aab161e013 ("socket: initial cgroup code."), the memory
+> usage would be granted to raise if below average even when under
+> protocol's pressure. This provides fairness among the sockets of
+> same protocol.
+> 
+> That commit changes this because the heuristic will also be
+> effective when only memcg is under pressure which makes no sense.
+> Fix this by skipping this heuristic when under memcg pressure.
+> 
+> Fixes: e1aab161e013 ("socket: initial cgroup code.")
+> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> ---
+>  net/core/sock.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 379eb8b65562..ef5cf6250f17 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -3093,8 +3093,16 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+>  	if (sk_has_memory_pressure(sk)) {
+>  		u64 alloc;
+>  
+> -		if (!sk_under_memory_pressure(sk))
+> +		if (memcg && mem_cgroup_under_socket_pressure(memcg))
+> +			goto suppress_allocation;
+> +
+> +		if (!sk_under_global_memory_pressure(sk))
+>  			return 1;
 
-Fixes: 0ce5bb825d54 ("arm64: dts: qcom: msm8916/39: Disable GPU by default")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts | 4 ++++
- arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts  | 4 ++++
- 2 files changed, 8 insertions(+)
+I am onboard with replacing sk_under_memory_pressure() with
+sk_under_global_memory_pressure(). However suppressing on memcg pressure
+is a behavior change from status quo and need more thought and testing.
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts b/arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts
-index 75c4854ecd64..c3f1acc55078 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts
-@@ -112,6 +112,10 @@ touchscreen@4a {
- 	};
- };
- 
-+&gpu {
-+	status = "okay";
-+};
-+
- &mdss {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts b/arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts
-index 11359bcc27b3..998625abd409 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts
-@@ -64,6 +64,10 @@ touchscreen@20 {
- 	};
- };
- 
-+&gpu {
-+	status = "okay";
-+};
-+
- &mdss {
- 	status = "okay";
- };
+I think there are three options for this hunk:
 
--- 
-2.42.0
+1. proposed patch
+2. Consider memcg pressure only for !in_softirq().
+3. Don't consider memcg pressure at all.
 
+All three options are behavior change from the status quo but with
+different risk levels. (1) may reintroduce the regression fixed by
+720ca52bcef22 ("net-memcg: avoid stalls when under memory pressure").
+(2) is more inlined with 720ca52bcef22. (3) has the risk to making memcg
+limits ineffective.
+
+IMHO we should go with (2) as there is already a precedence in
+720ca52bcef22.
+
+thanks,
+Shakeel
