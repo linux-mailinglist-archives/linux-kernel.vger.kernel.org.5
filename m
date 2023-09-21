@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3767A9DF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58C57A9E20
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbjIUTwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        id S229513AbjIUT4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjIUTvr (ORCPT
+        with ESMTP id S230114AbjIUT4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:51:47 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C061481D;
-        Thu, 21 Sep 2023 12:42:27 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32ABE1BF203;
-        Thu, 21 Sep 2023 19:42:22 +0000 (UTC)
-From:   Ilya Maximets <i.maximets@ovn.org>
-To:     netdev@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Ilya Maximets <i.maximets@ovn.org>
-Subject: [PATCH net-next v2] openvswitch: reduce stack usage in do_execute_actions
-Date:   Thu, 21 Sep 2023 21:42:35 +0200
-Message-ID: <20230921194314.1976605-1-i.maximets@ovn.org>
-X-Mailer: git-send-email 2.41.0
+        Thu, 21 Sep 2023 15:56:17 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9255DA9F0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:46:54 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso2325104e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695325612; x=1695930412; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PBK/gazFsyzXOKB+rBrmhryzG1knngQqKvlNh1yC244=;
+        b=EsADxX/l8bpSbBR0dOwOGRhFA/s32coC4juMuGu8Ot+SRhWVPckVxv5JqDr9TDrCPd
+         nXd+sCZGp9thaoONzvgcToC98HSNv1oBvfAUH+NUpHKDtYu6+TXZWE5aNsqoeWVKI6pB
+         POx0yugFS+EPmoHsXcwLnTmNZYGNgY5WU6nzs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695325612; x=1695930412;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PBK/gazFsyzXOKB+rBrmhryzG1knngQqKvlNh1yC244=;
+        b=EKbAYUBiBMD9xi3oZn/SXB23hAdd9o3d31ipMljrtNvemkVKoPApCw3ygw8lqISWxg
+         3uPvK9+gZwDqhD9VvblfLI3mnb0Cpcp93SLIQDCtJ3lJ19I/+xxzMxOde2Ibxumkta+U
+         P7BiDNt1cjcySz6tMltHPi3Z3uRCO6peIwEWhcUTMo8IBrDTXCHmm+n4IGAyqfcFJjyn
+         0wbfST2pZ2dzLGF5aZlCG7I1+TWWWJWotV3PUKTfm4dAYGmnzbx0lCqTNu/vfacGdoxd
+         8Lx0fwBQ8qOXRxgWoy3DsIHG85jB7Ote4qi5km+AdrwEi/o2B89jH1q3nNqvugkgkfSt
+         tz6Q==
+X-Gm-Message-State: AOJu0YzVI4VJa3KqjIweyvpSc4utO1dQYVlL0rMoneIQD7pXQd3/wRqR
+        aBZJJvbgPPqG0OaFyE7064bBeU9aBUGYyOBo0rnXgM/G
+X-Google-Smtp-Source: AGHT+IGIH9zxgy8LyXazn08gadTnFG+VwZsdchNPX0qmq7Mt7/PjA7JfEbqbCGln/hxFXFzF6E2MtQ==
+X-Received: by 2002:a19:3813:0:b0:4ff:7046:984a with SMTP id f19-20020a193813000000b004ff7046984amr5140997lfa.7.1695325612500;
+        Thu, 21 Sep 2023 12:46:52 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id j16-20020ac24550000000b0050300e013f3sm410038lfm.254.2023.09.21.12.46.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 12:46:51 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-503f39d3236so2346163e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:46:51 -0700 (PDT)
+X-Received: by 2002:a05:6512:2013:b0:502:ffdf:b098 with SMTP id
+ a19-20020a056512201300b00502ffdfb098mr4997773lfb.6.1695325611372; Thu, 21 Sep
+ 2023 12:46:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: i.maximets@ovn.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
+ <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
+ <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org> <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+In-Reply-To: <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Sep 2023 12:46:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjDAqOs5TFuxxEOSST-5-LJJkAS5cEMrDu-pgiYsrjyNw@mail.gmail.com>
+Message-ID: <CAHk-=wjDAqOs5TFuxxEOSST-5-LJJkAS5cEMrDu-pgiYsrjyNw@mail.gmail.com>
+Subject: Re: [GIT PULL v2] timestamp fixes
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_execute_actions() function can be called recursively multiple
-times while executing actions that require pipeline forking or
-recirculations.  It may also be re-entered multiple times if the packet
-leaves openvswitch module and re-enters it through a different port.
+On Thu, 21 Sept 2023 at 12:28, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> And that's ok when we're talking about times that are kernel running
+> times and we haev a couple of centuries to say "ok, we'll need to make
+> it be a bigger type",
 
-Currently, there is a 256-byte array allocated on stack in this
-function that is supposed to hold NSH header.  Compilers tend to
-pre-allocate that space right at the beginning of the function:
+Note that the "couple of centuries" here is mostly the machine uptime,
+not necessarily "we'll need to change the time in the year 2292".
 
-     a88:       48 81 ec b0 01 00 00    sub    $0x1b0,%rsp
+Although we do also have "ktime_get_real()" which is encoding the
+whole "nanoseconds since 1970". That *will* break in 2292.
 
-NSH is not a very common protocol, but the space is allocated on every
-recursive call or re-entry multiplying the wasted stack space.
+Anyway, regardless, I am *not* suggesting that ktime_t would be useful
+for filesystems, because of this issue.
 
-Move the stack allocation to push_nsh() function that is only used
-if NSH actions are actually present.  push_nsh() is also a simple
-function without a possibility for re-entry, so the stack is returned
-right away.
+I *do* suspect that we might consider a "tenth of a microsecond", though.
 
-With this change the preallocated space is reduced by 256 B per call:
+Resolution-wise, it's pretty much in the "system call time" order of
+magnitude, and if we have Linux filesystems around in the year-31k,
+I'll happily consider it to be a SEP thing at that point ("somebody
+else's problem").
 
-     b18:       48 81 ec b0 00 00 00    sub    $0xb0,%rsp
-
-Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
----
-
-Version 2:
-  - Added 'noinline_for_stack' to avoid potential inlining. [Eric]
-
- net/openvswitch/actions.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
-index 5f8094acd056..6fcd7e2ca81f 100644
---- a/net/openvswitch/actions.c
-+++ b/net/openvswitch/actions.c
-@@ -311,11 +311,18 @@ static int push_eth(struct sk_buff *skb, struct sw_flow_key *key,
- 	return 0;
- }
- 
--static int push_nsh(struct sk_buff *skb, struct sw_flow_key *key,
--		    const struct nshhdr *nh)
-+static noinline_for_stack int push_nsh(struct sk_buff *skb,
-+				       struct sw_flow_key *key,
-+				       const struct nlattr *a)
- {
-+	u8 buffer[NSH_HDR_MAX_LEN];
-+	struct nshhdr *nh = (struct nshhdr *)buffer;
- 	int err;
- 
-+	err = nsh_hdr_from_nlattr(a, nh, NSH_HDR_MAX_LEN);
-+	if (err)
-+		return err;
-+
- 	err = nsh_push(skb, nh);
- 	if (err)
- 		return err;
-@@ -1439,17 +1446,9 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
- 			err = pop_eth(skb, key);
- 			break;
- 
--		case OVS_ACTION_ATTR_PUSH_NSH: {
--			u8 buffer[NSH_HDR_MAX_LEN];
--			struct nshhdr *nh = (struct nshhdr *)buffer;
--
--			err = nsh_hdr_from_nlattr(nla_data(a), nh,
--						  NSH_HDR_MAX_LEN);
--			if (unlikely(err))
--				break;
--			err = push_nsh(skb, key, nh);
-+		case OVS_ACTION_ATTR_PUSH_NSH:
-+			err = push_nsh(skb, key, nla_data(a));
- 			break;
--		}
- 
- 		case OVS_ACTION_ATTR_POP_NSH:
- 			err = pop_nsh(skb, key);
--- 
-2.41.0
-
+                  Linus
