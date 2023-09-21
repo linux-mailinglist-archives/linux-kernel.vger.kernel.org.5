@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 872467AA222
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CE67A9F76
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbjIUVNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        id S231625AbjIUUWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbjIUVMu (ORCPT
+        with ESMTP id S231601AbjIUUVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:12:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E572A9ED;
-        Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E79EC4E689;
-        Thu, 21 Sep 2023 12:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695298861;
-        bh=KjzToofit3Y0FeaIc14Emfkd61E5wMUffmNSlgfWlws=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QYPRqg52qxooQYcthEAw6iPy3gYDm21MYLktLHDAFDD++GvQsqO3Pbl8kWx66N/k4
-         Ph1CAC1jiL8JbHCS47VNxUhcpRQYmEs1O/swIpxSAf2AIBRdwLCD/mCVMbTGWgQ/Mh
-         MnaAOkLhXGjOvwo584s9DUETmNucy7IQJPhqjP88A6fiibMY48yT58OyvlVMnxwOKQ
-         xpRwmKPmoncBvidVZz1wY5nHgntHNAdLpGnqyN0MTnCnOy5Y/+uHtfxuS02/m9zc+S
-         Y4e+hK97eCLA1c/pqsmEHfoHXoIMVj4vNPnxhgF4MR8n1V7KpY2ZRJ2HsOBzTW3MjB
-         mUCvSxGbx7mgg==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2bfea381255so14450931fa.3;
-        Thu, 21 Sep 2023 05:21:01 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yxg6EfmUwUYQqqAT2nePFV5hcTFEIXnYMNzdwebgE1Qs8WlHyi6
-        SHBl0SS8JU5Oaru30ch/ShQY7CZeFQUdSihLww==
-X-Google-Smtp-Source: AGHT+IEoXQqtt9tbYjAQ7FzV0NWQLqTY9v9t3vyNONu7fH6AtTwCNEpI851pYP7RujJ8URZmSKpMv4HJsMK8Dv1j3xQ=
-X-Received: by 2002:a2e:9952:0:b0:2b9:3684:165 with SMTP id
- r18-20020a2e9952000000b002b936840165mr4739244ljj.8.1695298859522; Thu, 21 Sep
- 2023 05:20:59 -0700 (PDT)
+        Thu, 21 Sep 2023 16:21:54 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5711D2B29
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:23:18 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-502e6d632b6so2157129e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1695320597; x=1695925397; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bnhBiFBKyPiQHRaYS9dfvLmsrYNmtEwUZ70lBW9wVas=;
+        b=gpkHPmEPKUqwdZjGfJVSorWzJV9PZSxhBpa9h7qrIP+HHjwaAdsJnz4QUQkGsOzWga
+         t5tyD+WwDtt9m3RCtDqr8CQH7I3OSkGdvbYydTrtNrbyVBO/1F7iiCDLIwFVAJUawLTy
+         Z9flEdw1fFIN/W3IWglHsUa1g6FFrzc090LLn2NXrY2ooWRuHMJtMLEEechfypjqwao/
+         PdPwprGN9fKgZFCEqQ6cgTgh1m9Zl+SZibKFvVU+K9FPTGPWvpXaw99ocssFfiwhTXfP
+         TUEPLGkY1sQJAwTbP4WkkZC6K2Pz+ZoP7kEF3udf5SHkLfIiSSsBo1/GX3beY+IGIaR+
+         EvFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695320597; x=1695925397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bnhBiFBKyPiQHRaYS9dfvLmsrYNmtEwUZ70lBW9wVas=;
+        b=i62pPFRYTPJ1WrZQuxI4PGHSXITCfspOHdowZTFOfp0N4hgpisqeuh4XuENTpvxqVE
+         OfW+RsEJON0fuBbBSDHGZL1+15z5N/SRqGb/Zju6mQKD0guQogo70pD6gxjxRTgBpTSi
+         3RPqBVW6z1DwM5n4YCkrmJ8NR1c/qq4sorDZzlZ7wj66LVP8kjqRxNHvkq+zHd5rwelL
+         X4u99NOkt5lp9iZl59s04g6rZAS6PtrpKUq9E4kNxRhRromdh/xhGOvdwHaGjfsIqz7e
+         7zJ/OqCDaJNzM2jDFoH0jDI6MASb+Aelf+Rd6CjRShvZCBQKXKV34haw2YRHLIX690Cm
+         Gy+w==
+X-Gm-Message-State: AOJu0Yzk170Rg36aZkeqssPAB0Tb003XqO8pFylPmMHmNcFlsL6hxjEF
+        taWx94J3Z16Qw/l8d/08Ut1XUO9FwrlNN8JzIofkVFtvxklUOtjwosE=
+X-Google-Smtp-Source: AGHT+IFZArCnDCg0IaUGDU5EJzWdv+w4dn7a4FoKjDrxayQwXMP+yWbdPJpvIebBcd22esKd9Y9YYWiI1e6z6nvhVig=
+X-Received: by 2002:aa7:c992:0:b0:52f:b00a:99be with SMTP id
+ c18-20020aa7c992000000b0052fb00a99bemr4603308edt.33.1695299051958; Thu, 21
+ Sep 2023 05:24:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
- <ZP96feVs2ev7098Y@smile.fi.intel.com> <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
- <ZQGaSr+G5qu/8nJZ@smile.fi.intel.com> <20230915193008.6d87b8a0@bootlin.com> <ZQf5huX2AMuf9kHC@smile.fi.intel.com>
-In-Reply-To: <ZQf5huX2AMuf9kHC@smile.fi.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 21 Sep 2023 07:20:46 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKNC1Qv+fucobnzoXmxUYNockWR=BbGhds2tNAYZWqgOA@mail.gmail.com>
-Message-ID: <CAL_JsqKNC1Qv+fucobnzoXmxUYNockWR=BbGhds2tNAYZWqgOA@mail.gmail.com>
-Subject: Re: [PATCH V13 0/5] Generate device tree node for pci devices
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Andrew Lunn <andrew@lunn.ch>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, max.zhen@amd.com,
-        sonal.santan@amd.com, stefano.stabellini@xilinx.com
+References: <20230920112835.549467415@linuxfoundation.org>
+In-Reply-To: <20230920112835.549467415@linuxfoundation.org>
+From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date:   Thu, 21 Sep 2023 21:24:00 +0900
+Message-ID: <CAKL4bV6gnu5Ufjru10sWG-3dew25WKtmtdPXQNfdrgLc0nfX_g@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/139] 6.1.55-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 2:17=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
->
-> On Fri, Sep 15, 2023 at 07:30:08PM +0200, Herve Codina wrote:
-> > On Wed, 13 Sep 2023 14:17:30 +0300
-> > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
-> > > On Tue, Sep 12, 2023 at 02:12:04PM -0500, Rob Herring wrote:
-> > > > On Mon, Sep 11, 2023 at 3:37=E2=80=AFPM Andy Shevchenko
-> > > > <andriy.shevchenko@intel.com> wrote:
-> > > > > On Tue, Aug 15, 2023 at 10:19:55AM -0700, Lizhi Hou wrote:
->
-> ...
->
-> > > > > Can you point out to the ACPI excerpt(s) of the description of an=
-ything related
-> > > > > to the device(s) in question?
-> > > >
-> > > > I don't understand what you are asking for.
-> > >
-> > > Through the email thread it was mentioned that this series was tested=
- on the
-> > > ACPI enabled platform, Jonathan (IIRC) asked why do we need to have a=
- shadow
-> > > DT for the something that ACPI already describes. That's why I'm tryi=
-ng to
-> > > understand if it's the case. and if so, how can we improve the approa=
-ch.
-> >
-> > Patches from Frank Rowand series [1] are needed to create an of_root_no=
-de if a DT
-> > was not provided by the firmware, bootloader, etc that run the kernel.
-> >
-> > [1]: https://lore.kernel.org/lkml/20220624034327.2542112-1-frowand.list=
-@gmail.com/
-> >
-> > Current Lizhi's series creates nodes from the PCI host node during the =
-PCI
-> > enumeration. It creates PCI-PCI bridge and PCI device nodes.
-> >
-> > I use these series on an ACPI system.
-> >
-> > I need one more missing component: the node related to the PCI host bri=
-dge
-> > This was the purpose of Clement's work. This work was not sent upstream=
- yet and I
-> > am working on it in order to have a full tree from the of_root to the P=
-CI device
-> > ie:
-> >  of_root                  <-- Frank Rowand series
-> >    + of_host_pci_bridge   <-- Clement's work
-> >        + pci_bridge       <-- Current Lizhi series
-> >            + pci_bridge   <-- Current Lizhi series
-> >             ...
-> >              + pci_dev    <-- Current Lizhi series
-> >
-> > Hope that this status helped.
->
-> Thanks for the explanation! I suppose it's better to have three series co=
-mbined
-> into one and being sent with a better cover letter to explain all this.
+Hi Greg
 
-You can go back (years now) and see that. I asked for this to be split
-up into manageable chunks and not solve multiple problems at once. No
-point in trying to do DT on top of ACPI if DT on top of DT doesn't
-work first.
+On Wed, Sep 20, 2023 at 8:55=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.55 release.
+> There are 139 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.55-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Rob
+6.1.55-rc1 tested.
+
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
+
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+
+Thanks
+
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
