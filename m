@@ -2,225 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3077A9E6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10A67A995E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjIUUBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        id S229595AbjIUSOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjIUUBD (ORCPT
+        with ESMTP id S229848AbjIUSNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:01:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381524F90C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695316476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5WnZqdwhkRoKQqYw3cgQpal+kFJURVQvQfhkGIc48y8=;
-        b=ZtWSEI3mnJy7q+OmC/6w3qacABgt83cfkTCooUBAiXJz/kGkJJL8pJvTPpjcv+tnnrn+1m
-        8QBFNsXxE1+2ZjS4vqZbmIJibS0WIFwgLoxCNN5iDx/+ChGjxZ0zV4dJsgaiJjPN81mVLt
-        +Wkl73izNul4omQibGLjMd+JuiAmoKw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-512-L_xUbqKAPzmtd0gkT9eXEg-1; Thu, 21 Sep 2023 06:52:43 -0400
-X-MC-Unique: L_xUbqKAPzmtd0gkT9eXEg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40526a782f7so6321045e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 03:52:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695293562; x=1695898362;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WnZqdwhkRoKQqYw3cgQpal+kFJURVQvQfhkGIc48y8=;
-        b=LTnQs5BnUyRAra6sG277dsl+G0n0/evUwp2gUz1+DGooIiGm8F8DCJoYGWHzElJw/3
-         64TJ5KuxePP+UsCvtuScYHtSjfnUMDm9MadZ+36qt6Sr03vAzMESQSimrIbW71Oh6h/2
-         uuBmSSrUP76MhH5I/Ti6Zd+eFJBGd9yeLorzgU5hl+p9IJWX86wrdMf8A+XNx/CMpcm8
-         AFXixGaW5nlTnZrFtJLzNp9KUXRA/3KxLDAwhv+Jc/xnF8GxkxMDDYiRtbI+3V8r6aSM
-         43y+UZRBfc1ONnymuF4V3aYjvwpnmZuUQwAV5xtaOmdilgZxCbh58ARhc6imLae12E1m
-         mIOA==
-X-Gm-Message-State: AOJu0YyDRSxMLJahD83trRsWcVQfERS3rgL7vtL97oFxTIRkCNhDZPQW
-        ScdyF3S4KJUB0d5k9k2FcScJGUe5MtqwqkMopwAVLKOrHUEi0NlUpHPzA55t7IUyg9HR5zzIWS0
-        JxGbNV/Z5YAKipaa8a9rXPS1+
-X-Received: by 2002:a05:600c:2201:b0:401:d3dd:c3c with SMTP id z1-20020a05600c220100b00401d3dd0c3cmr4562508wml.39.1695293561844;
-        Thu, 21 Sep 2023 03:52:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFVd+0oglV4sq2NNW4UpuK3w9yQhq7UAjftlH920QyVqC/rkJkmvOuYGXtFeT65RGtogMwRGg==
-X-Received: by 2002:a05:600c:2201:b0:401:d3dd:c3c with SMTP id z1-20020a05600c220100b00401d3dd0c3cmr4562490wml.39.1695293561432;
-        Thu, 21 Sep 2023 03:52:41 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id p19-20020a05600c1d9300b0040531f5c51asm1541399wms.5.2023.09.21.03.52.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 03:52:40 -0700 (PDT)
-Message-ID: <adebc422-2937-48d7-20c1-aef2dc1ac436@redhat.com>
-Date:   Thu, 21 Sep 2023 12:52:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] KVM: x86/mmu: Take "shared" instead of "as_id" TDP
- MMU's yield-safe iterator
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pattara Teerapong <pteerapong@google.com>,
-        David Stevens <stevensd@google.com>,
-        Yiwei Zhang <zzyiwei@google.com>,
-        Paul Hsia <paulhsia@google.com>
-References: <20230916003916.2545000-1-seanjc@google.com>
- <20230916003916.2545000-3-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230916003916.2545000-3-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Thu, 21 Sep 2023 14:13:31 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B5084F04;
+        Thu, 21 Sep 2023 10:37:39 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LAn48G031167;
+        Thu, 21 Sep 2023 11:00:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=p8EsBeNIrJi9VQT0CnLm9BaoTVOkiFg8QdPNBbVzQY4=;
+ b=S3h5NUBBeOy2OWmbxAgmfZe/8u0fehWLI8SSSAfMWXwNig8LRqUO8aMsJPof7bcNQVAD
+ BgKx2Zyrs96OKtsfONvrEYqj0p+vK68J2WUIOdbrNRn4YlYBP/JMr+wpE9NWOqgUrGkL
+ 7V7K/ayr08XYl14FmYAjCUwNHsHmJrpV0ZxGS1TF9aWEMR3JvjgnZOQkbUkszZSya18M
+ vbHM8IjhVHYO+gxnancZ4jjRAaYFNc76QX8suBmJCLZZxaU6hn2dYpBP9dWLBYvzDBpQ
+ j0OA5jSb8nDdGoAuiUmhR1JR+YVxt6l+yBbfp6sIPns8E1dv0WFRy8/vYY6cgh9qGz1H Aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t803f0b1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 11:00:28 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38LB07Yc016358;
+        Thu, 21 Sep 2023 11:00:27 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t803f0b16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 11:00:27 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38LAjd0p010385;
+        Thu, 21 Sep 2023 11:00:26 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5rwkqsu5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 11:00:26 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38LB0P1866060618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Sep 2023 11:00:25 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D1C105806A;
+        Thu, 21 Sep 2023 11:00:24 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B952C5805D;
+        Thu, 21 Sep 2023 11:00:20 +0000 (GMT)
+Received: from li-34d1fccc-27cd-11b2-a85c-c167793e56f7.ibm.com (unknown [9.204.200.131])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 21 Sep 2023 11:00:20 +0000 (GMT)
+Message-ID: <50798cd4558299eb62e2c3a11e367a6dbe11f915.camel@linux.vnet.ibm.com>
+Subject: Re: [RFC v3 1/2] powerpc/cpuidle: cpuidle wakeup latency based on
+ IPI and timer events
+From:   Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
+Reply-To: 87a5trvw88.fsf@mail.lhotse
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
+        npiggin@gmail.com, rmclure@linux.ibm.com, arnd@arndb.de,
+        joel@jms.id.au, shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        pratik.r.sampat@gmail.com
+Date:   Thu, 21 Sep 2023 16:30:19 +0530
+In-Reply-To: <87a5trvw88.fsf@mail.lhotse>
+References: <20230911053620.87973-1-aboorvad@linux.vnet.ibm.com>
+         <20230911053620.87973-2-aboorvad@linux.vnet.ibm.com>
+         <87a5trvw88.fsf@mail.lhotse>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: U6OLfEr1xVJJ58ZvUgMVyFoD8lhjrPU0
+X-Proofpoint-ORIG-GUID: 4TT-OWudeNNSff_lXJVKJf0lNCiNhmfS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_07,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 suspectscore=0 clxscore=1011 malwarescore=0 spamscore=0
+ mlxscore=0 phishscore=0 impostorscore=0 mlxlogscore=744 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309210092
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/23 02:39, Sean Christopherson wrote:
-> Replace the address space ID in for_each_tdp_mmu_root_yield_safe() with a
-> shared (vs. exclusive) param, and have the walker iterate over all address
-> spaces as all callers want to process all address spaces.  Drop the @as_id
-> param as well as the manual address space iteration in callers.
+On Wed, 2023-09-13 at 08:54 +1000, Michael Ellerman wrote:
+> Aboorva Devarajan <aboorvad@linux.vnet.ibm.com> writes:
+> > From: Pratik R. Sampat <psampat@linux.ibm.com>
+> > 
+> > Introduce a mechanism to fire directed IPIs from a source CPU to a
+> > specified target CPU and measure the time incurred on waking up the
+> > target CPU in response.
+> > 
+> > Also, introduce a mechanism to queue a hrtimer on a specified CPU
+> > and
+> > subsequently measure the time taken to wakeup the CPU.
+> > 
+> > Define a simple debugfs interface that allows for adjusting the
+> > settings to trigger IPI and timer events on a designated CPU, and
+> > to
+> > observe the resulting cpuidle wakeup latencies.
+> > 
+> > Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> > Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+> > Signed-off-by: Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
+> > ---
+> >  arch/powerpc/Kconfig.debug                 |  10 ++
+> >  arch/powerpc/kernel/Makefile               |   1 +
+> >  arch/powerpc/kernel/test_cpuidle_latency.c | 154
+> > +++++++++++++++++++++
+>   
+> I don't see anything here that's powerpc specific?
 > 
-> Add the @shared param even though the two current callers pass "false"
-> unconditionally, as the main reason for refactoring the walker is to
-> simplify using it to zap invalid TDP MMU roots, which is done with
-> mmu_lock held for read.
+> Which makes me wonder 1) could this be done with some existing
+> generic
+> mechanism?, and 2) if not can this test code be made generic.
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-You konw what, I don't really like the "bool shared" arguments anymore.
-For example, neither tdp_mmu_next_root nor kvm_tdp_mmu_put_root need to 
-know if the lock is taken for read or write; protection is achieved via 
-RCU and tdp_mmu_pages_lock.  It's more self-documenting to remove the 
-argument and assert that the lock is taken.
-
-Likewise, the argument is more or less unnecessary in the 
-for_each_*_tdp_mmu_root_yield_safe() macros.  Many users check for the 
-lock before calling it; and all of them either call small functions that 
-do the check, or end up calling tdp_mmu_set_spte_atomic() and 
-tdp_mmu_iter_set_spte(), so the per-iteration checks are also overkill.
-
-It may be useful to a few assertions to make up for the lost check 
-before the first execution of the body of 
-for_each_*_tdp_mmu_root_yield_safe(), but even this is more for 
-documentation reasons than to catch actual bugs.
-
-I'll send a v2.
-
-Paolo
-
-> ---
->   arch/x86/kvm/mmu/mmu.c     |  8 ++------
->   arch/x86/kvm/mmu/tdp_mmu.c | 20 ++++++++++----------
->   arch/x86/kvm/mmu/tdp_mmu.h |  3 +--
->   3 files changed, 13 insertions(+), 18 deletions(-)
+> At the very least this should be Cc'ed to the cpuidle lists &
+> maintainers given it's a test for cpuidle latency :)
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 59f5e40b8f55..54f94f644b42 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -6246,7 +6246,6 @@ static bool kvm_rmap_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_e
->   void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->   {
->   	bool flush;
-> -	int i;
->   
->   	if (WARN_ON_ONCE(gfn_end <= gfn_start))
->   		return;
-> @@ -6257,11 +6256,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->   
->   	flush = kvm_rmap_zap_gfn_range(kvm, gfn_start, gfn_end);
->   
-> -	if (tdp_mmu_enabled) {
-> -		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
-> -			flush = kvm_tdp_mmu_zap_leafs(kvm, i, gfn_start,
-> -						      gfn_end, flush);
-> -	}
-> +	if (tdp_mmu_enabled)
-> +		flush = kvm_tdp_mmu_zap_leafs(kvm, gfn_start, gfn_end, flush);
->   
->   	if (flush)
->   		kvm_flush_remote_tlbs_range(kvm, gfn_start, gfn_end - gfn_start);
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 89aaa2463373..7cb1902ae032 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -211,8 +211,12 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->   #define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared)	\
->   	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, true)
->   
-> -#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id)			\
-> -	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, false, false)
-> +#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _shared)			\
-> +	for (_root = tdp_mmu_next_root(_kvm, NULL, _shared, false);		\
-> +	     _root;								\
-> +	     _root = tdp_mmu_next_root(_kvm, _root, _shared, false))		\
-> +		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, _shared)) {		\
-> +		} else
->   
->   /*
->    * Iterate over all TDP MMU roots.  Requires that mmu_lock be held for write,
-> @@ -877,12 +881,11 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
->    * true if a TLB flush is needed before releasing the MMU lock, i.e. if one or
->    * more SPTEs were zapped since the MMU lock was last acquired.
->    */
-> -bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, int as_id, gfn_t start, gfn_t end,
-> -			   bool flush)
-> +bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush)
->   {
->   	struct kvm_mmu_page *root;
->   
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root, as_id)
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
->   		flush = tdp_mmu_zap_leafs(kvm, root, start, end, true, flush);
->   
->   	return flush;
-> @@ -891,7 +894,6 @@ bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, int as_id, gfn_t start, gfn_t end,
->   void kvm_tdp_mmu_zap_all(struct kvm *kvm)
->   {
->   	struct kvm_mmu_page *root;
-> -	int i;
->   
->   	/*
->   	 * Zap all roots, including invalid roots, as all SPTEs must be dropped
-> @@ -905,10 +907,8 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
->   	 * is being destroyed or the userspace VMM has exited.  In both cases,
->   	 * KVM_RUN is unreachable, i.e. no vCPUs will ever service the request.
->   	 */
-> -	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> -		for_each_tdp_mmu_root_yield_safe(kvm, root, i)
-> -			tdp_mmu_zap_root(kvm, root, false);
-> -	}
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
-> +		tdp_mmu_zap_root(kvm, root, false);
->   }
->   
->   /*
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index eb4fa345d3a4..bc088953f929 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -20,8 +20,7 @@ __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
->   void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
->   			  bool shared);
->   
-> -bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, int as_id, gfn_t start, gfn_t end,
-> -			   bool flush);
-> +bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush);
->   bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp);
->   void kvm_tdp_mmu_zap_all(struct kvm *kvm);
->   void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm);
+> cheers
+
+Hi Michael,
+
+Thanks a lot for taking a look at this.
+
+Yes, this test-case can be used as a generic benchmark for evaluating
+CPU idle latencies across different architectures, as it has thus far
+been exclusively tested and used on PowerPC, so we thought it would be
+more beneficial to incorporate it into a PowerPC specific self-test
+suite. But I will work on making it a generic self-test and send across
+a v4.
 
