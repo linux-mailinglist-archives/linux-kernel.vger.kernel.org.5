@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1BA7A9945
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0ABF7A9E8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjIUSMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
+        id S231562AbjIUUDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbjIUSLl (ORCPT
+        with ESMTP id S231493AbjIUUCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:11:41 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B028E6B1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:44:53 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4135f3d1213so7249261cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695318292; x=1695923092; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WUBffOBfeC4iGfE0wxrC0Btm8jAtr1Pc1HT4AAEfzTE=;
-        b=fjMPUH7cvmKfGgVy7Px+fM+9wkwWoNjQU4DD3QgU2nV+XKghDywE/u/XkhyvcD+fOo
-         B2tjXKFuo0fhF0dZHG1ioaQ07rUeAbAhjum/79208hXMKzcIztPHNcpbhO+XT2jyo+o4
-         xvfC3X1BJFX9ZkZbWhxu6y6mDI3+DrQBAcYxZQTCQCtDqQvALyZ+pnosUpJHZiYYHBoB
-         gaDbQHHDQa6GEIgkt59NUeKRL8dAM/sL6YRP/gQs04WFPN5txNpq8VcIGDwMenmUFEPB
-         QSbd6gYS7sFnB9rY60aIyf9vRR4+8XXI2lihO0okoaVvce6enERtrY40NuOCnvsKCtgz
-         yxLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318292; x=1695923092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WUBffOBfeC4iGfE0wxrC0Btm8jAtr1Pc1HT4AAEfzTE=;
-        b=MY2hk3HcYrakH5gpF25V7YBsM+eKV865YhnKJ/FrvP/m0N4zK/3oOyurw9pzq7zckT
-         Ll2fsaOoVN8SA6v5P+tbd7M0oUecnRsZBmd7LyD9x4cESJAsHIdo4LwpKhbXsEzHgKx5
-         GHuMqUz/9sDPRuJAcrd7WunkqAUaeDLjWux7b2yqESZRd37++yWQygwHMbXyH+oknCUZ
-         cFq7v2FWBsf41Ps8YKYdx5MsVCVD9kATJvJZ/JvmiqBuiDkdgg81OFRSlHNgHfiKYzPu
-         N9bm5YlnzAFgNDWclbd4VInTLahZ6vaov7TFHrt7shLn1I2tcEewT27RTypL5sdE3bnM
-         WJxQ==
-X-Gm-Message-State: AOJu0YxUGrOGLmExcL3h4oLmPKTeR7oqeHAz0xHOtMHsriEq4bVemFqt
-        xnQ7CmGvPcqe0tSPH23ylJKRm2ByV4sWOWpVzgO5411ItuxdD3VLfkcqBg==
-X-Google-Smtp-Source: AGHT+IHvvzJ5FrOBVxuU7MJlhhXjUqpDEKLo7haizXBfU6s6ceBJbpHRnsjrEsB19ulthb+AD7V/9xxV7AFl676QuJM=
-X-Received: by 2002:a1f:6243:0:b0:486:de54:b11 with SMTP id
- w64-20020a1f6243000000b00486de540b11mr4378052vkb.16.1695303136171; Thu, 21
- Sep 2023 06:32:16 -0700 (PDT)
+        Thu, 21 Sep 2023 16:02:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E295493E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695316636; x=1726852636;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=ftW/+CKi2mW4lDelhCa9qIoImXCyTfRFXibv41RPhmk=;
+  b=jV4RE860v8fVBNx/Fn64HAbCo2NXv12LNYxvc+CwCWOAzecMVQDkzP/H
+   Bg6I0Kx4HS8TmC69mBdJnBgS0USncqt6EQZkTMD82AYaiRi+XFeJHFJqp
+   HRnrtgaRt11YI1GEWX+be9omdmT2b/2s9LE2rNcjYyWsGVVzFk/AoSVk+
+   ssXHjPPbfXExVTtpC6ekDjN1yKIMGiSZv9+5QMGpGNi8k2av38Bqo2E8E
+   IOWMgN7Xl5GRW+K0VADIymkH5nSkzEXGEBt2uUm/GUwPCi95twg1Wt6//
+   uCPzeGQ2pvrGLzGSqB9MTotKLJ7BHfFM7C3/ntqiQeikeKDdFfAye0BC7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="444641997"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="444641997"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 06:34:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="812646899"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="812646899"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 06:34:45 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH 00/10] mm: PCP high auto-tuning
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920094118.8b8f739125c6aede17c627e0@linux-foundation.org>
+Date:   Thu, 21 Sep 2023 21:32:35 +0800
+In-Reply-To: <20230920094118.8b8f739125c6aede17c627e0@linux-foundation.org>
+        (Andrew Morton's message of "Wed, 20 Sep 2023 09:41:18 -0700")
+Message-ID: <87leczwt1o.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20230920112826.634178162@linuxfoundation.org>
-In-Reply-To: <20230920112826.634178162@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Sep 2023 15:32:04 +0200
-Message-ID: <CA+G9fYsCDqeonuM3Z-RHmbAyJ4w-UMwXYTevdKwHXEk2JhN7GQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/83] 5.10.196-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,168 +72,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 14:21, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi, Andrew,
+
+Andrew Morton <akpm@linux-foundation.org> writes:
+
+> On Wed, 20 Sep 2023 14:18:46 +0800 Huang Ying <ying.huang@intel.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.10.196 release.
-> There are 83 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+>> The page allocation performance requirements of different workloads
+>> are often different.  So, we need to tune the PCP (Per-CPU Pageset)
+>> high on each CPU automatically to optimize the page allocation
+>> performance.
 >
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
+> Some of the performance changes here are downright scary.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.196-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+> I've never been very sure that percpu pages was very beneficial (and
+> hey, I invented the thing back in the Mesozoic era).  But these numbers
+> make me think it's very important and we should have been paying more
+> attention.
 >
-> thanks,
+>> The list of patches in series is as follows,
+>> 
+>>  1 mm, pcp: avoid to drain PCP when process exit
+>>  2 cacheinfo: calculate per-CPU data cache size
+>>  3 mm, pcp: reduce lock contention for draining high-order pages
+>>  4 mm: restrict the pcp batch scale factor to avoid too long latency
+>>  5 mm, page_alloc: scale the number of pages that are batch allocated
+>>  6 mm: add framework for PCP high auto-tuning
+>>  7 mm: tune PCP high automatically
+>>  8 mm, pcp: decrease PCP high if free pages < high watermark
+>>  9 mm, pcp: avoid to reduce PCP high unnecessarily
+>> 10 mm, pcp: reduce detecting time of consecutive high order page freeing
+>> 
+>> Patch 1/2/3 optimize the PCP draining for consecutive high-order pages
+>> freeing.
+>> 
+>> Patch 4/5 optimize batch freeing and allocating.
+>> 
+>> Patch 6/7/8/9 implement and optimize a PCP high auto-tuning method.
+>> 
+>> Patch 10 optimize the PCP draining for consecutive high order page
+>> freeing based on PCP high auto-tuning.
+>> 
+>> The test results for patches with performance impact are as follows,
+>> 
+>> kbuild
+>> ======
+>> 
+>> On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
+>> one socket with `make -j 112`.
+>> 
+>> 	build time	zone lock%	free_high	alloc_zone
+>> 	----------	----------	---------	----------
+>> base	     100.0	      43.6          100.0            100.0
+>> patch1	      96.6	      40.3	     49.2	      95.2
+>> patch3	      96.4	      40.5	     11.3	      95.1
+>> patch5	      96.1	      37.9	     13.3	      96.8
+>> patch7	      86.4	       9.8	      6.2	      22.0
+>> patch9	      85.9	       9.4	      4.8	      16.3
+>> patch10	      87.7	      12.6	     29.0	      32.3
 >
-> greg k-h
+> You're seriously saying that kbuild got 12% faster?
+>
+> I see that [07/10] (autotuning) alone sped up kbuild by 10%?
 
+Thank you very much for questioning!
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I double-checked the my test results and configuration and found that I
+used an uncommon configuration.  So the description of the test should
+have been,
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On a 2-socket Intel server with 224 logical CPU, we tested kbuild with
+`numactl -m 1 -- make -j 112`.
 
-## Build
-* kernel: 5.10.196-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: f147286de8e534b063d97de0c66a4a5895bfc6ad
-* git describe: v5.10.195-84-gf147286de8e5
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.195-84-gf147286de8e5
+This will make processes running on socket 0 to use the normal zone of
+socket 1.  The remote accessing to zone->lock cause heavy lock
+contention.
 
-## Test Regressions (compared to v5.10.195)
+I apologize for any confusing caused by the above test results.
 
-## Metric Regressions (compared to v5.10.195)
+If we test kbuild with `make -j 224` on the machine, the test results
+becomes,
 
-## Test Fixes (compared to v5.10.195)
+	build time	     lock%	free_high	alloc_zone
+	----------	----------	---------	----------
+base	     100.0	      16.8          100.0            100.0
+patch5	      99.2	      13.9	      9.5	      97.0
+patch7	      98.5	       5.4	      4.8	      19.2
 
-## Metric Fixes (compared to v5.10.195)
+Although lock contention cycles%, draining PCP for high order freeing,
+and allocating from zone reduces greatly, the build time almost doesn't
+change.
 
-## Test result summary
-total: 89352, pass: 70107, fail: 2413, skip: 16770, xfail: 62
+We also tested kbuild in the following way, created 8 cgroup, and run
+`make -j 28` in each cgroup.  That is, the total parallel is same, but
+LRU lock contention can be eliminated via cgroup.  And, the
+single-process link stage take less proportion to the parallel compiling
+stage.  This isn't common for personal usage.  But it can be used by
+something like 0Day kbuild service.  The test result is as follows,
 
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 117 total, 116 passed, 1 failed
-* arm64: 44 total, 43 passed, 1 failed
-* i386: 35 total, 35 passed, 0 failed
-* mips: 27 total, 26 passed, 1 failed
-* parisc: 4 total, 0 passed, 4 failed
-* powerpc: 26 total, 25 passed, 1 failed
-* riscv: 12 total, 11 passed, 1 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 38 total, 38 passed, 0 failed
+	build time	     lock%	free_high	alloc_zone
+	----------	----------	---------	----------
+base	     100.0	      14.2          100.0            100.0
+patch5	      98.5	       8.5	      8.1	      97.1
+patch7	      95.0	       0.7	      3.0	      19.0
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
+The lock contention cycles% reduces to nearly 0, because LRU lock
+contention is eliminated too.  The build time reduction becomes visible
+too.  We will continue to do a full test with this configuration.
+
+> Other thoughts:
+>
+> - What if any facilities are provided to permit users/developers to
+>   monitor the operation of the autotuning algorithm?
+
+/proc/zoneinfo can be used to observe PCP high and count for each CPU.
+
+> - I'm not seeing any Documentation/ updates.  Surely there are things
+>   we can tell users?
+
+I will think about that.
+
+> - This:
+>
+>   : It's possible that PCP high auto-tuning doesn't work well for some
+>   : workloads.  So, when PCP high is tuned by hand via the sysctl knob,
+>   : the auto-tuning will be disabled.  The PCP high set by hand will be
+>   : used instead.
+>
+>   Is it a bit hacky to disable autotuning when the user alters
+>   pcp-high?  Would it be cleaner to have a separate on/off knob for
+>   autotuning?
+
+This was suggested by Mel Gormon,
+
+https://lore.kernel.org/linux-mm/20230714140710.5xbesq6xguhcbyvi@techsingularity.net/
+
+"
+I'm not opposed to having an adaptive pcp->high in concept. I think it would
+be best to disable adaptive tuning if percpu_pagelist_high_fraction is set
+though. I expect that users of that tunable are rare and that if it *is*
+used that there is a very good reason for it.
+"
+
+Do you think that this is reasonable?
+
+>   And how is the user to determine that "PCP high auto-tuning doesn't work
+>   well" for their workload?
+
+One way is to check the perf profiling results.  If there is heavy zone
+lock contention, the PCP high auto-tuning doesn't work well enough to
+eliminate the zone lock contention.  Users may try to tune PCP high by
+hand.
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+Best Regards,
+Huang, Ying
