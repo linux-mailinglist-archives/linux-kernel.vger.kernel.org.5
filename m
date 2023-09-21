@@ -2,168 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F8F7A9DFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3767A9DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjIUTwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
+        id S230096AbjIUTwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjIUTvw (ORCPT
+        with ESMTP id S229831AbjIUTvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:51:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944AC6FEBB;
-        Thu, 21 Sep 2023 12:42:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88870C433C8;
-        Thu, 21 Sep 2023 19:42:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695325355;
-        bh=bObmmHWvGoY13yIgsUgxwWw+0bq9aSwE6jDnMp+s9X0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s6mMtEmf/1QACJ7KcK+VEfYpibLW3rn9Aplu/8Gg5tI2fuweHgKfqjrtH4Ip+pPl0
-         g1otlco2Ve1kuDAbSQODDOxRR/U+rBqKb/FFuyn6400zLqPIUCtSVQ9iIl2S97QfjV
-         c5RVYN8jCVaDzqtIW9EHsjoVxkc/T8JP9eo28lvTYlGXx4lRxPA8O+N7SOkIa2g4PY
-         4JGwPbe5NGOO5AV9OJPxeKIHtb66hyRZmgSvdMpbg5A36RbCf+LwMTrWr0FQC9bTpE
-         p7x26p+S4LOdIxueXlGyERZOdnjTemrkXD54tpInfuaOri77vCzByl9TdIy8dsb2zt
-         N4dC6aJCemnOg==
-Received: (nullmailer pid 1050817 invoked by uid 1000);
-        Thu, 21 Sep 2023 19:42:33 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: errata: Add Cortex-A520 speculative unprivileged load workaround
-Date:   Thu, 21 Sep 2023 14:41:52 -0500
-Message-Id: <20230921194156.1050055-2-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230921194156.1050055-1-robh@kernel.org>
-References: <20230921194156.1050055-1-robh@kernel.org>
+        Thu, 21 Sep 2023 15:51:47 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C061481D;
+        Thu, 21 Sep 2023 12:42:27 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 32ABE1BF203;
+        Thu, 21 Sep 2023 19:42:22 +0000 (UTC)
+From:   Ilya Maximets <i.maximets@ovn.org>
+To:     netdev@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Ilya Maximets <i.maximets@ovn.org>
+Subject: [PATCH net-next v2] openvswitch: reduce stack usage in do_execute_actions
+Date:   Thu, 21 Sep 2023 21:42:35 +0200
+Message-ID: <20230921194314.1976605-1-i.maximets@ovn.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: i.maximets@ovn.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the workaround for ARM Cortex-A520 erratum 2966298. On an
-affected Cortex-A520 core, a speculatively executed unprivileged load
-might leak data from a privileged load via a cache side channel. The
-issue only exists for loads within a translation regime with the same
-translation (e.g. same ASID and VMID). Therefore, the issue only affects
-the return to EL0.
+do_execute_actions() function can be called recursively multiple
+times while executing actions that require pipeline forking or
+recirculations.  It may also be re-entered multiple times if the packet
+leaves openvswitch module and re-enters it through a different port.
 
-The workaround is to execute a TLBI before returning to EL0 after all
-loads of privileged data. A non-shareable TLBI to any address is
-sufficient.
+Currently, there is a 256-byte array allocated on stack in this
+function that is supposed to hold NSH header.  Compilers tend to
+pre-allocate that space right at the beginning of the function:
 
-The workaround isn't necessary if page table isolation (KPTI) is
-enabled, but for simplicity it will be. Page table isolation should
-normally be disabled for Cortex-A520 as it supports the CSV3 feature
-and the E0PD feature (used when KASLR is enabled).
+     a88:       48 81 ec b0 01 00 00    sub    $0x1b0,%rsp
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+NSH is not a very common protocol, but the space is allocated on every
+recursive call or re-entry multiplying the wasted stack space.
+
+Move the stack allocation to push_nsh() function that is only used
+if NSH actions are actually present.  push_nsh() is also a simple
+function without a possibility for re-entry, so the stack is returned
+right away.
+
+With this change the preallocated space is reduced by 256 B per call:
+
+     b18:       48 81 ec b0 00 00 00    sub    $0xb0,%rsp
+
+Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
 ---
-v2:
-- Add more details on conditions necessary for the errata to occur.
----
- Documentation/arch/arm64/silicon-errata.rst |  2 ++
- arch/arm64/Kconfig                          | 13 +++++++++++++
- arch/arm64/kernel/cpu_errata.c              |  8 ++++++++
- arch/arm64/kernel/entry.S                   |  4 ++++
- arch/arm64/tools/cpucaps                    |  1 +
- 5 files changed, 28 insertions(+)
 
-diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-index e96f057ea2a0..f47f63bcf67c 100644
---- a/Documentation/arch/arm64/silicon-errata.rst
-+++ b/Documentation/arch/arm64/silicon-errata.rst
-@@ -71,6 +71,8 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A510     | #2658417        | ARM64_ERRATUM_2658417       |
- +----------------+-----------------+-----------------+-----------------------------+
-+| ARM            | Cortex-A520     | #2966298        | ARM64_ERRATUM_2966298       |
-++----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A53      | #826319         | ARM64_ERRATUM_826319        |
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A53      | #827319         | ARM64_ERRATUM_827319        |
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b10515c0200b..78f20e632712 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1037,6 +1037,19 @@ config ARM64_ERRATUM_2645198
+Version 2:
+  - Added 'noinline_for_stack' to avoid potential inlining. [Eric]
+
+ net/openvswitch/actions.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+index 5f8094acd056..6fcd7e2ca81f 100644
+--- a/net/openvswitch/actions.c
++++ b/net/openvswitch/actions.c
+@@ -311,11 +311,18 @@ static int push_eth(struct sk_buff *skb, struct sw_flow_key *key,
+ 	return 0;
+ }
  
- 	  If unsure, say Y.
+-static int push_nsh(struct sk_buff *skb, struct sw_flow_key *key,
+-		    const struct nshhdr *nh)
++static noinline_for_stack int push_nsh(struct sk_buff *skb,
++				       struct sw_flow_key *key,
++				       const struct nlattr *a)
+ {
++	u8 buffer[NSH_HDR_MAX_LEN];
++	struct nshhdr *nh = (struct nshhdr *)buffer;
+ 	int err;
  
-+config ARM64_ERRATUM_2966298
-+	bool "Cortex-A520: 2966298: workaround for speculatively executed unprivileged load"
-+	default y
-+	help
-+	  This option adds the workaround for ARM Cortex-A520 erratum 2966298.
++	err = nsh_hdr_from_nlattr(a, nh, NSH_HDR_MAX_LEN);
++	if (err)
++		return err;
 +
-+	  On an affected Cortex-A520 core, a speculatively executed unprivileged
-+	  load might leak data from a privileged level via a cache side channel.
-+
-+	  Work around this problem by executing a TLBI before returning to EL0.
-+
-+	  If unsure, say Y.
-+
- config CAVIUM_ERRATUM_22375
- 	bool "Cavium erratum 22375, 24313"
- 	default y
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index be66e94a21bd..5706e74c5578 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -730,6 +730,14 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
- 		.cpu_enable = cpu_clear_bf16_from_user_emulation,
- 	},
- #endif
-+#ifdef CONFIG_ARM64_ERRATUM_2966298
-+	{
-+		.desc = "ARM erratum 2966298",
-+		.capability = ARM64_WORKAROUND_2966298,
-+		/* Cortex-A520 r0p0 - r0p1 */
-+		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A520, 0, 0, 1),
-+	},
-+#endif
- #ifdef CONFIG_AMPERE_ERRATUM_AC03_CPU_38
- 	{
- 		.desc = "AmpereOne erratum AC03_CPU_38",
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index 6ad61de03d0a..a6030913cd58 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -428,6 +428,10 @@ alternative_else_nop_endif
- 	ldp	x28, x29, [sp, #16 * 14]
+ 	err = nsh_push(skb, nh);
+ 	if (err)
+ 		return err;
+@@ -1439,17 +1446,9 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
+ 			err = pop_eth(skb, key);
+ 			break;
  
- 	.if	\el == 0
-+alternative_if ARM64_WORKAROUND_2966298
-+	tlbi	vale1, xzr
-+	dsb	nsh
-+alternative_else_nop_endif
- alternative_if_not ARM64_UNMAP_KERNEL_AT_EL0
- 	ldr	lr, [sp, #S_LR]
- 	add	sp, sp, #PT_REGS_SIZE		// restore sp
-diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-index c3f06fdef609..dea3dc89234b 100644
---- a/arch/arm64/tools/cpucaps
-+++ b/arch/arm64/tools/cpucaps
-@@ -84,6 +84,7 @@ WORKAROUND_2077057
- WORKAROUND_2457168
- WORKAROUND_2645198
- WORKAROUND_2658417
-+WORKAROUND_2966298
- WORKAROUND_AMPERE_AC03_CPU_38
- WORKAROUND_TRBE_OVERWRITE_FILL_MODE
- WORKAROUND_TSB_FLUSH_FAILURE
+-		case OVS_ACTION_ATTR_PUSH_NSH: {
+-			u8 buffer[NSH_HDR_MAX_LEN];
+-			struct nshhdr *nh = (struct nshhdr *)buffer;
+-
+-			err = nsh_hdr_from_nlattr(nla_data(a), nh,
+-						  NSH_HDR_MAX_LEN);
+-			if (unlikely(err))
+-				break;
+-			err = push_nsh(skb, key, nh);
++		case OVS_ACTION_ATTR_PUSH_NSH:
++			err = push_nsh(skb, key, nla_data(a));
+ 			break;
+-		}
+ 
+ 		case OVS_ACTION_ATTR_POP_NSH:
+ 			err = pop_nsh(skb, key);
 -- 
-2.40.1
+2.41.0
 
