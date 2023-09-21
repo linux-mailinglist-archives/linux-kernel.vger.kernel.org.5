@@ -2,358 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE477A9F22
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D4B7A9FAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbjIUUSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        id S229718AbjIUU0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbjIUURv (ORCPT
+        with ESMTP id S231787AbjIUU0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:17:51 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9800557B06;
-        Thu, 21 Sep 2023 10:27:59 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so1218974f8f.0;
-        Thu, 21 Sep 2023 10:27:59 -0700 (PDT)
+        Thu, 21 Sep 2023 16:26:07 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7879900C5;
+        Thu, 21 Sep 2023 10:46:13 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-405361bb9cdso8134805e9.0;
+        Thu, 21 Sep 2023 10:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695317275; x=1695922075; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aLOUgBOKWq6NxdLoayq1kH+OHtuiezuR3fsDyRpcAkg=;
-        b=BQATa9o9w8G1HdgATZ39j0QSA7ONtwIK7+txsC1lXDeaCsXBSDjcUwa4Vnu/9WZp9r
-         K5zBz3IBjTz24RImvghtJtLWDeJwiiNi9mjhh9DbG3x2ErmPgWcZGLee00y8YFOrw5RW
-         j4q22WPwuBSi+LtX0QTuhsQnJl1w7IGbc63xmm8XeNg8YxHq/c1SjE+c3+CDNwpNJE0Q
-         lKanOhOm9dSLRezciqCiz8bkgbaX0XanpzcLY4gVlDXHm++MJ1J5o9FqnbhgMQ8Woj1S
-         aY37FXZXcGTUZFCt2AZSNytMqDcWI7pH3WUAFEuHraqsd6okKZYL/iWoXgK7HvnOgvUT
-         4PlA==
+        d=gmail.com; s=20230601; t=1695318372; x=1695923172; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s0MtmUBoFFRZ1KaXa+vO728c+OI89EgadZUVnpzkFf4=;
+        b=X+BepzHeCjzhs4L1DMOfAQowXf7P16VfBhNkIMv5oBZmVN6hluILGhsH24wymo/bI/
+         Tw2VcoP9DzWSqccJPAGDUAJSD0Bb4O6gfoKAm5+UOQiwS+3T31RQNnx6B+GpTSlOSKN4
+         sbDwpOvindodMv3vmv/b89A7MlTVD0ZHJX64iH0w93nF/9g9PExlyy/KKpz/orFej/TP
+         C4CLmb+Xe8PvgbK8rKLlY/y13Gdo0mL0+PB7A3G3VFtdnOHW6r9KXDWMYslchm+xzeo1
+         1C50/PA3Rz1u0OOzEID5Ux6rLSx9+hIetETka1agqIrBvqu30XodBCBE2qZb/5XWSoXf
+         b4qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317275; x=1695922075;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aLOUgBOKWq6NxdLoayq1kH+OHtuiezuR3fsDyRpcAkg=;
-        b=iEzfHCZYZj9OeaPi1P+Z3JvJc4b8YVZkQnANeOv263SgppB4GRFmzE9jQBONPW2Vzd
-         3G1qGL8L5JEB7TAfu3deOmiohYpqxIq6zmvdHmHuouiudcCaIejOdbSVneOp7ChUAu/l
-         vJ60nK5OF+f7eOcQBVK2yBg5DALGzhQT2Rj/d+qLrIsKlQ6sqNo4+fx5meElXDWNkR6n
-         tiAL3smYo7loFpEszJSP5FpbKFl4HJtNSYL2E+pgRcKkwcZbF2NV0EOlZuLa+Oayb0Ow
-         u17yW49CnAzS5t4bhYByLDgEm3D3GLJIHUWQYCztz6n0cYqTvNKIT0FIxlcc6MUSmErD
-         jSXA==
-X-Gm-Message-State: AOJu0YzNJDvGK4zVUIrdh8IALd2FwVesiX2JmNvoru5sDixmzas01zEC
-        t32PWV9krE0BvHv3EICOwBUPQwPkgKzPVdS8xIE=
-X-Google-Smtp-Source: AGHT+IEUpN0KuvGnoDiMlnRabWMiMnNcX5ax9rogd8GDac7s6BmcAIsrNfcqrWw+ZP+e60CCtjEJxQ==
-X-Received: by 2002:a5d:58d6:0:b0:320:4cf:5b50 with SMTP id o22-20020a5d58d6000000b0032004cf5b50mr5202131wrf.5.1695302221075;
-        Thu, 21 Sep 2023 06:17:01 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id w12-20020a5d608c000000b003179d5aee67sm1733019wrt.94.2023.09.21.06.16.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Sep 2023 06:16:59 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     Xu Kuohai <xukuohai@huaweicloud.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-In-Reply-To: <041d4f6b-1350-105e-6ab0-73980aba26ea@huaweicloud.com>
-References: <20230917000045.56377-1-puranjay12@gmail.com>
- <20230917000045.56377-2-puranjay12@gmail.com>
- <041d4f6b-1350-105e-6ab0-73980aba26ea@huaweicloud.com>
-Date:   Thu, 21 Sep 2023 13:16:56 +0000
-Message-ID: <mb61pil83k6nr.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1695318372; x=1695923172;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s0MtmUBoFFRZ1KaXa+vO728c+OI89EgadZUVnpzkFf4=;
+        b=UUkSJGJap7Jzxp1YZDBdgURrCZa367a3CY7JcWH7AOfQ4TRL4/t9bx0yq4GJ2Ymp8L
+         kbJukLJVmjvhtLpadlMga0Mw8EMmcdTK3tZzIww9cYAsmTI9cpdZj1k3HmkQBVqkjOX1
+         iQ7WR+dWmrR3PjCWjJlev9FDESpPDWJaRXh9WF8GSi5+01GRSqGU0OhDbVxkqLzZ2uXk
+         c4fMWoVn/3zgd50s27IHoiatGV//YbeC496G1uFbA2yqc1YHjI7gTXES+6pOqSO2PMqT
+         7vedwjYyGlLIct14hAjy10a1DRLVYtLpz7M+mGf+ncb3IZVKO6HGwvf3ttwa92CoPsMo
+         6ezA==
+X-Gm-Message-State: AOJu0YzmUYSJb22WQf8uTP9+aB3vgy2Ds7/EuIMID9J5iaI8mCkmHs+L
+        RTwH/spsftMTnIGKa94CkBPs+A0vrIhkU5ZNrNtZMWBZFV4=
+X-Google-Smtp-Source: AGHT+IHYE8uHuhQAgOlNj2srv9Tl2K8NyVVKPejvFT4qvqp4BRCyx0VcWD+BRKbx2vEX0j1DXh6BQNj1kGISfZexFHU=
+X-Received: by 2002:a2e:b713:0:b0:2b9:aa4d:3728 with SMTP id
+ j19-20020a2eb713000000b002b9aa4d3728mr4606064ljo.29.1695302280319; Thu, 21
+ Sep 2023 06:18:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918165958.2659-1-tmaimon77@gmail.com> <20230918165958.2659-2-tmaimon77@gmail.com>
+ <b7a337f2-a810-d14c-e7cd-15e33a9ecb5d@linaro.org> <CAP6Zq1gSJYsNUuD-bexFW_1VpAUuF_WZkicNzZms6hVdo9LnMQ@mail.gmail.com>
+ <e0d42d13-b307-9915-97c8-948261b39ce1@linaro.org> <CAP6Zq1g0=-h0PFg2a8bqao+XjdNHoxGMdYSRRPAnfY_6WdemAw@mail.gmail.com>
+ <20230919162837.GA4051010-robh@kernel.org> <CAP6Zq1hJPPAtKw8auC22wViHGQHTi0SufPJoBiqYtGWomnNUYQ@mail.gmail.com>
+In-Reply-To: <CAP6Zq1hJPPAtKw8auC22wViHGQHTi0SufPJoBiqYtGWomnNUYQ@mail.gmail.com>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Thu, 21 Sep 2023 16:17:48 +0300
+Message-ID: <CAP6Zq1iUj8UfLZutyOVxbKgF42rMoF9ig3dViy7ApTHcqVoP7g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-binding: usb: ci-hdrc-usb2: document Nuvoton
+ NPCM supprt
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        peter.chen@kernel.org, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
+        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
+        joel@jms.id.au, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, j.neuschaefer@gmx.net,
+        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xu Kuohai <xukuohai@huaweicloud.com> writes:
+Hi Rob,
 
-> On 9/17/2023 8:00 AM, Puranjay Mohan wrote:
->> Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
->> by bpf_throw() to unwind till the program marked as exception boundary and
->> run the callback with the stack of the main program.
->> 
->> The prologue generation code has been modified to make the callback
->> program use the stack of the program marked as exception boundary where
->> callee-saved registers are already pushed.
->> 
->> As the bpf_throw function never returns, if it clobbers any callee-saved
->> registers, they would remain clobbered. So, the prologue of the
->> exception-boundary program is modified to push R23 and R24 as well,
->> which the callback will then recover in its epilogue.
->> 
->> The Procedure Call Standard for the Arm 64-bit Architecture[1] states
->> that registers r19 to r28 should be saved by the callee. BPF programs on
->> ARM64 already save all callee-saved registers except r23 and r24. This
->> patch adds an instruction in prologue of the  program to save these
->> two registers and another instruction in the epilogue to recover them.
->> 
->> These extra instructions are only added if bpf_throw() used. Otherwise
->> the emitted prologue/epilogue remains unchanged.
->> 
->> [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
->> 
->> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->> ---
->>   arch/arm64/net/bpf_jit_comp.c                | 98 ++++++++++++++++----
->>   tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
->>   2 files changed, 79 insertions(+), 20 deletions(-)
->> 
->> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
->> index 7d4af64e3982..fcc55e558863 100644
->> --- a/arch/arm64/net/bpf_jit_comp.c
->> +++ b/arch/arm64/net/bpf_jit_comp.c
->> @@ -21,6 +21,7 @@
->>   #include <asm/insn.h>
->>   #include <asm/patching.h>
->>   #include <asm/set_memory.h>
->> +#include <asm/stacktrace.h>
->>   
->>   #include "bpf_jit.h"
->>   
->> @@ -285,7 +286,7 @@ static bool is_lsi_offset(int offset, int scale)
->>   /* Tail call offset to jump into */
->>   #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
->>   
->> -static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->> +static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_exception_cb)
->>   {
->>   	const struct bpf_prog *prog = ctx->prog;
->>   	const bool is_main_prog = !bpf_is_subprog(prog);
->> @@ -333,19 +334,28 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->>   	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
->>   	emit(A64_NOP, ctx);
->>   
->> -	/* Sign lr */
->> -	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
->> -		emit(A64_PACIASP, ctx);
->> -
->> -	/* Save FP and LR registers to stay align with ARM64 AAPCS */
->> -	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
->> -	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
->> -
->> -	/* Save callee-saved registers */
->> -	emit(A64_PUSH(r6, r7, A64_SP), ctx);
->> -	emit(A64_PUSH(r8, r9, A64_SP), ctx);
->> -	emit(A64_PUSH(fp, tcc, A64_SP), ctx);
->> -	emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
->> +	if (!is_exception_cb) {
->> +		/* Sign lr */
->> +		if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
->> +			emit(A64_PACIASP, ctx);
->> +		/* Save FP and LR registers to stay align with ARM64 AAPCS */
->> +		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
->> +		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
->> +
->> +		/* Save callee-saved registers */
->> +		emit(A64_PUSH(r6, r7, A64_SP), ctx);
->> +		emit(A64_PUSH(r8, r9, A64_SP), ctx);
->> +		emit(A64_PUSH(fp, tcc, A64_SP), ctx);
->> +		emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
->> +	} else {
->> +		/* Exception callback receives FP of Main Program as third parameter */
->> +		emit(A64_MOV(1, A64_FP, A64_R(2)), ctx);
->> +		/*
->> +		 * Main Program already pushed the frame record and the callee-saved registers. The
->> +		 * exception callback will not push anything and re-use the main program's stack.
->> +		 */
->> +		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx); /* 10 registers are on the stack */
+Again thanks for your suggestion I took a look at the
+drivers/usb/roles and I am not sure it answers NPCM ChipIdae case.
+For example, in the NPCM845 we have ten UDC ChipIdea modules (UDC0-9).
+Only UDC8 and UDC9 are muxed with USB host0 and USB host1.
+NPCM UDC and NPCM USB host are different HW modules therefore different drivers.
+
+The ChipIdea driver uses its own internal USB role function to switch
+between ChipIdea UDC and ChipIdea USB host and we can't replace it
+with a unique NPCM USB role function also we need to set the mux only
+at the probe stage.
+
+This is why I have added nuvoton,sysgcr property to the NPCM ChipIdea driver.
+
+With the above do you think I should do it differently?
+
+On Wed, 20 Sept 2023 at 12:11, Tomer Maimon <tmaimon77@gmail.com> wrote:
 >
-> To ensure th calculated A6_SP is always correct, add an assertion
-> to ensure the distance between A64_FP and A64_SP is 80 after all
-> callee-registers are pushed to the stack?
+> Thanks Rob,
 >
-
-I agree that this should be done. Can you give an example how this
-should be implemented? 
-
->> +	}
->>   
->>   	/* Set up BPF prog stack base register */
->>   	emit(A64_MOV(1, fp, A64_SP), ctx);
->> @@ -365,6 +375,13 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->>   		emit_bti(A64_BTI_J, ctx);
->>   	}
->>   
->> +	/*
->> +	 * Program acting as exception boundary should save all ARM64 Callee-saved registers as the
->> +	 * exception callback needs to recover all ARM64 Callee-saved registers in its epilogue.
->> +	 */
->> +	if (prog->aux->exception_boundary)
->> +		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
+> I will check drivers/usb/roles
 >
-> Blindly storing x23/x24 to BPF_FP -8/16 is incorrect, as the stack
-> space below BPF_FP might be written with other values by the bpf
-> prog.
->
+> On Tue, 19 Sept 2023 at 19:28, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Sep 19, 2023 at 04:31:56PM +0300, Tomer Maimon wrote:
+> > > On Tue, 19 Sept 2023 at 15:39, Krzysztof Kozlowski
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > > >
+> > > > On 19/09/2023 07:14, Tomer Maimon wrote:
+> > > > >>>            - nvidia,tegra20-ehci
+> > > > >>>            - nvidia,tegra20-udc
+> > > > >>>            - nvidia,tegra30-ehci
+> > > > >>> @@ -325,6 +326,20 @@ properties:
+> > > > >>>      type: boolean
+> > > > >>>      deprecated: true
+> > > > >>>
+> > > > >>> +  nuvoton,sysgcr:
+> > > > >>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > > >>> +    items:
+> > > > >>> +      - items:
+> > > > >>> +          - description: phandle to syscon that configures usb phy mux.
+> > > > >>> +          - description: offset of usb phy mux selection.
+> > > > >>> +          - description: mask usb phy mux selection.
+> > > > >>> +          - description: value usb phy mux selection.
+> > > > >>> +    description:
+> > > > >>> +      A phandle to syscon with three arguments that configure usb phy mux.
+> > > > >>> +      The argument one is the offset of usb phy mux selection, the argument two
+> > > > >>> +      is the mask usb phy mux selection, the argument three is the mask usb phy
+> > > > >>> +      mux selection.
+> > > > >>
+> > > > >> Sorry, you miss phy driver. Don't use syscon instead of proper hardware
+> > > > >> devices.
+> > > > > Sorry the role of nuvoton,sysgcr property is to handle a mux between
+> > > > > the different devices and not the handle the phy itself, handle the
+> > > > > mux done in the GCR.
+> > > > > Should we move the nuvoton,sysgcr description to another place in the
+> > > > > ci-hdrc-usb2.yaml
+> > > > > or
+> > > > > Should we use a different driver to handle the mux and call it from
+> > > > > the ci-hdrc-npcm driver, If yes which driver should we use?
+> > > >
+> > > > What is an "usb phy mux"?
+> > > We have USB phy that could be connected to USB host (different driver)
+> > > or it can be connected to the UDC driver(ChipIdea)
+> >
+> > Isn't that just role switching? There is a driver framework for that in
+> > drivers/usb/roles/. Though it doesn't seem widely used yet.
+> >
+> > Rob
 
-Thanks for pointing this out. I will set fp = A64_SP - 16 so to allocate
-space for saving x23/x24. And I will take care while poping back in the epilogue.
+Best regards,
 
->> +
->>   	emit(A64_SUB_I(1, fpb, fp, ctx->fpb_offset), ctx);
->>   
->>   	/* Stack must be multiples of 16B */
->> @@ -653,7 +670,7 @@ static void build_plt(struct jit_ctx *ctx)
->>   		plt->target = (u64)&dummy_tramp;
->>   }
->>   
->> -static void build_epilogue(struct jit_ctx *ctx)
->> +static void build_epilogue(struct jit_ctx *ctx, bool is_exception_cb)
->>   {
->>   	const u8 r0 = bpf2a64[BPF_REG_0];
->>   	const u8 r6 = bpf2a64[BPF_REG_6];
->> @@ -666,6 +683,14 @@ static void build_epilogue(struct jit_ctx *ctx)
->>   	/* We're done with BPF stack */
->>   	emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
->>   
->> +	/*
->> +	 * Program acting as exception boundary pushes R23 and R24 in addition to BPF callee-saved
->> +	 * registers. Exception callback uses the boundary program's stack frame, so recover these
->
-> Keep the line width within 80 characters?
-
-bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
-removed the warning so I started using 100 character lines.
-
->
->> +	 * extra registers in the above two cases.
->> +	 */
->> +	if (ctx->prog->aux->exception_boundary || is_exception_cb)
->> +		emit(A64_POP(A64_R(23), A64_R(24), A64_SP), ctx);
->> +
->>   	/* Restore x27 and x28 */
->>   	emit(A64_POP(fpb, A64_R(28), A64_SP), ctx);
->>   	/* Restore fs (x25) and x26 */
->> @@ -1575,7 +1600,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>   	 * BPF line info needs ctx->offset[i] to be the offset of
->>   	 * instruction[i] in jited image, so build prologue first.
->>   	 */
->> -	if (build_prologue(&ctx, was_classic)) {
->> +	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
->>   		prog = orig_prog;
->>   		goto out_off;
->>   	}
->> @@ -1586,7 +1611,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>   	}
->>   
->>   	ctx.epilogue_offset = ctx.idx;
->> -	build_epilogue(&ctx);
->> +	build_epilogue(&ctx, prog->aux->exception_cb);
->>   	build_plt(&ctx);
->>   
->>   	extable_align = __alignof__(struct exception_table_entry);
->> @@ -1614,7 +1639,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>   	ctx.idx = 0;
->>   	ctx.exentry_idx = 0;
->>   
->> -	build_prologue(&ctx, was_classic);
->> +	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
->>   
->>   	if (build_body(&ctx, extra_pass)) {
->>   		bpf_jit_binary_free(header);
->> @@ -1622,7 +1647,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>   		goto out_off;
->>   	}
->>   
->> -	build_epilogue(&ctx);
->> +	build_epilogue(&ctx, prog->aux->exception_cb);
->>   	build_plt(&ctx);
->>   
->>   	/* 3. Extra pass to validate JITed code. */
->> @@ -2286,3 +2311,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
->>   
->>   	return ret;
->>   }
->> +
->> +bool bpf_jit_supports_exceptions(void)
->> +{
->> +	/* We unwind through both kernel frames (starting from within bpf_throw call) and
->> +	 * BPF frames. Therefore we require FP unwinder to be enabled to walk kernel frames and
->> +	 * reach BPF frames in the stack trace.
->> +	 * ARM64 kernel is aways compiled with CONFIG_FRAME_POINTER=y
->> +	 */
->> +	return true;
->> +}
->> +
->> +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
->> +{
->> +	struct stack_info stacks[] = {
->> +		stackinfo_get_task(current),
->> +	};
->> +
->
-> Seems there is no need to define "stacks" as an array
-
-Sure, will change in next version.
-
->
->> +	struct unwind_state state = {
->> +		.stacks = stacks,
->> +		.nr_stacks = ARRAY_SIZE(stacks),
->> +	};
->> +	unwind_init_common(&state, current);
->> +	state.fp = (unsigned long)__builtin_frame_address(1);
->> +	state.pc = (unsigned long)__builtin_return_address(0);
->> +
->> +	if (unwind_next_frame_record(&state))
->> +		return;
->> +	while (1) {
->> +		/* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
->> +		if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
->> +			break;
->> +		if (unwind_next_frame_record(&state))
->
-> When PTR_AUTH is implemented, lr is encoded before being pushed to
-> the stack, but unwind_next_frame_record() does not decode state.pc
-> when fetching it from the stack.
-
-Thanks for pointing this out. I will fix this in the next version.
-
->> +			break;
->> +	}
->
-> And it's better to simplify the if-while(1)-if to:
->
-> while (!unwind_next_frame_record(&state)) {
->      ...
-> }
-
-Sure,
-Will use this method in the next version.
-
->
->> +}
->> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
->> index f5065576cae9..7f768d335698 100644
->> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
->> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
->> @@ -1,6 +1,5 @@
->>   bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
->>   bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
->> -exceptions					 # JIT does not support calling kfunc bpf_throw: -524
->>   fexit_sleep                                      # The test never returns. The remaining tests cannot start.
->>   kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
->>   kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
-
-
-Thanks,
-Puranjay
+Tomer
