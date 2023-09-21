@@ -2,146 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A047A9FD0
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE3B7A9FCD
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbjIUU2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        id S232082AbjIUU14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjIUU1c (ORCPT
+        with ESMTP id S231609AbjIUU13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:27:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC6E19B9;
-        Thu, 21 Sep 2023 10:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318594; x=1726854594;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=blnPFyBCmuj49NnWuIH57vg9ki5lW+1BgUnV5MZfDW4=;
-  b=CmeEmsrL8xns8rbJ8J/gNtiBlayut9T5t5sXsQ13mQOAfVRStrfXJyF5
-   QaCAbPWSfM7lDUkC1qa4A/ZziJ2LDdvPaIbycW9G95RC+PrvODisflzGR
-   w8Zm+4HmJGs74QCmlfDhzz6hNuyYbXoNYfyPXJ/mqADdB4iVgLHcvv2Vx
-   AP4wSStD/9e+j3Kg+wcwlvDqhe9X9JwAkEDg8Y+C6z8gnM/MBaRnGtb0v
-   v71Rec8qkwnpRrCpeaCUl0bLV9nh5DqRmZcNyqPvTPbQ4aafsrGqZ5Ehg
-   Ho7sHCGx4Elc7aZ/i9BP3qlK7X1kJJd+W34f6h0EI2ViUVECXw2zKbUR9
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="446976775"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="446976775"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:37:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="920709593"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="920709593"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by orsmga005.jf.intel.com with ESMTP; 21 Sep 2023 05:37:31 -0700
-Message-ID: <2bb2122e-e91c-868c-5385-a1b84549a154@intel.com>
-Date:   Thu, 21 Sep 2023 15:38:53 +0300
+        Thu, 21 Sep 2023 16:27:29 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A931F81FD8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:53:52 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3214d4ecd39so1205078f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:53:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695318812; x=1695923612; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fv18euYIHxUyDyU2umf2N7sAa5N8tvwc+B+kdZWr598=;
+        b=QTWwg4uGH9PdWoLNa+ZhKm4sY5RrDVCDntKuODCQyx8jogdwFuDbNqxo2MdlS+6KuM
+         56C0JqKPaKzynsLd9MuG1b8C98fYuQ6CA8VGs6f43CH/diSX3nDehs9b1yRjI/AXruMg
+         shx1aaUQd0jWaiWhd4vjfk//Z69jJlpSdjGwgf7bkqWDilCRj8xl5EktHRZ6ApyvJej0
+         kyhr7LyRZeWNV1jpIPr+LEH67dG8mOQb1GY8RePOuhxvsWYUWED0iMowHO5G5WMJkY7j
+         IlAqXyZ3E4+wKF8D+/v1tPaEINl7TqFOZg8/sezKXj9fXlts6UPAt7zdKVsyfQrasNA5
+         75gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695318812; x=1695923612;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fv18euYIHxUyDyU2umf2N7sAa5N8tvwc+B+kdZWr598=;
+        b=KWl994TFHELLk8X3m8Flxf5Rm3ONLrr6LT1iCUvewLv0I1rJxlpBUGM3hWjCjE4DFs
+         HOVK14+PUMZhdSFiciyl5iZ9L3vfidWk+wAr1PLfp15433++LWKIfihrw75tkT9hbdRm
+         D/dCyC0vVMPoi5XZBSZ36X7I9nyewon7cUpdKDTx8NAtgodBPzCFUAddURQYGM7nMQmv
+         4PgX6Klk18A0MZNI+FWFiWgRSxxGOcx4a3uOTu2GsBIuUTN+/luhxDn+S+T7U+D4/JgV
+         qIIbVdtRDKkzYCF9PKKlSDE4+PfWDVOJIdtrAx6HdBqwIcinf6URWhcg4B5/zFQICJKc
+         gQEw==
+X-Gm-Message-State: AOJu0YyoiqN9dMu8Gh5Y3MMLhN9CDVaEVUKm539J0CmETwYZ8BimVXaK
+        GRVPTdNrCD1jsgXdgkDtT8Fua29gVdL1z/NW8iYKxoMt
+X-Google-Smtp-Source: AGHT+IF7yqREQn2rdmQ5jUsI6c21sqgqAn9leaUuvmmsTe+epR2XbZ0CTk+dmINmAhslhc7LZaZeeg==
+X-Received: by 2002:a17:906:9b94:b0:9a1:debe:6b9b with SMTP id dd20-20020a1709069b9400b009a1debe6b9bmr6177440ejc.35.1695300113099;
+        Thu, 21 Sep 2023 05:41:53 -0700 (PDT)
+Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id i22-20020a17090671d600b0099bcdfff7cbsm991440ejk.160.2023.09.21.05.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 05:41:52 -0700 (PDT)
+Message-ID: <0ae67e4d-0d51-5290-1255-1fe1b699ca14@blackwall.org>
+Date:   Thu, 21 Sep 2023 15:41:50 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2] usb: xhci-plat: fix usb disconnect issue after s4
+ Thunderbird/102.5.0
+Subject: Re: [PATCH net-next v4 4/6] net: bridge: Add netlink knobs for number
+ / max learned FDB entries
 Content-Language: en-US
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn
-References: <20230809095826.18183-1-zhuyinbo@loongson.cn>
- <4862ba2c-fa6b-de12-2ad9-4099d2eddbb1@loongson.cn>
-From:   Mathias Nyman <mathias.nyman@intel.com>
-In-Reply-To: <4862ba2c-fa6b-de12-2ad9-4099d2eddbb1@loongson.cn>
+To:     Johannes Nixdorf <jnixdorf-oss@avm.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
+ <20230919-fdb_limit-v4-4-39f0293807b8@avm.de>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20230919-fdb_limit-v4-4-39f0293807b8@avm.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.9.2023 4.58, Yinbo Zhu wrote:
+On 9/19/23 11:12, Johannes Nixdorf wrote:
+> The previous patch added accounting and a limit for the number of
+> dynamically learned FDB entries per bridge. However it did not provide
+> means to actually configure those bounds or read back the count. This
+> patch does that.
 > 
+> Two new netlink attributes are added for the accounting and limit of
+> dynamically learned FDB entries:
+>   - IFLA_BR_FDB_N_LEARNED (RO) for the number of entries accounted for
+>     a single bridge.
+>   - IFLA_BR_FDB_MAX_LEARNED (RW) for the configured limit of entries for
+>     the bridge.
 > 
-> Friendly ping ?
+> The new attributes are used like this:
 > 
+>   # ip link add name br up type bridge fdb_max_learned 256
+>   # ip link add name v1 up master br type veth peer v2
+>   # ip link set up dev v2
+>   # mausezahn -a rand -c 1024 v2
+>   0.01 seconds (90877 packets per second
+>   # bridge fdb | grep -v permanent | wc -l
+>   256
+>   # ip -d link show dev br
+>   13: br: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 [...]
+>       [...] fdb_n_learned 256 fdb_max_learned 256
 > 
-> 在 2023/8/9 下午5:58, Yinbo Zhu 写道:
->> The xhci retaining bogus hardware states cause usb disconnect devices
->> connected before hibernation(s4) and refer to the commit 'f3d478858be
->> ("usb: ohci-platform: fix usb disconnect issue after s4")' which set
->> flag "hibernated" as true when resume-from-hibernation and that the
->> drivers will reset the hardware to get rid of any existing state and
->> make sure resume from hibernation re-enumerates everything for xhci.
->>
->> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->> ---
->> Change in v2:
->>         1. Add CONFIG_PM_SLEEP in xhci_plat_pm_ops that for fix
->>            compile issue when CONFIG_PM not enable.
->>
->>   drivers/usb/host/xhci-plat.c | 24 ++++++++++++++++++++----
->>   1 file changed, 20 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
->> index 28218c8f1837..112468fdcca2 100644
->> --- a/drivers/usb/host/xhci-plat.c
->> +++ b/drivers/usb/host/xhci-plat.c
->> @@ -451,7 +451,7 @@ static int __maybe_unused xhci_plat_suspend(struct device *dev)
->>       return 0;
->>   }
->> -static int __maybe_unused xhci_plat_resume(struct device *dev)
->> +static int __maybe_unused xhci_plat_resume_common(struct device *dev, struct pm_message pmsg)
->>   {
->>       struct usb_hcd    *hcd = dev_get_drvdata(dev);
->>       struct xhci_hcd    *xhci = hcd_to_xhci(hcd);
->> @@ -466,7 +466,7 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
->>       if (ret)
->>           return ret;
->> -    ret = xhci_resume(xhci, PMSG_RESUME);
->> +    ret = xhci_resume(xhci, pmsg);
->>       if (ret)
->>           return ret;
->> @@ -477,6 +477,16 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
->>       return 0;
->>   }
->> +static int __maybe_unused xhci_plat_resume(struct device *dev)
->> +{
->> +    return xhci_plat_resume_common(dev, PMSG_RESUME);
->> +}
->> +
->> +static int __maybe_unused xhci_plat_restore(struct device *dev)
->> +{
->> +    return xhci_plat_resume_common(dev, PMSG_RESTORE);
->> +}
->> +
->>   static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
->>   {
->>       struct usb_hcd  *hcd = dev_get_drvdata(dev);
->> @@ -499,8 +509,14 @@ static int __maybe_unused xhci_plat_runtime_resume(struct device *dev)
->>   }
->>   const struct dev_pm_ops xhci_plat_pm_ops = {
->> -    SET_SYSTEM_SLEEP_PM_OPS(xhci_plat_suspend, xhci_plat_resume)
->> -
->> +#ifdef CONFIG_PM_SLEEP
->> +    .suspend = xhci_plat_suspend,
->> +    .resume = xhci_plat_resume,
->> +    .freeze = xhci_plat_suspend,
->> +    .thaw = xhci_plat_resume,
->> +    .poweroff = xhci_plat_suspend,
->> +    .restore = xhci_plat_restore,
->> +#endif
+> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+> ---
+>   include/uapi/linux/if_link.h |  2 ++
+>   net/bridge/br_netlink.c      | 15 ++++++++++++++-
+>   2 files changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+> index ce3117df9cec..0486f314c176 100644
+> --- a/include/uapi/linux/if_link.h
+> +++ b/include/uapi/linux/if_link.h
+> @@ -510,6 +510,8 @@ enum {
+>   	IFLA_BR_VLAN_STATS_PER_PORT,
+>   	IFLA_BR_MULTI_BOOLOPT,
+>   	IFLA_BR_MCAST_QUERIER_STATE,
+> +	IFLA_BR_FDB_N_LEARNED,
+> +	IFLA_BR_FDB_MAX_LEARNED,
+>   	__IFLA_BR_MAX,
+>   };
+>   
+> diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+> index 505683ef9a26..f5d49a05e61b 100644
+> --- a/net/bridge/br_netlink.c
+> +++ b/net/bridge/br_netlink.c
+> @@ -1267,6 +1267,8 @@ static const struct nla_policy br_policy[IFLA_BR_MAX + 1] = {
+>   	[IFLA_BR_VLAN_STATS_PER_PORT] = { .type = NLA_U8 },
+>   	[IFLA_BR_MULTI_BOOLOPT] =
+>   		NLA_POLICY_EXACT_LEN(sizeof(struct br_boolopt_multi)),
+> +	[IFLA_BR_FDB_N_LEARNED] = { .type = NLA_U32 },
+> +	[IFLA_BR_FDB_MAX_LEARNED] = { .type = NLA_U32 },
+>   };
+>   
+>   static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
+> @@ -1541,6 +1543,12 @@ static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
+>   			return err;
+>   	}
+>   
+> +	if (data[IFLA_BR_FDB_MAX_LEARNED]) {
+> +		u32 val = nla_get_u32(data[IFLA_BR_FDB_MAX_LEARNED]);
+> +
+> +		WRITE_ONCE(br->fdb_max_learned, val);
+> +	}
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1595,6 +1603,8 @@ static size_t br_get_size(const struct net_device *brdev)
+>   	       nla_total_size_64bit(sizeof(u64)) + /* IFLA_BR_TOPOLOGY_CHANGE_TIMER */
+>   	       nla_total_size_64bit(sizeof(u64)) + /* IFLA_BR_GC_TIMER */
+>   	       nla_total_size(ETH_ALEN) +       /* IFLA_BR_GROUP_ADDR */
+> +	       nla_total_size(sizeof(u32)) +    /* IFLA_BR_FDB_N_LEARNED */
+> +	       nla_total_size(sizeof(u32)) +    /* IFLA_BR_FDB_MAX_LEARNED */
+>   #ifdef CONFIG_BRIDGE_IGMP_SNOOPING
+>   	       nla_total_size(sizeof(u8)) +     /* IFLA_BR_MCAST_ROUTER */
+>   	       nla_total_size(sizeof(u8)) +     /* IFLA_BR_MCAST_SNOOPING */
+> @@ -1670,7 +1680,10 @@ static int br_fill_info(struct sk_buff *skb, const struct net_device *brdev)
+>   	    nla_put_u8(skb, IFLA_BR_TOPOLOGY_CHANGE_DETECTED,
+>   		       br->topology_change_detected) ||
+>   	    nla_put(skb, IFLA_BR_GROUP_ADDR, ETH_ALEN, br->group_addr) ||
+> -	    nla_put(skb, IFLA_BR_MULTI_BOOLOPT, sizeof(bm), &bm))
+> +	    nla_put(skb, IFLA_BR_MULTI_BOOLOPT, sizeof(bm), &bm) ||
+> +	    nla_put_u32(skb, IFLA_BR_FDB_N_LEARNED,
+> +			atomic_read(&br->fdb_n_learned)) ||
+> +	    nla_put_u32(skb, IFLA_BR_FDB_MAX_LEARNED, br->fdb_max_learned))
+>   		return -EMSGSIZE;
+>   
+>   #ifdef CONFIG_BRIDGE_VLAN_FILTERING
+> 
 
-How about using pm_ptr() and pm_sleep_ptr() macros instead of the #ifdef CONFIG_PM_SLEEP?
-should be able to get rif of the __maybe_unused flags as well.
+Actually you're using atomic for counting, but using a u32 for the 
+limit, you should cap it because the count can overflow. Or you should
+use atomic64 for the counting.
 
-Thanks
--Mathias
+
 
