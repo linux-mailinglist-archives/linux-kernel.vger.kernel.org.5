@@ -2,139 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 250CD7AA3C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467A77AA18B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbjIUV53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S232289AbjIUVDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbjIUV5S (ORCPT
+        with ESMTP id S232033AbjIUVC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:57:18 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BEB88AC2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:39:15 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31ff985e292so1145465f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695317953; x=1695922753; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Oet/D+JdIKmqqEXMeGgkoE2/3Tw5UCJOvyH76c8x0dQ=;
-        b=m+OYi7OnRv4VEh5i1SpShTZLc6gSD6htFiKcpkZeDHu0gitc+wMigJamFr/Tar1y4m
-         kegYeqkDVcELQaAXyWuUeT2A6BzCNo8ZC1OukmYyPqcd2aUAOuRIh4TQce8aNwDqkQ09
-         DAbIiBF3Mw7dWIYrLo1R44NUZ92WTztn2XIR+8Dwf9YsqxRpSHZR1n0zftZs79PgZTRK
-         AETsU12g8BaLXNi2L3DHnOPUCxiLwhfGFMn1nMURKfKMVIpcuha7oqggsUOuhD34q9c8
-         P+Bn/h4RWjOpqxtdp8fJNyyts17Wx9i0IJ6sScyASUqMRrpuvnC+werwWtBzBSfv/Uxs
-         od/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317953; x=1695922753;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oet/D+JdIKmqqEXMeGgkoE2/3Tw5UCJOvyH76c8x0dQ=;
-        b=B6diqtK3K+3bmhTkdpmWud5ASI3sKnSWl26uvDGvr55SKh3YPKAHeO1Vy35USZBbv0
-         cce8vNr1jdO++CVVOAdkKtZ6vfZzJw9q8KEn+vgirtsTmUoivWsZLJ5wQbv/uNY2L9/W
-         /5FT1/JcHhoFWf3CU23cRAvYunnLb6UKNpYyA24Wj582zuZ2DoUp/bm1XUcqeLy8INfa
-         DTfYVlI0omA9UsmtHB6vB9P2eOBygZHKXwZLOZoO4Pnfp6SIrylTse42zXBj8mmiXLYV
-         nf+1VrKvF33abzQIwTRgub9fZL0xPIgaq1oERkx+J/tWSy+LdFXH5AE6CHFBWROJfd2F
-         kXQg==
-X-Gm-Message-State: AOJu0YyGBxPh1Osv6hwUdNviK8q5BRZA7t9B1tXFUaE+PDBafukhj37v
-        FtGNI2X8xNnzWb4QLgM+EwMlZQ3YqBnII6rY6aGfhP2/
-X-Google-Smtp-Source: AGHT+IGSqpABR6NJIutspbmDVZEhOKpxYfh5Gelph+0yVDatq2aZ3E+NWHnq2oOH1AMJw/MFATUt/Q==
-X-Received: by 2002:ac2:5b1c:0:b0:503:314f:affe with SMTP id v28-20020ac25b1c000000b00503314faffemr4577024lfn.17.1695291285601;
-        Thu, 21 Sep 2023 03:14:45 -0700 (PDT)
-Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
-        by smtp.gmail.com with ESMTPSA id ay15-20020a056402202f00b00532c32e2b2dsm622021edb.18.2023.09.21.03.14.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 03:14:45 -0700 (PDT)
-Message-ID: <ab1130bb-38ce-1804-7981-6a4532d6ff7b@blackwall.org>
-Date:   Thu, 21 Sep 2023 13:14:43 +0300
+        Thu, 21 Sep 2023 17:02:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDF64EC8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 984F5C3278F;
+        Thu, 21 Sep 2023 10:15:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695291338;
+        bh=jFAqRCOVnDBQwszMKppgpfrfYXgx2S1l2UVTVChzJ6o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FB4UmtJMfn+nsX5DZ3qo2JYzuPEw/NKKLuoRNU1w4rR862MDRN47bHTygae5k0amd
+         oZFJeZk6psc3v49kSRgSuKWnb6qSVKyWIinaBQSDn8SnNX157QjRg+M7ghCNAs3yIU
+         ddyCNZdvngVyPb/heuhDlL/snul1qeJW5/53Yr5XQMnxSg0nftB0P18lUPoG8WAeur
+         RATGdFpyQDj/qc5sLQfrnbG7H8S0URXgZ05YATQsuMLKwjM6cQVpwfw2AHy0km/r03
+         Eso5n0WarjMTlhsqZh/NdkDgeUkgZbhiyBsuJ+tCvNZQCrUQgDenOwzJfsS63ybdQ3
+         Z28EfOHcPvUig==
+Date:   Thu, 21 Sep 2023 11:15:32 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Chen Wang <unicornxw@gmail.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, devicetree@vger.kernel.org,
+        emil.renner.berthing@canonical.com, guoren@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>,
+        Inochi Amaoto <inochiama@outlook.com>
+Subject: Re: [PATCH v2 09/11] riscv: dts: add initial SOPHGO SG2042 SoC
+ device tree
+Message-ID: <20230921-d2db829b289c937081dc8a72@fedora>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+ <ffe6a61a8879232aea7b86ff8aee5d681c6bd287.1695189879.git.wangchen20@iscas.ac.cn>
+ <20230920-financial-declared-7b4b4baae517@wendy>
+ <CAHAQgRBmUtyz-U+1Fu9qdvyhMuSzg+o4MMbTV9duUXsoSoPqUQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH net-next v4 2/6] net: bridge: Set strict_start_type for
- br_policy
-Content-Language: en-US
-To:     Johannes Nixdorf <jnixdorf-oss@avm.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
- <20230919-fdb_limit-v4-2-39f0293807b8@avm.de>
- <1c12b8f2-b28b-f326-b24f-f1ea602832d7@blackwall.org>
- <ZQvvgiz4rE8u6vba@u-jnixdorf.ads.avm.de>
-From:   Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <ZQvvgiz4rE8u6vba@u-jnixdorf.ads.avm.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fmkZD3PJDOz3F1Rh"
+Content-Disposition: inline
+In-Reply-To: <CAHAQgRBmUtyz-U+1Fu9qdvyhMuSzg+o4MMbTV9duUXsoSoPqUQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/23 10:23, Johannes Nixdorf wrote:
-> On Wed, Sep 20, 2023 at 01:46:02PM +0300, Nikolay Aleksandrov wrote:
->> On 9/19/23 11:12, Johannes Nixdorf wrote:
->>> Set any new attributes added to br_policy to be parsed strictly, to
->>> prevent userspace from passing garbage.
->>>
->>> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
->>> ---
->>>    net/bridge/br_netlink.c | 2 ++
->>>    1 file changed, 2 insertions(+)
->>>
->>> diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
->>> index 10f0d33d8ccf..505683ef9a26 100644
->>> --- a/net/bridge/br_netlink.c
->>> +++ b/net/bridge/br_netlink.c
->>> @@ -1229,6 +1229,8 @@ static size_t br_port_get_slave_size(const struct net_device *brdev,
->>>    }
->>>    static const struct nla_policy br_policy[IFLA_BR_MAX + 1] = {
->>> +	[IFLA_BR_UNSPEC]	= { .strict_start_type =
->>> +				    IFLA_BR_MCAST_QUERIER_STATE + 1 },
->>>    	[IFLA_BR_FORWARD_DELAY]	= { .type = NLA_U32 },
->>>    	[IFLA_BR_HELLO_TIME]	= { .type = NLA_U32 },
->>>    	[IFLA_BR_MAX_AGE]	= { .type = NLA_U32 },
->>>
->>
->> instead of IFLA_BR_MCAST_QUERIER_STATE + 1, why not move around the patch
->> and just use the new attribute name?
->> These are uapi, they won't change.
-> 
-> I wanted to avoid having a state between the two commits where the new
-> attributes are already added, but not yet strictly verified. Otherwise
-> they would present a slightly different UAPI at that one commit boundary
-> than after this commit.
-> 
 
-That's not really a problem, the attribute is the same.
+--fmkZD3PJDOz3F1Rh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This is also not the only place in the kernel where strict_start_type
-> is specified that way. See e.g. commit c00041cf1cb8 ("net: bridge: Set
-> strict_start_type at two policies"), even though that seems mostly be
-> done to turn on strict_start_type preemtively, not in the same series
-> that adds the new attribute.
+On Thu, Sep 21, 2023 at 05:56:28PM +0800, Chen Wang wrote:
+> Regards,
+>=20
+> unicornx
+>=20
+> Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=
+=8820=E6=97=A5=E5=91=A8=E4=B8=89 16:58=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > Yo,
+> >
+> > On Wed, Sep 20, 2023 at 02:40:32PM +0800, Chen Wang wrote:
+> > > Milk-V Pioneer motherboard is powered by SOPHON's SG2042.
+> > >
+> > > SG2042 is server grade chip with high performance, low power
+> > > consumption and high data throughput.
+> > > Key features:
+> > > - 64 RISC-V cpu cores which implements IMAFDC
+> >
+> > That's not quite true though, is it?
+>=20
+> The cpu cores of SG2042 is c902 from T-HEAD, it supports vector, but
+> it's v0.7, not official v1.0. If we declare it as supporting
+> v-extension, the latest kernel(since 6.5) will issue rvv1.0
+> instructions during booting and make c902 crash. So we have to remove
+> "v" from the capability of ISA to pass the booting of machine. You can
+> check the "riscv,isa =3D "rv64imafdc";" in DTS.
 
-Please, just use the new attribute to be more explicit where the strict 
-parsing starts.
+I know all of this, not my first rodeo looking at stuff using T-Head
+cores ;)
+What I meant was, imafdc is only a subset of what is supported,
+there are other things like the T-Head bitmanip extensions too, right?
+I'm not asking for it to be listed in the devicetree (yet), just
+actually curious what else is on the c920 as I do not speak a language
+that allows me to read the documentation for the cpu that I have been
+able to find online.
+
+> > > - 4 cores per cluster, 16 clusters on chip
+> > > - ......
+> >
+> > What's a "....."? ;)
+> I just cited a description from TRM of SG2042 and it looks too long. I
+> will give a better description here and avoid using "......" in the
+> next revision.
+>=20
+> >
+> > >
+> > > More info is available at [1].
+> > >
+> > > [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> >
+> > Link: please.
+> >
+> > > Currently only support booting into console with only uart,
+> > > other features will be added soon later.
+> > >
+> > > Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> > > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.c=
+om>
+> > > Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> >
+> > There are 4 sign-offs here. Surely some of these should be
+> > co-developed-bys?
+> >
+> > > +             cpu0: cpu@0 {
+> > > +                     compatible =3D "thead,c920", "riscv";
+> > > +                     device_type =3D "cpu";
+> > > +                     riscv,isa =3D "rv64imafdc";
+> >
+> > Please also add riscv,isa-base & riscv,isa-extensions.
+> >
+> > > +                     reg =3D <0>;
+> > > +                     i-cache-block-size =3D <64>;
+> > > +                     i-cache-size =3D <65536>;
+> > > +                     i-cache-sets =3D <512>;
+> > > +                     d-cache-block-size =3D <64>;
+> > > +                     d-cache-size =3D <65536>;
+> > > +                     d-cache-sets =3D <512>;
+> > > +                     next-level-cache =3D <&l2_cache0>;
+> > > +                     mmu-type =3D "riscv,sv39";
+> > > +
+> > > +                     cpu0_intc: interrupt-controller {
+> > > +                             compatible =3D "riscv,cpu-intc";
+> > > +                             interrupt-controller;
+> > > +                             #interrupt-cells =3D <1>;
+> > > +                     };
+> > > +             };
+> >
+> > > diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot=
+/dts/sophgo/sg2042.dtsi
+> > > new file mode 100644
+> > > index 000000000000..747fd9764c95
+> > > --- /dev/null
+> > > +++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
+> > > @@ -0,0 +1,439 @@
+> > > +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> >
+> > You should add () around the GPL-2.0 OR MIT.
+> >
+> > > +/*
+> > > + * Copyright (C) 2022 Sophgo Technology Inc. All rights reserved.
+> > > + */
+> > > +
+> > > +/dts-v1/;
+> > > +#include <dt-bindings/interrupt-controller/irq.h>
+> > > +
+> > > +#include "sg2042-cpus.dtsi"
+> > > +
+> > > +#define SOC_PERIPHERAL_IRQ(nr) (nr)
+> >
+> > Why? What does this do? Where was it copied from?
+> >
+> It should be unnecessary=EF=BC=8C I will remove it in the next revision.
+>=20
+> > > +
+> > > +/ {
+> > > +     compatible =3D "sophgo,sg2042";
+> > > +     #address-cells =3D <2>;
+> > > +     #size-cells =3D <2>;
+> > > +     dma-noncoherent;
+> > > +
+> > > +     aliases {
+> > > +             serial0 =3D &uart0;
+> > > +     };
+> > > +
+> > > +     /* the mem node will be updated by ZSBL. */
+> >
+> > huh? So these are random numbers below? Either put something useful here
+> > or delete it please.
+>=20
+> The memory for SG2042 is not fixed, the bootloader will detect memory
+> installed on board during booting and fill the actual address and size
+> in the memory node. The comment " /* the mem node will be updated by
+> ZSBL. */" is telling this.
+
+Yes, I read the comment!
+
+> We write memory nodes like this to make them act just as placeholders
+> and the value is by default written as zero.
+
+Why knowingly add something that is wrong, rather than omitting them
+entirely?
 
 Thanks,
-  Nik
+Conor.
 
+>=20
+>=20
+> >
+> > > +     memory@0 {
+> > > +             device_type =3D "memory";
+> > > +             reg =3D <0x00000000 0x00000000 0x00000000 0x00000000>;
+> > > +     };
+> > > +
+> > > +     memory@1 {
+> > > +             device_type =3D "memory";
+> > > +             reg =3D <0x00000000 0x00000001 0x00000000 0x00000000>;
+> > > +     };
+> > > +
+> > > +     memory@2 {
+> > > +             device_type =3D "memory";
+> > > +             reg =3D <0x00000000 0x00000002 0x00000000 0x00000000>;
+> > > +     };
+> > > +
+> > > +     memory@3 {
+> > > +             device_type =3D "memory";
+> > > +             reg =3D <0x00000000 0x00000003 0x00000000 0x00000000>;
+> > > +     };
+> >
+> > > +     soc: soc {
+> > > +             compatible =3D "simple-bus";
+> > > +             #address-cells =3D <2>;
+> > > +             #size-cells =3D <2>;
+> > > +             ranges;
+> > > +
+> > > +             clint_mswi: interrupt-controller@7094000000 {
+> > > +                     compatible =3D "sophgo,sg2042-clint-mswi", "the=
+ad,c900-clint-mswi";
+> > > +                     reg =3D <0x00000070 0x94000000 0x00000000 0x000=
+04000>;
+> >
+> > & nak to this without further explanation!
+> >
+> > Thanks,
+> > Conor.
+> >
 
+--fmkZD3PJDOz3F1Rh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQwXwQAKCRB4tDGHoIJi
+0jl6AQCO0iHjWqM9oAoOC3vM0RKXtmi36doTgL/y4uLTh6RcxgEApx827mJwlqM+
+T2Mfp1BE1i0rJvGerwlfpLGvc4y8Pws=
+=djLA
+-----END PGP SIGNATURE-----
+
+--fmkZD3PJDOz3F1Rh--
