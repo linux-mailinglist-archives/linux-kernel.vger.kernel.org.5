@@ -2,115 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 104507AA210
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9CC7AA2EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbjIUVMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
+        id S232688AbjIUVnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbjIUVLD (ORCPT
+        with ESMTP id S231786AbjIUVmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:11:03 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35E3DA0C3C;
-        Thu, 21 Sep 2023 10:57:37 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B63E61595;
-        Thu, 21 Sep 2023 03:12:48 -0700 (PDT)
-Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 366B93F59C;
-        Thu, 21 Sep 2023 03:12:11 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 11:12:09 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, conor.dooley@microchip.com,
-        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
-Subject: Re: [PATCH 0/4] consolidate and cleanup CPU capacity
-Message-ID: <ZQwW+XoOFqvyuQ63@arm.com>
-References: <20230901130312.247719-1-vincent.guittot@linaro.org>
+        Thu, 21 Sep 2023 17:42:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723AD72A0;
+        Thu, 21 Sep 2023 10:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695317320; x=1726853320;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=DUAFX+JNi4nRkne3bhKFanmYulDhmk2cpGuyh+eKgqo=;
+  b=FEmp4GMi5sFXuNeAppelkM4neNxsBpk/C6B4yuDpgTd5oUe3CNmu1EbS
+   Pz+EcVdT1/DRTcw6s0vEXitgkkJ8lF9LHY11wH7AULNQ2KKkRP8PcEuAF
+   oUBo99iTsSotQyjgzPcxxlHlz48gz8RKuKxw1G8No9VpmekvfAz6XRyF9
+   DdMqTcvbMa7MpUdw58MiQAdpqog6xMvVV+sgodfOWwAFSge2K7DPtBeUs
+   CKPi0nZPuAl4SzPzNVB8t+00xzoZiHeodnCW0qlLxa3s/DriJoGcBDd42
+   86fUxClvwgS/ANCDD8rDMKqvpEMRC8oDrxjQCJYd7Vqokp7rJzfZRKw+u
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="411422757"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="411422757"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 03:14:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="723688411"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="723688411"
+Received: from asilke-mobl2.ger.corp.intel.com (HELO [10.213.199.249]) ([10.213.199.249])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 03:14:29 -0700
+Message-ID: <6b9c8566-926d-40ff-7907-228d317fab3d@linux.intel.com>
+Date:   Thu, 21 Sep 2023 11:14:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230901130312.247719-1-vincent.guittot@linaro.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 6/6] drm/drm-file: Show finer-grained BO sizes in
+ drm_show_memory_stats
+Content-Language: en-US
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, healych@amazon.com,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        kernel@collabora.com, freedreno@lists.freedesktop.org
+References: <20230919233556.1458793-1-adrian.larumbe@collabora.com>
+ <20230919233556.1458793-7-adrian.larumbe@collabora.com>
+ <ccfa3697-b015-ff35-fb92-0efcbd1d7d7c@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <ccfa3697-b015-ff35-fb92-0efcbd1d7d7c@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 01 Sep 2023 at 15:03:08 (+0200), Vincent Guittot wrote:
-> This is the 1st part of consolidating how the max compute capacity is
-> used in the scheduler and how we calculate the frequency for a level of
-> utilization.
-> 
-> Fix some unconsistancy when computing frequency for an utilization. There
-> can be a mismatch between energy model and schedutil.
 
-There are a few more pieces of functionality that would be worth
-consolidating in this set as well, if you'd like to consider them:
+On 20/09/2023 16:32, Tvrtko Ursulin wrote:
+> 
+> On 20/09/2023 00:34, Adrián Larumbe wrote:
+>> The current implementation will try to pick the highest available size
+>> display unit as soon as the BO size exceeds that of the previous
+>> multiplier. That can lead to loss of precision in contexts of low memory
+>> usage.
+>>
+>> The new selection criteria try to preserve precision, whilst also
+>> increasing the display unit selection threshold to render more accurate
+>> values.
+>>
+>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+>> Reviewed-by: Steven Price <steven.price@arm.com>
+>> ---
+>>   drivers/gpu/drm/drm_file.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+>> index 762965e3d503..34cfa128ffe5 100644
+>> --- a/drivers/gpu/drm/drm_file.c
+>> +++ b/drivers/gpu/drm/drm_file.c
+>> @@ -872,6 +872,8 @@ void drm_send_event(struct drm_device *dev, struct 
+>> drm_pending_event *e)
+>>   }
+>>   EXPORT_SYMBOL(drm_send_event);
+>> +#define UPPER_UNIT_THRESHOLD 100
+>> +
+>>   static void print_size(struct drm_printer *p, const char *stat,
+>>                  const char *region, u64 sz)
+>>   {
+>> @@ -879,7 +881,8 @@ static void print_size(struct drm_printer *p, 
+>> const char *stat,
+>>       unsigned u;
+>>       for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
+>> -        if (sz < SZ_1K)
+>> +        if ((sz & (SZ_1K - 1)) &&
+> 
+> IS_ALIGNED worth it at all?
+> 
+>> +            sz < UPPER_UNIT_THRESHOLD * SZ_1K)
+>>               break;
+> 
+> Excuse me for a late comment (I was away). I did not get what what is 
+> special about a ~10% threshold? Sounds to me just going with the lower 
+> unit, when size is not aligned to the higher one, would be better than 
+> sometimes precision-sometimes-not.
 
-- arch_set_freq_scale() still uses policy->cpuinfo.max_freq. It might be
-  good to use the boot time stored max_freq here as well. Given that
-  arch_scale_cpu_capacity() would be based on that stored value, if
-  arch_scale_freq_capacity() ends up using a different value, it could
-  have interesting effects on the utilization signals in case of
-  boosting.
+FWIW both current and the threshold option make testing the feature very 
+annoying.
 
-- As Pierre mentioned in a previous comment, there is already a
-  cpufreq_get_hw_max_freq() weak function that returns
-  policy->cpuinfo.max_freq and it's only used at boot time by 
-  the setup code for AMU use for frequency invariance. I'm tempted to
-  suggest to use this to initialize what is now "freq_factor" as my
-  intention when I created that function was to provide platform
-  providers with the possibility to implement their own and decide on
-  the frequency they choose as their maximum. This could have been an
-  arch_ function as well, but as you mentioned before, mobile and server
-  platforms might want to choose different maximum values even if they
-  are using the same architecture.
+So I'd really propose we simply use smaller unit when unaligned.
 
-Thanks,
-Ionela.
+Regards,
 
-> 
-> Next step will be to make a difference between the original
-> max compute capacity of a CPU and what is currently available when
-> there is a capping applying forever (i.e. seconds or more).
-> 
-> Vincent Guittot (4):
->   sched: consolidate and cleanup access to CPU's max compute capacity
->   topology: add a new arch_scale_freq_reference
->   cpufreq/schedutil: use a fixed reference frequency
->   energy_model: use a fixed reference frequency
-> 
->  arch/arm/include/asm/topology.h   |  1 +
->  arch/arm64/include/asm/topology.h |  1 +
->  arch/riscv/include/asm/topology.h |  1 +
->  drivers/base/arch_topology.c      |  9 +++------
->  include/linux/arch_topology.h     |  7 +++++++
->  include/linux/energy_model.h      | 20 +++++++++++++++++---
->  kernel/sched/core.c               |  2 +-
->  kernel/sched/cpudeadline.c        |  2 +-
->  kernel/sched/cpufreq_schedutil.c  | 29 +++++++++++++++++++++++++++--
->  kernel/sched/deadline.c           |  4 ++--
->  kernel/sched/fair.c               | 18 ++++++++----------
->  kernel/sched/rt.c                 |  2 +-
->  kernel/sched/sched.h              |  6 ------
->  kernel/sched/topology.c           |  7 +++++--
->  14 files changed, 75 insertions(+), 34 deletions(-)
-> 
-> -- 
-> 2.34.1
-> 
-> 
+Tvrtko
