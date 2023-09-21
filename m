@@ -2,122 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100047A97AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E237A97F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjIUR0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S230232AbjIUR3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjIUR0k (ORCPT
+        with ESMTP id S230222AbjIUR2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:26:40 -0400
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF36573C8;
-        Thu, 21 Sep 2023 10:18:30 -0700 (PDT)
-Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
-        by SHSQR01.spreadtrum.com with ESMTP id 38L8vCm3047513;
-        Thu, 21 Sep 2023 16:57:12 +0800 (+08)
-        (envelope-from Huangzheng.Lai@unisoc.com)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 38L8tUJ5040573;
-        Thu, 21 Sep 2023 16:55:30 +0800 (+08)
-        (envelope-from Huangzheng.Lai@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Rrq0B1KZJz2SZykd;
-        Thu, 21 Sep 2023 16:52:10 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
- (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 21 Sep
- 2023 16:55:29 +0800
-From:   Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-CC:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: [PATCH V2 2/7] i2c: sprd: Add I2C driver to use 'reset framework' function
-Date:   Thu, 21 Sep 2023 16:54:52 +0800
-Message-ID: <20230921085457.32446-3-Huangzheng.Lai@unisoc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230921085457.32446-1-Huangzheng.Lai@unisoc.com>
-References: <20230921085457.32446-1-Huangzheng.Lai@unisoc.com>
+        Thu, 21 Sep 2023 13:28:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E81D3B1B5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:12:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5EC11338A1;
+        Thu, 21 Sep 2023 08:55:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695286505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=2opG4Jd738z1u4yL12DErFg1NgQFBk92ekhEYQherNE=;
+        b=YgqlQmvXig7QKQMZ1Gjl2UzqcVHlCVZLl14VlQkwvj9kguHfzf7S9k+pG94ylPS1AKwQrG
+        iY217u8QjwIg9dh6XMkpoHrfVXyynWyL0WF7Td7a519TIRn7vTg9LhkvroUdqTrqDujC18
+        7mcWbFJJjbT+Z3NZsiEkd4YZUSePo74=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695286505;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=2opG4Jd738z1u4yL12DErFg1NgQFBk92ekhEYQherNE=;
+        b=9cMbFEJ8FqpE7vvPC49OX3udiZqd/vo3gicg4MnrjbTdXxTQxPxzehjq+KGeeSEAPQAddO
+        Ul92pF+nOdMIpODQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C7A3134B0;
+        Thu, 21 Sep 2023 08:55:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8oKoDekEDGUIJwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 21 Sep 2023 08:55:05 +0000
+Message-ID: <bee087f0-878c-480a-b72b-6b3dd69b84a6@suse.de>
+Date:   Thu, 21 Sep 2023 10:55:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL: SHSQR01.spreadtrum.com 38L8tUJ5040573
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
+ drm_*_helper_funcs callbacks
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20230914195138.1518065-1-javierm@redhat.com>
+ <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
+ <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
+ <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
+ <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
+ <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
+ <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------URSyQjLCn3tx06YR40iVAL8Q"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the 'reset framework' function for I2C drivers, which
-resets the I2C controller when a timeout exception occurs.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------URSyQjLCn3tx06YR40iVAL8Q
+Content-Type: multipart/mixed; boundary="------------80bgPEWtLxdILzGnP5ci1a0a";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Maxime Ripard <mripard@kernel.org>
+Cc: dri-devel@lists.freedesktop.org,
+ Javier Martinez Canillas <javierm@redhat.com>, linux-kernel@vger.kernel.org
+Message-ID: <bee087f0-878c-480a-b72b-6b3dd69b84a6@suse.de>
+Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
+ drm_*_helper_funcs callbacks
+References: <20230914195138.1518065-1-javierm@redhat.com>
+ <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
+ <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
+ <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
+ <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
+ <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
+ <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
 
-Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
----
- drivers/i2c/busses/i2c-sprd.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+--------------80bgPEWtLxdILzGnP5ci1a0a
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-index b44916c6741d..aa602958d4fd 100644
---- a/drivers/i2c/busses/i2c-sprd.c
-+++ b/drivers/i2c/busses/i2c-sprd.c
-@@ -17,6 +17,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
- 
- #define I2C_CTL			0x00
- #define I2C_ADDR_CFG		0x04
-@@ -85,6 +86,7 @@ struct sprd_i2c {
- 	u32 src_clk;
- 	u32 bus_freq;
- 	struct completion complete;
-+	struct reset_control *rst;
- 	u8 *buf;
- 	u32 count;
- 	int irq;
-@@ -278,9 +280,17 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2c_adap,
- 
- 	time_left = wait_for_completion_timeout(&i2c_dev->complete,
- 				msecs_to_jiffies(I2C_XFER_TIMEOUT));
--	if (!time_left)
-+	if (!time_left) {
-+		dev_err(i2c_dev->dev, "transfer timeout, I2C_STATUS = 0x%x\n",
-+			readl(i2c_dev->base + I2C_STATUS));
-+		if (i2c_dev->rst) {
-+			int ret = reset_control_reset(i2c_dev->rst);
-+
-+			if (ret < 0)
-+				dev_warn(i2c_dev->dev, "i2c soft reset failed, ret = %d\n", ret);
-+		}
- 		return -ETIMEDOUT;
--
-+	}
- 	return i2c_dev->err;
- }
- 
-@@ -544,6 +554,11 @@ static int sprd_i2c_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	platform_set_drvdata(pdev, i2c_dev);
-+	i2c_dev->rst = devm_reset_control_get(i2c_dev->dev, "i2c_rst");
-+	if (IS_ERR(i2c_dev->rst)) {
-+		dev_dbg(i2c_dev->dev, "reset control not configured!\n");
-+		i2c_dev->rst = NULL;
-+	}
- 
- 	ret = clk_prepare_enable(i2c_dev->clk);
- 	if (ret)
--- 
-2.17.1
+SGkNCg0KQW0gMjEuMDkuMjMgdW0gMTA6NDYgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
+DQpbLi4uXQ0KPiANCj4+PiBBbnl0aGluZyBlbHNlIGNvbmZ1c2VzIHRoZSBjYXN1YWwgcmVh
+ZGVyLiBQZXJoYXBzIHRoZSByZWFsIHF1ZXN0aW9uIGlzIHdoZXRoZXINCj4+PiB0aGUgc3Ry
+dWN0dXJlcyBzaG91bGQgaGF2ZSAiaGVscGVyIiBpbiB0aGVpciBuYW1lIGluIHRoZSBmaXJz
+dCBwbGFjZT8NCj4+DQo+PiBUaG9zZSBzdHJ1Y3R1cmVzIGFyZSBtZWFudCBmb3IgZnVuY3Rp
+b25zIHVzZWQgYnkgdGhlIGhlbHBlcnMsIHRoZXkgYXJlIG5vdA0KPj4gaGVscGVyIGZ1bmN0
+aW9ucy4NCj4gDQo+IFRoYXQgbWlnaHQgYmUgaG93IHRoZXkgc3RhcnRlZCwgYnV0IHRvIG1l
+IGl0IGxvb2tzIGxpa2UgYWxsIHRoZXNlIGhlbHBlcnMNCj4gYXJlIG5vIGxvbmdlciBoZWxw
+ZXJzLCBidXQgcGFydCBvZiB0aGUgY29yZS4uLg0KDQpUaGV5IGFyZSBpbiBsaWJyYXJ5IG1v
+ZHVsZXMuIFlvdSBjYW4gd3JpdGUgYSBEUk0gZHJpdmVyIHdpdGhvdXQgDQpfaGVscGVyX2Z1
+bmNzLCBzZWUgaTkxNS4gSXQncyBqdXN0IGEgcmVhbGx5IGhhcmQgc2VsbCB0byB1cHN0cmVh
+bSBub3dhZGF5cy4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gR3J7b2V0amUs
+ZWV0aW5nfXMsDQo+IA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQNCj4gDQoN
+Ci0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNV
+U0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2
+LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVy
+cywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVl
+cm5iZXJnKQ0K
 
+--------------80bgPEWtLxdILzGnP5ci1a0a--
+
+--------------URSyQjLCn3tx06YR40iVAL8Q
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUMBOgFAwAAAAAACgkQlh/E3EQov+Aw
++xAAkfKv53b/mDnrqxidripJBwicaf/LxCVrmq1B1TpVtAPjtaicPJLSmm3s7P+dO3twpbGUkn6b
+sRDnm29+xwcjCxDkT+qoKNVOG5nvQXE+6oPqTnczpeB5XwznVdjeLO3zYZfL6O1jA1UDTftDjkls
+g4E5XXWRch/40WTJIUhu75nOQtDN6ry8r0pfN2PEXkmcUO2iODHHf13Bow7f2pl9AS4OUE5oYtgT
+5wmYO/2nYbMxsLCOQUZzt0cIoQBYNK6s6ymuYL7T5XciGBZlh59/XUYJD0kw0k0qYZ/61FAd9Qwm
+qmR8OBSRfTXausEoyFw5EKzBBB5OuE0/z5M65JlY8vAVDQZZAY15px1oPmhK1claScbd8gNMKANI
+UGly0emLWHk7eY6g9bfFmV6/k+UINObw4tT6GT9py3nI0WRdThyTUcSEoJi9Ar803H30J0f99cN9
+RaP2BoJZa4hHoHpHpWhsZhY86DNCuZInEbT7h8JMmte64927rcYK09alITFaV597YV408SC0asm2
+fxzFBpYuyL6J56iSW7sGj+UuJYmaB4IfBYTqB8BoaXv+vKdLcXMoRDNbapcRqxsiL3Jf+XRyjVPH
+MG1ykW9Wq0SDNcXeB14G6R793wwj+M3UqzqauQcJO/LQMd6dhsDGJPzX6T0Gw33KP9VJrwutjJWG
+EKk=
+=khKg
+-----END PGP SIGNATURE-----
+
+--------------URSyQjLCn3tx06YR40iVAL8Q--
