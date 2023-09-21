@@ -2,74 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A7D7A9FCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F387AA224
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbjIUU17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
+        id S230294AbjIUVNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjIUU1R (ORCPT
+        with ESMTP id S231389AbjIUVNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:27:17 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A719F8F4A6;
-        Thu, 21 Sep 2023 10:45:40 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-530e180ffcbso1402800a12.1;
-        Thu, 21 Sep 2023 10:45:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695318339; x=1695923139; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=baNlgOJnWePw9cKCL/heNAHkNhAX0XDqCt8diliLsFk=;
-        b=a8Whe/KtQrWvjBHgfV23XE62aQGa47lilGpgEW7zCAoElZ7f47ULqmTJmYgsnonHun
-         dMF34Cjjzor1nDW9ec4p5FwYsBe59sp+an/F6Sz9jqRcjeZbrVawlgjzUAsTzjp3ixdm
-         6mI+gPdV5h8HQgbZ/fO+SBz/Wy0XfezdNyegaKCyfqiVEzR7bBc8OKC1xyzRsSBJWLdL
-         g7n29HwRDskmrERHKRzZ3HOHQ52BgqiK4DpHhKHYnQSFKEHnuVe/7RBqD0I0k896H7nC
-         sHmvapMBFyaGhOO0HKgHNHtxFcCPKZpRk9rGVw+vgy9P07nCkj9LoweMEGhncwkWPOTf
-         7cRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318339; x=1695923139;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=baNlgOJnWePw9cKCL/heNAHkNhAX0XDqCt8diliLsFk=;
-        b=BfXoqIEtAZXNPRFVcuE2CNYhODPSWVs0sZbHr5xGscJRhVKFr4olyaQ9vRtKUtvbIQ
-         uYkc3zL0nCZVwVBe4jMxBaHKjFbsyK7HRLB7av1Zdl+WZ7rtCX6qECv3i+M4WRnUw6Ri
-         SzoUcRJ9Ii25il2JXdUusUkXAH2JDAl046vKSgLreMeB/SuA5guhSqX7vJtksYbG/BNx
-         vSKqu2qtgkWJ4+s+wOQd+zvHXaBunkfzqbdSWloCVMx0vApuOu/C+Y67DK9M5CsBvm7Z
-         lZPAmAd4TSAnee2Pt9f23wWVFn7Gxy5Wl9uJIAudRNOxlzOUpWTKEwM+iP+gwBbuFcIU
-         P6Iw==
-X-Gm-Message-State: AOJu0YwhN/dqBlsC4oPVVK57BAm3pzEC4kswIDT48HCbAdqjSdZIxMs2
-        RPQ4G8a9O15G/zLXsd1CIDoIR28tvrox0A==
-X-Google-Smtp-Source: AGHT+IH0koU/bsuvVlM3BjX3ipEkbzBkUBpc5x70WcHc8JTAs4gsHs92ZrhfG3MpQgIZzAVa/GzWJA==
-X-Received: by 2002:adf:f084:0:b0:321:52fb:5703 with SMTP id n4-20020adff084000000b0032152fb5703mr4879118wro.13.1695292223361;
-        Thu, 21 Sep 2023 03:30:23 -0700 (PDT)
-Received: from ubuntu ([2a02:810d:1640:10d8:fd07:b1e6:bd19:371d])
-        by smtp.gmail.com with ESMTPSA id n11-20020a5d4c4b000000b0031fbbe347ebsm1379868wrt.22.2023.09.21.03.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 03:30:22 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 12:30:19 +0200
-From:   Joerg Schambacher <joerg.hifiberry@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     a-krasser@ti.com, joerg@hifiberry.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
-Message-ID: <ZQwbO6BuBOTuCI4C@ubuntu>
-References: <20230907160851.14241-1-joerg.hifiberry@gmail.com>
- <20230912151535.GA812148-robh@kernel.org>
+        Thu, 21 Sep 2023 17:13:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D8EA9F6;
+        Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B298EC32796;
+        Thu, 21 Sep 2023 10:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695292320;
+        bh=OLrFUB5wiXsqIStG7DXtPfN52moqtzYBsJLLAwsWXrk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r70wz/HAzz20k6nRyeZwyRgQCIcBb4ApB/rTFJoGoE1SiNqWL2DCq6Ep8ZxkUIVtY
+         FhpZ5OvZGtj5oUljHyNZwb9A7wdLFv+xA0wapr4l95PkwfQ+7IdV/gwfyKMw+kMJA9
+         JZnCq0OcSj0fPEP3WDywLG1O4yodu+oDW/S8StUePF+n2dqnj1MchoYk2RamzE5vd1
+         yiuQjkiNmdU8S4Zm0sTuu9D64t5+na9Eeam8Dpn5/2wPFKZ1JGqsMT+2/UjzF+lW96
+         HhUtodx6snAMLBWjlIm2fi0i7rWzWnsMjQ3XdVZoGy55BFs/J9J3atIV3HG9mk4lmH
+         Vz6+nW6f6tFJA==
+Date:   Thu, 21 Sep 2023 11:31:56 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RESEND PATCH v3] leds: max5970: Add support for max5970
+Message-ID: <20230921103156.GB3449785@google.com>
+References: <20230914114521.1491390-1-naresh.solanki@9elements.com>
+ <20230920130528.GG13143@google.com>
+ <CABqG17j_gCr8xw65qjn4Kh7ChdraZbLsyGOsCmFEEWG3txjE4A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230912151535.GA812148-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABqG17j_gCr8xw65qjn4Kh7ChdraZbLsyGOsCmFEEWG3txjE4A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,62 +53,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.09.2023 um 10:15 hat Rob Herring geschrieben:
-> On Thu, Sep 07, 2023 at 06:08:51PM +0200, Joerg Schambacher wrote:
-> > The TAS5754/6 power amplifiers use the same pcm512x driver with
-> > only minor restictions described in the bindings document.
-> > 
-> > Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
-> > ---
-> >  .../devicetree/bindings/sound/pcm512x.txt     | 22 +++++++++++++++----
-> >  1 file changed, 18 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
-> > index 3aae3b41bd8e..b16cd0463695 100644
-> > --- a/Documentation/devicetree/bindings/sound/pcm512x.txt
-> > +++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
-> > @@ -1,12 +1,12 @@
-> > -PCM512x audio CODECs
-> > +PCM512x and TAS575x audio CODECs/amplifiers
-> >  
-> >  These devices support both I2C and SPI (configured with pin strapping
-> > -on the board).
-> > +on the board). The TAS575x devices only support I2C.
-> >  
-> >  Required properties:
-> >  
-> > -  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
-> > -                 "ti,pcm5142"
-> > +  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
-> > +                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
-> >  
-> >    - reg : the I2C address of the device for I2C, the chip select
-> >            number for SPI.
-> > @@ -25,6 +25,7 @@ Optional properties:
-> >      through <6>.  The device will be configured for clock input on the
-> >      given pll-in pin and PLL output on the given pll-out pin.  An
-> >      external connection from the pll-out pin to the SCLK pin is assumed.
-> > +    Caution: the TAS-desvices only support gpios 1,2 and 3
-> >  
-> >  Examples:
-> >  
-> > @@ -50,3 +51,16 @@ Examples:
-> >  		pll-in = <3>;
-> >  		pll-out = <6>;
-> >  	};
-> > +
-> > +	tas5756: tas5756@4f {
-> > +		compatible = "ti,tas5756";
+On Thu, 21 Sep 2023, Naresh Solanki wrote:
+
+> Hi
 > 
-> Is there anything new here? Just a different compatible doesn't justify 
-> another example.
 > 
-> With that dropped,
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-Thanks for feedback. Actually, there is nothing really new. More to show
-the reduced availability of GPIOs. I'm preparing a new version of the
-patch and I will drop the example.
+> On Wed, 20 Sept 2023 at 18:35, Lee Jones <lee@kernel.org> wrote:
+> >
+> > On Thu, 14 Sep 2023, Naresh Solanki wrote:
+> >
+> > > From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > >
+> > > The MAX5970 is hot swap controller and has 4 indication LED.
+> > >
+> > > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > > ---
+> > > Changes in V3:
+> > > - Drop array for ddata variable.
+> > > Changes in V2:
+> > > - Add of_node_put before return.
+> > > - Code cleanup
+> > > - Refactor code & remove max5970_setup_led function.
+> > > ---
+> > >  drivers/leds/Kconfig        |  11 ++++
+> > >  drivers/leds/Makefile       |   1 +
+> > >  drivers/leds/leds-max5970.c | 110 ++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 122 insertions(+)
+> > >  create mode 100644 drivers/leds/leds-max5970.c
+> >
+> > Couple of nits and you're good to go.
+> >
+> > Once fixed please resubmit with my:
+> >
+> >   Reviewed-by: Lee Jones <lee@kernel.org>
+> >
+> > > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > > index b92208eccdea..03ef527cc545 100644
+> > > --- a/drivers/leds/Kconfig
+> > > +++ b/drivers/leds/Kconfig
+> > > @@ -637,6 +637,17 @@ config LEDS_ADP5520
+> > >         To compile this driver as a module, choose M here: the module will
+> > >         be called leds-adp5520.
+> > >
+> > > +config LEDS_MAX5970
+> > > +     tristate "LED Support for Maxim 5970"
+> > > +     depends on LEDS_CLASS
+> > > +     depends on MFD_MAX5970
+> > > +     help
+> > > +       This option enables support for the Maxim MAX5970 & MAX5978 smart
+> > > +       switch indication LEDs via the I2C bus.
+> > > +
+> > > +       To compile this driver as a module, choose M here: the module will
+> > > +       be called leds-max5970.
+> > > +
+> > >  config LEDS_MC13783
+> > >       tristate "LED Support for MC13XXX PMIC"
+> > >       depends on LEDS_CLASS
+> > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > > index d7348e8bc019..6eaee0a753c6 100644
+> > > --- a/drivers/leds/Makefile
+> > > +++ b/drivers/leds/Makefile
+> > > @@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)           += leds-lp8501.o
+> > >  obj-$(CONFIG_LEDS_LP8788)            += leds-lp8788.o
+> > >  obj-$(CONFIG_LEDS_LP8860)            += leds-lp8860.o
+> > >  obj-$(CONFIG_LEDS_LT3593)            += leds-lt3593.o
+> > > +obj-$(CONFIG_LEDS_MAX5970)           += leds-max5970.o
+> > >  obj-$(CONFIG_LEDS_MAX77650)          += leds-max77650.o
+> > >  obj-$(CONFIG_LEDS_MAX8997)           += leds-max8997.o
+> > >  obj-$(CONFIG_LEDS_MC13783)           += leds-mc13783.o
+> > > diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max5970.c
+> > > new file mode 100644
+> > > index 000000000000..c9685990e26e
+> > > --- /dev/null
+> > > +++ b/drivers/leds/leds-max5970.c
+> > > @@ -0,0 +1,110 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Device driver for leds in MAX5970 and MAX5978 IC
+> > > + *
+> > > + * Copyright (c) 2022 9elements GmbH
+> > > + *
+> > > + * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > + */
+> > > +
+> > > +#include <linux/leds.h>
+> > > +#include <linux/mfd/max5970.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/regmap.h>
+> > > +
+> > > +#define ldev_to_maxled(c)       container_of(c, struct max5970_led, cdev)
+> > > +
+> > > +struct max5970_led {
+> > > +     struct device *dev;
+> > > +     struct regmap *regmap;
+> > > +     struct led_classdev cdev;
+> > > +     unsigned int index;
+> > > +};
+> > > +
+> > > +static int max5970_led_set_brightness(struct led_classdev *cdev,
+> > > +                                   enum led_brightness brightness)
+> > > +{
+> > > +     struct max5970_led *ddata = ldev_to_maxled(cdev);
+> > > +     int ret, val;
+> > > +
+> > > +     /* Set/clear corresponding bit for given led index */
+> > > +     val = !brightness ? BIT(ddata->index) : 0;
+> > > +
+> > > +     ret = regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLASH, BIT(ddata->index), val);
+> > > +     if (ret < 0)
+> > > +             dev_err(cdev->dev, "failed to set brightness %d", ret);
+> > > +
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static int max5970_led_probe(struct platform_device *pdev)
+> > > +{
+> > > +     struct device *dev = &pdev->dev;
+> > > +     struct device_node *np = dev_of_node(dev->parent);
+> > > +     struct regmap *regmap;
+> > > +     struct device_node *led_node;
+> > > +     struct device_node *child;
+> >
+> > Nit: You can place these on the same line.
+> Ack
+> >
+> > > +     struct max5970_led *ddata;
+> > > +     int ret = -ENODEV, num_leds = 0;
+> > > +
+> > > +     regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> > > +     if (!regmap)
+> > > +             return -EPROBE_DEFER;
+> >
+> > Why are you deferring here?
+> This is a Leaf driver. Making sure the parent driver has initialized regmap.
+
+How can this driver initialise before the parent driver?
+
 -- 
-
-
+Lee Jones [李琼斯]
