@@ -2,94 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299AD7A96AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9AD7A9811
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbjIURFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        id S230317AbjIUR3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjIURE4 (ORCPT
+        with ESMTP id S230340AbjIUR2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:04:56 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5612111;
-        Thu, 21 Sep 2023 10:02:39 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id A363832009CF;
-        Thu, 21 Sep 2023 08:13:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 21 Sep 2023 08:13:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695298398; x=1695384798; bh=qL6/VmfuEG0N5
-        xc6Mz2PvEm3VWqhSA+Pyx12f0FNgWU=; b=NNL8lLZ+nJLyfc6TshaXc4SDbglQp
-        a5ODaObdGtjszpBwKJ0Noyh3s/ouKVzOk3ISKCOGJ3XNBvbqe5AeN/048pZRLjiv
-        iBeXMcn5Gi7b6wms38bJmdhePlZtGCQ+5HjCoS3OQvYf2yjeN0DWol9H/ihvIlDs
-        B1BHuUigB92bXlPuGOFtLqzAKW3g4AEQYixtrwoJIEpt6B7/FO+9wvNzOBG2L5hx
-        sswKQwV9JYGbLdkR2oUkpP+YqpSyQzc6UG1sXviI8XOuUUXYG6ogPgML+mfJlpO0
-        qq9W6KkzK9vIs9UL/dRRcEqKyy6fVp8LwO6Gcl48X8QEQG6hrxKy0BQMA==
-X-ME-Sender: <xms:XTMMZU558zdbFxDVrw_Ze1QeomT43lgk6oMhblaUrxvWoyO7G_QfMw>
-    <xme:XTMMZV7WhFGkfhy9cDBfZoImR4-U9VV7Mi4kFtDuSncH_98CDVb_P4hub8H-HR-yc
-    OBI4cjlhYaZV1Y>
-X-ME-Received: <xmr:XTMMZTcSMCggTH-WN0omJfhlEc3mEWy01SQXRyhqoBeTbUYjI0E6aEzV7OtjGHYb_W0usouEZjkh-1JGP-0H5cRPMxaSrA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepfeefueegheehleelgeehjefgieeltdeuteekkeefheejudffleefgfeludeh
-    hfejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:XTMMZZKXbA6vPaFCLmzHouZnZ4RYukMibMg83PSsC7kY1pdEfS-2sA>
-    <xmx:XTMMZYJ5RUdkPQnNAdANDWlG2JlM3L6gEl3iA6nHkf9F4yaJLjFrgw>
-    <xmx:XTMMZawkfgR8HELWgXaCFL5B3mVVXvyaTzTDKMBF4Vk_o0qllOJ0lw>
-    <xmx:XjMMZV5p-3tjzZoiv3kOV5hCZK4mJttyW-Lf9t0syPcIwKPKyijm1A>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 Sep 2023 08:13:16 -0400 (EDT)
-Date:   Thu, 21 Sep 2023 15:13:12 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Johannes Nixdorf <jnixdorf-oss@avm.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Thu, 21 Sep 2023 13:28:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD06651F78;
+        Thu, 21 Sep 2023 10:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695316627; x=1726852627;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=R6y5ULZ42+b9n+Td0nzhf02tFYyolYBgBUdtJDkDQwc=;
+  b=AQ2vavD7J3BjyQbxfpKodl0gLS0KngsreL+wI3xurF8H1hjSpAEwApc9
+   E+bX2IbP6GI+BYUxgMCrj6iKrSnEnCa3MlI8LVR19//PogXHqte7fSgps
+   OeNug+XzAeIO0ZV0DjrM19o6Ja2chCyTXqidv7tjoV0TrdFU5qXupTTUi
+   le0L1KOjoYhhR908RzQtjDl1+fRHNpbmrunFcze2iSjIuEm1Pt/PPAIAP
+   cBP8+a9ydKg0AHW8Zd6GWN+mHlmd+/3g0LA4vurmz4aa4QhG5WnLMWZ8e
+   s21MdqOUodlW+cktJMDrHptVfReXETyNKu0XWuFvwyHREXrb0mmQiVu7L
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="444608167"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="444608167"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:20:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="862441720"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="862441720"
+Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2023 05:20:26 -0700
+From:   Choong Yong Liang <yong.liang.choong@linux.intel.com>
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
         Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net-next v4 1/6] net: bridge: Set BR_FDB_ADDED_BY_USER
- early in fdb_add_entry
-Message-ID: <ZQwzWINOPagvLgbS@shredder>
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
- <20230919-fdb_limit-v4-1-39f0293807b8@avm.de>
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>
+Cc:     David E Box <david.e.box@intel.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: [PATCH net-next v3 1/5] arch: x86: Add IPC mailbox accessor function and add SoC register access
+Date:   Thu, 21 Sep 2023 20:19:42 +0800
+Message-Id: <20230921121946.3025771-2-yong.liang.choong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919-fdb_limit-v4-1-39f0293807b8@avm.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:12:48AM +0200, Johannes Nixdorf wrote:
-> In preparation of the following fdb limit for dynamically learned entries,
-> allow fdb_create to detect that the entry was added by the user. This
-> way it can skip applying the limit in this case.
-> 
-> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+From: "David E. Box" <david.e.box@linux.intel.com>
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+- Exports intel_pmc_ipc() for host access to the PMC IPC mailbox
+- Add support to use IPC command allows host to access SoC registers
+through PMC firmware that are otherwise inaccessible to the host due to
+security policies.
+
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Signed-off-by: Chao Qin <chao.qin@intel.com>
+Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+---
+ MAINTAINERS                                   |  2 +
+ arch/x86/Kconfig                              |  9 +++
+ arch/x86/platform/intel/Makefile              |  1 +
+ arch/x86/platform/intel/pmc_ipc.c             | 75 +++++++++++++++++++
+ .../linux/platform_data/x86/intel_pmc_ipc.h   | 34 +++++++++
+ 5 files changed, 121 insertions(+)
+ create mode 100644 arch/x86/platform/intel/pmc_ipc.c
+ create mode 100644 include/linux/platform_data/x86/intel_pmc_ipc.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3dde038545d8..f608668fdfa6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10730,8 +10730,10 @@ M:	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+ M:	David E Box <david.e.box@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
++F:	arch/x86/platform/intel/pmc_ipc.c
+ F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+ F:	drivers/platform/x86/intel/pmc/
++F:	linux/platform_data/x86/intel_pmc_ipc.h
+ 
+ INTEL PMIC GPIO DRIVERS
+ M:	Andy Shevchenko <andy@kernel.org>
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 982b777eadc7..31fc8ece2b46 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -666,6 +666,15 @@ config X86_AMD_PLATFORM_DEVICE
+ 	  I2C and UART depend on COMMON_CLK to set clock. GPIO driver is
+ 	  implemented under PINCTRL subsystem.
+ 
++config INTEL_PMC_IPC
++	tristate "Intel Core SoC Power Management Controller IPC mailbox"
++	depends on ACPI
++	help
++	  This option enables sideband register access support for Intel SoC
++	  power management controller IPC mailbox.
++
++	  If you don't require the option or are in doubt, say N.
++
+ config IOSF_MBI
+ 	tristate "Intel SoC IOSF Sideband support for SoC platforms"
+ 	depends on PCI
+diff --git a/arch/x86/platform/intel/Makefile b/arch/x86/platform/intel/Makefile
+index dbee3b00f9d0..470fc68de6ba 100644
+--- a/arch/x86/platform/intel/Makefile
++++ b/arch/x86/platform/intel/Makefile
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_IOSF_MBI)			+= iosf_mbi.o
++obj-$(CONFIG_INTEL_PMC_IPC)		+= pmc_ipc.o
+\ No newline at end of file
+diff --git a/arch/x86/platform/intel/pmc_ipc.c b/arch/x86/platform/intel/pmc_ipc.c
+new file mode 100644
+index 000000000000..a96234982710
+--- /dev/null
++++ b/arch/x86/platform/intel/pmc_ipc.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Core SoC Power Management Controller IPC mailbox
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ * All Rights Reserved.
++ *
++ * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
++ *          David E. Box <david.e.box@linux.intel.com>
++ */
++#include <linux/module.h>
++#include <linux/acpi.h>
++#include <linux/platform_data/x86/intel_pmc_ipc.h>
++
++#define PMC_IPCS_PARAM_COUNT           7
++
++int intel_pmc_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
++{
++	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
++	union acpi_object params[PMC_IPCS_PARAM_COUNT] = {
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++	};
++	struct acpi_object_list arg_list = { PMC_IPCS_PARAM_COUNT, params };
++	union acpi_object *obj;
++	int status;
++
++	if (!ipc_cmd || !rbuf)
++		return -EINVAL;
++
++	/*
++	 * 0: IPC Command
++	 * 1: IPC Sub Command
++	 * 2: Size
++	 * 3-6: Write Buffer for offset
++	 */
++	params[0].integer.value = ipc_cmd->cmd;
++	params[1].integer.value = ipc_cmd->sub_cmd;
++	params[2].integer.value = ipc_cmd->size;
++	params[3].integer.value = ipc_cmd->wbuf[0];
++	params[4].integer.value = ipc_cmd->wbuf[1];
++	params[5].integer.value = ipc_cmd->wbuf[2];
++	params[6].integer.value = ipc_cmd->wbuf[3];
++
++	status = acpi_evaluate_object(NULL, "\\IPCS", &arg_list, &buffer);
++	if (ACPI_FAILURE(status))
++		return -ENODEV;
++
++	obj = buffer.pointer;
++	/* Check if the number of elements in package is 5 */
++	if (obj && obj->type == ACPI_TYPE_PACKAGE && obj->package.count == 5) {
++		const union acpi_object *objs = obj->package.elements;
++
++		if ((u8)objs[0].integer.value != 0)
++			return -EINVAL;
++
++		rbuf[0] = objs[1].integer.value;
++		rbuf[1] = objs[2].integer.value;
++		rbuf[2] = objs[3].integer.value;
++		rbuf[3] = objs[4].integer.value;
++	} else {
++		return -EINVAL;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(intel_pmc_ipc);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Intel PMC IPC Mailbox accessor");
+diff --git a/include/linux/platform_data/x86/intel_pmc_ipc.h b/include/linux/platform_data/x86/intel_pmc_ipc.h
+new file mode 100644
+index 000000000000..25ba57b8a7ea
+--- /dev/null
++++ b/include/linux/platform_data/x86/intel_pmc_ipc.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Intel Core SoC Power Management Controller Header File
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ * All Rights Reserved.
++ *
++ * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
++ *          David E. Box <david.e.box@linux.intel.com>
++ */
++#ifndef INTEL_PMC_IPC_H
++#define INTEL_PMC_IPC_H
++
++#define IPC_SOC_REGISTER_ACCESS			0xAA
++#define IPC_SOC_SUB_CMD_READ			0x00
++#define IPC_SOC_SUB_CMD_WRITE			0x01
++
++struct pmc_ipc_cmd {
++	u32 cmd;
++	u32 sub_cmd;
++	u32 size;
++	u32 wbuf[4];
++};
++
++/**
++ * intel_pmc_core_ipc() - PMC IPC Mailbox accessor
++ * @ipc_cmd:  struct pmc_ipc_cmd prepared with input to send
++ * @rbuf:     Allocated u32[4] array for returned IPC data
++ *
++ * Return: 0 on success. Non-zero on mailbox error
++ */
++int intel_pmc_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
++
++#endif /* INTEL_PMC_IPC_H */
+-- 
+2.25.1
+
