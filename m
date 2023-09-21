@@ -2,51 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9014B7AA481
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FAE7AA4F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbjIUWLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
+        id S231231AbjIUW1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbjIUWKz (ORCPT
+        with ESMTP id S233344AbjIUW0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:10:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D6084F3E;
-        Thu, 21 Sep 2023 10:37:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91A2C4AF7B;
-        Thu, 21 Sep 2023 11:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695297053;
-        bh=mXYzQ1Aw2AmUUG7pVcJYPh5w/95BLX6Xyx+iv32GdjM=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Bs2WggFziPp0qrw2QPhcDrEk2iWOjqSQHn7c+YlHM/5kRBfSCxdlUXbYPM5UknYKM
-         t75jJJqXm4wRyg2gGjrsZtyfooghoz7C/bJOP6/zSOwkA2uLsJAsPXMsYpmN6JLVGw
-         8MFNURKRlvcipijmnRr+i+K1ab4Ofk3AybcxouKfYlng1S5z8qvNnw4jQO4R+gw0Er
-         YmJqw+V2ZTRUIQ3RGeelZr92fzcpWFmM4+xp5Q8/pu48a0hfIPiN0rvRAeipckKMaK
-         CQZPD0H6T10DUVULVf9Ud3NZenXyl4qlByMEHHXZDLHvuf3nJOZJGmylLkdNZ7GGn6
-         1jm9QEt6fhN6g==
-From:   Lee Jones <lee@kernel.org>
-To:     william.gray@linaro.org, lee@kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230829134029.2402868-5-fabrice.gasnier@foss.st.com>
-References: <20230829134029.2402868-1-fabrice.gasnier@foss.st.com>
- <20230829134029.2402868-5-fabrice.gasnier@foss.st.com>
-Subject: Re: (subset) [PATCH 4/8] mfd: stm32-timers: add support for
- interrupts
-Message-Id: <169529705167.3631705.15052366988953895917.b4-ty@kernel.org>
-Date:   Thu, 21 Sep 2023 12:50:51 +0100
+        Thu, 21 Sep 2023 18:26:17 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BEBA0F4F;
+        Thu, 21 Sep 2023 10:57:03 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rrv5n1mB5z15NQt;
+        Thu, 21 Sep 2023 19:57:17 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 21 Sep
+ 2023 19:59:24 +0800
+Subject: Re: [PATCH net-next v9 5/6] page_pool: update document about frag API
+To:     Dima Tisnek <dimaqq@gmail.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <linux-doc@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20230920115855.27631-1-linyunsheng@huawei.com>
+ <20230920115855.27631-6-linyunsheng@huawei.com>
+ <CAGGBzXLu7rO4bTet0wqb2Z7FmqsSu0BVuVw_LprcJcPKO1vXEg@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <addf5abe-1683-d432-bf4b-e011ceba134c@huawei.com>
+Date:   Thu, 21 Sep 2023 19:59:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
+In-Reply-To: <CAGGBzXLu7rO4bTet0wqb2Z7FmqsSu0BVuVw_LprcJcPKO1vXEg@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,21 +64,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 15:40:25 +0200, Fabrice Gasnier wrote:
-> There are two types of STM32 timers that may have:
-> - a global interrupt line
-> - 4 dedicated interrupt lines.
-> Those interrupts are optional as defined in the dt-bindings. Enforce checks
-> on either one, four or no interrupts are provided with their names.
-> Optionally get them here, to be used by child devices.
+On 2023/9/21 9:02, Dima Tisnek wrote:
+> Minor comment on natural language:
 > 
-> [...]
+> On Wed, Sep 20, 2023 at 9:04 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> As more drivers begin to use the frag API, update the
+>> document about how to decide which API to use for the
+>> driver author.
+> 
+> the fragment API
+> 
+>> +/**
+>> + * page_pool_dev_alloc_frag() - allocate a page frag.
+> 
+> allocate a page fragment.
+> 
+> the precedent is set in
+> https://www.kernel.org/doc/html/v5.0/vm/page_frags.html
+> foo_frag is used in C code, and foo fragment in English docs.
 
-Applied, thanks!
+Sure.
 
-[4/8] mfd: stm32-timers: add support for interrupts
-      commit: f747b627d395c4eb8a82849dcccf31bf46b21504
+It seems I need to respin anyway as the newly merged idpf driver
+from intel is also using the frag API, and removing PP_FLAG_PAGE_FRAG
+flag breaks it.
 
---
-Lee Jones [李琼斯]
+And idpf driver really should be using the new API instead of
+selecting which API to use according to the buf_size as below
+in drivers/net/ethernet/intel/idpf/idpf_txrx.h, as it seems to
+be assuming PAGE_SIZE always being 4K, and we may be able to
+enable page split for buf_size > 2048 and PAGE_SIZE > 4K if using
+the new API.
 
+static inline dma_addr_t idpf_alloc_page(struct page_pool *pool,
+                                         struct idpf_rx_buf *buf,
+                                         unsigned int buf_size)
+{
+        if (buf_size == IDPF_RX_BUF_2048)
+                buf->page = page_pool_dev_alloc_frag(pool, &buf->page_offset,
+                                                     buf_size);
+        else
+                buf->page = page_pool_dev_alloc_pages(pool);
+
+        if (!buf->page)
+                return DMA_MAPPING_ERROR;
+
+        buf->truesize = buf_size;
+
+        return page_pool_get_dma_addr(buf->page) + buf->page_offset +
+               pool->p.offset;
+}
+
+> 
+> .
+> 
