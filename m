@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8627AA4E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A186F7AA58C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjIUWZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
+        id S229954AbjIUXUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 19:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbjIUWZ2 (ORCPT
+        with ESMTP id S229892AbjIUXUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:25:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A61312451
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:06:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 05151338AA;
-        Thu, 21 Sep 2023 13:29:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695302968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B4ukeL06gNkW2qwY73xzCc5or7ZOWYu47UFNiHA4sRE=;
-        b=uJQgO2DmrOlob0nOo/gvqcHgDMSNFGUM2gGXPdp79ntAOsVO7hmqxktnsfDHPFZniVf01T
-        v7Kn5AgQT6huYctuoqJ8LwO6G7g0cwZ44V3ggVgYfN2VUsSeIQQ80bnmTP05396MlpEmII
-        fSA/dV5eo7ZFdyCoaSK4+dAcLUSAbRg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695302968;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B4ukeL06gNkW2qwY73xzCc5or7ZOWYu47UFNiHA4sRE=;
-        b=ieGH00UspKgSKl5QEaY/iWTETyiW7Scz3JDoW1tgNAc/gFtBfLNVWlYo33/zUyHcj0IeaR
-        NPwDU9XbPWCYX2Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA60B134B0;
-        Thu, 21 Sep 2023 13:29:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id A5qWLDdFDGV0OQAAMHmgww
-        (envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 13:29:27 +0000
-Date:   Thu, 21 Sep 2023 15:29:27 +0200
-Message-ID: <87il83zmbs.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Ma Ke <make_ruc2021@163.com>
-Cc:     perex@perex.cz, tiwai@suse.com, Liam.Howlett@Oracle.com,
-        rppt@kernel.org, mgorman@techsingularity.net, mhocko@suse.com,
-        surenb@google.com, alsa-devel@alsa-project.org,
+        Thu, 21 Sep 2023 19:20:20 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAD478BF1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :in-reply-to:references:mime-version:content-transfer-encoding;
+         s=k1; bh=P2UTB5t8XD9NtlqSsq8WH+UKGF31k4LPyuXnRCJcSsU=; b=aQRTvR
+        IoCDhpscqTqS5VyqB969XMkC7KAhmznJ6gBMwQb1g1R7DPY64LTt/yzJOMrq7CWD
+        C0h6BfMfn2sR8cYw/0BCkgxE06v4opOIJA4pqlTX77OxMeMEg9ynsFhTZka6OW+g
+        eEwQkRArMvYq3rfrFtPIktzJihiUbeUzkfQDpdF1tAQpyP4H5VxTmZt5lXDlDdDQ
+        OnWIdM6VUbgA/WeiMQ/9BGPYRuyuv9qZhuawB+VWA1EJNZsfsd8dKhMsnCz2X0yy
+        51najsSf09NGgEgYyWml7ju2tHDYB+LlikF3jQn96M3Z07f5RhIRnhS4Xn+w/eFc
+        Ft+LEjQ9mCueLt1w==
+Received: (qmail 964439 invoked from network); 21 Sep 2023 15:32:12 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 21 Sep 2023 15:32:12 +0200
+X-UD-Smtp-Session: l3s3148p1@qKP8hN4FxgcuciJ+
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Johan Hovold <johan@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER
-In-Reply-To: <20230921064258.3582115-1-make_ruc2021@163.com>
-References: <20230921064258.3582115-1-make_ruc2021@163.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+Subject: [PATCH v3 2/3] dt-bindings: gnss: u-blox: add "reset-gpios" binding
+Date:   Thu, 21 Sep 2023 15:32:00 +0200
+Message-Id: <20230921133202.5828-3-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20230921133202.5828-1-wsa+renesas@sang-engineering.com>
+References: <20230921133202.5828-1-wsa+renesas@sang-engineering.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 08:42:58 +0200,
-Ma Ke wrote:
-> 
-> There is a small race window at snd_pcm_oss_set_trigger() that is
-> called from OSS PCM SNDCTL_DSP_SETTRIGGER ioctl; namely the function
-> calls snd_pcm_oss_make_ready() at first, then takes the params_lock
-> mutex for the rest. When the stream is set up again by another thread
-> between them, it leads to inconsistency, and may result in unexpected
-> results such as NULL dereference of OSS buffer as a fuzzer spotted
-> recently.
-> The fix is simply to cover snd_pcm_oss_make_ready() call into the same
-> params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
-> 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> ---
->  sound/core/oss/pcm_oss.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-> index 728c211142d1..f6340a2fe52b 100644
-> --- a/sound/core/oss/pcm_oss.c
-> +++ b/sound/core/oss/pcm_oss.c
-> @@ -2083,21 +2083,15 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
->  	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
->  	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
->  
-> -	if (psubstream) {
-> -		err = snd_pcm_oss_make_ready(psubstream);
-> -		if (err < 0)
-> -			return err;
-> -	}
-> -	if (csubstream) {
-> -		err = snd_pcm_oss_make_ready(csubstream);
-> -		if (err < 0)
-> -			return err;
-> -	}
->        	if (psubstream) {
->        		runtime = psubstream->runtime;
->  		cmd = 0;
->  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
->  			return -ERESTARTSYS;
-> +		err = snd_pcm_oss_make_ready_locked(psubstream);
-> +		if (err < 0)
-> +			mutex_unlock(&runtime->oss.params_lock);
-> +			return err;
+Needed to enable this chip on a Renesas KingFisher board. Description
+copied over from the Mediatek driver which already supports it.
 
-This breaks totally;  you missed braces...  (Ditto for another place).
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml b/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml
+index 4835a280b3bf..8e97e475613f 100644
+--- a/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml
++++ b/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml
+@@ -41,6 +41,9 @@ properties:
+     description: >
+       Backup voltage regulator
+ 
++  reset-gpios:
++    maxItems: 1
++
+ required:
+   - compatible
+   - vcc-supply
+@@ -49,10 +52,12 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/gpio/gpio.h>
+     serial {
+         gnss {
+             compatible = "u-blox,neo-8";
+             v-bckp-supply = <&gnss_v_bckp_reg>;
+             vcc-supply = <&gnss_vcc_reg>;
++            reset-gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
+         };
+     };
+-- 
+2.35.1
 
-Takashi
-
->  		if (trigger & PCM_ENABLE_OUTPUT) {
->  			if (runtime->oss.trigger)
->  				goto _skip1;
-> @@ -2128,6 +2122,10 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
->  		cmd = 0;
->  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
->  			return -ERESTARTSYS;
-> +		err = snd_pcm_oss_make_ready_locked(csubstream);
-> +		if (err < 0)
-> +			mutex_unlock(&runtime->oss.params_lock);
-> +			return err;
->  		if (trigger & PCM_ENABLE_INPUT) {
->  			if (runtime->oss.trigger)
->  				goto _skip2;
-> -- 
-> 2.37.2
-> 
