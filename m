@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E5E7AA49E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A687AA453
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbjIUWM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
+        id S232282AbjIUWGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbjIUWMU (ORCPT
+        with ESMTP id S231734AbjIUWGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:12:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E4A86E58;
-        Thu, 21 Sep 2023 10:38:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE57AC433C8;
-        Thu, 21 Sep 2023 17:38:09 +0000 (UTC)
-Date:   Thu, 21 Sep 2023 18:38:07 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 0/8] Fix set_huge_pte_at() panic on arm64
-Message-ID: <ZQx/f35o0zT2lug4@arm.com>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
- <20230921093026.230b2991be551093e397f462@linux-foundation.org>
- <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com>
+        Thu, 21 Sep 2023 18:06:21 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A345AF941;
+        Thu, 21 Sep 2023 11:07:29 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 27ba5ac5cc524f47; Thu, 21 Sep 2023 20:07:27 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 3400F664EC0;
+        Thu, 21 Sep 2023 20:07:27 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v1 06/13] thermal: gov_fair_share: Rearrange get_trip_level()
+Date:   Thu, 21 Sep 2023 19:54:02 +0200
+Message-ID: <1882755.CQOukoFCf9@kreacher>
+In-Reply-To: <1957441.PYKUYFuaPT@kreacher>
+References: <1957441.PYKUYFuaPT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedguddulecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhn
+ thgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 05:35:54PM +0100, Ryan Roberts wrote:
-> On 21/09/2023 17:30, Andrew Morton wrote:
-> > On Thu, 21 Sep 2023 17:19:59 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
-> >> Ryan Roberts (8):
-> >>   parisc: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   powerpc: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   riscv: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   s390: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   sparc: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   mm: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   arm64: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   arm64: hugetlb: Fix set_huge_pte_at() to work with all swap entries
-> >>
-> >>  arch/arm64/include/asm/hugetlb.h              |  2 +-
-> >>  arch/arm64/mm/hugetlbpage.c                   | 22 ++++----------
-> >>  arch/parisc/include/asm/hugetlb.h             |  2 +-
-> >>  arch/parisc/mm/hugetlbpage.c                  |  4 +--
-> >>  .../include/asm/nohash/32/hugetlb-8xx.h       |  3 +-
-> >>  arch/powerpc/mm/book3s64/hugetlbpage.c        |  2 +-
-> >>  arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  2 +-
-> >>  arch/powerpc/mm/nohash/8xx.c                  |  2 +-
-> >>  arch/powerpc/mm/pgtable.c                     |  7 ++++-
-> >>  arch/riscv/include/asm/hugetlb.h              |  2 +-
-> >>  arch/riscv/mm/hugetlbpage.c                   |  3 +-
-> >>  arch/s390/include/asm/hugetlb.h               |  8 +++--
-> >>  arch/s390/mm/hugetlbpage.c                    |  8 ++++-
-> >>  arch/sparc/include/asm/hugetlb.h              |  8 +++--
-> >>  arch/sparc/mm/hugetlbpage.c                   |  8 ++++-
-> >>  include/asm-generic/hugetlb.h                 |  6 ++--
-> >>  include/linux/hugetlb.h                       |  6 ++--
-> >>  mm/damon/vaddr.c                              |  2 +-
-> >>  mm/hugetlb.c                                  | 30 +++++++++----------
-> >>  mm/migrate.c                                  |  2 +-
-> >>  mm/rmap.c                                     | 10 +++----
-> >>  mm/vmalloc.c                                  |  5 +++-
-> >>  22 files changed, 80 insertions(+), 64 deletions(-)
-> > 
-> > Looks scary but it's actually a fairly modest patchset.  It could
-> > easily be all rolled into a single patch for ease of backporting. 
-> > Maybe Greg has an opinion?
-> 
-> Yes, I thought about doing that; or perhaps 2 patches - one for the interface
-> change across all arches and core code, and one for the actual bug fix?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I think this would make more sense, especially if we want to backport
-it. The first patch would have no functional change, only an interface
-change, followed by the arm64 fix.
+Make get_trip_level() access the thermal zone's trip table directly
+instead of using __thermal_zone_get_trip() which adds overhead related
+to the unnecessary bounds checking and copying the trip point data.
 
--- 
-Catalin
+Also rearrange the code in it to make it somewhat easier to follow.
+
+The general functionality is not expected to be changed.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/gov_fair_share.c |   22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+
+Index: linux-pm/drivers/thermal/gov_fair_share.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_fair_share.c
++++ linux-pm/drivers/thermal/gov_fair_share.c
+@@ -21,23 +21,21 @@
+  */
+ static int get_trip_level(struct thermal_zone_device *tz)
+ {
+-	struct thermal_trip trip;
+-	int count;
++	const struct thermal_trip *trip = tz->trips;
++	int i;
+ 
+-	for (count = 0; count < tz->num_trips; count++) {
+-		__thermal_zone_get_trip(tz, count, &trip);
+-		if (tz->temperature < trip.temperature)
++	if (tz->temperature < trip->temperature)
++		return 0;
++
++	for (i = 0; i < tz->num_trips - 1; i++) {
++		trip++;
++		if (tz->temperature < trip->temperature)
+ 			break;
+ 	}
+ 
+-	/*
+-	 * count > 0 only if temperature is greater than first trip
+-	 * point, in which case, trip_point = count - 1
+-	 */
+-	if (count > 0)
+-		trace_thermal_zone_trip(tz, count - 1, trip.type);
++	trace_thermal_zone_trip(tz, i, tz->trips[i].type);
+ 
+-	return count;
++	return i;
+ }
+ 
+ static long get_target_state(struct thermal_zone_device *tz,
+
+
+
