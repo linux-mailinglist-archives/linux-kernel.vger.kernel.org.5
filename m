@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D33C7A97A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015067A9816
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjIUR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        id S230141AbjIURaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjIUR0D (ORCPT
+        with ESMTP id S230089AbjIUR3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:26:03 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DEA4F387
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:17 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-307d20548adso1082102f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:17 -0700 (PDT)
+        Thu, 21 Sep 2023 13:29:03 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199394CB32;
+        Thu, 21 Sep 2023 10:14:51 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bffc55af02so21366791fa.2;
+        Thu, 21 Sep 2023 10:14:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695317115; x=1695921915; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DpJ/97G25b6TPjTn6QzU+EXfaLRmUn9TD44GKiLbxUc=;
-        b=XEkjCMU3aqZK8Juq/KEZbqWpqTZUK4nPDVl6zK9EYVnBBf/8LQkH52rFQQTOjUX0no
-         KhX2ruLvQ9yRA4GACbmmZNCKAGHLUqiPA80bFbjI0T0MF9geukksqtVxOI+CE9+Ask2k
-         r7AwnKSThwwslEpFKo+c6mLlDyEQL7iAxZjP+H4kYFk9M+DhwBEZqq6Z6aDnVthN7V0p
-         a2t5lkzKhNqX81827FI1BC87LpJjJKQ6dPeMri2yopZ7rbl02ifAwV/r0hyPZP2jwFzC
-         Ss+LOBlVh2IYBy8CecHLZAUyCw2K4V1LsW27f/D9MHeRJfrTPypErZd5V0cRcKKw0aQ/
-         sM+A==
+        d=gmail.com; s=20230601; t=1695316490; x=1695921290; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PT7BtDLW9rg1Fg+vRZKPaEJl+Jt/zEwGch4+5k14AJA=;
+        b=jbTXabZFaLasSJgCpvAUWon2To2ZzV3zfOiWkLo8Ex8+zHD2pWle9/dawKl+y5w+VG
+         jDGWAUTp25OnC/oqhGoCix9eu/5vtieZytoAXW0Zance5sjmhWY8dQCa2TbMDyOUm1Mj
+         QOFPjVEXWZYGceZJvj01yqMckvLHDWt4V60btBPzHsrtvc0dACSlOyAPvivJ9Xj2eQX8
+         Fj1nF8xK/FHSoABdTLtJrqy2SgQnVjKWhNSNIK58ejdWLab0bS1/1gaENvcZbJoGu2gA
+         KEUFx4K2VuYnt/upx6fM4k9M9GhHCSJm1T6EiKZy2CoOQ/zTcxIZH/zHK1NwTzGqNWZM
+         017g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317115; x=1695921915;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DpJ/97G25b6TPjTn6QzU+EXfaLRmUn9TD44GKiLbxUc=;
-        b=lOAy/HJd8Cd34MXDksdPGCQD9No7E8ltxGivL+49C+PvVpClREWV6OXpra8yyF55Uw
-         IMQwbC+yAhoZevfKSGccPz4XfB7Bc1LQKPEC1j73pMDx5kEmJg+pICCCRVfkXuRMnrkD
-         Dmte84JJvZz8egCktf/zvdzMxj+JtmpDyEIO3nH6By2MUvYUymda9vVAiHgpvLa+MLzj
-         FmKCAqAxKcs+J4tDMcvbjBDhFmMsnmY9uGOH03nh/o/H0f3X3mIF7yzNp5AMpdVnj6DE
-         S//81Z3Pzx/DHGNa111SVWaW1HkeEaS/6zWpac5j6Klob4zzcfBk4RWDBY9BAlnqAPKm
-         oNAg==
-X-Gm-Message-State: AOJu0Ywslw2TigMRChyxJ3CgJSnTU09wwbVS4WpbN4uSncsdFNyZ3BJr
-        6L94Mlg5qPAP6/JAjm/3fW836mwJe3vPTTM7G8Oe4bSjk60Zrf8G7TxHDA==
-X-Google-Smtp-Source: AGHT+IFTxMHPC95KiOI2z0xWTy4CeTB0NUWNRpnxeR4sjTTRwKDyfOkzMakcC+k0ZCF0c3b4q1acDPb+GMi6CilNLCU=
-X-Received: by 2002:a05:6512:110e:b0:503:7dd:7ebc with SMTP id
- l14-20020a056512110e00b0050307dd7ebcmr6385076lfg.18.1695306665262; Thu, 21
- Sep 2023 07:31:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695316490; x=1695921290;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PT7BtDLW9rg1Fg+vRZKPaEJl+Jt/zEwGch4+5k14AJA=;
+        b=QXW6vtjPi2ZCND6KOwAq32eKGnpVKhQqlgGWmLr+wwfd35EPldFT/A30/0HwVZdbOB
+         jbOuUkHBwNrMDtz2rMydCtfPSgyDHrIElovUnEabLBXE2xnn/sDNlIpz1bH2ON8E4ZxE
+         7FRl9AwpitFn5BYDwpie2VwEFnO3mul/zOx0+z9yrlsr9pXoE6SXMlaAagcZ5QPr/a77
+         S1OVaqkLM+vxjt8OjCO5qLjg0gxhDObWVbIgyakjU5I/0rztvpav3SuOyrsI15fqnscy
+         4SlZ45IhX+wVmxtH/B+LjtULfDq6kQ2THSrwXuJZk/BhCRC2e+odyvA2BDRUZNFceVfj
+         2ddw==
+X-Gm-Message-State: AOJu0YxUvPaQyBAP+9O6qlv5pea3U8gYx1FnQ6pRrubZcwUaum3tPCrH
+        C90ishhVue3gntAYatqnDb83KQgqSzigYopAEhY=
+X-Google-Smtp-Source: AGHT+IHh/1wwPrkBE5tRlQhDTSHXcqJ71kW307h+QJbF0bmMxsCiJ7umyPGEEJzsfhPmdwuJd+L4lA==
+X-Received: by 2002:adf:e490:0:b0:319:735c:73e1 with SMTP id i16-20020adfe490000000b00319735c73e1mr4959090wrm.4.1695306820635;
+        Thu, 21 Sep 2023 07:33:40 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id e24-20020a5d5958000000b00317ab75748bsm1916735wri.49.2023.09.21.07.33.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Sep 2023 07:33:40 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Xu Kuohai <xukuohai@huaweicloud.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        bpf@vger.kernel.org, kpsingh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 1/3] arm64: patching: Add aarch64_insn_copy()
+In-Reply-To: <9084901f-730c-cf33-9337-f18a3c17283f@huaweicloud.com>
+References: <20230908144320.2474-1-puranjay12@gmail.com>
+ <20230908144320.2474-2-puranjay12@gmail.com>
+ <9084901f-730c-cf33-9337-f18a3c17283f@huaweicloud.com>
+Date:   Thu, 21 Sep 2023 14:33:34 +0000
+Message-ID: <mb61pil83a94x.fsf@gmail.com>
 MIME-Version: 1.0
-References: <20230825112633.236607-1-ulf.hansson@linaro.org> <20230825112633.236607-12-ulf.hansson@linaro.org>
-In-Reply-To: <20230825112633.236607-12-ulf.hansson@linaro.org>
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Thu, 21 Sep 2023 16:30:48 +0200
-Message-ID: <CAKohponrQRm5xP4Ahei7ZnSmfdsLk+6tFD+7mXZ_c23pEP+x9w@mail.gmail.com>
-Subject: Re: [PATCH v3 11/13] cpufreq: scmi: Add support to parse domain-id
- using #power-domain-cells
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Aug 2023 at 13:27, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> The performance domain-id can be described in DT using the power-domains
-> property or the clock property. The latter is already supported, so let's
-> add support for the power-domains too.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->
-> Changes in v3:
->         - Move to get the power-domain index from power-domain-names.
->
-> ---
->  drivers/cpufreq/scmi-cpufreq.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
+Xu Kuohai <xukuohai@huaweicloud.com> writes:
 
+> On 9/8/2023 10:43 PM, Puranjay Mohan wrote:
+>> This will be used by BPF JIT compiler to dump JITed binary to a RX huge
+>> page, and thus allow multiple BPF programs sharing the a huge (2MB)
+>> page.
+>> 
+>> The bpf_prog_pack allocator that implements the above feature allocates
+>> a RX/RW buffer pair. The JITed code is written to the RW buffer and then
+>> this function will be used to copy the code from RW to RX buffer.
+>> 
+>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>> Acked-by: Song Liu <song@kernel.org>
+>> ---
+>>   arch/arm64/include/asm/patching.h |  1 +
+>>   arch/arm64/kernel/patching.c      | 41 +++++++++++++++++++++++++++++++
+>>   2 files changed, 42 insertions(+)
+>> 
+>> diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/patching.h
+>> index 68908b82b168..f78a0409cbdb 100644
+>> --- a/arch/arm64/include/asm/patching.h
+>> +++ b/arch/arm64/include/asm/patching.h
+>> @@ -8,6 +8,7 @@ int aarch64_insn_read(void *addr, u32 *insnp);
+>>   int aarch64_insn_write(void *addr, u32 insn);
+>>   
+>>   int aarch64_insn_write_literal_u64(void *addr, u64 val);
+>> +void *aarch64_insn_copy(void *dst, const void *src, size_t len);
+>>   
+>>   int aarch64_insn_patch_text_nosync(void *addr, u32 insn);
+>>   int aarch64_insn_patch_text(void *addrs[], u32 insns[], int cnt);
+>> diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+>> index b4835f6d594b..243d6ae8d2d8 100644
+>> --- a/arch/arm64/kernel/patching.c
+>> +++ b/arch/arm64/kernel/patching.c
+>> @@ -105,6 +105,47 @@ noinstr int aarch64_insn_write_literal_u64(void *addr, u64 val)
+>>   	return ret;
+>>   }
+>>   
+>> +/**
+>> + * aarch64_insn_copy - Copy instructions into (an unused part of) RX memory
+>> + * @dst: address to modify
+>> + * @src: source of the copy
+>> + * @len: length to copy
+>> + *
+>> + * Useful for JITs to dump new code blocks into unused regions of RX memory.
+>> + */
+>> +noinstr void *aarch64_insn_copy(void *dst, const void *src, size_t len)
+>> +{
+>> +	unsigned long flags;
+>> +	size_t patched = 0;
+>> +	size_t size;
+>> +	void *waddr;
+>> +	void *ptr;
+>> +	int ret;
+>> +
+>
+> check whether the input address and length are aligned to instruction size?
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Will add a check that dst is aligned to instruction size and len is a
+multiple of instruction size.
+
+>
+>> +	raw_spin_lock_irqsave(&patch_lock, flags);
+>> +
+>> +	while (patched < len) {
+>> +		ptr = dst + patched;
+>> +		size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
+>> +			     len - patched);
+>> +
+>> +		waddr = patch_map(ptr, FIX_TEXT_POKE0);
+>> +		ret = copy_to_kernel_nofault(waddr, src + patched, size);
+>> +		patch_unmap(FIX_TEXT_POKE0);
+>> +
+>> +		if (ret < 0) {
+>> +			raw_spin_unlock_irqrestore(&patch_lock, flags);
+>> +			return NULL;
+>> +		}
+>> +		patched += size;
+>> +	}
+>> +	raw_spin_unlock_irqrestore(&patch_lock, flags);
+>> +
+>> +	caches_clean_inval_pou((uintptr_t)dst, (uintptr_t)dst + len);
+>> +
+>
+> seems flush_icache_range() or something like should be called here to
+> ensure the other CPUs' pipelines are cleared, otherwise the old instructions
+> at the dst address might be executed on other CPUs after the copy is complete,
+> which is not expected.
+
+Sure, I will use flush_icache_range() in place of
+caches_clean_inval_pou() in the next version 
+
+>
+>> +	return dst;
+>> +}
+>> +
+>>   int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
+>>   {
+>>   	u32 *tp = addr;
