@@ -2,149 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD007A9658
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427E77A981A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjIURHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
+        id S230333AbjIURbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjIURGd (ORCPT
+        with ESMTP id S230010AbjIURbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:06:33 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CAF4493;
-        Thu, 21 Sep 2023 10:04:05 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LAbsbV008389;
-        Thu, 21 Sep 2023 10:47:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to : sender :
- content-transfer-encoding : mime-version; s=pp1;
- bh=tC0z5s3RdP9QagJBrQju/hCR80f7lEFVYo0jybcVgTM=;
- b=HdWa/AEjA4+xZ3TUtE1VtWYjY1c7NEir8CR9mzXEm2zoafqm/DVkf4mvOuZFnL75iZCX
- AsPKuAf8lorZYFJoJ6/BEZqu1vvAqfvLZzWN66caULCp6WZdvh+2gdfj5J8gS7M0JPuv
- XEth5u3wftn+eKwsb1O7WVix3oWTH46u8txnpr5MGRvKIQ8JAdTFtYDcTqeaLm+1sm5g
- FIH7kUQ0QN8Ga5ZH1FkWpSixRzSAjek2u3V6tkm0yVPFuh9HlOULIMNzZEPrHCBMt0c9
- 4cQvpGDkYOrIw9cFgoY77x9MopU2xWsQm27hBpRrUgNPIXQIdDqIFRF5xWovlK+ZvO90 OA== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t848tfpq9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 10:47:53 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38L9g03G016432;
-        Thu, 21 Sep 2023 10:47:52 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5sd2ffs1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 10:47:52 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38LAllZM28639826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Sep 2023 10:47:47 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4C082004B;
-        Thu, 21 Sep 2023 10:47:47 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B169220043;
-        Thu, 21 Sep 2023 10:47:47 +0000 (GMT)
-Received: from p1gen4-pw042f0m (unknown [9.196.32.213])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu, 21 Sep 2023 10:47:47 +0000 (GMT)
-Received: from bblock by p1gen4-pw042f0m with local (Exim 4.96)
-        (envelope-from <bblock@linux.ibm.com>)
-        id 1qjHDm-001qiu-1v;
-        Thu, 21 Sep 2023 12:47:46 +0200
-Date:   Thu, 21 Sep 2023 12:47:46 +0200
-From:   Benjamin Block <bblock@linux.ibm.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Steffen Maier <maier@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        James Bottomley <James.Bottomley@suse.de>,
-        Swen Schillig <swen@vnet.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mailing List linux-scsi <linux-scsi@vger.kernel.org>
-Subject: Re: [PATCH] scsi: zfcp: Fix a potential double free in
- zfcp_port_enqueue
-Message-ID: <20230921104746.GG10864@p1gen4-pw042f0m.fritz.box>
-References: <20230921063915.7703-1-dinghao.liu@zju.edu.cn>
- <20230921102102.GF10864@p1gen4-pw042f0m.fritz.box>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20230921102102.GF10864@p1gen4-pw042f0m.fritz.box>
-Sender: Benjamin Block <bblock@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 4HTqd0pstE7eD7KZs3X4dIgUVQj2m89p
-X-Proofpoint-ORIG-GUID: 4HTqd0pstE7eD7KZs3X4dIgUVQj2m89p
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 21 Sep 2023 13:31:16 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E38417E9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:45 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6C2DBB75;
+        Thu, 21 Sep 2023 12:49:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695293369;
+        bh=GtelloX72BG0KpOKNT08ravq8i4jklKRI0NqaQwnfmY=;
+        h=From:Date:Subject:To:Cc:From;
+        b=b3dK9v+1Zms30TB3W9ZPNRpNm5qpTHgSNMOGzHKiqCQc9UPaAsN49na3FtZvl2CjH
+         eML8+Pi15aqegXktXe3pgrCrkvQrgyR1sGcH4Y+iB84PoHQPhTb0KVb9h1P6Dfl+CH
+         xWicZQTB1agftUc9lyqIprMKP1Yv3JdarfOlwvf8=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date:   Thu, 21 Sep 2023 13:50:32 +0300
+Subject: [PATCH] drm/mipi-dsi: Fix detach call without attach
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-21_07,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- adultscore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=940
- suspectscore=0 clxscore=1011 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309210092
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230921-dsi-detach-fix-v1-1-d0de2d1621d9@ideasonboard.com>
+X-B4-Tracking: v=1; b=H4sIAPcfDGUC/x2MywqAIBAAf0X23IKPyOpXooPlmnux0Igg+vek4
+ wzMPFAoMxUYxQOZLi68pwqqEbBGlzZC9pVBS23koBX6wujpdGvEwDd21nTBurZfnIUaHZmq/of
+ T/L4ffU4YumAAAAA=
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4464;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=GtelloX72BG0KpOKNT08ravq8i4jklKRI0NqaQwnfmY=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlDCAYl+B54Nb5SeNh3o0z42dOJKO+9qwZHo/FL
+ m+U3tupsPGJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZQwgGAAKCRD6PaqMvJYe
+ 9Td5D/9tSIAGMyzurWvslVtJRJCj7Dcqji/ukpDthj6E/e4KjnAasDqROAqhNno0V/nudEOMnks
+ 796BQ9cbAZ9st10LecAKAQiRWeBE8MgRR1FE4D0k7C9jKNA+3jv4auS3/UCOMyTHPFzklS/cInf
+ 5tYJMQ4Myaep6L9xUq3/SozRtMo1ZY+2CRaHI8bmUkgzW7rXWiEt5I8vXB6wn0QDNmATR2/Atia
+ sh7c55ybOSQS06kDI1+kjCmGODn9TDwlP347/doOkrFHWUuMvQzfoMoasS+VJ/Oa0Co/TtVuzcl
+ yF4Idlzf5nLo6qkn6J+pqY+rc4GKMnb45h8A5awKEeLttJ8KV0sOSgUqYbhm9atoBhkyiBj6HiL
+ TmJ9GSwqr15NQ5Jzr+jKvcEoUpH73Z6WfWgBbrFINC2olgGcyupivgUThLcHtA6HHU78bUiBy/J
+ TnrTMNvmGVQhVTphX0RpuXh0+r55Yl3+3rspSL+I0dvuLPBURTI02tm+3hcQ2tvGWZVLwzGQY2J
+ lgCn6jl3pirW0urqBk/RzdvtbIZcCNPYvz9slsZsYal+DQK1iRlqsQMSF4aW2tjwTfTt//0MxFB
+ 8JbEXyTUhUpW7fZc26ZiGFjA4CcauKylXHzOXWHwE9TfTCc7n6Qi03L9VGV9lJ5xWz3JHe8l1Dq
+ u2XpRVgTbdN4dkw==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 12:21:02PM +0200, Benjamin Block wrote:
-> Hello Liu Dinghao,
-> 
-> good find.
+It's been reported that DSI host driver's detach can be called without
+the attach ever happening:
 
-Oh, also, please put linux-scsi on the CC list. Patches to zfcp go via
-linux-scsi, not linux-s390.
+https://lore.kernel.org/all/20230412073954.20601-1-tony@atomide.com/
 
-> 
-> On Thu, Sep 21, 2023 at 02:39:15PM +0800, Dinghao Liu wrote:
-> > When device_register() fails, zfcp_port_release() will be called
-> > after put_device(). As a result, the zfcp_ccw_adapter_put() after
-> > err_out is redundant because it will be called in the call-back
-> > function zfcp_port_release(). Remove it from this error path.
-> 
-> So the reference on the adapter object is doubly put, which may
-> lead to a premature free of the adapter object itself. Please mention that
-> either in the subject, or description; it makes it easier to see what exactly
-> breaks at a glance.
-> 
-> > 
-> > Fixes: f3450c7b9172 ("[SCSI] zfcp: Replace local reference counting with common kref")
-> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> > ---
-> >  drivers/s390/scsi/zfcp_aux.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/s390/scsi/zfcp_aux.c b/drivers/s390/scsi/zfcp_aux.c
-> > index df782646e856..489e6239dedf 100644
-> > --- a/drivers/s390/scsi/zfcp_aux.c
-> > +++ b/drivers/s390/scsi/zfcp_aux.c
-> > @@ -552,7 +552,7 @@ struct zfcp_port *zfcp_port_enqueue(struct zfcp_adapter *adapter, u64 wwpn,
-> >  
-> >  	if (device_register(&port->dev)) {
-> >  		put_device(&port->dev);
-> > -		goto err_out;
-> > +		return ERR_PTR(retval);
-> 
-> I'd rather have a new label at the bottom, in front of the return that is
-> already there, and jump to that, instead of a different function exit point.
-> 
-> >  	}
-> >  
-> >  	write_lock_irq(&adapter->port_list_lock);
-> > -- 
-> > 2.17.1
-> > 
+After reading the code, I think this is what happens:
 
+We have a DSI host defined in the device tree and a DSI peripheral under
+that host (i.e. an i2c device using the DSI as data bus doesn't exhibit
+this behavior).
+
+The host driver calls mipi_dsi_host_register(), which causes (via a few
+functions) mipi_dsi_device_add() to be called for the DSI peripheral. So
+now we have a DSI device under the host, but attach hasn't been called.
+
+Normally the probing of the devices continues, and eventually the DSI
+peripheral's driver will call mipi_dsi_attach(), attaching the
+peripheral.
+
+However, if the host driver's probe encounters an error after calling
+mipi_dsi_host_register(), and before the peripheral has called
+mipi_dsi_attach(), the host driver will do cleanups and return an error
+from its probe function. The cleanups include calling
+mipi_dsi_host_unregister().
+
+mipi_dsi_host_unregister() will call two functions for all its DSI
+peripheral devices: mipi_dsi_detach() and mipi_dsi_device_unregister().
+The latter makes sense, as the device exists, but the former may be
+wrong as attach has not necessarily been done.
+
+To fix this, track the attached state of the peripheral, and only detach
+from mipi_dsi_host_unregister() if the peripheral was attached.
+
+Note that I have only tested this with a board with an i2c DSI
+peripheral, not with a "pure" DSI peripheral.
+
+However, slightly related, the unregister machinery still seems broken.
+E.g. if the DSI host driver is unbound, it'll detach and unregister the
+DSI peripherals. After that, when the DSI peripheral driver unbound
+it'll call detach either directly or using the devm variant, leading to
+a crash. And probably the driver will crash if it happens, for some
+reason, to try to send a message via the DSI bus.
+
+But that's another topic.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+ drivers/gpu/drm/drm_mipi_dsi.c | 17 +++++++++++++++--
+ include/drm/drm_mipi_dsi.h     |  2 ++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+index 14201f73aab1..843a6dbda93a 100644
+--- a/drivers/gpu/drm/drm_mipi_dsi.c
++++ b/drivers/gpu/drm/drm_mipi_dsi.c
+@@ -347,7 +347,8 @@ static int mipi_dsi_remove_device_fn(struct device *dev, void *priv)
+ {
+ 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(dev);
+ 
+-	mipi_dsi_detach(dsi);
++	if (dsi->attached)
++		mipi_dsi_detach(dsi);
+ 	mipi_dsi_device_unregister(dsi);
+ 
+ 	return 0;
+@@ -370,11 +371,18 @@ EXPORT_SYMBOL(mipi_dsi_host_unregister);
+ int mipi_dsi_attach(struct mipi_dsi_device *dsi)
+ {
+ 	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
++	int ret;
+ 
+ 	if (!ops || !ops->attach)
+ 		return -ENOSYS;
+ 
+-	return ops->attach(dsi->host, dsi);
++	ret = ops->attach(dsi->host, dsi);
++	if (ret)
++		return ret;
++
++	dsi->attached = true;
++
++	return 0;
+ }
+ EXPORT_SYMBOL(mipi_dsi_attach);
+ 
+@@ -386,9 +394,14 @@ int mipi_dsi_detach(struct mipi_dsi_device *dsi)
+ {
+ 	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
+ 
++	if (WARN_ON(!dsi->attached))
++		return -EINVAL;
++
+ 	if (!ops || !ops->detach)
+ 		return -ENOSYS;
+ 
++	dsi->attached = false;
++
+ 	return ops->detach(dsi->host, dsi);
+ }
+ EXPORT_SYMBOL(mipi_dsi_detach);
+diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+index c9df0407980c..c0aec0d4d664 100644
+--- a/include/drm/drm_mipi_dsi.h
++++ b/include/drm/drm_mipi_dsi.h
+@@ -168,6 +168,7 @@ struct mipi_dsi_device_info {
+  * struct mipi_dsi_device - DSI peripheral device
+  * @host: DSI host for this peripheral
+  * @dev: driver model device node for this peripheral
++ * @attached: the DSI device has been successfully attached
+  * @name: DSI peripheral chip type
+  * @channel: virtual channel assigned to the peripheral
+  * @format: pixel format for video mode
+@@ -184,6 +185,7 @@ struct mipi_dsi_device_info {
+ struct mipi_dsi_device {
+ 	struct mipi_dsi_host *host;
+ 	struct device dev;
++	bool attached;
+ 
+ 	char name[DSI_DEV_NAME_SIZE];
+ 	unsigned int channel;
+
+---
+base-commit: 9fc75c40faa29df14ba16066be6bdfaea9f39ce4
+change-id: 20230921-dsi-detach-fix-6736f7a48ba7
+
+Best regards,
 -- 
-Best Regards, Benjamin Block        /        Linux on IBM Z Kernel Development
-IBM Deutschland Research & Development GmbH    /   https://www.ibm.com/privacy
-Vors. Aufs.-R.: Gregor Pillen         /         Geschäftsführung: David Faller
-Sitz der Ges.: Böblingen     /    Registergericht: AmtsG Stuttgart, HRB 243294
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
