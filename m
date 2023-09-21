@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D6B7AA0FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B717AA0FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbjIUU40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
+        id S231145AbjIUU4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbjIUU4L (ORCPT
+        with ESMTP id S232507AbjIUU4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Sep 2023 16:56:11 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9249AE94D
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:42 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d814634fe4bso1834683276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:42 -0700 (PDT)
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AF6C06B5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:44 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c43e6ba8d1so10908555ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695328422; x=1695933222; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695328424; x=1695933224; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=GXnfKvHXTg+GXCkfuzsuluimpzEK7TKl935+HXdmmVk=;
-        b=LbW7OvmzGYx86t/DB1TIa4aie8OrmSOTIMtNm/JXLP6Hddgey1cj0Cdt8bNQpoziRB
-         RL5lL7FoxOClWdH1c3CxdW6z2mh6lLSlLONUPzMcqlpjQRgivq8mBkQQPScxlABXbNTZ
-         0slD7P+iOjHIPOutQ1BeA26IYGi7ufkcODf4uA1xKARXC0/tneDwOmjmFb44mD7R8MFk
-         Na7m2dTmOCp7qZDDihuHQ63wAUZoyObMFkVwGRVNuBV1CJrDKPFZuhoPgnxHLrxfgmDM
-         +imtx0lw7GWFXxbScIR5pllKVWHQGpzrWfKYi538KiG8TwBlmfnsZl+mEHIldlQwH9CT
-         8zeA==
+        bh=ooFkuvOD+X01OBgJAJRWL8fBqVSu8Kag+d9BzvqrsOA=;
+        b=V30WBHyn02jX7zrORwjVf/opgyfac0giuBab24z168ORR6RfjRU3+sdMlHIDUzp6+Q
+         GEFaeOzRwqrZDztBXnfHO4WJ8PkuAwHRZinBGYE3zKGTKo2Fb+osioFKh6xktbut6JTT
+         5ynF5OnJLijZqWSQWpzsG4qhYQ06o2LkcCz/Brn7eDPGdhiSzX1TBsIOHTlup6XkvLh/
+         ZBlRZpGCWG2Uz2L+ElIrKAu/HXtFlQV8ZBxI7qUE/E/K1KLk38MMM4Pmn7yY9f1/j9x6
+         OYiH9wJVoKsWGfHjMGWYDqyXeKIPoEzZ6StluXAYO+lY+Ryyo4Pr/UHTRWHDZ0xLmJyJ
+         iaJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695328422; x=1695933222;
+        d=1e100.net; s=20230601; t=1695328424; x=1695933224;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GXnfKvHXTg+GXCkfuzsuluimpzEK7TKl935+HXdmmVk=;
-        b=fq1z4B3ApUV6X62a2RRFl3Bt1+DmNCxHjVDUw7JdOBiRYHKOVGj5dYkRjbx/No20Dr
-         R4MgntQWj5F4K/IgUNXCjo0f6PkxGS4lswdLe0ASTNkhGx9/R2y1OJMPcYGOjW/VNLGk
-         KKyLTkjkbg/VEg7vju271a0rPhhe+ujg2COKKFuEGls7DtjU4NtwophQVtSbw+YCj5S9
-         Yus4kY5ZF6hODvcGdeqdERB7f+Ptt3W6pw1zD87NoCTxFFtRrkawiJxLg5NxEQKDPXOu
-         0cLEHEXhrU/YpoklkbybtvcmnGwPIkYfx2crss0nskSTi78KbCsfl2Nz7E4t9fz+e+So
-         Ny9A==
-X-Gm-Message-State: AOJu0Yw/arDkBWwC1S5sLfLubvGPreCCrYHWrNykJuU/N5wg7sEFJKnC
-        dBiS503IbUCYrxClOcZa/hQW1t88NjA=
-X-Google-Smtp-Source: AGHT+IEi/fpx5qwnyQazg0USr1DHbY5reNhmjREs+J+LHxISH07TrHV0vwV7RrUiPSmPNiZfUH6GP2uptjE=
+        bh=ooFkuvOD+X01OBgJAJRWL8fBqVSu8Kag+d9BzvqrsOA=;
+        b=lnmYcXHI8RjOe8JNCfO+gm24DjzIb+7HEZ2KfF/ztyectMq6ZghfurPFqBBGx99HbO
+         +fdfkuZud2VQeABOhjVHzDcGRTV0k+epVm7pFLXsyERZaF+QpAIPrwhLyJ3eH/MNs6Wj
+         zkmKjJGSSiU7lAfSqdbRLgutZNqJlH4n+GYm8pnWMYfMNTX2PxkwdjS7Lhs22JleksfM
+         2VkPebj/PbS7IaFy2B2Qa6fOTL7blBmYWk3tssT+8aQcKgTcQnKipeL9ZJB3d3rQ/EMF
+         /qm4/N5EuFCwHdk4xqUkOMLdkcHS8/DjZM9DlOib8nYB0E0HgUaDdmJmJFBO+jemb8Y8
+         kNGQ==
+X-Gm-Message-State: AOJu0YzpOYg4+0A42TnQ7fbGOqQVpSQtYUnpr4GwGW5Th6zaCbNwhabX
+        4L9PxI9hKtH1jDkyWBoeV+r4KFmlK30=
+X-Google-Smtp-Source: AGHT+IEU5m4YoGaLYARxz6CkyfsMJNbrUD8SUx5Ubkh7a53+UYT0k7pUszgIuGSWr5rg40lyfuo4qcQeNaM=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:77d8:0:b0:d81:bb31:d2fa with SMTP id
- s207-20020a2577d8000000b00d81bb31d2famr91450ybc.3.1695328421812; Thu, 21 Sep
- 2023 13:33:41 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:e5d2:b0:1bf:cc5:7b53 with SMTP id
+ u18-20020a170902e5d200b001bf0cc57b53mr91087plf.1.1695328423673; Thu, 21 Sep
+ 2023 13:33:43 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 21 Sep 2023 13:33:21 -0700
+Date:   Thu, 21 Sep 2023 13:33:22 -0700
 In-Reply-To: <20230921203331.3746712-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230921203331.3746712-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230921203331.3746712-5-seanjc@google.com>
-Subject: [PATCH 04/13] KVM: WARN if there are danging MMU invalidations at VM destruction
+Message-ID: <20230921203331.3746712-6-seanjc@google.com>
+Subject: [PATCH 05/13] KVM: Fix MMU invalidation bookkeeping in guest_memfd
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -72,43 +72,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an assertion that there are no in-progress MMU invalidations when a
-VM is being destroyed, with the exception of the scenario where KVM
-unregisters its MMU notifier between an .invalidate_range_start() call and
-the corresponding .invalidate_range_end().
+Acquire mmu_lock and do invalidate_{begin,end}() if and only if there is
+at least one memslot that overlaps the to-be-invalidated range.  This
+fixes a bug where KVM would leave a danging in-progress invalidation as
+the begin() call was unconditional, but the end() was not (only performed
+if there was overlap).
 
-KVM can't detect unpaired calls from the mmu_notifier due to the above
-exception waiver, but the assertion can detect KVM bugs, e.g. such as the
-bug that *almost* escaped initial guest_memfd development.
-
-Link: https://lore.kernel.org/all/e397d30c-c6af-e68f-d18e-b4e3739c5389@linux.intel.com
+Reported-by: Binbin Wu <binbin.wu@linux.intel.com>
+Fixes: 1d46f95498c5 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific backing memory")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ virt/kvm/guest_mem.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 54480655bcce..277afeedd670 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1381,9 +1381,16 @@ static void kvm_destroy_vm(struct kvm *kvm)
- 	 * No threads can be waiting in kvm_swap_active_memslots() as the
- 	 * last reference on KVM has been dropped, but freeing
- 	 * memslots would deadlock without this manual intervention.
-+	 *
-+	 * If the count isn't unbalanced, i.e. KVM did NOT unregister between
-+	 * a start() and end(), then there shouldn't be any in-progress
-+	 * invalidations.
- 	 */
- 	WARN_ON(rcuwait_active(&kvm->mn_memslots_update_rcuwait));
--	kvm->mn_active_invalidate_count = 0;
-+	if (kvm->mn_active_invalidate_count)
-+		kvm->mn_active_invalidate_count = 0;
-+	else
-+		WARN_ON(kvm->mmu_invalidate_in_progress);
- #else
- 	kvm_flush_shadow_all(kvm);
- #endif
+diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+index 3c9e83a596fe..68528e9cddd7 100644
+--- a/virt/kvm/guest_mem.c
++++ b/virt/kvm/guest_mem.c
+@@ -88,14 +88,10 @@ static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
+ static void kvm_gmem_invalidate_begin(struct kvm_gmem *gmem, pgoff_t start,
+ 				      pgoff_t end)
+ {
++	bool flush = false, found_memslot = false;
+ 	struct kvm_memory_slot *slot;
+ 	struct kvm *kvm = gmem->kvm;
+ 	unsigned long index;
+-	bool flush = false;
+-
+-	KVM_MMU_LOCK(kvm);
+-
+-	kvm_mmu_invalidate_begin(kvm);
+ 
+ 	xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
+ 		pgoff_t pgoff = slot->gmem.pgoff;
+@@ -107,13 +103,21 @@ static void kvm_gmem_invalidate_begin(struct kvm_gmem *gmem, pgoff_t start,
+ 			.may_block = true,
+ 		};
+ 
++		if (!found_memslot) {
++			found_memslot = true;
++
++			KVM_MMU_LOCK(kvm);
++			kvm_mmu_invalidate_begin(kvm);
++		}
++
+ 		flush |= kvm_mmu_unmap_gfn_range(kvm, &gfn_range);
+ 	}
+ 
+ 	if (flush)
+ 		kvm_flush_remote_tlbs(kvm);
+ 
+-	KVM_MMU_UNLOCK(kvm);
++	if (found_memslot)
++		KVM_MMU_UNLOCK(kvm);
+ }
+ 
+ static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
+@@ -121,10 +125,11 @@ static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
+ {
+ 	struct kvm *kvm = gmem->kvm;
+ 
+-	KVM_MMU_LOCK(kvm);
+-	if (xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT))
++	if (xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT)) {
++		KVM_MMU_LOCK(kvm);
+ 		kvm_mmu_invalidate_end(kvm);
+-	KVM_MMU_UNLOCK(kvm);
++		KVM_MMU_UNLOCK(kvm);
++	}
+ }
+ 
+ static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
