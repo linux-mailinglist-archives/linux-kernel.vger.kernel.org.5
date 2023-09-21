@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ED27A910E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925907A910C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjIUCtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 22:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        id S229669AbjIUCsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjIUCss (ORCPT
+        with ESMTP id S229502AbjIUCsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:48:48 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F17F0
+        Wed, 20 Sep 2023 22:48:47 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D047E8
         for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 19:48:36 -0700 (PDT)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230921024834epoutp0389ff5dd7a4ce9587df788efb95d9f6a9~GyhgcLn_i0702607026epoutp03N
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 02:48:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230921024834epoutp0389ff5dd7a4ce9587df788efb95d9f6a9~GyhgcLn_i0702607026epoutp03N
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230921024833epoutp02dff2527906246616e276167dde4f8ffd~GyhfvKmBn1787817878epoutp022
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 02:48:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230921024833epoutp02dff2527906246616e276167dde4f8ffd~GyhfvKmBn1787817878epoutp022
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1695264514;
-        bh=KmG4QbAqci7Vhz1LB8iYJDLiqlnNyIXTPBwsLXKrGy8=;
+        s=mail20170921; t=1695264513;
+        bh=JsGFPRSyn0agbiv2BsE55C5s//NowQKDPVALOSXvPFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iKztScs7SPzulyj4QmbqrFC0rqaxP0wfQHbW+t7X1EdQ8bN2WICdI3vVDEbdvR/55
-         4Efuj0dZ7GrLhWeIP8LU1N38zAqJXmjDmf7FPvuKIA8jH/ZUfKzVvoR5Z1QuN5HV3v
-         xzdfebxZUJa4wZp9Le+QMxFnlHB4Sw4kODvPG9N8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20230921024833epcas2p2ad590b1433f821543f2bb9e37233b932~GyhfLei2r0273502735epcas2p2f;
+        b=RsmWTtqYa/K6ZstkAwfICFKd9eqcdUQctc5DlKN1yRE+2iVY5j8PaAGNtu2OlwFJM
+         KtZQmld7d/o3WeWjty8dO8wWUPITO3c5xJPYE2As9OAWx2HrMrQn0YW/+8lfVzpqlu
+         by0g4WX/YveWlSQZWkvnecjRE35yoX70RT5sj9eM=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20230921024833epcas2p38de9ac9ff5a072c27b9b7ce4dd688eba~Gyhe_EWrA2379423794epcas2p30;
         Thu, 21 Sep 2023 02:48:33 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.92]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Rrfwc5G0Xz4x9Q2; Thu, 21 Sep
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.97]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Rrfwc5BJmz4x9QB; Thu, 21 Sep
         2023 02:48:32 +0000 (GMT)
 Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4B.B4.09660.00FAB056; Thu, 21 Sep 2023 11:48:32 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20230921024832epcas2p450ca98aebdcdd0124be9ad5c2ff22b13~GyheBVbOM0279002790epcas2p4G;
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2D.AE.09649.00FAB056; Thu, 21 Sep 2023 11:48:32 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20230921024832epcas2p3677e522ed0175b83c1a56e36a730ce97~GyheJd-Vw2379423794epcas2p3w;
         Thu, 21 Sep 2023 02:48:32 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230921024832epsmtrp2b39a58f73aea53c7b9716d78eb6776f4~GyheANMZn1801818018epsmtrp2C;
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230921024832epsmtrp17d96bf194d512a6bdb7bdbf9965d156f~GyheFPkw30473204732epsmtrp1G;
         Thu, 21 Sep 2023 02:48:32 +0000 (GMT)
-X-AuditID: b6c32a47-afdff700000025bc-7d-650baf0091f3
+X-AuditID: b6c32a46-943ff700000025b1-ca-650baf001e11
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F6.53.08649.FFEAB056; Thu, 21 Sep 2023 11:48:31 +0900 (KST)
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A4.D7.18916.FFEAB056; Thu, 21 Sep 2023 11:48:31 +0900 (KST)
 Received: from jtpark-7920.dsn.sec.samsung.com (unknown [10.229.83.56]) by
         epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230921024831epsmtip26edec8385ac36fdede8946d4af5d5f5a~GyhdsRkE91641616416epsmtip24;
+        20230921024831epsmtip2c025d707382acb4bdbdd10b52e7cea8d~Gyhd0MWoQ2027220272epsmtip2b;
         Thu, 21 Sep 2023 02:48:31 +0000 (GMT)
 From:   Jeongtae Park <jtp.park@samsung.com>
 To:     Dan Williams <dan.j.williams@intel.com>,
@@ -70,89 +70,87 @@ Cc:     linux-kernel@vger.kernel.org,
         Jehoon Park <jehoon.park@samsung.com>,
         Jeongtae Park <jeongtae.park@gmail.com>,
         Jeongtae Park <jtp.park@samsung.com>
-Subject: [PATCH 3/7] cxl/mem: Fix a checkpatch error
-Date:   Thu, 21 Sep 2023 11:51:06 +0900
-Message-Id: <20230921025110.3717583-4-jtp.park@samsung.com>
+Subject: [PATCH 4/7] cxl: Fix a checkpatch error
+Date:   Thu, 21 Sep 2023 11:51:07 +0900
+Message-Id: <20230921025110.3717583-5-jtp.park@samsung.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230921025110.3717583-1-jtp.park@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEJsWRmVeSWpSXmKPExsWy7bCmuS7Deu5Ug+PT1CzuPr7AZtE8eTGj
-        xfSpFxgtTtxsZLNYfXMNo0XT6rusFs2L17NZfHjzj8XiwOsGdoszZ1+yWqxaeI3N4sjaq0wW
-        i4/OYLY4uofD4vysUywWl3fNYbO4NeEYk8XG++/YHIQ8ds66y+7RcuQtq8fiPS+ZPDat6mTz
-        2D93DbtH35ZVjB5TZ9d7fN4kF8ARlW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlh
-        rqSQl5ibaqvk4hOg65aZA/SKkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAvECv
-        ODG3uDQvXS8vtcTK0MDAyBSoMCE7Y/fmL0wFM1krVk3dz9zAuIGli5GTQ0LAROLhrpuMXYxc
-        HEICOxgl1v6aywzhfGKU6O48BZX5xigxZcskJpiWjiMXWCASexkl9sxqYwZJCAn8YZQ41qYF
-        YrMJaElMn9nAClIkIvCQSWLnqz4mEIdZ4BGTxMcTr8A6hIFG7fuzDMxmEVCVmHXzByuIzStg
-        LfG7bQIbxDp5if0Hz4LVcArYSJx7cYkJokZQ4uTMJ2BfMAPVNG+dDXa4hMAZDonu1WcZIZpd
-        JM7caYS6W1ji1fEt7BC2lMTnd3vZIBqaGSVeP7/CAuG0MEqsu70DqspY4t3N50AncQCt0JRY
-        v0sfxJQQUJY4cgtqMZ9Ex+G/7BBhXomONiGIRiWJeUvnMUPYEhKX5m5hhijxkGiY7QQJuX5G
-        iXPbXzFPYFSYheSdWUjemYWwdwEj8ypGsdSC4tz01GKjAmN4HCfn525iBCduLfcdjDPeftA7
-        xMjEwXiIUYKDWUmEN/kTV6oQb0piZVVqUX58UWlOavEhRlNgYE9klhJNzgfmjrySeEMTSwMT
-        MzNDcyNTA3Mlcd57rXNThATSE0tSs1NTC1KLYPqYODilGphcl59sMVu1u/M19/di5rfL9/D7
-        bl9g6ZpV2vQ75+bstV5fw/Yc0bvVO+22y8GGG9v3cHBb1eX+OL+C9/KB0z98H9xb1G8ovEZq
-        5cdjRUozLep8wlo0nrwx3Gozfw+nekKvyAkJ1g/d0ZUn6o552T0+zvHnSvxRx8Rvr7ekZ5Vv
-        O8bZ7ijwwUfWe2nh0ph3M7dGflNbu940y85VX2rRrLeMasv2ztulz3cq3+Ib+xFFRe285Zaz
-        a1J3bTgU8SHxYtmmKhH/z8qyM24n3nkdyDyz+d+ndQLOM7ZpvVpyuHumxolLnjzP3pQ8v3t0
-        qXpWfdbKgFP1Xj/S9s+x7zhULWK2enLZWhbbOU1dmy5fu3T6ixJLcUaioRZzUXEiAMbIFVpl
-        BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJXvf/Ou5UgzMHTC3uPr7AZtE8eTGj
-        xfSpFxgtTtxsZLNYfXMNo0XT6rusFs2L17NZfHjzj8XiwOsGdoszZ1+yWqxaeI3N4sjaq0wW
-        i4/OYLY4uofD4vysUywWl3fNYbO4NeEYk8XG++/YHIQ8ds66y+7RcuQtq8fiPS+ZPDat6mTz
-        2D93DbtH35ZVjB5TZ9d7fN4kF8ARxWWTkpqTWZZapG+XwJWxe/MXpoKZrBWrpu5nbmDcwNLF
-        yMkhIWAi0XHkApDNxSEksJtR4umsi4wQCQmJ5RteMEHYwhL3W46wQhT9YpR4e+UwO0iCTUBL
-        YvrMBrCEiMBzJomTb04xgjjMAq+YJHr/X2cGqRIG2rHvzzIwm0VAVWLWzR+sIDavgLXE77YJ
-        bBAr5CX2HzwLVsMpYCNx7sUlsNVCQDXLL+1lg6gXlDg58wnY3cxA9c1bZzNPYBSYhSQ1C0lq
-        ASPTKkbJ1ILi3PTcZMMCw7zUcr3ixNzi0rx0veT83E2M4BjT0tjBeG/+P71DjEwcjIcYJTiY
-        lUR4kz9xpQrxpiRWVqUW5ccXleakFh9ilOZgURLnNZwxO0VIID2xJDU7NbUgtQgmy8TBKdXA
-        VFzweOps9xnXDvhbtagy3JTcsNp9y8KWNbLPAtRm3UuQuZMT4h6k5/vgSWA1U+qKmv/B3PWT
-        rkzRcHZnXqcitned2QR5qyssty7aPTyX/0zg2gqT29sLLGPVey/KqtlN+vnGrnP7df23Ex+8
-        ehe2Zpt/+AOZusO3FLb/33fc+OLbnbyF5xMbMj425uxe+bL3mBgbt0aDhmZE3uT3O3OW8ytL
-        8V0qKzWrOzL5j9gyq/Cd/OkajMyuiW6c2eJrkyPu33dmKq4Wyud9F766QeiD7k+d+rdcM0QD
-        GR/+uGCY8fI7o85MZ1e5pu+sGRO85S4/nPD52s/1MwwbhdP+N+4XfiPh3/s2/PRjz7wJm9ex
-        KrEUZyQaajEXFScCAEwgCKkgAwAA
-X-CMS-MailID: 20230921024832epcas2p450ca98aebdcdd0124be9ad5c2ff22b13
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xTVxTHve+1rw+WzmcVvGuCsjfdAqHYVqAPBzqjMV2EhIWFhP3qHu1L
+        IdAf6SuLW+IECo6RgBhhrEUYQoixlPEjlQEzwUEZuIk0wGYKlmF1IFSworgRN7eWh5v/nXPy
+        +X7PPefei6OicUyM5+nNjElPF5BYOK9nKEYh2dLxEiP13HmD8t5xY5TlXAug6mrdgBr1FGNU
+        m8cBqJI2L5+ytHRgVOD+Mx511V8koK6PLfIp+4VfMcrV/gtCtQx/jVLDV3Bq3PYTj5rsP49R
+        09U/IlTXbyvYWyJln80rUJa6lvnKliuLiLLb/iWmHGhwCJRVTjtQ1tafUj7q3pWBv5efksvQ
+        GsYUzejVBk2eXptKHs9UHVElJkllElkypSCj9bSOSSWPpmVIjuUVBEchoz+hCwqDpQyaZcl9
+        B1NMhkIzE51rYM2pJGPUFBgVxniW1rGFem28njEfkEml8sQg+HF+rvvPUcRowU48ninjF4FK
+        fgUIwyGRAG8V1aAVIBwXEb0ADnt6+FyyCuCCs10QojaSbyrx54rS2X4BB/UBWH+rBHDQXwDO
+        unWhGCNiYZ21aMNpB3EbgX1LVUgoQQkfAh+OLqEhajshhY5Od1CN4zxiL1wvl4TKQuJNOOn5
+        XcB12w0HfhjbwMOIFHjj3gTCMdvgNetdXihGg4zlcj3K8aM49H13OGQJiaOwvl3BlbfDpRHn
+        pqUYLp45vTEAJCwA+hemeFxSCuC3M72b1H644lngh4xQIgZ29O/jPF+DrunNti/D8qG/BVxZ
+        CMtPizghCRtbGzdPA+FEg3MzVsKmJhfg9nYGwJ/PN/OrQbTthWlsL0xj+79xE0DtIJIxsjot
+        w8qN8v8uWG3QdYONlx17rBfULAfiBwGCg0EAcZTcIVSvhjMioYb+9DPGZFCZCgsYdhAkBld9
+        FhVHqA3Br6E3q2QJydKEpCSZQp4oVZA7hbNlDRoRoaXNTD7DGBnTcx2Ch4mLkIRdvUhtzYi1
+        4/BOXOY7/o6lYcSPt64d2eP9ZznGkL6WopnH47QCefLcNcUlVwU5p83KdJqqdjtal9mTN9Zz
+        Xp1TPbm5J6cq4qIkrLNyS5rm0v75cx/2uCLvPnMJqsyZndkPcuaKsxV7nTPxSz7r5RFLjjfr
+        qTi5NHO5S02kJ91zN3cfvCq4zthWFtORqNuHfPXNBx5/QPdZA1Frq36hJKpGPd311f233X+E
+        jX8um3j9qXikEYs8pTub/sVQ8vuErNp+0pZdUtb6UaCuuO37tEDgUXPu1kNro08aHHHm7K0Z
+        izlu37b5/Fci7GjczYcP1ien3s2akrsHFqwn0LFmP8ljc2lZLGpi6X8BTROm6GIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnkeLIzCtJLcpLzFFi42LZdlhJXpdhPXeqwRFTi7uPL7BZNE9ezGgx
+        feoFRosTNxvZLFbfXMNo0bT6LqtF8+L1bBYf3vxjsTjwuoHd4szZl6wWqxZeY7M4svYqk8Xi
+        ozOYLY7u4bA4P+sUi8XlXXPYLG5NOMZksfH+OzYHIY+ds+6ye7QcecvqsXjPSyaPTas62Tz2
+        z13D7tG3ZRWjx9TZ9R6fN8kFcERx2aSk5mSWpRbp2yVwZVz4cYKpoJmt4svtVtYGxl7WLkZO
+        DgkBE4mWe7vYuxi5OIQEtjNKbP63gAkiISGxfMMLKFtY4n7LEVaIol+MEh+OnGUDSbAJaElM
+        n9kAlhAReM4kcfLNKUYQh1ngFZNE7//rzCBVwgIGEms2XABKcHCwCKhK/OzQBQnzClhLXL75
+        lB1ig7zE/oNnwco5BWwkzr24BLZZCKhm+aW9bBD1ghInZz5hAbGZgeqbt85mnsAoMAtJahaS
+        1AJGplWMoqkFxbnpuckFhnrFibnFpXnpesn5uZsYwXGlFbSDcdn6v3qHGJk4GA8xSnAwK4nw
+        Jn/iShXiTUmsrEotyo8vKs1JLT7EKM3BoiTOq5zTmSIkkJ5YkpqdmlqQWgSTZeLglGpgmq6q
+        6+ZVkzG/yWLnQxluuds/P/5/NrXf1/instAqly1Nkp/SGtqDzj4VSEi/tyepunuW4+1avZnR
+        O3N2PzNcGcH2zutRzQWhox9392/3ajnwo3zbPrXvPJtdjMwitz7miZb7XC6Se9rwkU3F+/Sc
+        JSc1XB5bfZkRKjGd7WlXbu2huzO3Pzp3peIE8/qvPyzsdz50y3AxSJQ4MltdYk1p9j3Bmumi
+        CYz/stmf3NYJelsz10nhkJOW7PWWEpnvy3cYKDz6ZOOdoxXOcuCpbcde5tAdU/fqcE+zZNna
+        v+L1Sva8R58esj5+q69gbKvFcTj+xs5qJe5TnRaMdhcD1vtpGNYs7jgyxcbrmby0cUONEktx
+        RqKhFnNRcSIAxmh3RRoDAAA=
+X-CMS-MailID: 20230921024832epcas2p3677e522ed0175b83c1a56e36a730ce97
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: AUTO_CONFIDENTIAL
 CMS-TYPE: 102P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230921024832epcas2p450ca98aebdcdd0124be9ad5c2ff22b13
+X-CMS-RootMailID: 20230921024832epcas2p3677e522ed0175b83c1a56e36a730ce97
 References: <20230921025110.3717583-1-jtp.park@samsung.com>
-        <CGME20230921024832epcas2p450ca98aebdcdd0124be9ad5c2ff22b13@epcas2p4.samsung.com>
+        <CGME20230921024832epcas2p3677e522ed0175b83c1a56e36a730ce97@epcas2p3.samsung.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: spaces required around that '=' (ctx:WxV)
+ERROR: Macros with complex values should be enclosed in parentheses
 
 Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
 ---
- drivers/cxl/cxlmem.h | 2 +-
+ drivers/cxl/cxl.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index 79e99c873ca2..1ac3eb2be84f 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -183,7 +183,7 @@ struct cxl_mbox_cmd_rc {
- };
+diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+index 76d92561af29..545381355efb 100644
+--- a/drivers/cxl/cxl.h
++++ b/drivers/cxl/cxl.h
+@@ -142,7 +142,7 @@ static inline int ways_to_eiw(unsigned int ways, u8 *eiw)
+ #define CXL_RAS_HEADER_LOG_OFFSET 0x18
+ #define CXL_RAS_CAPABILITY_LENGTH 0x58
+ #define CXL_HEADERLOG_SIZE SZ_512
+-#define CXL_HEADERLOG_SIZE_U32 SZ_512 / sizeof(u32)
++#define CXL_HEADERLOG_SIZE_U32 (SZ_512 / sizeof(u32))
  
- static const
--struct cxl_mbox_cmd_rc cxl_mbox_cmd_rctable[] ={ CMD_CMD_RC_TABLE };
-+struct cxl_mbox_cmd_rc cxl_mbox_cmd_rctable[] = { CMD_CMD_RC_TABLE };
- #undef C
- 
- static inline const char *cxl_mbox_cmd_rc2str(struct cxl_mbox_cmd *mbox_cmd)
+ /* CXL 2.0 8.2.8.1 Device Capabilities Array Register */
+ #define CXLDEV_CAP_ARRAY_OFFSET 0x0
 -- 
 2.34.1
 
