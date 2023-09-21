@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1910E7A9A61
+	by mail.lfdr.de (Postfix) with ESMTP id 895EA7A9A63
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbjIUSit convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 14:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S230268AbjIUSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjIUSiK (ORCPT
+        with ESMTP id S229969AbjIUSiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:38:10 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964CAD62E8;
-        Thu, 21 Sep 2023 11:26:50 -0700 (PDT)
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3adc95fdceeso83763b6e.0;
-        Thu, 21 Sep 2023 11:26:50 -0700 (PDT)
+        Thu, 21 Sep 2023 14:38:14 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9261D66C0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:27:14 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso166198566b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grsecurity.net; s=grsec; t=1695320833; x=1695925633; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w+HrO7ldsgAqMO34/GLDqrs/oKiBjOHaDyijQN4RwUM=;
+        b=augSRktSCZNcD6JNpeM2IqVcSMln2gwUUSbOJ9F4R+5+sYBocI3a9jgU2g5v5xTwgU
+         OsGN2VM0OExTpCtZFqPwSr7RJL335s16i6sHbme1HROuv3G0T3+X7fNbk1pDXE2/oWhe
+         /fIBtYpmHCdAvVxEidnLA3jOVd7iZGg2zTXSppwX9kGJPQDGwN1pZrOjXsr386CPqNtI
+         7oj+VypYWgqP6W85ryX0aw1MnLUM67hhRqDb2MPe73QKsXzgVyr7NPZgQaCVUTBlO8SY
+         SeK73q75ooMbBaXoSGeP9iDfEV5IfqdsYHyCj+y6ZSYLdG7CwMUi/EpPe64GN/dsEJqA
+         qc9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320810; x=1695925610;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4n/wqWr27pRntEElj0EkXR3VCLKvT4G/Xcd993NCAk4=;
-        b=JVnGpV8TDgfBN4Hk8s0JvmB3A98d61iOmzqRcFV9g6bmAYjc8yphO8g1ebfLsfyUWu
-         iwqX8gUrB/jtipEvdMsumntv9mM8kmkdgiOWKDaRhthyRmDG1Pp5+DSHXzHZvA5Jg0wY
-         S2b0Im4TeshTSII5FN9YfvKeu7eIU5jG5nXcBq4zBkipAWnrmxxX8qvoKs2raN9xhmr7
-         w9A7xdznhP/CZCZQ5n+UejykLW0lEwBZ89IEoqFmGMxd3gImdnC3U8honwGxoGtxL3zG
-         o8LDpGOQcQ0V21EOYM7k3Tapd3tqUlIRKrpVia5H/2nUzALx66cT9VwwYnxXwsgqEaSt
-         VjFA==
-X-Gm-Message-State: AOJu0YwW4UYVbm7z1oTpMwH/Xf31yoOXSHYRJEnf77FGUe1jZetDlJvf
-        GTqS5tkTLONqxbRmvV/EO38/Z5CZ1paoax7SQfe4paw0
-X-Google-Smtp-Source: AGHT+IHrxNnigtLDAImoAjPYXbdlPLItCPsgM9jP/lbemDhG/GboyCzrBZG0LxMXhPHJITu+MFQrBEHm/2Ne9DJnuAA=
-X-Received: by 2002:a05:6808:20a7:b0:3ad:f525:52d5 with SMTP id
- s39-20020a05680820a700b003adf52552d5mr5455443oiw.4.1695320809853; Thu, 21 Sep
- 2023 11:26:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695320833; x=1695925633;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w+HrO7ldsgAqMO34/GLDqrs/oKiBjOHaDyijQN4RwUM=;
+        b=gKVHOFr9mzCndh/sLoW9HwqLRB4nXtBq8u4zI0AlWRpHm1DpZQgcCcQAWkwQFhyDlq
+         vuGzxd1KY6x/4sHcVJ5f+jQQjfJNOV40aBi6RIci1ncS00uoLjmRAr+ZfjWZ7J/h3I5X
+         tn/QwZDitUZH19v2x8ku/tUVynG1Upw7rI9SfrjXhbju/em/NxM6j93+5o7QoWqmsk4J
+         M8CeIgrO9lrCx/vS2ZUPS3gK2oFFRwm7qZSvVpxOGoaEWbtmrCqFTGcxpsh9R8U34tLr
+         GEO6wH2S203iGS+iYcEr9V6oGhqaSSZOcs1K0VqVYcU/7M+6C0qLKQXSQt0wQoSqL+5T
+         e4QQ==
+X-Gm-Message-State: AOJu0YwoW5gliuT0vneVvmbPInqvLtfw8vmXHymfeQ+uuJdRErHUk8Tn
+        8tBYp+MUOP9vjDgWcB52M3MuLw==
+X-Google-Smtp-Source: AGHT+IFoiM8ZrUT3KpUeDhjFlq2CsLrGEc9c8+nNF8YnzwiEcwY3AeVRUIhAlkjNH2m5vxDQXIrgqg==
+X-Received: by 2002:a17:906:2ce:b0:9a5:846d:d81f with SMTP id 14-20020a17090602ce00b009a5846dd81fmr4951426ejk.17.1695320833244;
+        Thu, 21 Sep 2023 11:27:13 -0700 (PDT)
+Received: from ?IPV6:2003:f6:af0b:f500:9282:fc17:35d3:acf0? (p200300f6af0bf5009282fc1735d3acf0.dip0.t-ipconnect.de. [2003:f6:af0b:f500:9282:fc17:35d3:acf0])
+        by smtp.gmail.com with ESMTPSA id k19-20020a170906159300b00985ed2f1584sm1405990ejd.187.2023.09.21.11.27.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 11:27:12 -0700 (PDT)
+Message-ID: <49e81d87-baee-4ba5-873c-ba32615beab0@grsecurity.net>
+Date:   Thu, 21 Sep 2023 20:27:09 +0200
 MIME-Version: 1.0
-References: <20230921170045.4189251-1-bgeffon@google.com>
-In-Reply-To: <20230921170045.4189251-1-bgeffon@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 21 Sep 2023 20:26:38 +0200
-Message-ID: <CAJZ5v0g1PyhxaD+mk0ccHStpO0YZhRXLdE=X5zKCx0xAGpL5QQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: hibernate: use __get_safe_page() rather than touching
- the list.
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] x86/hyperv: Remove hv_vtl_early_init initcall
+Content-Language: en-US, de-DE
+To:     Saurabh Sengar <ssengar@linux.microsoft.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com
+Cc:     ssengar@microsoft.com
+References: <1695185552-19910-1-git-send-email-ssengar@linux.microsoft.com>
+From:   Mathias Krause <minipli@grsecurity.net>
+In-Reply-To: <1695185552-19910-1-git-send-email-ssengar@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 7:01 PM Brian Geffon <bgeffon@google.com> wrote:
->
-> We found at least one situation where the safe pages list was empty and
-> get_buffer() would gladly try to use a NULL pointer.
->
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> Fixes: 8357376 ("swsusp: Improve handling of highmem")
-> Cc: stable@vger.kernel.org
->
-> Change-Id: Ibb43a9b4ac5ff2d7e3021fdacc08e116650231e9
-> ---
->  kernel/power/snapshot.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index 362e6bae5891..2dcb33248518 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -2544,8 +2544,9 @@ static void *get_highmem_page_buffer(struct page *page,
->                 pbe->copy_page = pfn_to_page(pfn);
->         } else {
->                 /* Copy of the page will be stored in normal memory */
-> -               kaddr = safe_pages_list;
-> -               safe_pages_list = safe_pages_list->next;
-> +               kaddr = __get_safe_page(ca->gfp_mask);
-> +               if (!kaddr)
-> +                       return ERR_PTR(-ENOMEM);
->                 pbe->copy_page = virt_to_page(kaddr);
->         }
->         pbe->next = highmem_pblist;
-> @@ -2747,8 +2748,9 @@ static void *get_buffer(struct memory_bitmap *bm, struct chain_allocator *ca)
->                 return ERR_PTR(-ENOMEM);
->         }
->         pbe->orig_address = page_address(page);
-> -       pbe->address = safe_pages_list;
-> -       safe_pages_list = safe_pages_list->next;
-> +       pbe->address = __get_safe_page(ca->gfp_mask);
-> +       if (!pbe->address)
-> +               return ERR_PTR(-ENOMEM);
->         pbe->next = restore_pblist;
->         restore_pblist = pbe;
->         return pbe->address;
-> --
+Missed it in my review, but the kernel bot already noticed it, so....
 
-Applied as 6.7 material, thanks!
+On 20.09.23 06:52, Saurabh Sengar wrote:
+> [...]
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index 033b53f993c6..83019c3aaae9 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -340,8 +340,10 @@ static inline u64 hv_get_non_nested_register(unsigned int reg) { return 0; }
+>  
+>  #ifdef CONFIG_HYPERV_VTL_MODE
+>  void __init hv_vtl_init_platform(void);
+> +int __init hv_vtl_early_init(void);
+>  #else
+>  static inline void __init hv_vtl_init_platform(void) {}
+> +static int __init hv_vtl_early_init(void) {}
+
+static inline
+
+>  #endif
+>  
+>  #include <asm-generic/mshyperv.h>
+
+Thanks,
+Mathias
