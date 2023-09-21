@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF997AA0EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D5A7AA0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjIUUuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        id S232360AbjIUUsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbjIUUtK (ORCPT
+        with ESMTP id S232328AbjIUUs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:49:10 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB83445625
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:51:40 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-98377c5d53eso150643966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695318699; x=1695923499; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yoJ9BAqIakkIRBck4+c6D512CvwPivJvBbrFNArEblQ=;
-        b=iOTG4EUpRwJyLsZSAp0/U0366gkT0yJK5N7OpyXc2SX81HVRJ7hHCBUr1vPDdiHH+j
-         NV4sccEnr8qIQUnaO6Tm3Hj11hODEYyYuar5Ro1wVGm+3+otLgUWA/qRMTH2akwW3rdL
-         wwTlsFLs0Hew9/bFHpQg5qve+sOaAdULr20Nmg1FnnlonhQruw5JuTnd1WBMIe0u/liW
-         yF4ep3xKiA3LYJ3onwG0rpUKwv2A9xb4vYa3w52HlCaIUj1lkleUg5jLXLP0QffOWEVe
-         Y+7b4o0WLZ/fy6EdgQNpQzB3mbDu4kLmGsj9TzUA0Hqswp295U5GHluxykw2X35Y1RNN
-         dXsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318699; x=1695923499;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yoJ9BAqIakkIRBck4+c6D512CvwPivJvBbrFNArEblQ=;
-        b=Lfue1sZYSZjWjUGb/lgyBCfhwZk1X8Pn9tkmVpRzMED8EZW9WTm2mkiS9Raz3ZpOD2
-         nmvSFl8n5ZW/CWSyLY+ehN72/vjyYzYwt9d2sCUyK/qNabkswA1JYm5qTZUeyigfbfkq
-         yioBC3fKCMXvRT+lo97TJwHKN3N3oVyf3uPFQBNey/SlZBtdB0n++YTncoK1Nsag1By/
-         CdJK2uw4SUeoZfZCadi5FRGkY2NHwM3/kBJcJ2HbM9t3ikfLYexUbneu2g+OCwJR8+np
-         i3Ii0ajnJDLuLd5Elu3hbFYUefFkvYsXdHua3FmbgRCb/4ZLiOTxlZAmJtgqqi4XNKHB
-         FNRw==
-X-Gm-Message-State: AOJu0YxeD1V1cqIkA/a9cHy/YQQFptJgxTdZuWLQRUg43S2nslHYQaT0
-        VUeeA+LSKl7d5b2NYHgGQW1GDh32COLIxVxWCLj7Tg==
-X-Google-Smtp-Source: AGHT+IG9uHccNQRNfWrPU8ZX/D7XdOZck/6xT2lynqeRJ6EkLfvPB7KBcTTCDBPgEMaA+RDkpFh+bw==
-X-Received: by 2002:a17:906:2cc:b0:99e:f3b:2f78 with SMTP id 12-20020a17090602cc00b0099e0f3b2f78mr4284625ejk.67.1695289173321;
-        Thu, 21 Sep 2023 02:39:33 -0700 (PDT)
-Received: from linaro.org ([86.120.16.169])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170906168400b009ad829ed144sm751272ejd.130.2023.09.21.02.39.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 02:39:32 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 12:39:31 +0300
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>
-Subject: Re: linux-next: Tree for Sep 12 (drivers/clk/imx/clk-imx8-acm.o)
-Message-ID: <ZQwPU23VTdkLVHDR@linaro.org>
-References: <20230912152645.0868a96a@canb.auug.org.au>
- <8b77219e-b59e-40f1-96f1-980a0b2debcf@infradead.org>
+        Thu, 21 Sep 2023 16:48:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73E790F13;
+        Thu, 21 Sep 2023 10:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695318443; x=1726854443;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/bI3SZUJj1sK0d5AIlLR9Jsr77qgx3aGIqY4S44vdwo=;
+  b=h8Bbgud3rW/qm7NMi6jEenNM+SfAs/0mP51HHTd9w9dWZdz/iC9Nhtdw
+   Nv/OjvRoh44ez1znxThFfde5bs0yQJdH6bjOE5h+qhNTw8rDtCxqU/J5L
+   2DybNjQWlcxx3aKswvWIWGuGWfZFMfNqXOOFiwuBYqGciHs8Meuhxhn8G
+   DoVb+Nl7gLBqoDUMTOOwgnZNwLu0NA+ZIIMrSVpot8NU6ncis2tqwwqdE
+   GVh6LE63qKxJO8GETQnewy9PZF+Z57CwooptgfluvfEZoiPKOcbuns9ic
+   Y6b3fnxXl1eO1+Cw/uEUdR7+esdtlSrlk64I9lOBmx9WwqHfcZFABh0NE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="377764188"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="377764188"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 02:45:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="994014933"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="994014933"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 02:45:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qjGF2-0000000GqzG-1y2X;
+        Thu, 21 Sep 2023 12:45:00 +0300
+Date:   Thu, 21 Sep 2023 12:45:00 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5] gpio: sim: fix an invalid __free() usage
+Message-ID: <ZQwQnA/W1TZDJivM@smile.fi.intel.com>
+References: <20230920073253.51742-1-brgl@bgdev.pl>
+ <ZQr3E/7crMrVxMp9@smile.fi.intel.com>
+ <CAMRc=MfvOL-ovQ89i7FASg=RoWHQPARGsc5Pxu9kC+roGqaE4g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b77219e-b59e-40f1-96f1-980a0b2debcf@infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAMRc=MfvOL-ovQ89i7FASg=RoWHQPARGsc5Pxu9kC+roGqaE4g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-09-12 15:28:29, Randy Dunlap wrote:
-> 
-> 
-> On 9/11/23 22:26, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20230911:
-> > 
-> > New tree: bcachefs
-> > 
-> > The bcachefs tree gained a semantic conflict against Linus' tree for
-> > which I applied a patch.
-> > 
-> > The wireless-next tree gaind a conflict against the wireless tree.
-> > 
-> > Non-merge commits (relative to Linus' tree): 4095
-> >  1552 files changed, 346893 insertions(+), 22945 deletions(-)
-> > 
-> > ----------------------------------------------------------------------------
-> 
-> on arm64:
-> 
-> aarch64-linux-ld: drivers/clk/imx/clk-imx8-acm.o: in function `imx8_acm_clk_probe':
-> clk-imx8-acm.c:(.text+0x3d0): undefined reference to `imx_check_clk_hws'
-> 
-> when
-> CONFIG_CLK_IMX8QXP=y
-> CONFIG_MXC_CLK=m
-> 
-> Should CLK_IMX8QXP select MXC_CLK?
-> I'll leave that patch up to the maintainers.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+On Thu, Sep 21, 2023 at 01:12:16AM -0700, Bartosz Golaszewski wrote:
+> On Wed, 20 Sep 2023 15:43:47 +0200, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> said:
+> > On Wed, Sep 20, 2023 at 09:32:53AM +0200, Bartosz Golaszewski wrote:
 
-Thanks for reporting this.
+...
 
-Sent a patch for it:
-https://lore.kernel.org/all/20230921093647.3901752-1-abel.vesa@linaro.org/
+> > As for the material to be backported it's fine, but I'm wondering if we
+> > actually can add the entries in a sorted manner, so we would need the exact
+> > what I mentioned in previous review round, just search backwards to the first
+> > satisfying entry. I don't believe the adding an entry to the list is a
+> > hot-path, so would be fine to call list_sort().
+> 
+> Given the need for the callback function, this would result in bigger code.
 
-> -- 
-> ~Randy
+Is it a problem?
+
+On the below I kinda agree.
+
+> Also calling:
+> 
+>     list_add_tail();
+>     list_sort();
+> 
+> is not very elegant. I would possibly go for adding list_add_sorted() but
+> that's a separate change for the future.
+
+Note, we do this for the GPIO bases already.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
