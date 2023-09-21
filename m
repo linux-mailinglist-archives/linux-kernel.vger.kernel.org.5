@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641457AA4E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18FA7AA504
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjIUWXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S231201AbjIUW1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjIUWXO (ORCPT
+        with ESMTP id S232941AbjIUW1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:23:14 -0400
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AE818D;
-        Thu, 21 Sep 2023 15:23:08 -0700 (PDT)
+        Thu, 21 Sep 2023 18:27:13 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEB094;
+        Thu, 21 Sep 2023 15:25:23 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4121130e7afso9519171cf.2;
+        Thu, 21 Sep 2023 15:25:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1695334988; x=1726870988;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=g7EFafS6t1foqgqAqNV0pkx1nSCq9B41+AoW2S9TWQg=;
-  b=o73nLZdi/MWrecxV8pNqzo7Bh/eY728g5Os7fpMYbBETcnCSt533X8Jb
-   oEtRIDoLO/NtnCUFE3MKZqP/2KwN83TRKYLIcBV1c5pTeicFhTwrQmJLE
-   rrdqc9UAWbnSayHVqJqOh3/+i9lWAnDvTRwIjknxQj6Dt2Qu8UnU5xjin
-   4=;
-X-IronPort-AV: E=Sophos;i="6.03,166,1694736000"; 
-   d="scan'208";a="365147049"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-54a853e6.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 22:23:07 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1a-m6i4x-54a853e6.us-east-1.amazon.com (Postfix) with ESMTPS id 4099248173;
-        Thu, 21 Sep 2023 22:23:02 +0000 (UTC)
-Received: from EX19D030UWB004.ant.amazon.com (10.13.139.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 21 Sep 2023 22:22:55 +0000
-Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
- EX19D030UWB004.ant.amazon.com (10.13.139.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 21 Sep 2023 22:22:54 +0000
-Received: from EX19D030UWB002.ant.amazon.com ([fe80::8cbd:fcae:56ad:4dfa]) by
- EX19D030UWB002.ant.amazon.com ([fe80::8cbd:fcae:56ad:4dfa%6]) with mapi id
- 15.02.1118.037; Thu, 21 Sep 2023 22:22:54 +0000
-From:   "Jitindar Singh, Suraj" <surajjs@amazon.com>
-To:     "maz@kernel.org" <maz@kernel.org>
-CC:     "vdonnefort@google.com" <vdonnefort@google.com>,
-        "philmd@linaro.org" <philmd@linaro.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "qperret@google.com" <qperret@google.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alexandru.elisei@arm.com" <alexandru.elisei@arm.com>
-Subject: Re: [PATCH stable 6.1.y 1/2] KVM: arm64: Prevent the donation of
- no-map pages
-Thread-Topic: [PATCH stable 6.1.y 1/2] KVM: arm64: Prevent the donation of
- no-map pages
-Thread-Index: AQHZ7NoqQQBf46ilGUajYblrTraBLA==
-Date:   Thu, 21 Sep 2023 22:22:54 +0000
-Message-ID: <a64c30b027951c4c533dea858150e2e807a912b7.camel@amazon.com>
+        d=gmail.com; s=20230601; t=1695335122; x=1695939922; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w2WooG+QkTpfUqojwok2CEiVMWZpsqmSjm3ZHCN+V1E=;
+        b=CJT4O9x+XcC9h0sn1qHpjKLXnTYL10SrXVHnIbScnMdqgrd/MY1fNwA99qTJVbtkh3
+         2jsB/7k0b0CCskbwfyIB6+3I69fsbD9aUIL4wtKcPKHfbfZnp9urVeSztfy3MmcGG9TQ
+         vm4ddzBKs/TeqoUQGkp5d+qF4c0G0Av68l+4reWx3y8dEPQaddLXAriaJSsRDgQKFuMX
+         FwistacHrieu7Okssq5KBNgSTDTI/VeWvCRsK01UdTimCZn8ZxbOHm8baenOTW0z4jmE
+         t/cX5cAldB3fLHrOT3Z14wA6aELGfll9weZ51riZqeK7ampbpV+dRqQUJDD4bt/TF283
+         zwcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695335122; x=1695939922;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w2WooG+QkTpfUqojwok2CEiVMWZpsqmSjm3ZHCN+V1E=;
+        b=dc/o5SjdTUCui/L7FmSjQidQsNG+kg1cVfdwjSMAaZzGgFSdwhHuE2zsT0eTbroHbG
+         4ZoQzyNogCoROO3NEqTSND9VaVVIR05u+k3HQSEtUmi9PM65OOmKTI8GECGfMQJDbUIT
+         DartBY8VLXUkIglZQqezDj14CFA2Gl/g6/HUzAKtLG96b+32Yg4I9nY7IdB8Wb/EDcmJ
+         cDj+UY5FulOuSXPS+9OmSewpLkzN9eSw1+MptGgX+g3RYxTn7S5mcZEStdgZUSo/2iaJ
+         ZX7nVwwazpPZTyJ9hKwhp9ZRM9kLO5a7j9Py6hzXiGW8lbBjdn7JmvR60ohaI5KctdHH
+         OzBg==
+X-Gm-Message-State: AOJu0Yy32VwFmpkcSJoeU710hYfJdFl6cskbFKOyl1AOUguevFG8VZpW
+        NCey/G883bDMj82jaUUpaqwYfax78dI=
+X-Google-Smtp-Source: AGHT+IFF0Fxu8IrAYMqbYE9O+JZeHJhGWgzy2cxwLDKKEWylEYlzdyNJ+FOguWr32UjLJJaA5m+Wew==
+X-Received: by 2002:a0c:e106:0:b0:651:6968:ae40 with SMTP id w6-20020a0ce106000000b006516968ae40mr6418148qvk.20.1695335122511;
+        Thu, 21 Sep 2023 15:25:22 -0700 (PDT)
+Received: from freeip.amazon.com ([205.251.233.111])
+        by smtp.googlemail.com with ESMTPSA id v7-20020a0ce1c7000000b00655d55117f5sm924928qvl.81.2023.09.21.15.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 15:25:21 -0700 (PDT)
+Message-ID: <2031eecaa417d4f6021717dcbbba133d784add72.camel@gmail.com>
+Subject: Re: [PATCH stable 6.1.y 2/2] KVM: arm64: Prevent unconditional
+ donation of unmapped regions from the host
+From:   Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     stable@vger.kernel.org, james.morse@arm.com,
+        alexandru.elisei@arm.com, suzuki.poulose@arm.com,
+        oliver.upton@linux.dev, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Date:   Thu, 21 Sep 2023 15:25:19 -0700
+In-Reply-To: <877cok3skn.wl-maz@kernel.org>
 References: <20230920192729.694309-1-surajjs@amazon.com>
-         <878r903snv.wl-maz@kernel.org>
-In-Reply-To: <878r903snv.wl-maz@kernel.org>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.187.171.47]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C6192A419174F448B28D39C53A1949A3@amazon.com>
-Content-Transfer-Encoding: base64
+         <20230920192729.694309-2-surajjs@amazon.com> <877cok3skn.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTA5LTIxIGF0IDA4OjEzICswMTAwLCBNYXJjIFp5bmdpZXIgd3JvdGU6DQo+
-IE9uIFdlZCwgMjAgU2VwIDIwMjMgMjA6Mjc6MjggKzAxMDAsDQo+IFN1cmFqIEppdGluZGFyIFNp
-bmdoIDxzdXJhampzQGFtYXpvbi5jb20+IHdyb3RlOg0KPiA+IA0KPiA+IEZyb206IFF1ZW50aW4g
-UGVycmV0IDxxcGVycmV0QGdvb2dsZS5jb20+DQo+ID4gDQo+ID4gY29tbWl0IDQzYzFmZjhiNzUw
-MTFiYzNlM2U5MjNhZGYzMWJhODE1ODY0YTI0OTQgdXBzdHJlYW0uDQo+ID4gDQo+ID4gTWVtb3J5
-IHJlZ2lvbnMgbWFya2VkIGFzICJuby1tYXAiIGluIHRoZSBob3N0IGRldmljZS10cmVlIHJvdXRp
-bmVseQ0KPiA+IGluY2x1ZGUgVHJ1c3Rab25lIGNhcmV2LW91dHMgYW5kIERNQSBwb29scy4gQWx0
-aG91Z2ggZG9uYXRpbmcgc3VjaA0KPiA+IHBhZ2VzDQo+ID4gdG8gdGhlIGh5cGVydmlzb3IgbWF5
-IG5vdCBicmVhY2ggY29uZmlkZW50aWFsaXR5LCBpdCBjb3VsZCBiZSB1c2VkDQo+ID4gdG8NCj4g
-PiBjb3JydXB0IGl0cyBzdGF0ZSBpbiB1bmNvbnRyb2xsYWJsZSB3YXlzLiBUbyBwcmV2ZW50IHRo
-aXMsIGxldCdzDQo+ID4gYmxvY2sNCj4gPiBob3N0LWluaXRpYXRlZCBtZW1vcnkgdHJhbnNpdGlv
-bnMgdGFyZ2V0aW5nICJuby1tYXAiIHBhZ2VzDQo+ID4gYWx0b2dldGhlciBpbg0KPiA+IG5WSEUg
-cHJvdGVjdGVkIG1vZGUgYXMgdGhlcmUgc2hvdWxkIGJlIG5vIHZhbGlkIHJlYXNvbiB0byBkbyB0
-aGlzDQo+ID4gaW4NCj4gPiBjdXJyZW50IG9wZXJhdGlvbi4NCj4gPiANCj4gPiBUaGFua2Z1bGx5
-LCB0aGUgcEtWTSBFTDIgaHlwZXJ2aXNvciBoYXMgYSBmdWxsIGNvcHkgb2YgdGhlIGhvc3Qncw0K
-PiA+IGxpc3QNCj4gPiBvZiBtZW1ibG9jayByZWdpb25zLCBzbyB3ZSBjYW4gZWFzaWx5IGNoZWNr
-IGZvciB0aGUgcHJlc2VuY2Ugb2YgdGhlDQo+ID4gTUVNQkxPQ0tfTk9NQVAgZmxhZyBvbiBhIHJl
-Z2lvbiBjb250YWluaW5nIHBhZ2VzIGJlaW5nIGRvbmF0ZWQgZnJvbQ0KPiA+IHRoZQ0KPiA+IGhv
-c3QuDQo+ID4gDQo+ID4gUmV2aWV3ZWQtYnk6IFBoaWxpcHBlIE1hdGhpZXUtRGF1ZMOpIDxwaGls
-bWRAbGluYXJvLm9yZz4NCj4gPiBUZXN0ZWQtYnk6IFZpbmNlbnQgRG9ubmVmb3J0IDx2ZG9ubmVm
-b3J0QGdvb2dsZS5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogUXVlbnRpbiBQZXJyZXQgPHFwZXJy
-ZXRAZ29vZ2xlLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBXaWxsIERlYWNvbiA8d2lsbEBrZXJu
-ZWwub3JnPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hcmMgWnluZ2llciA8bWF6QGtlcm5lbC5vcmc+
-DQo+ID4gTGluazoNCj4gPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjIxMTEwMTkwMjU5
-LjI2ODYxLTgtd2lsbEBrZXJuZWwub3JnDQo+ID4gWyBicDogY2xlYW4gXQ0KPiANCj4gV2hhdCBp
-cyB0aGlzPw0KDQpOb3RpbmcgYW55IGRldGFpbHMgYWJvdXQgdGhlIGJhY2twb3J0LiBJbiB0aGlz
-IGNhc2UgaXQgd2FzIGEgY2xlYW4NCmJhY2twb3J0Lg0KDQo+IA0KPiA+IFNpZ25lZC1vZmYtYnk6
-IFN1cmFqIEppdGluZGFyIFNpbmdoIDxzdXJhampzQGFtYXpvbi5jb20+DQo+IA0KPiBXaGF0IGlz
-IHRoZSByYXRpb25hbGUgZm9yIGJhY2twb3J0aW5nIHRoaXM/IEl0IHdhc24ndCB0YWdnZWQgYXMg
-Q2M6DQo+IHRvDQo+IHN0YWJsZSBmb3IgYSByZWFzb246IHBLVk0gaXNuJ3QgZnVuY3Rpb25hbCB1
-cHN0cmVhbSwgYW5kIHdvbid0IGJlIGZvcg0KPiB0aGUgbmV4dCBjb3VwbGUgb2YgY3ljbGVzICph
-dCBsZWFzdCouDQo+IA0KPiBTbyBhdCBpdCBzdGFuZHMsIEknbSBhZ2FpbnN0IHN1Y2ggYSBiYWNr
-cG9ydC4NCj4gDQoNClRoZSAyIHBhdGNoZXMgd2VyZSBiYWNrcG9ydGVkIHRvIGFkZHJlc3MgQ1ZF
-LTIwMjMtMjEyNjQuDQpUaGlzIG9uZSBwcm92aWRlcyBjb250ZXh0IGZvciB0aGUgcHJvY2VlZGlu
-ZyBwYXRjaC4NCg0KSSB3YXNuJ3QgYXdhcmUgdGhhdCBpdCdzIG5vbiBmdW5jdGlvbmFsLiBEb2Vz
-IHRoaXMgbWVhbiB0aGF0IHRoZSBjb2RlDQp3b24ndCBiZSBjb21waWxlZCBvciBqdXN0IHRoYXQg
-aXQgY2FuJ3QgYWN0dWFsbHkgYmUgcnVuIGN1cnJlbnRseSBmcm9tDQp0aGUgdXBzdHJlYW0gY29k
-ZWJhc2U/DQoNCkkgZ3Vlc3MgSSdtIHRyeWluZyB0byB1bmRlcnN0YW5kIGlmIHRoZSBjb25kaXRp
-b25zIG9mIHRoZSBDVkUgYXJlIGENCnJlYWwgY29uY2VybiBldmVuIGlmIGl0IGlzbid0IHRlY2hu
-aWNhbGx5IGZ1bmN0aW9uYWwuDQoNClRoYW5rcw0KDQo+IFRoYW5rcywNCj4gDQo+IMKgwqDCoMKg
-wqDCoMKgwqBNLg0KPiANCg0K
+On Thu, 2023-09-21 at 08:15 +0100, Marc Zyngier wrote:
+> On Wed, 20 Sep 2023 20:27:29 +0100,
+> Suraj Jitindar Singh <surajjs@amazon.com> wrote:
+> >=20
+> > From: Will Deacon <will@kernel.org>
+> >=20
+> > commit 09cce60bddd6461a93a5bf434265a47827d1bc6f upstream.
+> >=20
+> > Since host stage-2 mappings are created lazily, we cannot rely
+> > solely on
+> > the pte in order to recover the target physical address when
+> > checking a
+> > host-initiated memory transition as this permits donation of
+> > unmapped
+> > regions corresponding to MMIO or "no-map" memory.
+> >=20
+> > Instead of inspecting the pte, move the addr_is_allowed_memory()
+> > check
+> > into the host callback function where it is passed the physical
+> > address
+> > directly from the walker.
+> >=20
+> > Cc: Quentin Perret <qperret@google.com>
+> > Fixes: e82edcc75c4e ("KVM: arm64: Implement do_share() helper for
+> > sharing memory")
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > Link:
+> > https://lore.kernel.org/r/20230518095844.1178-1-will@kernel.org
+> > [ bp: s/ctx->addr/addr in __check_page_state_visitor due to missing
+> > commit
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "KVM: arm64: Combine visitor arguments i=
+nto a context
+> > structure"
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 in stable.
+> > ]
+>=20
+> Same question.
+
+Noting what changes were made to the patch from the upstream mainline
+version when it was applied to the stable tree.
+
+>=20
+> > Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+>=20
+> Again, I find this backport pretty pointless. What is the rationale
+> for it?
+
+The 2 patches were backported to address CVE-2023-21264.
+This one addresses the CVE.
+
+Thanks
+
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0M.
+>=20
+
