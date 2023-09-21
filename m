@@ -2,146 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 136BA7A9A29
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7907A9D2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjIUSg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        id S230442AbjIUT3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjIUSgg (ORCPT
+        with ESMTP id S230364AbjIUT2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:36:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F7044563F;
-        Thu, 21 Sep 2023 10:13:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5882176C;
-        Thu, 21 Sep 2023 09:36:37 -0700 (PDT)
-Received: from [10.1.34.154] (XHFQ2J9959.cambridge.arm.com [10.1.34.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82BA63F59C;
-        Thu, 21 Sep 2023 09:35:55 -0700 (PDT)
-Message-ID: <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com>
-Date:   Thu, 21 Sep 2023 17:35:54 +0100
+        Thu, 21 Sep 2023 15:28:54 -0400
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6237C3AB0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:09:38 -0700 (PDT)
+Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
+        id 7CD33C50248A; Thu, 21 Sep 2023 09:47:11 -0700 (PDT)
+From:   Stefan Roesch <shr@devkernel.io>
+To:     kernel-team@fb.com
+Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
+        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v3 2/2] mm/ksm: Test case for prctl fork/exec workflow
+Date:   Thu, 21 Sep 2023 09:47:09 -0700
+Message-Id: <20230921164709.3627565-3-shr@devkernel.io>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230921164709.3627565-1-shr@devkernel.io>
+References: <20230921164709.3627565-1-shr@devkernel.io>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/8] Fix set_huge_pte_at() panic on arm64
-Content-Language: en-GB
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
- <20230921093026.230b2991be551093e397f462@linux-foundation.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230921093026.230b2991be551093e397f462@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_NEUTRAL,TVD_RCVD_IP autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 17:30, Andrew Morton wrote:
-> On Thu, 21 Sep 2023 17:19:59 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
-> 
->> Hi All,
->>
->> This series fixes a bug in arm64's implementation of set_huge_pte_at(), which
->> can result in an unprivileged user causing a kernel panic. The problem was
->> triggered when running the new uffd poison mm selftest for HUGETLB memory. This
->> test (and the uffd poison feature) was merged for v6.6-rc1. However, upon
->> inspection there are multiple other pre-existing paths that can trigger this
->> bug.
->>
->> Ideally, I'd like to get this fix in for v6.6 if possible? And I guess it should
->> be backported too, given there are call sites where this can theoretically
->> happen that pre-date v6.6-rc1 (I've cc'ed stable@vger.kernel.org).
-> 
-> This gets you a naggygram from Greg.  The way to request a backport is
-> to add cc:stable to all the changelogs.  I'll make that change to my copy.
+This adds a new test case to the ksm functional tests to make sure that
+the KSM setting is inherited by the child process when doing a
+fork/exec.
 
-Ahh, sorry about that... I just got the same moan from the kernel test robot too.
+Signed-off-by: Stefan Roesch <shr@devkernel.io>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+ .../selftests/mm/ksm_functional_tests.c       | 66 ++++++++++++++++++-
+ 1 file changed, 65 insertions(+), 1 deletion(-)
 
-> 
-> 
->> Ryan Roberts (8):
->>   parisc: hugetlb: Convert set_huge_pte_at() to take vma
->>   powerpc: hugetlb: Convert set_huge_pte_at() to take vma
->>   riscv: hugetlb: Convert set_huge_pte_at() to take vma
->>   s390: hugetlb: Convert set_huge_pte_at() to take vma
->>   sparc: hugetlb: Convert set_huge_pte_at() to take vma
->>   mm: hugetlb: Convert set_huge_pte_at() to take vma
->>   arm64: hugetlb: Convert set_huge_pte_at() to take vma
->>   arm64: hugetlb: Fix set_huge_pte_at() to work with all swap entries
->>
->>  arch/arm64/include/asm/hugetlb.h              |  2 +-
->>  arch/arm64/mm/hugetlbpage.c                   | 22 ++++----------
->>  arch/parisc/include/asm/hugetlb.h             |  2 +-
->>  arch/parisc/mm/hugetlbpage.c                  |  4 +--
->>  .../include/asm/nohash/32/hugetlb-8xx.h       |  3 +-
->>  arch/powerpc/mm/book3s64/hugetlbpage.c        |  2 +-
->>  arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  2 +-
->>  arch/powerpc/mm/nohash/8xx.c                  |  2 +-
->>  arch/powerpc/mm/pgtable.c                     |  7 ++++-
->>  arch/riscv/include/asm/hugetlb.h              |  2 +-
->>  arch/riscv/mm/hugetlbpage.c                   |  3 +-
->>  arch/s390/include/asm/hugetlb.h               |  8 +++--
->>  arch/s390/mm/hugetlbpage.c                    |  8 ++++-
->>  arch/sparc/include/asm/hugetlb.h              |  8 +++--
->>  arch/sparc/mm/hugetlbpage.c                   |  8 ++++-
->>  include/asm-generic/hugetlb.h                 |  6 ++--
->>  include/linux/hugetlb.h                       |  6 ++--
->>  mm/damon/vaddr.c                              |  2 +-
->>  mm/hugetlb.c                                  | 30 +++++++++----------
->>  mm/migrate.c                                  |  2 +-
->>  mm/rmap.c                                     | 10 +++----
->>  mm/vmalloc.c                                  |  5 +++-
->>  22 files changed, 80 insertions(+), 64 deletions(-)
-> 
-> Looks scary but it's actually a fairly modest patchset.  It could
-> easily be all rolled into a single patch for ease of backporting. 
-> Maybe Greg has an opinion?
-
-Yes, I thought about doing that; or perhaps 2 patches - one for the interface
-change across all arches and core code, and one for the actual bug fix?
-
-But I thought the arch people might prefer to see exactly what's going on in
-each arch. Let me know the preference and I can repost if necessary.
-
-> 
+diff --git a/tools/testing/selftests/mm/ksm_functional_tests.c b/tools/te=
+sting/selftests/mm/ksm_functional_tests.c
+index 901e950f9138..fbff0dd09191 100644
+--- a/tools/testing/selftests/mm/ksm_functional_tests.c
++++ b/tools/testing/selftests/mm/ksm_functional_tests.c
+@@ -26,6 +26,7 @@
+=20
+ #define KiB 1024u
+ #define MiB (1024 * KiB)
++#define FORK_EXEC_CHILD_PRG_NAME "ksm_fork_exec_child"
+=20
+ static int mem_fd;
+ static int ksm_fd;
+@@ -479,6 +480,64 @@ static void test_prctl_fork(void)
+ 	ksft_test_result_pass("PR_SET_MEMORY_MERGE value is inherited\n");
+ }
+=20
++static int ksm_fork_exec_child(void)
++{
++	/* Test if KSM is enabled for the process. */
++	return prctl(PR_GET_MEMORY_MERGE, 0, 0, 0, 0) =3D=3D 1;
++}
++
++static void test_prctl_fork_exec(void)
++{
++	int ret, status;
++	pid_t child_pid;
++
++	ksft_print_msg("[RUN] %s\n", __func__);
++
++	ret =3D prctl(PR_SET_MEMORY_MERGE, 1, 0, 0, 0);
++	if (ret < 0 && errno =3D=3D EINVAL) {
++		ksft_test_result_skip("PR_SET_MEMORY_MERGE not supported\n");
++		return;
++	} else if (ret) {
++		ksft_test_result_fail("PR_SET_MEMORY_MERGE=3D1 failed\n");
++		return;
++	}
++
++	child_pid =3D fork();
++	if (child_pid =3D=3D -1) {
++		ksft_test_result_skip("fork() failed\n");
++		return;
++	} else if (child_pid =3D=3D 0) {
++		char *prg_name =3D "./ksm_functional_tests";
++		char *argv_for_program[] =3D { prg_name, FORK_EXEC_CHILD_PRG_NAME };
++
++		execv(prg_name, argv_for_program);
++		return;
++	}
++
++	if (waitpid(child_pid, &status, 0) > 0) {
++		if (WIFEXITED(status)) {
++			status =3D WEXITSTATUS(status);
++			if (status) {
++				ksft_test_result_fail("KSM not enabled\n");
++				return;
++			}
++		} else {
++			ksft_test_result_fail("program didn't terminate normally\n");
++			return;
++		}
++	} else {
++		ksft_test_result_fail("waitpid() failed\n");
++		return;
++	}
++
++	if (prctl(PR_SET_MEMORY_MERGE, 0, 0, 0, 0)) {
++		ksft_test_result_fail("PR_SET_MEMORY_MERGE=3D0 failed\n");
++		return;
++	}
++
++	ksft_test_result_pass("PR_SET_MEMORY_MERGE value is inherited\n");
++}
++
+ static void test_prctl_unmerge(void)
+ {
+ 	const unsigned int size =3D 2 * MiB;
+@@ -536,9 +595,13 @@ static void test_prot_none(void)
+=20
+ int main(int argc, char **argv)
+ {
+-	unsigned int tests =3D 7;
++	unsigned int tests =3D 8;
+ 	int err;
+=20
++	if (argc > 1 && !strcmp(argv[1], FORK_EXEC_CHILD_PRG_NAME)) {
++		exit(ksm_fork_exec_child() =3D=3D 1 ? 0 : 1);
++	}
++
+ #ifdef __NR_userfaultfd
+ 	tests++;
+ #endif
+@@ -576,6 +639,7 @@ int main(int argc, char **argv)
+=20
+ 	test_prctl();
+ 	test_prctl_fork();
++	test_prctl_fork_exec();
+ 	test_prctl_unmerge();
+=20
+ 	err =3D ksft_get_fail_cnt();
+--=20
+2.39.3
 
