@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0497A9B28
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0CE7A9D32
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjIUSyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S230465AbjIUT3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjIUSyV (ORCPT
+        with ESMTP id S230070AbjIUT3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:54:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802FC90A4E;
-        Thu, 21 Sep 2023 10:55:12 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 09:37:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695289077;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JyCE/Iv8cwQothVX0X8BnhrJ4OlthMKGpUC6QAJsTuE=;
-        b=nMv/CC3rOxywKJqhOWQzb66JRp11BeHmESX1CFMrITjJNGtHqU+yfGVn65ziTh3HYdmueq
-        i4MkAqqG0e6FiQgqgZzPD0VKvOHSxWw9MpdRKMTjqwvStUPZB1Tjg2xfXLtyMM2ED02+pl
-        gqpVlKxjlSpX2QaYZ+L2qm7IkUJ5TI5GRIORwegOomAMcSmqA0ARlwRhQW4xj8e4TrF1i+
-        4MzlGPqWCric3UiqeJV4IWCZXJchPkyErYIqUmysRcaA7sHaOdq3aRt7yIxB+LQ7pmT4+N
-        TCksFbfeCdqGMlJ/sgaezBwXEJgszkcZWz/rPpwezFKHERIchAZuODD0TQyEcQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695289077;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JyCE/Iv8cwQothVX0X8BnhrJ4OlthMKGpUC6QAJsTuE=;
-        b=lF3FWFezJLatewfcVpy2fu2A+PlGYaJhSzuXFwdxbWLoC9XFODT96LjxU9XI/0s7kt8WQo
-        MkJSv++576IVAkAg==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/headers: Standardize the
- <linux/sched/vhost_task.h> header guard name
-Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Thu, 21 Sep 2023 15:29:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F83A9EA;
+        Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ACB6C32780;
+        Thu, 21 Sep 2023 09:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695289085;
+        bh=94iskBoc6V/PnxsBaXf75S6qQ4CxvGzdNsAZ1gka2mg=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=PINsPSLHMNW0Ir2cAkCHqaAQHo2ZkKI28ArKcJ42NTjFW8szAXnJE3hoJFYG61AUj
+         3xSpLYDx43ZvVcIj1MWn3tJzUgJfwSA7TFYG1qWIdUgd4m5LTuGUIOJq8RsqsJxDLK
+         sbYPAbfsdrZ9CQ8xRCaa5+Qe8Hmr5eNM83M17mAdBF+ERS2Z7kbTMKYx/LpCCj5q8w
+         4l+SuoWZGo6GtlIZYz5gTkDIPZjclLuS1BX/FLvE3okRFHwdaS41YbP7jr9SyY73RY
+         RAA22XSshN5HVtn5WmBy3iN5Vrc3ZVJMjyRd4U/luHgQQ5xTtF+CJzAW68Cp95AqWX
+         hTS84DsY5VdcA==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230728112848.67092-1-krzysztof.kozlowski@linaro.org>
+References: <20230728112848.67092-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] soundwire: qcom: use newer link status tregister
+ on v2.0.0
+Message-Id: <169528908296.97319.1848948668643094291.b4-ty@kernel.org>
+Date:   Thu, 21 Sep 2023 11:38:02 +0200
 MIME-Version: 1.0
-Message-ID: <169528907726.27769.17347276414076634078.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     6eddb116dd830436afbd922568292867de6c8b9e
-Gitweb:        https://git.kernel.org/tip/6eddb116dd830436afbd922568292867de6c8b9e
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 21 Sep 2023 11:24:17 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 21 Sep 2023 11:25:51 +02:00
+On Fri, 28 Jul 2023 13:28:47 +0200, Krzysztof Kozlowski wrote:
+> Soundwire v2.0.0 comes with a new register LINK_STATUS for the
+> FRAME_GEN_ENABLED field (bit indicating that an active frame is
+> running).  The old register COMP_STATUS is still there and still works,
+> although the new one is preferred in downstream sources.  Probably
+> because it allows to choose Soundwire instance per CPU.  Most of the
+> code allowing to use new register for Soundwire v2.0.0 was already there
+> as part of commit 312355a6a9f6 ("soundwire: qcom: add support for v2.0.0
+> controller"), so switch to it in swrm_wait_for_frame_gen_enabled()
+> function.  This should not have functional impact, because the old
+> register still behaves correctly.
+> 
+> [...]
 
-sched/headers: Standardize the <linux/sched/vhost_task.h> header guard name
+Applied, thanks!
 
-Use the same _LINUX_SCHED_ prefix nomenclature as the other 29 header guards
-in include/linux/sched/ do.
+[1/2] soundwire: qcom: use newer link status tregister on v2.0.0
+      commit: 5d78c7d684192e42241593a936ee60003d8ac064
+[2/2] soundwire: qcom: handle command ignored interrupt
+      commit: 16d568c8f646933710c980783d87d3f59a89b563
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- include/linux/sched/vhost_task.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Best regards,
+-- 
+~Vinod
 
-diff --git a/include/linux/sched/vhost_task.h b/include/linux/sched/vhost_task.h
-index 837a236..bc60243 100644
---- a/include/linux/sched/vhost_task.h
-+++ b/include/linux/sched/vhost_task.h
-@@ -1,7 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _LINUX_VHOST_TASK_H
--#define _LINUX_VHOST_TASK_H
--
-+#ifndef _LINUX_SCHED_VHOST_TASK_H
-+#define _LINUX_SCHED_VHOST_TASK_H
- 
- struct vhost_task;
- 
-@@ -11,4 +10,4 @@ void vhost_task_start(struct vhost_task *vtsk);
- void vhost_task_stop(struct vhost_task *vtsk);
- void vhost_task_wake(struct vhost_task *vtsk);
- 
--#endif
-+#endif /* _LINUX_SCHED_VHOST_TASK_H */
+
