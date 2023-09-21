@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FE57A9ADB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72C37A9BA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjIUSvK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 14:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
+        id S230463AbjIUTDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjIUSur (ORCPT
+        with ESMTP id S230382AbjIUTCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:50:47 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD2788490;
-        Thu, 21 Sep 2023 10:38:59 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qjDgo-003G9s-Fd; Thu, 21 Sep 2023 09:01:30 +0200
-Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qjDgo-0028oM-87; Thu, 21 Sep 2023 09:01:30 +0200
-Message-ID: <a720e92592db824e65d0fcc03d89e20ea59b11a6.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] fbdev/sh7760fb: Depend on FB=y
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
-        sam@ravnborg.org, arnd@arndb.de, javierm@redhat.com,
-        rdunlap@infradead.org
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-        kernel test robot <lkp@intel.com>
-Date:   Thu, 21 Sep 2023 09:01:29 +0200
-In-Reply-To: <20230918090400.13264-1-tzimmermann@suse.de>
-References: <20230918090400.13264-1-tzimmermann@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.10
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 15:02:45 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454EF8BD24
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:41:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ED3EC338A0;
+        Thu, 21 Sep 2023 07:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695279791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=masS9gkY9Jl4ki7h+NB8IOeo+oB/UaEHw5Kk8HG6w48=;
+        b=YiVz+HfbczILR0YqIMhG3/yqIlhwI4X3p7etp0Hq5sKWUfJPUjqVZI+5UGc2RCqeSx/B+O
+        f4MHtFmOzPjCMHg9+5lpugRo7Aad4b7uMgv+dpnoo4Ygrp7RvxGudUYWes/xjLSr0zFQzy
+        dqySvJS4aJCH0xHWutcgln3PnFPr8YQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695279791;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=masS9gkY9Jl4ki7h+NB8IOeo+oB/UaEHw5Kk8HG6w48=;
+        b=wcwML8meNly0O4NEO10L4HcN+RHFvL9Y9OoId9FM1xhzNdXg17WcGt0BQbPgz8CzjSqzPv
+        VEmJwmAy5tWuy5AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C814113513;
+        Thu, 21 Sep 2023 07:03:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7nj8L6/qC2UPawAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 07:03:11 +0000
+Date:   Thu, 21 Sep 2023 09:03:11 +0200
+Message-ID: <87wmwkt3dc.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Abelardo Ricart <aricart@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCHv2] ALSA: hda/realtek: Add quirk for ASUS ROG G533Q
+In-Reply-To: <348823a2-af40-42d5-af30-dc00eaf1d90a@gmail.com>
+References: <348823a2-af40-42d5-af30-dc00eaf1d90a@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-18 at 11:03 +0200, Thomas Zimmermann wrote:
-> Fix linker error if FB=m about missing fb_io_read and fb_io_write. The
-> linker's error message suggests that this config setting has already
-> been broken for other symbols.
+On Thu, 21 Sep 2023 08:58:37 +0200,
+Abelardo Ricart wrote:
 > 
->   All errors (new ones prefixed by >>):
-> 
->      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_probe':
->      sh7760fb.c:(.text+0x374): undefined reference to `framebuffer_alloc'
->      sh4-linux-ld: sh7760fb.c:(.text+0x394): undefined reference to `fb_videomode_to_var'
->      sh4-linux-ld: sh7760fb.c:(.text+0x39c): undefined reference to `fb_alloc_cmap'
->      sh4-linux-ld: sh7760fb.c:(.text+0x3a4): undefined reference to `register_framebuffer'
->      sh4-linux-ld: sh7760fb.c:(.text+0x3ac): undefined reference to `fb_dealloc_cmap'
->      sh4-linux-ld: sh7760fb.c:(.text+0x434): undefined reference to `framebuffer_release'
->      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_remove':
->      sh7760fb.c:(.text+0x800): undefined reference to `unregister_framebuffer'
->      sh4-linux-ld: sh7760fb.c:(.text+0x804): undefined reference to `fb_dealloc_cmap'
->      sh4-linux-ld: sh7760fb.c:(.text+0x814): undefined reference to `framebuffer_release'
->   >> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0xc): undefined reference to `fb_io_read'
->   >> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x10): undefined reference to `fb_io_write'
->      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
->      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
->      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
-> 
-> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309130632.LS04CPWu-lkp@intel.com/
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> The same quirk applied to the ASUS G533Z is also applicable to the ASUS
+> G533Q (of which I am an owner and have thus tested). Resubmitted for
+> e-mail formatting issue.
+
+You don't need to mention about resubmission in the patch description
+here.  It can be put under the line "---" instead; then it won't be
+taken into the git commit log.
+
+In anyway, the problem isn't fixed...
+
+> Signed-off-by: Abelardo Ricart <aricart@gmail.com>
 > ---
->  drivers/video/fbdev/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> index 4455bfd57f0ec..64ccb34d882dd 100644
-> --- a/drivers/video/fbdev/Kconfig
-> +++ b/drivers/video/fbdev/Kconfig
-> @@ -1756,7 +1756,7 @@ config FB_COBALT
->  
->  config FB_SH7760
->  	bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
-> -	depends on FB && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
-> +	depends on FB=y && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
->  		|| CPU_SUBTYPE_SH7720 || CPU_SUBTYPE_SH7721)
->  	select FB_IOMEM_HELPERS
->  	help
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index b7e78bfcffd8..7bb3c1e05bf2 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -9781,6 +9781,7 @@ static const struct snd_pci_quirk
+> alc269_fixup_tbl[] = {
+> SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V",
+> ALC285_FIXUP_ASUS_HEADSET_MIC),
+> SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook
+> UX31A",ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+> SND_PCI_QUIRK(0x1043, 0x1573, "ASUS GZ301V",
+> ALC285_FIXUP_ASUS_HEADSET_MIC),
+> + SND_PCI_QUIRK(0x1043, 0x1602, "ASUS ROG Strix G15
+> (G533Q)",ALC285_FIXUP_ASUS_G533Z_PINS),
+> SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
+> SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR",
+> ALC287_FIXUP_CS35L41_I2C_2),
+> SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
 
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+... now all spaces are gone completely.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
+Takashi
