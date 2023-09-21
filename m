@@ -2,79 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B867A9FA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EEE7AA016
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjIUU00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        id S230335AbjIUUcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbjIUUZ6 (ORCPT
+        with ESMTP id S231888AbjIUUcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:25:58 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD1655BA;
-        Thu, 21 Sep 2023 10:50:37 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-564af0ac494so853685a12.0;
-        Thu, 21 Sep 2023 10:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695318636; x=1695923436; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9Lp00J6zbysQ8U2olBiWnBUllQFV2OnKj6qqlkk1XgQ=;
-        b=Q7v18kTul10IvqQPubPDEojMgN+1Jp1HZd+yZvRRY4XpEInWmZtJuSLn7WmQKBYKRY
-         tSdpH9nFdeyyl54GzXLJOJwH1iDnevLW1P20vrnOvmqMj277wudK5x0gVT53C1AkiFc1
-         h0yzlKW0AoHg7pliRDIdA/pi/1iecSvSiOyHNl1iEXSifJJG0Nme2gH01EDQ6tFk8NHp
-         WVV2eZWtgsq6p6PFh+c+MyidQw4OIzU4oz0Rb2bDpq4zxUeNThAqRF+YteJ4DJ5Smuux
-         bsj2KYSwcv0TDyjo+EHxrjh+rkw5RzTSIATlaQuhNbbeVHoMAcmeMdEg1PW9FpGAAxgM
-         BRoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318636; x=1695923436;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Lp00J6zbysQ8U2olBiWnBUllQFV2OnKj6qqlkk1XgQ=;
-        b=G7hbs9QMXSCXH1uSII5e5vXZ3ExMsLEH9GB0HAWP7+JHD9gfPgwhcmKo+xeb6lpC0F
-         RWZ4R3lHBrpIAe4m8IutPVlOLcEZVnQWxJtnqZAKh4lyeQ26gIzGrCF+QIBRtwBtZefn
-         i8VgVTnUT3+hWtsb845UCMxOEKvBkQFct07Dt1zoBgWSA93shKxoWcqtvbZyd1pWHld6
-         5J3CPKiEHMgPGUTc2YR09lGhg+O5PUaRuxhIZf7ID5tdbFmwaCnRiHZAcX7g4/eMvO5m
-         RFJThjwfrNstDlh/oKTkZ43r5Dc6xFQbfesFq1jlA0RlwJmv5mesDUHhSSoCGxy7r6vH
-         a5cA==
-X-Gm-Message-State: AOJu0YzE8XK7+EXEArowZyGxRyVrARb1G5rNtKNdiQTB1yDokwlqdBwq
-        hPGBFv1DyzvYg3H6FmhsxlM=
-X-Google-Smtp-Source: AGHT+IE7UJ6hYq2t3odvKnj1OZgtt6CWAdhXxSjFmzJDNiIjPTZrtGFl/0+W4Cg0cp1PsPUwW0M7Mg==
-X-Received: by 2002:a17:90b:3786:b0:274:77df:50cd with SMTP id mz6-20020a17090b378600b0027477df50cdmr6002734pjb.9.1695318635785;
-        Thu, 21 Sep 2023 10:50:35 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id r6-20020a17090a438600b00263f41a655esm1817452pjg.43.2023.09.21.10.50.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 10:50:35 -0700 (PDT)
-Message-ID: <ab3076e2-5f65-e517-17f9-00249aabe51f@gmail.com>
-Date:   Thu, 21 Sep 2023 10:50:33 -0700
+        Thu, 21 Sep 2023 16:32:00 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCA1AF94C;
+        Thu, 21 Sep 2023 11:07:31 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id c8dfa8de6a80f189; Thu, 21 Sep 2023 20:07:29 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 1A650664EBE;
+        Thu, 21 Sep 2023 20:07:28 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v1 04/13] ACPI: thermal: Merge trip initialization functions
+Date:   Thu, 21 Sep 2023 19:51:19 +0200
+Message-ID: <1785516.VLH7GnMWUR@kreacher>
+In-Reply-To: <1957441.PYKUYFuaPT@kreacher>
+References: <1957441.PYKUYFuaPT@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 net-next 3/5] net: dsa: tag_ksz: Extend ksz9477_xmit()
- for HSR frame duplication
-Content-Language: en-US
-To:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230920114343.1979843-1-lukma@denx.de>
- <20230920114343.1979843-4-lukma@denx.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230920114343.1979843-4-lukma@denx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhn
+ thgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,21 +56,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/23 04:43, Lukasz Majewski wrote:
-> The KSZ9477 has support for HSR (High-Availability Seamless Redundancy).
-> One of its offloading (i.e. performed in the switch IC hardware) features
-> is to duplicate received frame to both HSR aware switch ports.
-> 
-> To achieve this goal - the tail TAG needs to be modified. To be more
-> specific, both ports must be marked as destination (egress) ones.
-> 
-> The NETIF_F_HW_HSR_DUP flag indicates that the device supports HSR and
-> assures (in HSR core code) that frame is sent only once from HOST to
-> switch with tail tag indicating both ports.
-> 
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+In order to reduce code duplicationeve further, merge
+acpi_thermal_init_passive/active_trip() into one function called
+acpi_thermal_init_trip() that will be used for initializing both
+the passive and active trip points.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/thermal.c |   64 ++++++++++++++++++++++---------------------------
+ 1 file changed, 30 insertions(+), 34 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -399,72 +399,68 @@ static long acpi_thermal_get_hot_trip(st
+ 	return tmp;
+ }
+ 
+-static bool acpi_thermal_init_passive_trip(struct acpi_thermal *tz)
++static bool passive_trip_params_init(struct acpi_thermal *tz)
+ {
+ 	unsigned long long tmp;
+ 	acpi_status status;
+-	int temp;
+-
+-	if (psv == -1)
+-		goto fail;
+-
+-	if (psv > 0) {
+-		temp = celsius_to_deci_kelvin(psv);
+-	} else {
+-		temp = get_passive_temp(tz);
+-		if (temp == THERMAL_TEMP_INVALID)
+-			goto fail;
+-	}
+ 
+ 	status = acpi_evaluate_integer(tz->device->handle, "_TC1", NULL, &tmp);
+ 	if (ACPI_FAILURE(status))
+-		goto fail;
++		return false;
+ 
+ 	tz->trips.passive.tc1 = tmp;
+ 
+ 	status = acpi_evaluate_integer(tz->device->handle, "_TC2", NULL, &tmp);
+ 	if (ACPI_FAILURE(status))
+-		goto fail;
++		return false;
+ 
+ 	tz->trips.passive.tc2 = tmp;
+ 
+ 	status = acpi_evaluate_integer(tz->device->handle, "_TSP", NULL, &tmp);
+ 	if (ACPI_FAILURE(status))
+-		goto fail;
++		return false;
+ 
+ 	tz->trips.passive.tsp = tmp;
+ 
+-	if (!update_trip_devices(tz, &tz->trips.passive.trip,
+-				 ACPI_THERMAL_TRIP_PASSIVE, false))
+-		goto fail;
+-
+-	tz->trips.passive.trip.temperature = temp;
+ 	return true;
+-
+-fail:
+-	tz->trips.passive.trip.temperature = THERMAL_TEMP_INVALID;
+-	return false;
+ }
+ 
+-static bool acpi_thermal_init_active_trip(struct acpi_thermal *tz, int index)
++static bool acpi_thermal_init_trip(struct acpi_thermal *tz, int index)
+ {
++	struct acpi_thermal_trip *acpi_trip;
+ 	long temp;
+ 
+-	if (act == -1)
+-		goto fail;
++	if (index == ACPI_THERMAL_TRIP_PASSIVE) {
++		acpi_trip = &tz->trips.passive.trip;
++
++		if (psv == -1)
++			goto fail;
++
++		if (!passive_trip_params_init(tz))
++			goto fail;
++
++		temp = psv > 0 ? celsius_to_deci_kelvin(psv) :
++				 get_passive_temp(tz);
++	} else {
++		acpi_trip = &tz->trips.active[index].trip;
++
++		if (act == -1)
++			goto fail;
++
++		temp = get_active_temp(tz, index);
++	}
+ 
+-	temp = get_active_temp(tz, index);
+ 	if (temp == THERMAL_TEMP_INVALID)
+ 		goto fail;
+ 
+-	if (!update_trip_devices(tz, &tz->trips.active[index].trip, index, false))
++	if (!update_trip_devices(tz, acpi_trip, index, false))
+ 		goto fail;
+ 
+-	tz->trips.active[index].trip.temperature = temp;
++	acpi_trip->temperature = temp;
+ 	return true;
+ 
+ fail:
+-	tz->trips.active[index].trip.temperature = THERMAL_TEMP_INVALID;
++	acpi_trip->temperature = THERMAL_TEMP_INVALID;
+ 	return false;
+ }
+ 
+@@ -473,11 +469,11 @@ static int acpi_thermal_get_trip_points(
+ 	unsigned int count = 0;
+ 	int i;
+ 
+-	if (acpi_thermal_init_passive_trip(tz))
++	if (acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE))
+ 		count++;
+ 
+ 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
+-		if (acpi_thermal_init_active_trip(tz, i))
++		if (acpi_thermal_init_trip(tz, i))
+ 			count++;
+ 		else
+ 			break;
+
+
 
