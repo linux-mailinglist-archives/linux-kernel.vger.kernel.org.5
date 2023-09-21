@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1D27AA14E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0AB7A9F91
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbjIUVAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
+        id S231405AbjIUUYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbjIUU7x (ORCPT
+        with ESMTP id S231782AbjIUUX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:59:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A994BBDF
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MEwOrql2CJ8ARZnwIYvEKozhyGDGiEqWcdZBHjO1eK4=; b=BKnAtAgBdBYP6A5mxCfLXR4gjN
-        A/aRGwIT14O8GtCkN+n6oFDsI5YuuzJAEZXUyPhAce1YRKe2OfmOIg8nIesAIAr+hVeP5ytMS//1V
-        YU1UH5bk/cTQATcd5xDpOQ/n9QtUq9i8EL1UEYxPkQxb6ecekqAKtPI1F7++7uZioqUMQfuNxD+3v
-        dAoQAvi4iDz+A8fT+taz6vE8je1IO24zLrnJGmxk3B3j1iQ2i4ISvdSFdzX5QoIai2sFzvcpP1Itm
-        W8J1R2tR98dAkWwcBtVyUhK+YBiPPO5h8JcHxy71u5oB9yvkccrG9zQrjedNEAXDkhK4HWT2NYkbj
-        vkq333pw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qjE5Q-00AXQj-Cs; Thu, 21 Sep 2023 07:26:56 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 915B23002E3; Thu, 21 Sep 2023 09:26:55 +0200 (CEST)
-Date:   Thu, 21 Sep 2023 09:26:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] x86/speculation, objtool: Use absolute relocations for
- annotations
-Message-ID: <20230921072655.GA14803@noisy.programming.kicks-ass.net>
-References: <20230920001728.1439947-1-maskray@google.com>
+        Thu, 21 Sep 2023 16:23:29 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08EF8A6A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:11:00 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5335725cf84so602007a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695316258; x=1695921058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U7gFQeovCOqyG+Vt42B/k9KqcPKnAtH77aTFoPbh9E0=;
+        b=yS0nIQqmyBoPffpV7C/mZlvStooBS9QmQqfE71OyfIDbJK2g4mknm/ZvSURtGo45kR
+         jjqXLWJrMeGMzbd+3eVxHMIzNJeblsTCGMryPFZrZ9krFQn4c0xHGFi/QemUI6GvdstF
+         6O7nPxlJfDOdCwGohvoURnM8ZodFIPNIMB7RAO4EyAycvITfyHhFN2DMRbY5q1pfbE1E
+         0SAxa/8WJMjsRXmQfxEfsM7I48JzlzdY/ltjH2pkbdWwhyqSfJ85WzS312ewLfCl19G+
+         1L+u0S4Z5J+l0OLCUvVAhxx5wJQsxchR0EeV4WHPqgOcGUdc1FLeWPOzsvJ3VCxxLfQY
+         MjJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316258; x=1695921058;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U7gFQeovCOqyG+Vt42B/k9KqcPKnAtH77aTFoPbh9E0=;
+        b=PZJbOPWOHVhDTPMWjWubchE+b8RwWI0QkQ3qCDXaD8gumReTwyDKLE7lw0LMrHfsoF
+         n2rOcZOlzf4+WIi6QBkYPBZvQQu9HTjT/ERNFCUnoNBlIz06dsvwCMgrdGEAzYtLc7vE
+         4SsQe3CAGRsanLHkMuLjxg6lVS+nLLnOIf8DOVzmCBCS4BatjSdCDNtcVIJYDHCd2ETU
+         FNzGjGNrXQwRktHs/mBfjQh1MPCaP9SnWAXrkkyMEqmJUzMsx9OUcLn9njzyB7ctMN34
+         nodDNurXDugvvhlk9tcMd+FTed0K+M5lqdkXpXC1IeMbKbV2trMiktmlZzh/PbTESV4k
+         aFng==
+X-Gm-Message-State: AOJu0YxxhF8+5FDcQFIuDZ6GnU0QNDkhcf/WZ1tVgU6WpAY4wChOTCfY
+        xAiq7JCcGQBLM233jTVM1EUT4N+dh85reJ+0391Sxg==
+X-Google-Smtp-Source: AGHT+IHjIQkVJQybbyYx/PL2aE6OMJIhMwgKGQdYG4h1ptw97QpAlXlx1ORnozqq/yIgm5Zhfz1miQ==
+X-Received: by 2002:a17:906:704d:b0:9a1:c42e:5e5e with SMTP id r13-20020a170906704d00b009a1c42e5e5emr3859123ejj.42.1695281319261;
+        Thu, 21 Sep 2023 00:28:39 -0700 (PDT)
+Received: from [172.20.15.189] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id a24-20020a170906245800b0098963eb0c3dsm616369ejb.26.2023.09.21.00.28.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 00:28:38 -0700 (PDT)
+Message-ID: <2ec21b71-bfdc-885f-827a-eca7b70f2728@linaro.org>
+Date:   Thu, 21 Sep 2023 09:28:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920001728.1439947-1-maskray@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 2/3] soc: qcom: rmtfs: Support discarding guard pages
+Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
+ <20230920-rmtfs-mem-guard-pages-v3-2-305b37219b78@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20230920-rmtfs-mem-guard-pages-v3-2-305b37219b78@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 05:17:28PM -0700, Fangrui Song wrote:
-> .discard.retpoline_safe sections do not have the SHF_ALLOC flag.  These
-> sections referencing text sections' STT_SECTION symbols with PC-relative
-> relocations like R_386_PC32 [0] is conceptually not suitable.  Newer
-> LLD will report warnings for REL relocations even for relocatable links
-> [1].
+
+
+On 9/21/23 04:37, Bjorn Andersson wrote:
+> In some configurations, the exact placement of the rmtfs shared memory
+> region isn't so strict. The DeviceTree author can then choose to use the
+> "size" property and rely on the OS for placement (in combination with
+> "alloc-ranges", if desired).
 > 
->     ld.lld: warning: vmlinux.a(drivers/i2c/busses/i2c-i801.o):(.discard.retpoline_safe+0x120): has non-ABS relocation R_386_PC32 against symbol ''
-
-What, why ?!? Please explain more.
-
-> Switch to absolute relocations instead, which indicate link-time
-> addresses.  In a relocatable link, these addresses are also output
-> section offsets, used by checks in tools/objtool/check.c.  When linking
-> vmlinux, these .discard.* sections will be discarded, therefore it is
-> not a problem that R_X86_64_32 cannot represent a kernel address.
+> But on some platforms the rmtfs memory region may not be allocated
+> adjacent to regions allocated by other clients. Add support for
+> discarding the first and last 4k block in the region, if
+> qcom,use-guard-pages is specified in DeviceTree.
 > 
-> Alternatively, we could set the SHF_ALLOC flag for .discard.* sections,
-> but I think non-SHF_ALLOC for sections to be discarded makes more sense.
-> 
-> Note: if we decide to never support REL architectures (e.g. arm, i386),
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+I don't want to block this anymore, but I guess I should ask
+the question whether it would be valuable to add a common
+reserved-memory property for e.g. low-padding and high-padding
 
-We have explicit support for REL (as opposed to RELA) architectures, so
-I don't think we can do that.
+Have we seen cases of that outside rmtfs?
 
+Konrad
