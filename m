@@ -2,220 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663487A9972
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EB07A9D5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjIUSPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
+        id S231133AbjIUTbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjIUSO4 (ORCPT
+        with ESMTP id S230135AbjIUTag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:14:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32307E50;
-        Thu, 21 Sep 2023 10:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318603; x=1726854603;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FjWBe0gquMx3lNYmeIOSoDBa7nBK8aydjByq9TyafbE=;
-  b=JuwufzhiuqmcvPH4RfML1r0fw9NOvsz4Sh8rnL7VzBP5pK4kLuY1LvNH
-   cz03XKR1E/vXvVxVIZEx5BEAYonHVWI3m4bf54WUT+mKkQ2nPshG/l/T9
-   RygW7LyGVOlvAnPu5N5H5+oxWtNz6L51JrgL0WCRxXUc0qnUpC0bECOjb
-   unaGXYK+B+XWdlHydlHhW/3gpqUelMYtjG2u/DHEYkuE/PERinX+kvnbY
-   YXNANGwiR3cbmAkARjHpG9bw1g69DePtqRX3SXdGKoLW7s6nS4eNfcvNi
-   kUAceIHwDXAbgBXspY5bdDFwBK2+fG57CiVHtXzatoJ6UXdLqhjJ0qDuk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359871047"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="359871047"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 04:06:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="870765809"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="870765809"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 21 Sep 2023 04:06:23 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjHVl-0009uA-1C;
-        Thu, 21 Sep 2023 11:06:21 +0000
-Date:   Thu, 21 Sep 2023 19:05:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH 4/5] mm: workingset: move the stats flush into
- workingset_test_recent()
-Message-ID: <202309211829.Efuqg8NE-lkp@intel.com>
-References: <20230921081057.3440885-5-yosryahmed@google.com>
+        Thu, 21 Sep 2023 15:30:36 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F000B56D38;
+        Thu, 21 Sep 2023 10:18:26 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6c21b2c6868so710554a34.1;
+        Thu, 21 Sep 2023 10:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695316706; x=1695921506; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q6Io+NqdH4bxbw7qedQ2WLW3wnG7KpfohNDHzRzQ7HQ=;
+        b=a42Jhq7F8SjW0ZExjFGT/NMG51AGscXCa+vQg0M7q6tY4RR8SUfn9gMooM/yJnXL72
+         amhA9iSA5LaRFZ/NBIhcyxWEOVnoWlm10Wl9eZnnFYJp/G5sdG0Pj9DNtKk1y7oHlxsw
+         DC64FvDaFge121tiPM3qcIYgoHuv7joy5zFoRcoSXXnKfXHpR13iFUJIEx0yDPzT4Ke/
+         YqKE15JJc9+PPUveY3dC8bf98HMKfde+sx1GUmX+4BWNrypq1qwTT+vl/NV/jqvkJt9S
+         kljpk1tq0CsalhNUwTq/fUxHyyO33oZgziqIo4vB3a6TGtkEc7V88qSSdcJUdePcaH5c
+         04+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316706; x=1695921506;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q6Io+NqdH4bxbw7qedQ2WLW3wnG7KpfohNDHzRzQ7HQ=;
+        b=J0PBu7FA7o7uIuFEz9psKi8rAEt4HQEYwKZVP8oVDeXxAy+Iw+5bGTeWTuwl6IyFSK
+         7/xuM5khrW1jQL1v77JfSvUZnfHoSk7sUcJdq7XMpKBldIENQUk65VBG1qDNxf+km3tN
+         R6yBwTOnkXdjTsV3DZuGCdxHuXY9fCh2egLR2qRhMBZjB/JRJGDBqaaEpZIexq7g4sLJ
+         rOfjeC2AHFnFBCKjSS9vYX90wABPAxMBlCyuDUaLBQjOv5cmxhyi87EsV57IbLkpLOXi
+         dNxoz9X5WiZIXMPrWDn+1t5uRYtTghxZnMlCNQPpyuYBoBsl0Atr17cyMkYz0oNlwEjj
+         WhCg==
+X-Gm-Message-State: AOJu0YyNTFiVI+kQDcZkqcWtJaWLdEE22XQiphi+uF0O5oS8Or8A+W2T
+        b+tSW0ABvEnBO1vcob+Z6e5WcNzXTphSx8XI1ms0Ro9xdjE=
+X-Google-Smtp-Source: AGHT+IFd83OFEN20e4ml9L8pmlvbvhS2daJ1R+Y7BWCut39c7qxVh2xC1k3KYOAJpyayzaGsCncOE3w/BFNte+w5Fc8=
+X-Received: by 2002:a17:90b:390a:b0:26d:2bac:a0bb with SMTP id
+ ob10-20020a17090b390a00b0026d2baca0bbmr4967326pjb.6.1695294806097; Thu, 21
+ Sep 2023 04:13:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921081057.3440885-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
+ <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
+ <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl> <CAA+D8APyNGFSry1GUv6TOW0nKYHKSwQd5bTcRNuT7cu0Xf8eUA@mail.gmail.com>
+ <5292ce53-643e-44f0-b2cc-cb66efee9712@xs4all.nl>
+In-Reply-To: <5292ce53-643e-44f0-b2cc-cb66efee9712@xs4all.nl>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 21 Sep 2023 19:13:14 +0800
+Message-ID: <CAA+D8AMZN59uTRs2sOrSeVb5AGopTzurNVCTNwJOVPahfEXd+w@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD
+ control
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yosry,
+On Thu, Sep 21, 2023 at 3:11=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
+rote:
+>
+> On 21/09/2023 08:55, Shengjiu Wang wrote:
+> > On Wed, Sep 20, 2023 at 6:19=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.n=
+l> wrote:
+> >>
+> >> On 20/09/2023 11:32, Shengjiu Wang wrote:
+> >>> The input clock and output clock may not be the accurate
+> >>> rate as the sample rate, there is some drift, so the convert
+> >>> ratio of i.MX ASRC module need to be changed according to
+> >>> actual clock rate.
+> >>>
+> >>> Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
+> >>> adjust the ratio.
+> >>>
+> >>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> >>> ---
+> >>>  Documentation/userspace-api/media/v4l/control.rst | 5 +++++
+> >>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
+> >>>  include/uapi/linux/v4l2-controls.h                | 1 +
+> >>>  3 files changed, 7 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Docu=
+mentation/userspace-api/media/v4l/control.rst
+> >>> index 4463fce694b0..2bc175900a34 100644
+> >>> --- a/Documentation/userspace-api/media/v4l/control.rst
+> >>> +++ b/Documentation/userspace-api/media/v4l/control.rst
+> >>> @@ -318,6 +318,11 @@ Control IDs
+> >>>      depending on particular custom controls should check the driver =
+name
+> >>>      and version, see :ref:`querycap`.
+> >>>
+> >>> +.. _v4l2-audio-imx:
+> >>> +
+> >>> +``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
+> >>> +    sets the rasampler ratio modifier of i.MX asrc module.
+> >>
+> >> rasampler -> resampler (I think?)
+> >>
+> >> This doesn't document at all what the type of the control is or how to=
+ interpret it.
+> >>
+> >>> +
+> >>>  Applications can enumerate the available controls with the
+> >>>  :ref:`VIDIOC_QUERYCTRL` and
+> >>>  :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
+> >>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/medi=
+a/v4l2-core/v4l2-ctrls-defs.c
+> >>> index 8696eb1cdd61..16f66f66198c 100644
+> >>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>> @@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> >>>       case V4L2_CID_COLORIMETRY_CLASS:        return "Colorimetry Con=
+trols";
+> >>>       case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:               return =
+"HDR10 Content Light Info";
+> >>>       case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:      return =
+"HDR10 Mastering Display";
+> >>> +     case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:                  return =
+"ASRC RATIO MOD";
+> >>
+> >> Let's stay consistent with the other control names:
+> >>
+> >> "ASRC Ratio Modifier"
+> >>
+> >> But if this is a driver specific control, then this doesn't belong her=
+e.
+> >>
+> >> Driver specific controls are defined in the driver itself, including t=
+his
+> >> description.
+> >>
+> >> Same for the control documentation: if it is driver specific, then tha=
+t
+> >> typically is documented either in a driver-specific public header, or
+> >> possibly in driver-specific documentation (Documentation/admin-guide/m=
+edia/).
+> >>
+> >> But is this imx specific? Wouldn't other similar devices need this?
+> >
+> > It is imx specific.
+>
+> Why? I'm not opposed to this, but I wonder if you looked at datasheets of
+> similar devices from other vendors: would they use something similar?
 
-kernel test robot noticed the following build errors:
+I tried to find some datasheets for other vendors, but failed to find them.
+So I don't know how they implement this part.
 
-[auto build test ERROR on akpm-mm/mm-everything]
+Ratio modification on i.MX is to modify the configured ratio.
+For example, the input rate is 44.1kHz,  output rate is 48kHz,
+configured ratio =3D 441/480,   the ratio modification is to modify
+the fractional part of (441/480) with small steps.  because the
+input clock or output clock has drift in the real hardware.
+The ratio modification is signed value, it is added to configured
+ratio.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-change-flush_next_time-to-flush_last_time/20230921-161246
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230921081057.3440885-5-yosryahmed%40google.com
-patch subject: [PATCH 4/5] mm: workingset: move the stats flush into workingset_test_recent()
-config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/20230921/202309211829.Efuqg8NE-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230921/202309211829.Efuqg8NE-lkp@intel.com/reproduce)
+In our case, we have some sysfs interface for user to get the
+clock from input audio device and output audio device, user
+need to calculate the ratio dynamically , then configure the
+modification to driver
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309211829.Efuqg8NE-lkp@intel.com/
+May be other vendors has similar implementation. or make
+the definition be generic is an option.
 
-All errors (new ones prefixed by >>):
+best regards
+wang shengjiu
 
-   mm/workingset.c: In function 'workingset_test_recent':
->> mm/workingset.c:461:32: error: invalid use of undefined type 'struct mem_cgroup'
-     461 |         css_get(&eviction_memcg->css);
-         |                                ^~
-
-
-vim +461 mm/workingset.c
-
-   405	
-   406	/**
-   407	 * workingset_test_recent - tests if the shadow entry is for a folio that was
-   408	 * recently evicted. Also fills in @workingset with the value unpacked from
-   409	 * shadow.
-   410	 * @shadow: the shadow entry to be tested.
-   411	 * @file: whether the corresponding folio is from the file lru.
-   412	 * @workingset: where the workingset value unpacked from shadow should
-   413	 * be stored.
-   414	 *
-   415	 * Return: true if the shadow is for a recently evicted folio; false otherwise.
-   416	 */
-   417	bool workingset_test_recent(void *shadow, bool file, bool *workingset)
-   418	{
-   419		struct mem_cgroup *eviction_memcg;
-   420		struct lruvec *eviction_lruvec;
-   421		unsigned long refault_distance;
-   422		unsigned long workingset_size;
-   423		unsigned long refault;
-   424		int memcgid;
-   425		struct pglist_data *pgdat;
-   426		unsigned long eviction;
-   427	
-   428		rcu_read_lock();
-   429	
-   430		if (lru_gen_enabled()) {
-   431			bool recent = lru_gen_test_recent(shadow, file,
-   432							  &eviction_lruvec, &eviction,
-   433							  workingset);
-   434			rcu_read_unlock();
-   435			return recent;
-   436		}
-   437	
-   438		unpack_shadow(shadow, &memcgid, &pgdat, &eviction, workingset);
-   439		eviction <<= bucket_order;
-   440	
-   441		/*
-   442		 * Look up the memcg associated with the stored ID. It might
-   443		 * have been deleted since the folio's eviction.
-   444		 *
-   445		 * Note that in rare events the ID could have been recycled
-   446		 * for a new cgroup that refaults a shared folio. This is
-   447		 * impossible to tell from the available data. However, this
-   448		 * should be a rare and limited disturbance, and activations
-   449		 * are always speculative anyway. Ultimately, it's the aging
-   450		 * algorithm's job to shake out the minimum access frequency
-   451		 * for the active cache.
-   452		 *
-   453		 * XXX: On !CONFIG_MEMCG, this will always return NULL; it
-   454		 * would be better if the root_mem_cgroup existed in all
-   455		 * configurations instead.
-   456		 */
-   457		eviction_memcg = mem_cgroup_from_id(memcgid);
-   458		if (!mem_cgroup_disabled() && !eviction_memcg)
-   459			return false;
-   460	
- > 461		css_get(&eviction_memcg->css);
-   462		rcu_read_unlock();
-   463	
-   464		/* Flush stats (and potentially sleep) outside the RCU read section */
-   465		mem_cgroup_flush_stats_ratelimited();
-   466	
-   467		eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
-   468		refault = atomic_long_read(&eviction_lruvec->nonresident_age);
-   469	
-   470		/*
-   471		 * Calculate the refault distance
-   472		 *
-   473		 * The unsigned subtraction here gives an accurate distance
-   474		 * across nonresident_age overflows in most cases. There is a
-   475		 * special case: usually, shadow entries have a short lifetime
-   476		 * and are either refaulted or reclaimed along with the inode
-   477		 * before they get too old.  But it is not impossible for the
-   478		 * nonresident_age to lap a shadow entry in the field, which
-   479		 * can then result in a false small refault distance, leading
-   480		 * to a false activation should this old entry actually
-   481		 * refault again.  However, earlier kernels used to deactivate
-   482		 * unconditionally with *every* reclaim invocation for the
-   483		 * longest time, so the occasional inappropriate activation
-   484		 * leading to pressure on the active list is not a problem.
-   485		 */
-   486		refault_distance = (refault - eviction) & EVICTION_MASK;
-   487	
-   488		/*
-   489		 * Compare the distance to the existing workingset size. We
-   490		 * don't activate pages that couldn't stay resident even if
-   491		 * all the memory was available to the workingset. Whether
-   492		 * workingset competition needs to consider anon or not depends
-   493		 * on having free swap space.
-   494		 */
-   495		workingset_size = lruvec_page_state(eviction_lruvec, NR_ACTIVE_FILE);
-   496		if (!file) {
-   497			workingset_size += lruvec_page_state(eviction_lruvec,
-   498							     NR_INACTIVE_FILE);
-   499		}
-   500		if (mem_cgroup_get_nr_swap_pages(eviction_memcg) > 0) {
-   501			workingset_size += lruvec_page_state(eviction_lruvec,
-   502							     NR_ACTIVE_ANON);
-   503			if (file) {
-   504				workingset_size += lruvec_page_state(eviction_lruvec,
-   505							     NR_INACTIVE_ANON);
-   506			}
-   507		}
-   508	
-   509		mem_cgroup_put(eviction_memcg);
-   510		return refault_distance <= workingset_size;
-   511	}
-   512	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> And the very short description you gave in the commit log refers to input
+> and output clock: how would userspace know those clock frequencies? In
+> other words, what information does userspace need in order to set this
+> control correctly? And is that information actually available? How would
+> you use this control?
+>
+> I don't really understand how this is supposed to be used.
+>
+> >
+> > Does this mean that I need to create a header file in include/uapi/linu=
+x
+> > folder to put this definition?  I just hesitate if this is necessary.
+>
+> Yes, put it there. There are some examples of this already:
+>
+> include/uapi/linux/aspeed-video.h
+> include/uapi/linux/max2175.h
+>
+> >
+> > There is folder Documentation/userspace-api/media/drivers/ for drivers
+> > Should this document in this folder, not in the
+> > Documentation/admin-guide/media/?
+>
+> Yes, you are correct. For the headers above, the corresponding documentat=
+ion
+> is in:
+>
+> Documentation/userspace-api/media/drivers/aspeed-video.rst
+> Documentation/userspace-api/media/drivers/max2175.rst
+>
+> So you have some examples as reference.
+>
+> Frankly, what is in admin-guide and in userspace-api is a bit random, it
+> probably could use a cleanup.
+>
+> Regards,
+>
+>         Hans
+>
+> >
+> > Best regards
+> > Wang shengjiu
+> >>
+> >>>       default:
+> >>>               return NULL;
+> >>>       }
+> >>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/=
+v4l2-controls.h
+> >>> index c3604a0a3e30..b1c319906d12 100644
+> >>> --- a/include/uapi/linux/v4l2-controls.h
+> >>> +++ b/include/uapi/linux/v4l2-controls.h
+> >>> @@ -162,6 +162,7 @@ enum v4l2_colorfx {
+> >>>  /* The base for the imx driver controls.
+> >>>   * We reserve 16 controls for this driver. */
+> >>>  #define V4L2_CID_USER_IMX_BASE                       (V4L2_CID_USER_=
+BASE + 0x10b0)
+> >>> +#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD     (V4L2_CID_USER_IMX_BASE=
+ + 0)
+> >>>
+> >>>  /*
+> >>>   * The base for the atmel isc driver controls.
+> >>
+> >> Regards,
+> >>
+> >>         Hans
+>
