@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8447AA037
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38677AA0B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbjIUUeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        id S232268AbjIUUrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbjIUUdm (ORCPT
+        with ESMTP id S231653AbjIUUrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:33:42 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F82266EA
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:32:32 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c01d22f332so28698751fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:32:32 -0700 (PDT)
+        Thu, 21 Sep 2023 16:47:03 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CB356D31
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:28:17 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a640c23a62f3a-9ae22bf33a0so529594666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695317549; x=1695922349; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695317295; x=1695922095; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SZXK6IdVBTSXcGTIHRUU/WhDyCqjH/rftizzn5sbxAE=;
-        b=k1i4uBjTloXGxXlLxo2zcwKsbn6RrrqAdMoTX9iZ7Cx7ZaOHg6WnbwC8mF4FmoDypf
-         ZFOJIabFJgxhrMx/l5pCOg1Rxj700qsrVDLR2trikSx5Wqc6DXD30AyEMUY/4WOZm39h
-         BnagZwFRmlK5RaIhfouTfu0peyGOlGqlN9qqb2sU67c3rd2ktpiFS1i8JxuJ9EWCYNv9
-         +hK/d5mMK4H9KS+o3ikUqlxKGgp/LTjevFQFeoTQoEfadvYR86FyHtIj+7Zz/JfIXyUL
-         O0Um9KE9ZepIv0/FeCHYQ14GyxQl/rRmGhsU6tjKokgASXjRIhQVbbAe2jPaRyg7OTvf
-         PI2g==
+        bh=dOWL8UFN0vGXrTIparX6s/KCVRR+pmZ6D/qH1lVsdWQ=;
+        b=t41sic2vSUatU0Dgg6ZF67xbNGnoLEJKP1R7JWFu7gtuFJmf+/emAPIsdfPlZUALvf
+         xbrywqbmKcygEGqwBcc2iSO4Jko7YfPV1u107sNo0ccDotEkoDKXL2hLftUENZ54Ts7Q
+         suK8I3QYLhTEAtt1UHi/+4WCebeoKYJWvldYC4QZxr5nJvI5DQNRDU14yLpE63aS4qj/
+         dehy2UN8YJwDzv57GJvrjJLLCblrtMOwTVzzI5pQpJsRLBKGWZ5w5oE5z91FMBR8g+vz
+         CDgB26u8pLawbodtMwHs22QwhKmQi9tZWkrt/ADRK34U5mIOaW0+esplsX/Ar443FbtM
+         GFFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317549; x=1695922349;
+        d=1e100.net; s=20230601; t=1695317295; x=1695922095;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SZXK6IdVBTSXcGTIHRUU/WhDyCqjH/rftizzn5sbxAE=;
-        b=ps0Sm/Q1rTIee54D9URaUF1iLFMmiRCNb86WZmYdvBjnlDyA05W4ev/ApFHylknmHV
-         0UzD0OBHHmzlAHNOqg3DUyIgB5kpEeQjfc+lI73KT9TCDmjww2Ex52Al76N2lSzi1B7z
-         ykSie/7Ayk/GMgAEDcgMDvVeEdqdcdjrg0nvIwU4U61UGAgfI7pO5WdEglf/5Kj0hVNn
-         1UF1i7vjll6DQPYr7dRk45xuayjUN3M8CBc5MlU0XX2nL5o/7L92VlmO4ya2m1/Zofgy
-         9oWbTJEzl7a6uxi3mAayb7VrE0Yxx/YViu3fA7Q0h+8tgWLLpdmBIkeV9Og3yR644NFF
-         fihg==
-X-Gm-Message-State: AOJu0YyV3Y6jgMv9/xEuqan+7JyPHIA+RV4shXMtPkx+iHSuA6rIrdIG
-        xM4yZiWO7Asd3wyLa7JGvmyK3enyUeNLRSJB0rv86/CJ
-X-Google-Smtp-Source: AGHT+IHMEHv2klXQ63wwzWGVjMOGX5bZqWdw2Z4sNl3hAMpsWXkSNUzWXIDheODJzKMZ7lJR41f9Ow==
-X-Received: by 2002:a5d:4dc2:0:b0:320:968:f3b0 with SMTP id f2-20020a5d4dc2000000b003200968f3b0mr6330695wru.35.1695307453560;
-        Thu, 21 Sep 2023 07:44:13 -0700 (PDT)
+        bh=dOWL8UFN0vGXrTIparX6s/KCVRR+pmZ6D/qH1lVsdWQ=;
+        b=iWxMLO7n0OOTw4VY1zz0LhL6RtJpwaewMMaomK/8p5nVMYMHXyIO9gcWdjYsBdM8B9
+         WwuftL5m9y5v4h2mvEzOCOKA9wj6lcMJnamNOwu5m1lEoafD0nBznskvk695gs1TU2WC
+         cWf57/2PcKW1A5e69+r8TzYu8aQSG9FjErtbVEtkHpkq/PoNKOtFwXAw6xs1+hxlNiHH
+         7mU1GIXnr2OJ+2JVKzXbRB/uVK+TZ7ZvaU4W9vzhu/RhbnMVSRqocWn9yVbDKyeyRamw
+         aaAVB+V/3BtkLO2B93Z0ZC0JhYCVzP38bHGlAK0lQym2+YogsPX6IeRQuW5x8/L8J3oD
+         PK4A==
+X-Gm-Message-State: AOJu0YxrfCPmEUGzs6PTaPchCSx8HO9gNV/mmOGljvKZDOJuX9IeNvIk
+        3EJtTZlmquPcdGjTKagGeHnuaUC3QjaBfMreDtzyl6MsuqY=
+X-Google-Smtp-Source: AGHT+IFzcBipIczu0UM4gStcHPA5qOTjVF5hSW6xMiN01FgCN7Y6ZAzNQO6cw/yOKmnG0hURQ665bQ==
+X-Received: by 2002:a05:600c:3789:b0:3fb:c075:b308 with SMTP id o9-20020a05600c378900b003fbc075b308mr4598413wmr.12.1695307454403;
+        Thu, 21 Sep 2023 07:44:14 -0700 (PDT)
 Received: from localhost.localdomain (abordeaux-655-1-129-86.w90-5.abo.wanadoo.fr. [90.5.10.86])
-        by smtp.gmail.com with ESMTPSA id s17-20020a1cf211000000b003fe2a40d287sm2125515wmc.1.2023.09.21.07.44.12
+        by smtp.gmail.com with ESMTPSA id s17-20020a1cf211000000b003fe2a40d287sm2125515wmc.1.2023.09.21.07.44.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:44:13 -0700 (PDT)
+        Thu, 21 Sep 2023 07:44:14 -0700 (PDT)
 From:   David Lechner <dlechner@baylibre.com>
 To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-staging@lists.linux.dev
@@ -61,193 +61,148 @@ Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
         =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Axel Haslam <ahaslam@baylibre.com>,
         Philip Molloy <pmolloy@baylibre.com>,
-        David Lechner <dlechner@baylibre.com>,
-        Apelete Seketeli <aseketeli@baylibre.com>
-Subject: [PATCH v2 01/19] dt-bindings: iio: resolver: add devicetree bindings for ad2s1210
-Date:   Thu, 21 Sep 2023 09:43:42 -0500
-Message-Id: <20230921144400.62380-2-dlechner@baylibre.com>
+        David Lechner <dlechner@baylibre.com>
+Subject: [PATCH v2 02/19] staging: iio: Documentation: document IIO resolver AD2S1210 sysfs attributes
+Date:   Thu, 21 Sep 2023 09:43:43 -0500
+Message-Id: <20230921144400.62380-3-dlechner@baylibre.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230921144400.62380-1-dlechner@baylibre.com>
 References: <20230921144400.62380-1-dlechner@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds new DeviceTree bindings for the Analog Devices, Inc. AD2S1210
-resolver-to-digital converter.
+This adds documentation for the device-specific sysfs attributes of the
+iio/resolver/ad2s1210 driver.
 
-Co-developed-by: Apelete Seketeli <aseketeli@baylibre.com>
-Signed-off-by: Apelete Seketeli <aseketeli@baylibre.com>
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
+ .../sysfs-bus-iio-resolver-ad2s1210           | 109 ++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+ create mode 100644 drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
 
-v2 changes:
-* Add Co-developed-by:
-* Remove extraneous quotes on strings
-* Remove extraneous pipe on some multi-line descriptions
-
- .../bindings/iio/resolver/adi,ad2s1210.yaml   | 150 ++++++++++++++++++
- 1 file changed, 150 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
-
-diff --git a/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml b/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
+diff --git a/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210 b/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
 new file mode 100644
-index 000000000000..f55c9652cfb7
+index 000000000000..32890c85168e
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
-@@ -0,0 +1,150 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/resolver/adi,ad2s1210.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
+@@ -0,0 +1,109 @@
++What:		/sys/bus/iio/devices/iio:deviceX/dos_mis_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Degradation of Signal Mismatch
++		Threshold value. Writing sets the value. Valid values are 0 (0V)
++		to 127 (4.826V). To convert the value to volts, multiply by
++		0.038.
 +
-+title: Analog Devices AD2S1210 Resolver-to-Digital Converter
++What:		/sys/bus/iio/devices/iio:deviceX/dos_ovr_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Degradation of Signal Overrange
++		Threshold value. Writing sets the value. Valid values are 0 (0V)
++		to 127 (4.826V). To convert the value to volts, multiply by
++		0.038.
 +
-+maintainers:
-+  - Michael Hennerich <michael.hennerich@analog.com>
++What:		/sys/bus/iio/devices/iio:deviceX/dos_rst_max_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Degradation of Signal Reset Maximum
++		Threshold value. Writing sets the value. Valid values are 0 (0V)
++		to 127 (4.826V). To convert the value to volts, multiply by
++		0.038.
 +
-+description: |
-+  The AD2S1210 is a complete 10-bit to 16-bit resolution tracking
-+  resolver-to-digital converter, integrating an on-board programmable
-+  sinusoidal oscillator that provides sine wave excitation for
-+  resolvers.
++What:		/sys/bus/iio/devices/iio:deviceX/dos_rst_min_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Degradation of Signal Reset Minimum
++		Threshold value. Writing sets the value. Valid values are 0 (0V)
++		to 127 (4.826V). To convert the value to volts, multiply by
++		0.038.
 +
-+  The AD2S1210 allows the user to read the angular position or the
-+  angular velocity data directly from the parallel outputs or through
-+  the serial interface.
++What:		/sys/bus/iio/devices/iio:deviceX/fault
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns a hex value containing the fault bit flags.
 +
-+    A1  A0  Result
-+     0   0  Normal mode - position output
-+     0   1  Normal mode - velocity output
-+     1   0  Reserved
-+     1   1  Configuration mode
++		Bit	Description
++		---	-----------
++		D7	Sine/cosine inputs clipped
++		D6	Sine/cosine inputs below LOS threshold
++		D5	Sine/cosine inputs exceed DOS overrange threshold
++		D4	Sine/cosine inputs exceed DOS mismatch threshold
++		D3	Tracking error exceeds LOT threshold
++		D2	Velocity exceeds maximum tracking rate
++		D1	Phase error exceeds phase lock range
++		D0	Configuration parity error
 +
-+  In normal mode, the resolution of the digital output is selected using
-+  the RES0 and RES1 input pins. In configuration mode, the resolution is
-+  selected by setting the RES0 and RES1 bits in the control register.
++		Writing any value will clear any fault conditions.
 +
-+  RES1  RES0  Resolution (Bits)
-+     0     0  10
-+     0     1  12
-+     1     0  14
-+     1     1  16
++What:		/sys/bus/iio/devices/iio:deviceX/excitation_frequency
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Excitation Frequency in Hz. Writing
++		sets the Excitation Frequency and performs a software reset on
++		the device to apply the change. Valid values are 2000 (2kHz) to
++		20000 (20kHz).
 +
-+  Note on SPI connections: The CS line on the AD2S1210 should hard-wired to
-+  logic low and the WR/FSYNC line on the AD2S1210 should be connected to the
-+  SPI CSn output of the SPI controller.
++What:		/sys/bus/iio/devices/iio:deviceX/los_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Loss of Signal Reset Threshold
++		value. Writing sets the value. Valid values are 0 (0V) to
++		127 (4.826V). To convert the value to volts, multiply by 0.038.
 +
-+  Datasheet:
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ad2s1210.pdf
++What:		/sys/bus/iio/devices/iio:deviceX/lot_high_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Loss of Position Tracking Detection
++		High Threshold value. Writing sets the value. Valid values are
++		0 (0 deg) to 127 (9/18/45 deg). The interpretation of the value
++		depends on the selected resolution. To convert the value to
++		degrees, multiply by 0.35 for 10-bit resolution, multiply by
++		0.14 for 12-bit resolution or multiply by 0.09 for 14 and 16-bit
++		resolution.
 +
-+properties:
-+  compatible:
-+    const: adi,ad2s1210
++What:		/sys/bus/iio/devices/iio:deviceX/lot_low_thrd
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Loss of Position Tracking Detection
++		Low Threshold value. Writing sets the value. Valid values are
++		0 (0 deg) to 127 (9/18/45 deg). The interpretation of the value
++		depends on the selected resolution. To convert the value to
++		degrees, multiply by 0.35 for 10-bit resolution, multiply by
++		0.14 for 12-bit resolution or multiply by 0.09 for 14 and 16-bit
++		resolution.
 +
-+  reg:
-+    maxItems: 1
++What:		/sys/bus/iio/devices/iio:deviceX/phase_lock_range
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the current Phase lock range in degrees. Writing
++		sets the value in the configuration register.
 +
-+  spi-max-frequency:
-+    maximum: 25000000
-+
-+  spi-cpha: true
-+
-+  clocks:
-+    maxItems: 1
-+    description: External oscillator clock (CLKIN).
-+
-+  reset-gpios:
-+    description:
-+      GPIO connected to the /RESET pin. As the line needs to be low for the
-+      reset to be active, it should be configured as GPIO_ACTIVE_LOW.
-+    maxItems: 1
-+
-+  sample-gpios:
-+    description:
-+      GPIO connected to the /SAMPLE pin. As the line needs to be low to trigger
-+      a sample, it should be configured as GPIO_ACTIVE_LOW.
-+    maxItems: 1
-+
-+  mode-gpios:
-+    description:
-+      GPIO lines connected to the A0 and A1 pins. These pins select the data
-+      transfer mode.
-+    minItems: 2
-+    maxItems: 2
-+
-+  resolution-gpios:
-+    description:
-+      GPIO lines connected to the RES0 and RES1 pins. These pins select the
-+      resolution of the digital output. If omitted, it is assumed that the
-+      RES0 and RES1 pins are hard-wired to match the assigned-resolution-bits
-+      property.
-+    minItems: 2
-+    maxItems: 2
-+
-+  fault-gpios:
-+    description:
-+      GPIO lines connected to the LOT and DOS pins. These pins combined indicate
-+      the type of fault present, if any. As these pins a pulled low to indicate
-+      a fault condition, they should be configured as GPIO_ACTIVE_LOW.
-+    minItems: 2
-+    maxItems: 2
-+
-+  adi,fixed-mode:
-+    description:
-+      This is used to indicate the selected mode if A0 and A1 are hard-wired
-+      instead of connected to GPIOS (i.e. mode-gpios is omitted).
-+    $ref: /schemas/types.yaml#/definitions/string
-+    enum: [config, velocity, position]
-+
-+  assigned-resolution-bits:
-+    description:
-+      Resolution of the digital output required by the application. This
-+      determines the precision of the angle and/or the maximum speed that can
-+      be measured. If resolution-gpios is omitted, it is assumed that RES0 and
-+      RES1 are hard-wired to match this value.
-+    enum: [10, 12, 14, 16]
-+
-+required:
-+  - compatible
-+  - reg
-+  - spi-cpha
-+  - clocks
-+  - sample-gpios
-+  - assigned-resolution-bits
-+
-+oneOf:
-+  - required:
-+      - mode-gpios
-+  - required:
-+      - adi,fixed-mode
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        resolver@0 {
-+            compatible = "adi,ad2s1210";
-+            reg = <0>;
-+            spi-max-frequency = <20000000>;
-+            spi-cpha;
-+            clocks = <&ext_osc>;
-+            sample-gpios = <&gpio0 90 GPIO_ACTIVE_LOW>;
-+            mode-gpios = <&gpio0 86 0>, <&gpio0 87 0>;
-+            resolution-gpios = <&gpio0 88 0>, <&gpio0 89 0>;
-+            assigned-resolution-bits = <16>;
-+        };
-+    };
++What:		/sys/bus/iio/devices/iio:deviceX/phase_lock_range_available
++KernelVersion:  6.7
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Reading returns the possible values for the phase_lock_range
++		attribute, namely 44 and 360.
 -- 
 2.34.1
 
