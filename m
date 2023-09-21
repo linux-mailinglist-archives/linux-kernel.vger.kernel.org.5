@@ -2,143 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FB97AA234
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FD57AA0DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjIUVNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
+        id S232547AbjIUUs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjIUVNJ (ORCPT
+        with ESMTP id S232333AbjIUUs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:13:09 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB655279;
-        Thu, 21 Sep 2023 10:08:21 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8589D660731D;
-        Thu, 21 Sep 2023 16:46:49 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695311211;
-        bh=qmLDWY/AuDZBwTiEH6bdhLx9MgWdAsDslzLfx3DOK4A=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=AAgC+As4Cy0TIyhqMYWvMkMILzrYGP2tdMFpvtrvDNPf0KcxzcZjzMOSK4Rq+GWMQ
-         EIpWb+TvGWirRWMOZCnECZJb8onvByXZBGwfeB6ZhIC0oO7BjgjViiHxqwDixdY78Z
-         K42MnJB5KJsEJ7fPabAtJvrBf8vDCD1DZ6xRKVOKXgDp7Ecy6k7Slj/HvSyvE2VWMK
-         QntErYDk3VwsgkkGUd4sx9fDC1P8XVhFchzQ+LnlHzDVJAEldAUAFC1OeR/4l+Gdi4
-         F7SL1J42s1DO+HX9UVMY1uNhlaX6g2/4RjNBE3XNQIveR7GF+dQxCVD4Z0bz0/rViQ
-         EvIPcMHnu1ptg==
-Message-ID: <c7cd83c49a9226e72c272365653dc8b998b6adcb.camel@collabora.com>
-Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to
- decoder driver
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Jeffrey Kardatzke <jkardatzke@google.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Yunfei Dong =?UTF-8?Q?=28=E8=91=A3=E4=BA=91=E9=A3=9E=29?= 
-        <Yunfei.Dong@mediatek.com>,
-        "nhebert@chromium.org" <nhebert@chromium.org>,
-        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
-        "nfraprado@collabora.com" <nfraprado@collabora.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "frkoenig@chromium.org" <frkoenig@chromium.org>,
-        "stevecho@chromium.org" <stevecho@chromium.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@chromium.org" <hsinyi@chromium.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 21 Sep 2023 11:46:40 -0400
-In-Reply-To: <CA+ddPcPbox=mknpmDkwfYTfDMca49wU10SNF3mJspYu=5T64FQ@mail.gmail.com>
-References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
-         <20230911125936.10648-13-yunfei.dong@mediatek.com>
-         <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
-         <d4cedcb0-32ed-495d-a8cd-a635d5105824@xs4all.nl>
-         <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
-         <bafc37e8-96e8-41c0-b805-c6477f0d7c4a@xs4all.nl>
-         <CA+ddPcN6EaFERC60_Z_-ZmWzqyUEwxiDCZwt_U6Y-gpaAu76tA@mail.gmail.com>
-         <ff7aa575-c820-4dfa-853f-77438b8b149a@xs4all.nl>
-         <b7d661637eacbda3e83d192b1126fc3970c4f50d.camel@collabora.com>
-         <c3d14f64-bf04-46b9-ac7b-af7ef9014335@xs4all.nl>
-         <CA+ddPcPbox=mknpmDkwfYTfDMca49wU10SNF3mJspYu=5T64FQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 21 Sep 2023 16:48:26 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2030914C3;
+        Thu, 21 Sep 2023 10:47:31 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-59eb8ec5e20so15210167b3.3;
+        Thu, 21 Sep 2023 10:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695318451; x=1695923251; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HOWTj9FP0vaaz3q49p+fKdClapweM+Ed4jAzEAA9yno=;
+        b=ZF8ynQoyzpUvoaF3gnzpAixA0AB0YnJHLrzWTPZXvqaLmSVwV5E815yK+gNg9XhyRR
+         FCSmtWhkhUyML0k9zfZkhpH614O7sxlUFtw7edf/ot8FmJ5WMUecGJbSPoVfmaAKW0LH
+         30ZPmrSSq00J5Nx+TzTgD7ZNadSwX+3FAkQoPbmNVSvCB2mUWykfRN4ANixxyJpunPdB
+         smohF2kQwSyp7qpBbqRmOHdfxU8nglhlXP9dab4SzJkHsIAoRJ1svDGUTpEmSr4+ZsPJ
+         z3qSXM+h3OrRtygriksVvQoapRtUy6XF1dmAb/55EPMB29/4ypA36t0KB/rteWXzbfFv
+         ZGcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695318451; x=1695923251;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HOWTj9FP0vaaz3q49p+fKdClapweM+Ed4jAzEAA9yno=;
+        b=KU7SRhd9KTqf0XOrye382dUG/XIEXSyGwP8aJ4zNMs9e791BFwlHDme4nS2fWF+zHG
+         NbPvxhqmBuTKL/fJvgBL1WVkyGmM00oloyuEHxHnldakMTsqy03Sp3qg2kdN9sSp2VXq
+         wifZ4WcOfv/E523Z65xGrUg3JgKLCSYB13FrHL37PBWdlvATf2HIhroB7FNaF+h9aXTv
+         8tAmyhNEPECQQNBfxD5RoUWVxRt+4pKp0wicLoR/uOYyqB+Sn75XAWJ0wwB369rBFJNV
+         5y9+Bvz4nVri0/6hcrMHXSOzI+wzwvnFJh9oBGaaCoYmOMVzGkU6oFlf7rzSUsn9i7dS
+         QYXw==
+X-Gm-Message-State: AOJu0Yz38/sUIoKBL6tma8PUgNqJVMo+6uAPz/qqAE4vYYN7yWKoOpzC
+        jarA+PooipfkLt+/3EHE5uetsBavYww=
+X-Google-Smtp-Source: AGHT+IE9zcw1DS9VmayNJucKFF84Njj6B5FeeIlhqZa34RI2TxAsXoEH16utjF2kucRF4hs8Dc6uRg==
+X-Received: by 2002:a05:6602:22c2:b0:794:d833:4a8a with SMTP id e2-20020a05660222c200b00794d8334a8amr6096222ioe.0.1695311516461;
+        Thu, 21 Sep 2023 08:51:56 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id eh3-20020a056638298300b0039deb26853csm430538jab.10.2023.09.21.08.51.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 08:51:55 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 21 Sep 2023 08:51:53 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 4.14 000/186] 4.14.326-rc1 review
+Message-ID: <d68ca4b4-9c5a-4ca8-9205-4159bf75f2ff@roeck-us.net>
+References: <20230920112836.799946261@linuxfoundation.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920112836.799946261@linuxfoundation.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 20 septembre 2023 =C3=A0 11:20 -0700, Jeffrey Kardatzke a =C3=
-=A9crit=C2=A0:
-> > >=20
-> > > Also, regarding MTK, these are stateless decoders. I think it would b=
-e nice to
-> > > show use example code that can properly parse the un-encrypted header=
-, pass the
-> > > data to the decryptor and decode. There is a bit of mechanic in there=
- that lacks
-> > > clarification, a reference implementation would clearly help. Finally=
-, does this
-> > > platform offers some clearkey implementation (or other alternative) s=
-o we can do
-> > > validation and regression testing? It would be very unfortunate to ad=
-d feature
-> > > upstream that can only be tested by proprietary CDM software.
-> >=20
->=20
-> It would be possible to use this with clearkey w/ some additional work
-> on our end. If this is then part of the public ChromiumOS build, would
-> that be satisfactory? (the TEE would have some binary blob components
-> like firmware does though)
+On Wed, Sep 20, 2023 at 01:28:23PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.326 release.
+> There are 186 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+> Anything received after that time might be too late.
+> 
 
-From my point of view, this would fully cover my concern. To clarify this
-concern, the  decryption into secure memory currently only ever take place =
-in
-proprietary code that implements the protection (Widewine CDM). With clear =
-key,
-we can have an open source CDM (made for testing purpose) so that we don't =
-have
-to have hidden code to test the entire pipeline. So appart from the TEE
-firmware, which is just a firmware like all the others, we could have open
-source tests in kernelCI and other CI, and we could extend these test to
-eventually support other vendors.
+Build results:
+	total: 139 pass: 139 fail: 0
+Qemu test results:
+	total: 440 pass: 440 fail: 0
 
-Note that currently, with other proposal, one could allocate and fill a nor=
-mal
-buffer, and "secure" that buffer to test the CODECs and display, but on thi=
-s
-specific architecture, with the limitation on the number of secure regions,=
- this
-feature isn't available.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Alternatives to this end-to-end solution, we could consider a TA (Trusted
-Application) that simply copy data from a untrusted chunk of memory into a
-trusted chunk of memory. That seems like a cross-platform solution. It woul=
-d be
-even better if this get standardized in TEEs for course (or at least requir=
-ed
-with all secure memory implementation). Then copying from untrusted to trus=
-ted
-could easily become an ioctl generic to all TEE drivers. That to me would b=
-e
-equally acceptable, and perhaps easier to use.
-
-Nicolas=20
+Guenter
