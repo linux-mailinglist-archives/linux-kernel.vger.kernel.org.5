@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5257A9797
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8D57A9684
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjIURZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S230028AbjIURCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjIURZ2 (ORCPT
+        with ESMTP id S229633AbjIURCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:25:28 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62ACA46DF1;
-        Thu, 21 Sep 2023 10:14:01 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50435a9f800so124477e87.2;
-        Thu, 21 Sep 2023 10:14:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695316439; x=1695921239; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZOwo8hyrebGgO2V/Dzr5eBCz1cH8hJCbHTwIz3ASbYA=;
-        b=WG79ZtiOEq5G7EL/My5+3TpG6xS39BVsVYYFb+vIPTyyd2nc/j5Pj2RmIeYnRGFfvL
-         iQ9VNpGl+ePQJ1JLJxq4qwtDwd6VzmTBLfhtJIYP6SR+tvBigk01v9j9jhN0UFTndF0k
-         RxVcduAbfEo9fcmDiGTGUGOM8dxHgf4Ml+oWZWrorR1bnK+WphVyq9ZJcU5gQN/LU4ub
-         Jn+7Lw6nQjPBzCIiAhgTdR9XSxzY+ur1odFKORVsCXDRGCQN4xzxazYV8Ma4BRbHSdJT
-         Ro+NFdn2rjOvVxeqDB+Ii7NbkK/EsL/VnWeC7wk/xcDmL+X0e2VhCvdCZiGf7AbxvOF0
-         g1SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316439; x=1695921239;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZOwo8hyrebGgO2V/Dzr5eBCz1cH8hJCbHTwIz3ASbYA=;
-        b=ImyVc6xx/eOfPm6SA6U9PdMhxfkB4kheI7U7m0HMegGRUcHcPyjkN86L7tzgbI6XBm
-         NbMcwxKiqG7G48H9oV29ji5PKvRm4YRjc+8SLZqL5lxv7jELSfANKBGkj4nl9EbBS1ud
-         3bdPbj3K9+1nQZQ4PhWkJTvXV1aJC9ZVL2gvkq3Afbu2VkOXu9dY5lYWUVwT+r0Qps2A
-         NS0WejEG98Rk7QL+KnZPJ8oicxAuKiTmiT4IQRaQzSKJ2n/ck5hVQZO0iJtkLWxYU4GO
-         mQZiGfn7ZNCqheYpzX8nA1WxumUD7jAYyK4boF/+S5m08yUZOIc1vqCzKiHcgL4Z8BjR
-         S+6A==
-X-Gm-Message-State: AOJu0YyDbGOaJYvZHw+0tRBM34zBtVFxdnTxu2mvudzZVJNt1KpAECwl
-        QFFHshHwxHB2O74UlZ0ttxx/tmMJO7k=
-X-Google-Smtp-Source: AGHT+IHy75Zw/oHT0QdpQwOljvDOvgsSgRY8twuD810TBRpptwH+Vwig1RUsv4xZTTyAb+3v4IpDXg==
-X-Received: by 2002:a05:600c:4708:b0:405:36d7:4577 with SMTP id v8-20020a05600c470800b0040536d74577mr380727wmo.26.1695283431095;
-        Thu, 21 Sep 2023 01:03:51 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id m5-20020a05600c280500b003feeb082a9fsm1198206wmb.3.2023.09.21.01.03.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 01:03:47 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 21 Sep 2023 10:03:45 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Fangrui Song <maskray@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
-Subject: Re: [tip: objtool/core] x86/speculation, objtool: Use absolute
- relocations for annotations
-Message-ID: <ZQv44cT8Fj7HAWa3@gmail.com>
-References: <20230920001728.1439947-1-maskray@google.com>
- <169528034747.27769.14777306686927534953.tip-bot2@tip-bot2>
- <20230921072718.GB14803@noisy.programming.kicks-ass.net>
+        Thu, 21 Sep 2023 13:02:09 -0400
+Received: from mail.avm.de (mail.avm.de [IPv6:2001:bf0:244:244::94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510FB2112;
+        Thu, 21 Sep 2023 10:01:14 -0700 (PDT)
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Thu, 21 Sep 2023 10:06:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+        t=1695283566; bh=EzGmNrSKOJc7ZUWqu95aGt4JAKmhiqLPdGsju567CAk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s5BAmOkMuI+eBqvoX4jxWJ6gSAWinUICiwcr9FCuzw16BjWz/LRBk2pOKtoc289IH
+         LLJsqZbrXEYCAGHSdUrrGPH+OErDMkrB5B6yA98g/ZVu5NLG3t/vI0+YXCJQzJw16Z
+         0CqlBe9j3IF5pEnsxff5BskDQAnpen3+7kaJM3Fo=
+Received: from localhost (unknown [172.17.88.63])
+        by mail-auth.avm.de (Postfix) with ESMTPSA id 1044581C20;
+        Thu, 21 Sep 2023 10:06:01 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 10:06:00 +0200
+From:   Johannes Nixdorf <jnixdorf-oss@avm.de>
+To:     Nikolay Aleksandrov <razor@blackwall.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v4 5/6] net: bridge: Add a configurable default
+ FDB learning limit
+Message-ID: <ZQv5aNbgqxCuOKyr@u-jnixdorf.ads.avm.de>
+References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
+ <20230919-fdb_limit-v4-5-39f0293807b8@avm.de>
+ <cc14cd4a-f3bb-3d6f-5b38-ec73cad32570@blackwall.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230921072718.GB14803@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <cc14cd4a-f3bb-3d6f-5b38-ec73cad32570@blackwall.org>
+X-purgate-ID: 149429::1695283561-FD4345D2-604B728F/0/0
+X-purgate-type: clean
+X-purgate-size: 3303
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Thu, Sep 21, 2023 at 07:12:27AM -0000, tip-bot2 for Fangrui Song wrote:
-> > The following commit has been merged into the objtool/core branch of tip:
+On Wed, Sep 20, 2023 at 02:00:27PM +0300, Nikolay Aleksandrov wrote:
+> On 9/19/23 11:12, Johannes Nixdorf wrote:
+> > Add a Kconfig option to configure a default FDB learning limit system
+> > wide, so a distributor building a special purpose kernel can limit all
+> > created bridges by default.
 > > 
-> > Commit-ID:     0ca0043d89930cb162070598e7e4a9ed3fe57795
-> > Gitweb:        https://git.kernel.org/tip/0ca0043d89930cb162070598e7e4a9ed3fe57795
-> > Author:        Fangrui Song <maskray@google.com>
-> > AuthorDate:    Tue, 19 Sep 2023 17:17:28 -07:00
-> > Committer:     Ingo Molnar <mingo@kernel.org>
-> > CommitterDate: Thu, 21 Sep 2023 08:42:38 +02:00
+> > The limit is only a soft default setting and overrideable on a per bridge
+> > basis using netlink.
+> > 
+> > Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+> > ---
+> >   net/bridge/Kconfig     | 13 +++++++++++++
+> >   net/bridge/br_device.c |  2 ++
+> >   2 files changed, 15 insertions(+)
+> > 
+> > diff --git a/net/bridge/Kconfig b/net/bridge/Kconfig
+> > index 3c8ded7d3e84..c0d9c08088c4 100644
+> > --- a/net/bridge/Kconfig
+> > +++ b/net/bridge/Kconfig
+> > @@ -84,3 +84,16 @@ config BRIDGE_CFM
+> >   	  Say N to exclude this support and reduce the binary size.
+> >   	  If unsure, say N.
+> > +
+> > +config BRIDGE_DEFAULT_FDB_MAX_LEARNED
+> > +	int "Default FDB learning limit"
+> > +	default 0
+> > +	depends on BRIDGE
+> > +	help
+> > +	  Sets a default limit on the number of learned FDB entries on
+> > +	  new bridges. This limit can be overwritten via netlink on a
+> > +	  per bridge basis.
+> > +
+> > +	  The default of 0 disables the limit.
+> > +
+> > +	  If unsure, say 0.
+> > diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+> > index 9a5ea06236bd..3214391c15a0 100644
+> > --- a/net/bridge/br_device.c
+> > +++ b/net/bridge/br_device.c
+> > @@ -531,6 +531,8 @@ void br_dev_setup(struct net_device *dev)
+> >   	br->bridge_ageing_time = br->ageing_time = BR_DEFAULT_AGEING_TIME;
+> >   	dev->max_mtu = ETH_MAX_MTU;
+> > +	br->fdb_max_learned = CONFIG_BRIDGE_DEFAULT_FDB_MAX_LEARNED;
+> > +
+> >   	br_netfilter_rtable_init(br);
+> >   	br_stp_timer_init(br);
+> >   	br_multicast_init(br);
+> > 
 > 
-> Ingo, can we please make this patch go away until further clarified?
+> This one I'm not sure about at all. Distributions can just create the bridge
+> with a predefined limit. This is not flexible and just adds
+> one more kconfig option that is rather unnecessary. Why having a kconfig
+> knob is better than bridge creation time limit setting? You still have
+> to create the bridge, so why not set the limit then?
 
-Yeah, already gone.
+The problem I'm trying to solve here are unaware applications. Assuming
+this change lands in the next Linux release there will still be quite
+some time until the major applications that create bridges (distribution
+specific or common network management tools, the container solution of
+they day, for embedded some random vendor tools, etc.) will pick it
+up. In this series I chose a default of 0 to not break existing setups
+that rely on some arbitrary amount of FDB entries, so those unaware
+applications will create bridges without limits. I added the Kconfig
+setting so someone who knows their use cases can still set a more fitting
+default limit.
 
-Thanks,
-
-	Ingo
+More specifically to our use case as an embedded vendor that builds their
+own kernels and knows they have no use case that requires huge FDB tables,
+the kernel config allows us to set a safe default limit before starting
+to teach all our applications and our upstream vendors' code about the
+new netlink attribute. As this patch is relatively simple, we can also
+keep it downstream if there is opposition to it here though.
