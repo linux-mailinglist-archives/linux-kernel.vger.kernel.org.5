@@ -2,56 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1296B7AA206
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AAC7A9ECF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbjIUVLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
+        id S229606AbjIUUMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjIUVF1 (ORCPT
+        with ESMTP id S229834AbjIUUMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:05:27 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64A8AF96C;
-        Thu, 21 Sep 2023 11:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=0Pf7QAqDNb+p8bWlfrIyHJVZ4jtnajPgptNvSy4IZPI=; b=g5
-        gkpSG/9cOftC6F92ZPW42OexlxLwh7n353jEq11uPhN6yUs5OqKea93qAl2ERfGW/0mINvTnnHFNw
-        K2W3YVYGZXE6BdfWyFwBnv7Ny6H9YqIU0zirZRCrbqbylTM9W73z7bNDbZfjWzmbCaoV+Qn/O4mgf
-        KXrttycikFARIUY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qjMdy-0076bl-CW; Thu, 21 Sep 2023 18:35:10 +0200
-Date:   Thu, 21 Sep 2023 18:35:10 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     MD Danish Anwar <danishanwar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, vladimir.oltean@nxp.com,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srk@ti.com, r-gunasekaran@ti.com,
-        Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: add TAPRIO offload
- support
-Message-ID: <f54b6cd6-3f9f-4a4c-a14d-de2201f1e8b0@lunn.ch>
-References: <20230921070031.795788-1-danishanwar@ti.com>
- <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
+        Thu, 21 Sep 2023 16:12:10 -0400
+X-Greylist: delayed 878 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Sep 2023 10:11:11 PDT
+Received: from mail-4321.protonmail.ch (mail-4321.protonmail.ch [185.70.43.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684FC7EF0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1695314667; x=1695573867;
+        bh=gXaY4Zv4HDR4uGZnzyupeALs2dkkGXlQjy8jeXvNVlw=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=GB4ECG/+Nzk/b3PoIxrDUCBZU/m0ZTreA/vs+tlToWDPx1DcR0eDzH0fqm2EQZNhy
+         t1/uWGmwn9gCVoTO4YDHNPNe/rKf2Vx5FhnbwisTxOQ1fBK+obT7bUx5qTGH1qzZGM
+         Sk3w3KZH84tQWYBM/V+oD3sbl0qU2eebE0TL6GqyjkY/+hjQZzwf+p6D9OR8w9AS2w
+         HIBghWvZspT2wD0uTYL5jBDgZQ/iiHoNgasuCAgdDF1ajP6FaqH/SGuxXAjzQ/L4o4
+         kl8KP0XTCHRddAYmLdjZw/37Q1d7QF6boBpt4cgVEUiWnp5/uX9E0i4g0tEK9iuQkK
+         SbuL+7gsr4MOA==
+Date:   Thu, 21 Sep 2023 16:43:55 +0000
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Turritopsis Dohrnii Teo En Ming <tdtem@protonmail.com>
+Cc:     "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
+Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kernel 4.19.191+
+Message-ID: <SQ5WZyOZAzTQRUbRLZI1Z6vc0fBFwkFXjONxUOz-2fJRgU5G4N87Pb16CcvM8iyDgnHew6d0Hg924ubTesDAfFpNc6Fz_98PPxVtO6a0rwg=@protonmail.com>
+Feedback-ID: 80245632:user:proton
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
         SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,17 +47,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 01:42:36PM +0300, Roger Quadros wrote:
-> Hi Danish,
-> 
-> On 21/09/2023 10:00, MD Danish Anwar wrote:
-> 
-> Can you please retain patch authorhsip?
-> 
-> > ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
-> > in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
-> > configuration.
+Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on Li=
+nux kernel 4.19.191+
 
-Does the switch version of the firmware support this?
+Good day from Singapore,
 
-     Andrew
+I have just bought vivo V25 Pro 5G (12 GB + 256 GB) Starlight Black Android=
+ Mobile Phone for SGD$600 on 15 Sep 2023 Friday.
+
+My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kerne=
+l 4.19.191+. Are there any severe/critical security vulnerabilities in Linu=
+x kernel 4.19.191+ that will allow government-sponsored or state-backed hac=
+kers or Advanced Persistent Threats (APTs) to take over absolute control of=
+ my brand new vivo mobile phone? Can I download, compile and install the la=
+test Linux kernel 6.5.4 from sources on my brand new vivo mobile phone by m=
+yself? I would like to know how I can do it.
+
+Details are as follows.
+
+Retail Shop: @ Ang Mo Kio Central
+Purchase Time: Around 7 PM in the evening, PayNow record of SGD$600 shows 7=
+.13 PM Singapore Time
+
+Model: V2158
+RAM: 12 GB
+ROM: 256 GB
+Color: Starlight Black
+Checker: *****406
+Manufacturing Date?: 2022.09.28
+
+Funtouch OS 13
+
+Processor:
+Mediatek
+3.0 GHz
+Dimensity 1300=20
+Octa-core
+
+RAM:
+12.00+8.00 GB
+
+Android version:
+13
+
+Phone storage:
+256 GB
+
+Status
+=3D=3D=3D=3D=3D=3D
+
+IMEI (sim slot 1)
+868*********994
+
+IMEI (sim slot 2)
+868*********986
+
+IMEI SV
+34
+
+MEID:
+**********4AF0
+
+Serial Number: 10A*********12Z
+
+Other number: 6 93**** ***973
+
+Software information
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+OS version
+Funtouch OS 13 Global
+
+Hardware version
+MP_0.1
+
+Build number
+PD2204BF_EX_A_13.1.13.12.W20
+
+Baseband version
+MOLY.NR15.R3.TC19.PR4.SP.V1.P74
+
+LINUX Kernel version
+4.19.191+
+#1 Mon Jul 17 17:58:52 CST 2023
+
+Compile time
+Jul 17, 2023 17:29:43
+
+Android security update
+July 1, 2023
+
+Google Play system update
+July 1, 2022
+
+Phone/device price: one time payment of SGD$600 (I had thought of paying us=
+ing Atome 3 monthly installments of SGD$216 but decided against it eventual=
+ly)=20
+Other items: Screen Protective Membrane $20 + camera lens protective cover =
+$10 + shock resistant phone cover $20: SGD$50
+Grand Total: SGD$650
+
+Full phone specifications - vivo V25 Pro 5G: https://www.gsmarena.com/vivo_=
+v25_pro-11771.php
+
+I have decided to buy this vivo mobile phone because my Samsung Galaxy A32 =
+5G mobile phone SGD$338 has now become extremely slow in performance and la=
+gs like hell. Maybe too many apps were installed.
+Opening and using apps is now a slow and painful experience. The phone came=
+ra is even worse. Taking a photo or selfie takes 2-3 seconds. If you move t=
+he phone by a bit before the 3 seconds is up, your photo or selfie will tur=
+n out very blur. So you need to set a timer of 2 seconds when you take a se=
+lfie or photo. Taking videos with the phone camera is also very laggy and c=
+hoppy. The recorded video will turn out to be choppy.
+
+I had bought the Samsung Galaxy A32 5G mobile phone SGD$338 on 6 Oct 2021. =
+I have used the Samsung mobile phone for 1 year 11 months 10 days [ALMOST 2=
+ YEARS] (as of 16 Sep 2023 Sat) and it is getting slower and slower by the =
+day. Maybe the Singapore Government had planted a spyware and/or rootkit on=
+ my Samsung mobile phone.
+
+I need to ask manufacturer Samsung why my Samsung mobile phone is getting s=
+o slow and laggy. Is it because it is too cheap and too low end??
+
+I certainly hope my brand new vivo mobile phone is a good purchase and it w=
+ill last me for another 5-6 years without getting slow and laggy.
+
+My bank balance as of 22 Sep 2023 Friday is SGD$3,592. I am 45 years old. T=
+hat is all and everything I have, besides a HDB 2-room RENTAL flat under th=
+e Public Rental Housing Scheme meant for the EXTREMELY POOR in Singapore.
+
+The Michael Kors private event at Mandarin Gallery Orchard Singapore on 21 =
+Sep 2023 Thursday at 7.30 PM Singapore Time is the very 1st event where I h=
+ave taken lots of selfies and lots of Full HD videos with this brand new vi=
+vo mobile phone. I must say taking selfies with the front camera is very fa=
+st. I am able to take 3-4 selfies in quick succession. There is no lag at a=
+ll. Female celebrities who grace this event are XinLin Khaw, He Ying Ying, =
+and Hazelle Teo to name a few.
+
+Regards,
+
+Mr. Turritopsis Dohrnii Teo En Ming
+Targeted Individual in Singapore
+Blogs:
+https://tdtemcerts.blogspot.com
+https://tdtemcerts.wordpress.com
+GIMP also stands for Government-Induced Medical Problems.
+
+Bachelor of Engineering (2nd Class Lower Honors) degree in Mechanical Engin=
+eering with Aerospace Specialization, National University of Singapore (Gra=
+duated December 2006)
+Diploma in Mechatronics Engineering, Singapore Polytechnic (Graduated 1998)
+Diploma in Computer Networking, Singapore Polytechnic (Graduated 2017)
+Studied CCNA and CISSP 5-day boot camps at NTUC Learning Hub in Singapore
+GCE "O" Level Top Student Year 1994, Ahmad Ibrahim Secondary School, Singap=
+ore
+I have setup, configured and deployed 22 Fortigate firewalls for 20 compani=
+es/organizations in Singapore so far (as of 22 Sep 2023 Fri)
+EOF
+
+
+
+
+Sent with Proton Mail secure email.
