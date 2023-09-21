@@ -2,5077 +2,2527 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA16D7A9DBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDF47A9D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbjIUTqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        id S229866AbjIUTid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjIUTqB (ORCPT
+        with ESMTP id S230448AbjIUTiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:46:01 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B262EDBE2;
-        Thu, 21 Sep 2023 12:11:18 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A740E66072A2;
-        Thu, 21 Sep 2023 20:11:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695323476;
-        bh=PeG3euFN18yefJC7BTnYFjhXeLBpWSqE8gNKzTCxevs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cdDHvRvKCdFUWg3OklwRxXjK60XRrYfN9drlXrmlfY6xNV4x++gQQkuDFoox7C20u
-         mZ3wIbesUciOcxRxByFSwovbZSyX9Syt1Yp4qbaK+y11nhEHa64vNrwXk6NvxxcFcb
-         ZSu/bo/07BwkRgkAtbLvGrnxaexDCPm9KRBkjC5mE38I074nK68B7O25/NIolGcqlL
-         LI68qnnAdp4rr9l+ikDIQZ6n+VuftZI1BCdUPru3P/SFiaTuoWXEl1byrTtFZWiMyO
-         9DMqCAJvl2b+V8veBOC6qBSfUTIL7PmbBRP41dTdKIDNTsqh2SIKvyEuIai/bxmqr+
-         ucwDx2K9HGWMQ==
-Message-ID: <7b159731dfbc2ab8243396eaec8f41be10af5160.camel@collabora.com>
-Subject: Re: [PATCH v12 5/7] media: chips-media: wave5: Add the v4l2 layer
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Robert Beckett <bob.beckett@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Date:   Thu, 21 Sep 2023 15:11:05 -0400
-In-Reply-To: <b7aa9a5a-018a-4d78-b001-4ba84acb1e24@xs4all.nl>
-References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
-         <20230915-wave5_v12_on_media_master-v12-5-92fc66cd685d@collabora.com>
-         <b7aa9a5a-018a-4d78-b001-4ba84acb1e24@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 21 Sep 2023 15:38:14 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7108EE594;
+        Thu, 21 Sep 2023 12:12:04 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id C738160173;
+        Thu, 21 Sep 2023 21:12:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695323522; bh=35aNQYnEMuJBsXTI6ZfQ8/W6Ou1O8AUJSf/k0uAXHBo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=yaJnPSvXQShPoGtGdU0L7o2H/anakKWM1c7ikqrcUCpbxZxFE3C5oqjmUZfEgXIGV
+         5VGIftSvOFL8C7gNh1krzm9L2VhP4SUrz26+0P/jYJFP9x9ZLGEMU3gxcm/cbW8x+6
+         EjlwIeaeT6J/THy7elDz9sqtq/hvey1MBJYYaiGCUrM8BS2qZhjPIw1TpnffdlPCfi
+         grj4oXIdoZSTEX134rEwFJ9Vfzhph2xfNX0UKfgom25Yp1OhEMdxdRk1c8lF5liTYv
+         goGmFWzes+Ggr36U9uhGr0fsXKrHCXPfPMp9UyST6irSuqL6xtuhr3hiOHFnx0BfWQ
+         XxKMYYwdrazkg==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id cCFnqBbGlHrR; Thu, 21 Sep 2023 21:11:59 +0200 (CEST)
+Received: from [192.168.1.6] (78-3-40-141.adsl.net.t-com.hr [78.3.40.141])
+        by domac.alu.hr (Postfix) with ESMTPSA id 95B3A60157;
+        Thu, 21 Sep 2023 21:11:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695323519; bh=35aNQYnEMuJBsXTI6ZfQ8/W6Ou1O8AUJSf/k0uAXHBo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hUxM8KANwM8fL8yUj983oDPVUEjlT8CvHIltY68exp8fqdj0HAtK7MuDWXMGXGylr
+         nVCc5sgs4v58ZBRBTgEVMPNKT8p+pIV0ep6a0GcHDom1Ac1HuUIrvvg+lP0/uSzuoa
+         pH1eM3sg0QSpVbIqikshxzhdD+4v895ezKE2B1QILHBxZaNdUwK0TgUUpi1CK8jDXU
+         Tf1ZsoZ4/EeGIDPTpr+vvgqKZzAancNvacnork9groxRhAk0IGNQKMkRM663cGmOBW
+         EOz/KoAuW4gbpCfI/5sqvsYAGiHyLqqiT/VfjBS9BHWg5tH9UMaFxJGAouy3nKVUYh
+         ndmuidVpAhY/A==
+Content-Type: multipart/mixed; boundary="------------ADHPYrIoS1kzb01a3S4HpH5e"
+Message-ID: <56a4231d-75ab-403d-9765-064fd7d6e2d9@alu.unizg.hr>
+Date:   Thu, 21 Sep 2023 21:11:52 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] ACPICA: utdebug: use spinlocks to fix the
+ data-races reported by the KCSAN
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@freebsd.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        kernel test robot <lkp@intel.com>
+References: <20230920162222.3614-1-mirsad.todorovac@alu.unizg.hr>
+ <CAJZ5v0iLjOYBGcANrziRghZTPqHrPhJksB=oV9tRJYctWJ=CvA@mail.gmail.com>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <CAJZ5v0iLjOYBGcANrziRghZTPqHrPhJksB=oV9tRJYctWJ=CvA@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 20 septembre 2023 =C3=A0 17:13 +0200, Hans Verkuil a =C3=A9crit=
-=C2=A0:
-> On 15/09/2023 23:11, Sebastian Fricke wrote:
-> > From: Nas Chung <nas.chung@chipsnmedia.com>
-> >=20
-> > Add the decoder and encoder implementing the v4l2
-> > API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
-> >=20
-> > Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
-> > Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> > Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-> > Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> > Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
-> > ---
-> >  drivers/media/platform/chips-media/Kconfig         |    1 +
-> >  drivers/media/platform/chips-media/Makefile        |    1 +
-> >  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
-> >  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
-> >  .../platform/chips-media/wave5/wave5-helper.c      |  196 ++
-> >  .../platform/chips-media/wave5/wave5-helper.h      |   30 +
-> >  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1965 ++++++++++++=
-++++++++
-> >  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1825 ++++++++++++=
-++++++
-> >  .../media/platform/chips-media/wave5/wave5-vpu.c   |  331 ++++
-> >  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
-> >  10 files changed, 4454 insertions(+)
-> >=20
-> > diff --git a/drivers/media/platform/chips-media/Kconfig b/drivers/media=
-/platform/chips-media/Kconfig
-> > index f87a0d693df7..ad350eb6b1fc 100644
-> > --- a/drivers/media/platform/chips-media/Kconfig
-> > +++ b/drivers/media/platform/chips-media/Kconfig
-> > @@ -3,3 +3,4 @@
-> >  comment "Chips&Media media platform drivers"
-> > =20
-> >  source "drivers/media/platform/chips-media/coda/Kconfig"
-> > +source "drivers/media/platform/chips-media/wave5/Kconfig"
-> > diff --git a/drivers/media/platform/chips-media/Makefile b/drivers/medi=
-a/platform/chips-media/Makefile
-> > index 5ee693f651c1..6b5d99de8b54 100644
-> > --- a/drivers/media/platform/chips-media/Makefile
-> > +++ b/drivers/media/platform/chips-media/Makefile
-> > @@ -1,3 +1,4 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> > =20
-> >  obj-y +=3D coda/
-> > +obj-y +=3D wave5/
-> > diff --git a/drivers/media/platform/chips-media/wave5/Kconfig b/drivers=
-/media/platform/chips-media/wave5/Kconfig
-> > new file mode 100644
-> > index 000000000000..a3b949356cd5
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/Kconfig
-> > @@ -0,0 +1,12 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +config VIDEO_WAVE_VPU
-> > +	tristate "Chips&Media Wave Codec Driver"
-> > +	depends on VIDEO_DEV
-> > +	select VIDEOBUF2_DMA_CONTIG
-> > +	select VIDEOBUF2_VMALLOC
-> > +	select V4L2_MEM2MEM_DEV
-> > +	help
-> > +	  Chips&Media stateful encoder and decoder driver.
-> > +	  The driver supports HEVC and H264 formats.
-> > +	  To compile this driver as modules, choose M here: the
-> > +	  modules will be called wave5.
-> > diff --git a/drivers/media/platform/chips-media/wave5/Makefile b/driver=
-s/media/platform/chips-media/wave5/Makefile
-> > new file mode 100644
-> > index 000000000000..3d738a03bd8e
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/Makefile
-> > @@ -0,0 +1,10 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +obj-$(CONFIG_VIDEO_WAVE_VPU) +=3D wave5.o
-> > +wave5-objs +=3D  	wave5-hw.o \
-> > +		wave5-vpuapi.o \
-> > +		wave5-vdi.o \
-> > +		wave5-vpu-dec.o \
-> > +		wave5-vpu.o \
-> > +		wave5-vpu-enc.o \
-> > +		wave5-helper.o
-> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c b/=
-drivers/media/platform/chips-media/wave5/wave5-helper.c
-> > new file mode 100644
-> > index 000000000000..07b6910bbfee
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> > @@ -0,0 +1,196 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > +/*
-> > + * Wave5 series multi-standard codec IP - decoder interface
-> > + *
-> > + * Copyright (C) 2021 CHIPS&MEDIA INC
->=20
-> 2021? Should that be 2021-2023?
->=20
-> > + */
-> > +
-> > +#include "wave5-helper.h"
-> > +
-> > +const char *state_to_str(enum vpu_instance_state state)
-> > +{
-> > +	switch (state) {
-> > +	case VPU_INST_STATE_NONE:
-> > +		return "NONE";
-> > +	case VPU_INST_STATE_OPEN:
-> > +		return "OPEN";
-> > +	case VPU_INST_STATE_INIT_SEQ:
-> > +		return "INIT_SEQ";
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		return "PIC_RUN";
-> > +	case VPU_INST_STATE_STOP:
-> > +		return "STOP";
-> > +	default:
-> > +		return "UNKNOWN";
-> > +	}
-> > +}
-> > +
-> > +void wave5_cleanup_instance(struct vpu_instance *inst)
-> > +{
-> > +	int i;
-> > +
-> > +	if (list_is_singular(&inst->list))
-> > +		wave5_vdi_free_sram(inst->dev);
-> > +
-> > +	for (i =3D 0; i < inst->fbc_buf_count; i++)
-> > +		wave5_vpu_dec_reset_framebuffer(inst, i);
-> > +
-> > +	wave5_vdi_free_dma_memory(inst->dev, &inst->bitstream_vbuf);
-> > +	v4l2_ctrl_handler_free(&inst->v4l2_ctrl_hdl);
-> > +	if (inst->v4l2_fh.vdev) {
-> > +		v4l2_fh_del(&inst->v4l2_fh);
-> > +		v4l2_fh_exit(&inst->v4l2_fh);
-> > +	}
-> > +	list_del_init(&inst->list);
-> > +	kfifo_free(&inst->irq_status);
-> > +	ida_free(&inst->dev->inst_ida, inst->id);
-> > +	kfree(inst->codec_info);
-> > +	kfree(inst);
-> > +}
-> > +
-> > +int wave5_vpu_release_device(struct file *filp,
-> > +			     int (*close_func)(struct vpu_instance *inst, u32 *fail_res),
-> > +			     char *name)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(filp->private_data);
-> > +
-> > +	v4l2_m2m_ctx_release(inst->v4l2_fh.m2m_ctx);
-> > +	if (inst->state !=3D VPU_INST_STATE_NONE) {
-> > +		u32 fail_res;
-> > +		int ret;
-> > +
-> > +		ret =3D close_func(inst, &fail_res);
-> > +		if (fail_res =3D=3D WAVE5_SYSERR_VPU_STILL_RUNNING) {
-> > +			dev_err(inst->dev->dev, "%s close failed, device is still running\n=
-",
-> > +				name);
-> > +			return -EBUSY;
-> > +		}
-> > +		if (ret && ret !=3D -EIO) {
-> > +			dev_err(inst->dev->dev, "%s close, fail: %d\n", name, ret);
-> > +			return ret;
-> > +		}
-> > +	}
-> > +
-> > +	wave5_cleanup_instance(inst);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +int wave5_vpu_queue_init(void *priv, struct vb2_queue *src_vq, struct =
-vb2_queue *dst_vq,
-> > +			 const struct vb2_ops *ops)
-> > +{
-> > +	struct vpu_instance *inst =3D priv;
-> > +	int ret;
-> > +
-> > +	src_vq->type =3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
-> > +	src_vq->io_modes =3D VB2_MMAP | VB2_DMABUF;
-> > +	src_vq->mem_ops =3D &vb2_dma_contig_memops;
-> > +	src_vq->ops =3D ops;
-> > +	src_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> > +	src_vq->buf_struct_size =3D sizeof(struct vpu_src_buffer);
-> > +	src_vq->drv_priv =3D inst;
-> > +	src_vq->lock =3D &inst->dev->dev_lock;
-> > +	src_vq->dev =3D inst->dev->v4l2_dev.dev;
-> > +	ret =3D vb2_queue_init(src_vq);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	dst_vq->type =3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
-> > +	dst_vq->io_modes =3D VB2_MMAP | VB2_DMABUF;
-> > +	dst_vq->mem_ops =3D &vb2_dma_contig_memops;
-> > +	dst_vq->ops =3D ops;
-> > +	dst_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> > +	dst_vq->buf_struct_size =3D sizeof(struct vpu_src_buffer);
-> > +	dst_vq->drv_priv =3D inst;
-> > +	dst_vq->lock =3D &inst->dev->dev_lock;
-> > +	dst_vq->dev =3D inst->dev->v4l2_dev.dev;
-> > +	ret =3D vb2_queue_init(dst_vq);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +int wave5_vpu_subscribe_event(struct v4l2_fh *fh, const struct v4l2_ev=
-ent_subscription *sub)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	bool is_decoder =3D inst->type =3D=3D VPU_INST_TYPE_DEC;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: [%s] type: %u id: %u | flags: %u\n", __f=
-unc__,
-> > +		is_decoder ? "decoder" : "encoder", sub->type, sub->id, sub->flags);
-> > +
-> > +	switch (sub->type) {
-> > +	case V4L2_EVENT_EOS:
-> > +		return v4l2_event_subscribe(fh, sub, 0, NULL);
-> > +	case V4L2_EVENT_SOURCE_CHANGE:
-> > +		if (is_decoder)
-> > +			return v4l2_src_change_event_subscribe(fh, sub);
-> > +		return -EINVAL;
-> > +	case V4L2_EVENT_CTRL:
-> > +		return v4l2_ctrl_subscribe_event(fh, sub);
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +}
-> > +
-> > +int wave5_vpu_g_fmt_out(struct file *file, void *fh, struct v4l2_forma=
-t *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i;
-> > +
-> > +	f->fmt.pix_mp.width =3D inst->src_fmt.width;
-> > +	f->fmt.pix_mp.height =3D inst->src_fmt.height;
-> > +	f->fmt.pix_mp.pixelformat =3D inst->src_fmt.pixelformat;
-> > +	f->fmt.pix_mp.field =3D inst->src_fmt.field;
-> > +	f->fmt.pix_mp.flags =3D inst->src_fmt.flags;
-> > +	f->fmt.pix_mp.num_planes =3D inst->src_fmt.num_planes;
-> > +	for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
-> > +		f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->src_fmt.plane_fmt[=
-i].bytesperline;
-> > +		f->fmt.pix_mp.plane_fmt[i].sizeimage =3D inst->src_fmt.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	f->fmt.pix_mp.colorspace =3D inst->colorspace;
-> > +	f->fmt.pix_mp.ycbcr_enc =3D inst->ycbcr_enc;
-> > +	f->fmt.pix_mp.hsv_enc =3D inst->hsv_enc;
-> > +	f->fmt.pix_mp.quantization =3D inst->quantization;
-> > +	f->fmt.pix_mp.xfer_func =3D inst->xfer_func;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +const struct vpu_format *wave5_find_vpu_fmt(unsigned int v4l2_pix_fmt,
-> > +					    const struct vpu_format fmt_list[MAX_FMTS])
-> > +{
-> > +	unsigned int index;
-> > +
-> > +	for (index =3D 0; index < MAX_FMTS; index++) {
-> > +		if (fmt_list[index].v4l2_pix_fmt =3D=3D v4l2_pix_fmt)
-> > +			return &fmt_list[index];
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +const struct vpu_format *wave5_find_vpu_fmt_by_idx(unsigned int idx,
-> > +						   const struct vpu_format fmt_list[MAX_FMTS])
-> > +{
-> > +	if (idx >=3D MAX_FMTS)
-> > +		return NULL;
-> > +
-> > +	if (!fmt_list[idx].v4l2_pix_fmt)
-> > +		return NULL;
-> > +
-> > +	return &fmt_list[idx];
-> > +}
-> > +
-> > +enum wave_std wave5_to_vpu_std(unsigned int v4l2_pix_fmt, enum vpu_ins=
-tance_type type)
-> > +{
-> > +	switch (v4l2_pix_fmt) {
-> > +	case V4L2_PIX_FMT_H264:
-> > +		return type =3D=3D VPU_INST_TYPE_DEC ? W_AVC_DEC : W_AVC_ENC;
-> > +	case V4L2_PIX_FMT_HEVC:
-> > +		return type =3D=3D VPU_INST_TYPE_DEC ? W_HEVC_DEC : W_HEVC_ENC;
-> > +	default:
-> > +		return STD_UNKNOWN;
-> > +	}
-> > +}
-> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.h b/=
-drivers/media/platform/chips-media/wave5/wave5-helper.h
-> > new file mode 100644
-> > index 000000000000..a55d5503f5b2
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/wave5-helper.h
-> > @@ -0,0 +1,30 @@
-> > +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-> > +/*
-> > + * Wave5 series multi-standard codec IP - basic types
-> > + *
-> > + * Copyright (C) 2021 CHIPS&MEDIA INC
-> > + */
-> > +
-> > +#ifndef __WAVE_HELPER_H__
-> > +#define __WAVE_HELPER_H__
-> > +
-> > +#include "wave5-vpu.h"
-> > +
-> > +#define FMT_TYPES	2
-> > +#define MAX_FMTS	12
-> > +
-> > +const char *state_to_str(enum vpu_instance_state state);
-> > +void wave5_cleanup_instance(struct vpu_instance *inst);
-> > +int wave5_vpu_release_device(struct file *filp,
-> > +			     int (*close_func)(struct vpu_instance *inst, u32 *fail_res),
-> > +			     char *name);
-> > +int wave5_vpu_queue_init(void *priv, struct vb2_queue *src_vq, struct =
-vb2_queue *dst_vq,
-> > +			 const struct vb2_ops *ops);
-> > +int wave5_vpu_subscribe_event(struct v4l2_fh *fh, const struct v4l2_ev=
-ent_subscription *sub);
-> > +int wave5_vpu_g_fmt_out(struct file *file, void *fh, struct v4l2_forma=
-t *f);
-> > +const struct vpu_format *wave5_find_vpu_fmt(unsigned int v4l2_pix_fmt,
-> > +					    const struct vpu_format fmt_list[MAX_FMTS]);
-> > +const struct vpu_format *wave5_find_vpu_fmt_by_idx(unsigned int idx,
-> > +						   const struct vpu_format fmt_list[MAX_FMTS]);
-> > +enum wave_std wave5_to_vpu_std(unsigned int v4l2_pix_fmt, enum vpu_ins=
-tance_type type);
-> > +#endif
-> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b=
-/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> > new file mode 100644
-> > index 000000000000..41257a26504b
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> > @@ -0,0 +1,1965 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > +/*
-> > + * Wave5 series multi-standard codec IP - decoder interface
-> > + *
-> > + * Copyright (C) 2021 CHIPS&MEDIA INC
-> > + */
-> > +
-> > +#include "wave5-helper.h"
-> > +
-> > +#define VPU_DEC_DEV_NAME "C&M Wave5 VPU decoder"
-> > +#define VPU_DEC_DRV_NAME "wave5-dec"
-> > +
-> > +#define DEFAULT_SRC_SIZE(width, height) ({			\
-> > +	(width) * (height) / 8 * 3;					\
-> > +})
-> > +
-> > +static const struct vpu_format dec_fmt_list[FMT_TYPES][MAX_FMTS] =3D {
-> > +	[VPU_FMT_TYPE_CODEC] =3D {
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_HEVC,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_H264,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 32,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 32,
-> > +		},
-> > +	},
-> > +	[VPU_FMT_TYPE_RAW] =3D {
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV422P,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV16,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV61,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420M,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12M,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21M,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV422M,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV16M,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV61M,
-> > +			.max_width =3D 8192,
-> > +			.min_width =3D 8,
-> > +			.max_height =3D 4320,
-> > +			.min_height =3D 8,
-> > +		},
-> > +	}
-> > +};
-> > +
-> > +/*
-> > + * Make sure that the state switch is allowed and add logging for debu=
-gging
-> > + * purposes
-> > + */
-> > +static int switch_state(struct vpu_instance *inst, enum vpu_instance_s=
-tate state)
-> > +{
-> > +	switch (state) {
-> > +	case VPU_INST_STATE_NONE:
-> > +		break;
-> > +	case VPU_INST_STATE_OPEN:
-> > +		if (inst->state !=3D VPU_INST_STATE_NONE)
-> > +			goto invalid_state_switch;
-> > +		goto valid_state_switch;
-> > +	case VPU_INST_STATE_INIT_SEQ:
-> > +		if (inst->state !=3D VPU_INST_STATE_OPEN && inst->state !=3D VPU_INS=
-T_STATE_STOP)
-> > +			goto invalid_state_switch;
-> > +		goto valid_state_switch;
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		if (inst->state !=3D VPU_INST_STATE_INIT_SEQ)
-> > +			goto invalid_state_switch;
-> > +		goto valid_state_switch;
-> > +	case VPU_INST_STATE_STOP:
-> > +		goto valid_state_switch;
-> > +	};
->=20
-> Spurious ;
->=20
-> Odd, wouldn't checkpatch.pl --strict warn about that?
->=20
-> > +invalid_state_switch:
-> > +	WARN(1, "Invalid state switch from %s to %s.\n",
-> > +	     state_to_str(inst->state), state_to_str(state));
-> > +	return -EINVAL;
-> > +valid_state_switch:
-> > +	dev_dbg(inst->dev->dev, "Switch state from %s to %s.\n",
-> > +		state_to_str(inst->state), state_to_str(state));
-> > +	inst->state =3D state;
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_set_eos_on_firmware(struct vpu_instance *inst=
-)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret =3D wave5_vpu_dec_update_bitstream_buffer(inst, 0);
-> > +	if (ret) {
-> > +		dev_err(inst->dev->dev,
-> > +			"Setting EOS for the bitstream, fail: %d\n", ret);
->=20
-> Is this an error due to a driver problem, or because a bad bitstream is
-> fed from userspace? In the first case, dev_err would be right, in the
-> second dev_dbg would be more appropriate. Bad userspace input should not
-> spam the kernel log in general.
+This is a multi-part message in MIME format.
+--------------ADHPYrIoS1kzb01a3S4HpH5e
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Its the first. To set the EOS flag, a command is sent to the firmware. That
-command may never return (timeout) or may report an error. For this specifi=
-c
-command, if that happens we are likely facing firmware of driver problem (o=
-r
-both).
 
->=20
-> > +		return ret;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> > +static bool wave5_last_src_buffer_consumed(struct v4l2_m2m_ctx *m2m_ct=
-x)
-> > +{
-> > +	struct vpu_src_buffer *vpu_buf;
-> > +
-> > +	if (!m2m_ctx->last_src_buf)
-> > +		return false;
-> > +
-> > +	vpu_buf =3D wave5_to_vpu_src_buf(m2m_ctx->last_src_buf);
-> > +	return vpu_buf->consumed;
-> > +}
-> > +
-> > +static void wave5_handle_src_buffer(struct vpu_instance *inst, dma_add=
-r_t rd_ptr)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct v4l2_m2m_buffer *buf, *n;
-> > +	size_t consumed_bytes =3D 0;
-> > +
-> > +	if (rd_ptr >=3D inst->last_rd_ptr) {
-> > +		consumed_bytes =3D rd_ptr - inst->last_rd_ptr;
-> > +	} else {
-> > +		size_t rd_offs =3D rd_ptr - inst->bitstream_vbuf.daddr;
-> > +		size_t last_rd_offs =3D inst->last_rd_ptr - inst->bitstream_vbuf.dad=
-dr;
-> > +
-> > +		consumed_bytes =3D rd_offs + (inst->bitstream_vbuf.size - last_rd_of=
-fs);
-> > +	}
-> > +
-> > +	inst->last_rd_ptr =3D rd_ptr;
-> > +	consumed_bytes +=3D inst->remaining_consumed_bytes;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: %zu bytes of bitstream was consumed", __=
-func__,
-> > +		consumed_bytes);
-> > +
-> > +	v4l2_m2m_for_each_src_buf_safe(m2m_ctx, buf, n) {
-> > +		struct vb2_v4l2_buffer *src_buf =3D &buf->vb;
-> > +		size_t src_size =3D vb2_get_plane_payload(&src_buf->vb2_buf, 0);
-> > +
-> > +		if (src_size > consumed_bytes)
-> > +			break;
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: removing src buffer %i",
-> > +			__func__, src_buf->vb2_buf.index);
-> > +		src_buf =3D v4l2_m2m_src_buf_remove(m2m_ctx);
-> > +		inst->timestamp =3D src_buf->vb2_buf.timestamp;
-> > +		v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
-> > +		consumed_bytes -=3D src_size;
-> > +
-> > +		/* Handle the case the last bitstream buffer has been picked */
-> > +		if (src_buf =3D=3D m2m_ctx->last_src_buf) {
-> > +			int ret;
-> > +
-> > +			m2m_ctx->last_src_buf =3D NULL;
-> > +			ret =3D wave5_vpu_dec_set_eos_on_firmware(inst);
-> > +			if (ret)
-> > +				dev_warn(inst->dev->dev,
-> > +					 "Setting EOS for the bitstream, fail: %d\n", ret);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	inst->remaining_consumed_bytes =3D consumed_bytes;
-> > +}
-> > +
-> > +static void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp=
-, unsigned int width,
-> > +				 unsigned int height)
-> > +{
-> > +	switch (pix_mp->pixelformat) {
-> > +	case V4L2_PIX_FMT_YUV420:
-> > +	case V4L2_PIX_FMT_NV12:
-> > +	case V4L2_PIX_FMT_NV21:
-> > +		pix_mp->width =3D round_up(width, 32);
-> > +		pix_mp->height =3D round_up(height, 16);
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height * 3 / 2;
-> > +		break;
-> > +	case V4L2_PIX_FMT_YUV422P:
-> > +	case V4L2_PIX_FMT_NV16:
-> > +	case V4L2_PIX_FMT_NV61:
-> > +		pix_mp->width =3D round_up(width, 32);
-> > +		pix_mp->height =3D round_up(height, 16);
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height * 2;
-> > +		break;
-> > +	case V4L2_PIX_FMT_YUV420M:
-> > +		pix_mp->width =3D round_up(width, 32);
-> > +		pix_mp->height =3D round_up(height, 16);
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height;
-> > +		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32) / 2;
-> > +		pix_mp->plane_fmt[1].sizeimage =3D width * height / 4;
-> > +		pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32) / 2;
-> > +		pix_mp->plane_fmt[2].sizeimage =3D width * height / 4;
-> > +		break;
-> > +	case V4L2_PIX_FMT_NV12M:
-> > +	case V4L2_PIX_FMT_NV21M:
-> > +		pix_mp->width =3D round_up(width, 32);
-> > +		pix_mp->height =3D round_up(height, 16);
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height;
-> > +		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[1].sizeimage =3D width * height / 2;
-> > +		break;
-> > +	case V4L2_PIX_FMT_YUV422M:
-> > +		pix_mp->width =3D round_up(width, 32);
-> > +		pix_mp->height =3D round_up(height, 16);
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height;
-> > +		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32) / 2;
-> > +		pix_mp->plane_fmt[1].sizeimage =3D width * height / 2;
-> > +		pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32) / 2;
-> > +		pix_mp->plane_fmt[2].sizeimage =3D width * height / 2;
-> > +		break;
-> > +	case V4L2_PIX_FMT_NV16M:
-> > +	case V4L2_PIX_FMT_NV61M:
-> > +		pix_mp->width =3D round_up(width, 32);
-> > +		pix_mp->height =3D round_up(height, 16);
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height;
-> > +		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[1].sizeimage =3D width * height;
-> > +		break;
-> > +	default:
-> > +		pix_mp->width =3D width;
-> > +		pix_mp->height =3D height;
-> > +		pix_mp->plane_fmt[0].bytesperline =3D 0;
-> > +		pix_mp->plane_fmt[0].sizeimage =3D max(DEFAULT_SRC_SIZE(width, heigh=
-t),
-> > +						     pix_mp->plane_fmt[0].sizeimage);
-> > +		break;
-> > +	}
-> > +}
-> > +
-> > +static int start_decode(struct vpu_instance *inst, u32 *fail_res)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	int ret =3D 0;
-> > +
-> > +	ret =3D wave5_vpu_dec_start_one_frame(inst, fail_res);
-> > +	if (ret) {
-> > +		struct vb2_v4l2_buffer *src_buf;
-> > +
-> > +		/* FIXME this will have no effect on the firmware at all, and we
-> > +		 * are moving to STOP state, so the remaming src buffer won't be
-> > +		 * consumed. Maybe best here is just to make sure we can avoid
-> > +		 * deadlocking the app ?
-> > +		 */
-> > +		src_buf =3D v4l2_m2m_src_buf_remove(m2m_ctx);
-> > +		if (src_buf)
-> > +			v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_ERROR);
-> > +		switch_state(inst, VPU_INST_STATE_STOP);
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: pic run failed / finish job", __func__)=
-;
-> > +		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/* Must be called with state_spinlock */
-> > +static void flag_last_buffer_done(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *vb;
-> > +	int i;
-> > +
-> > +	vb =3D v4l2_m2m_dst_buf_remove(m2m_ctx);
-> > +	if (!vb) {
-> > +		m2m_ctx->is_draining =3D true;
-> > +		m2m_ctx->next_buf_last =3D true;
-> > +		return;
-> > +	}
-> > +
-> > +	for (i =3D 0; i < vb->vb2_buf.num_planes; i++)
-> > +		vb2_set_plane_payload(&vb->vb2_buf, i, 0);
-> > +	vb->field =3D V4L2_FIELD_NONE;
-> > +
-> > +	v4l2_m2m_last_buffer_done(m2m_ctx, vb);
-> > +}
-> > +
-> > +/* Must be called with state_spinlock */
-> > +static void send_eos_event(struct vpu_instance *inst)
-> > +{
-> > +	static const struct v4l2_event vpu_event_eos =3D {
-> > +		.type =3D V4L2_EVENT_EOS
-> > +	};
-> > +
-> > +	v4l2_event_queue_fh(&inst->v4l2_fh, &vpu_event_eos);
-> > +	inst->eos =3D false;
-> > +}
-> > +
-> > +/* Must be called with state_spinlock */
-> > +static int handle_dynamic_resolution_change(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_fh *fh =3D &inst->v4l2_fh;
-> > +	static const struct v4l2_event vpu_event_src_ch =3D {
-> > +		.type =3D V4L2_EVENT_SOURCE_CHANGE,
-> > +		.u.src_change.changes =3D V4L2_EVENT_SRC_CH_RESOLUTION,
-> > +	};
-> > +	struct dec_info *p_dec_info =3D &inst->codec_info->dec_info;
-> > +	struct dec_initial_info *initial_info =3D &inst->codec_info->dec_info=
-.initial_info;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: rd_ptr %pad", __func__, &initial_info->r=
-d_ptr);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: width: %u height: %u profile: %u | minbu=
-ffer: %u\n",
-> > +		__func__, initial_info->pic_width, initial_info->pic_height,
-> > +		initial_info->profile, initial_info->min_frame_buffer_count);
-> > +
-> > +	inst->needs_reallocation =3D true;
-> > +	inst->fbc_buf_count =3D initial_info->min_frame_buffer_count + 1;
-> > +	if (inst->dst_buf_count !=3D inst->fbc_buf_count) {
-> > +		struct v4l2_ctrl *ctrl;
-> > +
-> > +		ctrl =3D v4l2_ctrl_find(&inst->v4l2_ctrl_hdl,
-> > +				      V4L2_CID_MIN_BUFFERS_FOR_CAPTURE);
-> > +		if (ctrl)
-> > +			v4l2_ctrl_s_ctrl(ctrl, inst->fbc_buf_count);
-> > +
-> > +		inst->dst_buf_count =3D inst->fbc_buf_count;
-> > +	}
-> > +
-> > +	if (p_dec_info->initial_info_obtained) {
-> > +		inst->conf_win.left =3D initial_info->pic_crop_rect.left;
-> > +		inst->conf_win.top =3D initial_info->pic_crop_rect.top;
-> > +		inst->conf_win.width =3D initial_info->pic_width -
-> > +			initial_info->pic_crop_rect.left - initial_info->pic_crop_rect.righ=
-t;
-> > +		inst->conf_win.height =3D initial_info->pic_height -
-> > +			initial_info->pic_crop_rect.top - initial_info->pic_crop_rect.botto=
-m;
-> > +
-> > +		wave5_update_pix_fmt(&inst->src_fmt, initial_info->pic_width,
-> > +				     initial_info->pic_height);
-> > +		wave5_update_pix_fmt(&inst->dst_fmt, initial_info->pic_width,
-> > +				     initial_info->pic_height);
-> > +	}
-> > +
-> > +	v4l2_event_queue_fh(fh, &vpu_event_src_ch);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void wave5_vpu_dec_finish_decode(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct dec_output_info dec_info;
-> > +	int ret;
-> > +	struct vb2_v4l2_buffer *dec_buf =3D NULL;
-> > +	struct vb2_v4l2_buffer *disp_buf =3D NULL;
-> > +	struct vb2_queue *dst_vq =3D v4l2_m2m_get_dst_vq(m2m_ctx);
-> > +	struct queue_status_info q_status;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: Fetch output info from firmware.", __fun=
-c__);
-> > +
-> > +	ret =3D wave5_vpu_dec_get_output_info(inst, &dec_info);
-> > +	if (ret) {
-> > +		dev_warn(inst->dev->dev, "%s: could not get output info.", __func__)=
-;
-> > +		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +		return;
-> > +	}
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: rd_ptr %pad wr_ptr %pad", __func__, &dec=
-_info.rd_ptr,
-> > +		&dec_info.wr_ptr);
-> > +	wave5_handle_src_buffer(inst, dec_info.rd_ptr);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: dec_info dec_idx %i disp_idx %i", __func=
-__,
-> > +		dec_info.index_frame_decoded, dec_info.index_frame_display);
-> > +
-> > +	if (!vb2_is_streaming(dst_vq)) {
-> > +		dev_dbg(inst->dev->dev, "%s: capture is not streaming..", __func__);
-> > +		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +		return;
-> > +	}
-> > +
-> > +	/* Remove decoded buffer from the ready queue now that it has been
-> > +	 * decoded.
-> > +	 */
-> > +	if (dec_info.index_frame_decoded >=3D 0) {
-> > +		struct vb2_buffer *vb =3D vb2_get_buffer(dst_vq,
-> > +						       dec_info.index_frame_decoded);
-> > +		if (vb)
-> > +			dec_buf =3D to_vb2_v4l2_buffer(vb);
-> > +		else
-> > +			dev_warn(inst->dev->dev, "%s: invalid decoded frame index %i",
-> > +				 __func__, dec_info.index_frame_decoded);
-> > +	}
-> > +
-> > +	if (dec_buf)
-> > +		dec_buf->vb2_buf.timestamp =3D inst->timestamp;
-> > +
-> > +	if (dec_info.index_frame_display >=3D 0) {
-> > +		disp_buf =3D v4l2_m2m_dst_buf_remove_by_idx(m2m_ctx, dec_info.index_=
-frame_display);
-> > +		if (!disp_buf)
-> > +			dev_warn(inst->dev->dev, "%s: invalid display frame index %i",
-> > +				 __func__, dec_info.index_frame_display);
-> > +	}
-> > +
-> > +	/* If there is anything to display, do that now */
-> > +	if (disp_buf) {
-> > +		struct vpu_dst_buffer *dst_vpu_buf =3D wave5_to_vpu_dst_buf(disp_buf=
-);
-> > +		int stride =3D dec_info.disp_frame.stride;
-> > +		int height =3D dec_info.disp_pic_height;
-> > +
-> > +		/* FIXME we should calculate that once, and use v4l2-common if
-> > +		 * possible
-> > +		 */
-> > +		if (inst->dst_fmt.num_planes =3D=3D 1) {
-> > +			vb2_set_plane_payload(&disp_buf->vb2_buf, 0,
-> > +					      (stride * height * 3 / 2));
-> > +		} else if (inst->dst_fmt.num_planes =3D=3D 2) {
-> > +			vb2_set_plane_payload(&disp_buf->vb2_buf, 0,
-> > +					      (stride * height));
-> > +			vb2_set_plane_payload(&disp_buf->vb2_buf, 1,
-> > +					      ((stride / 2) * height));
-> > +		} else if (inst->dst_fmt.num_planes =3D=3D 3) {
-> > +			vb2_set_plane_payload(&disp_buf->vb2_buf, 0,
-> > +					      (stride * height));
-> > +			vb2_set_plane_payload(&disp_buf->vb2_buf, 1,
-> > +					      ((stride / 2) * (height / 2)));
-> > +			vb2_set_plane_payload(&disp_buf->vb2_buf, 2,
-> > +					      ((stride / 2) * (height / 2)));
-> > +		}
-> > +
-> > +		/* TODO implement interlace support */
-> > +		disp_buf->field =3D V4L2_FIELD_NONE;
-> > +		dst_vpu_buf->display =3D true;
-> > +		v4l2_m2m_buf_done(disp_buf, VB2_BUF_STATE_DONE);
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: frame_cycle %8u (payload %lu stride %d =
-height %d)\n",
-> > +			__func__, dec_info.frame_cycle,
-> > +			vb2_get_plane_payload(&disp_buf->vb2_buf, 0), stride, height);
-> > +	}
-> > +
-> > +	if ((dec_info.index_frame_display =3D=3D DISPLAY_IDX_FLAG_SEQ_END ||
-> > +	     dec_info.sequence_changed)) {
-> > +		unsigned long flags;
-> > +
-> > +		spin_lock_irqsave(&inst->state_spinlock, flags);
-> > +		if (!v4l2_m2m_has_stopped(m2m_ctx)) {
-> > +			switch_state(inst, VPU_INST_STATE_STOP);
-> > +
-> > +			if (dec_info.sequence_changed)
-> > +				handle_dynamic_resolution_change(inst);
-> > +			else
-> > +				send_eos_event(inst);
-> > +
-> > +			flag_last_buffer_done(inst);
-> > +		}
-> > +		spin_unlock_irqrestore(&inst->state_spinlock, flags);
-> > +	}
-> > +
-> > +	/*
-> > +	 * During a resolution change and while draining, the firmware may fl=
-ush
-> > +	 * the reorder queue regardless of having a matching decoding operati=
-on
-> > +	 * pending. Only terminate the job if there are no more IRQ coming.
-> > +	 */
-> > +	wave5_vpu_dec_give_command(inst, DEC_GET_QUEUE_STATUS, &q_status);
-> > +	if (q_status.report_queue_count =3D=3D 0 &&
-> > +	    (q_status.instance_queue_count =3D=3D 0 || dec_info.sequence_chan=
-ged)) {
-> > +		dev_dbg(inst->dev->dev, "%s: finishing job.\n", __func__);
-> > +		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +	}
-> > +}
-> > +
-> > +static int wave5_vpu_dec_querycap(struct file *file, void *fh, struct =
-v4l2_capability *cap)
-> > +{
-> > +	strscpy(cap->driver, VPU_DEC_DRV_NAME, sizeof(cap->driver));
-> > +	strscpy(cap->card, VPU_DEC_DRV_NAME, sizeof(cap->card));
-> > +	strscpy(cap->bus_info, "platform:" VPU_DEC_DRV_NAME, sizeof(cap->bus_=
-info));
->=20
-> This shouldn't be needed, bus_info is filled by the v4l2 core.
->=20
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_enum_framesizes(struct file *f, void *fh, str=
-uct v4l2_frmsizeenum *fsize)
-> > +{
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	if (fsize->index)
-> > +		return -EINVAL;
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt(fsize->pixel_format, dec_fmt_list[VPU_=
-FMT_TYPE_CODEC]);
-> > +	if (!vpu_fmt) {
-> > +		vpu_fmt =3D wave5_find_vpu_fmt(fsize->pixel_format, dec_fmt_list[VPU=
-_FMT_TYPE_RAW]);
-> > +		if (!vpu_fmt)
-> > +			return -EINVAL;
-> > +	}
-> > +
-> > +	fsize->type =3D V4L2_FRMSIZE_TYPE_CONTINUOUS;
-> > +	fsize->stepwise.min_width =3D vpu_fmt->min_width;
-> > +	fsize->stepwise.max_width =3D vpu_fmt->max_width;
-> > +	fsize->stepwise.step_width =3D 1;
-> > +	fsize->stepwise.min_height =3D vpu_fmt->min_height;
-> > +	fsize->stepwise.max_height =3D vpu_fmt->max_height;
-> > +	fsize->stepwise.step_height =3D 1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_enum_fmt_cap(struct file *file, void *fh, str=
-uct v4l2_fmtdesc *f)
-> > +{
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt_by_idx(f->index, dec_fmt_list[VPU_FMT_=
-TYPE_RAW]);
-> > +	if (!vpu_fmt)
-> > +		return -EINVAL;
-> > +
-> > +	f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +	f->flags =3D 0;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_try_fmt_cap(struct file *file, void *fh, stru=
-ct v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	struct dec_info *p_dec_info =3D &inst->codec_info->dec_info;
-> > +	const struct vpu_format *vpu_fmt;
-> > +	int width, height;
-> > +
-> > +	dev_dbg(inst->dev->dev,
-> > +		"%s: fourcc: %u width: %u height: %u nm planes: %u colorspace: %u fi=
-eld: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.colorspace, f->fmt.pix_mp.fi=
-eld);
-> > +
-> > +	if (f->type !=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-> > +		return -EINVAL;
->=20
-> This check isn't needed.
->=20
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, dec_fmt_lis=
-t[VPU_FMT_TYPE_RAW]);
-> > +	if (!vpu_fmt) {
-> > +		width =3D inst->dst_fmt.width;
-> > +		height =3D inst->dst_fmt.height;
-> > +		f->fmt.pix_mp.pixelformat =3D inst->dst_fmt.pixelformat;
-> > +		f->fmt.pix_mp.num_planes =3D inst->dst_fmt.num_planes;
-> > +	} else {
-> > +		const struct v4l2_format_info *info =3D v4l2_format_info(vpu_fmt->v4=
-l2_pix_fmt);
-> > +
-> > +		width =3D clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt->ma=
-x_width);
-> > +		height =3D clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_fmt-=
->max_height);
-> > +		f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +		f->fmt.pix_mp.num_planes =3D info->mem_planes;
-> > +	}
-> > +
-> > +	if (p_dec_info->initial_info_obtained) {
-> > +		width =3D inst->dst_fmt.width;
-> > +		height =3D inst->dst_fmt.height;
-> > +	}
-> > +
-> > +	wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
-> > +	f->fmt.pix_mp.flags =3D 0;
-> > +	f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
-> > +	f->fmt.pix_mp.colorspace =3D inst->colorspace;
-> > +	f->fmt.pix_mp.ycbcr_enc =3D inst->ycbcr_enc;
-> > +	f->fmt.pix_mp.hsv_enc =3D inst->hsv_enc;
->=20
-> Drop this. hsv_enc and ycbcr_enc are in a union, so copying one is
-> sufficient. This might be done elsewhere, so grep for hsv_enc.
->=20
-> > +	f->fmt.pix_mp.quantization =3D inst->quantization;
-> > +	f->fmt.pix_mp.xfer_func =3D inst->xfer_func;
-> > +	memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved));
->=20
-> Not needed, cleared by the core.
->=20
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_s_fmt_cap(struct file *file, void *fh, struct=
- v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i, ret;
-> > +
-> > +	dev_dbg(inst->dev->dev,
-> > +		"%s: fourcc: %u width: %u height: %u num_planes: %u colorspace: %u f=
-ield: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.colorspace, f->fmt.pix_mp.fi=
-eld);
-> > +
-> > +	ret =3D wave5_vpu_dec_try_fmt_cap(file, fh, f);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	inst->dst_fmt.width =3D f->fmt.pix_mp.width;
-> > +	inst->dst_fmt.height =3D f->fmt.pix_mp.height;
-> > +	inst->dst_fmt.pixelformat =3D f->fmt.pix_mp.pixelformat;
-> > +	inst->dst_fmt.field =3D f->fmt.pix_mp.field;
-> > +	inst->dst_fmt.flags =3D f->fmt.pix_mp.flags;
-> > +	inst->dst_fmt.num_planes =3D f->fmt.pix_mp.num_planes;
-> > +	for (i =3D 0; i < inst->dst_fmt.num_planes; i++) {
-> > +		inst->dst_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp.plane_fmt[=
-i].bytesperline;
-> > +		inst->dst_fmt.plane_fmt[i].sizeimage =3D f->fmt.pix_mp.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	if (inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV12 ||
-> > +	    inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV12M) {
-> > +		inst->cbcr_interleave =3D true;
-> > +		inst->nv21 =3D false;
-> > +		inst->output_format =3D FORMAT_420;
-> > +	} else if (inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV21 ||
-> > +		   inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV21M) {
-> > +		inst->cbcr_interleave =3D true;
-> > +		inst->nv21 =3D true;
-> > +		inst->output_format =3D FORMAT_420;
-> > +	} else if (inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV16 ||
-> > +		   inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV16M) {
-> > +		inst->cbcr_interleave =3D true;
-> > +		inst->nv21 =3D false;
-> > +		inst->output_format =3D FORMAT_422;
-> > +	} else if (inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV61 ||
-> > +		   inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV61M) {
-> > +		inst->cbcr_interleave =3D true;
-> > +		inst->nv21 =3D true;
-> > +		inst->output_format =3D FORMAT_422;
-> > +	} else if (inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_YUV422P ||
-> > +		   inst->dst_fmt.pixelformat =3D=3D V4L2_PIX_FMT_YUV422M) {
-> > +		inst->cbcr_interleave =3D false;
-> > +		inst->nv21 =3D false;
-> > +		inst->output_format =3D FORMAT_422;
-> > +	} else {
-> > +		inst->cbcr_interleave =3D false;
-> > +		inst->nv21 =3D false;
-> > +		inst->output_format =3D FORMAT_420;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_g_fmt_cap(struct file *file, void *fh, struct=
- v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i;
-> > +
-> > +	f->fmt.pix_mp.width =3D inst->dst_fmt.width;
-> > +	f->fmt.pix_mp.height =3D inst->dst_fmt.height;
-> > +	f->fmt.pix_mp.pixelformat =3D inst->dst_fmt.pixelformat;
-> > +	f->fmt.pix_mp.field =3D inst->dst_fmt.field;
-> > +	f->fmt.pix_mp.flags =3D inst->dst_fmt.flags;
-> > +	f->fmt.pix_mp.num_planes =3D inst->dst_fmt.num_planes;
-> > +	for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
-> > +		f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->dst_fmt.plane_fmt[=
-i].bytesperline;
-> > +		f->fmt.pix_mp.plane_fmt[i].sizeimage =3D inst->dst_fmt.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	f->fmt.pix_mp.colorspace =3D inst->colorspace;
-> > +	f->fmt.pix_mp.ycbcr_enc =3D inst->ycbcr_enc;
-> > +	f->fmt.pix_mp.hsv_enc =3D inst->hsv_enc;
->=20
-> Ah, another hsv_enc. Just drop all references for hsv_enc, it's not relev=
-ant
-> for this driver.
->=20
-> > +	f->fmt.pix_mp.quantization =3D inst->quantization;
-> > +	f->fmt.pix_mp.xfer_func =3D inst->xfer_func;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_enum_fmt_out(struct file *file, void *fh, str=
-uct v4l2_fmtdesc *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: index: %u\n", __func__, f->index);
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt_by_idx(f->index, dec_fmt_list[VPU_FMT_=
-TYPE_CODEC]);
-> > +	if (!vpu_fmt)
-> > +		return -EINVAL;
-> > +
-> > +	f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +	f->flags =3D V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_try_fmt_out(struct file *file, void *fh, stru=
-ct v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	dev_dbg(inst->dev->dev,
-> > +		"%s: fourcc: %u width: %u height: %u num_planes: %u colorspace: %u f=
-ield: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.colorspace, f->fmt.pix_mp.fi=
-eld);
-> > +
-> > +	if (f->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		return -EINVAL;
->=20
-> Can be dropped.
->=20
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, dec_fmt_lis=
-t[VPU_FMT_TYPE_CODEC]);
-> > +	if (!vpu_fmt) {
-> > +		f->fmt.pix_mp.pixelformat =3D inst->src_fmt.pixelformat;
-> > +		f->fmt.pix_mp.num_planes =3D inst->src_fmt.num_planes;
-> > +		wave5_update_pix_fmt(&f->fmt.pix_mp, inst->src_fmt.width, inst->src_=
-fmt.height);
-> > +	} else {
-> > +		int width =3D clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt=
-->max_width);
-> > +		int height =3D clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_=
-fmt->max_height);
-> > +
-> > +		f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +		f->fmt.pix_mp.num_planes =3D 1;
-> > +		wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
-> > +	}
-> > +
-> > +	f->fmt.pix_mp.flags =3D 0;
-> > +	f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
-> > +	memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved));
->=20
-> Drop this.
->=20
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_s_fmt_out(struct file *file, void *fh, struct=
- v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i, ret;
-> > +
-> > +	dev_dbg(inst->dev->dev,
-> > +		"%s: fourcc: %u width: %u height: %u num_planes: %u field: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
-> > +
-> > +	ret =3D wave5_vpu_dec_try_fmt_out(file, fh, f);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	inst->std =3D wave5_to_vpu_std(f->fmt.pix_mp.pixelformat, inst->type)=
-;
-> > +	if (inst->std =3D=3D STD_UNKNOWN) {
-> > +		dev_warn(inst->dev->dev, "unsupported pixelformat: %.4s\n",
-> > +			 (char *)&f->fmt.pix_mp.pixelformat);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	inst->src_fmt.width =3D f->fmt.pix_mp.width;
-> > +	inst->src_fmt.height =3D f->fmt.pix_mp.height;
-> > +	inst->src_fmt.pixelformat =3D f->fmt.pix_mp.pixelformat;
-> > +	inst->src_fmt.field =3D f->fmt.pix_mp.field;
-> > +	inst->src_fmt.flags =3D f->fmt.pix_mp.flags;
-> > +	inst->src_fmt.num_planes =3D f->fmt.pix_mp.num_planes;
-> > +	for (i =3D 0; i < inst->src_fmt.num_planes; i++) {
-> > +		inst->src_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp.plane_fmt[=
-i].bytesperline;
-> > +		inst->src_fmt.plane_fmt[i].sizeimage =3D f->fmt.pix_mp.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	inst->colorspace =3D f->fmt.pix_mp.colorspace;
-> > +	inst->ycbcr_enc =3D f->fmt.pix_mp.ycbcr_enc;
-> > +	inst->hsv_enc =3D f->fmt.pix_mp.hsv_enc;
-> > +	inst->quantization =3D f->fmt.pix_mp.quantization;
-> > +	inst->xfer_func =3D f->fmt.pix_mp.xfer_func;
-> > +
-> > +	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width, f->fmt.pix_=
-mp.height);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_g_selection(struct file *file, void *fh, stru=
-ct v4l2_selection *s)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u | target: %u\n", __func__, s->t=
-ype, s->target);
-> > +
-> > +	if (s->type !=3D V4L2_BUF_TYPE_VIDEO_CAPTURE)
-> > +		return -EINVAL;
-> > +	switch (s->target) {
-> > +	case V4L2_SEL_TGT_COMPOSE_BOUNDS:
-> > +	case V4L2_SEL_TGT_COMPOSE_PADDED:
-> > +		s->r.left =3D 0;
-> > +		s->r.top =3D 0;
-> > +		s->r.width =3D inst->dst_fmt.width;
-> > +		s->r.height =3D inst->dst_fmt.height;
-> > +		break;
-> > +	case V4L2_SEL_TGT_COMPOSE:
-> > +	case V4L2_SEL_TGT_COMPOSE_DEFAULT:
-> > +		s->r.left =3D 0;
-> > +		s->r.top =3D 0;
-> > +		if (inst->state > VPU_INST_STATE_OPEN) {
-> > +			s->r =3D inst->conf_win;
-> > +		} else {
-> > +			s->r.width =3D inst->src_fmt.width;
-> > +			s->r.height =3D inst->src_fmt.height;
-> > +		}
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_s_selection(struct file *file, void *fh, stru=
-ct v4l2_selection *s)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +
-> > +	if (s->type !=3D V4L2_BUF_TYPE_VIDEO_CAPTURE)
-> > +		return -EINVAL;
-> > +
-> > +	if (s->target !=3D V4L2_SEL_TGT_COMPOSE)
-> > +		return -EINVAL;
-> > +
-> > +	dev_dbg(inst->dev->dev, "V4L2_SEL_TGT_COMPOSE w: %u h: %u\n",
-> > +		s->r.width, s->r.height);
-> > +
-> > +	s->r.left =3D 0;
-> > +	s->r.top =3D 0;
-> > +	s->r.width =3D inst->dst_fmt.width;
-> > +	s->r.height =3D inst->dst_fmt.height;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_create_bufs(struct file *file, void *priv,
-> > +				     struct v4l2_create_buffers *create)
-> > +{
-> > +	struct v4l2_format *f =3D &create->format;
-> > +
-> > +	if (f->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE)
-> > +		return -ENOTTY;
->=20
-> Huh? Why is this needed?
 
-Minimally a comment should be added. The why is that we support CREATE_BUF =
-for
-OUTPUT queue (bitstream) but not for CAPTURE queues. This is simply not
-supported by Wave5 firmware. Do you have any suggestion how this asymmetry =
-can
-be implemented better ?
+On 9/20/23 19:03, Rafael J. Wysocki wrote:
+> On Wed, Sep 20, 2023 at 6:30 PM Mirsad Goran Todorovac
+> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>
+>> KCSAN reported hundreds of instances of data-races in ACPICA like this one:
+>>
+>> [    6.994149] ==================================================================
+>> [    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
+>>
+>> [    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+>> [    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+>> [    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+>> [    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+>> [    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+>> [    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+>> [    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+>> [    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+>> [    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+>> [    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+>> [    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+>> [    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+>> [    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+>> [    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+>> [    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+>> [    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+>> [    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+>> [    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+>> [    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+>> [    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [    6.995476] value changed: 0x00000004 -> 0x00000002
+>>
+>> [    6.995629] Reported by Kernel Concurrency Sanitizer on:
+>> [    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+>> [    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> [    6.995765] ==================================================================
+>>
+>> Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
+>>
+>> A number of unprotected increments:
+>>
+>>          acpi_gbl_nesting_level++;
+>>
+>> and conditional statements:
+>>
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>>
+>> no longer work in SMP environment.
+>>
+>> Proper locking like
+>>
+>>          spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>>          spin_unlock(&acpi_utdebug_lock);
+>>
+>> and
+>>
+>>          spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>>          spin_unlock(&acpi_utdebug_lock);
+>>
+>> makes these data-races go away.
+>>
+>> Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+>> acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+>> stuff the optmisers do.
+>>
+>> The patch eliminates KCSAN BUG warnings.
+>>
+>> Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+>> Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+>> Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+>> Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+>> Cc: Jung-uk Kim <jkim@FreeBSD.org>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Erik Kaneda <erik.kaneda@intel.com>
+>> Cc: Bob Moore <robert.moore@intel.com>
+>> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+>> Cc: Len Brown <lenb@kernel.org>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: acpica-devel@lists.linuxfoundation.org
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202309201331.S2c1JL2h-lkp@intel.com/
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202309201308.5ZBJFbjh-lkp@intel.com/
+>> Link: https://github.com/acpica/acpica/pull/893
+>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> ---
+>> v2 -> v3:
+>>   Made the pull request at the ACPICA github.
+>>   Fixed DEFINE_SPINLOCK() undefined warning by putting it inside #ifdef ACPI_DEBUG_OUTPUT
+>>   ... #endif
+>>   Capitalised ACPICA according to the convention.
+>>
+>> v1 -> v2:
+>>   Moved the declaration of 'u32 nesting_level' inside #ifdef ACPI_APPLICATION ... #endif
+>>   according to the unused variable warning of the kernel test robot.
+>>
+>> v1:
+>>   Preliminary RFC version of the patch.
+>>
+>>   drivers/acpi/acpica/utdebug.c | 49 +++++++++++++++++++++++++----------
+>>   1 file changed, 35 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+>> index c5f6c85a3a09..594eee294f0f 100644
+>> --- a/drivers/acpi/acpica/utdebug.c
+>> +++ b/drivers/acpi/acpica/utdebug.c
+>> @@ -15,8 +15,9 @@
+>>
+>>   #define _COMPONENT          ACPI_UTILITIES
+>>   ACPI_MODULE_NAME("utdebug")
+>> -
+>>   #ifdef ACPI_DEBUG_OUTPUT
+>> +static DEFINE_SPINLOCK(acpi_utdebug_lock);
+> 
+> No, you can't do that in the ACPICA code.  Likewise for other
+> Linux-specific pieces of code in the patch below.
+> 
+> I'd very much prefer you to send a proper problem report instead of
+> sending patches like this.
 
->=20
-> > +
-> > +	return v4l2_m2m_ioctl_create_bufs(file, priv, create);
-> > +}
-> > +
-> > +/* Must be called with state_spinlock */
-> > +static int wave5_vpu_dec_stop_unlocked(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	if (m2m_ctx->is_draining)
-> > +		return -EBUSY;
-> > +
-> > +	if (inst->state !=3D VPU_INST_STATE_NONE) {
-> > +		int ret;
-> > +
-> > +		ret =3D wave5_vpu_dec_set_eos_on_firmware(inst);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Used to remember the EOS state after the streamoff/on transition o=
-n
-> > +	 * the capture queue.
-> > +	 */
-> > +	inst->eos =3D true;
-> > +
-> > +	if (m2m_ctx->has_stopped)
-> > +		return 0;
-> > +
-> > +	m2m_ctx->last_src_buf =3D v4l2_m2m_last_src_buf(m2m_ctx);
-> > +	m2m_ctx->is_draining =3D true;
-> > +
-> > +	/*
-> > +	 * Deferred to device run in case it wasn't in the ring buffer
-> > +	 * yet. In other case, we have to send the EOS signal to the
-> > +	 * firmware so that any pending PIC_RUN ends without new
-> > +	 * bitstream buffer.
-> > +	 */
-> > +	if (m2m_ctx->last_src_buf)
-> > +		return 0;
-> > +
-> > +	if (inst->state =3D=3D VPU_INST_STATE_NONE) {
-> > +		send_eos_event(inst);
-> > +		flag_last_buffer_done(inst);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/* Must be called with state_spinlock */
-> > +static int wave5_vpu_dec_start_unlocked(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_queue *dst_vq =3D v4l2_m2m_get_dst_vq(m2m_ctx);
-> > +
-> > +	if (m2m_ctx->is_draining)
-> > +		return -EBUSY;
-> > +
-> > +	if (m2m_ctx->has_stopped)
-> > +		m2m_ctx->has_stopped =3D false;
-> > +
-> > +	vb2_clear_last_buffer_dequeued(dst_vq);
-> > +	inst->eos =3D false;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_decoder_cmd(struct file *file, void *fh, stru=
-ct v4l2_decoder_cmd *dc)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	unsigned long flags;
-> > +	int ret;
-> > +
-> > +	dev_dbg(inst->dev->dev, "decoder command: %u\n", dc->cmd);
-> > +
-> > +	ret =3D v4l2_m2m_ioctl_try_decoder_cmd(file, fh, dc);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	switch (dc->cmd) {
-> > +	case V4L2_DEC_CMD_STOP:
-> > +		spin_lock_irqsave(&inst->state_spinlock, flags);
-> > +		ret =3D wave5_vpu_dec_stop_unlocked(inst);
-> > +		spin_unlock_irqrestore(&inst->state_spinlock, flags);
-> > +
-> > +		/* Just in case we don't have anything to decode anymore */
-> > +		v4l2_m2m_try_schedule(m2m_ctx);
-> > +		break;
-> > +	case V4L2_DEC_CMD_START:
-> > +		spin_lock_irqsave(&inst->state_spinlock, flags);
-> > +		ret =3D wave5_vpu_dec_start_unlocked(inst);
-> > +		spin_unlock_irqrestore(&inst->state_spinlock, flags);
-> > +		break;
-> > +	default:
-> > +		ret =3D -EINVAL;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static const struct v4l2_ioctl_ops wave5_vpu_dec_ioctl_ops =3D {
-> > +	.vidioc_querycap =3D wave5_vpu_dec_querycap,
-> > +	.vidioc_enum_framesizes =3D wave5_vpu_dec_enum_framesizes,
-> > +
-> > +	.vidioc_enum_fmt_vid_cap	=3D wave5_vpu_dec_enum_fmt_cap,
-> > +	.vidioc_s_fmt_vid_cap_mplane =3D wave5_vpu_dec_s_fmt_cap,
-> > +	.vidioc_g_fmt_vid_cap_mplane =3D wave5_vpu_dec_g_fmt_cap,
-> > +	.vidioc_try_fmt_vid_cap_mplane =3D wave5_vpu_dec_try_fmt_cap,
-> > +
-> > +	.vidioc_enum_fmt_vid_out	=3D wave5_vpu_dec_enum_fmt_out,
-> > +	.vidioc_s_fmt_vid_out_mplane =3D wave5_vpu_dec_s_fmt_out,
-> > +	.vidioc_g_fmt_vid_out_mplane =3D wave5_vpu_g_fmt_out,
-> > +	.vidioc_try_fmt_vid_out_mplane =3D wave5_vpu_dec_try_fmt_out,
-> > +
-> > +	.vidioc_g_selection =3D wave5_vpu_dec_g_selection,
-> > +	.vidioc_s_selection =3D wave5_vpu_dec_s_selection,
-> > +
-> > +	.vidioc_reqbufs =3D v4l2_m2m_ioctl_reqbufs,
-> > +	.vidioc_querybuf =3D v4l2_m2m_ioctl_querybuf,
-> > +	.vidioc_create_bufs =3D wave5_vpu_dec_create_bufs,
-> > +	.vidioc_prepare_buf =3D v4l2_m2m_ioctl_prepare_buf,
-> > +	.vidioc_qbuf =3D v4l2_m2m_ioctl_qbuf,
-> > +	.vidioc_expbuf =3D v4l2_m2m_ioctl_expbuf,
-> > +	.vidioc_dqbuf =3D v4l2_m2m_ioctl_dqbuf,
-> > +	.vidioc_streamon =3D v4l2_m2m_ioctl_streamon,
-> > +	.vidioc_streamoff =3D v4l2_m2m_ioctl_streamoff,
-> > +
-> > +	.vidioc_try_decoder_cmd =3D v4l2_m2m_ioctl_try_decoder_cmd,
-> > +	.vidioc_decoder_cmd =3D wave5_vpu_dec_decoder_cmd,
-> > +
-> > +	.vidioc_subscribe_event =3D wave5_vpu_subscribe_event,
-> > +	.vidioc_unsubscribe_event =3D v4l2_event_unsubscribe,
-> > +};
-> > +
-> > +static int wave5_vpu_dec_queue_setup(struct vb2_queue *q, unsigned int=
- *num_buffers,
-> > +				     unsigned int *num_planes, unsigned int sizes[],
-> > +				     struct device *alloc_devs[])
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_pix_format_mplane inst_format =3D
-> > +		(q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst->src_fmt :=
- inst->dst_fmt;
-> > +	unsigned int i;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: num_buffers: %u | num_planes: %u | type:=
- %u\n", __func__,
-> > +		*num_buffers, *num_planes, q->type);
-> > +
-> > +	/* the CREATE_BUFS case */
-> > +	if (*num_planes) {
-> > +		if (inst_format.num_planes !=3D *num_planes)
-> > +			return -EINVAL;
-> > +
-> > +		for (i =3D 0; i < *num_planes; i++) {
-> > +			if (sizes[i] < inst_format.plane_fmt[i].sizeimage)
-> > +				return -EINVAL;
-> > +		}
-> > +	/* the REQBUFS case */
-> > +	} else {
-> > +		*num_planes =3D inst_format.num_planes;
-> > +
-> > +		if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
-> > +			sizes[0] =3D inst_format.plane_fmt[0].sizeimage;
-> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
-> > +		} else if (*num_planes =3D=3D 1) {
-> > +			if (inst->output_format =3D=3D FORMAT_422)
-> > +				sizes[0] =3D inst_format.width * inst_format.height * 2;
-> > +			else
-> > +				sizes[0] =3D inst_format.width * inst_format.height * 3 / 2;
-> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
-> > +		} else if (*num_planes =3D=3D 2) {
-> > +			sizes[0] =3D inst_format.width * inst_format.height;
-> > +			if (inst->output_format =3D=3D FORMAT_422)
-> > +				sizes[1] =3D inst_format.width * inst_format.height;
-> > +			else
-> > +				sizes[1] =3D inst_format.width * inst_format.height / 2;
-> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u\n",
-> > +				__func__, sizes[0], sizes[1]);
-> > +		} else if (*num_planes =3D=3D 3) {
-> > +			sizes[0] =3D inst_format.width * inst_format.height;
-> > +			if (inst->output_format =3D=3D FORMAT_422) {
-> > +				sizes[1] =3D inst_format.width * inst_format.height / 2;
-> > +				sizes[2] =3D inst_format.width * inst_format.height / 2;
-> > +			} else {
-> > +				sizes[1] =3D inst_format.width * inst_format.height / 4;
-> > +				sizes[2] =3D inst_format.width * inst_format.height / 4;
-> > +			}
-> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u | size[2]: %=
-u\n",
-> > +				__func__, sizes[0], sizes[1], sizes[2]);
-> > +		}
-> > +	}
-> > +
-> > +	if (inst->state =3D=3D VPU_INST_STATE_INIT_SEQ &&
-> > +	    q->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
-> > +		if (*num_buffers > inst->dst_buf_count &&
-> > +		    *num_buffers < WAVE5_MAX_FBS)
-> > +			inst->dst_buf_count =3D *num_buffers;
->=20
-> In the create_bufs case, *num_buffers is the number of buffers you are
-> adding to the already existing buffers. Frankly, the logic here is
-> dubious. I'm not sure what the intent is. Why do you need to keep track
-> of the buf count at all when the vb2_queue already does that?
+I was so enthusiastic about the patch that cleared all the KCSAN data-race bug warnings,
+that I must have forgot about sending one.
 
-This needs to be cleaned up. CREATE_BUFS case is not supported for capture,=
- and
-so there is no such weirdo case second calls for that queue at least. Meanw=
-hile,
-inst->dst_buf_count is used a MIN_BUFFERS_FOR_CAPTURE initially, and the nu=
-mber
-of allocated buffer later. I think it would be better to simply store the m=
-in,
-and use the queue to track the number of allocated buffers.
+Patching of hundreds of annoying KCSAN acpi warnings seemed so good that I forgot about the
+procedure, sorry.
 
-In this diver, the reference frame are stored separately, and compressed. T=
-he
-capture queue contains the display frame. There is a gap when comes time to
-transfer timestamp, and for this reason we had to keep the two fbc_count eq=
-ual.
-We classified this as hardware issue and moved on.
+I am aware that the maintainers have to carefully evaluate any contribution in order for the
+kernel not becoming bloated and unstable ...
 
-I think the dst_buf_count can be dropped now and the "*num_buffers > inst-
->dst_buf_count" not longer make any sense.
+> As it stands, I'm not even sure what problem exactly this is
+> attempting to address.
 
->=20
-> WAVE5_MAX_FBS =3D=3D 32, which is VIDEO_MAX_FRAMES. You can just drop the=
- check
-> against WAVE5_MAX_FBS since the core ensures already it will never alloca=
-te
-> more than VIDEO_MAX_FRAMES.
->=20
-> I'm not sure why WAVE5_MAX_FBS is defined at all, when it is just equal t=
-o
-> VIDEO_MAX_FRAMES. Perhaps it can be replaced everywhere with VIDEO_MAX_FR=
-AMES?
+I hope the attached excerpt from the dmesg log will help.
 
-That is more challenging changes, since VIDEO_MAX_FRAMES is a software
-limitation, but WAVE5_MAX_FBS is a hardware limitation. Buffer index only h=
-ave 4
-bits on this hardware. And the marking of frame being used for display is u=
-sing
-a 32bit flag. Considering there is effort to lift that software limitation,=
- it
-seems ill advised to completely stop ensuring this HW limit is respected.
+> Thanks!
 
-I'm open for suggestions.
+Anytime.
 
->=20
-> > +
-> > +		*num_buffers =3D inst->dst_buf_count;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_prepare_fb(struct vpu_instance *inst)
-> > +{
-> > +	int linear_num;
-> > +	int non_linear_num;
-> > +	int fb_stride =3D 0, fb_height =3D 0;
-> > +	int luma_size, chroma_size;
-> > +	int ret, i;
-> > +	struct v4l2_m2m_buffer *buf, *n;
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	linear_num =3D inst->dst_buf_count;
-> > +	non_linear_num =3D inst->fbc_buf_count;
-> > +
-> > +	for (i =3D 0; i < non_linear_num; i++) {
-> > +		struct frame_buffer *frame =3D &inst->frame_buf[i];
-> > +		struct vpu_buf *vframe =3D &inst->frame_vbuf[i];
-> > +
-> > +		fb_stride =3D inst->dst_fmt.width;
-> > +		fb_height =3D ALIGN(inst->dst_fmt.height, 32);
-> > +		luma_size =3D fb_stride * fb_height;
-> > +
-> > +		/* FIXME shall we do /4 in case of 422 ?*/
-> > +		chroma_size =3D ALIGN(fb_stride / 2, 16) * fb_height;
-> > +
-> > +		if (vframe->size) {
-> > +			if (vframe->size !=3D (luma_size + chroma_size))
-> > +				wave5_vpu_dec_reset_framebuffer(inst, i);
-> > +			else
-> > +				continue;
-> > +		}
-> > +
-> > +		vframe->size =3D luma_size + chroma_size;
-> > +		ret =3D wave5_vdi_allocate_dma_memory(inst->dev, vframe);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Allocating FBC buf of size %zu, fail: %d\n",
-> > +				__func__, vframe->size, ret);
-> > +			return ret;
-> > +		}
-> > +
-> > +		frame->buf_y =3D vframe->daddr;
-> > +		frame->buf_cb =3D vframe->daddr + luma_size;
-> > +		frame->buf_cr =3D (dma_addr_t)-1;
-> > +		frame->size =3D vframe->size;
-> > +		frame->width =3D inst->src_fmt.width;
-> > +		frame->stride =3D fb_stride;
-> > +		frame->map_type =3D COMPRESSED_FRAME_MAP;
-> > +		frame->update_fb_info =3D true;
-> > +	}
-> > +	/* In case the count has reduced, clean up leftover framebuffer memor=
-y */
-> > +	for (i =3D non_linear_num; i < MAX_REG_FRAME; i++) {
-> > +		ret =3D wave5_vpu_dec_reset_framebuffer(inst, i);
-> > +		if (ret)
-> > +			break;
-> > +	}
-> > +
-> > +	for (i =3D 0; i < linear_num; i++) {
-> > +		struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +		struct vb2_queue *dst_vq =3D v4l2_m2m_get_dst_vq(m2m_ctx);
-> > +		struct vb2_buffer *vb =3D vb2_get_buffer(dst_vq, i);
-> > +		struct frame_buffer *frame =3D &inst->frame_buf[non_linear_num + i];
-> > +		dma_addr_t buf_addr_y =3D 0, buf_addr_cb =3D 0, buf_addr_cr =3D 0;
-> > +		u32 buf_size =3D 0;
-> > +		u32 fb_stride =3D inst->dst_fmt.width;
-> > +		u32 luma_size =3D fb_stride * inst->dst_fmt.height;
-> > +		u32 chroma_size;
-> > +
-> > +		if (inst->output_format =3D=3D FORMAT_422)
-> > +			chroma_size =3D fb_stride * inst->dst_fmt.height / 2;
-> > +		else
-> > +			chroma_size =3D fb_stride * inst->dst_fmt.height / 4;
-> > +
-> > +		if (inst->dst_fmt.num_planes =3D=3D 1) {
-> > +			buf_size =3D vb2_plane_size(vb, 0);
-> > +			buf_addr_y =3D vb2_dma_contig_plane_dma_addr(vb, 0);
-> > +			buf_addr_cb =3D buf_addr_y + luma_size;
-> > +			buf_addr_cr =3D buf_addr_cb + chroma_size;
-> > +		} else if (inst->dst_fmt.num_planes =3D=3D 2) {
-> > +			buf_size =3D vb2_plane_size(vb, 0) +
-> > +				vb2_plane_size(vb, 1);
-> > +			buf_addr_y =3D vb2_dma_contig_plane_dma_addr(vb, 0);
-> > +			buf_addr_cb =3D vb2_dma_contig_plane_dma_addr(vb, 1);
-> > +			buf_addr_cr =3D buf_addr_cb + chroma_size;
-> > +		} else if (inst->dst_fmt.num_planes =3D=3D 3) {
-> > +			buf_size =3D vb2_plane_size(vb, 0) +
-> > +				vb2_plane_size(vb, 1) +
-> > +				vb2_plane_size(vb, 2);
-> > +			buf_addr_y =3D vb2_dma_contig_plane_dma_addr(vb, 0);
-> > +			buf_addr_cb =3D vb2_dma_contig_plane_dma_addr(vb, 1);
-> > +			buf_addr_cr =3D vb2_dma_contig_plane_dma_addr(vb, 2);
-> > +		}
-> > +
-> > +		frame->buf_y =3D buf_addr_y;
-> > +		frame->buf_cb =3D buf_addr_cb;
-> > +		frame->buf_cr =3D buf_addr_cr;
-> > +		frame->size =3D buf_size;
-> > +		frame->width =3D inst->src_fmt.width;
-> > +		frame->stride =3D fb_stride;
-> > +		frame->map_type =3D LINEAR_FRAME_MAP;
-> > +		frame->update_fb_info =3D true;
-> > +	}
-> > +
-> > +	ret =3D wave5_vpu_dec_register_frame_buffer_ex(inst, non_linear_num, =
-linear_num,
-> > +						     fb_stride, inst->dst_fmt.height);
-> > +	if (ret) {
-> > +		dev_dbg(inst->dev->dev, "%s: vpu_dec_register_frame_buffer_ex fail: =
-%d",
-> > +			__func__, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Mark all frame buffers as out of display, to avoid using them befo=
-re
-> > +	 * the application have them queued.
-> > +	 */
-> > +	for (i =3D 0; i < inst->dst_buf_count; i++) {
-> > +		ret =3D wave5_vpu_dec_set_disp_flag(inst, i);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Setting display flag of buf index: %u, fail: %d\n",
-> > +				__func__, i, ret);
-> > +		}
-> > +	}
-> > +
-> > +	v4l2_m2m_for_each_dst_buf_safe(m2m_ctx, buf, n) {
-> > +		struct vb2_v4l2_buffer *vbuf =3D &buf->vb;
-> > +
-> > +		ret =3D wave5_vpu_dec_clr_disp_flag(inst, vbuf->vb2_buf.index);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Clearing display flag of buf index: %u, fail: %d\n",
-> > +				__func__, i, ret);
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int write_to_ringbuffer(struct vpu_instance *inst, void *buffer=
-, size_t buffer_size,
-> > +			       struct vpu_buf *ring_buffer, dma_addr_t wr_ptr)
-> > +{
-> > +	size_t size;
-> > +	size_t offset =3D wr_ptr - ring_buffer->daddr;
-> > +	int ret;
-> > +
-> > +	if (wr_ptr + buffer_size > ring_buffer->daddr + ring_buffer->size) {
-> > +		size =3D ring_buffer->daddr + ring_buffer->size - wr_ptr;
-> > +		ret =3D wave5_vdi_write_memory(inst->dev, ring_buffer, offset, (u8 *=
-)buffer, size);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		ret =3D wave5_vdi_write_memory(inst->dev, ring_buffer, 0, (u8 *)buff=
-er + size,
-> > +					     buffer_size - size);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	} else {
-> > +		ret =3D wave5_vdi_write_memory(inst->dev, ring_buffer, offset, (u8 *=
-)buffer,
-> > +					     buffer_size);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int fill_ringbuffer(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct v4l2_m2m_buffer *buf, *n;
-> > +	int ret;
-> > +
-> > +	if (m2m_ctx->last_src_buf)  {
-> > +		struct vpu_src_buffer *vpu_buf =3D wave5_to_vpu_src_buf(m2m_ctx->las=
-t_src_buf);
-> > +
-> > +		if (vpu_buf->consumed) {
-> > +			dev_dbg(inst->dev->dev, "last src buffer already written\n");
-> > +			return 0;
-> > +		}
-> > +	}
-> > +
-> > +	v4l2_m2m_for_each_src_buf_safe(m2m_ctx, buf, n) {
-> > +		struct vb2_v4l2_buffer *vbuf =3D &buf->vb;
-> > +		struct vpu_src_buffer *vpu_buf =3D wave5_to_vpu_src_buf(vbuf);
-> > +		struct vpu_buf *ring_buffer =3D &inst->bitstream_vbuf;
-> > +		size_t src_size =3D vb2_get_plane_payload(&vbuf->vb2_buf, 0);
-> > +		void *src_buf =3D vb2_plane_vaddr(&vbuf->vb2_buf, 0);
-> > +		dma_addr_t rd_ptr =3D 0;
-> > +		dma_addr_t wr_ptr =3D 0;
-> > +		size_t remain_size =3D 0;
-> > +
-> > +		if (vpu_buf->consumed) {
-> > +			dev_dbg(inst->dev->dev, "already copied src buf (%u) to the ring bu=
-ffer\n",
-> > +				vbuf->vb2_buf.index);
-> > +			continue;
-> > +		}
-> > +
-> > +		if (!src_buf) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Acquiring kernel pointer to src buf (%u), fail\n",
-> > +				__func__, vbuf->vb2_buf.index);
-> > +			break;
-> > +		}
-> > +
-> > +		ret =3D wave5_vpu_dec_get_bitstream_buffer(inst, &rd_ptr, &wr_ptr, &=
-remain_size);
-> > +		if (ret) {
-> > +			/* Unable to acquire the mutex */
-> > +			dev_err(inst->dev->dev, "Getting the bitstream buffer, fail: %d\n",
-> > +				ret);
-> > +			return ret;
-> > +		}
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: rd_ptr %pad wr_ptr %pad", __func__, &rd=
-_ptr, &wr_ptr);
-> > +
-> > +		if (remain_size < src_size) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: remaining size: %zu < source size: %zu for src buf (%u)\n",
-> > +				__func__, remain_size, src_size, vbuf->vb2_buf.index);
-> > +			break;
-> > +		}
-> > +
-> > +		ret =3D write_to_ringbuffer(inst, src_buf, src_size, ring_buffer, wr=
-_ptr);
-> > +		if (ret) {
-> > +			dev_err(inst->dev->dev, "Write src buf (%u) to ring buffer, fail: %=
-d\n",
-> > +				vbuf->vb2_buf.index, ret);
-> > +			return ret;
-> > +		}
-> > +
-> > +		ret =3D wave5_vpu_dec_update_bitstream_buffer(inst, src_size);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"update_bitstream_buffer fail: %d for src buf (%u)\n",
-> > +				ret, vbuf->vb2_buf.index);
-> > +			break;
-> > +		}
-> > +
-> > +		vpu_buf->consumed =3D true;
-> > +
-> > +		/* Don't write buffers passed the last one while draining. */
-> > +		if (v4l2_m2m_is_last_draining_src_buf(m2m_ctx, vbuf)) {
-> > +			dev_dbg(inst->dev->dev, "last src buffer written to the ring buffer=
-ur\n");
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void wave5_vpu_dec_buf_queue_src(struct vb2_buffer *vb)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(vb->vb2_queue);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
-> > +	struct vpu_src_buffer *vpu_buf =3D wave5_to_vpu_src_buf(vbuf);
-> > +
-> > +	vpu_buf->consumed =3D false;
-> > +	vbuf->sequence =3D inst->queued_src_buf_num++;
-> > +
-> > +	v4l2_m2m_buf_queue(m2m_ctx, vbuf);
-> > +}
-> > +
-> > +static void wave5_vpu_dec_buf_queue_dst(struct vb2_buffer *vb)
-> > +{
-> > +	struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(vb->vb2_queue);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	vbuf->sequence =3D inst->queued_dst_buf_num++;
-> > +
-> > +	if (inst->state =3D=3D VPU_INST_STATE_PIC_RUN) {
-> > +		struct vpu_dst_buffer *vpu_buf =3D wave5_to_vpu_dst_buf(vbuf);
-> > +		int ret;
-> > +
-> > +		/*
-> > +		 * The buffer is already register, just clear the display flag
->=20
-> register -> registered
->=20
-> > +		 * to let the firmware know it can be used.
-> > +		 */
-> > +		vpu_buf->display =3D false;
-> > +		ret =3D wave5_vpu_dec_clr_disp_flag(inst, vb->index);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Clearing the display flag of buffer index: %u, fail: %d\n",
-> > +				__func__, vb->index, ret);
-> > +		}
-> > +	}
-> > +
-> > +	if (vb2_is_streaming(vb->vb2_queue) && v4l2_m2m_dst_buf_is_last(m2m_c=
-tx)) {
-> > +		unsigned int i;
-> > +
-> > +		for (i =3D 0; i < vb->num_planes; i++)
-> > +			vb2_set_plane_payload(vb, i, 0);
-> > +
-> > +		vbuf->field =3D V4L2_FIELD_NONE;
-> > +
-> > +		send_eos_event(inst);
-> > +		v4l2_m2m_last_buffer_done(m2m_ctx, vbuf);
-> > +	} else {
-> > +		v4l2_m2m_buf_queue(m2m_ctx, vbuf);
-> > +	}
-> > +}
-> > +
-> > +static void wave5_vpu_dec_buf_queue(struct vb2_buffer *vb)
-> > +{
-> > +	struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(vb->vb2_queue);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %4u index: %4u size: ([0]=3D%4lu, =
-[1]=3D%4lu, [2]=3D%4lu)\n",
-> > +		__func__, vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
-> > +		vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->vb2_buf, 2)=
-);
-> > +
-> > +	if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		wave5_vpu_dec_buf_queue_src(vb);
-> > +	else if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-> > +		wave5_vpu_dec_buf_queue_dst(vb);
-> > +}
-> > +
-> > +static int wave5_vpu_dec_allocate_ring_buffer(struct vpu_instance *ins=
-t)
-> > +{
-> > +	int ret;
-> > +	struct vpu_buf *ring_buffer =3D &inst->bitstream_vbuf;
-> > +
-> > +	ring_buffer->size =3D ALIGN(inst->src_fmt.plane_fmt[0].sizeimage, 102=
-4) * 4;
-> > +	ret =3D wave5_vdi_allocate_dma_memory(inst->dev, ring_buffer);
-> > +	if (ret) {
-> > +		dev_dbg(inst->dev->dev, "%s: allocate ring buffer of size %zu fail: =
-%d\n",
-> > +			__func__, ring_buffer->size, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	inst->last_rd_ptr =3D ring_buffer->daddr;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_start_streaming(struct vb2_queue *q, unsigned=
- int count)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *buf;
-> > +	int ret =3D 0;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, q->type);
-> > +
-> > +	v4l2_m2m_update_start_streaming_state(m2m_ctx, q);
-> > +
-> > +	if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE && inst->state =
-=3D=3D VPU_INST_STATE_NONE) {
-> > +		struct dec_open_param open_param;
-> > +
-> > +		memset(&open_param, 0, sizeof(struct dec_open_param));
-> > +
-> > +		ret =3D wave5_vpu_dec_allocate_ring_buffer(inst);
-> > +		if (ret)
-> > +			return ret;
->=20
-> If there is an error during start_streaming, then all buffers of the queu=
-e must
-> be returned to state DEQUEUED. That doesn't happen here.
->=20
-> > +
-> > +		inst->std =3D wave5_to_vpu_std(inst->src_fmt.pixelformat, inst->type=
-);
-> > +		if (inst->std =3D=3D STD_UNKNOWN) {
-> > +			dev_warn(inst->dev->dev, "unsupported pixelformat: %.4s\n",
-> > +				 (char *)&inst->src_fmt.pixelformat);
->=20
-> How can this happen? This is very weird to see inside a start_streaming c=
-allback.
->=20
-> > +			goto free_bitstream_vbuf;
-> > +		}
-> > +		open_param.bitstream_buffer =3D inst->bitstream_vbuf.daddr;
-> > +		open_param.bitstream_buffer_size =3D inst->bitstream_vbuf.size;
-> > +
-> > +		ret =3D wave5_vpu_dec_open(inst, &open_param);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev, "%s: decoder opening, fail: %d\n",
-> > +				__func__, ret);
-> > +			goto free_bitstream_vbuf;
-> > +		}
-> > +
-> > +		ret =3D switch_state(inst, VPU_INST_STATE_OPEN);
-> > +		if (ret)
-> > +			goto free_bitstream_vbuf;
-> > +	} else if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
-> > +		struct dec_initial_info *initial_info =3D
-> > +			&inst->codec_info->dec_info.initial_info;
-> > +
-> > +		if (inst->state =3D=3D VPU_INST_STATE_STOP)
-> > +			ret =3D switch_state(inst, VPU_INST_STATE_INIT_SEQ);
-> > +
-> > +		if (inst->state =3D=3D VPU_INST_STATE_INIT_SEQ) {
-> > +			if (initial_info->luma_bitdepth !=3D 8) {
-> > +				dev_info(inst->dev->dev, "%s: no support for %d bit depth",
-> > +					 __func__, initial_info->luma_bitdepth);
-> > +				goto cleanup_dst_buffers;
-> > +			}
-> > +		}
-> > +	}
-> > +
-> > +	return ret;
-> > +
-> > +free_bitstream_vbuf:
-> > +	wave5_vdi_free_dma_memory(inst->dev, &inst->bitstream_vbuf);
-> > +cleanup_dst_buffers:
-> > +	while ((buf =3D v4l2_m2m_dst_buf_remove(m2m_ctx)))
->=20
-> This doesn't look right. This just clears the capture queue, instead it
-> should clear the capture or output queue, depending on V4L2_TYPE_IS_OUTPU=
-T(q->type).
+Best regards,
+Mirsad Todorovac
+--------------ADHPYrIoS1kzb01a3S4HpH5e
+Content-Type: application/x-xz; name="acpi-kcsan-20230921-01.log.xz"
+Content-Disposition: attachment; filename="acpi-kcsan-20230921-01.log.xz"
+Content-Transfer-Encoding: base64
 
-Good catch.
+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
+AARZWg==
+--------------ADHPYrIoS1kzb01a3S4HpH5e
+Content-Type: application/x-xz;
+ name="config-6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0.xz"
+Content-Disposition: attachment;
+ filename="config-6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0.xz"
+Content-Transfer-Encoding: base64
 
->=20
-> > +		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_QUEUED);
-> > +	return -EINVAL;
-> > +}
-> > +
-> > +static int streamoff_output(struct vb2_queue *q)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *buf;
-> > +	int ret;
-> > +	dma_addr_t new_rd_ptr;
-> > +
-> > +	while ((buf =3D v4l2_m2m_src_buf_remove(m2m_ctx))) {
-> > +		dev_dbg(inst->dev->dev, "%s: (Multiplanar) buf type %4u | index %4u\=
-n",
-> > +			__func__, buf->vb2_buf.type, buf->vb2_buf.index);
-> > +		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
-> > +	}
-> > +
-> > +	ret =3D wave5_vpu_flush_instance(inst);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Reset the ring buffer information */
-> > +	new_rd_ptr =3D wave5_vpu_dec_get_rd_ptr(inst);
-> > +	inst->last_rd_ptr =3D new_rd_ptr;
-> > +	inst->codec_info->dec_info.stream_rd_ptr =3D new_rd_ptr;
-> > +	inst->codec_info->dec_info.stream_wr_ptr =3D new_rd_ptr;
-> > +
-> > +	if (v4l2_m2m_has_stopped(m2m_ctx))
-> > +		send_eos_event(inst);
-> > +
-> > +	/* streamoff on output cancels any draining operation */
-> > +	inst->eos =3D false;
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int streamoff_capture(struct vb2_queue *q)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *buf;
-> > +	unsigned int i;
-> > +	int ret =3D 0;
-> > +
-> > +	/* TOOD unregister the framebuffers to restrict access from the firmw=
-are to
-> > +	 * buffers that are freed up
-> > +	 */
-> > +	while ((buf =3D v4l2_m2m_dst_buf_remove(m2m_ctx))) {
-> > +		u32 plane;
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: buf type %4u | index %4u\n",
-> > +			__func__, buf->vb2_buf.type, buf->vb2_buf.index);
-> > +
-> > +		for (plane =3D 0; plane < inst->dst_fmt.num_planes; plane++)
-> > +			vb2_set_plane_payload(&buf->vb2_buf, plane, 0);
-> > +
-> > +		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
-> > +	}
-> > +
-> > +	for (i =3D 0; i < inst->dst_buf_count; i++) {
-> > +		ret =3D wave5_vpu_dec_set_disp_flag(inst, i);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Setting display flag of buf index: %u, fail: %d\n",
-> > +				__func__, i, ret);
-> > +		}
-> > +	}
-> > +
-> > +	if (inst->needs_reallocation) {
-> > +		wave5_vpu_dec_give_command(inst, DEC_RESET_FRAMEBUF_INFO, NULL);
-> > +		inst->needs_reallocation =3D false;
-> > +	}
-> > +
-> > +	if (v4l2_m2m_has_stopped(m2m_ctx)) {
-> > +		ret =3D switch_state(inst, VPU_INST_STATE_INIT_SEQ);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void wave5_vpu_dec_stop_streaming(struct vb2_queue *q)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	bool check_cmd =3D TRUE;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, q->type);
-> > +
-> > +	while (check_cmd) {
-> > +		struct queue_status_info q_status;
-> > +		struct dec_output_info dec_output_info;
-> > +
-> > +		wave5_vpu_dec_give_command(inst, DEC_GET_QUEUE_STATUS, &q_status);
-> > +
-> > +		if (q_status.report_queue_count =3D=3D 0)
-> > +			break;
-> > +
-> > +		if (wave5_vpu_wait_interrupt(inst, VPU_DEC_TIMEOUT) < 0)
-> > +			break;
-> > +
-> > +		if (wave5_vpu_dec_get_output_info(inst, &dec_output_info))
-> > +			dev_dbg(inst->dev->dev, "Getting decoding results from fw, fail\n")=
-;
-> > +	}
-> > +
-> > +	v4l2_m2m_update_stop_streaming_state(m2m_ctx, q);
-> > +
-> > +	if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		streamoff_output(q);
-> > +	else
-> > +		streamoff_capture(q);
-> > +}
-> > +
-> > +static const struct vb2_ops wave5_vpu_dec_vb2_ops =3D {
-> > +	.queue_setup =3D wave5_vpu_dec_queue_setup,
-> > +	.wait_prepare =3D vb2_ops_wait_prepare,
-> > +	.wait_finish =3D vb2_ops_wait_finish,
-> > +	.buf_queue =3D wave5_vpu_dec_buf_queue,
-> > +	.start_streaming =3D wave5_vpu_dec_start_streaming,
-> > +	.stop_streaming =3D wave5_vpu_dec_stop_streaming,
-> > +};
-> > +
-> > +static void wave5_set_default_format(struct v4l2_pix_format_mplane *sr=
-c_fmt,
-> > +				     struct v4l2_pix_format_mplane *dst_fmt)
-> > +{
-> > +	unsigned int dst_pix_fmt =3D dec_fmt_list[VPU_FMT_TYPE_RAW][0].v4l2_p=
-ix_fmt;
-> > +	const struct v4l2_format_info *dst_fmt_info =3D v4l2_format_info(dst_=
-pix_fmt);
-> > +
-> > +	src_fmt->pixelformat =3D dec_fmt_list[VPU_FMT_TYPE_CODEC][0].v4l2_pix=
-_fmt;
-> > +	src_fmt->field =3D V4L2_FIELD_NONE;
-> > +	src_fmt->flags =3D 0;
-> > +	src_fmt->num_planes =3D 1;
-> > +	wave5_update_pix_fmt(src_fmt, 720, 480);
-> > +
-> > +	dst_fmt->pixelformat =3D dst_pix_fmt;
-> > +	dst_fmt->field =3D V4L2_FIELD_NONE;
-> > +	dst_fmt->flags =3D 0;
-> > +	dst_fmt->num_planes =3D dst_fmt_info->mem_planes;
-> > +	wave5_update_pix_fmt(dst_fmt, 736, 480);
-> > +}
-> > +
-> > +static int wave5_vpu_dec_queue_init(void *priv, struct vb2_queue *src_=
-vq, struct vb2_queue *dst_vq)
-> > +{
-> > +	return wave5_vpu_queue_init(priv, src_vq, dst_vq, &wave5_vpu_dec_vb2_=
-ops);
-> > +}
-> > +
-> > +static const struct vpu_instance_ops wave5_vpu_dec_inst_ops =3D {
-> > +	.finish_process =3D wave5_vpu_dec_finish_decode,
-> > +};
-> > +
-> > +static int initialize_sequence(struct vpu_instance *inst)
-> > +{
-> > +	struct dec_initial_info initial_info;
-> > +	int ret =3D 0;
-> > +
-> > +	memset(&initial_info, 0, sizeof(struct dec_initial_info));
-> > +
-> > +	ret =3D wave5_vpu_dec_issue_seq_init(inst);
-> > +	if (ret) {
-> > +		dev_dbg(inst->dev->dev, "%s: wave5_vpu_dec_issue_seq_init, fail: %d\=
-n",
-> > +			__func__, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (wave5_vpu_wait_interrupt(inst, VPU_DEC_TIMEOUT) < 0)
-> > +		dev_dbg(inst->dev->dev, "%s: failed to call vpu_wait_interrupt()\n",=
- __func__);
-> > +
-> > +	ret =3D wave5_vpu_dec_complete_seq_init(inst, &initial_info);
-> > +	if (ret) {
-> > +		dev_dbg(inst->dev->dev, "%s: vpu_dec_complete_seq_init, fail: %d, re=
-ason: %u\n",
-> > +			__func__, ret, initial_info.seq_init_err_reason);
-> > +		wave5_handle_src_buffer(inst, initial_info.rd_ptr);
-> > +	} else {
-> > +		handle_dynamic_resolution_change(inst);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/* Must be called with state_spinlock */
-> > +static bool wave5_is_draining_or_eos(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	return m2m_ctx->is_draining || inst->eos;
-> > +}
-> > +
-> > +static void wave5_vpu_dec_device_run(void *priv)
-> > +{
-> > +	struct vpu_instance *inst =3D priv;
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct queue_status_info q_status;
-> > +	u32 fail_res =3D 0;
-> > +	int ret =3D 0;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: Fill the ring buffer with new bitstream =
-data", __func__);
-> > +
-> > +	ret =3D fill_ringbuffer(inst);
-> > +	if (ret) {
-> > +		dev_warn(inst->dev->dev, "Filling ring buffer failed\n");
-> > +		goto finish_job_and_return;
-> > +	}
-> > +
-> > +	switch (inst->state) {
-> > +	case VPU_INST_STATE_OPEN:
-> > +		ret =3D initialize_sequence(inst);
-> > +		if (ret) {
-> > +			unsigned long flags;
-> > +
-> > +			spin_lock_irqsave(&inst->state_spinlock, flags);
-> > +			if (wave5_is_draining_or_eos(inst) &&
-> > +			    wave5_last_src_buffer_consumed(m2m_ctx)) {
-> > +				struct vb2_queue *dst_vq =3D v4l2_m2m_get_dst_vq(m2m_ctx);
-> > +
-> > +				switch_state(inst, VPU_INST_STATE_STOP);
-> > +
-> > +				if (vb2_is_streaming(dst_vq))
-> > +					send_eos_event(inst);
-> > +				else
-> > +					handle_dynamic_resolution_change(inst);
-> > +
-> > +				flag_last_buffer_done(inst);
-> > +			}
-> > +			spin_unlock_irqrestore(&inst->state_spinlock, flags);
-> > +		} else {
-> > +			switch_state(inst, VPU_INST_STATE_INIT_SEQ);
-> > +		}
-> > +
-> > +		break;
-> > +
-> > +	case VPU_INST_STATE_INIT_SEQ:
-> > +		/*
-> > +		 * Do this early, preparing the fb can trigger an IRQ before
-> > +		 * we had a chance to switch, which leads to an invalid state
-> > +		 * change.
-> > +		 */
-> > +		switch_state(inst, VPU_INST_STATE_PIC_RUN);
-> > +
-> > +		/*
-> > +		 * During DRC, the picture decoding remains pending, so just leave t=
-he job
-> > +		 * active until this decode operation completes.
-> > +		 */
-> > +		wave5_vpu_dec_give_command(inst, DEC_GET_QUEUE_STATUS, &q_status);
-> > +
-> > +		/*
-> > +		 * The sequence must be analyzed first to calculate the proper
-> > +		 * size of the auxiliary buffers.
-> > +		 */
-> > +		ret =3D wave5_prepare_fb(inst);
-> > +		if (ret) {
-> > +			dev_warn(inst->dev->dev, "Framebuffer preparation, fail: %d\n", ret=
-);
-> > +			switch_state(inst, VPU_INST_STATE_STOP);
-> > +			break;
-> > +		}
-> > +
-> > +		if (q_status.instance_queue_count) {
-> > +			dev_dbg(inst->dev->dev, "%s: leave with active job", __func__);
-> > +			return;
-> > +		}
-> > +
-> > +		fallthrough;
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		ret =3D start_decode(inst, &fail_res);
-> > +		if (ret) {
-> > +			dev_err(inst->dev->dev,
-> > +				"Frame decoding on m2m context (%p), fail: %d (result: %d)\n",
-> > +				m2m_ctx, ret, fail_res);
-> > +			break;
-> > +		}
-> > +		/* Return so that we leave this job active */
-> > +		dev_dbg(inst->dev->dev, "%s: leave with active job", __func__);
-> > +		return;
-> > +	default:
-> > +		WARN(1, "Execution of a job in state %s illegal.\n", state_to_str(in=
-st->state));
-> > +		break;
-> > +	}
-> > +
-> > +finish_job_and_return:
-> > +	dev_dbg(inst->dev->dev, "%s: leave and finish job", __func__);
-> > +	v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +}
-> > +
-> > +static void wave5_vpu_dec_job_abort(void *priv)
-> > +{
-> > +	struct vpu_instance *inst =3D priv;
-> > +	int ret;
-> > +
-> > +	ret =3D switch_state(inst, VPU_INST_STATE_STOP);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	ret =3D wave5_vpu_dec_set_eos_on_firmware(inst);
-> > +	if (ret)
-> > +		dev_warn(inst->dev->dev,
-> > +			 "Setting EOS for the bitstream, fail: %d\n", ret);
-> > +}
-> > +
-> > +static int wave5_vpu_dec_job_ready(void *priv)
-> > +{
-> > +	struct vpu_instance *inst =3D priv;
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	unsigned long flags;
-> > +	bool ret =3D false;
-> > +
-> > +	spin_lock_irqsave(&inst->state_spinlock, flags);
-> > +
-> > +	switch (inst->state) {
-> > +	case VPU_INST_STATE_NONE:
-> > +		dev_dbg(inst->dev->dev, "Decoder must be open to start queueing M2M =
-jobs!\n");
-> > +		break;
-> > +	case VPU_INST_STATE_OPEN:
-> > +		if (wave5_is_draining_or_eos(inst) || !v4l2_m2m_has_stopped(m2m_ctx)=
- ||
-> > +		    v4l2_m2m_num_src_bufs_ready(m2m_ctx) > 0) {
-> > +			ret =3D true;
-> > +			break;
-> > +		}
-> > +
-> > +		dev_dbg(inst->dev->dev,
-> > +			"Decoder must be draining or >=3D 1 OUTPUT queue buffer must be que=
-ued!\n");
-> > +		break;
-> > +	case VPU_INST_STATE_INIT_SEQ:
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		if (!m2m_ctx->cap_q_ctx.q.streaming) {
-> > +			dev_dbg(inst->dev->dev, "CAPTURE queue must be streaming to queue j=
-obs!\n");
-> > +			break;
-> > +		} else if (v4l2_m2m_num_dst_bufs_ready(m2m_ctx) < (inst->fbc_buf_cou=
-nt - 1)) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"No capture buffer ready to decode!\n");
-> > +			break;
-> > +		} else if (!wave5_is_draining_or_eos(inst) &&
-> > +			   !v4l2_m2m_num_src_bufs_ready(m2m_ctx)) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"No bitstream data to decode!\n");
-> > +			break;
-> > +		}
-> > +		ret =3D true;
-> > +		break;
-> > +	case VPU_INST_STATE_STOP:
-> > +		dev_dbg(inst->dev->dev, "Decoder is stopped, not running.\n");
-> > +		break;
-> > +	}
-> > +
-> > +	spin_unlock_irqrestore(&inst->state_spinlock, flags);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static const struct v4l2_m2m_ops wave5_vpu_dec_m2m_ops =3D {
-> > +	.device_run =3D wave5_vpu_dec_device_run,
-> > +	.job_abort =3D wave5_vpu_dec_job_abort,
-> > +	.job_ready =3D wave5_vpu_dec_job_ready,
-> > +};
-> > +
-> > +static int wave5_vpu_open_dec(struct file *filp)
-> > +{
-> > +	struct video_device *vdev =3D video_devdata(filp);
-> > +	struct vpu_device *dev =3D video_drvdata(filp);
-> > +	struct vpu_instance *inst =3D NULL;
-> > +	struct v4l2_m2m_ctx *m2m_ctx;
-> > +	int ret =3D 0;
-> > +
-> > +	inst =3D kzalloc(sizeof(*inst), GFP_KERNEL);
-> > +	if (!inst)
-> > +		return -ENOMEM;
-> > +
-> > +	inst->dev =3D dev;
-> > +	inst->type =3D VPU_INST_TYPE_DEC;
-> > +	inst->ops =3D &wave5_vpu_dec_inst_ops;
-> > +
-> > +	spin_lock_init(&inst->state_spinlock);
-> > +
-> > +	inst->codec_info =3D kzalloc(sizeof(*inst->codec_info), GFP_KERNEL);
-> > +	if (!inst->codec_info)
-> > +		return -ENOMEM;
-> > +
-> > +	v4l2_fh_init(&inst->v4l2_fh, vdev);
-> > +	filp->private_data =3D &inst->v4l2_fh;
-> > +	v4l2_fh_add(&inst->v4l2_fh);
-> > +
-> > +	INIT_LIST_HEAD(&inst->list);
-> > +	list_add_tail(&inst->list, &dev->instances);
-> > +
-> > +	inst->v4l2_m2m_dev =3D inst->dev->v4l2_m2m_dec_dev;
-> > +	inst->v4l2_fh.m2m_ctx =3D
-> > +		v4l2_m2m_ctx_init(inst->v4l2_m2m_dev, inst, wave5_vpu_dec_queue_init=
-);
-> > +	if (IS_ERR(inst->v4l2_fh.m2m_ctx)) {
-> > +		ret =3D PTR_ERR(inst->v4l2_fh.m2m_ctx);
-> > +		goto cleanup_inst;
-> > +	}
-> > +	m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	v4l2_m2m_set_src_buffered(m2m_ctx, true);
-> > +	v4l2_m2m_set_dst_buffered(m2m_ctx, true);
-> > +	/*
-> > +	 * We use the M2M job queue to ensure synchronization of steps where
-> > +	 * needed, as IOCTLs can occur at anytime and we need to run commands=
- on
-> > +	 * the firmware in a specified order.
-> > +	 * In order to initialize the sequence on the firmware within an M2M
-> > +	 * job, the M2M framework needs to be able to queue jobs before
-> > +	 * the CAPTURE queue has been started, because we need the results of=
- the
-> > +	 * initialization to properly prepare the CAPTURE queue with the corr=
-ect
-> > +	 * amount of buffers
->=20
-> Add something along the lines of:
->=20
-> 	By setting ignore_cap_streaming to true the m2m framework will call
-> 	job_ready as soon as the OUTPUT queue is streaming, instead of waiting
-> 	until both the CAPTURE and OUTPUT queues are streaming.
->=20
-> > +	 */
-> > +	v4l2_m2m_set_dst_ignore_streaming(m2m_ctx, true);
-> > +
-> > +	v4l2_ctrl_handler_init(&inst->v4l2_ctrl_hdl, 10);
-> > +	v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, NULL,
-> > +			  V4L2_CID_MIN_BUFFERS_FOR_CAPTURE, 1, 32, 1, 1);
-> > +
-> > +	if (inst->v4l2_ctrl_hdl.error) {
-> > +		ret =3D -ENODEV;
-> > +		goto cleanup_inst;
-> > +	}
-> > +
-> > +	inst->v4l2_fh.ctrl_handler =3D &inst->v4l2_ctrl_hdl;
-> > +	v4l2_ctrl_handler_setup(&inst->v4l2_ctrl_hdl);
-> > +
-> > +	wave5_set_default_format(&inst->src_fmt, &inst->dst_fmt);
-> > +	inst->colorspace =3D V4L2_COLORSPACE_REC709;
-> > +	inst->ycbcr_enc =3D V4L2_YCBCR_ENC_DEFAULT;
-> > +	inst->hsv_enc =3D 0;
-> > +	inst->quantization =3D V4L2_QUANTIZATION_DEFAULT;
-> > +	inst->xfer_func =3D V4L2_XFER_FUNC_DEFAULT;
-> > +
-> > +	init_completion(&inst->irq_done);
-> > +	ret =3D kfifo_alloc(&inst->irq_status, 16 * sizeof(int), GFP_KERNEL);
-> > +	if (ret) {
-> > +		dev_err(inst->dev->dev, "failed to allocate fifo\n");
-> > +		goto cleanup_inst;
-> > +	}
-> > +
-> > +	inst->id =3D ida_alloc(&inst->dev->inst_ida, GFP_KERNEL);
-> > +	if (inst->id < 0) {
-> > +		dev_warn(inst->dev->dev, "Allocating instance ID, fail: %d\n", inst-=
->id);
-> > +		ret =3D inst->id;
-> > +		goto cleanup_inst;
-> > +	}
-> > +
-> > +	wave5_vdi_allocate_sram(inst->dev);
-> > +
-> > +	return 0;
-> > +
-> > +cleanup_inst:
-> > +	wave5_cleanup_instance(inst);
-> > +	return ret;
-> > +}
-> > +
-> > +static int wave5_vpu_dec_release(struct file *filp)
-> > +{
-> > +	return wave5_vpu_release_device(filp, wave5_vpu_dec_close, "decoder")=
-;
-> > +}
-> > +
-> > +static const struct v4l2_file_operations wave5_vpu_dec_fops =3D {
-> > +	.owner =3D THIS_MODULE,
-> > +	.open =3D wave5_vpu_open_dec,
-> > +	.release =3D wave5_vpu_dec_release,
-> > +	.unlocked_ioctl =3D video_ioctl2,
-> > +	.poll =3D v4l2_m2m_fop_poll,
-> > +	.mmap =3D v4l2_m2m_fop_mmap,
-> > +};
-> > +
-> > +int wave5_vpu_dec_register_device(struct vpu_device *dev)
-> > +{
-> > +	struct video_device *vdev_dec;
-> > +	int ret;
-> > +
-> > +	vdev_dec =3D devm_kzalloc(dev->v4l2_dev.dev, sizeof(*vdev_dec), GFP_K=
-ERNEL);
-> > +	if (!vdev_dec)
-> > +		return -ENOMEM;
-> > +
-> > +	dev->v4l2_m2m_dec_dev =3D v4l2_m2m_init(&wave5_vpu_dec_m2m_ops);
-> > +	if (IS_ERR(dev->v4l2_m2m_dec_dev)) {
-> > +		ret =3D PTR_ERR(dev->v4l2_m2m_dec_dev);
-> > +		dev_err(dev->dev, "v4l2_m2m_init, fail: %d\n", ret);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	dev->video_dev_dec =3D vdev_dec;
-> > +
-> > +	strscpy(vdev_dec->name, VPU_DEC_DEV_NAME, sizeof(vdev_dec->name));
-> > +	vdev_dec->fops =3D &wave5_vpu_dec_fops;
-> > +	vdev_dec->ioctl_ops =3D &wave5_vpu_dec_ioctl_ops;
-> > +	vdev_dec->release =3D video_device_release_empty;
-> > +	vdev_dec->v4l2_dev =3D &dev->v4l2_dev;
-> > +	vdev_dec->vfl_dir =3D VFL_DIR_M2M;
-> > +	vdev_dec->device_caps =3D V4L2_CAP_VIDEO_M2M_MPLANE | V4L2_CAP_STREAM=
-ING;
-> > +	vdev_dec->lock =3D &dev->dev_lock;
-> > +
-> > +	ret =3D video_register_device(vdev_dec, VFL_TYPE_VIDEO, -1);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	video_set_drvdata(vdev_dec, dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +void wave5_vpu_dec_unregister_device(struct vpu_device *dev)
-> > +{
-> > +	video_unregister_device(dev->video_dev_dec);
-> > +	if (dev->v4l2_m2m_dec_dev)
-> > +		v4l2_m2m_release(dev->v4l2_m2m_dec_dev);
-> > +}
-> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b=
-/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > new file mode 100644
-> > index 000000000000..e8d8e31b0cbe
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > @@ -0,0 +1,1825 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > +/*
-> > + * Wave5 series multi-standard codec IP - encoder interface
-> > + *
-> > + * Copyright (C) 2021 CHIPS&MEDIA INC
-> > + */
-> > +
-> > +#include "wave5-helper.h"
-> > +
-> > +#define VPU_ENC_DEV_NAME "C&M Wave5 VPU encoder"
-> > +#define VPU_ENC_DRV_NAME "wave5-enc"
-> > +
-> > +static const struct vpu_format enc_fmt_list[FMT_TYPES][MAX_FMTS] =3D {
-> > +	[VPU_FMT_TYPE_CODEC] =3D {
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_HEVC,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_H264,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +	},
-> > +	[VPU_FMT_TYPE_RAW] =3D {
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420M,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12M,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +		{
-> > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21M,
-> > +			.max_width =3D W5_MAX_ENC_PIC_WIDTH,
-> > +			.min_width =3D W5_MIN_ENC_PIC_WIDTH,
-> > +			.max_height =3D W5_MAX_ENC_PIC_HEIGHT,
-> > +			.min_height =3D W5_MIN_ENC_PIC_HEIGHT,
-> > +		},
-> > +	}
-> > +};
-> > +
-> > +static int switch_state(struct vpu_instance *inst, enum vpu_instance_s=
-tate state)
-> > +{
-> > +	switch (state) {
-> > +	case VPU_INST_STATE_NONE:
-> > +		goto invalid_state_switch;
-> > +	case VPU_INST_STATE_OPEN:
-> > +		if (inst->state !=3D VPU_INST_STATE_NONE)
-> > +			goto invalid_state_switch;
-> > +		break;
-> > +	case VPU_INST_STATE_INIT_SEQ:
-> > +		if (inst->state !=3D VPU_INST_STATE_OPEN && inst->state !=3D VPU_INS=
-T_STATE_STOP)
-> > +			goto invalid_state_switch;
-> > +		break;
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		if (inst->state !=3D VPU_INST_STATE_INIT_SEQ)
-> > +			goto invalid_state_switch;
-> > +		break;
-> > +	case VPU_INST_STATE_STOP:
-> > +		break;
-> > +	};
-> > +
-> > +	dev_dbg(inst->dev->dev, "Switch state from %s to %s.\n",
-> > +		state_to_str(inst->state), state_to_str(state));
-> > +	inst->state =3D state;
-> > +	return 0;
-> > +
-> > +invalid_state_switch:
-> > +	WARN(1, "Invalid state switch from %s to %s.\n",
-> > +	     state_to_str(inst->state), state_to_str(state));
-> > +	return -EINVAL;
-> > +}
-> > +
-> > +static void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp=
-, unsigned int width,
-> > +				 unsigned int height)
-> > +{
-> > +	switch (pix_mp->pixelformat) {
-> > +	case V4L2_PIX_FMT_YUV420:
-> > +	case V4L2_PIX_FMT_NV12:
-> > +	case V4L2_PIX_FMT_NV21:
-> > +		pix_mp->width =3D width;
-> > +		pix_mp->height =3D height;
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height * 3 =
-/ 2;
-> > +		break;
-> > +	case V4L2_PIX_FMT_YUV420M:
-> > +		pix_mp->width =3D width;
-> > +		pix_mp->height =3D height;
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height;
-> > +		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32) / 2;
-> > +		pix_mp->plane_fmt[1].sizeimage =3D round_up(width, 32) * height / 4;
-> > +		pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32) / 2;
-> > +		pix_mp->plane_fmt[2].sizeimage =3D round_up(width, 32) * height / 4;
-> > +		break;
-> > +	case V4L2_PIX_FMT_NV12M:
-> > +	case V4L2_PIX_FMT_NV21M:
-> > +		pix_mp->width =3D width;
-> > +		pix_mp->height =3D height;
-> > +		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height;
-> > +		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
-> > +		pix_mp->plane_fmt[1].sizeimage =3D round_up(width, 32) * height / 2;
-> > +		break;
-> > +	default:
-> > +		pix_mp->width =3D width;
-> > +		pix_mp->height =3D height;
-> > +		pix_mp->plane_fmt[0].bytesperline =3D 0;
-> > +		pix_mp->plane_fmt[0].sizeimage =3D width * height / 8 * 3;
-> > +		break;
-> > +	}
-> > +}
-> > +
-> > +static int start_encode(struct vpu_instance *inst, u32 *fail_res)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	int ret;
-> > +	struct vb2_v4l2_buffer *src_buf;
-> > +	struct vb2_v4l2_buffer *dst_buf;
-> > +	struct frame_buffer frame_buf;
-> > +	struct enc_param pic_param;
-> > +	u32 stride =3D ALIGN(inst->dst_fmt.width, 32);
-> > +	u32 luma_size =3D (stride * inst->dst_fmt.height);
-> > +	u32 chroma_size =3D ((stride / 2) * (inst->dst_fmt.height / 2));
-> > +
-> > +	memset(&pic_param, 0, sizeof(struct enc_param));
-> > +	memset(&frame_buf, 0, sizeof(struct frame_buffer));
-> > +
-> > +	dst_buf =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > +	if (!dst_buf) {
-> > +		dev_dbg(inst->dev->dev, "%s: No destination buffer found\n", __func_=
-_);
-> > +		return -EAGAIN;
-> > +	}
-> > +
-> > +	pic_param.pic_stream_buffer_addr =3D
-> > +		vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-> > +	pic_param.pic_stream_buffer_size =3D
-> > +		vb2_plane_size(&dst_buf->vb2_buf, 0);
-> > +
-> > +	src_buf =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > +	if (!src_buf) {
-> > +		dev_dbg(inst->dev->dev, "%s: No source buffer found\n", __func__);
-> > +		if (m2m_ctx->is_draining)
-> > +			pic_param.src_end_flag =3D 1;
-> > +		else
-> > +			return -EAGAIN;
-> > +	} else {
-> > +		if (inst->src_fmt.num_planes =3D=3D 1) {
-> > +			frame_buf.buf_y =3D
-> > +				vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 0);
-> > +			frame_buf.buf_cb =3D frame_buf.buf_y + luma_size;
-> > +			frame_buf.buf_cr =3D frame_buf.buf_cb + chroma_size;
-> > +		} else if (inst->src_fmt.num_planes =3D=3D 2) {
-> > +			frame_buf.buf_y =3D
-> > +				vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 0);
-> > +			frame_buf.buf_cb =3D
-> > +				vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 1);
-> > +			frame_buf.buf_cr =3D frame_buf.buf_cb + chroma_size;
-> > +		} else if (inst->src_fmt.num_planes =3D=3D 3) {
-> > +			frame_buf.buf_y =3D
-> > +				vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 0);
-> > +			frame_buf.buf_cb =3D
-> > +				vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 1);
-> > +			frame_buf.buf_cr =3D
-> > +				vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 2);
-> > +		}
-> > +		frame_buf.stride =3D stride;
-> > +		pic_param.src_idx =3D src_buf->vb2_buf.index;
-> > +	}
-> > +
-> > +	pic_param.source_frame =3D &frame_buf;
-> > +	pic_param.code_option.implicit_header_encode =3D 1;
-> > +	pic_param.code_option.encode_aud =3D inst->encode_aud;
-> > +	ret =3D wave5_vpu_enc_start_one_frame(inst, &pic_param, fail_res);
-> > +	if (ret) {
-> > +		if (*fail_res =3D=3D WAVE5_SYSERR_QUEUEING_FAIL)
-> > +			return -EINVAL;
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: wave5_vpu_enc_start_one_frame fail: %d\=
-n",
-> > +			__func__, ret);
-> > +		src_buf =3D v4l2_m2m_src_buf_remove(m2m_ctx);
-> > +		if (!src_buf) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Removing src buf failed, the queue is empty\n",
-> > +				__func__);
-> > +			return -EINVAL;
-> > +		}
-> > +		dst_buf =3D v4l2_m2m_dst_buf_remove(m2m_ctx);
-> > +		if (!dst_buf) {
-> > +			dev_dbg(inst->dev->dev,
-> > +				"%s: Removing dst buf failed, the queue is empty\n",
-> > +				__func__);
-> > +			return -EINVAL;
-> > +		}
-> > +		switch_state(inst, VPU_INST_STATE_STOP);
-> > +		dst_buf->vb2_buf.timestamp =3D src_buf->vb2_buf.timestamp;
-> > +		v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_ERROR);
-> > +		v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_ERROR);
-> > +	} else {
-> > +		dev_dbg(inst->dev->dev, "%s: wave5_vpu_enc_start_one_frame success\n=
-",
-> > +			__func__);
-> > +		/*
-> > +		 * Remove the source buffer from the ready-queue now and finish
-> > +		 * it in the videobuf2 framework once the index is returned by the
-> > +		 * firmware in finish_encode
-> > +		 */
-> > +		if (src_buf)
-> > +			v4l2_m2m_src_buf_remove_by_idx(m2m_ctx, src_buf->vb2_buf.index);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void wave5_vpu_enc_finish_encode(struct vpu_instance *inst)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	int ret;
-> > +	struct enc_output_info enc_output_info;
-> > +	struct vb2_v4l2_buffer *src_buf =3D NULL;
-> > +	struct vb2_v4l2_buffer *dst_buf =3D NULL;
-> > +
-> > +	ret =3D wave5_vpu_enc_get_output_info(inst, &enc_output_info);
-> > +	if (ret) {
-> > +		dev_dbg(inst->dev->dev,
-> > +			"%s: vpu_enc_get_output_info fail: %d  reason: %u | info: %u\n",
-> > +			__func__, ret, enc_output_info.error_reason, enc_output_info.warn_i=
-nfo);
-> > +		return;
-> > +	}
-> > +
-> > +	dev_dbg(inst->dev->dev,
-> > +		"%s: pic_type %i recon_idx %i src_idx %i pic_byte %u pts %llu\n",
-> > +		__func__,  enc_output_info.pic_type, enc_output_info.recon_frame_ind=
-ex,
-> > +		enc_output_info.enc_src_idx, enc_output_info.enc_pic_byte, enc_outpu=
-t_info.pts);
-> > +
-> > +	/*
-> > +	 * The source buffer will not be found in the ready-queue as it has b=
-een
-> > +	 * dropped after sending of the encode firmware command, locate it in
-> > +	 * the videobuf2 queue directly
-> > +	 */
-> > +	if (enc_output_info.enc_src_idx >=3D 0) {
-> > +		struct vb2_buffer *vb =3D vb2_get_buffer(v4l2_m2m_get_src_vq(m2m_ctx=
-),
-> > +						       enc_output_info.enc_src_idx);
-> > +		if (vb->state !=3D VB2_BUF_STATE_ACTIVE)
-> > +			dev_warn(inst->dev->dev,
-> > +				 "%s: encoded buffer (%d) was not in ready queue %i.",
-> > +				 __func__, enc_output_info.enc_src_idx, vb->state);
-> > +		else
-> > +			src_buf =3D to_vb2_v4l2_buffer(vb);
-> > +
-> > +		if (src_buf) {
-> > +			inst->timestamp =3D src_buf->vb2_buf.timestamp;
-> > +			v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
-> > +		} else {
-> > +			dev_warn(inst->dev->dev, "%s: no source buffer with index: %d found=
-\n",
-> > +				 __func__, enc_output_info.enc_src_idx);
-> > +		}
-> > +	}
-> > +
-> > +	dst_buf =3D v4l2_m2m_dst_buf_remove(m2m_ctx);
-> > +	if (enc_output_info.recon_frame_index =3D=3D RECON_IDX_FLAG_ENC_END) =
-{
-> > +		static const struct v4l2_event vpu_event_eos =3D {
-> > +			.type =3D V4L2_EVENT_EOS
-> > +		};
-> > +
-> > +		if (dst_buf) {
-> > +			vb2_set_plane_payload(&dst_buf->vb2_buf, 0, 0);
-> > +			dst_buf->field =3D V4L2_FIELD_NONE;
-> > +			v4l2_m2m_last_buffer_done(m2m_ctx, dst_buf);
-> > +		} else {
-> > +			WARN(1, "A job have been run without destination buffer.\n");
-> > +		}
-> > +
-> > +		v4l2_event_queue_fh(&inst->v4l2_fh, &vpu_event_eos);
-> > +
-> > +		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +	} else {
-> > +		if (!dst_buf) {
-> > +			dev_warn(inst->dev->dev, "No bitstream buffer.");
-> > +			v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +			return;
-> > +		}
-> > +
-> > +		vb2_set_plane_payload(&dst_buf->vb2_buf, 0, enc_output_info.bitstrea=
-m_size);
-> > +
-> > +		dst_buf->vb2_buf.timestamp =3D inst->timestamp;
-> > +		dst_buf->field =3D V4L2_FIELD_NONE;
-> > +		if (enc_output_info.pic_type =3D=3D PIC_TYPE_I) {
-> > +			if (enc_output_info.enc_vcl_nut =3D=3D 19 ||
-> > +			    enc_output_info.enc_vcl_nut =3D=3D 20)
-> > +				dst_buf->flags |=3D V4L2_BUF_FLAG_KEYFRAME;
-> > +			else
-> > +				dst_buf->flags |=3D V4L2_BUF_FLAG_PFRAME;
-> > +		} else if (enc_output_info.pic_type =3D=3D PIC_TYPE_P) {
-> > +			dst_buf->flags |=3D V4L2_BUF_FLAG_PFRAME;
-> > +		} else if (enc_output_info.pic_type =3D=3D PIC_TYPE_B) {
-> > +			dst_buf->flags |=3D V4L2_BUF_FLAG_BFRAME;
-> > +		}
-> > +
-> > +		v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
-> > +
-> > +		dev_dbg(inst->dev->dev, "%s: frame_cycle %8u\n",
-> > +			__func__, enc_output_info.frame_cycle);
-> > +
-> > +		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +	}
-> > +}
-> > +
-> > +static int wave5_vpu_enc_querycap(struct file *file, void *fh, struct =
-v4l2_capability *cap)
-> > +{
-> > +	strscpy(cap->driver, VPU_ENC_DRV_NAME, sizeof(cap->driver));
-> > +	strscpy(cap->card, VPU_ENC_DRV_NAME, sizeof(cap->card));
-> > +	strscpy(cap->bus_info, "platform:" VPU_ENC_DRV_NAME, sizeof(cap->bus_=
-info));
->=20
-> This last line should not be needed, I think.
->=20
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_enum_framesizes(struct file *f, void *fh, str=
-uct v4l2_frmsizeenum *fsize)
-> > +{
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	if (fsize->index)
-> > +		return -EINVAL;
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt(fsize->pixel_format, enc_fmt_list[VPU_=
-FMT_TYPE_CODEC]);
-> > +	if (!vpu_fmt) {
-> > +		vpu_fmt =3D wave5_find_vpu_fmt(fsize->pixel_format, enc_fmt_list[VPU=
-_FMT_TYPE_RAW]);
-> > +		if (!vpu_fmt)
-> > +			return -EINVAL;
-> > +	}
-> > +
-> > +	fsize->type =3D V4L2_FRMSIZE_TYPE_CONTINUOUS;
-> > +	fsize->stepwise.min_width =3D vpu_fmt->min_width;
-> > +	fsize->stepwise.max_width =3D vpu_fmt->max_width;
-> > +	fsize->stepwise.step_width =3D 1;
-> > +	fsize->stepwise.min_height =3D vpu_fmt->min_height;
-> > +	fsize->stepwise.max_height =3D vpu_fmt->max_height;
-> > +	fsize->stepwise.step_height =3D 1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_enum_fmt_cap(struct file *file, void *fh, str=
-uct v4l2_fmtdesc *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: index: %u\n", __func__, f->index);
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt_by_idx(f->index, enc_fmt_list[VPU_FMT_=
-TYPE_CODEC]);
-> > +	if (!vpu_fmt)
-> > +		return -EINVAL;
-> > +
-> > +	f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +	f->flags =3D 0;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_try_fmt_cap(struct file *file, void *fh, stru=
-ct v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: fourcc: %u width: %u height: %u num_plan=
-es: %u field: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
-> > +
-> > +	if (f->type !=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-> > +		return -EINVAL;
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, enc_fmt_lis=
-t[VPU_FMT_TYPE_CODEC]);
-> > +	if (!vpu_fmt) {
-> > +		f->fmt.pix_mp.pixelformat =3D inst->dst_fmt.pixelformat;
-> > +		f->fmt.pix_mp.num_planes =3D inst->dst_fmt.num_planes;
-> > +		wave5_update_pix_fmt(&f->fmt.pix_mp, inst->dst_fmt.width, inst->dst_=
-fmt.height);
-> > +	} else {
-> > +		int width =3D clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt=
-->max_width);
-> > +		int height =3D clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_=
-fmt->max_height);
-> > +
-> > +		f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +		f->fmt.pix_mp.num_planes =3D 1;
-> > +		wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
-> > +	}
-> > +
-> > +	f->fmt.pix_mp.flags =3D 0;
-> > +	f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
-> > +	f->fmt.pix_mp.colorspace =3D inst->colorspace;
-> > +	f->fmt.pix_mp.ycbcr_enc =3D inst->ycbcr_enc;
-> > +	f->fmt.pix_mp.hsv_enc =3D inst->hsv_enc;
->=20
-> Same issue here with hsv_enc. I won't mention that again.
->=20
-> > +	f->fmt.pix_mp.quantization =3D inst->quantization;
-> > +	f->fmt.pix_mp.xfer_func =3D inst->xfer_func;
-> > +	memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved));
->=20
-> Not needed.
->=20
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_s_fmt_cap(struct file *file, void *fh, struct=
- v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i, ret;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: fourcc: %u width: %u height: %u num_plan=
-es: %u field: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
-> > +
-> > +	ret =3D wave5_vpu_enc_try_fmt_cap(file, fh, f);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	inst->dst_fmt.width =3D f->fmt.pix_mp.width;
-> > +	inst->dst_fmt.height =3D f->fmt.pix_mp.height;
-> > +	inst->dst_fmt.pixelformat =3D f->fmt.pix_mp.pixelformat;
-> > +	inst->dst_fmt.field =3D f->fmt.pix_mp.field;
-> > +	inst->dst_fmt.flags =3D f->fmt.pix_mp.flags;
-> > +	inst->dst_fmt.num_planes =3D f->fmt.pix_mp.num_planes;
-> > +	for (i =3D 0; i < inst->dst_fmt.num_planes; i++) {
-> > +		inst->dst_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp.plane_fmt[=
-i].bytesperline;
-> > +		inst->dst_fmt.plane_fmt[i].sizeimage =3D f->fmt.pix_mp.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_g_fmt_cap(struct file *file, void *fh, struct=
- v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i;
-> > +
-> > +	f->fmt.pix_mp.width =3D inst->dst_fmt.width;
-> > +	f->fmt.pix_mp.height =3D inst->dst_fmt.height;
-> > +	f->fmt.pix_mp.pixelformat =3D inst->dst_fmt.pixelformat;
-> > +	f->fmt.pix_mp.field =3D inst->dst_fmt.field;
-> > +	f->fmt.pix_mp.flags =3D inst->dst_fmt.flags;
-> > +	f->fmt.pix_mp.num_planes =3D inst->dst_fmt.num_planes;
-> > +	for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
-> > +		f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->dst_fmt.plane_fmt[=
-i].bytesperline;
-> > +		f->fmt.pix_mp.plane_fmt[i].sizeimage =3D inst->dst_fmt.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	f->fmt.pix_mp.colorspace =3D inst->colorspace;
-> > +	f->fmt.pix_mp.ycbcr_enc =3D inst->ycbcr_enc;
-> > +	f->fmt.pix_mp.hsv_enc =3D inst->hsv_enc;
-> > +	f->fmt.pix_mp.quantization =3D inst->quantization;
-> > +	f->fmt.pix_mp.xfer_func =3D inst->xfer_func;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_enum_fmt_out(struct file *file, void *fh, str=
-uct v4l2_fmtdesc *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: index: %u\n", __func__, f->index);
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt_by_idx(f->index, enc_fmt_list[VPU_FMT_=
-TYPE_RAW]);
-> > +	if (!vpu_fmt)
-> > +		return -EINVAL;
-> > +
-> > +	f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +	f->flags =3D 0;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_try_fmt_out(struct file *file, void *fh, stru=
-ct v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	const struct vpu_format *vpu_fmt;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: fourcc: %u width: %u height: %u num_plan=
-es: %u field: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
-> > +
-> > +	if (f->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		return -EINVAL;
-> > +
-> > +	vpu_fmt =3D wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, enc_fmt_lis=
-t[VPU_FMT_TYPE_RAW]);
-> > +	if (!vpu_fmt) {
-> > +		f->fmt.pix_mp.pixelformat =3D inst->src_fmt.pixelformat;
-> > +		f->fmt.pix_mp.num_planes =3D inst->src_fmt.num_planes;
-> > +		wave5_update_pix_fmt(&f->fmt.pix_mp, inst->src_fmt.width, inst->src_=
-fmt.height);
-> > +	} else {
-> > +		int width =3D clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt=
-->max_width);
-> > +		int height =3D clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_=
-fmt->max_height);
-> > +		const struct v4l2_format_info *info =3D v4l2_format_info(vpu_fmt->v4=
-l2_pix_fmt);
-> > +
-> > +		f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
-> > +		f->fmt.pix_mp.num_planes =3D info->mem_planes;
-> > +		wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
-> > +	}
-> > +
-> > +	f->fmt.pix_mp.flags =3D 0;
-> > +	f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
-> > +	memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved));
->=20
-> Not needed.
->=20
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_s_fmt_out(struct file *file, void *fh, struct=
- v4l2_format *f)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	int i, ret;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: fourcc: %u width: %u height: %u num_plan=
-es: %u field: %u\n",
-> > +		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix=
-_mp.height,
-> > +		f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
-> > +
-> > +	ret =3D wave5_vpu_enc_try_fmt_out(file, fh, f);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	inst->src_fmt.width =3D f->fmt.pix_mp.width;
-> > +	inst->src_fmt.height =3D f->fmt.pix_mp.height;
-> > +	inst->src_fmt.pixelformat =3D f->fmt.pix_mp.pixelformat;
-> > +	inst->src_fmt.field =3D f->fmt.pix_mp.field;
-> > +	inst->src_fmt.flags =3D f->fmt.pix_mp.flags;
-> > +	inst->src_fmt.num_planes =3D f->fmt.pix_mp.num_planes;
-> > +	for (i =3D 0; i < inst->src_fmt.num_planes; i++) {
-> > +		inst->src_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp.plane_fmt[=
-i].bytesperline;
-> > +		inst->src_fmt.plane_fmt[i].sizeimage =3D f->fmt.pix_mp.plane_fmt[i].=
-sizeimage;
-> > +	}
-> > +
-> > +	if (inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV12 ||
-> > +	    inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV12M) {
-> > +		inst->cbcr_interleave =3D true;
-> > +		inst->nv21 =3D false;
-> > +	} else if (inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV21 ||
-> > +		   inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV21M) {
-> > +		inst->cbcr_interleave =3D true;
-> > +		inst->nv21 =3D true;
-> > +	} else {
-> > +		inst->cbcr_interleave =3D false;
-> > +		inst->nv21 =3D false;
-> > +	}
-> > +
-> > +	inst->colorspace =3D f->fmt.pix_mp.colorspace;
-> > +	inst->ycbcr_enc =3D f->fmt.pix_mp.ycbcr_enc;
-> > +	inst->hsv_enc =3D f->fmt.pix_mp.hsv_enc;
-> > +	inst->quantization =3D f->fmt.pix_mp.quantization;
-> > +	inst->xfer_func =3D f->fmt.pix_mp.xfer_func;
-> > +
-> > +	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width, f->fmt.pix_=
-mp.height);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_g_selection(struct file *file, void *fh, stru=
-ct v4l2_selection *s)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u | target: %u\n", __func__, s->t=
-ype, s->target);
-> > +
-> > +	if (s->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT) {
-> > +		switch (s->target) {
-> > +		case V4L2_SEL_TGT_CROP_DEFAULT:
-> > +		case V4L2_SEL_TGT_CROP_BOUNDS:
-> > +			s->r.left =3D 0;
-> > +			s->r.top =3D 0;
-> > +			s->r.width =3D inst->dst_fmt.width;
-> > +			s->r.height =3D inst->dst_fmt.height;
-> > +			break;
-> > +		case V4L2_SEL_TGT_CROP:
-> > +			s->r.left =3D 0;
-> > +			s->r.top =3D 0;
-> > +			s->r.width =3D inst->dst_fmt.width;
-> > +			s->r.height =3D inst->dst_fmt.height;
-> > +			dev_dbg(inst->dev->dev, "%s: V4L2_SEL_TGT_CROP width: %u | height: =
-%u\n",
-> > +				__func__, s->r.width, s->r.height);
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +	} else {
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_s_selection(struct file *file, void *fh, stru=
-ct v4l2_selection *s)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +
-> > +	if (s->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT)
-> > +		return -EINVAL;
-> > +
-> > +	if (s->target !=3D V4L2_SEL_TGT_CROP)
-> > +		return -EINVAL;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: V4L2_SEL_TGT_CROP width: %u | height: %u=
-\n",
-> > +		__func__, s->r.width, s->r.height);
-> > +
-> > +	s->r.left =3D 0;
-> > +	s->r.top =3D 0;
-> > +	s->r.width =3D inst->src_fmt.width;
-> > +	s->r.height =3D inst->src_fmt.height;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_encoder_cmd(struct file *file, void *fh, stru=
-ct v4l2_encoder_cmd *ec)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	int ret;
-> > +
-> > +	ret =3D v4l2_m2m_ioctl_try_encoder_cmd(file, fh, ec);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (!wave5_vpu_both_queues_are_streaming(inst))
-> > +		return 0;
-> > +
-> > +	switch (ec->cmd) {
-> > +	case V4L2_ENC_CMD_STOP:
-> > +		if (m2m_ctx->is_draining)
-> > +			return -EBUSY;
-> > +
-> > +		if (m2m_ctx->has_stopped)
-> > +			return 0;
-> > +
-> > +		m2m_ctx->last_src_buf =3D v4l2_m2m_last_src_buf(m2m_ctx);
-> > +		m2m_ctx->is_draining =3D true;
-> > +		break;
-> > +	case V4L2_ENC_CMD_START:
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_g_parm(struct file *file, void *fh, struct v4=
-l2_streamparm *a)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, a->type);
-> > +
-> > +	if (a->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT && a->type !=3D V4L2_BUF_=
-TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		return -EINVAL;
-> > +
-> > +	a->parm.output.capability =3D V4L2_CAP_TIMEPERFRAME;
-> > +	a->parm.output.timeperframe.numerator =3D 1;
-> > +	a->parm.output.timeperframe.denominator =3D inst->frame_rate;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: numerator: %u | denominator: %u\n",
-> > +		__func__, a->parm.output.timeperframe.numerator,
-> > +		a->parm.output.timeperframe.denominator);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_s_parm(struct file *file, void *fh, struct v4=
-l2_streamparm *a)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_to_vpu_inst(fh);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, a->type);
-> > +
-> > +	if (a->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT && a->type !=3D V4L2_BUF_=
-TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		return -EINVAL;
-> > +
-> > +	a->parm.output.capability =3D V4L2_CAP_TIMEPERFRAME;
-> > +	if (a->parm.output.timeperframe.denominator && a->parm.output.timeper=
-frame.numerator) {
-> > +		inst->frame_rate =3D a->parm.output.timeperframe.denominator /
-> > +				   a->parm.output.timeperframe.numerator;
-> > +	} else {
-> > +		a->parm.output.timeperframe.numerator =3D 1;
-> > +		a->parm.output.timeperframe.denominator =3D inst->frame_rate;
-> > +	}
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: numerator: %u | denominator: %u\n",
-> > +		__func__, a->parm.output.timeperframe.numerator,
-> > +		a->parm.output.timeperframe.denominator);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct v4l2_ioctl_ops wave5_vpu_enc_ioctl_ops =3D {
-> > +	.vidioc_querycap =3D wave5_vpu_enc_querycap,
-> > +	.vidioc_enum_framesizes =3D wave5_vpu_enc_enum_framesizes,
-> > +
-> > +	.vidioc_enum_fmt_vid_cap	=3D wave5_vpu_enc_enum_fmt_cap,
-> > +	.vidioc_s_fmt_vid_cap_mplane =3D wave5_vpu_enc_s_fmt_cap,
-> > +	.vidioc_g_fmt_vid_cap_mplane =3D wave5_vpu_enc_g_fmt_cap,
-> > +	.vidioc_try_fmt_vid_cap_mplane =3D wave5_vpu_enc_try_fmt_cap,
-> > +
-> > +	.vidioc_enum_fmt_vid_out	=3D wave5_vpu_enc_enum_fmt_out,
-> > +	.vidioc_s_fmt_vid_out_mplane =3D wave5_vpu_enc_s_fmt_out,
-> > +	.vidioc_g_fmt_vid_out_mplane =3D wave5_vpu_g_fmt_out,
-> > +	.vidioc_try_fmt_vid_out_mplane =3D wave5_vpu_enc_try_fmt_out,
-> > +
-> > +	.vidioc_g_selection =3D wave5_vpu_enc_g_selection,
-> > +	.vidioc_s_selection =3D wave5_vpu_enc_s_selection,
-> > +
-> > +	.vidioc_g_parm =3D wave5_vpu_enc_g_parm,
-> > +	.vidioc_s_parm =3D wave5_vpu_enc_s_parm,
-> > +
-> > +	.vidioc_reqbufs =3D v4l2_m2m_ioctl_reqbufs,
-> > +	.vidioc_querybuf =3D v4l2_m2m_ioctl_querybuf,
-> > +	.vidioc_create_bufs =3D v4l2_m2m_ioctl_create_bufs,
-> > +	.vidioc_prepare_buf =3D v4l2_m2m_ioctl_prepare_buf,
-> > +	.vidioc_qbuf =3D v4l2_m2m_ioctl_qbuf,
-> > +	.vidioc_expbuf =3D v4l2_m2m_ioctl_expbuf,
-> > +	.vidioc_dqbuf =3D v4l2_m2m_ioctl_dqbuf,
-> > +	.vidioc_streamon =3D v4l2_m2m_ioctl_streamon,
-> > +	.vidioc_streamoff =3D v4l2_m2m_ioctl_streamoff,
-> > +
-> > +	.vidioc_try_encoder_cmd =3D v4l2_m2m_ioctl_try_encoder_cmd,
-> > +	.vidioc_encoder_cmd =3D wave5_vpu_enc_encoder_cmd,
-> > +
-> > +	.vidioc_subscribe_event =3D wave5_vpu_subscribe_event,
-> > +	.vidioc_unsubscribe_event =3D v4l2_event_unsubscribe,
-> > +};
-> > +
-> > +static int wave5_vpu_enc_s_ctrl(struct v4l2_ctrl *ctrl)
-> > +{
-> > +	struct vpu_instance *inst =3D wave5_ctrl_to_vpu_inst(ctrl);
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: name: %s | value: %d\n", __func__, ctrl-=
->name, ctrl->val);
-> > +
-> > +	switch (ctrl->id) {
-> > +	case V4L2_CID_MPEG_VIDEO_AU_DELIMITER:
-> > +		inst->encode_aud =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_HFLIP:
-> > +		inst->mirror_direction |=3D (ctrl->val << 1);
-> > +		break;
-> > +	case V4L2_CID_VFLIP:
-> > +		inst->mirror_direction |=3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_ROTATE:
-> > +		inst->rot_angle =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:
-> > +		inst->vbv_buf_size =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_BITRATE_MODE:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_BITRATE_MODE_VBR:
-> > +			inst->rc_mode =3D 0;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_BITRATE_MODE_CBR:
-> > +			inst->rc_mode =3D 1;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_BITRATE:
-> > +		inst->bit_rate =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_GOP_SIZE:
-> > +		inst->enc_param.avc_idr_period =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE:
-> > +		inst->enc_param.independ_slice_mode =3D ctrl->val;
-> > +		inst->enc_param.avc_slice_mode =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_MB:
-> > +		inst->enc_param.independ_slice_mode_arg =3D ctrl->val;
-> > +		inst->enc_param.avc_slice_arg =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE:
-> > +		inst->rc_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_MB_RC_ENABLE:
-> > +		inst->enc_param.mb_level_rc_enable =3D ctrl->val;
-> > +		inst->enc_param.cu_level_rc_enable =3D ctrl->val;
-> > +		inst->enc_param.hvs_qp_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN:
-> > +			inst->enc_param.profile =3D HEVC_PROFILE_MAIN;
-> > +			inst->bit_depth =3D 8;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE:
-> > +			inst->enc_param.profile =3D HEVC_PROFILE_STILLPICTURE;
-> > +			inst->enc_param.en_still_picture =3D 1;
-> > +			inst->bit_depth =3D 8;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10:
-> > +			inst->enc_param.profile =3D HEVC_PROFILE_MAIN10;
-> > +			inst->bit_depth =3D 10;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_1:
-> > +			inst->enc_param.level =3D 10 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_2:
-> > +			inst->enc_param.level =3D 20 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1:
-> > +			inst->enc_param.level =3D 21 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_3:
-> > +			inst->enc_param.level =3D 30 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1:
-> > +			inst->enc_param.level =3D 31 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_4:
-> > +			inst->enc_param.level =3D 40 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1:
-> > +			inst->enc_param.level =3D 41 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5:
-> > +			inst->enc_param.level =3D 50 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1:
-> > +			inst->enc_param.level =3D 51 * 3;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2:
-> > +			inst->enc_param.level =3D 52 * 3;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP:
-> > +		inst->enc_param.min_qp_i =3D ctrl->val;
-> > +		inst->enc_param.min_qp_p =3D ctrl->val;
-> > +		inst->enc_param.min_qp_b =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP:
-> > +		inst->enc_param.max_qp_i =3D ctrl->val;
-> > +		inst->enc_param.max_qp_p =3D ctrl->val;
-> > +		inst->enc_param.max_qp_b =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP:
-> > +		inst->enc_param.intra_qp =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_DISABLED:
-> > +			inst->enc_param.disable_deblk =3D 1;
-> > +			inst->enc_param.sao_enable =3D 0;
-> > +			inst->enc_param.lf_cross_slice_boundary_enable =3D 0;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_ENABLED:
-> > +			inst->enc_param.disable_deblk =3D 0;
-> > +			inst->enc_param.sao_enable =3D 1;
-> > +			inst->enc_param.lf_cross_slice_boundary_enable =3D 1;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDAR=
-Y:
-> > +			inst->enc_param.disable_deblk =3D 0;
-> > +			inst->enc_param.sao_enable =3D 1;
-> > +			inst->enc_param.lf_cross_slice_boundary_enable =3D 0;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_LF_BETA_OFFSET_DIV2:
-> > +		inst->enc_param.beta_offset_div2 =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_LF_TC_OFFSET_DIV2:
-> > +		inst->enc_param.tc_offset_div2 =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_REFRESH_TYPE:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_HEVC_REFRESH_NONE:
-> > +			inst->enc_param.decoding_refresh_type =3D 0;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_REFRESH_CRA:
-> > +			inst->enc_param.decoding_refresh_type =3D 1;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_HEVC_REFRESH_IDR:
-> > +			inst->enc_param.decoding_refresh_type =3D 2;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_REFRESH_PERIOD:
-> > +		inst->enc_param.intra_period =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_LOSSLESS_CU:
-> > +		inst->enc_param.lossless_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_CONST_INTRA_PRED:
-> > +		inst->enc_param.const_intra_pred_flag =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_WAVEFRONT:
-> > +		inst->enc_param.wpp_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_STRONG_SMOOTHING:
-> > +		inst->enc_param.strong_intra_smooth_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_MAX_NUM_MERGE_MV_MINUS1:
-> > +		inst->enc_param.max_num_merge =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_HEVC_TMV_PREDICTION:
-> > +		inst->enc_param.tmvp_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE:
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE:
-> > +			inst->enc_param.profile =3D H264_PROFILE_BP;
-> > +			inst->bit_depth =3D 8;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_MAIN:
-> > +			inst->enc_param.profile =3D H264_PROFILE_MP;
-> > +			inst->bit_depth =3D 8;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED:
-> > +			inst->enc_param.profile =3D H264_PROFILE_EXTENDED;
-> > +			inst->bit_depth =3D 8;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH:
-> > +			inst->enc_param.profile =3D H264_PROFILE_HP;
-> > +			inst->bit_depth =3D 8;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_10:
-> > +			inst->enc_param.profile =3D H264_PROFILE_HIGH10;
-> > +			inst->bit_depth =3D 10;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422:
-> > +			inst->enc_param.profile =3D H264_PROFILE_HIGH422;
-> > +			inst->bit_depth =3D 10;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_444_PREDICTIVE:
-> > +			inst->enc_param.profile =3D H264_PROFILE_HIGH444;
-> > +			inst->bit_depth =3D 10;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_1_0:
-> > +			inst->enc_param.level =3D 10;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_1B:
-> > +			inst->enc_param.level =3D 9;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_1_1:
-> > +			inst->enc_param.level =3D 11;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_1_2:
-> > +			inst->enc_param.level =3D 12;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_1_3:
-> > +			inst->enc_param.level =3D 13;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_2_0:
-> > +			inst->enc_param.level =3D 20;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_2_1:
-> > +			inst->enc_param.level =3D 21;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_2_2:
-> > +			inst->enc_param.level =3D 22;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_3_0:
-> > +			inst->enc_param.level =3D 30;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_3_1:
-> > +			inst->enc_param.level =3D 31;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_3_2:
-> > +			inst->enc_param.level =3D 32;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_4_0:
-> > +			inst->enc_param.level =3D 40;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_4_1:
-> > +			inst->enc_param.level =3D 41;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_4_2:
-> > +			inst->enc_param.level =3D 42;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_5_0:
-> > +			inst->enc_param.level =3D 50;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LEVEL_5_1:
-> > +			inst->enc_param.level =3D 51;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_MIN_QP:
-> > +		inst->enc_param.min_qp_i =3D ctrl->val;
-> > +		inst->enc_param.min_qp_p =3D ctrl->val;
-> > +		inst->enc_param.min_qp_b =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_MAX_QP:
-> > +		inst->enc_param.max_qp_i =3D ctrl->val;
-> > +		inst->enc_param.max_qp_p =3D ctrl->val;
-> > +		inst->enc_param.max_qp_b =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP:
-> > +		inst->enc_param.intra_qp =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_MODE:
-> > +		switch (ctrl->val) {
-> > +		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED:
-> > +			inst->enc_param.disable_deblk =3D 1;
-> > +			inst->enc_param.lf_cross_slice_boundary_enable =3D 1;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_ENABLED:
-> > +			inst->enc_param.disable_deblk =3D 0;
-> > +			inst->enc_param.lf_cross_slice_boundary_enable =3D 1;
-> > +			break;
-> > +		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDAR=
-Y:
-> > +			inst->enc_param.disable_deblk =3D 0;
-> > +			inst->enc_param.lf_cross_slice_boundary_enable =3D 0;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_BETA:
-> > +		inst->enc_param.beta_offset_div2 =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_ALPHA:
-> > +		inst->enc_param.tc_offset_div2 =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
-> > +		inst->enc_param.transform8x8_enable =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_CONSTRAINED_INTRA_PREDICTION:
-> > +		inst->enc_param.const_intra_pred_flag =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_CHROMA_QP_INDEX_OFFSET:
-> > +		inst->enc_param.chroma_cb_qp_offset =3D ctrl->val;
-> > +		inst->enc_param.chroma_cr_qp_offset =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_I_PERIOD:
-> > +		inst->enc_param.intra_period =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE:
-> > +		inst->enc_param.entropy_coding_mode =3D ctrl->val;
-> > +		break;
-> > +	case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct v4l2_ctrl_ops wave5_vpu_enc_ctrl_ops =3D {
-> > +	.s_ctrl =3D wave5_vpu_enc_s_ctrl,
-> > +};
-> > +
-> > +static int wave5_vpu_enc_queue_setup(struct vb2_queue *q, unsigned int=
- *num_buffers,
-> > +				     unsigned int *num_planes, unsigned int sizes[],
-> > +				     struct device *alloc_devs[])
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_pix_format_mplane inst_format =3D
-> > +		(q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst->src_fmt :=
- inst->dst_fmt;
-> > +	unsigned int i;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: num_buffers: %u | num_planes: %u | type:=
- %u\n", __func__,
-> > +		*num_buffers, *num_planes, q->type);
-> > +
-> > +	if (*num_planes) {
-> > +		if (inst_format.num_planes !=3D *num_planes)
-> > +			return -EINVAL;
-> > +
-> > +		for (i =3D 0; i < *num_planes; i++) {
-> > +			if (sizes[i] < inst_format.plane_fmt[i].sizeimage)
-> > +				return -EINVAL;
-> > +		}
-> > +	} else {
-> > +		*num_planes =3D inst_format.num_planes;
-> > +		for (i =3D 0; i < *num_planes; i++) {
-> > +			sizes[i] =3D inst_format.plane_fmt[i].sizeimage;
-> > +			dev_dbg(inst->dev->dev, "%s: size[%u]: %u\n", __func__, i, sizes[i]=
-);
-> > +		}
-> > +	}
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: size: %u\n", __func__, sizes[0]);
-> > +
-> > +	if (inst->state =3D=3D VPU_INST_STATE_INIT_SEQ &&
-> > +	    q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
-> > +		if (*num_buffers > inst->src_buf_count &&
-> > +		    *num_buffers < WAVE5_MAX_FBS)
-> > +			inst->src_buf_count =3D *num_buffers;
->=20
-> Same issue as with the decoder. Why is src_buf_count needed at all?
->=20
-> > +
-> > +		*num_buffers =3D inst->src_buf_count;
-> > +		dev_dbg(inst->dev->dev, "%s: src buf num: %u", __func__, *num_buffer=
-s);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void wave5_vpu_enc_buf_queue(struct vb2_buffer *vb)
-> > +{
-> > +	struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(vb->vb2_queue);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %4u index: %4u size: ([0]=3D%4lu, =
-[1]=3D%4lu, [2]=3D%4lu)\n",
-> > +		__func__, vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
-> > +		vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->vb2_buf, 2)=
-);
-> > +
-> > +	if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		vbuf->sequence =3D inst->queued_src_buf_num++;
-> > +	else
-> > +		vbuf->sequence =3D inst->queued_dst_buf_num++;
-> > +
-> > +	v4l2_m2m_buf_queue(m2m_ctx, vbuf);
-> > +}
-> > +
-> > +static void wave5_set_enc_openparam(struct enc_open_param *open_param,
-> > +				    struct vpu_instance *inst)
-> > +{
-> > +	struct enc_wave_param input =3D inst->enc_param;
-> > +	u32 num_ctu_row =3D ALIGN(inst->dst_fmt.height, 64) / 64;
-> > +	u32 num_mb_row =3D ALIGN(inst->dst_fmt.height, 16) / 16;
-> > +
-> > +	open_param->wave_param.gop_preset_idx =3D PRESET_IDX_IPP_SINGLE;
-> > +	open_param->wave_param.hvs_qp_scale =3D 2;
-> > +	open_param->wave_param.hvs_max_delta_qp =3D 10;
-> > +	open_param->wave_param.skip_intra_trans =3D 1;
-> > +	open_param->wave_param.intra_nx_n_enable =3D 1;
-> > +	open_param->wave_param.nr_intra_weight_y =3D 7;
-> > +	open_param->wave_param.nr_intra_weight_cb =3D 7;
-> > +	open_param->wave_param.nr_intra_weight_cr =3D 7;
-> > +	open_param->wave_param.nr_inter_weight_y =3D 4;
-> > +	open_param->wave_param.nr_inter_weight_cb =3D 4;
-> > +	open_param->wave_param.nr_inter_weight_cr =3D 4;
-> > +	open_param->wave_param.rdo_skip =3D 1;
-> > +	open_param->wave_param.lambda_scaling_enable =3D 1;
-> > +
-> > +	open_param->line_buf_int_en =3D true;
-> > +	open_param->pic_width =3D inst->dst_fmt.width;
-> > +	open_param->pic_height =3D inst->dst_fmt.height;
-> > +	open_param->frame_rate_info =3D inst->frame_rate;
-> > +	open_param->rc_enable =3D inst->rc_enable;
-> > +	if (inst->rc_enable) {
-> > +		open_param->wave_param.initial_rc_qp =3D -1;
-> > +		open_param->wave_param.rc_weight_param =3D 16;
-> > +		open_param->wave_param.rc_weight_buf =3D 128;
-> > +	}
-> > +	open_param->wave_param.mb_level_rc_enable =3D input.mb_level_rc_enabl=
-e;
-> > +	open_param->wave_param.cu_level_rc_enable =3D input.cu_level_rc_enabl=
-e;
-> > +	open_param->wave_param.hvs_qp_enable =3D input.hvs_qp_enable;
-> > +	open_param->bit_rate =3D inst->bit_rate;
-> > +	open_param->vbv_buffer_size =3D inst->vbv_buf_size;
-> > +	if (inst->rc_mode =3D=3D 0)
-> > +		open_param->vbv_buffer_size =3D 3000;
-> > +	open_param->wave_param.profile =3D input.profile;
-> > +	open_param->wave_param.en_still_picture =3D input.en_still_picture;
-> > +	open_param->wave_param.level =3D input.level;
-> > +	open_param->wave_param.internal_bit_depth =3D inst->bit_depth;
-> > +	open_param->wave_param.intra_qp =3D input.intra_qp;
-> > +	open_param->wave_param.min_qp_i =3D input.min_qp_i;
-> > +	open_param->wave_param.max_qp_i =3D input.max_qp_i;
-> > +	open_param->wave_param.min_qp_p =3D input.min_qp_p;
-> > +	open_param->wave_param.max_qp_p =3D input.max_qp_p;
-> > +	open_param->wave_param.min_qp_b =3D input.min_qp_b;
-> > +	open_param->wave_param.max_qp_b =3D input.max_qp_b;
-> > +	open_param->wave_param.disable_deblk =3D input.disable_deblk;
-> > +	open_param->wave_param.lf_cross_slice_boundary_enable =3D
-> > +		input.lf_cross_slice_boundary_enable;
-> > +	open_param->wave_param.tc_offset_div2 =3D input.tc_offset_div2;
-> > +	open_param->wave_param.beta_offset_div2 =3D input.beta_offset_div2;
-> > +	open_param->wave_param.decoding_refresh_type =3D input.decoding_refre=
-sh_type;
-> > +	open_param->wave_param.intra_period =3D input.intra_period;
-> > +	if (inst->std =3D=3D W_HEVC_ENC) {
-> > +		if (input.intra_period =3D=3D 0) {
-> > +			open_param->wave_param.decoding_refresh_type =3D DEC_REFRESH_TYPE_I=
-DR;
-> > +			open_param->wave_param.intra_period =3D input.avc_idr_period;
-> > +		}
-> > +	} else {
-> > +		open_param->wave_param.avc_idr_period =3D input.avc_idr_period;
-> > +	}
-> > +	open_param->wave_param.entropy_coding_mode =3D input.entropy_coding_m=
-ode;
-> > +	open_param->wave_param.lossless_enable =3D input.lossless_enable;
-> > +	open_param->wave_param.const_intra_pred_flag =3D input.const_intra_pr=
-ed_flag;
-> > +	open_param->wave_param.wpp_enable =3D input.wpp_enable;
-> > +	open_param->wave_param.strong_intra_smooth_enable =3D input.strong_in=
-tra_smooth_enable;
-> > +	open_param->wave_param.max_num_merge =3D input.max_num_merge;
-> > +	open_param->wave_param.tmvp_enable =3D input.tmvp_enable;
-> > +	open_param->wave_param.transform8x8_enable =3D input.transform8x8_ena=
-ble;
-> > +	open_param->wave_param.chroma_cb_qp_offset =3D input.chroma_cb_qp_off=
-set;
-> > +	open_param->wave_param.chroma_cr_qp_offset =3D input.chroma_cr_qp_off=
-set;
-> > +	open_param->wave_param.independ_slice_mode =3D input.independ_slice_m=
-ode;
-> > +	open_param->wave_param.independ_slice_mode_arg =3D input.independ_sli=
-ce_mode_arg;
-> > +	open_param->wave_param.avc_slice_mode =3D input.avc_slice_mode;
-> > +	open_param->wave_param.avc_slice_arg =3D input.avc_slice_arg;
-> > +	open_param->wave_param.intra_mb_refresh_mode =3D input.intra_mb_refre=
-sh_mode;
-> > +	if (input.intra_mb_refresh_mode !=3D REFRESH_MB_MODE_NONE) {
-> > +		if (num_mb_row >=3D input.intra_mb_refresh_arg)
-> > +			open_param->wave_param.intra_mb_refresh_arg =3D
-> > +				num_mb_row / input.intra_mb_refresh_arg;
-> > +		else
-> > +			open_param->wave_param.intra_mb_refresh_arg =3D num_mb_row;
-> > +	}
-> > +	open_param->wave_param.intra_refresh_mode =3D input.intra_refresh_mod=
-e;
-> > +	if (input.intra_refresh_mode !=3D 0) {
-> > +		if (num_ctu_row >=3D input.intra_refresh_arg)
-> > +			open_param->wave_param.intra_refresh_arg =3D
-> > +				num_ctu_row / input.intra_refresh_arg;
-> > +		else
-> > +			open_param->wave_param.intra_refresh_arg =3D num_ctu_row;
-> > +	}
-> > +}
-> > +
-> > +static int initialize_sequence(struct vpu_instance *inst)
-> > +{
-> > +	struct enc_initial_info initial_info;
-> > +	struct v4l2_ctrl *ctrl;
-> > +	int ret;
-> > +
-> > +	ret =3D wave5_vpu_enc_issue_seq_init(inst);
-> > +	if (ret) {
-> > +		dev_err(inst->dev->dev, "%s: wave5_vpu_enc_issue_seq_init, fail: %d\=
-n",
-> > +			__func__, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (wave5_vpu_wait_interrupt(inst, VPU_ENC_TIMEOUT) < 0) {
-> > +		dev_err(inst->dev->dev, "%s: wave5_vpu_wait_interrupt failed\n", __f=
-unc__);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	ret =3D wave5_vpu_enc_complete_seq_init(inst, &initial_info);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: min_frame_buffer: %u | min_source_buffer=
-: %u\n",
-> > +		__func__, initial_info.min_frame_buffer_count,
-> > +		initial_info.min_src_frame_count);
-> > +	inst->min_src_buf_count =3D initial_info.min_src_frame_count +
-> > +				  COMMAND_QUEUE_DEPTH;
-> > +
-> > +	ctrl =3D v4l2_ctrl_find(&inst->v4l2_ctrl_hdl,
-> > +			      V4L2_CID_MIN_BUFFERS_FOR_OUTPUT);
-> > +	if (ctrl)
-> > +		v4l2_ctrl_s_ctrl(ctrl, inst->min_src_buf_count);
-> > +
-> > +	inst->fbc_buf_count =3D initial_info.min_frame_buffer_count;
-> > +	inst->src_buf_count =3D inst->min_src_buf_count;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int prepare_fb(struct vpu_instance *inst)
-> > +{
-> > +	u32 fb_stride =3D ALIGN(inst->dst_fmt.width, 32);
-> > +	u32 fb_height =3D ALIGN(inst->dst_fmt.height, 32);
-> > +	int i, ret =3D 0;
-> > +
-> > +	for (i =3D 0; i < inst->fbc_buf_count; i++) {
-> > +		u32 luma_size =3D fb_stride * fb_height;
-> > +		u32 chroma_size =3D ALIGN(fb_stride / 2, 16) * fb_height;
-> > +
-> > +		inst->frame_vbuf[i].size =3D luma_size + chroma_size;
-> > +		ret =3D wave5_vdi_allocate_dma_memory(inst->dev, &inst->frame_vbuf[i=
-]);
-> > +		if (ret < 0) {
-> > +			dev_err(inst->dev->dev, "%s: failed to allocate FBC buffer %zu\n",
-> > +				__func__, inst->frame_vbuf[i].size);
-> > +			goto free_buffers;
-> > +		}
-> > +
-> > +		inst->frame_buf[i].buf_y =3D inst->frame_vbuf[i].daddr;
-> > +		inst->frame_buf[i].buf_cb =3D (dma_addr_t)-1;
-> > +		inst->frame_buf[i].buf_cr =3D (dma_addr_t)-1;
-> > +		inst->frame_buf[i].update_fb_info =3D true;
-> > +		inst->frame_buf[i].size =3D inst->frame_vbuf[i].size;
-> > +	}
-> > +
-> > +	ret =3D wave5_vpu_enc_register_frame_buffer(inst, inst->fbc_buf_count=
-, fb_stride,
-> > +						  fb_height, COMPRESSED_FRAME_MAP);
-> > +	if (ret) {
-> > +		dev_err(inst->dev->dev,
-> > +			"%s: wave5_vpu_enc_register_frame_buffer, fail: %d\n",
-> > +			__func__, ret);
-> > +		goto free_buffers;
-> > +	}
-> > +
-> > +	return 0;
-> > +free_buffers:
-> > +	for (i =3D 0; i < inst->fbc_buf_count; i++)
-> > +		wave5_vpu_dec_reset_framebuffer(inst, i);
-> > +	return ret;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_start_streaming(struct vb2_queue *q, unsigned=
- int count)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	int ret;
-> > +
-> > +	v4l2_m2m_update_start_streaming_state(m2m_ctx, q);
-> > +
-> > +	if (inst->state =3D=3D VPU_INST_STATE_NONE && q->type =3D=3D V4L2_BUF=
-_TYPE_VIDEO_OUTPUT_MPLANE) {
-> > +		struct enc_open_param open_param;
-> > +
-> > +		memset(&open_param, 0, sizeof(struct enc_open_param));
-> > +
-> > +		inst->std =3D wave5_to_vpu_std(inst->dst_fmt.pixelformat, inst->type=
-);
-> > +		if (inst->std =3D=3D STD_UNKNOWN) {
-> > +			dev_warn(inst->dev->dev, "unsupported pixelformat: %.4s\n",
-> > +				 (char *)&inst->dst_fmt.pixelformat);
->=20
-> This should call buf_done(DEQUEUED) for all buffers in the queue on error=
-.
->=20
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		wave5_set_enc_openparam(&open_param, inst);
-> > +
-> > +		ret =3D wave5_vpu_enc_open(inst, &open_param);
-> > +		if (ret) {
-> > +			dev_dbg(inst->dev->dev, "%s: wave5_vpu_enc_open, fail: %d\n",
-> > +				__func__, ret);
-> > +			return ret;
-> > +		}
-> > +
-> > +		if (inst->mirror_direction) {
-> > +			wave5_vpu_enc_give_command(inst, ENABLE_MIRRORING, NULL);
-> > +			wave5_vpu_enc_give_command(inst, SET_MIRROR_DIRECTION,
-> > +						   &inst->mirror_direction);
-> > +		}
-> > +		if (inst->rot_angle) {
-> > +			wave5_vpu_enc_give_command(inst, ENABLE_ROTATION, NULL);
-> > +			wave5_vpu_enc_give_command(inst, SET_ROTATION_ANGLE, &inst->rot_ang=
-le);
-> > +		}
-> > +
-> > +		switch_state(inst, VPU_INST_STATE_OPEN);
-> > +	}
-> > +	if (inst->state =3D=3D VPU_INST_STATE_OPEN && m2m_ctx->cap_q_ctx.q.st=
-reaming) {
-> > +		ret =3D initialize_sequence(inst);
-> > +		if (ret) {
-> > +			dev_warn(inst->dev->dev, "Sequence not found: %d\n", ret);
-> > +			return ret;
-> > +		}
-> > +		switch_state(inst, VPU_INST_STATE_INIT_SEQ);
-> > +		/*
-> > +		 * The sequence must be analyzed first to calculate the proper
-> > +		 * size of the auxiliary buffers.
-> > +		 */
-> > +		ret =3D prepare_fb(inst);
-> > +		if (ret) {
-> > +			dev_warn(inst->dev->dev, "Framebuffer preparation, fail: %d\n", ret=
-);
-> > +			return ret;
-> > +		}
-> > +
-> > +		switch_state(inst, VPU_INST_STATE_PIC_RUN);
-> > +	}
-> > +
->=20
-> The DEQUEUED sequence is done (although not quite correctly) in the decod=
-er's start_streaming,
-> but not at all here.
->=20
-> > +	return 0;
-> > +}
-> > +
-> > +static void streamoff_output(struct vpu_instance *inst, struct vb2_que=
-ue *q)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *buf;
-> > +
-> > +	while ((buf =3D v4l2_m2m_src_buf_remove(m2m_ctx))) {
-> > +		dev_dbg(inst->dev->dev, "%s: buf type %4u | index %4u\n",
-> > +			__func__, buf->vb2_buf.type, buf->vb2_buf.index);
-> > +		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
-> > +	}
-> > +}
-> > +
-> > +static void streamoff_capture(struct vpu_instance *inst, struct vb2_qu=
-eue *q)
-> > +{
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	struct vb2_v4l2_buffer *buf;
-> > +
-> > +	while ((buf =3D v4l2_m2m_dst_buf_remove(m2m_ctx))) {
-> > +		dev_dbg(inst->dev->dev, "%s: buf type %4u | index %4u\n",
-> > +			__func__, buf->vb2_buf.type, buf->vb2_buf.index);
-> > +		vb2_set_plane_payload(&buf->vb2_buf, 0, 0);
-> > +		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
-> > +	}
-> > +
-> > +	v4l2_m2m_clear_state(m2m_ctx);
-> > +}
-> > +
-> > +static void wave5_vpu_enc_stop_streaming(struct vb2_queue *q)
-> > +{
-> > +	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
-> > +	bool check_cmd =3D true;
-> > +
-> > +	/*
-> > +	 * Note that we don't need m2m_ctx->next_buf_last for this driver, so=
- we
-> > +	 * don't call v4l2_m2m_update_stop_streaming_state().
-> > +	 */
-> > +
-> > +	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, q->type);
-> > +
-> > +	if (wave5_vpu_both_queues_are_streaming(inst))
-> > +		switch_state(inst, VPU_INST_STATE_STOP);
-> > +
-> > +	while (check_cmd) {
-> > +		struct queue_status_info q_status;
-> > +		struct enc_output_info enc_output_info;
-> > +
-> > +		wave5_vpu_enc_give_command(inst, ENC_GET_QUEUE_STATUS, &q_status);
-> > +
-> > +		if (q_status.report_queue_count =3D=3D 0)
-> > +			break;
-> > +
-> > +		if (wave5_vpu_wait_interrupt(inst, VPU_ENC_TIMEOUT) < 0)
-> > +			break;
-> > +
-> > +		if (wave5_vpu_enc_get_output_info(inst, &enc_output_info))
-> > +			dev_dbg(inst->dev->dev, "Getting encoding results from fw, fail\n")=
-;
-> > +	}
-> > +
-> > +	if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > +		streamoff_output(inst, q);
-> > +	else
-> > +		streamoff_capture(inst, q);
-> > +}
-> > +
-> > +static const struct vb2_ops wave5_vpu_enc_vb2_ops =3D {
-> > +	.queue_setup =3D wave5_vpu_enc_queue_setup,
-> > +	.wait_prepare =3D vb2_ops_wait_prepare,
-> > +	.wait_finish =3D vb2_ops_wait_finish,
-> > +	.buf_queue =3D wave5_vpu_enc_buf_queue,
-> > +	.start_streaming =3D wave5_vpu_enc_start_streaming,
-> > +	.stop_streaming =3D wave5_vpu_enc_stop_streaming,
-> > +};
-> > +
-> > +static void wave5_set_default_format(struct v4l2_pix_format_mplane *sr=
-c_fmt,
-> > +				     struct v4l2_pix_format_mplane *dst_fmt)
-> > +{
-> > +	unsigned int src_pix_fmt =3D enc_fmt_list[VPU_FMT_TYPE_RAW][0].v4l2_p=
-ix_fmt;
-> > +	const struct v4l2_format_info *src_fmt_info =3D v4l2_format_info(src_=
-pix_fmt);
-> > +
-> > +	src_fmt->pixelformat =3D src_pix_fmt;
-> > +	src_fmt->field =3D V4L2_FIELD_NONE;
-> > +	src_fmt->flags =3D 0;
-> > +	src_fmt->num_planes =3D src_fmt_info->mem_planes;
-> > +	wave5_update_pix_fmt(src_fmt, 416, 240);
-> > +
-> > +	dst_fmt->pixelformat =3D enc_fmt_list[VPU_FMT_TYPE_CODEC][0].v4l2_pix=
-_fmt;
-> > +	dst_fmt->field =3D V4L2_FIELD_NONE;
-> > +	dst_fmt->flags =3D 0;
-> > +	dst_fmt->num_planes =3D 1;
-> > +	wave5_update_pix_fmt(dst_fmt, 416, 240);
-> > +}
-> > +
-> > +static int wave5_vpu_enc_queue_init(void *priv, struct vb2_queue *src_=
-vq, struct vb2_queue *dst_vq)
-> > +{
-> > +	return wave5_vpu_queue_init(priv, src_vq, dst_vq, &wave5_vpu_enc_vb2_=
-ops);
-> > +}
-> > +
-> > +static const struct vpu_instance_ops wave5_vpu_enc_inst_ops =3D {
-> > +	.finish_process =3D wave5_vpu_enc_finish_encode,
-> > +};
-> > +
-> > +static void wave5_vpu_enc_device_run(void *priv)
-> > +{
-> > +	struct vpu_instance *inst =3D priv;
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +	u32 fail_res =3D 0;
-> > +	int ret =3D 0;
-> > +
-> > +	switch (inst->state) {
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		ret =3D start_encode(inst, &fail_res);
-> > +		if (ret) {
-> > +			if (ret =3D=3D -EINVAL)
-> > +				dev_err(inst->dev->dev,
-> > +					"Frame encoding on m2m context (%p), fail: %d (res: %d)\n",
-> > +					m2m_ctx, ret, fail_res);
-> > +			else if (ret =3D=3D -EAGAIN)
-> > +				dev_dbg(inst->dev->dev, "Missing buffers for encode, try again\n")=
-;
-> > +			break;
-> > +		}
-> > +		dev_dbg(inst->dev->dev, "%s: leave with active job", __func__);
-> > +		return;
-> > +	default:
-> > +		WARN(1, "Execution of a job in state %s is invalid.\n",
-> > +		     state_to_str(inst->state));
-> > +		break;
-> > +	}
-> > +	dev_dbg(inst->dev->dev, "%s: leave and finish job", __func__);
-> > +	v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
-> > +}
-> > +
-> > +static int wave5_vpu_enc_job_ready(void *priv)
-> > +{
-> > +	struct vpu_instance *inst =3D priv;
-> > +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
-> > +
-> > +	switch (inst->state) {
-> > +	case VPU_INST_STATE_NONE:
-> > +		dev_dbg(inst->dev->dev, "Encoder must be open to start queueing M2M =
-jobs!\n");
-> > +		return false;
-> > +	case VPU_INST_STATE_PIC_RUN:
-> > +		if (m2m_ctx->is_draining || v4l2_m2m_num_src_bufs_ready(m2m_ctx)) {
-> > +			dev_dbg(inst->dev->dev, "Encoder ready for a job, state: %s\n",
-> > +				state_to_str(inst->state));
-> > +			return true;
-> > +		}
-> > +		fallthrough;
-> > +	default:
-> > +		dev_dbg(inst->dev->dev,
-> > +			"Encoder not ready for a job, state: %s, %s draining, %d src bufs r=
-eady\n",
-> > +			state_to_str(inst->state), m2m_ctx->is_draining ? "is" : "is not",
-> > +			v4l2_m2m_num_src_bufs_ready(m2m_ctx));
-> > +		break;
-> > +	}
-> > +	return false;
-> > +}
-> > +
-> > +static const struct v4l2_m2m_ops wave5_vpu_enc_m2m_ops =3D {
-> > +	.device_run =3D wave5_vpu_enc_device_run,
-> > +	.job_ready =3D wave5_vpu_enc_job_ready,
-> > +};
-> > +
-> > +static int wave5_vpu_open_enc(struct file *filp)
-> > +{
-> > +	struct video_device *vdev =3D video_devdata(filp);
-> > +	struct vpu_device *dev =3D video_drvdata(filp);
-> > +	struct vpu_instance *inst =3D NULL;
-> > +	struct v4l2_ctrl_handler *v4l2_ctrl_hdl;
-> > +	int ret =3D 0;
-> > +
-> > +	inst =3D kzalloc(sizeof(*inst), GFP_KERNEL);
-> > +	if (!inst)
-> > +		return -ENOMEM;
-> > +	v4l2_ctrl_hdl =3D &inst->v4l2_ctrl_hdl;
-> > +
-> > +	inst->dev =3D dev;
-> > +	inst->type =3D VPU_INST_TYPE_ENC;
-> > +	inst->ops =3D &wave5_vpu_enc_inst_ops;
-> > +
-> > +	inst->codec_info =3D kzalloc(sizeof(*inst->codec_info), GFP_KERNEL);
-> > +	if (!inst->codec_info)
-> > +		return -ENOMEM;
-> > +
-> > +	v4l2_fh_init(&inst->v4l2_fh, vdev);
-> > +	filp->private_data =3D &inst->v4l2_fh;
-> > +	v4l2_fh_add(&inst->v4l2_fh);
-> > +
-> > +	INIT_LIST_HEAD(&inst->list);
-> > +	list_add_tail(&inst->list, &dev->instances);
-> > +
-> > +	inst->v4l2_m2m_dev =3D inst->dev->v4l2_m2m_enc_dev;
-> > +	inst->v4l2_fh.m2m_ctx =3D
-> > +		v4l2_m2m_ctx_init(inst->v4l2_m2m_dev, inst, wave5_vpu_enc_queue_init=
-);
-> > +	if (IS_ERR(inst->v4l2_fh.m2m_ctx)) {
-> > +		ret =3D PTR_ERR(inst->v4l2_fh.m2m_ctx);
-> > +		goto cleanup_inst;
-> > +	}
-> > +	v4l2_m2m_set_src_buffered(inst->v4l2_fh.m2m_ctx, true);
-> > +
-> > +	v4l2_ctrl_handler_init(v4l2_ctrl_hdl, 50);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_HEVC_PROFILE,
-> > +			       V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10, 0,
-> > +			       V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_HEVC_LEVEL,
-> > +			       V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1, 0,
-> > +			       V4L2_MPEG_VIDEO_HEVC_LEVEL_1);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP,
-> > +			  0, 63, 1, 8);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP,
-> > +			  0, 63, 1, 51);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP,
-> > +			  0, 63, 1, 30);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE,
-> > +			       V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUN=
-DARY, 0,
-> > +			       V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_ENABLED);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_LF_BETA_OFFSET_DIV2,
-> > +			  -6, 6, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_LF_TC_OFFSET_DIV2,
-> > +			  -6, 6, 1, 0);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_HEVC_REFRESH_TYPE,
-> > +			       V4L2_MPEG_VIDEO_HEVC_REFRESH_IDR, 0,
-> > +			       V4L2_MPEG_VIDEO_HEVC_REFRESH_CRA);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_REFRESH_PERIOD,
-> > +			  0, 2047, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_LOSSLESS_CU,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_CONST_INTRA_PRED,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_WAVEFRONT,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_STRONG_SMOOTHING,
-> > +			  0, 1, 1, 1);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_MAX_NUM_MERGE_MV_MINUS1,
-> > +			  1, 2, 1, 2);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_HEVC_TMV_PREDICTION,
-> > +			  0, 1, 1, 1);
-> > +
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_H264_PROFILE,
-> > +			       V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_444_PREDICTIVE, 0,
-> > +			       V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_H264_LEVEL,
-> > +			       V4L2_MPEG_VIDEO_H264_LEVEL_5_1, 0,
-> > +			       V4L2_MPEG_VIDEO_H264_LEVEL_1_0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_MIN_QP,
-> > +			  0, 63, 1, 8);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_MAX_QP,
-> > +			  0, 63, 1, 51);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP,
-> > +			  0, 63, 1, 30);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_MODE,
-> > +			       V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUN=
-DARY, 0,
-> > +			       V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_ENABLED);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_ALPHA,
-> > +			  -6, 6, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_BETA,
-> > +			  -6, 6, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM,
-> > +			  0, 1, 1, 1);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_CONSTRAINED_INTRA_PREDICTION,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_CHROMA_QP_INDEX_OFFSET,
-> > +			  -12, 12, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_H264_I_PERIOD,
-> > +			  0, 2047, 1, 0);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE,
-> > +			       V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CABAC, 0,
-> > +			       V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CAVLC);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_AU_DELIMITER,
-> > +			  0, 1, 1, 1);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_HFLIP,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_VFLIP,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_ROTATE,
-> > +			  0, 270, 90, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_VBV_SIZE,
-> > +			  10, 3000, 1, 1000);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_BITRATE_MODE,
-> > +			       V4L2_MPEG_VIDEO_BITRATE_MODE_CBR, 0,
-> > +			       V4L2_MPEG_VIDEO_BITRATE_MODE_CBR);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_BITRATE,
-> > +			  0, 700000000, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_GOP_SIZE,
-> > +			  0, 2047, 1, 0);
-> > +	v4l2_ctrl_new_std_menu(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			       V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE,
-> > +			       V4L2_MPEG_VIDEO_MULTI_SLICE_MODE_MAX_MB, 0,
-> > +			       V4L2_MPEG_VIDEO_MULTI_SLICE_MODE_SINGLE);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_MB,
-> > +			  0, 0xFFFF, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MPEG_VIDEO_MB_RC_ENABLE,
-> > +			  0, 1, 1, 0);
-> > +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
-> > +			  V4L2_CID_MIN_BUFFERS_FOR_OUTPUT, 1, 32, 1, 1);
-> > +
-> > +	if (v4l2_ctrl_hdl->error) {
-> > +		ret =3D -ENODEV;
-> > +		goto cleanup_inst;
-> > +	}
-> > +
-> > +	inst->v4l2_fh.ctrl_handler =3D v4l2_ctrl_hdl;
-> > +	v4l2_ctrl_handler_setup(v4l2_ctrl_hdl);
-> > +
-> > +	wave5_set_default_format(&inst->src_fmt, &inst->dst_fmt);
-> > +	inst->colorspace =3D V4L2_COLORSPACE_REC709;
-> > +	inst->ycbcr_enc =3D V4L2_YCBCR_ENC_DEFAULT;
-> > +	inst->hsv_enc =3D 0;
-> > +	inst->quantization =3D V4L2_QUANTIZATION_DEFAULT;
-> > +	inst->xfer_func =3D V4L2_XFER_FUNC_DEFAULT;
-> > +	inst->frame_rate =3D 30;
-> > +
-> > +	init_completion(&inst->irq_done);
-> > +	ret =3D kfifo_alloc(&inst->irq_status, 16 * sizeof(int), GFP_KERNEL);
-> > +	if (ret) {
-> > +		dev_err(inst->dev->dev, "Allocating fifo, fail: %d\n", ret);
-> > +		goto cleanup_inst;
-> > +	}
-> > +
-> > +	inst->id =3D ida_alloc(&inst->dev->inst_ida, GFP_KERNEL);
-> > +	if (inst->id < 0) {
-> > +		dev_warn(inst->dev->dev, "Allocating instance ID, fail: %d\n", inst-=
->id);
-> > +		ret =3D inst->id;
-> > +		goto cleanup_inst;
-> > +	}
-> > +
-> > +	wave5_vdi_allocate_sram(inst->dev);
-> > +
-> > +	return 0;
-> > +
-> > +cleanup_inst:
-> > +	wave5_cleanup_instance(inst);
-> > +	return ret;
-> > +}
-> > +
-> > +static int wave5_vpu_enc_release(struct file *filp)
-> > +{
-> > +	return wave5_vpu_release_device(filp, wave5_vpu_enc_close, "encoder")=
-;
-> > +}
-> > +
-> > +static const struct v4l2_file_operations wave5_vpu_enc_fops =3D {
-> > +	.owner =3D THIS_MODULE,
-> > +	.open =3D wave5_vpu_open_enc,
-> > +	.release =3D wave5_vpu_enc_release,
-> > +	.unlocked_ioctl =3D video_ioctl2,
-> > +	.poll =3D v4l2_m2m_fop_poll,
-> > +	.mmap =3D v4l2_m2m_fop_mmap,
-> > +};
-> > +
-> > +int wave5_vpu_enc_register_device(struct vpu_device *dev)
-> > +{
-> > +	struct video_device *vdev_enc;
-> > +	int ret;
-> > +
-> > +	vdev_enc =3D devm_kzalloc(dev->v4l2_dev.dev, sizeof(*vdev_enc), GFP_K=
-ERNEL);
-> > +	if (!vdev_enc)
-> > +		return -ENOMEM;
-> > +
-> > +	dev->v4l2_m2m_enc_dev =3D v4l2_m2m_init(&wave5_vpu_enc_m2m_ops);
-> > +	if (IS_ERR(dev->v4l2_m2m_enc_dev)) {
-> > +		ret =3D PTR_ERR(dev->v4l2_m2m_enc_dev);
-> > +		dev_err(dev->dev, "v4l2_m2m_init, fail: %d\n", ret);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	dev->video_dev_enc =3D vdev_enc;
-> > +
-> > +	strscpy(vdev_enc->name, VPU_ENC_DEV_NAME, sizeof(vdev_enc->name));
-> > +	vdev_enc->fops =3D &wave5_vpu_enc_fops;
-> > +	vdev_enc->ioctl_ops =3D &wave5_vpu_enc_ioctl_ops;
-> > +	vdev_enc->release =3D video_device_release_empty;
-> > +	vdev_enc->v4l2_dev =3D &dev->v4l2_dev;
-> > +	vdev_enc->vfl_dir =3D VFL_DIR_M2M;
-> > +	vdev_enc->device_caps =3D V4L2_CAP_VIDEO_M2M_MPLANE | V4L2_CAP_STREAM=
-ING;
-> > +	vdev_enc->lock =3D &dev->dev_lock;
-> > +
-> > +	ret =3D video_register_device(vdev_enc, VFL_TYPE_VIDEO, -1);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	video_set_drvdata(vdev_enc, dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +void wave5_vpu_enc_unregister_device(struct vpu_device *dev)
-> > +{
-> > +	video_unregister_device(dev->video_dev_enc);
-> > +	if (dev->v4l2_m2m_enc_dev)
-> > +		v4l2_m2m_release(dev->v4l2_m2m_enc_dev);
-> > +}
-> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c b/dri=
-vers/media/platform/chips-media/wave5/wave5-vpu.c
-> > new file mode 100644
-> > index 000000000000..a13d968f5d04
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > @@ -0,0 +1,331 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > +/*
-> > + * Wave5 series multi-standard codec IP - platform driver
-> > + *
-> > + * Copyright (C) 2021 CHIPS&MEDIA INC
-> > + */
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/firmware.h>
-> > +#include <linux/interrupt.h>
-> > +#include "wave5-vpu.h"
-> > +#include "wave5-regdefine.h"
-> > +#include "wave5-vpuconfig.h"
-> > +#include "wave5.h"
-> > +
-> > +#define VPU_PLATFORM_DEVICE_NAME "vdec"
-> > +#define VPU_CLK_NAME "vcodec"
-> > +
-> > +#define WAVE5_IS_ENC BIT(0)
-> > +#define WAVE5_IS_DEC BIT(1)
-> > +
-> > +struct wave5_match_data {
-> > +	int flags;
-> > +	const char *fw_name;
-> > +};
-> > +
-> > +int wave5_vpu_wait_interrupt(struct vpu_instance *inst, unsigned int t=
-imeout)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret =3D wait_for_completion_timeout(&inst->irq_done,
-> > +					  msecs_to_jiffies(timeout));
-> > +	if (!ret)
-> > +		return -ETIMEDOUT;
-> > +
-> > +	reinit_completion(&inst->irq_done);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void wave5_vpu_get_interrupt_for_inst(struct vpu_instance *inst=
-, u32 status)
-> > +{
-> > +	struct vpu_device *dev =3D inst->dev;
-> > +	u32 seq_done;
-> > +	u32 cmd_done;
-> > +	int val;
-> > +
-> > +	seq_done =3D wave5_vdi_read_register(dev, W5_RET_SEQ_DONE_INSTANCE_IN=
-FO);
-> > +	cmd_done =3D wave5_vdi_read_register(dev, W5_RET_QUEUE_CMD_DONE_INST)=
-;
-> > +
-> > +	if (status & BIT(INT_WAVE5_INIT_SEQ)) {
-> > +		if (seq_done & BIT(inst->id)) {
-> > +			seq_done &=3D ~BIT(inst->id);
-> > +			wave5_vdi_write_register(dev, W5_RET_SEQ_DONE_INSTANCE_INFO, seq_do=
-ne);
-> > +			val =3D BIT(INT_WAVE5_INIT_SEQ);
-> > +			kfifo_in(&inst->irq_status, &val, sizeof(int));
-> > +		}
-> > +	}
-> > +	if (status & BIT(INT_WAVE5_ENC_SET_PARAM)) {
-> > +		if (seq_done & BIT(inst->id)) {
-> > +			seq_done &=3D ~BIT(inst->id);
-> > +			wave5_vdi_write_register(dev, W5_RET_SEQ_DONE_INSTANCE_INFO, seq_do=
-ne);
-> > +			val =3D BIT(INT_WAVE5_ENC_SET_PARAM);
-> > +			kfifo_in(&inst->irq_status, &val, sizeof(int));
-> > +		}
-> > +	}
-> > +	if (status & BIT(INT_WAVE5_DEC_PIC) ||
-> > +	    status & BIT(INT_WAVE5_ENC_PIC)) {
-> > +		if (cmd_done & BIT(inst->id)) {
-> > +			cmd_done &=3D ~BIT(inst->id);
-> > +			wave5_vdi_write_register(dev, W5_RET_QUEUE_CMD_DONE_INST, cmd_done)=
-;
-> > +			val =3D BIT(INT_WAVE5_DEC_PIC);
-> > +			kfifo_in(&inst->irq_status, &val, sizeof(int));
-> > +		}
-> > +	}
-> > +}
-> > +
-> > +static irqreturn_t wave5_vpu_irq(int irq, void *dev_id)
-> > +{
-> > +	struct vpu_device *dev =3D dev_id;
-> > +
-> > +	if (wave5_vdi_read_register(dev, W5_VPU_VPU_INT_STS)) {
-> > +		struct vpu_instance *inst;
-> > +		u32 irq_status =3D wave5_vdi_read_register(dev, W5_VPU_VINT_REASON);
-> > +
-> > +		list_for_each_entry(inst, &dev->instances, list) {
-> > +			wave5_vpu_get_interrupt_for_inst(inst, irq_status);
-> > +		}
-> > +
-> > +		wave5_vdi_write_register(dev, W5_VPU_VINT_REASON_CLR, irq_status);
-> > +		wave5_vdi_write_register(dev, W5_VPU_VINT_CLEAR, 0x1);
-> > +
-> > +		return IRQ_WAKE_THREAD;
-> > +	}
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static irqreturn_t wave5_vpu_irq_thread(int irq, void *dev_id)
-> > +{
-> > +	struct vpu_device *dev =3D dev_id;
-> > +	struct vpu_instance *inst;
-> > +	int irq_status, ret;
-> > +
-> > +	list_for_each_entry(inst, &dev->instances, list) {
-> > +		while (kfifo_len(&inst->irq_status)) {
-> > +			ret =3D kfifo_out(&inst->irq_status, &irq_status, sizeof(int));
-> > +			if (!ret)
-> > +				break;
-> > +
-> > +			if (irq_status =3D=3D BIT(INT_WAVE5_INIT_SEQ) ||
-> > +			    irq_status =3D=3D BIT(INT_WAVE5_ENC_SET_PARAM))
-> > +				complete(&inst->irq_done);
-> > +			else /* DEC/ENC_PIC */
-> > +				inst->ops->finish_process(inst);
-> > +
-> > +			wave5_vpu_clear_interrupt(inst, irq_status);
-> > +		}
-> > +	}
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static int wave5_vpu_load_firmware(struct device *dev, const char *fw_=
-name,
-> > +				   u32 *revision)
-> > +{
-> > +	const struct firmware *fw;
-> > +	int ret;
-> > +	unsigned int product_id;
-> > +
-> > +	ret =3D request_firmware(&fw, fw_name, dev);
-> > +	if (ret) {
-> > +		dev_err(dev, "request_firmware, fail: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret =3D wave5_vpu_init_with_bitcode(dev, (u8 *)fw->data, fw->size);
-> > +	if (ret) {
-> > +		dev_err(dev, "vpu_init_with_bitcode, fail: %d\n", ret);
-> > +		goto release_fw;
-> > +	}
-> > +	release_firmware(fw);
-> > +
-> > +	ret =3D wave5_vpu_get_version_info(dev, revision, &product_id);
-> > +	if (ret) {
-> > +		dev_err(dev, "vpu_get_version_info fail: %d\n", ret);
-> > +		goto err_without_release;
-> > +	}
-> > +
-> > +	dev_dbg(dev, "%s: enum product_id: %08x, fw revision: %u\n",
-> > +		__func__, product_id, *revision);
-> > +
-> > +	return 0;
-> > +
-> > +release_fw:
-> > +	release_firmware(fw);
-> > +err_without_release:
-> > +	return ret;
-> > +}
-> > +
-> > +static int wave5_vpu_probe(struct platform_device *pdev)
-> > +{
-> > +	int ret;
-> > +	struct vpu_device *dev;
-> > +	const struct wave5_match_data *match_data;
-> > +	u32 fw_revision;
-> > +
-> > +	match_data =3D device_get_match_data(&pdev->dev);
-> > +	if (!match_data) {
-> > +		dev_err(&pdev->dev, "missing device match data\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	/* physical addresses limited to 32 bits */
-> > +	dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-> > +	dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
-> > +
-> > +	dev =3D devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-> > +	if (!dev)
-> > +		return -ENOMEM;
-> > +
-> > +	dev->vdb_register =3D devm_platform_ioremap_resource(pdev, 0);
-> > +	if (IS_ERR(dev->vdb_register))
-> > +		return PTR_ERR(dev->vdb_register);
-> > +	ida_init(&dev->inst_ida);
-> > +
-> > +	mutex_init(&dev->dev_lock);
-> > +	mutex_init(&dev->hw_lock);
-> > +	dev_set_drvdata(&pdev->dev, dev);
-> > +	dev->dev =3D &pdev->dev;
-> > +
-> > +	ret =3D devm_clk_bulk_get_all(&pdev->dev, &dev->clks);
-> > +
-> > +	/* continue without clock, assume externally managed */
-> > +	if (ret < 0) {
-> > +		dev_warn(&pdev->dev, "Getting clocks, fail: %d\n", ret);
-> > +		ret =3D 0;
-> > +	}
-> > +	dev->num_clks =3D ret;
-> > +
-> > +	ret =3D clk_bulk_prepare_enable(dev->num_clks, dev->clks);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "Enabling clocks, fail: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret =3D of_property_read_u32(pdev->dev.of_node, "sram-size",
-> > +				   &dev->sram_size);
-> > +	if (ret) {
-> > +		dev_warn(&pdev->dev, "sram-size not found\n");
-> > +		dev->sram_size =3D 0;
-> > +	}
-> > +
-> > +	dev->sram_pool =3D of_gen_pool_get(pdev->dev.of_node, "sram", 0);
-> > +	if (!dev->sram_pool)
-> > +		dev_warn(&pdev->dev, "sram node not found\n");
-> > +
-> > +	dev->product_code =3D wave5_vdi_read_register(dev, VPU_PRODUCT_CODE_R=
-EGISTER);
-> > +	ret =3D wave5_vdi_init(&pdev->dev);
-> > +	if (ret < 0) {
-> > +		dev_err(&pdev->dev, "wave5_vdi_init, fail: %d\n", ret);
-> > +		goto err_clk_dis;
-> > +	}
-> > +	dev->product =3D wave5_vpu_get_product_id(dev);
-> > +
-> > +	INIT_LIST_HEAD(&dev->instances);
-> > +	ret =3D v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "v4l2_device_register, fail: %d\n", ret);
-> > +		goto err_vdi_release;
-> > +	}
-> > +
-> > +	if (match_data->flags & WAVE5_IS_DEC) {
-> > +		ret =3D wave5_vpu_dec_register_device(dev);
-> > +		if (ret) {
-> > +			dev_err(&pdev->dev, "wave5_vpu_dec_register_device, fail: %d\n", re=
-t);
-> > +			goto err_v4l2_unregister;
-> > +		}
-> > +	}
-> > +	if (match_data->flags & WAVE5_IS_ENC) {
-> > +		ret =3D wave5_vpu_enc_register_device(dev);
-> > +		if (ret) {
-> > +			dev_err(&pdev->dev, "wave5_vpu_enc_register_device, fail: %d\n", re=
-t);
-> > +			goto err_dec_unreg;
-> > +		}
-> > +	}
-> > +
-> > +	dev->irq =3D platform_get_irq(pdev, 0);
-> > +	if (dev->irq < 0) {
-> > +		dev_err(&pdev->dev, "failed to get irq resource\n");
-> > +		ret =3D -ENXIO;
-> > +		goto err_enc_unreg;
-> > +	}
-> > +
-> > +	ret =3D devm_request_threaded_irq(&pdev->dev, dev->irq, wave5_vpu_irq=
-,
-> > +					wave5_vpu_irq_thread, 0, "vpu_irq", dev);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "Register interrupt handler, fail: %d\n", ret);
-> > +		goto err_enc_unreg;
-> > +	}
-> > +
-> > +	ret =3D wave5_vpu_load_firmware(&pdev->dev, match_data->fw_name, &fw_=
-revision);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "wave5_vpu_load_firmware, fail: %d\n", ret);
-> > +		goto err_enc_unreg;
-> > +	}
-> > +
-> > +	dev_info(&pdev->dev, "Added wave5 driver with caps: %s %s\n",
-> > +		 (match_data->flags & WAVE5_IS_ENC) ? "'ENCODE'" : "",
-> > +		 (match_data->flags & WAVE5_IS_DEC) ? "'DECODE'" : "");
-> > +	dev_info(&pdev->dev, "Product Code:      0x%x\n", dev->product_code);
-> > +	dev_info(&pdev->dev, "Firmware Revision: %u\n", fw_revision);
-> > +	return 0;
-> > +
-> > +err_enc_unreg:
-> > +	if (match_data->flags & WAVE5_IS_ENC)
-> > +		wave5_vpu_enc_unregister_device(dev);
-> > +err_dec_unreg:
-> > +	if (match_data->flags & WAVE5_IS_DEC)
-> > +		wave5_vpu_dec_unregister_device(dev);
-> > +err_v4l2_unregister:
-> > +	v4l2_device_unregister(&dev->v4l2_dev);
-> > +err_vdi_release:
-> > +	wave5_vdi_release(&pdev->dev);
-> > +err_clk_dis:
-> > +	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int wave5_vpu_remove(struct platform_device *pdev)
-> > +{
-> > +	struct vpu_device *dev =3D dev_get_drvdata(&pdev->dev);
-> > +
-> > +	mutex_destroy(&dev->dev_lock);
-> > +	mutex_destroy(&dev->hw_lock);
-> > +	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
-> > +	wave5_vpu_enc_unregister_device(dev);
-> > +	wave5_vpu_dec_unregister_device(dev);
-> > +	v4l2_device_unregister(&dev->v4l2_dev);
-> > +	wave5_vdi_release(&pdev->dev);
-> > +	ida_destroy(&dev->inst_ida);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct wave5_match_data wave521c_data =3D {
-> > +	.flags =3D WAVE5_IS_ENC | WAVE5_IS_DEC,
-> > +	.fw_name =3D "cnm/wave521c_k3_codec_fw.bin",
-> > +};
-> > +
-> > +static const struct of_device_id wave5_dt_ids[] =3D {
-> > +	{ .compatible =3D "cnm,cm521c-vpu", .data =3D &wave521c_data },
-> > +	{ /* sentinel */ }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, wave5_dt_ids);
-> > +
-> > +static struct platform_driver wave5_vpu_driver =3D {
-> > +	.driver =3D {
-> > +		.name =3D VPU_PLATFORM_DEVICE_NAME,
-> > +		.of_match_table =3D of_match_ptr(wave5_dt_ids),
-> > +		},
-> > +	.probe =3D wave5_vpu_probe,
-> > +	.remove =3D wave5_vpu_remove,
-> > +};
-> > +
-> > +module_platform_driver(wave5_vpu_driver);
-> > +MODULE_DESCRIPTION("chips&media VPU V4L2 driver");
-> > +MODULE_LICENSE("Dual BSD/GPL");
-> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.h b/dri=
-vers/media/platform/chips-media/wave5/wave5-vpu.h
-> > new file mode 100644
-> > index 000000000000..f4117c079027
-> > --- /dev/null
-> > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.h
-> > @@ -0,0 +1,83 @@
-> > +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-> > +/*
-> > + * Wave5 series multi-standard codec IP - basic types
-> > + *
-> > + * Copyright (C) 2021 CHIPS&MEDIA INC
-> > + */
-> > +#ifndef __VPU_DRV_H__
-> > +#define __VPU_DRV_H__
-> > +
-> > +#include <media/v4l2-ctrls.h>
-> > +#include <media/v4l2-ioctl.h>
-> > +#include <media/v4l2-event.h>
-> > +#include <media/v4l2-fh.h>
-> > +#include <media/videobuf2-v4l2.h>
-> > +#include <media/videobuf2-dma-contig.h>
-> > +#include <media/videobuf2-vmalloc.h>
-> > +#include "wave5-vpuconfig.h"
-> > +#include "wave5-vpuapi.h"
-> > +
-> > +#define VPU_BUF_SYNC_TO_DEVICE 0
-> > +#define VPU_BUF_SYNC_FROM_DEVICE 1
-> > +
-> > +struct vpu_src_buffer {
-> > +	struct v4l2_m2m_buffer	v4l2_m2m_buf;
-> > +	struct list_head	list;
-> > +	bool			consumed;
-> > +};
-> > +
-> > +struct vpu_dst_buffer {
-> > +	struct v4l2_m2m_buffer v4l2_m2m_buf;
-> > +	bool                   display;
-> > +};
-> > +
-> > +enum vpu_fmt_type {
-> > +	VPU_FMT_TYPE_CODEC =3D 0,
-> > +	VPU_FMT_TYPE_RAW   =3D 1
-> > +};
-> > +
-> > +struct vpu_format {
-> > +	unsigned int v4l2_pix_fmt;
-> > +	unsigned int max_width;
-> > +	unsigned int min_width;
-> > +	unsigned int max_height;
-> > +	unsigned int min_height;
-> > +};
-> > +
-> > +static inline struct vpu_instance *wave5_to_vpu_inst(struct v4l2_fh *v=
-fh)
-> > +{
-> > +	return container_of(vfh, struct vpu_instance, v4l2_fh);
-> > +}
-> > +
-> > +static inline struct vpu_instance *wave5_ctrl_to_vpu_inst(struct v4l2_=
-ctrl *vctrl)
-> > +{
-> > +	return container_of(vctrl->handler, struct vpu_instance, v4l2_ctrl_hd=
-l);
-> > +}
-> > +
-> > +static inline struct vpu_src_buffer *wave5_to_vpu_src_buf(struct vb2_v=
-4l2_buffer *vbuf)
-> > +{
-> > +	return container_of(vbuf, struct vpu_src_buffer, v4l2_m2m_buf.vb);
-> > +}
-> > +
-> > +static inline struct vpu_dst_buffer *wave5_to_vpu_dst_buf(struct vb2_v=
-4l2_buffer *vbuf)
-> > +{
-> > +	return container_of(vbuf, struct vpu_dst_buffer, v4l2_m2m_buf.vb);
-> > +}
-> > +
-> > +int wave5_vpu_wait_interrupt(struct vpu_instance *inst, unsigned int t=
-imeout);
-> > +
-> > +int  wave5_vpu_dec_register_device(struct vpu_device *dev);
-> > +void wave5_vpu_dec_unregister_device(struct vpu_device *dev);
-> > +int  wave5_vpu_enc_register_device(struct vpu_device *dev);
-> > +void wave5_vpu_enc_unregister_device(struct vpu_device *dev);
-> > +static inline bool wave5_vpu_both_queues_are_streaming(struct vpu_inst=
-ance *inst)
-> > +{
-> > +	struct vb2_queue *vq_cap =3D
-> > +		v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE_M=
-PLANE);
-> > +	struct vb2_queue *vq_out =3D
-> > +		v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT_MP=
-LANE);
-> > +
-> > +	return vb2_is_streaming(vq_cap) && vb2_is_streaming(vq_out);
-> > +}
-> > +
-> > +#endif
-> >=20
->=20
-> Regards,
->=20
-> 	Hans
+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
 
-Thank you so much or your review,
-
-	Nicolas
+--------------ADHPYrIoS1kzb01a3S4HpH5e--
