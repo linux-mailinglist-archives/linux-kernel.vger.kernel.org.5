@@ -2,227 +2,557 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E467AA0EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157FA7A9F49
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbjIUUuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
+        id S231219AbjIUUUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbjIUUtb (ORCPT
+        with ESMTP id S231695AbjIUUTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:49:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40B190F1B;
-        Thu, 21 Sep 2023 10:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318446; x=1726854446;
-  h=message-id:date:subject:to:references:cc:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=7y8W/ezEPnzjg6KEPTxEtNCd9uUM5nh0AKEIq5X93XU=;
-  b=VRb/pZwW1oL6NAnlAr7WLpKU0Vh+cMj2HBWvl2WKOGRyw94TEh2EYGyR
-   nGMF4ZGFh/5RJw88nvtE518Uoow0jfGwnRpuzocQBDN/l9cYWXc9pACIh
-   xPoWDFcfrDsJJ/er85f7f/zy2C50Hog5GPAqMPEpOGfqvHEQnGA10CNqM
-   /ai0ebW+CZm4AsFEqHAMS1FMySxhIu46ScsNR5RgzYeMXIeT2KvzOzKSu
-   +KkTxVaIH3rBhGZs8PTPYYGVh44+MznE9as+37P3NotFYJORTIA+HnLqO
-   ddPukpOildNIhNBcnUVP4Rl8VEDRwmT4A/Q8iSu/BI/3VUf6waRa+/EPF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="377805444"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="377805444"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 06:05:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="920720413"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="920720413"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Sep 2023 06:05:32 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 21 Sep 2023 06:05:31 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 21 Sep 2023 06:05:31 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 21 Sep 2023 06:05:31 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 21 Sep 2023 06:05:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SkQECvbp/DFOxUOdT37wrdm0T5Qc8AXDvPHDmNzvnpO1LdlKNN1k4YZWZNmROBQGQBZxWEqdSqAADTougZnESTU/p3rwzKh8a+VNqcAMijJIYsiDfknCKD8VICjKlDGziEvxl0ur1ZvmVYMWPJSiy+YAOa7pD5NxDNIvi+OSAFEcAWsKtGubQWuPskYplmNXV7HMwVMg4/vQ0AfNhMgRH0pY7tQ7OnXM9IeRVBoBUMvhrzKbGZXHaZPbaczaqxjT7xelOPcRksfnIvxXo6wEg7E0ofGW9RftrVWIRuf4hza2G2/SQzAQaxdghQ+kA+ntfuKSYTA4KtGmJl1NOkjBqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Lg8HRrSB5KEcaqVmwVrFKnenivR/OZIKq5lGTiwzBXY=;
- b=HLuzCmvKKyGLzLN8komMHNhLGgYJcTaEwE0UgdL3JtTzMntwGdAESA+jKuXwtF3Bp6nNb6I0cASsd03dCP8DssGkXZYuCZHHdNEd6o73PbZyRBcGqxPgoDOTSKQ6fAdPiXMg+QY6vl7ReLr8UaEhRp9rZPGkY+ZUTS7kQKauhKyoAdZr+C7Li6oXUclqt7XRXCrnx9CIbflpMI4m8qdFmhM8/rqbRzJOW7yp5vVkX+C9nxT0Als1+koJu9TiER2+VIXqOuvSDizSjQoyDTpZmZTpT0+YLuckDdcQSjJHu/U0QixIA7mGVEGtZ4EZgZt6yjrVAk6me/Ty/JFso01ydA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by CH3PR11MB8361.namprd11.prod.outlook.com (2603:10b6:610:172::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Thu, 21 Sep
- 2023 13:05:29 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::bede:bd20:31e9:fcb4]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::bede:bd20:31e9:fcb4%7]) with mapi id 15.20.6768.029; Thu, 21 Sep 2023
- 13:05:29 +0000
-Message-ID: <ed6eafdf-d788-5eec-1feb-ef7d56184715@intel.com>
-Date:   Thu, 21 Sep 2023 15:04:35 +0200
+        Thu, 21 Sep 2023 16:19:47 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0347E6D;
+        Thu, 21 Sep 2023 10:27:17 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38LAbQXB000605;
+        Thu, 21 Sep 2023 15:05:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:from:to:cc:references
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=6AqLoXGPw7uz+MC875pyy/CFwU0aSTYkKoYlw6xBWX4=; b=mB
+        25njK8Gur3NgJGNDx+kSRRxV5OS5Gco3JgR8uUL8irSAI6edIf1xgh4xuRJ7lg8Q
+        u+xOeXasTpuG3NvrD7zXkkKu2erHG7XyTo2M5pFfM8CBoNTAeuqkRsKh8qkHedx9
+        d10c2omsz7hckGVKZG5bb2yVN7q6JNkA2ctvB00TVwUEZovz9/fqawGiSjueXHlP
+        BJnq7jRbecupE231QgbIXpjCCToDihe2gJX9m0fxNNJcd2ZKSPjIaV5RqqhVnKDj
+        uuaTGSndM7arlgozzb4APdAeojyoCzHmW4WczJ01AiJcF+Cu/oARtZSpdtVT8mDn
+        Ef3zxDF5suSKG1KoyrJA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t51sfmkjg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 15:05:03 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7E7BD100057;
+        Thu, 21 Sep 2023 15:05:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 63366233C62;
+        Thu, 21 Sep 2023 15:05:02 +0200 (CEST)
+Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
+ 2023 15:05:01 +0200
+Message-ID: <36253b17-0892-83f7-2f17-367298246d8b@foss.st.com>
+Date:   Thu, 21 Sep 2023 15:05:01 +0200
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Intel-wired-lan] [PATCH net-next 0/3] net/intel: fix link-time
- undefined reference errors
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 3/8] tools/counter: add a flexible watch events tool
 Content-Language: en-US
-To:     Jacob Keller <jacob.e.keller@intel.com>
-References: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
- <f05c2a5b-d434-5edc-828f-4b87049d01fe@intel.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "Richard Cochran" <richardcochran@gmail.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Michal Michalik <michal.michalik@intel.com>,
-        Milena Olech <milena.olech@intel.com>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     William Breathitt Gray <william.gray@linaro.org>
+CC:     <lee@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <f05c2a5b-d434-5edc-828f-4b87049d01fe@intel.com>
+References: <20230829134029.2402868-1-fabrice.gasnier@foss.st.com>
+ <20230829134029.2402868-4-fabrice.gasnier@foss.st.com>
+ <ZQdOcDQR6qONmmnR@fedora> <7aa66ac8-eceb-2f6e-960b-2c4dac9f595e@foss.st.com>
+In-Reply-To: <7aa66ac8-eceb-2f6e-960b-2c4dac9f595e@foss.st.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0187.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ca::9) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CH3PR11MB8361:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c355a32-96de-4323-c60c-08dbbaa36dea
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VnbZnb+G4YyaVGIUooRywhhCPuW77d4Xz4E5B2LOcKvRKVSaNMOtgmCw/m8hfu/25lmjx2PrXF4CUb2akLTXFzZI19RiScezFxp0SQfBqMPWHSgauEGAvRqJGG7EYCTvb7wnswVXjAKJ+59BYgB0oD77ZQ6hhB9SL8pkpLZL8SDD+AVjTbdQDy3nDgfH+X8u4NlIO4bRL7tzM+WmIRCZJzZcrs+gjsikrJ6+VZ6ACNIOWQfnuncy+/35xbl0+NuB9hqHN5/zPX5jBem65OJezTG7ftk8djgW56sO3DlhT83a5wC21HmlReTeAD9sNLgN8zYRl+D0ROLcTU/s4bVcY078CjJbycpNmmIzeJtOhSHs1AZAni4ymo/63D1nOy+OlIAamv464tiC37Cwnwu0oY3wktZdABQ15QynRcved/431tw7m1HELuVmj60QgFA8WuXw9mGRFznR0zKtt8S3MZx9QoTXl/mmyQRAcCqDJQUl6WZo4uIRVmLteMO9xJInT5WmtjYbTQ6V6wXMg5CwxcZffdCD7YVTA/fvE+PbluhovFn6LX9cUdqlqC1BGuJijUKuhiJjnzmW5EFrJTdPZrGE8YxCzjO77//roKKahQwEblLOlCL4WWMHjjRovyW68yjxSWHCCj6wxo2ZH8c+tQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(39860400002)(396003)(1800799009)(186009)(451199024)(6506007)(6486002)(6666004)(53546011)(6512007)(478600001)(83380400001)(2616005)(26005)(2906002)(6862004)(8936002)(8676002)(37006003)(316002)(66476007)(6636002)(66946007)(66556008)(5660300002)(41300700001)(54906003)(4326008)(966005)(82960400001)(31696002)(36756003)(86362001)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXpqOTV3enMwdWxNY05MeHFKQVVIbW5Ca3dDMVVsR1JNZGJIY0cySk85bHM3?=
- =?utf-8?B?T210VGtFdjVqenN4dlF2dDc0V2ppNWFHYzZVSE1ONEZkZ1JFQ1B1dlF2RXpQ?=
- =?utf-8?B?K0JZdFRaekx4ZmRqU2JHY2c2bHo0L3I4U29HWExVZkJWU0pWcVJpV0YyWXVG?=
- =?utf-8?B?T1Frak8rOXRBa2RhQ1dtejJsK20rTlk5Y0x5S0JCVEtaYkw1Wm1YTDZ3YURS?=
- =?utf-8?B?SzUxVVIrM3BObUlXNTg0aEY5dGVTQmhVNVVmQVBHMGxNYS9DYzlJa1FzUEZX?=
- =?utf-8?B?dnFzQkMyZmd6U3NyZHg2Z2pZS3lrUW9zVERoeVhualNyUEZESUNJYW8vZXRq?=
- =?utf-8?B?UTdjRjhmQVhQRnhsS0c2b0Q1WXlCMUtyUkU3VWVYRS9Ldnh4czZLcmFCSG9I?=
- =?utf-8?B?UEdmWkdRb1MwL0RhZ3dLTElpL0w4NmE5RE81T2FHM0QyZlZaSTFkMzZxVGxr?=
- =?utf-8?B?MmUxdGhnK3dyclUwcjJyOHNqcGIzVWQ4cnZMTlpwSlFjbUhlOGdPcnYyNFlw?=
- =?utf-8?B?V2lyNU1Ua2k2Tng5OWx1T3UwYkFLbFFxcndveWN6SXlTejdmbTc1ejlsNFRL?=
- =?utf-8?B?MitqcE05dWY5WGt3S3BsV1JvNFJUdVdDUldQUnBaVXZOc2IvdzVhQm9EaDgy?=
- =?utf-8?B?YXBXNFJ1ZlBWcnAyR1lnblZ4TlFoVTFkUVBHWEF1Wk5CUnhFL3JJU0g1ei9t?=
- =?utf-8?B?UEE3bXZuWGRVTHRNSG1iNm4yRGpEcTdZQWl3aEZ5aTBlaUtNaEkrcXVGSHAv?=
- =?utf-8?B?SU9mWWpvNTlDWk9udzlEZ0gxMUUrNHBSREZGV0ZZUTVYZktoOS94Mm80WnVL?=
- =?utf-8?B?MjFwNnAzdW9WaWpFN0tvbXpud1FOQUV1aUZoSk45VGdjN3VTcDBlazNuVjM1?=
- =?utf-8?B?a2tQU1ExTnl2ejJXSjk3TzF3YzlTNXNVMXpQQlIyenMxZWJ3NEJLL0Q4VmFh?=
- =?utf-8?B?MWVqcHdHRytoaDZjYVE2UVRlUDNxUWdCMGVHOURBa3YrK28yYnIwdnczNkkz?=
- =?utf-8?B?SXE5Z0xxaCtuUEt0elpKLytyaVUzVEhiV01MdEMxK01MRnpsT1lTOVFMTFVG?=
- =?utf-8?B?QlZlQVRYOTVvVUJJYUpOVEFXMWtpQ1hVaHJZa245T1JBaHVGS2g5MHczZkp5?=
- =?utf-8?B?T2tQUm5FNWpyU2Q1QlI0M3NLRXYrNGVuK0VHNlpMVUE2bFp3V0pTQUxFV3Zj?=
- =?utf-8?B?QmJSQlQ2WGpQNm95cCtxaDhKNGdSVUhBanIrdktJSC92Yy85OGpXYmxzeFYw?=
- =?utf-8?B?TUh5Y2ZaVWpHQmdqV2ZPQisyQlFDTUxkSGF1eW8wejlKZStTaG4xcExuTFpn?=
- =?utf-8?B?OWhpTTRaQ1ZGZ0Rpanhockp2T3FORDVrMXA5OUNsUGlkdzBQcGZ2ZlNpbHVx?=
- =?utf-8?B?bUJoNUtFQXFRSjFiVTFQZndBWk1kdklJZkdhckprNmEzT0pIaDBGbzh6elc0?=
- =?utf-8?B?N3hKQlRaelVVdXhBUWxBMlE3dGh2QkJxU3RpdFhBQnI5aTRGWkp3dUlPRTFn?=
- =?utf-8?B?YXFvZlovcmIvbUpDdlY3TXNKRzFSeHNla05XVFRjRkxsVzM3b1VIbWpoeXpo?=
- =?utf-8?B?TXhhb21YR3Q0V1B4NlFoVGhBNjcwSlNsdldjdGp5ZHc1MnM4RGhxbXU5MEt6?=
- =?utf-8?B?STBYZi9BQUM1MC9DZ0JRTDVJOTdqM1p0VUxCTFhzMm0vVHJ5aXdKMlkrSHR2?=
- =?utf-8?B?dlNVZUsvaXFvb2krN2RoMEVzb3p0NEk2eTJWVzg3K1U4VTFhaWtjTGtxY0hU?=
- =?utf-8?B?UFhleGUvZ0RMeFAwbVZMdForZE9OaTk4Z3ordGtFdC84dDhybWErUVhvOEZv?=
- =?utf-8?B?NGxuOEErZWRyZzFxVXFlRTFKalI4WER6Qk84V1gvVGt6N0pBUzI5NXljVk16?=
- =?utf-8?B?VktaK3piMWdBaS9TcStuMVFZSVNjZkR4UHBxWE9ZdlpqdjJ0Qm1oSkt4SGti?=
- =?utf-8?B?NXVhUEZBZmc0YjRVNmxVV3F2K0twakZTWjdKZWNnakIrTnJkOFFrTFpvbi9K?=
- =?utf-8?B?RGlxSFl5L1h5Q0sySmtNcWxzV3loNzZNWHZoMWhVMG9ualVGWW56YzVrVDBJ?=
- =?utf-8?B?ZlQvZWZLZVhEdDZ3RmtMTWtMaXdQQ3ZmWTYzTFNDd2NhVldpRldjQWVXWUly?=
- =?utf-8?B?ZUVyWHk5eHl6WHpYMUV4SUlodTJpV21pWDBUelhqZ0hZTHZURUNOVkovU3lp?=
- =?utf-8?B?THc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c355a32-96de-4323-c60c-08dbbaa36dea
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 13:05:29.1877
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R+jYFNazd6Pg2SJChtvenEFIBf8V8LIAgP1LgFNqZmeqju3KrjVHeKhal00qR+D0sTeu1iG/ROMfiq+mRWWz2ZJcFnnOeRcJ5RfcbT4lZOc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8361
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.20.59]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-21_11,2023-09-21_01,2023-05-22_02
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
-Date: Wed, 20 Sep 2023 16:31:27 -0700
-
-> 
-> 
-> On 9/20/2023 11:07 AM, Alexander Lobakin wrote:
->> Recently, several link-time issues were spotted in the ethernet/intel/
->> folder thanks to Kbuild bots and linux-next.
->> The fixes are pretty straightforward, just some stubs and CONFIG_*
->> guards, so resolve all of them in one shot and unbreak randconfig
->> builds.
+On 9/19/23 17:37, Fabrice Gasnier wrote:
+> On 9/17/23 21:07, William Breathitt Gray wrote:
+>> On Tue, Aug 29, 2023 at 03:40:24PM +0200, Fabrice Gasnier wrote:
+>>> This adds a new counter tool to be able to test various watch events.
+>>> A flexible watch array can be populated from command line, each field
+>>> may be tuned with a dedicated command line argument.
+>>> Each argument can be repeated several times: each time it gets repeated,
+>>> a corresponding new watch element is allocated.
+>>>
+>>> It also comes with a simple default watch (to monitor overflows), used
+>>> when no watch parameters are provided.
+>>>
+>>> The print_usage() routine proposes another example, from the command line,
+>>> which generates a 2 elements watch array, to monitor:
+>>> - overflow events
+>>> - capture events, on channel 3, that reads read captured data by
+>>>   specifying the component id (capture3_component_id being 7 here).
+>>>
+>>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 >>
->> Alexander Lobakin (3):
->>   ice: fix undefined references to ice_is_*() when
->>     !CONFIG_PTP_1588_CLOCK
->>   ice: fix undefined references from DPLL code when
->>     !CONFIG_PTP_1588_CLOCK
->>   idpf: fix undefined reference to tcp_gro_complete() when !CONFIG_INET
+>> Hi Fabrice,
 >>
->>  drivers/net/ethernet/intel/ice/Makefile     |  5 ++---
->>  drivers/net/ethernet/intel/ice/ice_main.c   |  8 ++++---
->>  drivers/net/ethernet/intel/ice/ice_ptp_hw.h | 25 ++++++++++++++++++++-
->>  drivers/net/ethernet/intel/idpf/idpf_txrx.c |  3 +++
->>  4 files changed, 34 insertions(+), 7 deletions(-)
+>> This is great idea, it'll make it so much easier to test out drivers
+>> so I'm excited! :-)
+> 
+> Hi William,
+> 
+> Thanks
+> 
 >>
->> ---
->> Directly to netdev/net-next, build bots are not happy and the next
->> linux-next is approaching :s
+>> This is a new tool, so would you add a MAINTAINERS entry for the
+>> counter_watch_events.c file?
 > 
-> I had alternative fixes for ice at:
+> I haven't thought about it.
+> I can add a MAINTAINERS entry, yes!
+> Who would you suggest ?
 > 
-> https://lore.kernel.org/intel-wired-lan/20230919233435.518620-1-jacob.e.keller@intel.com/
+>>
+>> More comments inline below.
+>>
+>>> ---
+>>>  tools/counter/Build                  |   1 +
+>>>  tools/counter/Makefile               |   8 +-
+>>>  tools/counter/counter_watch_events.c | 348 +++++++++++++++++++++++++++
+>>>  3 files changed, 356 insertions(+), 1 deletion(-)
+>>>  create mode 100644 tools/counter/counter_watch_events.c
+>>>
+>>> diff --git a/tools/counter/Build b/tools/counter/Build
+>>> index 33f4a51d715e..4bbadb7ec93a 100644
+>>> --- a/tools/counter/Build
+>>> +++ b/tools/counter/Build
+>>> @@ -1 +1,2 @@
+>>>  counter_example-y += counter_example.o
+>>> +counter_watch_events-y += counter_watch_events.o
+>>> diff --git a/tools/counter/Makefile b/tools/counter/Makefile
+>>> index b2c2946f44c9..00e211edd768 100644
+>>> --- a/tools/counter/Makefile
+>>> +++ b/tools/counter/Makefile
+>>> @@ -14,7 +14,7 @@ MAKEFLAGS += -r
+>>>  
+>>>  override CFLAGS += -O2 -Wall -g -D_GNU_SOURCE -I$(OUTPUT)include
+>>>  
+>>> -ALL_TARGETS := counter_example
+>>> +ALL_TARGETS := counter_example counter_watch_events
+>>>  ALL_PROGRAMS := $(patsubst %,$(OUTPUT)%,$(ALL_TARGETS))
+>>>  
+>>>  all: $(ALL_PROGRAMS)
+>>> @@ -31,6 +31,12 @@ $(OUTPUT)include/linux/counter.h: ../../include/uapi/linux/counter.h
+>>>  
+>>>  prepare: $(OUTPUT)include/linux/counter.h
+>>>  
+>>> +COUNTER_WATCH_EVENTS := $(OUTPUT)counter_watch_events.o
+>>> +$(COUNTER_WATCH_EVENTS): prepare FORCE
+>>> +	$(Q)$(MAKE) $(build)=counter_watch_events
+>>> +$(OUTPUT)counter_watch_events: $(COUNTER_WATCH_EVENTS)
+>>> +	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+>>> +
+>>
+>> Move this below the COUNTER_EXAMPLE block just so we can keep the
+>> recipes in alphabetical order.
 > 
-> that are slightly more invasive but bring things in line with changes I
-> had proposed earlier before the DPLL code got merged. See:
+> Ack, will update it.
 > 
-> https://lore.kernel.org/intel-wired-lan/20230919233435.518620-1-jacob.e.keller@intel.com/
+>>
+>>>  COUNTER_EXAMPLE := $(OUTPUT)counter_example.o
+>>>  $(COUNTER_EXAMPLE): prepare FORCE
+>>>  	$(Q)$(MAKE) $(build)=counter_example
+>>> diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
+>>> new file mode 100644
+>>> index 000000000000..7f73a1519d8e
+>>> --- /dev/null
+>>> +++ b/tools/counter/counter_watch_events.c
+>>> @@ -0,0 +1,348 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/* Counter - Test various watch events in a userspace application
+>>
+>> "Counter" should be "Counter Watch Events" (or "counter_watch_events").
+>>
+>>> + * inspired by counter_example.c
+>>
+>> No need to mention counter_example.c, this utility does far more than
+>> and bares little resemblance at this point to counter_example.c which is
+>> really just a bare minimal example of watching Counter events.
 > 
-> I'd obviously prefer my version of the ice changes, but I understand if
-> we prefer a simple more 'obvious' fix be merged now. I can spin my
-> changes again to cleanup/refactor in a follow up if necessary.
+> Ack
+> 
+>>
+>>> + */
+>>> +
+>>> +#include <errno.h>
+>>> +#include <fcntl.h>
+>>> +#include <getopt.h>
+>>> +#include <linux/counter.h>
+>>> +#include <stdlib.h>
+>>> +#include <stdio.h>
+>>> +#include <string.h>
+>>> +#include <sys/ioctl.h>
+>>> +#include <unistd.h>
+>>> +
+>>> +#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+>>
+>> My initial reaction was that this macro is already exposed in some
+>> header for us, but my local /usr/include/linux/kernel.h file doesn't
+>> appear to bare it so I guess not. Perhaps it'll be fine for our needs --
+>> I think the only difference between this ARRAY_SIZE and the Linux kernel
+>> one is the addition of __must_be_array(x).
+> 
+> I had the same reaction when trying to use it. Then, I figured out
+> several tools redefine this macro.
+> Digging further, I just found out some tools have in their Makefile CFLAGS:
+> -I$(srctree)/tools/include
+> and include from there: <linux/kernel.h>
+> 
+> I'll update the Makefile in v2, and remove this definition from here.
+> 
+>>
+>>> +
+>>> +static struct counter_watch simple_watch[] = {
+>>> +	{
+>>> +		/* Component data: Count 0 count */
+>>> +		.component.type = COUNTER_COMPONENT_COUNT,
+>>> +		.component.scope = COUNTER_SCOPE_COUNT,
+>>> +		.component.parent = 0,
+>>> +		/* Event type: Index */
+>>> +		.event = COUNTER_EVENT_OVERFLOW_UNDERFLOW,
+>>
+>> There's a bit of confusion here. The comment says the event type is
+>> INDEX, but the structure event type is set for OVERFLOW_UNDERFLOW; also,
+>> the commit description states that we're monitoring "overflows" which
+>> implies to me the OVERFLOW event type. So which of the three is it?
+> 
+> Ah yes, It's a mix of bad copy paste and updates. I'll fix it.
+> 
+>>
+>>> +		/* Device event channel 0 */
+>>> +		.channel = 0,
+>>> +	},
+>>> +};
+>>> +
+>>> +static int find_match_or_number_from_array(char *arg, const char * const str[], int sz, __u8 *val)
+>>> +{
+>>> +	unsigned int i;
+>>> +	char *dummy;
+>>> +	unsigned long idx;
+>>> +	int ret;
+>>> +
+>>> +	for (i = 0; i < sz; i++) {
+>>> +		ret = strncmp(arg, str[i], strlen(str[i]));
+>>> +		if (!ret && strlen(str[i]) == strlen(arg)) {
+>>> +			*val = i;
+>>> +			return 0;
+>>> +		}
+>>
+>> This has several strlen calls so I wonder if it's more wasteful than it
+>> needs to me. I suppose the compiler would optimize this away, but I
+>> think there is an alternative solution.
+>>
+>> We're checking for an exact match, so you don't need the string length.
+>> Instead, you can compare each character, break when characters differ,
+>> or return 0 when you reached the null byte for both. So something like
+>> this:
+>>
+>>     for (j = 0; arg[j] == str[i][j]; j++) {
+>>             /* If we reached the end of the strings */
+>>             if (arg[j] == '\0') {
+>>                     *val = i;
+>>                     return 0;
+>>             }
+>>     }
+>>     /* Strings do not match; continue to the next string */
+>>
+>> We end up with the same number of lines, so I'll leave it up to you
+>> whether you want to use this solution, or if you consider the existing
+>> code clearer read.
+> 
+> I'll look forward in the direction you propose. First, we need to
+> confirm in which form the arguments can be expected. It depends on your
+> proposal to use a --watch string formatted arguments.
+> 
+>>
+>>> +	}
+>>> +
+>>> +	/* fallback to number */
+>>
+>> I'm not sure it makes sense to support numbers. Although it's true that
+>> the component type, component scope, and event type are passed as __u8
+>> values, users are expected to treat those values are opaque and pass
+>> them via the respective enum constants. Since we don't guarantee that
+>> the specific enum constant values will remain consistent between kernel
+>> versions, I don't think it's a good idea to give to users that sort of
+>> implication by allowing them to use raw numbers for configuration
+>> selection.
+> 
+> Ack, I can remove this.
+> 
+> I'm a bit surprised by this statement. I may be wrong... I'd expect a
+> userland binary to be compatible when updating to a newer kernel: e.g.
+> user API (ABI?) definitions to be stable (including enum constants) ?
+> 
+>>
+>>> +	idx = strtoul(optarg, &dummy, 10);
+>>> +	if (!errno) {
+>>> +		if (idx >= sz)
+>>> +			return -EINVAL;
+>>> +		*val = idx;
+>>> +		return 0;
+>>> +	}
+>>> +
+>>> +	return -errno;
+>>> +}
+>>> +
+>>> +static const char * const counter_event_type_name[] = {
+>>> +	"COUNTER_EVENT_OVERFLOW",
+>>> +	"COUNTER_EVENT_UNDERFLOW",
+>>> +	"COUNTER_EVENT_OVERFLOW_UNDERFLOW",
+>>> +	"COUNTER_EVENT_THRESHOLD",
+>>> +	"COUNTER_EVENT_INDEX",
+>>> +	"COUNTER_EVENT_CHANGE_OF_STATE",
+>>> +	"COUNTER_EVENT_CAPTURE",
+>>> +};
+>>> +
+>>> +static int counter_arg_to_event_type(char *arg, __u8 *event)
+>>> +{
+>>> +	return find_match_or_number_from_array(arg, counter_event_type_name,
+>>> +					       ARRAY_SIZE(counter_event_type_name), event);
+>>> +}
+>>> +
+>>> +static const char * const counter_component_type_name[] = {
+>>> +	"COUNTER_COMPONENT_NONE",
+>>> +	"COUNTER_COMPONENT_SIGNAL",
+>>> +	"COUNTER_COMPONENT_COUNT",
+>>> +	"COUNTER_COMPONENT_FUNCTION",
+>>> +	"COUNTER_COMPONENT_SYNAPSE_ACTION",
+>>> +	"COUNTER_COMPONENT_EXTENSION",
+>>> +};
+>>> +
+>>> +static int counter_arg_to_component_type(char *arg, __u8 *type)
+>>> +{
+>>> +	return find_match_or_number_from_array(arg, counter_component_type_name,
+>>> +					       ARRAY_SIZE(counter_component_type_name), type);
+>>> +}
+>>> +
+>>> +static const char * const counter_scope_name[] = {
+>>> +	"COUNTER_SCOPE_DEVICE",
+>>> +	"COUNTER_SCOPE_SIGNAL",
+>>> +	"COUNTER_SCOPE_COUNT",
+>>> +};
+>>> +
+>>> +static int counter_arg_to_scope(char *arg, __u8 *type)
+>>> +{
+>>> +	return find_match_or_number_from_array(arg, counter_scope_name,
+>>> +					       ARRAY_SIZE(counter_scope_name), type);
+>>> +}
+>>> +
+>>> +static void print_usage(void)
+>>> +{
+>>> +	fprintf(stderr, "Usage: counter_watch_events [options]...\n"
+>>> +		"Test various watch events for given counter device\n"
+>>> +		"  --channel -c <n>\n"
+>>> +		"        Set watch.channel\n"
+>>> +		"  --debug -d\n"
+>>> +		"        Prints debug information\n"
+>>> +		"  --event -e <number or counter_event_type string>\n"
+>>> +		"        Sets watch.event\n"
+>>> +		"  --help -h\n"
+>>> +		"        Prints usage\n"
+>>> +		"  --device-num -n <n>\n"
+>>> +		"        Set device number (/dev/counter<n>, default to 0)\n"
+>>> +		"  --id -i <n>\n"
+>>> +		"        Set watch.component.id\n"
+>>> +		"  --loop -l <n>\n"
+>>> +		"        Loop for a number of events (forever if n < 0)\n"
+>>> +		"  --parent -p <n>\n"
+>>> +		"        Set watch.component.parent number\n"
+>>> +		"  --scope -s <number or counter_scope string>\n"
+>>> +		"        Set watch.component.scope\n"
+>>> +		"  --type -t <number or counter_component_type string>\n"
+>>> +		"        Set watch.component.type\n"
+>>> +		"\n"
+>>> +		"Example with two watched events:\n\n"
+>>> +		"counter_watch_events -d \\\n"
+>>> +		"\t-t COUNTER_COMPONENT_COUNT -s COUNTER_SCOPE_COUNT"
+>>> +		" -e COUNTER_EVENT_OVERFLOW_UNDERFLOW -i 0 -c 0 \\\n"
+>>> +		"\t-t COUNTER_COMPONENT_EXTENSION -s COUNTER_SCOPE_COUNT"
+>>> +		" -e COUNTER_EVENT_CAPTURE -i 7 -c 3\n"
+>>> +		);
+>>> +}
+>>
+>> Are you following any particular convention for the usage description? I
+>> wonder if there is a particular preferred standard for command-line
+>> interface descriptions. A quick search brought up a few, such as the
+>> POSIX Utility Conventions[^1] and docopt[^2].
+>>
+>> One improvement I would recommend here is to put the short form of the
+>> option before the long form and separate them with a command to make it
+>> clearer (e.g. "-h, --help").
+>>
+>> [^1] https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
+>> [^2] http://docopt.org
+> 
+> Thanks for pointing this! So definitely a good pointer, and suggestion
+> to look at!
+> 
+> I'll try to improve in v2.
+> 
+>>
+>>> +
+>>> +static void print_watch(struct counter_watch *watch, int nwatch)
+>>> +{
+>>> +	int i;
+>>> +
+>>> +	/* prints the watch array in C-like structure */
+>>> +	printf("watch[%d] = {\n", nwatch);
+>>> +	for (i = 0; i < nwatch; i++) {
+>>> +		printf(" [%d] =\t{\n"
+>>> +		       "\t\t.component.type = %s\n"
+>>> +		       "\t\t.component.scope = %s\n"
+>>> +		       "\t\t.component.parent = %d\n"
+>>> +		       "\t\t.component.id = %d\n"
+>>> +		       "\t\t.event = %s\n"
+>>> +		       "\t\t.channel = %d\n"
+>>> +		       "\t},\n",
+>>> +		       i,
+>>> +		       counter_component_type_name[watch[i].component.type],
+>>> +		       counter_scope_name[watch[i].component.scope],
+>>> +		       watch[i].component.parent,
+>>> +		       watch[i].component.id,
+>>> +		       counter_event_type_name[watch[i].event],
+>>> +		       watch[i].channel);
+>>> +	}
+>>> +	printf("};\n");
+>>> +}
+>>> +
+>>> +static const struct option longopts[] = {
+>>> +	{ "channel",		required_argument, 0, 'c' },
+>>> +	{ "debug",		no_argument,       0, 'd' },
+>>> +	{ "event",		required_argument, 0, 'e' },
+>>> +	{ "help",		no_argument,       0, 'h' },
+>>> +	{ "device-num",		required_argument, 0, 'n' },
+>>> +	{ "id",			required_argument, 0, 'i' },
+>>> +	{ "loop",		required_argument, 0, 'l' },
+>>> +	{ "parent",		required_argument, 0, 'p' },
+>>> +	{ "scope",		required_argument, 0, 's' },
+>>> +	{ "type",		required_argument, 0, 't' },
+>>> +	{ },
+>>> +};
+>>> +
+>>> +int main(int argc, char **argv)
+>>> +{
+>>> +	int c, fd, i, ret;
+>>> +	struct counter_event event_data;
+>>> +	char *device_name = NULL;
+>>> +	int debug = 0, loop = -1;
+>>> +	char *dummy;
+>>> +	int dev_num = 0, nwatch = 0, ncfg[] = {0, 0, 0, 0, 0, 0};
+>>> +	int num_chan = 0, num_evt = 0, num_id = 0, num_p = 0, num_s = 0, num_t = 0;
+>>> +	struct counter_watch *watches;
+>>> +
+>>> +	/*
+>>> +	 * 1st pass: count events configurations number to allocate the watch array.
+>>> +	 * Each watch argument can be repeated several times: each time it gets repeated,
+>>> +	 * a corresponding watch is allocated (and configured) in 2nd pass.
+>>> +	 */
+>>
+>> It feels a somewhat prone to error (at least cumbersome) to populate
+> 
+> Yes, this could be error prone. This is also why I added a print of the
+> gathered arguments when using --debug option.
+> Perhaps this could be better to always print it (e.g. print_watch()) ?
+> 
+>> each watch via individual arguments for each field. Since a watch always
+>> has these fields, perhaps instead we could pass some format string that
+>> represents a watch, and deliminate watches via commas. For example, we
+>> could have --watch="cco00,ecc73" to represent the two watches in the
+>> usage example.
+> 
+> I like the idea, to concatenate as a string. With current approach, the
+> command line quickly becomes very long.
+> 
+> It makes it obvious in your example, that two watches are used, and no
+> argument is omitted.
+> On the opposite, each argument isn't very easy to understand compared to
+> plain text definition.
+> 
+>>
+>> Of course, we'd need to define a more robust format string convention
+>> than in my example to ensure the correct configuration is properly
+> 
+> Indeed, by using a single letter, we could face limitations (ex:
+> overflow, underflow, overflow_underflow, which letter for the 3rd here?)
+> 
+> If we go this way, probably need to brainstorm a bit.
+> 
+>> communicated. What do you think, would this approach would make things
+>> simpler, or just more complicated in the end?
+> 
+> I'm not 100% sure if some helpers like getopt() will help here? So, I
+> guess this could be more complicated. This may also be against the
+> guideline "options should be preceded by the '-' delimiter character."
+> in [^1] (Ok, this would rather be the --watch option, fed with watch data.)
+> 
+> Would you have suggestions regarding possible helpers ? Or do you have
+> in mind some others tools that already adopted such approach ?
 
-Go forth with yours. You can take some of my pieces if you like them
-more if you want. I just spotted both idpf and ice reports at the same
-time and was ignorant enough to not look at our MLs (internal and IWL)
-first.
-I'm respinning IDPF solely.
 
-> 
-> Thanks,
-> Jake
+Hi William,
+
+I've prototyped something to follow your suggestion regarding --watch=
+string arguments. This may endup in more easy to read, and hopefully
+simpler approach :-).
+
+I'll post a V2 soon for this series (removing some patches that seems
+already applied), or just this tool.
 
 Thanks,
-Olek
+Fabrice
+
+> 
+>>
+>>> +	while ((c = getopt_long(argc, argv, "c:de:hn:i:l:p:s:t:", longopts, NULL)) != -1) {
+>>> +		switch (c) {
+>>> +		case 'c':
+>>> +			ncfg[0]++;
+>>> +			break;
+>>> +		case 'e':
+>>> +			ncfg[1]++;
+>>> +			break;
+>>> +		case 'i':
+>>> +			ncfg[2]++;
+>>> +			break;
+>>> +		case 'p':
+>>> +			ncfg[3]++;
+>>> +			break;
+>>> +		case 's':
+>>> +			ncfg[4]++;
+>>> +			break;
+>>> +		case 't':
+>>> +			ncfg[5]++;
+>>> +			break;
+>>> +		};
+>>> +	};
+>>> +
+>>> +	for (i = 0; i < ARRAY_SIZE(ncfg); i++)
+>>> +		if (ncfg[i] > nwatch)
+>>> +			nwatch = ncfg[i];
+>>> +
+>>> +	if (nwatch) {
+>>> +		watches = calloc(nwatch, sizeof(*watches));
+>>
+>> We need to check if calloc fails, right?
+> 
+> Yes, you're right, will fix this too.
+> 
+> Thanks for reviewing!
+> Best regards,
+> Fabrice
+> 
+>>
+>> William Breathitt Gray 
