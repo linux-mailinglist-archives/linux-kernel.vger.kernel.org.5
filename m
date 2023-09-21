@@ -2,133 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B02427AA299
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849AE7A9F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbjIUVWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
+        id S231638AbjIUUXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbjIUVWC (ORCPT
+        with ESMTP id S231705AbjIUUWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:22:02 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F12B100A42;
-        Thu, 21 Sep 2023 12:17:11 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-401da71b85eso14388775e9.1;
-        Thu, 21 Sep 2023 12:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695323830; x=1695928630; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ENmOmmDyO4dkcD1BpyQlNPkn3uQwit51bry3W/ndj4k=;
-        b=SDjx4jzKKf7zErScli/HMCzeFCL8iE/OKs31+eJyVAWt8GnJfwbu4UheOvK9owIfuT
-         S8S5sxbuFmocpAR83VNquLxEKCiTHvVeNCt+16jSxsjcnHN9iCli10eIDr7zQvqhhxnq
-         MF5pG9WMz95JTpE4dYR2ZSGrYV0Icsg20TixG4VOPBYg3u6YM0lYKHWx/Iq6dKdbz+LI
-         Fr2E5LFKUUW58e50htN4u/XSAaER4W29IQ8V7L6L6pTKR9JT24z3JDN1PwX9EtjYa3Iw
-         C/DhKnuEVGtxqv8FL0J69MnOGDj6WVDQyNkXnY3X6TNBBLhzXM5nCzhFOEcqEx1izra5
-         Hq/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695323830; x=1695928630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ENmOmmDyO4dkcD1BpyQlNPkn3uQwit51bry3W/ndj4k=;
-        b=WbkHm0Cr3JW/gORMh3aUF9zWKcQMv3P4PsbuaXB9EAW4fNmwAXGlytlOHtxR4toXPx
-         +l/91oh+sq1THe/FLhQUwJ32AqyxNUiAPL3MEda+v1YpiigfPnc0kn0k5pKF4Y1psiv3
-         omf9fx/w0+KJS9jq65CHtUDO60mLuSAgtS7W76T+CKDTLoGSrbn8ijcvp8dAIOgdcUfn
-         JYVC5R2worue5TP3eYoig2iBDT47SVNOfVenoOxElloNNSZX/Zj+ofN1GkbKw6Cwfnbu
-         ISJS0upzT1Rpmf5JCt7EVckaH5xIjjTNn3uF50I0BSulTVbtK1p7TPvtjV0SeMNoAnRL
-         D5JA==
-X-Gm-Message-State: AOJu0YyGmWvFcKoN6bakB38XACnzPcPlUooMd9aRxhFXrUsDWmDWpN58
-        y+G9/489N9X97e6Tfm6F4DI=
-X-Google-Smtp-Source: AGHT+IHz3TLJG+ziEtoS9dFznj7pMmUdXA3BCjDrGwVomS3vMGyxNpUFAZCye+dXZh/r/eGoltERuw==
-X-Received: by 2002:a05:600c:46c6:b0:405:36d7:4582 with SMTP id q6-20020a05600c46c600b0040536d74582mr1921439wmo.15.1695323829463;
-        Thu, 21 Sep 2023 12:17:09 -0700 (PDT)
-Received: from freebase (oliv-cloud.duckdns.org. [78.196.47.215])
-        by smtp.gmail.com with ESMTPSA id v4-20020a05600c214400b003fef19bb55csm2621945wml.34.2023.09.21.12.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 12:17:09 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 21:17:06 +0200
-From:   Olivier Dautricourt <olivierdautricourt@gmail.com>
-To:     Eric Schwarz <eas@sw-optimization.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
-Message-ID: <ZQyWsvcQCJgmG5aO@freebase>
-References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
- <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 16:22:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED2A102D51
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695324005; x=1726860005;
+  h=date:from:to:cc:subject:message-id;
+  bh=K72iQc040c76vp9PaHCkViv/ZlJXbJdgpLoZYPY0lqg=;
+  b=XxHdB2fpRkssNVpwNZ0+2+pxfukbn83stO81aVIX5oG9Uvpf51jVLWEH
+   ofOjmGDjWoIBY/gnUflDxQCAkzZ7qymk5J31R/1wHlmBcIhZsn76haA1j
+   9USaiOnRMVkux6yxA4xGkiNR2FzTAkJjW2hgAJXoNdwLuYvsT/7llr0eG
+   3p25RMhyg/3IJ8Px/tXkifU2+1q81oQr1bg6PiuqwfcjKX/Zkz5x1wOoZ
+   UxDejF/PxN/IobvDUhLXIiqar7tgoszLBhqRgTq2S8ivxvmkNqpA8hkMR
+   pdHqCxa1LY1lijHSjDF2Zrz/QMi3rAyWxuX+uqB5Oq3UTDYcyQ23wt2l0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="370953588"
+X-IronPort-AV: E=Sophos;i="6.03,166,1694761200"; 
+   d="scan'208";a="370953588"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 12:18:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="862627726"
+X-IronPort-AV: E=Sophos;i="6.03,166,1694761200"; 
+   d="scan'208";a="862627726"
+Received: from lkp-server02.sh.intel.com (HELO b77866e22201) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2023 12:18:57 -0700
+Received: from kbuild by b77866e22201 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qjPCR-0000HX-0a;
+        Thu, 21 Sep 2023 19:18:55 +0000
+Date:   Fri, 22 Sep 2023 03:17:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:objtool/core] BUILD SUCCESS
+ fef44ebaf61b57a71ab818058926a3f9a0ac81e6
+Message-ID: <202309220357.1oGdiecn-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 03:07:15PM +0200, Eric Schwarz wrote:
-> Hello Olivier,
-> 
-> thanks for following up on my comment first. I really appreciate. - I don't
-> have access to the hardware anymore, so I cannot test changes myself.
-> 
-> This patch addresses IMHO three fixes. - Shouldn't it be split up into three
-> small junks so one could also later work w/ git bisect / separate ack's? -
-> That way it is an all or nothing thing. Please regard this remark as
-> cosmetics.
-> 
-> Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
-> > Sparse complains because we first take the lock in msgdma_tasklet -> move
-> > locking to msgdma_chan_desc_cleanup.
-> > In consequence, move calling of msgdma_chan_desc_cleanup outside of the
-> > critical section of function msgdma_tasklet.
-> > 
-> > Use spin_unlock_irqsave/restore instead of just spinlock/unlock to keep
-> > state of irqs while executing the callbacks.
-> 
-> What about the locking in the IRQ handler msgdma_irq_handler() itself? -
-> Shouldn't spin_unlock_irqsave/restore() be used there as well instead of
-> just spinlock/unlock()?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/core
+branch HEAD: fef44ebaf61b57a71ab818058926a3f9a0ac81e6  x86/unwind/orc: Remove redundant initialization of 'mid' pointer in __orc_find()
 
-IMO no:
-It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
-The irq handler cannot be preempted by the tasklet, so the
-spin_lock/unlock version is ok. However the tasklet could be interrupted
-by the Hard IRQ hence the disabling of irqs with save/restore when
-entering critical section.
+elapsed time: 734m
 
-It should not be needed to keep interrupts locally disabled while invoking
-callbacks, will add this to the commit description.
+configs tested: 127
+configs skipped: 113
 
-[1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> > Remove list_del call in msgdma_chan_desc_cleanup, this should be the role
-> > of msgdma_free_descriptor. In consequence replace list_add_tail with
-> > list_move_tail in msgdma_free_descriptor. This fixes the path:
-> > msgdma_free_chan_resources -> msgdma_free_descriptors ->
-> > msgdma_free_desc_list -> msgdma_free_descriptor
-> > which does __not__ seems to free correctly the descriptors as firsts nodes
-> > where not removed from the specified list.
-> > 
-> s/__not__/_not_/
-> s/seems/seem/
-> s/firsts/first/ => Actually I would omit it.
-> s/where/were/
-> 
-> "Fixes: <12 digits git hash> ("commit-message")" is missing [1] isn't it?
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230921   gcc  
+arm                             pxa_defconfig   gcc  
+arm                   randconfig-001-20230921   gcc  
+arm64                             allnoconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230921   gcc  
+i386         buildonly-randconfig-002-20230921   gcc  
+i386         buildonly-randconfig-003-20230921   gcc  
+i386         buildonly-randconfig-004-20230921   gcc  
+i386         buildonly-randconfig-005-20230921   gcc  
+i386         buildonly-randconfig-006-20230921   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230921   gcc  
+i386                  randconfig-002-20230921   gcc  
+i386                  randconfig-003-20230921   gcc  
+i386                  randconfig-004-20230921   gcc  
+i386                  randconfig-005-20230921   gcc  
+i386                  randconfig-006-20230921   gcc  
+i386                  randconfig-011-20230921   gcc  
+i386                  randconfig-012-20230921   gcc  
+i386                  randconfig-013-20230921   gcc  
+i386                  randconfig-014-20230921   gcc  
+i386                  randconfig-015-20230921   gcc  
+i386                  randconfig-016-20230921   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230921   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+mips                      bmips_stb_defconfig   clang
+mips                  maltasmvp_eva_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                 simple_smp_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                      cm5200_defconfig   gcc  
+powerpc                       maple_defconfig   gcc  
+powerpc                     sequoia_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230921   gcc  
+riscv                          rv32_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                  randconfig-001-20230921   gcc  
+s390                       zfcpdump_defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          sdk7780_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230921   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230921   gcc  
+x86_64       buildonly-randconfig-002-20230921   gcc  
+x86_64       buildonly-randconfig-003-20230921   gcc  
+x86_64       buildonly-randconfig-004-20230921   gcc  
+x86_64       buildonly-randconfig-005-20230921   gcc  
+x86_64       buildonly-randconfig-006-20230921   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230921   gcc  
+x86_64                randconfig-002-20230921   gcc  
+x86_64                randconfig-003-20230921   gcc  
+x86_64                randconfig-004-20230921   gcc  
+x86_64                randconfig-005-20230921   gcc  
+x86_64                randconfig-006-20230921   gcc  
+x86_64                randconfig-011-20230921   gcc  
+x86_64                randconfig-012-20230921   gcc  
+x86_64                randconfig-013-20230921   gcc  
+x86_64                randconfig-014-20230921   gcc  
+x86_64                randconfig-015-20230921   gcc  
+x86_64                randconfig-016-20230921   gcc  
+x86_64                randconfig-071-20230921   gcc  
+x86_64                randconfig-072-20230921   gcc  
+x86_64                randconfig-073-20230921   gcc  
+x86_64                randconfig-074-20230921   gcc  
+x86_64                randconfig-075-20230921   gcc  
+x86_64                randconfig-076-20230921   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
+xtensa                          iss_defconfig   gcc  
 
-Thank you for your remarks/corrections, i will take them into account
-in next version of the patch.
-
-Kr,
-
-Olivier Dautricourt
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
