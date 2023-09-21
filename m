@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDD77A90F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683AF7A90FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjIUCiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 22:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S229583AbjIUCjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjIUCh5 (ORCPT
+        with ESMTP id S229472AbjIUCjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:37:57 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AA8E5;
-        Wed, 20 Sep 2023 19:37:51 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38L1iEiM027364;
-        Thu, 21 Sep 2023 02:37:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=DQqgahBrunVeJ2T5ssMsMl2PItK5lsgtV+m/zCZvEWc=;
- b=Yf0s5Xl4rb+JkXVCurM4lZo7q2+DzSezMICBiHZDBOxPq+eTtVAlWDBRkEZJRg3N+wNZ
- 7W5OUNR5j2fvSfu6cNg5auX5K3+doxFDRMKGkZoudCPiJl//zv/JqnTz5e5fnkpDugle
- HjZvMDOk8WOZyR5MoUCLv+17p+86RNWmKeP5Z16MaKdhzWvvbsd5xUm4m9mWrGmjEfGn
- KnAS1SakKDcqJ7iR9ddKKSyBN8LiMwKLfV4hza8o4H2dSByoIlXeAuh+sVQG0A7Y0oi1
- bqkuJNKGApv8q49ywfC2VajNC/9U1NhzvJaYLaUkwvQchIVRAsMbsyD8DbGM+a0ENJot XQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7sh3tm1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 02:37:45 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38L2bjoO032304
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 02:37:45 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 20 Sep 2023 19:37:44 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-Date:   Wed, 20 Sep 2023 19:37:32 -0700
-Subject: [PATCH v3 3/3] soc: qcom: rtmfs: Handle reserved-memory allocation
- issues
+        Wed, 20 Sep 2023 22:39:11 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0EFCF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 19:39:05 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RrfgD37yrz15NR2;
+        Thu, 21 Sep 2023 10:36:56 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 21 Sep 2023 10:39:02 +0800
+Subject: Re: [PATCH -next] ubi: block: Fix use-after-free in ubiblock_cleanup
+To:     ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
+        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+        <chaitanya.kulkarni@wdc.com>, <axboe@kernel.dk>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <dce695b6-a4ca-82d6-a4c4-02342b4d57f0@huawei.com>
+Date:   Thu, 21 Sep 2023 10:39:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230920-rmtfs-mem-guard-pages-v3-3-305b37219b78@quicinc.com>
-References: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
-In-Reply-To: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695263863; l=904;
- i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
- bh=7jXz3rP8GNqMZsIHoKFFl+IwJpRuFh8oza0b3my6eAs=;
- b=HKuicCpF2ZYWAOR1HrVl0YJXuad3HGWt7ibs2VpT9C5bBFQEyFdqqVtLO8Syh8KZAFV74UbMKEsR
- XyGqjYLPCu8RK2914hN+iMYZGeH7+mcvoAy4fs/i3axKoxxZAyF9
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
- pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: -XxDpDD5KCEqZ4iGvMDNfxJd37mWn0Jj
-X-Proofpoint-GUID: -XxDpDD5KCEqZ4iGvMDNfxJd37mWn0Jj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_14,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=737
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 impostorscore=0
- malwarescore=0 priorityscore=1501 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309210021
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the even that Linux failed to allocate the reserved memory range
-specified in the DeviceTree, the size of the reserved_mem will be 0,
-which results in a oops when memory remapping is attempted.
+ÔÚ 2023/9/21 10:01, ZhaoLong Wang Ð´µÀ:
+> The following BUG is reported when a ubiblock is removed:
+> 
+>   ==================================================================
+>   BUG: KASAN: slab-use-after-free in ubiblock_cleanup+0x88/0xa0 [ubi]
+>   Read of size 4 at addr ffff88810c8f3804 by task ubiblock/1716
+> 
+>   CPU: 5 PID: 1716 Comm: ubiblock Not tainted 6.6.0-rc2+ #135
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+>   Call Trace:
+>    <TASK>
+>    dump_stack_lvl+0x37/0x50
+>    print_report+0xd0/0x620
+>    kasan_report+0xb6/0xf0
+>    ubiblock_cleanup+0x88/0xa0 [ubi]
+>    ubiblock_remove+0x121/0x190 [ubi]
+>    vol_cdev_ioctl+0x355/0x630 [ubi]
+>    __x64_sys_ioctl+0xc7/0x100
+>    do_syscall_64+0x3f/0x90
+>    entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>   RIP: 0033:0x7f08d7445577
+>   Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 8
+>   RSP: 002b:00007ffde05a3018 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+>   RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f08d7445577
+>   RDX: 0000000000000000 RSI: 0000000000004f08 RDI: 0000000000000003
+>   RBP: 0000000000816010 R08: 00000000008163a7 R09: 0000000000000000
+>   R10: 0000000000000003 R11: 0000000000000206 R12: 0000000000000003
+>   R13: 00007ffde05a3130 R14: 0000000000000000 R15: 0000000000000000
+>    </TASK>
+> 
+>   Allocated by task 1715:
+>    kasan_save_stack+0x22/0x50
+>    kasan_set_track+0x25/0x30
+>    __kasan_kmalloc+0x7f/0x90
+>    __alloc_disk_node+0x40/0x2b0
+>    __blk_mq_alloc_disk+0x3e/0xb0
+>    ubiblock_create+0x2ba/0x620 [ubi]
+>    vol_cdev_ioctl+0x581/0x630 [ubi]
+>    __x64_sys_ioctl+0xc7/0x100
+>    do_syscall_64+0x3f/0x90
+>    entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+>   Freed by task 0:
+>    kasan_save_stack+0x22/0x50
+>    kasan_set_track+0x25/0x30
+>    kasan_save_free_info+0x2b/0x50
+>    __kasan_slab_free+0x10e/0x190
+>    __kmem_cache_free+0x96/0x220
+>    bdev_free_inode+0xa4/0xf0
+>    rcu_core+0x496/0xec0
+>    __do_softirq+0xeb/0x384
+> 
+>   The buggy address belongs to the object at ffff88810c8f3800
+>    which belongs to the cache kmalloc-1k of size 1024
+>   The buggy address is located 4 bytes inside of
+>    freed 1024-byte region [ffff88810c8f3800, ffff88810c8f3c00)
+> 
+>   The buggy address belongs to the physical page:
+>   page:00000000d03de848 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10c8f0
+>   head:00000000d03de848 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+>   flags: 0x200000000000840(slab|head|node=0|zone=2)
+>   page_type: 0xffffffff()
+>   raw: 0200000000000840 ffff888100042dc0 ffffea0004244400 dead000000000002
+>   raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+>   page dumped because: kasan: bad access detected
+> 
+>   Memory state around the buggy address:
+>    ffff88810c8f3700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>    ffff88810c8f3780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>   >ffff88810c8f3800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                      ^
+>    ffff88810c8f3880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>    ffff88810c8f3900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>   ==================================================================
+> 
+> Fix it by using a local variable to record the gendisk ID.
+> 
+> Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
+> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+> ---
+>   drivers/mtd/ubi/block.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-Detect this and report that the memory region was not found instead.
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/soc/qcom/rmtfs_mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soc/qcom/rmtfs_mem.c b/drivers/soc/qcom/rmtfs_mem.c
-index 83bba9321e72..13823abd85c2 100644
---- a/drivers/soc/qcom/rmtfs_mem.c
-+++ b/drivers/soc/qcom/rmtfs_mem.c
-@@ -180,7 +180,7 @@ static int qcom_rmtfs_mem_probe(struct platform_device *pdev)
- 	int ret, i;
- 
- 	rmem = of_reserved_mem_lookup(node);
--	if (!rmem) {
-+	if (!rmem || !rmem->size) {
- 		dev_err(&pdev->dev, "failed to acquire memory region\n");
- 		return -EINVAL;
- 	}
-
--- 
-2.25.1
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> index 437c5b83ffe5..309a42aeaa4c 100644
+> --- a/drivers/mtd/ubi/block.c
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -447,13 +447,15 @@ int ubiblock_create(struct ubi_volume_info *vi)
+>   
+>   static void ubiblock_cleanup(struct ubiblock *dev)
+>   {
+> +	int id = dev->gd->first_minor;
+> +
+>   	/* Stop new requests to arrive */
+>   	del_gendisk(dev->gd);
+>   	/* Finally destroy the blk queue */
+>   	dev_info(disk_to_dev(dev->gd), "released");
+>   	put_disk(dev->gd);
+>   	blk_mq_free_tag_set(&dev->tag_set);
+> -	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
+> +	idr_remove(&ubiblock_minor_idr, id);
+>   }
+>   
+>   int ubiblock_remove(struct ubi_volume_info *vi)
+> 
 
