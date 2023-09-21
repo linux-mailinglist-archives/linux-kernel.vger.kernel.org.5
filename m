@@ -2,226 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694B47A9F1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0E27AA279
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbjIUUSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S232586AbjIUVTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjIUURa (ORCPT
+        with ESMTP id S231918AbjIUVTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:17:30 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F0C4F38B
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:28:43 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bfea381255so20605011fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:28:43 -0700 (PDT)
+        Thu, 21 Sep 2023 17:19:00 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75D6A5469;
+        Thu, 21 Sep 2023 10:58:55 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-405361bb93bso8117535e9.3;
+        Thu, 21 Sep 2023 10:58:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695317321; x=1695922121; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BurSNjw3LRUUcMvXtonPsGB5QUx7CZPo8/XQKc8tXvQ=;
-        b=kZh6uBu/pkLkpTzo/OfqIJlSEKHtreiZoPZImZJV+Mr1gME/Wzq9OXmca2un4J5bwR
-         n0iiltbCuixbjTaypArA15qmhfX8K0aU2JmX51H+BClGEmKMgo3wWZAHdK0HMhu86YQn
-         zcfA4LMkB7HRd6d9+X6Xt8nIkB1Y5JSVbRb4him9XdEYAU5zqn5283aHjAFGckNSpasF
-         RJDY3/DdC3w8lVWnS79eBk5BklGpJ5m+7+2QAfc2AmUx0WOjtGjCcFVcExq0jqC5ZjtH
-         N7cIY4uoPU5ZGnIfwEGZB93c1zeRC/NlbB+yToUhfSlkS/DQ4SBOknGCuQcJlD7PwvWV
-         HPZQ==
+        d=gmail.com; s=20230601; t=1695319134; x=1695923934; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oQjWGh5FJkJl0s9pvk/+A6cLo2EhA5CUtBJB0T+VZWo=;
+        b=Ib6Ldlvbxu8Hcirox7qE4CqlrSzM6P1G2iKDqrI+2EvBlipW8azStxjGphQIHAITSi
+         GAp0qstHzidDZsMvN99bTTvMiSAxbFUyX6zEbCvBcRFjq0Odtxq7uCuagjpUHfJCNHrb
+         fVLelecX2L2wHFCFpMfLqF+29NnIzxzaTarIzyoECBm7BAksOeeenlDU/L70AhJTojaS
+         PDDlKa9F6m7edlEAySUAbjVOxxn4OhNjkven0U/46TdpkeSruJIJmwV8rb4qQxQEbWku
+         qhOFQcrx5K9Mz6uvlcv0T+bYlfyXuMCEgzGdnCawufiaUyYS9IoSRmCt+drp2zKGO/VP
+         ovfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317321; x=1695922121;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BurSNjw3LRUUcMvXtonPsGB5QUx7CZPo8/XQKc8tXvQ=;
-        b=EwkpJAZ74k2oCQLZWQnr3uccwdtCLBGq821SRDHS+HjBIorlPJO/kMehbHjV6F03AD
-         vr7CDHrd48F4jJkJICu7P1dQ9Cm4dy9xMMtF6/DrPiFvm5XsTJcF1xjDjhebdCJtefFB
-         VCwAWJ89OTZ6rpIPiBOG0GwKvtXSJsp98DKGvm9ZsQ6UDpbDtec1iYzJzDTJQzO83QpJ
-         1HrBodOQp2wT/qpL6QyEzBvbeqfWMh7J78TL1bu/iJckOZE5eLo2dbCWHbl0y+oSp5pR
-         n7xLYYEbl4lHTgrZlLOVHnFn3LZx2aB2/U8siIMIlwVIM2xs/5udKjiSX4SxOqpiX3Yx
-         otAA==
-X-Gm-Message-State: AOJu0YwyMy7j3x/Dx++AiqJlS5vAxFhgdee83bWh+9jtk+X+yc4H0i+L
-        1qhKXuLWEjeiUDizBXhdxFpfA53bTvIAA6I8lQ4uRUew
-X-Google-Smtp-Source: AGHT+IFr5GjddnPlZ/OIX1F1eX1mtogYABeYtRFcW+TA7feS7ZNjH1l9heWGXc2fqvb3clHUz2cAVg==
-X-Received: by 2002:a05:600c:2055:b0:403:cab3:b76e with SMTP id p21-20020a05600c205500b00403cab3b76emr5458870wmg.22.1695307469491;
-        Thu, 21 Sep 2023 07:44:29 -0700 (PDT)
-Received: from localhost.localdomain (abordeaux-655-1-129-86.w90-5.abo.wanadoo.fr. [90.5.10.86])
-        by smtp.gmail.com with ESMTPSA id s17-20020a1cf211000000b003fe2a40d287sm2125515wmc.1.2023.09.21.07.44.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:44:29 -0700 (PDT)
-From:   David Lechner <dlechner@baylibre.com>
-To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        David Lechner <dlechner@baylibre.com>
-Subject: [PATCH v2 19/19] staging: iio: resolver: ad2s1210: add triggered buffer support
-Date:   Thu, 21 Sep 2023 09:44:00 -0500
-Message-Id: <20230921144400.62380-20-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230921144400.62380-1-dlechner@baylibre.com>
-References: <20230921144400.62380-1-dlechner@baylibre.com>
+        d=1e100.net; s=20230601; t=1695319134; x=1695923934;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oQjWGh5FJkJl0s9pvk/+A6cLo2EhA5CUtBJB0T+VZWo=;
+        b=KpTwfxSVzfmfLeTIFwu41mZzmAD0bAaIRxgo/ZgiwTqhYbCo0KIIA0TGrNJ+gVJUUl
+         Zmgxjf0SlHo8KAsk5kZuGuPRnbAQGv5hk7GgvwwzoG7z7pA/SDykAaSbECB/W92Q96SB
+         XazT5QicuooELGGuKireKR/GV7qGdk4P3dNUt5GIP0i+e+7bjZHfmXkMOX4T27SLgnyM
+         mi3kAfRUZK4/etM0mg72t6p/3M0mGmAD/7GI+yDfgyMyLqyUjHkOp76BsCniVj0R/Z3A
+         WR8l8+9mLYWl+SezFooKE5RDMfw0iqZjFt0kKTkP1GibiYSaW13HX39AGb8TgNoCazLC
+         ulGg==
+X-Gm-Message-State: AOJu0YxS8kZw+pyHfmd4Zv0Ut5h4NznRw20vu9laNojQX/WeKrAHW0H5
+        KiPHkT8RFmOMzZIHvJGNgzjofwBsWgaU8/tGDEY=
+X-Google-Smtp-Source: AGHT+IGf19k4uMXQxHLVePErL4etNMmx5eWqBe9n5W2Jow9QcPW8JD/yKoQlaELtpNjeFxHgRKlQ9g==
+X-Received: by 2002:a05:600c:2186:b0:402:f54d:745 with SMTP id e6-20020a05600c218600b00402f54d0745mr5777398wme.17.1695307859542;
+        Thu, 21 Sep 2023 07:50:59 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id e20-20020a05600c219400b003fe1c332810sm4988805wme.33.2023.09.21.07.50.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Sep 2023 07:50:59 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Xu Kuohai <xukuohai@huaweicloud.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        bpf@vger.kernel.org, kpsingh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 2/3] arm64: patching: Add aarch64_insn_set()
+In-Reply-To: <2095a591-8f3e-318c-a390-a43a653ce6d5@huaweicloud.com>
+References: <20230908144320.2474-1-puranjay12@gmail.com>
+ <20230908144320.2474-3-puranjay12@gmail.com>
+ <2095a591-8f3e-318c-a390-a43a653ce6d5@huaweicloud.com>
+Date:   Thu, 21 Sep 2023 14:50:55 +0000
+Message-ID: <mb61pfs37a8c0.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for triggered buffers to the AD2S1210 resolver driver.
+Xu Kuohai <xukuohai@huaweicloud.com> writes:
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/staging/iio/resolver/ad2s1210.c | 84 ++++++++++++++++++++++++-
- 1 file changed, 83 insertions(+), 1 deletion(-)
+> On 9/8/2023 10:43 PM, Puranjay Mohan wrote:
+>> The BPF JIT needs to write invalid instructions to RX regions of memory
+>> to invalidate removed BPF programs. This needs a function like memset()
+>> that can work with RX memory.
+>> 
+>> Implement aarch64_insn_set() which is similar to text_poke_set() of x86.
+>> 
+>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>> ---
+>>   arch/arm64/include/asm/patching.h |  1 +
+>>   arch/arm64/kernel/patching.c      | 40 +++++++++++++++++++++++++++++++
+>>   2 files changed, 41 insertions(+)
+>> 
+>> diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/patching.h
+>> index f78a0409cbdb..551933338739 100644
+>> --- a/arch/arm64/include/asm/patching.h
+>> +++ b/arch/arm64/include/asm/patching.h
+>> @@ -8,6 +8,7 @@ int aarch64_insn_read(void *addr, u32 *insnp);
+>>   int aarch64_insn_write(void *addr, u32 insn);
+>>   
+>>   int aarch64_insn_write_literal_u64(void *addr, u64 val);
+>> +int aarch64_insn_set(void *dst, const u32 insn, size_t len);
+>>   void *aarch64_insn_copy(void *dst, const void *src, size_t len);
+>>   
+>>   int aarch64_insn_patch_text_nosync(void *addr, u32 insn);
+>> diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+>> index 243d6ae8d2d8..63d9e0e77806 100644
+>> --- a/arch/arm64/kernel/patching.c
+>> +++ b/arch/arm64/kernel/patching.c
+>> @@ -146,6 +146,46 @@ noinstr void *aarch64_insn_copy(void *dst, const void *src, size_t len)
+>>   	return dst;
+>>   }
+>>   
+>> +/**
+>> + * aarch64_insn_set - memset for RX memory regions.
+>> + * @dst: address to modify
+>> + * @c: value to set
+>
+> insn
 
-diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index f5b8b290e860..44a2ecaeeeff 100644
---- a/drivers/staging/iio/resolver/ad2s1210.c
-+++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -19,8 +19,11 @@
- #include <linux/sysfs.h>
- #include <linux/types.h>
- 
-+#include <linux/iio/buffer.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/sysfs.h>
-+#include <linux/iio/trigger_consumer.h>
-+#include <linux/iio/triggered_buffer.h>
- 
- #define DRV_NAME "ad2s1210"
- 
-@@ -85,6 +88,12 @@ struct ad2s1210_state {
- 	unsigned long fclkin;
- 	/** The selected resolution */
- 	enum ad2s1210_resolution resolution;
-+	/** Scan buffer */
-+	struct {
-+		__be16 chan[2];
-+		/* Ensure timestamp is naturally aligned. */
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	u8 rx[2] __aligned(IIO_DMA_MINALIGN);
- 	u8 tx[2];
- };
-@@ -592,18 +601,35 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
- 		.type = IIO_ANGL,
- 		.indexed = 1,
- 		.channel = 0,
-+		.scan_index = 0,
-+		.scan_type = {
-+			.sign = 'u',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_BE,
-+		},
- 		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
- 				      BIT(IIO_CHAN_INFO_SCALE) |
- 				      BIT(IIO_CHAN_INFO_HYSTERESIS),
- 		.info_mask_separate_available =
- 					BIT(IIO_CHAN_INFO_HYSTERESIS),
-+		.datasheet_name = "position",
- 	}, {
- 		.type = IIO_ANGL_VEL,
- 		.indexed = 1,
- 		.channel = 0,
-+		.scan_index = 1,
-+		.scan_type = {
-+			.sign = 's',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_BE,
-+		},
- 		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
- 				      BIT(IIO_CHAN_INFO_SCALE),
--	}
-+		.datasheet_name = "velocity",
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(2),
- };
- 
- static struct attribute *ad2s1210_attributes[] = {
-@@ -665,6 +691,55 @@ static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
- 	return ret;
- }
- 
-+static irqreturn_t ad2s1210_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct ad2s1210_state *st = iio_priv(indio_dev);
-+	size_t chan = 0;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+
-+	memset(&st->scan, 0, sizeof(st->scan));
-+	gpiod_set_value(st->sample_gpio, 1);
-+
-+	if (test_bit(0, indio_dev->active_scan_mask)) {
-+		ret = ad2s1210_set_mode(st, MOD_POS);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		/* REVIST: we can read 3 bytes here and also get fault flags */
-+		ret = spi_read(st->sdev, st->rx, 2);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		memcpy(&st->scan.chan[chan++], st->rx, 2);
-+	}
-+
-+	if (test_bit(1, indio_dev->active_scan_mask)) {
-+		ret = ad2s1210_set_mode(st, MOD_VEL);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		/* REVIST: we can read 3 bytes here and also get fault flags */
-+		ret = spi_read(st->sdev, st->rx, 2);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		memcpy(&st->scan.chan[chan++], st->rx, 2);
-+	}
-+
-+	iio_push_to_buffers_with_timestamp(indio_dev, &st->scan, pf->timestamp);
-+
-+error_ret:
-+	gpiod_set_value(st->sample_gpio, 0);
-+	mutex_unlock(&st->lock);
-+	iio_trigger_notify_done(indio_dev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static const struct iio_info ad2s1210_info = {
- 	.read_raw = ad2s1210_read_raw,
- 	.read_avail = ad2s1210_read_avail,
-@@ -850,6 +925,13 @@ static int ad2s1210_probe(struct spi_device *spi)
- 	indio_dev->num_channels = ARRAY_SIZE(ad2s1210_channels);
- 	indio_dev->name = spi_get_device_id(spi)->name;
- 
-+	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
-+					      &iio_pollfunc_store_time,
-+					      &ad2s1210_trigger_handler, NULL);
-+	if (ret < 0)
-+		return dev_err_probe(&spi->dev, ret,
-+				     "iio triggered buffer setup failed\n");
-+
- 	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
--- 
-2.34.1
+Thanks for catching.
 
+>> + * @len: length of memory region.
+>> + *
+>> + * Useful for JITs to fill regions of RX memory with illegal instructions.
+>> + */
+>> +noinstr int aarch64_insn_set(void *dst, const u32 insn, size_t len)
+>
+> const is unnecessary
+>
+
+Will remove in next version.
+
+>> +{
+>> +	unsigned long flags;
+>> +	size_t patched = 0;
+>> +	size_t size;
+>> +	void *waddr;
+>> +	void *ptr;
+>> +
+>> +	/* A64 instructions must be word aligned */
+>> +	if ((uintptr_t)dst & 0x3)
+>> +		return -EINVAL;
+>> +
+>> +	raw_spin_lock_irqsave(&patch_lock, flags);
+>> +
+>> +	while (patched < len) {
+>> +		ptr = dst + patched;
+>> +		size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
+>> +			     len - patched);
+>> +
+>> +		waddr = patch_map(ptr, FIX_TEXT_POKE0);
+>> +		memset32(waddr, insn, size / 4);
+>> +		patch_unmap(FIX_TEXT_POKE0);
+>> +
+>> +		patched += size;
+>> +	}
+>> +	raw_spin_unlock_irqrestore(&patch_lock, flags);
+>> +
+>> +	caches_clean_inval_pou((uintptr_t)dst, (uintptr_t)dst + len);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>
+> this function shares most of the code with aarch64_insn_copy(), how about
+> extracting the shared code to a separate function?
+
+I was thinking of writing it like the text_poke api of x86. Where you
+can provide a function as an argument to work on a memory area.
+Essentially, it will look like:
+
+typedef int text_poke_f(void *dst, const void *src, size_t len);
+
+static void *aarch64_insn_poke(text_poke_f func, void *addr, const void *src, size_t len)
+
+We can call this function with a wrapper of `copy_to_kernel_nofault` for copy
+and with a wrapper of memset32 for setting.
+
+Do you think this is a good approach?
+
+>
+>>   int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
+>>   {
+>>   	u32 *tp = addr;
+
+Thanks,
+Puranjay
