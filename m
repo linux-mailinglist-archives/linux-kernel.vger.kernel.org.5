@@ -2,71 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9217AA01E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA037A9EC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbjIUUcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        id S230141AbjIUUMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjIUUcc (ORCPT
+        with ESMTP id S231136AbjIUULs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:32:32 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9EB268B4E4;
-        Thu, 21 Sep 2023 10:41:34 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id BA1328109;
-        Thu, 21 Sep 2023 12:16:27 +0000 (UTC)
-Date:   Thu, 21 Sep 2023 15:16:26 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, jarkko.nikula@bitmer.com,
-        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-Message-ID: <20230921121626.GT5285@atomide.com>
-References: <20230705190324.355282-1-andreas@kemnade.info>
- <20230705190324.355282-2-andreas@kemnade.info>
- <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
- <20230920063353.GQ5285@atomide.com>
- <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+        Thu, 21 Sep 2023 16:11:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B23551F54;
+        Thu, 21 Sep 2023 10:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695316619; x=1726852619;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6hzWF6t3usS5DT5I810V3jYMFYBjf/9WntyNrqaTQuo=;
+  b=bJ2vQwqqvZUSlPQef5CO7qJl7hpl60lcNGbtiepil+vDOyE23iqnsvjZ
+   H7zkCcVHvqSwcypLhDNlwLZ54wSS1+8xJfjNzdE1vXSYvsfSRkxVh34eM
+   O2Cngk1Rgx4fPh3dw1G6aisXoiElqyZGzi2EVbLpbduE02b+LXisOuUQk
+   IMYrjpOJLF0ns1TO3cDk0t4xUPYqLcwEMwZH25mCgNbn/ldbS9XjVXnFc
+   OWSUyOhYUuGfxhfY5nsDskRSA/VnF9VW4SWmOeylepvNlHL0GowqnPRM7
+   GmS0AO9h/cctYPyXDZ5THol3YJtVszkXIap6NGeW+S5yPfh+m7IZohWaE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="444608109"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="444608109"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:20:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="862441612"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="862441612"
+Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2023 05:20:13 -0700
+From:   Choong Yong Liang <yong.liang.choong@linux.intel.com>
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>
+Cc:     David E Box <david.e.box@intel.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: [PATCH net-next v3 0/5] TSN auto negotiation between 1G and 2.5G
+Date:   Thu, 21 Sep 2023 20:19:41 +0800
+Message-Id: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Péter Ujfalusi <peter.ujfalusi@gmail.com> [230920 17:40]:
-> It is not the parent's fck, it is the PRCM clock which is selected as
-> the sourcee of the clock generator (CLKS) for BCLK/FSYNC. That is the
-> functional clock as well for the McBSP instance.
+Intel platforms’ integrated Gigabit Ethernet controllers support
+2.5Gbps mode statically using BIOS programming. In the current
+implementation, the BIOS menu provides an option to select between
+10/100/1000Mbps and 2.5Gbps modes. Based on the selection, the BIOS
+programs the Phase Lock Loop (PLL) registers. The BIOS also read the
+TSN lane registers from Flexible I/O Adapter (FIA) block and provided
+10/100/1000Mbps/2.5Gbps information to the stmmac driver. But
+auto-negotiation between 10/100/1000Mbps and 2.5Gbps is not allowed.
+The new proposal is to support auto-negotiation between 10/100/1000Mbps
+and 2.5Gbps . Auto-negotiation between 10, 100, 1000Mbps will use
+in-band auto negotiation. Auto-negotiation between 10/100/1000Mbps and
+2.5Gbps will work as the following proposed flow, the stmmac driver reads
+the PHY link status registers then identifies the negotiated speed.
+Based on the speed stmmac driver will identify TSN lane registers from
+FIA then send IPC command to the Power Management controller (PMC)
+through PMC driver/API. PMC will act as a proxy to programs the
+PLL registers.
+changelog:
 
-Oh OK
+v1 -> v2: 
+ - Add static to pmc_lpm_modes declaration
+ - Add cur_link_an_mode to the kernel doc
+ - Combine 2 commits i.e. "stmmac: intel: Separate driver_data of ADL-N
+ from TGL" and "net: stmmac: Add 1G/2.5G auto-negotiation
+ support for ADL-N" into 1 commit.
 
-> Out of reset it is using the PRCM source which is fine in all current users.
-> I would do this fix or workaround in a different way: instead of
-> ignoring the error, avoid it in the first place. Do nothing if the
-> already selected clock is requested.
-> That would remove the error and will fail in case the reparenting is not
-> working -> boards will know this and might be able to do something about
-> it in a reasonable way.
-> 
-> How that sounds?
+v2 -> v3:
+ - Create `pmc_ipc.c` file for `intel_pmc_ipc()` function and 
+ allocate the file in `arch/x86/platform/intel/` directory.
+ - Update phylink's AN mode during phy interface change and 
+ not exposing phylink's AN mode into phylib.
 
-Sounds good to me :)
+---
 
-Tony
+Choong Yong Liang (2):
+  net: phy: update in-band AN mode when changing interface by PHY driver
+  stmmac: intel: Add 1G/2.5G auto-negotiation support for ADL-N
+
+David E. Box (1):
+  arch: x86: Add IPC mailbox accessor function and add SoC register
+    access
+
+Tan, Tee Min (2):
+  net: pcs: xpcs: combine C37 SGMII AN and 2500BASEX for Intel mGbE
+    controller
+  net: stmmac: enable Intel mGbE 1G/2.5G auto-negotiation support
+
+ MAINTAINERS                                   |   2 +
+ arch/x86/Kconfig                              |   9 +
+ arch/x86/platform/intel/Makefile              |   1 +
+ arch/x86/platform/intel/pmc_ipc.c             |  75 +++++++
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |   1 +
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 183 +++++++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  81 ++++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  20 ++
+ drivers/net/pcs/pcs-xpcs.c                    |  72 +++++--
+ drivers/net/phy/phylink.c                     |  30 ++-
+ include/linux/pcs/pcs-xpcs.h                  |   1 +
+ .../linux/platform_data/x86/intel_pmc_ipc.h   |  34 ++++
+ include/linux/stmmac.h                        |   1 +
+ 13 files changed, 493 insertions(+), 17 deletions(-)
+ create mode 100644 arch/x86/platform/intel/pmc_ipc.c
+ create mode 100644 include/linux/platform_data/x86/intel_pmc_ipc.h
+
+-- 
+2.25.1
+
