@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEB77A9AE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058047A9982
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjIUSvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        id S229983AbjIUSPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbjIUSvU (ORCPT
+        with ESMTP id S230098AbjIUSPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:51:20 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282404B71D
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:49:54 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-7740d57e9f3so43706885a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:49:54 -0700 (PDT)
+        Thu, 21 Sep 2023 14:15:01 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418D4884BD;
+        Thu, 21 Sep 2023 10:39:14 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59c0442a359so15400667b3.0;
+        Thu, 21 Sep 2023 10:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695318593; x=1695923393; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695317953; x=1695922753; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S9nCvb9CrO2GaZq009DzYQ8CxVOSv0DQu3f44RpIAl4=;
-        b=R5LhrGPN56Ucfjoq1FdDkz/L3ylQkoJkyVLbK0683IT6u86XW7JyxCxSRTTkDI3dAs
-         dlOEhGlAOa1fYNhcWUwrajDN1aAAdRg0RPmS3MwK0Pjyd3Jur2c/8UKDz+fzuuJLJP88
-         EhUGmqAF2JpqvoFAnD2MYOrkeaMQ8mAiJ25SFF0CAcce9IlUVjQBzWFnCRba/61UHzle
-         UCJET1GyVxngbcE1i6GYhiqUb1A0doHrqRLXDi1/hG92ayJhi8jrWbHwyTICxSl908Dk
-         0YEXTfYEaGyvjwahfVN6PK/OFdleuo3CbnyTgxeEIPke5hCBhM/dpIJbCOaWPJRViEms
-         UQMw==
+        bh=t1F+jNn4p2YFYWnyRLpXhofZQpKLhDAtPlwv/PrP4WI=;
+        b=H0ivDVGLZ79q0aLnFpwiEeAAEEUUWflb8Ah/Xysl9WQ/0gc6IuHUuyZWGMEeiKaive
+         GfdMS0KYesiM0LBArEnDShfy5Dm4DkjfynAtPKtCsXUQG5abkB3R5/RrdYgtePJ4y7OG
+         zf3fCC6oXa7PalM+vcECQ8kx7uzkciFQXvjklD4pNDh5RL6PR8tBLyh1rDX2tz4J1a36
+         3YMqqi+9ewHFarkWLv5y80On08yNRJT6F6aVLl4TDEUbkoduC6oFbqYZ4Wite5aysROQ
+         y2MRfL6Lr0jKSK6UbSR9v5hFs/fr/a1yc4hkcciaaxEIpcfSmsgnjEy3N/Bv+EdkWuB5
+         7rVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318593; x=1695923393;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695317953; x=1695922753;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S9nCvb9CrO2GaZq009DzYQ8CxVOSv0DQu3f44RpIAl4=;
-        b=CQk/ZCcwzWLFr+fDsM5sDM5ubBFPHXA8Zm3P9q+CQw9hPNPscwZeBPLIpvgk8J26i1
-         Oh+1u9KICD+OM0RHahsAxDyIrWsurCtJqq8h3y9fyzYS1ARaehe9La+ft2raayOZhNlU
-         uNEAJeJASJMla+MyEv/NOLr1h+f98P37okNnhsqgCpeDoZIndWVjb5Mp3XBmXKH8WOJb
-         B3ptJGgsGvMPf+CAg8QzeNwOMTkKsPEEjutgqcSTaGEjNhBY4/eTMlrxQjhjsRqvzGWV
-         2kczcLpYVG6Sw9ykT0vIn7t7guaQExcRwPcrPATMv8n2aRYzurPCvPbknEL38xEnHqU9
-         3Pfg==
-X-Gm-Message-State: AOJu0YyXx1eapKGk7kl3BmkYIot6d41FhcldZjV4rLhIAJGNHSfczHxv
-        duV+bOKXEjLVBKQM5G/q8fOnv6AfXheT10PU+/kHs+nJPNXvaMOOJi0=
-X-Google-Smtp-Source: AGHT+IHVPuhFW+sGrMGW2iY7pMa14QvaelEddHySWV/HAgZhZpuV4DDEx4xNG/hsPPFcqiqQeUvbDngd1S9ogJ2JCoI=
-X-Received: by 2002:a17:90a:c08a:b0:268:553f:1938 with SMTP id
- o10-20020a17090ac08a00b00268553f1938mr4569172pjs.4.1695273761830; Wed, 20 Sep
- 2023 22:22:41 -0700 (PDT)
+        bh=t1F+jNn4p2YFYWnyRLpXhofZQpKLhDAtPlwv/PrP4WI=;
+        b=BUmppY0Xah5LyQrhmwmhVAfQsODbT7qAdbFFbsT64YEz4O9+8Wq4o1Yn+ElIZJSzxY
+         ZE16fZdF9vtvo9WJNeHc1R0mCPWxi1oLFMa0cyUY17CnqfeNe/lLZzSVs+N6sxGh8dsD
+         E1y9KQ3Vps2jJ3MZcPRKB02ILWfRCtx87anD2Bx6Jw0k28j2sStRfULH3362Np3R+Zjk
+         ksyYgAzUJiNiMYxxMIxKePiDt+EzrM/8haOfHnUUhd/+AZqqT6r1ndTVXEktIeWyxmdx
+         /cah79wRSt7bCNQefi6Ngwd30M+3OWtTiBISccXwBNBHXrWBRP6Jl3GGdGcVaJ7zAUmC
+         dYVQ==
+X-Gm-Message-State: AOJu0YxkPKKkAO2ryOKM8keCwXA9SZLbmwBqkluQDh/f6RGzXuYD54Wm
+        abkq6MlD9xRR8juQkGHqqMqykjj145675u2I
+X-Google-Smtp-Source: AGHT+IEex6NSKgWXUjJK9NtDKEBemVHgyoAvkJToFZZV4i38mLrQmkXb+UjR3aIEY0G94D6xXHU65Q==
+X-Received: by 2002:a05:6a21:7795:b0:15d:42d5:6cc1 with SMTP id bd21-20020a056a21779500b0015d42d56cc1mr717960pzc.33.1695275776544;
+        Wed, 20 Sep 2023 22:56:16 -0700 (PDT)
+Received: from toolbox.alistair23.me (2403-580b-97e8-0-321-6fb2-58f1-a1b1.ip6.aussiebb.net. [2403:580b:97e8:0:321:6fb2:58f1:a1b1])
+        by smtp.gmail.com with ESMTPSA id jw18-20020a170903279200b001adf6b21c77sm502841plb.107.2023.09.20.22.56.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 22:56:16 -0700 (PDT)
+From:   Alistair Francis <alistair23@gmail.com>
+X-Google-Original-From: Alistair Francis <alistair.francis@wdc.com>
+To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, lukas@wunner.de
+Cc:     alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        chaitanyak@nvidia.com, rdunlap@infradead.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: [PATCH v8 3/3] PCI/DOE: Allow enabling DOE without CXL
+Date:   Thu, 21 Sep 2023 15:55:31 +1000
+Message-ID: <20230921055531.2028834-3-alistair.francis@wdc.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230921055531.2028834-1-alistair.francis@wdc.com>
+References: <20230921055531.2028834-1-alistair.francis@wdc.com>
 MIME-Version: 1.0
-References: <20230920154608.1447057-1-apatel@ventanamicro.com>
-In-Reply-To: <20230920154608.1447057-1-apatel@ventanamicro.com>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Thu, 21 Sep 2023 10:52:29 +0530
-Message-ID: <CAK9=C2WXtRLTFA5JeWbkyKt+1qyTat0nw7v3-b6oQ-YO_37tdA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] KVM RISC-V fixes for ONE_REG interface
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 9:16=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> This series includes few assorted fixes for KVM RISC-V ONE_REG interface
-> and KVM_GET_REG_LIST API.
->
-> These patches can also be found in riscv_kvm_onereg_fixes_v2 branch at:
-> https://github.com/avpatel/linux.git
->
-> Changes since v1:
->  - Addressed Drew's comments in PATCH4
->
-> Anup Patel (4):
->   RISC-V: KVM: Fix KVM_GET_REG_LIST API for ISA_EXT registers
->   RISC-V: KVM: Fix riscv_vcpu_get_isa_ext_single() for missing
->     extensions
->   KVM: riscv: selftests: Fix ISA_EXT register handling in get-reg-list
->   KVM: riscv: selftests: Selectively filter-out AIA registers
+PCIe devices (not CXL) can support DOE as well, so allow DOE to be
+enabled even if CXL isn't.
 
-Queued this series for 6.6-rcX fixes
+Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+v8:
+ - No changes
+v7:
+ - Initial patch
 
-Thanks,
-Anup
+ drivers/pci/Kconfig | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
->
->  arch/riscv/kvm/vcpu_onereg.c                  |  7 ++-
->  .../selftests/kvm/riscv/get-reg-list.c        | 58 ++++++++++++++-----
->  2 files changed, 47 insertions(+), 18 deletions(-)
->
-> --
-> 2.34.1
->
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index e9ae66cc4189..672a1f5178c6 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -117,7 +117,10 @@ config PCI_ATS
+ 	bool
+ 
+ config PCI_DOE
+-	bool
++	bool "Enable PCI Data Object Exchange (DOE) support"
++	help
++	  Say Y here if you want be able to communicate with PCIe DOE
++	  mailboxes.
+ 
+ config PCI_ECAM
+ 	bool
+-- 
+2.41.0
+
