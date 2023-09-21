@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB407AA1C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0267A9F7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbjIUVGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
+        id S231776AbjIUUWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbjIUVEp (ORCPT
+        with ESMTP id S231694AbjIUUWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:04:45 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C262DAFC11;
-        Thu, 21 Sep 2023 11:07:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=NQXiZoHMCblnzW0FheGDzK8ZNsxJFNqugzxVPC1fy1I=; b=iIe0qoEAImcIE+rWAmnZ8xPO0W
-        h7aRx1fUHew4bud6BGsi+v+ohOeiHSveI/FFZ5SyKv1kbc7VK83hD5MIgl8bSRk2MWkP40bLCLZKQ
-        g5jPLEsA23tIcvia6u+LA4GTrpUy6SatHC/Edfnef7Y1TbnnVE/MEsgyVz7ZqKpkc/mo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qjJWF-0075Vg-FS; Thu, 21 Sep 2023 15:14:59 +0200
-Date:   Thu, 21 Sep 2023 15:14:59 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        David E Box <david.e.box@intel.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v3 0/5] TSN auto negotiation between 1G and 2.5G
-Message-ID: <4caade36-d4be-4670-ac79-d9d00488293d@lunn.ch>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+        Thu, 21 Sep 2023 16:22:30 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED579025;
+        Thu, 21 Sep 2023 10:11:02 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-76f2843260bso72941785a.3;
+        Thu, 21 Sep 2023 10:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695316262; x=1695921062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vmAqS4POZPQ4cWVva2XsitwLpylcffcICW2xKCJAJKs=;
+        b=MRqMb0ErSrr4wYpe1itOlcjN7/APkPythWOmRjzTboiRL9JfU7RByvJ+F5O+xIFIUE
+         //9lhMbVyepYpQBzICN6lJx8Z4RsedsNuXC9qIJePcKhw/0lGnni6JIxgZY+9xXpni+/
+         e1rvMEpKozskOfDaWLuqGRHkmdtLf2IrjzyANzv8Zg/X84BcAP2f3tjmkizpd1Br3Viq
+         IhJtiFosCPVtAMeygLusVi/Emx/c9XtrNWlHtuSd/Rn6pUtp0oAWRY6PA3E4W6ibTaOD
+         l15BVKpKVTCdJn16jYhf03QerAUZ/Z6+A7hrcoy5oDhoVPVdsRNhR6bavnhvhiU4VGib
+         3HhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316262; x=1695921062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vmAqS4POZPQ4cWVva2XsitwLpylcffcICW2xKCJAJKs=;
+        b=T4wm7iURJMAeaggidUIV1+o/pv+Da1DiBqEulNbkY0UKyZesupg90ao9L1bma0p1P4
+         M8+pcHGb+wllbDQRel1sEFEaI6W4K4vyvLNHoNG1rvfPEFNrjlUkvZZWXZ6Gg1Ehm1Gt
+         fKnGjgfbrcWKPc8A2IsdDRoTHN5/dO6/o3GIZ975j+pR8ep3UmNOzn+8dbOowZWYbtwL
+         3CJ157xLeZFajm4FAqjOqJgO+Hi2/9/M6ZM0sHP8ZL9thhu/xS4OkQledWccUF+2Mlnl
+         YuZ3YmWSMHf9tDKZfVOG2E6n/1Vcl7iEg6xifvtVNJARbVIrUX5PvDMXaF76pMlCKmFZ
+         DQ/g==
+X-Gm-Message-State: AOJu0YwPNJI+WREc5Q+AMX58ylpzRsn68gH40hU+CkObp+wNT1Hnk9aU
+        nO2KG/WYYnmIVGUNFAA+eOzexHSZ7w92WLXbuIx2wqTx
+X-Google-Smtp-Source: AGHT+IGlJdba7Njyh19TjaAtxrKa+auxnuBas8gb+0vYCa3DLBBmCmHN8Sx2z82f9gjmZ9zPPKAz/33voSKrEqm8sUA=
+X-Received: by 2002:a1f:c886:0:b0:496:21dc:ec73 with SMTP id
+ y128-20020a1fc886000000b0049621dcec73mr5737338vkf.5.1695302243773; Thu, 21
+ Sep 2023 06:17:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+References: <730408.1695292879@warthog.procyon.org.uk> <CANn89i+wUq5R2nFO8eGLp7=8Y5OiJ0fwjR+ES74gk1X4k9r0rw@mail.gmail.com>
+In-Reply-To: <CANn89i+wUq5R2nFO8eGLp7=8Y5OiJ0fwjR+ES74gk1X4k9r0rw@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 21 Sep 2023 09:16:48 -0400
+Message-ID: <CAF=yD-JhsNCtP7iWCL830=JWwsKHMqo4OMb9NSgReGJK7C=_0w@mail.gmail.com>
+Subject: Re: [PATCH net v3] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Auto-negotiation between 10, 100, 1000Mbps will use
-> in-band auto negotiation. Auto-negotiation between 10/100/1000Mbps and
-> 2.5Gbps will work as the following proposed flow, the stmmac driver reads
-> the PHY link status registers then identifies the negotiated speed.
+On Thu, Sep 21, 2023 at 7:09=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Thu, Sep 21, 2023 at 12:41=E2=80=AFPM David Howells <dhowells@redhat.c=
+om> wrote:
+> >
+> >
+> > Including the transhdrlen in length is a problem when the packet is
+> > partially filled (e.g. something like send(MSG_MORE) happened previousl=
+y)
+> > when appending to an IPv4 or IPv6 packet as we don't want to repeat the
+> > transport header or account for it twice.  This can happen under some
+> > circumstances, such as splicing into an L2TP socket.
+> >
+> > The symptom observed is a warning in __ip6_append_data():
+> >
+> >     WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_appen=
+d_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+> >
+> > that occurs when MSG_SPLICE_PAGES is used to append more data to an alr=
+eady
+> > partially occupied skbuff.  The warning occurs when 'copy' is larger th=
+an
+> > the amount of data in the message iterator.  This is because the reques=
+ted
+> > length includes the transport header length when it shouldn't.  This ca=
+n be
+> > triggered by, for example:
+> >
+> >         sfd =3D socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
+> >         bind(sfd, ...); // ::1
+> >         connect(sfd, ...); // ::1 port 7
+> >         send(sfd, buffer, 4100, MSG_MORE);
+> >         sendfile(sfd, dfd, NULL, 1024);
+> >
+> > Fix this by only adding transhdrlen into the length if the write queue =
+is
+> > empty in l2tp_ip6_sendmsg(), analogously to how UDP does things.
+> >
+> > l2tp_ip_sendmsg() looks like it won't suffer from this problem as it bu=
+ilds
+> > the UDP packet itself.
+> >
+> > Fixes: a32e0eec7042 ("l2tp: introduce L2TPv3 IP encapsulation support f=
+or IPv6")
+> > Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
+> > Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com=
+/
+> > Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > cc: Eric Dumazet <edumazet@google.com>
+> > cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> > cc: "David S. Miller" <davem@davemloft.net>
+> > cc: David Ahern <dsahern@kernel.org>
+> > cc: Paolo Abeni <pabeni@redhat.com>
+> > cc: Jakub Kicinski <kuba@kernel.org>
+> > cc: netdev@vger.kernel.org
+> > cc: bpf@vger.kernel.org
+> > cc: syzkaller-bugs@googlegroups.com
+> > ---
+>
+> Looks safer indeed, thanks to you and Willem !
+>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-I don't think you replied to my comment.
-
-in-band is just an optimisation. It in theory allows you to avoid a
-software path, the PHY driver talking to the MAC driver about the PHY
-status. As an optimisation, it is optional. Linux has the software
-path and the MAC driver you are using basically has it implemented.
-
-Why use this odd mix of in-band and out of band? It seems the change
-will be simpler if you just use the out of band method all the time
-and ignore in-band.
-
-	Andrew
+Reviewed-by: Willem de Bruijn <willemb@google.com>
