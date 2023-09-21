@@ -2,144 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A857A9EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B97A7A9EFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbjIUUH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55304 "EHLO
+        id S231433AbjIUUQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjIUUHq (ORCPT
+        with ESMTP id S231378AbjIUUPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:07:46 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0329D1FE8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:02:15 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c1c66876aso145071666b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:02:15 -0700 (PDT)
+        Thu, 21 Sep 2023 16:15:41 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8869C43CB2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:16:16 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5334f9a56f6so781934a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695315662; x=1695920462; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=19SW2gsLL1UdhsDBKiLlNxKkdUUQxSgCx6gW88i2Zes=;
-        b=NC9YxZCcV5mWuV4hivgJTEtsoQObB4P+6CvY2dBTY7it/cPw2l1uj4YlsZGjWUdlHW
-         CENcSL3V6EPyb5lelGqVJ1Lsb0GIdRG0u14GUJ0b/ICutLNM03RdA/ZSz/f9HYmm3sCt
-         fvfVjkuuT576uOfnkyVrIWTzESnr/40Br0NcU=
+        d=arista.com; s=google; t=1695316575; x=1695921375; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jLeTejN+krtXCBUoQ8c2GsyBFaUAnJ4kR1g83a7uWA8=;
+        b=OlwmdQT9VB1TgWmXiurmEbUYraDsgXQEph0gp8X6yvn0u7CxOCkK+sqfgIUxc+RLKN
+         Xd/mHxS2Kyc+oRPHaWhF+gt6mqk9u2WmDTpvU5hhuCPFkODLVzt69B3a98lASThj0WIK
+         2RMobMclcUbSowWEQJbYp2vvCtP8t6eUALK/NrRhgqSm8TjLyXzrxFRVarz8xW9zBZSd
+         HxN5Fvi1fDvyebiOf/oI3BxmTZdR+IeIPlmW4ruWH+69mLNqlLOExnZWIlf3YcDXP3mI
+         00xmqJQUY88tvMR0Xx1uLh8gR+GLv4qbFzraPZmzWok7bL+iwHVdqVbIkTrutK0aQWEw
+         AGeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695315662; x=1695920462;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=19SW2gsLL1UdhsDBKiLlNxKkdUUQxSgCx6gW88i2Zes=;
-        b=Rg2vBxCqPeTwh/wgYkqqFa1Qi/EU5A0rhcGcIZAviFO67DztjPLbLi9S5J0Tu6U6Oo
-         IEGu1nDeq8A7/LYhNeFhUez//k7WZKRdSHyxhZ8riAvKlTM4us9Je6QNARMVYKsg4a1C
-         7/dGVCbA+eDevHKqmovZZEpK+usQZl3NjDAdKqOG9pAapNCPXp/DldQJqhjs/15m9aIn
-         DU6xXIs8IcB1ZKmxv1+EZJR6wAjXaEyVmi4pmyYmLfJ0sy6jw3JbvCvauO4otxR6yWU9
-         4FYb4aHUyoxY38Dh0Kxy+tm9xQp+04AAoNDdMPcvOCDAoPZDhI/pF7eZiGh57MyxgB/z
-         EDWQ==
-X-Gm-Message-State: AOJu0YwKNU2GPsZ2HOeB8oSH4Q2upC5vFba4DnpmZiaI1gnzwsf5i4SH
-        zkrUCT1LT54CrSuJRjAHlv/fr77U1vxWF8N8WcNnDZU4
-X-Google-Smtp-Source: AGHT+IEOiGq2WUxqncse0GSK9WElwYns1AiX2s54rCR17XJgVp1yBUKXYqSYej4U24C367gKLmlIKQ==
-X-Received: by 2002:a17:906:2cc:b0:9a5:b878:7336 with SMTP id 12-20020a17090602cc00b009a5b8787336mr5997744ejk.7.1695312073186;
-        Thu, 21 Sep 2023 09:01:13 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id l3-20020a170906230300b009932337747esm1263922eja.86.2023.09.21.09.01.12
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1695316575; x=1695921375;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jLeTejN+krtXCBUoQ8c2GsyBFaUAnJ4kR1g83a7uWA8=;
+        b=QzVneO/MDr4SSVO6zS92rhPvGTnzPNEUUhO4Vmcscl5G0Kfc5gITRhBMzRxclvd1h8
+         BZWc6Gf/tfrOz3Mc0+c/dyI58zh7qANXutDG5nvJUPB8Pn/s0zm19/nZImUlbcQWWcDR
+         loDgmTZ+o5m8x50/U7V5qJQesNgQvrVCk/MfCnlxXcqu5MyKwR6OMhhXOtXVGnO8MiLA
+         oupcGtN0eCRgXFZKUm1T5IFsbR8aBkWxTaEHWyREadzYbsCr4jeYYXYnVEXPTP7vEigL
+         87BTxPkfTDrhAF2fF84o0kMe6Xc1YY+CqTbQM/jSDwoDTc5qdD+cVeWCWPkyA1r7LFvq
+         r59A==
+X-Gm-Message-State: AOJu0YzCGL7UZ4MdPYwSHhdif3xrmUV3t6zcfXrCMO+n5nj647TRaYtk
+        sSnjiLrqReU/8LycziNQv3btsD+lLjutxVS8cuA=
+X-Google-Smtp-Source: AGHT+IHqkoyAs8j3cuxFWRtoTCw47NxHsOSGjMKRiLPU0zR/pPum9yeXdhIngEZ+J2VrxNeRK//JMw==
+X-Received: by 2002:a05:600c:478a:b0:405:3955:5872 with SMTP id k10-20020a05600c478a00b0040539555872mr945316wmo.18.1695312190050;
+        Thu, 21 Sep 2023 09:03:10 -0700 (PDT)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id y2-20020a7bcd82000000b00403bbe69629sm2279793wmj.31.2023.09.21.09.03.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 09:01:12 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5310a63cf7bso1362565a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:01:12 -0700 (PDT)
-X-Received: by 2002:aa7:c448:0:b0:52a:6497:d02b with SMTP id
- n8-20020aa7c448000000b0052a6497d02bmr5458698edr.16.1695312071878; Thu, 21 Sep
- 2023 09:01:11 -0700 (PDT)
+        Thu, 21 Sep 2023 09:03:09 -0700 (PDT)
+Message-ID: <24f4b6aa-3be3-8fd1-7f98-503c1d7fea56@arista.com>
+Date:   Thu, 21 Sep 2023 17:03:07 +0100
 MIME-Version: 1.0
-References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
- <20230908070258.GA19320@noisy.programming.kicks-ass.net> <87zg1v3xxh.fsf@oracle.com>
- <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com> <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com> <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net> <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net> <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <8734z8v1lo.ffs@tglx>
-In-Reply-To: <8734z8v1lo.ffs@tglx>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 Sep 2023 09:00:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wix=nrfi2LkSXBvBSrTHgEAMYQebUfWXq8Q-PtH0x_SdQ@mail.gmail.com>
-Message-ID: <CAHk-=wix=nrfi2LkSXBvBSrTHgEAMYQebUfWXq8Q-PtH0x_SdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v12 net-next 06/23] net/tcp: Add TCP-AO sign to outgoing
+ packets
+Content-Language: en-US
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dan Carpenter <error27@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Donald Cassidy <dcassidy@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        "Nassiri, Mohammad" <mnassiri@ciena.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
+References: <20230918190027.613430-1-dima@arista.com>
+ <20230918190027.613430-7-dima@arista.com>
+ <c2c0b0684b9c2a930ae6001bcc0044dd7a0862d5.camel@redhat.com>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <c2c0b0684b9c2a930ae6001bcc0044dd7a0862d5.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok, I like this.
+On 9/21/23 12:23, Paolo Abeni wrote:
+> On Mon, 2023-09-18 at 20:00 +0100, Dmitry Safonov wrote:
+>> @@ -1361,16 +1385,48 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>>  		th->window	= htons(min(tp->rcv_wnd, 65535U));
+>>  	}
+>>  
+>> -	tcp_options_write(th, tp, &opts);
+>> +	tcp_options_write(th, tp, &opts, &key);
+>>  
+>> +	if (tcp_key_is_md5(&key)) {
+>>  #ifdef CONFIG_TCP_MD5SIG
+>> -	/* Calculate the MD5 hash, as we have all we need now */
+>> -	if (md5) {
+>> +		/* Calculate the MD5 hash, as we have all we need now */
+>>  		sk_gso_disable(sk);
+>>  		tp->af_specific->calc_md5_hash(opts.hash_location,
+>> -					       md5, sk, skb);
+>> -	}
+>> +					       key.md5_key, sk, skb);
+>>  #endif
+>> +	} else if (tcp_key_is_ao(&key)) {
+>> +#ifdef CONFIG_TCP_AO
+>> +		struct tcp_ao_info *ao;
+>> +		void *tkey_buf = NULL;
+>> +		u8 *traffic_key;
+>> +		__be32 disn;
+>> +
+>> +		ao = rcu_dereference_protected(tcp_sk(sk)->ao_info,
+>> +					       lockdep_sock_is_held(sk));
+>> +		if (unlikely(tcb->tcp_flags & TCPHDR_SYN)) {
+>> +			if (tcb->tcp_flags & TCPHDR_ACK)
+>> +				disn = ao->risn;
+>> +			else
+>> +				disn = 0;
+>> +
+>> +			tkey_buf = kmalloc(tcp_ao_digest_size(key.ao_key),
+>> +					   GFP_ATOMIC);
+>> +			if (!tkey_buf) {
+>> +				kfree_skb_reason(skb, SKB_DROP_REASON_NOMEM);
+>> +				return -ENOMEM;
+>> +			}
+>> +			traffic_key = tkey_buf;
+>> +			tp->af_specific->ao_calc_key_sk(key.ao_key, traffic_key,
+>> +							sk, ao->lisn, disn, true);
+>> +		} else {
+>> +			traffic_key = snd_other_key(key.ao_key);
+>> +		}
+>> +		tp->af_specific->calc_ao_hash(opts.hash_location, key.ao_key,
+>> +					      sk, skb, traffic_key,
+>> +					      opts.hash_location - (u8 *)th, 0);
+>> +		kfree(tkey_buf);
+>> +#endif
+> 
+> I'm sorry for the incremental feedback.
+> 
+> The above could possibly deserve being moved to a specific helper, for
+> both readability and code locality when TCP_AO is enabled at compile
+> time but not used.
 
-That said, this part of it:
+Sure, will do for the v13.
 
-On Wed, 20 Sept 2023 at 16:58, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> -void resched_curr(struct rq *rq)
-> +static void __resched_curr(struct rq *rq, int nr_bit)
->  [...]
-> -               set_tsk_need_resched(curr);
-> -               set_preempt_need_resched();
-> +               set_tsk_thread_flag(curr, nr_bit);
-> +               if (nr_bit == TIF_NEED_RESCHED)
-> +                       set_preempt_need_resched();
+Thanks,
+           Dmitry
 
-feels really hacky.
-
-I think that instead of passing a random TIF bit around, it should
-just pass a "lazy or not" value around.
-
-Then you make the TIF bit be some easily computable thing (eg something like
-
-        #define TIF_RESCHED(lazy) (TIF_NEED_RESCHED + (lazy))
-
-or whatever), and write the above conditional as
-
-        if (!lazy)
-                set_preempt_need_resched();
-
-so that it all *does* the same thing, but the code makes it clear
-about what the logic is.
-
-Because honestly, without having been part of this thread, I would look at that
-
-        if (nr_bit == TIF_NEED_RESCHED)
-                set_preempt_need_resched();
-
-and I'd be completely lost. It doesn't make conceptual sense, I feel.
-
-So I'd really like the source code to be more directly expressing the
-*intent* of the code, not be so centered around the implementation
-detail.
-
-Put another way: I think we can make the compiler turn the intent into
-the implementation, and I'd rather *not* have us humans have to infer
-the intent from the implementation.
-
-That said - I think as a proof of concept and "look, with this we get
-the expected scheduling event counts", that patch is perfect. I think
-you more than proved the concept.
-
-                 Linus
