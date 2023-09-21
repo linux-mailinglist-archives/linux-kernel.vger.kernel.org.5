@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6F47A97C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD757A97AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbjIUR1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
+        id S229674AbjIUR05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjIUR0v (ORCPT
+        with ESMTP id S229840AbjIUR0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:26:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B01E57
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:03:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4EFC32781;
-        Thu, 21 Sep 2023 14:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695306914;
-        bh=Ashko9Vqxtf3QtmQTLjdXa1bJRP7FL+fu06wAfd3F7c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FRMShh9/zX9wUDM9v8+QIfE2SHrgP+e4G8jiMmiY532CnUx1xx/BPojQLknskBGaV
-         /tZuyOapRtkzGcTUI++k8EOhvB2FjvEDZpcWizWGkS3m2Gs6GV3ltV2UBvht06CInz
-         GEPoh/stnSW9Sd3S0EaxIKvqU8O+UtDXE9lw9Bv1en7UzL6Xd5AkJO4dNNPPwBxA4h
-         FxPhfiyO87F4c1lg/byqQEeOfnnYRPJcGfXSs1NDe5kJZmEj15AmnMWMkJyV/DGTau
-         X6ah1ms2I5mjEosoSOYhpAXbs9WmDccDu41kAk+yb9oQUdHgu85ZAT+o+VrHlv1HWM
-         TqwKyW4jUw2MA==
-Date:   Thu, 21 Sep 2023 16:35:11 +0200
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Sandor Yu <Sandor.yu@nxp.com>, andrzej.hajda@intel.com,
-        neil.armstrong@linaro.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
-        daniel@ffwll.ch, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kernel@pengutronix.de,
-        linux-imx@nxp.com, oliver.brown@nxp.com,
-        alexander.stein@ew.tq-group.com, sam@ravnborg.org
-Subject: Re: [PATCH v8 2/7] phy: Add HDMI configuration options
-Message-ID: <ZQxUn3MEVuxU3h6I@matsya>
-References: <20230808083243.3113192-1-Sandor.yu@nxp.com>
- <20230808083243.3113192-3-Sandor.yu@nxp.com>
- <c485b64e-3c83-4616-b8d8-76c2c7d56b0e@linaro.org>
- <ZOS+IQgFZYxN503B@matsya>
- <CAA8EJpokkjw_Q36YMh4p6NR+r4JGgM7_b+_QXtbmcPr6GzA=ug@mail.gmail.com>
- <ZQxMmtbqDTqgECnE@matsya>
+        Thu, 21 Sep 2023 13:26:44 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECB95AAAB
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:21:30 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50307759b65so2273237e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695316889; x=1695921689; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BRjD71BxaHKeKUao5JkBY66AYjHKMR6kgB3U+BDfPis=;
+        b=Ho7SHi/ryKoRwLToXgd2BOfVJQIAGve3hien8pv9xkpxa457QYcZ0hwacwtOk3mKvp
+         D0sETx3z2JHw2AeuqRZ0RrhGfK7KHK3E3T73RNkkG9uiEjIXQbcAK+P47KxDhs6PQavY
+         PbMV00IINqjyX7V/M9NhnY0wBhP66kgxmCSk2Y45BtvSYlibWGY6q0DO3Xh6Sqp3izrl
+         lj8I22RK2XEByZmiVzCSj0VF4hy6P3al3xFV8l66MQNKwpDyZcq1IvWDTha5fW38F1Y2
+         zbCr9qe8e2wtnAISsLkJiGdzlnB0ySsKj3HmkCcV4dZS1Gkchx2xEFlt6dZY1nSSn7kY
+         v4lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316889; x=1695921689;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BRjD71BxaHKeKUao5JkBY66AYjHKMR6kgB3U+BDfPis=;
+        b=NDD5yOB9tCiBqbW2nUzPuw0OGZsFilqJusbtRvU7wiEIVlXkG5rS17MTUkN16qMgeS
+         aYwGV1s5MYnsgLGI5AUSTCt/3AqmBuWdyavVqV7XTXISK8PJLlA79ejOyfHKyF7M7/pD
+         l3em5dpDJYEVDwak6OCtJdq4u9BiBLlTgqvYaEomhEOiyjIdUH2K2JbnHqB//iPSLOq4
+         4vrkquuqIzmB4z0Txyhf+MMSk6qkkWDXdvfmsOPYg8xo66NUU/ezHVy0yMBIjOP8wJ8U
+         s4ed2qz9lVBhhiRU1O32FVzYu5qT/meQiWWFN7El9p2b+YmKXgFWARCcy0mj0KHvkVLA
+         Wcgw==
+X-Gm-Message-State: AOJu0YzBGw/cLB+kgEEOsyJR32eP7gcH+S2ji3xI7WpGidv5kl5LRzFV
+        dP/b10lhgU4B3Htp2gzf+sgH6I/qQXXy9bdfDu2QoQ==
+X-Google-Smtp-Source: AGHT+IG20+78STBi2PpMkzT53VyFCQlg3f49O0y4ik5lHqELKdgTjzje3z/jrKlwq+zFG+cbW++8sA==
+X-Received: by 2002:a17:906:10a:b0:9ae:6355:afe9 with SMTP id 10-20020a170906010a00b009ae6355afe9mr2017506eje.52.1695306953057;
+        Thu, 21 Sep 2023 07:35:53 -0700 (PDT)
+Received: from [172.20.34.61] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id cb8-20020a170906a44800b00988dbbd1f7esm1118264ejb.213.2023.09.21.07.35.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 07:35:52 -0700 (PDT)
+Message-ID: <4425afd4-c38c-4f27-96a6-9833fe2401b4@linaro.org>
+Date:   Thu, 21 Sep 2023 15:35:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQxMmtbqDTqgECnE@matsya>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
+Content-Language: en-US
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>,
+        "pratyush@kernel.org" <pratyush@kernel.org>,
+        "michael@walle.cc" <michael@walle.cc>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "richard@nod.at" <richard@nod.at>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     GEO-CHHER-bsp-development 
+        <bsp-development.geo@leica-geosystems.com>
+References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
+ <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
+ <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
+ <084ed945-7674-280f-5866-9238473a294d@leica-geosystems.com>
+ <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
+In-Reply-To: <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-09-23, 16:01, Vinod Koul wrote:
-> On 22-08-23, 20:22, Dmitry Baryshkov wrote:
-> > On 22/08/2023 16:54, Vinod Koul wrote:
-> > > On 17-08-23, 13:05, Dmitry Baryshkov wrote:
-> > >> On 08/08/2023 11:32, Sandor Yu wrote:
-> > >>> Allow HDMI PHYs to be configured through the generic
-> > >>> functions through a custom structure added to the generic union.
-> > >>>
-> > >>> The parameters added here are based on HDMI PHY
-> > >>> implementation practices.  The current set of parameters
-> > >>> should cover the potential users.
-> > >>>
-> > >>> Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
-> > >>> ---
-> > >>>    include/linux/phy/phy-hdmi.h | 24 ++++++++++++++++++++++++
-> > >>>    include/linux/phy/phy.h      |  7 ++++++-
-> > >>>    2 files changed, 30 insertions(+), 1 deletion(-)
-> > >>>    create mode 100644 include/linux/phy/phy-hdmi.h
-> > >>
-> > >> I think this looks good now, thank you!
-> > >>
-> > >> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > >
-> > > Should this go thru drm or phy...?
-> > 
-> > I'd say, PHY, together with the other PHY patches. If you can merge
-> > them into an immutable branch, then it can also be merged into
-> > drm-misc (?) to provide the dependency between drm and phy parts.
+
+
+On 9/21/23 15:31, Tudor Ambarus wrote:
+cut
 > 
-> phy/topic/hdmi should be pushed out in a bit for that
+> So the first commit will look like:
+> diff --git a/drivers/mtd/spi-nor/micron-st.c
+> b/drivers/mtd/spi-nor/micron-st.c
+> index 4afcfc57c896..a8da1f18e335 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -405,9 +405,6 @@ static const struct flash_info st_nor_parts[] = {
+>         }, {
+>                 .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
+>                 .name = "mt25qu512a",
+> -               .size = SZ_64M,
+> -               .no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ |
+> SPI_NOR_QUAD_READ,
+> -               .fixup_flags = SPI_NOR_4B_OPCODES,
 
-Sorry we need the drm header, so best to merge thru drm tree:
+since we removed the 4b-opcodes flag here,
+>                 .mfr_flags = USE_FSR,
+>         }, {
+>                 .id = SNOR_ID(0x20, 0xbb, 0x20),
+> 
+> and the second one will add just the BP support, something like:
+> diff --git a/drivers/mtd/spi-nor/micron-st.c
+> b/drivers/mtd/spi-nor/micron-st.c
+> index a8da1f18e335..fdafbfa0f936 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -405,6 +405,8 @@ static const struct flash_info st_nor_parts[] = {
+>         }, {
+>                 .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
+>                 .name = "mt25qu512a",
+> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+> SPI_NOR_4BIT_BP |
+> +                        SPI_NOR_BP3_SR_BIT6,
+>                 .mfr_flags = USE_FSR,
+>         }, {
+>                 .id = SNOR_ID(0x20, 0xbb, 0x20),
+> 
+> Of course, I expect you to run again the mtd_debug tests and also verify
+> the locking. Thanks!
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
+would also be good if you can also verify that 4BAIT SFDP table is
+present and you still use the 4B opcodes after the change.
 
--- 
-~Vinod
+> 
+> Cheers,
+> ta
+> 
