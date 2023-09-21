@@ -2,196 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5CE7AA1CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256D57AA0C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbjIUVGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        id S232438AbjIUUse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233067AbjIUVFW (ORCPT
+        with ESMTP id S230381AbjIUUsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:05:22 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D86EE4E5ED;
-        Thu, 21 Sep 2023 10:17:21 -0700 (PDT)
-Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8EBC7212C5B4;
-        Thu, 21 Sep 2023 03:43:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8EBC7212C5B4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695292989;
-        bh=SOX5o5oyS7LBbpizIPBbrtijPHb6zgqQsGJ5vxNHoRg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=KS6RUS3maeHbxTGmUE9NWlj60qEleuPTBYYk8JsyzO4q+sPwdZ//gABDcp7SHFTee
-         /HMZ15pczaXyx4Wt3T0Vx2enaJFbBL2dpK8qSyfX4WFsQwsfwfJ2CFSZWIx4ULFx8X
-         +p5xFjwwMSC9rbg7dOFDrm3Lzd9qo9uGqLViDvxg=
-Message-ID: <f01b5d93-0f43-41c8-b3d8-40ef9696dcf8@linux.microsoft.com>
-Date:   Thu, 21 Sep 2023 12:43:05 +0200
+        Thu, 21 Sep 2023 16:48:18 -0400
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D377284F03;
+        Thu, 21 Sep 2023 10:50:53 -0700 (PDT)
+Received: from [192.168.42.133] (host-178-72-203-90.ip.nej.cz [178.72.203.90])
+        by mx.gpxsee.org (Postfix) with ESMTPSA id 7D95FF62;
+        Thu, 21 Sep 2023 12:43:59 +0200 (CEST)
+Message-ID: <91d2eb26-f4de-4b83-816e-d7b8ada5a225@gpxsee.org>
+Date:   Thu, 21 Sep 2023 12:43:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
- kmem.limit_in_bytes
-To:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        mathieu.tortuyaux@gmail.com
-References: <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
- <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
- <ZQrSXh+riB7NnZuE@dhcp22.suse.cz>
- <4eb47d6a-b127-4aad-af30-896c3b9505b4@linux.microsoft.com>
- <ZQr3+YfcBM2Er6F7@dhcp22.suse.cz>
- <CALvZod7E_Jm9y+40OKtLs5EFA0ptKGjoe2BU58SY29pUiPc93g@mail.gmail.com>
- <ZQskGGAwlsr1YxAp@dhcp22.suse.cz>
- <CALvZod6b3=+=xXEUeWOQW3t_URJpeeVX46WjBHv5BS+436KoFA@mail.gmail.com>
- <ZQtRKzUOfdaVKRCF@dhcp22.suse.cz>
- <CALvZod5DSMoEGY0CwGz=P-2=Opbr4SmMfwHhZRROBx7yCaBdDA@mail.gmail.com>
- <ZQv2MXOynlEPW/bX@dhcp22.suse.cz>
+Subject: Re: [PATCH v10 1/2] Added Digiteq Automotive MGB4 driver
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+References: <20230919165923.2509-1-tumic@gpxsee.org>
+ <20230919165923.2509-2-tumic@gpxsee.org>
+ <84ecbf4e-79eb-4ab4-851d-cdd998201534@xs4all.nl>
 Content-Language: en-US
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <ZQv2MXOynlEPW/bX@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
+From:   =?UTF-8?Q?Martin_T=C5=AFma?= <tumic@gpxsee.org>
+In-Reply-To: <84ecbf4e-79eb-4ab4-851d-cdd998201534@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/2023 9:52 AM, Michal Hocko wrote:
-> On Wed 20-09-23 14:46:52, Shakeel Butt wrote:
->> On Wed, Sep 20, 2023 at 1:08 PM Michal Hocko <mhocko@suse.com> wrote:
->>>
->> [...]
->>>> have a strong opinion against it. Also just to be clear we are not
->>>> talking about full revert of 58056f77502f but just the returning of
->>>> EOPNOTSUPP, right?
->>>
->>> If we allow the limit to be set without returning a failure then we
->>> still have options 2 and 3 on how to deal with that. One of them is to
->>> enforce the limit.
->>>
+On 21. 09. 23 9:28, Hans Verkuil wrote:
+> On 19/09/2023 18:59, tumic@gpxsee.org wrote:
+>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
 >>
->> Option 3 is a partial revert of 58056f77502f where we keep the no
->> limit enforcement and remove the EOPNOTSUPP return on write. Let's go
->> with option 3. In addition, let's add pr_warn_once on the read of
->> kmem.limit_in_bytes as well.
+>> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
+>> video interfaces. As for now, two modules - FPD-Link and GMSL - are
+>> available and supported by the driver. The card has two inputs and two
+>> outputs (FPD-Link only).
+>>
+>> In addition to the video interfaces it also provides a trigger signal
+>> interface and a MTD interface for FPGA firmware upload.
+>>
+>> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>> ---
+>>   MAINTAINERS                             |   7 +
+>>   drivers/media/pci/Kconfig               |   1 +
+>>   drivers/media/pci/Makefile              |   1 +
+>>   drivers/media/pci/mgb4/Kconfig          |  17 +
+>>   drivers/media/pci/mgb4/Makefile         |   6 +
+>>   drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
+>>   drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
+>>   drivers/media/pci/mgb4/mgb4_core.c      | 686 +++++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_core.h      |  74 ++
+>>   drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
+>>   drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
+>>   drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
+>>   drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
+>>   drivers/media/pci/mgb4/mgb4_io.h        |  33 +
+>>   drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
+>>   drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
+>>   drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
+>>   drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 744 +++++++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_sysfs_out.c | 681 +++++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
+>>   drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
+>>   drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
+>>   drivers/media/pci/mgb4/mgb4_vin.c       | 934 ++++++++++++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
+>>   drivers/media/pci/mgb4/mgb4_vout.c      | 597 +++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
+>>   26 files changed, 4862 insertions(+)
+>>   create mode 100644 drivers/media/pci/mgb4/Kconfig
+>>   create mode 100644 drivers/media/pci/mgb4/Makefile
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
+>>
 > 
-> How about this?
-> --- 
-
-I'm OK with this approach. You're missing this in the patch below:
-
-// static struct cftype mem_cgroup_legacy_files[] = {
-
-+       {
-+               .name = "kmem.limit_in_bytes",
-+               .private = MEMFILE_PRIVATE(_KMEM, RES_LIMIT),
-+               .write = mem_cgroup_write,
-+               .read_u64 = mem_cgroup_read_u64,
-+       },
-
-
-Thanks,
-Jeremi
-
->>From 81ae0797d8da1b9cfbf357b4be4787a5bbf46bb4 Mon Sep 17 00:00:00 2001
-> From: Michal Hocko <mhocko@suse.com>
-> Date: Thu, 21 Sep 2023 09:38:29 +0200
-> Subject: [PATCH] mm, memcg: reconsider kmem.limit_in_bytes deprecation
+> <snip>
 > 
-> This reverts commits 86327e8eb94c ("memcg: drop kmem.limit_in_bytes")
-> and partially reverts 58056f77502f ("memcg, kmem: further deprecate
-> kmem.limit_in_bytes") which have incrementally removed support for the
-> kernel memory accounting hard limit. Unfortunately it has turned out
-> that there is still userspace depending on the existence of
-> memory.kmem.limit_in_bytes [1]. The underlying functionality is not
-> really required but the non-existent file just confuses the userspace
-> which fails in the result. The patch to fix this on the userspace side
-> has been submitted but it is hard to predict how it will propagate
-> through the maze of 3rd party consumers of the software.
+>> diff --git a/drivers/media/pci/mgb4/mgb4_sysfs_in.c b/drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>> new file mode 100644
+>> index 000000000000..61b1ee969ed0
+>> --- /dev/null
+>> +++ b/drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>> @@ -0,0 +1,744 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (C) 2021-2023 Digiteq Automotive
+>> + *     author: Martin Tuma <martin.tuma@digiteqautomotive.com>
+>> + *
+>> + * This module handles all the sysfs info/configuration that is related to the
+>> + * v4l2 input devices.
+>> + */
+>> +
+>> +#include <linux/device.h>
+>> +#include "mgb4_core.h"
+>> +#include "mgb4_i2c.h"
+>> +#include "mgb4_vin.h"
+>> +#include "mgb4_cmt.h"
+>> +#include "mgb4_sysfs.h"
+>> +
+>> +/* Common for both FPDL3 and GMSL */
+>> +
+>> +static ssize_t input_id_show(struct device *dev,
+>> +			     struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>> +
+>> +	return sprintf(buf, "%d\n", vindev->config->id);
+>> +}
+>> +
+>> +static ssize_t oldi_lane_width_show(struct device *dev,
+>> +				    struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>> +	struct mgb4_dev *mgbdev = vindev->mgbdev;
+>> +	u16 i2c_reg;
+>> +	u8 i2c_mask, i2c_single_val, i2c_dual_val;
+>> +	u32 config;
+>> +	int ret;
+>> +
+>> +	i2c_reg = MGB4_IS_GMSL(mgbdev) ? 0x1CE : 0x49;
+>> +	i2c_mask = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x03;
+>> +	i2c_single_val = MGB4_IS_GMSL(mgbdev) ? 0x00 : 0x02;
+>> +	i2c_dual_val = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x00;
+>> +
+>> +	mutex_lock(&mgbdev->i2c_lock);
+>> +	ret = mgb4_i2c_read_byte(&vindev->deser, i2c_reg);
+>> +	mutex_unlock(&mgbdev->i2c_lock);
+>> +	if (ret < 0)
+>> +		return -EIO;
+>> +
+>> +	config = mgb4_read_reg(&mgbdev->video, vindev->config->regs.config);
+>> +
+>> +	if (((config & (1U << 9)) && ((ret & i2c_mask) != i2c_dual_val)) ||
+>> +	    (!(config & (1U << 9)) && ((ret & i2c_mask) != i2c_single_val))) {
+>> +		dev_err(dev, "I2C/FPGA register value mismatch\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return sprintf(buf, "%s\n", config & (1U << 9) ? "1" : "0");
+>> +}
+>> +
+>> +static ssize_t oldi_lane_width_store(struct device *dev,
+>> +				     struct device_attribute *attr,
+>> +				     const char *buf, size_t count)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>> +	struct mgb4_dev *mgbdev = vindev->mgbdev;
+>> +	u32 fpga_data;
+>> +	u16 i2c_reg;
+>> +	u8 i2c_mask, i2c_data;
+>> +	unsigned long val;
+>> +	int ret;
+>> +
+>> +	ret = kstrtoul(buf, 10, &val);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	switch (val) {
+>> +	case 0: /* single */
+>> +		fpga_data = 0;
+>> +		i2c_data = MGB4_IS_GMSL(mgbdev) ? 0x00 : 0x02;
+>> +		break;
+>> +	case 1: /* dual */
+>> +		fpga_data = 1U << 9;
+>> +		i2c_data = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x00;
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	i2c_reg = MGB4_IS_GMSL(mgbdev) ? 0x1CE : 0x49;
+>> +	i2c_mask = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x03;
 > 
-> Now, reverting alone 86327e8eb94c is not an option because there is
-> another set of userspace which cannot cope with ENOTSUPP returned when
-> writing to the file. Therefore we have to go and revisit 58056f77502f
-> as well. There are two ways to go ahead. Either we give up on the
-> deprecation and fully revert 58056f77502f as well or we can keep
-> kmem.limit_in_bytes but make the write a noop and warn about the fact.
-> This should work for both known breaking workloads which depend on the
-> existence but do not depend on the hard limit enforcement.
+> Isn't this sequence needed as well?
 > 
-> [1] http://lkml.kernel.org/r/20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net
-> Fixes: 86327e8eb94c ("memcg: drop kmem.limit_in_bytes")
-> Fixes: 58056f77502f ("memcg, kmem: further deprecate kmem.limit_in_bytes")
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> ---
->  Documentation/admin-guide/cgroup-v1/memory.rst |  7 +++++++
->  mm/memcontrol.c                                | 12 ++++++++++++
->  2 files changed, 19 insertions(+)
+> 	mutex_lock(vindev->vdev.lock);
+> 	if (vb2_is_busy(vindev->vdev.queue)) {
+> 		mutex_unlock(vindev->vdev.lock);
+> 		return -EBUSY;
+> 	}
 > 
-> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> index 5f502bf68fbc..ff456871bf4b 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -92,6 +92,13 @@ Brief summary of control files.
->   memory.oom_control		     set/show oom controls.
->   memory.numa_stat		     show the number of memory usage per numa
->  				     node
-> + memory.kmem.limit_in_bytes          Deprecated knob to set and read the kernel
-> +                                     memory hard limit. Kernel hard limit is not
-> +                                     supported since 5.16. Writing any value to
-> +                                     do file will not have any effect same as if
-> +                                     nokmem kernel parameter was specified.
-> +                                     Kernel memory is still charged and reported
-> +                                     by memory.kmem.usage_in_bytes.
->   memory.kmem.usage_in_bytes          show current kernel memory allocation
->   memory.kmem.failcnt                 show the number of kernel memory usage
->  				     hits limits
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a4d3282493b6..ac7f14b2338d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3097,6 +3097,7 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
->  static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
->  				   unsigned int nr_pages)
->  {
-> +	struct page_counter *counter;
->  	struct mem_cgroup *memcg;
->  	int ret;
->  
-> @@ -3107,6 +3108,10 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
->  		goto out;
->  
->  	memcg_account_kmem(memcg, nr_pages);
-> +
-> +	/* There is no way to set up kmem hard limit so this operation cannot fail */
-> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +		WARN_ON(!page_counter_try_charge(&memcg->kmem, nr_pages, &counter));
->  out:
->  	css_put(&memcg->css);
->  
-> @@ -3867,6 +3872,13 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
->  		case _MEMSWAP:
->  			ret = mem_cgroup_resize_max(memcg, nr_pages, true);
->  			break;
-> +		case _KMEM:
-> +			pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
-> +				     "Writing any value to this file has no effect. "
-> +				     "Please report your usecase to linux-mm@kvack.org if you "
-> +				     "depend on this functionality.\n");
-> +			ret = 0;
-> +			break;
->  		case _TCP:
->  			ret = memcg_update_tcp_max(memcg, nr_pages);
->  			break;
+> I would expect this to be present in almost all store functions.
+> You don't want to change a setting like this when the queue is busy.
+> 
+> If a store function doesn't need the lock, then perhaps add a comment
+> like: 'This can be changed at any time, even if vb2_is_busy() is true.'
+> 
+> Can you go through all the store functions and verify this?
+> 
+> Basically any store function that changes timings/video source/buffer size
+> needs this check.
+> 
+> Similar to VIDIOC_S_FMT and VIDIOC_S_DV_TIMINGS ioctls: you can't change
+> those while buffers are allocated.
+> 
+
+Any store function, that could change the video source/size and thus 
+would require new buffers is guarded by this check. In the admin guide 
+documentation, all those functions have the "This parameter can not be 
+changed while the output v4l2 device is open." note.
+
+Functions that change the signal "on the wire" like 
+oldi_lane_width_store() do however not have this guard as for me it 
+seems that those can not break anything in v4l2 - the queue remains the 
+same. Also when practically tested, nothing seemed to break. But I can 
+of course add those checks to some more functions if you think they are 
+necessary. Not having this restrictions makes it possible to fiddle with 
+the parameters on live streams to set the correct parameters. For 
+example in this case (oldi_lane_width) the image switches between "two 
+images in one" and "the correct image" if you switch it during playback, 
+but the queue (buffer size) is the same. The FPGA is also designed to be 
+capable of changing those parameters "live".
+
+>> +
+>> +	mutex_lock(&mgbdev->i2c_lock);
+>> +	ret = mgb4_i2c_mask_byte(&vindev->deser, i2c_reg, i2c_mask, i2c_data);
+>> +	mutex_unlock(&mgbdev->i2c_lock);
+>> +	if (ret < 0)
+>> +		return -EIO;
+>> +	mgb4_mask_reg(&mgbdev->video, vindev->config->regs.config, 1U << 9,
+>> +		      fpga_data);
+>> +	if (MGB4_IS_GMSL(mgbdev)) {
+>> +		/* reset input link */
+>> +		mutex_lock(&mgbdev->i2c_lock);
+>> +		ret = mgb4_i2c_mask_byte(&vindev->deser, 0x10, 1U << 5, 1U << 5);
+>> +		mutex_unlock(&mgbdev->i2c_lock);
+>> +		if (ret < 0)
+>> +			return -EIO;
+>> +	}
+>> +
+>> +	return count;
+>> +}
+>> +
+>> +static ssize_t color_mapping_show(struct device *dev,
+>> +				  struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>> +	u32 config = mgb4_read_reg(&vindev->mgbdev->video,
+>> +	  vindev->config->regs.config);
+>> +
+>> +	return sprintf(buf, "%s\n", config & (1U << 8) ? "0" : "1");
+>> +}
+>> +
+>> +static ssize_t color_mapping_store(struct device *dev,
+>> +				   struct device_attribute *attr,
+>> +				   const char *buf, size_t count)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>> +	u32 fpga_data;
+>> +	unsigned long val;
+>> +	int ret;
+>> +
+>> +	ret = kstrtoul(buf, 10, &val);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	switch (val) {
+>> +	case 0: /* OLDI/JEIDA */
+>> +		fpga_data = (1U << 8);
+>> +		break;
+>> +	case 1: /* SPWG/VESA */
+>> +		fpga_data = 0;
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	mgb4_mask_reg(&vindev->mgbdev->video, vindev->config->regs.config,
+>> +		      1U << 8, fpga_data);
+> 
+> This is likely a store function that can be called at any time as this
+> doesn't interrupt video streaming or changes buffer sizes.
+> 
+
+Yes, this parameter definitely does not break anything else than the 
+color scheme of the image and is without doubt safe to do on running 
+streams. But the others should be as well.
+
+>> +
+>> +	return count;
+>> +}
+>> +
+> 
+> Regards,
+> 
+> 	Hans
 
