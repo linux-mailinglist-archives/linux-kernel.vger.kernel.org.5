@@ -2,192 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966F87A9D1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEF27A9960
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjIUT2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
+        id S229680AbjIUSOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbjIUT2Z (ORCPT
+        with ESMTP id S230150AbjIUSNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:28:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4990576B6;
-        Thu, 21 Sep 2023 10:10:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695316220; x=1726852220;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=X9BBfgk8l9qrBPqgGMYev0KIhH/OZFgWEJbj0DqM7ps=;
-  b=aQOyF2nRK+tn5jfi9VgKf5gncIlneS1E5shoEImI3P8xl+Ox9gECyWTm
-   5RfYqOD/gbxVRzS8hXF7RY9DArGFgs9HKqbMMcaauWJN6uiPHmWCo3tqZ
-   wQzKOZwCU28scH2FDR+QVpGwNmDX2KMBT5D6rBv2DRtsLx0YWzCZt6xoC
-   r2mOGlge/GNDLCS9vcONkJjVxlvXP8T59OaTpJSZg1BA1PWwrgeFzq2QK
-   2qTaGRmCXcCM/xdnPm/ko4JB/8wo5LGC9Xp4e0bTDB8HOxImIDc/SN7GI
-   nUNqVhYXtAwos0/9Eh0jkuh3FOFEDFvFysZk3spEYt23FG/eZUt+bm42r
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="370764359"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="370764359"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 00:54:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="812522971"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="812522971"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Sep 2023 00:54:42 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: [PATCH v5 00/11] Add Intel VT-d nested translation
-Date:   Thu, 21 Sep 2023 00:54:20 -0700
-Message-Id: <20230921075431.125239-1-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 21 Sep 2023 14:13:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84B483E6;
+        Thu, 21 Sep 2023 10:23:15 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B2AC466072B4;
+        Thu, 21 Sep 2023 08:54:38 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695282879;
+        bh=mxa+TQ9McxKXTWkBAdGpIkOnbJ9KXBTRLFoX7g4x3U4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=aOx3li4jlzpntW7uZPRu6InVLWX1CEWeAd6xYNw5Cu5ySnF3GxElIKu/WXg6KjDcF
+         SpIv2sTg+zYMgzBZADkIltCPzyj40Z42PGN+SI6+iQ0rpbvTjH5vJ5cuRS63vGk3Xp
+         jis6cjJteeDzGPYtOGuSNWvAn8Dc0O4ED2WlXBRcM5US63j09hwqiWLSmr13atHZI2
+         hWnvBochrfDGcR3KhXDJku8+GR8uaPGigvxWIVES9sMIU3F7KyQ9PJMvX0xNhd6CPy
+         IhWVhKQd26cnucXe/AtKomFmpxc7ubr7kgVpAzJiqVCzHJkmyVSyURn6FA3LXK9rrw
+         leS8AqnHoNEAQ==
+Message-ID: <eb6cc1dd-1df9-3b68-1f72-d536189c7b4d@collabora.com>
+Date:   Thu, 21 Sep 2023 09:54:35 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 4/4] thermal/drivers/mediatek/lvts_thermal: add mt7988
+ support
+Content-Language: en-US
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230920175001.47563-1-linux@fw-web.de>
+ <20230920175001.47563-5-linux@fw-web.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230920175001.47563-5-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is to add Intel VT-d nested translation based on IOMMUFD nesting
-infrastructure. As the iommufd nesting infrastructure series[1], iommu
-core supports new ops to report iommu hardware information, allocate
-domains with user data and invalidate stage-1 IOTLB when there is mapping
-changed in stage-1 page table. The data required in the three paths are
-vendor-specific, so
+Il 20/09/23 19:50, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> Add Support for Mediatek Filogic 880/MT7988 LVTS.
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+> v2:
+> - use 105°C for hw shutdown
+> - move constants to binding file
+> - change coeff.a to temp_factor and coeff.b to temp_offset
+> - change to lvts to lvts-ap (Application Processor)
+> - drop comments about efuse offsets
+> - change comment of mt8195 to be similar to mt7988
+> ---
+>   drivers/thermal/mediatek/lvts_thermal.c | 46 +++++++++++++++++++++++++
+>   1 file changed, 46 insertions(+)
+> 
+> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
+> index c2669f405a94..8fd1dc5adb16 100644
+> --- a/drivers/thermal/mediatek/lvts_thermal.c
+> +++ b/drivers/thermal/mediatek/lvts_thermal.c
+> @@ -82,6 +82,8 @@
+>   #define LVTS_GOLDEN_TEMP_DEFAULT	50
+>   #define LVTS_COEFF_A_MT8195			-250460
+>   #define LVTS_COEFF_B_MT8195			250460
+> +#define LVTS_COEFF_A_MT7988			-204650
+> +#define LVTS_COEFF_B_MT7988			204650
+>   
+>   #define LVTS_MSR_IMMEDIATE_MODE		0
+>   #define LVTS_MSR_FILTERED_MODE		1
+> @@ -89,6 +91,7 @@
+>   #define LVTS_MSR_READ_TIMEOUT_US	400
+>   #define LVTS_MSR_READ_WAIT_US		(LVTS_MSR_READ_TIMEOUT_US / 2)
+>   
+> +#define LVTS_HW_SHUTDOWN_MT7988		105000
 
-1) IOMMU_HWPT_TYPE_VTD_S1 is defined for the Intel VT-d stage-1 page
-   table, it will be used in the stage-1 domain allocation and IOTLB
-   syncing path. struct iommu_hwpt_vtd_s1 is defined to pass user_data
-   for the Intel VT-d stage-1 domain allocation.
-   struct iommu_hwpt_vtd_s1_invalidate is defined to pass the data for
-   the Intel VT-d stage-1 IOTLB invalidation.
-2) IOMMU_HW_INFO_TYPE_INTEL_VTD and struct iommu_hw_info_vtd are defined
-   to report iommu hardware information for Intel VT-d.
+I would simply reuse the definition of LVTS_HW_SHUTDOWN_MT8195....
 
-With above IOMMUFD extensions, the intel iommu driver implements the three
-paths to support nested translation.
+>   #define LVTS_HW_SHUTDOWN_MT8195		105000
+>   
+>   #define LVTS_MINIMUM_THRESHOLD		20000
+> @@ -1269,6 +1272,41 @@ static int lvts_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +/*
+> + * LVTS MT7988
+> + */
+> +
 
-The first Intel platform supporting nested translation is Sapphire
-Rapids which, unfortunately, has a hardware errata [2] requiring special
-treatment. This errata happens when a stage-1 page table page (either
-level) is located in a stage-2 read-only region. In that case the IOMMU
-hardware may ignore the stage-2 RO permission and still set the A/D bit
-in stage-1 page table entries during page table walking.
+Please remove this big comment block, that's not needed.
 
-A flag IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17 is introduced to report
-this errata to userspace. With that restriction the user should either
-disable nested translation to favor RO stage-2 mappings or ensure no
-RO stage-2 mapping to enable nested translation.
+> +static const struct lvts_ctrl_data mt7988_lvts_ap_data_ctrl[] = {
+> +	{
+> +		.cal_offset = { 0x00, 0x04, 0x08, 0x0c }, //918,91C,920,924
 
-Intel-iommu driver is armed with necessary checks to prevent such mix
-in patch12 of this series.
+This 918,91c,etc comment is not necessary
 
-Qemu currently does add RO mappings though. The vfio agent in Qemu
-simply maps all valid regions in the GPA address space which certainly
-includes RO regions e.g. vbios.
+> +		.lvts_sensor = {
+> +			{ .dt_id = MT7988_CPU_0 }, // CPU 0,1
 
-In reality we don't know a usage relying on DMA reads from the BIOS
-region. Hence finding a way to skip RO regions (e.g. via a discard manager)
-in Qemu might be an acceptable tradeoff. The actual change needs more
-discussion in Qemu community. For now we just hacked Qemu to test.
+If you want to retain those comments, you shall use the right style.
 
-Complete code can be found in [3], corresponding QEMU could can be found
-in [4].
+{ .dt_id = MT7988_CPU_0 }, /* CPU 0,1 */
+{ .. } /* CPU 2,3 */
+{ .. } /* Internal 2.5G PHY 1 */
 
-[1] https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@intel.com/
-[2] https://www.intel.com/content/www/us/en/content-details/772415/content-details.html
-[3] https://github.com/yiliu1765/iommufd/tree/iommufd_nesting
-[4] https://github.com/yiliu1765/qemu/tree/zhenzhong/wip/iommufd_nesting_rfcv1
+etc
 
-Change log:
+> +			{ .dt_id = MT7988_CPU_1 }, // CPU 2,3
+> +			{ .dt_id = MT7988_ETH2P5G_0 }, // internal 2.5G Phy 1
+> +			{ .dt_id = MT7988_ETH2P5G_1 }  // internal 2.5G Phy 2
+> +		},
+> +		.num_lvts_sensor = 4,
+> +		.offset = 0x0,
+> +		.hw_tshut_temp = LVTS_HW_SHUTDOWN_MT7988,
+> +	},
+> +	{
+> +		.cal_offset = { 0x14, 0x18, 0x1c, 0x20 }, //92C,930,934,938
 
-v5:
- - Add Kevin's r-b for patch 2, 3 ,5 8, 10
- - Drop enforce_cache_coherency callback from the nested type domain ops (Kevin)
- - Remove duplicate agaw check in patch 04 (Kevin)
- - Remove duplicate domain_update_iommu_cap() in patch 06 (Kevin)
- - Check parent's force_snooping to set pgsnp in the pasid entry (Kevin)
- - uapi data structure check (Kevin)
- - Simplify the errata handling as user can allocate nested parent domain
+comment not needed
 
-v4: https://lore.kernel.org/linux-iommu/20230724111335.107427-1-yi.l.liu@intel.com/
- - Remove ascii art tables (Jason)
- - Drop EMT (Tina, Jason)
- - Drop MTS and related definitions (Kevin)
- - Rename macro IOMMU_VTD_PGTBL_ to IOMMU_VTD_S1_ (Kevin)
- - Rename struct iommu_hwpt_intel_vtd_ to iommu_hwpt_vtd_ (Kevin)
- - Rename struct iommu_hwpt_intel_vtd to iommu_hwpt_vtd_s1 (Kevin)
- - Put the vendor specific hwpt alloc data structure before enuma iommu_hwpt_type (Kevin)
- - Do not trim the higher page levels of S2 domain in nested domain attachment as the
-   S2 domain may have been used independently. (Kevin)
- - Remove the first-stage pgd check against the maximum address of s2_domain as hw
-   can check it anyhow. It makes sense to check every pfns used in the stage-1 page
-   table. But it cannot make it. So just leave it to hw. (Kevin)
- - Split the iotlb flush part into an order of uapi, helper and callback implementation (Kevin)
- - Change the policy of VT-d nesting errata, disallow RO mapping once a domain is used
-   as parent domain of a nested domain. This removes the nested_users counting. (Kevin)
- - Minor fix for "make htmldocs"
+> +		.lvts_sensor = {
+> +			{ .dt_id = MT7988_TOPS_0}, // TOPS > +			{ .dt_id = MT7988_TOPS_1}, // TOPS
 
-v3: https://lore.kernel.org/linux-iommu/20230511145110.27707-1-yi.l.liu@intel.com/
- - Further split the patches into an order of adding helpers for nested
-   domain, iotlb flush, nested domain attachment and nested domain allocation
-   callback, then report the hw_info to userspace.
- - Add batch support in cache invalidation from userspace
- - Disallow nested translation usage if RO mappings exists in stage-2 domain
-   due to errata on readonly mappings on Sapphire Rapids platform.
+The dt_id definition already says "TOPS", this comment is not needed.
 
-v2: https://lore.kernel.org/linux-iommu/20230309082207.612346-1-yi.l.liu@intel.com/
- - The iommufd infrastructure is split to be separate series.
+> +			{ .dt_id = MT7988_ETHWARP_0}, // WED 1
+> +			{ .dt_id = MT7988_ETHWARP_1}  // WED 2
 
-v1: https://lore.kernel.org/linux-iommu/20230209043153.14964-1-yi.l.liu@intel.com/
+Same comment about the format; /* WED 1 */
 
-Regards,
-	Yi Liu
+> +		},
+> +		.num_lvts_sensor = 4,
+> +		.offset = 0x100,
+> +		.hw_tshut_temp = LVTS_HW_SHUTDOWN_MT7988,
+> +	}
+> +};
+> +
+> +/*
+> + * LVTS MT8195
+> + */
 
-Lu Baolu (5):
-  iommu/vt-d: Extend dmar_domain to support nested domain
-  iommu/vt-d: Add helper for nested domain allocation
-  iommu/vt-d: Add helper to setup pasid nested translation
-  iommu/vt-d: Add nested domain allocation
-  iommu/vt-d: Disallow read-only mappings to nest parent domain
+Please also remove this big comment block, it's not needed.
 
-Yi Liu (6):
-  iommufd: Add data structure for Intel VT-d stage-1 domain allocation
-  iommu/vt-d: Make domain attach helpers to be extern
-  iommu/vt-d: Set the nested domain to a device
-  iommufd: Add data structure for Intel VT-d stage-1 cache invalidation
-  iommu/vt-d: Make iotlb flush helpers to be extern
-  iommu/vt-d: Add iotlb flush for nested domain
+Apart from that, this patch looks good; v3 will be the golden one :-)
 
- drivers/iommu/intel/Makefile |   2 +-
- drivers/iommu/intel/iommu.c  |  60 +++++++++----
- drivers/iommu/intel/iommu.h  |  51 +++++++++--
- drivers/iommu/intel/nested.c | 162 +++++++++++++++++++++++++++++++++++
- drivers/iommu/intel/pasid.c  | 125 +++++++++++++++++++++++++++
- drivers/iommu/intel/pasid.h  |   2 +
- include/uapi/linux/iommufd.h |  76 +++++++++++++++-
- 7 files changed, 452 insertions(+), 26 deletions(-)
- create mode 100644 drivers/iommu/intel/nested.c
+Cheers,
+Angelo
 
--- 
-2.34.1
+> +
+>   static const struct lvts_ctrl_data mt8195_lvts_mcu_data_ctrl[] = {
+>   	{
+>   		.cal_offset = { 0x04, 0x07 },
+> @@ -1348,6 +1386,13 @@ static const struct lvts_ctrl_data mt8195_lvts_ap_data_ctrl[] = {
+>   	}
+>   };
+>   
+> +static const struct lvts_data mt7988_lvts_ap_data = {
+> +	.lvts_ctrl	= mt7988_lvts_ap_data_ctrl,
+> +	.num_lvts_ctrl	= ARRAY_SIZE(mt7988_lvts_ap_data_ctrl),
+> +	.temp_factor	= LVTS_COEFF_A_MT7988,
+> +	.temp_offset	= LVTS_COEFF_B_MT7988,
+> +};
+> +
+>   static const struct lvts_data mt8195_lvts_mcu_data = {
+>   	.lvts_ctrl	= mt8195_lvts_mcu_data_ctrl,
+>   	.num_lvts_ctrl	= ARRAY_SIZE(mt8195_lvts_mcu_data_ctrl),
+> @@ -1363,6 +1408,7 @@ static const struct lvts_data mt8195_lvts_ap_data = {
+>   };
+>   
+>   static const struct of_device_id lvts_of_match[] = {
+> +	{ .compatible = "mediatek,mt7988-lvts-ap", .data = &mt7988_lvts_ap_data },
+>   	{ .compatible = "mediatek,mt8195-lvts-mcu", .data = &mt8195_lvts_mcu_data },
+>   	{ .compatible = "mediatek,mt8195-lvts-ap", .data = &mt8195_lvts_ap_data },
+>   	{},
 
