@@ -2,94 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB707AA153
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5552B7AA11D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbjIUVBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
+        id S232267AbjIUU6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbjIUVAS (ORCPT
+        with ESMTP id S232273AbjIUU5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:00:18 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F3BFAF96E;
-        Thu, 21 Sep 2023 11:07:37 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CF091655;
-        Thu, 21 Sep 2023 04:34:09 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 33C4C3F5A1;
-        Thu, 21 Sep 2023 04:33:31 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH] firmware: arm_scmi: Move power-domain driver to the pmdomain dir
-Date:   Thu, 21 Sep 2023 12:33:28 +0100
-Message-ID: <20230921113328.3208651-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230919121605.7304-1-ulf.hansson@linaro.org>
-References: <20230919121605.7304-1-ulf.hansson@linaro.org>
+        Thu, 21 Sep 2023 16:57:37 -0400
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490A8880B5;
+        Thu, 21 Sep 2023 10:38:50 -0700 (PDT)
+Received: from relay9-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::229])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id EAB5BC0A2F;
+        Thu, 21 Sep 2023 11:38:53 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 18E4AFF809;
+        Thu, 21 Sep 2023 11:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1695296310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jg1KwFh5lSvkfLStS1akS234BD88W219/y2jE+qO6JQ=;
+        b=FB+WZwNSKjLpXhOD9eu3aYO9S6xv7RKPVKfQqt6Yyak4R0XVc2bs16R2Ke/+V/3txgPjPr
+        wNyBzW42Tn7VAFs2jhEpLj1G9U6dnj08SGVZCzFzU+kN0/r6dBMoRCU2I1O3Q8xtwIolig
+        xJ1YEEOth0NiXYYwOeMIAC90CHeyPQYQTN1YQTfV6AKvrznfMYMqllejuEeIHK1xAQoq7D
+        B2wVQWekSUN/HVPKuTr+U8nV6amDRMGb5hUj07YiP5dfthswJzspcJcvSs0Fc397s1bG45
+        3KvHozxpJJGdRulhdH2AcaicpASeaoEDTfZJ6ynuWsTayDIRxLyeQVsxkaRHLg==
+Message-ID: <16710cf9-8911-4fed-8e2d-b19b581446c1@arinc9.com>
+Date:   Thu, 21 Sep 2023 14:38:09 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 07/10] dt-bindings: net: enforce phylink
+ bindings on certain ethernet controllers
+To:     Rob Herring <robh@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <20230916110902.234273-8-arinc.unal@arinc9.com>
+ <20230918181319.GA1445647-robh@kernel.org>
+Content-Language: en-US
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20230918181319.GA1445647-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To simplify with maintenance let's move the Arm SCMI power-domain driver
-to the new pmdomain directory.
+On 18.09.2023 21:13, Rob Herring wrote:
+> On Sat, Sep 16, 2023 at 02:08:59PM +0300, Arınç ÜNAL wrote:
+>> Phylink bindings are required for ethernet controllers that utilise
+>> phylink_fwnode_phy_connect() directly or through phylink_of_phy_connect(),
+>> and register OF-based only MDIO buses, if they register any.
+> 
+> What is phylink?
+> 
+> Don't describe/justify binding changes based on some Linux functions.
 
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
+I'd like to discuss the influence of the Linux drivers on the devicetree
+bindings. Before that let me clarify these "phylink" bindings. They are
+certain rules to properly describe the link of the ethernet controller. Any
+of the phy-handle, pcs-handle, sfp, and fixed-link properties describe the
+link. They are already defined on ethernet-controller.yaml, just not
+enforced.
 
-Hi Ulf,
+Why I called them phylink bindings, is because when phylink is used on the
+ethernet controller driver, only then we can be sure that the link
+descriptions on the ethernet controller are needed. Because, some drivers
+don't need the link descriptions on the ethernet controller as they can
+search a certain MDIO bus to find and connect a MAC to a PHY or set up a
+fixed link without looking at the devicetree.
 
-If you are happy with this, please cck. I would like to take this along
-with your scmi_perf_domain change as part of you series.
+I don't like this approach because, as you said, devicetree bindings should
+describe the hardware, not driver policies. So I propose that we don't let
+Linux drivers interfere with dt-bindings. To that extent:
 
-Regards,
-Sudeep
+- Link descriptions must be required on ethernet controllers. We don't care
+   whether some Linux driver can or cannot find the PHY or set up a fixed
+   link without looking at the devicetree.
 
- drivers/firmware/arm_scmi/Makefile                           | 1 -
- drivers/pmdomain/arm/Makefile                                | 1 +
- drivers/{firmware/arm_scmi => pmdomain/arm}/scmi_pm_domain.c | 0
- 3 files changed, 1 insertion(+), 1 deletion(-)
- rename drivers/{firmware/arm_scmi => pmdomain/arm}/scmi_pm_domain.c (100%)
+- The MDIO bus description on an ethernet controller describes that the
+   hardware comes with an MDIO bus. The MDIO property is optional not
+   because some Linux driver can find and map the PHYs to MACs without DT
+   descriptions but because the hardware doesn't have to use that or any
+   MDIO bus.
 
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index b31d78fa66cc..a7bc4796519c 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -16,7 +16,6 @@ scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
- 
--obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
- obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
- 
- ifeq ($(CONFIG_THUMB2_KERNEL)$(CONFIG_CC_IS_CLANG),yy)
-diff --git a/drivers/pmdomain/arm/Makefile b/drivers/pmdomain/arm/Makefile
-index 7128db96deac..cfcb1f6cdd90 100644
---- a/drivers/pmdomain/arm/Makefile
-+++ b/drivers/pmdomain/arm/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
- obj-$(CONFIG_ARM_SCMI_PERF_DOMAIN) += scmi_perf_domain.o
-+obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
-diff --git a/drivers/firmware/arm_scmi/scmi_pm_domain.c b/drivers/pmdomain/arm/scmi_pm_domain.c
-similarity index 100%
-rename from drivers/firmware/arm_scmi/scmi_pm_domain.c
-rename to drivers/pmdomain/arm/scmi_pm_domain.c
--- 
-2.42.0
+Let's also talk about the elephant in the room: DSA bindings. Distributed
+Switch Architecture is a Linux subsystem, not a hardware property.
+Devicetree bindings are supposed to describe the hardware, yet we have
+bindings specifically for DSA so that the DSA driver can properly control
+the hardware.
 
+Although I see dsa.yaml and dsa-port.yaml mostly consist of describing an
+ethernet switch with CPU port(s), there're properties that are specific to
+DSA, such as dsa,member on dsa.yaml and dsa-tag-protocol and label on
+dsa-port.yaml.
+
+Depending on how I get responses, I will address my patches. Then I can
+further discuss the DSA bindings.
+
+Arınç
