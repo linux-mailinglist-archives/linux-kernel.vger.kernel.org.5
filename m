@@ -2,361 +2,708 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9F57A9F85
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166637AA16C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbjIUUXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
+        id S231693AbjIUVCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjIUUWp (ORCPT
+        with ESMTP id S231528AbjIUVBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:22:45 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D9C48AA9;
-        Thu, 21 Sep 2023 10:14:41 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3ab2436b57dso772777b6e.0;
-        Thu, 21 Sep 2023 10:14:41 -0700 (PDT)
+        Thu, 21 Sep 2023 17:01:30 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916F981236;
+        Thu, 21 Sep 2023 10:36:21 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59bebd5bdadso15573117b3.0;
+        Thu, 21 Sep 2023 10:36:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695316481; x=1695921281; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695317780; x=1695922580; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C1Z+4wJ7dsIwTfLYYwPGAAlK13JBxWGp5edHNOse4Yo=;
-        b=KDTO99pBhjCYmTpyRXucOKHJ3yjMmQ2+JU86ZZ2VFwo0IaAuI7++sPwoico/KoMFQU
-         IOnacjB4cvZSHn2r6Ds5rqqPjdNy6NtHAKHK88IKUM5fOmzXSDH561vZcLq5whFEjHkm
-         K6md55tzWpzveiEVxaG0M4X4BExKsJR6ZO2f7GSh9WhgRKWu4bkJn1S46Y+1b8sU15UN
-         zbhw6wnG7IR0h8Blry55BAfH62piiojQVtFuk0fZDFCuXFXyrZwg+H8I9DxN/oZGliNw
-         E3iL6G5wm4vtiroOBKghW1JqzRQacbjqG7OL55CEHzUnBsv7NZhAZPjcqj6r7E1tzRP2
-         sE6A==
+        bh=DNh6azN+DuyaIMJiQJXx/Pm0NzZZgmYg40bh+TXTkdo=;
+        b=GZyo4kQnW5vjwHHo/4bzPlMcN3YWEgJ7fRtMAwbovGbxuK9v9hHT8jPMcV7AOUexaH
+         uI/BK7HYP+huwsyKgKEUe77ZqJESKIXqdKnwdYJR1MgjQ+I27tghlhcOOvfjpiluFL6w
+         8Bjs6sQa1XbUA6d6sVag/i8QnLX00c6ogSQI/TAtYSwIF1h5tg/Cz3Qw9XKOlFXKJDid
+         DYEnL9RWA38TEbnqhnG01fCYk0eSHu9zU0oSWNtuSxh7TFAWps62qjDqG191VJnWg88G
+         UT+v6ISEWvNg3LlRIvbkt3HaD8tYq5plNv/leEg6U0Yc75dz0X5z1WA7EXjKi/AojwNF
+         sKXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316481; x=1695921281;
+        d=1e100.net; s=20230601; t=1695317780; x=1695922580;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C1Z+4wJ7dsIwTfLYYwPGAAlK13JBxWGp5edHNOse4Yo=;
-        b=QTF7tKo+AwadU87fAMvOm0iNEkKxgqdYW+agWkHc2hKn5jmK+fGlyabkP8xGgXKNPw
-         WoCsc/xqCavTPog+ddTXNABrzsGSqMFdK5g/8IlSfFWO5l0wxOK7bHHTKYTcW2MCNjNM
-         KZcFCvfJyz4uIAAGxxNU4rANKo9JtgiTztxjxpn0TUaZMQ/55gg2ibLOvMtsL23+UIN/
-         mct+vOFbueuIzDF7F84UnZ4ZI/KDRDikvjp41ip29YiUd/qELQSyMbunVoNhqiqBX0Zg
-         JCVMR+fsH+1ixv2lG1O4BPl8KSwxKOMPWqCOPslfuYCqq3HMO/uKneqbXlQRQsDTTg20
-         VIHQ==
-X-Gm-Message-State: AOJu0Yzh+JuPRfwQeysYdB4ybo9lBmRn3VKHTH/8ttN5edtQc8KnEWEq
-        0lZyi/A5VOhsONF9DuXjP9fDuqnF+QYG4W55
-X-Google-Smtp-Source: AGHT+IGgdlyC0pmkzvxzBp7qhVK96MWdeH8cohemhiuuy7OYEpTqXIDzRmB+PxeYr6QsX6KAx1zUqQ==
-X-Received: by 2002:a17:902:d2cf:b0:1bc:69d0:a024 with SMTP id n15-20020a170902d2cf00b001bc69d0a024mr5397011plc.33.1695275770986;
-        Wed, 20 Sep 2023 22:56:10 -0700 (PDT)
-Received: from toolbox.alistair23.me (2403-580b-97e8-0-321-6fb2-58f1-a1b1.ip6.aussiebb.net. [2403:580b:97e8:0:321:6fb2:58f1:a1b1])
-        by smtp.gmail.com with ESMTPSA id jw18-20020a170903279200b001adf6b21c77sm502841plb.107.2023.09.20.22.56.05
+        bh=DNh6azN+DuyaIMJiQJXx/Pm0NzZZgmYg40bh+TXTkdo=;
+        b=sUadToJ0bl586qmfMCrSa44bOg/CTf7qvXpy+Ju1v/XeTNKA9Qbz5ZKuuWlKGvu3UK
+         qS234UockEH1cABZyFub/nlV7nVGqIErGS7SzHQdaucX6E0GGwikgs1k6i1ItpFTgRM/
+         71hv0YheLXZM5EMKFDUqBJNYJegsA0jb90uiEzAZXSqapYzxRXLgCd7nzJE1MzCK/JFt
+         8n8c9/kcPGcqCBz1lJf7V3zs4NS+D8z/fP/7xRr6tyrRKwTARBB2bol8zl9E0nVI4IKh
+         R10N0JIGNYvxRfu/qssd87livL5SNLb1fMF7C3OC8gmO6bWkvJgr69GTMVhGi4NApZNR
+         rYeA==
+X-Gm-Message-State: AOJu0YxrxWXv9U93W6NIS4iox5e+lxXYxSOJ3OmlwGVwelh9qwC/QLmL
+        9FRaQpbmRb3Z8HXfxwFCP9cMrEkto+aLpObQ
+X-Google-Smtp-Source: AGHT+IGbZFYr6EDI0tsyFUtsEIbuhscoR94vqy2T2Ku7/2nu4/EmF38TF2ntGI8rgYMyR/sgsTW12Q==
+X-Received: by 2002:a5e:8a09:0:b0:792:82f8:7402 with SMTP id d9-20020a5e8a09000000b0079282f87402mr5378509iok.16.1695275818600;
+        Wed, 20 Sep 2023 22:56:58 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-152-19.hlrn.qwest.net. [71.33.152.19])
+        by smtp.gmail.com with ESMTPSA id e7-20020a056638020700b0042ad887f705sm182745jaq.143.2023.09.20.22.56.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 22:56:10 -0700 (PDT)
-From:   Alistair Francis <alistair23@gmail.com>
-X-Google-Original-From: Alistair Francis <alistair.francis@wdc.com>
-To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, lukas@wunner.de
-Cc:     alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v8 2/3] PCI/DOE: Expose the DOE features via sysfs
-Date:   Thu, 21 Sep 2023 15:55:30 +1000
-Message-ID: <20230921055531.2028834-2-alistair.francis@wdc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230921055531.2028834-1-alistair.francis@wdc.com>
-References: <20230921055531.2028834-1-alistair.francis@wdc.com>
+        Wed, 20 Sep 2023 22:56:58 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v9 2/3] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM support
+Date:   Wed, 20 Sep 2023 23:56:07 -0600
+Message-Id: <20230921055611.1459374-2-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230921055611.1459374-1-james.hilliard1@gmail.com>
+References: <20230921055611.1459374-1-james.hilliard1@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe 6 specification added support for the Data Object Exchange (DOE).
-When DOE is supported the Discovery Data Object Protocol must be
-implemented. The protocol allows a requester to obtain information about
-the other DOE features supported by the device.
+This patch adds support for the Variscite VAR_SOM-MX6 SoM with :
+- i.MX6 Quad or Dual Lite SoC
+- 256 – 4096 MB DDR3
+- 4-64 GB eMMC
+- 128 – 1024 MB SLC NAND
+- Camera Interface
+- HDMI+CEC interface
+- LVDS / DSI / Parallel RGB interfaces
+- Ethernet RGMII interface
+- On-SoM Wi-Fi/Bluetooth with WiLink wl183x SDIO Module
+- SD/MMC/SDIO interface
+- USB Host + USB OTG interface
+- I2C interfaces
+- SPI interfaces
+- PCI-Express 2.0 interface
+- on-SoM Audio Codec with HP/Line-In interfaces + DMIC interface
+- Digital Audio interface
+- S/PDIF interface
 
-The kernel is already querying the DOE features supported and cacheing
-the values. This patch exposes the values via sysfs. This will allow
-userspace to determine which DOE features are supported by the PCIe
-device.
+Product website : https://www.variscite.com/product/system-on-module-som/cortex-a9/var-som-mx6-cpu-freescale-imx6/
 
-By exposing the information to userspace tools like lspci can relay the
-information to users. By listing all of the supported features we can
-allow userspace to parse and support the list, which might include
-vendor specific features as well as yet to be supported features.
+Support is handled with a SoM-centric dtsi exporting the default interfaces
+along the default pinmuxing to be enabled by the board dts file.
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+This file is based on the one provided by Variscite on their own
+kernel, but adapted for mainline.
+
+Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
-v8:
- - Inlucde an example in the docs
- - Fixup removing a file that wasn't added
- - Remove a blank line
-v7:
- - Fixup the #ifdefs to keep the test robot happy
-v6:
- - Use "feature" instead of protocol
- - Don't use any devm_* functions
- - Add two more patches to the series
-v5:
- - Return the file name as the file contents
- - Code cleanups and simplifications
-v4:
- - Fixup typos in the documentation
- - Make it clear that the file names contain the information
- - Small code cleanups
- - Remove most #ifdefs
- - Remove extra NULL assignment
-v3:
- - Expose each DOE feature as a separate file
-v2:
- - Add documentation
- - Code cleanups
+ .../arm/boot/dts/nxp/imx/imx6qdl-var-som.dtsi | 569 ++++++++++++++++++
+ 1 file changed, 569 insertions(+)
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6qdl-var-som.dtsi
 
-This patch will create a doe_features directory for all
-PCIe devies. This should be fixed by a pending sysfs fixup
-patch.
-
- Documentation/ABI/testing/sysfs-bus-pci |  23 +++++
- drivers/pci/doe.c                       | 112 ++++++++++++++++++++++++
- drivers/pci/pci-sysfs.c                 |  10 +++
- drivers/pci/pci.h                       |   3 +
- include/linux/pci-doe.h                 |   1 +
- 5 files changed, 149 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index ecf47559f495..b52bb82a771e 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -500,3 +500,26 @@ Description:
- 		console drivers from the device.  Raw users of pci-sysfs
- 		resourceN attributes must be terminated prior to resizing.
- 		Success of the resizing operation is not guaranteed.
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6qdl-var-som.dtsi b/arch/arm/boot/dts/nxp/imx/imx6qdl-var-som.dtsi
+new file mode 100644
+index 000000000000..a1ea33c4eeb7
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6qdl-var-som.dtsi
+@@ -0,0 +1,569 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Support for Variscite VAR-SOM-MX6 Module
++ *
++ * Copyright 2011 Linaro Ltd.
++ * Copyright 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2014-2016 Variscite, Ltd.
++ * Author: Donio Ron <ron.d@variscite.com>
++ * Copyright 2022 Bootlin
++ */
 +
-+What:		/sys/bus/pci/devices/.../doe_features
-+Date:		August 2023
-+Contact:	Linux PCI developers <linux-pci@vger.kernel.org>
-+Description:
-+		This directory contains a list of the supported
-+		Data Object Exchange (DOE) features. The feature values are in
-+		the file name. The contents of each file are the same as the
-+		name.
++/dts-v1/;
 +
-+		The value comes from the device and specifies the vendor and
-+		data object type supported. The lower byte is the data object
-+		type and the next two bytes are the vendor ID.
++#include "imx6q.dtsi"
++#include <dt-bindings/clock/imx6qdl-clock.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/sound/fsl-imx-audmux.h>
 +
-+		As all DOE devices must support the DOE discovery protocol, if
-+		DOE is supported you will at least see this file, with this
-+		contents
++/ {
++	model = "Variscite VAR-SOM-MX6 module";
++	compatible = "variscite,var-som-imx6q", "fsl,imx6q";
 +
-+		# cat doe_features/0x0001:00
-+		0x0001:00
++	chosen {
++		stdout-path = &uart1;
++	};
 +
-+		If the device supports other protocols you will see other files
-+		as well.
-diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-index 78ce79e031cd..30826462d167 100644
---- a/drivers/pci/doe.c
-+++ b/drivers/pci/doe.c
-@@ -47,6 +47,7 @@
-  * @wq: Wait queue for work item
-  * @work_queue: Queue of pci_doe_work items
-  * @flags: Bit array of PCI_DOE_FLAG_* flags
-+ * @sysfs_attrs: Array of sysfs device attributes
-  */
- struct pci_doe_mb {
- 	struct pci_dev *pdev;
-@@ -56,6 +57,10 @@ struct pci_doe_mb {
- 	wait_queue_head_t wq;
- 	struct workqueue_struct *work_queue;
- 	unsigned long flags;
++	memory@10000000 {
++		device_type = "memory";
++		reg = <0x10000000 0x40000000>;
++	};
 +
-+#ifdef CONFIG_SYSFS
-+	struct device_attribute *sysfs_attrs;
-+#endif
- };
- 
- struct pci_doe_feature {
-@@ -92,6 +97,113 @@ struct pci_doe_task {
- 	struct pci_doe_mb *doe_mb;
- };
- 
-+#ifdef CONFIG_SYSFS
-+static umode_t pci_doe_sysfs_attr_is_visible(struct kobject *kobj,
-+					     struct attribute *a, int n)
-+{
-+	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
-+	struct pci_doe_mb *doe_mb;
-+	unsigned long index, j;
-+	void *entry;
++	reg_usb_otg_vbus: regulator-usb-otg-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "usb_otg_vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
 +
-+	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-+		xa_for_each(&doe_mb->feats, j, entry)
-+			return a->mode;
-+	}
++	reg_usb_h1_vbus: regulator-usb-h1-vbud {
++		compatible = "regulator-fixed";
++		regulator-name = "usb_h1_vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
 +
-+	return 0;
-+}
++	reg_1p8v: regulator-1p8v {
++		compatible = "regulator-fixed";
++		regulator-name = "1P8V";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++	};
 +
-+static struct attribute *pci_dev_doe_feature_attrs[] = {
-+	NULL,
++	reg_3p3v: regulator-3p3v {
++		compatible = "regulator-fixed";
++		regulator-name = "3P3V";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++	};
++
++	reg_wl18xx_vmmc: regulator-wl18xx {
++		compatible = "regulator-fixed";
++		regulator-name = "vwl1807";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		gpio = <&gpio7 8 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		startup-delay-us = <70000>;
++	};
++
++	sound: sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "var-som-audio";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,bitclock-master = <&sound_codec>;
++		simple-audio-card,frame-master = <&sound_codec>;
++		simple-audio-card,widgets = "Headphone", "Headphone Jack",
++					    "Line", "Line In", "Microphone", "Mic Jack";
++		simple-audio-card,routing = "Headphone Jack", "HPLOUT",
++					    "Headphone Jack", "HPROUT",
++					    "LINE1L", "Line In",
++					    "LINE1R", "Line In";
++
++		sound_cpu: simple-audio-card,cpu {
++			sound-dai = <&ssi2>;
++		};
++
++		sound_codec: simple-audio-card,codec {
++			sound-dai = <&tlv320aic3106>;
++			clocks = <&clks IMX6QDL_CLK_CKO>;
++		};
++	};
++
++	rfkill {
++		compatible = "rfkill-gpio";
++		name = "rfkill";
++		radio-type = "bluetooth";
++		shutdown-gpios = <&gpio6 18 GPIO_ACTIVE_HIGH>;
++	};
 +};
 +
-+const struct attribute_group pci_dev_doe_feature_group = {
-+	.name	= "doe_features",
-+	.attrs	= pci_dev_doe_feature_attrs,
-+	.is_visible = pci_doe_sysfs_attr_is_visible,
++&audmux {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_audmux>;
++	status = "okay";
++
++	mux-ssi2 {
++		fsl,audmux-port = <1>;
++		fsl,port-config = <
++			(IMX_AUDMUX_V2_PTCR_SYN |
++			IMX_AUDMUX_V2_PTCR_TFSDIR |
++			IMX_AUDMUX_V2_PTCR_TFSEL(2) |
++			IMX_AUDMUX_V2_PTCR_TCLKDIR |
++			IMX_AUDMUX_V2_PTCR_TCSEL(2))
++			IMX_AUDMUX_V2_PDCR_RXDSEL(2)
++		>;
++	};
++
++	mux-aud3 {
++		fsl,audmux-port = <2>;
++		fsl,port-config = <
++			IMX_AUDMUX_V2_PTCR_SYN
++			IMX_AUDMUX_V2_PDCR_RXDSEL(1)
++		>;
++	};
 +};
 +
-+static ssize_t pci_doe_sysfs_feature_show(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
-+{
-+	return sysfs_emit(buf, "%s\n", attr->attr.name);
-+}
++&ecspi3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ecspi3>;
++	cs-gpios = <&gpio4 24 GPIO_ACTIVE_LOW>;
++	status = "okay";
++};
 +
-+static int pci_doe_sysfs_feature_supports(struct pci_dev *pdev,
-+					  struct pci_doe_mb *doe_mb)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_attribute *attrs;
-+	unsigned long num_features = 0;
-+	unsigned long vid, type;
-+	unsigned long i;
-+	void *entry;
-+	int ret;
++&fec {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_enet>;
++	phy-mode = "rgmii";
++	phy-handle = <&rgmii_phy>;
++	status = "okay";
 +
-+	xa_for_each(&doe_mb->feats, i, entry)
-+		num_features++;
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+	attrs = kcalloc(num_features, sizeof(*attrs), GFP_KERNEL);
-+	if (!attrs)
-+		return -ENOMEM;
++		rgmii_phy: ethernet-phy@7 {
++			reg = <7>;
++			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <10000>;
++		};
++	};
++};
 +
-+	doe_mb->sysfs_attrs = attrs;
-+	xa_for_each(&doe_mb->feats, i, entry) {
-+		sysfs_attr_init(&attrs[i].attr);
-+		vid = xa_to_value(entry) >> 8;
-+		type = xa_to_value(entry) & 0xFF;
-+		attrs[i].attr.name = kasprintf(GFP_KERNEL,
-+					       "0x%04lX:%02lX", vid, type);
-+		if (!attrs[i].attr.name) {
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
++&gpmi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gpmi_nand>;
++	status = "okay";
++};
 +
-+		attrs[i].attr.mode = 0444;
-+		attrs[i].show = pci_doe_sysfs_feature_show;
++&i2c2 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c2>;
++	status = "okay";
 +
-+		ret = sysfs_add_file_to_group(&dev->kobj, &attrs[i].attr,
-+					      pci_dev_doe_feature_group.name);
-+		if (ret) {
-+			attrs[i].show = NULL;
-+			goto fail;
-+		}
-+	}
++	pmic@8 {
++		compatible = "fsl,pfuze100";
++		reg = <0x08>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pmic>;
 +
-+	return 0;
++		regulators {
++			sw1a_reg: sw1ab {
++				regulator-min-microvolt = <300000>;
++				regulator-max-microvolt = <1875000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <6250>;
++			};
 +
-+fail:
-+	doe_mb->sysfs_attrs = NULL;
-+	xa_for_each(&doe_mb->feats, i, entry) {
-+		if (attrs[i].show)
-+			sysfs_remove_file_from_group(&dev->kobj, &attrs[i].attr,
-+						     pci_dev_doe_feature_group.name);
-+		kfree(attrs[i].attr.name);
-+	}
++			sw1c_reg: sw1c {
++				regulator-min-microvolt = <300000>;
++				regulator-max-microvolt = <1875000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <6250>;
++			};
 +
-+	kfree(attrs);
++			sw2_reg: sw2 {
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
 +
-+	return ret;
-+}
++			sw3a_reg: sw3a {
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3950000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
 +
-+int doe_sysfs_init(struct pci_dev *pdev)
-+{
-+	struct pci_doe_mb *doe_mb;
-+	unsigned long index;
-+	int ret;
++			sw3b_reg: sw3b {
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3950000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
 +
-+	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-+		ret = pci_doe_sysfs_feature_supports(pdev, doe_mb);
-+		if (ret)
-+			return ret;
-+	}
++			sw4_reg: sw4 {
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3950000>;
++			};
 +
-+	return 0;
-+}
-+#endif
++			snvs_reg: vsnvs {
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3000000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
 +
- static int pci_doe_wait(struct pci_doe_mb *doe_mb, unsigned long timeout)
- {
- 	if (wait_event_timeout(doe_mb->wq,
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index d9eede2dbc0e..01bbd1f1cb9b 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -16,6 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/sched.h>
- #include <linux/pci.h>
-+#include <linux/pci-doe.h>
- #include <linux/stat.h>
- #include <linux/export.h>
- #include <linux/topology.h>
-@@ -1230,6 +1231,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
- 	int i;
- 	int retval;
- 
-+	if (IS_ENABLED(CONFIG_PCI_DOE)) {
-+		retval = doe_sysfs_init(pdev);
-+		if (retval)
-+			return retval;
-+	}
++			vref_reg: vrefddr {
++				regulator-boot-on;
++				regulator-always-on;
++			};
 +
- 	/* Expose the PCI resources from this device as files */
- 	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
- 
-@@ -1655,6 +1662,9 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
- #endif
- #ifdef CONFIG_PCIEASPM
- 	&aspm_ctrl_attr_group,
-+#endif
-+#ifdef CONFIG_PCI_DOE
-+	&pci_dev_doe_feature_group,
- #endif
- 	NULL,
- };
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 39a8932dc340..b85dd83ddfcb 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -186,6 +186,9 @@ extern const struct attribute_group *pci_dev_groups[];
- extern const struct attribute_group *pcibus_groups[];
- extern const struct device_type pci_dev_type;
- extern const struct attribute_group *pci_bus_groups[];
-+#ifdef CONFIG_SYSFS
-+extern const struct attribute_group pci_dev_doe_feature_group;
-+#endif
- 
- extern unsigned long pci_hotplug_io_size;
- extern unsigned long pci_hotplug_mmio_size;
-diff --git a/include/linux/pci-doe.h b/include/linux/pci-doe.h
-index 1f14aed4354b..4cc13d9ccb50 100644
---- a/include/linux/pci-doe.h
-+++ b/include/linux/pci-doe.h
-@@ -22,4 +22,5 @@ int pci_doe(struct pci_doe_mb *doe_mb, u16 vendor, u8 type,
- 	    const void *request, size_t request_sz,
- 	    void *response, size_t response_sz);
- 
-+int doe_sysfs_init(struct pci_dev *pci_dev);
- #endif
++			vgen1_reg: vgen1 {
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <1550000>;
++			};
++
++			vgen2_reg: vgen2 {
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <1550000>;
++			};
++
++			vgen3_reg: vgen3 {
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			vgen4_reg: vgen4 {
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			vgen5_reg: vgen5 {
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			vgen6_reg: vgen6 {
++				regulator-min-microvolt = <2800000>;
++				regulator-max-microvolt = <2800000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++		};
++	};
++
++	tlv320aic3106: audio-codec@1b {
++		compatible = "ti,tlv320aic3106";
++		reg = <0x1b>;
++		#sound-dai-cells = <0>;
++		DRVDD-supply = <&reg_3p3v>;
++		AVDD-supply = <&reg_3p3v>;
++		IOVDD-supply = <&reg_3p3v>;
++		DVDD-supply = <&reg_1p8v>;
++		ai3x-ocmv = <0>;
++		reset-gpios = <&gpio4 5 GPIO_ACTIVE_LOW>;
++		ai3x-gpio-func = <
++			0 /* AIC3X_GPIO1_FUNC_DISABLED */
++			5 /* AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT */
++		>;
++	};
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hog>;
++
++	pinctrl_audmux: audmuxgrp {
++		fsl,pins = <
++			MX6QDL_PAD_CSI0_DAT7__AUD3_RXD		0x130b0
++			MX6QDL_PAD_CSI0_DAT4__AUD3_TXC		0x130b0
++			MX6QDL_PAD_CSI0_DAT5__AUD3_TXD		0x110b0
++			MX6QDL_PAD_CSI0_DAT6__AUD3_TXFS		0x130b0
++			/* Audio Clock */
++			MX6QDL_PAD_GPIO_0__CCM_CLKO1		0x130b0
++		>;
++	};
++
++	pinctrl_bt: btgrp {
++		fsl,pins = <
++			/* Bluetooth/wifi enable */
++			MX6QDL_PAD_SD3_DAT6__GPIO6_IO18		0x1b0b1
++			/* Wifi Slow Clock */
++			MX6QDL_PAD_ENET_RXD0__OSC32K_32K_OUT	0x000b0
++		>;
++	};
++
++	pinctrl_ecspi3: ecspi3grp {
++		fsl,pins = <
++			MX6QDL_PAD_DISP0_DAT2__ECSPI3_MISO	0x100b1
++			MX6QDL_PAD_DISP0_DAT1__ECSPI3_MOSI	0x100b1
++			MX6QDL_PAD_DISP0_DAT0__ECSPI3_SCLK	0x100b1
++		>;
++	};
++
++	pinctrl_enet: enetgrp {
++		fsl,pins = <
++			MX6QDL_PAD_ENET_MDIO__ENET_MDIO		0x1b0b0
++			MX6QDL_PAD_ENET_MDC__ENET_MDC		0x1b0b0
++			MX6QDL_PAD_RGMII_TXC__RGMII_TXC		0x1b0b0
++			MX6QDL_PAD_RGMII_TD0__RGMII_TD0		0x1b0b0
++			MX6QDL_PAD_RGMII_TD1__RGMII_TD1		0x1b0b0
++			MX6QDL_PAD_RGMII_TD2__RGMII_TD2		0x1b0b0
++			MX6QDL_PAD_RGMII_TD3__RGMII_TD3		0x1b0b0
++			MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL	0x1b0b0
++			MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK	0x1b0b0
++			MX6QDL_PAD_RGMII_RXC__RGMII_RXC		0x1b0b0
++			MX6QDL_PAD_RGMII_RD0__RGMII_RD0		0x1b0b0
++			MX6QDL_PAD_RGMII_RD1__RGMII_RD1		0x1b0b0
++			MX6QDL_PAD_RGMII_RD2__RGMII_RD2		0x1b0b0
++			MX6QDL_PAD_RGMII_RD3__RGMII_RD3		0x1b0b0
++			MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL	0x1b0b0
++		>;
++	};
++
++	pinctrl_enet_irq: enetirqgrp {
++		fsl,pins = <
++			MX6QDL_PAD_GPIO_6__ENET_IRQ	0x000b1
++		>;
++	};
++
++	pinctrl_gpmi_nand: gpminandgrp {
++		fsl,pins = <
++			MX6QDL_PAD_NANDF_CLE__NAND_CLE		0xb0b1
++			MX6QDL_PAD_NANDF_ALE__NAND_ALE		0xb0b1
++			MX6QDL_PAD_NANDF_CS0__NAND_CE0_B	0xb0b1
++			MX6QDL_PAD_NANDF_CS1__NAND_CE1_B	0xb0b1
++			MX6QDL_PAD_NANDF_RB0__NAND_READY_B	0xb0b1
++			MX6QDL_PAD_NANDF_D0__NAND_DATA00	0xb0b1
++			MX6QDL_PAD_NANDF_D1__NAND_DATA01	0xb0b1
++			MX6QDL_PAD_NANDF_D2__NAND_DATA02	0xb0b1
++			MX6QDL_PAD_NANDF_D3__NAND_DATA03	0xb0b1
++			MX6QDL_PAD_NANDF_D4__NAND_DATA04	0xb0b1
++			MX6QDL_PAD_NANDF_D5__NAND_DATA05	0xb0b1
++			MX6QDL_PAD_NANDF_D6__NAND_DATA06	0xb0b1
++			MX6QDL_PAD_NANDF_D7__NAND_DATA07	0xb0b1
++			MX6QDL_PAD_SD4_CMD__NAND_RE_B		0xb0b1
++			MX6QDL_PAD_SD4_CLK__NAND_WE_B		0xb0b1
++			MX6QDL_PAD_NANDF_WP_B__NAND_WP_B	0xb0b1
++		>;
++	};
++
++	pinctrl_hog: hoggrp {
++		fsl,pins = <
++			/* CTW6120 IRQ */
++			MX6QDL_PAD_EIM_DA7__GPIO3_IO07		0xb0b1
++			/* SDMMC2 CD/WP */
++			MX6QDL_PAD_KEY_COL4__GPIO4_IO14		0x1b0b0
++			MX6QDL_PAD_KEY_ROW4__GPIO4_IO15		0x1b0b0
++		>;
++	};
++
++	pinctrl_i2c1: i2c1grp {
++		fsl,pins = <
++			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA	0x4001b8b1
++			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL	0x4001b8b1
++		>;
++	};
++
++	pinctrl_i2c2: i2c2grp {
++		fsl,pins = <
++			MX6QDL_PAD_KEY_COL3__I2C2_SCL	0x4001b8b1
++			MX6QDL_PAD_KEY_ROW3__I2C2_SDA	0x4001b8b1
++		>;
++	};
++
++	pinctrl_i2c3: i2c3grp {
++		fsl,pins = <
++			MX6QDL_PAD_GPIO_5__I2C3_SCL	0x4001b8b1
++			MX6QDL_PAD_GPIO_16__I2C3_SDA	0x4001b8b1
++		>;
++	};
++
++	pinctrl_pmic: pmicgrp {
++		fsl,pins = <
++			/* PMIC INT */
++			MX6QDL_PAD_GPIO_17__GPIO7_IO12	0x1b0b0
++		>;
++	};
++
++	pinctrl_pwm2: pwm2grp {
++		fsl,pins = <
++			MX6QDL_PAD_DISP0_DAT9__PWM2_OUT	0x1b0b1
++		>;
++	};
++
++	pinctrl_uart1: uart1grp {
++		fsl,pins = <
++			MX6QDL_PAD_CSI0_DAT10__UART1_TX_DATA 0x1b0b1
++			MX6QDL_PAD_CSI0_DAT11__UART1_RX_DATA 0x1b0b1
++		>;
++	};
++
++	pinctrl_uart2: uart2grp {
++		fsl,pins = <
++			MX6QDL_PAD_SD3_DAT4__UART2_RX_DATA	0x1b0b1
++			MX6QDL_PAD_SD3_DAT5__UART2_TX_DATA	0x1b0b1
++			MX6QDL_PAD_EIM_D28__UART2_CTS_B		0x1b0b1
++			MX6QDL_PAD_EIM_D29__UART2_RTS_B		0x1b0b1
++		>;
++	};
++
++	pinctrl_usdhc3: usdhc3grp {
++		fsl,pins = <
++			MX6QDL_PAD_SD3_CMD__SD3_CMD	0x17069
++			MX6QDL_PAD_SD3_CLK__SD3_CLK	0x10069
++			MX6QDL_PAD_SD3_DAT0__SD3_DATA0	0x17069
++			MX6QDL_PAD_SD3_DAT1__SD3_DATA1	0x17069
++			MX6QDL_PAD_SD3_DAT2__SD3_DATA2	0x17069
++			MX6QDL_PAD_SD3_DAT3__SD3_DATA3	0x17069
++			/* WL_EN */
++			MX6QDL_PAD_SD3_DAT7__GPIO6_IO17 0x13059
++			/* WL_IRQ */
++			MX6QDL_PAD_SD3_RST__GPIO7_IO08  0x13059
++		>;
++	};
++
++	pinctrl_usdhc3_100mhz: usdhc3grp100mhzgrp {
++		fsl,pins = <
++			MX6QDL_PAD_SD3_CMD__SD3_CMD	0x170B9
++			MX6QDL_PAD_SD3_CLK__SD3_CLK	0x100B9
++			MX6QDL_PAD_SD3_DAT0__SD3_DATA0	0x170B9
++			MX6QDL_PAD_SD3_DAT1__SD3_DATA1	0x170B9
++			MX6QDL_PAD_SD3_DAT3__SD3_DATA3	0x170B9
++			MX6QDL_PAD_SD3_DAT3__SD3_DATA3	0x170B9
++			/* WL_EN */
++			MX6QDL_PAD_SD3_DAT7__GPIO6_IO17 0x130B9
++			/* WL_IRQ */
++			MX6QDL_PAD_SD3_RST__GPIO7_IO08  0x130B9
++		>;
++	};
++
++	pinctrl_usdhc3_200mhz: usdhc3grp200mhzgrp {
++		fsl,pins = <
++			MX6QDL_PAD_SD3_CMD__SD3_CMD	0x170F9
++			MX6QDL_PAD_SD3_CLK__SD3_CLK	0x100F9
++			MX6QDL_PAD_SD3_DAT0__SD3_DATA0	0x170F9
++			MX6QDL_PAD_SD3_DAT1__SD3_DATA1	0x170F9
++			MX6QDL_PAD_SD3_DAT2__SD3_DATA2	0x170F9
++			MX6QDL_PAD_SD3_DAT3__SD3_DATA3	0x170F9
++			/* WL_EN */
++			MX6QDL_PAD_SD3_DAT7__GPIO6_IO17 0x130F9
++			/* WL_IRQ */
++			MX6QDL_PAD_SD3_RST__GPIO7_IO08  0x130F9
++		>;
++	};
++};
++
++&pwm2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pwm2>;
++	status = "okay";
++};
++
++&reg_arm {
++	vin-supply = <&sw1a_reg>;
++};
++
++&reg_pu {
++	vin-supply = <&sw1c_reg>;
++};
++
++&reg_soc {
++	vin-supply = <&sw1c_reg>;
++};
++
++&reg_vdd1p1 {
++	vin-supply = <&vgen5_reg>;
++};
++
++&reg_vdd2p5 {
++	vin-supply = <&vgen5_reg>;
++};
++
++&snvs_poweroff {
++	status = "okay";
++};
++
++&ssi2 {
++	status = "okay";
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1>;
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2 &pinctrl_bt>;
++	uart-has-rtscts;
++	status = "okay";
++};
++
++&usbh1 {
++	vbus-supply = <&reg_usb_h1_vbus>;
++	status = "okay";
++};
++
++&usbotg {
++	vbus-supply = <&reg_usb_otg_vbus>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg_var>;
++	disable-over-current;
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usbphy1 {
++	fsl,tx-d-cal = <0x5>;
++};
++
++&usbphy2 {
++	fsl,tx-d-cal = <0x5>;
++};
++
++&usdhc1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc1>;
++	non-removable;
++	keep-power-in-suspend;
++	status = "okay";
++};
++
++&usdhc3 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc3>;
++	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
++	bus-width = <4>;
++	vmmc-supply = <&reg_wl18xx_vmmc>;
++	non-removable;
++	wakeup-source;
++	keep-power-in-suspend;
++	cap-power-off-card;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	wifi: wifi@2 {
++		compatible = "ti,wl1835";
++		reg = <2>;
++		interrupt-parent = <&gpio6>;
++		interrupts = <17 IRQ_TYPE_EDGE_RISING>;
++		ref-clock-frequency = <38400000>;
++	};
++};
 -- 
-2.41.0
+2.34.1
 
