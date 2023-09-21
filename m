@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1877AA228
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6AE7A9F65
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjIUVNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S231552AbjIUUVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231717AbjIUVMZ (ORCPT
+        with ESMTP id S231546AbjIUUVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:12:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5898B98A45;
-        Thu, 21 Sep 2023 10:56:48 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 06:41:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695278467;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g44M9hKvXEDwyXwCGx4cA7u2mkZTmo3YlGxVozqTY0Q=;
-        b=sv+cMhSArTF4tfQ+u7e+XFTDJWvDXKk8BR7Q3LRxuVePUFrxoxIEXlE9E+8nDDpvvda83T
-        c3VsXlOHmtrDHLyp1PxZFp72OCwQMS2rgpwyMIwAPba1Fry80RllcKCaNFAxsfjUXITymC
-        G2uNzFQFdc2UjKOC74ljSjr/VTUVDV7GAiVaOJhXfdcaaW4lhdD/6pbJd99v6VGTQyVsOC
-        cBMMAknGmwNcZQUA9NQ8Lxj7pPR9DdmpZv0j5IsDtNH4/K+7wNGJJDNfkITG6yQYqDfRtV
-        Y+LaIpREC4f7jZK6I9Za1aMVtnKCxkqYYie+YGGINQLYJL+Fvnr8lfPeG5rbpQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695278467;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g44M9hKvXEDwyXwCGx4cA7u2mkZTmo3YlGxVozqTY0Q=;
-        b=B3sACAN4d9PwM+tihDtaf6VrEDYJN+PxevT78CKXLLDD93MpKoRlwIs+UIUvKOz1vkBHsq
-        hl22DDYJpiHABJAA==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/seqlock: Do the lockdep annotation
- before locking in do_write_seqcount_begin_nested()
-Cc:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230920104627._DTHgPyA@linutronix.de>
-References: <20230920104627._DTHgPyA@linutronix.de>
-MIME-Version: 1.0
-Message-ID: <169527846710.27769.2808849894554476760.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 21 Sep 2023 16:21:16 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7254E5EC
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:21 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-274b4d91172so834048a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695316641; x=1695921441; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6b+r/qO6jTNd+eQdEZK212ydTtWtBK6Hb2cWKKJgo7o=;
+        b=WROqpbfZnTgwEOtha9R2oDR7HNUNqAa1qBePPoSRL8GtUVyeZarPnzCyJF1mXY5h/S
+         5C98P7vm5opFqXSkNqdtJIoklDV4q0WFIgsfVeWOiR/KSwTgTCCf4tB7XptHrHPficvy
+         /qfW971yb16gfIbBYm53oTzcLy1tOAjhG9j9dzZ6C6aSwsCPF03ttpdocxL8yBViT5Y+
+         zvhFzYcBf29LQ9LoCR7IXnEePLrDMBw2CiGboJRe4hlZppR/wzYOkAhmPOwpGZ3U9ufu
+         lpVcsRvdbKjLata4hW9tChTWhlyK+XbjnAScVRDOk/TBNScvnQ4dYG48E3YnZe3J1+O3
+         H/2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316641; x=1695921441;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6b+r/qO6jTNd+eQdEZK212ydTtWtBK6Hb2cWKKJgo7o=;
+        b=KXUdYO1mkcVT2nNXU+Dm7u5dQgHc9pGfWdLVdXUaGvIJtw41NP3q9DFp8KKQEtPz2O
+         g3XfHBC1adpDzkvTddVatTbPFZVGdKVxd9vU8PtR94xk8JyMIz5lqE2NfWfwmwfFRy9E
+         MwH9yHIBsTiBFEtRvAA1Z8OJmAMYZKiHlW1PJ9/KWtylKZyq0BW2O1FNlv++by9CDEWo
+         ERbppPml3juT/sfG5T9T9AUULfx3MLaioYdEei5HekmKj6D9X2U8Lj3QjqZ/yip8OWsq
+         s3+C8dQcQv6uZMGmf8lUBaTOuv5zsR0zdeZzS7xxA5boZdxeeXdnXBLUE7+RK6/Rls03
+         jFUA==
+X-Gm-Message-State: AOJu0Yydg0y/jD/tYRgGarNZHIm8cLHkQP8VhBXr8dRqCfKgzNcGR4Uj
+        3cVi1Eo3xa05w6DAJKrK6cmzp88=
+X-Google-Smtp-Source: AGHT+IFLA7pELMkRmPVUcV9dQSyP5wShtjA3I4pLFmR0wr3ICAIAxSCbstWOoMP3LDJ/cCr9C0wtfNw=
+X-Received: from hmarynka.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:925])
+ (user=ovt job=sendgmr) by 2002:a25:408f:0:b0:d7f:8774:dfd4 with SMTP id
+ n137-20020a25408f000000b00d7f8774dfd4mr62822yba.12.1695278727640; Wed, 20 Sep
+ 2023 23:45:27 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 06:45:05 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230921064506.3420402-1-ovt@google.com>
+Subject: [PATCH] ima: Finish deprecation of IMA_TRUSTED_KEYRING Kconfig
+From:   Oleksandr Tymoshenko <ovt@google.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nayna Jain <nayna@linux.ibm.com>
+Cc:     ovt@google.com, rnv@google.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The removal of IMA_TRUSTED_KEYRING made IMA_LOAD_X509
+and IMA_BLACKLIST_KEYRING unavailable because the latter
+two depend on the former. Since IMA_TRUSTED_KEYRING was
+deprecated in favor of INTEGRITY_TRUSTED_KEYRING use it
+as a dependency for the two Kconfigs affected by the
+deprecation.
 
-Commit-ID:     41b43b6c6e30a832c790b010a06772e793bca193
-Gitweb:        https://git.kernel.org/tip/41b43b6c6e30a832c790b010a06772e793bca193
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Wed, 20 Sep 2023 12:46:27 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 21 Sep 2023 08:37:44 +02:00
-
-locking/seqlock: Do the lockdep annotation before locking in do_write_seqcount_begin_nested()
-
-It was brought up by Tetsuo that the following sequence:
-
-   write_seqlock_irqsave()
-   printk_deferred_enter()
-
-could lead to a deadlock if the lockdep annotation within
-write_seqlock_irqsave() triggers.
-
-The problem is that the sequence counter is incremented before the lockdep
-annotation is performed. The lockdep splat would then attempt to invoke
-printk() but the reader side, of the same seqcount, could have a
-tty_port::lock acquired waiting for the sequence number to become even again.
-
-The other lockdep annotations come before the actual locking because "we
-want to see the locking error before it happens". There is no reason why
-seqcount should be different here.
-
-Do the lockdep annotation first then perform the locking operation (the
-sequence increment).
-
-Fixes: 1ca7d67cf5d5a ("seqcount: Add lockdep functionality to seqcount/seqlock structures")
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230920104627._DTHgPyA@linutronix.de
-
-Closes: https://lore.kernel.org/20230621130641.-5iueY1I@linutronix.de
+Fixes: 5087fd9e80e5 ("ima: Remove deprecated IMA_TRUSTED_KEYRING Kconfig")
+Signed-off-by: Oleksandr Tymoshenko <ovt@google.com>
 ---
- include/linux/seqlock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 987a59d..e9bd2f6 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -512,8 +512,8 @@ do {									\
+diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+index ecddc807c536..4e559bd1fd41 100644
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -269,7 +269,7 @@ config IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
+ config IMA_BLACKLIST_KEYRING
+ 	bool "Create IMA machine owner blacklist keyrings (EXPERIMENTAL)"
+ 	depends on SYSTEM_TRUSTED_KEYRING
+-	depends on IMA_TRUSTED_KEYRING
++	depends on INTEGRITY_TRUSTED_KEYRING
+ 	default n
+ 	help
+ 	   This option creates an IMA blacklist keyring, which contains all
+@@ -279,7 +279,7 @@ config IMA_BLACKLIST_KEYRING
  
- static inline void do_write_seqcount_begin_nested(seqcount_t *s, int subclass)
- {
--	do_raw_write_seqcount_begin(s);
- 	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
-+	do_raw_write_seqcount_begin(s);
- }
- 
- /**
+ config IMA_LOAD_X509
+ 	bool "Load X509 certificate onto the '.ima' trusted keyring"
+-	depends on IMA_TRUSTED_KEYRING
++	depends on INTEGRITY_TRUSTED_KEYRING
+ 	default n
+ 	help
+ 	   File signature verification is based on the public keys
+-- 
+2.42.0.459.ge4e396fd5e-goog
+
