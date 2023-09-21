@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B65277AA1A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF387AA20A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjIUVE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
+        id S230450AbjIUVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232542AbjIUVDo (ORCPT
+        with ESMTP id S229999AbjIUVK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:03:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB7086104
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6F6C4E74D;
-        Thu, 21 Sep 2023 13:58:28 +0000 (UTC)
-Date:   Thu, 21 Sep 2023 09:59:06 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <20230921095906.3dad00be@gandalf.local.home>
-In-Reply-To: <87wmwkcga6.fsf@oracle.com>
-References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
-        <20230908070258.GA19320@noisy.programming.kicks-ass.net>
-        <87zg1v3xxh.fsf@oracle.com>
-        <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
-        <87edj64rj1.fsf@oracle.com>
-        <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
-        <87zg1u1h5t.fsf@oracle.com>
-        <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
-        <20230911150410.GC9098@noisy.programming.kicks-ass.net>
-        <87h6o01w1a.fsf@oracle.com>
-        <20230912082606.GB35261@noisy.programming.kicks-ass.net>
-        <87cyyfxd4k.ffs@tglx>
-        <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
-        <87led2wdj0.ffs@tglx>
-        <8734z8v1lo.ffs@tglx>
-        <87edisibrp.fsf@oracle.com>
-        <87ttrothbb.ffs@tglx>
-        <87wmwkcga6.fsf@oracle.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 21 Sep 2023 17:10:58 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A52A6B77;
+        Thu, 21 Sep 2023 11:00:29 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id af288fc4f0608954; Thu, 21 Sep 2023 16:00:28 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id BA3E1664E61;
+        Thu, 21 Sep 2023 16:00:27 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Frank Scheiner <frank.scheiner@web.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1] ACPI: processor: Provide empty stub of acpi_proc_quirk_mwait_check()
+Date:   Thu, 21 Sep 2023 16:00:27 +0200
+Message-ID: <5724231.DvuYhMxLoT@kreacher>
+In-Reply-To: <CAMj1kXHpVroVqXxH72XNJP5=dYDcfBiZex2wE2jOsSFNEAYqxg@mail.gmail.com>
+References: <12299447.O9o76ZdvQC@kreacher> <CAMj1kXHpVroVqXxH72XNJP5=dYDcfBiZex2wE2jOsSFNEAYqxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedgjedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfeduudeutdeugfelffduieegiedtueefledvjeegffdttefhhffhtefhleejgfetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheprghruggssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehi
+ nhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugiesrhhovggtkhdquhhsrdhnvghtpdhrtghpthhtohepfhhrrghnkhdrshgthhgvihhnvghrseifvggsrdguvg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sep 2023 21:16:17 -0700
-Ankur Arora <ankur.a.arora@oracle.com> wrote:
-
-> > On Wed, Sep 20 2023 at 17:57, Ankur Arora wrote:  
-> >> Thomas Gleixner <tglx@linutronix.de> writes:  
-> >>> Find below a PoC which implements that scheme. It's not even close to
-> >>> correct, but it builds, boots and survives lightweight testing.  
-> >>
-> >> Whew, that was electric. I had barely managed to sort through some of
-> >> the config maze.
-> >> From a quick look this is pretty much how you described it.  
+On Thursday, September 21, 2023 3:09:04 PM CEST Ard Biesheuvel wrote:
+> On Thu, 21 Sept 2023 at 13:04, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
 > >
-
-
-> > What's electric about that?  
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Commit 0a0e2ea642f6 ("ACPI: processor: Move MWAIT quirk out of
+> > acpi_processor.c") added acpi_proc_quirk_mwait_check() that is
+> > only defined for x86 and is unlikely to be defined for any other
+> > architectures, so put it under #ifdef CONFIG_X86 and provide
+> > an empty stub implementation of it for the other cases.
+> >
+> > Link: https://lore.kernel.org/lkml/c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net
+> > Link: https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/commit/?h=remove-ia64&id=a0334bf78b95532cec54f56b53e8ae1bfe7e1ca1
+> > Fixes: 0a0e2ea642f6 ("ACPI: processor: Move MWAIT quirk out of acpi_processor.c")
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Reported-by: Frank Scheiner <frank.scheiner@web.de>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > This is kind of orthogonal to
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/commit/?h=remove-ia64&id=a0334bf78b95532cec54f56b53e8ae1bfe7e1ca1
+> >
+> > because if any architectures other than x86 and ia64 decide to use the
+> > processor _OSC, they will see the reported build error.
+> >
 > 
-> Hmm, so I /think/ I was going for something like electric current taking
-> the optimal path, with a side meaning of electrifying.
+> You mean when other arches #define CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC too, right?
 > 
-> Though, I guess electron flow is a quantum mechanical, so that would
-> really try all possible paths, which means the analogy doesn't quite
-> fit.
+> In any case, this is going to conflict with my change, which is
+> already in linux-next (you were cc'ed on the PR to asm-generic). What
+> do you propose here?
+
+IIUC, the conflict is that the empty stub will be defined twice if this is
+applied before removing ia64.
+
+But if it is applied on top of the ia64 removal, all should be fine, so that's
+what I would do (and tell the -stable people to ignore it).
+ 
+> > ---
+> >  drivers/acpi/internal.h |   14 ++++----------
+> >  1 file changed, 4 insertions(+), 10 deletions(-)
+> >
+> > Index: linux-pm/drivers/acpi/internal.h
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/internal.h
+> > +++ linux-pm/drivers/acpi/internal.h
+> > @@ -148,8 +148,11 @@ int acpi_wakeup_device_init(void);
+> >  #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
+> >  void acpi_early_processor_control_setup(void);
+> >  void acpi_early_processor_set_pdc(void);
+> > -
+> > +#ifdef CONFIG_X86
+> >  void acpi_proc_quirk_mwait_check(void);
+> > +#else
+> > +static inline void acpi_proc_quirk_mwait_check(void) {}
+> > +#endif
+> >  bool processor_physically_present(acpi_handle handle);
+> >  #else
+> >  static inline void acpi_early_processor_control_setup(void) {}
+> >
+> >
+> >
 > 
-> Let me substitute greased lightning for electric :D.
 
-"It's electrifying!" ;-)
 
-  https://www.youtube.com/watch?v=7oKPYe53h78
 
--- Steve
+
