@@ -2,51 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF387AA20A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BDA7AA07A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbjIUVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        id S232157AbjIUUiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjIUVK6 (ORCPT
+        with ESMTP id S231640AbjIUUhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:10:58 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A52A6B77;
-        Thu, 21 Sep 2023 11:00:29 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id af288fc4f0608954; Thu, 21 Sep 2023 16:00:28 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id BA3E1664E61;
-        Thu, 21 Sep 2023 16:00:27 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Frank Scheiner <frank.scheiner@web.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v1] ACPI: processor: Provide empty stub of acpi_proc_quirk_mwait_check()
-Date:   Thu, 21 Sep 2023 16:00:27 +0200
-Message-ID: <5724231.DvuYhMxLoT@kreacher>
-In-Reply-To: <CAMj1kXHpVroVqXxH72XNJP5=dYDcfBiZex2wE2jOsSFNEAYqxg@mail.gmail.com>
-References: <12299447.O9o76ZdvQC@kreacher> <CAMj1kXHpVroVqXxH72XNJP5=dYDcfBiZex2wE2jOsSFNEAYqxg@mail.gmail.com>
+        Thu, 21 Sep 2023 16:37:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AB986108
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 338FDC4E74A;
+        Thu, 21 Sep 2023 14:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695304861;
+        bh=fBOyl4wnZj0qgJkc8bc1nWtNS7FruFf11iwwBxp/N8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XWV8ExU3oehstOxt6ss9ARdQ3g9ez+u6+VQS3HyjR5ECimrVni6bFZFstl0+/V0kw
+         JpxRzExfIzPRzxjCdzv/dwZYuunuD7rRqne/9aQzuFb8xTgHxkdcU/Mpk++SgAM+WA
+         ZDwqmGnB18k7KpGmtHgxu3t6Tx+DKqea37FrFud5B801Zq3BwF2aKzk8gcGfa5teC+
+         hTwNlEJ+7HGWYQW4gdIsLidhqUypVI02ioF/spHiNPhbReMhpxAsOaOHYUTtgTDztn
+         U6H9xDeXUUcCOYMwfzxb7Gb6HQRSiajHQ5awBJZH+bjOiP4068zL0P30B9/Pn2e/+H
+         JEj6Y1JM6q45A==
+Date:   Thu, 21 Sep 2023 16:00:58 +0200
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Sandor Yu <Sandor.yu@nxp.com>, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
+        daniel@ffwll.ch, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, kernel@pengutronix.de,
+        linux-imx@nxp.com, oliver.brown@nxp.com,
+        alexander.stein@ew.tq-group.com, sam@ravnborg.org
+Subject: Re: [PATCH v8 2/7] phy: Add HDMI configuration options
+Message-ID: <ZQxMmtbqDTqgECnE@matsya>
+References: <20230808083243.3113192-1-Sandor.yu@nxp.com>
+ <20230808083243.3113192-3-Sandor.yu@nxp.com>
+ <c485b64e-3c83-4616-b8d8-76c2c7d56b0e@linaro.org>
+ <ZOS+IQgFZYxN503B@matsya>
+ <CAA8EJpokkjw_Q36YMh4p6NR+r4JGgM7_b+_QXtbmcPr6GzA=ug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedgjedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfeduudeutdeugfelffduieegiedtueefledvjeegffdttefhhffhtefhleejgfetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheprghruggssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehi
- nhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugiesrhhovggtkhdquhhsrdhnvghtpdhrtghpthhtohepfhhrrghnkhdrshgthhgvihhnvghrseifvggsrdguvg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpokkjw_Q36YMh4p6NR+r4JGgM7_b+_QXtbmcPr6GzA=ug@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,71 +62,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, September 21, 2023 3:09:04 PM CEST Ard Biesheuvel wrote:
-> On Thu, 21 Sept 2023 at 13:04, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+On 22-08-23, 20:22, Dmitry Baryshkov wrote:
+> On 22/08/2023 16:54, Vinod Koul wrote:
+> > On 17-08-23, 13:05, Dmitry Baryshkov wrote:
+> >> On 08/08/2023 11:32, Sandor Yu wrote:
+> >>> Allow HDMI PHYs to be configured through the generic
+> >>> functions through a custom structure added to the generic union.
+> >>>
+> >>> The parameters added here are based on HDMI PHY
+> >>> implementation practices.  The current set of parameters
+> >>> should cover the potential users.
+> >>>
+> >>> Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> >>> ---
+> >>>    include/linux/phy/phy-hdmi.h | 24 ++++++++++++++++++++++++
+> >>>    include/linux/phy/phy.h      |  7 ++++++-
+> >>>    2 files changed, 30 insertions(+), 1 deletion(-)
+> >>>    create mode 100644 include/linux/phy/phy-hdmi.h
+> >>
+> >> I think this looks good now, thank you!
+> >>
+> >> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > >
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Commit 0a0e2ea642f6 ("ACPI: processor: Move MWAIT quirk out of
-> > acpi_processor.c") added acpi_proc_quirk_mwait_check() that is
-> > only defined for x86 and is unlikely to be defined for any other
-> > architectures, so put it under #ifdef CONFIG_X86 and provide
-> > an empty stub implementation of it for the other cases.
-> >
-> > Link: https://lore.kernel.org/lkml/c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net
-> > Link: https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/commit/?h=remove-ia64&id=a0334bf78b95532cec54f56b53e8ae1bfe7e1ca1
-> > Fixes: 0a0e2ea642f6 ("ACPI: processor: Move MWAIT quirk out of acpi_processor.c")
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Reported-by: Frank Scheiner <frank.scheiner@web.de>
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > This is kind of orthogonal to
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/commit/?h=remove-ia64&id=a0334bf78b95532cec54f56b53e8ae1bfe7e1ca1
-> >
-> > because if any architectures other than x86 and ia64 decide to use the
-> > processor _OSC, they will see the reported build error.
-> >
+> > Should this go thru drm or phy...?
 > 
-> You mean when other arches #define CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC too, right?
-> 
-> In any case, this is going to conflict with my change, which is
-> already in linux-next (you were cc'ed on the PR to asm-generic). What
-> do you propose here?
+> I'd say, PHY, together with the other PHY patches. If you can merge
+> them into an immutable branch, then it can also be merged into
+> drm-misc (?) to provide the dependency between drm and phy parts.
 
-IIUC, the conflict is that the empty stub will be defined twice if this is
-applied before removing ia64.
+phy/topic/hdmi should be pushed out in a bit for that
 
-But if it is applied on top of the ia64 removal, all should be fine, so that's
-what I would do (and tell the -stable people to ignore it).
- 
-> > ---
-> >  drivers/acpi/internal.h |   14 ++++----------
-> >  1 file changed, 4 insertions(+), 10 deletions(-)
-> >
-> > Index: linux-pm/drivers/acpi/internal.h
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/internal.h
-> > +++ linux-pm/drivers/acpi/internal.h
-> > @@ -148,8 +148,11 @@ int acpi_wakeup_device_init(void);
-> >  #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
-> >  void acpi_early_processor_control_setup(void);
-> >  void acpi_early_processor_set_pdc(void);
-> > -
-> > +#ifdef CONFIG_X86
-> >  void acpi_proc_quirk_mwait_check(void);
-> > +#else
-> > +static inline void acpi_proc_quirk_mwait_check(void) {}
-> > +#endif
-> >  bool processor_physically_present(acpi_handle handle);
-> >  #else
-> >  static inline void acpi_early_processor_control_setup(void) {}
-> >
-> >
-> >
-> 
-
-
-
-
+-- 
+~Vinod
