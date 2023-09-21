@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058047A9982
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448657A9D9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjIUSPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
+        id S230268AbjIUTmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:42:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjIUSPB (ORCPT
+        with ESMTP id S230180AbjIUTmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:15:01 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418D4884BD;
-        Thu, 21 Sep 2023 10:39:14 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59c0442a359so15400667b3.0;
-        Thu, 21 Sep 2023 10:39:14 -0700 (PDT)
+        Thu, 21 Sep 2023 15:42:24 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B87D66D0;
+        Thu, 21 Sep 2023 12:08:39 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59c07cf02ebso16265337b3.1;
+        Thu, 21 Sep 2023 12:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695317953; x=1695922753; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t1F+jNn4p2YFYWnyRLpXhofZQpKLhDAtPlwv/PrP4WI=;
-        b=H0ivDVGLZ79q0aLnFpwiEeAAEEUUWflb8Ah/Xysl9WQ/0gc6IuHUuyZWGMEeiKaive
-         GfdMS0KYesiM0LBArEnDShfy5Dm4DkjfynAtPKtCsXUQG5abkB3R5/RrdYgtePJ4y7OG
-         zf3fCC6oXa7PalM+vcECQ8kx7uzkciFQXvjklD4pNDh5RL6PR8tBLyh1rDX2tz4J1a36
-         3YMqqi+9ewHFarkWLv5y80On08yNRJT6F6aVLl4TDEUbkoduC6oFbqYZ4Wite5aysROQ
-         y2MRfL6Lr0jKSK6UbSR9v5hFs/fr/a1yc4hkcciaaxEIpcfSmsgnjEy3N/Bv+EdkWuB5
-         7rVg==
+        d=gmail.com; s=20230601; t=1695323318; x=1695928118; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ruiINtpGZfULEUut8GaQI6nqxxaArMSZTd8GUgMbPVk=;
+        b=AwisRaIoaSVluCkRzFjDsc4+l3HmqHR/IJhptR1tb4T5IxETUjBe1aqzmtghMA2olt
+         S6sQfy2EQ7+y6SX0Ftfm/1PfTK5wCLhLjD+Q9jFZffl+rAVjmrUl68SJ6yyJzGTD/F+D
+         ldRqxl5d+OPxv7YOhiLUGWaUAfC/xLE5UajsgF33dPlOlllCk2N4z60HfWoDkZPVWVQN
+         CxGfl2xMfUyMMcdzBfYV0xNcnyMqIgXndANppmtZOzCJ1BYA2ZE0/0HTRxxPh0uDITWl
+         kNhIM0rEDPhRsBwZHbpwJuKasqgBElGOwlyjC76LpaYBpK+Vm2DuaznyVmZlmlGAexYy
+         9hAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317953; x=1695922753;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t1F+jNn4p2YFYWnyRLpXhofZQpKLhDAtPlwv/PrP4WI=;
-        b=BUmppY0Xah5LyQrhmwmhVAfQsODbT7qAdbFFbsT64YEz4O9+8Wq4o1Yn+ElIZJSzxY
-         ZE16fZdF9vtvo9WJNeHc1R0mCPWxi1oLFMa0cyUY17CnqfeNe/lLZzSVs+N6sxGh8dsD
-         E1y9KQ3Vps2jJ3MZcPRKB02ILWfRCtx87anD2Bx6Jw0k28j2sStRfULH3362Np3R+Zjk
-         ksyYgAzUJiNiMYxxMIxKePiDt+EzrM/8haOfHnUUhd/+AZqqT6r1ndTVXEktIeWyxmdx
-         /cah79wRSt7bCNQefi6Ngwd30M+3OWtTiBISccXwBNBHXrWBRP6Jl3GGdGcVaJ7zAUmC
-         dYVQ==
-X-Gm-Message-State: AOJu0YxkPKKkAO2ryOKM8keCwXA9SZLbmwBqkluQDh/f6RGzXuYD54Wm
-        abkq6MlD9xRR8juQkGHqqMqykjj145675u2I
-X-Google-Smtp-Source: AGHT+IEex6NSKgWXUjJK9NtDKEBemVHgyoAvkJToFZZV4i38mLrQmkXb+UjR3aIEY0G94D6xXHU65Q==
-X-Received: by 2002:a05:6a21:7795:b0:15d:42d5:6cc1 with SMTP id bd21-20020a056a21779500b0015d42d56cc1mr717960pzc.33.1695275776544;
-        Wed, 20 Sep 2023 22:56:16 -0700 (PDT)
-Received: from toolbox.alistair23.me (2403-580b-97e8-0-321-6fb2-58f1-a1b1.ip6.aussiebb.net. [2403:580b:97e8:0:321:6fb2:58f1:a1b1])
-        by smtp.gmail.com with ESMTPSA id jw18-20020a170903279200b001adf6b21c77sm502841plb.107.2023.09.20.22.56.11
+        d=1e100.net; s=20230601; t=1695323318; x=1695928118;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ruiINtpGZfULEUut8GaQI6nqxxaArMSZTd8GUgMbPVk=;
+        b=aclNh3P4daSN3xlb9h/PGpNdH9bHVQJAVs64HSNA3OLsx3c2ogUa6eYbLOeE0mS9S5
+         jeABszAJbyAwtw6rorFItFDKEuLXJRHycXPwStBFFj1Ovrz25AAsEao+IqS5m+IFRTRK
+         ndw/RmFPu6vWAeqOuSrkRIyFWISS9KruD19Mn2OW18m4hOUgHih8tzlu2d8fhKbBKOTE
+         vC//A5rGnqMJzs0AMg6m8Ns8QK8aCKT/IKppefwhj9KnBTeLZvl0jlTmME0HsVTgWZ9b
+         jOVYoLqQJzYkvGmFy6pi7iPH2oAwNJjANb1/a887jAn3FK0qFF2fne7EKo+RFe5NiqBq
+         alFw==
+X-Gm-Message-State: AOJu0Yy3dko1G+wCTSGFOEtl0MJW2b4mzKjN/w58S/CVstkVOryQlvSM
+        QzXnUgjS0JHbolHia9exd3tYpxYw6psOF2sw
+X-Google-Smtp-Source: AGHT+IGzvTtHD3sFNB2BPTBDN+yVpmqMcJQ9gplzoOR2pPA0YL0NcetmRF5GqamTRnszmgJ2nDoQsg==
+X-Received: by 2002:a92:c549:0:b0:34f:67da:3d98 with SMTP id a9-20020a92c549000000b0034f67da3d98mr6282951ilj.20.1695275814109;
+        Wed, 20 Sep 2023 22:56:54 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-152-19.hlrn.qwest.net. [71.33.152.19])
+        by smtp.gmail.com with ESMTPSA id e7-20020a056638020700b0042ad887f705sm182745jaq.143.2023.09.20.22.56.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 22:56:16 -0700 (PDT)
-From:   Alistair Francis <alistair23@gmail.com>
-X-Google-Original-From: Alistair Francis <alistair.francis@wdc.com>
-To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, lukas@wunner.de
-Cc:     alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v8 3/3] PCI/DOE: Allow enabling DOE without CXL
-Date:   Thu, 21 Sep 2023 15:55:31 +1000
-Message-ID: <20230921055531.2028834-3-alistair.francis@wdc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230921055531.2028834-1-alistair.francis@wdc.com>
-References: <20230921055531.2028834-1-alistair.francis@wdc.com>
+        Wed, 20 Sep 2023 22:56:53 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v9 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with Custom Board
+Date:   Wed, 20 Sep 2023 23:56:06 -0600
+Message-Id: <20230921055611.1459374-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe devices (not CXL) can support DOE as well, so allow DOE to be
-enabled even if CXL isn't.
+Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
-v8:
- - No changes
-v7:
- - Initial patch
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- drivers/pci/Kconfig | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-index e9ae66cc4189..672a1f5178c6 100644
---- a/drivers/pci/Kconfig
-+++ b/drivers/pci/Kconfig
-@@ -117,7 +117,10 @@ config PCI_ATS
- 	bool
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 9450b2c8a678..c47f5ecdd249 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -385,6 +385,12 @@ properties:
+           - const: toradex,apalis_imx6q
+           - const: fsl,imx6q
  
- config PCI_DOE
--	bool
-+	bool "Enable PCI Data Object Exchange (DOE) support"
-+	help
-+	  Say Y here if you want be able to communicate with PCIe DOE
-+	  mailboxes.
- 
- config PCI_ECAM
- 	bool
++      - description: i.MX6Q Variscite VAR-SOM-MX6 Boards
++        items:
++          - const: variscite,mx6customboard
++          - const: variscite,var-som-imx6q
++          - const: fsl,imx6q
++
+       - description: TQ-Systems TQMa6Q SoM (variant A) on MBa6x
+         items:
+           - const: tq,imx6q-mba6x-a
 -- 
-2.41.0
+2.34.1
 
