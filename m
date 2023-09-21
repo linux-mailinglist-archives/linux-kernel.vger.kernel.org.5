@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46E07A9965
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4DA7A9C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjIUSON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
+        id S229587AbjIUTMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjIUSNi (ORCPT
+        with ESMTP id S231486AbjIUTE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:13:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B2E8613D;
-        Thu, 21 Sep 2023 10:37:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75DA4C4E761;
-        Thu, 21 Sep 2023 15:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695308896;
-        bh=L0Y9YCcXIfYgNBjuyvMWPQWu9ej2m027Mk4wviryPFc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=gFqOvKwD82XZsHe76trqDACk/ukmKSHQJwz7bCZ7MJEH6nifbgBEjKRk6FWVzvDum
-         ooqrhdbeY3pDtPMG4uXEcnIVGNJGRkxhdeX81V/m+WYU6IG4sOSGXuQOwEfFfHhY8/
-         cQ3dnRizGPzyY24kv5ahl5Qxo2rqKrpqZqQNU6zkqXhBy36+wTFXYaYfAH9NH3701w
-         3tk7aPFDVUmL5+XcB13lGwt7TITWrmlIM+um0rBia3JEQEPMyQWXUXGogl03F+zXUs
-         I6fouyBEvFdignF5f+LWfr7ti9Gvs6tWnXCG+Y0wACYnSmQvrXmLQf/FjekRCApaKS
-         lwKCQM68yqdAg==
-Date:   Thu, 21 Sep 2023 10:08:14 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v6 08/19] PCI: plda: Add event interrupt codes and IRQ
- domain ops
-Message-ID: <20230921150814.GA330660@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230916-rescuer-enroll-dd4fb1320676@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 21 Sep 2023 15:04:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9314080F9C;
+        Thu, 21 Sep 2023 10:36:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AA6873377F;
+        Thu, 21 Sep 2023 15:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695309006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0eTKe2XuZQ29/5KHHLZyTd//jnc11IR/vGdwjTaApTI=;
+        b=ZhL02ap/z8114SestHHkj/X32LfJyKAawxzSi0z0cG5UMMNUJBiiNu2hMZWUsXYMllpVFh
+        UyZNJU+88gHEteRNtFUBR63qeooUlYAUKVaPHnMGf7j4IJrJOcaQDDKYxLNji+8XKgon3K
+        VGgn/dFYKdEq/rEkjPj1gSO+F7d3iMU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695309006;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0eTKe2XuZQ29/5KHHLZyTd//jnc11IR/vGdwjTaApTI=;
+        b=2qhkMIKiIIrhDoE9b1Mqgp7UFDZwFtxXvuHXv20tIduMEA5tO9L4G59EMKri9+VLb4ZJhe
+        ZD3xbl4RgNFwitCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39BA1134B0;
+        Thu, 21 Sep 2023 15:10:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ccT8DM5cDGUAbgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 15:10:06 +0000
+Date:   Thu, 21 Sep 2023 17:10:05 +0200
+Message-ID: <87sf77y33m.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v5 01/11] sound: Fix snd_pcm_readv()/writev() to use iov access functions
+In-Reply-To: <809186.1695308608@warthog.procyon.org.uk>
+References: <87o7hvzn12.wl-tiwai@suse.de>
+        <20230920222231.686275-1-dhowells@redhat.com>
+        <20230920222231.686275-2-dhowells@redhat.com>
+        <809186.1695308608@warthog.procyon.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 01:11:29AM +0100, Conor Dooley wrote:
-> On Fri, Sep 15, 2023 at 06:22:32PM +0800, Minda Chen wrote:
-> > For PolarFire implements non-PLDA local interrupt events, most of
-> > event interrupt process codes can not be re-used. PLDA implements
-> > new codes and IRQ domain ops like PolarFire.
-> > 
-> > plda_get_events() adds a new IRQ num to event num mapping codes for
-> > PLDA local event except DMA engine interrupt events. The DMA engine
-> > interrupt events are implemented by vendors.
-> > 
-> > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+On Thu, 21 Sep 2023 17:03:28 +0200,
+David Howells wrote:
 > 
-> Perhaps not important as they will go away in the next patch, but for
-> this patch the riscv patchwork stuff noticed:
-> drivers/pci/controller/plda/pcie-plda-host.c:114:36: warning: unused variable 'plda_evt_dom_ops' [-Wunused-const-variable]
-> drivers/pci/controller/plda/pcie-plda-host.c:118:36: warning: unused variable 'plda_event_ops' [-Wunused-const-variable]
+> Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> > Would you apply it through your tree, or shall I apply this one via
+> > sound git tree?
+> 
+> It's a prerequisite for a later patch in this series, so I'd prefer to keep it
+> with my other patches.
 
-Details like this *are* important because fixing them makes the
-individual patches more readable, thanks for noticing!
+Sure, please go ahead.
 
-Bjorn
+
+thanks,
+
+Takashi
