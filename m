@@ -2,256 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24187A9BF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B887A9B6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbjIUTFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        id S229711AbjIUTBV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 15:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjIUTE3 (ORCPT
+        with ESMTP id S229699AbjIUTBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:04:29 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C89EEE5A1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:45:25 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-76c64da0e46so53268839f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695321925; x=1695926725; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnKiy3ihwgd/VOoqSanohGN5ffhK+cZ/VpjdYKJUjf8=;
-        b=U6AnxTaZN69Yg5XxdFZLDPrDlurYvQFWsLRVzWczhSGkzBjE+vR12yzRRlUc1skcb4
-         eTOdHdLPXX+vyRtm959mPZgXaiVu2cdXlZQ5aAdj5i11oiQp8U5S63W/HQj3iL+xs+V9
-         P7ntzZ08MRJXVe0+P+zII1R4/a9aXzGHPQ40I=
+        Thu, 21 Sep 2023 15:01:05 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16441EE5B9;
+        Thu, 21 Sep 2023 11:45:50 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3adbe273a0cso232690b6e.0;
+        Thu, 21 Sep 2023 11:45:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321925; x=1695926725;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DnKiy3ihwgd/VOoqSanohGN5ffhK+cZ/VpjdYKJUjf8=;
-        b=J4Ao/QsXHEEslVyszZre4xG7e+SuMjgZO8ZI1arRVjAKdWwXL4JQwZaSaiVdpCgk7m
-         2j7quzFQGixaYl4X7O/ah5D2yLJPt/V6jzJWWT33X0CKif5yTfBhE4L+dBvJ5EH6h8OI
-         k5eJccyTpOXGjFhjbNNdiKPODAb6TRDaYR4dCS/xs0GM8c4Qiek+EAN0WwzZv0BzURIq
-         N6XUEfp7nkfUkOZsAGIsx70XE+wFJaKlIQ55iHd0NuWD8nHK5luUqKmLWiq48PAGX5To
-         u+VreI5cWQgfeAOLPl44kaCS9zW3iwYNKOUdVqiGEMuFnSnWinC3BF48l9SwH2xSR5XL
-         9Trg==
-X-Gm-Message-State: AOJu0YzFF/JFqIZNZcnrp+gDdcIYu9lk65Y+Gb1un8ZFqUFSqZDprQMP
-        niC3zY6FtgHPXJQ2V+/VfZCMG6ilGYUvgykw4zI=
-X-Google-Smtp-Source: AGHT+IFLx+QxNqVoEsIFpwCXXYW/u8hYUS5LzSu0VrhuBFkVi/scOpz5E7kCyC+9y88eBDeWXVQ/9A==
-X-Received: by 2002:a6b:7303:0:b0:787:34d:f223 with SMTP id e3-20020a6b7303000000b00787034df223mr7074088ioh.11.1695321924839;
-        Thu, 21 Sep 2023 11:45:24 -0700 (PDT)
-Received: from kea.bld.corp.google.com ([2620:15c:183:200:a636:e615:ea83:bc42])
-        by smtp.gmail.com with ESMTPSA id d26-20020a02a49a000000b004290fd3a68dsm511017jam.1.2023.09.21.11.45.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 11:45:24 -0700 (PDT)
-From:   Simon Glass <sjg@chromium.org>
-To:     devicetree@vger.kernel.org
-Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Rob Herring <robh@kernel.org>, Simon Glass <sjg@chromium.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: mtd: Add a schema for binman
-Date:   Thu, 21 Sep 2023 12:45:14 -0600
-Message-ID: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+        d=1e100.net; s=20230601; t=1695321949; x=1695926749;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mSC2Mx8lZwcBsu4ssGOLP2DR4kbz2MNqD+ptdUPWGs4=;
+        b=Ec/eKrMY/6jzKOTjojd1uhPAk7Lf3tN/nMEAasAVwCuBeTeADao+R1OZZSRLd/jIzE
+         ZrFoM4llkyPQHbDNk5MOdT/mecrBWpGshU8KRzPGLP1gl6XX4Rw4RDbl1RCnQ/CBJYrw
+         CyrzPQMUOAf7XygfjRGc4cDkvWP3JFXBdgyyMW6S5ucoZeMG+IGH56hd3qENpCGOFofI
+         KEzjdD5/KEYEguShD6MCA2dy6vN++fsi4uP5yRYFKTUy+8OSTmnes9J7PD/jes06Flgo
+         tYMJFzpYu4QR1E+VIXKcP/td0hv2E5aQZj4cjGKh3iXVQeDyv0PiZM2DOlB04jSvUnCQ
+         Y6XQ==
+X-Gm-Message-State: AOJu0Yzdu8v4AWQyXGdp7cHsMf5LgQxi1+LVpKgZIk+Dv+M3vBH1PkZ6
+        TZa9Vg/uh3UQhU+kVjoX7UcuqzJgBX7tc33wcQA=
+X-Google-Smtp-Source: AGHT+IHQOvwO1HCg1mAMiEkCzXok2CE6zEvjP3SkSyr60AQ/8kEpBnleecz/hKIvBiyPJ9jqrBg4+T2inrVGBJ83Dr8=
+X-Received: by 2002:a05:6808:2092:b0:3ad:af12:2fe0 with SMTP id
+ s18-20020a056808209200b003adaf122fe0mr6862727oiw.3.1695321949259; Thu, 21 Sep
+ 2023 11:45:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230920180337.809-1-shiju.jose@huawei.com>
+In-Reply-To: <20230920180337.809-1-shiju.jose@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 21 Sep 2023 20:45:38 +0200
+Message-ID: <CAJZ5v0j2qAakkcuMS0Np8Do5w4Np67ddt_EfqYY4br+p-WXV9w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] ACPI / APEI: Fix for overwriting AER info when
+ error status data has multiple sections
+To:     shiju.jose@huawei.com
+Cc:     helgaas@kernel.org, rafael@kernel.org, lenb@kernel.org,
+        tony.luck@intel.com, james.morse@arm.com, bp@alien8.de,
+        ying.huang@intel.com, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, jonathan.cameron@huawei.com,
+        tanxiaofei@huawei.com, prime.zeng@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Binman[1] is a tool for creating firmware images. It allows you to
-combine various binaries and place them in an output file.
+On Wed, Sep 20, 2023 at 8:03 PM <shiju.jose@huawei.com> wrote:
+>
+> From: Shiju Jose <shiju.jose@huawei.com>
+>
+> ghes_handle_aer() passes AER data to the PCI core for logging and
+> recovery by calling aer_recover_queue() with a pointer to struct
+> aer_capability_regs.
+>
+> The problem was that aer_recover_queue() queues the pointer directly
+> without copying the aer_capability_regs data.  The pointer was to
+> the ghes->estatus buffer, which could be reused before
+> aer_recover_work_func() reads the data.
+>
+> To avoid this problem, allocate a new aer_capability_regs structure
+> from the ghes_estatus_pool, copy the AER data from the ghes->estatus
+> buffer into it, pass a pointer to the new struct to
+> aer_recover_queue(), and free it after aer_recover_work_func() has
+> processed it.
+>
+> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> ---
+> Changes from v2 to v3:
+> 1. Add stub code for ghes_estatus_pool_region_free() to fix following
+> build error, reported by kernel test robot, if CONFIG_ACPI_APEI_GHES
+> is not enabled.
+> ld: drivers/pci/pcie/aer.o: in function `aer_recover_work_func':
+> aer.c:(.text+0xec5): undefined reference to `ghes_estatus_pool_region_free'
+>
+> Changes from v1 to v2:
+> 1. Updated patch description with the description Bjorn has suggested.
+> 2. Add Acked-by: Bjorn Helgaas <bhelgaas@google.com>.
+> ---
+>  drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
+>  drivers/pci/pcie/aer.c   | 10 ++++++++++
+>  include/acpi/ghes.h      |  4 ++++
+>  3 files changed, 36 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index ef59d6ea16da..63ad0541db38 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
+>         return -ENOMEM;
+>  }
+>
+> +/**
+> + * ghes_estatus_pool_region_free - free previously allocated memory
+> + *                                from the ghes_estatus_pool.
+> + * @addr: address of memory to free.
+> + * @size: size of memory to free.
+> + *
+> + * Returns none.
+> + */
+> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size)
+> +{
+> +       gen_pool_free(ghes_estatus_pool, addr, size);
+> +}
+> +EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
+> +
+>  static int map_gen_v2(struct ghes *ghes)
+>  {
+>         return apei_map_generic_address(&ghes->generic_v2->read_ack_register);
+> @@ -564,6 +578,7 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+>             pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
+>                 unsigned int devfn;
+>                 int aer_severity;
+> +               u8 *aer_info;
+>
+>                 devfn = PCI_DEVFN(pcie_err->device_id.device,
+>                                   pcie_err->device_id.function);
+> @@ -577,11 +592,17 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+>                 if (gdata->flags & CPER_SEC_RESET)
+>                         aer_severity = AER_FATAL;
+>
+> +               aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
+> +                                                 sizeof(struct aer_capability_regs));
+> +               if (!aer_info)
+> +                       return;
+> +               memcpy(aer_info, pcie_err->aer_info, sizeof(struct aer_capability_regs));
+> +
+>                 aer_recover_queue(pcie_err->device_id.segment,
+>                                   pcie_err->device_id.bus,
+>                                   devfn, aer_severity,
+>                                   (struct aer_capability_regs *)
+> -                                 pcie_err->aer_info);
+> +                                 aer_info);
+>         }
+>  #endif
+>  }
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index e85ff946e8c8..ba1ce820c141 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/kfifo.h>
+>  #include <linux/slab.h>
+>  #include <acpi/apei.h>
+> +#include <acpi/ghes.h>
+>  #include <ras/ras_event.h>
+>
+>  #include "../pci.h"
+> @@ -996,6 +997,15 @@ static void aer_recover_work_func(struct work_struct *work)
+>                         continue;
+>                 }
+>                 cper_print_aer(pdev, entry.severity, entry.regs);
+> +               /*
+> +                * Memory for aer_capability_regs(entry.regs) is being allocated from the
+> +                * ghes_estatus_pool to protect it from overwriting when multiple sections
+> +                * are present in the error status. Thus free the same after processing
+> +                * the data.
+> +                */
+> +               ghes_estatus_pool_region_free((unsigned long)entry.regs,
+> +                                             sizeof(struct aer_capability_regs));
+> +
+>                 if (entry.severity == AER_NONFATAL)
+>                         pcie_do_recovery(pdev, pci_channel_io_normal,
+>                                          aer_root_reset);
+> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+> index 3c8bba9f1114..be1dd4c1a917 100644
+> --- a/include/acpi/ghes.h
+> +++ b/include/acpi/ghes.h
+> @@ -73,8 +73,12 @@ int ghes_register_vendor_record_notifier(struct notifier_block *nb);
+>  void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+>
+>  struct list_head *ghes_get_devices(void);
+> +
+> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+>  #else
+>  static inline struct list_head *ghes_get_devices(void) { return NULL; }
+> +
+> +static inline void ghes_estatus_pool_region_free(unsigned long addr, u32 size) { return; }
+>  #endif
+>
+>  int ghes_estatus_pool_init(unsigned int num_ghes);
+> --
 
-Binman uses a DT schema to describe an image, in enough detail that
-it can be automatically built from component parts, disassembled,
-replaced, listed, etc.
-
-Images are typically stored in flash, which is why this binding is
-targeted at mtd. Previous discussion is at [2] [3].
-
-[1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
-[2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
-[3] https://www.spinics.net/lists/devicetree/msg626149.html
-
-Signed-off-by: Simon Glass <sjg@chromium.org>
----
-
- .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
- .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 4 files changed, 117 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-new file mode 100644
-index 00000000000000..c792d5a37b700a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman firmware layout
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. For now it just supports a very simple set of
-+  features, as a starting point for discussion.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-+
-+properties:
-+  compatible:
-+    const: u-boot,binman
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    firmware {
-+      binman {
-+        compatible = "u-boot,binman";
-+
-+        u-boot {
-+          size = <0xa0000>;
-+        };
-+
-+        atf-bl31 {
-+          offset = <0x100000>;
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-new file mode 100644
-index 00000000000000..8003eb4f1a994f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman/entry.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman entry
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description: |
-+  The entry node specifies a single entry in the firmware.
-+
-+  Entries have a specific type, such as "u-boot" or "atf-bl31". If the type
-+  is missing, the name is used as the type.
-+
-+  Note: This definition is intended to be hierarchical, so that entries can
-+  appear in other entries. Schema for that is TBD.
-+
-+properties:
-+  $nodename:
-+    pattern: "^[-a-z]+(-[0-9]+)?$"
-+
-+  type:
-+    $ref: /schemas/types.yaml#/definitions/string
-+
-+  offset:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Provides the offset of this entry from the start of its parent section.
-+      If this is omitted, Binman will determine this by packing the enclosing
-+      section according to alignment rules, etc.
-+
-+  size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Provides the size of this entry in bytes. If this is omitted, Binman will
-+      use the content size, along with any alignment information, to determine
-+      the size of the entry.
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    firmware {
-+      binman {
-+        compatible = "u-boot,binman";
-+
-+        u-boot {
-+          size = <0xa0000>;
-+        };
-+
-+        second-area {
-+          type = "atf-bl31";
-+          offset = <0x100000>;
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747bd7..849fd15d085ccc 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
- 
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a4c30221eb305d..ebcbfb4292e8dc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3505,6 +3505,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-+
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
--- 
-2.42.0.515.g380fc7ccd1-goog
-
+Applied as 6.7 material, thanks!
