@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1927AA24D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0961E7A9F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjIUVPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
+        id S230151AbjIUURj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbjIUVPF (ORCPT
+        with ESMTP id S229667AbjIUURX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:15:05 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B112AE381
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:50 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-415155b2796so13061cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695316069; x=1695920869; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XVDAf4WvVJJ7OSvhi+Yfiyx2UN4HVXEh6f4xLTULUGM=;
-        b=PJLYVhgabyAZB/nH+Vf45P2uN9tLY2VwORnadwpUVrigSWWPwvlbkqXrFqv+CFZzUz
-         aglGb6i4guSfgaJEtl3nnrZ66Q6UskZ7NMoRKDD6L+20q20tN1kpNEDA2eBwCTUJ78jv
-         nXIWfqJVDW1YY8IerpBylFiSq46x/BRt75eSW4mkW7Sc2NNhPkCVPaTsbAbfcwUReKWh
-         ycTTkMqyMbtqkUkAdoyaHZ3nwpqJE9qO65qGhaLH+m/+Q2kZrrs8AahfmXAb3AxCwGti
-         jmiGSfwTF79i8k+qYkznFwv/4XrKwMfPCB1f4hsHEdEVfq1XB5C4fRXrksCuVGdtTmWd
-         r8sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316069; x=1695920869;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XVDAf4WvVJJ7OSvhi+Yfiyx2UN4HVXEh6f4xLTULUGM=;
-        b=l97KJWqNYd2su1AeXAi5AeEydbog5UTtfaF3Pqhas7vBbyOY42bF0yuyRRuhYq8+Nc
-         dFeGTm+TeIBRrC0iymF++YrrVdBG4vvJJV3PfbPaqhKkd8hG8Im5+KHswx5ylWP3paEm
-         rf55WP09f/2CLEIWpUOwhHWj8Ryz1sOIrCZ3qqZUXnyHN+NUF98Q5ctUUdZNuGnmO2gx
-         9YwjtSDogTGniWBuLq19s8ulMXyBFCkAPN6j8gaqGeLEqvUUkyI3JuwLqKJZPNTiFB+D
-         Pz+WAI2OR0qJE3s+lrN3/ngMyfNuNvGpXvrhCpReagrn/RRhD9U+n58eKt8VAc91nzFx
-         ToaA==
-X-Gm-Message-State: AOJu0Yx7PkvAQk1cywiV6nVBKcTiWinTNBNIpW2DXcU01DbADfu9jq4n
-        Ic98vOyMzcXw5TUPZIqpM/n469+9fhJ8yELqVyBikGv2rh1dQFL+7WsjOg==
-X-Google-Smtp-Source: AGHT+IHhB5IobmDnc5veIt6gFjFNMEhSdUigSI1xxqe8K/+P5OK7t3buKoUeeDTzHcWQMy7ISbP8znADFgHSZBnWzng=
-X-Received: by 2002:ac8:590d:0:b0:404:8218:83da with SMTP id
- 13-20020ac8590d000000b00404821883damr135481qty.1.1695283104920; Thu, 21 Sep
- 2023 00:58:24 -0700 (PDT)
+        Thu, 21 Sep 2023 16:17:23 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C03EAB0;
+        Thu, 21 Sep 2023 10:12:52 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38L52ATc018997;
+        Thu, 21 Sep 2023 10:03:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=xuMwQg6
+        e1Wn4J45HkR4xLWFNEWC3Wmj+tN4CFCgiioA=; b=3RU7hiF9MdRO82scr535kov
+        XC1NRnLK3FUrv3mJ27BqDj2OHtrrwiQrJhA28/zPMrdqcDf4GjF6UnEiZ0Cp0dRp
+        Da8fY3u9yXRrhz2V1BPoXZ7Pl7ew/jk8lYxBgzA2t1TClsvf19jbeGFxugYXmaMF
+        PiMbnNYptMRKijM0BHrScp+EAx5rhwoyw2msVUDVjCsGiX/KtbTCsQhdynO4Y8HP
+        x66iD3moQg0/ZXHUGV4qAl8FMqBoystoajnl/PCx9+EBsYIUc/TUj9Qnpe+1cUov
+        3BYqxa5RFCzsY0yyPhB/xO5SnJuu6fi1FOJ1W9YLwivECzjcAT/1ue6hzr25mBA=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t7ybkm004-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 10:03:11 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB06C100058;
+        Thu, 21 Sep 2023 10:03:07 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E0A0320FA2A;
+        Thu, 21 Sep 2023 10:03:07 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
+ 2023 10:03:07 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v3 0/9] hwrng: stm32: support STM32MP13x platforms
+Date:   Thu, 21 Sep 2023 10:02:52 +0200
+Message-ID: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230920001728.1439947-1-maskray@google.com> <20230921072655.GA14803@noisy.programming.kicks-ass.net>
-In-Reply-To: <20230921072655.GA14803@noisy.programming.kicks-ass.net>
-From:   Fangrui Song <maskray@google.com>
-Date:   Thu, 21 Sep 2023 00:58:13 -0700
-Message-ID: <CAFP8O3+_8H+fetuoqwwcfqJLNtYmpsWZhY2arD7HMuPmcN+X_g@mail.gmail.com>
-Subject: Re: [PATCH] x86/speculation, objtool: Use absolute relocations for annotations
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-16.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_06,2023-09-20_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 12:26=E2=80=AFAM Peter Zijlstra <peterz@infradead.o=
-rg> wrote:
->
-> On Tue, Sep 19, 2023 at 05:17:28PM -0700, Fangrui Song wrote:
-> > .discard.retpoline_safe sections do not have the SHF_ALLOC flag.  These
-> > sections referencing text sections' STT_SECTION symbols with PC-relativ=
-e
-> > relocations like R_386_PC32 [0] is conceptually not suitable.  Newer
-> > LLD will report warnings for REL relocations even for relocatable links
-> > [1].
-> >
-> >     ld.lld: warning: vmlinux.a(drivers/i2c/busses/i2c-i801.o):(.discard=
-.retpoline_safe+0x120): has non-ABS relocation R_386_PC32 against symbol ''
->
-> What, why ?!? Please explain more.
+The STM32MP13x platforms have a RNG hardware block that supports
+customization, a conditional reset sequences that allows to
+recover from certain situations and a configuration locking
+mechanism.
 
-This can be read as a pedantic warning from the linker.
+This series adds support for the mentionned features. Note that
+the hardware RNG can and should be managed in the secure world
+for this platform, hence the rng not being default enabled on
+the STM32MP135F-DK board.
 
-A location relocated by an R_386_PC32 relocation in
-.discard.retpoline_safe records an offset from the current location
-(non-allocable) to an text symbol.
-This offset is conceptually not suitable: in the ELF object file
-format's model, the non-SHF_ALLOC section is not part of the memory
-image, so
-we cannot say that the offset from the non-memory thing to a text
-symbol is a fixed value.
+Changes in V2:
+	- Use pm_ptr() and add __maybe_unused on PM API
+	- Correct bug using WARN_ON
 
-> > Switch to absolute relocations instead, which indicate link-time
-> > addresses.  In a relocatable link, these addresses are also output
-> > section offsets, used by checks in tools/objtool/check.c.  When linking
-> > vmlinux, these .discard.* sections will be discarded, therefore it is
-> > not a problem that R_X86_64_32 cannot represent a kernel address.
-> >
-> > Alternatively, we could set the SHF_ALLOC flag for .discard.* sections,
-> > but I think non-SHF_ALLOC for sections to be discarded makes more sense=
-.
-> >
-> > Note: if we decide to never support REL architectures (e.g. arm, i386),
->
-> We have explicit support for REL (as opposed to RELA) architectures, so
-> I don't think we can do that.
->
+Changes in V3:
+	- Squash of bindings patches
+	- st,rng-lock-conf property declaration rework
+	- Fix stm32_rng_pm_ops declaration in patch [5/9]
 
+Gatien Chevallier (9):
+  dt-bindings: rng: introduce new compatible for STM32MP13x
+  hwrng: stm32 - use devm_platform_get_and_ioremap_resource() API
+  hwrng: stm32 - implement STM32MP13x support
+  hwrng: stm32 - implement error concealment
+  hwrng: stm32 - rework error handling in stm32_rng_read()
+  hwrng: stm32 - restrain RNG noise source clock
+  hwrng: stm32 - support RNG configuration locking mechanism
+  hwrng: stm32 - rework power management sequences
+  ARM: dts: stm32: add RNG node for STM32MP13x platforms
 
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |  20 +-
+ arch/arm/boot/dts/st/stm32mp131.dtsi          |   8 +
+ drivers/char/hw_random/stm32-rng.c            | 511 +++++++++++++++---
+ 3 files changed, 455 insertions(+), 84 deletions(-)
+
+-- 
+2.25.1
+
