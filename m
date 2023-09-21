@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38147A9EC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEADC7AA128
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjIUULo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
+        id S232243AbjIUU6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjIUULa (ORCPT
+        with ESMTP id S230456AbjIUU5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:11:30 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4515A026;
-        Thu, 21 Sep 2023 10:20:53 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38LB5qEa030987;
-        Thu, 21 Sep 2023 17:08:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=zKgubgfi6Pb54XiIzppYUInYCBS8Pc8fetwYjtT9IwE=; b=lf
-        I4Erdufi2YGpRtcdZ4ukaRioDOkkOFDAo+q9KbDCrPqhWHqd8+QWs9dDW2S75u4Y
-        +DG4xtMwDF5p5ypY7BMb4SVC2enFhnH+GXeAZg1hm1iA0TSU9hMLXbN28Uuk+vuh
-        MGbpU0KqWLKODwyMr5mKuqAaGonf+VIH2612ru9rYZbgXoi9Dc1H9eNZttsIrTu8
-        9LfUoy9cCuEflmoQc5fV0M84x51fdVmzlxe2/G1srrm7e6nRZugd29cQJ6ITxzel
-        oz1EvLOKiLD+68HcK9FQKpAIYTjqIEPeqoeH/xJ23sA4TebW0bjEnddXhrpzczXU
-        hmnh5Dttjs1pL075nITw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t51sfn3nk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 17:08:05 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3993A100057;
-        Thu, 21 Sep 2023 17:08:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 31832257A80;
-        Thu, 21 Sep 2023 17:08:05 +0200 (CEST)
-Received: from localhost (10.201.21.249) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
- 2023 17:08:04 +0200
-From:   Christophe Roullier <christophe.roullier@foss.st.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Christophe Roullier <christophe.roullier@foss.st.com>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 7/7] ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
-Date:   Thu, 21 Sep 2023 17:06:22 +0200
-Message-ID: <20230921150622.599232-8-christophe.roullier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921150622.599232-1-christophe.roullier@foss.st.com>
-References: <20230921150622.599232-1-christophe.roullier@foss.st.com>
+        Thu, 21 Sep 2023 16:57:55 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDF429792;
+        Thu, 21 Sep 2023 10:11:45 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38LF9G9c053265;
+        Thu, 21 Sep 2023 10:09:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695308956;
+        bh=oTNy2wHSxIaJqOc+yS1dO/7QvHpmd/SGTpHunhYERaU=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=uaVms098IiGUq4F+/3TXjTR/+/Vxl/3nUqx716SB/wJrgGXm+9za0VN5dP49Nyebs
+         RK+QCOfkJqiMYcwDVPdha06I7sGsNK76c7U5KUVWTcy1/eAgc5czdxe6C4KjbtgVw1
+         AIHDOZG9fBAP9975wbQj5TNp/MmAkOivENRP5UsA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38LF9GFq020971
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 Sep 2023 10:09:16 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Sep 2023 10:09:16 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Sep 2023 10:09:16 -0500
+Received: from [10.249.139.5] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38LF9CL8067245;
+        Thu, 21 Sep 2023 10:09:13 -0500
+Message-ID: <1a608e54-36a4-475a-ac21-906d4c9df475@ti.com>
+Date:   Thu, 21 Sep 2023 20:39:12 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] arm64: dts: ti: k3-j721e-mcu-wakeup: Add MCU domain
+ ESM instance
+Content-Language: en-US
+To:     "Kumar, Udit" <u-kumar1@ti.com>, <robh+dt@kernel.org>,
+        <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>
+References: <20230920063029.3081579-1-n-francis@ti.com>
+ <191d1260-48f0-2388-ab29-405222302cda@ti.com>
+From:   Neha Malcom Francis <n-francis@ti.com>
+In-Reply-To: <191d1260-48f0-2388-ab29-405222302cda@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.21.249]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-21_13,2023-09-21_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Need to enable MCP23S08 I/O expanders to manage Ethernet phy
-reset in STM32MP135F-DK board
-STMMAC driver defer is not silent, need to put this config in
-built-in to avoid huge of Ethernet messages
+Hi Udit
 
-Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 21-Sep-23 4:29 PM, Kumar, Udit wrote:
+> 
+> On 9/20/2023 12:00 PM, Neha Malcom Francis wrote:
+>> Currently J721E defines only the main_esm in DTS. Add node for mcu_esm
+>> as well.
+> Could you please add some more description in commit message , why we 
+> need mcu_esm node.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 23fc49f23d25..373f58f2d5b9 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -458,6 +458,7 @@ CONFIG_SPI_XILINX=y
- CONFIG_SPI_SPIDEV=y
- CONFIG_SPMI=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MCP23S08=y
- CONFIG_PINCTRL_MICROCHIP_SGPIO=y
- CONFIG_PINCTRL_OCELOT=y
- CONFIG_PINCTRL_PALMAS=y
--- 
-2.25.1
+Yes I will add that in, thanks for reviewing!
 
+>> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi 
+>> b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+>> index 05d6ef127ba7..fa8af20c7818 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+>> @@ -671,4 +671,11 @@ wkup_vtm0: temperature-sensor@42040000 {
+>>           power-domains = <&k3_pds 154 TI_SCI_PD_EXCLUSIVE>;
+>>           #thermal-sensor-cells = <1>;
+>>       };
+>> +
+>> +    mcu_esm: esm@40800000 {
+>> +        compatible = "ti,j721e-esm";
+>> +        reg = <0x00 0x40800000 0x00 0x1000>;
+>> +        ti,esm-pins = <95>;
+>> +        bootph-pre-ram;
+>> +    };
+>>   };
+> 
+> With that change
+> 
+> Reviewed-by: Udit Kumar <u-kumar1@ti.com>
+> 
+> 
+
+Thanking You
+Neha Malcom Francis
