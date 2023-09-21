@@ -2,126 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E755A7A9662
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF307A98CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjIURAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
+        id S229736AbjIURxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjIURAb (ORCPT
+        with ESMTP id S229560AbjIURwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:00:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E611FC6;
-        Thu, 21 Sep 2023 09:59:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3301C116A7;
-        Thu, 21 Sep 2023 10:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695293924;
-        bh=k+oWmq5/Pe7Ad2WcpmyGau4Su5RU02XWHcpF3f+bt0o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HCd5uoxI0DYs1sKTBnlJPv2cLm4Epi1yRRD8+m26r6LgCADejdZVkWauBM59S7mm9
-         GX5xCgkd/P6zTkI8buwrmtvfsYVcqygtl29+bO+cBeY5lqlYpR7m0utuFrNOdyO6N3
-         7HWVjyQjVcDgx4890o4qiegTVGhs/4gGgDKZs0tq6BfaQGiUhlvfUC8kcSIW6e9WW6
-         v4gK31Dzm/eEIXnzFolY31bnuofJjQOukchp9rxphgPRT9Md2pTWlMr51ZX4hDVueH
-         szWamPr5YQn4GzOPMhMYaHfyywfI7TQIsUPfYCELt2XqhlC05lbkYSFO6OMU/jufim
-         Rp81aVO8E0wtw==
-Date:   Thu, 21 Sep 2023 11:58:38 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Larry Lai <larry.lai@yunjingtech.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "GaryWang@aaeon.com.tw" <GaryWang@aaeon.com.tw>,
-        Musa Lin <musa.lin@yunjingtech.com>,
-        Jack Chang <jack.chang@yunjingtech.com>,
-        Noah Hung <noah.hung@yunjingtech.com>
-Subject: Re: =?utf-8?B?5Zue6KaGOiBbUEFUQ0ggVg==?= =?utf-8?Q?6?= 2/3] pinctrl:
- Add support pin control for UP board CPLD/FPGA
-Message-ID: <20230921105838.GF3449785@google.com>
-References: <20230915031123.14515-1-larry.lai@yunjingtech.com>
- <20230915031123.14515-3-larry.lai@yunjingtech.com>
- <CACRpkdbi0bS0yiJ9ac6Z44os0w6FyKm+UsvbgQEYzYKymjww-w@mail.gmail.com>
- <SEYPR06MB65077401CD3AA45A9D5E5C97F9FAA@SEYPR06MB6507.apcprd06.prod.outlook.com>
+        Thu, 21 Sep 2023 13:52:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F0F1BFE
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:27:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695317214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tn5ZDFUI6iPOIWmja0Ms5+F66UgwvJBJvQvpQLjnla0=;
+        b=c5zbx6JlMnpQIVFjw3Aqc7K1cYyI7ULJf2/iHeZEHCwrHmIgIbnBHFpXPJw2aq1H9wXI2S
+        bFX6kJk0AKfNJW2opGepsiuYSgji3NDJCe6Nlv/RYdTHJaKGveMPYs6uyTmcbLAssyBIpJ
+        Dia2PLXsWcjFeoa8jRxD4EmmpmElQIw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-212-HzV00hqNNTmcFQhVDqz-Nw-1; Thu, 21 Sep 2023 07:04:57 -0400
+X-MC-Unique: HzV00hqNNTmcFQhVDqz-Nw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 848AF8039CB;
+        Thu, 21 Sep 2023 11:04:56 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BA682156701;
+        Thu, 21 Sep 2023 11:04:48 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, arnd@arndb.de, jiaxun.yang@flygoat.com,
+        mpe@ellerman.id.au, geert@linux-m68k.org, mcgrof@kernel.org,
+        hch@infradead.org, tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        deller@gmx.de, Baoquan He <bhe@redhat.com>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: [PATCH v5 3/4] arch/*/io.h: remove ioremap_uc in some architectures
+Date:   Thu, 21 Sep 2023 19:04:23 +0800
+Message-ID: <20230921110424.215592-4-bhe@redhat.com>
+In-Reply-To: <20230921110424.215592-1-bhe@redhat.com>
+References: <20230921110424.215592-1-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <SEYPR06MB65077401CD3AA45A9D5E5C97F9FAA@SEYPR06MB6507.apcprd06.prod.outlook.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023, Larry Lai wrote:
+ioremap_uc() is only meaningful on old x86-32 systems with the PAT
+extension, and on ia64 with its slightly unconventional ioremap()
+behavior. So remove the ioremap_uc() definition in architecutures
+other than x86 and ia64. These architectures all have asm-generic/io.h
+included and will have the default ioremap_uc() definition which
+returns NULL.
 
-> Hi Linus, 
-> 
->        Thank you for spending time to review the V6 patch, for your question, please kindly to check our comments with ">>" beginning.
+This changes the existing behaviour, while no need to worry about
+any breakage because in the only callsite of ioremap_uc(), code
+has been adjusted to eliminate the impact. Please see
+atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
 
-I don't know about anyone else, but I'm finding this format hard to
-read.  A full conversation using this style would be impossible to
-decipher.
+If any new invocation of ioremap_uc() need be added, please consider
+using ioremap() intead or adding a ARCH specific version if necessary.
 
-Please can you configure your editor/client to quote and reply properly?
-That way previous responses and your comments can be easily
-differentiated.
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Acked-by: Helge Deller <deller@gmx.de>  # parisc
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+---
+ Documentation/driver-api/device-io.rst | 9 +++++----
+ arch/alpha/include/asm/io.h            | 1 -
+ arch/hexagon/include/asm/io.h          | 3 ---
+ arch/m68k/include/asm/kmap.h           | 1 -
+ arch/mips/include/asm/io.h             | 1 -
+ arch/parisc/include/asm/io.h           | 2 --
+ arch/powerpc/include/asm/io.h          | 1 -
+ arch/sh/include/asm/io.h               | 2 --
+ arch/sparc/include/asm/io_64.h         | 1 -
+ 9 files changed, 5 insertions(+), 16 deletions(-)
 
-> 寄件者: Linus Walleij <linus.walleij@linaro.org>
-> 寄件日期: 2023年9月15日 下午 05:02
-> 收件者: Larry Lai <larry.lai@yunjingtech.com>
-> 副本: lee@kernel.org <lee@kernel.org>; andriy.shevchenko@linux.intel.com <andriy.shevchenko@linux.intel.com>; pavel@ucw.cz <pavel@ucw.cz>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-gpio@vger.kernel.org <linux-gpio@vger.kernel.org>; linux-leds@vger.kernel.org <linux-leds@vger.kernel.org>; GaryWang@aaeon.com.tw <GaryWang@aaeon.com.tw>; Musa Lin <musa.lin@yunjingtech.com>; Jack Chang <jack.chang@yunjingtech.com>; Noah Hung <noah.hung@yunjingtech.com>
-> 主旨: Re: [PATCH V6 2/3] pinctrl: Add support pin control for UP board CPLD/FPGA 
-
-Your client should automatically strip this from the mail body.
->  
-> On Fri, Sep 15, 2023 at 5:12 AM larry.lai <larry.lai@yunjingtech.com> wrote:
-> 
-> > The UP Squared board <http://www.upboard.com> implements certain
-> > features (pin control) through an on-board FPGA.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Gary Wang <garywang@aaeon.com.tw>
-> > Signed-off-by: larry.lai <larry.lai@yunjingtech.com>
-> 
-> This v6 overall looks good to me!
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Can the patch be merged on its own?
-> 
-> > +#include "core.h"
-> > +#include "intel/pinctrl-intel.h"
-> 
-> Didn't notice this before. But if Andy is OK with it, I'm
-> OK with it, I guess there is a reason? Perhaps it warrants
-> a comment explaining why you do this?
-> >>
-> Need struct intel_pinctrl gpp information to control dedicated Raspberry Pi compatible GPIOs. 
-> These products (Up boards) are intel approves foundation kits.
-> 
-> Valid reasons:
-> - You are using Intel-specific HW features also found in this
->    FPGA
-> 
-> Invalid reasons:
-> - Using nifty macros or helpers, then either make them generic
->   or (if they are small) duplicate them.
-> 
-> If it was that thing I asked Andy to keep locally because I didn't
-> agree with its generic usefulness, maybe I should be told to
-> reconsider.
-> 
-> Yours,
-> Linus Walleij
-
+diff --git a/Documentation/driver-api/device-io.rst b/Documentation/driver-api/device-io.rst
+index 2c7abd234f4e..d55384b106bd 100644
+--- a/Documentation/driver-api/device-io.rst
++++ b/Documentation/driver-api/device-io.rst
+@@ -408,11 +408,12 @@ functions for details on the CPU side of things.
+ ioremap_uc()
+ ------------
+ 
+-ioremap_uc() behaves like ioremap() except that on the x86 architecture without
+-'PAT' mode, it marks memory as uncached even when the MTRR has designated
+-it as cacheable, see Documentation/arch/x86/pat.rst.
++ioremap_uc() is only meaningful on old x86-32 systems with the PAT extension,
++and on ia64 with its slightly unconventional ioremap() behavior, everywhere
++elss ioremap_uc() defaults to return NULL.
+ 
+-Portable drivers should avoid the use of ioremap_uc().
++
++Portable drivers should avoid the use of ioremap_uc(), use ioremap() instead.
+ 
+ ioremap_cache()
+ ---------------
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 7aeaf7c30a6f..076f0e4e7f1e 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -308,7 +308,6 @@ static inline void __iomem *ioremap(unsigned long port, unsigned long size)
+ }
+ 
+ #define ioremap_wc ioremap
+-#define ioremap_uc ioremap
+ 
+ static inline void iounmap(volatile void __iomem *addr)
+ {
+diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
+index e2b308e32a37..b7bc246dbcb1 100644
+--- a/arch/hexagon/include/asm/io.h
++++ b/arch/hexagon/include/asm/io.h
+@@ -174,9 +174,6 @@ static inline void writel(u32 data, volatile void __iomem *addr)
+ #define _PAGE_IOREMAP (_PAGE_PRESENT | _PAGE_READ | _PAGE_WRITE | \
+ 		       (__HEXAGON_C_DEV << 6))
+ 
+-#define ioremap_uc(addr, size) ioremap((addr), (size))
+-
+-
+ #define __raw_writel writel
+ 
+ static inline void memcpy_fromio(void *dst, const volatile void __iomem *src,
+diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
+index 4efb3efa593a..b778f015c917 100644
+--- a/arch/m68k/include/asm/kmap.h
++++ b/arch/m68k/include/asm/kmap.h
+@@ -25,7 +25,6 @@ static inline void __iomem *ioremap(unsigned long physaddr, unsigned long size)
+ 	return __ioremap(physaddr, size, IOMAP_NOCACHE_SER);
+ }
+ 
+-#define ioremap_uc ioremap
+ #define ioremap_wt ioremap_wt
+ static inline void __iomem *ioremap_wt(unsigned long physaddr,
+ 				       unsigned long size)
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 41d8bd5adef8..1ecf255efb40 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -170,7 +170,6 @@ void iounmap(const volatile void __iomem *addr);
+  */
+ #define ioremap(offset, size)						\
+ 	ioremap_prot((offset), (size), _CACHE_UNCACHED)
+-#define ioremap_uc		ioremap
+ 
+ /*
+  * ioremap_cache -	map bus memory into CPU space
+diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
+index 366537042465..48630c78714a 100644
+--- a/arch/parisc/include/asm/io.h
++++ b/arch/parisc/include/asm/io.h
+@@ -132,8 +132,6 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
+ 
+ #define ioremap_wc(addr, size)  \
+ 	ioremap_prot((addr), (size), _PAGE_IOREMAP)
+-#define ioremap_uc(addr, size)  \
+-	ioremap_prot((addr), (size), _PAGE_IOREMAP)
+ 
+ #define pci_iounmap			pci_iounmap
+ 
+diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
+index 0732b743e099..21bd3e8bffce 100644
+--- a/arch/powerpc/include/asm/io.h
++++ b/arch/powerpc/include/asm/io.h
+@@ -900,7 +900,6 @@ void __iomem *ioremap_wt(phys_addr_t address, unsigned long size);
+ #endif
+ 
+ void __iomem *ioremap_coherent(phys_addr_t address, unsigned long size);
+-#define ioremap_uc(addr, size)		ioremap((addr), (size))
+ #define ioremap_cache(addr, size) \
+ 	ioremap_prot((addr), (size), pgprot_val(PAGE_KERNEL))
+ 
+diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+index f2f38e9d489a..790bea22c9b5 100644
+--- a/arch/sh/include/asm/io.h
++++ b/arch/sh/include/asm/io.h
+@@ -302,8 +302,6 @@ unsigned long long poke_real_address_q(unsigned long long addr,
+ 	ioremap_prot((addr), (size), pgprot_val(PAGE_KERNEL))
+ #endif /* CONFIG_MMU */
+ 
+-#define ioremap_uc	ioremap
+-
+ /*
+  * Convert a physical pointer to a virtual kernel pointer for /dev/mem
+  * access
+diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
+index 9303270b22f3..d8ee1442f303 100644
+--- a/arch/sparc/include/asm/io_64.h
++++ b/arch/sparc/include/asm/io_64.h
+@@ -423,7 +423,6 @@ static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
+ 	return (void __iomem *)offset;
+ }
+ 
+-#define ioremap_uc(X,Y)			ioremap((X),(Y))
+ #define ioremap_wc(X,Y)			ioremap((X),(Y))
+ #define ioremap_wt(X,Y)			ioremap((X),(Y))
+ static inline void __iomem *ioremap_np(unsigned long offset, unsigned long size)
 -- 
-Lee Jones [李琼斯]
+2.41.0
+
