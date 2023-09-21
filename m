@@ -2,50 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 111037A9A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883F77A99AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjIUSja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S230128AbjIUSRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjIUSjT (ORCPT
+        with ESMTP id S230359AbjIUSQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:39:19 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2336CAF96A;
-        Thu, 21 Sep 2023 11:07:34 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 66c059efcc43437d; Thu, 21 Sep 2023 20:07:33 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 0A8DA664EBE;
-        Thu, 21 Sep 2023 20:07:33 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 00/13] thermal: ACPI: More ACPI thermal improvements and modification of thermal instances
-Date:   Thu, 21 Sep 2023 19:46:55 +0200
-Message-ID: <1957441.PYKUYFuaPT@kreacher>
+        Thu, 21 Sep 2023 14:16:39 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD624F39F;
+        Thu, 21 Sep 2023 10:49:15 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so1174768b3a.0;
+        Thu, 21 Sep 2023 10:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695318554; x=1695923354; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W2wfV/E+fvJQFqOd9U3s9nuYGhY7TXlGuTmZ5ygRn+8=;
+        b=a2DDzy2Hn6fyIB8+uAex48RezFQZAFdSV1hKWQz7++mBCS9m7wwx8uQz5PQgF/A3sG
+         xFNd21SWNhFR8/xJUKet4qbglN1BWSZC+0tAqtnwScaAMcdQudU3uH+aLrpXxfFQ4k6g
+         a3ZiroInKBQV+MdP6hs3qYYrGcoZX0mjwk2QTeUOws8/WGZufMwwVo4zf0Iu+sru94VV
+         S4Ar5Ph1kX+mJUHQXSNj+TQBm205MAES6Bnj6fYk57jg91RxP3yop8oKwrTn4T1dbQJ4
+         WWDQM9xNX3OwwjGgR+7sg8z2829mPyEPYiTkPUxOLWp6Qf1RDvG8tRXeWymQS4I6SJ1G
+         1PNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695318554; x=1695923354;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W2wfV/E+fvJQFqOd9U3s9nuYGhY7TXlGuTmZ5ygRn+8=;
+        b=A6wo9wgNfNZryBNOt+LWcdmdoPKv+EaNAD6oWHAn2I6fjeut0PoFue00vzhIWLE6ga
+         vSPkJIVVsaHuL8GKCnOsyNmYqUlVv2LCsygtbHYV1YHcB7O1imAMBpdZu7UpuYRc9mGT
+         tMk3Fl8kDWpFARZuk2qVSqF4rczqDBLkGHd3j56lRYMAEWjNwPq2cOw+7HxQRwuMs3lY
+         Uck65v+gGMWIrS5EalcR/0lbPzpeeRp7rYLd+tFXyQsHjxjKCN/AgBoBVLVjaNBEzZ+B
+         CZFZEqvtv1cmy/p1b5fvZhvEHM9G3GHZmAI26jXGMISo8JhKS+wa9+Flm8d+AThqd/Sl
+         Ilog==
+X-Gm-Message-State: AOJu0YzPofDCqAXHnvtqYL7xH1lwPOO9mtxvt8S1IGM4+8byDghZ9Kfd
+        k6OXTUuYtm3ERlSYTtalW6U=
+X-Google-Smtp-Source: AGHT+IFN5Qo3S/gdKI6RmUoa7YqqeNvU1hWE9nakU7LnRUBc6U0ZDuU9E4v7k6zRTh6J6kMRfLaI/g==
+X-Received: by 2002:a05:6a00:b45:b0:68f:b72f:9aca with SMTP id p5-20020a056a000b4500b0068fb72f9acamr6785120pfo.27.1695318554312;
+        Thu, 21 Sep 2023 10:49:14 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j1-20020aa783c1000000b006675c242548sm1660426pfn.182.2023.09.21.10.49.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 10:49:13 -0700 (PDT)
+Message-ID: <96ef7250-d382-095c-495b-836d5c61ab31@gmail.com>
+Date:   Thu, 21 Sep 2023 10:49:11 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgr
- nhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 net-next 2/5] net: dsa: notify drivers of MAC address
+ changes on user ports
+Content-Language: en-US
+To:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+References: <20230920114343.1979843-1-lukma@denx.de>
+ <20230920114343.1979843-3-lukma@denx.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230920114343.1979843-3-lukma@denx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,50 +84,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On 9/20/23 04:43, Lukasz Majewski wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> In some cases, drivers may need to veto the changing of a MAC address on
+> a user port. Such is the case with KSZ9477 when it offloads a HSR device,
+> because it programs the MAC address of multiple ports to a shared
+> hardware register. Those ports need to have equal MAC addresses for the
+> lifetime of the HSR offload.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
 
-The ACPI thermal driver has undergone some significant changes recently, but
-there is still room for improvements in it.
-
-First off, it turns out that a small rearrangement of its internal data
-structures allows code duplication in it to be reduced quite a bit (patches
-[01-04/13].
-
-Next, by changing the way it binds cooling devices to thermal zones (and trips
-within them), the use of trip point indices can be eliminated from it (patch
-[11/13]) which then allows its internal data structures to be simplified even
-further (patch [12/13]).
-
-However, in order to make those latter changes, it is useful to modify struct
-thermal_instance to carry a trip pointer instead a trip index (patch [05/13])
-which then allows the core to be adjusted to facilitate using trip pointers for
-cooling device binding and unbinding (patch [10/13]).
-
-Meanwhile, the modification of struct thermal_instance mentioned above also
-helps to reduce the thermal governors overhead related to using
-__thermal_zone_get_trip() that carries out bounds checking and copies trip
-point data which both are not necessary in the governor code.  Some related
-cleanups of thermal governors can be done as well (patches [06-09/13].
-
-Finally, it is prudent to visually distinguish the names of structure fields
-and variables that carry temperature values in different units, so patch
-[13/13] changes the names of those items in the ACPI thermal driver that are
-used to store temperature values in deci-Kelvin.
-
-This series is on top of the series of ACPI thermal driver posted last week:
-
-https://patchwork.kernel.org/project/linux-acpi/list/?series=783543
-
-and a couple of recent thermal core patches:
-
-https://patchwork.kernel.org/project/linux-pm/patch/12296181.O9o76ZdvQC@kreacher/
-https://patchwork.kernel.org/project/linux-pm/patch/5981326.lOV4Wx5bFT@kreacher/
-
-It will be exposed in a separate git branch for easier access.
-
-Please see the individual patch changelogs for details.
-
-Thanks!
-
-
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
