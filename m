@@ -2,176 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1464F7A9FA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC79D7AA019
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbjIUUZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        id S231887AbjIUUcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbjIUUYp (ORCPT
+        with ESMTP id S231267AbjIUUcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:24:45 -0400
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F67C4C1C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:04:40 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id jPuaqsc4hWkeLjPuaqqtyH; Thu, 21 Sep 2023 22:04:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695326674;
-        bh=pgVovfgULLuIhHghHoiORjK2SMAEHL0Uj/DD3vZku1U=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=VycdaZQ+0TA5bG9VG8uVWgoDY5dWp3W3qbrI62siiyl3WzJ/IKbczu2rVGt82EpBD
-         8Bfc7RkJQB5nZKYY2kJDkqjhG1sEjfcTxKjpv4+ei1yeRaK0D3dbiIeIt1ZiJqCGF7
-         dAyXxtK02y1SFHlgx7tqV0AKykLGPo7tdc+fPcGyhop1kOEU7837rN3UjXjyB4QPmm
-         E7vfhv1T7y9azS+yHgvTHnb11jY1esCHDK798pxwRoUjs5RNsSbkQfxS+Puc3cRfjy
-         r2lTWgCTF8ysgh8MxiqwjQG8nR0aF9V9wENah4iyLRXsP43db8WWpz3kS0YLLid20P
-         5dB93JYy3cRRg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 21 Sep 2023 22:04:34 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <c6f07289-2e69-fab4-32dc-46fe5e5713e7@wanadoo.fr>
-Date:   Thu, 21 Sep 2023 22:04:31 +0200
+        Thu, 21 Sep 2023 16:32:18 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883FA57B2B;
+        Thu, 21 Sep 2023 13:04:37 -0700 (PDT)
+Received: from [192.168.2.59] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 755EA66072A2;
+        Thu, 21 Sep 2023 21:04:35 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695326676;
+        bh=lGCCGD09P+hB0jZstru4OmJv0sw//3y5pX3ry9Zores=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Y+fcaOiuOfo9P9+/kSAvCV4N8Fg3jzWljzR74pttOlu51MqfrmOTAZ4RhvKS5GwDo
+         Kjf4Y1j9Q81zPxGkW/ZCwCKNVt/A+k5t7XsBg+JCvymZk+nk57i/b0WB27/TTk7SkV
+         i0SlZEfsehes4laiS+rBYUi9bc3SDnXHWZ7aE68pT+b83pqT9rwGDjT+XUXAY59ObR
+         Ki8ZDioYGTvVq20aMSGA/mDOWKGvOvnKHTRwPUVG6+ak/B3AclTUq+j4D/YxyLYPCR
+         QnxR7yQuI6gpkXhdvLNmDzcqtdGh8SeCkdPxjkl7g/2lRzfgr9y3W5Fp4YPySp8QjY
+         x3CN11f8IqTbw==
+Message-ID: <5aed4ece-02a9-a031-9a8a-e2f665c23ae3@collabora.com>
+Date:   Thu, 21 Sep 2023 23:04:33 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/1] PCI: layerscape-ep: set 64-bit DMA mask
-Content-Language: fr
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        imx@lists.linux.dev, Rob Herring <robh@kernel.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Roy Zang <roy.zang@nxp.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>, Mingkai Hu <mingkai.hu@nxp.com>,
-        Christoph Hellwig <hch@infradead.org>
-References: <20230921153702.3281289-1-Frank.Li@nxp.com>
- <925da248-f582-6dd5-57ab-0fadc4e84f9e@wanadoo.fr>
- <ZQyM+9uxFoX5TgPa@lizhi-Precision-Tower-5810>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <ZQyM+9uxFoX5TgPa@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v9 6/6] KVM: x86/mmu: Handle non-refcounted pages
+Content-Language: en-US
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20230911021637.1941096-1-stevensd@google.com>
+ <20230911021637.1941096-7-stevensd@google.com>
+ <14db8c0b-77de-34ec-c847-d7360025a571@collabora.com>
+ <CAD=HUj62vdy9CmqHWsAQi4S6i1ZH8uUE81p8Wu67pQd5vNRr+w@mail.gmail.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <CAD=HUj62vdy9CmqHWsAQi4S6i1ZH8uUE81p8Wu67pQd5vNRr+w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 21/09/2023 à 20:35, Frank Li a écrit :
-> On Thu, Sep 21, 2023 at 07:59:51PM +0200, Christophe JAILLET wrote:
->> Le 21/09/2023 à 17:37, Frank Li a écrit :
->>> From: Guanhua Gao <guanhua.gao@nxp.com>
+On 9/19/23 05:31, David Stevens wrote:
+> On Mon, Sep 18, 2023 at 6:58 PM Dmitry Osipenko
+> <dmitry.osipenko@collabora.com> wrote:
+>>
+>> On 9/11/23 05:16, David Stevens wrote:
+>>> From: David Stevens <stevensd@chromium.org>
 >>>
->>> Set DMA mask and coherent DMA mask to enable 64-bit addressing.
+>>> Handle non-refcounted pages in __kvm_faultin_pfn. This allows the host
+>>> to map memory into the guest that is backed by non-refcounted struct
+>>> pages - for example, the tail pages of higher order non-compound pages
+>>> allocated by the amdgpu driver via ttm_pool_alloc_page.
 >>>
->>> Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
->>> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
->>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>>> The bulk of this change is tracking the is_refcounted_page flag so that
+>>> non-refcounted pages don't trigger page_count() == 0 warnings. This is
+>>> done by storing the flag in an unused bit in the sptes. There are no
+>>> bits available in PAE SPTEs, so non-refcounted pages can only be handled
+>>> on TDP and x86-64.
+>>>
+>>> Signed-off-by: David Stevens <stevensd@chromium.org>
 >>> ---
->>>    drivers/pci/controller/dwc/pci-layerscape-ep.c | 5 +++++
->>>    1 file changed, 5 insertions(+)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
->>> index de4c1758a6c33..6fd0dea38a32c 100644
->>> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
->>> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
->>> @@ -249,6 +249,11 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
->>>    	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
->>> +	/* set 64-bit DMA mask and coherent DMA mask */
->>> +	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)))
->>> +		if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32)))
+>>>  arch/x86/kvm/mmu/mmu.c          | 52 +++++++++++++++++++++++----------
+>>>  arch/x86/kvm/mmu/mmu_internal.h |  1 +
+>>>  arch/x86/kvm/mmu/paging_tmpl.h  |  8 +++--
+>>>  arch/x86/kvm/mmu/spte.c         |  4 ++-
+>>>  arch/x86/kvm/mmu/spte.h         | 12 +++++++-
+>>>  arch/x86/kvm/mmu/tdp_mmu.c      | 22 ++++++++------
+>>>  include/linux/kvm_host.h        |  3 ++
+>>>  virt/kvm/kvm_main.c             |  6 ++--
+>>>  8 files changed, 76 insertions(+), 32 deletions(-)
 >>
->> As stated in [1], dma_set_mask() with a 64-bit mask will never
->> fail if dev->dma_mask is non-NULL.
+>> Could you please tell which kernel tree you used for the base of this
+>> series? This patch #6 doesn't apply cleanly to stable/mainline/next/kvm
 >>
->> So, if it fails, the 32 bits case will also fail for the same reason.
->> There is no need for the 2nd test.
->>
->>
->> See [1] for Christoph Hellwig comment about it.
+>> error: sha1 information is lacking or useless (arch/x86/kvm/mmu/mmu.c).
+>> error: could not build fake ancestor
 > 
-> I don't think it is true. the below is dma_set_mask()'s implementation
+> This series is based on the kvm next branch (i.e.
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=next). The
+> specific hash is d011151616e73de20c139580b73fa4c7042bd861.
 
-I'll try to recollect a more detailled explanation from Christoph.
+Thanks, this tag works
 
-I also checked all paths some times ago, and the conclusion was that if 
-dma_set_mask(64) failed, dma_set_mask(32) would fail for the exact same 
-reasons.
-
-I'll try to find the corresponding mail and come back to you.
-
-I don't thing that implementation details have changed since that times, 
-so the conclusion should still be valid.
-
-Adding Christoph in cc, if he wants to give another look at it, or if he 
-beats me finding the 1 or 2 years old mails.
-
-CJ
-
-> 
-> int dma_set_mask(struct device *dev, u64 mask)
-> {
-> 	/*
-> 	 * Truncate the mask to the actually supported dma_addr_t width to
-> 	 * avoid generating unsupportable addresses.
-> 	 */
-> 	mask = (dma_addr_t)mask;
-> 
-> 	if (!dev->dma_mask || !dma_supported(dev, mask))
-> 				^^^^^^^
-> 		return -EIO;
-> 
-> 	arch_dma_set_mask(dev, mask);
-> 	*dev->dma_mask = mask;
-> 	return 0;
-> }
-> 
-> dma_supported() may return failiure.
-> 
-> static int dma_supported(struct device *dev, u64 mask)
-> {
-> 	const struct dma_map_ops *ops = get_dma_ops(dev);
-> 
-> 	/*
-> 	 * ->dma_supported sets the bypass flag, so we must always call
-> 	 * into the method here unless the device is truly direct mapped.
-> 	 */
-> 	if (!ops)
-> 		return dma_direct_supported(dev, mask);
-> 	if (!ops->dma_supported)
-> 		return 1;
-> 	return ops->dma_supported(dev, mask);
->                      ^^^^^^
-> 			DMA driver or IOMMU driver may return failure.
-> }
-> 
->   
-> Frank
-> 
->>
->> CJ
->>
->>
->> [1]: https://lkml.org/lkml/2021/6/7/398
->>
->>> +			return -EIO;
->>> +
->>>    	platform_set_drvdata(pdev, pcie);
->>>    	ret = dw_pcie_ep_init(&pci->ep);
->>
-> 
+-- 
+Best regards,
+Dmitry
 
