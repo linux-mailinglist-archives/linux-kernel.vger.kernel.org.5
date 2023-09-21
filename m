@@ -2,175 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C68E97AA1C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F817AA195
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbjIUVGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        id S232559AbjIUVEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233042AbjIUVFU (ORCPT
+        with ESMTP id S232422AbjIUVD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:05:20 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2A1AF69F;
-        Thu, 21 Sep 2023 11:07:23 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 36cbd7be29a8bf2c; Thu, 21 Sep 2023 20:07:22 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id D268B664EBE;
-        Thu, 21 Sep 2023 20:07:21 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 12/13] ACPI: thermal: Drop critical_valid and hot_valid trip flags
-Date:   Thu, 21 Sep 2023 20:04:49 +0200
-Message-ID: <2375603.NG923GbCHz@kreacher>
-In-Reply-To: <1957441.PYKUYFuaPT@kreacher>
-References: <1957441.PYKUYFuaPT@kreacher>
+        Thu, 21 Sep 2023 17:03:26 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B680C171F;
+        Thu, 21 Sep 2023 11:11:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695319884; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Bam1vUcyihG1lqNc7Xs0K+o/bvAAPuEmv9n1mjtgIT8gkgBd2oX5wjpMDZWRtwYWpN
+    lhlGdEARXWx7up5To7RE4H+SgdrApRCr4TWFIUwgsQbG7CyG+W9sX/e/WrPZ69tbvRuD
+    cUNsApOzUhrrmSuOjTAmnVmSdi1DWOsk52aI8vTSW6totpclPdA6QmRujxlHQm5yobgD
+    Q1H9+U1JEoCjK3hOZnEpZV7LsopyAR3mLLViTYLhTKq5WEsAOcW+e015ZQMFVd41ZkgS
+    DF73MKS+TGRnCex96pWH0Q1cP4mUzTRECy6huWhxWZyiLlxxUcyWBTr0xR+HEghC9dG2
+    Wxew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695319884;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=ahCo3lNhh52oZdX8vz08vk15RlYtdTcqGpzjjeIwnXQ=;
+    b=JdQzqBDcIbknXR3ENnTcVDwBgtjtSPdl15sG1AWpGIDFojGHFXAwi46V3WFi02Sv0F
+    nNllnVStiYoutkSMPWpDnKXIy3PSuzNSovGo3GV6i70Q3xk/UoyJXe5sTbjDUQO96Bae
+    LXzWadMBKrjikaUuET81tFL4CCNaTJLlEpMU7Zd8QAbbPqL0Lf5pDsas2ufdmR+LUL03
+    Z8LiiXDTn5GaOC2uqmApKnYRYIvLTxVXUKaNCG5DmBJebL8FgD7d37y1+bzwi5JZuI7t
+    0x4PgEIzzlPMTzRTQkoUZi1jlqZ0yaGQNOz9Dpysqzy3rSJuu+M5Ex23hcJEHV3vqcOz
+    2GpQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695319884;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=ahCo3lNhh52oZdX8vz08vk15RlYtdTcqGpzjjeIwnXQ=;
+    b=o1pHRFnAhQYP/bv6DCSPKMbluR//9glDgxihI3Fqlu14ES1ieJJAhUjTJ3oogBKx8m
+    JNNlfnBvfQvkXoZU9sTPirSq4lAdk5Z5gPQGIj5pTe2m42y0UqcCjMzsuRh32DHBJVYq
+    zmkWDhHLYrpJAYaDmLoCTygHFtYWkI5BjKsfGM4ngbG2LvCW27LYbM9lniVFLki1d9EE
+    k82ZQf+5t3Q0mq4V5h6zFHJa5/YEreZJWNaHcAm1ybZ1cUVUGFKZ2HTIihNCFlK6gRc2
+    tmmAvnVOLlGYFckcZgpoFD7FGwsasSr5Vs6JChwIO+slxPNVwRDirBYuc7xHP1UYu4P2
+    S/AQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695319884;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=ahCo3lNhh52oZdX8vz08vk15RlYtdTcqGpzjjeIwnXQ=;
+    b=mzvBxC8X+dLe3lq7Uh7SgDGQuHNe9pNjCKzBNs/ommsuRxvrqxeEMMDTrVityLikS7
+    dwt+HNqY2pbDN42MTnAg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z+P1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id R04c57z8LIBORNe
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 21 Sep 2023 20:11:24 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 20:11:23 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Subject: Re: [PATCH v3 3/3] soc: qcom: rtmfs: Handle reserved-memory
+ allocation issues
+Message-ID: <ZQyHS__ZPlnvMIFo@gerhold.net>
+References: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
+ <20230920-rmtfs-mem-guard-pages-v3-3-305b37219b78@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhn
- thgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920-rmtfs-mem-guard-pages-v3-3-305b37219b78@quicinc.com>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Sep 20, 2023 at 07:37:32PM -0700, Bjorn Andersson wrote:
+> In the even that Linux failed to allocate the reserved memory range
+> specified in the DeviceTree, the size of the reserved_mem will be 0,
+> which results in a oops when memory remapping is attempted.
+> 
+> Detect this and report that the memory region was not found instead.
+> 
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-The critical_valid and hot_valid flags in struct acpi_thermal_trips are
-only used during initialization and they are only false if the
-corresponding trip temperatures are equal to THERMAL_TEMP_INVALID, so
-drop them and use THERMAL_TEMP_INVALID checks instead of them where
-applicable.
+I dropped these checks in my remoteproc patches because Caleb suggested
+maybe putting this check directly in of_reserved_mem_lookup() (or
+similar) given that almost none of the users verify this [1].
 
-No intentional functional impact.
+Do you have any opinion on that? I asked back then too but you did not
+reply yet [2]. :-)
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c |   25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+[1]: https://lore.kernel.org/linux-arm-msm/c3f59fb4-4dd8-f27a-d3f5-b1870006a75c@linaro.org/
+[2]: https://lore.kernel.org/linux-arm-msm/ZIsld-MAdkKvdzTx@gerhold.net/
 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -100,8 +100,6 @@ struct acpi_thermal_active {
- struct acpi_thermal_trips {
- 	struct acpi_thermal_passive passive;
- 	struct acpi_thermal_active active[ACPI_THERMAL_MAX_ACTIVE];
--	bool critical_valid;
--	bool hot_valid;
- };
- 
- struct acpi_thermal {
-@@ -355,13 +353,13 @@ static long acpi_thermal_get_critical_tr
- 	}
- 	if (crt == -1) {
- 		acpi_handle_debug(tz->device->handle, "Critical threshold disabled\n");
--		goto fail;
-+		return THERMAL_TEMP_INVALID;
- 	}
- 
- 	status = acpi_evaluate_integer(tz->device->handle, "_CRT", NULL, &tmp);
- 	if (ACPI_FAILURE(status)) {
- 		acpi_handle_debug(tz->device->handle, "No critical threshold\n");
--		goto fail;
-+		return THERMAL_TEMP_INVALID;
- 	}
- 	if (tmp <= 2732) {
- 		/*
-@@ -369,17 +367,12 @@ static long acpi_thermal_get_critical_tr
- 		 * so discard them as invalid.
- 		 */
- 		pr_info(FW_BUG "Invalid critical threshold (%llu)\n", tmp);
--		goto fail;
-+		return THERMAL_TEMP_INVALID;
- 	}
- 
- set:
--	tz->trips.critical_valid = true;
- 	acpi_handle_debug(tz->device->handle, "Critical threshold [%llu]\n", tmp);
- 	return tmp;
--
--fail:
--	tz->trips.critical_valid = false;
--	return THERMAL_TEMP_INVALID;
- }
- 
- static long acpi_thermal_get_hot_trip(struct acpi_thermal *tz)
-@@ -389,12 +382,10 @@ static long acpi_thermal_get_hot_trip(st
- 
- 	status = acpi_evaluate_integer(tz->device->handle, "_HOT", NULL, &tmp);
- 	if (ACPI_FAILURE(status)) {
--		tz->trips.hot_valid = false;
- 		acpi_handle_debug(tz->device->handle, "No hot threshold\n");
- 		return THERMAL_TEMP_INVALID;
- 	}
- 
--	tz->trips.hot_valid = true;
- 	acpi_handle_debug(tz->device->handle, "Hot threshold [%llu]\n", tmp);
- 	return tmp;
- }
-@@ -789,7 +780,7 @@ static void acpi_thermal_aml_dependency_
-  */
- static void acpi_thermal_guess_offset(struct acpi_thermal *tz, long crit_temp)
- {
--	if (tz->trips.critical_valid && crit_temp % 5 == 1)
-+	if (crit_temp != THERMAL_TEMP_INVALID && crit_temp % 5 == 1)
- 		tz->kelvin_offset = 273100;
- 	else
- 		tz->kelvin_offset = 273200;
-@@ -850,11 +841,11 @@ static int acpi_thermal_add(struct acpi_
- 	trip_count = acpi_thermal_get_trip_points(tz);
- 
- 	crit_temp = acpi_thermal_get_critical_trip(tz);
--	if (tz->trips.critical_valid)
-+	if (crit_temp != THERMAL_TEMP_INVALID)
- 		trip_count++;
- 
- 	hot_temp = acpi_thermal_get_hot_trip(tz);
--	if (tz->trips.hot_valid)
-+	if (hot_temp != THERMAL_TEMP_INVALID)
- 		trip_count++;
- 
- 	if (!trip_count) {
-@@ -886,13 +877,13 @@ static int acpi_thermal_add(struct acpi_
- 
- 	tz->trip_table = trip;
- 
--	if (tz->trips.critical_valid) {
-+	if (crit_temp != THERMAL_TEMP_INVALID) {
- 		trip->type = THERMAL_TRIP_CRITICAL;
- 		trip->temperature = acpi_thermal_temp(tz, crit_temp);
- 		trip++;
- 	}
- 
--	if (tz->trips.hot_valid) {
-+	if (hot_temp != THERMAL_TEMP_INVALID) {
- 		trip->type = THERMAL_TRIP_HOT;
- 		trip->temperature = acpi_thermal_temp(tz, hot_temp);
- 		trip++;
-
-
-
+> ---
+>  drivers/soc/qcom/rmtfs_mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/rmtfs_mem.c b/drivers/soc/qcom/rmtfs_mem.c
+> index 83bba9321e72..13823abd85c2 100644
+> --- a/drivers/soc/qcom/rmtfs_mem.c
+> +++ b/drivers/soc/qcom/rmtfs_mem.c
+> @@ -180,7 +180,7 @@ static int qcom_rmtfs_mem_probe(struct platform_device *pdev)
+>  	int ret, i;
+>  
+>  	rmem = of_reserved_mem_lookup(node);
+> -	if (!rmem) {
+> +	if (!rmem || !rmem->size) {
+>  		dev_err(&pdev->dev, "failed to acquire memory region\n");
+>  		return -EINVAL;
+>  	}
+> 
+> -- 
+> 2.25.1
+> 
