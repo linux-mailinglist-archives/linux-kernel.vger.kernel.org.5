@@ -2,175 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAB37A976C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08647A98B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbjIURXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        id S230161AbjIURvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbjIURXd (ORCPT
+        with ESMTP id S229653AbjIURv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:23:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE9010935;
-        Thu, 21 Sep 2023 10:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695316281; x=1726852281;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FMm83P7beXWMiji6R1eFj/4s+rv6p3/F5Z6Swx5xKU0=;
-  b=fJfrXwRKOYbKdwqSK5pUfEbo4I7uYX2awFltlmFUShU5TvTiKR3Wqhs9
-   n+l142v33IkkagWsUV+IJNuKvmnGOHjdrjSMyd4FjlB0T6vOEtzZzg1hR
-   FhKDXGk9OcWIKX+Gd4luabSWOKR4G+LLti3nf31H5AoMDIElQXqvxM1CX
-   zprk6zXhAcpctYAPqLiALQJe3+oN+SFI2zJluIEL2OpveJ+6jxPaajqqm
-   b2FAbIhv6BEtTPMtKpnzaw1PgKo7p7P16f7LrZzMLs1zpPADLiU2DIxsP
-   LlR1iMYj9xpClYXyfYtUQZIV4nppdJ76a2dvfy5eVK54hdgDpB5sepcCt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="370764506"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="370764506"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 00:54:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="812523193"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="812523193"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Sep 2023 00:54:54 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: [PATCH v5 11/11] iommu/vt-d: Disallow read-only mappings to nest parent domain
-Date:   Thu, 21 Sep 2023 00:54:31 -0700
-Message-Id: <20230921075431.125239-12-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230921075431.125239-1-yi.l.liu@intel.com>
-References: <20230921075431.125239-1-yi.l.liu@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 13:51:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7F26E99;
+        Thu, 21 Sep 2023 10:22:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9943EC07618;
+        Thu, 21 Sep 2023 07:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695282918;
+        bh=qvPZ+VCJtPMejE6viuglDi8nXd8o5MD4A3HkT/J6twY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QNsk4p+/lZjcd6Y+rEjxn/UjnbFW/kFDV0pOQKYpCebciHdwyv7OJO2WDztsBPMSd
+         DTLx1JsTnmBClOEJBWftMLGYMD1XwFqb7lW3I4VCRDOZUSqRna9Ltrb+gGUVFX5d5O
+         rKESmAfK4AhmKkPRFk1VK0y6TfkH81F36AsznQ/0R36tHoqTN/EkjsNOfNam0ShW1S
+         aDZOmJDtOB2ij2jtE4cxaGw+Qh9QBHKboq9CiJIUPgRVlx3HFsLUrc6u/6jbZoSAi+
+         c72Szhe25QJZSuX2G9nU5HENKtvkr8UMDwhuBhCMLmUp76a0UxAjry62rIer69adY7
+         NpYkARY2O0TEg==
+Received: from 82-132-232-12.dab.02.net ([82.132.232.12] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qjEWp-00EsBY-9W;
+        Thu, 21 Sep 2023 08:55:16 +0100
+Date:   Thu, 21 Sep 2023 08:55:10 +0100
+Message-ID: <871qes3qqp.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.au@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge trigger detection for TINT
+In-Reply-To: <OS0PR01MB592242E8A1A3A22CD1B74A1986FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230918122411.237635-1-biju.das.jz@bp.renesas.com>
+        <20230918122411.237635-4-biju.das.jz@bp.renesas.com>
+        <86y1h2cjpb.wl-maz@kernel.org>
+        <OS0PR01MB5922748F489467BE2539AA1886FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+        <87cyye3zly.wl-maz@kernel.org>
+        <OS0PR01MB59228AD24951D49F3E639BFF86FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+        <87a5ti3y7i.wl-maz@kernel.org>
+        <OS0PR01MB592242E8A1A3A22CD1B74A1986FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.232.12
+X-SA-Exim-Rcpt-To: biju.das.jz@bp.renesas.com, tglx@linutronix.de, prabhakar.mahadev-lad.rj@bp.renesas.com, claudiu.beznea.uj@bp.renesas.com, geert+renesas@glider.be, biju.das.au@gmail.com, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+On Tue, 19 Sep 2023 18:06:54 +0100,
+Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> 
+> Hi Marc Zyngier,
+> 
+> > Subject: Re: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge
+> > trigger detection for TINT
+> > 
+> > On Tue, 19 Sep 2023 17:32:05 +0100,
+> > Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> > 
+> > [...]
+> > 
+> > > > So you mean that you *already* lose interrupts across a disable
+> > > > followed by an enable? I'm slightly puzzled...
+> > >
+> > > There is no interrupt lost at all.
+> > >
+> > > Currently this patch addresses 2 issues.
+> > >
+> > > Scenario 1: Extra interrupt when we select TINT source on enable_irq()
+> > >
+> > > Getting an extra interrupt, when client drivers calls enable_irq()
+> > > during probe()/resume(). In this case, the irq handler on the Client
+> > > driver just clear the interrupt status bit.
+> > >
+> > > Issue 2: IRQ storm when we select TINT source on enable_irq()
+> > >
+> > > Here as well, we are getting an extra interrupt, when client drivers
+> > > calls enable_irq() during probe() and this Interrupts getting
+> > > generated infinitely, when the client driver calls disable_irq() in
+> > > irq handler and in in work queue calling enable_irq().
+> > 
+> > How do you know this is a spurious interrupt? 
+> 
+> We have PMOD on RZ/G2L SMARC EVK. So I connected it to GPIO pin
+> and other end to ground. During the boot, I get an interrupt
+> even though there is no high to low transition, when the IRQ is setup
+> in the probe(). From this it is a spurious interrupt.
 
-When remapping hardware is configured by system software in scalable mode
-as Nested (PGTT=011b) and with PWSNP field Set in the PASID-table-entry,
-it may Set Accessed bit and Dirty bit (and Extended Access bit if enabled)
-in first-stage page-table entries even when second-stage mappings indicate
-that corresponding first-stage page-table is Read-Only.
+That doesn't really handle my question. At the point of enabling the
+interrupt and consuming the edge (which is what this patch does), how
+do you know you can readily discard this signal? This is a genuine
+question.
 
-As the result, contents of pages designated by VMM as Read-Only can be
-modified by IOMMU via PML5E (PML4E for 4-level tables) access as part of
-address translation process due to DMAs issued by Guest.
+Spurious interrupts at boot are common. The HW resets in a funky,
+unspecified state, and it's SW's job to initialise it before letting
+other agents in the system use interrupts.
 
-This disallows read-only mappings in the domain that is supposed to be used
-as nested parent. Reference from Sapphire Rapids Specification Update [1],
-errata details, SPR17. Userspace should know this limitation by checking
-the IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17 flag reported in the IOMMU_GET_HW_INFO
-ioctl.
+> 
+> > For all you can tell, you are
+> > just consuming an edge. I absolutely don't buy this workaround, because you
+> > have no context that allows you to discriminate between a real spurious
+> > interrupt and a normal interrupt that lands while the interrupt line was
+> > masked.
+> > 
+> > > Currently we are not loosing interrupts, but we are getting additional
+> > > Interrupt(phantom) which is causing the issue.
+> > 
+> > If you get an interrupt at probe time in the endpoint driver, that's
+> > probably because the device is not in a quiescent state when the interrupt
+> > is requested. And it is probably this that needs addressing.
+> 
+> Any pointer for addressing this issue? 
 
-[1] https://www.intel.com/content/www/us/en/content-details/772415/content-details.html
+Nothing but the most basic stuff: you should make sure that the
+interrupt isn't enabled before you can actually handle it, and triage
+it as spurious.
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/iommu/intel/iommu.c  | 11 +++++++++++
- drivers/iommu/intel/iommu.h  |  1 +
- include/uapi/linux/iommufd.h | 12 +++++++++++-
- 3 files changed, 23 insertions(+), 1 deletion(-)
+	M.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 9b10e4b1d400..dbcdf7b95b9f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2193,6 +2193,11 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 	if ((prot & (DMA_PTE_READ|DMA_PTE_WRITE)) == 0)
- 		return -EINVAL;
- 
-+	if (!(prot & DMA_PTE_WRITE) && domain->is_nested_parent) {
-+		pr_err_ratelimited("Read-only mapping is disallowed on the domain which serves as the parent in a nested configuration, due to HW errata (ERRATA_772415_SPR17)\n");
-+		return -EINVAL;
-+	}
-+
- 	attr = prot & (DMA_PTE_READ | DMA_PTE_WRITE | DMA_PTE_SNP);
- 	attr |= DMA_FL_PTE_PRESENT;
- 	if (domain->use_first_level) {
-@@ -4106,6 +4111,11 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
- 			domain = ERR_PTR(-ENOMEM);
- 	}
- 
-+	if (!IS_ERR(domain)) {
-+		struct dmar_domain *dmar_domain = container_of(domain,
-+						struct dmar_domain, domain);
-+		dmar_domain->is_nested_parent = request_nest_parent;
-+	}
- 	return domain;
- }
- 
-@@ -4831,6 +4841,7 @@ static void *intel_iommu_hw_info(struct device *dev, u32 *length, u32 *type)
- 	if (!vtd)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vtd->flags = IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17;
- 	vtd->cap_reg = iommu->cap;
- 	vtd->ecap_reg = iommu->ecap;
- 	*length = sizeof(*vtd);
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index ac23b9d22d20..8d0aac71c135 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -592,6 +592,7 @@ struct dmar_domain {
- 					 * otherwise, goes through the second
- 					 * level.
- 					 */
-+	u8 is_nested_parent:1;		/* has other domains nested on it */
- 
- 	spinlock_t lock;		/* Protect device tracking lists */
- 	struct list_head devices;	/* all devices' list */
-diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
-index 3050efbceb57..99401d7d70b2 100644
---- a/include/uapi/linux/iommufd.h
-+++ b/include/uapi/linux/iommufd.h
-@@ -440,10 +440,20 @@ struct iommu_hwpt_alloc {
- };
- #define IOMMU_HWPT_ALLOC _IO(IOMMUFD_TYPE, IOMMUFD_CMD_HWPT_ALLOC)
- 
-+/**
-+ * enum iommu_hw_info_vtd_flags - Flags for VT-d hw_info
-+ * @IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17: If set, disallow nesting on domains
-+ *                                   with read-only mapping.
-+ *                                   https://www.intel.com/content/www/us/en/content-details/772415/content-details.html
-+ */
-+enum iommu_hw_info_vtd_flags {
-+	IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17 = 1 << 0,
-+};
-+
- /**
-  * struct iommu_hw_info_vtd - Intel VT-d hardware information
-  *
-- * @flags: Must be 0
-+ * @flags: Combination of enum iommu_hw_info_vtd_flags
-  * @__reserved: Must be 0
-  *
-  * @cap_reg: Value of Intel VT-d capability register defined in VT-d spec
 -- 
-2.34.1
-
+Without deviation from the norm, progress is not possible.
