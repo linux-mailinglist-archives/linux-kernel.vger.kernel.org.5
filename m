@@ -2,153 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87097A9690
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59D77A97E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjIURAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        id S230030AbjIUR2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjIURA2 (ORCPT
+        with ESMTP id S230194AbjIUR1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:00:28 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on20716.outbound.protection.outlook.com [IPv6:2a01:111:f400:feae::716])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13B72683;
-        Thu, 21 Sep 2023 09:59:03 -0700 (PDT)
+        Thu, 21 Sep 2023 13:27:45 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2088.outbound.protection.outlook.com [40.107.95.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4141FFF;
+        Thu, 21 Sep 2023 10:01:12 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=acHfolHkGyHCrygFOBEmKj47vQOd+IafDhtHVRkdM4B+zygLr4D0iohAc+osNgKLeFu6MekdYhWiSgp68yuaaT6AxYJtsxlTVh1SZOtrRBtYl20gWJoLzyILNCuFvtdHGpSa8Ou4+tFgS8vvTJM8ATlZCRdJBugjnwm729k4XqmL447e1bmtOyyyqI7wIX0EwgNI1DRzmR5GT/V/2Ts4EgnVDKV/0KRlehU2+It8PjPom5tQZuPKSpHoShmBj2egFfrg6eiFxfl/wL7IeAIm6etiN9QcBmWPTGrS0p8ub2juC/NOhq0ZpXSBiKPWeUEp4sGyz6GX1gvsXofCCpie5g==
+ b=KMAcQmocii2rTWZsVqijGP6oJdE169P/OA7cZesley5EyUJWbr1po4rnAnkqmjfoTcHjP56WUVxEFB/hacNwb92l3p9TlT0TaFXkPHQ9qEEkVT+LjQ8wMyKUEntbcu+SooyoFeX9EoXfWIifhAPUCmPThILm7pOc/YoPPAtKRFC+drwiuZKkqmej/XoQpxzmcph4ccbZC3t3nEUxsEs5TMneVRtEB5JXLLl0BnDnsGg5a0Ie0ORolm/O2xTsfzjbDjGpVYGxttG1HXNmqJiEsHHQ1R2+JMoLCe53sQtb3CkT1PHzYzAaTtdcdytWb7Elzy7Kizd5qGfEulhRjdBMkA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=epR7kML4uq+MfC56HTBz3XD9T3bIMTGDymcaABXyZOw=;
- b=C8u2YWkqUg3u2Mw05uIgDK0GbEq/y+dzN7FW+VK2DqJeYjecfuXcRyTdE1qJ4oEMPwnklXzUclAstFKpDj94a2581yZKQ6mmbuhf2es1xgfpgNEjeard3myhdSP8SXZbNVq9NkOu6M+AK7IKh8S4j9gfdCGiEjK+7TBT1oO6Pwl9y+UXihctanHumXujnhFKnKVpFzBrGNaud2FIMvD47XRHdaQSwX4jee3PnN/MUPdRunB3MHEQcKKbyWu/6H3ABvTRcPpl+7Tp4Jk7MR5Z9dC60nfOFbpcVih8cEbaQe99Uk+u3yyWA8gcCc+050m0qlGJLnVAjyrdHPb0HBHG3g==
+ bh=5/nfUsa3nrQB28CvgksNPj5PlcpValBLU08SZenRAxc=;
+ b=HwSI2wCpoqXiL0Gy2QMXpbLHgqQkYFr7+HZA/Wizx+XSHQ2xMk1+sngWnYNuXIpnYenknAJzVS/VnbrPgNQLK7a4VAV1d9ZNSBUZrrjKhR6u4/YxOS7egKvzrts68j7xnd1ZL3rOl9tjhHrfFFygB3f4UKE3MuHKTDOPP2pcUPBP6t6SGWx1w6gNrQtiS7e+CqNNb06EZQ+Ort4HcHHd7l8gmyp6ANyZAvO67HVg9Bn13v63jtxl8qOiHgwPRdUYscQY3zbPRr5HVCSf8IvBYX+dQfmoG3DllXO79sU820VdyzT2tp1pMZAJdtnsoivEcknjkUsV3fid/MQslJp9Sg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epR7kML4uq+MfC56HTBz3XD9T3bIMTGDymcaABXyZOw=;
- b=NkqQEt+GD0EJBasOvh7zv8FX8LdkAzfdHyH7O7ZmvdK72AEvZHMZtJVVg6n2dBAm8pKsYrxBFLp6/1Rr+3NXcOUxhs+et2100rNYY1PHWofHcAw1t0hgwVV4c0Mj+EsL5/9ka2JskvF5YK4sB0ekMQ6Kd5wi4ABr1AnsfGO0M2P3a//jr8Mtx5CqB5eQRtgJjhq3Z0Wqv0uJaABU3/+aOTEhFKJmqR4pz+9NtUOL4UalLuxfjZOtSEAnvWcVVLw5LL/jXW41whFI0lmplVOGtSYO9JIl9S2eijq8ZLF+GQOiGpX66zApS+EjxAsS+s3BhD9yyjcPLaIJkA8oBrktbw==
+ bh=5/nfUsa3nrQB28CvgksNPj5PlcpValBLU08SZenRAxc=;
+ b=31D2alhWKZpKWJQl8GxEec4VvuXncncoqrx6Wijo+W0zWRhrdo7Owcqcu+BXDt26dv/QssF1NfOdNUUa9UwEcLshqXKZ6MIg096YNyEfLqDVAn05u1N2aKTcLhxZAzWqeWkzVaqCIDSfszGEbq3hqCFK48UlwEI5TkkPcWDR5xE=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- SEYPR06MB5492.apcprd06.prod.outlook.com (2603:1096:101:b4::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.29; Thu, 21 Sep 2023 09:11:28 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::1d4d:f221:b9dd:74d1]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::1d4d:f221:b9dd:74d1%6]) with mapi id 15.20.6813.018; Thu, 21 Sep 2023
- 09:11:28 +0000
-From:   Minjie Du <duminjie@vivo.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, Minjie Du <duminjie@vivo.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH v1] thermal/drivers/mediatek/lvts_thermal: fix error check in lvts_debugfs_init()
-Date:   Thu, 21 Sep 2023 17:10:50 +0800
-Message-Id: <20230921091057.3812-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB5839.namprd12.prod.outlook.com (2603:10b6:8:7a::21) by
+ BN9PR12MB5177.namprd12.prod.outlook.com (2603:10b6:408:11a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 21 Sep
+ 2023 09:12:19 +0000
+Received: from DS7PR12MB5839.namprd12.prod.outlook.com
+ ([fe80::6a6c:fde3:1b43:73dc]) by DS7PR12MB5839.namprd12.prod.outlook.com
+ ([fe80::6a6c:fde3:1b43:73dc%6]) with mapi id 15.20.6745.035; Thu, 21 Sep 2023
+ 09:12:19 +0000
+Message-ID: <d096e88e-aec5-9920-8d5a-bd8200560c2c@amd.com>
+Date:   Thu, 21 Sep 2023 14:41:54 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] Proposal of QEMU PCI Endpoint test environment
+To:     Shunsuke Mie <mie@igel.co.jp>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, vaishnav.a@ti.com
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
+        qemu-devel@nongnu.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+References: <CANXvt5oKt=AKdqv24LT079e+6URnfqJcfTJh0ajGA17paJUEKw@mail.gmail.com>
+Content-Language: en-US
+From:   Kishon Vijay Abraham I <kvijayab@amd.com>
+In-Reply-To: <CANXvt5oKt=AKdqv24LT079e+6URnfqJcfTJh0ajGA17paJUEKw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYCP301CA0014.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:400:386::11) To SG2PR06MB5288.apcprd06.prod.outlook.com
- (2603:1096:4:1dc::9)
+X-ClientProxiedBy: BMXPR01CA0091.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:54::31) To DS7PR12MB5839.namprd12.prod.outlook.com
+ (2603:10b6:8:7a::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|SEYPR06MB5492:EE_
-X-MS-Office365-Filtering-Correlation-Id: c28ecbed-f092-4afd-e226-08dbba82bcee
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5839:EE_|BN9PR12MB5177:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3e23059-0a16-4a0e-e8aa-08dbba82db01
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B5XW9tMfwGWeBmUXujodriucQwHX8X2mHuGX2YHo1IycbNe7ADcooz5kxLlab+DQpMvqH+gJm2/KAD/XAp+1JZWBbt07a4WIjtSAw1T85GXzOvoLM5LDaIdjotfrTnicIeJoOsZRcauC016Ean1Dib3m1qwfIdqDTB63kTVmh2eLWNTTVA5AvTAdiucMB5vj3/RnJSqyxPAGBTKXXRXxmGEDlR+3Rx0rVLU3uH6nS3R5Uo7nN6R/SW6aZOTNWjVsvjWxfyvxyL+aWHSKkU9qT/mbT1IjGoSWl9X6vTxyhw0eZlYu/3cbmlQ/UxZglO6Z/hTuij8ZjdN0bdf5MLq2KxBMh/kTOwpkcgv7WbDFJLZrkzC6Z1KewgHEtCC83UK2cPh8Pj7L322irYCotYvQ/2oxh0rWXQDHiVjI9HFBwkf3dr6FnDRy9iStPeW5tvWHH3HTsEh9gBFeTWVNvFlOh0w+vnyzAcwDaOFQNeQvEFfY3qy2BnK5Gd2wtr8rztM79ECPvGhkqd6M7vIrj+1Mr7mHH1n9Q3f51QCAc3NW+fZ8F+/ytEc6HtULp5mzrvJhb8kP3ZGjGGS56GVoXuAO2y45NJokOF2a/wcibgh+yYKE3mOJHDdAiV45L8pouM/KEyI00mvWs2j/nMOuNZjDaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(136003)(396003)(451199024)(1800799009)(186009)(6486002)(6666004)(6506007)(52116002)(6512007)(7416002)(66946007)(8936002)(478600001)(5660300002)(2906002)(83380400001)(4744005)(110136005)(316002)(8676002)(107886003)(26005)(66476007)(1076003)(66556008)(41300700001)(4326008)(86362001)(2616005)(36756003)(921005)(38350700002)(38100700002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: hLhHsA/j3gTyYB7GqdUYeR6oopDyGL3LBOcaerbMK0gCkef42ZKXa+/Oi2OcaTUbLJnZ2iztYNtfj/h5+0erek72oOVROBO1iSvMs01TzuouL9TNN27rsmOL9ZPt+qtJkXLb1U0oCOPn0BgJRwK0e7tHB9phQRNHCl9WwcxlYAyWJv9bLUmkG2tDfup064yD+nsBBS2FhZk14G2ypY3eHdyonWxdxQ/iKSpVNdg1uG5z0hnI61M9Ln0Oif6Xxjh/1co2zYil6D6hnA9A1UvHlHfwbHCVc1khiMeZ0vP4xzEgvZ+RcGe0EpsyJSFGsvFyiXyNqOQi1bwV6bWICAiamp0X8IwrHIEr6Lme08D2rDyCgG8P4q2tJM/JW+zad75Gd6/s0Zv/Q2ezsekB3cUDeoWn/DHmCULFKyfvtKJkqwUbsFdEB8b+6Iod9LpaMQzF5gjs4klBjNoNrLXDoeGf5mUjqiA5yAAl6i9Q7fkwpftkqRXJ6HNL43e6nag2lJEuXeShRxGTmHldylmQAfotqVGQNr0t0WWlrZE3cmQ4p/xvaH22W/Q3nOum61e5bqzd+u4FYr2geSvAIU/LW+psP3in2neANR3XZPtNjhkWxMBjLnydN7XS9enpV/7+Boid1Tbkvi4zFkEBIjZofTYBL4fimRuxVmybCUaA2/nfOV0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5839.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(366004)(346002)(39860400002)(1800799009)(451199024)(186009)(6506007)(6666004)(6486002)(53546011)(5660300002)(6512007)(966005)(83380400001)(478600001)(2616005)(26005)(7416002)(66946007)(2906002)(66476007)(66556008)(54906003)(316002)(8676002)(4326008)(110136005)(8936002)(41300700001)(36756003)(31696002)(38100700002)(3613699003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?P9v0DSzdhXD+PkwxLz7UId152n13K8oRZc1mA29MfggjB0Gyet6sir+h1Mq4?=
- =?us-ascii?Q?JqfFITNsPTczj+S+UvDoShNRKpk6GePtgG6VRIH+8j1F+uQrRNofnQ9Qu8H2?=
- =?us-ascii?Q?+WEMGg/nUSmy7SyP2R6jo6Stog9161jDKE8FZgeC+7a9ob6GL4iBcoML2u/I?=
- =?us-ascii?Q?88O6o6SKYczLP7613+S/33x/2ffPqzErnsMF9CRtKQG+nJcrfmxtEg70JW0m?=
- =?us-ascii?Q?stzLF0Z/+g0OaacpbKSHlLmNrvWoGlCL4P/k3aDdZ2cO/FKXGVluSfjankHC?=
- =?us-ascii?Q?+DxrB/4zASLzxja1LBBUnUvtlyRCOp6anoRG15GN5qvoBzc+taSK1J1R73V9?=
- =?us-ascii?Q?Cr8u3zlGyj6NM1OUNOoFgbG0vv6W4QLTBq9lfF6rg6plCHuUQ91KIJLuO+6S?=
- =?us-ascii?Q?1deIjabDvxR+3NLDGmAgKW2j9FbQ8NeB03d5HZDqhQE5K7AxnnTesNrJanuD?=
- =?us-ascii?Q?x4bA63Anb8+H5CLYXH1FPXi4mIokQCfMzBwsuWo8CeOu3gKeM/sywji8+hvh?=
- =?us-ascii?Q?U21ehfdfzIh5tlVftr8n391tym852Wwh/UsUn9cZz6UQ3Ia/hl2bCGJKz38F?=
- =?us-ascii?Q?yfT6PObfg5Njmtu/cI/BYK7kZ7AzenJc9ISCWMgguSAyo6LbPe2+iN0Fn2Iz?=
- =?us-ascii?Q?/OARVGyt1Tj24kgB637ddyYxFfE3bZFyvfWW4cuW1cOGsKWr0w97jpY6qv1e?=
- =?us-ascii?Q?5Ky5YZXVSw7HwleSG1Pl+JAurPS3bpt39UnsXawQKV7xQo4laTn08xwiIvgl?=
- =?us-ascii?Q?KfDjpOqSOWc6i+hzvrDxZzXXv5u81biZK0OzhMmQg5ELJxPBfwnandvuJcH1?=
- =?us-ascii?Q?66yXI9UW82ZA1sLGhmgWn8yQxJYwupXiFjM07GN61k4xHIUYKY84PSSFEH8W?=
- =?us-ascii?Q?NWnGsb4de1chpbwWA2LgJ+N6vU6gUoK+SvbBRTk4MSTJx/9GEPHOdnOQOeNp?=
- =?us-ascii?Q?mj4kd5A6WfoL1nBedYVzzH/2WxUaKxvLMTWtHdbEIeXBrfWb80hfi/w77NMd?=
- =?us-ascii?Q?ukjhAeb5Ilmz9XkArnZ8gc8Wi2GTo9bTWzpwl1fhI9Ku5o42dpjtY6b4MFy9?=
- =?us-ascii?Q?S2teV+Cn0PR2Mtq9M5gYto3nOCGIGiW89542wVKjYm9t1qkrWF2qhlaJ3uWL?=
- =?us-ascii?Q?k0tcc4hdHhlIcs62P1RTNp/hUqlP0/nIppLThtB3hMC+7lpTa9oyuUY+qo6+?=
- =?us-ascii?Q?b0n6e/JNHa7LqpefzuQHWEfYPP03v7+MOXQaik9msk1nTvrZ9vb3yGaAShXd?=
- =?us-ascii?Q?3LQECsbUEqQyw2qFH74uosTDuikPqzMwv5Un1XzMGL8r6P770d0mD2X6XP2b?=
- =?us-ascii?Q?4UmPtAaO81+PjmEgoBEuCk4p+ZkTb9wRXZUGfSIJEEREWRk7esvRR4y2eSkT?=
- =?us-ascii?Q?MhO+fn6RZcjrx2/lyAzPke6Qfni9bo2ZHjlUnqw4W2FUhwi2mg30/7sI3pHY?=
- =?us-ascii?Q?yUblyb5nJHEwWHKsH7bty0nJ99QGR1gdP/RHFXCI0dCvUw8WR51nLJAjzYOL?=
- =?us-ascii?Q?u9EHN6cWvzMUjp+asxUwRyja7WIC8wy7EyJiVZLTCxsWgMoCI1c4akmcC4eN?=
- =?us-ascii?Q?s2nryguRizw5RfyeCclBADvh4yG0JpMyxGNzbp50?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c28ecbed-f092-4afd-e226-08dbba82bcee
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MHlWQlF3bDNseGpaUEE0UjZKcFpCVjNIV3NjOUxOTFMyS0Z2WWkwVU5TZDd3?=
+ =?utf-8?B?ZUFjS0RnbU1RRG5ybEV5WTlEZ2prNmpKVWZoenV0a1BhZmJyY3UzbHFFLzYr?=
+ =?utf-8?B?bGE5QVQvNWZKWjd4TXlibUxZZFNvNTU0enZXMHZhQmEzV0ptczBibzJHZzJq?=
+ =?utf-8?B?V0J4cHBYRjRxM3FjQWZZdC95djNQaHdvd2FkeTFNcE92R2R6Q1BPbG55N3Ev?=
+ =?utf-8?B?NStZWnN2VVl4MjFDZSt6OW5xM0Vqa3ZOL0ozQ2VFTkxNNjN6SUlsd2tlcElO?=
+ =?utf-8?B?R0x1N2NBQklyak5DMzNHRXZ5dHVpS1Ztb2VoamMydDZqOEYwL1ptM080V1Nk?=
+ =?utf-8?B?R0dYM2pQaWNFZ3NYYTVvYnlqOGh3UkUvb2hZdzFFbGg2OTkwMk82OFlHYU9y?=
+ =?utf-8?B?NWY0d2RhSXMwUnhVQUJKWld4OFdnaTFCbm5ReFNweXJPcVQxS2dRSDR0aCtW?=
+ =?utf-8?B?SjNUd1ZVajVzdjNudUthZkZ1OTZBNVVNVkQyREcrRW9DSlJpSythMkEvUC9X?=
+ =?utf-8?B?VXNtVGJLUXcxVWpMODY2RXh1blJrM0ZsaUNsbEYyZkRqTzFXUmsrYndBRzBD?=
+ =?utf-8?B?OU5nNkI3clZFSGVnWFNRdkk2M2VCSHdKWXNrOGxCUUxVd25RMER1TUpCZ0pG?=
+ =?utf-8?B?WFV5RkZlbTBSWllIUlJYUEZXWkhYbTh1clNibzYrVzgxZ2taSXYvTkV3eFNY?=
+ =?utf-8?B?YUwrVEN2VlBRUVgzbFRzbHNIQUhQMTdUYnk1TWtPc3JRMWlPZEdCSFJhL01F?=
+ =?utf-8?B?SktUL1M0Y1NVZUtWbVAyd280cGczWmYzTXBnRFg5OG4zWnBDZ3d0TmVIbnZ0?=
+ =?utf-8?B?RWU2bXdxa2ZJdWJKa0IwdXR2Rk5sMndZYzZJOTBTQ2ZKaGNLblFFdkNhaXNj?=
+ =?utf-8?B?emxxSHVPeU1xUmE3SURtb3I3QVZ3M21mOVRYbis5RkZ3VUhyTlZtVzAwT3pG?=
+ =?utf-8?B?dU8veHZSNG16eWttcmJYQW94SVpOM0VtdUZyb05iaWhFTC9WTmRXWWFrak5T?=
+ =?utf-8?B?d2EzckNXKzBLbldod3Q0K1NMVTgvdFlYaDRTU21FeVhvRXBlSHEvMFdDaENl?=
+ =?utf-8?B?YWt2WUhvb082WWJ4T29XODc0UzhMQ0crRUpVM1BUZ0l6RTYrejZVTXpCZ2JR?=
+ =?utf-8?B?YngwNzJYei9XZXhseUdEZVNpa1YwN0xQSy94bVJMTS93UytlMnFDRUhQYjNr?=
+ =?utf-8?B?SkgyajRmNFZtSzkxMEV4SFBYQ3VrZWp0OFhUVlhFekRlQmpQM041WlRqY1pk?=
+ =?utf-8?B?b2pjbWNlZFlQZ240RTVqVTFFdWlmTCt2a0NxL2thL1BXbGgrT0VhSnBzUzU0?=
+ =?utf-8?B?cFZQR1E3ODFOTmZ2UERpamRKU2hvVVVQeUhBOHd2N2xtN1BCNy9BOFBrZXBV?=
+ =?utf-8?B?UXd0RjlwZTc3VUZ3YldWY21wOTlwbmxIeTN0M3BId3RRMGtrMC9mMGpPOXl6?=
+ =?utf-8?B?OUloeUR5V3JqMkpxTFFEdDhPMWNoenBSQnNaSTkvenVZV2xaWFBoRmRrcGlu?=
+ =?utf-8?B?b1M3MklBSGNlUmxkdTBVam1XWENhRDJOTnlVdFpIb0pZeHBFOHRnWEh5TlZU?=
+ =?utf-8?B?NkcvNTZlZUVyeTRFQW8xWEt6Y2VvTGVPT0JrenVUVW0zenBWRVp4ZGlIOEFX?=
+ =?utf-8?B?dHJJMm1PQytjWXN0dUR2OW5uK1RnUFNtTEJkL05ERGRsMGhsbGtlWnE1NWNa?=
+ =?utf-8?B?SVFnTnlFdlpNSnBzQ3ZzeUpWeEZtZkRrbzU1blJMQkFOMVh6VVBnOUEwT3U5?=
+ =?utf-8?B?M096RWwvam4yTjY0ZFZOaEswZlJZN2Y3dE95ZkxFVWNOS2YybnJZVGl3WWFQ?=
+ =?utf-8?B?dURQU05oRk0rOFFiQndvUzA0aWtSM0piL3RWOTBndGg5R0YyNGE1T2NiSCsv?=
+ =?utf-8?B?cytYcEpaaUYrTzFrZTdzdThKNEdTK3lOWHZ5aSt3cUpKb1V5OTEzVE4zQTY1?=
+ =?utf-8?B?MkcrOSs1MU5wV1RwUHlCbzl3YlkxZHR0blJSVmhuVWQxdFhiakQvZHFodmwx?=
+ =?utf-8?B?UVNzQVlCVVArclp0Mk8rT0doWEc4bDVTUUNPZk01OUJjR3FrQlhyRlMvR29C?=
+ =?utf-8?B?YUtUY3lOL1FNUzdEQnFZWG9TS0dJVEVCVHNjR3VpcEdPQ0NQUHhWL0Y5dWo3?=
+ =?utf-8?Q?Jq0Sh5UQL62O2jPJ8jEiGfo5I?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3e23059-0a16-4a0e-e8aa-08dbba82db01
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5839.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 09:11:28.3473
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 09:12:18.9585
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6UdQ+0Es+tnh6Q/5yj3mO65CIdlrN6T+f4VcUz76paleb6iMu5vN65uqfbrbyAhhvYzm+EDGkeDvQ5pym1r91w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5492
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: k9xO3z1i2zpqE8sbKdJVRxzdcZW0oepJ4OnopXMOQTD4uxa5LZT7Bu1fnWBSXWTghb8tpObn2R/sL/WKx60XXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5177
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs_create_dir() function returns an error value embedded in
-the pointer (PTR_ERR). Evaluate the return value using IS_ERR
-rather than checking for NULL.
++Vaishnav
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
----
- drivers/thermal/mediatek/lvts_thermal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Shunsuke,
 
-diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-index effd9b00a424..88240600e6ce 100644
---- a/drivers/thermal/mediatek/lvts_thermal.c
-+++ b/drivers/thermal/mediatek/lvts_thermal.c
-@@ -213,7 +213,7 @@ static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
- 
- 		sprintf(name, "controller%d", i);
- 		dentry = debugfs_create_dir(name, lvts_td->dom_dentry);
--		if (!dentry)
-+		if (IS_ERR(dentry))
- 			continue;
- 
- 		regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
--- 
-2.39.0
+On 8/18/2023 7:16 PM, Shunsuke Mie wrote:
+> Hi all,
+> 
+> We are proposing to add a new test syste to Linux for PCIe Endpoint. That
+> can be run on QEMU without real hardware. At present, partially we have
+> confirmed that pci-epf-test is working, but it is not yet complete.
+> However, we would appreciate your comments on the architecture design.
+> 
+> # Background
+> The background is as follows.
+> 
+> PCI Endpoint function driver is implemented using the PCIe Endpoint
+> framework, but it requires physical boards for testing, and it is difficult
+> to test sufficiently. In order to find bugs and hardware-dependent
+> implementations early, continuous testing is required. Since it is
+> difficult to automate tests that require hardware, this RFC proposes a
+> virtual environment for testing PCI endpoint function drivers.
 
+This would be quite useful and thank you for attempting it! I would like 
+to compare other mechanisms available in-addition to QEMU before going 
+with the QEMU approach.
+
+Though I don't understand this fully, Looking at 
+https://osseu2023.sched.com/event/1OGk8/emulating-devices-in-linux-using-greybus-subsystem-vaishnav-mohandas-achath-texas-instruments, 
+Vaishnav seems to solve the same problem using greybus for multiple type 
+s of devices.
+
+Vaishnav, we'd wait for your OSS presentation but do you have any 
+initial thoughts on how greybus could be used to test PCIe endpoint drivers?
+
+Thanks,
+Kishon
+
+> 
+> # Architecture
+> The overview of the architecture is as follows.
+> 
+>    Guest 1                        Guest 2
+> +-------------------------+    +----------------------------+
+> | Linux kernel            |    | Linux kernel               |
+> |                         |    |                            |
+> | PCI EP function driver  |    |                            |
+> | (e.g. pci-epf-test)     |    |                            |
+> |-------------------------|    | PCI Device Driver          |
+> | (2) QEMU EPC Driver     |    | (e.g. pci_endpoint_test)   |
+> +-------------------------+    +----------------------------+
+> +-------------------------+    +----------------------------+
+> | QEMU                    |    | QEMU                       |
+> |-------------------------|    |----------------------------|
+> | (1) QEMU PCI EPC Device *----* (3) QEMU EPF Bridge Device |
+> +-------------------------+    +----------------------------+
+> 
+> At present, it is designed to work guests only on the same host, and
+> communication is done through Unix domain sockets.
+> 
+> The three parts shown in the figure were introduced this time.
+> 
+> (1) QEMU PCI Endpoint Controller(EPC) Device
+> PCI Endpoint Controller implemented as QEMU PCI device.
+> (2) QEMU PCI Endpoint Controller(EPC) Driver
+> Linux kernel driver that drives the device (1). It registers a epc device
+> to linux kernel and handling each operations for the epc device.
+> (3) QEMU PCI Endpoint function(EPF) Bridge Device
+> QEMU PCI device that cooperates with (1) and performs accesses to pci
+> configuration space, BAR and memory space to communicate each guests, and
+> generates interruptions to the guest 1.
+> 
+> Each projects are:
+> (1), (3) https://github.com/ShunsukeMie/qemu/tree/epf-bridge/v1 
+> <https://github.com/ShunsukeMie/qemu/tree/epf-bridge/v1>
+> files: hw/misc/{qemu-epc.{c,h}, epf-bridge.c}
+> (2) https://github.com/ShunsukeMie/linux-virtio-rdma/tree/qemu-epc 
+> <https://github.com/ShunsukeMie/linux-virtio-rdma/tree/qemu-epc>
+> files: drivers/pci/controller/pcie-qemu-ep.c
+> 
+> # Protocol
+> 
+> PCI, PCIe has a layer structure that includes Physical, Data Lane and
+> Transaction. The communicates between the bridge(3) and controller (1)
+> mimic the Transaction. Specifically, a protocol is implemented for
+> exchanging fd for communication protocol version check and communication,
+> in addition to the interaction equivalent to PCIe Transaction Layer Packet
+> (Read and Write of I/O, Memory, Configuration space and Message). In my
+> mind, we need to discuss the communication mor.
+> 
+> We also are planning to post the patch set after the code is organized and
+> the protocol discussion is matured.
+> 
+> Best regards,
+> Shunsuke
