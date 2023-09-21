@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E61D07A9021
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 02:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756837A9024
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 02:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbjIUAVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 20:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S229699AbjIUAZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 20:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjIUAVU (ORCPT
+        with ESMTP id S229478AbjIUAZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 20:21:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19B3CC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 17:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695255674; x=1726791674;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HM+uOoZk64Z4WIVFmaIOtHvJb14KM46fqD4q873r+vA=;
-  b=QzsKVTJWqdRpicnb/VOkA4C8YqCIl+j8QYBHTdZKx9PYcwwyH9+Uw4vD
-   btTi8QghFdUCaAX6K3/Ol/NBwpqpEe5rcwQglnRzdkjhNnJzioFXXW4ZK
-   u/Xa9iepd9Dx5et+Q5UyjJrCgjJgEbtRO8pIDCHf0HcaR2pj4b93iXAvp
-   jFmvm53q+OjsGvL1YMmZaJdb4LHkfS/jtM2dJNdPmArBL0YuTaAioGR8N
-   NuIImxDmRMBVNfBbMPZrpYbWn/NgAN2rrEfuO837KWp+/FQWKStvOmgfN
-   C6I6ZCzlLnF9Y0VmQt8RV9lSwHOrCFkeasigxVJdvEl7AsOmO1XNTQ6//
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="384216538"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="384216538"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 17:21:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="890156991"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="890156991"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 17:20:23 -0700
-Date:   Wed, 20 Sep 2023 17:21:12 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     James Morse <james.morse@arm.com>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: resctrl2 - status
-Message-ID: <ZQuMeCCUm2sHuX8p@agluck-desk3>
-References: <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
- <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
- <ZOkU+d4AsLGSAG+y@agluck-desk3>
- <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
- <ZOlRNTq3lE7VNHjU@agluck-desk3>
- <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
- <ZPjDHN0nvHz9kWFn@agluck-desk3>
- <fa93564a-45b0-ccdd-c139-ae4867eacfb5@arm.com>
- <ZQTAuChYjK9Y93y7@agluck-desk3>
+        Wed, 20 Sep 2023 20:25:28 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D31AA3;
+        Wed, 20 Sep 2023 17:25:21 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c3d6d88231so3209535ad.0;
+        Wed, 20 Sep 2023 17:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695255920; x=1695860720; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DczeM/Y/ll/HO5aTU1FZs9q/jGteDrPwoT1dCCvthrk=;
+        b=AFibqjw46Xk3SQJfSZaDE4mo59JNIGGfQofnaZbxucbCElsiPUyIAw1cpuGsG9efUn
+         vCBBOC81J8/EuFzdzIHkXAFCDzcTJd826q3PCI6j61MYVgDh5A1q6JAkuagoJfvXLqM1
+         QZgdJZytZBEdQ0l8FEBEc2DquAZJwx4wp1/E3eASq6Qt8LTuQI5t5bFTDCBkkMJhXPgm
+         zJxAj4BTs6Q+6ZMV26h66tXy+YbtkaYH7AeuIdcyTUsYtvDEjEe44q0jZFNWytXari0H
+         o/97lAme7GS1/Em6G3w1+fszDF8WEpt7k/chkaRL+4e+oM9JpSfeelP1dtlBzL6ahuRN
+         KvMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695255920; x=1695860720;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DczeM/Y/ll/HO5aTU1FZs9q/jGteDrPwoT1dCCvthrk=;
+        b=EcjZcW/QvsF8dByEyLEAuoCPa2QSx/IrRzpzBOhYJ3Diilz4G+/UrepdQ8xo4cG0gH
+         JGv4sfsqLAENh07rH2pl7g1TLE5lSABiDDTAHdeS76G+olMkAGVmk9hfCaIBBOYeH7QZ
+         4PAfCJ+3g1tRCxF3a5CogtzSN0M6dXDMI2NqqPnKBUzID7O97gwrNDyokMWS88Mb7wyI
+         DjUnot0rWjJ2E2NVVAzD62/1QdWQIJeRRvuNfDV200Y3PfWotNbX8ekyBlJ2WogaLP8J
+         mMlTN08a/bvr2+iLqx2o81hhT8/3QAcvQ+rmTkWe9Hpxm6JO64/OinPPMZ3ZBaTqeLgt
+         CruQ==
+X-Gm-Message-State: AOJu0YxauH/VJfMTSMnv3iOz0IairLOdSImjx+PgemwSlz8erprT6GNo
+        SDc4P/lVJ/3Z8nCgCfKZJ73TJzdWnJOI+g==
+X-Google-Smtp-Source: AGHT+IEborYCvHbvZKLnVJxX+AOOqYd3ehjy+iJcuUM00XR24BNq0vdPJf1tfv2ENzbw8STYhGpymQ==
+X-Received: by 2002:a17:902:e74b:b0:1bb:8931:ee94 with SMTP id p11-20020a170902e74b00b001bb8931ee94mr4001271plf.67.1695255920421;
+        Wed, 20 Sep 2023 17:25:20 -0700 (PDT)
+Received: from localhost ([162.243.44.213])
+        by smtp.gmail.com with ESMTPSA id q3-20020a170902dac300b001b9c5e07bc3sm88735plx.238.2023.09.20.17.25.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 17:25:19 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 08:24:25 +0800
+From:   Jianguo Bao <roidinev@gmail.com>
+To:     Manmohan Shukla <manmshuk@gmail.com>
+Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: error: Markdown style nit
+Message-ID: <f6azofsmelve5eeppckk5vn6wvjghadt2bduq3lzxcqdk2azos@f73u4yyszooq>
+References: <20230906204857.85619-1-manmshuk@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZQTAuChYjK9Y93y7@agluck-desk3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230906204857.85619-1-manmshuk@gmail.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 01:38:16PM -0700, Tony Luck wrote:
-> My PoC code went full throttle on pushing all the schemata code to the
-> driver. But you are right that this may be too drastic.  Drivers could
-> just indicate that they need one of the basic types "bitmap, percentage,
-> number, bandwidth" together with some parameters (number of bits for
-> bitmap, granularity for percentage, high/low values for number, ditto
-> for bandwidth) and have core code handle the inital parsing. Then give
-> to the module for validation (e.g. for the Intel requirement that
-> cache bit masks have contiguous "1" bits), and some CPU models require
-> that a minimum of two bits are set). Also pass to the module to apply
-> (wrmsr() on a CPU in the domain for x86, MMIO from anywhere for ARM).
+On Thu, Sep 07, 2023 at 02:18:57AM +0530, Manmohan Shukla wrote:
+> This patch fixes a trivial markdown style nit in the `SAFETY` comment.
 > 
-> For bitmasks - MPAM seems to allow very long masks. Perhaps the kernel
-> can make use of the "%*pb" format to scanf/printk to cope with those?
-> It would mean commas in the masks like 0000,00000fff,ffffff00,0000000f
+> Signed-off-by: Manmohan Shukla <manmshuk@gmail.com>
+> ---
+>  rust/kernel/error.rs | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
+> index 05fcab6abfe6..6233021daa8a 100644
+> --- a/rust/kernel/error.rs
+> +++ b/rust/kernel/error.rs
+> @@ -133,7 +133,7 @@ pub fn to_errno(self) -> core::ffi::c_int {
+>      /// Returns the error encoded as a pointer.
+>      #[allow(dead_code)]
+>      pub(crate) fn to_ptr<T>(self) -> *mut T {
+> -        // SAFETY: self.0 is a valid error due to its invariant.
+> +        // SAFETY: `self.0` is a valid error due to its invariant.
+>          unsafe { bindings::ERR_PTR(self.0.into()) as *mut _ }
+>      }
+>  
+> -- 
+> 2.34.1
 
-James,
-
-Your earlier e-mail came at a fortuitous moment. I am breaking my
-giant patches into smaller pieces. I had just got to the "add the
-schemata file" section of the series. I took your advice and put
-the majority of the parsing code into the core, leaving the arch
-specific modules just a hook to handle weird quirks.
-
-Modules specify the "type" of their schemata entries, together with
-a parameter that the core can use. I implemented two types so far.
-But should be easy to add additional types like "bandwidth" as you
-had suggested.
-
-1) Bitmask. Parameter is the number of bits.
-2) Unsigned long. Parameter is the max value.
-
-Examples of quirks:
-1) Intel L3 CAT requires all "1" bits to be in a consecutive block.
-   In this case core code will accept any bitmask that doesn't exceed
-   the number of bits. The module can reject if the user doesn't
-   follow the consecutive bits rule.
-2) Intel L3 MBA requires that throttle percentage values be a multiple of the
-   h/w enumerated granularity (e.g. 10%). Here the module does a
-   roundup() to quietly fix invalid input (same as legacy resctrl).
-
-I've only got through the "control" section of converting to patches.
-But I think this is well past the halfway point.
-
-Current snapshot of code is here:
-
-
-git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git resctrl2_patches
-
-
-* Comes with just the rdt_l3_cat and rdt_l3_mba modules.
-  Without the AMD support bits at this point.
-* No "cpus", "mode", "size" files yet.
-* Just CTRL_MON directories.
-* No monitoring support yet.
-
--Tony
+Reviewed-by: Jianguo Bao <roidinev@gmail.com>
