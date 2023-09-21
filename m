@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9107A9B08
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58137A995A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjIUSxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        id S230185AbjIUSNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjIUSwt (ORCPT
+        with ESMTP id S229661AbjIUSMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:52:49 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF4F8DEDC
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:54:36 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso10251625ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695318874; x=1695923674; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntFYzRRPH6h7NTTrU5OlfJP05uG/LpkpMCjAuag4Kkc=;
-        b=BTDhImtu+T1lIbYOfOgvjX2YZfyHJN7Fgg68GJuvFbhOop1OYwjm//OF0ijGv2SEts
-         TXm6k4AijChwe0SCA3vchDb3kXSSNHUh4R//5gYprqXwFQ9trHf6/xDEIXzrq+BuqT4v
-         v0DvXVCgX1RyM0L+10r5ivzwxpQWFkSmGxr93qWASUqpnW6QgIWH3os1l0tmSgeVw06m
-         shsVaCnWypR5fd5S/HAnsVvGRiUC3dK4i2PoNDL7MbES38rxymcSeueG+pOFnOFjcRP7
-         Y6eccHYrvdb4eDq5wCtvkThnM3EihCMnYbyWwwzBZBoyh8lJd+xSAw13iz1o6hVRmRiG
-         YeFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318874; x=1695923674;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ntFYzRRPH6h7NTTrU5OlfJP05uG/LpkpMCjAuag4Kkc=;
-        b=vPt7WK9Vy+9fswCzvW+KkXgMKJvCfMz5CZeoEWhSeadpFT3hSmYAV3gxPY1uku1RuY
-         8IUWmVrw/yQE6Xw3UVPzPrLgZGwU/ENlibfzBR+WTEDzMcGyp4k6cLvcF2AEKV51EYKe
-         uPNFezK4MDOV/hU/3bM4C6iWoz28m1s4hE3r6voNJBbHw3yma2BJizFXuZFD+zTbNKG9
-         UI/mbZ/YyclJKMVLN6hhaSSObILhEmzAYjXXCsCon97QxlODKzgvjD8zcVJeKt7NObiB
-         2FTPhcYyIK1xbnnW4Nr4a6tnSqtzhC2Q4XiGBOq/euKr18LFArfFDsfih8W8Ul1foNNq
-         szQw==
-X-Gm-Message-State: AOJu0YywizPnxv+Y4Jb6YQ3DduqqySeYvLisxRb5L+Cn/bx2gq+9lDbc
-        xJMlObrMJbjUwVSbP7oUJwjRy+ckYuw=
-X-Google-Smtp-Source: AGHT+IHm6nVqzehFXY6vEF16SHpPlU7oBFFCAc51VIviyurfJg7vB7aYgvQo0m1cGdNkYQ/CBX38Ag==
-X-Received: by 2002:a05:6808:1820:b0:3a8:43d5:878b with SMTP id bh32-20020a056808182000b003a843d5878bmr5338958oib.2.1695283316233;
-        Thu, 21 Sep 2023 01:01:56 -0700 (PDT)
-Received: from localhost.localdomain ([111.108.111.135])
-        by smtp.gmail.com with ESMTPSA id fm1-20020a056a002f8100b00679a4b56e41sm735214pfb.43.2023.09.21.01.01.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Sep 2023 01:01:55 -0700 (PDT)
-From:   Wei Gong <gongwei833x@gmail.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, Wei Gong <gongwei833x@gmail.com>
-Subject: [PATCH] genirq: avoid long loops in handle_edge_irq
-Date:   Thu, 21 Sep 2023 16:01:46 +0800
-Message-Id: <20230921080146.37186-1-gongwei833x@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+        Thu, 21 Sep 2023 14:12:33 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06E34F3BA;
+        Thu, 21 Sep 2023 10:25:21 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38L4vGtU026792;
+        Thu, 21 Sep 2023 10:03:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        selector1; bh=G8EhQbj3Y2d5kGyFRRSXdWRplKfMjsPAQezvHj9+23E=; b=rH
+        a1C5nvWfNOPrGnUiaRi50KTde4ThwBtPwprZMx55tno1+JuLXC4/1WCXcJlxpRUN
+        yVKe9VHYXkkDgV6xXpCeTgj382vkWJ0JiMoy3hNs5lcEkHtV5rsYFegkJYWdW279
+        OjrZDFqSQIu3kshgGby5PrRvNYQybJYOjJMCWamG47KZTNRVvmO8irvIIgO1XqH6
+        fr2anSrhQcNUn++egadKQaG3OcrFJsVC6jYWs5o7c4m/INIrfCO1rDj/1GaYRw/L
+        /J7PDuFTTKG7CT11HCK7VYjCDxaXX+NdNLOOpzpMV/iw/pnQXJtt7CpLO1DeBODp
+        SILNQFknpYRVxvDYl7JA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t53px31ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 10:03:11 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9A5FF100057;
+        Thu, 21 Sep 2023 10:03:09 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 93095211F0D;
+        Thu, 21 Sep 2023 10:03:09 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
+ 2023 10:03:09 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v3 2/9] hwrng: stm32 - use devm_platform_get_and_ioremap_resource() API
+Date:   Thu, 21 Sep 2023 10:02:54 +0200
+Message-ID: <20230921080301.253563-3-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
+References: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_06,2023-09-20_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there are a large number of interrupts occurring on the tx
-queue(irq smp_affinity=1) of the network card, changing the CPU
-affinity of the tx queue (echo 2 > /proc/irq/xx/smp_affinity)
-will cause handle_edge_irq to loop for a long time in the
-do {} while() loop.
+Use devm_platform_get_and_ioremap_resource() to get and ioremap a
+resource.
 
-After setting the IRQ CPU affinity, the next interrupt will only
-be activated when it arrives. Therefore, the next interrupt will
-still be on CPU 0. When a new CPU affinity is activated on CPU 0,
-subsequent interrupts will be processed on CPU 1.
-
-       cpu 0                                cpu 1
-  - handle_edge_irq
-    - apic_ack_irq
-      - irq_do_set_affinity
-                                        - handle_edge_irq
-    - do {
-        - handle_irq_event
-          - istate &= ~IRQS_PENDIN
-          - IRQD_IRQ_INPROGRESS
-          - spin_unlock()
-                                          - spin_lock()
-                                          - istate |= IRQS_PENDIN
-          - handle_irq_event_percpu       - mask_ack_irq()
-                                          - spin_unlock()
-          - spin_unlock
-
-      } while(IRQS_PENDIN &&
-              !irq_disable)
-
-Therefore, when determining whether to continue looping, we add a check
-to see if the current CPU belongs to the affinity table of the interrupt.
-
-Signed-off-by: Wei Gong <gongwei833x@gmail.com>
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 ---
- kernel/irq/chip.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/char/hw_random/stm32-rng.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index dc94e0bf2c94..cafd395367c3 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -831,7 +831,8 @@ void handle_edge_irq(struct irq_desc *desc)
- 		handle_irq_event(desc);
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index efb6a9f9a11b..d64d25d0fee8 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -118,18 +118,13 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	struct device *dev = &ofdev->dev;
+ 	struct device_node *np = ofdev->dev.of_node;
+ 	struct stm32_rng_private *priv;
+-	struct resource res;
+-	int err;
++	struct resource *res;
  
- 	} while ((desc->istate & IRQS_PENDING) &&
--		 !irqd_irq_disabled(&desc->irq_data));
-+		 !irqd_irq_disabled(&desc->irq_data) &&
-+		 cpumask_test_cpu(smp_processor_id(), desc->irq_common_data.affinity));
+ 	priv = devm_kzalloc(dev, sizeof(struct stm32_rng_private), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
  
- out_unlock:
- 	raw_spin_unlock(&desc->lock);
+-	err = of_address_to_resource(np, 0, &res);
+-	if (err)
+-		return err;
+-
+-	priv->base = devm_ioremap_resource(dev, &res);
++	priv->base = devm_platform_get_and_ioremap_resource(ofdev, 0, &res);
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
+ 
 -- 
-2.32.1 (Apple Git-133)
+2.25.1
 
