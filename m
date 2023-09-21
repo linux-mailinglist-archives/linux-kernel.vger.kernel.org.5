@@ -2,182 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D6A7A9B2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EAA7A9BBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjIUSy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        id S231172AbjIUTEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjIUSym (ORCPT
+        with ESMTP id S230513AbjIUTD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:54:42 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EAA8B9B1;
-        Thu, 21 Sep 2023 10:41:48 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RrwJv22k1z15NR6;
-        Thu, 21 Sep 2023 20:51:59 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 21 Sep 2023 20:54:06 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <vnagarnaik@google.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <yeweihua4@huawei.com>,
-        <zhengyejian1@huawei.com>
-Subject: [PATCH] ring-buffer: Fix bytes info in per_cpu buffer stats
-Date:   Thu, 21 Sep 2023 20:54:25 +0800
-Message-ID: <20230921125425.1708423-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 21 Sep 2023 15:03:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1FF89D92;
+        Thu, 21 Sep 2023 10:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695318732; x=1726854732;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CB1e+1tDos0izps6y7bKpYTFHFvWb1uVC0e3ziRvTvY=;
+  b=mecA3MhG8FsF1L21mW5EE32egHlmVWqjFJFhGlb4kpq8+3WFNyFwOYe5
+   AVLA1N14JzI47A9GpIoKEuqzdP2MRL+oaQy0rY6PAGD8hhxC3ytF/OOjP
+   DQHi/j14luo8t1InVRRC5EgEtqJ7AXax/FSub8DKQ4GEAueW597y+XKAs
+   HeZpdzFJ8u0HjksA48SfAs89sRKddv5hGEd6THec/Hp3WU4pTFJjWGwWs
+   DT4PtivxIs1gfBGJADMpG6ybuxqsiiD3U+q8bAaJVXNUM4kASWgO2LUuI
+   ZmbZWeIP8HufYhLqlguGLN1hYD1Ze/d+owXRUHWMNo4Zis3b/dSz1Dk47
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="379396206"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="379396206"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 06:00:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="812639263"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="812639263"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Sep 2023 06:00:40 -0700
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>
+Subject: [PATCH net-next] idpf: fix undefined reference to tcp_gro_complete() when !CONFIG_INET
+Date:   Thu, 21 Sep 2023 14:59:36 +0200
+Message-ID: <20230921125936.1621191-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'bytes' info in file 'per_cpu/cpu<X>/stats' means the number of
-bytes in cpu buffer that have not been consumed. However, currently
-after consuming data by reading file 'trace_pipe', the 'bytes' info
-was not changed as expected.
+When CONFIG_INET is not set, tcp_gro_complete is not compiled, although
+the drivers using it may still be compiled (spotted by Randy):
 
-  # cat per_cpu/cpu0/stats
-  entries: 0
-  overrun: 0
-  commit overrun: 0
-  bytes: 568             <--- 'bytes' is problematical !!!
-  oldest event ts:  8651.371479
-  now ts:  8653.912224
-  dropped events: 0
-  read events: 8
+aarch64-linux-ld: drivers/net/ethernet/intel/idpf/idpf_txrx.o:
+in function `idpf_rx_rsc.isra.0':
+drivers/net/ethernet/intel/idpf/idpf_txrx.c:2909:(.text+0x40cc):
+undefined reference to `tcp_gro_complete'
 
-The root cause is incorrect stat on cpu_buffer->read_bytes. To fix it:
-  1. When stat 'read_bytes', account consumed event in rb_advance_reader();
-  2. When stat 'entries_bytes', exclude the discarded padding event which
-     is smaller than minimum size because it is invisible to reader. Then
-     use rb_page_commit() instead of BUF_PAGE_SIZE at where accounting for
-     page-based read/remove/overrun.
+The drivers need to guard the calls to it manually.
+Return early from the RSC completion function if !CONFIG_INET, it won't
+work properly either way. This effectively makes it be compiled-out
+almost entirely on such builds.
 
-Also correct the comments of ring_buffer_bytes_cpu() in this patch.
-
-Fixes: c64e148a3be3 ("trace: Add ring buffer stats to measure rate of events")
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Fixes: 3a8845af66ed ("idpf: add RX splitq napi poll support")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/linux-next/4c84eb7b-3dec-467b-934b-8a0240f7fb12@infradead.org
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- kernel/trace/ring_buffer.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+Directly to net-next, build bots are not happy :s
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index a1651edc48d5..28daf0ce95c5 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -354,6 +354,11 @@ static void rb_init_page(struct buffer_data_page *bpage)
- 	local_set(&bpage->commit, 0);
- }
+From v1[0]:
+ * post the patch as standalone;
+ * pick the received tags (Randy, Jake, Przemek).
+
+[0] https://lore.kernel.org/netdev/20230920180745.1607563-1-aleksander.lobakin@intel.com
+---
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index 6fa79898c42c..aa45afeb6496 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -2876,6 +2876,9 @@ static int idpf_rx_rsc(struct idpf_queue *rxq, struct sk_buff *skb,
+ 	if (unlikely(!(ipv4 ^ ipv6)))
+ 		return -EINVAL;
  
-+static __always_inline unsigned int rb_page_commit(struct buffer_page *bpage)
-+{
-+	return local_read(&bpage->page->commit);
-+}
++	if (!IS_ENABLED(CONFIG_INET))
++		return 0;
 +
- static void free_buffer_page(struct buffer_page *bpage)
- {
- 	free_page((unsigned long)bpage->page);
-@@ -2003,7 +2008,7 @@ rb_remove_pages(struct ring_buffer_per_cpu *cpu_buffer, unsigned long nr_pages)
- 			 * Increment overrun to account for the lost events.
- 			 */
- 			local_add(page_entries, &cpu_buffer->overrun);
--			local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
-+			local_sub(rb_page_commit(to_remove_page), &cpu_buffer->entries_bytes);
- 			local_inc(&cpu_buffer->pages_lost);
- 		}
- 
-@@ -2367,11 +2372,6 @@ rb_reader_event(struct ring_buffer_per_cpu *cpu_buffer)
- 			       cpu_buffer->reader_page->read);
- }
- 
--static __always_inline unsigned rb_page_commit(struct buffer_page *bpage)
--{
--	return local_read(&bpage->page->commit);
--}
--
- static struct ring_buffer_event *
- rb_iter_head_event(struct ring_buffer_iter *iter)
- {
-@@ -2517,7 +2517,7 @@ rb_handle_head_page(struct ring_buffer_per_cpu *cpu_buffer,
- 		 * the counters.
- 		 */
- 		local_add(entries, &cpu_buffer->overrun);
--		local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
-+		local_sub(rb_page_commit(next_page), &cpu_buffer->entries_bytes);
- 		local_inc(&cpu_buffer->pages_lost);
- 
- 		/*
-@@ -2660,9 +2660,6 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	event = __rb_page_index(tail_page, tail);
- 
--	/* account for padding bytes */
--	local_add(BUF_PAGE_SIZE - tail, &cpu_buffer->entries_bytes);
--
- 	/*
- 	 * Save the original length to the meta data.
- 	 * This will be used by the reader to add lost event
-@@ -2676,7 +2673,8 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	 * write counter enough to allow another writer to slip
- 	 * in on this page.
- 	 * We put in a discarded commit instead, to make sure
--	 * that this space is not used again.
-+	 * that this space is not used again, and this space will
-+	 * not be accounted into 'entries_bytes'.
- 	 *
- 	 * If we are less than the minimum size, we don't need to
- 	 * worry about it.
-@@ -2701,6 +2699,9 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	/* time delta must be non zero */
- 	event->time_delta = 1;
- 
-+	/* account for padding bytes */
-+	local_add(BUF_PAGE_SIZE - tail, &cpu_buffer->entries_bytes);
-+
- 	/* Make sure the padding is visible before the tail_page->write update */
- 	smp_wmb();
- 
-@@ -4215,7 +4216,7 @@ u64 ring_buffer_oldest_event_ts(struct trace_buffer *buffer, int cpu)
- EXPORT_SYMBOL_GPL(ring_buffer_oldest_event_ts);
- 
- /**
-- * ring_buffer_bytes_cpu - get the number of bytes consumed in a cpu buffer
-+ * ring_buffer_bytes_cpu - get the number of bytes unconsumed in a cpu buffer
-  * @buffer: The ring buffer
-  * @cpu: The per CPU buffer to read from.
-  */
-@@ -4723,6 +4724,7 @@ static void rb_advance_reader(struct ring_buffer_per_cpu *cpu_buffer)
- 
- 	length = rb_event_length(event);
- 	cpu_buffer->reader_page->read += length;
-+	cpu_buffer->read_bytes += length;
- }
- 
- static void rb_advance_iter(struct ring_buffer_iter *iter)
-@@ -5816,7 +5818,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 	} else {
- 		/* update the entry counter */
- 		cpu_buffer->read += rb_page_entries(reader);
--		cpu_buffer->read_bytes += BUF_PAGE_SIZE;
-+		cpu_buffer->read_bytes += rb_page_commit(reader);
- 
- 		/* swap the pages */
- 		rb_init_page(bpage);
+ 	rsc_segments = DIV_ROUND_UP(skb->data_len, rsc_seg_len);
+ 	if (unlikely(rsc_segments == 1))
+ 		return 0;
 -- 
-2.25.1
+2.41.0
 
