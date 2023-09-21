@@ -2,176 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3937A9E2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEB47A9DAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjIUT6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
+        id S230355AbjIUTo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjIUT6X (ORCPT
+        with ESMTP id S229655AbjIUTo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:58:23 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23555E0A4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:29:47 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401da71b83cso12844465e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695317375; x=1695922175; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y5XZRvh5FJ3F9RXkqi8NbBrwtIOGm1RUjmAFGYn0SWM=;
-        b=G3Nlc/Nn/wLfLhPbsfjQt9FgtoM0PgvCc6mxXqC+4By9eIxGr9FxJ9FBI/5Q/72r1u
-         R2hu3ehA3431xwmKQRLwLZs104RWynFdOtOwpYhcv82J6IIom8p5DT/kENc2B2uEI4Kk
-         VgiEVSOCkCvQZZRxAYCYoyDsI9XcNnr1Lk9p+8/pNnpBRzdgTJPL+pfNU5Ngd0H6ls9v
-         mr9e0idwX+lTIBHxPE59ofBnm5vjNE4GE2+TxLwWI1MuNIfrHbpZbnFhA7AtmZmrUXVo
-         rGNbRxyULeMGS5f2pZuQxMN1mdNk1DKg2GGr2VJlJoNeQmjcRPnCCBH0pqqV9dRA4Rv2
-         EODQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317375; x=1695922175;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y5XZRvh5FJ3F9RXkqi8NbBrwtIOGm1RUjmAFGYn0SWM=;
-        b=aWuEp68I5iO0s2opKJx7Q217L6n/8Idx7cY8kFXEBmrDOZYWdE0NApqvKy83dzCejp
-         AW1IKH2SI72+oCywYK6FNal3eHCGbE/EbhShitqvFzBt3Cd56YAF4zwXWpKPucYq2l4f
-         oQQlolIeDxxMWIevg6HoqT/O1JLLZ2p3Bml7EzVrOf9VfQb9YW7ySqwyMlW2z3RJXAOe
-         D8x1RxwB+jUBymUmZqsLQpk1oYvUZ9eEH4BKYMgU7/47msIJr8MmcyREmiKM7IPkrdW6
-         cxCzESPSWZ1rFn2ZHE+s+NOKdm6TBpI08b5+53axOBaIuSyTSOVc0BCdsz3I2e/eDtR2
-         COAA==
-X-Gm-Message-State: AOJu0YwpSjAAmjq2ygeAMDqS3HHXLvi/7rysQEtrGNr6scPXMu0xZoGx
-        xR4RI5eUm+3/me/vblhkFSUiDeoPhfMgLA54mUBbb7Ah
-X-Google-Smtp-Source: AGHT+IH08jq16ad3p4HMe9xcyB8hweATSv5qN9lzeXRVPAWw2aoHMZLAHGaB/1pFA589xCpY6igblA==
-X-Received: by 2002:a5d:4289:0:b0:319:7a9f:c63 with SMTP id k9-20020a5d4289000000b003197a9f0c63mr5309192wrq.50.1695307468423;
-        Thu, 21 Sep 2023 07:44:28 -0700 (PDT)
-Received: from localhost.localdomain (abordeaux-655-1-129-86.w90-5.abo.wanadoo.fr. [90.5.10.86])
-        by smtp.gmail.com with ESMTPSA id s17-20020a1cf211000000b003fe2a40d287sm2125515wmc.1.2023.09.21.07.44.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:44:28 -0700 (PDT)
-From:   David Lechner <dlechner@baylibre.com>
-To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        David Lechner <dlechner@baylibre.com>
-Subject: [PATCH v2 18/19] staging: iio: resolver: ad2s1210: add phase_lock_range attributes
-Date:   Thu, 21 Sep 2023 09:43:59 -0500
-Message-Id: <20230921144400.62380-19-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230921144400.62380-1-dlechner@baylibre.com>
-References: <20230921144400.62380-1-dlechner@baylibre.com>
+        Thu, 21 Sep 2023 15:44:27 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3798755AE4;
+        Thu, 21 Sep 2023 10:50:20 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 81A2760173;
+        Thu, 21 Sep 2023 16:45:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+        t=1695307510; bh=7MNMf/5wLuDOzd81hlGE2fuMxkyLMCjXuf9gtw7vPdI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=KlrPDSGHxwZ6q4CDdxwD92SLGGoeSuWx57+ZAruG+fw/xcjyslgwastDsVDfFNJbK
+         emaHy7ahp7ah9Nl6K0SAdPP581IVuD1blfYiBAud1jkSl8IIuxi6e8FLGUDUQIvFRO
+         /hPlKP5mKVXCDVkyX3CIOr6k/noKf1WXnKVBxAm2Nr52rWmVP4q+I5yJF6jN9fU+Iy
+         Od98pvAmowvfGjl9fCjxnYBjYT++6Jxv+wun//QjfMZaUTfCe2ey4r+QAK2ntZrDQ5
+         Xkp5NZKO6yqD5+NVWIcODDD+KYRH01C9iZAIvns+8YsyU2j3w6AOQj2DoosFZ8HKbE
+         jb6EKjM363uwA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RFnCqO-4w49M; Thu, 21 Sep 2023 16:45:07 +0200 (CEST)
+Received: from [IPV6:2001:b68:2:2600:a00d:4e77:39e3:b52f] (unknown [IPv6:2001:b68:2:2600:a00d:4e77:39e3:b52f])
+        by domac.alu.hr (Postfix) with ESMTPSA id 0DDCD60157;
+        Thu, 21 Sep 2023 16:45:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695307507; bh=7MNMf/5wLuDOzd81hlGE2fuMxkyLMCjXuf9gtw7vPdI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=2Mlwc/Gcd/WzVSDQBWWK9/Xt+IF+57O3N8UqPnTYvoAI6wc9JWpe31LD9i7cjq7tq
+         FgmFVT97G/yPTqMipOWKjlcOJyECxM7/tg+STMWZpeIWsjO3tGhUTMp53L0uDIdBCj
+         p554o0TzWg8tMG/SagK3LbUIpf1U4TRoPIAim3QAthk2HSkLIZuT2L49OcHv9InUWi
+         iDgR3ibBleP4xKmZum3HxxB5FaYZG4HDUyXNqHy5gFlYNwJg5Ls/yIzQvddyncCPSV
+         xq3R0MiHGdWKAs63rR14Y6a0HLn9B54MLoLCuKGdJmkkQxnt+zG95mIbxNhoI6s+p5
+         I55N/t2HMPx3w==
+Message-ID: <ac5143f3-9e7e-4216-920c-88d18f3eb495@alu.unizg.hr>
+Date:   Thu, 21 Sep 2023 16:44:58 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] acpica: use spinlocks to fix the data-races
+ reported by the KCSAN
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@freebsd.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        kernel test robot <lkp@intel.com>
+References: <20230920074158.3605-1-mirsad.todorovac@alu.unizg.hr>
+ <CAJZ5v0j5d-jc8LRODvcjcu63URZV+EVgekQXDzN9xsWnabTaLQ@mail.gmail.com>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <CAJZ5v0j5d-jc8LRODvcjcu63URZV+EVgekQXDzN9xsWnabTaLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds new phase_lock_range and phase_lock_range_available attributes
-to the ad2s1210 resolver driver. These attributes allow the user to set
-the phase lock range bit in the control register to modify the behavior
-of the resolver to digital converter.
+On 9/20/2023 11:53 AM, Rafael J. Wysocki wrote:
+> On Wed, Sep 20, 2023 at 9:44 AM Mirsad Goran Todorovac
+> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>
+>> KCSAN reported hundreds of instances of data-races in ACPICA like this one:
+> 
+> If you want to make changes in the ACPICA code, the way to do that is
+> to submit a pull request for the upstream ACPICA project on GitHub.
+> 
+> Then you can resend the Linux patch with a Link: tag pointing to the
+> upstream pull request.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/staging/iio/resolver/ad2s1210.c | 58 +++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+I got the reply that I have to put the code into the ACPICA uniplatform 
+language and I just did not manage that at first attempt.
 
-diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index 71f0913b7e2e..f5b8b290e860 100644
---- a/drivers/staging/iio/resolver/ad2s1210.c
-+++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -259,6 +259,60 @@ static ssize_t excitation_frequency_store(struct device *dev,
- 	return ret;
- }
- 
-+static ssize_t phase_lock_range_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
-+			       AD2S1210_PHASE_LOCK_RANGE_44);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = sprintf(buf, "%d\n", ret ? 44 : 360);
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t len)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	u16 udata;
-+	int ret;
-+
-+	ret = kstrtou16(buf, 10, &udata);
-+	if (ret < 0 || (udata != 44 && udata != 360))
-+		return -EINVAL;
-+
-+	mutex_lock(&st->lock);
-+
-+	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
-+				 AD2S1210_PHASE_LOCK_RANGE_44,
-+				 udata == 44 ? AD2S1210_PHASE_LOCK_RANGE_44 : 0);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = len;
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_available_show(struct device *dev,
-+					       struct device_attribute *attr,
-+					       char *buf)
-+{
-+	return sprintf(buf, "44 360\n");
-+}
-+
- /* read the fault register since last sample */
- static ssize_t ad2s1210_show_fault(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
-@@ -506,6 +560,8 @@ static int ad2s1210_write_raw(struct iio_dev *indio_dev,
- }
- 
- static IIO_DEVICE_ATTR_RW(excitation_frequency, 0);
-+static IIO_DEVICE_ATTR_RW(phase_lock_range, 0);
-+static IIO_DEVICE_ATTR_RO(phase_lock_range_available, 0);
- static IIO_DEVICE_ATTR(fault, 0644,
- 		       ad2s1210_show_fault, ad2s1210_clear_fault, 0);
- 
-@@ -552,6 +608,8 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
- 
- static struct attribute *ad2s1210_attributes[] = {
- 	&iio_dev_attr_excitation_frequency.dev_attr.attr,
-+	&iio_dev_attr_phase_lock_range.dev_attr.attr,
-+	&iio_dev_attr_phase_lock_range_available.dev_attr.attr,
- 	&iio_dev_attr_fault.dev_attr.attr,
- 	&iio_dev_attr_los_thrd.dev_attr.attr,
- 	&iio_dev_attr_dos_ovr_thrd.dev_attr.attr,
--- 
-2.34.1
+Best regards,
+Mirsad Todorovac
 
+>> [    6.994149] ==================================================================
+>> [    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
+>>
+>> [    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+>> [    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+>> [    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+>> [    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+>> [    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+>> [    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+>> [    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+>> [    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+>> [    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+>> [    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+>> [    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+>> [    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+>> [    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+>> [    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+>> [    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+>> [    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+>> [    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+>> [    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+>> [    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+>> [    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [    6.995476] value changed: 0x00000004 -> 0x00000002
+>>
+>> [    6.995629] Reported by Kernel Concurrency Sanitizer on:
+>> [    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+>> [    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> [    6.995765] ==================================================================
+>>
+>> Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
+>>
+>> A number of unprotected increments:
+>>
+>>          acpi_gbl_nesting_level++;
+>>
+>> and conditional statements:
+>>
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>>
+>> no longer work in SMP environment.
+>>
+>> Proper locking like
+>>
+>>          spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>>          spin_unlock(&acpi_utdebug_lock);
+>>
+>> and
+>>
+>>          spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>>          spin_unlock(&acpi_utdebug_lock);
+>>
+>> makes these data-races go away.
+>>
+>> Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+>> acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+>> stuff the optmisers do.
+>>
+>> The patch eliminates KCSAN BUG warnings.
+>>
+>> Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+>> Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+>> Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+>> Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+>> Cc: Jung-uk Kim <jkim@FreeBSD.org>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Erik Kaneda <erik.kaneda@intel.com>
+>> Cc: Bob Moore <robert.moore@intel.com>
+>> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+>> Cc: Len Brown <lenb@kernel.org>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: acpica-devel@lists.linuxfoundation.org
+>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202309201331.S2c1JL2h-lkp@intel.com/
+>> ---
+>> v1 -> v2:
+>>   Moved the declaration of 'u32 nesting_level' inside #ifdef ACPI_APPLICATION ... #endif
+>>   according to the unused variable warning of the kernel test robot.
+>>
+>> v1:
+>>   Preliminary RFC version of the patch.
+>>
+>>   drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
+>>   1 file changed, 35 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+>> index c5f6c85a3a09..1faf7dc144f0 100644
+>> --- a/drivers/acpi/acpica/utdebug.c
+>> +++ b/drivers/acpi/acpica/utdebug.c
+>> @@ -16,6 +16,8 @@
+>>   #define _COMPONENT          ACPI_UTILITIES
+>>   ACPI_MODULE_NAME("utdebug")
+>>
+>> +static DEFINE_SPINLOCK(acpi_utdebug_lock);
+>> +
+>>   #ifdef ACPI_DEBUG_OUTPUT
+>>   static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
+>>   static const char *acpi_gbl_function_entry_prefix = "----Entry";
+>> @@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
+>>   void acpi_ut_track_stack_ptr(void)
+>>   {
+>>          acpi_size current_sp;
+>> +       u32 nesting_level;
+>>
+>>          if (&current_sp < acpi_gbl_lowest_stack_pointer) {
+>>                  acpi_gbl_lowest_stack_pointer = &current_sp;
+>>          }
+>>
+>> -       if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
+>> -               acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
+>> +       nesting_level = READ_ONCE(acpi_gbl_nesting_level);
+>> +
+>> +       if (nesting_level > acpi_gbl_deepest_nesting) {
+>> +               acpi_gbl_deepest_nesting = nesting_level;
+>>          }
+>>   }
+>>
+>> @@ -136,6 +141,7 @@ acpi_debug_print(u32 requested_debug_level,
+>>          va_list args;
+>>   #ifdef ACPI_APPLICATION
+>>          int fill_count;
+>> +       u32 nesting_level;
+>>   #endif
+>>
+>>          /* Check if debug output enabled */
+>> @@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
+>>                  }
+>>
+>>                  acpi_gbl_previous_thread_id = thread_id;
+>> -               acpi_gbl_nesting_level = 0;
+>> +               WRITE_ONCE(acpi_gbl_nesting_level, 0);
+>>          }
+>>
+>>          /*
+>> @@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
+>>                  acpi_os_printf("[%u] ", (u32)thread_id);
+>>          }
+>>
+>> -       fill_count = 48 - acpi_gbl_nesting_level -
+>> +       fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
+>>              strlen(acpi_ut_trim_function_name(function_name));
+>>          if (fill_count < 0) {
+>>                  fill_count = 0;
+>>          }
+>>
+>> +       nesting_level = READ_ONCE(acpi_gbl_nesting_level);
+>> +
+>>          acpi_os_printf("[%02d] %*s",
+>> -                      acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
+>> +                      nesting_level, nesting_level + 1, " ");
+>>          acpi_os_printf("%s%*s: ",
+>>                         acpi_ut_trim_function_name(function_name), fill_count,
+>>                         " ");
+>> @@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
+>>                const char *module_name, u32 component_id)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
+>>                    u32 component_id, const void *pointer)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
+>>                    const char *module_name, u32 component_id, const char *string)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
+>>                    const char *module_name, u32 component_id, u32 integer)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
+>>                                   acpi_gbl_function_exit_prefix);
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   ACPI_EXPORT_SYMBOL(acpi_ut_exit)
+>> @@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
+>>                  }
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
+>> @@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
+>>                                   ACPI_FORMAT_UINT64(value));
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
+>> @@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
+>>                                   acpi_gbl_function_exit_prefix, ptr);
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   /*******************************************************************************
+>> @@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
+>>                                   acpi_gbl_function_exit_prefix, string);
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   /*******************************************************************************
+>> --
+>> 2.34.1
+>>
