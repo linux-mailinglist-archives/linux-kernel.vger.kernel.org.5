@@ -2,70 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2D17AA4BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7A87AA490
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbjIUWQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S232155AbjIUWMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbjIUWPa (ORCPT
+        with ESMTP id S232756AbjIUWLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:15:30 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC635AF97E;
-        Thu, 21 Sep 2023 11:07:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=PZoJibFgab/vN9GIaKJ3/1GHrki3dxSUD2jY1bTI4vI=; b=eRFcMdCA9qvR+q+a9CgGajuBM1
-        95+mHIxZFcop86v4Bg58gAHW33MUSAy/zRn/p0eTplitvq5yj70/F/Pbsg8ygMu8au1nuM6c4PWvO
-        2BPmXQe/3KXMYrV0CkO924pf+xQkdU4T1T6CfMnA/ZH6x4qEKhQrU+MX5omAYqLc2OyQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qjMFe-0076Ut-Gt; Thu, 21 Sep 2023 18:10:02 +0200
-Date:   Thu, 21 Sep 2023 18:10:02 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        afd@ti.com, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srk@ti.com, r-gunasekaran@ti.com
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
- Ethernet support
-Message-ID: <bdb60c9f-467e-4960-b516-9d79f43544ed@lunn.ch>
-References: <20230921060913.721336-1-danishanwar@ti.com>
- <20230921060913.721336-3-danishanwar@ti.com>
+        Thu, 21 Sep 2023 18:11:44 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4BDC85D0C;
+        Thu, 21 Sep 2023 10:37:47 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 735E21756;
+        Thu, 21 Sep 2023 09:21:10 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07CC83F59C;
+        Thu, 21 Sep 2023 09:20:28 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Subject: [PATCH v1 2/8] powerpc: hugetlb: Convert set_huge_pte_at() to take vma
+Date:   Thu, 21 Sep 2023 17:20:01 +0100
+Message-Id: <20230921162007.1630149-3-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230921162007.1630149-1-ryan.roberts@arm.com>
+References: <20230921162007.1630149-1-ryan.roberts@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921060913.721336-3-danishanwar@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	/* Dual Ethernet application node on PRU-ICSSG2 */
+In order to fix a bug, arm64 needs access to the vma inside it's
+implementation of set_huge_pte_at(). Provide for this by converting the
+mm parameter to be a vma. Any implementations that require the mm can
+access it via vma->vm_mm.
 
-How relevant is "Dual Ethernet" here? You are talking of adding
-switchdev support, and runtime swapping the application. All these
-properties should be valid for the switch application as well?
+This commit makes the required powerpc modifications. Separate commits
+update the other arches and core code, before the actual bug is fixed in
+arm64.
 
-In fact, you are describing hardware here, so the application should
-not actually matter.
+No behavioral changes intended.
 
-So maybe this comment should be:
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+---
+ arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h | 3 ++-
+ arch/powerpc/mm/book3s64/hugetlbpage.c           | 2 +-
+ arch/powerpc/mm/book3s64/radix_hugetlbpage.c     | 2 +-
+ arch/powerpc/mm/nohash/8xx.c                     | 2 +-
+ arch/powerpc/mm/pgtable.c                        | 7 ++++++-
+ 5 files changed, 11 insertions(+), 5 deletions(-)
 
-Ethernet node on PRU-ICSSG2
+diff --git a/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h b/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
+index de092b04ee1a..fff8cd726bc7 100644
+--- a/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
+@@ -46,7 +46,8 @@ static inline int check_and_get_huge_psize(int shift)
+ }
+ 
+ #define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
+-void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_t pte);
++void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep, pte_t pte);
++void __set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_t pte);
+ 
+ #define __HAVE_ARCH_HUGE_PTE_CLEAR
+ static inline void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+diff --git a/arch/powerpc/mm/book3s64/hugetlbpage.c b/arch/powerpc/mm/book3s64/hugetlbpage.c
+index 3bc0eb21b2a0..ae7fd7c90eb8 100644
+--- a/arch/powerpc/mm/book3s64/hugetlbpage.c
++++ b/arch/powerpc/mm/book3s64/hugetlbpage.c
+@@ -147,7 +147,7 @@ void huge_ptep_modify_prot_commit(struct vm_area_struct *vma, unsigned long addr
+ 	if (radix_enabled())
+ 		return radix__huge_ptep_modify_prot_commit(vma, addr, ptep,
+ 							   old_pte, pte);
+-	set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
++	set_huge_pte_at(vma, addr, ptep, pte);
+ }
+ 
+ void __init hugetlbpage_init_defaultsize(void)
+diff --git a/arch/powerpc/mm/book3s64/radix_hugetlbpage.c b/arch/powerpc/mm/book3s64/radix_hugetlbpage.c
+index 17075c78d4bc..7cd40a334c3a 100644
+--- a/arch/powerpc/mm/book3s64/radix_hugetlbpage.c
++++ b/arch/powerpc/mm/book3s64/radix_hugetlbpage.c
+@@ -58,5 +58,5 @@ void radix__huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
+ 	    atomic_read(&mm->context.copros) > 0)
+ 		radix__flush_hugetlb_page(vma, addr);
+ 
+-	set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
++	set_huge_pte_at(vma, addr, ptep, pte);
+ }
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index dbbfe897455d..650a7a8496b6 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -91,7 +91,7 @@ static int __ref __early_map_kernel_hugepage(unsigned long va, phys_addr_t pa,
+ 	if (new && WARN_ON(pte_present(*ptep) && pgprot_val(prot)))
+ 		return -EINVAL;
+ 
+-	set_huge_pte_at(&init_mm, va, ptep, pte_mkhuge(pfn_pte(pa >> PAGE_SHIFT, prot)));
++	__set_huge_pte_at(&init_mm, va, ptep, pte_mkhuge(pfn_pte(pa >> PAGE_SHIFT, prot)));
+ 
+ 	return 0;
+ }
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index 3f86fd217690..9cbcb561a4d8 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -288,7 +288,7 @@ int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+ }
+ 
+ #if defined(CONFIG_PPC_8xx)
+-void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_t pte)
++void __set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_t pte)
+ {
+ 	pmd_t *pmd = pmd_off(mm, addr);
+ 	pte_basic_t val;
+@@ -310,6 +310,11 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_
+ 	for (i = 0; i < num; i++, entry++, val += SZ_4K)
+ 		*entry = val;
+ }
++
++void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep, pte_t pte)
++{
++	__set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
++}
+ #endif
+ #endif /* CONFIG_HUGETLB_PAGE */
+ 
+-- 
+2.25.1
 
-	Andrew
