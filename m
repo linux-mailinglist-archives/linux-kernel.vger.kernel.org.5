@@ -2,194 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A1F7A9F10
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EFD7AA16D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjIUUQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        id S231165AbjIUVCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjIUUQi (ORCPT
+        with ESMTP id S232158AbjIUVB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:16:38 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636A945628;
-        Thu, 21 Sep 2023 10:23:34 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38LHNExm092944;
-        Thu, 21 Sep 2023 12:23:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695316994;
-        bh=M2urefFnMrpaE3NGHp7ET4+oPQS3ILeoSpVkIqVTMmo=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=XUxukriC9Jnz/EgqmTQ1QvwHTAM0yTZ9n4QWkHit4ojgROexIgmBXpwvkyx3MnFLF
-         JXVH4ZJrixSXp4AchXLe/ZLSD0Xcd1KH7gSA9CK00XB8GVt9aTsqO2PT992QxmjKov
-         Xtim9GRL1I47/ahiJx0HcQPNiKCunmqkM7Pg8RQo=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38LHNER3038267
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Sep 2023 12:23:14 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Sep 2023 12:23:13 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Sep 2023 12:23:13 -0500
-Received: from [10.250.38.120] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38LHNDS9061180;
-        Thu, 21 Sep 2023 12:23:13 -0500
-Message-ID: <f79f521b-bfaf-27d2-f152-2f2f21d6f2b7@ti.com>
-Date:   Thu, 21 Sep 2023 12:23:12 -0500
+        Thu, 21 Sep 2023 17:01:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E7F7E4D2;
+        Thu, 21 Sep 2023 10:36:02 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 17:36:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695317761;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GbltNKSEFxaaB7VGzgXS8G1Qsg+F+A8ssGGhxytvu40=;
+        b=euLBJ2br2Fvthu232sqmqm1mPOtiSWn0sNE7UWb/dwPtjxyh0WaJlZDE1aBFFSZv7xq6HF
+        3VnMr3Y8o4D9uY+P91q4/ZF0TpdxUqft6yYsJ+mAKfTHepVOvdUlzjlFWQbGkDltcu+26j
+        5Y8e5NMo3u8g/by7LZbB9pLjJxkpl5bzEfDiXHj4xf284vevkyy593n2JE0j/tnT9dqJ4z
+        eLHF+NoXWWxI86VAmZwJKXIazWB+2grXOY72L6DudRRtgGru7Xo9wWUoRRGZf30GLPK+tw
+        6A5kETH/gUCU8LhZLrtrjhASPVgOlUrEywoefnbXxdD6nhsSVqfJ5njk+GTXDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695317761;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GbltNKSEFxaaB7VGzgXS8G1Qsg+F+A8ssGGhxytvu40=;
+        b=pVkaMbw7bgjDTXAfUJEwo4dvSAhHys2QAc0UDEvCM+Nre2zXdebOA49vXsVB6D/AmjUpxH
+        KB7JqlCKOX9xkpBg==
+From:   "tip-bot2 for peterz@infradead.org" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] futex: Add flags2 argument to futex_requeue()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230921105248.396780136@noisy.programming.kicks-ass.net>
+References: <20230921105248.396780136@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/2] arm64: dts: ti: am642-evm: Add overlay for NAND
- expansion card
-Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>, Nishanth Menon <nm@ti.com>
-CC:     <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srk@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Siddharth Vadapalli <s-vadapalli@ti.com>
-References: <20230920133450.54226-1-rogerq@kernel.org>
- <20230920133450.54226-3-rogerq@kernel.org>
- <20230920135802.3ej2wcuaruqjidel@uncouth>
- <e8f26137-1284-4f45-a74d-a0a5f2aa2f93@kernel.org>
- <20230920164424.rrjvm6nvtv4ysyrw@unreal>
- <c7ec6ccd-37de-244d-0b3b-cb5d13bae539@ti.com>
- <6f2b38f8-1962-46f2-a095-b1eaf99ed407@kernel.org>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <6f2b38f8-1962-46f2-a095-b1eaf99ed407@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169531776042.27769.15557593072618205773.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/23 6:37 AM, Roger Quadros wrote:
-> On 20/09/2023 20:06, Andrew Davis wrote:
->> On 9/20/23 11:44 AM, Nishanth Menon wrote:
->>> On 18:18-20230920, Roger Quadros wrote:
->>>>
->>>>
->>>> On 20/09/2023 16:58, Nishanth Menon wrote:
->>>>> On 16:34-20230920, Roger Quadros wrote:
->>>>>> The NAND expansion card plugs in over the HSE (High Speed Expansion)
->>>>>> connector. Add support for it.
->>>>>>
->>>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>>>> ---
->>>>>>    arch/arm64/boot/dts/ti/Makefile               |   1 +
->>>>>>    arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++++++++++
->>>>>>    2 files changed, 141 insertions(+)
->>>>>>    create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
->>>>>>
->>>>>> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
->>>>>> index 06d6f264f292..ece74085a6be 100644
->>>>>> --- a/arch/arm64/boot/dts/ti/Makefile
->>>>>> +++ b/arch/arm64/boot/dts/ti/Makefile
->>>>>> @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
->>>>>>      # Boards with AM64x SoC
->>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
->>>>>> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtbo
->>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
->>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
->>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
->>>>>
->>>>> Also see https://lore.kernel.org/all/20230911165610.GA1362932-robh@kernel.org/
->>>>>
->>>>> you may not get the dtbo installed when doing make dtbs_install
->>>>>
->>>>> [...]
->>>>>
->>>>
->>>> $ v8make dtbs_install INSTALL_DTBS_PATH=/tmp
->>>>     INSTALL /tmp/ti/k3-am625-beagleplay.dtb
->>>>     INSTALL /tmp/ti/k3-am625-phyboard-lyra-rdk.dtb
->>>>     INSTALL /tmp/ti/k3-am625-sk.dtb
->>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dahlia.dtb
->>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dev.dtb
->>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-yavia.dtb
->>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-dahlia.dtb
->>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-dev.dtb
->>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-yavia.dtb
->>>>     INSTALL /tmp/ti/k3-am62-lp-sk.dtb
->>>>     INSTALL /tmp/ti/k3-am62x-sk-hdmi-audio.dtbo
->>>>     INSTALL /tmp/ti/k3-am62a7-sk.dtb
->>>>     INSTALL /tmp/ti/k3-am62p5-sk.dtb
->>>>     INSTALL /tmp/ti/k3-am642-evm.dtb
->>>>     INSTALL /tmp/ti/k3-am642-evm-nand.dtbo
->>>> ^^^^
->>>>     INSTALL /tmp/ti/k3-am642-phyboard-electra-rdk.dtb
->>>>     INSTALL /tmp/ti/k3-am642-sk.dtb
->>>>
->>>>
->>>> What did I miss?
->>>
->>> I missed it, actually. See Rob's comment:
->>> https://lore.kernel.org/all/CAL_Jsq+GR3hP6hFvFn2z5aXvSXnh9butD3aKZ-y_XJgx0_YPTw@mail.gmail.com/
->>>
->>> Having orphan dtbo is apparently frowned upon
->>>
->>
->> And if you apply these overlays to the base DTB then it gets
->> symbols added automatically, no need for your patch [1/2] here.
->>
-> 
-> Is this OK?
-> 
-> 	k3-am642-evm-nand-dtbs := k3-am642-evm.dtb k3-am642-evm-nand.dtbo
-> 	dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtb
-> 
-> So patch 1 is not required in this case but we have an
-> extra dtb file which is not really required.
-> 
+The following commit has been merged into the locking/core branch of tip:
 
-While I agree we will end up with several pre-overlayed DTB files
-that are arguably not required as they could be later built/applied,
-until we find a better way to check at build time these overlays
-need applied to something as a test.
+Commit-ID:     27b88f3519e72d71c8cead6b835a26c171109c9b
+Gitweb:        https://git.kernel.org/tip/27b88f3519e72d71c8cead6b835a26c171109c9b
+Author:        peterz@infradead.org <peterz@infradead.org>
+AuthorDate:    Thu, 21 Sep 2023 12:45:14 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 21 Sep 2023 19:22:09 +02:00
 
-> I have 2 more issues to point out
-> 
-> 1)
-> With existing examples e.g. J7200 EVM
-> wouldn't  k3-j7200-evm.dtb include the k3-j7200-evm-quad-port-eth-exp.dtbo?
-> Is this what we really want?
-> 
-> likewise for k3-j721e-evm.dtb and k3-am654-gp-evm.dtb
-> 
+futex: Add flags2 argument to futex_requeue()
 
-Yes, that is the idea, the base-board.dtb is just the raw main board, but
-the "EVM" when you buy it comes with the quad-port daughtercard attached.
-That is what we consider the "EVM" and the DTB names match that.
+In order to support mixed size requeue, add a second flags argument to
+the internal futex_requeue() function.
 
-> 2)
-> Another issue (unrelated to this change) is the below warning:
-> 
-> 	arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #address-cells value
-> 	arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #size-cells value
-> 
-> This is because we use the 'ranges' property in the gpmc0 node
-> and the compiler doesn't know the #address/size-cells of the
-> parent node.
-> 
-> Is there a trick to specify it in the dtso file?
-> 
+No functional change intended.
 
-Hmm, seems like a tricky one. Do you really need to do the ranges here?
-Could you use the default `ranges;` for gpmc0? Then do the range translation
-down inside the nand node to keep the partition addresses sane.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20230921105248.396780136@noisy.programming.kicks-ass.net
+---
+ kernel/futex/futex.h    |  5 +++--
+ kernel/futex/requeue.c  | 12 +++++++-----
+ kernel/futex/syscalls.c |  6 +++---
+ 3 files changed, 13 insertions(+), 10 deletions(-)
 
-Andrew
-
+diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
+index a8ea5ef..a06030a 100644
+--- a/kernel/futex/futex.h
++++ b/kernel/futex/futex.h
+@@ -328,8 +328,9 @@ extern int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags, u32
+ 				 val, ktime_t *abs_time, u32 bitset, u32 __user
+ 				 *uaddr2);
+ 
+-extern int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+-			 u32 __user *uaddr2, int nr_wake, int nr_requeue,
++extern int futex_requeue(u32 __user *uaddr1, unsigned int flags1,
++			 u32 __user *uaddr2, unsigned int flags2,
++			 int nr_wake, int nr_requeue,
+ 			 u32 *cmpval, int requeue_pi);
+ 
+ extern int __futex_wait(u32 __user *uaddr, unsigned int flags, u32 val,
+diff --git a/kernel/futex/requeue.c b/kernel/futex/requeue.c
+index 5bf6958..a0a7995 100644
+--- a/kernel/futex/requeue.c
++++ b/kernel/futex/requeue.c
+@@ -346,8 +346,9 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
+ /**
+  * futex_requeue() - Requeue waiters from uaddr1 to uaddr2
+  * @uaddr1:	source futex user address
+- * @flags:	futex flags (FLAGS_SHARED, etc.)
++ * @flags1:	futex flags (FLAGS_SHARED, etc.)
+  * @uaddr2:	target futex user address
++ * @flags2:	futex flags (FLAGS_SHARED, etc.)
+  * @nr_wake:	number of waiters to wake (must be 1 for requeue_pi)
+  * @nr_requeue:	number of waiters to requeue (0-INT_MAX)
+  * @cmpval:	@uaddr1 expected value (or %NULL)
+@@ -361,7 +362,8 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
+  *  - >=0 - on success, the number of tasks requeued or woken;
+  *  -  <0 - on error
+  */
+-int futex_requeue(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
++int futex_requeue(u32 __user *uaddr1, unsigned int flags1,
++		  u32 __user *uaddr2, unsigned int flags2,
+ 		  int nr_wake, int nr_requeue, u32 *cmpval, int requeue_pi)
+ {
+ 	union futex_key key1 = FUTEX_KEY_INIT, key2 = FUTEX_KEY_INIT;
+@@ -424,10 +426,10 @@ int futex_requeue(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
+ 	}
+ 
+ retry:
+-	ret = get_futex_key(uaddr1, flags, &key1, FUTEX_READ);
++	ret = get_futex_key(uaddr1, flags1, &key1, FUTEX_READ);
+ 	if (unlikely(ret != 0))
+ 		return ret;
+-	ret = get_futex_key(uaddr2, flags, &key2,
++	ret = get_futex_key(uaddr2, flags2, &key2,
+ 			    requeue_pi ? FUTEX_WRITE : FUTEX_READ);
+ 	if (unlikely(ret != 0))
+ 		return ret;
+@@ -459,7 +461,7 @@ retry_private:
+ 			if (ret)
+ 				return ret;
+ 
+-			if (!(flags & FLAGS_SHARED))
++			if (!(flags1 & FLAGS_SHARED))
+ 				goto retry_private;
+ 
+ 			goto retry;
+diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
+index e4c8ec7..dde9b74 100644
+--- a/kernel/futex/syscalls.c
++++ b/kernel/futex/syscalls.c
+@@ -106,9 +106,9 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 	case FUTEX_WAKE_BITSET:
+ 		return futex_wake(uaddr, flags, val, val3);
+ 	case FUTEX_REQUEUE:
+-		return futex_requeue(uaddr, flags, uaddr2, val, val2, NULL, 0);
++		return futex_requeue(uaddr, flags, uaddr2, flags, val, val2, NULL, 0);
+ 	case FUTEX_CMP_REQUEUE:
+-		return futex_requeue(uaddr, flags, uaddr2, val, val2, &val3, 0);
++		return futex_requeue(uaddr, flags, uaddr2, flags, val, val2, &val3, 0);
+ 	case FUTEX_WAKE_OP:
+ 		return futex_wake_op(uaddr, flags, uaddr2, val, val2, val3);
+ 	case FUTEX_LOCK_PI:
+@@ -125,7 +125,7 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 		return futex_wait_requeue_pi(uaddr, flags, val, timeout, val3,
+ 					     uaddr2);
+ 	case FUTEX_CMP_REQUEUE_PI:
+-		return futex_requeue(uaddr, flags, uaddr2, val, val2, &val3, 1);
++		return futex_requeue(uaddr, flags, uaddr2, flags, val, val2, &val3, 1);
+ 	}
+ 	return -ENOSYS;
+ }
