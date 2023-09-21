@@ -2,146 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141707A9A12
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA5F7A9E9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjIUSgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S231659AbjIUUDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjIUSfv (ORCPT
+        with ESMTP id S231483AbjIUUCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:35:51 -0400
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80191B05A3;
-        Thu, 21 Sep 2023 11:08:35 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-530ea522f5eso1423880a12.3;
-        Thu, 21 Sep 2023 11:08:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695319714; x=1695924514;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+hU2wGCingAlq1vH4snxZ9jH8iIHNT0vP9dB+aFD54M=;
-        b=XEyTr1vkxd5ooik5lhgh1bysykBKHa95Zpjl0gy+oiYOy4JUDUQkXfbcjqPbijhomj
-         qFQRlmM7L7KcOdBRam65bUjtEWjEuHJvtgOEbaHPcAaU//j4fubT44O5GnwILHYGvzS/
-         cybjLkxOb3uieXHynx58/LtB4SZqBXlEHM84+GDDUUfT/GZB1EgtTdBlcL29bc8E1G1L
-         mEOV2uHPrY6L6cWPVArUJB5YbkibXQWuSceGqQ2cA5Nma6tzI7hKPPbO+QWP5JG1dqNw
-         oCWIdUcax45DhpxSq9mi/xoJTvzFSNO3BNXANCFcsOUzihSlBVN+GPA3fVo8O/G33c2n
-         xnIQ==
-X-Gm-Message-State: AOJu0YyermOGWXBdR2jnK5Fb2xES42R+m3ALRWczvxPnJgCvY5XIjlX/
-        ZHi0MRSml1vsQ5XNKW0VSvGLDfZDEXI=
-X-Google-Smtp-Source: AGHT+IGy7RH6hkCC0ACph3nnEpew0kaReSoVyb7qqMq6pTWN19tauJ71Q+euN43r2C8pvwjN2OYldQ==
-X-Received: by 2002:a17:906:a3c2:b0:9ae:406c:3420 with SMTP id ca2-20020a170906a3c200b009ae406c3420mr4235574ejb.30.1695295307914;
-        Thu, 21 Sep 2023 04:21:47 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id g21-20020a170906199500b009a5f1d15644sm887268ejd.119.2023.09.21.04.21.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 04:21:47 -0700 (PDT)
-Message-ID: <1165e159-62d1-4abd-88d7-b8eaeaf797df@kernel.org>
-Date:   Thu, 21 Sep 2023 13:21:46 +0200
+        Thu, 21 Sep 2023 16:02:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53165468E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C3B0C4AF77;
+        Thu, 21 Sep 2023 11:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695295545;
+        bh=t4ry7//CzzJohA2MxLm7JobvhK5R16tidfZmy/skTKI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=E+RHM/0nm/ZfWk42C534jVIWFMefKm7Ty3hKQ4Hyswv04LpkLVCqkWxeGIL3oKKBP
+         fcDaBLBNm3x1VYbuiBOfYJ9iKZWaDMh2R96h3b8+HAIyg/nWYdcGOmTkF6plHHuyqW
+         PVUlJ6n/XUjv0i7wtNkiDMyvcqyZNs6eOho7EyGKVxBXXU8VfAis+v/J0iHL/DYriE
+         k5L16ftgwm+V2nOqoVSIfDB6WRekOeZs1QAiidvYArDmj2oVgyHSuwEpqAESiaPKtw
+         J2CddwE0QGM2Iayy6tSHYx41BksAOShY4Xd7Uo9tGKvlDfmVlSAjiEElXdLvqK6rUn
+         0cg6plV0ZdZGw==
+Message-ID: <4a9c1f89-99c6-40dc-a56c-64d06386d5a1@kernel.org>
+Date:   Thu, 21 Sep 2023 14:25:38 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] serial: 8250: remove AR7 support
+Subject: Re: [PATCH net-next v4 2/3] net: ethernet: ti: am65-cpsw: add mqprio
+ qdisc offload in channel mode
 Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
- <20230920201035.3445-2-wsa+renesas@sang-engineering.com>
- <a86483c4-9ec2-3435-198b-9773379c67be@linaro.org>
- <ZQwl+OXvhA6/x6f1@smile.fi.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <ZQwl+OXvhA6/x6f1@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+To:     Simon Horman <horms@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
+        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230920121530.4710-1-rogerq@kernel.org>
+ <20230920121530.4710-3-rogerq@kernel.org>
+ <20230921104529.GI224399@kernel.org>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20230921104529.GI224399@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 09. 23, 13:16, Andy Shevchenko wrote:
-> On Thu, Sep 21, 2023 at 12:36:05PM +0200, Philippe Mathieu-Daudé wrote:
->> On 20/9/23 22:10, Wolfram Sang wrote:
-> 
->>> --- a/include/uapi/linux/serial_core.h
->>> +++ b/include/uapi/linux/serial_core.h
->>> @@ -32,7 +32,6 @@
->>>    #define PORT_XSCALE	15
->>>    #define PORT_RM9000	16	/* PMC-Sierra RM9xxx internal UART */
->>>    #define PORT_OCTEON	17	/* Cavium OCTEON internal UART */
->>> -#define PORT_AR7	18	/* Texas Instruments AR7 internal UART */
+Hi Simon,
+
+On 21/09/2023 13:45, Simon Horman wrote:
+> On Wed, Sep 20, 2023 at 03:15:29PM +0300, Roger Quadros wrote:
+>> From: Grygorii Strashko <grygorii.strashko@ti.com>
 >>
->> I'm a bit surprised definitions are removed from the uAPI, isn't
->> it expected to be very stable? Shouldn't it be better to keep it
->> defined but modify the comment, mentioning "obsolete" or "deprecated"?
+>> This patch adds MQPRIO Qdisc offload in full 'channel' mode which allows
+>> not only setting up pri:tc mapping, but also configuring TX shapers
+>> (rate-limiting) on external port FIFOs.
+>>
+>> The MQPRIO Qdisc offload is expected to work with or without VLAN/priority
+>> tagged packets.
+>>
+>> The CPSW external Port FIFO has 8 Priority queues. The rate-limit can be
+>> set for each of these priority queues. Which Priority queue a packet is
+>> assigned to depends on PN_REG_TX_PRI_MAP register which maps header
+>> priority to switch priority.
+>>
+>> The header priority of a packet is assigned via the RX_PRI_MAP_REG which
+>> maps packet priority to header priority.
+>>
+>> The packet priority is either the VLAN priority (for VLAN tagged packets)
+>> or the thread/channel offset.
+>>
+>> For simplicity, we assign the same priority queue to all queues of a
+>> Traffic Class so it can be rate-limited correctly.
+>>
+>> Configuration example:
+>>  ethtool -L eth1 tx 5
+>>  ethtool --set-priv-flags eth1 p0-rx-ptype-rrobin off
+>>
+>>  tc qdisc add dev eth1 parent root handle 100: mqprio num_tc 3 \
+>>  map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
+>>  queues 1@0 1@1 1@2 hw 1 mode channel \
+>>  shaper bw_rlimit min_rate 0 100mbit 200mbit max_rate 0 101mbit 202mbit
+>>
+>>  tc qdisc replace dev eth2 handle 100: parent root mqprio num_tc 1 \
+>>  map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 hw 1
+>>
+>>  ip link add link eth1 name eth1.100 type vlan id 100
+>>  ip link set eth1.100 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
+>>
+>> In the above example two ports share the same TX CPPI queue 0 for low
+>> priority traffic. 3 traffic classes are defined for eth1 and mapped to:
+>> TC0 - low priority, TX CPPI queue 0 -> ext Port 1 fifo0, no rate limit
+>> TC1 - prio 2, TX CPPI queue 1 -> ext Port 1 fifo1, CIR=100Mbit/s, EIR=1Mbit/s
+>> TC2 - prio 3, TX CPPI queue 2 -> ext Port 1 fifo2, CIR=200Mbit/s, EIR=2Mbit/s
+>>
+>> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 > 
-> The numbers up to 20 must stay, they are being used somewhere, setserial
-> implementation in busybox (IIRC).
+> ...
+> 
+>> +static int am65_cpsw_mqprio_verify_shaper(struct am65_cpsw_port *port,
+>> +					  struct tc_mqprio_qopt_offload *mqprio)
+>> +{
+>> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+>> +	struct netlink_ext_ack *extack = mqprio->extack;
+>> +	u64 min_rate_total = 0, max_rate_total = 0;
+>> +	u32 min_rate_msk = 0, max_rate_msk = 0;
+>> +	bool has_min_rate, has_max_rate;
+>> +	int num_tc, i;
+>> +
+>> +	if (!(mqprio->flags & TC_MQPRIO_F_SHAPER))
+>> +		return 0;
+>> +
+>> +	if (mqprio->shaper != TC_MQPRIO_SHAPER_BW_RATE)
+>> +		return 0;
+>> +
+>> +	has_min_rate = !!(mqprio->flags & TC_MQPRIO_F_MIN_RATE);
+>> +	has_max_rate = !!(mqprio->flags & TC_MQPRIO_F_MAX_RATE);
+>> +
+>> +	if (!has_min_rate && has_max_rate) {
+>> +		NL_SET_ERR_MSG_MOD(extack, "min_rate is required with max_rate");
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	if (!has_min_rate)
+>> +		return 0;
+>> +
+>> +	num_tc = mqprio->qopt.num_tc;
+>> +
+>> +	for (i = num_tc - 1; i >= 0; i--) {
+>> +		u32 ch_msk;
+>> +
+>> +		if (mqprio->min_rate[i])
+>> +			min_rate_msk |= BIT(i);
+>> +		min_rate_total +=  mqprio->min_rate[i];
+>> +
+>> +		if (has_max_rate) {
+>> +			if (mqprio->max_rate[i])
+>> +				max_rate_msk |= BIT(i);
+>> +			max_rate_total +=  mqprio->max_rate[i];
+>> +
+>> +			if (!mqprio->min_rate[i] && mqprio->max_rate[i]) {
+>> +				NL_SET_ERR_MSG_FMT_MOD(extack,
+>> +						       "TX tc%d rate max>0 but min=0\n",
+>> +						       i);
+>> +				return -EINVAL;
+>> +			}
+>> +
+>> +			if (mqprio->max_rate[i] &&
+>> +			    mqprio->max_rate[i] < mqprio->min_rate[i]) {
+>> +				NL_SET_ERR_MSG_FMT_MOD(extack,
+>> +						       "TX tc%d rate min(%llu)>max(%llu)\n",
+>> +						       i, mqprio->min_rate[i],
+>> +						       mqprio->max_rate[i]);
+>> +				return -EINVAL;
+>> +			}
+>> +		}
+>> +
+>> +		ch_msk = GENMASK(num_tc - 1, i);
+>> +		if ((min_rate_msk & BIT(i)) && (min_rate_msk ^ ch_msk)) {
+>> +			NL_SET_ERR_MSG_FMT_MOD(extack,
+>> +					       "TX min rate limiting has to be enabled sequentially hi->lo tx_rate_msk%x\n",
+>> +					       min_rate_msk);
+> 
+> Hi Grygorii and Roger,
+> 
+> An allmodconfig build with gcc-13 W=1 warns that:
+> 
+>  drivers/net/ethernet/ti/am65-cpsw-qos.c: In function 'am65_cpsw_mqprio_verify_shaper':
+>  ./include/linux/netlink.h:116:13: warning: 'am65_cpsw_qos: TX min rate l...' directive output truncated writing 85 bytes into a region of size 80 [-Wformat-truncation=]
+> 
+>> +			return -EINVAL;
+>> +		}
+>> +
+>> +		if ((max_rate_msk & BIT(i)) && (max_rate_msk ^ ch_msk)) {
+>> +			NL_SET_ERR_MSG_FMT_MOD(extack,
+>> +					       "TX max rate limiting has to be enabled sequentially hi->lo tx_rate_msk%x\n",
+>> +					       max_rate_msk);
+> 
+> Likewise, here too.
 
-But they define it if we don't:
-#ifndef PORT_AR7
-# define PORT_AR7               18
-#endif
+OK. I'll have to reduce the message by 5 characters. Thanks!
 
-> NAK.
-I don't mind either way. But likely we should reserve the field if we go 
-and remove it (setserial has a number->string mapping in busybox). Hm, 
-then reserving it or keep it? Perhaps keep it is better... So ack the 
-NACK :).
+> 
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>> +	min_rate_total = TO_MBPS(min_rate_total);
+>> +	max_rate_total = TO_MBPS(max_rate_total);
+>> +
+>> +	p_mqprio->shaper_en = true;
+>> +	p_mqprio->max_rate_total = max_t(u64, min_rate_total, max_rate_total);
+>> +
+>> +	return 0;
+>> +}
+> 
+> ,..
 
 -- 
-js
-suse labs
-
+cheers,
+-roger
