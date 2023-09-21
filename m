@@ -2,692 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CEB7AA57B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AB07AA57E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbjIUXKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 19:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        id S229643AbjIUXPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 19:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjIUXKu (ORCPT
+        with ESMTP id S229490AbjIUXPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 19:10:50 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519F2129
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:10:41 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3ae140d80bfso596041b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:10:41 -0700 (PDT)
+        Thu, 21 Sep 2023 19:15:50 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077FB110
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:15:43 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 5b1f17b1804b1-4051fea48a8so17443485e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1695338141; x=1695942941; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Q0jmxeUHMyRvSul47ykDzG/kcgtqwpKI1qC1sVJFmMs=;
+        b=Uu67o6wHSCJOmW99y3/jtHtDUDAtf/NQmtb7dPJHoFi2nsTzA4MNbQoRMvDuygl3n+
+         eA6WHhNZ264slaSeFY8ulm8mNBDmt0GbEzrOMf1VvTmqGgBKnXIvTEMz8iAxge9XKNq/
+         86SmNvBauir3eZPjMQdzX2KiZ3RUTkRoJPgNXal7PkQ2dQs/j8tXWTAlaFQxuRT8/Nti
+         JrAwTA5DmI6P8UNLwVZQ4SiFGVtx9+V2jbEwcmqmW8JH1i/YIo93kP0GnA8XwEu4a94O
+         X6Y36LkX3DqpWEDoFrMrbijZMFFwnhdKwP1NzlOxSN5t1ksFxPCwGhOzl4R29uYHkTAd
+         NftQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695337840; x=1695942640;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h/yHc8m8Ppc+ZSh/h1oHChVO3RcbS3h+g7+zq5fzEJY=;
-        b=SvX/XNN1FUAy/+ToXCAmBeyVUtugMcu1oiSt+YRiCzJ/x11zmsPYakxr1VGjCKJqFM
-         YVO0NuY0gbvw/hUd/0NiqXCmSPG7tV2eCC9Xw+Q+hM81TLjfn62xB0n79Q6sXYorqU4f
-         uEbd0aUuKb+uwgBR2rqy2gsZj9zhaUrqx+5FEcZWvIoS5yXA7zaS4slIafMksM9cs37a
-         vid3sW64af0dk2tM/Zjhlk4u7Hx+1VgGJgiAnEdHeiNUFa+K60xwiuXblez9z6vzsq2R
-         BdQLHUW8QzAOcFJmg5xAMilxfdDUxUGTKlZTbTzwx5BCzxoQbdm0WvHZBH1Nl/3DxtFo
-         tqkQ==
-X-Gm-Message-State: AOJu0YzdFcdEyaZ30rbftUaoxo8OmlzoC5qchfOkbUwrQ1yPuo40xHDh
-        TwkH935/ncRqXEc5IRgDrnpF7oaOqO+mfgjRphJqNtwmasVq
-X-Google-Smtp-Source: AGHT+IEBaQK/NideN3h8SjjwDaInNVzd/XsMojnCsli3nX+nJC2oaFzayNnuycsL6VCSSU6/CPMLn9weHAbHzYeCKAZR4qgJ8o3d
+        d=1e100.net; s=20230601; t=1695338141; x=1695942941;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q0jmxeUHMyRvSul47ykDzG/kcgtqwpKI1qC1sVJFmMs=;
+        b=CwUjf9PS8CkRED5r9srkdj6U5uQo7zZDZo9fprCy18gXjIv3MWTOapNoi4VVLC7SBQ
+         vtfu12G3/xMg+ORXdwSZxR9DQ4iZfAjfMpIOJ/aeoEdl5mNSDf61V2/361JaweuNYg3z
+         0cFk+HVvHFy9iUptSF6gpJsDKcRLeRJFXO/MuTkTbyhUcNhGz3AGEyXzdDD0+koqITWV
+         uma1p7eiY3J/9yQVN9An4N9T2P5UWzB13mgtVsxfkmazrCnX2mQHq6nN6xljErsbqpxK
+         gKCnISImH/TezyKSf21/i+t+RNRDi6L0nQ9BXwaN+RbiCkgYphIueQDyHnHXHXyU+1Nj
+         O2SA==
+X-Gm-Message-State: AOJu0Yz85318ir8wbwATkqrUpFGIFDQvLvb82i9ovrb//DBQWNUw50RJ
+        ohPKAfD/P+5cNmCRD4x6V+jd+g==
+X-Google-Smtp-Source: AGHT+IEP2PI1/W7hWYftVLg/4+qyY/LqCbYhRiu1QhICRTxA7xUEXZmBZJCSCOGW/2v1WCOr5XNfoQ==
+X-Received: by 2002:a5d:440b:0:b0:319:6d03:13ae with SMTP id z11-20020a5d440b000000b003196d0313aemr6267180wrq.55.1695338141414;
+        Thu, 21 Sep 2023 16:15:41 -0700 (PDT)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id a3-20020a5d5083000000b003198a9d758dsm2911162wrt.78.2023.09.21.16.15.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 16:15:40 -0700 (PDT)
+Message-ID: <0d9983af-1483-d43e-810e-64ce6068a381@arista.com>
+Date:   Fri, 22 Sep 2023 00:15:27 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1589:b0:3a7:392a:7405 with SMTP id
- t9-20020a056808158900b003a7392a7405mr3561216oiw.2.1695337840659; Thu, 21 Sep
- 2023 16:10:40 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 16:10:40 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c456810605e6997c@google.com>
-Subject: [syzbot] [fs?] BUG: sleeping function called from invalid context in bdev_getblk
-From:   syzbot <syzbot+51c61e2b1259fcd64071@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [syzbot] [net?] memory leak in tcp_md5_do_add
+From:   Dmitry Safonov <dima@arista.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+68662811b3d5f6695bcb@syzkaller.appspotmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <0000000000004d83170605e16003@google.com>
+ <CANn89iJwQ3TCSm+SMs=W90oThgRMLoiSAcTBJ9LH2AVsJY1NBA@mail.gmail.com>
+ <18267b34-1dcf-08d5-5ba1-4f5162e6c43a@arista.com>
+Content-Language: en-US
+In-Reply-To: <18267b34-1dcf-08d5-5ba1-4f5162e6c43a@arista.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Eric,
 
-syzbot found the following issue on:
+On 9/21/23 18:01, Dmitry Safonov wrote:
+> On 9/21/23 17:59, Eric Dumazet wrote:
+>> On Thu, Sep 21, 2023 at 6:56 PM syzbot
+>> <syzbot+68662811b3d5f6695bcb@syzkaller.appspotmail.com> wrote:
+>>>
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    ee3f96b16468 Merge tag 'nfsd-6.3-1' of git://git.kernel.or..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1312bba8c80000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=f5733ca1757172ad
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=68662811b3d5f6695bcb
+>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105393a8c80000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1113917f480000
+>>>
+>>> Downloadable assets:
+>>> disk image: https://storage.googleapis.com/syzbot-assets/29e7966ab711/disk-ee3f96b1.raw.xz
+>>> vmlinux: https://storage.googleapis.com/syzbot-assets/ae21b8e855de/vmlinux-ee3f96b1.xz
+>>> kernel image: https://storage.googleapis.com/syzbot-assets/803ee0425ad6/bzImage-ee3f96b1.xz
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+68662811b3d5f6695bcb@syzkaller.appspotmail.com
+>>>
+>>> executing program
+>>> BUG: memory leak
+>>> unreferenced object 0xffff88810a86f7a0 (size 32):
+>>>   comm "syz-executor325", pid 5099, jiffies 4294978342 (age 119.240s)
+>>>   hex dump (first 32 bytes):
+>>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>>   backtrace:
+>>>     [<ffffffff81533d64>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1061
+>>>     [<ffffffff840edaa0>] kmalloc include/linux/slab.h:580 [inline]
+>>>     [<ffffffff840edaa0>] tcp_md5sig_info_add net/ipv4/tcp_ipv4.c:1169 [inline]
+>>>     [<ffffffff840edaa0>] tcp_md5_do_add+0xa0/0x150 net/ipv4/tcp_ipv4.c:1240
+>>>     [<ffffffff84262c73>] tcp_v6_parse_md5_keys+0x253/0x4a0 net/ipv6/tcp_ipv6.c:671
+>>>     [<ffffffff840c720e>] do_tcp_setsockopt+0x40e/0x1360 net/ipv4/tcp.c:3720
+>>>     [<ffffffff840c81fb>] tcp_setsockopt+0x9b/0xa0 net/ipv4/tcp.c:3806
+>>>     [<ffffffff83d72a8b>] __sys_setsockopt+0x1ab/0x330 net/socket.c:2274
+>>>     [<ffffffff83d72c36>] __do_sys_setsockopt net/socket.c:2285 [inline]
+>>>     [<ffffffff83d72c36>] __se_sys_setsockopt net/socket.c:2282 [inline]
+>>>     [<ffffffff83d72c36>] __x64_sys_setsockopt+0x26/0x30 net/socket.c:2282
+>>>     [<ffffffff849ad699>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>>     [<ffffffff849ad699>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>>>     [<ffffffff84a0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>>
+>>> BUG: memory leak
+>>> unreferenced object 0xffff88811225ccc0 (size 192):
+>>>   comm "syz-executor325", pid 5099, jiffies 4294978342 (age 119.240s)
+>>>   hex dump (first 32 bytes):
+>>>     00 00 00 00 00 00 00 00 22 01 00 00 00 00 ad de  ........".......
+>>>     22 0a 80 00 fe 80 00 00 00 00 00 00 00 00 00 00  "...............
+>>>   backtrace:
+>>>     [<ffffffff8153444a>] __do_kmalloc_node mm/slab_common.c:966 [inline]
+>>>     [<ffffffff8153444a>] __kmalloc+0x4a/0x120 mm/slab_common.c:980
+>>>     [<ffffffff83d75c15>] kmalloc include/linux/slab.h:584 [inline]
+>>>     [<ffffffff83d75c15>] sock_kmalloc net/core/sock.c:2635 [inline]
+>>>     [<ffffffff83d75c15>] sock_kmalloc+0x65/0xa0 net/core/sock.c:2624
+>>>     [<ffffffff840eb9bb>] __tcp_md5_do_add+0xcb/0x300 net/ipv4/tcp_ipv4.c:1212
+>>>     [<ffffffff840eda67>] tcp_md5_do_add+0x67/0x150 net/ipv4/tcp_ipv4.c:1253
+>>>     [<ffffffff84262c73>] tcp_v6_parse_md5_keys+0x253/0x4a0 net/ipv6/tcp_ipv6.c:671
+>>>     [<ffffffff840c720e>] do_tcp_setsockopt+0x40e/0x1360 net/ipv4/tcp.c:3720
+>>>     [<ffffffff840c81fb>] tcp_setsockopt+0x9b/0xa0 net/ipv4/tcp.c:3806
+>>>     [<ffffffff83d72a8b>] __sys_setsockopt+0x1ab/0x330 net/socket.c:2274
+>>>     [<ffffffff83d72c36>] __do_sys_setsockopt net/socket.c:2285 [inline]
+>>>     [<ffffffff83d72c36>] __se_sys_setsockopt net/socket.c:2282 [inline]
+>>>     [<ffffffff83d72c36>] __x64_sys_setsockopt+0x26/0x30 net/socket.c:2282
+>>>     [<ffffffff849ad699>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>>     [<ffffffff849ad699>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>>>     [<ffffffff84a0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>>
+>>>
+>>>
+>>> ---
+>>> This report is generated by a bot. It may contain errors.
+>>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>>
+>>> syzbot will keep track of this issue. See:
+>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>>
+>>> If the bug is already fixed, let syzbot know by replying with:
+>>> #syz fix: exact-commit-title
+>>>
+>>> If you want syzbot to run the reproducer, reply with:
+>>> #syz test: git://repo/address.git branch-or-commit-hash
+>>> If you attach or paste a git patch, syzbot will apply it before testing.
+>>>
+>>> If you want to overwrite bug's subsystems, reply with:
+>>> #syz set subsystems: new-subsystem
+>>> (See the list of subsystem names on the web dashboard)
+>>>
+>>> If the bug is a duplicate of another bug, reply with:
+>>> #syz dup: exact-subject-of-another-report
+>>>
+>>> If you want to undo deduplication, reply with:
+>>> #syz undup
+>>
+>> Dmitry, please take a look at this bug, we need to fix it before your
+>> patch series.
+> 
+> Sure, seems reasonable to me to fix before merging something on top.
 
-HEAD commit:    dfa449a58323 Add linux-next specific files for 20230915
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14c33a54680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e204dda2e58397ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=51c61e2b1259fcd64071
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=117f463c680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12406dac680000
+It seems to me that it's related to a race between RCU grace period and
+kmemleak scan period. There seems to be a patch [1] that likely fixes
+that, albeit I couldn't verify it as all my attempts to reproduce syzbot
+issue produced only unrelated to TCP-MD5 log:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/34f9995871ed/disk-dfa449a5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/95e2e1c3ab9e/vmlinux-dfa449a5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cfc6db9684d4/bzImage-dfa449a5.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7542796b830f/mount_0.gz
+> [  263.201211] kmemleak: unreferenced object 0xffff9ceb047d9948 (size 192):
+> [  263.201781] kmemleak:   comm "ip", pid 730, jiffies 4294937874 (age 257.270s)
+> [  263.202460] kmemleak:   hex dump (first 32 bytes):
+> [  263.202921] kmemleak:     00 c8 e9 01 eb 9c ff ff e0 00 00 01 00 00 00 00  ................
+> [  263.203700] kmemleak:     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> [  263.204484] kmemleak:   backtrace:
+> [  263.204814] kmemleak:     [<ffffffff830a2946>] kmalloc_trace+0x26/0x90
+> [  263.205440] kmemleak:     [<ffffffff837e8310>] ____ip_mc_inc_group+0xa0/0x240
+> [  263.206134] kmemleak:     [<ffffffff837e9a9b>] ip_mc_up+0x4b/0xb0
+> [  263.206725] kmemleak:     [<ffffffff837e28fb>] inetdev_event+0xbb/0x5c0
+> [  263.207358] kmemleak:     [<ffffffff82f3caf6>] notifier_call_chain+0x56/0xc0
+> [  263.208070] kmemleak:     [<ffffffff836f1818>] __dev_notify_flags+0x58/0xf0
+> [  263.208784] kmemleak:     [<ffffffff836f2210>] dev_change_flags+0x50/0x60
+> [  263.209471] kmemleak:     [<ffffffff837e1718>] devinet_ioctl+0x378/0x770
+> [  263.210152] kmemleak:     [<ffffffff837e34a7>] inet_ioctl+0x187/0x1d0
+> [  263.210805] kmemleak:     [<ffffffff836c40ed>] sock_do_ioctl+0x3d/0x100
+> [  263.211482] kmemleak:     [<ffffffff836c4293>] sock_ioctl+0xe3/0x2b0
+> [  263.212131] kmemleak:     [<ffffffff8313cbec>] __x64_sys_ioctl+0x8c/0xc0
+> [  263.212789] kmemleak:     [<ffffffff83a2ad75>] do_syscall_64+0x35/0x80
+> [  263.213438] kmemleak:     [<ffffffff83c0006a>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> [  263.214283] kmemleak: unreferenced object 0xffff9ceb03ad5400 (size 512):
+> [  263.214982] kmemleak:   comm "ip", pid 730, jiffies 4294937874 (age 257.290s)
+> [  263.215728] kmemleak:   hex dump (first 32 bytes):
+> [  263.216231] kmemleak:     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
+> [  263.217106] kmemleak:     80 00 00 00 00 00 00 00 ff ff ff ff ff ff ff ff  ................
+> [  263.218041] kmemleak:   backtrace:
+> [  263.218438] kmemleak:     [<ffffffff830a2946>] kmalloc_trace+0x26/0x90
+> [  263.219181] kmemleak:     [<ffffffff8384b90b>] ipv6_add_addr+0x13b/0x6c0
+> [  263.219931] kmemleak:     [<ffffffff8384d4b5>] add_addr+0x75/0x150
+> [  263.220627] kmemleak:     [<ffffffff8385357d>] addrconf_notify+0x53d/0x730
+> [  263.221377] kmemleak:     [<ffffffff82f3caf6>] notifier_call_chain+0x56/0xc0
+> [  263.222104] kmemleak:     [<ffffffff836f1818>] __dev_notify_flags+0x58/0xf0
+> [  263.222844] kmemleak:     [<ffffffff836f2210>] dev_change_flags+0x50/0x60
+> [  263.223581] kmemleak:     [<ffffffff837e1718>] devinet_ioctl+0x378/0x770
+> [  263.224293] kmemleak:     [<ffffffff837e34a7>] inet_ioctl+0x187/0x1d0
+> [  263.224961] kmemleak:     [<ffffffff836c40ed>] sock_do_ioctl+0x3d/0x100
+> [  263.225660] kmemleak:     [<ffffffff836c4293>] sock_ioctl+0xe3/0x2b0
+> [  263.226331] kmemleak:     [<ffffffff8313cbec>] __x64_sys_ioctl+0x8c/0xc0
+> [  263.227039] kmemleak:     [<ffffffff83a2ad75>] do_syscall_64+0x35/0x80
+> [  263.227747] kmemleak:     [<ffffffff83c0006a>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> [  263.228708] kmemleak: 2 new suspected memory leaks (see /sys/kernel/debug/kmemleak)
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+This seems to be quite the same issue: inet6_ifa_finish_destroy()
+destroys inet6_ifaddr with kfree_rcu().
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12847a3c680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11847a3c680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16847a3c680000
+[1]
+https://lore.kernel.org/linux-mm/ZQA064908T5nngcc@arm.com/T/#ma4a68fdc44793e2594c9e7cadefa8ea40da5807d
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+51c61e2b1259fcd64071@syzkaller.appspotmail.com
+Thanks,
+            Dmitry
 
-loop0: rw=0, sector=17668342, nr_sectors = 2 limit=128
-Buffer I/O error on dev loop0, logical block 8834171, async page read
-syz-executor392: attempt to access beyond end of device
-loop0: rw=0, sector=26932834, nr_sectors = 2 limit=128
-Buffer I/O error on dev loop0, logical block 13466417, async page read
-syz-executor392: attempt to access beyond end of device
-loop0: rw=0, sector=16147212, nr_sectors = 2 limit=128
-Buffer I/O error on dev loop0, logical block 8073606, async page read
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 5047 Comm: syz-executor392 Not tainted 6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-syz-executor392: attempt to access beyond end of device
-loop0: rw=0, sector=6491548, nr_sectors = 2 limit=128
-Buffer I/O error on dev loop0, logical block 3245774, async page read
-syz-executor392: attempt to access beyond end of device
-loop0: rw=0, sector=17669878, nr_sectors = 2 limit=128
-Buffer I/O error on dev loop0, logical block 8834939, async page read
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/pagemap.h:1012
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- folio_lock include/linux/pagemap.h:1012 [inline]
- __filemap_get_folio+0x5e0/0xa90 mm/filemap.c:1880
- grow_dev_page fs/buffer.c:1047 [inline]
- grow_buffers fs/buffer.c:1111 [inline]
- __getblk_slow+0x1be/0x720 fs/buffer.c:1138
- bdev_getblk+0xad/0xc0 fs/buffer.c:1434
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/pagemap.h:1012
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- folio_lock include/linux/pagemap.h:1012 [inline]
- __filemap_get_folio+0x5e0/0xa90 mm/filemap.c:1880
- grow_dev_page fs/buffer.c:1047 [inline]
- grow_buffers fs/buffer.c:1111 [inline]
- __getblk_slow+0x1be/0x720 fs/buffer.c:1138
- bdev_getblk+0xad/0xc0 fs/buffer.c:1434
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5047, name: syz-executor392
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-2 locks held by syz-executor392/5047:
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #0: ffff888076ce8188 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: path_openat+0x18a5/0x29c0 fs/namei.c:3774
- #1: ffffffff8cfc8b98 (pointers_lock){.+.+}-{2:2}, at: get_block+0x18f/0x15c0 fs/sysv/itree.c:221
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 5047 Comm: syz-executor392 Tainted: G        W          6.6.0-rc1-next-20230915-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10106
- might_alloc include/linux/sched/mm.h:306 [inline]
- bdev_getblk+0x89/0xc0 fs/buffer.c:1430
- __bread_gfp+0xaf/0x370 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:326 [inline]
- get_branch+0x2cb/0x660 fs/sysv/itree.c:104
- get_block+0x1ad/0x15c0 fs/sysv/itree.c:222
- block_read_full_folio+0x3df/0xae0 fs/buffer.c:2398
- filemap_read_folio+0xe9/0x2c0 mm/filemap.c:2368
- do_read_cache_folio+0x205/0x540 mm/filemap.c:3728
- do_read_cache_page mm/filemap.c:3794 [inline]
- read_cache_page+0x5b/0x160 mm/filemap.c:3803
- read_mapping_page include/linux/pagemap.h:854 [inline]
- dir_get_page fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x1db/0x480 fs/sysv/dir.c:157
- sysv_inode_by_name+0x74/0x1c0 fs/sysv/dir.c:374
- sysv_lookup fs/sysv/namei.c:38 [inline]
- sysv_lookup+0x88/0x100 fs/sysv/namei.c:31
- lookup_open.isra.0+0x926/0x13b0 fs/namei.c:3454
- open_last_lookups fs/namei.c:3544 [inline]
- path_openat+0x931/0x29c0 fs/namei.c:3774
- do_filp_open+0x1de/0x430 fs/namei.c:3804
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_open fs/open.c:1445 [inline]
- __se_sys_open fs/open.c:1441 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1441
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f5f628dda19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffe787af38 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f628dda19
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f5f6295a5f0 R08: 0000000000009e13 R09: 00005555563914c0
-R10: 00007fffe787ae00 R11: 0000000000000246 R12: 00007fffe787af60
-R13: 00007fffe787b188 R14: 431bde82d7b634db R15: 00007f5f6292603b
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
