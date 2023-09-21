@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C22177A97EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066457A97CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjIUR2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S230157AbjIUR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjIUR2C (ORCPT
+        with ESMTP id S229823AbjIUR1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:28:02 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F24F385
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:47 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4D68040E01A5;
-        Thu, 21 Sep 2023 10:07:31 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1-bsyjNbzYQo; Thu, 21 Sep 2023 10:07:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695290848; bh=i5LLD7WLnKBMdVSUtI3jdRxCSy7DasvEpR6qADkCZ1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M/7VsC4kL1JYkns/HwzYpKZ8CeEG9Hhl1Ra/WclQ8lLXM60/nCvKJYP6/sRTqaamJ
-         98X8S91g2T2UfygnW66ILef7DHQyxxDlKKlM0ZiKLwSmuCDxquAi4/QmBPEqpA5pK9
-         MHiNWegn3QCq3khchGjCyeEkwCQ/KMcWGbCn3sIWW/QnHy9VdHd61UGkY+09l4s2hF
-         iqK9ncL0i1k4iicNTcricezT1j73a+uYck3IDrDPAww7kjjq5uw4JC3Ih8nSyyKkR9
-         Gead7phD3O1ff4LGhtEMcDel9VnxCdmlBzVhQrborkjwPiMbcI38m+gUo0kHClsDQM
-         0bFO++CwvxxVkkr7LVgTLTrPD4ke6QMAn4RkObweqMxqKzX+IXTm+i51E5GFuKskB3
-         m9HqqTbKGsRvfqqZSzcn9PCjVoLWmqoGzetpNueUL1GAfdSI7pxv7hEFfdtDAaOevE
-         vy1rghA5kpV72n+lYHG1GZMXAsgl/kq5G2Jm6rDMlN+pTn1RPVN2P7Y2wOYx8v0dPM
-         xD/ZCRIroXeKV3rlZlsQ9eUY+rCRAooWYXLqlssz8wCop1IkqmcD1V9PmMJsOWnwaJ
-         L4CPvpwQUA5TwngYiNW6FIx54mn2mlIMqNAkImoXkqUdNVzKLP1DwljXMeD8u7xAk9
-         cFxd560JMGjrREqcJVsZplfk=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 42D4240E014B;
-        Thu, 21 Sep 2023 10:07:22 +0000 (UTC)
-Date:   Thu, 21 Sep 2023 12:07:17 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 10/30] x86/microcode/intel: Unify microcode apply()
- functions
-Message-ID: <20230921100717.GGZQwV1bIb+jHyXIwX@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065501.405080839@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230912065501.405080839@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 13:27:15 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503C32733;
+        Thu, 21 Sep 2023 10:02:25 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38L9lsFx016537;
+        Thu, 21 Sep 2023 10:21:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=jvjyqmXjGaLDAO0qCQr4SvmyGJx0LScVYR7S+2vUExo=;
+ b=l/I3CFVTgAKh/PXPQ8CZJ+aIq7mAxpzCjz+uyNZdnI5seHtCPpsDtZaSYY7rFcNBZ81m
+ 7XUz31Evjyab/cVPV7rhIoL1p4sZTPxmLy09pxrbxiPvTjjrcBirIEiuYFesHNJoiIvo
+ zvvZFUzxf6oU9mPaE6mqsuVEfYeRD4Vf4XLydheZyGdysnPCWoMMSULOwbjyB5EtDJ7l
+ dKrKqOZ2QqKAj31B6BzGsBbO3uu63z5jyFrSTZZjFU2WYCjwxbzNyYokPoKzY8I6hVNf
+ xKCmp2CCohb41xRNqc075D2F6n3huF1NT9AIBqF1hKarkdhdaOBnRHdZc5Pvvp9tcEsa Uw== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8e0agrr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 10:21:41 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38LALbDm023115;
+        Thu, 21 Sep 2023 10:21:37 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3t55ekq7nm-1;
+        Thu, 21 Sep 2023 10:21:37 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38LALbhj023104;
+        Thu, 21 Sep 2023 10:21:37 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 38LALa3R023100;
+        Thu, 21 Sep 2023 10:21:37 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
+        id D6D301E1A; Thu, 21 Sep 2023 15:51:35 +0530 (+0530)
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
+        quic_wcheng@quicinc.com, dmitry.baryshkov@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, kernel@quicinc.com,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>
+Subject: [PATCH v3 0/5] Add USB Support on Qualcomm's SDX75 Platform
+Date:   Thu, 21 Sep 2023 15:51:27 +0530
+Message-Id: <1695291692-18850-1-git-send-email-quic_rohiagar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4o-s8FiR1q4jZRh_UdHDlXhpeb5Akvgw
+X-Proofpoint-GUID: 4o-s8FiR1q4jZRh_UdHDlXhpeb5Akvgw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_07,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ mlxlogscore=562 bulkscore=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309210090
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:57:59AM +0200, Thomas Gleixner wrote:
-> Deduplicate the early and late apply() functions.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/cpu/microcode/intel.c |  105 +++++++++++-----------------------
->  1 file changed, 36 insertions(+), 69 deletions(-)
-> 
-> --- a/arch/x86/kernel/cpu/microcode/intel.c
-> +++ b/arch/x86/kernel/cpu/microcode/intel.c
-> @@ -294,12 +294,11 @@ static __init struct microcode_intel *sc
->  	return size ? NULL : patch;
->  }
->  
-> -static enum ucode_state apply_microcode_early(struct ucode_cpu_info *uci, bool early)
-> +static enum ucode_state apply_microcode(struct ucode_cpu_info *uci, struct microcode_intel *mc,
+Hi,
 
-Err, we have
+Changes in v3:
+ - Removed the unnecessary change introduced in v2 of patch 2/5
+ - Added Fixes tag in patch 3/5
+ - Rebased patch 5/5 on Dmitry's cleanup patches.
+   https://lore.kernel.org/all/20230911203842.778411-1-dmitry.baryshkov@linaro.org/
+   https://lore.kernel.org/linux-phy/20230824211952.1397699-1-dmitry.baryshkov@linaro.org/
 
-struct microcode_ops.apply_microcode()
+Changes in v2:
+ - Dropped the new dt schema introduced in v1 for sdx75 usb3 phy
+   and reusing the bindings.
+ - Rephrased the commit message of patch 3/5
+ - Removed stray lines from the patch 5/5
 
-already. Can we disambiguate those pls?
+This series adds support of USB3 PHY support for Qualcomm's SDX75 Platform.
+
+Thanks,
+Rohit.
+
+Rohit Agarwal (5):
+  dt-bindings: phy: qcom,snps-eusb2-phy: Add compatible for SDX75
+  dt-bindings: phy: qcom,qmp-usb: Add SDX75 USB3 PHY
+  dt-bindings: usb: qcom,dwc3: Fix SDX65 clocks
+  dt-bindings: usb: dwc3: Add SDX75 compatible
+  phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support
+
+ .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        |   2 +
+ .../bindings/phy/qcom,snps-eusb2-phy.yaml          |   7 +-
+ .../devicetree/bindings/usb/qcom,dwc3.yaml         |   4 +
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c            | 165 +++++++++++++++++++++
+ 4 files changed, 177 insertions(+), 1 deletion(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.7.4
 
-https://people.kernel.org/tglx/notes-about-netiquette
