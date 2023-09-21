@@ -2,85 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5FB7A9ECD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02427AA299
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjIUUMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S232626AbjIUVWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbjIUUMI (ORCPT
+        with ESMTP id S232552AbjIUVWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:12:08 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C55100A41;
+        Thu, 21 Sep 2023 17:22:02 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F12B100A42;
+        Thu, 21 Sep 2023 12:17:11 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-401da71b85eso14388775e9.1;
+        Thu, 21 Sep 2023 12:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695323830; x=1695928630; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ENmOmmDyO4dkcD1BpyQlNPkn3uQwit51bry3W/ndj4k=;
+        b=SDjx4jzKKf7zErScli/HMCzeFCL8iE/OKs31+eJyVAWt8GnJfwbu4UheOvK9owIfuT
+         S8S5sxbuFmocpAR83VNquLxEKCiTHvVeNCt+16jSxsjcnHN9iCli10eIDr7zQvqhhxnq
+         MF5pG9WMz95JTpE4dYR2ZSGrYV0Icsg20TixG4VOPBYg3u6YM0lYKHWx/Iq6dKdbz+LI
+         Fr2E5LFKUUW58e50htN4u/XSAaER4W29IQ8V7L6L6pTKR9JT24z3JDN1PwX9EtjYa3Iw
+         C/DhKnuEVGtxqv8FL0J69MnOGDj6WVDQyNkXnY3X6TNBBLhzXM5nCzhFOEcqEx1izra5
+         Hq/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695323830; x=1695928630;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENmOmmDyO4dkcD1BpyQlNPkn3uQwit51bry3W/ndj4k=;
+        b=WbkHm0Cr3JW/gORMh3aUF9zWKcQMv3P4PsbuaXB9EAW4fNmwAXGlytlOHtxR4toXPx
+         +l/91oh+sq1THe/FLhQUwJ32AqyxNUiAPL3MEda+v1YpiigfPnc0kn0k5pKF4Y1psiv3
+         omf9fx/w0+KJS9jq65CHtUDO60mLuSAgtS7W76T+CKDTLoGSrbn8ijcvp8dAIOgdcUfn
+         JYVC5R2worue5TP3eYoig2iBDT47SVNOfVenoOxElloNNSZX/Zj+ofN1GkbKw6Cwfnbu
+         ISJS0upzT1Rpmf5JCt7EVckaH5xIjjTNn3uF50I0BSulTVbtK1p7TPvtjV0SeMNoAnRL
+         D5JA==
+X-Gm-Message-State: AOJu0YyGmWvFcKoN6bakB38XACnzPcPlUooMd9aRxhFXrUsDWmDWpN58
+        y+G9/489N9X97e6Tfm6F4DI=
+X-Google-Smtp-Source: AGHT+IHz3TLJG+ziEtoS9dFznj7pMmUdXA3BCjDrGwVomS3vMGyxNpUFAZCye+dXZh/r/eGoltERuw==
+X-Received: by 2002:a05:600c:46c6:b0:405:36d7:4582 with SMTP id q6-20020a05600c46c600b0040536d74582mr1921439wmo.15.1695323829463;
         Thu, 21 Sep 2023 12:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=9qTM0K/yk5JdWUeLoP3oQpoZOY/3tRKxEVyXZngPDNQ=; b=CNkrTxxxCnxfM62tCw6pnjsbMW
-        DA9LLSCZIGZkABwGThi4P6y7G6dE4/OnpWKo7rut/nS3TbWdMmIN22oDDsh+9CNRKoIuoLehCIPMZ
-        TwDNnmnAKppB4qVcA6ZplqS1+JhjucYUMLDMJAUsmOCa9rQsA2FDofTxnxMvb+6ppMwU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qjPAT-0077hs-Ck; Thu, 21 Sep 2023 21:16:53 +0200
-Date:   Thu, 21 Sep 2023 21:16:53 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Parthiban.Veerasooran@microchip.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, Steen.Hegelund@microchip.com,
-        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
-        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-        Thorsten.Kummermehr@microchip.com
-Subject: Re: [RFC PATCH net-next 1/6] net: ethernet: implement OPEN Alliance
- control transaction interface
-Message-ID: <42031ac6-7f3d-4bc9-8cfa-d7eb61ed10d5@lunn.ch>
-References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
- <20230908142919.14849-2-Parthiban.Veerasooran@microchip.com>
- <74a6cd9c-fb30-46eb-a50f-861d9ff5bf37@lunn.ch>
- <6ecc8364-2bd7-a134-f334-2aff31f44498@microchip.com>
- <2021acc6-bcf6-4dba-b7ce-ca1b3ca86088@lunn.ch>
- <94e4a08b-005d-adc0-5852-85568ba5db72@microchip.com>
+Received: from freebase (oliv-cloud.duckdns.org. [78.196.47.215])
+        by smtp.gmail.com with ESMTPSA id v4-20020a05600c214400b003fef19bb55csm2621945wml.34.2023.09.21.12.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 12:17:09 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 21:17:06 +0200
+From:   Olivier Dautricourt <olivierdautricourt@gmail.com>
+To:     Eric Schwarz <eas@sw-optimization.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
+Message-ID: <ZQyWsvcQCJgmG5aO@freebase>
+References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
+ <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <94e4a08b-005d-adc0-5852-85568ba5db72@microchip.com>
+In-Reply-To: <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So drivers/net/ethernet/Kconfig file should contain the below,
+On Thu, Sep 21, 2023 at 03:07:15PM +0200, Eric Schwarz wrote:
+> Hello Olivier,
 > 
-> config OA_TC6
->           tristate "OPEN Alliance TC6 10BASE-T1x MAC-PHY support"
->           depends on SPI
->           select PHYLIB 
+> thanks for following up on my comment first. I really appreciate. - I don't
+> have access to the hardware anymore, so I cannot test changes myself.
 > 
->           help
->             This library implements OPEN Alliance TC6 10BASE-T1x MAC-PHY
->             Serial Interface protocol for supporting 10BASE-T1x MAC-PHYs.
+> This patch addresses IMHO three fixes. - Shouldn't it be split up into three
+> small junks so one could also later work w/ git bisect / separate ack's? -
+> That way it is an all or nothing thing. Please regard this remark as
+> cosmetics.
 > 
-> The drivers/net/ethernet/Makefile file should contain the below,
+> Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
+> > Sparse complains because we first take the lock in msgdma_tasklet -> move
+> > locking to msgdma_chan_desc_cleanup.
+> > In consequence, move calling of msgdma_chan_desc_cleanup outside of the
+> > critical section of function msgdma_tasklet.
+> > 
+> > Use spin_unlock_irqsave/restore instead of just spinlock/unlock to keep
+> > state of irqs while executing the callbacks.
 > 
-> obj-$(CONFIG_OA_TC6) += oa_tc6.o
+> What about the locking in the IRQ handler msgdma_irq_handler() itself? -
+> Shouldn't spin_unlock_irqsave/restore() be used there as well instead of
+> just spinlock/unlock()?
 
-That looks about right, but i'm not a kconfig expert.
+IMO no:
+It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
+The irq handler cannot be preempted by the tasklet, so the
+spin_lock/unlock version is ok. However the tasklet could be interrupted
+by the Hard IRQ hence the disabling of irqs with save/restore when
+entering critical section.
 
-I would expect drivers using this to then have a
+It should not be needed to keep interrupts locally disabled while invoking
+callbacks, will add this to the commit description.
 
-	depends on OA_TC6
+[1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
 
-	Andrew
+> 
+> > Remove list_del call in msgdma_chan_desc_cleanup, this should be the role
+> > of msgdma_free_descriptor. In consequence replace list_add_tail with
+> > list_move_tail in msgdma_free_descriptor. This fixes the path:
+> > msgdma_free_chan_resources -> msgdma_free_descriptors ->
+> > msgdma_free_desc_list -> msgdma_free_descriptor
+> > which does __not__ seems to free correctly the descriptors as firsts nodes
+> > where not removed from the specified list.
+> > 
+> s/__not__/_not_/
+> s/seems/seem/
+> s/firsts/first/ => Actually I would omit it.
+> s/where/were/
+> 
+> "Fixes: <12 digits git hash> ("commit-message")" is missing [1] isn't it?
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+
+Thank you for your remarks/corrections, i will take them into account
+in next version of the patch.
+
+Kr,
+
+Olivier Dautricourt
