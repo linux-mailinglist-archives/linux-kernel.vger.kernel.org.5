@@ -2,212 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F177A9DE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674A57A9DEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjIUTvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        id S231162AbjIUTvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbjIUTu6 (ORCPT
+        with ESMTP id S229477AbjIUTvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:50:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17A6A0C3A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695324479; x=1726860479;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=shAPycxG2fwnrrfUZmorIEJIlq/mRB7wdivH5nYo/Ww=;
-  b=LOYZiAeAzvJaHhf2X88GzI8DtqZZ12rDCLAf47tR13VsBzsmjBOgu1wI
-   r276Acl9wdlUIUreOATH//+oHP90U3RuMr39k00zflMJeLqq7dTT8AflP
-   14DjVFeT7jNhqhF6lWEPHVjMW+U3LRckJZfFjqMBU+MpvfhJUCVgMBXkp
-   XqwNyz1pdEB5luQINAJ6Kvtr57KGaWtDoVH/iaB9HGIhr2+GXeN04iEqI
-   hcFTJr8BPWDZyvaycz9uEj5cWlcAI7UFYM2mO4c2+gwwxColSesA/G2fQ
-   xVoT6xR7LjPK/VXkFmTA+IV0RSrDtVD9nTXL1+9LZB8xy8tMCHQj868b9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="466943300"
-X-IronPort-AV: E=Sophos;i="6.03,166,1694761200"; 
-   d="scan'208";a="466943300"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 12:27:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="750516842"
-X-IronPort-AV: E=Sophos;i="6.03,166,1694761200"; 
-   d="scan'208";a="750516842"
-Received: from lkp-server02.sh.intel.com (HELO b77866e22201) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Sep 2023 12:27:57 -0700
-Received: from kbuild by b77866e22201 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjPL9-0000IB-2L;
-        Thu, 21 Sep 2023 19:27:55 +0000
-Date:   Fri, 22 Sep 2023 03:27:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>
-Subject: arch/microblaze/kernel/entry.S:945: Error: unknown opcode "suspend"
-Message-ID: <202309220342.si10sBaE-lkp@intel.com>
+        Thu, 21 Sep 2023 15:51:16 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F222E59D1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:32 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9adcb89b48bso163170466b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695324511; x=1695929311; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gQeBC3WD5Q9pOBgHLJnTig2EHFJlKZ+82vyKLhOZTtc=;
+        b=CZw6d2a559GAkYPmFSKPqKRuUbDsdQjBvC5kXov7uLpUQMCUuF1riF/5mxFfK+LhqG
+         Mk3dz4JTULxZwkkm6fO8UTfI61WQRZ3oSELzgLxOt4FT1lF8ieZ8A/ODyS8oatOdMBCd
+         HyyX0/yLwl3MKI4tBeGqPfuP/XmhLcMaA2tAI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695324511; x=1695929311;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gQeBC3WD5Q9pOBgHLJnTig2EHFJlKZ+82vyKLhOZTtc=;
+        b=HO4JXDBNP9qSwxRuP6xl4Wn6S66bRXClk3UWZyTdHnyAg4i49Zd/sjFwOlIrXbeTXU
+         sp1jj2VD415ONhcZ5avYKt+GAUp/d9O8YV29H1BdbmCmxcIPmmslXCutx2VDPteNOg8F
+         q89zE5anundWBkQ5gehtMx/MnBFJYpdV57JjBo9QvuYxl/TpfZdJ9RbGFVsgc87rCbom
+         yv3m1f8yKnsRUf/wjud2jFx4VDnj7eSNQ8IITb8ADysIiwD5T7xOQqUl2puTeMPboYjs
+         /q3ip/72eys4G3IRkfozZt1TRNUtnppqcEBErakCo1pjafOBRUjRhwu2MIaSvJaUj1Y+
+         cAWg==
+X-Gm-Message-State: AOJu0YwjHVXM5HaQk1PIWd7NDw4MT0V30LUCncRwTwTfWZ3sd2BbyQHG
+        xw66lz3CpSeSAFkYmeR9o9RXBOhZ0kraRnJ/jWCmlpd3
+X-Google-Smtp-Source: AGHT+IEzZMgCDo7/GwE1wYEouovwpXKFrOsaa3Khf6EGgbIFZWZPfAHqI7vkksnf865Sh1GqZ7b8QA==
+X-Received: by 2002:a17:907:778c:b0:9a3:faf:7aaa with SMTP id ky12-20020a170907778c00b009a30faf7aaamr5894764ejc.15.1695324511154;
+        Thu, 21 Sep 2023 12:28:31 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id k15-20020a170906970f00b0098733a40bb7sm1468101ejx.155.2023.09.21.12.28.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 12:28:30 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5315b70c50dso1569283a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:28:30 -0700 (PDT)
+X-Received: by 2002:a50:cb88:0:b0:533:23e2:c48 with SMTP id
+ k8-20020a50cb88000000b0053323e20c48mr3881085edi.3.1695324510158; Thu, 21 Sep
+ 2023 12:28:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
+ <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com> <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+In-Reply-To: <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Sep 2023 12:28:13 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+Message-ID: <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+Subject: Re: [GIT PULL v2] timestamp fixes
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b5cbe7c00aa0f7a81ec40c007f81a3e9c84581e3
-commit: 88707ebe77e23e856981e597f322cabbf6415662 microblaze: Add custom break vector handler for mb manager
-date:   12 months ago
-config: microblaze-allmodconfig (https://download.01.org/0day-ci/archive/20230922/202309220342.si10sBaE-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230922/202309220342.si10sBaE-lkp@intel.com/reproduce)
+On Thu, 21 Sept 2023 at 11:51, Jeff Layton <jlayton@kernel.org> wrote:
+>
+> We have many, many inodes though, and 12 bytes per adds up!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309220342.si10sBaE-lkp@intel.com/
+That was my thinking, but honestly, who knows what other alignment
+issues might eat up some - or all - of the theoreteical 12 bytes.
 
-All errors (new ones prefixed by >>):
+It might be, for example, that the inode is already some aligned size,
+and that the allocation alignment means that the size wouldn't
+*really* shrink at all.
 
-   arch/microblaze/kernel/entry.S: Assembler messages:
->> arch/microblaze/kernel/entry.S:945: Error: unknown opcode "suspend"
+So I just want to make clear that I think the 12 bytes isn't
+necessarily there. Maybe you'd get it, maybe it would be hidden by
+other things.
 
+My biggest impetus was really that whole abuse of a type that I
+already disliked for other reasons.
 
-vim +/suspend +945 arch/microblaze/kernel/entry.S
+> I'm on board with the idea, but...that's likely to be as big a patch
+> series as the ctime overhaul was. In fact, it'll touch a lot of the same
+> code. I can take a stab at that in the near future though.
 
-   825	
-   826		/* restore all the tlb's */
-   827		addik	r3, r0, TOPHYS(tlb_skip)
-   828		addik	r6, r0, PT_TLBL0
-   829		addik	r7, r0, PT_TLBH0
-   830	restore_tlb:
-   831		add	r6, r6, r1
-   832		add	r7, r7, r1
-   833		lwi	r2, r6, 0
-   834		mts 	rtlblo, r2
-   835		lwi	r2, r7, 0
-   836		mts	rtlbhi, r2
-   837		addik	r6, r6, 4
-   838		addik	r7, r7, 4
-   839		bgtid	r3, restore_tlb
-   840		addik	r3, r3, -1
-   841	
-   842		lwi  	r5, r0, TOPHYS(xmb_manager_dev)
-   843		lwi	r8, r0, TOPHYS(xmb_manager_reset_callback)
-   844		set_vms
-   845		/* return from reset need -8 to adjust for rtsd r15, 8 */
-   846		addik   r15, r0, ret_from_reset - 8
-   847		rtbd	r8, 0
-   848		nop
-   849	
-   850	ret_from_reset:
-   851		set_bip /* Ints masked for state restore */
-   852		VM_OFF
-   853		/* MS: Restore all regs */
-   854		RESTORE_REGS
-   855		lwi	r14, r1, PT_R14
-   856		lwi	r16, r1, PT_PC
-   857		addik	r1, r1, PT_SIZE + 36
-   858		rtbd	r16, 0
-   859		nop
-   860	
-   861	/*
-   862	 * Break handler for MB Manager. Enter to _xmb_manager_break by
-   863	 * injecting fault in one of the TMR Microblaze core.
-   864	 * FIXME: This break handler supports getting
-   865	 * called from kernel space only.
-   866	 */
-   867	C_ENTRY(_xmb_manager_break):
-   868		/*
-   869		 * Reserve memory in the stack for context store/restore
-   870		 * (which includes memory for storing tlbs (max two tlbs))
-   871		 */
-   872		addik	r1, r1, -PT_SIZE - 36
-   873		swi	r1, r0, xmb_manager_stackpointer
-   874		SAVE_REGS
-   875		swi	r14, r1, PT_R14	/* rewrite saved R14 value */
-   876		swi	r16, r1, PT_PC; /* PC and r16 are the same */
-   877	
-   878		lwi	r6, r0, TOPHYS(xmb_manager_baseaddr)
-   879		lwi	r7, r0, TOPHYS(xmb_manager_crval)
-   880		/*
-   881		 * When the break vector gets asserted because of error injection,
-   882		 * the break signal must be blocked before exiting from the
-   883		 * break handler, below code configures the tmr manager
-   884		 * control register to block break signal.
-   885		 */
-   886		swi	r7, r6, 0
-   887	
-   888		/* Save the special purpose registers  */
-   889		mfs	r2, rpid
-   890		swi	r2, r1, PT_PID
-   891	
-   892		mfs	r2, rtlbx
-   893		swi	r2, r1, PT_TLBI
-   894	
-   895		mfs	r2, rzpr
-   896		swi	r2, r1, PT_ZPR
-   897	
-   898	#if CONFIG_XILINX_MICROBLAZE0_USE_FPU
-   899		mfs	r2, rfsr
-   900		swi	r2, r1, PT_FSR
-   901	#endif
-   902		mfs	r2, rmsr
-   903		swi	r2, r1, PT_MSR
-   904	
-   905		/* Save all the tlb's */
-   906		addik	r3, r0, TOPHYS(tlb_skip)
-   907		addik	r6, r0, PT_TLBL0
-   908		addik	r7, r0, PT_TLBH0
-   909	save_tlb:
-   910		add	r6, r6, r1
-   911		add	r7, r7, r1
-   912		mfs	r2, rtlblo
-   913		swi	r2, r6, 0
-   914		mfs	r2, rtlbhi
-   915		swi	r2, r7, 0
-   916		addik	r6, r6, 4
-   917		addik	r7, r7, 4
-   918		bgtid	r3, save_tlb
-   919		addik	r3, r3, -1
-   920	
-   921		lwi  	r5, r0, TOPHYS(xmb_manager_dev)
-   922		lwi	r8, r0, TOPHYS(xmb_manager_callback)
-   923		/* return from break need -8 to adjust for rtsd r15, 8 */
-   924		addik   r15, r0, ret_from_break - 8
-   925		rtbd	r8, 0
-   926		nop
-   927	
-   928	ret_from_break:
-   929		/* flush the d-cache */
-   930		bralid	r15, mb_flush_dcache
-   931		nop
-   932	
-   933		/*
-   934		 * To make sure microblaze i-cache is in a proper state
-   935		 * invalidate the i-cache.
-   936		 */
-   937		bralid	r15, mb_invalidate_icache
-   938		nop
-   939	
-   940		set_bip; /* Ints masked for state restore */
-   941		VM_OFF;
-   942		mbar	1
-   943		mbar	2
-   944		bri	4
- > 945		suspend
-   946		nop
-   947	#endif
-   948	
+Yea, it's likely to be fairly big and invasive.  That was one of the
+reasons for my suggested "inode_time()" macro hack: using the macro
+argument concatenation is really a hack to "gather" the pieces based
+on name, and while it's odd and not a very typical kernel model, I
+think doing it that way might allow the conversion to be slightly less
+painful.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+You'd obviously have to have the same kind of thing for assignment.
+
+Without that kind of name-based hack, you'd have to create all these
+random helper functions that just do the same thing over and over for
+the different times, which seems really annoying.
+
+> Since we're on the subject...another thing that bothers me with all of
+> the timestamp handling is that we don't currently try to mitigate "torn
+> reads" across the two different words. It seems like you could fetch a
+> tv_sec value and then get a tv_nsec value that represents an entirely
+> different timestamp if there are stores between them.
+
+Hmm. I think that's an issue that we have always had in theory, and
+have ignored because it's simply not problematic in practice, and
+fixing it is *hugely* painful.
+
+I suspect we'd have to use some kind of sequence lock for it (to make
+reads be cheap), and while it's _possible_ that having the separate
+accessor functions for reading/writing those times might help things
+out, I suspect the reading/writing happens for the different times (ie
+atime/mtime/ctime) together often enough that you might want to have
+the locking done at an outer level, and _not_ do it at the accessor
+level.
+
+So I suspect this is a completely separate issue (ie even an accessor
+doesn't make the "hugely painful" go away). And probably not worth
+worrying about *unless* somebody decides that they really really care
+about the race.
+
+That said, one thing that *could* help is if people decide that the
+right format for inode times is to just have one 64-bit word that has
+"sufficient resolution". That's what we did for "kernel time", ie
+"ktime_t" is a 64-bit nanosecond count, and by being just a single
+value, it avoids not just the horrible padding with 'struct
+timespec64', it is also dense _and_ can be accessed as one atomic
+value.
+
+Sadly, that "sufficient resolution" couldn't be nanoseconds, because
+64-bit nanoseconds isn't enough of a spread. It's fine for the kernel
+time, because 2**63 nanoseconds is 292 years, so it moved the "year
+2038" problem to "year 2262".
+
+And that's ok when we're talking about times that are kernel running
+times and we haev a couple of centuries to say "ok, we'll need to make
+it be a bigger type", but when you save the values to disk, things are
+different. I suspect filesystem people are *not* willing to deal with
+a "year 2262" issue.
+
+But if we were to say that "a tenth of microsecond resolution is
+sufficient for inode timestamps", then suddenly 64 bits is *enormous*.
+So we could do a
+
+    // tenth of a microseconds since Jan 1, 1970
+    typedef s64 fstime_t;
+
+and have a nice dense timestamp format with reasonable - but not
+nanosecond - accuracy. Now that 292 year range has become 29,247
+years, and filesystem people *might* find the "year-31k" problem
+acceptable.
+
+I happen to think that "100ns timestamp resolution on files is
+sufficient" is a very reasonable statement, but I suspect that we'll
+still find lots of people who say "that's completely unacceptable"
+both to that resolution, and to the 31k-year problem.
+
+But wouldn't it be nice to have just one single "fstime_t" for file
+timestamps, the same way we have "ktime_t" for CPU timestamps?
+
+Then we'd save even more space in the 'struct inode'....
+
+                  Linus
