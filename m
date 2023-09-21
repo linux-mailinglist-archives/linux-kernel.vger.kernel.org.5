@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE77AA2F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D6B7AA0FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbjIUVnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
+        id S232594AbjIUU40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbjIUVnK (ORCPT
+        with ESMTP id S232666AbjIUU4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:43:10 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9419176812
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:40 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c240e637aso20501107b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:40 -0700 (PDT)
+        Thu, 21 Sep 2023 16:56:11 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9249AE94D
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d814634fe4bso1834683276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 13:33:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695328420; x=1695933220; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695328422; x=1695933222; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=MoKhLmBudHFsqVub0iZnr0qo3mrdYvg37SqAKaFM83k=;
-        b=wacm37VVEAoOBFG9ghqEMvSqQOsqj2uX+efwm1Kt9mu4xfpI4eBbzRd28dN6+kwnbx
-         gbjMsrKrA/az3kHsFFv75Pnpvq8QZeVN+1hPcWnI8aftMXlfGumWnzs8egptFzpeL6xd
-         6SkuW6gB4bTQJ0laoVIAFd/0TWq5uT4ohszUAQ63ON2mjLUp222i2rIb9wA6X7sqOfwx
-         YPhXb5y9pnZ5l21FdyrmLMZcX6kQAa0zo5Hesdi2jATItiQQG9JTUbTm3Uc0RB7DgQIb
-         WUdsxwgaUGmn+EcCIjRcL6WkWkWN77/Nz3uOuYld23IMCYG+6Pr6WO7aNbbQ8RcYycsm
-         hxAw==
+        bh=GXnfKvHXTg+GXCkfuzsuluimpzEK7TKl935+HXdmmVk=;
+        b=LbW7OvmzGYx86t/DB1TIa4aie8OrmSOTIMtNm/JXLP6Hddgey1cj0Cdt8bNQpoziRB
+         RL5lL7FoxOClWdH1c3CxdW6z2mh6lLSlLONUPzMcqlpjQRgivq8mBkQQPScxlABXbNTZ
+         0slD7P+iOjHIPOutQ1BeA26IYGi7ufkcODf4uA1xKARXC0/tneDwOmjmFb44mD7R8MFk
+         Na7m2dTmOCp7qZDDihuHQ63wAUZoyObMFkVwGRVNuBV1CJrDKPFZuhoPgnxHLrxfgmDM
+         +imtx0lw7GWFXxbScIR5pllKVWHQGpzrWfKYi538KiG8TwBlmfnsZl+mEHIldlQwH9CT
+         8zeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695328420; x=1695933220;
+        d=1e100.net; s=20230601; t=1695328422; x=1695933222;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MoKhLmBudHFsqVub0iZnr0qo3mrdYvg37SqAKaFM83k=;
-        b=Rsm7OzFW+N2NOpIV0yscT+EVbr/GNKv1dAErsiiqKlZEEIKMztOUub+G/5IEtq11wN
-         Am+HcU9zG4bs3hyVayINp5CJcHl2RxKns2b4rUXLI5PbzHZ3VP5iZqudnvFHBLd+D1lD
-         8FzaNf410L2mq68Gv/4wfQGcEkVfJMoJ2+F77qeEPOtCHzinkQWKWOj3+kJa6JdZsCSG
-         fjO19O2MZyXn4FxDj0Ar35uonNjMsam8Tf6I6v9rXHiZ9er4IpJECGzcVMCuE+czhRGb
-         uFrKmdq3Y7XMUEEsqmnzzkbMmSb1vGenxpmRNKg7lcZxJG34sdLK6Ri5NdrlfNWhS2xo
-         1iAg==
-X-Gm-Message-State: AOJu0Yys4YVVfDdoOSE9sOQx2NR6vMmrCWTTg9HsqFY5T5jtRzTnvq8S
-        1/jOmwzioVNjqQg57hUD6AuT82sYh/k=
-X-Google-Smtp-Source: AGHT+IEYG8/hrFY0O/v1dhWCGuKqtsz5qSqkYbmrQr34bAdR9bPEuoVobXgQyPT7lOV22JgARaBCkSNMs4U=
+        bh=GXnfKvHXTg+GXCkfuzsuluimpzEK7TKl935+HXdmmVk=;
+        b=fq1z4B3ApUV6X62a2RRFl3Bt1+DmNCxHjVDUw7JdOBiRYHKOVGj5dYkRjbx/No20Dr
+         R4MgntQWj5F4K/IgUNXCjo0f6PkxGS4lswdLe0ASTNkhGx9/R2y1OJMPcYGOjW/VNLGk
+         KKyLTkjkbg/VEg7vju271a0rPhhe+ujg2COKKFuEGls7DtjU4NtwophQVtSbw+YCj5S9
+         Yus4kY5ZF6hODvcGdeqdERB7f+Ptt3W6pw1zD87NoCTxFFtRrkawiJxLg5NxEQKDPXOu
+         0cLEHEXhrU/YpoklkbybtvcmnGwPIkYfx2crss0nskSTi78KbCsfl2Nz7E4t9fz+e+So
+         Ny9A==
+X-Gm-Message-State: AOJu0Yw/arDkBWwC1S5sLfLubvGPreCCrYHWrNykJuU/N5wg7sEFJKnC
+        dBiS503IbUCYrxClOcZa/hQW1t88NjA=
+X-Google-Smtp-Source: AGHT+IEi/fpx5qwnyQazg0USr1DHbY5reNhmjREs+J+LHxISH07TrHV0vwV7RrUiPSmPNiZfUH6GP2uptjE=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:b726:0:b0:59b:ccba:124f with SMTP id
- v38-20020a81b726000000b0059bccba124fmr93086ywh.9.1695328419949; Thu, 21 Sep
- 2023 13:33:39 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:77d8:0:b0:d81:bb31:d2fa with SMTP id
+ s207-20020a2577d8000000b00d81bb31d2famr91450ybc.3.1695328421812; Thu, 21 Sep
+ 2023 13:33:41 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 21 Sep 2023 13:33:20 -0700
+Date:   Thu, 21 Sep 2023 13:33:21 -0700
 In-Reply-To: <20230921203331.3746712-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230921203331.3746712-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230921203331.3746712-4-seanjc@google.com>
-Subject: [PATCH 03/13] KVM: WARN if *any* MMU invalidation sequence doesn't
- add a range
+Message-ID: <20230921203331.3746712-5-seanjc@google.com>
+Subject: [PATCH 04/13] KVM: WARN if there are danging MMU invalidations at VM destruction
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -64,48 +63,52 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Binbin Wu <binbin.wu@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tweak the assertion in kvm_mmu_invalidate_end() to unconditionally require
-a range to be added between start() and end().  Asserting if and only if
-kvm->mmu_invalidate_in_progress is non-zero makes the assertion all but
-useless as it would fire only when there are multiple invalidations in
-flight, which is not common and would also get a false negative if one or
-more sequences, but not all, added a range.
+Add an assertion that there are no in-progress MMU invalidations when a
+VM is being destroyed, with the exception of the scenario where KVM
+unregisters its MMU notifier between an .invalidate_range_start() call and
+the corresponding .invalidate_range_end().
 
-Reported-by: Binbin Wu <binbin.wu@linux.intel.com>
-Fixes: 145725d1542a ("KVM: Use gfn instead of hva for mmu_notifier_retry")
+KVM can't detect unpaired calls from the mmu_notifier due to the above
+exception waiver, but the assertion can detect KVM bugs, e.g. such as the
+bug that *almost* escaped initial guest_memfd development.
+
+Link: https://lore.kernel.org/all/e397d30c-c6af-e68f-d18e-b4e3739c5389@linux.intel.com
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ virt/kvm/kvm_main.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 30708e460568..54480655bcce 100644
+index 54480655bcce..277afeedd670 100644
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -873,11 +873,10 @@ void kvm_mmu_invalidate_end(struct kvm *kvm)
- 	KVM_BUG_ON(kvm->mmu_invalidate_in_progress < 0, kvm);
- 
- 	/*
--	 * Assert that at least one range must be added between start() and
--	 * end().  Not adding a range isn't fatal, but it is a KVM bug.
-+	 * Assert that at least one range was added between start() and end().
-+	 * Not adding a range isn't fatal, but it is a KVM bug.
+@@ -1381,9 +1381,16 @@ static void kvm_destroy_vm(struct kvm *kvm)
+ 	 * No threads can be waiting in kvm_swap_active_memslots() as the
+ 	 * last reference on KVM has been dropped, but freeing
+ 	 * memslots would deadlock without this manual intervention.
++	 *
++	 * If the count isn't unbalanced, i.e. KVM did NOT unregister between
++	 * a start() and end(), then there shouldn't be any in-progress
++	 * invalidations.
  	 */
--	WARN_ON_ONCE(kvm->mmu_invalidate_in_progress &&
--		     kvm->mmu_invalidate_range_start == INVALID_GPA);
-+	WARN_ON_ONCE(kvm->mmu_invalidate_range_start == INVALID_GPA);
- }
- 
- static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+ 	WARN_ON(rcuwait_active(&kvm->mn_memslots_update_rcuwait));
+-	kvm->mn_active_invalidate_count = 0;
++	if (kvm->mn_active_invalidate_count)
++		kvm->mn_active_invalidate_count = 0;
++	else
++		WARN_ON(kvm->mmu_invalidate_in_progress);
+ #else
+ 	kvm_flush_shadow_all(kvm);
+ #endif
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
