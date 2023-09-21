@@ -2,120 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A7C7AA065
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1716C7A9FCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbjIUUgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+        id S230462AbjIUU1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbjIUUfG (ORCPT
+        with ESMTP id S231883AbjIUU1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:35:06 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B0608C63E;
-        Thu, 21 Sep 2023 10:42:37 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 765C5DA7;
-        Wed, 20 Sep 2023 20:37:26 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.32.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5C6CA3F59C;
-        Wed, 20 Sep 2023 20:36:45 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V7 2/3] coresight: etm: Make cycle count threshold user configurable
-Date:   Thu, 21 Sep 2023 09:06:30 +0530
-Message-Id: <20230921033631.1298723-3-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921033631.1298723-1-anshuman.khandual@arm.com>
-References: <20230921033631.1298723-1-anshuman.khandual@arm.com>
+        Thu, 21 Sep 2023 16:27:17 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBB1914DC
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:47:36 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32164a6af64so1086333f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695318455; x=1695923255; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2aBYYxm4V3k4FyEjLrLJ9/n/H90Md6QsttKISLF22a4=;
+        b=ObrvCDPGycohSkh9xvZVoXnZ6hquPa7On30BlI/svia3aPWn4yvSBC7ytEjyzgbaQh
+         ERL2knB1y2ng2xllaelBKchdvHD8yyx7wbFkj0XO6kzSaiBh686WAEFrWeozJhWHxpmf
+         xKgH+PhxpiNbE2F2TsatS5y7kviIrhANSdeN8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695318455; x=1695923255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2aBYYxm4V3k4FyEjLrLJ9/n/H90Md6QsttKISLF22a4=;
+        b=ZV6z6baaPLBhfp2qNtO5Pti9HKR2HyvbhIKDqJQauRh9aKvvkRy7O5tJSxYIbQT/LO
+         ++b869nmHfw29aIVVCvAk0/XiBrLc8zrOk3kvZRlVVm4mEDexSILo60W2W7jkJ21O4PM
+         N7j7xg+YkLGIsAtwHa1r7wH091cxGHtDGQYtwohPRqzkMCubdRJp7uE7/HTf42LFzfsK
+         zi+vr1XPey8N3FKysLvuJOIVhiHBuwLN7SCe8hKIQZUmet1xPxk/CSryhIlPagCsYT5b
+         Lmk9Kyr9UMKZ6c1VyR0QMec4UAUJqm94AB6cYjwpHvZvyDSnspcxQrUWNX21kEWAKS20
+         4CeQ==
+X-Gm-Message-State: AOJu0YxjmVbDvILEuuLMIXILgGe7i/KiST8Q91PSs0X14soape39sS/a
+        4lH+GlmRxzXLKBv2zP4w4Zme4Hog53CgQAzSKph+cqnSlrUcG/svYIM=
+X-Google-Smtp-Source: AGHT+IGdIV8J7fxjUNbRUv5HJhGzBY+D1JG/lYO+jffLDerOCNDgsVdIhjbf+HuUVjEXXFJfi0crYYSdZkt0BFEhkOg=
+X-Received: by 2002:a19:e051:0:b0:4ff:8863:be01 with SMTP id
+ g17-20020a19e051000000b004ff8863be01mr3396045lfj.8.1695269389034; Wed, 20 Sep
+ 2023 21:09:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230919092336.51007-1-angelogioacchino.delregno@collabora.com> <20230920150332.318851-1-laura.nao@collabora.com>
+In-Reply-To: <20230920150332.318851-1-laura.nao@collabora.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 21 Sep 2023 12:09:37 +0800
+Message-ID: <CAGXv+5Hr1woRL5z6b4k6e+FQKaVyoUmP4vAt=RrEgjEwq8bUhw@mail.gmail.com>
+Subject: Re: [PATCH] remoteproc: mediatek: Refactor single core check and fix retrocompatibility
+To:     Laura Nao <laura.nao@collabora.com>
+Cc:     angelogioacchino.delregno@collabora.com, andersson@kernel.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-remoteproc@vger.kernel.org, mathieu.poirier@linaro.org,
+        matthias.bgg@gmail.com, tinghan.shen@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When cycle counting is enabled, we use a default threshold value i.e 0x100
-for the instruction trace cycle counting.
+On Wed, Sep 20, 2023 at 11:03=E2=80=AFPM Laura Nao <laura.nao@collabora.com=
+> wrote:
+>
+> On 9/19/23 11:23, AngeloGioacchino Del Regno wrote:
+> > In older devicetrees we had the ChromeOS EC in a node called "cros-ec"
+> > instead of the newer "cros-ec-rpmsg", but this driver is now checking
+> > only for the latter, breaking compatibility with those.
+> >
+> > Besides, we can check if the SCP is single or dual core by simply
+> > walking through the children of the main SCP node and checking if
+> > if there's more than one "mediatek,scp-core" compatible node.
+> >
+> > Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-=
+core SCP")
+> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@co=
+llabora.com>
+> > ---
+> >   drivers/remoteproc/mtk_scp.c | 18 +++++++-----------
+> >   1 file changed, 7 insertions(+), 11 deletions(-)
+> >
+>
+> Tested on asurada (spherion) and jacuzzi (juniper). The issue was detecte=
+d by KernelCI, so:
+>
+> Reported-by: "kernelci.org bot" <bot@kernelci.org>
+> Tested-by: Laura Nao <laura.nao@collabora.com>
 
-This patch makes the cycle threshold user configurable via perf event
-attributes( 'cc_threshold' => event->attr.config3[11:0] ), falling back
-to the current default if unspecified.
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+Tested-by: Chen-Yu Tsai <wenst@chromium.org>
 
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/hwtracing/coresight/coresight-etm-perf.c   | 2 ++
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 9 +++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 5ca6278baff4..09f75dffae60 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -68,6 +68,7 @@ PMU_FORMAT_ATTR(preset,		"config:0-3");
- PMU_FORMAT_ATTR(sinkid,		"config2:0-31");
- /* config ID - set if a system configuration is selected */
- PMU_FORMAT_ATTR(configid,	"config2:32-63");
-+PMU_FORMAT_ATTR(cc_threshold,	"config3:0-11");
- 
- 
- /*
-@@ -101,6 +102,7 @@ static struct attribute *etm_config_formats_attr[] = {
- 	&format_attr_preset.attr,
- 	&format_attr_configid.attr,
- 	&format_attr_branch_broadcast.attr,
-+	&format_attr_cc_threshold.attr,
- 	NULL,
- };
- 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 9619d9d0bbb1..5b6a878a2ac5 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -644,7 +644,7 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	struct etmv4_config *config = &drvdata->config;
- 	struct perf_event_attr *attr = &event->attr;
- 	unsigned long cfg_hash;
--	int preset;
-+	int preset, cc_threshold;
- 
- 	/* Clear configuration from previous run */
- 	memset(config, 0, sizeof(struct etmv4_config));
-@@ -667,7 +667,12 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	if (attr->config & BIT(ETM_OPT_CYCACC)) {
- 		config->cfg |= TRCCONFIGR_CCI;
- 		/* TRM: Must program this for cycacc to work */
--		config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
-+		cc_threshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
-+		if (!cc_threshold)
-+			cc_threshold = ETM_CYC_THRESHOLD_DEFAULT;
-+		if (cc_threshold < drvdata->ccitmin)
-+			cc_threshold = drvdata->ccitmin;
-+		config->ccctlr = cc_threshold;
- 	}
- 	if (attr->config & BIT(ETM_OPT_TS)) {
- 		/*
--- 
-2.25.1
-
+on Hayato (MT8192) and Juniper (MT8183).
