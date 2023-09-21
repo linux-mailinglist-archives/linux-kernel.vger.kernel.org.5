@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BD77A90E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40ADC7A90E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjIUC1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 22:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
+        id S229514AbjIUCbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjIUC1q (ORCPT
+        with ESMTP id S229445AbjIUCbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:27:46 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC9B99;
-        Wed, 20 Sep 2023 19:27:39 -0700 (PDT)
-Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RrfNK44YSzMlhR;
-        Thu, 21 Sep 2023 10:24:01 +0800 (CST)
-Received: from [10.67.121.59] (10.67.121.59) by kwepemm600004.china.huawei.com
- (7.193.23.242) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 21 Sep
- 2023 10:27:36 +0800
-Message-ID: <1b05f595-b485-5a7e-ad31-b19f462fe43f@huawei.com>
-Date:   Thu, 21 Sep 2023 10:27:36 +0800
+        Wed, 20 Sep 2023 22:31:32 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6C99E;
+        Wed, 20 Sep 2023 19:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695263484;
+        bh=rrKsNa5C1soZq1fFRc7nMu3zzxokdr6j2JJqc0o1XEA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U8XTfYRki8mhxr87CB2+cUoKLA+/Uo2SDojiMu1ybKMR4HqqndGGIsO1BES+5XjXM
+         rX5cOzRy9uR0lHQq+u2X55ur/hmuq5OETeTG2ZAfc6bQz7ulg7VtRS4qlZRq7lU7Lu
+         IhsgzvMBcAexbxu4+Gj5paqMwQcxlQdjNauLudVDYXh9CX/YPwA7urxg9KVEb0h8BX
+         SGGy9qVLEbn6PUt9YIGb3U+jl8+X286XZ1BtccqBFpmJJ0dipDZHUPFt7PSW6nSpja
+         7R/zTYEzaK4NSQrC0dnpViW484Nt6hnMnWqQ5P9sDdcDrVq5OMnvo6xyD+2VPcRVWc
+         yujeZMzvYFisA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RrfXq72TTz4x3j;
+        Thu, 21 Sep 2023 12:31:23 +1000 (AEST)
+Date:   Thu, 21 Sep 2023 12:31:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20230921123123.2362fbc1@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 2/2] soc: kunpeng_hccs: add the check for PCC subspace
- type
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <rafael@kernel.org>, <rafael.j.wysocki@intel.com>,
-        <xuwei5@hisilicon.com>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <liuyonglong@huawei.com>,
-        <lihuisong@huawei.com>
-References: <20230914115753.9064-1-lihuisong@huawei.com>
- <20230920064703.23543-1-lihuisong@huawei.com>
- <20230920064703.23543-3-lihuisong@huawei.com>
- <20230920141147.bq7cjiqjk6c36t6d@bogus>
-From:   "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <20230920141147.bq7cjiqjk6c36t6d@bogus>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.121.59]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600004.china.huawei.com (7.193.23.242)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/qppQxBL+5GzDCGM6gTAfvDt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/qppQxBL+5GzDCGM6gTAfvDt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-在 2023/9/20 22:11, Sudeep Holla 写道:
-> On Wed, Sep 20, 2023 at 02:47:03PM +0800, Huisong Li wrote:
->> Currently, HCCS driver directly uses Generic Communications Channel Shared
->> Memory Region which is used in type0/1/2 to communicate with platform,
->> but actually doesn't support type3/4/5.
->> So this patch adds the check for PCC subspace type.
->>
->> Signed-off-by: Huisong Li <lihuisong@huawei.com>
->> ---
->>   drivers/soc/hisilicon/kunpeng_hccs.c | 17 +++++++++++++++++
->>   1 file changed, 17 insertions(+)
->>
->> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
->> index f3810d9d1caa..4ba3bfd45a01 100644
->> --- a/drivers/soc/hisilicon/kunpeng_hccs.c
->> +++ b/drivers/soc/hisilicon/kunpeng_hccs.c
->> @@ -174,6 +174,19 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
->>   	return rc;
->>   }
->>   
->> +static int hccs_check_pcc_info(struct hccs_dev *hdev)
->> +{
->> +	struct pcc_mbox_chan *pcc_chan = hdev->cl_info.pcc_chan;
->> +
->> +	if (pcc_chan->type >= ACPI_PCCT_TYPE_EXT_PCC_MASTER_SUBSPACE) {
->> +		dev_err(hdev->dev, "unsupport for subspace type%u.\n",
->> +			pcc_chan->type);
->> +		return -EOPNOTSUPP;
->> +	}
->   
-> Is this the only use of the PCC type information you have or do you plan to
-> use it for something other than the validation.
-Yeah, it is just validation now. we want to plan this driver can support 
-more types.
->
-> Just for sake of argument, I can say all users of PCC must then do the
-> similar validation. I don't know where to draw the line here.
+Hi all,
 
-If export PCC type, it is good for the user of PCC to be more universal 
-and more compatible.
+After merging the amdgpu tree, today's linux-next build (htmldocs)
+produced this warning:
 
->
-> Ideally I would expect the driver to make this transparent and give error
-> during transmit if not supported.
-I understand you.
-I just check this type only once during the initializing phase.
-Otherwise, every once need to verify it when send PCC command.
->
-> The driver must be able to work with different PCC type to support variety
-> of platforms TBH. What is the issue exactly here ? Is this to prevent the
-Agree more with you.
-IMO, the user of PCC has the ability to support variety of platforms if 
-they can get PCC type.
-In this case, to prevent type 4 is necessary if driver cannot act as a 
-slave.
-on the other hand, If one driver acts as a slave, platform must supply 
-slave subspace for them.
-> use of Type 4 ? I think we must do something better but I don't know what
-> that is yet.
+drivers/gpu/drm/amd/pm/amdgpu_pm.c:988: ERROR: Unexpected indentation.
 
-Yes, we can try to do it better. I have a concern, like below.
+Introduced by commit
 
-You know that the use of PCC can use polling mode and interrupt mode to 
-communicate with platform.
-I'm not sure if the obtaining of the polling mode and interrupt mode is 
-an issue to prevent driver to be more universal.
-But this driver can know if they support interrupt mode based on struct 
-mbox_chan::struct mbox_controller::txdone_irq after requesting PCC channel.
-Because I'm not sure it's a better way.
-You know that drivers used interrupt mode need to fill the rx_callback 
-function into mbx_client when register PCC channel.
-And drivers used polling mode don't do it.
-If we use this way, drivers that both support the two mode have to 
-modify the rx_callback pointer after requesting PCC channel.
->
+  615585d09b33 ("Documentation/amdgpu: Modify pp_dpm_*clk details")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qppQxBL+5GzDCGM6gTAfvDt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmULqvsACgkQAVBC80lX
+0GyMewf/dsjYrj5+rnOGCfecPa4SHEZgWPV8X3Y0dpO/K4XAGZXdfmpJ6VXxHAur
+NC+ixuFKsbkUPBrJjii9+4c34jvsvQ6wJv6ISFtN9m7OLAlF3wXgQzWi0cXkauy6
+9UHBYGNl1v6thLBbL6n6XFBOoLzwIaMsB7D0hSNRSsL8nA+NagyusO6IQQ4/0f68
+ggQqpDIJGgmTncXPjKDakHQ7Fr3urIo7fbg3jix6y3hd1R9itvYe7TR0uY1ROTxw
+3WqGBSnxGGoNry0gRQ2w/wGmSJPZuokJDwvdv5oN4YrBBNbZ4BcAuvOdsPInPk74
+A0A2ItwoCrVLkmLBRQ5sFLIGH0rXRg==
+=Xvtd
+-----END PGP SIGNATURE-----
+
+--Sig_/qppQxBL+5GzDCGM6gTAfvDt--
