@@ -2,147 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF667AA269
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EFC7A9FB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbjIUVQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        id S231984AbjIUU1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233228AbjIUVP2 (ORCPT
+        with ESMTP id S231603AbjIUU01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:15:28 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on0614.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0e::614])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75061713;
-        Thu, 21 Sep 2023 10:06:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NXvsGFIDhJiTgxsX0PpE8J/lhq1tyHC41fb19oDJjj4qm2zFfyMuUNBNTDYa0GKfQSK/Ydd0PExXjMlIZxceIQ8Me8Q7tvzs6tHgTqmLLG72PSwG2KIWAxWh2ivJnDlGqwl+v9sa4ip/ErwXuWU2FWtooHm9OYRKG8QqobRhm/C97c5dHl4v1f9V0jSUPqqOyBFVau+Am3doenfWiZiGPY1arAo8y2NAIPPaONz6uLyd9JFly0GSG9Q4uCeEKcjtwTpl2WvGcjMnIUj3ECv93pfmyPk8+zjeBYmHo2kCwoubo+kkojLmU5YiRoTMxQa6iWYwnNhzgQiWlEXERNidXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=44kUePCEurOOgwMYy/g7ZeaiQvugDdzWMXCOBAU9FXc=;
- b=gzFSPMxTYrIHUzLhKDOO9nHDJV2idBfSIEl0LmMH1ans48GpQMZ7bEIbDY92HHGoVGldGvCJhy9Po3F/HMZtcpX0/zH5toG0aoBrSb7G/uPmskiqz/rbFysZeIvFUkwGBJyL3oWJlMXEVQxs/bHeyeU6fQDMTtkrpcxQtTtW+nSrtT8H5Nq4OLCSF5mEdmWEOV5uYAQb1OgBND+iSerQ9W0LkKDrncbjXwOEMM+7LxY++Li+BsDtHPSf5N3DSeJaQnAefJ6HcDAufNSTYdY6ItXA3pdFj4dgVxyG1I+k98fmmU0OGcB1YrGNnR9N2dFqypqyknhghbjE5/+d6IoHQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=44kUePCEurOOgwMYy/g7ZeaiQvugDdzWMXCOBAU9FXc=;
- b=KhD1rXPWKK+Ru+lheGKutFuCSmkgvKPy/d4OtGol7qgt/y6xTzYGTSZyOAkf8Kkv2Kt8gvq5TNnfU8gIFP0qXcvLSRwnEDrQcfECrNgGX/4aw8WPT4Kb+86lrV8ZPH0qlhmRvdEwH5Ep05OOrfsgGOdni7OwgX3zIKl/fwLm1HQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6004.eurprd04.prod.outlook.com (2603:10a6:208:11a::11)
- by DB9PR04MB9776.eurprd04.prod.outlook.com (2603:10a6:10:4f0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 21 Sep
- 2023 12:43:01 +0000
-Received: from AM0PR04MB6004.eurprd04.prod.outlook.com
- ([fe80::86b7:e0cc:dd24:12c0]) by AM0PR04MB6004.eurprd04.prod.outlook.com
- ([fe80::86b7:e0cc:dd24:12c0%7]) with mapi id 15.20.6813.017; Thu, 21 Sep 2023
- 12:43:01 +0000
-From:   Gaurav Jain <gaurav.jain@nxp.com>
-To:     Horia Geanta <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Aisheng Dong <aisheng.dong@nxp.com>
-Cc:     Silvano Di Ninno <silvano.dininno@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Gaurav Jain <gaurav.jain@nxp.com>
-Subject: [PATCH] crypto: caam/jr - fix Chacha20 + Poly1305 self test failure
-Date:   Thu, 21 Sep 2023 18:12:37 +0530
-Message-Id: <20230921124237.2364827-1-gaurav.jain@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0176.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::32) To AM0PR04MB6004.eurprd04.prod.outlook.com
- (2603:10a6:208:11a::11)
+        Thu, 21 Sep 2023 16:26:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E567356B;
+        Thu, 21 Sep 2023 10:33:16 -0700 (PDT)
+Received: from [IPV6:2a01:e0a:120:3210:9fdf:789a:7434:5a59] (unknown [IPv6:2a01:e0a:120:3210:9fdf:789a:7434:5a59])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 33A2566072EA;
+        Thu, 21 Sep 2023 13:46:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695300403;
+        bh=LVEZ1RsG9zACgcHPee3WTOL671cvZoROVfJ92IP6s4Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Z7acJaSzlHDcCiwLMiECWrrw5UijdlQ+DYiCsWekWoNpZ3tWGx6RqitZQ5cmt7bpf
+         r8MU3UuFwvDJzNYe1xL5Y/b3xLsQy0Phe/0FacTfJDAd76T/xFvJsFSKXzdi7cqygT
+         nnR/uVG3c5M9+pdpeUljAGo+Ro7bh3NzUCc7J3/ZVMKPQmZV5Ar34/V7nSYyhf7xVi
+         RjGOqVm5mGQxUBr22OlVpTmp3jupc+1vblk/eBLz/A9XDq3XaZ2d0hvxOepERS1ZdT
+         9mjN13gH3bQTbVtxurYBzMHh5jfHpAcMC56+t7Ip6d0FjST8TjTAN+DXWqnN9PFxMc
+         NU4rD8cbt2+6g==
+Message-ID: <c8b7db47-3875-a10b-8d81-a0b3dcbc564a@collabora.com>
+Date:   Thu, 21 Sep 2023 14:46:40 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6004:EE_|DB9PR04MB9776:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc573aea-51c0-4f49-264d-08dbbaa049e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CdHgm64dgOns7JEY14Sbpn7OjUzCciwH/Q+DkU2sZLrNDpCpHxcdWYjTCkYVJGMMrLTYEfAo/BbbVPQCm2pU0wpfksS4MYUAA37m0oVM49jlkr16aLgGT6KI+HzdNNINUYXdPIalfGHOSD44xvRZdKmIZ5eZJxM1rKKBBS04lHuR2HZ95jCPa9AuxtkZI8o0SyOFZ+PAr3itko997Emu+57KjRHIouFB/Csr6XtayaRL3z4JYGFtViXk0s6/xPa/KjcM0DNX31de0HxR0OhvzFSh0N5JtEO67fANKWi12+wWXJzVAKJPrlSLmwe2Phxcid2w3Hi2RgJdDPDap0QocF9e3aJGVAFsYRGESVgHAQsBW7ALj6vBC5xBzajPYU/qXF5WgBJOHJhB4lvPDI8+812zsbp5NzhO5OGWXDbzJKjIcwMBdq0NRVxEZXWkvdWCV4ubCfFdIPjfRMItDOVcnEXqb9HA6l/hnMYC6/Z8XSuFHWH/1gIa8Ong/Jir4TJwAtr86PIlPXhAY/mVvusjgI1QyNguS1z2nna985NTTKXmD155fYNq3UrZ9tW7mF23xrLQE93wP/Y0eCQ5iGYBE4k22Z3kxUs6vI5NKIs0DD9aAYAnwosr0l6oGEtEg06B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6004.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(366004)(376002)(1800799009)(186009)(451199024)(52116002)(6512007)(6486002)(6506007)(6666004)(83380400001)(38100700002)(86362001)(38350700002)(36756003)(2616005)(1076003)(26005)(4744005)(110136005)(66476007)(6636002)(54906003)(316002)(66556008)(66946007)(41300700001)(2906002)(44832011)(5660300002)(8936002)(8676002)(4326008)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pxGTBpdEb9uwCgiKKmXtgcx2Cx5oS8NqQp8uEX0jWDsKKgUN42HymCmjxuBG?=
- =?us-ascii?Q?ZBvd5S90DVUOwndCOFaYgWY0yNqcY0IPzrLxmq6Sixfu+Qz0Vfg9StGdD8Mk?=
- =?us-ascii?Q?xvUaKfI/L6Hw9ZYvbhU0X161A2xcT9MHWkGDKST6Xx73JoSZHqWkwEVHaoXI?=
- =?us-ascii?Q?A0ghS8Jl/wNWM2iYl+Eb3K/+Cy3k0Trqn9e+NLLq/st43JyUi+uOc/voz4WD?=
- =?us-ascii?Q?/FrqI7vdZCmktf5rxHjdBtTSvg+JZ/r0DvcOw3qbbHPZLfhlX5+/3noHG+AS?=
- =?us-ascii?Q?S/diyIWv9v7lVNb0Br6fYg741pHbFuvf2oXY/0/L+k4pgv1LKAbCjsiwUy+J?=
- =?us-ascii?Q?B27TJHirfFPaSVBvTj+WuXI0NKukfz+VThdpZLYN/dYxrKsKMmIlbM/JzA51?=
- =?us-ascii?Q?+nFbM5Fff3VXEYC/KYbMr8p9kA1Yg4t0QwgZtkkfMXBwG7bmugDzs0GYzMHj?=
- =?us-ascii?Q?I/U1vK7T9uU6rcD7ETBKsYT1V3jQU4dIIseE6i0A/xX7sCvGbOpdaazNNcx8?=
- =?us-ascii?Q?tthdd6GpSu0a0nSk8UFVymZUfuMwAHowPCMqMkHueM1NyNX/z79LR66618AX?=
- =?us-ascii?Q?LRhjLINX17tXFm31xwuTOJRQROQXoFfk344XFlXCibqZHfHXzlFjqTJ1aQEl?=
- =?us-ascii?Q?AkLOIBGCCrWe/ZGHsbpVCczrpW5O3R7G47KdkMe2qxx654/Of9Kw9dsluMzH?=
- =?us-ascii?Q?BsaIPUuLVeHFeoPUYIE0sRTMUErycAfz9a8Db9uqcsQRiQ5uemDFXUe/ZCOj?=
- =?us-ascii?Q?ZmOxzrZyoaiEtv4l4+wEBrtJILCF3E91+4eZGasssi+IrknmO6L3l8gsEnlx?=
- =?us-ascii?Q?4qNCmN1djmsUJ0d5+E716/VxASe1fvh0fWRkwwGtUKQCPH3s44U00P2V/J55?=
- =?us-ascii?Q?d+e7ZQz/MX2CAcreJ48bXEQiNg9CJVVAKgHJ+oV00NjTQq8C5W7BYH9UO7X3?=
- =?us-ascii?Q?oDL9To95vQ8y0QK2i8Yxt4KWFsSuE2iWLXjgXjjaubtfAlZHuKLDesHLys89?=
- =?us-ascii?Q?UVru4oIJXDiyPikfCPnCeTMDEwGvUx8cz6i9RIIPZFT9QFvRlqUDrAgZ1R2D?=
- =?us-ascii?Q?6ichxdTf2ZqjcVzt2/Mb5wIG5yFQPTBuHEBKfuXcc9xibX7EC7bAhcWP7S4b?=
- =?us-ascii?Q?RddqycQ4yQ29tqRKCXhXDE4Vm3eX4wrYbH5H7wmg+WaqhpEUKfbtKGCidXwX?=
- =?us-ascii?Q?OsGnhgcXaszyYsx47utfGYRpchyzHJaG5wudm1pjwBjkfmd18nLQIKjgmOc/?=
- =?us-ascii?Q?+lCm+y8jrYTIxr2xr1SNzFBk1Ypqnpu5VBXYoNbBB1QoX3lUboCorHGsO+Kb?=
- =?us-ascii?Q?IyjAizvZ4jKBoOFMLduHNx6VGGZ1RcLIAq2KZFh4KzPW1xV0EIyXtFoHA8Vc?=
- =?us-ascii?Q?WY3ERmvZWUjGV0DnvB+z0dkyR7xSINl3t0WlaqPVp3hPJKbILVC/bAG1/XT7?=
- =?us-ascii?Q?1adNANtcAvbJ1gDhQoPVwBkfEkaj2w9IVgrl3ItSxYxhTlcqOOMuDf1g3F2I?=
- =?us-ascii?Q?qTy4Z+Z5cqwSbf913+rP8G++23fNi915bCMPwtXFV/FQ7gCOnijcVJH20+A5?=
- =?us-ascii?Q?wYKqEKJhNhNNzS2TDg0g4W1h/mRe7MvPBTvBC8QH?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc573aea-51c0-4f49-264d-08dbbaa049e0
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6004.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 12:43:01.2249
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lBHjn0K46FW4BlUJfgD6ZcfY9lbsi7I9mIs7mzf2L8lJmJdKSWudoFWSZ4y/HZVCm068x8+qdOdXoc3Q8BtKAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9776
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_PERMERROR,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 45/49] media: core: Add bitmap manage bufs array
+ entries
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, mchehab@kernel.org,
+        tfiga@chromium.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
+ <20230914133323.198857-46-benjamin.gaignard@collabora.com>
+ <1142bbb4-b8f1-44ec-962e-9347a231782f@xs4all.nl>
+ <20b6b93e-eef8-3d7b-a3c2-795f220059d4@collabora.com>
+ <470682b4-c14b-4237-bc46-fddfdd085026@xs4all.nl>
+ <31f298ec-6280-d21b-3d8a-c7bf1c9c0c30@collabora.com>
+ <b10a7414-b710-4fb9-a72d-e2d7eff2616d@xs4all.nl>
+ <aa649adf-8faf-801b-f6bd-d4a4760e040f@collabora.com>
+ <a6a6da68-d9f2-44d3-9741-aa2cf83fac6d@xs4all.nl>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <a6a6da68-d9f2-44d3-9741-aa2cf83fac6d@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-key buffer is not copied in chachapoly_setkey function,
-results in wrong output for encryption/decryption operation.
 
-fix this by memcpy the key in caam_ctx key arrary
+Le 21/09/2023 à 14:13, Hans Verkuil a écrit :
+> On 21/09/2023 14:05, Benjamin Gaignard wrote:
+>> Le 21/09/2023 à 12:24, Hans Verkuil a écrit :
+>>> On 21/09/2023 11:28, Benjamin Gaignard wrote:
+>>>> Le 20/09/2023 à 16:56, Hans Verkuil a écrit :
+>>>>> On 20/09/2023 16:30, Benjamin Gaignard wrote:
+>>>>> <snip>
+>>>>>
+>>>>>>>>          num_buffers = min_t(unsigned int, num_buffers,
+>>>>>>>>                      q->max_allowed_buffers - vb2_get_num_buffers(q));
+>>>>>>>>      -    first_index = vb2_get_num_buffers(q);
+>>>>>>>> +    first_index = bitmap_find_next_zero_area(q->bufs_map, q->max_allowed_buffers,
+>>>>>>>> +                         0, num_buffers, 0);
+>>>>>>>>            if (first_index >= q->max_allowed_buffers)
+>>>>>>>>              return 0;
+>>>>>>>> @@ -675,7 +678,13 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>>>>>>>>        struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q, unsigned int index)
+>>>>>>>>      {
+>>>>>>>> -    if (index < q->num_buffers)
+>>>>>>>> +    if (!q->bufs_map || !q->bufs)
+>>>>>>>> +        return NULL;
+>>>>>>> I don't think this can ever happen.
+>>>>>> I got kernel crash without them.
+>>>>>> I will keep them.
+>>>>> What is the backtrace? How can this happen? It feels wrong that this can be
+>>>>> called with a vb2_queue that apparently is not properly initialized.
+>>>> I have this log when adding dump_stack() in vb2_get_buffer() if !q->bufs_bitmap:
+>>>>
+>>>> [   18.924627] Call trace:
+>>>> [   18.927090]  dump_backtrace+0x94/0xec
+>>>> [   18.930787]  show_stack+0x18/0x24
+>>>> [   18.934137]  dump_stack_lvl+0x48/0x60
+>>>> [   18.937833]  dump_stack+0x18/0x24
+>>>> [   18.941166]  __vb2_queue_cancel+0x23c/0x2f0
+>>>> [   18.945365]  vb2_core_queue_release+0x24/0x6c
+>>>> [   18.949740]  vb2_queue_release+0x10/0x1c
+>>>> [   18.953677]  v4l2_m2m_ctx_release+0x20/0x40
+>>>> [   18.957892]  hantro_release+0x20/0x54
+>>>> [   18.961584]  v4l2_release+0x74/0xec
+>>>> [   18.965110]  __fput+0xb4/0x274
+>>>> [   18.968205]  __fput_sync+0x50/0x5c
+>>>> [   18.971626]  __arm64_sys_close+0x38/0x7c
+>>>> [   18.975562]  invoke_syscall+0x48/0x114
+>>>> [   18.979329]  el0_svc_common.constprop.0+0xc0/0xe0
+>>>> [   18.984068]  do_el0_svc+0x1c/0x28
+>>>> [   18.987402]  el0_svc+0x40/0xe8
+>>>> [   18.990470]  el0t_64_sync_handler+0x100/0x12c
+>>>> [   18.994842]  el0t_64_sync+0x190/0x194
+>>>>
+>>>> This happen at boot time when hantro driver is open and close without other actions.
+>>> Ah, now I see the problem. q->bufs and q->bufs_map are allocated in
+>>> vb2_core_create_bufs and vb2_core_reqbufs, but they should be allocated
+>>> in vb2_queue_init: that's the counterpart of vb2_core_queue_release.
+>>>
+>>> With that change you shouldn't have to check for q->bufs/bufs_map anymore.
+>> It is a better solution but even like this vb2_core_queue_release() is called
+>> at least 2 times on the same vivid queue and without testing q->bufs_bitmap
+>> makes kernel crash.
+> Do you have a stacktrace for that? Perhaps vb2_core_queue_release should check
+> for q->bufs/q->bufs_map and return if those are NULL. But it could also be a
+> bug that it is called twice, it just was never noticed because it was harmless
+> before.
 
-Fixes: d6bbd4eea243 ("crypto: caam/jr - add support for Chacha20 + Poly1305")
-Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
----
- drivers/crypto/caam/caamalg.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I have added some printk to log that when running test-media on vivid:
 
-diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-index eba2d750c3b0..066f08a3a040 100644
---- a/drivers/crypto/caam/caamalg.c
-+++ b/drivers/crypto/caam/caamalg.c
-@@ -575,7 +575,8 @@ static int chachapoly_setkey(struct crypto_aead *aead, const u8 *key,
- 	if (keylen != CHACHA_KEY_SIZE + saltlen)
- 		return -EINVAL;
- 
--	ctx->cdata.key_virt = key;
-+	memcpy(ctx->key, key, keylen);
-+	ctx->cdata.key_virt = ctx->key;
- 	ctx->cdata.keylen = keylen - saltlen;
- 
- 	return chachapoly_set_sh_desc(aead);
--- 
-2.25.1
+[  130.497426] vb2_core_queue_init queue cap-0000000050d195ab allocate q->bufs 00000000dc2c15ed and q->bufs_bitmap 000000008173fc5a
+...
+[  130.733967] vb2_core_queue_release queue cap-0000000050d195ab release q->bufs and q->bufs_bitmap
+[  133.866345] vb2_get_buffer queue cap-0000000050d195ab q->bufs_bitmap is NULL
+[  133.873454] CPU: 1 PID: 321 Comm: v4l2-ctl Not tainted 6.6.0-rc1+ #542
+[  133.879997] Hardware name: NXP i.MX8MQ EVK (DT)
+[  133.884536] Call trace:
+[  133.886988]  dump_backtrace+0x94/0xec
+[  133.890673]  show_stack+0x18/0x24
+[  133.894002]  dump_stack_lvl+0x48/0x60
+[  133.897681]  dump_stack+0x18/0x24
+[  133.901009]  __vb2_queue_cancel+0x250/0x31c
+[  133.905209]  vb2_core_queue_release+0x24/0x88
+[  133.909580]  _vb2_fop_release+0xb0/0xbc
+[  133.913428]  vb2_fop_release+0x2c/0x58
+[  133.917187]  vivid_fop_release+0x80/0x388 [vivid]
+[  133.921948]  v4l2_release+0x74/0xec
+[  133.925452]  __fput+0xb4/0x274
+[  133.928520]  __fput_sync+0x50/0x5c
+[  133.931934]  __arm64_sys_close+0x38/0x7c
+[  133.935868]  invoke_syscall+0x48/0x114
+[  133.939630]  el0_svc_common.constprop.0+0x40/0xe0
+[  133.944349]  do_el0_svc+0x1c/0x28
+[  133.947677]  el0_svc+0x40/0xe8
+[  133.950741]  el0t_64_sync_handler+0x100/0x12c
+[  133.955109]  el0t_64_sync+0x190/0x194
 
+and later I have a call to reqbufs on the same queue without call to vb2_core_queue_init before
+
+[   58.696812] __vb2_queue_alloc queue cap- 0000000050d195abq->bufs_bitmap is NULL
+[   58.704148] CPU: 1 PID: 319 Comm: v4l2-compliance Not tainted 6.6.0-rc1+ #544
+[   58.711291] Hardware name: NXP i.MX8MQ EVK (DT)
+[   58.715826] Call trace:
+[   58.718274]  dump_backtrace+0x94/0xec
+[   58.721951]  show_stack+0x18/0x24
+[   58.725274]  dump_stack_lvl+0x48/0x60
+[   58.728946]  dump_stack+0x18/0x24
+[   58.732268]  __vb2_queue_alloc+0x4a8/0x50c
+[   58.736374]  vb2_core_reqbufs+0x274/0x46c
+[   58.740391]  vb2_ioctl_reqbufs+0xb0/0xe8
+[   58.744320]  vidioc_reqbufs+0x50/0x64 [vivid]
+[   58.748717]  v4l_reqbufs+0x50/0x64
+[   58.752125]  __video_do_ioctl+0x164/0x3c8
+[   58.756140]  video_usercopy+0x200/0x668
+[   58.759982]  video_ioctl2+0x18/0x28
+[   58.763475]  v4l2_ioctl+0x40/0x60
+[   58.766798]  __arm64_sys_ioctl+0xac/0xf0
+[   58.770730]  invoke_syscall+0x48/0x114
+[   58.774487]  el0_svc_common.constprop.0+0x40/0xe0
+[   58.779199]  do_el0_svc+0x1c/0x28
+[   58.782520]  el0_svc+0x40/0xe8
+[   58.785580]  el0t_64_sync_handler+0x100/0x12c
+[   58.789942]  el0t_64_sync+0x190/0x194
+
+>
+> Regards,
+>
+> 	Hans
+>
+>>> Regards,
+>>>
+>>>      Hans
+>>>
+>>>>     
+>>>>>>>> +
+>>>>>>>> +    return (bitmap_weight(q->bufs_map, q->max_allowed_buffers) > 0);
+>>>>>>> How about:
+>>>>>>>
+>>>>>>>        return vb2_get_num_buffers(q) > 0;
+>>>>>> vb2_get_num_buffers is defined in videobuf2-core.c, I'm not sure that
+>>>>>> an inline function could depend of a module function.
+>>>>> Not a problem. E.g. v4l2-ctrls.h is full of such static inlines.
+>>>>>
+>>>>> Regards,
+>>>>>
+>>>>>       Hans
+>>>>>
+>
