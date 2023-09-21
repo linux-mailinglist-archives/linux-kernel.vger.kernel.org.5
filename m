@@ -2,212 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA5F7A9E9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A0F7A9E8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbjIUUDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        id S231362AbjIUUCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjIUUCk (ORCPT
+        with ESMTP id S231529AbjIUUCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:02:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53165468E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C3B0C4AF77;
-        Thu, 21 Sep 2023 11:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695295545;
-        bh=t4ry7//CzzJohA2MxLm7JobvhK5R16tidfZmy/skTKI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=E+RHM/0nm/ZfWk42C534jVIWFMefKm7Ty3hKQ4Hyswv04LpkLVCqkWxeGIL3oKKBP
-         fcDaBLBNm3x1VYbuiBOfYJ9iKZWaDMh2R96h3b8+HAIyg/nWYdcGOmTkF6plHHuyqW
-         PVUlJ6n/XUjv0i7wtNkiDMyvcqyZNs6eOho7EyGKVxBXXU8VfAis+v/J0iHL/DYriE
-         k5L16ftgwm+V2nOqoVSIfDB6WRekOeZs1QAiidvYArDmj2oVgyHSuwEpqAESiaPKtw
-         J2CddwE0QGM2Iayy6tSHYx41BksAOShY4Xd7Uo9tGKvlDfmVlSAjiEElXdLvqK6rUn
-         0cg6plV0ZdZGw==
-Message-ID: <4a9c1f89-99c6-40dc-a56c-64d06386d5a1@kernel.org>
-Date:   Thu, 21 Sep 2023 14:25:38 +0300
+        Thu, 21 Sep 2023 16:02:14 -0400
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F5543AB5;
+        Thu, 21 Sep 2023 10:26:05 -0700 (PDT)
+Received: from [192.168.42.133] (host-178-72-203-90.ip.nej.cz [178.72.203.90])
+        by mx.gpxsee.org (Postfix) with ESMTPSA id 5045D725;
+        Thu, 21 Sep 2023 13:27:34 +0200 (CEST)
+Message-ID: <1d6ccf7f-a2d5-4cb5-a9aa-18538d32ce32@gpxsee.org>
+Date:   Thu, 21 Sep 2023 13:27:34 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 2/3] net: ethernet: ti: am65-cpsw: add mqprio
- qdisc offload in channel mode
+Subject: Re: [PATCH v10 1/2] Added Digiteq Automotive MGB4 driver
 Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
-        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230920121530.4710-1-rogerq@kernel.org>
- <20230920121530.4710-3-rogerq@kernel.org>
- <20230921104529.GI224399@kernel.org>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230921104529.GI224399@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+References: <20230919165923.2509-1-tumic@gpxsee.org>
+ <20230919165923.2509-2-tumic@gpxsee.org>
+ <84ecbf4e-79eb-4ab4-851d-cdd998201534@xs4all.nl>
+ <91d2eb26-f4de-4b83-816e-d7b8ada5a225@gpxsee.org>
+ <b4fc7e06-d9d4-482c-b83d-ab2de29f34f3@xs4all.nl>
+From:   =?UTF-8?Q?Martin_T=C5=AFma?= <tumic@gpxsee.org>
+In-Reply-To: <b4fc7e06-d9d4-482c-b83d-ab2de29f34f3@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
+On 21. 09. 23 12:49, Hans Verkuil wrote:
+> On 21/09/2023 12:43, Martin Tůma wrote:
+>> On 21. 09. 23 9:28, Hans Verkuil wrote:
+>>> On 19/09/2023 18:59, tumic@gpxsee.org wrote:
+>>>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>>>
+>>>> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
+>>>> video interfaces. As for now, two modules - FPD-Link and GMSL - are
+>>>> available and supported by the driver. The card has two inputs and two
+>>>> outputs (FPD-Link only).
+>>>>
+>>>> In addition to the video interfaces it also provides a trigger signal
+>>>> interface and a MTD interface for FPGA firmware upload.
+>>>>
+>>>> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>>> ---
+>>>>    MAINTAINERS                             |   7 +
+>>>>    drivers/media/pci/Kconfig               |   1 +
+>>>>    drivers/media/pci/Makefile              |   1 +
+>>>>    drivers/media/pci/mgb4/Kconfig          |  17 +
+>>>>    drivers/media/pci/mgb4/Makefile         |   6 +
+>>>>    drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
+>>>>    drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
+>>>>    drivers/media/pci/mgb4/mgb4_core.c      | 686 +++++++++++++++++
+>>>>    drivers/media/pci/mgb4/mgb4_core.h      |  74 ++
+>>>>    drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
+>>>>    drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
+>>>>    drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
+>>>>    drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
+>>>>    drivers/media/pci/mgb4/mgb4_io.h        |  33 +
+>>>>    drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
+>>>>    drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
+>>>>    drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
+>>>>    drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 744 +++++++++++++++++++
+>>>>    drivers/media/pci/mgb4/mgb4_sysfs_out.c | 681 +++++++++++++++++
+>>>>    drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
+>>>>    drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
+>>>>    drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
+>>>>    drivers/media/pci/mgb4/mgb4_vin.c       | 934 ++++++++++++++++++++++++
+>>>>    drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
+>>>>    drivers/media/pci/mgb4/mgb4_vout.c      | 597 +++++++++++++++
+>>>>    drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
+>>>>    26 files changed, 4862 insertions(+)
+>>>>    create mode 100644 drivers/media/pci/mgb4/Kconfig
+>>>>    create mode 100644 drivers/media/pci/mgb4/Makefile
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
+>>>>    create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
+>>>>
+>>>
+>>> <snip>
+>>>
+>>>> diff --git a/drivers/media/pci/mgb4/mgb4_sysfs_in.c b/drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>>>> new file mode 100644
+>>>> index 000000000000..61b1ee969ed0
+>>>> --- /dev/null
+>>>> +++ b/drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>>>> @@ -0,0 +1,744 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>>> +/*
+>>>> + * Copyright (C) 2021-2023 Digiteq Automotive
+>>>> + *     author: Martin Tuma <martin.tuma@digiteqautomotive.com>
+>>>> + *
+>>>> + * This module handles all the sysfs info/configuration that is related to the
+>>>> + * v4l2 input devices.
+>>>> + */
+>>>> +
+>>>> +#include <linux/device.h>
+>>>> +#include "mgb4_core.h"
+>>>> +#include "mgb4_i2c.h"
+>>>> +#include "mgb4_vin.h"
+>>>> +#include "mgb4_cmt.h"
+>>>> +#include "mgb4_sysfs.h"
+>>>> +
+>>>> +/* Common for both FPDL3 and GMSL */
+>>>> +
+>>>> +static ssize_t input_id_show(struct device *dev,
+>>>> +                 struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +    struct video_device *vdev = to_video_device(dev);
+>>>> +    struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>>>> +
+>>>> +    return sprintf(buf, "%d\n", vindev->config->id);
+>>>> +}
+>>>> +
+>>>> +static ssize_t oldi_lane_width_show(struct device *dev,
+>>>> +                    struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +    struct video_device *vdev = to_video_device(dev);
+>>>> +    struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>>>> +    struct mgb4_dev *mgbdev = vindev->mgbdev;
+>>>> +    u16 i2c_reg;
+>>>> +    u8 i2c_mask, i2c_single_val, i2c_dual_val;
+>>>> +    u32 config;
+>>>> +    int ret;
+>>>> +
+>>>> +    i2c_reg = MGB4_IS_GMSL(mgbdev) ? 0x1CE : 0x49;
+>>>> +    i2c_mask = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x03;
+>>>> +    i2c_single_val = MGB4_IS_GMSL(mgbdev) ? 0x00 : 0x02;
+>>>> +    i2c_dual_val = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x00;
+>>>> +
+>>>> +    mutex_lock(&mgbdev->i2c_lock);
+>>>> +    ret = mgb4_i2c_read_byte(&vindev->deser, i2c_reg);
+>>>> +    mutex_unlock(&mgbdev->i2c_lock);
+>>>> +    if (ret < 0)
+>>>> +        return -EIO;
+>>>> +
+>>>> +    config = mgb4_read_reg(&mgbdev->video, vindev->config->regs.config);
+>>>> +
+>>>> +    if (((config & (1U << 9)) && ((ret & i2c_mask) != i2c_dual_val)) ||
+>>>> +        (!(config & (1U << 9)) && ((ret & i2c_mask) != i2c_single_val))) {
+>>>> +        dev_err(dev, "I2C/FPGA register value mismatch\n");
+>>>> +        return -EINVAL;
+>>>> +    }
+>>>> +
+>>>> +    return sprintf(buf, "%s\n", config & (1U << 9) ? "1" : "0");
+>>>> +}
+>>>> +
+>>>> +static ssize_t oldi_lane_width_store(struct device *dev,
+>>>> +                     struct device_attribute *attr,
+>>>> +                     const char *buf, size_t count)
+>>>> +{
+>>>> +    struct video_device *vdev = to_video_device(dev);
+>>>> +    struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>>>> +    struct mgb4_dev *mgbdev = vindev->mgbdev;
+>>>> +    u32 fpga_data;
+>>>> +    u16 i2c_reg;
+>>>> +    u8 i2c_mask, i2c_data;
+>>>> +    unsigned long val;
+>>>> +    int ret;
+>>>> +
+>>>> +    ret = kstrtoul(buf, 10, &val);
+>>>> +    if (ret)
+>>>> +        return ret;
+>>>> +
+>>>> +    switch (val) {
+>>>> +    case 0: /* single */
+>>>> +        fpga_data = 0;
+>>>> +        i2c_data = MGB4_IS_GMSL(mgbdev) ? 0x00 : 0x02;
+>>>> +        break;
+>>>> +    case 1: /* dual */
+>>>> +        fpga_data = 1U << 9;
+>>>> +        i2c_data = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x00;
+>>>> +        break;
+>>>> +    default:
+>>>> +        return -EINVAL;
+>>>> +    }
+>>>> +
+>>>> +    i2c_reg = MGB4_IS_GMSL(mgbdev) ? 0x1CE : 0x49;
+>>>> +    i2c_mask = MGB4_IS_GMSL(mgbdev) ? 0x0E : 0x03;
+>>>
+>>> Isn't this sequence needed as well?
+>>>
+>>>      mutex_lock(vindev->vdev.lock);
+>>>      if (vb2_is_busy(vindev->vdev.queue)) {
+>>>          mutex_unlock(vindev->vdev.lock);
+>>>          return -EBUSY;
+>>>      }
+>>>
+>>> I would expect this to be present in almost all store functions.
+>>> You don't want to change a setting like this when the queue is busy.
+>>>
+>>> If a store function doesn't need the lock, then perhaps add a comment
+>>> like: 'This can be changed at any time, even if vb2_is_busy() is true.'
+>>>
+>>> Can you go through all the store functions and verify this?
+>>>
+>>> Basically any store function that changes timings/video source/buffer size
+>>> needs this check.
+>>>
+>>> Similar to VIDIOC_S_FMT and VIDIOC_S_DV_TIMINGS ioctls: you can't change
+>>> those while buffers are allocated.
+>>>
+>>
+>> Any store function, that could change the video source/size and thus would require new buffers is guarded by this check. In the admin guide documentation, all those functions have the "This parameter
+>> can not be changed while the output v4l2 device is open." note.
+>>
+>> Functions that change the signal "on the wire" like oldi_lane_width_store() do however not have this guard as for me it seems that those can not break anything in v4l2 - the queue remains the same.
+>> Also when practically tested, nothing seemed to break. But I can of course add those checks to some more functions if you think they are necessary. Not having this restrictions makes it possible to
+>> fiddle with the parameters on live streams to set the correct parameters. For example in this case (oldi_lane_width) the image switches between "two images in one" and "the correct image" if you
+>> switch it during playback, but the queue (buffer size) is the same. The FPGA is also designed to be capable of changing those parameters "live".
+> 
+> Ah, OK. Then this should be documented in the source code. Basically you want
+> to see in the code that it is intentional that no locking takes place and that
+> it is safe to do so.
+> 
+> Most devices are not able to handle this, at minimum you will see video glitches.
+> 
 
-On 21/09/2023 13:45, Simon Horman wrote:
-> On Wed, Sep 20, 2023 at 03:15:29PM +0300, Roger Quadros wrote:
->> From: Grygorii Strashko <grygorii.strashko@ti.com>
->>
->> This patch adds MQPRIO Qdisc offload in full 'channel' mode which allows
->> not only setting up pri:tc mapping, but also configuring TX shapers
->> (rate-limiting) on external port FIFOs.
->>
->> The MQPRIO Qdisc offload is expected to work with or without VLAN/priority
->> tagged packets.
->>
->> The CPSW external Port FIFO has 8 Priority queues. The rate-limit can be
->> set for each of these priority queues. Which Priority queue a packet is
->> assigned to depends on PN_REG_TX_PRI_MAP register which maps header
->> priority to switch priority.
->>
->> The header priority of a packet is assigned via the RX_PRI_MAP_REG which
->> maps packet priority to header priority.
->>
->> The packet priority is either the VLAN priority (for VLAN tagged packets)
->> or the thread/channel offset.
->>
->> For simplicity, we assign the same priority queue to all queues of a
->> Traffic Class so it can be rate-limited correctly.
->>
->> Configuration example:
->>  ethtool -L eth1 tx 5
->>  ethtool --set-priv-flags eth1 p0-rx-ptype-rrobin off
->>
->>  tc qdisc add dev eth1 parent root handle 100: mqprio num_tc 3 \
->>  map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
->>  queues 1@0 1@1 1@2 hw 1 mode channel \
->>  shaper bw_rlimit min_rate 0 100mbit 200mbit max_rate 0 101mbit 202mbit
->>
->>  tc qdisc replace dev eth2 handle 100: parent root mqprio num_tc 1 \
->>  map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 hw 1
->>
->>  ip link add link eth1 name eth1.100 type vlan id 100
->>  ip link set eth1.100 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
->>
->> In the above example two ports share the same TX CPPI queue 0 for low
->> priority traffic. 3 traffic classes are defined for eth1 and mapped to:
->> TC0 - low priority, TX CPPI queue 0 -> ext Port 1 fifo0, no rate limit
->> TC1 - prio 2, TX CPPI queue 1 -> ext Port 1 fifo1, CIR=100Mbit/s, EIR=1Mbit/s
->> TC2 - prio 3, TX CPPI queue 2 -> ext Port 1 fifo2, CIR=200Mbit/s, EIR=2Mbit/s
->>
->> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> 
-> ...
-> 
->> +static int am65_cpsw_mqprio_verify_shaper(struct am65_cpsw_port *port,
->> +					  struct tc_mqprio_qopt_offload *mqprio)
->> +{
->> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
->> +	struct netlink_ext_ack *extack = mqprio->extack;
->> +	u64 min_rate_total = 0, max_rate_total = 0;
->> +	u32 min_rate_msk = 0, max_rate_msk = 0;
->> +	bool has_min_rate, has_max_rate;
->> +	int num_tc, i;
->> +
->> +	if (!(mqprio->flags & TC_MQPRIO_F_SHAPER))
->> +		return 0;
->> +
->> +	if (mqprio->shaper != TC_MQPRIO_SHAPER_BW_RATE)
->> +		return 0;
->> +
->> +	has_min_rate = !!(mqprio->flags & TC_MQPRIO_F_MIN_RATE);
->> +	has_max_rate = !!(mqprio->flags & TC_MQPRIO_F_MAX_RATE);
->> +
->> +	if (!has_min_rate && has_max_rate) {
->> +		NL_SET_ERR_MSG_MOD(extack, "min_rate is required with max_rate");
->> +		return -EOPNOTSUPP;
->> +	}
->> +
->> +	if (!has_min_rate)
->> +		return 0;
->> +
->> +	num_tc = mqprio->qopt.num_tc;
->> +
->> +	for (i = num_tc - 1; i >= 0; i--) {
->> +		u32 ch_msk;
->> +
->> +		if (mqprio->min_rate[i])
->> +			min_rate_msk |= BIT(i);
->> +		min_rate_total +=  mqprio->min_rate[i];
->> +
->> +		if (has_max_rate) {
->> +			if (mqprio->max_rate[i])
->> +				max_rate_msk |= BIT(i);
->> +			max_rate_total +=  mqprio->max_rate[i];
->> +
->> +			if (!mqprio->min_rate[i] && mqprio->max_rate[i]) {
->> +				NL_SET_ERR_MSG_FMT_MOD(extack,
->> +						       "TX tc%d rate max>0 but min=0\n",
->> +						       i);
->> +				return -EINVAL;
->> +			}
->> +
->> +			if (mqprio->max_rate[i] &&
->> +			    mqprio->max_rate[i] < mqprio->min_rate[i]) {
->> +				NL_SET_ERR_MSG_FMT_MOD(extack,
->> +						       "TX tc%d rate min(%llu)>max(%llu)\n",
->> +						       i, mqprio->min_rate[i],
->> +						       mqprio->max_rate[i]);
->> +				return -EINVAL;
->> +			}
->> +		}
->> +
->> +		ch_msk = GENMASK(num_tc - 1, i);
->> +		if ((min_rate_msk & BIT(i)) && (min_rate_msk ^ ch_msk)) {
->> +			NL_SET_ERR_MSG_FMT_MOD(extack,
->> +					       "TX min rate limiting has to be enabled sequentially hi->lo tx_rate_msk%x\n",
->> +					       min_rate_msk);
-> 
-> Hi Grygorii and Roger,
-> 
-> An allmodconfig build with gcc-13 W=1 warns that:
-> 
->  drivers/net/ethernet/ti/am65-cpsw-qos.c: In function 'am65_cpsw_mqprio_verify_shaper':
->  ./include/linux/netlink.h:116:13: warning: 'am65_cpsw_qos: TX min rate l...' directive output truncated writing 85 bytes into a region of size 80 [-Wformat-truncation=]
-> 
->> +			return -EINVAL;
->> +		}
->> +
->> +		if ((max_rate_msk & BIT(i)) && (max_rate_msk ^ ch_msk)) {
->> +			NL_SET_ERR_MSG_FMT_MOD(extack,
->> +					       "TX max rate limiting has to be enabled sequentially hi->lo tx_rate_msk%x\n",
->> +					       max_rate_msk);
-> 
-> Likewise, here too.
+Well, you get video/image glitches in this case too, but they are 
+expected. Fiddling with this parameters is expected to be done while 
+"exploring" the radio/display (getting some documentation on the device 
+is usually harder than to "trial and error" it - yes, it's crazy, but 
+that's how it works in the VW group...). After that you create the 
+appropriate udev rules for the signal parameters and access the device 
+through the standard v4l2 API.
 
-OK. I'll have to reduce the message by 5 characters. Thanks!
+As this "trial and error" phase is the expected use-case, the FPGA is 
+designed not to break the buffer queue wherever possible. But I do 
+understand that "normal" devices do not work that way and people looking 
+into the code may find that suspicious. I will add a comment like "this 
+change can only break the image, not the buffer queue and is expected to 
+be called on live streams" and submit a v11 patch.
 
-> 
->> +			return -EINVAL;
->> +		}
->> +	}
->> +
->> +	min_rate_total = TO_MBPS(min_rate_total);
->> +	max_rate_total = TO_MBPS(max_rate_total);
->> +
->> +	p_mqprio->shaper_en = true;
->> +	p_mqprio->max_rate_total = max_t(u64, min_rate_total, max_rate_total);
->> +
->> +	return 0;
->> +}
-> 
-> ,..
+M.
 
--- 
-cheers,
--roger
+> With that change I should be able to merge v11.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>>>> +
+>>>> +    mutex_lock(&mgbdev->i2c_lock);
+>>>> +    ret = mgb4_i2c_mask_byte(&vindev->deser, i2c_reg, i2c_mask, i2c_data);
+>>>> +    mutex_unlock(&mgbdev->i2c_lock);
+>>>> +    if (ret < 0)
+>>>> +        return -EIO;
+>>>> +    mgb4_mask_reg(&mgbdev->video, vindev->config->regs.config, 1U << 9,
+>>>> +              fpga_data);
+>>>> +    if (MGB4_IS_GMSL(mgbdev)) {
+>>>> +        /* reset input link */
+>>>> +        mutex_lock(&mgbdev->i2c_lock);
+>>>> +        ret = mgb4_i2c_mask_byte(&vindev->deser, 0x10, 1U << 5, 1U << 5);
+>>>> +        mutex_unlock(&mgbdev->i2c_lock);
+>>>> +        if (ret < 0)
+>>>> +            return -EIO;
+>>>> +    }
+>>>> +
+>>>> +    return count;
+>>>> +}
+>>>> +
+>>>> +static ssize_t color_mapping_show(struct device *dev,
+>>>> +                  struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +    struct video_device *vdev = to_video_device(dev);
+>>>> +    struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>>>> +    u32 config = mgb4_read_reg(&vindev->mgbdev->video,
+>>>> +      vindev->config->regs.config);
+>>>> +
+>>>> +    return sprintf(buf, "%s\n", config & (1U << 8) ? "0" : "1");
+>>>> +}
+>>>> +
+>>>> +static ssize_t color_mapping_store(struct device *dev,
+>>>> +                   struct device_attribute *attr,
+>>>> +                   const char *buf, size_t count)
+>>>> +{
+>>>> +    struct video_device *vdev = to_video_device(dev);
+>>>> +    struct mgb4_vin_dev *vindev = video_get_drvdata(vdev);
+>>>> +    u32 fpga_data;
+>>>> +    unsigned long val;
+>>>> +    int ret;
+>>>> +
+>>>> +    ret = kstrtoul(buf, 10, &val);
+>>>> +    if (ret)
+>>>> +        return ret;
+>>>> +
+>>>> +    switch (val) {
+>>>> +    case 0: /* OLDI/JEIDA */
+>>>> +        fpga_data = (1U << 8);
+>>>> +        break;
+>>>> +    case 1: /* SPWG/VESA */
+>>>> +        fpga_data = 0;
+>>>> +        break;
+>>>> +    default:
+>>>> +        return -EINVAL;
+>>>> +    }
+>>>> +
+>>>> +    mgb4_mask_reg(&vindev->mgbdev->video, vindev->config->regs.config,
+>>>> +              1U << 8, fpga_data);
+>>>
+>>> This is likely a store function that can be called at any time as this
+>>> doesn't interrupt video streaming or changes buffer sizes.
+>>>
+>>
+>> Yes, this parameter definitely does not break anything else than the color scheme of the image and is without doubt safe to do on running streams. But the others should be as well.
+>>
+>>>> +
+>>>> +    return count;
+>>>> +}
+>>>> +
+>>>
+>>> Regards,
+>>>
+>>>      Hans
+>>
+> 
+
