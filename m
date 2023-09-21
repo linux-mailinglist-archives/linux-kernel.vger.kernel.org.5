@@ -2,142 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FB77A9B7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D497A997B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjIUTBt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 15:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        id S230194AbjIUSPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjIUTBT (ORCPT
+        with ESMTP id S230063AbjIUSPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:01:19 -0400
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2245C198D
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:34:33 -0700 (PDT)
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3ab2a0391c0so818627b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:34:33 -0700 (PDT)
+        Thu, 21 Sep 2023 14:15:00 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309EEB0F79;
+        Thu, 21 Sep 2023 11:10:10 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c108e106f0so21937591fa.1;
+        Thu, 21 Sep 2023 11:10:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695319808; x=1695924608; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=k4kPbAvXqYWCjQtm/jTtJ1li9AEbZqWafTDz226oJdI=;
+        b=HyW1ySaOYwx7yRSykO8SXgAdM+zjuMDEpBZ2iK7ou+9OtVJbyU3quv7EmukevAq/eB
+         hbNBSXFGYfqiLVdidnxUlB4QRZs+PGMJECYyTt139pAE4nhI/QxdbwGydDVsQnZcv5dn
+         Ei++gAWRD6x8MBddj8GsOhwj7Xs1yQ8lSXHC3FioQMbw3CECewchvziJseGPxvuwDHkk
+         ZWEWAzNSi8DOg9WZ2cm6uteTah+zdwDt74osOE4t0FjUSWoE6cDrA2ORacIv7XiUguIL
+         k0TUwJHyTrPlkROG+6QZ2GzeBPe+5W40udQozuldaSaWTa02RmMGSWntxWwDHHmS2Um9
+         YcxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321272; x=1695926072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6wRswdA+hUPT84SfQuestnzzAlGgjNnTThx2x+1h1rI=;
-        b=lu3oiCoZiTWnD9usJVgaOS9EjL0Lr53zvAFRFaxhZ/DxVnGTBnpFwGCNooXofwT8N2
-         /FulyFz1YRRA7CrKZAaXkYnda5k6fO4Yg3dOnlJ/vC/DIvR3cj7Md1zISwxtojSUQ+sC
-         1rPfu3j4v5xIbOfR/UWb9UOSNDRn0d3SSfTnbjg8hwS184foKrSGPD+9+eiairfuM6lk
-         alqO9E3jN+tbnWdRL1NA5cfVf+0ZKTfMCVYHQXm5RNwWtZPsG4bbHFOPSfl4b/P5XS+F
-         Hd1SYmi1x4nSj/DjjRvaoo877gKBt73DXliThH6b1bD9SXRfxnriPiVk72rAJENPAmZu
-         Cijw==
-X-Gm-Message-State: AOJu0YwSJc4EGFr+3xCJVTDCjSMSy01ZBvM3ph9Qa+JyZlAntvOkavFN
-        LVmZhjVxshgYVptfb/rRHsXIQ4uTuG/K2921
-X-Google-Smtp-Source: AGHT+IFwoZnnslTYO054SzzpiqR7BuA6WqZg/m2a4TzWwxAOQhvccsfczi9xAJRV6/Tw2tH6yme/ow==
-X-Received: by 2002:a25:e64d:0:b0:d80:1161:5ec1 with SMTP id d74-20020a25e64d000000b00d8011615ec1mr4397007ybh.20.1695285979175;
-        Thu, 21 Sep 2023 01:46:19 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id f34-20020a25b0a2000000b00d7e339ada01sm245629ybj.20.2023.09.21.01.46.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 01:46:18 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59be6605e1dso8577297b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 01:46:18 -0700 (PDT)
-X-Received: by 2002:a81:5dd7:0:b0:59b:ce0b:7829 with SMTP id
- r206-20020a815dd7000000b0059bce0b7829mr4365474ywb.35.1695285978536; Thu, 21
- Sep 2023 01:46:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230914195138.1518065-1-javierm@redhat.com> <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
- <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set> <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
- <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com> <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
-In-Reply-To: <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Sep 2023 10:46:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
-Message-ID: <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
- drm_*_helper_funcs callbacks
+        d=1e100.net; s=20230601; t=1695319808; x=1695924608;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k4kPbAvXqYWCjQtm/jTtJ1li9AEbZqWafTDz226oJdI=;
+        b=lexDUwOEjXMWKwh/OuzvtjKOJpBlUpSCddaa9P02lmnAESLS+lUMmcORl0hQwY3e67
+         K7qdB5htFvaX4K+tYNi/Ut6g91qTkeFUL4zX4bprMWr12F/wGD0lYTkfO2CwLPMssTBb
+         HMSg6y6RXjHduhRzL5FeBRY8CibrMzmvkaQJRcC9LNQVkjqKWBToRF7Mx9Jj+wapxxIT
+         ToBwv2O/g6yx6Yu4ep0QPLvjBgqstBUu6p63yF7C0P3D+ckFEWYPitrt2BvWjYXiKuq6
+         knNhWeW3riRYZVbRZXIt9Dk87FNDH8lhHBEy/pMm/4GgCboDxonGUA0VsTxpMAB7EXML
+         i4NA==
+X-Gm-Message-State: AOJu0YwAwoCnXRFjPoNlXNvDWhl7Rz+bBfMfULKGjY7qC+YbGv/BYehO
+        28Mp5Vk+QtINgQI1AqxTEJ0=
+X-Google-Smtp-Source: AGHT+IECgI0x8NqVEUwF8vAB/HRCbCPTukfPzQhaF2jXn5JCb5+dUTi6Rg3yqEOYh76bvzU4KraLtw==
+X-Received: by 2002:ac2:5224:0:b0:503:1d46:6f29 with SMTP id i4-20020ac25224000000b005031d466f29mr4160892lfl.37.1695286128519;
+        Thu, 21 Sep 2023 01:48:48 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id h16-20020a197010000000b004fbddb14020sm205979lfc.56.2023.09.21.01.48.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 01:48:48 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 11:48:45 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?UTF-8?B?U3Q=?= =?UTF-8?B?w7xibmVy?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH RFC v2 05/37] drm/connector: hdmi: Add output BPC to the
+ connector state
+Message-ID: <20230921114845.7edb1d37@eldfell>
+In-Reply-To: <20230920-kms-hdmi-connector-state-v2-5-17932daddd7d@kernel.org>
+References: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
+        <20230920-kms-hdmi-connector-state-v2-5-17932daddd7d@kernel.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/1wJwHY6yZH5_elgENzeqr8U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+--Sig_/1wJwHY6yZH5_elgENzeqr8U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 21, 2023 at 10:12 AM Maxime Ripard <mripard@kernel.org> wrote:
-> On Thu, Sep 21, 2023 at 09:57:22AM +0200, Geert Uytterhoeven wrote:
-> > On Thu, Sep 21, 2023 at 9:44 AM Maxime Ripard <mripard@kernel.org> wrote:
-> > > On Mon, Sep 18, 2023 at 09:19:07AM +0200, Javier Martinez Canillas wrote:
-> > > > Thomas Zimmermann <tzimmermann@suse.de> writes:
-> > > > > Am 14.09.23 um 21:51 schrieb Javier Martinez Canillas:
-> > > > >> The driver uses a naming convention where functions for struct drm_*_funcs
-> > > > >> callbacks are named ssd130x_$object_$operation, while the callbacks for
-> > > > >> struct drm_*_helper_funcs are named ssd130x_$object_helper_$operation.
-> > > > >>
-> > > > >> The idea is that this helper_ prefix in the function names denote that are
-> > > > >> for struct drm_*_helper_funcs callbacks. This convention was copied from
-> > > > >> other drivers, when ssd130x was written but Maxime pointed out that is the
-> > > > >> exception rather than the norm.
-> > > > >
-> > > > > I guess you found this in my code. I want to point out that I use the
-> > > > > _helper infix to signal that these are callback for
-> > > > > drm_primary_plane_helper_funcs and *not* drm_primary_plane_funcs. The
-> > > > > naming is intentional.
-> > > >
-> > > > Yes, that's what tried to say in the commit message and indeed I got the
-> > > > convention from drivers in drivers/gpu/drm/tiny. In fact I believe these
-> > > > function names are since first iteration of the driver, when was meant to
-> > > > be a tiny driver.
-> > > >
-> > > > According to Maxime it's the exception rather than the rule and suggested
-> > > > to change it, I don't really have a strong opinion on either naming TBH.
-> > >
-> > > Maybe that's just me, but the helper in the name indeed throws me off. In my
-> > > mind, it's supposed to be used only for helpers, not functions implementing the
-> > > helpers hooks.
-> >
-> > With several callbacks using the same (field) name, it is very helpful
-> > to name the actual implementation by combining the struct type name
-> > and the field name.
->
-> I can't think of any (at least for a given object). Which one do you have in
-> mind?
+On Wed, 20 Sep 2023 16:35:20 +0200
+Maxime Ripard <mripard@kernel.org> wrote:
 
-E.g. atomic_check():
+> We'll add automatic selection of the output BPC in a following patch,
+> but let's add it to the HDMI connector state already.
+>=20
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+>  drivers/gpu/drm/drm_atomic.c              |  4 +++-
+>  drivers/gpu/drm/drm_atomic_state_helper.c |  6 +++++-
+>  drivers/gpu/drm/drm_connector.c           | 13 ++++++++++++-
+>  include/drm/drm_connector.h               | 13 ++++++++++++-
+>  4 files changed, 32 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
+> index b1b56dcaa76b..8dce0a2f2ac3 100644
+> --- a/drivers/gpu/drm/drm_atomic.c
+> +++ b/drivers/gpu/drm/drm_atomic.c
+> @@ -1143,9 +1143,11 @@ static void drm_atomic_connector_print_state(struc=
+t drm_printer *p,
+>  	drm_printf(p, "\tcolorspace=3D%s\n", drm_get_colorspace_name(state->col=
+orspace));
+> =20
+>  	if (connector->connector_type =3D=3D DRM_MODE_CONNECTOR_HDMIA ||
+> -	    connector->connector_type =3D=3D DRM_MODE_CONNECTOR_HDMIB)
+> +	    connector->connector_type =3D=3D DRM_MODE_CONNECTOR_HDMIB) {
+>  		drm_printf(p, "\tbroadcast_rgb=3D%s\n",
+>  			   drm_hdmi_connector_get_broadcast_rgb_name(state->hdmi.broadcast_rg=
+b));
+> +		drm_printf(p, "\toutput_bpc=3D%u\n", state->hdmi.output_bpc);
+> +	}
+> =20
+>  	if (connector->connector_type =3D=3D DRM_MODE_CONNECTOR_WRITEBACK)
+>  		if (state->writeback_job && state->writeback_job->fb)
+> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/=
+drm_atomic_state_helper.c
+> index 0f7e5ba555b8..2c9b52ae1b56 100644
+> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+> @@ -569,6 +569,9 @@ EXPORT_SYMBOL(drm_atomic_helper_connector_tv_reset);
+>  void __drm_atomic_helper_connector_hdmi_reset(struct drm_connector *conn=
+ector,
+>  					      struct drm_connector_state *new_state)
+>  {
+> +	new_state->max_bpc =3D 8;
+> +	new_state->max_requested_bpc =3D 8;
+> +	new_state->hdmi.output_bpc =3D 8;
 
-    drm_crtc_helper_funcs.atomic_check()
-    drm_encoder_helper_funcs.atomic_check()
-    drm_connector_helper_funcs.atomic_check()
-    drm_plane_helper_funcs.atomic_check()
+Hi,
 
-Interestingly, drm_mode_config_helper_funcs does not have an
-atomic_check() callback, but drm_mode_config_funcs has.
+will this be forcing all drivers using these helpers to default to max bpc =
+=3D 8?
 
-> > Anything else confuses the casual reader. Perhaps the real question is whether
-> > the structures should have "helper" in their name in the first place?
->
-> Those structures are meant for functions used by the helpers, they are not
-> helper functions.
+I believe at least amdgpu would disagree. The defaults were changed in
+the recent years, IIRC to avoid extra modesets during boot-up when
+desktops prefer highest possible bpc for a mode.
 
-That might be how they started, but to me it looks like all these helpers
-are no longer helpers, but part of the core...
+The 'max bpc' property itself is a manual workaround for faulty
+hardware that does not correctly indicate the max bpc it can handle. It
+should not default to be a limiting factor.
 
-Gr{oetje,eeting}s,
+>  	new_state->hdmi.broadcast_rgb =3D DRM_HDMI_BROADCAST_RGB_AUTO;
+>  }
+>  EXPORT_SYMBOL(__drm_atomic_helper_connector_hdmi_reset);
+> @@ -651,7 +654,8 @@ int drm_atomic_helper_connector_hdmi_check(struct drm=
+_connector *connector,
+>  	struct drm_connector_state *new_state =3D
+>  		drm_atomic_get_new_connector_state(state, connector);
+> =20
+> -	if (old_state->hdmi.broadcast_rgb !=3D new_state->hdmi.broadcast_rgb) {
+> +	if (old_state->hdmi.broadcast_rgb !=3D new_state->hdmi.broadcast_rgb ||
+> +	    old_state->hdmi.output_bpc !=3D new_state->hdmi.output_bpc) {
+>  		struct drm_crtc *crtc =3D new_state->crtc;
+>  		struct drm_crtc_state *crtc_state;
+> =20
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index b45471d540ac..f55f5918411c 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -459,6 +459,7 @@ EXPORT_SYMBOL(drmm_connector_init);
+>   * @funcs: callbacks for this connector
+>   * @connector_type: user visible type of the connector
+>   * @ddc: optional pointer to the associated ddc adapter
+> + * @max_bpc: Maximum bits per char the HDMI connector supports
+>   *
+>   * Initialises a preallocated HDMI connector. Connectors can be
+>   * subclassed as part of driver connector objects.
+> @@ -475,7 +476,8 @@ int drmm_connector_hdmi_init(struct drm_device *dev,
+>  			     struct drm_connector *connector,
+>  			     const struct drm_connector_funcs *funcs,
+>  			     int connector_type,
+> -			     struct i2c_adapter *ddc)
+> +			     struct i2c_adapter *ddc,
+> +			     unsigned int max_bpc)
+>  {
+>  	int ret;
+> =20
+> @@ -487,6 +489,15 @@ int drmm_connector_hdmi_init(struct drm_device *dev,
+>  	if (ret)
+>  		return ret;
+> =20
+> +	if (max_bpc) {
+> +		if (!(max_bpc =3D=3D 8 || max_bpc =3D=3D 10 || max_bpc =3D=3D 12))
+> +			return -EINVAL;
+> +
+> +		drm_connector_attach_hdr_output_metadata_property(connector);
+> +		drm_connector_attach_max_bpc_property(connector, 8, max_bpc);
+> +		connector->max_bpc =3D max_bpc;
+> +	}
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(drmm_connector_hdmi_init);
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index fdcf64ab91a9..d0bcb835c857 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1056,6 +1056,11 @@ struct drm_connector_state {
+>  		 * Broadcast RGB selection value.
+>  		 */
+>  		enum drm_hdmi_broadcast_rgb broadcast_rgb;
+> +
+> +		/**
+> +		 * @output_bpc: Bits per character to output.
 
-                        Geert
+Is it not bits per channel?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> +		 */
+> +		unsigned int output_bpc;
+>  	} hdmi;
+>  };
+> =20
+> @@ -1700,6 +1705,11 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property_blob *path_blob_ptr;
+> =20
+> +	/**
+> +	 * @max_bpc: Maximum bits per character the connector supports.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+channel?
+
+> +	 */
+> +	unsigned int max_bpc;
+> +
+>  	/**
+>  	 * @max_bpc_property: Default connector property for the max bpc to be
+>  	 * driven out of the connector.
+> @@ -1939,7 +1949,8 @@ int drmm_connector_hdmi_init(struct drm_device *dev,
+>  			     struct drm_connector *connector,
+>  			     const struct drm_connector_funcs *funcs,
+>  			     int connector_type,
+> -			     struct i2c_adapter *ddc);
+> +			     struct i2c_adapter *ddc,
+> +			     unsigned int max_bpc);
+>  void drm_connector_attach_edid_property(struct drm_connector *connector);
+>  int drm_connector_register(struct drm_connector *connector);
+>  void drm_connector_unregister(struct drm_connector *connector);
+>=20
+
+Thanks,
+pq
+
+--Sig_/1wJwHY6yZH5_elgENzeqr8U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmUMA20ACgkQI1/ltBGq
+qqdaQRAAjfKbi0w7oddJriljZUDUoI1Xd4FCUc54o8hNaouY4GMPo8BjlHTUGHxT
+oHxATfX6EO5a4wWK3ceBWFhBpLETGmIpqn5wdcG2+84vhIVHXgPn/l1MwShFkzcD
+5WQjnEnFvGqg8eZ05Cc545omaAiLZbqGKeXw2piYUd2+cZmBDZroK3BQXgZlM6JV
+62/0mx3eR3juCdwGR9PlWHnoPdsVQA8REfaR62C33rF4ZP52tp0x/OiXa0D7tcxl
+bj7XqZ3iuK9lCArc8GGZZdSuyEK8oobA7j6SDvbY6KqNGoE4DLNkKHVp1Cm7x7X/
+xvexGK/FiQ3QLSn7KUXFK3MFk5X14Zr5P83bLFnEL78MqSdz0KCgeZFhJ9Hs6PkS
+y3FuV7YcM8PNsPwvJIElTRnMpby7LpweEPD2mohJENK22b3bfFWU5o+sGVGotCKq
+Y3BRrJnjWZrXq6mkcKhFwq2YM7+oFasQrG74Afn8SFvfu9lnRfXnveYp8tpyR/Jz
+CIH/X57kHsgZJeZaPVD86aGmEq5UFjynjuLbwznoJYVcJrwAtvbVwNzcrTO3x4ea
+P8PRUxUwROJGWuLKSRKosmmoMIjpqSBIsQ2UDaWEwv0UIbKA2jivnb9vGkbBVEGZ
+rAzfC0oo7clq9sikn0v8UMgbIkzWSYYy5ycZVl1KQ7xxXQtbHr4=
+=JFuq
+-----END PGP SIGNATURE-----
+
+--Sig_/1wJwHY6yZH5_elgENzeqr8U--
