@@ -2,82 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 490F37A9F56
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176DA7AA2C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbjIUUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
+        id S232386AbjIUVeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbjIUUUv (ORCPT
+        with ESMTP id S231359AbjIUVd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:20:51 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89E34F933
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:18 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c008042211so20400621fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695316516; x=1695921316; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dFcwkCsyNvb3+F2dBflUU/e2F/txYXL9uZkq7j4g1FI=;
-        b=wdF2OsQpDO8CaaI+CjYLhKaPJgdE+ZAkmkgRCfRpUi3L/+/AHl16BBz9sOb72x91DW
-         W8Yj2YDh9dacDQWDFTZTNHcCJZt9/CkgqH5/5+pfBdEWgtZ48mZO4rKpVsTbKG9NAGCX
-         lNdr+ve1E1ZMvVIW1UW+z8GU6ZV+ru+o3YSJFq7s0/+LylyhWMaQwRl4+MS/ZS4bTIUj
-         bL3LFWHWMctNbWIv+ML6irjYGOU3QFzcNC+yOov6HxygK73SCEeJZyFqybiR/cPy8uWZ
-         PW6crdhOV1m/jgPRTsjebimVWy/0m/f1GyOj+qLbvFSYhmmfz9HMiouL6Q7rUERg1IjW
-         Gyhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316516; x=1695921316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dFcwkCsyNvb3+F2dBflUU/e2F/txYXL9uZkq7j4g1FI=;
-        b=pSMlcVJs8IIAwDxpC89FcdVDohP/RLsJXmOTZDRdo8pFQecCeYuLVZpA0w0X7eQDTT
-         uSWvo0TXQPCOpQwpeXkXoXuCQO3uJFKTu429W5DkDIZrJ90MTVJ/OkaEzs32+m4U6jEH
-         Qlj9DvcyIbdJuvrNd3kB9eg5VjzZwjBFxfi9ewl+HLmLHiMto0mpMDHnB23avKFzG57T
-         0elR28jAeoGfrafAqWZ0tjQ1ObBCI2vTDPGVS3eHGJTtuwfkuRNUmcXOhOCusj18dMk5
-         cFle9MDPPMLPUu/GtS+84wu1NIkzYAS13N3x+RphiNZE4+kgPafrbmIO+5fpjsTbEFWR
-         Rf0Q==
-X-Gm-Message-State: AOJu0YxI4lgsdhcjlO+BiuvWsbZcIjnvlxsjKVgeHT7gRaOI3pLpqn1h
-        uNsOmsJOS0GRaQpdLR1QK02zUkGr0ZE57KC2cX5nK2NUMcKhNlpx
-X-Google-Smtp-Source: AGHT+IFNezL7iZrcu9U0R/PCxUbFl1VTTxffcH3c3kpwj9r61fMAUV/sWK+nSgSyoGMEtsvb1Pu8+P6qFlABdx1A6ro=
-X-Received: by 2002:a2e:3306:0:b0:2bc:dfab:5dc8 with SMTP id
- d6-20020a2e3306000000b002bcdfab5dc8mr4897815ljc.37.1695314735888; Thu, 21 Sep
- 2023 09:45:35 -0700 (PDT)
+        Thu, 21 Sep 2023 17:33:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B50355AD7;
+        Thu, 21 Sep 2023 10:17:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A439C611A5;
+        Thu, 21 Sep 2023 16:48:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695314908;
+        bh=ZbMXdzw0c6h6S382Eseu0JWC3SsTXULfTbe1Huhp5BM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D2YWMMMQiBTC5mxrk+SG24U9NwIaq8dJU0Qw9abr55Q84220BN00grlowP+mIyJ9X
+         Due81h4X6s9m6SpzErNcepsukUfq5XGjMjTYHIysoBms4ojX/ilMzZGW7t6tdLOH9g
+         Q10WJPqeiYnEYz3xd0jJyE0qNhj9YJ3urQlGTvaqdFDOWz94iiDE/WRL9by3g/VgOb
+         NK+SFUA4pA8acwVjMHwKK2hPAx1dn4GuI//4CZzzUM9MxuP8c3Ypp9lXqViDXp6SzB
+         e6BsQW5Rqm4XNeo4k86JIqffTyyrZYc0GomPiLHiieFizLyldl4ngBJFXIoghmw/i5
+         5k13QgGKHqYRA==
+Date:   Thu, 21 Sep 2023 18:48:26 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH RFC v2 00/37] drm/connector: Create HDMI Connector
+ infrastructure
+Message-ID: <cbbovd3t7ssstvk22qmhwl7hgfo74jdwy77harjh3wwyaml3hh@qfsoqtqaw26x>
+References: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
+ <f6bf0ef2-7a2a-4456-825f-a34ba8c8886f@xs4all.nl>
 MIME-Version: 1.0
-References: <20230920193801.3035093-1-evan@rivosinc.com> <20230920-98a392b40f88c69e852e2c88@fedora>
- <CAOnJCUK7KTO0n_8wDYDxh2ULtEvMWF-re2dEX6nng_tX1AGgPw@mail.gmail.com>
- <CALs-HsuurXBZ2p=jYKvPq6ZMScugm5rBchttD6Wv9Mtupfx3NQ@mail.gmail.com>
- <CAOnJCU+YNOzw39JMjWmJFHY5QjcRrKEwULo+d9WhPfv7TejpbQ@mail.gmail.com>
- <CALs-HsvvnMFErCtShB-30xO8LR4M03riYomZy3FnvEghRua_3g@mail.gmail.com> <a94490f6b1dd43d5985a8b14aa93bd27@AcuMS.aculab.com>
-In-Reply-To: <a94490f6b1dd43d5985a8b14aa93bd27@AcuMS.aculab.com>
-From:   Evan Green <evan@rivosinc.com>
-Date:   Thu, 21 Sep 2023 09:44:59 -0700
-Message-ID: <CALs-Hsuuhmtg54TRSBtGFR9QGH4LWuO4TxUsg3NVzoPj3g6HzQ@mail.gmail.com>
-Subject: Re: [PATCH v2] RISC-V: Probe misaligned access speed in parallel
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        Conor Dooley <conor@kernel.org>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tqheb5u3s3lx5xmw"
+Content-Disposition: inline
+In-Reply-To: <f6bf0ef2-7a2a-4456-825f-a34ba8c8886f@xs4all.nl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,45 +64,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 3:22=E2=80=AFAM David Laight <David.Laight@aculab.c=
-om> wrote:
->
-> ...
-> > > For probing alignment speed, you just care about running it on that
-> > > cpu. Correct ?
-> >
-> > For this we care both about not migrating to other CPUs, and also
-> > secondarily minimizing disturbances while the test is being run.
-> > Usually I equate pre-emption with migration, but in this case I think
-> > the worker threads are bound to that CPU. So I'll keep the
-> > preempt_disable/enable where it is, since it's harmless for CPUs other
-> > than 0, but useful for 0. I also like it for readability as it
-> > highlights the critical section (as a reader, "is preemption disabled"
-> > would be one of my first questions when studying this).
->
-> You need to disable pre-emption to get any kind of meaningful answer.
->
-> But why do you need to run the test on more than the boot cpu?
-> If you've a heterogenous mix of cpu any code that looks at the answer
-> is going to behave incorrectly unless it has also disabled pre-emption
-> or is bound to a cpu.
 
-I don't think it's safe to assume misaligned access speed is the same
-across all cores. In a big.little combination I can easily imagine the
-big cores having fast misaligned access and the slow cores not having
-it (though hopefully the slow cores don't kick it to firmware). Since
-this info is presented to usermode per-cpu, I'd like it to be correct.
+--tqheb5u3s3lx5xmw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> One obvious use of the result is to setup some static branches.
-> But that assumes all cpu are the same.
+Hi Hans,
 
-Right, this could be used to set up static branches, or in an ifunc
-selector. This is why we provide pre-computed answers for "all CPUs"
-in hwprobe. If the situation I describe above did happen, code asking
-on behalf of all CPUs would come back "unknown", which is true (though
-would probably default to the byte-copy version). More specific
-environments might choose to curate their scheduling a bit more, and
-this info per-core would be useful there.
+On Thu, Sep 21, 2023 at 06:29:29PM +0200, Hans Verkuil wrote:
+> On 20/09/2023 16:35, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > Here's a series that creates a subclass of drm_connector specifically
+> > targeted at HDMI controllers.
+> >=20
+> > The idea behind this series came from a recent discussion on IRC during
+> > which we discussed infoframes generation of i915 vs everything else.=20
+> >=20
+> > Infoframes generation code still requires some decent boilerplate, with
+> > each driver doing some variation of it.
+> >=20
+> > In parallel, while working on vc4, we ended up converting a lot of i915
+> > logic (mostly around format / bpc selection, and scrambler setup) to
+> > apply on top of a driver that relies only on helpers.
+> >=20
+> > While currently sitting in the vc4 driver, none of that logic actually
+> > relies on any driver or hardware-specific behaviour.
+> >=20
+> > The only missing piece to make it shareable are a bunch of extra
+> > variables stored in a state (current bpc, format, RGB range selection,
+> > etc.).
+> >=20
+> > The initial implementation was relying on some generic subclass of
+> > drm_connector to address HDMI connectors, with a bunch of helpers that
+> > will take care of all the "HDMI Spec" related code. Scrambler setup is
+> > missing at the moment but can easily be plugged in.
+> >=20
+> > The feedback was that creating a connector subclass like was done for
+> > writeback would prevent the adoption of those helpers since it couldn't
+> > be used in all situations (like when the connector driver can implement
+> > multiple output) and required more churn to cast between the
+> > drm_connector and its subclass. The decision was thus to provide a set
+> > of helper and to store the required variables in drm_connector and
+> > drm_connector_state. This what has been implemented now.
+> >=20
+> > Hans Verkuil also expressed interest in implementing a mechanism in v4l2
+> > to retrieve infoframes from HDMI receiver and implementing an
+> > infoframe-decode tool.
+>=20
+> I'd love to get started on that, but...
+>=20
+> >=20
+> > This series thus leverages the infoframe generation code to expose it
+> > through debugfs.
+> >=20
+> > This entire series is only build-tested at the moment. Let me know what
+> > you think,
+>=20
+> ...trying this series on my RPi4 gives me this during boot:
+>=20
+> [    2.361239] vc4-drm gpu: bound fe400000.hvs (ops 0xffff800080cac6f8)
+> [    2.367834] Unable to handle kernel NULL pointer dereference at virtua=
+l address 0000000000000090
+> [    2.376748] Mem abort info:
+> [    2.379570]   ESR =3D 0x0000000096000044
+> [    2.383367]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> [    2.388748]   SET =3D 0, FnV =3D 0
+> [    2.391835]   EA =3D 0, S1PTW =3D 0
+> [    2.395011]   FSC =3D 0x04: level 0 translation fault
+> [    2.399951] Data abort info:
+> [    2.402864]   ISV =3D 0, ISS =3D 0x00000044, ISS2 =3D 0x00000000
+> [    2.408420]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
+> [    2.413536]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+> [    2.418916] [0000000000000090] user address but active_mm is swapper
+> [    2.425353] Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
+> [    2.431700] Modules linked in:
+> [    2.434791] CPU: 2 PID: 55 Comm: kworker/u8:3 Not tainted 6.6.0-rc1-hd=
+mi-dbg #245
+> [    2.442372] Hardware name: Raspberry Pi 4 Model B Rev 1.4 (DT)
+> [    2.448278] Workqueue: events_unbound deferred_probe_work_func
+> [    2.454193] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYP=
+E=3D--)
+> [    2.461245] pc : drm_connector_attach_max_bpc_property+0x48/0x90
+> [    2.467332] lr : drm_connector_attach_max_bpc_property+0x3c/0x90
+> [    2.473415] sp : ffff800081d038b0
+> [    2.476766] x29: ffff800081d038b0 x28: 0000000000000000 x27: ffff00010=
+41968c0
+> [    2.483999] x26: 0000000000000000 x25: ffff00010339d558 x24: ffff00010=
+3399000
+> [    2.491231] x23: ffff800080caa3e8 x22: ffff800080e96a20 x21: 000000000=
+000000c
+> [    2.498463] x20: 000000000000000c x19: ffff00010339d558 x18: fffffffff=
+fffffff
+> [    2.505694] x17: ffff0001008e7650 x16: ffff800080d55500 x15: fffffffff=
+fffffff
+> [    2.512926] x14: ffff000105dda209 x13: 0000000000000006 x12: 000000000=
+0000001
+> [    2.520158] x11: 0101010101010101 x10: ffff00027effe219 x9 : 000000000=
+0000001
+> [    2.527389] x8 : ffff000105db8ad4 x7 : 00000000c0c0c0c0 x6 : 00000000c=
+0c0c0c0
+> [    2.534620] x5 : 0000000000000000 x4 : ffff00010339d728 x3 : ffff00010=
+339d728
+> [    2.541852] x2 : 000000000000000c x1 : 0000000000000000 x0 : 000000000=
+0000000
+> [    2.549083] Call trace:
+> [    2.551554]  drm_connector_attach_max_bpc_property+0x48/0x90
+> [    2.557285]  drmm_connector_hdmi_init+0x114/0x14c
+> [    2.562048]  vc4_hdmi_bind+0x320/0xa40
+> [    2.565842]  component_bind_all+0x114/0x23c
+> [    2.570077]  vc4_drm_bind+0x148/0x2c0
+> [    2.573784]  try_to_bring_up_aggregate_device+0x168/0x1d4
+> [    2.579253]  __component_add+0xa4/0x16c
+> [    2.583136]  component_add+0x14/0x20
+> [    2.586754]  vc4_hdmi_dev_probe+0x1c/0x28
+> [    2.590815]  platform_probe+0x68/0xc4
+> [    2.594522]  really_probe+0x148/0x2b0
+> [    2.598228]  __driver_probe_device+0x78/0x12c
+> [    2.602638]  driver_probe_device+0xd8/0x15c
+> [    2.606873]  __device_attach_driver+0xb8/0x134
+> [    2.611372]  bus_for_each_drv+0x80/0xdc
+> [    2.615254]  __device_attach+0x9c/0x188
+> [    2.619136]  device_initial_probe+0x14/0x20
+> [    2.623371]  bus_probe_device+0xac/0xb0
+> [    2.627253]  deferred_probe_work_func+0x88/0xc0
+> [    2.631839]  process_one_work+0x138/0x244
+> [    2.635899]  worker_thread+0x320/0x438
+> [    2.639692]  kthread+0x10c/0x110
+> [    2.642957]  ret_from_fork+0x10/0x20
+> [    2.646576] Code: 94005f8d 12001e94 f9427e61 52800000 (39024034)
+> [    2.652745] ---[ end trace 0000000000000000 ]---
 
--Evan
+Well, I guess I'll have to start testing what I'm doing then :)
+
+Maxime
+
+--tqheb5u3s3lx5xmw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQxz2gAKCRDj7w1vZxhR
+xTmAAP9zoK2b+SdtpCJFGCX7o373ATzx/Z9LKZn8NsK54IxYDAEAqMqFpI0Xg1Kq
+iSTWfIp3pAvquRgXpVDtgkMv7+qbSAU=
+=vGpA
+-----END PGP SIGNATURE-----
+
+--tqheb5u3s3lx5xmw--
