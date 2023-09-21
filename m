@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AED7A97F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766867A9745
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjIUR3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
+        id S229785AbjIURM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbjIUR2c (ORCPT
+        with ESMTP id S229819AbjIURM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:28:32 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133434F3A1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:55 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690bd8f89baso1064987b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:15:55 -0700 (PDT)
+        Thu, 21 Sep 2023 13:12:56 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F8B1737
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:57:55 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5042bfb4fe9so1588624e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695316555; x=1695921355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Hj2ZbHk7wD50zNluyjwn885x6blD4upSIobGwpX/8c=;
-        b=S22fnJNYDCYy5FrIqU2b3+99vpnPJzz7lsxp8fBgiwbI16oVknKTRpROm7UtSxJUHI
-         Gbv5Bi3JlKyAkymlE3NSC5zn77PjfWGlNv3iZK0qLxHU2jElbJZkMIXR0nRB/70AiGCe
-         kMjHQjMt1jCOcaMn9rUoYBvlg8y190h1OTG5Y1GALHivATr3aZAe8Yj7p6jSDl7gXTVX
-         8PQV/3+DHe9DnIoUaDNOtzoXx0zQYX1820hmg7UZgmDLajjySte3PY+OTANATUlkWE29
-         QXG4HjxABl3L3fK4LulERAuKiUtFux+rJilL3oLQlPqiR+ONzBp7+GOqbO4Dz7JYOOES
-         SSJw==
+        d=linaro.org; s=google; t=1695315468; x=1695920268; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b7aGXpKSZd0nkaqg7goI4xd52TS77NJzRSHYqFQggM8=;
+        b=H/Icern+xz7wYmsgOMLuE4DtB7esQ2kWVg5oW6lH0p4VTFBQGT5Z1yO2lH40Osahx/
+         EfXc3XZMaHNz5hcMe5yV7+GhxNACCgZAoXkQNplf7FLDSJqzbyXsvEpPF5v8e4Nsd/Qp
+         kKI1no9Oom1kXA5vhn5SRYmIwVoaWbCARKjpYFVb7ynK54QM6Lo4ji62MsGuR6v/lDgg
+         jG1th5Bm4WXn2ub07W4D9L7HB8mW1vmFcsXxzTD5eZzXkdvKdoFbjGMirEmlwKjX1+YN
+         i/aI/0/e7Hov5L7Z7tF5F19+hvwSHiOKEmm0+PnbwSXeRU8S5u8LsL2xeyxNAwG2OXz3
+         58Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316555; x=1695921355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3Hj2ZbHk7wD50zNluyjwn885x6blD4upSIobGwpX/8c=;
-        b=uuBAjbc2yzmAH+nswY13Cr08wgqOLEx2yF8vP/O/LHu1jh9eb3JDdOxGxxCN1Fs9p2
-         c3dV3gXZ5mUII/0Yl5iFrKpHs9k7HKnhoygMWIxs6jb07Pbc6oSkOiYdfpdw9PFk0q/3
-         xVpFVWDitbbpneojlGfScDWqFExvcbJIvldj69UI1g0PXnTFhKUgNI/9eacNMghkJVjB
-         QmdHSgRxnrWmeqD7gJqy+AotNnpnq6LaWQjdRyrWcjSc0wk63M8xtd7bCnqUv32WpUKl
-         lu4LqOCwQdU63ItWtee/29WIMgnyc/ubgBA7a10JiljJmSyXOg6soUYLFk2JL2BsHFaH
-         UcnA==
-X-Gm-Message-State: AOJu0YxEFn0aU2fil6jSdYQVBNo+MIim4hBdC2kp+qldOpP0g+1QMt36
-        NSLOJiS7Gqp/fG8f5cHH59tRCin6CmaTWLM1ZHvORxr3WyszLCFknONcKw==
-X-Google-Smtp-Source: AGHT+IEsnQ4F2rramLNiHmi2v+BX80aZfHjTbk4kweC9NP3w5GMjoWSjNXzGB0kbkdULrF6gpsuuRZ6/t6J+Wg7NkpU=
-X-Received: by 2002:a67:e205:0:b0:452:86e7:5b3d with SMTP id
- g5-20020a67e205000000b0045286e75b3dmr5918515vsa.26.1695300432292; Thu, 21 Sep
- 2023 05:47:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695315468; x=1695920268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b7aGXpKSZd0nkaqg7goI4xd52TS77NJzRSHYqFQggM8=;
+        b=srASUR8YMHkRYcSs1IUibknV2tVtDN6MLszL29CpKR5tEuTGlvjVVd8x58w4ivgtUz
+         AHgHzuRMEaLyHNnT6d/cRcY3xvIc8DmROK6oOPVN1p6+3p6uW1LblJjlcks7IwC5Mgts
+         AgG3H0ghVfm0WV6w1OUDTH5Quk2HbERr+XtyH2vzijO4tqKTRuLNvrnqsiaNRnnCPfy/
+         4hrOt/LftPU2j+NCY71bo46PM9/oHbr3U8SkmNpPcODCBtMaYCS80njAPyX2iWxOzuBl
+         D9EsBDzZyl+qia5S3dgK2DmWcHe+OgthVtzbHgURRn5g3BOGBWTt251xTlSN9eT9DGdZ
+         ZiAQ==
+X-Gm-Message-State: AOJu0YxVrcF0On7+48m+0uu2uvTEtruFrMPRpkUCYCO8H2p27Rk69PWE
+        0ONXKnB/e6LoeoZqPC2y/xbRWMgeEcM6oXgWOVamgQ==
+X-Google-Smtp-Source: AGHT+IEUZqEOYV4M6SlzSpxNp5dBDgvjEldvmzJ6hEHHcdY4tYiha+4k/ZKwAc0oUEQlmz9ki3DsiQ==
+X-Received: by 2002:a17:906:29a:b0:9ae:522e:8f71 with SMTP id 26-20020a170906029a00b009ae522e8f71mr3578502ejf.7.1695300691322;
+        Thu, 21 Sep 2023 05:51:31 -0700 (PDT)
+Received: from p14s (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id lz1-20020a170906fb0100b0099b5a71b0bfsm1002039ejb.94.2023.09.21.05.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 05:51:30 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 06:51:29 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     andersson@kernel.org, matthias.bgg@gmail.com,
+        tinghan.shen@mediatek.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com
+Subject: Re: [PATCH] remoteproc: mediatek: Refactor single core check and fix
+ retrocompatibility
+Message-ID: <ZQw8UdZ9vhsrggky@p14s>
+References: <20230919092336.51007-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
-References: <20230920112836.799946261@linuxfoundation.org>
-In-Reply-To: <20230920112836.799946261@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Sep 2023 14:47:00 +0200
-Message-ID: <CA+G9fYvOHuu+7Ozt0eLFy1A50j5KHoacp69HGvbHezTVeDNSCw@mail.gmail.com>
-Subject: Re: [PATCH 4.14 000/186] 4.14.326-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919092336.51007-1-angelogioacchino.delregno@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,164 +76,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 14:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Sep 19, 2023 at 11:23:36AM +0200, AngeloGioacchino Del Regno wrote:
+> In older devicetrees we had the ChromeOS EC in a node called "cros-ec"
+> instead of the newer "cros-ec-rpmsg", but this driver is now checking
+> only for the latter, breaking compatibility with those.
+> 
+> Besides, we can check if the SCP is single or dual core by simply
+> walking through the children of the main SCP node and checking if
+> if there's more than one "mediatek,scp-core" compatible node.
+> 
+> Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-core SCP")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  drivers/remoteproc/mtk_scp.c | 18 +++++++-----------
+>  1 file changed, 7 insertions(+), 11 deletions(-)
 >
-> This is the start of the stable review cycle for the 4.14.326 release.
-> There are 186 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.326-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
+Applied.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks,
+Mathieu
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-The latest version of selftests ftrace test fails here on 4.14.326-rc1.
-This is not a kernel regression.
-
-## Build
-* kernel: 4.14.326-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.14.y
-* git commit: db587d473a47d83c9329f769e7df2c07df6b77a5
-* git describe: v4.14.325-187-gdb587d473a47
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.325-187-gdb587d473a47
-
-## Test Regressions (compared to v4.14.325)
-
-## Metric Regressions (compared to v4.14.325)
-
-## Test Fixes (compared to v4.14.325)
-
-## Metric Fixes (compared to v4.14.325)
-
-## Test result summary
-total: 51393, pass: 43787, fail: 1208, skip: 6354, xfail: 44
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 107 total, 102 passed, 5 failed
-* arm64: 33 total, 29 passed, 4 failed
-* i386: 21 total, 18 passed, 3 failed
-* mips: 21 total, 21 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 8 total, 7 passed, 1 failed
-* s390: 6 total, 5 passed, 1 failed
-* sh: 12 total, 12 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 27 total, 23 passed, 4 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+> index ea227b566c54..a35409eda0cf 100644
+> --- a/drivers/remoteproc/mtk_scp.c
+> +++ b/drivers/remoteproc/mtk_scp.c
+> @@ -1144,29 +1144,25 @@ static int scp_add_multi_core(struct platform_device *pdev,
+>  	return ret;
+>  }
+>  
+> -static int scp_is_single_core(struct platform_device *pdev)
+> +static bool scp_is_single_core(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct device_node *np = dev_of_node(dev);
+>  	struct device_node *child;
+> +	int num_cores = 0;
+>  
+> -	child = of_get_next_available_child(np, NULL);
+> -	if (!child)
+> -		return dev_err_probe(dev, -ENODEV, "No child node\n");
+> +	for_each_child_of_node(np, child)
+> +		if (of_device_is_compatible(child, "mediatek,scp-core"))
+> +			num_cores++;
+>  
+> -	of_node_put(child);
+> -	return of_node_name_eq(child, "cros-ec-rpmsg");
+> +	return num_cores < 2;
+>  }
+>  
+>  static int scp_cluster_init(struct platform_device *pdev, struct mtk_scp_of_cluster *scp_cluster)
+>  {
+>  	int ret;
+>  
+> -	ret = scp_is_single_core(pdev);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	if (ret)
+> +	if (scp_is_single_core(pdev))
+>  		ret = scp_add_single_core(pdev, scp_cluster);
+>  	else
+>  		ret = scp_add_multi_core(pdev, scp_cluster);
+> -- 
+> 2.42.0
+> 
