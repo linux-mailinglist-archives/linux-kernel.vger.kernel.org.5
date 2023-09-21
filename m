@@ -2,59 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607B07AA318
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4177AA19E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjIUVrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
+        id S232478AbjIUVEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232538AbjIUVq2 (ORCPT
+        with ESMTP id S232470AbjIUVDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:46:28 -0400
+        Thu, 21 Sep 2023 17:03:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01826E8C;
-        Thu, 21 Sep 2023 10:22:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF20FC4E685;
-        Thu, 21 Sep 2023 13:43:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDF885D3A;
+        Thu, 21 Sep 2023 10:37:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8547CC4E687;
+        Thu, 21 Sep 2023 13:47:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695303788;
-        bh=EWdJvIwF6uv0RWl2Gt/yW75HzMTZ/s3XRzzcEYnfV7c=;
+        s=k20201202; t=1695304054;
+        bh=Oo9AjLmvT40iXA2aHlcvjH+u91I2XspBDwHA99rab5U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QH0o15QG+AubVg6W1pk+o3mUkrKs+CPmKCMeHbIP1NMLSk+MCAMvzuby9ymnvm0l+
-         kcRFHkUzLgmT18elmBM8npwxFYWov8LWYK4xwcb36u78XXIktx9JgCpO/gFilF26P+
-         sJYdwerntMLkuNJoHidrfuR/Dtf9VoaY6DySkwWlTgCLFS62/iUVO/77lyxW0awSjh
-         e+Na9Fgm4E0lIFMtDuxLp4NuelMx7q3NKWawVBceg+HYdNsMGU0DhVLNJWq9raAmg2
-         uTfklCCHQXvDvD8Gv9HSfn8SKqdxhGrbExHxWVea06k7LponKAdd0t6s+MVBcxKP9q
-         k7+r35VqwpAZw==
-Date:   Thu, 21 Sep 2023 15:43:05 +0200
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-clk@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: Re: [PATCH 08/31] phy: rockchip-inno-usb2: Split ID interrupt phy
- registers
-Message-ID: <ZQxIaU6ITbTGBkVC@matsya>
-References: <20230829171647.187787-1-knaerzche@gmail.com>
- <20230829171647.187787-9-knaerzche@gmail.com>
+        b=B/nzU1poVexwNkd1uy8NYKF7nqNzSxBZguu99fbkUbbpOGB0M5SIkbkOKFB0tLFHK
+         4u4LRILb6bb/hPssO9FbQR6ITa+eINX7rERGA+6Cm+/Gj80MA+4Exh1CEGWqwfVHIw
+         TF8e19PDWWeOZsXJPl4Be7LrH+8OQstaf+zWw17Icr8pueLiaA+2Ej3awqB6c7juJ6
+         dOZmyoJP7YtQKWwVuQFnrxB4DFhB5Uk7lIMntm6OTJc+PVGtrJD0x4Bde1AVh2BU28
+         UrlntiPzMnfdfLtkDt2FL5PD5hbJIDFLdSf7nrXjg4A7Vg349CbDEHDgKKnuWPNq93
+         j0lnhWD/kOxbQ==
+Date:   Thu, 21 Sep 2023 14:47:30 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hvilleneuve@dimonoff.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/4] dt-bindings: sc16is7xx: add vendor prefix to
+ irda-mode-ports property
+Message-ID: <20230921-epidermis-labrador-3e51bb0b2cb9@spud>
+References: <20230920152015.1376838-1-hugo@hugovil.com>
+ <20230920152015.1376838-4-hugo@hugovil.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dITO17on8mP4IvAa"
 Content-Disposition: inline
-In-Reply-To: <20230829171647.187787-9-knaerzche@gmail.com>
+In-Reply-To: <20230920152015.1376838-4-hugo@hugovil.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -65,22 +55,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-08-23, 19:16, Alex Bee wrote:
-> Commit 51a9b2c03dd3 ("phy: rockchip-inno-usb2: Handle ID IRQ") added ID
-> detection interrupt registers. However the current implementation assumes
-> that falling and rising edge interrupt are always enabled in registers
-> spaning over subsequent bits.
-> That is not the case for RK312x's version of the phy and this
-> implementation can't be used as-is, since there are bits with different
-> purpose in between.
-> 
-> This splits up the register definitions for id_det_en, id_det_en and
-> id_det_clr registers in rising and falling edge variants.
-> It's required as preparation to support RK312x's Innosilicon usb2 phy as
-> well in this driver and matches pretty much to what the vendor does, so I'm
-> not expecting issues for other SoCs with that change.
 
-This fails to apply for phy/next
+--dITO17on8mP4IvAa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+On Wed, Sep 20, 2023 at 11:20:14AM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>=20
+> The NXP-specific "irda-mode-ports" property lacks a proper vendor
+> prefix. Add "nxp," prefix to comply with DT best practises.
+
+Looks like you've made changes to the driver in a way both will work,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+>=20
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> ---
+>  .../devicetree/bindings/serial/nxp,sc16is7xx.txt          | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt b=
+/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt
+> index 1a7e4bff0456..d89815c5c562 100644
+> --- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt
+> +++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt
+> @@ -21,8 +21,8 @@ Optional properties:
+>    the second cell is used to specify the GPIO polarity:
+>      0 =3D active high,
+>      1 =3D active low.
+> -- irda-mode-ports: An array that lists the indices of the port that
+> -		   should operate in IrDA mode.
+> +- nxp,irda-mode-ports: An array that lists the indices of the port that
+> +		       should operate in IrDA mode.
+>  - nxp,modem-control-line-ports: An array that lists the indices of the p=
+ort that
+>  				should have shared GPIO lines configured as
+>  				modem control lines.
+> @@ -80,8 +80,8 @@ Optional properties:
+>    the second cell is used to specify the GPIO polarity:
+>      0 =3D active high,
+>      1 =3D active low.
+> -- irda-mode-ports: An array that lists the indices of the port that
+> -		   should operate in IrDA mode.
+> +- nxp,irda-mode-ports: An array that lists the indices of the port that
+> +		       should operate in IrDA mode.
+>  - nxp,modem-control-line-ports: An array that lists the indices of the p=
+ort that
+>  				should have shared GPIO lines configured as
+>  				modem control lines.
+> --=20
+> 2.30.2
+>=20
+
+--dITO17on8mP4IvAa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQxJcgAKCRB4tDGHoIJi
+0i60AQDkv6NAQfFJKu9ceTROjQsUq5KvzHpILZ/l5wPEFqql6wEA16WdTQeQYNUJ
+S1/xZghGAvjC+nLpApgENKAvRXOFJg4=
+=eS7q
+-----END PGP SIGNATURE-----
+
+--dITO17on8mP4IvAa--
