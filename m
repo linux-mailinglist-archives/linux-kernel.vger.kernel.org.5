@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2ACE7A9E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04C37A9B70
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbjIUTxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S230527AbjIUTBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbjIUTxc (ORCPT
+        with ESMTP id S230047AbjIUTBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:53:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED1990F15;
-        Thu, 21 Sep 2023 10:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318444; x=1726854444;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HY1sm+rBkYtBd+6vBns4g32g88NP2b9P0RK55lZf5eM=;
-  b=O1+KVf7KYfaUo7bnrEkA2Jd4GC9XnoNkIlyscEjdiTfXzrLbYjTkod/X
-   zDqEgegT8ZL/YkrzJQh+CyqnmUOqKkFFSHIOASsIURIB/MJqOl2AEpf3b
-   gQqK0V6v7uyX4Ka4UgiBkgn6IShskrDBkDDipim97gTBi2hLT4ldxg21N
-   LGiMgNKcGE5vOZMn98vMih6CCs1pzZznu/gjYu4QWFVqP8QR/uEXVkPMr
-   N5WscN1JzcgtE3jndOGl/+yMOD7/4I8fisngE6gTKjvuky6eFaH9ukUH+
-   ijF8NW/BEMLiP8n+2yrr/kXGF9HX6zuU+WnWYDWF+1xhQ3p2DOlaq/OaG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="377792033"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="377792033"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:11:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="747070867"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="747070867"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.213]) ([10.254.213.213])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:11:01 -0700
-Message-ID: <4b17d331-957b-44d3-8a19-0b2ccc59150b@linux.intel.com>
-Date:   Thu, 21 Sep 2023 20:10:58 +0800
+        Thu, 21 Sep 2023 15:01:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2B97B951
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:36:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B80C4E67A;
+        Thu, 21 Sep 2023 12:18:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695298694;
+        bh=qmymxn57s6y/C3HqE3FJehRFkoes3QzpalkGevYvvUY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ICCPYTi5A8rrVEfseGvXpOnv3WdinCsEQeA7NPK+S2/PtCnKGOP7UtJKUx1HdLjMQ
+         S2cYMQwPkPbKoOOWzaVakoR9wmV8gIrHn4tBxsztg8dwupb5OFCoQfle6GIX88JpCk
+         ltUvwNVyLKOBhJHiq8TRD45FoDMAzU8goBvhTHqZq3pJJ530PWT4nEg6F9Q9AiBdUa
+         Xj5hcoLoXANxaSOUmIbyf7A4kMzvgqqTtq3LlAPRnmT9VNVXz71yMiSgFBB4+xHC1K
+         aC9mxbJwVpZ45a0/zT/J2WA3N2lgQ9rVVhw63Ln4hNXEuM6oqdFDrTt2vwzoHvQI3/
+         XQFaHAPUUbGGw==
+Date:   Thu, 21 Sep 2023 13:18:08 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Chen Wang <unicornxw@gmail.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, devicetree@vger.kernel.org,
+        emil.renner.berthing@canonical.com, guoren@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH v2 03/11] dt-bindings: riscv: add sophgo sg2042 bindings
+Message-ID: <20230921-1ae70cfdbf983e011d5b6754@fedora>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+ <c6aea83bb1df563b1f2a66c5f230c3861aed1e15.1695189879.git.wangchen20@iscas.ac.cn>
+ <20230920-arrival-bonanza-e335686420f4@wendy>
+ <CAHAQgRDh72FLQPOFzn2rhsWmOOaLUO0sKyJwJQBG0Z7qZN_YLw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
-        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
- domain_alloc_user op
-Content-Language: en-US
-To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-2-yi.l.liu@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230921075138.124099-2-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8Cc4R56bUloFLm3Z"
+Content-Disposition: inline
+In-Reply-To: <CAHAQgRDh72FLQPOFzn2rhsWmOOaLUO0sKyJwJQBG0Z7qZN_YLw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,33 +58,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/21 15:51, Yi Liu wrote:
-> +/**
-> + * iommu_copy_user_data - Copy iommu driver specific user space data
-> + * @dst_data: Pointer to an iommu driver specific user data that is defined in
-> + *            include/uapi/linux/iommufd.h
-> + * @src_data: Pointer to a struct iommu_user_data for user space data info
-> + * @data_len: Length of current user data structure, i.e. sizeof(struct _dst)
-> + * @min_len: Initial length of user data structure for backward compatibility.
-> + *           This should be offsetofend using the last member in the user data
-> + *           struct that was initially added to include/uapi/linux/iommufd.h
-> + */
-> +static inline int iommu_copy_user_data(void *dst_data,
-> +				       const struct iommu_user_data *src_data,
-> +				       size_t data_len, size_t min_len)
-> +{
-> +	if (WARN_ON(!dst_data || !src_data))
-> +		return -EINVAL;
-> +	if (src_data->len < min_len || data_len < src_data->len)
-> +		return -EINVAL;
-> +	return copy_struct_from_user(dst_data, data_len,
-> +				     src_data->uptr, src_data->len);
-> +}
 
-I am not sure that I understand the purpose of "min_len" correctly. It
-seems like it would always be equal to data_len?
+--8Cc4R56bUloFLm3Z
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Or, it means the minimal data length that the iommu driver requires?
+On Thu, Sep 21, 2023 at 06:21:08PM +0800, Chen Wang wrote:
+> Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=
+=8820=E6=97=A5=E5=91=A8=E4=B8=89 16:29=E5=86=99=E9=81=93=EF=BC=9A
+> > On Wed, Sep 20, 2023 at 02:37:51PM +0800, Chen Wang wrote:
+> > > Add DT binding documentation for the Sophgo SG2042 Soc [1] and the
+> > > Milk-V Pioneer board [2].
+> > >
+> > > [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> > > [2]: https://milkv.io/pioneer
+> >
+> > Again, link tags please.
+> >
+> > > Acked-by: Chao Wei <chao.wei@sophgo.com>
+> > > Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> > > ---
+> > >  .../devicetree/bindings/riscv/sophgo.yaml     | 28 +++++++++++++++++=
+++
+> > >  MAINTAINERS                                   |  7 +++++
+> > >  2 files changed, 35 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/riscv/sophgo.ya=
+ml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Do=
+cumentation/devicetree/bindings/riscv/sophgo.yaml
+> > > new file mode 100644
+> > > index 000000000000..82468ae915db
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+> > > @@ -0,0 +1,28 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/riscv/sophgo.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Sophgo SoC-based boards
+> > > +
+> > > +maintainers:
+> > > +  - Chao Wei <chao.wei@sophgo.com>
+> > > +  - Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > +
+> > > +description:
+> > > +  Sophgo SoC-based boards
+> > > +
+> > > +properties:
+> > > +  $nodename:
+> > > +    const: '/'
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - items:
+> > > +          - enum:
+> > > +              - milkv,pioneer
+> > > +          - const: sophgo,sg2042
+> > > +
+> > > +additionalProperties: true
+> > > +
+> > > +...
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 90f13281d297..b74d505003e2 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -20063,6 +20063,13 @@ F:   drivers/char/sonypi.c
+> > >  F:   drivers/platform/x86/sony-laptop.c
+> > >  F:   include/linux/sony-laptop.h
+> > >
+> > > +SOPHGO DEVICETREES
+> > > +M:   Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > > +M:   Chao Wei <chao.wei@sophgo.com>
+> > > +S:   Maintained
+> > > +F:   Documentation/devicetree/bindings/riscv/sophgo.yaml
+> >
+> > > +F:   arch/riscv/boot/dts/sophgo/
+> >
+> > Firstly, this directory does not exist at the time of this patch, so it
+> > should not be added here, but rather at the time that you create it.
+> >
+> > Secondly, are Xiaoguang Xing and Chao Wei going to monitor the lists &
+> > apply patches for these files? If so, you should add a git tree here
+> > that they will apply patches to & add to linux-next. Also, I'd really
+> > like to see some on-list signs of life from these people, otherwise
+> > I'd rather see your name here instead of theirs.
+> >
+> > If they don't intend reviewing/testing/applying patches, I can do it as
+> > a last resort but I would rather that someone who specifically cares for
+> > this hardware does it.
+>=20
+> Please allow me to explain first. As a community volunteer, I actually
+> had full discussions and testing with Sophgo people when submitting
+> patches, so I added tag such "Acked-by: Xiaoguang Xing ..." to the
+> signature part of most patches. Also if you think a formal email is
+> required, I will talk them to send it.
 
-Best regards,
-baolu
+No, I'm okay with the acks that are on these patches. I just want to
+make sure that those who are acking know why they are & am wondering why
+your name is not there, seeing as you're the one who has submitted these
+patches.
+
+> As for the issue of MAINTAINERS, I discussed it with the people from
+> Sophgo. They (including me also) feel that we are not very familiar
+> with the community process (especially as maintainer, and actually I
+> modify the file MAINTAINERS is just to suppress warning information
+> when running checkpatch.pl), so we sincerely hope to invite you, Mr.
+> Conor,
+
+Oh god, there's no need to call me "Mr. Conor". Conor will do perfectly
+fine!
+
+> to help us for a period of time on maintenance work, including
+> checking relevant patches, merging and submitting PRs, we will learn
+> together with you for a while, and then take over this part of the
+> work when we become familiar with it. We know that you are also very
+> busy at work, especially if you don't have the hardware at hand. I
+> have the hardware here and I can take the responsibility to run
+> testing. What do you think? I'm waiting for your reply. Thanks in
+> advance.
+
+That seems fine to me. In that case, you should add yourself to the
+MAINTAINERS entry.
+
+Thanks,
+Conor.
+
+--8Cc4R56bUloFLm3Z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQw0egAKCRB4tDGHoIJi
+0upuAP9e+4b7yDD+8RNRpdlOF0A7E6AxHPx60+aInTMSpqizJwD/e0DeVwI5xEEG
+zzLkCk94IyNRVLe4jIQ/I/2+sJmTHQA=
+=fSpa
+-----END PGP SIGNATURE-----
+
+--8Cc4R56bUloFLm3Z--
