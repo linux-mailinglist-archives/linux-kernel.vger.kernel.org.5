@@ -2,49 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 075E77AA130
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE207A9F9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbjIUU6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        id S231804AbjIUUZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbjIUU6F (ORCPT
+        with ESMTP id S232281AbjIUUZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:58:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E4D7EA0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DEA6C32798;
-        Thu, 21 Sep 2023 10:37:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695292675;
-        bh=l3altaqa2vlkLvvlLcemsJXO+aays1kdpxDpG0qkff4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IHKYggjbKElo1leuZD7jc0VoseeE94G/G1cDa+fVm2V6TwbnoGiZFBvtloGDnQoAw
-         rfcE2rDFoMlO4FQRpThrm+jetlms/D+UqUa7D0ZkESklLhmjfNsT33v6RkPJjs53vK
-         Txd30i7dADjW3NDyOiIQDSA32EWFDpuTg2Rv7nYE2A5l8eSWZvA53oPKfgl8NueTfj
-         GB8FRoQ2ytxlaVoumfjcPY1mPsqHrQ9XoaGJvCOJLQAMNqLgml348f0HK+MgXdZBaY
-         TztDIH4cRZSNv3X/nHQd2xiDpllTkbPGfUkbL3o7+Vb8iTWVAr6jI/TrP5hKUkn0r7
-         RVpD0obEbWfbA==
-Date:   Thu, 21 Sep 2023 11:37:51 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Stephen Zhang <starzhangzsd@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, zhangshida@kylinos.cn,
-        k2ci <kernel-bot@kylinos.cn>
-Subject: Re: [PATCH] mfd: cs42l43: fix defined but not used warnings
-Message-ID: <20230921103751.GD3449785@google.com>
-References: <20230905021209.1412987-1-zhangshida@kylinos.cn>
- <20230920095248.GC13143@google.com>
- <CANubcdVuiBciEQu14hOUvgSYo2+1okQ4ed-tJJa5Xo_3jieGzg@mail.gmail.com>
+        Thu, 21 Sep 2023 16:25:14 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52FF900FE
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:46:31 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-530e721f077so1543116a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695318390; x=1695923190; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZiQyBT2Rr44GS62RAnCzFGqwRIpWXpGD1ZEK9WT/Wr8=;
+        b=KovLFKNDV+y0s8JO3QDUevkctiUMTAnynF9Y7j4XSzOKIJCoVbCFYGXvRV62gjztYf
+         OmF+JY7dmtX7tVWqWHLP+TwS4c6Tep5WLDqj9ScNCPosPVxDSkXla1GweTdhUuano/IL
+         3zxc5WzeYdy0oW6C7sYrMLZRCVV2oY5T+QRzgssRr7xyzRDVrxU0GRF4UuzvvDH70mRi
+         cZAeuBYcRxW8NizsVCZ25ZwKfw2wptVVmgCpQ5uIoZwSd7imi6u9XouqcLcT2MzimegP
+         juExhmmOfjgSur5pJPoZKPjzdT578HUJMKQCqO5PkxrRss5YA0fRcOKy2Fn8akulwbb2
+         /vzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695318390; x=1695923190;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZiQyBT2Rr44GS62RAnCzFGqwRIpWXpGD1ZEK9WT/Wr8=;
+        b=d1/SO/1Dgr+1vLJLWVviCv3/qAak/rIeHgUKH7+estLChA52d7WMTT6jJjlJVHK7j2
+         S74qEbu86GA+3akYBAtMHZI3aEPkukUSXGmNZk/jIKlgiUwaXY0StKA6fHYvGsiEjUVD
+         akNpncnqApqBQvN3nWScIEnGDVcgbuttdArkG0f0bq3cyvs4XR366xEgrXmidwg+4v99
+         HkEHVFUt/H6SD0WGe8f9c124kgZ1jwsqmj+j1vuJJsCKMLSiES3aGjJBpWz3C0dLXotD
+         qpfGT5OSECnBmbitx3fwy82tWdOokQKf0amk5yIB2D1/clK0naDQr+LbreGHtu3PuQu+
+         FcTw==
+X-Gm-Message-State: AOJu0Yzacf6RNRCnFa6jyErirMD1zhIKcd9JOBJjRGHTJUBx/Hf3Hls2
+        Z8zYy1CuGi8G0Dc2OU6we6IuR8VxTiLQzojnLF4=
+X-Google-Smtp-Source: AGHT+IHJU6MhImw2uW/qQJuMk0u6QNr8wV2CMNdC0tH3BYevlLkqIhiFmeB/HWKBkw5V+J8mdkbgSA==
+X-Received: by 2002:a17:906:cc10:b0:9ae:4776:5a3a with SMTP id ml16-20020a170906cc1000b009ae47765a3amr3927167ejb.39.1695292678437;
+        Thu, 21 Sep 2023 03:37:58 -0700 (PDT)
+Received: from [172.20.41.70] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id z27-20020a1709060adb00b00993cc1242d4sm840623ejf.151.2023.09.21.03.37.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 03:37:57 -0700 (PDT)
+Message-ID: <30279c62-c80b-330f-260f-0c64a7893555@linaro.org>
+Date:   Thu, 21 Sep 2023 12:37:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANubcdVuiBciEQu14hOUvgSYo2+1okQ4ed-tJJa5Xo_3jieGzg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH 3/6] vlynq: remove bus driver
+Content-Language: en-US
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mips@vger.kernel.org
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
+ <20230920201035.3445-4-wsa+renesas@sang-engineering.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230920201035.3445-4-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,117 +79,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023, Stephen Zhang wrote:
+On 20/9/23 22:10, Wolfram Sang wrote:
+> There are no users with a vlynq_driver in the Kernel tree. Also, only
+> the AR7 platform ever initialized a VLYNQ bus, but AR7 is going to be
+> removed from the Kernel. OpenWRT had some out-of-tree drivers which they
+> probably intended to upport, but AR7 devices are even there not
 
-> Lee Jones <lee@kernel.org> 于2023年9月20日周三 17:52写道：
-> >
-> > On Tue, 05 Sep 2023, zhangshida wrote:
-> >
-> > > From: Shida Zhang <zhangshida@kylinos.cn>
-> > >
-> > > Warnings were generated during compiling for functions like
-> > > cs42l43_*_{resume,suspend}:
-> > >
-> > > ../drivers/mfd/cs42l43.c:1138:12: error: ‘cs42l43_runtime_resume’ defined but not used [-Werror=unused-function]
-> > >  1138 | static int cs42l43_runtime_resume(struct device *dev)
-> > >       |            ^~~~~~~~~~~~~~~~~~~~~~
-> > > ../drivers/mfd/cs42l43.c:1124:12: error: ‘cs42l43_runtime_suspend’ defined but not used [-Werror=unused-function]
-> > >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
-> > >       |            ^~~~~~~~~~~~~~~~~~~~~~~
-> > > ../drivers/mfd/cs42l43.c:1106:12: error: ‘cs42l43_resume’ defined but not used [-Werror=unused-function]
-> > >  1106 | static int cs42l43_resume(struct device *dev)
-> > >       |            ^~~~~~~~~~~~~~
-> > > ../drivers/mfd/cs42l43.c:1076:12: error: ‘cs42l43_suspend’ defined but not used [-Werror=unused-function]
-> > >  1076 | static int cs42l43_suspend(struct device *dev)
-> > >
-> > > Fix it by guarding it with CONFIG_PM/CONFIG_PM_SLEEP.
-> > >
-> > > Reported-by: k2ci <kernel-bot@kylinos.cn>
-> > > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
-> > > ---
-> > >  drivers/mfd/cs42l43.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-> > > index 37b23e9bae82..e589a61c118d 100644
-> > > --- a/drivers/mfd/cs42l43.c
-> > > +++ b/drivers/mfd/cs42l43.c
-> > > @@ -1073,6 +1073,7 @@ void cs42l43_dev_remove(struct cs42l43 *cs42l43)
-> > >  }
-> > >  EXPORT_SYMBOL_NS_GPL(cs42l43_dev_remove, MFD_CS42L43);
-> > >
-> > > +#ifdef CONFIG_PM_SLEEP
-> > >  static int cs42l43_suspend(struct device *dev)
-> > >  {
-> > >       struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
-> > > @@ -1120,7 +1121,9 @@ static int cs42l43_resume(struct device *dev)
-> > >
-> > >       return 0;
-> > >  }
-> > > +#endif
-> > >
-> > > +#ifdef CONFIG_PM
-> > >  static int cs42l43_runtime_suspend(struct device *dev)
-> > >  {
-> > >       struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
-> > > @@ -1176,6 +1179,7 @@ static int cs42l43_runtime_resume(struct device *dev)
-> > >
-> > >       return ret;
-> > >  }
-> > > +#endif
-> > >
-> > >  EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
-> > >       SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
-> >
-> > I see a bunch of drivers using PM helpers and not many of them are
-> > are being guarded by ugly #ifery.  Please find out what they're doing to
-> > solve the same issue and replicate that instead.
-> >
-> > Here's a really big hint:
-> >
-> >   `git log --oneline 02313a90095fb`
-> >
+Typo "support".
+
+> supported anymore because they are "stuck with Kernel
+> 3.18" [1]. This code can go.
 > 
-> Thanks, I've learned something from the hint.
+> [1] https://openwrt.org/docs/techref/targets/ar7
 > 
-> And I also checked the code:
-> -----
-> EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
->         SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
->         SET_RUNTIME_PM_OPS(cs42l43_runtime_suspend,
-> cs42l43_runtime_resume, NULL)
-> };
-> ----
-> #ifdef CONFIG_PM_SLEEP
-> #define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
->         SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
-> #else
-> #define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
-> #endif
-> ----
-> #define SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
->         .suspend = pm_sleep_ptr(suspend_fn), \
->         .resume = pm_sleep_ptr(resume_fn), \
->         .freeze = pm_sleep_ptr(suspend_fn), \
->         .thaw = pm_sleep_ptr(resume_fn), \
->         .poweroff = pm_sleep_ptr(suspend_fn), \
->         .restore = pm_sleep_ptr(resume_fn),
-> ----
-> The technique has already been used by the marcos, but it still
-> reports the defined-but-not-used warning.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>   MAINTAINERS            |   7 -
+>   drivers/Kconfig        |   2 -
+>   drivers/Makefile       |   1 -
+>   drivers/vlynq/Kconfig  |  21 --
+>   drivers/vlynq/Makefile |   6 -
+>   drivers/vlynq/vlynq.c  | 799 -----------------------------------------
+>   include/linux/vlynq.h  | 149 --------
+>   7 files changed, 985 deletions(-)
+>   delete mode 100644 drivers/vlynq/Kconfig
+>   delete mode 100644 drivers/vlynq/Makefile
+>   delete mode 100644 drivers/vlynq/vlynq.c
+>   delete mode 100644 include/linux/vlynq.h
 
-The MACROS can use #ifery since they are located in header files.
-
-#ifery in C files is to be avoided if at all possible.
-
-> Maybe some compilers still choose to compile these functions in...
-> Anyway, I will just leave it alone since it is really not a big problem...
-
-If you're seeing an error, it should be fixed.
-
-Why is this not an issue anywhere else?
-
-Does the same build complain about all the other drivers too?
-
--- 
-Lee Jones [李琼斯]
