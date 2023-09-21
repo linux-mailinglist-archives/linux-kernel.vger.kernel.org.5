@@ -2,128 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E117AA2C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1E87AA372
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbjIUVed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S230020AbjIUVu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232910AbjIUV3t (ORCPT
+        with ESMTP id S232834AbjIUVu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:29:49 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246285AA9F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:29:16 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31fe2c8db0dso1127344f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:29:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695317343; x=1695922143; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NaqmMPfKXAOtSVjFcLvPHbWm7slgkGY5/ld8VMlAl3Q=;
-        b=B/bfnwSEfkB7271SnjIa9UnvNsZ1Z8MHI+KH1kbrWNytjj9BMhLzx3dcjkZM4K4O2e
-         CQ9fBOU2IaQ144/Z2JgA3/7oSbp7eucogrGv49wSP/Pa7pMVGLPldNtV8TPTNbhep1En
-         pW+vJX2LzM0skEWaDMaCM0tOMiTNeCM80WAZdz12LQ5KRUb0yDj7heS4Q4jJjcQqe3d0
-         ChFKcTYtZU2Cn/We9I01HJ9KN4ljlZt0MNGxwLIAzUCmvMz3BJ254XP+egqtLuxEFdT+
-         XA2b/rwKYi+Jym4890B3/K8PUeJDVKm5ZwR259WtiTgcv6qGTdV7kOKQsKbzmXTSi2W1
-         Lk4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317343; x=1695922143;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NaqmMPfKXAOtSVjFcLvPHbWm7slgkGY5/ld8VMlAl3Q=;
-        b=UMAy5lSEllhqd7bCW8Fl8GWIGaDdf6jSlBNnx+6h1oF2NomXzicp1CWkNpFVJ/Vlly
-         ACoqpq+mTqOeiloXmW39Zl/pGmRW/7Qa3ywKwj4Q7HYswDRIyVh1RwjcfJJh3g6L+IET
-         PoC9/sb4qTqcHtVPXYqV0Ku1BlrtjvLmEseD6emenAREcXoQGwhJurI/oFujraH8Bden
-         ODLYMxn8uDyzlmLCulmfzVcnq+cfDCwq7Fz+W1ppZ0xy1T4PYkswt1dduRew6hP6jMjr
-         gQQJjCApSZZJbiaTBdiB1/tQ5pCJwDC0djWsAOOoVmK5l2WyJ7X+QEMouej8cIsSUiCl
-         xnOg==
-X-Gm-Message-State: AOJu0YytYFP+xxhBJwYjJFFSy0oAKGykcX1+awieTs6aQefzpqr7oUaD
-        m25AfGIIJCBtfl1TrboR0FC/z09HcDRI9yZTR5Y=
-X-Google-Smtp-Source: AGHT+IFaAYDa6Vr0lrCvqGhnr3YcAh06ruBWoq695g+RZk8mUCM1VfhyAsQXvwPJdaNC8FQdqzlkZw==
-X-Received: by 2002:a17:906:28d0:b0:9a9:ec12:4832 with SMTP id p16-20020a17090628d000b009a9ec124832mr5144140ejd.41.1695306778831;
-        Thu, 21 Sep 2023 07:32:58 -0700 (PDT)
-Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id lt12-20020a170906fa8c00b009a219ecbaf1sm1153327ejb.85.2023.09.21.07.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:32:58 -0700 (PDT)
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-Date:   Thu, 21 Sep 2023 16:32:46 +0200
-Subject: [PATCH v5 7/7] arm64: dts: mediatek: add iommu support for mt8365
- SoC
+        Thu, 21 Sep 2023 17:50:27 -0400
+Received: from icts-p-cavspool-1.kulnet.kuleuven.be (icts-p-cavspool-1.kulnet.kuleuven.be [134.58.240.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFE68CC94;
+        Thu, 21 Sep 2023 10:42:40 -0700 (PDT)
+Received: from icts-p-cavuit-2.kulnet.kuleuven.be (icts-p-cavuit-2.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:131])
+        by icts-p-cavspool-1.kulnet.kuleuven.be (Postfix) with ESMTP id C5AE629C3;
+        Thu, 21 Sep 2023 16:36:59 +0200 (CEST)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 811F6201B4.AF3C2
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:140:242:ac11:1d])
+        by icts-p-cavuit-2.kulnet.kuleuven.be (Postfix) with ESMTP id 811F6201B4;
+        Thu, 21 Sep 2023 16:36:37 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1695306997;
+        bh=SwLD8/U7UN06+wHZP5wX9JtDvnWuIFp1Ea4q7cRJOXw=;
+        h=From:To:Cc:Subject:Date;
+        b=AGWlTrp+yggW3WYIVPHio+NHwV34PcxQNilk/051Mi/wcA4apl46GPuswjhfTJjMY
+         us38ZuuB7QYP/fPzD97KxkKl7pCKPLpP2KuYfX49N4lnqGg/GcIDD3FZRCPMTkk+ye
+         mqQmSqsj0MS+G6JoF8HHKGXPrkUxLs5cXrLHU6xU=
+Received: from localhost.localdomain (ptr-82s0fs8p4onqm1q5sl7.18120a2.ip6.access.telenet.be [IPv6:2a02:1811:d31:8b00:c962:1db3:c9ed:fdfb])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 4609ED4F30837;
+        Thu, 21 Sep 2023 16:36:37 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH v6 00/13] selftests/sgx: Fix compilation errors
+Date:   Thu, 21 Sep 2023 16:35:51 +0200
+Message-Id: <20230921143604.6561-1-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230207-iommu-support-v5-7-fa6f03680832@baylibre.com>
-References: <20230207-iommu-support-v5-0-fa6f03680832@baylibre.com>
-In-Reply-To: <20230207-iommu-support-v5-0-fa6f03680832@baylibre.com>
-To:     Yong Wu <yong.wu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexandre Mergnat <amergnat@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1094; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=9vmrSAYQ/OJGejgymOj9rq18l0jyb8olHnhsKnJiPYw=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBlDFQPl1+LIdPl1L229+UVcYfLca3OCYNM/P0YnuXB
- v4QWDSCJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZQxUDwAKCRArRkmdfjHURQJCEA
- DHuD1i2t/r+Gg3749MClPYGF6EvLT0nqGc30sqhS8plPDlblum+YJR+x5f9yqpboZgb+3sCnX7Zi6E
- d4A/JTQDZ1rL3QYD28iI3zVNVFl765+7QIM/KeVEJ9HThaF0sfXQe2i6Pvsy/IetfSueods9QemGkq
- JT9DTpz6wFf7Ciq57MLgYGvCxDq0zY0AsZ2sJV1mxmQNkfxVfakpoRgiiNmPbNrbzfFEzlLTf3Udp1
- j8iZCsdmO4kQT8oLRzMzepRpIIQNlFo+aWfjq3L/c7Gl5YoE2tgtsRcVt7b8czjJJH4xoMCD+mEHfe
- Pp1LRdwNJGKcOmDuH7Bs2MZTyFOYLWtmQ8Me+Ht9Nkj0P3r0iZTSvBRn7HVSzx9GL/eE3pTDJm/Iac
- s0Kqc/ySTwwbvhJn+a6NqUZaW5pI9szuP6KThc56aZnU8xKbo2b6ROzifjl2eEIqgSsm8tIyrMIMqn
- 3mLLqsDL0vBKQdyhw+FjU0V482ifiB0swMjtuzEgQHjc+linbCEBFDWe4LfTnFV+6w0dSWCSaufIXt
- xPedYGgozlvbrJK8TJLdcfHzQYz6qZ+dl3iDu/yWu+MbXuRmXJ7pYgP99wIL+8bEORcE2Mj2J8VzFH
- wJnE5PfTyKrI/9/85Dch7lBPFSwIyjoAa+RochVFwz9nsl36hPVAF/8K5ktg==
-X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
- fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add iommu support in the SoC DTS using the 4 local arbiters (LARBs)
+Hi,
 
-Reviewed-by: Yong Wu <yong.wu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt8365.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+This patch series ensures that all SGX selftests succeed when compiling with
+optimizations (as tested with -O{0,1,2,3,s} for both gcc 11.3.0 and clang
+14.0.0). The aim of the patches is to avoid reliance on undefined,
+compiler-specific behavior that can make the test results fragile.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-index afcfa1dd242e..24581f7410aa 100644
---- a/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-@@ -471,6 +471,14 @@ sysirq: interrupt-controller@10200a80 {
- 			reg = <0 0x10200a80 0 0x20>;
- 		};
- 
-+		iommu: iommu@10205000 {
-+			compatible = "mediatek,mt8365-m4u";
-+			reg = <0 0x10205000 0 0x1000>;
-+			interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_LOW>;
-+			mediatek,larbs = <&larb0>, <&larb1>, <&larb2>, <&larb3>;
-+			#iommu-cells = <1>;
-+		};
-+
- 		infracfg_nao: infracfg@1020e000 {
- 			compatible = "mediatek,mt8365-infracfg", "syscon";
- 			reg = <0 0x1020e000 0 0x1000>;
+As far as I see, all commits in this series have now been acked/reviewed.
+Please let me know if any concerns remain and I'd happily address them.
+
+Reference output below:
+
+.. Testing   gcc   -O0    [OK]
+.. Testing   gcc   -O1    [OK]
+.. Testing   gcc   -O2    [OK]
+.. Testing   gcc   -O3    [OK]
+.. Testing   gcc   -Os    [OK]
+.. Testing   gcc   -Ofast [OK]
+.. Testing   gcc   -Og    [OK]
+.. Testing   clang -O0    [OK]
+.. Testing   clang -O1    [OK]
+.. Testing   clang -O2    [OK]
+.. Testing   clang -O3    [OK]
+.. Testing   clang -Os    [OK]
+.. Testing   clang -Ofast [OK]
+.. Testing   clang -Og    [OK]
+
+Changelog
+---------
+
+v6
+  - Collect final ack/reviewed-by tags (Jarkko, Kai)
+
+v5
+  - Reorder patches (Jarkko, Kai)
+  - Include fixes tag for inline asm memory clobber patch (Kai)
+  - Include linker error in static-pie commit message (Kai)
+  - Include generated assembly in relocations commit (Kai)
+
+v4
+  - Remove redundant -nostartfiles compiler flag (Jarkko)
+  - Split dynamic symbol table removal in separate commit (Kai)
+  - Split redundant push/pop elimination in separate commit (Kai)
+  - Remove (incomplete) register cleansing on enclave exit
+  - Fix possibly uninitialized pointer dereferences in load.c
+
+v3
+  - Refactor encl_op_array declaration and indexing (Jarkko)
+  - Annotate encl_buffer with "used" attribute (Kai)
+  - Split encl_buffer size and placement commits (Kai)
+
+v2
+  - Add additional check for NULL pointer (Kai)
+  - Refine to produce proper static-pie executable
+  - Fix linker script assertions
+  - Specify memory clobber for inline asm instead of volatile (Kai)
+  - Clarify why encl_buffer non-static (Jarkko, Kai)
+  - Clarify -ffreestanding (Jarkko)
+
+Best,
+Jo
+
+
+Jo Van Bulck (13):
+  selftests/sgx: Fix uninitialized pointer dereference in error path
+  selftests/sgx: Fix uninitialized pointer dereferences in
+    encl_get_entry
+  selftests/sgx: Include memory clobber for inline asm in test enclave
+  selftests/sgx: Separate linker options
+  selftests/sgx: Specify freestanding environment for enclave
+    compilation
+  selftests/sgx: Remove redundant enclave base address save/restore
+  selftests/sgx: Produce static-pie executable for test enclave
+  selftests/sgx: Handle relocations in test enclave
+  selftests/sgx: Fix linker script asserts
+  selftests/sgx: Ensure test enclave buffer is entirely preserved
+  selftests/sgx: Ensure expected location of test enclave buffer
+  selftests/sgx: Discard unsupported ELF sections
+  selftests/sgx: Remove incomplete ABI sanitization code in test enclave
+
+ tools/testing/selftests/sgx/Makefile          | 12 ++--
+ tools/testing/selftests/sgx/defines.h         |  2 +
+ tools/testing/selftests/sgx/load.c            |  9 ++-
+ tools/testing/selftests/sgx/sigstruct.c       |  5 +-
+ tools/testing/selftests/sgx/test_encl.c       | 67 +++++++++++++------
+ tools/testing/selftests/sgx/test_encl.lds     | 10 +--
+ .../selftests/sgx/test_encl_bootstrap.S       | 28 +++-----
+ 7 files changed, 77 insertions(+), 56 deletions(-)
 
 -- 
 2.25.1
