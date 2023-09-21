@@ -2,59 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64497A97B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEA37A9893
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjIUR1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
+        id S229629AbjIURuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjIUR0t (ORCPT
+        with ESMTP id S229881AbjIURt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:26:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99431BCE;
-        Thu, 21 Sep 2023 10:01:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83AB6C433BC;
-        Thu, 21 Sep 2023 07:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695281463;
-        bh=MMiANpm/tYrygvqzjXfEiCYC2yeCEyBRWQiNI0+pzFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z0PHmHygjWP1wKwlpRSiugrczCcpHcj8QTlBqQn/HoTurjSMHGHImFbMpzAGGnOL9
-         YT7saeq1G0DMNq0uo/d+YQ+cgPIcRb83YfVEymFdMCD/KgRs9hah3CtyoZA3QQ+wSb
-         Ax7Vfn6w7iOOiMmU5A4lkYNoV2Qdz+exHkWVCm+Q=
-Date:   Thu, 21 Sep 2023 09:31:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 1/6] serial: 8250: remove AR7 support
-Message-ID: <2023092152-unfilled-spinout-657c@gregkh>
-References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
- <20230920201035.3445-2-wsa+renesas@sang-engineering.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920201035.3445-2-wsa+renesas@sang-engineering.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 13:49:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50162724
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:03:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1CE6921DC8;
+        Thu, 21 Sep 2023 07:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695281594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CtSTnaLnaJEKj1j/kHsXGQg1xrJm7Dcrziia39euvc8=;
+        b=sXR5FTPpsdCvHSV+3Wzc4Y6SiatA8kkX6IiI7WOIyCqhMeHhr3QuVOdEG0zlOOSd2zZ7n3
+        c+saM0Mglh7dZdSU7E4tk3Ul50x4Go/KUcT3XBxYOApwavRGjYT+aqPPonG17IR8mnEC3M
+        rovvX2DwbFkS4NrbK1FLv2Fa8bL24Qc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695281594;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CtSTnaLnaJEKj1j/kHsXGQg1xrJm7Dcrziia39euvc8=;
+        b=xKpK1wTn4RIo7c8vmiuZaUc+CgsXh2MO8LeeV4LA5c/ObebGrnW4lWO5cubah1FYxWeU9g
+        XErNPssYEffDlsAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E854713513;
+        Thu, 21 Sep 2023 07:33:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tMmyN7nxC2VpegAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 07:33:13 +0000
+Date:   Thu, 21 Sep 2023 09:33:13 +0200
+Message-ID: <87sf78t1za.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Abelardo Ricart <aricart@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCHv3] ALSA: hda/realtek: Add quirk for ASUS ROG G533Q
+In-Reply-To: <2436e7f2-b986-4dda-9d4d-0f73845c1ffc@gmail.com>
+References: <2436e7f2-b986-4dda-9d4d-0f73845c1ffc@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 10:10:27PM +0200, Wolfram Sang wrote:
-> AR7 is going to be removed from the Kernel, so remove its type
-> definition from 8250 code. As with previous removals, I checked with
-> Debian Code Search that 'PORT_AR7' is not used in userspace.
+On Thu, 21 Sep 2023 09:22:57 +0200,
+Abelardo Ricart wrote:
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
+> The same quirk applied to the ASUS G533Z is also applicable to the ASUS
+> G533Q (of which I am an owner and have thus tested).
+> 
+> Signed-off-by: Abelardo Ricart <aricart@gmail.com>
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Unfortunately it's still a problem; tabs are converted to 4 spaces.
+
+I recommend you to try sending to yourself locally and verify whether
+it works before resubmitting v4.
+
+
+thanks,
+
+Takashi
+
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index dc7b7a407638..fdc3560ad951 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -9649,6 +9649,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>      SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+>      SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+>      SND_PCI_QUIRK(0x1043, 0x1573, "ASUS GZ301V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+> +    SND_PCI_QUIRK(0x1043, 0x1602, "ASUS ROG Strix G15 (G533Q)", ALC285_FIXUP_ASUS_G533Z_PINS),
+>      SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
+>      SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", ALC287_FIXUP_CS35L41_I2C_2),
+>      SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
+> 
