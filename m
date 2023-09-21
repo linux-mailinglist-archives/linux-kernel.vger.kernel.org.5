@@ -2,171 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2867A990D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107F27A9E8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjIUSKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
+        id S231644AbjIUUDH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 16:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjIUSKk (ORCPT
+        with ESMTP id S231485AbjIUUCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:10:40 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43D4897F0;
-        Thu, 21 Sep 2023 10:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=y80U+ROzdWFAGesuJv0fAWCJugjaoZUvkVKbCL8UtRM=; b=J1yh53DeBNARTsqqU8MHBzo9Oa
-        t0+dRp/RaWdqEqR/zlkiuTCdTMvV7LfZBpgaPOo9mz3Ar25SG5iPMKXPJ1Pakv7POYEio6eyu3imp
-        Jue1paSBhwzjv0GVy6aou42CWQp6vSIlPYV8hlPJ5VHamcRnA8qcdTN4cPrFGpVz1BTCn704A78vE
-        WKxVrydWMewhT15+u9bny+bRHgeZaaqgcYNfslcWse8SCYpLZxpj04q12Qq2mZevEQIJk5Ji3lybk
-        draQ9SuAvOjf/F8wS4j1zOR8oS4A/59eybSt0kjrpVaKBQ211JZ5hMg5lAiocOJweLC8GJ5sJOtgz
-        HfWLrfPQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54404)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qjKIb-0004k2-1O;
-        Thu, 21 Sep 2023 15:04:57 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qjKIX-0003an-Lu; Thu, 21 Sep 2023 15:04:53 +0100
-Date:   Thu, 21 Sep 2023 15:04:53 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        David E Box <david.e.box@intel.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v3 3/5] net: phy: update in-band AN mode when
- changing interface by PHY driver
-Message-ID: <ZQxNhYcusHfrJvxM@shell.armlinux.org.uk>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
- <20230921121946.3025771-4-yong.liang.choong@linux.intel.com>
+        Thu, 21 Sep 2023 16:02:36 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4A85A038
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:21:02 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-78-tT6XIwH6NoO3sNNrU8Sykg-1; Thu, 21 Sep 2023 15:05:00 +0100
+X-MC-Unique: tT6XIwH6NoO3sNNrU8Sykg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Sep
+ 2023 15:05:00 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 21 Sep 2023 15:05:00 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Howells' <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Christian Brauner" <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 00/11] iov_iter: Convert the iterator macros into
+ inline funcs
+Thread-Topic: [PATCH v5 00/11] iov_iter: Convert the iterator macros into
+ inline funcs
+Thread-Index: AQHZ7BD/kh4zTlIOdEezFNQQd09cYrAlRT1Q
+Date:   Thu, 21 Sep 2023 14:04:59 +0000
+Message-ID: <591a70bf016b4317add2d936696abc0f@AcuMS.aculab.com>
+References: <20230920222231.686275-1-dhowells@redhat.com>
+In-Reply-To: <20230920222231.686275-1-dhowells@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921121946.3025771-4-yong.liang.choong@linux.intel.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 08:19:44PM +0800, Choong Yong Liang wrote:
-> As there is a mechanism in PHY drivers to switch the PHY interface
-> between SGMII and 2500BaseX according to link speed. In this case,
-> the in-band AN mode should be switching based on the PHY interface
-> as well, if the PHY interface has been changed/updated by PHY driver.
+From: David Howells
+> Sent: 20 September 2023 23:22
+...
+>  (8) Move the copy-and-csum code to net/ where it can be in proximity with
+>      the code that uses it.  This eliminates the code if CONFIG_NET=n and
+>      allows for the slim possibility of it being inlined.
 > 
-> For e.g., disable in-band AN in 2500BaseX mode, or enable in-band AN
-> back for SGMII mode (10/100/1000Mbps).
+>  (9) Fold memcpy_and_csum() in to its two users.
 > 
-> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> (10) Move csum_and_copy_from_iter_full() out of line and merge in
+>      csum_and_copy_from_iter() since the former is the only caller of the
+>      latter.
 
-This approach is *going* to break existing setups, sorry.
+I thought that the real idea behind these was to do the checksum
+at the same time as the copy to avoid loading the data into the L1
+data-cache twice - especially for long buffers.
+I wonder how often there are multiple iov[] that actually make
+it better than just check summing the linear buffer?
 
-> +/**
-> + * phylink_interface_change() - update both cfg_link_an_mode and
-> + * cur_link_an_mode when there is a change in the interface.
-> + * @phydev: pointer to &struct phy_device
-> + *
-> + * When the PHY interface switches between SGMII and 2500BaseX in
-> + * accordance with the link speed, the in-band AN mode should also switch
-> + * based on the PHY interface
-> + */
-> +static void phylink_interface_change(struct phy_device *phydev)
-> +{
-> +	struct phylink *pl = phydev->phylink;
-> +
-> +	if (pl->phy_state.interface != phydev->interface) {
-> +		/* Fallback to the correct AN mode. */
-> +		if (phy_interface_mode_is_8023z(phydev->interface) &&
-> +		    pl->cfg_link_an_mode == MLO_AN_INBAND) {
-> +			pl->cfg_link_an_mode = MLO_AN_PHY;
-> +			pl->cur_link_an_mode = MLO_AN_PHY;
+I had a feeling that check summing of udp data was done during
+copy_to/from_user, but the code can't be the copy-and-csum here
+for that because it is missing support form odd-length buffers.
 
-1. Why are you changing both cfg_link_an_mode (configured link AN mode)
-and cur_link_an_mode (current link AN mode) ?
+Intel x86 desktop chips can easily checksum at 8 bytes/clock
+(But probably not with the current code!).
+(I've got ~12 bytes/clock using adox and adcx but that loop
+is entirely horrid and it would need run-time patching.
+Especially since I think some AMD cpu execute them very slowly.)
 
-The "configured" link AN mode is supposed to be whatever was configured
-at phylink creation time, and it's never supposed to change. The
-"current" link AN mode can change, but changing that must be followed
-by a major reconfiguration to ensure everything is correctly setup.
-That will happen only because the change to the current link AN mode
-can only happen when pl->phy_state.interface has changed, and the
-change of pl->phy_state.interface triggers the reconfiguration.
+OTOH 'rep movs[bq]' copy will copy 16 bytes/clock (32 if the
+destination is 32 byte aligned - it pretty much won't be).
 
-2. You force this behaviour on everyone, so now everyone with a SFP
-module that operates in 802.3z mode will be switched out of inband mode
-whether they want that or not. This is likely to cause some breakage.
+So you'd need a csum-and-copy loop that did 16 bytes every
+three clocks to get the same throughput for long buffers.
+In principle splitting the 'adc memory' into two instructions
+is the same number of u-ops - but I'm sure I've tried to do
+that and failed and the extra memory write can happen in
+parallel with everything else.
+So I don't think you'll get 16 bytes in two clocks - but you
+might get it is three.
 
-> +		} else if (pl->config->ovr_an_inband) {
-> +			pl->cfg_link_an_mode = MLO_AN_INBAND;
-> +			pl->cur_link_an_mode = MLO_AN_INBAND;
+OTOH for a cpu where memcpy is code loop summing the data in
+the copy loop is likely to be a gain.
 
-Here you force inband when not 802.3z mode and ovr_an_inband is set.
-There are SFP modules that do *not* support in-band at all, and this
-will break these modules when combined with a driver that sets
-ovr_an_inband. So more breakage.
+But I suspect doing the checksum and copy at the same time
+got 'all to complicated' to actually implement fully.
+With most modern ethernet chips checksumming receive pacakets
+does it really get used enough for the additional complexity?
 
-Please enumerate the PHY interface modes that you are trying to support
-with this patch set, and indicate whether you want in-band for that
-mode or not, and where the restriction for whether in-band can be used
-comes from (PHY, PCS or MAC) so that it's possible to better understand
-what you're trying to achieve.
+	David
 
-Thanks.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
