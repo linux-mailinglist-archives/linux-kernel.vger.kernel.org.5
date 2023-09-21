@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9939D7AA5BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446A47AA5D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjIUXl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 19:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S230116AbjIUXuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 19:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjIUXl4 (ORCPT
+        with ESMTP id S229509AbjIUXuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 19:41:56 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B0FF7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:41:49 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-493a661d7b6so1862279e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695339708; x=1695944508; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w48GztKGUIvMqqvPZVDMleDtLD/hcfB0PxWuC7Y1iOw=;
-        b=DFD/rYlLTeDrOiGM45jyBtz17y5yAuVkN9ykqbctoA0NuU2/enysa5nLfnGkwPmpZB
-         OdZZ8S6A41NJz/vhG9nXKl90oU/7G5AF1sxBFn4iRfD7itTfq+v9XOEoe22NSrXdEv2G
-         TT8SArPrsHZFRdFU1J8tvvLu1BZDra/n7eJ+eaC8vn0iu1IkwOkDVKXxZ16JCuVOaPEM
-         hyDSGgiByFKiE5Pmn3+nKw6zYnMy8tt9G/YCi9kCtFAVLGTyPZ9JyfnMtTJRr3hY0uUC
-         wG1hBKrzQTVgZxbRH0W10UzykXtjlW3UEX/EotHMizWXknNLG1RFmbK7YGHVMHxPgEEe
-         ydnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695339708; x=1695944508;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w48GztKGUIvMqqvPZVDMleDtLD/hcfB0PxWuC7Y1iOw=;
-        b=CfovyqICLIOUQdWQMq7jtLexyjGm3MQms0H7HCtlOr6vnQtbcvoqciSN49+Sk6ot4L
-         Pv/ILYPBWBhC+C45AmZXNYtmLig2Ifwx8szOOArS+nudSadjo78hIHLqqoUqxxvQjwJG
-         JUvTDP8A7QOnceYZY6AIG0naB30K0bYSF0qVgeA3pWbvWa/mg7M6gdaqYfSECpOZl1J6
-         U/PXSgF2AOdLsOCNWkNprw+O0APCIQeLOERclwX2mFY99c2YPCD2Kq4e3JiB+fTwUlfR
-         fiNVJHbxZv3omJo95BR58H/srJqR9LXxIr8iKdbHP/yyU6WEYQ6/F3K9NxwI7HxoVA8A
-         jObA==
-X-Gm-Message-State: AOJu0YyPtrNIp54QJ4ufVxytCu2Tmnye/WVeDoVluWIHYotrpHHReBzY
-        3d9rwWlyxGVcAQ+MqNGdLXOxu6ieK9isZF7RUPc=
-X-Google-Smtp-Source: AGHT+IHowdOAInWy8qSJ+bGjp+ELswpQrYyP6Vw2ghvlTdU0OH1bR6+Ua/20leLuBdh2b2O6fPWb//YZdRjluLHi5Uw=
-X-Received: by 2002:ac5:c978:0:b0:493:a661:c5f5 with SMTP id
- t24-20020ac5c978000000b00493a661c5f5mr690990vkm.2.1695339708341; Thu, 21 Sep
- 2023 16:41:48 -0700 (PDT)
+        Thu, 21 Sep 2023 19:50:35 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B778F102
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:50:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1695340228;
+        bh=UUmux8/Cg3ThyE8UwqG2/nXFVX8BSQmnhjAf5f0s7Qo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ai6593xBSTRx0fCOrgZMlKzEr0DfS3sIswGFwktvHA/5e4hVScmF4Mp7P6Wwxhf+U
+         P9jq+ZYJllCH+gXhwqRbLAygJxl1fOiDdW8qSiv76wbndCKpDyBYm+XGHplTRB+VnL
+         BYodGXuqfwe72zTxaRkVsPWOxOZLJZlAxj49EZDpVNAPK0/i1s1ttWb2mpvF+HQHQa
+         dpjc3Gl/UW9y63AQRBKMJRMWUYRp2xY245+oEI9KudGzxaQlKPNIft+9wuBZ+UKxmY
+         XjBZ09dllD8GZYneLEQka5iwlA6JxnVVqJHyHOqRDhzFBwrgdbUxeaPQktZ29+kmV5
+         wQ10mrDpgMqZg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RsBwf14Pwz4x5G;
+        Fri, 22 Sep 2023 09:50:25 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Yuan Tan <tanyuan@tinylab.org>, christophe.leroy@csgroup.eu
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        falcon@tinylab.org, w@1wt.eu, linux@weissschuh.net,
+        Philippe =?utf-8?Q?Ma?= =?utf-8?Q?thieu-Daud=C3=A9?= 
+        <philmd@linaro.org>
+Subject: Re: [PATCH v3 1/3] powerpc/config: Cleanup pmac32_defconfig
+In-Reply-To: <A81E00EBD697C30F+9c7a7721-e949-4ca6-a6b3-8eeb181718f2@tinylab.org>
+References: <cover.1694685860.git.tanyuan@tinylab.org>
+ <23b30e8e9e31e7a6af4aa7d317699e1538ad89c2.1694685860.git.tanyuan@tinylab.org>
+ <87y1h87vf3.fsf@mail.lhotse>
+ <A81E00EBD697C30F+9c7a7721-e949-4ca6-a6b3-8eeb181718f2@tinylab.org>
+Date:   Fri, 22 Sep 2023 09:50:25 +1000
+Message-ID: <87o7hvm6gu.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <20230921181236.509072-1-Liam.Howlett@oracle.com>
- <20230921112521.fc07c658804f4e188179da77@linux-foundation.org>
- <20230921185330.j5jw3oms4tc6crkf@revolver> <ZQyYH+5pnDc1KYj0@casper.infradead.org>
- <20230921162748.a85eb5af766e0662e4f22a5e@linux-foundation.org> <20230921233422.kv46hm4lddhp6rgb@revolver>
-In-Reply-To: <20230921233422.kv46hm4lddhp6rgb@revolver>
-From:   Pedro Falcato <pedro.falcato@gmail.com>
-Date:   Fri, 22 Sep 2023 00:41:37 +0100
-Message-ID: <CAKbZUD3GS7YJmeO1q=f7LRomkJAigQaFw93Vwn99jZaO9O1Eyg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] maple_tree: Fix mas_prev() state regression.
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, pedro.falcato@gmail.com,
-        stable <stable@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 12:34=E2=80=AFAM Liam R. Howlett
-<Liam.Howlett@oracle.com> wrote:
+Yuan Tan <tanyuan@tinylab.org> writes:
+> On 9/14/2023 9:10 PM, Michael Ellerman wrote:
+>> Yuan Tan <tanyuan@tinylab.org> writes:
+>>> Use 'make savedefconfig' to cleanup pmac32_defconfig, based on Linux
+>>> 7.6-rc1
+>> Thanks but I don't like doing these updates in a single commit like
+>> this, it's easy to accidentally lose a symbol.
+> Yeah I have the same concerns too.
+>>
+>> I prefer an explanation for what's changing for each symbol. See
+>> 1ce7fda142af ("powerpc/configs/64s: Drop IPV6 which is default y") and
+>> the commits leading up to it, to see what I mean.
+>>
+>> But I suspect you probably don't want to go to all that effort, which is
+>> fine :)
 >
-> * Andrew Morton <akpm@linux-foundation.org> [230921 19:27]:
-> > On Thu, 21 Sep 2023 20:23:11 +0100 Matthew Wilcox <willy@infradead.org>=
- wrote:
-> >
-> > > > > It isn't clear what are the user-visible effects of this flaw?  P=
-lease
-> > > > > send this along and I'll paste it in.
-> > > >
-> > > >
-> > > > User may notice that mas_prev() or mas_next() calls that result in =
-going
-> > > > outside of the limit passed to the call will cause incorrect return=
-s on
-> > > > subsequent calls using that maple state, such as mas_find() skippin=
-g an
-> > > > entry.
-> > >
-> > > When Andrew says "User visible" he means "userspace visible".  Not
-> > > "in kernel user visible".  What are the _consequences_.
-> >
-> > Thanks ;)
-> >
-> > We have a Link:
-> > (https://gist.github.com/heatd/85d2971fae1501b55b6ea401fbbe485b) but it
-> > takes us to the reproducer code.  If it took us to Pedro's initial bug
-> > report then the sun would shine and birds would sing.
-> >
+> I am not familiar with other options, so I'd better not do that. :)
 >
-> I don't think the irc channel is logged so I'll respin with a cleaner
-> changelog for both patches and the subject of patch 1.
+> By the way, just to be cautious, since the defconfig can only be updated
+> by 'savedefconfig'[1], how can we write an explanation for a single
+> change in an option?
 
-FYI:
+Well the defconfig can be updated manually, but the changes you make
+manually should match what savedefconfig would do.
 
-The original distro bug report: https://bugs.archlinux.org/task/79656
-The original userspace program bug report:
-https://github.com/cebix/macemu/issues/271
+> I mean, when I change one option, the value of the other undetermined
+> option will be set just like in patch 1.
 
-(and yes, this is my fault, I should've raised this on the ML with the
-regression tracker and all, but I tried to write my own fix then
-realized it was trickier than it looked and pinged Liam)
+At that point I just stage the change to the option I'm changing, and
+leave the other lines modified by savedefconfig alone. That way you can
+commit the changes made by savedefconfig in multiple steps, explaining
+what happens along the way, and the end result is the same as what
+savedefconfig generates.
 
---=20
-Pedro
+So for example at the moment if you do savedefconfig on
+pmac32_defconfig, the start of the diff looks like:
+
+ 1  diff --git a/arch/powerpc/configs/pmac32_defconfig b/arch/powerpc/configs/pmac32_defconfig
+ 2  index 57ded82c2840..17df965be099 100644
+ 3  --- a/arch/powerpc/configs/pmac32_defconfig
+ 4  +++ b/arch/powerpc/configs/pmac32_defconfig
+ 5  @@ -1,4 +1,3 @@
+ 6  -CONFIG_ALTIVEC=y
+ 7   # CONFIG_LOCALVERSION_AUTO is not set
+ 8   CONFIG_SYSVIPC=y
+ 9   CONFIG_POSIX_MQUEUE=y
+10  @@ -8,12 +7,8 @@ CONFIG_IKCONFIG=y
+11   CONFIG_IKCONFIG_PROC=y
+12   CONFIG_LOG_BUF_SHIFT=14
+13   CONFIG_BLK_DEV_INITRD=y
+14  -# CONFIG_COMPAT_BRK is not set
+15   CONFIG_PROFILING=y
+16  -CONFIG_MODULES=y
+17  -CONFIG_MODULE_UNLOAD=y
+18  -CONFIG_MODULE_FORCE_UNLOAD=y
+19 -CONFIG_PARTITION_ADVANCED=y
+20 +CONFIG_ALTIVEC=y
+21  # CONFIG_PPC_CHRP is not set
+22  CONFIG_CPU_FREQ=y
+23  CONFIG_CPU_FREQ_GOV_POWERSAVE=y
+
+So you can stage lines 6 and 20, and commit that as "Update for symbol
+movement", ie. nothing changed other than a symbol moved.
+
+Then repeat that until eventually the config is up to date.
+
+cheers
