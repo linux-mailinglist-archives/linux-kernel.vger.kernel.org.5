@@ -2,182 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C3D7A9A33
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4C37A9A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjIUShT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        id S230297AbjIUShm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjIUSgi (ORCPT
+        with ESMTP id S230293AbjIUShQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:36:38 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54282DC728;
-        Thu, 21 Sep 2023 11:34:19 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c59c40b840so11540625ad.3;
-        Thu, 21 Sep 2023 11:34:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695321259; x=1695926059; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bGf/7eKiw4GZy2wkGbtT/YuoGRNiPGyqjAL1OAImvU4=;
-        b=c7LhKglQKaBJZG9fUaf2z6LaXdMU/N/5YxruMzwR/8sgJUEkSkMN9UMeFi+XtkFNgn
-         5rSZpfw0vj8jy2ub+4+EpDn/DY6lcft2WwG6hxOxgyc8kXjWry7qCZt0J2ttC4m/B4dx
-         YzZjxtCFxQo/WM+PpcaibcNjqCjsUWlogbtGIDSS4fHK6dwhPg3L0KXaW5ktFFHgCTfe
-         MliIb4KowRjRdtVXJY86nfYa5hmegANCO55PvRq24NQD/PLMIfwk0SAamNDL9PUj3Ll9
-         1HZwhl1eNqW/vV6FZv/YvTEoyPQqwtMFwevuwyEDfHnOfSZ/MLZdJJKDy0JEgm/QZpTs
-         VS+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321259; x=1695926059;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bGf/7eKiw4GZy2wkGbtT/YuoGRNiPGyqjAL1OAImvU4=;
-        b=mLwtjnWX30Sa1J9wqHlXmWUVsAYPEYtJD+kOeHfC+xuwnHQEdvPV3dtp0V4KOwmaJ5
-         lBuN5BIKZiiMbbEBIOx2yrURSmqr6+XooX2WgeMoo10ntoGg80CzDZYhBwi0ZXEdeFJq
-         4EP4J6WuxbygN1vRIFPu6ZVYDEA6XjNOWXul6v7X0f/dxbiMrFsutR5isLRHLLUsnYR5
-         43hCGSP2BVavzr2FrYeBVsYs6Pfad2wbz1IUAnF/L/sbFL1oVpU1ivdL/vsEeoXWq+TW
-         yOEwksDNeUg5WvIrtr9lkP+VDLoWn/JrMf7pcxjtRfPOhIp8xJFF3VTwW1mqiTI7cuAw
-         pTag==
-X-Gm-Message-State: AOJu0YwzHhWiBoKWBOQf+9H3HV31MK9iaHpY7IDY4Ebe9JImogLjbwZm
-        FcEAnzDBFNPCS9MAIOReY44=
-X-Google-Smtp-Source: AGHT+IHIURvUvx+ENScmM7CExkX+NBRuXfn7qir3DidtTnofrsT1JNEfob6CFehvv2XfBUELPXBlsg==
-X-Received: by 2002:a17:902:7d93:b0:1c5:e00f:2 with SMTP id a19-20020a1709027d9300b001c5e00f0002mr910511plm.28.1695321258605;
-        Thu, 21 Sep 2023 11:34:18 -0700 (PDT)
-Received: from localhost.localdomain ([122.172.81.113])
-        by smtp.gmail.com with ESMTPSA id c3-20020a170902d90300b001bbfa86ca3bsm1844790plz.78.2023.09.21.11.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 11:34:18 -0700 (PDT)
-From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: dt-bindings: tfa9879: Convert to dtschema
-Date:   Fri, 22 Sep 2023 00:03:13 +0530
-Message-Id: <20230921183313.54112-1-bragathemanick0908@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 21 Sep 2023 14:37:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF577DC21B
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:33:50 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6743E6607298;
+        Thu, 21 Sep 2023 19:33:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695321229;
+        bh=lDQ8GBBO0ng+H4kWbKPjf5JLKqSr+zH/fT77VHc7Fhg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J5bHcWZyf7OCCMpztwXTN34U3HeSXmUlHykJ9GhM/mwXp6Mz2AuqpJi9SSWxhUmhJ
+         DVbq7QVgsiv+ULzMYj9hexrgx8dDqmsM5NCJ+pCBfc3vbkEmifUIekctQ4ZbKtCe2E
+         9tAp/fOxrD/oI2Ou5XaMTF+O3oeiSEsGej3jC0lR5A72KfbvqwhDzaYSzM7668Hddq
+         wI8l/d+aJJoUFzD/apKEZRb8L7xZO/59xRFB4wR1BljvH7apNbl64zsIf/abiBIeNX
+         tFq+qjVWQlpOee4MAIFC1rJmCNVEoayDspiudsNwXCYA3WB4q8tVm3JwOBEIri1hRQ
+         20u+MT3JT8diQ==
+Received: by mercury (Postfix, from userid 1000)
+        id B24E210604CA; Thu, 21 Sep 2023 20:33:45 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 20:33:45 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH] drm/mipi-dsi: Fix detach call without attach
+Message-ID: <20230921183345.nbglbbbhh3g4hznl@mercury.elektranox.org>
+References: <20230921-dsi-detach-fix-v1-1-d0de2d1621d9@ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6ftich7izjxfzuy5"
+Content-Disposition: inline
+In-Reply-To: <20230921-dsi-detach-fix-v1-1-d0de2d1621d9@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the tfa9879 audio CODEC bindings to DT schema
-No error/warning seen when running make dt_binding_check
 
-Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+--6ftich7izjxfzuy5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes:
-V1 -> V2: Fixed DT syntax errors and doc warning
----
- .../bindings/sound/nxp,tfa9879.yaml           | 44 +++++++++++++++++++
- .../devicetree/bindings/sound/tfa9879.txt     | 23 ----------
- MAINTAINERS                                   |  2 +-
- 3 files changed, 45 insertions(+), 24 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
-new file mode 100644
-index 000000000000..df26248573ad
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nxp,tfa9879.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP TFA9879 class-D audio amplifier
-+
-+maintainers:
-+  - Peter Rosin <peda@axentia.se>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: nxp,tfa9879
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#sound-dai-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c1 {
-+       #address-cells = <1>;
-+       #size-cells = <0>;
-+       amplifier@6c {
-+          compatible = "nxp,tfa9879";
-+          reg = <0x6c>;
-+          pinctrl-names = "default";
-+          pinctrl-0 = <&pinctrl_i2c1>;
-+          #sound-dai-cells = <0>;
-+       };
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
-deleted file mode 100644
-index 1620e6848436..000000000000
---- a/Documentation/devicetree/bindings/sound/tfa9879.txt
-+++ /dev/null
-@@ -1,23 +0,0 @@
--NXP TFA9879 class-D audio amplifier
--
--Required properties:
--
--- compatible : "nxp,tfa9879"
--
--- reg : the I2C address of the device
--
--- #sound-dai-cells : must be 0.
--
--Example:
--
--&i2c1 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_i2c1>;
--
--	amp: amp@6c {
--		#sound-dai-cells = <0>;
--		compatible = "nxp,tfa9879";
--		reg = <0x6c>;
--	};
--};
--
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a4c30221eb30..569303daf9b4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15476,7 +15476,7 @@ NXP TFA9879 DRIVER
- M:	Peter Rosin <peda@axentia.se>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/sound/tfa9879.txt
-+F:	Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
- F:	sound/soc/codecs/tfa9879*
- 
- NXP-NCI NFC DRIVER
--- 
-2.34.1
+On Thu, Sep 21, 2023 at 01:50:32PM +0300, Tomi Valkeinen wrote:
+> It's been reported that DSI host driver's detach can be called without
+> the attach ever happening:
+>=20
+> https://lore.kernel.org/all/20230412073954.20601-1-tony@atomide.com/
+>=20
+> After reading the code, I think this is what happens:
+>=20
+> We have a DSI host defined in the device tree and a DSI peripheral under
+> that host (i.e. an i2c device using the DSI as data bus doesn't exhibit
+> this behavior).
+>=20
+> The host driver calls mipi_dsi_host_register(), which causes (via a few
+> functions) mipi_dsi_device_add() to be called for the DSI peripheral. So
+> now we have a DSI device under the host, but attach hasn't been called.
+>=20
+> Normally the probing of the devices continues, and eventually the DSI
+> peripheral's driver will call mipi_dsi_attach(), attaching the
+> peripheral.
+>=20
+> However, if the host driver's probe encounters an error after calling
+> mipi_dsi_host_register(), and before the peripheral has called
+> mipi_dsi_attach(), the host driver will do cleanups and return an error
+> from its probe function. The cleanups include calling
+> mipi_dsi_host_unregister().
+>=20
+> mipi_dsi_host_unregister() will call two functions for all its DSI
+> peripheral devices: mipi_dsi_detach() and mipi_dsi_device_unregister().
+> The latter makes sense, as the device exists, but the former may be
+> wrong as attach has not necessarily been done.
+>=20
+> To fix this, track the attached state of the peripheral, and only detach
+> from mipi_dsi_host_unregister() if the peripheral was attached.
+>=20
+> Note that I have only tested this with a board with an i2c DSI
+> peripheral, not with a "pure" DSI peripheral.
+>=20
+> However, slightly related, the unregister machinery still seems broken.
+> E.g. if the DSI host driver is unbound, it'll detach and unregister the
+> DSI peripherals. After that, when the DSI peripheral driver unbound
+> it'll call detach either directly or using the devm variant, leading to
+> a crash. And probably the driver will crash if it happens, for some
+> reason, to try to send a message via the DSI bus.
+>=20
+> But that's another topic.
+>=20
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
 
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+>  drivers/gpu/drm/drm_mipi_dsi.c | 17 +++++++++++++++--
+>  include/drm/drm_mipi_dsi.h     |  2 ++
+>  2 files changed, 17 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_ds=
+i.c
+> index 14201f73aab1..843a6dbda93a 100644
+> --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> @@ -347,7 +347,8 @@ static int mipi_dsi_remove_device_fn(struct device *d=
+ev, void *priv)
+>  {
+>  	struct mipi_dsi_device *dsi =3D to_mipi_dsi_device(dev);
+> =20
+> -	mipi_dsi_detach(dsi);
+> +	if (dsi->attached)
+> +		mipi_dsi_detach(dsi);
+>  	mipi_dsi_device_unregister(dsi);
+> =20
+>  	return 0;
+> @@ -370,11 +371,18 @@ EXPORT_SYMBOL(mipi_dsi_host_unregister);
+>  int mipi_dsi_attach(struct mipi_dsi_device *dsi)
+>  {
+>  	const struct mipi_dsi_host_ops *ops =3D dsi->host->ops;
+> +	int ret;
+> =20
+>  	if (!ops || !ops->attach)
+>  		return -ENOSYS;
+> =20
+> -	return ops->attach(dsi->host, dsi);
+> +	ret =3D ops->attach(dsi->host, dsi);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dsi->attached =3D true;
+> +
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL(mipi_dsi_attach);
+> =20
+> @@ -386,9 +394,14 @@ int mipi_dsi_detach(struct mipi_dsi_device *dsi)
+>  {
+>  	const struct mipi_dsi_host_ops *ops =3D dsi->host->ops;
+> =20
+> +	if (WARN_ON(!dsi->attached))
+> +		return -EINVAL;
+> +
+>  	if (!ops || !ops->detach)
+>  		return -ENOSYS;
+> =20
+> +	dsi->attached =3D false;
+> +
+>  	return ops->detach(dsi->host, dsi);
+>  }
+>  EXPORT_SYMBOL(mipi_dsi_detach);
+> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+> index c9df0407980c..c0aec0d4d664 100644
+> --- a/include/drm/drm_mipi_dsi.h
+> +++ b/include/drm/drm_mipi_dsi.h
+> @@ -168,6 +168,7 @@ struct mipi_dsi_device_info {
+>   * struct mipi_dsi_device - DSI peripheral device
+>   * @host: DSI host for this peripheral
+>   * @dev: driver model device node for this peripheral
+> + * @attached: the DSI device has been successfully attached
+>   * @name: DSI peripheral chip type
+>   * @channel: virtual channel assigned to the peripheral
+>   * @format: pixel format for video mode
+> @@ -184,6 +185,7 @@ struct mipi_dsi_device_info {
+>  struct mipi_dsi_device {
+>  	struct mipi_dsi_host *host;
+>  	struct device dev;
+> +	bool attached;
+> =20
+>  	char name[DSI_DEV_NAME_SIZE];
+>  	unsigned int channel;
+>=20
+> ---
+> base-commit: 9fc75c40faa29df14ba16066be6bdfaea9f39ce4
+> change-id: 20230921-dsi-detach-fix-6736f7a48ba7
+>=20
+> Best regards,
+> --=20
+> Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>=20
+
+--6ftich7izjxfzuy5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUMjIIACgkQ2O7X88g7
++pqw6w/8DQfaBWez0s+nGhOdT5JZQAFfDfjB9f97SUg4YL3nbquq1CW5lWs8IqYy
+cZJp7h50+GPFqka87gtUiMuMOuM4MXBe1vy08LnM0cWeMyLNUPsSVfzclprCeuPP
+Yz8JyjauIwEK8s3bAAx3BEC4aqKk3d2/D+PF4FIZISMrhgduupvV/lI1aLV0LN5w
+lI0h3J/9uagxnXTIU6meqDaBvm1uNkgPqQ+dh42AWtQGGg8W4NmuUABDYZzcEqVh
+8KYlj9c91b6dOdDP3aDbf/khqiJufWhI/JSIhF8cjVaZMmYQOl5TgwPYO0i0yJJs
+IDLSytb762nibcCL4vE3Ab3IWUVsDCrJg9HLdHfwJD/SIj/kOA6uluzjMPIehQIP
+657ay2mCTIFp5HgTbWvDrFlQxkOrFzyGNASvtSSaNy1NphvnC4qrSEDoXUlWVzTd
+J3I2YSy3LlrSqcEXfObZQwhWqACnUT4mgSzZ88TiO3REroJvgKLnr3hLKVcbO7WN
+8oCT18f6OUE4AtvJckDptSLVUQstwRfluz6jqq3vTeyS3LLxJAmu6sYHMXc38mZW
+RTZQF9vJ6e70Ir3pmah9643L/e1GZAbhx5aQ2McGiWOvqt9nhxj2TKF3uftnDdY8
+ONccI61oyjbXDYQPP7TPJ6operc6hI9ISSEpsOEnLmLLnr70NVA=
+=aIji
+-----END PGP SIGNATURE-----
+
+--6ftich7izjxfzuy5--
