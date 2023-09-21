@@ -2,259 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6207A9F8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7187AA017
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjIUUXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
+        id S230138AbjIUUc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbjIUUXJ (ORCPT
+        with ESMTP id S231887AbjIUUcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:23:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA60D561C3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:39 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E7581477;
-        Wed, 20 Sep 2023 21:21:52 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.32.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DC0053F59C;
-        Wed, 20 Sep 2023 21:21:12 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC RESEND 7/7] coresight: debug: Move ACPI support from AMBA driver to platform driver
-Date:   Thu, 21 Sep 2023 09:50:40 +0530
-Message-Id: <20230921042040.1334641-8-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921042040.1334641-1-anshuman.khandual@arm.com>
-References: <20230921042040.1334641-1-anshuman.khandual@arm.com>
+        Thu, 21 Sep 2023 16:32:00 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4B7AECD0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:06:21 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76f2843260bso76437685a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695319580; x=1695924380; darn=vger.kernel.org;
+        h=reply-to:date:from:to:subject:content-description
+         :content-transfer-encoding:mime-version:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5BfqCn3SI4zJhaJ/BY04ihMcOPLtkiQ9Z9x5owCaadI=;
+        b=EhfRTDtpSjpK/GAXN4yArAq7OvBiBXiTFGXUYxANblQfXBaq8FHxNOz/UUFkwxJ5wA
+         qTVrYjIlcU8KCK7zRWg44au2+c76eC1vlYHUtXrGsl7lNwXMZ6Pg5j0lhJx+C7m8up5o
+         d84EbUPmUzopS9nd6Eb4XvlIkr8QXVaEu2cX/YjjxL14P+FbmPW8khnn0LjZk4rC+WzH
+         LfRfPpQuTGgOokpZW8KqBWN3wkjP+f3hAbfABptVRt2oVly7h7GAn9cb8ZRVlfZiSi/O
+         3SHIHfMR3ro6Yf83JtWWmUzZ2ZPy7aZHMxOmoSAQuUVNy/gLrn3LJbsbt6du9XZKnAIi
+         TYcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695319580; x=1695924380;
+        h=reply-to:date:from:to:subject:content-description
+         :content-transfer-encoding:mime-version:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5BfqCn3SI4zJhaJ/BY04ihMcOPLtkiQ9Z9x5owCaadI=;
+        b=YZe/lrzd8P8c0qHNcOs8VKPqDQ6zPD1DJ1B8BGm8toJhyxoU88krrXCkmTqo5qUWXt
+         WrzRyknL4YW4aWMNezRlXxj9a1J2PDQSSa9DMJ6Pfkeh+n7Lu8O08iWCSBwP+4RaWcgq
+         VZ0bdf7zneoe19z/WafMac8zE24ZmgCL/vhBQmHo6A8HzaUaLMX3JhMQmklrk2JeY102
+         dw/Nr7u3heunmXcxu0yfuE9dFx63isrqLm3wdkcTZ0B3O1q+ZSPjMLkA9NJabOcYZRAE
+         6KRSAClakDjyDBqsh0xyf7shC/Dj8R7zUx5M+8PEDs0L44MLEvM/qVjNuBuH+Wmv7u0g
+         Nu2g==
+X-Gm-Message-State: AOJu0Yy1sxLsUR+w2axFz6POj6mwHpkFOpRHfhwZhzwQZr7GFJbGXETg
+        ksCqH+VvgjbPoXeoBgUZsuKjB8nuscB62fAVvDk=
+X-Google-Smtp-Source: AGHT+IHd3iGA+S6h7idqLQFgIhpzyOe+6zpzJzX/HU8N51aG9BgMtIAL+x/X63hH5W9MqLbXvCYh9w==
+X-Received: by 2002:a17:90b:8d6:b0:274:8330:c7da with SMTP id ds22-20020a17090b08d600b002748330c7damr4668286pjb.28.1695270206272;
+        Wed, 20 Sep 2023 21:23:26 -0700 (PDT)
+Received: from [192.168.8.100] ([203.144.88.35])
+        by smtp.googlemail.com with ESMTPSA id t19-20020a17090b019300b00274922d4b38sm350263pjs.27.2023.09.20.21.23.20
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Wed, 20 Sep 2023 21:23:25 -0700 (PDT)
+Message-ID: <650bc53d.170a0220.49bf.1d24@mx.google.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Financing Project Proposal
+To:     Recipients <hrperycapdonotreply@gmail.com>
+From:   "Ronald Scott" <hrperycapdonotreply@gmail.com>
+Date:   Thu, 21 Sep 2023 11:23:13 +0700
+Reply-To: ronscoltt@gmail.com
+X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_50,DEAR_SOMETHING,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the cpu debug devices in a new platform driver, which can
-then be used on ACPI based platforms. This change would now allow runtime
-power management for ACPI based systems. The driver would try to enable
-the APB clock if available.
+Dear Sir,
 
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/acpi/arm64/amba.c                     |   1 -
- .../hwtracing/coresight/coresight-cpu-debug.c | 130 ++++++++++++++++--
- 2 files changed, 117 insertions(+), 14 deletions(-)
+Greetings.
 
-diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index ebc866518057..b591c7a650aa 100644
---- a/drivers/acpi/arm64/amba.c
-+++ b/drivers/acpi/arm64/amba.c
-@@ -22,7 +22,6 @@
- static const struct acpi_device_id amba_id_list[] = {
- 	{"ARMH0061", 0}, /* PL061 GPIO Device */
- 	{"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
--	{"ARMHC503", 0}, /* ARM CoreSight Debug */
- 	{"", 0},
- };
- 
-diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-index 1874df7c6a73..77a42a7d5d7c 100644
---- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-+++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-@@ -23,6 +23,8 @@
- #include <linux/smp.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
-+#include <linux/platform_device.h>
-+#include <linux/acpi.h>
- 
- #include "coresight-priv.h"
- 
-@@ -84,6 +86,7 @@
- #define DEBUG_WAIT_TIMEOUT		32000
- 
- struct debug_drvdata {
-+	struct clk	*pclk;
- 	void __iomem	*base;
- 	struct device	*dev;
- 	int		cpu;
-@@ -557,18 +560,12 @@ static void debug_func_exit(void)
- 	debugfs_remove_recursive(debug_debugfs_dir);
- }
- 
--static int debug_probe(struct amba_device *adev, const struct amba_id *id)
-+static int __debug_probe(struct device *dev, struct resource *res)
- {
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
- 	void __iomem *base;
--	struct device *dev = &adev->dev;
--	struct debug_drvdata *drvdata;
--	struct resource *res = &adev->res;
- 	int ret;
- 
--	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
--	if (!drvdata)
--		return -ENOMEM;
--
- 	drvdata->cpu = coresight_get_cpu(dev);
- 	if (drvdata->cpu < 0)
- 		return drvdata->cpu;
-@@ -579,8 +576,7 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
- 		return -EBUSY;
- 	}
- 
--	drvdata->dev = &adev->dev;
--	amba_set_drvdata(adev, drvdata);
-+	drvdata->dev = dev;
- 
- 	/* Validity for the resource is already checked by the AMBA core */
- 	base = devm_ioremap_resource(dev, res);
-@@ -629,10 +625,21 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
- 	return ret;
- }
- 
--static void debug_remove(struct amba_device *adev)
-+static int debug_probe(struct amba_device *adev, const struct amba_id *id)
- {
--	struct device *dev = &adev->dev;
--	struct debug_drvdata *drvdata = amba_get_drvdata(adev);
-+	struct debug_drvdata *drvdata;
-+
-+	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	amba_set_drvdata(adev, drvdata);
-+	return __debug_probe(&adev->dev, &adev->res);
-+}
-+
-+static void __debug_remove(struct device *dev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
- 
- 	per_cpu(debug_drvdata, drvdata->cpu) = NULL;
- 
-@@ -646,6 +653,11 @@ static void debug_remove(struct amba_device *adev)
- 		debug_func_exit();
- }
- 
-+static void debug_remove(struct amba_device *adev)
-+{
-+	__debug_remove(&adev->dev);
-+}
-+
- static const struct amba_cs_uci_id uci_id_debug[] = {
- 	{
- 		/*  CPU Debug UCI data */
-@@ -679,6 +691,98 @@ static struct amba_driver debug_driver = {
- 
- module_amba_driver(debug_driver);
- 
-+static int debug_platform_probe(struct platform_device *pdev)
-+{
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	struct debug_drvdata *drvdata;
-+	int ret = 0;
-+
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
-+	if (IS_ERR(drvdata->pclk))
-+		return -ENODEV;
-+
-+	if (res) {
-+		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
-+		if (IS_ERR(drvdata->base)) {
-+			clk_put(drvdata->pclk);
-+			return PTR_ERR(drvdata->base);
-+		}
-+	}
-+
-+	dev_set_drvdata(&pdev->dev, drvdata);
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
-+	ret = __debug_probe(&pdev->dev, res);
-+	if (ret) {
-+		pm_runtime_put_noidle(&pdev->dev);
-+		pm_runtime_disable(&pdev->dev);
-+	}
-+	return ret;
-+}
-+
-+static int debug_platform_remove(struct platform_device *pdev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
-+
-+	if (drvdata)
-+		__debug_remove(&pdev->dev);
-+
-+	pm_runtime_disable(&pdev->dev);
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_put(drvdata->pclk);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id debug_platform_ids[] = {
-+	{"ARMHC503", 0}, /* ARM CoreSight Debug */
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, debug_platform_ids);
-+#endif
-+
-+#ifdef CONFIG_PM
-+static int debug_runtime_suspend(struct device *dev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
-+
-+	if (drvdata->pclk && !IS_ERR(drvdata->pclk))
-+		clk_disable_unprepare(drvdata->pclk);
-+	return 0;
-+}
-+
-+static int debug_runtime_resume(struct device *dev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
-+
-+	if (drvdata->pclk && !IS_ERR(drvdata->pclk))
-+		clk_prepare_enable(drvdata->pclk);
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops debug_dev_pm_ops = {
-+	SET_RUNTIME_PM_OPS(debug_runtime_suspend, debug_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver debug_platform_driver = {
-+	.probe	= debug_platform_probe,
-+	.remove	= debug_platform_remove,
-+	.driver	= {
-+		.name			= "coresight-debug-platform",
-+		.acpi_match_table	= ACPI_PTR(debug_platform_ids),
-+		.suppress_bind_attrs	= true,
-+		.pm			= &debug_dev_pm_ops,
-+	},
-+};
-+module_platform_driver(debug_platform_driver);
-+
- MODULE_AUTHOR("Leo Yan <leo.yan@linaro.org>");
- MODULE_DESCRIPTION("ARM Coresight CPU Debug Driver");
- MODULE_LICENSE("GPL");
--- 
-2.25.1
+My name is Ronald Scott, I'm a broker and Financial Facilitator.We are an i=
+nternational financial giant with an A+ credit rating, A series of conclude=
+d businesses and strong partnerships achieved by years of continuous dilige=
+nce, trust and uninterrupted attention to our clients.
 
+Because of the prevailing economic situation affecting companies world over=
+,our investors are seeking new business opportunities and projects for poss=
+ible funding and capital financing. We are open to further discussions.
+
+It will be nice to meet your acquaintance. We seek to know the possibility =
+of going into partnership discussion with your company within your present =
+scope of business. We would be happy to do so in whatever medium you find m=
+uch more appropriate for this engagement.
+
+If you wish to act as an agent or you have anyone who might be interested, =
+we are willing to compensate you  with a reasonable commission.
+
+Once I hear from you, we will set up formal channels of communications and =
+possible meeting.
+
+I look forward to working with you.
+
+Regards,
+Ronald Scott.
