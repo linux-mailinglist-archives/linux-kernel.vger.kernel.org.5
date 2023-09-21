@@ -2,139 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073317A9D33
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6517A993B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjIUT3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
+        id S230252AbjIUSLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjIUT3K (ORCPT
+        with ESMTP id S229947AbjIUSLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:29:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EECA9E7;
-        Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A636EC116D7;
-        Thu, 21 Sep 2023 08:52:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695286328;
-        bh=SBD9ZzEicd22ZDdkZ70qDAja5Op34wmz8fwnbFCDoPw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mjYj8FDDXuN2U5Mf1F2HHeaNdS4oKHVT6ICoyBQiXFpyhdXpn6eY2PcewMf1EnIXn
-         3VFwNdTQa97TsGvLsMM9F98Bmhgfy7ySgyJwpQYGGrd/8vwFY5rnQ7kVj9bI1esag0
-         BPnZgsSOX34n/33Uq/bk7QHf5LXLHBGhiGMirfPth7XNf6+VCnUfVyT6B0og9+b/XI
-         PHAbVrkIk1IqIhRPx5v79iYkbOQN6PBkxOfY5ORVfwgD9i3bd/o18+VpAaEt1o5v+4
-         AVP6806Ei5gD184AnQEkElKbONar700d2uIve8zeAn3AbrcZogBCxzvKDdVt4ovNiM
-         rzJc7gy8/TMfg==
-Date:   Thu, 21 Sep 2023 09:52:01 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Inochi Amaoto <inochiama@outlook.com>
-Cc:     Anup Patel <apatel@ventanamicro.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        evicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
-Subject: Re: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
-Message-ID: <20230921-dbfb0a62538cc54852ad45b4@fedora>
-References: <20230921-d7bab3f036e498a23eb6b578@fedora>
- <PH7PR20MB4962478C50534722C16B17DDBBF8A@PH7PR20MB4962.namprd20.prod.outlook.com>
+        Thu, 21 Sep 2023 14:11:15 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7713573D5;
+        Thu, 21 Sep 2023 10:18:34 -0700 (PDT)
+Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
+        by SHSQR01.spreadtrum.com with ESMTP id 38L8vFBT047648;
+        Thu, 21 Sep 2023 16:57:15 +0800 (+08)
+        (envelope-from Huangzheng.Lai@unisoc.com)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 38L8tVw8040607;
+        Thu, 21 Sep 2023 16:55:31 +0800 (+08)
+        (envelope-from Huangzheng.Lai@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Rrq0B6YBSz2SZtbS;
+        Thu, 21 Sep 2023 16:52:10 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
+ (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 21 Sep
+ 2023 16:55:29 +0800
+From:   Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+CC:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: [PATCH V2 3/7] i2c: sprd: Use global variables to record I2C ack/nack status instead of local variables
+Date:   Thu, 21 Sep 2023 16:54:53 +0800
+Message-ID: <20230921085457.32446-4-Huangzheng.Lai@unisoc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230921085457.32446-1-Huangzheng.Lai@unisoc.com>
+References: <20230921085457.32446-1-Huangzheng.Lai@unisoc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3QkateNXglw3SC16"
-Content-Disposition: inline
-In-Reply-To: <PH7PR20MB4962478C50534722C16B17DDBBF8A@PH7PR20MB4962.namprd20.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx04.spreadtrum.com (10.0.1.214)
+X-MAIL: SHSQR01.spreadtrum.com 38L8tVw8040607
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We found that when the interrupt bit of the I2C controller is cleared,
+the ack/nack bit is also cleared at the same time. After clearing the
+interrupt bit in sprd_i2c_isr(), incorrect ack/nack information will be
+obtained in sprd_i2c_isr_thread(), resulting in incorrect communication
+when nack cannot be recognized. To solve this problem, we used a global
+variable to record ack/nack information before clearing the interrupt
+bit instead of a local variable.
 
---3QkateNXglw3SC16
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
+Cc: <stable@vger.kernel.org> # v4.14+
+Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+---
+ drivers/i2c/busses/i2c-sprd.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Yo,
+diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
+index aa602958d4fd..dec627ef408c 100644
+--- a/drivers/i2c/busses/i2c-sprd.c
++++ b/drivers/i2c/busses/i2c-sprd.c
+@@ -85,6 +85,7 @@ struct sprd_i2c {
+ 	struct clk *clk;
+ 	u32 src_clk;
+ 	u32 bus_freq;
++	bool ack_flag;
+ 	struct completion complete;
+ 	struct reset_control *rst;
+ 	u8 *buf;
+@@ -119,6 +120,7 @@ static void sprd_i2c_clear_ack(struct sprd_i2c *i2c_dev)
+ {
+ 	u32 tmp = readl(i2c_dev->base + I2C_STATUS);
+ 
++	i2c_dev->ack_flag = 0;
+ 	writel(tmp & ~I2C_RX_ACK, i2c_dev->base + I2C_STATUS);
+ }
+ 
+@@ -393,7 +395,6 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
+ {
+ 	struct sprd_i2c *i2c_dev = dev_id;
+ 	struct i2c_msg *msg = i2c_dev->msg;
+-	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
+ 	u32 i2c_tran;
+ 
+ 	if (msg->flags & I2C_M_RD)
+@@ -409,7 +410,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
+ 	 * For reading data, ack is always true, if i2c_tran is not 0 which
+ 	 * means we still need to contine to read data from slave.
+ 	 */
+-	if (i2c_tran && ack) {
++	if (i2c_tran && i2c_dev->ack_flag) {
+ 		sprd_i2c_data_transfer(i2c_dev);
+ 		return IRQ_HANDLED;
+ 	}
+@@ -420,7 +421,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
+ 	 * If we did not get one ACK from slave when writing data, we should
+ 	 * return -EIO to notify users.
+ 	 */
+-	if (!ack)
++	if (!i2c_dev->ack_flag)
+ 		i2c_dev->err = -EIO;
+ 	else if (msg->flags & I2C_M_RD && i2c_dev->count)
+ 		sprd_i2c_read_bytes(i2c_dev, i2c_dev->buf, i2c_dev->count);
+@@ -437,7 +438,6 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
+ {
+ 	struct sprd_i2c *i2c_dev = dev_id;
+ 	struct i2c_msg *msg = i2c_dev->msg;
+-	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
+ 	u32 i2c_tran;
+ 
+ 	if (msg->flags & I2C_M_RD)
+@@ -456,7 +456,8 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
+ 	 * means we can read all data in one time, then we can finish this
+ 	 * transmission too.
+ 	 */
+-	if (!i2c_tran || !ack) {
++	i2c_dev->ack_flag = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
++	if (!i2c_tran || !i2c_dev->ack_flag) {
+ 		sprd_i2c_clear_start(i2c_dev);
+ 		sprd_i2c_clear_irq(i2c_dev);
+ 	}
+-- 
+2.17.1
 
-On Thu, Sep 21, 2023 at 04:18:57PM +0800, Inochi Amaoto wrote:
-> >On Thu, Sep 21, 2023 at 08:43:47AM +0800, Inochi Amaoto wrote:
-
-> >>>>>> but not one. In another word, there is no need to defined mtimer a=
-nd ipi
-> >>>>>> device on the same base address.
-> >>>>>
-> >>>>> There's also no need to have two compatibles for the same interrupt
-> >>>>> controller, so I do not get this reasoning. What actually _requires_
-> >>>>> them to be split?
-> >>>>>
-> >>>>
-> >>>> Yes, it is one, but can be mapped into different address. So I think=
- we
-> >>>> need two.
-> >>>
-> >>> Not two compatibles though, just two memory addresses that you need to
-> >>> locate (or maybe even 3, for SSWI?)
-> >>>
-> >>
-> >> We may need four (mtime, mtimecmp, mswi, sswi) if use register range.
-> >
-> >Why would you need 4? The first two certainly could be individual
-> >reg entries, no?
-> >
->=20
-> After reading the aclint doc again, I found the all of them can be mapped
-> on the different address. (See the section 2.1 in that doc).
-
-Right, that's what I meant by individual reg entries. If there's some
-dynamic gap between them, then one reg entry would cover mtime and one
-would cover the base of the mtimecmp region.
-
-> But for now,
-> the mtime and mtimecmp have the same base address in any platform.
-
-How? The mtimecmp base address would have to be offset from the mtime
-base address. Is what you mean that, for example, mtime is at an offset
-of 0x0 from the base address & mtimecmp0 is at, for example, an offset
-of 0x8 so a single reg entry can cover both?
-
-Also, "any platform"? I figure you mean in this one specific platform?
-
-> Anyway,
-> the frozen spec in future will decided how many ranges we need.
-
-Isn't the spec abandoned? There may well be no frozen spec.
-
-> >> Anyway, I will use a vendor spec implementation as a temporary solutio=
-n.
-> >> I hope this will be corrected in a predictable future, and we can use a
-> >> standard way to resolve this at that time. :)
-> >
-> >If the spec doesn't get frozen, there'll not be a standard way merged.
-> >Hopefully not too many others go off an implement non-frozen specs, and
-> >we will not really need to worry all that much about it.
-
-Cheers,
-Conor.
-
---3QkateNXglw3SC16
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQwELgAKCRB4tDGHoIJi
-0mFBAQDD7fMHX5wOXYvk1hooV2cLDyyw+SAUv7OJKgltZw/Y1AEAlXgGk+Kx3Gm4
-Kh/W9kwPQFTcI0GL2em5xAh5VCoPSw4=
-=tkZX
------END PGP SIGNATURE-----
-
---3QkateNXglw3SC16--
