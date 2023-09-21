@@ -2,152 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A5B7AA45C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E447AA4D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbjIUWG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
+        id S233245AbjIUWVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbjIUWGi (ORCPT
+        with ESMTP id S233218AbjIUWVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:06:38 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51FED85D07;
-        Thu, 21 Sep 2023 10:37:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F07FB175D;
-        Thu, 21 Sep 2023 09:21:23 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84F093F59C;
-        Thu, 21 Sep 2023 09:20:42 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: [PATCH v1 5/8] sparc: hugetlb: Convert set_huge_pte_at() to take vma
-Date:   Thu, 21 Sep 2023 17:20:04 +0100
-Message-Id: <20230921162007.1630149-6-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921162007.1630149-1-ryan.roberts@arm.com>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
+        Thu, 21 Sep 2023 18:21:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E5E83D1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695315919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Et32g+8HvIOExJc33zMYGqC3XM2pU+ZYA6hMXlIOOlQ=;
+        b=gna9JrLFxeKp0iJIoO2EEGOCOui5FRd0xWufxtnJPih9V1or2PwcABAJWm0OhzpoKTzfjd
+        VhA+Eu9nQibGSoWTufUBV+qNhB/M1SJoI1RA4na6iIBzKa7lrNBm1AdlpxRbxVFr3P5vfI
+        v5FT1yKy+e+VZFEIeNnvCKBldGiHUOU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-531-fByegjCiOkGqxo3_WUOLtQ-1; Thu, 21 Sep 2023 12:26:34 -0400
+X-MC-Unique: fByegjCiOkGqxo3_WUOLtQ-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5218b9647a8so795246a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:26:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695313592; x=1695918392;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Et32g+8HvIOExJc33zMYGqC3XM2pU+ZYA6hMXlIOOlQ=;
+        b=nvdhPsrNbo4hgCC0TQI7bNhw1i+VKFOSMYuYKBRC3vHpBV1zG7ZmiRXBVhMoh331ED
+         LiVUQthrxSIrfa338ilJP7MGytIFoUX3oEvdnPgEnK638L+croZb4usbgCBdV9HCAyny
+         t2B8ZRBdANYI3fwgTbaCaD48ENz+GKws9uEX6z6CayZYM2W1HghxF6sXufLv5K8hPh8w
+         C+VlS/LTfOjEWyedhMbvG5QYi4c5I0nMTuVDe+8Ey7YZHGeiuhDblkoyJT1dvrqSUzF+
+         ndMyOmkYSzWSqUoXYBl1N87pyek1EEAvjvHinZFWXYL/uN0lNXOaPgzX9WD6iMZ0/4+X
+         SjqA==
+X-Gm-Message-State: AOJu0YwSsJjz0v2xoBXOmIDJABxPjmqqDNI5R7OGJ7Td+4UWgOpIYcDu
+        +CLK3axNL2EI+FJgt/B3ygHi8TT9AA789vkqADDo4zR7r3SVCBfPHqRdum/G2KCMK0NuJxpTGz6
+        eM8vEb+RFwrpXxmYCiVPf7JKmI0E0J9C7
+X-Received: by 2002:a17:906:20ce:b0:9ae:505d:310b with SMTP id c14-20020a17090620ce00b009ae505d310bmr4361724ejc.39.1695313592345;
+        Thu, 21 Sep 2023 09:26:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF0rucEDMA1Te6aRXpJF3deJOppkRTntaQLrHgtjyHI97WRXh4Z6ohjO6Q3PTrrVbX1xQaGlg==
+X-Received: by 2002:a17:906:20ce:b0:9ae:505d:310b with SMTP id c14-20020a17090620ce00b009ae505d310bmr4361708ejc.39.1695313592044;
+        Thu, 21 Sep 2023 09:26:32 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id rh27-20020a17090720fb00b009930c80b87csm1301892ejb.142.2023.09.21.09.26.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 09:26:31 -0700 (PDT)
+Message-ID: <5ffaf4a2-4359-065a-240a-fcfde68c6180@redhat.com>
+Date:   Thu, 21 Sep 2023 18:26:30 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] platform-drivers-x86 for 6.6-3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Content-Language: en-US, nl
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to fix a bug, arm64 needs access to the vma inside it's
-implementation of set_huge_pte_at(). Provide for this by converting the
-mm parameter to be a vma. Any implementations that require the mm can
-access it via vma->vm_mm.
+Hi Linus,
 
-This commit makes the required sparc modifications. Separate commits
-update the other arches and core code, before the actual bug is fixed in
-arm64.
+Here is the second round of fixes for platform-drivers-x86 for 6.6.
 
-No behavioral changes intended.
+The most noteworthy change in here is the addition of Ilpo Järvinen
+as co-maintainer of platform-drivers-x86. Ilpo will be helping me
+with platform-drivers-x86 maintenance going forward and you can
+expect platform-drivers-x86 pull-requests from Ilpo in the future.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- arch/sparc/include/asm/hugetlb.h | 8 +++++---
- arch/sparc/mm/hugetlbpage.c      | 8 +++++++-
- 2 files changed, 12 insertions(+), 4 deletions(-)
+Other then that there is a set of Intel SCU IPC fixes and
+a thinkpad_acpi locking fix.
 
-diff --git a/arch/sparc/include/asm/hugetlb.h b/arch/sparc/include/asm/hugetlb.h
-index 0a26cca24232..14a71b735bb8 100644
---- a/arch/sparc/include/asm/hugetlb.h
-+++ b/arch/sparc/include/asm/hugetlb.h
-@@ -13,7 +13,9 @@ extern struct pud_huge_patch_entry __pud_huge_patch, __pud_huge_patch_end;
- #endif
- 
- #define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
--void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-+void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
-+		     pte_t *ptep, pte_t pte);
-+void __set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
- 		     pte_t *ptep, pte_t pte);
- 
- #define __HAVE_ARCH_HUGE_PTEP_GET_AND_CLEAR
-@@ -32,7 +34,7 @@ static inline void huge_ptep_set_wrprotect(struct mm_struct *mm,
- 					   unsigned long addr, pte_t *ptep)
- {
- 	pte_t old_pte = *ptep;
--	set_huge_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
-+	__set_huge_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
- }
- 
- #define __HAVE_ARCH_HUGE_PTEP_SET_ACCESS_FLAGS
-@@ -42,7 +44,7 @@ static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- {
- 	int changed = !pte_same(*ptep, pte);
- 	if (changed) {
--		set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
-+		__set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
- 		flush_tlb_page(vma, addr);
- 	}
- 	return changed;
-diff --git a/arch/sparc/mm/hugetlbpage.c b/arch/sparc/mm/hugetlbpage.c
-index d7018823206c..05267b72103f 100644
---- a/arch/sparc/mm/hugetlbpage.c
-+++ b/arch/sparc/mm/hugetlbpage.c
-@@ -328,7 +328,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
- 	return pte_offset_huge(pmd, addr);
- }
- 
--void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-+void __set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
- 		     pte_t *ptep, pte_t entry)
- {
- 	unsigned int nptes, orig_shift, shift;
-@@ -364,6 +364,12 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
- 				    orig_shift);
- }
- 
-+void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
-+		     pte_t *ptep, pte_t entry)
-+{
-+	__set_huge_pte_at(vma->vm_mm, addr, ptep, entry);
-+}
-+
- pte_t huge_ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
- 			      pte_t *ptep)
- {
--- 
-2.25.1
+Regards,
+
+Hans
+
+
+The following changes since commit 4106a70ddad57ee6d8f98b81d6f036740c72762b:
+
+  platform/x86: asus-wmi: Support 2023 ROG X16 tablet mode (2023-09-11 13:26:13 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.6-3
+
+for you to fetch changes up to bc3b6f59463ba9f4367a80331213db491766b5a1:
+
+  MAINTAINERS: Add x86 platform drivers patchwork (2023-09-21 18:03:03 +0200)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v6.6-3
+
+Highlights:
+ -  Add Ilpo Järvinen as platform-drivers-x86 co-maintainer
+ -  Set of Intel SCU IPC fixes
+ -  thinkpad_acpi locking fix
+
+The following is an automated git shortlog grouped by driver:
+
+MAINTAINERS:
+ -  Add x86 platform drivers patchwork
+ -  Add myself into x86 platform driver maintainers
+
+intel_scu_ipc:
+ -  Fail IPC send if still busy
+ -  Don't override scu in intel_scu_ipc_dev_simple_command()
+ -  Check status upon timeout in ipc_wait_for_interrupt()
+ -  Check status after timeout in busy_loop()
+
+thinkpad_acpi:
+ -  Take mutex in hotkey_resume
+
+----------------------------------------------------------------
+Dennis Bonke (1):
+      platform/x86: thinkpad_acpi: Take mutex in hotkey_resume
+
+Ilpo Järvinen (2):
+      MAINTAINERS: Add myself into x86 platform driver maintainers
+      MAINTAINERS: Add x86 platform drivers patchwork
+
+Stephen Boyd (4):
+      platform/x86: intel_scu_ipc: Check status after timeout in busy_loop()
+      platform/x86: intel_scu_ipc: Check status upon timeout in ipc_wait_for_interrupt()
+      platform/x86: intel_scu_ipc: Don't override scu in intel_scu_ipc_dev_simple_command()
+      platform/x86: intel_scu_ipc: Fail IPC send if still busy
+
+ MAINTAINERS                          |  4 +++
+ drivers/platform/x86/intel_scu_ipc.c | 66 ++++++++++++++++++++++--------------
+ drivers/platform/x86/thinkpad_acpi.c |  2 ++
+ 3 files changed, 46 insertions(+), 26 deletions(-)
 
