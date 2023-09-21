@@ -2,150 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D725F7AA140
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5CE7AA1CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbjIUU76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
+        id S232591AbjIUVGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbjIUU7Z (ORCPT
+        with ESMTP id S233067AbjIUVFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:59:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54617B05A8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695319716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=R9gyNPaV4zuqNuZuo/vx9UBWKean5gdHBlkkwmtG0SQ=;
-        b=XOT1ZkquHLDF5KYxecldIkAlvz1YAy9XUOfXoxfhBbLGEdCHnCqL6d0ANRy24G6Iz695TE
-        y2EdXZsBVzp4Y5PQLRAB8P6iZyEcBQ1dsT9h2GrpBXxjgS1UomGJgdYDVxT+2ErLeoQuuV
-        b5CT83oWz75Gxo23TbMyR8WycKrz0jU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-515-0ruNuvMkOS6GtcLt8Ah2FA-1; Thu, 21 Sep 2023 06:41:22 -0400
-X-MC-Unique: 0ruNuvMkOS6GtcLt8Ah2FA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BBA57101A529;
-        Thu, 21 Sep 2023 10:41:21 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A0D751E3;
-        Thu, 21 Sep 2023 10:41:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-cc:     dhowells@redhat.com,
-        syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH net v3] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+        Thu, 21 Sep 2023 17:05:22 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D86EE4E5ED;
+        Thu, 21 Sep 2023 10:17:21 -0700 (PDT)
+Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8EBC7212C5B4;
+        Thu, 21 Sep 2023 03:43:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8EBC7212C5B4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695292989;
+        bh=SOX5o5oyS7LBbpizIPBbrtijPHb6zgqQsGJ5vxNHoRg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=KS6RUS3maeHbxTGmUE9NWlj60qEleuPTBYYk8JsyzO4q+sPwdZ//gABDcp7SHFTee
+         /HMZ15pczaXyx4Wt3T0Vx2enaJFbBL2dpK8qSyfX4WFsQwsfwfJ2CFSZWIx4ULFx8X
+         +p5xFjwwMSC9rbg7dOFDrm3Lzd9qo9uGqLViDvxg=
+Message-ID: <f01b5d93-0f43-41c8-b3d8-40ef9696dcf8@linux.microsoft.com>
+Date:   Thu, 21 Sep 2023 12:43:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <730407.1695292879.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 21 Sep 2023 11:41:19 +0100
-Message-ID: <730408.1695292879@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
+ kmem.limit_in_bytes
+To:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+References: <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
+ <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
+ <ZQrSXh+riB7NnZuE@dhcp22.suse.cz>
+ <4eb47d6a-b127-4aad-af30-896c3b9505b4@linux.microsoft.com>
+ <ZQr3+YfcBM2Er6F7@dhcp22.suse.cz>
+ <CALvZod7E_Jm9y+40OKtLs5EFA0ptKGjoe2BU58SY29pUiPc93g@mail.gmail.com>
+ <ZQskGGAwlsr1YxAp@dhcp22.suse.cz>
+ <CALvZod6b3=+=xXEUeWOQW3t_URJpeeVX46WjBHv5BS+436KoFA@mail.gmail.com>
+ <ZQtRKzUOfdaVKRCF@dhcp22.suse.cz>
+ <CALvZod5DSMoEGY0CwGz=P-2=Opbr4SmMfwHhZRROBx7yCaBdDA@mail.gmail.com>
+ <ZQv2MXOynlEPW/bX@dhcp22.suse.cz>
+Content-Language: en-US
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <ZQv2MXOynlEPW/bX@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    =
+On 9/21/2023 9:52 AM, Michal Hocko wrote:
+> On Wed 20-09-23 14:46:52, Shakeel Butt wrote:
+>> On Wed, Sep 20, 2023 at 1:08 PM Michal Hocko <mhocko@suse.com> wrote:
+>>>
+>> [...]
+>>>> have a strong opinion against it. Also just to be clear we are not
+>>>> talking about full revert of 58056f77502f but just the returning of
+>>>> EOPNOTSUPP, right?
+>>>
+>>> If we allow the limit to be set without returning a failure then we
+>>> still have options 2 and 3 on how to deal with that. One of them is to
+>>> enforce the limit.
+>>>
+>>
+>> Option 3 is a partial revert of 58056f77502f where we keep the no
+>> limit enforcement and remove the EOPNOTSUPP return on write. Let's go
+>> with option 3. In addition, let's add pr_warn_once on the read of
+>> kmem.limit_in_bytes as well.
+> 
+> How about this?
+> --- 
 
-Including the transhdrlen in length is a problem when the packet is
-partially filled (e.g. something like send(MSG_MORE) happened previously)
-when appending to an IPv4 or IPv6 packet as we don't want to repeat the
-transport header or account for it twice.  This can happen under some
-circumstances, such as splicing into an L2TP socket.
+I'm OK with this approach. You're missing this in the patch below:
 
-The symptom observed is a warning in __ip6_append_data():
+// static struct cftype mem_cgroup_legacy_files[] = {
 
-    WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_d=
-ata.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
++       {
++               .name = "kmem.limit_in_bytes",
++               .private = MEMFILE_PRIVATE(_KMEM, RES_LIMIT),
++               .write = mem_cgroup_write,
++               .read_u64 = mem_cgroup_read_u64,
++       },
 
-that occurs when MSG_SPLICE_PAGES is used to append more data to an alread=
-y
-partially occupied skbuff.  The warning occurs when 'copy' is larger than
-the amount of data in the message iterator.  This is because the requested
-length includes the transport header length when it shouldn't.  This can b=
-e
-triggered by, for example:
 
-        sfd =3D socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
-        bind(sfd, ...); // ::1
-        connect(sfd, ...); // ::1 port 7
-        send(sfd, buffer, 4100, MSG_MORE);
-        sendfile(sfd, dfd, NULL, 1024);
+Thanks,
+Jeremi
 
-Fix this by only adding transhdrlen into the length if the write queue is
-empty in l2tp_ip6_sendmsg(), analogously to how UDP does things.
-
-l2tp_ip_sendmsg() looks like it won't suffer from this problem as it build=
-s
-the UDP packet itself.
-
-Fixes: a32e0eec7042 ("l2tp: introduce L2TPv3 IP encapsulation support for =
-IPv6")
-Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com/
-Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: David Ahern <dsahern@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: netdev@vger.kernel.org
-cc: bpf@vger.kernel.org
-cc: syzkaller-bugs@googlegroups.com
----
- net/l2tp/l2tp_ip6.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/l2tp/l2tp_ip6.c b/net/l2tp/l2tp_ip6.c
-index ed8ebb6f5909..11f3d375cec0 100644
---- a/net/l2tp/l2tp_ip6.c
-+++ b/net/l2tp/l2tp_ip6.c
-@@ -507,7 +507,6 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct ms=
-ghdr *msg, size_t len)
- 	 */
- 	if (len > INT_MAX - transhdrlen)
- 		return -EMSGSIZE;
--	ulen =3D len + transhdrlen;
- =
-
- 	/* Mirror BSD error message compatibility */
- 	if (msg->msg_flags & MSG_OOB)
-@@ -628,6 +627,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct ms=
-ghdr *msg, size_t len)
- =
-
- back_from_confirm:
- 	lock_sock(sk);
-+	ulen =3D len + skb_queue_empty(&sk->sk_write_queue) ? transhdrlen : 0;
- 	err =3D ip6_append_data(sk, ip_generic_getfrag, msg,
- 			      ulen, transhdrlen, &ipc6,
- 			      &fl6, (struct rt6_info *)dst,
+>>From 81ae0797d8da1b9cfbf357b4be4787a5bbf46bb4 Mon Sep 17 00:00:00 2001
+> From: Michal Hocko <mhocko@suse.com>
+> Date: Thu, 21 Sep 2023 09:38:29 +0200
+> Subject: [PATCH] mm, memcg: reconsider kmem.limit_in_bytes deprecation
+> 
+> This reverts commits 86327e8eb94c ("memcg: drop kmem.limit_in_bytes")
+> and partially reverts 58056f77502f ("memcg, kmem: further deprecate
+> kmem.limit_in_bytes") which have incrementally removed support for the
+> kernel memory accounting hard limit. Unfortunately it has turned out
+> that there is still userspace depending on the existence of
+> memory.kmem.limit_in_bytes [1]. The underlying functionality is not
+> really required but the non-existent file just confuses the userspace
+> which fails in the result. The patch to fix this on the userspace side
+> has been submitted but it is hard to predict how it will propagate
+> through the maze of 3rd party consumers of the software.
+> 
+> Now, reverting alone 86327e8eb94c is not an option because there is
+> another set of userspace which cannot cope with ENOTSUPP returned when
+> writing to the file. Therefore we have to go and revisit 58056f77502f
+> as well. There are two ways to go ahead. Either we give up on the
+> deprecation and fully revert 58056f77502f as well or we can keep
+> kmem.limit_in_bytes but make the write a noop and warn about the fact.
+> This should work for both known breaking workloads which depend on the
+> existence but do not depend on the hard limit enforcement.
+> 
+> [1] http://lkml.kernel.org/r/20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net
+> Fixes: 86327e8eb94c ("memcg: drop kmem.limit_in_bytes")
+> Fixes: 58056f77502f ("memcg, kmem: further deprecate kmem.limit_in_bytes")
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> ---
+>  Documentation/admin-guide/cgroup-v1/memory.rst |  7 +++++++
+>  mm/memcontrol.c                                | 12 ++++++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+> index 5f502bf68fbc..ff456871bf4b 100644
+> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+> @@ -92,6 +92,13 @@ Brief summary of control files.
+>   memory.oom_control		     set/show oom controls.
+>   memory.numa_stat		     show the number of memory usage per numa
+>  				     node
+> + memory.kmem.limit_in_bytes          Deprecated knob to set and read the kernel
+> +                                     memory hard limit. Kernel hard limit is not
+> +                                     supported since 5.16. Writing any value to
+> +                                     do file will not have any effect same as if
+> +                                     nokmem kernel parameter was specified.
+> +                                     Kernel memory is still charged and reported
+> +                                     by memory.kmem.usage_in_bytes.
+>   memory.kmem.usage_in_bytes          show current kernel memory allocation
+>   memory.kmem.failcnt                 show the number of kernel memory usage
+>  				     hits limits
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index a4d3282493b6..ac7f14b2338d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3097,6 +3097,7 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+>  static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+>  				   unsigned int nr_pages)
+>  {
+> +	struct page_counter *counter;
+>  	struct mem_cgroup *memcg;
+>  	int ret;
+>  
+> @@ -3107,6 +3108,10 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+>  		goto out;
+>  
+>  	memcg_account_kmem(memcg, nr_pages);
+> +
+> +	/* There is no way to set up kmem hard limit so this operation cannot fail */
+> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> +		WARN_ON(!page_counter_try_charge(&memcg->kmem, nr_pages, &counter));
+>  out:
+>  	css_put(&memcg->css);
+>  
+> @@ -3867,6 +3872,13 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
+>  		case _MEMSWAP:
+>  			ret = mem_cgroup_resize_max(memcg, nr_pages, true);
+>  			break;
+> +		case _KMEM:
+> +			pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
+> +				     "Writing any value to this file has no effect. "
+> +				     "Please report your usecase to linux-mm@kvack.org if you "
+> +				     "depend on this functionality.\n");
+> +			ret = 0;
+> +			break;
+>  		case _TCP:
+>  			ret = memcg_update_tcp_max(memcg, nr_pages);
+>  			break;
 
