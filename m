@@ -2,226 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1147A98C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF78B7A9B8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjIURxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
+        id S229521AbjIUTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjIURwm (ORCPT
+        with ESMTP id S230024AbjIUTCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:52:42 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CBB301E7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:24 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c4084803f1so10545ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695317123; x=1695921923; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nEO84+iq6kC3VEaU1+DAhOho9ryfXauqS0h4qPx+tVo=;
-        b=UmgM4a5eO87NvvqT4VbsUD0cVBF7B5KILCjrBj+T+pVfrTpG9Rg47p6TdtG/FmvTtP
-         lmh/zpJ54NrDpw09b64iEmxoDm5ZwAkgb3eI4yKkHGbKZIA50+BUoksudnqUWQkrgEfy
-         Enw2O0EfHEppZeg/y78ZI2SnIBpAJJAxpobZ2XdhAa75qu2F7mqU/JbOYsMz7YM0I14I
-         cUQx+o+5dj7442hvkHKh39JqnGtvxt8sKLbAuoWMVJESGOhBxN1X436pK8LhOLPa68qR
-         +V2f82kuKT/dDxgtQhKmdkFE356gUZkRv+ndek7XB2NvLPlzuW1NlVcTpSAf1Nryj9BC
-         31DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317123; x=1695921923;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nEO84+iq6kC3VEaU1+DAhOho9ryfXauqS0h4qPx+tVo=;
-        b=ZizGc0xS3YaHzNrmWr5ApUnUCPMLQm2fxMoSl4igJzPyJ0Ptc+jjcbppG/ZZmHRq2v
-         kWsW0hrybAu1QWS6hpJcEI9rBADMl7p2/3KZKgVDjNJvGx21zTm2fhYD1j1hX1ECm0gh
-         TQXu22dqpcnWZZe8TcJlBGnflTrOu+nbh64ENoEi06WPNjp+RrbBOEPZDNKH/XNN+8yU
-         e0sTTnrS1TzBrAQjOGBUvbtqdH/aUECSl1blumElxq/dUMfD+h+v3Cy6rpP+8wSSK/I4
-         xnzzRwJaPEvKEOIXWq5T6MDSspioKKpdsH8fwusEFO9UDLRjcpil4i2SU8Es6JyAfuGb
-         /Bcw==
-X-Gm-Message-State: AOJu0Yyl8mkQVaVibVydQaisHO7mpibGeQvJQuebkw57fGdyLqiVWyVg
-        8Z9MHqiersS4iiwoTPqWXDOWdu7QltSNBbItDpR3SyZtfEPfwkm5FwA=
-X-Google-Smtp-Source: AGHT+IH34jeCfkePOj7hpV+ODrentVe9NkKGE3tVIgDkrp39gCm/9T4EqQqhcSsElnfpQxsWsPmXdWmVy7RyHw94dUk=
-X-Received: by 2002:a17:902:e744:b0:1b8:89fd:61ea with SMTP id
- p4-20020a170902e74400b001b889fd61eamr201854plf.1.1695317123272; Thu, 21 Sep
- 2023 10:25:23 -0700 (PDT)
+        Thu, 21 Sep 2023 15:02:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 398848C63D;
+        Thu, 21 Sep 2023 10:42:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0CE1C15;
+        Wed, 20 Sep 2023 20:37:21 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.32.120])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DBFA83F59C;
+        Wed, 20 Sep 2023 20:36:40 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V7 1/3] coresight: etm: Override TRCIDR3.CCITMIN on errata affected cpus
+Date:   Thu, 21 Sep 2023 09:06:29 +0530
+Message-Id: <20230921033631.1298723-2-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230921033631.1298723-1-anshuman.khandual@arm.com>
+References: <20230921033631.1298723-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-References: <ZQrSXh+riB7NnZuE@dhcp22.suse.cz> <4eb47d6a-b127-4aad-af30-896c3b9505b4@linux.microsoft.com>
- <ZQr3+YfcBM2Er6F7@dhcp22.suse.cz> <CALvZod7E_Jm9y+40OKtLs5EFA0ptKGjoe2BU58SY29pUiPc93g@mail.gmail.com>
- <ZQskGGAwlsr1YxAp@dhcp22.suse.cz> <CALvZod6b3=+=xXEUeWOQW3t_URJpeeVX46WjBHv5BS+436KoFA@mail.gmail.com>
- <ZQtRKzUOfdaVKRCF@dhcp22.suse.cz> <CALvZod5DSMoEGY0CwGz=P-2=Opbr4SmMfwHhZRROBx7yCaBdDA@mail.gmail.com>
- <ZQv2MXOynlEPW/bX@dhcp22.suse.cz> <f01b5d93-0f43-41c8-b3d8-40ef9696dcf8@linux.microsoft.com>
- <ZQwnUpX7FlzIOWXP@dhcp22.suse.cz>
-In-Reply-To: <ZQwnUpX7FlzIOWXP@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 21 Sep 2023 10:25:11 -0700
-Message-ID: <CALvZod7fs_K3807N1=-5bmXbA=vhAk+zcF+VHS=T5ycK1eeMfg@mail.gmail.com>
-Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop kmem.limit_in_bytes
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        mathieu.tortuyaux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 4:21=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Thu 21-09-23 12:43:05, Jeremi Piotrowski wrote:
-> > On 9/21/2023 9:52 AM, Michal Hocko wrote:
-> > > On Wed 20-09-23 14:46:52, Shakeel Butt wrote:
-> > >> On Wed, Sep 20, 2023 at 1:08=E2=80=AFPM Michal Hocko <mhocko@suse.co=
-m> wrote:
-> > >>>
-> > >> [...]
-> > >>>> have a strong opinion against it. Also just to be clear we are not
-> > >>>> talking about full revert of 58056f77502f but just the returning o=
-f
-> > >>>> EOPNOTSUPP, right?
-> > >>>
-> > >>> If we allow the limit to be set without returning a failure then we
-> > >>> still have options 2 and 3 on how to deal with that. One of them is=
- to
-> > >>> enforce the limit.
-> > >>>
-> > >>
-> > >> Option 3 is a partial revert of 58056f77502f where we keep the no
-> > >> limit enforcement and remove the EOPNOTSUPP return on write. Let's g=
-o
-> > >> with option 3. In addition, let's add pr_warn_once on the read of
-> > >> kmem.limit_in_bytes as well.
-> > >
-> > > How about this?
-> > > ---
-> >
-> > I'm OK with this approach. You're missing this in the patch below:
-> >
-> > // static struct cftype mem_cgroup_legacy_files[] =3D {
-> >
-> > +       {
-> > +               .name =3D "kmem.limit_in_bytes",
-> > +               .private =3D MEMFILE_PRIVATE(_KMEM, RES_LIMIT),
-> > +               .write =3D mem_cgroup_write,
-> > +               .read_u64 =3D mem_cgroup_read_u64,
-> > +       },
->
-> Of course. I've lost the hunk while massaging the revert. Thanks for
-> spotting. Updated version below. Btw. I've decided to not pr_{warn,info}
-> on the read side because realistically I do not think this will help all
-> that much. I am worried we will get stuck with this for ever because
-> there always be somebody stuck on unpatched userspace.
-> ---
-> From bb6702b698efd31f3f90f4f1dd36ffe223397bec Mon Sep 17 00:00:00 2001
-> From: Michal Hocko <mhocko@suse.com>
-> Date: Thu, 21 Sep 2023 09:38:29 +0200
-> Subject: [PATCH] mm, memcg: reconsider kmem.limit_in_bytes deprecation
->
-> This reverts commits 86327e8eb94c ("memcg: drop kmem.limit_in_bytes")
-> and partially reverts 58056f77502f ("memcg, kmem: further deprecate
-> kmem.limit_in_bytes") which have incrementally removed support for the
-> kernel memory accounting hard limit. Unfortunately it has turned out
-> that there is still userspace depending on the existence of
-> memory.kmem.limit_in_bytes [1]. The underlying functionality is not
-> really required but the non-existent file just confuses the userspace
-> which fails in the result. The patch to fix this on the userspace side
-> has been submitted but it is hard to predict how it will propagate
-> through the maze of 3rd party consumers of the software.
->
-> Now, reverting alone 86327e8eb94c is not an option because there is
-> another set of userspace which cannot cope with ENOTSUPP returned when
-> writing to the file. Therefore we have to go and revisit 58056f77502f
-> as well. There are two ways to go ahead. Either we give up on the
-> deprecation and fully revert 58056f77502f as well or we can keep
-> kmem.limit_in_bytes but make the write a noop and warn about the fact.
-> This should work for both known breaking workloads which depend on the
-> existence but do not depend on the hard limit enforcement.
->
-> [1] http://lkml.kernel.org/r/20230920081101.GA12096@linuxonhyperv3.guj3yc=
-tzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net
-> Fixes: 86327e8eb94c ("memcg: drop kmem.limit_in_bytes")
-> Fixes: 58056f77502f ("memcg, kmem: further deprecate kmem.limit_in_bytes"=
-)
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
+This work arounds errata 1490853 on Cortex-A76, and Neoverse-N1, errata
+1491015 on Cortex-A77, errata 1502854 on Cortex-X1, and errata 1619801 on
+Neoverse-V1, based affected cpus, where software read for TRCIDR3.CCITMIN
+field in ETM gets an wrong value.
 
-With one request below:
+If software uses the value returned by the TRCIDR3.CCITMIN register field,
+then it will limit the range which could be used for programming the ETM.
+In reality, the ETM could be programmed with a much smaller value than what
+is indicated by the TRCIDR3.CCITMIN field and still function correctly.
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+If software reads the TRCIDR3.CCITMIN register field, corresponding to the
+instruction trace counting minimum threshold, observe the value 0x100 or a
+minimum cycle count threshold of 256. The correct value should be 0x4 or a
+minimum cycle count threshold of 4.
 
-> ---
->  Documentation/admin-guide/cgroup-v1/memory.rst |  7 +++++++
->  mm/memcontrol.c                                | 18 ++++++++++++++++++
->  2 files changed, 25 insertions(+)
->
-> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentati=
-on/admin-guide/cgroup-v1/memory.rst
-> index 5f502bf68fbc..ff456871bf4b 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -92,6 +92,13 @@ Brief summary of control files.
->   memory.oom_control                 set/show oom controls.
->   memory.numa_stat                   show the number of memory usage per =
-numa
->                                      node
-> + memory.kmem.limit_in_bytes          Deprecated knob to set and read the=
- kernel
-> +                                     memory hard limit. Kernel hard limi=
-t is not
-> +                                     supported since 5.16. Writing any v=
-alue to
-> +                                     do file will not have any effect sa=
-me as if
-> +                                     nokmem kernel parameter was specifi=
-ed.
-> +                                     Kernel memory is still charged and =
-reported
-> +                                     by memory.kmem.usage_in_bytes.
->   memory.kmem.usage_in_bytes          show current kernel memory allocati=
-on
->   memory.kmem.failcnt                 show the number of kernel memory us=
-age
->                                      hits limits
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a4d3282493b6..0b161705ef36 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3097,6 +3097,7 @@ static void obj_cgroup_uncharge_pages(struct obj_cg=
-roup *objcg,
->  static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
->                                    unsigned int nr_pages)
->  {
-> +       struct page_counter *counter;
->         struct mem_cgroup *memcg;
->         int ret;
->
-> @@ -3107,6 +3108,10 @@ static int obj_cgroup_charge_pages(struct obj_cgro=
-up *objcg, gfp_t gfp,
->                 goto out;
->
->         memcg_account_kmem(memcg, nr_pages);
-> +
-> +       /* There is no way to set up kmem hard limit so this operation ca=
-nnot fail */
-> +       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +               WARN_ON(!page_counter_try_charge(&memcg->kmem, nr_pages, =
-&counter));
+This work arounds the problem via storing 4 in drvdata->ccitmin on affected
+systems where the TRCIDR3.CCITMIN has been 256, thus preserving cycle count
+threshold granularity.
 
-WARN_ON_ONCE() please.
+These errata information has been updated in arch/arm64/silicon-errata.rst,
+but without their corresponding configs because these have been implemented
+directly in the driver.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ Documentation/arch/arm64/silicon-errata.rst   | 10 +++++
+ .../coresight/coresight-etm4x-core.c          | 37 +++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+
+diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
+index e96f057ea2a0..8f1be5da68b7 100644
+--- a/Documentation/arch/arm64/silicon-errata.rst
++++ b/Documentation/arch/arm64/silicon-errata.rst
+@@ -115,6 +115,10 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Cortex-A76      | #1463225        | ARM64_ERRATUM_1463225       |
+ +----------------+-----------------+-----------------+-----------------------------+
++| ARM            | Cortex-A76      | #1490853        | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
++| ARM            | Cortex-A77      | #1491015        | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
+@@ -125,6 +129,8 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Cortex-A715     | #2645198        | ARM64_ERRATUM_2645198       |
+ +----------------+-----------------+-----------------+-----------------------------+
++| ARM            | Cortex-X1       | #1502854        | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Cortex-X2       | #2119858        | ARM64_ERRATUM_2119858       |
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Cortex-X2       | #2224489        | ARM64_ERRATUM_2224489       |
+@@ -133,6 +139,8 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Neoverse-N1     | #1349291        | N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
++| ARM            | Neoverse-N1     | #1490853        | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
+@@ -141,6 +149,8 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | Neoverse-N2     | #2253138        | ARM64_ERRATUM_2253138       |
+ +----------------+-----------------+-----------------+-----------------------------+
++| ARM            | Neoverse-V1     | #1619801        | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | MMU-500         | #841119,826419  | N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | MMU-600         | #1076982,1209401| N/A                         |
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 77b0271ce6eb..9619d9d0bbb1 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -1150,6 +1150,41 @@ static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
+ 	drvdata->trfcr = trfcr;
+ }
+ 
++/*
++ * The following errata on applicable cpu ranges, affect the CCITMIN filed
++ * in TCRIDR3 register. Software read for the field returns 0x100 limiting
++ * the cycle threshold granularity, whereas the right value should have
++ * been 0x4, which is well supported in the hardware.
++ */
++static struct midr_range etm_wrong_ccitmin_cpus[] = {
++	/* Erratum #1490853 - Cortex-A76 */
++	MIDR_RANGE(MIDR_CORTEX_A76, 0, 0, 4, 0),
++	/* Erratum #1490853 - Neoverse-N1 */
++	MIDR_RANGE(MIDR_NEOVERSE_N1, 0, 0, 4, 0),
++	/* Erratum #1491015 - Cortex-A77 */
++	MIDR_RANGE(MIDR_CORTEX_A77, 0, 0, 1, 0),
++	/* Erratum #1502854 - Cortex-X1 */
++	MIDR_REV(MIDR_CORTEX_X1, 0, 0),
++	/* Erratum #1619801 - Neoverse-V1 */
++	MIDR_REV(MIDR_NEOVERSE_V1, 0, 0),
++	{},
++};
++
++static void etm4_fixup_wrong_ccitmin(struct etmv4_drvdata *drvdata)
++{
++	/*
++	 * Erratum affected cpus will read 256 as the minimum
++	 * instruction trace cycle counting threshold whereas
++	 * the correct value should be 4 instead. Override the
++	 * recorded value for 'drvdata->ccitmin' to workaround
++	 * this problem.
++	 */
++	if (is_midr_in_range_list(read_cpuid_id(), etm_wrong_ccitmin_cpus)) {
++		if (drvdata->ccitmin == 256)
++			drvdata->ccitmin = 4;
++	}
++}
++
+ static void etm4_init_arch_data(void *info)
+ {
+ 	u32 etmidr0;
+@@ -1214,6 +1249,8 @@ static void etm4_init_arch_data(void *info)
+ 	etmidr3 = etm4x_relaxed_read32(csa, TRCIDR3);
+ 	/* CCITMIN, bits[11:0] minimum threshold value that can be programmed */
+ 	drvdata->ccitmin = FIELD_GET(TRCIDR3_CCITMIN_MASK, etmidr3);
++	etm4_fixup_wrong_ccitmin(drvdata);
++
+ 	/* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
+ 	drvdata->s_ex_level = FIELD_GET(TRCIDR3_EXLEVEL_S_MASK, etmidr3);
+ 	drvdata->config.s_ex_level = drvdata->s_ex_level;
+-- 
+2.25.1
+
