@@ -2,62 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 883297A9129
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 05:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C7F7A912F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 05:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbjIUDOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 23:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
+        id S229508AbjIUDQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 23:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIUDOk (ORCPT
+        with ESMTP id S229459AbjIUDQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 23:14:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E75FF4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 20:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SCXgHyJZGhjaqUfFGquv/AGCdJtUKcQzBvEtg+zXiaw=; b=uWvzVrANKhUwfNVS1gqC2WUylG
-        aUdYNAu9l4Ieft7wo+vsG3QeoCSM/PA5lNcacnFP+5rlwpHoRIKzPpPsaXXjtCpbt5bvQfbQgBvI4
-        ZXb6za90QA3fv3lO2QybVH0CLLDJIz7MOm+EFnwB+xQwXs1QK2GrADxFjKRk0pLnNg+kOd1LKFpoM
-        7+UbHm1b0GDoUzBTWsW6cxgclo9iD6NPUiJcUMUDO3lDs2FSWn6gL6zzErtMfTz2WRXTDDP+QcjWK
-        m1eqIJq5we4lN7rf7spkLseHr4Mj1eLXcv/cq92QK39lHpNCy1eTpt8KEDd+apBa/xCPm04OkZRMU
-        pv8rxvnA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qjA94-004sVS-2D;
-        Thu, 21 Sep 2023 03:14:26 +0000
-Date:   Wed, 20 Sep 2023 20:14:26 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rohan Puri <rohan.puri15@gmail.com>,
-        Adam Manzanares <a.manzanares@samsung.com>
-Subject: Re: [RFC PATCH 0/4] Enable >0 order folio memory compaction
-Message-ID: <ZQu1EhQiV8h5Jsa6@bombadil.infradead.org>
-References: <20230912162815.440749-1-zi.yan@sent.com>
- <ZQuUl2DdwDlzKoeM@bombadil.infradead.org>
- <ZQuZdkxm/GMyS6wY@bombadil.infradead.org>
- <5ac6a387-0ca7-45ca-bebc-c3bdd48452cb@nvidia.com>
+        Wed, 20 Sep 2023 23:16:07 -0400
+X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 20:15:58 PDT
+Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB96ED;
+        Wed, 20 Sep 2023 20:15:58 -0700 (PDT)
+Received: from ssh248.corpemail.net
+        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id QCJ00047;
+        Thu, 21 Sep 2023 11:14:47 +0800
+Received: from localhost.localdomain (10.180.205.246) by
+ jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
+ 15.1.2507.32; Thu, 21 Sep 2023 11:14:47 +0800
+From:   Andy Shen Shen <shengaoya@inspur.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <robh@kernel.org>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andy Shen Shen <shengaoya@inspur.com>
+Subject: [PATCH] iio: adc: for kernel comment
+Date:   Thu, 21 Sep 2023 11:14:44 +0800
+Message-ID: <20230921031444.63594-1-shengaoya@inspur.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ac6a387-0ca7-45ca-bebc-c3bdd48452cb@nvidia.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.180.205.246]
+tUid:   20239211114473753a10c5d5c4983b2e6654ef98be0c0
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,53 +48,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 07:05:25PM -0700, John Hubbard wrote:
-> On 9/20/23 18:16, Luis Chamberlain wrote:
-> > On Wed, Sep 20, 2023 at 05:55:51PM -0700, Luis Chamberlain wrote:
-> > > Are there other known recipes test help test this stuff?
-> > 
-> > You know, it got me wondering... since how memory fragmented a system
-> > might be by just running fstests, because, well, we already have
-> > that automated in kdevops and it also has LBS support for all the
-> > different large block sizes on 4k sector size. So if we just had a
-> > way to "measure" or "quantify" memory fragmentation with a score,
-> > we could just tally up how we did after 4 hours of testing for each
-> > block size with a set of memory on the guest / target node / cloud
-> > system.
-> > 
-> >    Luis
-> 
-> I thought about it, and here is one possible way to quantify
-> fragmentation with just a single number. Take this with some
-> skepticism because it is a first draft sort of thing:
-> 
-> a) Let BLOCKS be the number of 4KB pages (or more generally, then number
-> of smallest sized objects allowed) in the area.
-> 
-> b) Let FRAGS be the number of free *or* allocated chunks (no need to
-> consider the size of each, as that is automatically taken into
-> consideration).
-> 
-> Then:
->       fragmentation percentage = (FRAGS / BLOCKS) * 100%
-> 
-> This has some nice properties. For one thing, it's easy to calculate.
-> For another, it can discern between these cases:
-> 
-> Assume a 12-page area:
-> 
-> Case 1) 6 pages allocated allocated unevenly:
-> 
-> 1 page allocated | 1 page free | 1 page allocated | 5 pages free | 4 pages allocated
-> 
-> fragmentation = (5 FRAGS / 12 BLOCKS) * 100% = 41.7%
-> 
-> Case 2) 6 pages allocated evenly: every other page is allocated:
-> 
-> fragmentation = (12 FRAGS / 12 BLOCKS) * 100% = 100%
+In line 460 of the palmas_gpadc.c file, fix kernel comment errors.
 
-Thanks! Will try this!
+Signed-off-by: Andy Shen Shen <shengaoya@inspur.com>
+---
+ drivers/iio/adc/palmas_gpadc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-BTW stress-ng might also be a nice way to do other pathalogical things here.
+diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
+index e202ea18af10..203cbbc70719 100644
+--- a/drivers/iio/adc/palmas_gpadc.c
++++ b/drivers/iio/adc/palmas_gpadc.c
+@@ -457,7 +457,7 @@ static int palmas_gpadc_get_calibrated_code(struct palmas_gpadc *adc,
+  *
+  * The gain error include both gain error, as specified in the datasheet, and
+  * the gain error drift. These paramenters vary depending on device and whether
+- * the the channel is calibrated (trimmed) or not.
++ * the channel is calibrated (trimmed) or not.
+  */
+ static int palmas_gpadc_threshold_with_tolerance(int val, const int INL,
+ 						 const int gain_error,
+-- 
+2.31.1
 
-  Luis
