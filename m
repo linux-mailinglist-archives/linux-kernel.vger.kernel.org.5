@@ -2,323 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B887AA261
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3707AA253
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbjIUVQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S232613AbjIUVQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbjIUVPQ (ORCPT
+        with ESMTP id S233116AbjIUVPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:15:16 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6883AD18B
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:03:13 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4528cba7892so675694137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1695319393; x=1695924193; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ye6J64RdQfSH5ZZJmFPv+aIMJZXeJIeXwiDO5WjhAs=;
-        b=KHcp3L1vuNjdrIgsK60P7pY0eDj5oy8KvGu8ddYLt1fmjBEQYHOh9q3/pr/S0TFrXv
-         gC8aanyxz7LVGizJwCnvSRLPKYT+BRmRTHO+n8kluI2MdA1km5c4+ufm96TD/GOS2TGd
-         BQWf1g+Ctphh8cQ3JWO7Powzi8/FsUjdENOMhIei9OfYLb2JQHhIbJbV7Hm7YYUflpSe
-         LuB+3qoTiYI6qwWlguj5y8otlNm0hG5G/Qb0Y8PG/Zsisu8iMQnLnzlHANhdTkYukL1y
-         JCAvVfPxfp0GzFVPyeFrHckShAQbKw/1BrITOjoH46CO6LgjnM8on8ZCNFuqFmGE8eQC
-         BlXQ==
+        Thu, 21 Sep 2023 17:15:19 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD19A150A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:57:20 -0700 (PDT)
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id AA19F3F68C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 06:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1695276528;
+        bh=LGLvEUCLByX56ZHTlqmLlwmZ6pTbCna8gvztcJYDoU8=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=rauudwVUP8l7s8SwO4VSe69N7gnmCVEH1jsNY1fFoKehhXjOrLiPmAoeqI7widzy7
+         ZUxhg4oe+oHsZfKmL/AMw6mjza/a7C4z12xb4eiJ+dfy2KR5I2nipRDHlvAGbxCnWh
+         canQ+lz3VdI78sZMi0Yr86AqHTZJxAVIREWSg5gLp6dut/4Ne+d7F4W7G8Xtw5M+jq
+         IC6PBAWXzjBkgllANmR9e7E1ru5kZ0cJkRwgmeuSWpu/kP7PIlyLwPRCCZdh7Pb3Bs
+         Y3VCQo9nYSaSkQcZC2VDeulP1/JUSxlpXKP4s509rTW/mPkfmwJ0hUIp87GeLa6yEs
+         sEkFWaQd34ztQ==
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-274a28033b2so385172a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 23:08:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695319393; x=1695924193;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ye6J64RdQfSH5ZZJmFPv+aIMJZXeJIeXwiDO5WjhAs=;
-        b=DDl292N8L0mLGsIypmPhF7ooXwYZk0Y0xKux1wr41+f6jQ5OAfN3A1ALiwxt39ZUlm
-         NO+KNMkcD0lUFTyHIt0adrV7zqB4lLS8JeZsTm/Y+4hkhw0jvWsFHj28YeE57MCCQqpx
-         hRFVWrAiOu00k1u5cbUGTxueuD2990POM+4wBV1u4BNZvLUfMQJtK6Ad0TUr9Lvo3H0x
-         /zc4RgC8gWvD7U7jLSXTfZ7pI5k6xKCxqEbDgIj8blAVfoFAEN12RQyvBiLh8Lpi+L5L
-         kM2ctH8spS3vgmy7K3IsQDSafTEYTAcDTbePDF7Gsf/oBDJY1Cr8f9cM5DSMeLlAtw+u
-         uaDg==
-X-Gm-Message-State: AOJu0YxA+TCMhw0DH/kvv4OCg8pki2vM3iL4iR8EFT2NKWU9Ycz5UL/E
-        MvHIfu8PtiiddMocbsPFf+fSk7D5xPI2F0OE+iw=
-X-Google-Smtp-Source: AGHT+IGcNBGL+pDeHsKhkBDdteItjMWxY4MHk0vNzkLK3f+g+ciu8dm5QelRM4idTi8vuV1fdEjBtg==
-X-Received: by 2002:a17:902:c3d5:b0:1c5:d1a2:c3e8 with SMTP id j21-20020a170902c3d500b001c5d1a2c3e8mr797505plj.5.1695276240297;
-        Wed, 20 Sep 2023 23:04:00 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001bda42a216bsm519473plh.100.2023.09.20.23.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 23:03:59 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qjCn6-003Xt1-1b;
-        Thu, 21 Sep 2023 16:03:56 +1000
-Date:   Thu, 21 Sep 2023 16:03:56 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Pankaj Raghav <p.raghav@samsung.com>,
-        Pankaj Raghav <kernel@pankajraghav.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        da.gomez@samsung.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org,
-        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
-        gost.dev@samsung.com, riteshh@linux.ibm.com
-Subject: Re: [RFC 00/23] Enable block size > page size in XFS
-Message-ID: <ZQvczBjY4vTLJFBp@dread.disaster.area>
-References: <20230915183848.1018717-1-kernel@pankajraghav.com>
- <ZQd4IPeVI+o6M38W@dread.disaster.area>
- <ZQewKIfRYcApEYXt@bombadil.infradead.org>
- <CGME20230918050749eucas1p13c219481b4b08c1d58e90ea70ff7b9c8@eucas1p1.samsung.com>
- <ZQfbHloBUpDh+zCg@dread.disaster.area>
- <806df723-78cf-c7eb-66a6-1442c02126b3@samsung.com>
- <ZQuxvAd2lxWppyqO@bombadil.infradead.org>
- <ZQvNVAfZMjE3hgmN@bombadil.infradead.org>
+        d=1e100.net; s=20230601; t=1695276527; x=1695881327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LGLvEUCLByX56ZHTlqmLlwmZ6pTbCna8gvztcJYDoU8=;
+        b=YOPL+wdsvQQiHxGmJuhzsAK1wTP1D5+ovkHwEompdm+fwlViGhoyaJBJX1J4YJ36ru
+         cOCcpe9DFlohSYHmLI7D/KloXUdqZKI6mFBn9pfDWR1U+GQcEXAEMEr3OXbIJ4bPyw+u
+         SCybwCAP8QTxWi2yynh3obI8XhkYDkldjRXCzTS/Bt2uvYNq2pSfkMrwZ+5I00/M1imH
+         Lz108tXO6NeBP19satvX2MHeNCRRu2iOtcdJsnvODxS2OGLnJQ8UN2grX5GZIMUjmGas
+         967GK8qk8XB0Jj8bTn3K3pCY9CcW31LKswl1QGUH0Ewuo5ca6aKwJV8tvkh27eFVNpjV
+         hRfw==
+X-Gm-Message-State: AOJu0YwmnneA/hQK1SnZ7caReQM1i3DJ8LlniYHWugPYxxqJkTiTjlr4
+        w88vdW/+Bad9qsF5prON37n5WO3ZhlwFrcaedsA3pnBASJ3bntQe3vpiGAFD19VlPnkA2BzVmg+
+        /7UaoRJNs0UG+wc2IYoPgJvcWv0/Aiu8yBq8OXFg7SLPwfv54zwTire1TqRpRlkPl7Q==
+X-Received: by 2002:a17:90b:60f:b0:271:9237:a07f with SMTP id gb15-20020a17090b060f00b002719237a07fmr4869863pjb.32.1695276527092;
+        Wed, 20 Sep 2023 23:08:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH3mcQsaQ+FE/ji4v4nyF6aUsilUttOw7YcXgkdZG82nw6jvzjNPhHOMNN3PnauJxNw7lKirmfAfZZ+zIWZCFI=
+X-Received: by 2002:a17:90b:60f:b0:271:9237:a07f with SMTP id
+ gb15-20020a17090b060f00b002719237a07fmr4869844pjb.32.1695276526779; Wed, 20
+ Sep 2023 23:08:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQvNVAfZMjE3hgmN@bombadil.infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230914041806.816741-1-kai.heng.feng@canonical.com>
+ <7b45ac2ed091497b4e21a6a5c19956161175ba16.camel@linux.intel.com>
+ <SN6PR11MB26245C44E84C37C1B551260EF4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
+ <CAAd53p5ywMVKWzhn0nYzvBnW_Bc=sntgBttJdcVUuf_a4AnX5w@mail.gmail.com>
+ <SN6PR11MB262473E2BF4057F4D285A613F4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
+ <DM6PR11MB26184A8A3F955589F5FC6836F4FBA@DM6PR11MB2618.namprd11.prod.outlook.com>
+ <CAAd53p4o1pB-yzpvUCYsvuYEvQQK0my=u-ogrByRCx_Lvns=hw@mail.gmail.com>
+ <bbbf36724d63f7532696a960a9d56d7ccd5a5bee.camel@linux.intel.com>
+ <CAAd53p6MA9YLbcXxpC8=YEtbO6frFJk1LQ1BNUgPk=r1_uR8iw@mail.gmail.com>
+ <67c85f083201ed2cda2cab198b40141ad21912a2.camel@linux.intel.com> <CAJZ5v0iFLxpWHW=sDZ7=Wne3Yt=8_EwhW9SeCmRP6REpVqo8rA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iFLxpWHW=sDZ7=Wne3Yt=8_EwhW9SeCmRP6REpVqo8rA@mail.gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 21 Sep 2023 14:08:33 +0800
+Message-ID: <CAAd53p67tiP0xXwhn=NviU_rvrSveSxbAhDieYG9AmUWF2e__Q@mail.gmail.com>
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Xu, Even" <even.xu@intel.com>,
+        "jikos@kernel.org" <jikos@kernel.org>,
+        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "Lee, Jian Hui" <jianhui.lee@canonical.com>,
+        "Zhang, Lixu" <lixu.zhang@intel.com>,
+        "Ba, Najumon" <najumon.ba@intel.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:57:56PM -0700, Luis Chamberlain wrote:
-> On Wed, Sep 20, 2023 at 08:00:12PM -0700, Luis Chamberlain wrote:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=large-block-linus
-> > 
-> > I haven't tested yet the second branch I pushed though but it applied without any changes
-> > so it should be good (usual famous last words).
-> 
-> I have run some preliminary tests on that branch as well above using fsx
-> with larger LBA formats running them all on the *same* system at the
-> same time. Kernel is happy.
-> 
-> root@linus ~ # uname -r
-> 6.6.0-rc2-large-block-linus+
-> 
-> root@linus ~ # mount | grep mnt
-> /dev/nvme17n1 on /mnt-16k type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme13n1 on /mnt-32k-16ks type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme11n1 on /mnt-64k-16ks type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=64k,noquota)
-> /dev/nvme18n1 on /mnt-32k type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme14n1 on /mnt-64k-32ks type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=64k,noquota)
-> /dev/nvme7n1 on /mnt-64k-512b type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme4n1 on /mnt-32k-512 type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme3n1 on /mnt-16k-512b type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme9n1 on /mnt-64k-4ks type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=64k,noquota)
-> /dev/nvme8n1 on /mnt-32k-4ks type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme6n1 on /mnt-16k-4ks type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme5n1 on /mnt-4k type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/nvme1n1 on /mnt-512 type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> 
-> root@linus ~ # ps -ef| grep fsx
-> root       45601   45172 44 04:02 pts/3    00:20:26 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-16k/foo
-> root       46207   45658 39 04:04 pts/5    00:17:18 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-32k-16ks/foo
-> root       46792   46289 35 04:06 pts/7    00:14:36 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-64k-16ks/foo
-> root       47293   46899 39 04:08 pts/9    00:15:30 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-32k/foo
-> root       47921   47338 34 04:10 pts/11   00:12:56 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-64k-32ks/foo
-> root       48898   48484 32 04:14 pts/13   00:10:56 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-64k-512b/foo
-> root       49313   48939 35 04:15 pts/15   00:11:38 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-32k-512/foo
-> root       49729   49429 40 04:17 pts/17   00:12:27 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-16k-512b/foo
-> root       50085   49794 33 04:18 pts/19   00:09:56 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-64k-4ks/foo
-> root       50449   50130 36 04:19 pts/21   00:10:28 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-32k-4ks/foo
-> root       50844   50517 41 04:20 pts/23   00:11:22 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-16k-4ks/foo
-> root       51135   50893 52 04:21 pts/25   00:13:57 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-4k/foo
-> root       52061   51193 49 04:25 pts/27   00:11:21 /var/lib/xfstests/ltp/fsx -q -S 0 -p 1000000 /mnt-512/foo
-> root       57668   52131  0 04:48 pts/29   00:00:00 grep fsx
+On Wed, Sep 20, 2023 at 2:00=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Tue, Sep 19, 2023 at 6:54=E2=80=AFPM srinivas pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> >
+> > On Tue, 2023-09-19 at 15:36 +0800, Kai-Heng Feng wrote:
+> > > On Mon, Sep 18, 2023 at 11:57=E2=80=AFPM srinivas pandruvada
+> > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > >
+> > > > Hi Kai-Heng,
+> > > > On Mon, 2023-09-18 at 09:17 +0800, Kai-Heng Feng wrote:
+> > > > > Hi Even,
+> > > > >
+> > > > > On Mon, Sep 18, 2023 at 8:33=E2=80=AFAM Xu, Even <even.xu@intel.c=
+om>
+> > > > > wrote:
+> > > > > >
+> > > > > > Hi, Kai-Heng,
+> > > > > >
+> > > > > > I just got feedback, for testing EHL S5 wakeup feature, you
+> > > > > > need
+> > > > > > several steps to setup and access
+> > > > > > "https://portal.devicewise.com/things/browse" to trigger wake.
+> > > > > > But currently, our test account of this website are all out of
+> > > > > > data.
+> > > > > > So maybe you need double check with the team who required you
+> > > > > > preparing the patch for the verification.
+> > > > >
+> > > > > The patch is to solve the GPE refcount overflow, while
+> > > > > maintaining S5
+> > > > > wakeup. I don't have any mean to test S5 wake.
+> > > > >
+> > > > The issue is not calling acpi_disable_gpe(). To reduce the scope of
+> > > > change can we just add that instead of a adding new callbacks. This
+> > > > way
+> > > > scope is reduced.
+> > >
+> > > This patch does exactly the same thing by letting PCI and ACPI handle
+> > > the PME and GPE.
+> > > Though the change seems to be bigger, it actually reduces the duped
+> > > code, while keep the S5 wakeup ability intact.
+> > It may be doing the same. But with long chain of calls without
+> > verification, I am not comfortable.
+> > This can be another patch by itself to use the framework.
+>
+> I agree.
+>
+> Let's change one thing at a time.
+>
+> > But you are targeting a fix for overflow issue, which is separate from
+> > the use of PCI/ACPI framework.
+>
+> Yes, let's fix the bug first and make things look nicer separately.
 
-So I just pulled this, built it and run generic/091 as the very
-first test on this:
+Right, please use the fix from Srinivas and I'll send a separate patch
+to make things looks better.
 
-# ./run_check.sh --mkfs-opts "-m rmapbt=1 -b size=64k" --run-opts "-s xfs_64k generic/091"
-.....
-meta-data=/dev/pmem0             isize=512    agcount=4, agsize=32768 blks
-         =                       sectsz=4096  attr=2, projid32bit=1
-         =                       crc=1        finobt=1, sparse=1, rmapbt=1
-         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
-data     =                       bsize=65536  blocks=131072, imaxpct=25
-         =                       sunit=0      swidth=0 blks
-naming   =version 2              bsize=65536  ascii-ci=0, ftype=1
-log      =internal log           bsize=65536  blocks=2613, version=2
-         =                       sectsz=4096  sunit=1 blks, lazy-count=1
-realtime =none                   extsz=65536  blocks=0, rtextents=0
-....
-Running: MOUNT_OPTIONS= ./check -R xunit -b -s xfs_64k generic/091
-SECTION       -- xfs_64k
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 test3 6.6.0-rc2-large-block-linus-dgc+ #1906 SMP PREEMPT_DYNAMIC Thu Sep 21 15:19:47 AEST 2023
-MKFS_OPTIONS  -- -f -m rmapbt=1 -b size=64k /dev/pmem1
-MOUNT_OPTIONS -- -o dax=never -o context=system_u:object_r:root_t:s0 /dev/pmem1 /mnt/scratch
-
-generic/091 10s ... [failed, exit status 1]- output mismatch (see /home/dave/src/xfstests-dev/results//xfs_64k/generic/091.out.bad)
-    --- tests/generic/091.out   2022-12-21 15:53:25.467044754 +1100
-    +++ /home/dave/src/xfstests-dev/results//xfs_64k/generic/091.out.bad        2023-09-21 15:47:48.222559248 +1000
-    @@ -1,7 +1,113 @@
-     QA output created by 091
-     fsx -N 10000 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z -R -W
-    -fsx -N 10000 -o 8192 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z -R -W
-    -fsx -N 10000 -o 32768 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z -R -W
-    -fsx -N 10000 -o 8192 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z -R -W
-    -fsx -N 10000 -o 32768 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z -R -W
-    -fsx -N 10000 -o 128000 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z -W
-    ...
-    (Run 'diff -u /home/dave/src/xfstests-dev/tests/generic/091.out /home/dave/src/xfstests-dev/results//xfs_64k/generic/091.out.bad'  to see the entire diff)
-Failures: generic/091
-Failed 1 of 1 tests
-Xunit report: /home/dave/src/xfstests-dev/results//xfs_64k/result.xml
-
-SECTION       -- xfs_64k
-=========================
-Failures: generic/091
-Failed 1 of 1 tests
-
-
-real    0m4.214s
-user    0m0.972s
-sys     0m3.603s
-#
-
-For all these assertions about how none of your testing is finding
-bugs in this code, It's taken me *4 seconds* of test runtime to find
-the first failure.
-
-And, well, it's the same failure as I reported for the previous
-version of this code:
-
-# cat /home/dave/src/xfstests-dev/results//xfs_64k/generic/091.out.bad
-/home/dave/src/xfstests-dev/ltp/fsx -N 10000 -l 500000 -r 4096 -t 512 -w 512 -Z -R -W /mnt/test/junk
-mapped writes DISABLED    
-Seed set to 1
-main: filesystem does not support exchange range, disabling!
-fallocating to largest ever: 0x79f06
-READ BAD DATA: offset = 0x18000, size = 0xf000, fname = /mnt/test/junk
-OFFSET      GOOD    BAD     RANGE
-0x21000     0x0000  0x9008  0x0
-operation# (mod 256) for the bad data may be 144
-0x21001     0x0000  0x0810  0x1
-operation# (mod 256) for the bad data may be 16
-0x21002     0x0000  0x1000  0x2
-operation# (mod 256) for the bad data may be 16
-0x21005     0x0000  0x8e00  0x3
-operation# (mod 256) for the bad data unknown, check HOLE and EXTEND ops
-0x21007     0x0000  0x82ff  0x4
-operation# (mod 256) for the bad data may be 255
-0x21008     0x0000  0xffff  0x5
-operation# (mod 256) for the bad data may be 255
-0x21009     0x0000  0xffff  0x6
-operation# (mod 256) for the bad data may be 255
-0x2100a     0x0000  0xffff  0x7
-operation# (mod 256) for the bad data may be 255
-0x2100b     0x0000  0xff00  0x8
-operation# (mod 256) for the bad data unknown, check HOLE and EXTEND ops
-0x21010     0x0000  0x700b  0x9
-operation# (mod 256) for the bad data may be 112
-0x21011     0x0000  0x0b10  0xa
-operation# (mod 256) for the bad data may be 16
-0x21012     0x0000  0x1000  0xb
-operation# (mod 256) for the bad data may be 16
-0x21014     0x0000  0x038e  0xc
-operation# (mod 256) for the bad data may be 3
-0x21015     0x0000  0x8e00  0xd
-operation# (mod 256) for the bad data unknown, check HOLE and EXTEND ops
-0x21017     0x0000  0x82ff  0xe
-operation# (mod 256) for the bad data may be 255
-0x21018     0x0000  0xffff  0xf
-operation# (mod 256) for the bad data may be 255
-LOG DUMP (69 total operations):
-1(  1 mod 256): FALLOC   0x6ba10 thru 0x79f06   (0xe4f6 bytes) EXTENDING
-2(  2 mod 256): SKIPPED (no operation)
-3(  3 mod 256): SKIPPED (no operation)
-4(  4 mod 256): TRUNCATE DOWN   from 0x79f06 to 0x51800
-5(  5 mod 256): SKIPPED (no operation)
-6(  6 mod 256): READ     0x1b000 thru 0x21fff   (0x7000 bytes)
-7(  7 mod 256): PUNCH    0x2ce7a thru 0x39b9e   (0xcd25 bytes)
-8(  8 mod 256): PUNCH    0x29238 thru 0x29f57   (0xd20 bytes)
-9(  9 mod 256): COPY 0x3000 thru 0x9fff (0x7000 bytes) to 0x40400 thru 0x473ff
-10( 10 mod 256): READ     0x16000 thru 0x21fff  (0xc000 bytes)
-11( 11 mod 256): FALLOC   0x4a42b thru 0x4b8f7  (0x14cc bytes) INTERIOR
-12( 12 mod 256): TRUNCATE DOWN  from 0x51800 to 0x15c00 ******WWWW
-13( 13 mod 256): SKIPPED (no operation)
-14( 14 mod 256): READ     0xb000 thru 0x14fff   (0xa000 bytes)
-15( 15 mod 256): SKIPPED (no operation)
-16( 16 mod 256): SKIPPED (no operation)
-17( 17 mod 256): SKIPPED (no operation)
-18( 18 mod 256): READ     0x3000 thru 0x11fff   (0xf000 bytes)
-19( 19 mod 256): FALLOC   0x69b94 thru 0x6c922  (0x2d8e bytes) EXTENDING
-20( 20 mod 256): SKIPPED (no operation)
-21( 21 mod 256): SKIPPED (no operation)
-22( 22 mod 256): WRITE    0x23000 thru 0x285ff  (0x5600 bytes)
-23( 23 mod 256): SKIPPED (no operation)
-24( 24 mod 256): SKIPPED (no operation)
-25( 25 mod 256): SKIPPED (no operation)
-26( 26 mod 256): ZERO     0x1fba0 thru 0x2c568  (0xc9c9 bytes)  ******ZZZZ
-27( 27 mod 256): READ     0x4f000 thru 0x50fff  (0x2000 bytes)
-28( 28 mod 256): READ     0x39000 thru 0x3afff  (0x2000 bytes)
-29( 29 mod 256): WRITE    0x40200 thru 0x4cdff  (0xcc00 bytes)
-30( 30 mod 256): SKIPPED (no operation)
-31( 31 mod 256): WRITE    0x47e00 thru 0x547ff  (0xca00 bytes)
-32( 32 mod 256): SKIPPED (no operation)
-33( 33 mod 256): READ     0x28000 thru 0x29fff  (0x2000 bytes)
-34( 34 mod 256): SKIPPED (no operation)
-35( 35 mod 256): READ     0x69000 thru 0x6bfff  (0x3000 bytes)
-36( 36 mod 256): READ     0x16000 thru 0x20fff  (0xb000 bytes)
-37( 37 mod 256): ZERO     0x45150 thru 0x47e9c  (0x2d4d bytes)
-38( 38 mod 256): SKIPPED (no operation)
-39( 39 mod 256): SKIPPED (no operation)
-40( 40 mod 256): COPY 0x10000 thru 0x11fff      (0x2000 bytes) to 0x22a00 thru 0x249ff
-41( 41 mod 256): WRITE    0x29000 thru 0x2efff  (0x6000 bytes)
-42( 42 mod 256): ZERO     0x59c7 thru 0x13eee   (0xe528 bytes)
-43( 43 mod 256): FALLOC   0x1fdbf thru 0x2e694  (0xe8d5 bytes) INTERIOR ******FFFF
-44( 44 mod 256): SKIPPED (no operation)
-45( 45 mod 256): ZERO     0x740f5 thru 0x7a11f  (0x602b bytes)
-46( 46 mod 256): SKIPPED (no operation)
-47( 47 mod 256): WRITE    0x14200 thru 0x1e3ff  (0xa200 bytes)
-48( 48 mod 256): READ     0x69000 thru 0x6bfff  (0x3000 bytes)
-49( 49 mod 256): TRUNCATE DOWN  from 0x6c922 to 0x16a00 ******WWWW
-50( 50 mod 256): WRITE    0x15000 thru 0x163ff  (0x1400 bytes)
-51( 51 mod 256): PUNCH    0x3b5e thru 0xa2c1    (0x6764 bytes)
-52( 52 mod 256): SKIPPED (no operation)
-53( 53 mod 256): SKIPPED (no operation)
-54( 54 mod 256): WRITE    0x34a00 thru 0x3fdff  (0xb400 bytes) HOLE     ***WWWW
-55( 55 mod 256): WRITE    0x38000 thru 0x397ff  (0x1800 bytes)
-56( 56 mod 256): PUNCH    0x7922 thru 0x115f0   (0x9ccf bytes)
-57( 57 mod 256): SKIPPED (no operation)
-58( 58 mod 256): SKIPPED (no operation)
-59( 59 mod 256): SKIPPED (no operation)
-60( 60 mod 256): FALLOC   0x300a8 thru 0x331d0  (0x3128 bytes) INTERIOR
-61( 61 mod 256): ZERO     0x3799c thru 0x39245  (0x18aa bytes)
-62( 62 mod 256): ZERO     0x62fc3 thru 0x6b630  (0x866e bytes)
-63( 63 mod 256): SKIPPED (no operation)
-64( 64 mod 256): ZERO     0x6110a thru 0x61dad  (0xca4 bytes)
-65( 65 mod 256): FALLOC   0x1d8ca thru 0x20876  (0x2fac bytes) INTERIOR
-66( 66 mod 256): COPY 0x65000 thru 0x68fff      (0x4000 bytes) to 0x22400 thru 0x263ff
-67( 67 mod 256): SKIPPED (no operation)
-68( 68 mod 256): WRITE    0x36a00 thru 0x415ff  (0xac00 bytes)
-69( 69 mod 256): READ     0x18000 thru 0x26fff  (0xf000 bytes)  ***RRRR***
-Log of operations saved to "/mnt/test/junk.fsxops"; replay with --replay-ops
-Correct content saved for comparison
-(maybe hexdump "/mnt/test/junk" vs "/mnt/test/junk.fsxgood")
-
-Guess what? The fsx parameters being used means it is testing things you
-aren't. Yes, the '-Z -R -W' mean it is using direct IO for reads and writes,
-mmap() is disabled. Other parameters indicate that using 4k aligned reads and
-512 byte aligned writes and truncates.
-
-There is a reason there are multiple different fsx tests in fstests;
-they all exercise different sets of IO behaviours and alignments,
-and they exercise the IO paths differently.
-
-So there's clearly something wrong here - it's likely that the
-filesystem IO alignment parameters pulled from the underlying block
-device (4k physical, 512 byte logical sector sizes) are improperly
-interpreted.  i.e. for a filesystem with a sector size of 4kB,
-direct IO with an alignment of 512 bytes should be rejected......
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Kai-Heng
