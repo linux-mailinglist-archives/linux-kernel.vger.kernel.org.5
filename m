@@ -2,161 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683AF7A90FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2D37A9100
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjIUCjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 22:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        id S229593AbjIUCkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIUCjL (ORCPT
+        with ESMTP id S229472AbjIUCkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:39:11 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0EFCF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 19:39:05 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RrfgD37yrz15NR2;
-        Thu, 21 Sep 2023 10:36:56 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 21 Sep 2023 10:39:02 +0800
-Subject: Re: [PATCH -next] ubi: block: Fix use-after-free in ubiblock_cleanup
-To:     ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
-        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-        <chaitanya.kulkarni@wdc.com>, <axboe@kernel.dk>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <dce695b6-a4ca-82d6-a4c4-02342b4d57f0@huawei.com>
-Date:   Thu, 21 Sep 2023 10:39:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 20 Sep 2023 22:40:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796BDE4;
+        Wed, 20 Sep 2023 19:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695263995; x=1726799995;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iSkpE1N9Jcp84HPqnZ+sK/v5B9D3q8Q2ZGh6iASUxTU=;
+  b=QMxYLfRcxVjlt2JELGOu9PCSyMNr1ixLCAbfbUpWOLVunrJeyQ80UA7s
+   8H12ILDLy45wWwrEjygDsrV8PeeBlEp6OIQaSq6E8/BhsiXRN28Yz2oPh
+   /ksj9i6pXn6H3V97kDFf+VjAiBf7LyV3l+BBlWmtguiTAwba6i7o6S85o
+   01rxP/GrIT1aUy9f+/JcEXtpygpQ/yfFzX3bhe1yB7Z29/gj4Y7BLkD9b
+   OYX0UKHHt9oNM5HndiEbdeM11Jzm4f9ePwaU3fPpHDEC9Xk0xuyJAVvbw
+   tb9vqu5Kr48uJwsC+p4uz8ZML7jzrGxCgBfmddbQn9fOLHscV1OeiW2nH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="360653924"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="360653924"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 19:39:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="1077731075"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="1077731075"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Sep 2023 19:39:45 -0700
+Date:   Thu, 21 Sep 2023 10:39:18 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC PATCH v12 02/33] KVM: Use gfn instead of hva for
+ mmu_notifier_retry
+Message-ID: <ZQus1v3AvEZjuat9@yilunxu-OptiPlex-7050>
+References: <20230914015531.1419405-1-seanjc@google.com>
+ <20230914015531.1419405-3-seanjc@google.com>
+ <ZQqMBEL61p739dpF@yilunxu-OptiPlex-7050>
+ <ZQr5uXhV6Cnx4DYT@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQr5uXhV6Cnx4DYT@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2023/9/21 10:01, ZhaoLong Wang Ð´µÀ:
-> The following BUG is reported when a ubiblock is removed:
+On 2023-09-20 at 06:55:05 -0700, Sean Christopherson wrote:
+> On Wed, Sep 20, 2023, Xu Yilun wrote:
+> > On 2023-09-13 at 18:55:00 -0700, Sean Christopherson wrote:
+> > > +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end)
+> > > +{
+> > > +	lockdep_assert_held_write(&kvm->mmu_lock);
+> > > +
+> > > +	WARN_ON_ONCE(!kvm->mmu_invalidate_in_progress);
+> > > +
+> > >  	if (likely(kvm->mmu_invalidate_in_progress == 1)) {
+> > >  		kvm->mmu_invalidate_range_start = start;
+> > >  		kvm->mmu_invalidate_range_end = end;
+> > 
+> > IIUC, Now we only add or override a part of the invalidate range in
+> > these fields, IOW only the range in last slot is stored when we unlock.
 > 
->   ==================================================================
->   BUG: KASAN: slab-use-after-free in ubiblock_cleanup+0x88/0xa0 [ubi]
->   Read of size 4 at addr ffff88810c8f3804 by task ubiblock/1716
+> Ouch.  Good catch!
 > 
->   CPU: 5 PID: 1716 Comm: ubiblock Not tainted 6.6.0-rc2+ #135
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
->   Call Trace:
->    <TASK>
->    dump_stack_lvl+0x37/0x50
->    print_report+0xd0/0x620
->    kasan_report+0xb6/0xf0
->    ubiblock_cleanup+0x88/0xa0 [ubi]
->    ubiblock_remove+0x121/0x190 [ubi]
->    vol_cdev_ioctl+0x355/0x630 [ubi]
->    __x64_sys_ioctl+0xc7/0x100
->    do_syscall_64+0x3f/0x90
->    entry_SYSCALL_64_after_hwframe+0x6e/0xd8
->   RIP: 0033:0x7f08d7445577
->   Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 8
->   RSP: 002b:00007ffde05a3018 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
->   RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f08d7445577
->   RDX: 0000000000000000 RSI: 0000000000004f08 RDI: 0000000000000003
->   RBP: 0000000000816010 R08: 00000000008163a7 R09: 0000000000000000
->   R10: 0000000000000003 R11: 0000000000000206 R12: 0000000000000003
->   R13: 00007ffde05a3130 R14: 0000000000000000 R15: 0000000000000000
->    </TASK>
+> > That may break mmu_invalidate_retry_gfn() cause it can never know the
+> > whole invalidate range.
+> > 
+> > How about we extend the mmu_invalidate_range_start/end everytime so that
+> > it records the whole invalidate range:
+> > 
+> > if (kvm->mmu_invalidate_range_start == INVALID_GPA) {
+> > 	kvm->mmu_invalidate_range_start = start;
+> > 	kvm->mmu_invalidate_range_end = end;
+> > } else {
+> > 	kvm->mmu_invalidate_range_start =
+> > 		min(kvm->mmu_invalidate_range_start, start);
+> > 	kvm->mmu_invalidate_range_end =
+> > 		max(kvm->mmu_invalidate_range_end, end);
+> > }
 > 
->   Allocated by task 1715:
->    kasan_save_stack+0x22/0x50
->    kasan_set_track+0x25/0x30
->    __kasan_kmalloc+0x7f/0x90
->    __alloc_disk_node+0x40/0x2b0
->    __blk_mq_alloc_disk+0x3e/0xb0
->    ubiblock_create+0x2ba/0x620 [ubi]
->    vol_cdev_ioctl+0x581/0x630 [ubi]
->    __x64_sys_ioctl+0xc7/0x100
->    do_syscall_64+0x3f/0x90
->    entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> Yeah, that does seem to be the easiest solution.
 > 
->   Freed by task 0:
->    kasan_save_stack+0x22/0x50
->    kasan_set_track+0x25/0x30
->    kasan_save_free_info+0x2b/0x50
->    __kasan_slab_free+0x10e/0x190
->    __kmem_cache_free+0x96/0x220
->    bdev_free_inode+0xa4/0xf0
->    rcu_core+0x496/0xec0
->    __do_softirq+0xeb/0x384
-> 
->   The buggy address belongs to the object at ffff88810c8f3800
->    which belongs to the cache kmalloc-1k of size 1024
->   The buggy address is located 4 bytes inside of
->    freed 1024-byte region [ffff88810c8f3800, ffff88810c8f3c00)
-> 
->   The buggy address belongs to the physical page:
->   page:00000000d03de848 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10c8f0
->   head:00000000d03de848 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
->   flags: 0x200000000000840(slab|head|node=0|zone=2)
->   page_type: 0xffffffff()
->   raw: 0200000000000840 ffff888100042dc0 ffffea0004244400 dead000000000002
->   raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
->   page dumped because: kasan: bad access detected
-> 
->   Memory state around the buggy address:
->    ffff88810c8f3700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->    ffff88810c8f3780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->   >ffff88810c8f3800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                      ^
->    ffff88810c8f3880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->    ffff88810c8f3900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   ==================================================================
-> 
-> Fix it by using a local variable to record the gendisk ID.
-> 
-> Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-> ---
->   drivers/mtd/ubi/block.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+> I'll post a fixup patch, unless you want the honors.
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Please go ahead, cause at a second thought I'm wondering if this simple
+range extension is reasonable.
 
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 437c5b83ffe5..309a42aeaa4c 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -447,13 +447,15 @@ int ubiblock_create(struct ubi_volume_info *vi)
->   
->   static void ubiblock_cleanup(struct ubiblock *dev)
->   {
-> +	int id = dev->gd->first_minor;
-> +
->   	/* Stop new requests to arrive */
->   	del_gendisk(dev->gd);
->   	/* Finally destroy the blk queue */
->   	dev_info(disk_to_dev(dev->gd), "released");
->   	put_disk(dev->gd);
->   	blk_mq_free_tag_set(&dev->tag_set);
-> -	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
-> +	idr_remove(&ubiblock_minor_idr, id);
->   }
->   
->   int ubiblock_remove(struct ubi_volume_info *vi)
-> 
+When the invalidation acrosses multiple slots, I'm not sure if the
+contiguous HVA range must correspond to contiguous GFN range. If not,
+are we producing a larger range than required?
 
+And when the invalidation acrosses multiple address space, I'm almost
+sure it is wrong to merge GFN ranges from different address spaces. But
+I have no clear solution yet.
+
+Thanks,
+Yilun
