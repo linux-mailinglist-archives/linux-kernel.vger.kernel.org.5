@@ -2,48 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CD37A9AE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF847A9939
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjIUSva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        id S230380AbjIUSML convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 14:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjIUSvB (ORCPT
+        with ESMTP id S229648AbjIUSLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:51:01 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10571D5109
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:41:44 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RrnQv46tyztSwc;
-        Thu, 21 Sep 2023 15:41:43 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 21 Sep 2023 15:45:58 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <ying.huang@intel.com>,
-        <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 5/6] mm: mempolicy: make mpol_misplaced() to take a folio
-Date:   Thu, 21 Sep 2023 15:44:16 +0800
-Message-ID: <20230921074417.24004-6-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20230921074417.24004-1-wangkefeng.wang@huawei.com>
-References: <20230921074417.24004-1-wangkefeng.wang@huawei.com>
+        Thu, 21 Sep 2023 14:11:19 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2E6880B7;
+        Thu, 21 Sep 2023 10:38:50 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qjENN-003VFB-V1; Thu, 21 Sep 2023 09:45:29 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qjENN-002Iwn-NI; Thu, 21 Sep 2023 09:45:29 +0200
+Message-ID: <f61e1f218ee4d5a87121c0e5ee0d8694364ea2dd.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, linux-sh@vger.kernel.org,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 21 Sep 2023 09:45:29 +0200
+In-Reply-To: <d2f5cdc1-4bff-4f1d-a7b2-38eee6a6a86d@app.fastmail.com>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+         <20230802184849.1019466-4-arnd@kernel.org>
+         <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com>
+         <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com>
+         <CAMuHMdVYcvPL+JpPw9sA48=615cdfwa8d0LP-bVp0NWqbQ+JOw@mail.gmail.com>
+         <190041c8-2d99-4bc3-adc3-6fbe902c1265@app.fastmail.com>
+         <CAMuHMdXyLHitBWOMp74cqtJbSs6q_4sPOEee+x72tE-E2G-KWg@mail.gmail.com>
+         <d2f5cdc1-4bff-4f1d-a7b2-38eee6a6a86d@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,105 +62,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for large folio numa balancing, make mpol_misplaced()
-to take a folio, no functional change intended.
+Hi!
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- include/linux/mempolicy.h |  5 +++--
- mm/memory.c               |  2 +-
- mm/mempolicy.c            | 22 ++++++++++++----------
- 3 files changed, 16 insertions(+), 13 deletions(-)
+On Fri, 2023-09-15 at 17:49 +0200, Arnd Bergmann wrote:
+> On Fri, Sep 15, 2023, at 17:41, Geert Uytterhoeven wrote:
+> > On Wed, Sep 13, 2023 at 4:30 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Wed, Sep 13, 2023, at 16:13, Geert Uytterhoeven wrote:
+> > > 
+> > > Right, it looks like the GENERIC_IOMAP part if gone from that
+> > > series, and I also see that the PCI host bridge does not actually
+> > 
+> > No, 02/30 still enables it.
+> 
+> Ok.
+> 
+> > > map the port I/O window. That's usually fine because very few
+> > > drivers actually need it, and it also means that there should be
+> > > no need for GENERIC_IOMAP or the simpler alternative.
+> > > 
+> > > The first version probably only did it accidentally, which is a
+> > > common mistake, and I think the ones for hexagon, m68k, and
+> > > mips can probably be removed as well with some simplifiations.
+> > 
+> > When not selecting GENERIC_IOMAP in v2, the build fails with:
+> > 
+> > sh4-linux-gnu-ld: lib/devres.o: in function `pcim_iomap_release':
+> > devres.c:(.text+0x234): undefined reference to `pci_iounmap'
+> 
+> Odd, that one is provided based on CONFIG_GENERIC_PCI_IOMAP
+> and should be provided by common code, despite the similar
+> naming this is unrelated to CONFIG_GENERIC_IOMAP.
 
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index d232de7cdc56..6c2754d7bfed 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -174,7 +174,7 @@ extern void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol);
- /* Check if a vma is migratable */
- extern bool vma_migratable(struct vm_area_struct *vma);
- 
--extern int mpol_misplaced(struct page *, struct vm_area_struct *, unsigned long);
-+int mpol_misplaced(struct folio *, struct vm_area_struct *, unsigned long);
- extern void mpol_put_task_policy(struct task_struct *);
- 
- static inline bool mpol_is_preferred_many(struct mempolicy *pol)
-@@ -278,7 +278,8 @@ static inline int mpol_parse_str(char *str, struct mempolicy **mpol)
- }
- #endif
- 
--static inline int mpol_misplaced(struct page *page, struct vm_area_struct *vma,
-+static inline int mpol_misplaced(struct folio *folio,
-+				 struct vm_area_struct *vma,
- 				 unsigned long address)
- {
- 	return -1; /* no node preference */
-diff --git a/mm/memory.c b/mm/memory.c
-index 93ce8bcbe9d7..29c5618c91e5 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4741,7 +4741,7 @@ int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
- 		*flags |= TNF_FAULT_LOCAL;
- 	}
- 
--	return mpol_misplaced(&folio->page, vma, addr);
-+	return mpol_misplaced(folio, vma, addr);
- }
- 
- static vm_fault_t do_numa_page(struct vm_fault *vmf)
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 98fae2bfc851..ecf06ce3a5dd 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -2572,24 +2572,25 @@ static void sp_free(struct sp_node *n)
- }
- 
- /**
-- * mpol_misplaced - check whether current page node is valid in policy
-+ * mpol_misplaced - check whether current folio node is valid in policy
-  *
-- * @page: page to be checked
-- * @vma: vm area where page mapped
-- * @addr: virtual address where page mapped
-+ * @folio: folio to be checked
-+ * @vma: vm area where folio mapped
-+ * @addr: virtual address in @vma for shared policy lookup and interleave policy
-  *
-- * Lookup current policy node id for vma,addr and "compare to" page's
-+ * Lookup current policy node id for vma,addr and "compare to" folio's
-  * node id.  Policy determination "mimics" alloc_page_vma().
-  * Called from fault path where we know the vma and faulting address.
-  *
-  * Return: NUMA_NO_NODE if the page is in a node that is valid for this
-- * policy, or a suitable node ID to allocate a replacement page from.
-+ * policy, or a suitable node ID to allocate a replacement folio from.
-  */
--int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long addr)
-+int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
-+		   unsigned long addr)
- {
- 	struct mempolicy *pol;
- 	struct zoneref *z;
--	int curnid = page_to_nid(page);
-+	int curnid = folio_nid(folio);
- 	unsigned long pgoff;
- 	int thiscpu = raw_smp_processor_id();
- 	int thisnid = cpu_to_node(thiscpu);
-@@ -2645,11 +2646,12 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
- 		BUG();
- 	}
- 
--	/* Migrate the page towards the node whose CPU is referencing it */
-+	/* Migrate the folio towards the node whose CPU is referencing it */
- 	if (pol->flags & MPOL_F_MORON) {
- 		polnid = thisnid;
- 
--		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
-+		if (!should_numa_migrate_memory(current, &folio->page, curnid,
-+						thiscpu))
- 			goto out;
- 	}
- 
+So, what would be the suggestion now to move forward? Shall I include this
+series for 6.7 or better wait until after Yoshinori's series to convert
+to device tree has been merged?
+
+Adrian
+
 -- 
-2.27.0
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
