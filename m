@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B517A90DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BD77A90E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbjIUCZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 22:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        id S229566AbjIUC1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjIUCZz (ORCPT
+        with ESMTP id S229503AbjIUC1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:25:55 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB2BD3;
-        Wed, 20 Sep 2023 19:25:49 -0700 (PDT)
-Received: from [127.0.0.1] ([98.35.210.218])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38L2Ojrq2878666
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 20 Sep 2023 19:24:46 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38L2Ojrq2878666
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1695263088;
-        bh=WciaewRbFVCG7f/TWCqOhh4NlX/euw7ehl3BKDv4D2s=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=Ljqz95c2+2ctrUrqDTYh4QJqwX6aq8mwwAySkJYOLB/rmPNr+SnxWAYlU/KQSCT5Y
-         tz1ezsYWqK0Q4cbXNch6WmSJ06yICbg3IW6efg/D3UscvInNuY+tdrl12AD0aOeABS
-         jJnQKYPibz2ODD7CuZvST50wrsGNzOQdvKs4ffKVf6+Dzir4Me4tyjJ9yIDffI8iep
-         PiaHLNeUMu9OkEdAJ0K0iskn+vI9N9gg/LhElcG3QQu2b49nd1vPLUf+lmlguTs+9v
-         aCY/LfiHWkB5ORkGwlNjhb+7FcMKMnOnZzBWQVPbPpuDO2ZZDvqBIwYYvhyazgjB9h
-         NhSAU3+MJhZIw==
-Date:   Wed, 20 Sep 2023 19:24:43 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Li, Xin3" <xin3.li@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-CC:     "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
-Subject: RE: [PATCH v10 36/38] x86/fred: Add fred_syscall_init()
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87h6npuuk9.ffs@tglx>
-References: <20230914044805.301390-1-xin3.li@intel.com> <20230914044805.301390-37-xin3.li@intel.com> <87v8c6woqo.ffs@tglx> <SA1PR11MB6734C02FFB973B2074EC6CC8A8F9A@SA1PR11MB6734.namprd11.prod.outlook.com> <87h6npuuk9.ffs@tglx>
-Message-ID: <4578F690-1501-46C3-9048-5AED97EAD001@zytor.com>
+        Wed, 20 Sep 2023 22:27:46 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC9B99;
+        Wed, 20 Sep 2023 19:27:39 -0700 (PDT)
+Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RrfNK44YSzMlhR;
+        Thu, 21 Sep 2023 10:24:01 +0800 (CST)
+Received: from [10.67.121.59] (10.67.121.59) by kwepemm600004.china.huawei.com
+ (7.193.23.242) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 21 Sep
+ 2023 10:27:36 +0800
+Message-ID: <1b05f595-b485-5a7e-ad31-b19f462fe43f@huawei.com>
+Date:   Thu, 21 Sep 2023 10:27:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 2/2] soc: kunpeng_hccs: add the check for PCC subspace
+ type
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     <rafael@kernel.org>, <rafael.j.wysocki@intel.com>,
+        <xuwei5@hisilicon.com>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <liuyonglong@huawei.com>,
+        <lihuisong@huawei.com>
+References: <20230914115753.9064-1-lihuisong@huawei.com>
+ <20230920064703.23543-1-lihuisong@huawei.com>
+ <20230920064703.23543-3-lihuisong@huawei.com>
+ <20230920141147.bq7cjiqjk6c36t6d@bogus>
+From:   "lihuisong (C)" <lihuisong@huawei.com>
+In-Reply-To: <20230920141147.bq7cjiqjk6c36t6d@bogus>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.121.59]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On September 20, 2023 1:18:14 AM PDT, Thomas Gleixner <tglx@linutronix=2Ede=
-> wrote:
->On Wed, Sep 20 2023 at 04:33, Li, Xin3 wrote:
->>> > +static inline void fred_syscall_init(void) {
->>> > +	/*
->>> > +	 * Per FRED spec 5=2E0, FRED uses the ring 3 FRED entrypoint for S=
-YSCALL
->>> > +	 * and SYSENTER, and ERETU is the only legit instruction to return=
- to
->>> > +	 * ring 3, as a result there is _no_ need to setup the SYSCALL and
->>> > +	 * SYSENTER MSRs=2E
->>> > +	 *
->>> > +	 * Note, both sysexit and sysret cause #UD when FRED is enabled=2E
->>> > +	 */
->>> > +	wrmsrl(MSR_LSTAR, 0ULL);
->>> > +	wrmsrl_cstar(0ULL);
->>>=20
->>> That write is pointless=2E See the comment in wrmsrl_cstar()=2E
->>
->> What I heard is that AMD is going to support FRED=2E
->>
->> Both LSTAR and CSTAR have no function when FRED is enabled, so maybe
->> just do NOT write to them?
->
->Right=2E If AMD needs to clear it then it's trivial enough to add a
->wrmsrl_cstar(0) to it=2E
 
-Just to clarify: the only reason I added the writes here was to possibly m=
-ake bugs easier to track down=2E There is indeed no functional reason=2E
+在 2023/9/20 22:11, Sudeep Holla 写道:
+> On Wed, Sep 20, 2023 at 02:47:03PM +0800, Huisong Li wrote:
+>> Currently, HCCS driver directly uses Generic Communications Channel Shared
+>> Memory Region which is used in type0/1/2 to communicate with platform,
+>> but actually doesn't support type3/4/5.
+>> So this patch adds the check for PCC subspace type.
+>>
+>> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+>> ---
+>>   drivers/soc/hisilicon/kunpeng_hccs.c | 17 +++++++++++++++++
+>>   1 file changed, 17 insertions(+)
+>>
+>> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
+>> index f3810d9d1caa..4ba3bfd45a01 100644
+>> --- a/drivers/soc/hisilicon/kunpeng_hccs.c
+>> +++ b/drivers/soc/hisilicon/kunpeng_hccs.c
+>> @@ -174,6 +174,19 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
+>>   	return rc;
+>>   }
+>>   
+>> +static int hccs_check_pcc_info(struct hccs_dev *hdev)
+>> +{
+>> +	struct pcc_mbox_chan *pcc_chan = hdev->cl_info.pcc_chan;
+>> +
+>> +	if (pcc_chan->type >= ACPI_PCCT_TYPE_EXT_PCC_MASTER_SUBSPACE) {
+>> +		dev_err(hdev->dev, "unsupport for subspace type%u.\n",
+>> +			pcc_chan->type);
+>> +		return -EOPNOTSUPP;
+>> +	}
+>   
+> Is this the only use of the PCC type information you have or do you plan to
+> use it for something other than the validation.
+Yeah, it is just validation now. we want to plan this driver can support 
+more types.
+>
+> Just for sake of argument, I can say all users of PCC must then do the
+> similar validation. I don't know where to draw the line here.
+
+If export PCC type, it is good for the user of PCC to be more universal 
+and more compatible.
+
+>
+> Ideally I would expect the driver to make this transparent and give error
+> during transmit if not supported.
+I understand you.
+I just check this type only once during the initializing phase.
+Otherwise, every once need to verify it when send PCC command.
+>
+> The driver must be able to work with different PCC type to support variety
+> of platforms TBH. What is the issue exactly here ? Is this to prevent the
+Agree more with you.
+IMO, the user of PCC has the ability to support variety of platforms if 
+they can get PCC type.
+In this case, to prevent type 4 is necessary if driver cannot act as a 
+slave.
+on the other hand, If one driver acts as a slave, platform must supply 
+slave subspace for them.
+> use of Type 4 ? I think we must do something better but I don't know what
+> that is yet.
+
+Yes, we can try to do it better. I have a concern, like below.
+
+You know that the use of PCC can use polling mode and interrupt mode to 
+communicate with platform.
+I'm not sure if the obtaining of the polling mode and interrupt mode is 
+an issue to prevent driver to be more universal.
+But this driver can know if they support interrupt mode based on struct 
+mbox_chan::struct mbox_controller::txdone_irq after requesting PCC channel.
+Because I'm not sure it's a better way.
+You know that drivers used interrupt mode need to fill the rx_callback 
+function into mbx_client when register PCC channel.
+And drivers used polling mode don't do it.
+If we use this way, drivers that both support the two mode have to 
+modify the rx_callback pointer after requesting PCC channel.
+>
