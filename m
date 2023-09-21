@@ -2,83 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C377A9A56
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C3D7A9A33
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjIUSi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        id S229589AbjIUShT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbjIUSho (ORCPT
+        with ESMTP id S229918AbjIUSgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:37:44 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFEFD9D0B
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:30:43 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so20213801fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:30:43 -0700 (PDT)
+        Thu, 21 Sep 2023 14:36:38 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54282DC728;
+        Thu, 21 Sep 2023 11:34:19 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c59c40b840so11540625ad.3;
+        Thu, 21 Sep 2023 11:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695321041; x=1695925841; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=je3lP1GqCpTp1WJIazL9sCEzHC84Hlh5WUKnq4wtUQQ=;
-        b=XlulifhbCFajWGBJyUp5ueWde0aAaVK4pzUc+F3lS+RxIJRU1GKc0zQCk/S5ClXjge
-         3LukVAfwxTiAYsNBEaMaEX4bsMmOzlBhsKBzy/j5FSVqGTmsxd5SMBeoyZOkcNrXEgPy
-         vj3CmKHfENTPmC4aAgI6GZm0gqd72MdWV8sf4=
+        d=gmail.com; s=20230601; t=1695321259; x=1695926059; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bGf/7eKiw4GZy2wkGbtT/YuoGRNiPGyqjAL1OAImvU4=;
+        b=c7LhKglQKaBJZG9fUaf2z6LaXdMU/N/5YxruMzwR/8sgJUEkSkMN9UMeFi+XtkFNgn
+         5rSZpfw0vj8jy2ub+4+EpDn/DY6lcft2WwG6hxOxgyc8kXjWry7qCZt0J2ttC4m/B4dx
+         YzZjxtCFxQo/WM+PpcaibcNjqCjsUWlogbtGIDSS4fHK6dwhPg3L0KXaW5ktFFHgCTfe
+         MliIb4KowRjRdtVXJY86nfYa5hmegANCO55PvRq24NQD/PLMIfwk0SAamNDL9PUj3Ll9
+         1HZwhl1eNqW/vV6FZv/YvTEoyPQqwtMFwevuwyEDfHnOfSZ/MLZdJJKDy0JEgm/QZpTs
+         VS+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321041; x=1695925841;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695321259; x=1695926059;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=je3lP1GqCpTp1WJIazL9sCEzHC84Hlh5WUKnq4wtUQQ=;
-        b=P0vCwSScpiAYkQvjC93qwvEYhv0NldwE3cMc1zVu+FKeGY2MNs0q5czX6ApmWLSAqC
-         NolU2UzpOKq6FXfTWi2ym35+b6SYKQL9MlvKRA98bT86UKLZ5A86Vo5f7DlJOSDv7mh8
-         3CxzgUQNMYMFmFV13FUQvOhBDMPQzQKv+EHFgT5QRZKskSGKjwRFwtKLx65tbt3vQIuv
-         bwcnD/Wd/GBJm3tbfDjPJ6XDABGilOG+x7ybm0zKHvO8cSIAbwL4iecSoOEMrYGSsRcE
-         7AX53DVLlqZx0MlQRNN4ToG3K5frB7WmDd3BFnMAGbO1EH8YTkDoZqzOvLZXHVTZAXia
-         BhqQ==
-X-Gm-Message-State: AOJu0Yx9ardiIt9Ih7+UoHT6H8/72kvKCPimejEhrmM3rQpDHpD4CyWE
-        orohDtJm/4so90aBWi9MCW7/QxwVJwWMLJ398ty4KQSm
-X-Google-Smtp-Source: AGHT+IEQyLRNDIB/PB1as2CR6uqo6PKaHNMkONpr49kZPERgQull/fF/H5UIZnNzw/QdjTHKfRyY+g==
-X-Received: by 2002:a2e:910f:0:b0:2bf:ff17:811e with SMTP id m15-20020a2e910f000000b002bfff17811emr5319930ljg.14.1695321041216;
-        Thu, 21 Sep 2023 11:30:41 -0700 (PDT)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id h9-20020a17090619c900b009ae54eba5casm1412890ejd.102.2023.09.21.11.30.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 11:30:40 -0700 (PDT)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-532aaba8747so1594846a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:30:40 -0700 (PDT)
-X-Received: by 2002:aa7:d4d7:0:b0:525:691c:cd50 with SMTP id
- t23-20020aa7d4d7000000b00525691ccd50mr5853774edr.24.1695321040242; Thu, 21
- Sep 2023 11:30:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <a15822902e9e751b982a07621d180e3fa00353d4.camel@redhat.com>
-In-Reply-To: <a15822902e9e751b982a07621d180e3fa00353d4.camel@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 Sep 2023 11:30:22 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whsTjLdt7RX-f-sFxqu_PieiBz=2OTjBF1CgW4j+OHfag@mail.gmail.com>
-Message-ID: <CAHk-=whsTjLdt7RX-f-sFxqu_PieiBz=2OTjBF1CgW4j+OHfag@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for 6.6-rc3
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        bh=bGf/7eKiw4GZy2wkGbtT/YuoGRNiPGyqjAL1OAImvU4=;
+        b=mLwtjnWX30Sa1J9wqHlXmWUVsAYPEYtJD+kOeHfC+xuwnHQEdvPV3dtp0V4KOwmaJ5
+         lBuN5BIKZiiMbbEBIOx2yrURSmqr6+XooX2WgeMoo10ntoGg80CzDZYhBwi0ZXEdeFJq
+         4EP4J6WuxbygN1vRIFPu6ZVYDEA6XjNOWXul6v7X0f/dxbiMrFsutR5isLRHLLUsnYR5
+         43hCGSP2BVavzr2FrYeBVsYs6Pfad2wbz1IUAnF/L/sbFL1oVpU1ivdL/vsEeoXWq+TW
+         yOEwksDNeUg5WvIrtr9lkP+VDLoWn/JrMf7pcxjtRfPOhIp8xJFF3VTwW1mqiTI7cuAw
+         pTag==
+X-Gm-Message-State: AOJu0YwzHhWiBoKWBOQf+9H3HV31MK9iaHpY7IDY4Ebe9JImogLjbwZm
+        FcEAnzDBFNPCS9MAIOReY44=
+X-Google-Smtp-Source: AGHT+IHIURvUvx+ENScmM7CExkX+NBRuXfn7qir3DidtTnofrsT1JNEfob6CFehvv2XfBUELPXBlsg==
+X-Received: by 2002:a17:902:7d93:b0:1c5:e00f:2 with SMTP id a19-20020a1709027d9300b001c5e00f0002mr910511plm.28.1695321258605;
+        Thu, 21 Sep 2023 11:34:18 -0700 (PDT)
+Received: from localhost.localdomain ([122.172.81.113])
+        by smtp.gmail.com with ESMTPSA id c3-20020a170902d90300b001bbfa86ca3bsm1844790plz.78.2023.09.21.11.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 11:34:18 -0700 (PDT)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH v2] ASoC: dt-bindings: tfa9879: Convert to dtschema
+Date:   Fri, 22 Sep 2023 00:03:13 +0530
+Message-Id: <20230921183313.54112-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sept 2023 at 07:35, Paolo Abeni <pabeni@redhat.com> wrote:
->
-> I'm wondering is if my PR reached somehow your inbox and/or if I have
-> to re-send it.
+Convert the tfa9879 audio CODEC bindings to DT schema
+No error/warning seen when running make dt_binding_check
 
-I got it fine, and just merged it (still going through the build test etc)
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 
-                Linus
+Changes:
+V1 -> V2: Fixed DT syntax errors and doc warning
+---
+ .../bindings/sound/nxp,tfa9879.yaml           | 44 +++++++++++++++++++
+ .../devicetree/bindings/sound/tfa9879.txt     | 23 ----------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 45 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+new file mode 100644
+index 000000000000..df26248573ad
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nxp,tfa9879.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP TFA9879 class-D audio amplifier
++
++maintainers:
++  - Peter Rosin <peda@axentia.se>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: nxp,tfa9879
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c1 {
++       #address-cells = <1>;
++       #size-cells = <0>;
++       amplifier@6c {
++          compatible = "nxp,tfa9879";
++          reg = <0x6c>;
++          pinctrl-names = "default";
++          pinctrl-0 = <&pinctrl_i2c1>;
++          #sound-dai-cells = <0>;
++       };
++    };
+diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
+deleted file mode 100644
+index 1620e6848436..000000000000
+--- a/Documentation/devicetree/bindings/sound/tfa9879.txt
++++ /dev/null
+@@ -1,23 +0,0 @@
+-NXP TFA9879 class-D audio amplifier
+-
+-Required properties:
+-
+-- compatible : "nxp,tfa9879"
+-
+-- reg : the I2C address of the device
+-
+-- #sound-dai-cells : must be 0.
+-
+-Example:
+-
+-&i2c1 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_i2c1>;
+-
+-	amp: amp@6c {
+-		#sound-dai-cells = <0>;
+-		compatible = "nxp,tfa9879";
+-		reg = <0x6c>;
+-	};
+-};
+-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a4c30221eb30..569303daf9b4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15476,7 +15476,7 @@ NXP TFA9879 DRIVER
+ M:	Peter Rosin <peda@axentia.se>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/sound/tfa9879.txt
++F:	Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+ F:	sound/soc/codecs/tfa9879*
+ 
+ NXP-NCI NFC DRIVER
+-- 
+2.34.1
+
