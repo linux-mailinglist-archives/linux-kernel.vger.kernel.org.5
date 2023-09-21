@@ -2,81 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3127AA114
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83927AA10B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbjIUU56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
+        id S230337AbjIUU4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbjIUU5f (ORCPT
+        with ESMTP id S229670AbjIUUtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:57:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A804066A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:10:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=70cLdlRlQ6wmrVb+lO5G5T5n9IGtfTiJYwHW+xMgyWs=; b=jLdH+cnqRr5ViVdt6JoCr7dBTH
-        A8fXI6yDoy3NVMaj96gwpb8+Hbe6wAdWZUjYr6dag/E1NUKi7DULxm8Wr3bxpETzcVcssNr9LmKqy
-        +cxDjNFh8u2+9fJ9g59VzSH/qM0BIJmVEjy7nqtrNud9cdZ9MtYyjlLSIrVT637FKkv+2h4PEWwPE
-        zzJeNrcTx+Wx6cUoHv9a0z/txjTW96OtamblWo/GOOlBkGpPvk2wMGss8KtX5sm4AtqFRuPBHIqjx
-        H38zktMy7dBpwbPqnEBU5fCJ/GZFWvJVavitL0rmF32nmQ4FinocWhwE3r5rbIoqjmhnE9eG+Rc8A
-        5D7PPX6w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qjENX-00Acj0-Fd; Thu, 21 Sep 2023 07:45:41 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 97F8C3002E3; Thu, 21 Sep 2023 09:45:38 +0200 (CEST)
-Date:   Thu, 21 Sep 2023 09:45:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     John Stultz <jstultz@google.com>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] locking/semaphore: Use wake_q to wake up processes
- outside lock critical section
-Message-ID: <20230921074538.GD14803@noisy.programming.kicks-ass.net>
-References: <20220909192848.963982-1-longman@redhat.com>
- <CANDhNCpsDbz9ZT+h4Zcq-7QMJ-uqs3rW+MXCVcbi2A2hnTjBpQ@mail.gmail.com>
+        Thu, 21 Sep 2023 16:49:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA2D4CB00;
+        Thu, 21 Sep 2023 10:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695318588; x=1726854588;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=fZEXWeTeOBrejODuS6erDuW9xhi+ilN63E3t7GSB+Dc=;
+  b=mYLObWUcd9WTK/8as8BLRXq34hkELQ+jqRWpxcYabdwgQj1hmo3YyPjU
+   K6XUxEbrRgGBFkE1odl1b4Yk0/Wdyd1QWoT0Qop9VQQ/qHEQAJXaL5mph
+   E2xcdYJi5zLclO7jDAskar481WVdWzYHT2AuoI3OhwCRdL2DLNaR9fq6K
+   pG0rjNNOfMGhA0yAthttcVSto8Fc3oKCRajdWVOnDmIEHv9klpnTW+PSr
+   LdxGsuuJnxrKP1AL9XlL4hDVseR70QrauEMQyAa7R0Rp+B5/BTsENVMME
+   kRqUjQ/ESVtEeDzghup16Tvvx2LufPHsE+dd1A4aIJ0tba/KcqBIhcTY3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359832824"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="359832824"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 00:52:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="723649502"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="723649502"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by orsmga006.jf.intel.com with ESMTP; 21 Sep 2023 00:52:09 -0700
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: [PATCH v4 03/17] iommufd: Unite all kernel-managed members into a struct
+Date:   Thu, 21 Sep 2023 00:51:24 -0700
+Message-Id: <20230921075138.124099-4-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230921075138.124099-1-yi.l.liu@intel.com>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANDhNCpsDbz9ZT+h4Zcq-7QMJ-uqs3rW+MXCVcbi2A2hnTjBpQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 05:05:56PM -0700, John Stultz wrote:
-> On Fri, Sep 9, 2022 at 12:28 PM Waiman Long <longman@redhat.com> wrote:
-> >
-> > It was found that a circular lock dependency can happen with the
-> > following locking sequence:
-> >
-> >    +--> (console_sem).lock --> &p->pi_lock --> &rq->__lock --+
-> >    |                                                         |
-> >    +---------------------------------------------------------+
-> >
-> > The &p->pi_lock --> &rq->__lock sequence is very common in all the
-> > task_rq_lock() calls.
-> 
-> Thanks for sending this out! I've been hitting these lockdep warningns
-> a lot recently, particularly if I have any debug printks/WARN_ONs in
-> the scheduler that trip, so I'm eager to get a fix for this!
+From: Nicolin Chen <nicolinc@nvidia.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=debug/experimental
+The struct iommufd_hw_pagetable has been representing a kernel-managed
+HWPT, yet soon will be reused to represent a user-managed HWPT. These
+two types of HWPTs has the same IOMMUFD object type and an iommu_domain
+object, but have quite different attributes/members.
 
-and use with: earlyprintk=serial,ttyS0,115200 force_early_printk, or
-somesuch.
+Add a union in struct iommufd_hw_pagetable and group all the existing
+kernel-managed members. One of the following patches will add another
+struct for user-managed members.
 
-I could not have done perf or much of the sched patches without it.
+Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+---
+ drivers/iommu/iommufd/iommufd_private.h | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+index 3064997a0181..947a797536e3 100644
+--- a/drivers/iommu/iommufd/iommufd_private.h
++++ b/drivers/iommu/iommufd/iommufd_private.h
+@@ -231,13 +231,18 @@ int iommufd_vfio_ioas(struct iommufd_ucmd *ucmd);
+  */
+ struct iommufd_hw_pagetable {
+ 	struct iommufd_object obj;
+-	struct iommufd_ioas *ioas;
+ 	struct iommu_domain *domain;
+-	bool auto_domain : 1;
+-	bool enforce_cache_coherency : 1;
+-	bool msi_cookie : 1;
+-	/* Head at iommufd_ioas::hwpt_list */
+-	struct list_head hwpt_item;
++
++	union {
++		struct { /* kernel-managed */
++			struct iommufd_ioas *ioas;
++			bool auto_domain : 1;
++			bool enforce_cache_coherency : 1;
++			bool msi_cookie : 1;
++			/* Head at iommufd_ioas::hwpt_list */
++			struct list_head hwpt_item;
++		};
++	};
+ };
+ 
+ struct iommufd_hw_pagetable *
+-- 
+2.34.1
 
