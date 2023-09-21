@@ -2,185 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1547AA071
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3B27AA375
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjIUUhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
+        id S232686AbjIUVum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbjIUUh1 (ORCPT
+        with ESMTP id S231874AbjIUVuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:37:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DA98920B
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:39:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 038061FF4A;
-        Thu, 21 Sep 2023 08:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695285846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=q9zIgA9s/phS/Nqu/3pDBFlZT3PSAPCasnzdZQ61fI4=;
-        b=Gp+/LVCjMkul1O75it9Z8S3cIolHoh7n2UD14BVd1R6+0ziAUyxhrcUDSiEUKcBBlAdc7T
-        ruUrVUu20YiTiZuJ2TYlefEQHGPG8MCn9lbbpj0yZg5SqofHnH+gnkGEL4FzHDKNdW3uox
-        IjA+sntFGeIWoH3OVaPnK8Ec1ePbC+Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695285846;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=q9zIgA9s/phS/Nqu/3pDBFlZT3PSAPCasnzdZQ61fI4=;
-        b=jzQ8YKu6/kc0bEz+3W+lHDRSWqPbLWXooNWf2qtTt9PgqP4VKd8bXPRF0G/1QSu9zerzlM
-        goklmO8O6GFtvPDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8A41134B0;
-        Thu, 21 Sep 2023 08:44:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id xAzeM1UCDGVmIAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 21 Sep 2023 08:44:05 +0000
-Message-ID: <ab551ded-f8f2-4a75-8b51-a8a0fb9e3349@suse.de>
-Date:   Thu, 21 Sep 2023 10:44:05 +0200
+        Thu, 21 Sep 2023 17:50:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258B183331;
+        Thu, 21 Sep 2023 10:37:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 348ABC116D4;
+        Thu, 21 Sep 2023 08:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695286022;
+        bh=YrAx0IOimxMinoRfvH9X/BV0qc5xwrL8BUKY0ZLKjMk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rwPg638QO2+Noyan8G0ltDwFnFolFtg4oQadiBeTUGMYuQjrPgFqvd9sBhIVGeo+5
+         S0si5GD/LrF3y3DiEzoab49//IOo2JcWTo1+ICI5vk1bhxaxSJDjcfVThXlEFYpKkw
+         tVTwTjbrTuCsyN0nt+nNrv9Q+kdrFQqVdgeVgebxjJPW8kCUk0Zn+1xSYElRpVK9vE
+         DZCarQRNhB52q8dmoCl8U7CEaaS9gxh0VfeOlSWh/WRf0LWvGcBKBZBljLht8zcir4
+         r4lvyrwAh7rKIE3DDq/wEWUdMEsuhwI1O60X4lixu79Y8r8LwvrrBdvIzVP1s9OlnQ
+         rn0bx/W9GYYAA==
+Date:   Thu, 21 Sep 2023 10:46:58 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     syzbot <syzbot+5f1acda7e06a2298fae6@syzkaller.appspotmail.com>
+Cc:     chuck.lever@oracle.com, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [fs?] memory leak in fasync_helper (2)
+Message-ID: <20230921-kichern-akrobatisch-3d83edba974a@brauner>
+References: <000000000000a3f3d40605d8f0f8@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
- drm_*_helper_funcs callbacks
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230914195138.1518065-1-javierm@redhat.com>
- <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
- <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
- <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
- <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
- <878r90kk8h.fsf@minerva.mail-host-address-is-not-set>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <878r90kk8h.fsf@minerva.mail-host-address-is-not-set>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------gnaJEnC7xR3fHLvNbEiwFQU3"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <000000000000a3f3d40605d8f0f8@google.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------gnaJEnC7xR3fHLvNbEiwFQU3
-Content-Type: multipart/mixed; boundary="------------fJeVOobFUNnvhtAK0N0SFJnS";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Maxime Ripard <mripard@kernel.org>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <ab551ded-f8f2-4a75-8b51-a8a0fb9e3349@suse.de>
-Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
- drm_*_helper_funcs callbacks
-References: <20230914195138.1518065-1-javierm@redhat.com>
- <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
- <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
- <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
- <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
- <878r90kk8h.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <878r90kk8h.fsf@minerva.mail-host-address-is-not-set>
+On Wed, Sep 20, 2023 at 11:52:48PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f0b0d403eabb Merge tag 'kbuild-fixes-v6.6' of git://git.ke..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=144e498c680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=943a94479fa8e863
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5f1acda7e06a2298fae6
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=161ac702680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16515418680000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/47695e593bcd/disk-f0b0d403.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/306f9aca0df9/vmlinux-f0b0d403.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/25549b4deb42/bzImage-f0b0d403.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5f1acda7e06a2298fae6@syzkaller.appspotmail.com
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888114ac69c0 (size 48):
+>   comm "syz-executor199", pid 5124, jiffies 4294947402 (age 21.830s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
+>     00 00 00 00 00 00 00 00 00 81 0f 09 81 88 ff ff  ................
+>   backtrace:
+>     [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
+>     [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
+>     [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
+>     [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
 
---------------fJeVOobFUNnvhtAK0N0SFJnS
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-SGkNCg0KQW0gMjEuMDkuMjMgdW0gMTA6MjMgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
-aWxsYXM6DQpbLi4uXQ0KPiANCj4gQm90aCBvcHRpb25zIGhhdmUgY29ucyBhbmQgcHJvcyAo
-ZS5nOiBxdWlja2x5IGZpZ3VyaW5nIG91dCB0byB3aGF0IHN0cnVjdA0KPiBjYWxsYmFjayBp
-cyBhc3NvY2lhdGVkIGFzIHlvdSBzYWlkKSwgYnV0IHRoZSByZWFzb24gSSBwb3N0ZWQgdGhp
-cyBwYXRjaCBpcw0KPiB0byBhdHRlbXB0IG1ha2luZyB0aGUgZHJpdmVyIG1vcmUgY29uc2lz
-dGVudCB3aXRoIHRoZSByZXN0IG9mIHRoZSBkcml2ZXJzLg0KPiANCj4+IFBlcmhhcHMgdGhl
-IHJlYWwgcXVlc3Rpb24gaXMgd2hldGhlciB0aGUgc3RydWN0dXJlcyBzaG91bGQgaGF2ZSAi
-aGVscGVyIg0KPj4gaW4gdGhlaXIgbmFtZSBpbiB0aGUgZmlyc3QgcGxhY2U/DQo+Pg0KPiAN
-Cj4gSW5kZWVkLiBJIG5ldmVyIGZ1bGx5IHVuZGVyc3Rvb2Qgd2h5IHRoZSBEUk0vS01TIG9i
-amVjdHMgY2FsbGJhY2tzIGFyZQ0KPiBzcGxpdCBpbiBkcm1fJG9iamVjdF9mdW5jcyBhbmQg
-ZHJtXyRvYmplY3RfaGVscGVyX2Z1bmNzIHN0cnVjdHMuIEFGQUlVDQo+IGlzIGJlY2F1c2Ug
-dGhlIGZvcm1lciBpcyB0aGUgbWluaW11bSByZXF1aXJlZCBhbmQgdGhlIGxhdHRlciBpcyB0
-byBhZGQNCj4gYWRkaXRpb25hbCBjdXN0b20gYmVoYXZpb3IgPw0KDQpUaGUgZHJtXzxvYmpl
-Y3Q+X2Z1bmNzIGlzIGFuIGludGVyZmFjZSB0aGF0IGlzIGJlaW5nIGNhbGxlZCBmcm9tIERS
-TSANCnVzZXJzcGFjZS9jbGllbnRzL2lvY3Rscy4gSXQncyB0aGUgaW50ZXJmYWNlIHRoYXQg
-d2UgcHJlc2VudCB0byB0aGUgDQpvdXRzaWRlIHdvcmxkLiBJbXBsZW1lbnQgdGhlbSBpbiBl
-YWNoIGhhcmR3YXJlJ3MgZHJpdmVyLg0KDQpCdXQgbW9zdCBncmFwaGljcyBoYXJkd2FyZSBp
-cyBzaW1pbGFyIHRvIGVhY2ggb3RoZXIuIFRoZSBkaWZmZXJlbmNlcyBhcmUgDQppbiB0aGUg
-d2F5IGhvdyB0aGluZ3MgYXJlIGRvbmUsIGJ1dCBub3Qgc28gbXVjaCB3aGF0IGlzIGJlaW5n
-IGRvbmUuIA0KSGVuY2UsIGEgZ29vZCBudW1iZXIgb2YgZHJtXyRvYmplY3RfZnVuY3MgY2Fu
-IGJlIHByb3ZpZGVkIGluIA0KaGFyZHdhcmUtaW5kZXBlbmRlbnQgaGVscGVycy4gZHJtX29i
-amVjdF9oZWxwZXJfZnVuY3MgYXJlIGNhbGxiYWNrIGZvciANCnRoZXNlIGhlbHBlcnMuIElu
-IHRoZSBwbGFjZXMgd2hlcmUgdGhlIGhlbHBlcnMgbmVlZCB0aGUgZHJpdmVyIHRvIGRvIA0K
-c29tZXRoaW5nIHdpdGggdGhlIGhhcmR3YXJlLCB0aGV5IHJlZmVyIHRvIF9oZWxwZXJfZnVu
-Y3MuDQoNCklJUkMsIHRoZXJlIGFyZSBhIGZldyBvdXRsaWVycywgYnV0IHRoYXQncyB0aGUg
-b3ZlcmFsbCBpZGVhLg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPiBJIHJlYWQg
-dGhpcyBzZWN0aW9uIG9mIHRoZSBkb2N1bWVudGF0aW9uIGJ1dCBzdGlsbCBpc24ndCBjbGVh
-ciB0byBtZToNCj4gDQo+IGh0dHBzOi8vZHJpLmZyZWVkZXNrdG9wLm9yZy9kb2NzL2RybS9n
-cHUvZHJtLWttcy1oZWxwZXJzLmh0bWwNCj4gDQo+PiBKdXN0IG15IDLigqxjIGFzIGEgRFJN
-IG5vdmljZS4uLg0KPj4NCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNz
-IERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21i
-SA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJ
-dm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJt
-YW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
-
---------------fJeVOobFUNnvhtAK0N0SFJnS--
-
---------------gnaJEnC7xR3fHLvNbEiwFQU3
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUMAlUFAwAAAAAACgkQlh/E3EQov+Be
-7xAAqEc4f6bs8expymGc6gxio2SoBgMJngmjbRXxB3Avo/tIKa7TSa4hR1krtJA+Ym8ocUR1kvCy
-Uhh2mPV3oyxwBHyolgN/c1jVguvYXrRf7w2iz/16B2IqKmJaJOy+PjJyU/5tDDt/VTt3IQyaUl+m
-z+sD0vT3l4+PPRYXAC/OcmvGSxF4a3wvqCPFIQVY13N9ykluuHeHLU4/ulAwytPdnemTvewycq9b
-62f5Y47BoxG6rFaOSYjsXsXk280c+6tsvHX2Tbsmh5jxko6CL7Rwt9tfthgBRHavLpA1tCoyrXY9
-rvXKxXZjqGr/ZoUl2kXQ5jen0rhYSY99FCmyc8L5w6o0j0V/ZiqOxHOgqhJ4WOjcGNo57DYd4lMt
-pk3LV9T6VQ2L1DJFWdNtDggtZOT/V1+VrObUEVlU6AsemWpkALx9GGf4bbWxki5ve1CRDpvmLJG+
-+2SP66U1qXDvLbE4Pt+smjVOUr/pnwUIbivJb6LoXCxN6/Mrv/T/fDmvw2ptgv/GP4HUiFYUyYyU
-PMqC7A6YLYLJSFhsD3S/5dmlWapKGYSNPgxuW4khAnjIB8Pc1To2ZOxzRKLT1E6YzyGLKItt3IUo
-oeij4TUuZQ1R8lHzhA+2acfGOwSQI2ADBEIa93gwbNfcI7BcT5CwUJaqMa17j8EbqKyCeelkT07k
-N70=
-=qa3g
------END PGP SIGNATURE-----
-
---------------gnaJEnC7xR3fHLvNbEiwFQU3--
+#syz set subsystems: net
