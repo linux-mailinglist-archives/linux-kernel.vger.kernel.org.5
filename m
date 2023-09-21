@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DE67A9A08
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFC57A9A34
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjIUSfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
+        id S230286AbjIUShQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjIUSfZ (ORCPT
+        with ESMTP id S229799AbjIUSgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:35:25 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4115065BA;
-        Thu, 21 Sep 2023 11:15:22 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4053c6f0d3dso922945e9.1;
-        Thu, 21 Sep 2023 11:15:22 -0700 (PDT)
+        Thu, 21 Sep 2023 14:36:38 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C7BDAFC7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:32:13 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so1470866a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:32:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695320120; x=1695924920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VewR6GvnAG1Xb3ny5cXxxfMwVZK0RXHm5eoMUnZrOq4=;
-        b=dNMWu+4wZaZq9t/liVVlkh0RkoNzuzAWg28uiKBteA91wSWenHkvXGatLVu7j1+ApF
-         eUPQZp46d5xh7OGrShzDvxC+G6Z+pszsJybMS5NdD2ICisaGIyU/7KX1yvIrk3HV0sog
-         7MRo/bOwJY2p4nskGEAjjjGDKUBbGGbUU/xZJEDLnADN+GK9vlJzFy/oHiRX944F45Sm
-         tFtMuHeeTvbCPBpwwsCrwJm6N/reheVrojhQGJj08LVI2TAtwwYbmzj165trvrRiyfrk
-         0Afvf0yxBt79AVrhkVLz7XIAtNb5f9poI+I4Tblkk+Re6i+vE7WjfgMYxXa8XkbNjJPb
-         d+Og==
+        d=szeredi.hu; s=google; t=1695321132; x=1695925932; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=duasdIDps1Ar+JiX8MLjxGEHHubOxG32YmdpyidUjAA=;
+        b=qFpG4RkEhgRgb2vau6Tpv6uWtagYsxHtB9cl4sw4vdMzsVh48WPJQZBcu1FG8Bkmkv
+         5wLMa5BGUWNjz1Y8MSCRItgfaTDeyWt/eTf68t4WPIYqdvXSuedzXhi3CYqa4xyfdTk9
+         Pm0p5pgWKp7TLtr44x/JvxkbcU3EamMCnwy+A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320120; x=1695924920;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695321132; x=1695925932;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VewR6GvnAG1Xb3ny5cXxxfMwVZK0RXHm5eoMUnZrOq4=;
-        b=v3HyRDiuDSv4UOAOI6b2dJJiQiyLcmxcawoAsFopmfBJIm4CL+TxYZXymZLZgH/8bZ
-         mdEd9nCNQ2HmEtgera8S24ZzcIlLo59AIB/6t+IWhSLSRfKAWP8GiDaJP1Pn2FeaGnH0
-         FtN/H1iPK7WysWNw4baL5T9KjyqMvGkNQz+QzstQwyANyvsfF518wkNETEdPn4yu2qdj
-         4XQze42yzDc301hW8vfMseqXzR8hZx4SRwhAPNnFQwHBsTLdUiNhP+c//qlLda4B5XAZ
-         dqsTZABY+mRMbSW7gAkfSFJbGABejaZQ4d3NFkcHMLn0KqfPVzM1aXL8SJ/Dplxfyb9p
-         4Tug==
-X-Gm-Message-State: AOJu0YxynJVca+OWaTbMFhngqOpLDHk3DpUNVlqMtgGUfTKzqbDbAmnf
-        Xpa8ljMaU95TwpVstx1sgQfE6PG83n4z9Q==
-X-Google-Smtp-Source: AGHT+IFHhXhgBdE5T7SPSfFl/a9nBt06Mtr/0hBhDGBXRf4YMzvsWqLkX0osTD7Hjg49aO3EPR3Lkw==
-X-Received: by 2002:a05:6512:4002:b0:4fe:25bc:71f5 with SMTP id br2-20020a056512400200b004fe25bc71f5mr4995738lfb.11.1695281585731;
-        Thu, 21 Sep 2023 00:33:05 -0700 (PDT)
-Received: from lab.hqhome163.com ([194.183.10.152])
-        by smtp.googlemail.com with ESMTPSA id k22-20020a05600c0b5600b0040523bef620sm1161231wmr.0.2023.09.21.00.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 00:33:05 -0700 (PDT)
-From:   "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
-To:     linux-clk@vger.kernel.org
-Cc:     Alessandro Carminati <alessandro.carminati@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Philip Daly <pdaly@redhat.com>
-Subject: [PATCH v2] clk: Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
-Date:   Thu, 21 Sep 2023 07:32:17 +0000
-Message-Id: <20230921073217.572151-1-alessandro.carminati@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=duasdIDps1Ar+JiX8MLjxGEHHubOxG32YmdpyidUjAA=;
+        b=pIlD96gNSeeC7s0neR/7xjhwaw9bBYoLwzcnbWCOw4pN+PiECkZdgWWila/vwWCbDV
+         Lbswn7YITpFbU/8qc6IBihdjUu76ppzDUUuLROZxlqWhyB13plSW1wMGt1MACudBFVcf
+         9t2auURNsOMQqFu94RmHbeUcDvLeSKXy73Mq4mb9Zs3ggA1wijtNTT/aLTt06FHHQwqf
+         iUd2QvaO3KYBSIp0NPKJxAcXfDtfVAoTcPU4lhk3+8cYLUAn8EBqeTORmUAYQG/FwqgN
+         sSEb2tU8arIUjLK7RZRnww82XunprHiPD+DxsZGX8WU3uG9yKIOD0qj78/ih5Ug0RuvA
+         Z++Q==
+X-Gm-Message-State: AOJu0YwB5ctaY1s4vQNZxOSJN95llmEbjh7fN3jOYkSsJIDYuEnRsMH7
+        AsYfPF8vGsSAErsyhz0TtbuL0uRmGJoqbkFhIa0ABkjb2R5WO/gY3Lg=
+X-Google-Smtp-Source: AGHT+IEMcpET+KyGeAflcKrt2Lb0K8gxzNygopNZCsI5AgwGZvckAbSqyadk7XQvFGprUQhpXBwpf5gUZkOt9LY6QjE=
+X-Received: by 2002:a17:906:d3:b0:99e:1358:ffdf with SMTP id
+ 19-20020a17090600d300b0099e1358ffdfmr3894831eji.72.1695281665917; Thu, 21 Sep
+ 2023 00:34:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+ <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+ <20230914-lockmittel-verknallen-d1a18d76ba44@brauner> <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
+ <20230918-grafik-zutreffen-995b321017ae@brauner> <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
+ <20230918-hierbei-erhielten-ba5ef74a5b52@brauner> <CAJfpegtaGXoZkMWLnk3PcibAvp7kv-4Yobo=UJj943L6v3ctJQ@mail.gmail.com>
+ <20230918-stuhl-spannend-9904d4addc93@brauner> <CAJfpegvxNhty2xZW+4MM9Gepotii3CD1p0fyvLDQB82hCYzfLQ@mail.gmail.com>
+ <20230918-bestialisch-brutkasten-1fb34abdc33c@brauner> <CAJfpegvTiK=RM+0y07h-2vT6Zk2GCu6F98c=_CNx8B1ytFtO-g@mail.gmail.com>
+ <20230919003800.93141-1-mattlloydhouse@gmail.com> <CAJfpegs6g8JQDtaHsECA_12ss_8KXOHVRH9gwwPf5WamzxXOWQ@mail.gmail.com>
+ <20230919212840.144314-1-mattlloydhouse@gmail.com> <CAJfpeguMf7ouiW79iey1i68kYnCcvcpEXLpUNf+CF=aNWxXO2Q@mail.gmail.com>
+ <20230920132606.187860-1-mattlloydhouse@gmail.com>
+In-Reply-To: <20230920132606.187860-1-mattlloydhouse@gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 21 Sep 2023 09:34:14 +0200
+Message-ID: <CAJfpegvZ+4SNnkOEkS=7D44bZNQBovA7SU7etChN6Bh_B9f3dQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Matthew House <mattlloydhouse@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alessandro Carminati <alessandro.carminati@gmail.com>
+On Wed, 20 Sept 2023 at 15:26, Matthew House <mattlloydhouse@gmail.com> wrote:
 
-In the possible_parent_show function, ensure proper handling of the return
-value from of_clk_get_parent_name to prevent potential issues arising from
-a NULL return.
-The current implementation invokes seq_puts directly on the result of
-of_clk_get_parent_name without verifying the return value, which can lead
-to kernel panic if the function returns NULL.
+> The declared type of a variable *is* one of the different types, as far as
+> the aliasing rules are concerned. In C17, section 6.5 ("Expressions"):
+>
+> > The *effective type* of an object for an access to its stored value is
+> > the declared type of the object, if any. [More rules about objects with
+> > no declared type, i.e., those created with malloc(3) or realloc(3)...]
+> >
+> > An object shall have its stored value accessed only by an lvalue
+> > expression that has one of the following types:
+> >
+> > -- a type compatible with the effective type of the object,
+> >
+> > -- a qualified version of a type compatible with the effective type of
+> >    the object,
+> >
+> > -- a type that is the signed or unsigned type corresponding to the
+> >    effective type of the object,
+> >
+> > -- a type that is the signed or unsigned type corresponding to a
+> >    qualified version of the effective type of the object,
+> >
+> > -- an aggregate or union type that includes one of the aforementioned
+> >    types among its members (including, recursively, a member of a
+> >    subaggregate or contained union), or
+> >
+> > -- a character type.
+>
+> In this case, buf is declared in the program as a char[10000] array, so the
+> declared type of each element is char, and the effective type of each
+> element is also char. If we want to access, say, st->mnt_id, the lvalue
+> expression has type __u64, and it tries to access 8 of the char objects.
+> However, the integer type that __u64 expands to doesn't meet any of those
+> criteria, so the aliasing rules are violated and the behavior is undefined.
 
-This patch addresses the concern by introducing a check on the return
-value of of_clk_get_parent_name. If the return value is not NULL, the
-function proceeds to call seq_puts, providing the returned value as
-argument.
-However, if of_clk_get_parent_name returns NULL, the function provides a
-static string as argument, avoiding the panic.
+Some of the above is new information for me.
 
-Fixes: 1ccc0ddf046a ("clk: Use seq_puts() in possible_parent_show()")
-Reported-by: Philip Daly <pdaly@redhat.com>
-Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
----
- drivers/clk/clk.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+However for all practical purposes the code doesn't violate aliasing
+rules.  Even the most aggressive "-Wstrict-aliasing=1" doesn't trigger
+a warning.  I guess this is because gcc takes the definition to be
+symmetric, i.e. anything may safely be aliased to a char pointer and a
+char pointer may safely be aliased to anything.  I'm not saying that
+that is what the language definition says, just that gcc interprets
+the language definition that way.  Also plain "-Wstrict-aliasing"
+doesn't trigger even if the type of the array is not char, because gcc
+tries hard not to warn about cases where there's no dereference of the
+aliased pointer.  This is consistent with what I said and what the gcc
+manpage says:  only accesses count, declarations don't.
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index c249f9791ae8..473563bc7496 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3416,6 +3416,7 @@ static void possible_parent_show(struct seq_file *s, struct clk_core *core,
- 				 unsigned int i, char terminator)
- {
- 	struct clk_core *parent;
-+	const char *name = NULL;
- 
- 	/*
- 	 * Go through the following options to fetch a parent's name.
-@@ -3430,18 +3431,20 @@ static void possible_parent_show(struct seq_file *s, struct clk_core *core,
- 	 * registered (yet).
- 	 */
- 	parent = clk_core_get_parent_by_index(core, i);
--	if (parent)
-+	if (parent) {
- 		seq_puts(s, parent->name);
--	else if (core->parents[i].name)
-+	} else if (core->parents[i].name) {
- 		seq_puts(s, core->parents[i].name);
--	else if (core->parents[i].fw_name)
-+	} else if (core->parents[i].fw_name) {
- 		seq_printf(s, "<%s>(fw)", core->parents[i].fw_name);
--	else if (core->parents[i].index >= 0)
--		seq_puts(s,
--			 of_clk_get_parent_name(core->of_node,
--						core->parents[i].index));
--	else
--		seq_puts(s, "(missing)");
-+	} else {
-+		if (core->parents[i].index >= 0)
-+			name = of_clk_get_parent_name(core->of_node, core->parents[i].index);
-+		if (!name)
-+			name = "(missing)";
-+
-+		seq_puts(s, name);
-+	}
- 
- 	seq_putc(s, terminator);
- }
--- 
-2.34.1
+>
+> I've always felt that capacity doubling is a bit wasteful, but it's
+> definitely something I can live with, especially if providing size feedback
+> is as complex as you suggest. Still, I'm not a big fan of single-buffer
+> interfaces in general, with how poorly they tend to interact with C's
+> aliasing rules. (Also, those kinds of interfaces also invite alignment
+> errors: for instance, your snippet above is missing the necessary union to
+> prevent the buffer from being misaligned, which would cause UB when you
+> cast it to a struct statmnt *.)
 
+Okay, alignment is a different story.   I'll note this in the man page.
+
+Thanks,
+Miklos
