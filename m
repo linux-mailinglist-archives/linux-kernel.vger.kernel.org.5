@@ -2,194 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AA47A98D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DE37A97F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbjIURxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
+        id S230228AbjIUR3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjIURxh (ORCPT
+        with ESMTP id S229995AbjIUR2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:53:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA5FB66354
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:34:05 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42EF116F3;
-        Thu, 21 Sep 2023 09:17:16 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3BC6B3F59C;
-        Thu, 21 Sep 2023 09:16:38 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dianders@chromium.org, keescook@chromium.org, mark.rutland@arm.com,
-        sumit.garg@linaro.org, swboyd@chromium.org
-Subject: [PATCH v2] lkdtm/bugs: add test for panic() with stuck secondary CPUs
-Date:   Thu, 21 Sep 2023 17:16:34 +0100
-Message-Id: <20230921161634.4063233-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 21 Sep 2023 13:28:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A58B2AC52
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695316309; x=1726852309;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+uJnQMLMCkrFmbMkL5ksZO00cYOUb/n0p/lufRKAs5o=;
+  b=H0xQpKVjYsfxjCJaVrxOCQGEFnIrXvZ4KddRs2X3o2RHsFjfCobqkA36
+   5wT0EwZYog6fZ5APvO1y4E33/jeVDW3BLt/VkrhDvRps0DoxlD0zoFrsF
+   UEkl6DFE8Yjh9Cpcdgm387l1WAoSOjHnSl3YFNlaIIjl3YOSE4HL+xCOC
+   ra84TGLphRysiMTjWtHF+cX7lvZ7G9ftcR5QVA77I9NOhfNEa0lc6zeYe
+   bEEOip3REG9Q1LJQBXDmUg0nrjxeGo/+DsxxrOCa5vVbnuUn3GQGZ/VXh
+   qvIHtRjc5srDZECwQHB9mSK84KnfmWYCoMe80UWGQNN9sf7treFkRp/Bl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="370896833"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="370896833"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 09:18:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="817463280"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="817463280"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 09:18:46 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qjMO3-0000000GxY6-47Cw;
+        Thu, 21 Sep 2023 19:18:43 +0300
+Date:   Thu, 21 Sep 2023 19:18:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()
+Message-ID: <ZQxs445+AIBnSd8w@smile.fi.intel.com>
+References: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
+ <202309211632.67e4c1e0-oliver.sang@intel.com>
+ <ZQxjBkFZV5T6BELA@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQxjBkFZV5T6BELA@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BANG_GUAR,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon a panic() the kernel will use either smp_send_stop() or
-crash_smp_send_stop() to attempt to stop secondary CPUs via an IPI,
-which may or may not be an NMI. Generally it's preferable that this is an
-NMI so that CPUs can be stopped in as many situations as possible, but
-it's not always possible to provide an NMI, and there are cases where
-CPUs may be unable to handle the NMI regardless.
+On Thu, Sep 21, 2023 at 06:36:38PM +0300, Andy Shevchenko wrote:
+> On Thu, Sep 21, 2023 at 09:34:13PM +0800, kernel test robot wrote:
+> > 
+> > Hello,
+> > 
+> > kernel test robot noticed "WARNING:at_fs/sysfs/file.c:#sysfs_emit" on:
+> > 
+> > commit: d4004295e5502a1eb3e361e97ea4dd1686046af6 ("[PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()")
+> > url: https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/params-Introduce-the-param_unknown_fn-type/20230912-231033
+> > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> > patch link: https://lore.kernel.org/all/20230912150551.401537-1-andriy.shevchenko@linux.intel.com/
+> > patch subject: [PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()
+> > 
+> > in testcase: trinity
+> > version: trinity-i386-abe9de86-1_20230429
+> > with following parameters:
+> > 
+> > 	runtime: 300s
+> > 	group: group-04
+> > 	nr_groups: 5
+> 
+> 
+> > what we observed is this issue doesn't always happen. we run the test upon
+> > this commit almost 500 times, it happened 42 times.
+> > however, the parent keeps clean.
+> > 
+> >         v6.6-rc1 d4004295e5502a1eb3e361e97ea
+> > ---------------- ---------------------------
+> >        fail:runs  %reproduction    fail:runs
+> >            |             |             |
+> >            :497          8%          42:496   dmesg.EIP:sysfs_emit
+> >            :497          8%          42:496   dmesg.WARNING:at_fs/sysfs/file.c:#sysfs_emit
+> 
+> Cool! I will check this, thank you for the report.
 
-This patch adds a test for panic() where all other CPUs are stuck with
-interrupts disabled, which can be used to check whether the kernel
-gracefully handles CPUs failing to respond to a stop, and whether NMIs
-actually work to stop CPUs.
+Oh, my gosh... This reveals a nice overflow bug for some getters that expect
+buffer to be PAGE_SIZE, but an array can be bigger than that.
 
-For example, on arm64 *without* an NMI, this results in:
+So, basically this is a flaw in param_array_get() which is a wrapper on top of
+getter and calls ->get() without any proper alignment or buffer size guarantee!
 
-| # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
-| lkdtm: Performing direct entry PANIC_STOP_IRQOFF
-| Kernel panic - not syncing: panic stop irqoff test
-| CPU: 2 PID: 24 Comm: migration/2 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
-| Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-| Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
-| Call trace:
-|  dump_backtrace+0x94/0xec
-|  show_stack+0x18/0x24
-|  dump_stack_lvl+0x74/0xc0
-|  dump_stack+0x18/0x24
-|  panic+0x358/0x3e8
-|  lkdtm_PANIC+0x0/0x18
-|  multi_cpu_stop+0x9c/0x1a0
-|  cpu_stopper_thread+0x84/0x118
-|  smpboot_thread_fn+0x224/0x248
-|  kthread+0x114/0x118
-|  ret_from_fork+0x10/0x20
-| SMP: stopping secondary CPUs
-| SMP: failed to stop secondary CPUs 0-3
-| Kernel Offset: 0x401cf3490000 from 0xffff80008000000c0
-| PHYS_OFFSET: 0x40000000
-| CPU features: 0x00000000,68c167a1,cce6773f
-| Memory Limit: none
-| ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
+While ->get() is by nature suppose to get an aligned buffer of PAGE_SIZE.
 
-Note the "failed to stop secondary CPUs 0-3" message.
+Ideally we need to have an additional ->get_array_element() callback which will
+take an offset. Less intrusive one is to have an allocated buffer of PAGE_SIZE
+in the param_array_get() and ->get() to it, then copy to the real one with the
+offset. Any other proposals?
 
-On arm64 *with* an NMI, this results in:
+Luis, which solution would you prefer?
 
-| # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
-| lkdtm: Performing direct entry PANIC_STOP_IRQOFF
-| Kernel panic - not syncing: panic stop irqoff test
-| CPU: 1 PID: 19 Comm: migration/1 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
-| Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-| Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
-| Call trace:
-|  dump_backtrace+0x94/0xec
-|  show_stack+0x18/0x24
-|  dump_stack_lvl+0x74/0xc0
-|  dump_stack+0x18/0x24
-|  panic+0x358/0x3e8
-|  lkdtm_PANIC+0x0/0x18
-|  multi_cpu_stop+0x9c/0x1a0
-|  cpu_stopper_thread+0x84/0x118
-|  smpboot_thread_fn+0x224/0x248
-|  kthread+0x114/0x118
-|  ret_from_fork+0x10/0x20
-| SMP: stopping secondary CPUs
-| Kernel Offset: 0x55a9c0bc0000 from 0xffff800080000000
-| PHYS_OFFSET: 0x40000000
-| CPU features: 0x00000000,68c167a1,fce6773f
-| Memory Limit: none
-| ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
-
-Note the absence of a "failed to stop secondary CPUs" message, since we
-don't log anything when secondary CPUs are successfully stopped.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Stephen Boyd <swboyd@chromium.org
-Cc: Sumit Garg <sumit.garg@linaro.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
----
- drivers/misc/lkdtm/bugs.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
-
-Since v1 [1]:
-* Improve commit message
-* Clarify comment in panic_stop_irqoff_fn()
-* Drop cpus_read_{lock,unlock}()
-* Fold in tags
-
-[1] https://lore.kernel.org/all/20230831101026.3122590-1-mark.rutland@arm.com/
-
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index c66cc05a68c45..b080eb2335eba 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -6,12 +6,14 @@
-  * test source files.
-  */
- #include "lkdtm.h"
-+#include <linux/cpu.h>
- #include <linux/list.h>
- #include <linux/sched.h>
- #include <linux/sched/signal.h>
- #include <linux/sched/task_stack.h>
--#include <linux/uaccess.h>
- #include <linux/slab.h>
-+#include <linux/stop_machine.h>
-+#include <linux/uaccess.h>
- 
- #if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
- #include <asm/desc.h>
-@@ -73,6 +75,31 @@ static void lkdtm_PANIC(void)
- 	panic("dumptest");
- }
- 
-+static int panic_stop_irqoff_fn(void *arg)
-+{
-+	atomic_t *v = arg;
-+
-+	/*
-+	 * As stop_machine() disables interrupts, all CPUs within this function
-+	 * have interrupts disabled and cannot take a regular IPI.
-+	 *
-+	 * The last CPU which enters here will trigger a panic, and as all CPUs
-+	 * cannot take a regular IPI, we'll only be able to stop secondaries if
-+	 * smp_send_stop() or crash_smp_send_stop() uses an NMI.
-+	 */
-+	if (atomic_inc_return(v) == num_online_cpus())
-+		panic("panic stop irqoff test");
-+
-+	for (;;)
-+		cpu_relax();
-+}
-+
-+static void lkdtm_PANIC_STOP_IRQOFF(void)
-+{
-+	atomic_t v = ATOMIC_INIT(0);
-+	stop_machine(panic_stop_irqoff_fn, &v, cpu_online_mask);
-+}
-+
- static void lkdtm_BUG(void)
- {
- 	BUG();
-@@ -638,6 +665,7 @@ static noinline void lkdtm_CORRUPT_PAC(void)
- 
- static struct crashtype crashtypes[] = {
- 	CRASHTYPE(PANIC),
-+	CRASHTYPE(PANIC_STOP_IRQOFF),
- 	CRASHTYPE(BUG),
- 	CRASHTYPE(WARNING),
- 	CRASHTYPE(WARNING_MESSAGE),
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
