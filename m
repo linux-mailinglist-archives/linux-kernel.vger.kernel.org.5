@@ -2,283 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8467AA13E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB997AA21D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbjIUU7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S232288AbjIUVM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjIUU7j (ORCPT
+        with ESMTP id S232390AbjIUVMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:59:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBF886109;
-        Thu, 21 Sep 2023 10:37:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5535FC4E750;
-        Thu, 21 Sep 2023 14:09:50 +0000 (UTC)
-Message-ID: <2d44d574-08e5-4db3-87d9-5d12657f8935@xs4all.nl>
-Date:   Thu, 21 Sep 2023 16:09:48 +0200
+        Thu, 21 Sep 2023 17:12:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DA5A0C2B;
+        Thu, 21 Sep 2023 10:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695319056; x=1726855056;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=+pwHUZ/2swYVy2VSDvF9eI7bZY/Pr2mIwCivK34bjD0=;
+  b=e+RMHdL/iTwtXU+VahcqhLks/o3X7BCNdrchx46BCJkt6K5iQVHrXXPu
+   Eyeq38yzDuOK/fNq3WeYM1FhzKjtQgVu8jqdWv9Qwf+33669UCXlCNuAo
+   ZmmmHc+035WdKYjyA8XfPFL/AvmSg/rG+RWicMcQXrUhW69eZhdcY381E
+   HBKy4NIzm2dUeJsIvjX5vEhsWaxBLU/nuAeo4x9nUeCaxpPZmYc2eF3GH
+   MywA03M4VgxL2XI8/y1yBapeomsONCRnNPU/Gb1vHkidPTVbPz0Cphha/
+   0zGi7lFnZn7H01lcQXnBlZoBH5DwSg9xmnbk6rupLxlXLHanVeaVYMtQH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="383284305"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="383284305"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 07:15:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="1077903851"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="1077903851"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Sep 2023 07:15:28 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 21 Sep 2023 07:15:27 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 21 Sep 2023 07:15:27 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 21 Sep 2023 07:15:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IaFMBb6ge/DQ3To+BZrKCDRwSD25sg9CuWej7x7OfvVDQm7g8976FlyZlmoPR9w/I7xtgTTxC2AdEV/+jBuCeTeM4TEug0KYbrQTqspCN7t8Ysqj6xjlmEjmApeSVqx1YTvvzLqgCUynooDsRDgacH05cICsxs8rtNsRjP94HykbELg9Synv3l3t5UbByZurNGnrqwpiQJTJjDUMw5HQBCnawdKwAEIjAdZs7HAB9aODnl6niXjar+LXa2JGhQb5H7gV2xArwLTiD9+Kq+k/nAsUyxo8RVZrTUCRGu1AtgT5xCfqNMkYxmCdYZxngYx66gujQcBsPjhvE0IF4tGm4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nUEQRtq692kemEgPUm+d+dXMnJHtjEjJZpe0o9CyDkk=;
+ b=JWKePhJa0uI0++UEI+C9808BLS0yjTBjZdSx2uMdemRQ0kFD2I6+TZYNBsC1PUx5k7SGdi7uQjvXvUAVkj3dZaNEjHy3fgW+Hcj7LmKTuFNnzPshbTwW62h0wPx0gzrVMvaVGN+4S3OGU1cZnHIwTm3vMl6XowafzCbEjCvENARW3OfhTfr/2dWmDGqV/IVGBTmlXNxKXMEFp8SuPf+UiFvrPlBimfC0agg0ep5UyQ31DIbzqvkLZOjVTRoe8QW2cS84jRv5Ddx2ciIt1u1O1E1HdTcqdczPBmGLJhjLDy7ookvHR1Qs/G0W3vxJxIIho143DGdswRknCEPc25op/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by BN9PR11MB5274.namprd11.prod.outlook.com (2603:10b6:408:133::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 21 Sep
+ 2023 14:15:25 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::bede:bd20:31e9:fcb4]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::bede:bd20:31e9:fcb4%7]) with mapi id 15.20.6768.029; Thu, 21 Sep 2023
+ 14:15:25 +0000
+Message-ID: <d7462ae5-c971-452f-49d7-855f60c850d3@intel.com>
+Date:   Thu, 21 Sep 2023 16:14:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] sky2: Make sure there is at least one frag_addr available
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+CC:     Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
+References: <20230920202509.never.299-kees@kernel.org>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230920202509.never.299-kees@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0096.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9b::19) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add
- V4L2_CID_USER_IMX_ASRC_RATIO_MOD control
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
- <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
- <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
- <CAA+D8APyNGFSry1GUv6TOW0nKYHKSwQd5bTcRNuT7cu0Xf8eUA@mail.gmail.com>
- <5292ce53-643e-44f0-b2cc-cb66efee9712@xs4all.nl>
- <CAA+D8AMZN59uTRs2sOrSeVb5AGopTzurNVCTNwJOVPahfEXd+w@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <CAA+D8AMZN59uTRs2sOrSeVb5AGopTzurNVCTNwJOVPahfEXd+w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|BN9PR11MB5274:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1715514c-4f8e-4db0-1ceb-08dbbaad3291
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4U0eBLt4Iy8TsDLrNGZ72EDB127ST1QRi3ZDaL7j0UFlwuIqFXU1Y31+thRujaWcfoHmSAYavCBLXGCemduusaQX5lXVnvY78DmQxLooFbeSgCMEXTvDJ85GO/XL/1b74Eue2hIK/ksMVYtUQVlUW5kQpvykVdyYpvWsfdec3MKMe/448Wqb8C6pS7JwtqCqqRMCIr2xDi7II7ChVFgmtCaDG9vNgjedDqV+Y4ig+m5wZtGB7zKFydsgxH+7XwPSjajIuIYLmLIWc75Tt6GUCYOgN2oHZcGsfBj5ODjV0HJHZlqV1IUzttQI45RkYHaHXU2PP/GgXafPHzM7RfVXs75bIdM8WJh+npJta9wcmpn6B5Utz894Fdo+jkP16S0Ee1OtJeqsYq3yMPM/8gRleQ8PUoD6gFv7+Dcdg6N404emaR0ZDL38A5hvoXVqOppHjSrIgU6GgwKF0tfWO3diZEeUDuHFb/a5g3N7q1Ago6+kWmQOMICgyWM0VOhF6oMNIzOMSBYGfQtiAzttf2RZzjTMlpSmQKpDg/0n89AYhUw9LTEFdkdOKtXkE7ptBd3OQzHdIgqD/klAlfuW6qMCI9eVAW5jQNVEi4CUYxvo+BMmmWjv68pm3SyJCjxKINa/52yaHv+h1j+t7+6YU/DYWw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(396003)(39860400002)(451199024)(1800799009)(186009)(31686004)(6666004)(6512007)(6506007)(6486002)(38100700002)(82960400001)(36756003)(86362001)(31696002)(7416002)(2906002)(6916009)(966005)(83380400001)(26005)(478600001)(2616005)(5660300002)(41300700001)(8936002)(316002)(66476007)(4326008)(66556008)(54906003)(66946007)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y3JEalBtbGF5dVpzektPMEJDdkxjdEkveVBtb0xqLzNvc1NuK3BzZUFzd2tW?=
+ =?utf-8?B?VkgyZWgxemxMQ1JuYWVrNENJWkowRHE5eDZWdG5KaXM1UXJLdXJxMzBDTUtq?=
+ =?utf-8?B?Sk8rQzNRbjZvUnFxeVNKUGc4R0hCNlRXaW9VUDNNcWtvOHh2RUlQZ0RHR1Fa?=
+ =?utf-8?B?RG5nYmJYcmovL3cyMjg5ZXRVcnQzN0UrS1BqV2pIOGVTUmV5QmtHa0Vyb1hM?=
+ =?utf-8?B?MTMyT2JWc1MxbU9hcHRENWdRc3dETG9yQTF5cUI1aWErZEt1Vis5SzVlcytN?=
+ =?utf-8?B?dlVzYlV4dlplYStrYS9TZFBsaFRveHNqNmtYeGtBeDhObUlPT1I3ZTRmQzA2?=
+ =?utf-8?B?bUNKQUxYYlpZRXp6TGg5OC9MdlZaaUJYbHp2cUtTQmtBeWIweFEzV2hldElm?=
+ =?utf-8?B?UllvOERKWUY5MjdFUVh3TWRUNmxHUGFmaHdKaE8yK2dkb1NMZnpYU3VucUJJ?=
+ =?utf-8?B?cTVkYVU0Z0FhMHMyZS9xWWZFMHgycEt1VDlhOGljVm5vOTNUVkJ0NlB1cmI0?=
+ =?utf-8?B?cDhhd0k0eHEwcFRyV1BqUXptVkdYc2dkZ1VTMlBaSjdsWHVCakdMYzNTNkFw?=
+ =?utf-8?B?dWdDcUR6cTIxV3hOSWxOeFBoekZvRzg1QnpIa2t1dXpiYXJFZTN3cGE0Z3dF?=
+ =?utf-8?B?bnFxR2VNaXV1ZklWL0cxS05LUDV2SkpqNXBVbWlkOTI0ekc5aGJyUll5dWFT?=
+ =?utf-8?B?ZDVlUUFjNThCN2l0b3hyMlViRUQxLzZNT29rMGoxWmRCclQvUUpSbENhcnpm?=
+ =?utf-8?B?djNMRVMrbFhNTmpNeFNqeVhla3RiVzBlZmV3WWc4aVpUMVIyNXd6emNzTHJY?=
+ =?utf-8?B?dUUyRmVqVklwMXliWEx4a0NxalB2WFBwUExlTkxWRHFEeTBVeDNqb2FPOGJC?=
+ =?utf-8?B?QzdwVlQwTGRLamVZTEdxb2R2OTZNWEN4OXRTYWQvSEJydlNHK2JiQnVUWDhk?=
+ =?utf-8?B?STJXNU1pZHFkdzRZWnAyZnBGMlVTRmIrdGhWREtjSnFLZzQ2RW5SbDV0MHNT?=
+ =?utf-8?B?WE1PV3k0NklnVjFQcTMraTI4L2hjRy9WZXNIVHFPZFYwSnE1ME8vLy9vc20r?=
+ =?utf-8?B?THlKUndtcFhDODQ4Zlo0VXM5RDJUbmxCUzJPdHJucW1YZkErTW81ZnNueUtx?=
+ =?utf-8?B?QzNsajZyb1hHRUV6dlgvQXdpVFI3ZHI1K3NWV2QvZSt0TTE2cFNIVkZmNGpz?=
+ =?utf-8?B?aENpMmVjeU1aZTFRNmdIcERQclZjNUxacXhDTmdIYnFQbXpPQ0lYWS96d3RE?=
+ =?utf-8?B?SDRjdXllaTFSNVcxYUVKSTcvd1hjcnRBSFZ5NmlmVEp6M2dQUXJNZ2Zvc2p3?=
+ =?utf-8?B?UmRWRit2QlBWb3BwQjdBdU5RNVJBODc3WXFnSDd3YU5MbmxmckxNejcySis3?=
+ =?utf-8?B?NWxsc1N3VEVLdDFmQWpFRVpxRFk5SjVPc2h1WGxKc1A4cXNTczJEdmJ4am1Y?=
+ =?utf-8?B?WXQyaUlTM1A5SURkYUpGZENobzVaZThmb3FQVEZYdVNEcnlXWkJBTUFVZW9U?=
+ =?utf-8?B?dFJrb1NWMVZRZURFSThqd0lnd1RLcnllZERpc2RQVE85cnlXVnM1dUVjYTRR?=
+ =?utf-8?B?cDY2bnBBUmlLTHFoQ3hScGR2anF3YklpckdEOGVGcDgwU1drUnlYWEZiQmFU?=
+ =?utf-8?B?OXROVVVvd095UWZTWnFodXJoV1dhb0x4M1U0aERVbCsyU1dZVUNVSnZOckpl?=
+ =?utf-8?B?MG03OTFUVFgvYzdLNDJIRzN1UVEvRG9IK0NGNWJueUh1bmFrWEh4am8rTnhV?=
+ =?utf-8?B?Y0dwOFJaNG5UMk1icmVTb3l6UUl6N3MwUnBSdU1HOSs5R0NnQVMwRWxPamV2?=
+ =?utf-8?B?ZE5vYXNoN0pJMTdHWHNhSG8rKy92Um9qZVpzSmQ0OENBc21vQXd3bFJ4bHJI?=
+ =?utf-8?B?dkkwOTI3MHVvdVU3VDhEN3VXRlRFSEY2UHZmVGRXN2oyZk5adzlYZ0lpMFl2?=
+ =?utf-8?B?ZmNNSGtrSnJianZiTE1tcHk1UU8xMlEySWxUcTZ4VWwveDF1ZFlVcDRjamVW?=
+ =?utf-8?B?RDAzS0NRV0JWVCt3UVovTi9EOXFNS215bWpDZHBQMHFPbDBKTDdhSHl3TXBF?=
+ =?utf-8?B?MXFSWFY5V2ZGTXdBeEJoWmhvY016QUFCZUM0NTQ0ZjJ2SzN4Y1FtNDR4OE1Y?=
+ =?utf-8?B?TzJ2eVQwY1d6M2gyUEszaDJtRFUvcEk3YkNZM0ROQWxZVDRRUDg5UHpLSWVI?=
+ =?utf-8?B?aUE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1715514c-4f8e-4db0-1ceb-08dbbaad3291
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 14:15:25.0900
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L4ZvzvLK7uSBZZJWeKZ3elPZmq30i8OZ7V3gcfLMDujqSpN5TmaA6smsOwAfoB6FjyVozAfAYPgLGglUrycJODQfECNW+LF/GSl2ImL+fas=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5274
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 13:13, Shengjiu Wang wrote:
-> On Thu, Sep 21, 2023 at 3:11 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>
->> On 21/09/2023 08:55, Shengjiu Wang wrote:
->>> On Wed, Sep 20, 2023 at 6:19 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>>>
->>>> On 20/09/2023 11:32, Shengjiu Wang wrote:
->>>>> The input clock and output clock may not be the accurate
->>>>> rate as the sample rate, there is some drift, so the convert
->>>>> ratio of i.MX ASRC module need to be changed according to
->>>>> actual clock rate.
->>>>>
->>>>> Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
->>>>> adjust the ratio.
->>>>>
->>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->>>>> ---
->>>>>  Documentation/userspace-api/media/v4l/control.rst | 5 +++++
->>>>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
->>>>>  include/uapi/linux/v4l2-controls.h                | 1 +
->>>>>  3 files changed, 7 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
->>>>> index 4463fce694b0..2bc175900a34 100644
->>>>> --- a/Documentation/userspace-api/media/v4l/control.rst
->>>>> +++ b/Documentation/userspace-api/media/v4l/control.rst
->>>>> @@ -318,6 +318,11 @@ Control IDs
->>>>>      depending on particular custom controls should check the driver name
->>>>>      and version, see :ref:`querycap`.
->>>>>
->>>>> +.. _v4l2-audio-imx:
->>>>> +
->>>>> +``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
->>>>> +    sets the rasampler ratio modifier of i.MX asrc module.
->>>>
->>>> rasampler -> resampler (I think?)
->>>>
->>>> This doesn't document at all what the type of the control is or how to interpret it.
->>>>
->>>>> +
->>>>>  Applications can enumerate the available controls with the
->>>>>  :ref:`VIDIOC_QUERYCTRL` and
->>>>>  :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
->>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->>>>> index 8696eb1cdd61..16f66f66198c 100644
->>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->>>>> @@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>>>>       case V4L2_CID_COLORIMETRY_CLASS:        return "Colorimetry Controls";
->>>>>       case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:               return "HDR10 Content Light Info";
->>>>>       case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:      return "HDR10 Mastering Display";
->>>>> +     case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:                  return "ASRC RATIO MOD";
->>>>
->>>> Let's stay consistent with the other control names:
->>>>
->>>> "ASRC Ratio Modifier"
->>>>
->>>> But if this is a driver specific control, then this doesn't belong here.
->>>>
->>>> Driver specific controls are defined in the driver itself, including this
->>>> description.
->>>>
->>>> Same for the control documentation: if it is driver specific, then that
->>>> typically is documented either in a driver-specific public header, or
->>>> possibly in driver-specific documentation (Documentation/admin-guide/media/).
->>>>
->>>> But is this imx specific? Wouldn't other similar devices need this?
->>>
->>> It is imx specific.
->>
->> Why? I'm not opposed to this, but I wonder if you looked at datasheets of
->> similar devices from other vendors: would they use something similar?
+From: Kees Cook <keescook@chromium.org>
+Date: Wed, 20 Sep 2023 13:25:13 -0700
+
+> In the likely pathological case of building sky2 with 16k PAGE_SIZE,
+> make sure there is at least 1 frag_addr in struct rx_ring_info:
 > 
-> I tried to find some datasheets for other vendors, but failed to find them.
-> So I don't know how they implement this part.
+>    In file included from include/linux/skbuff.h:28,
+>                     from include/net/net_namespace.h:43,
+>                     from include/linux/netdevice.h:38,
+>                     from drivers/net/ethernet/marvell/sky2.c:18:
+>    drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_unmap_skb':
+>    include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
+>      416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
+>          |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/ethernet/marvell/sky2.c:1257:17: note: in expansion of macro 'dma_unmap_page'
+>     1257 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
+>          |                 ^~~~~~~~~~~~~~
+>    In file included from drivers/net/ethernet/marvell/sky2.c:41:
+>    drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
+>     2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
+>          |                         ^~~~~~~~~
 > 
-> Ratio modification on i.MX is to modify the configured ratio.
-> For example, the input rate is 44.1kHz,  output rate is 48kHz,
-> configured ratio = 441/480,   the ratio modification is to modify
-> the fractional part of (441/480) with small steps.  because the
-> input clock or output clock has drift in the real hardware.
-> The ratio modification is signed value, it is added to configured
-> ratio.
+> With CONFIG_PAGE_SIZE_16KB=y, PAGE_SHIFT == 14, so:
 > 
-> In our case, we have some sysfs interface for user to get the
-> clock from input audio device and output audio device, user
-> need to calculate the ratio dynamically , then configure the
-> modification to driver
-
-So this ratio modifier comes into play when either the audio input
-or audio output (or both) are realtime audio inputs/outputs where
-the sample rate is not a perfect 44.1 or 48 kHz, but slightly different?
-
-If you would use this resampler to do offline resampling (i.e. resample
-a 44.1 kHz wav file to a 48 kHz wav file), then this wouldn't be needed,
-correct?
-
-When dealing with realtime audio, userspace will know how to get the
-precise sample rate, but that is out-of-scope of this driver. Here
-you just need a knob to slightly tweak the resampling ratio.
-
-If my understanding is correct, then I wonder if it is such a good
-idea to put the rate into the v4l2_audio_format: it really has nothing
-to do with the audio format as it is stored in memory.
-
-What if you would drop that 'rate' field and instead create just a single
-control for the resampling ratio. This can use struct v4l2_fract to represent
-a fraction. It would be more work since v4l2_fract is currently not supported
-for controls, but it is not hard to add support for that (just a bit tedious)
-and I actually think this might be a perfect solution.
-
-That way userspace can quite precisely tweak the ratio on the fly, and
-it is a generic solution as well instead of mediatek specific.
-
-Regards,
-
-	Hans
-
+>   #define ETH_JUMBO_MTU   9000
 > 
-> May be other vendors has similar implementation. or make
-> the definition be generic is an option.
+> causes "ETH_JUMBO_MTU >> PAGE_SHIFT" to be 0. Use "?: 1" to solve this build warning.
 > 
-> best regards
-> wang shengjiu
-> 
->>
->> And the very short description you gave in the commit log refers to input
->> and output clock: how would userspace know those clock frequencies? In
->> other words, what information does userspace need in order to set this
->> control correctly? And is that information actually available? How would
->> you use this control?
->>
->> I don't really understand how this is supposed to be used.
->>
->>>
->>> Does this mean that I need to create a header file in include/uapi/linux
->>> folder to put this definition?  I just hesitate if this is necessary.
->>
->> Yes, put it there. There are some examples of this already:
->>
->> include/uapi/linux/aspeed-video.h
->> include/uapi/linux/max2175.h
->>
->>>
->>> There is folder Documentation/userspace-api/media/drivers/ for drivers
->>> Should this document in this folder, not in the
->>> Documentation/admin-guide/media/?
->>
->> Yes, you are correct. For the headers above, the corresponding documentation
->> is in:
->>
->> Documentation/userspace-api/media/drivers/aspeed-video.rst
->> Documentation/userspace-api/media/drivers/max2175.rst
->>
->> So you have some examples as reference.
->>
->> Frankly, what is in admin-guide and in userspace-api is a bit random, it
->> probably could use a cleanup.
->>
->> Regards,
->>
->>         Hans
->>
->>>
->>> Best regards
->>> Wang shengjiu
->>>>
->>>>>       default:
->>>>>               return NULL;
->>>>>       }
->>>>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
->>>>> index c3604a0a3e30..b1c319906d12 100644
->>>>> --- a/include/uapi/linux/v4l2-controls.h
->>>>> +++ b/include/uapi/linux/v4l2-controls.h
->>>>> @@ -162,6 +162,7 @@ enum v4l2_colorfx {
->>>>>  /* The base for the imx driver controls.
->>>>>   * We reserve 16 controls for this driver. */
->>>>>  #define V4L2_CID_USER_IMX_BASE                       (V4L2_CID_USER_BASE + 0x10b0)
->>>>> +#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD     (V4L2_CID_USER_IMX_BASE + 0)
->>>>>
->>>>>  /*
->>>>>   * The base for the atmel isc driver controls.
->>>>
->>>> Regards,
->>>>
->>>>         Hans
->>
+> Cc: Mirko Lindner <mlindner@marvell.com>
+> Cc: Stephen Hemminger <stephen@networkplumber.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309191958.UBw1cjXk-lkp@intel.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
+Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+
+That "nobody uses this HW on non-x86 systems, why bother" is fun each time.
+
+> ---
+>  drivers/net/ethernet/marvell/sky2.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/sky2.h b/drivers/net/ethernet/marvell/sky2.h
+> index ddec1627f1a7..8d0bacf4e49c 100644
+> --- a/drivers/net/ethernet/marvell/sky2.h
+> +++ b/drivers/net/ethernet/marvell/sky2.h
+> @@ -2195,7 +2195,7 @@ struct rx_ring_info {
+>  	struct sk_buff	*skb;
+>  	dma_addr_t	data_addr;
+>  	DEFINE_DMA_UNMAP_LEN(data_size);
+> -	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
+> +	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT ?: 1];
+>  };
+>  
+>  enum flow_control {
+
+Thanks,
+Olek
