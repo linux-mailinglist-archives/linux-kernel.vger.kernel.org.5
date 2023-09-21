@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8517A9BE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE1B7A9E1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjIUTEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
+        id S230296AbjIUT40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjIUTEG (ORCPT
+        with ESMTP id S230451AbjIUT4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:04:06 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711EA400EE
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:34:56 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1d6b4735158so713065fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:34:56 -0700 (PDT)
+        Thu, 21 Sep 2023 15:56:08 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6819D7DAF
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:15 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d815a5eee40so1494631276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695321295; x=1695926095; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695320955; x=1695925755; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pNpVr3hX07AdKTZ8+Sx0LVisp+9RYkwStP9wMLdYrzw=;
-        b=xjAW3Rx1Yp0Hv+2w3r83byyuEfGwkHcCu5KggzzKcnMuX+fiOG7rPrqPBp3ZvDHUIp
-         yJGyRVXbQkAh1fTbTxI0GLyqT19m0tsD+fdJTJZacsE9LL4pg18DQvXb4T9tcU0g2KC3
-         OVyRLMlsuTN36yo9NgT71PVVn3YfLifEsPoAD+FiNNVsV2tRqxw8NjStJZOvmxWTA12P
-         /WCCUWFFXYgJpN2EKXEIzOMfRmnYvl8+axBUBM5q6OHBFAuR4XCENWNTx4AYxmaGT26i
-         JvizROix5E8TitMDdbwrk6fptGQ7tyX8HxatzECTEEm+Tm6TZNSxNCM8gN2kFhVy+Wj6
-         Gn6w==
+        bh=C3AGJ5YqreaKjGqVvvBcJoqmWbVP9NW6r7+ZQpOUS+4=;
+        b=GGNT+nBkfIjI7is7u45fqw3D7HCvj0+jnBRkgxyMqT2M4iz05T4284QXI1vVKtekRH
+         Hx+98Z+pudKX9moXYpC89AZBxBHO8wvLUNG3MTOL5ltJVaGORkagCtZX5TiD4Ve8N6rQ
+         tjRyPv7htEUfOp+1RXRElHc3oLLgCBvwJ4XEIEUgf+ULKvYj7vOTJbihjf12Pr17o48x
+         2A0BERxxtyYPUGBNboXraPNcWlMwwDMhq/+h7743fLzsKGsrLsNGb+bzwG39OOTe1tzv
+         1aLLr8hlehv4XH7f6R6+ZGIPUuEamV/YijgZuUGyDpARtnc8bX6ugPXdhK4dVuPECNeN
+         g/Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321295; x=1695926095;
+        d=1e100.net; s=20230601; t=1695320955; x=1695925755;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pNpVr3hX07AdKTZ8+Sx0LVisp+9RYkwStP9wMLdYrzw=;
-        b=UoG6dvjeyp0Xesvou2juwnsaQ9CN7Q2/doNQRScBlhPG5ynJCRPfl3PFWTNJw6n/tq
-         fEyzwxClwCgmwxc8nn70in11IdZNJ1nlNs+DAlO4OU0TbIgn7QuvMdjbIFOoWVYcKv8c
-         gdAjhJVxA38w68eu6Tu7mz5SGDx8Hzkbha0FbbnX/FUO6weMoGP6VungmeWNz/xXhgOg
-         /Htd12aZe7bI1PZDGWzAAZ7bp21qjdovhGHdJVHqYBAL22i23WGxlfovPS5jT8M+cwXK
-         vwEpsqIsD5FL/Tu/nNoY3qa9LJbBrgVOw58y7JOqo4MK2qgjiN70xxLABByoo9YlWPK/
-         2Zeg==
-X-Gm-Message-State: AOJu0Yzr3oCPACDbLtTurKzXvBrt/YTk0UeEl/vonVeTlvmYgeIFkq0f
-        zq6zLGTN1vAkz2lXd8AK28dYd1BaezFfPYXNd8jVTZ/NPJNBk+g7juE=
-X-Google-Smtp-Source: AGHT+IFqX3AQtEQOsB1IQQCIx2Q35DO+VOl1a5nyQVZz96a/QlXlu7E2WC2lL+gM1UWaSurybAhPe1nEThyHesRaRIs=
-X-Received: by 2002:a25:d301:0:b0:d7b:a78e:6b2d with SMTP id
- e1-20020a25d301000000b00d7ba78e6b2dmr8458738ybf.20.1695301372684; Thu, 21 Sep
- 2023 06:02:52 -0700 (PDT)
+        bh=C3AGJ5YqreaKjGqVvvBcJoqmWbVP9NW6r7+ZQpOUS+4=;
+        b=w7qbiQcozMeRn11GaPgG969SYe3xrFAdtmCkdk484NFqFU5WlWMsUh47gpPKWZpemw
+         IGtrWLpxxHTQ2n83x2uexmx4eiEAzC3o34Dg7weyhFqsHTZEgEdKftKV6K8uJLWgzL48
+         KblBxVovGHn9PcEDd0sNNv5O/Vq0zpr7AeFaJKI8W/fIx38IACQOAqqEsygwAsTsbhCQ
+         /jZZd+woOwwzL97zgQuEbase3l2m+nv1dHC/iePowgAd3N/IMLwlCFHjKI0lxwaIZXRc
+         Rfm0HZdlGqkZdf3Orr/0i9dXXSv2QelCS3ZpLc/ycwlMC0irUc/JRxvvqtCBKqVKf7Rt
+         ntvQ==
+X-Gm-Message-State: AOJu0YyMYtkiCwRoh1FKexW7FHT+iF11qSWWrepPppvVzCIbW17lqAPg
+        TBIU6aY9036utJOSaf1y6K24IYWuSPKAXjOHnZB+PxpuPh8xU964fZk=
+X-Google-Smtp-Source: AGHT+IGxEP7M4RGeRIoS5MoOfdR/G92y7IkWBKiScp+pN2700H3k/FEmydtbEwKJZ/XQkDiYo3ii4LoHbD1J2F0GMzI=
+X-Received: by 2002:a05:6902:100c:b0:d80:68d1:b826 with SMTP id
+ w12-20020a056902100c00b00d8068d1b826mr6552250ybt.6.1695301553511; Thu, 21 Sep
+ 2023 06:05:53 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230825112633.236607-1-ulf.hansson@linaro.org>
- <20230825112633.236607-8-ulf.hansson@linaro.org> <20230921111426.b2vp5hu7ssdtmz3n@bogus>
-In-Reply-To: <20230921111426.b2vp5hu7ssdtmz3n@bogus>
+ <20230825112633.236607-13-ulf.hansson@linaro.org> <20230921112019.gftlr5ys3yw2nwgw@bogus>
+In-Reply-To: <20230921112019.gftlr5ys3yw2nwgw@bogus>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Sep 2023 15:02:16 +0200
-Message-ID: <CAPDyKFqHBWtDioepsJuNHEa6ckwtuAOKBLx+LZEZctADTP--3w@mail.gmail.com>
-Subject: Re: [PATCH v3 07/13] cpufreq: scmi: Drop redundant ifdef in scmi_cpufreq_probe()
+Date:   Thu, 21 Sep 2023 15:05:17 +0200
+Message-ID: <CAPDyKFpkjOFhjKMY=4dDgngi7PftE_4c+4dHE2KcGAGYnjk6-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 12/13] PM: domains: Allow genpd providers to manage OPP
+ tables directly by its FW
 To:     Sudeep Holla <sudeep.holla@arm.com>
 Cc:     Cristian Marussi <cristian.marussi@arm.com>,
         Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
@@ -74,23 +75,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sept 2023 at 13:14, Sudeep Holla <sudeep.holla@arm.com> wrote:
+On Thu, 21 Sept 2023 at 13:20, Sudeep Holla <sudeep.holla@arm.com> wrote:
 >
-> On Fri, Aug 25, 2023 at 01:26:27PM +0200, Ulf Hansson wrote:
-> > We have stubs for devm_of_clk_add_hw_provider(), so there should be no need
-> > to protect this with the '#ifdef CONFIG_COMMON_CLK'. Let's drop it to clean
-> > up the code a bit.
+> On Fri, Aug 25, 2023 at 01:26:32PM +0200, Ulf Hansson wrote:
+> > In some cases the OPP tables aren't specified in device tree, but rather
+> > encoded in the FW. To allow a genpd provider to specify them dynamically
+> > instead, let's add a new genpd flag, GENPD_FLAG_OPP_TABLE_FW.
+> >
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > ---
+> >
+> > Changes in v3:
+> >       - None.
 > >
 >
-> No exactly. The stub is under !CONFIG_OF but we need it for !CONFIG_COMMON_CLK.
-> The original build issue reported for which I add this was CONFIG_OF=y &&
-> CONFIG_COMMON_CLK=n.
->
-> It looks like it is still valid combo though I don't have a handy randconfig
-> to present to you. I prefer to drop this for now if that is OK with you.
+> Just checking if I need Rafael's ack here or that is OK as you are
+> co-maintainer ? Again asking explicitly to ensure arm-soc is happy when
+> I send PR.
 
-Sure, it's perfectly fine to drop it. It's just a thing I stumbled
-over that isn't really needed in the $subject series!
+This should be fine for you to pick up. Rafael would have objected if
+this was something that he didn't like. Moreover, there's no other
+patches being queued for genpd at this moment so no worries of
+conflicts.
 
 Kind regards
 Uffe
