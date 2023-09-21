@@ -2,65 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D147A9932
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9C77A9D05
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjIUSMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
+        id S230115AbjIUT15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjIUSLQ (ORCPT
+        with ESMTP id S230129AbjIUT1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:11:16 -0400
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71B6566F4;
-        Thu, 21 Sep 2023 10:18:11 -0700 (PDT)
-Received: from relay3-d.mail.gandi.net (unknown [217.70.183.195])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 44DA2D2A89;
-        Thu, 21 Sep 2023 13:27:08 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 19EC960004;
-        Thu, 21 Sep 2023 13:26:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695302806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kj1DdUWkzlgEljhadlQHHpn2eO93iRvKozJKFFaqhJ8=;
-        b=k/IBP72ImwLm+awCTGPrjbS+9xPBl/wQE7MrB0pTrwtdaHL0T3h2bgW/tfGWDJX5/FaUzZ
-        ucasGuuEi2qGwTfUXODyhmvGuZPGLxrMiktcTXKLnxyAJb115p2g+RnZ1p2Vn0//jG0AP2
-        VJZe3/2LTYjSwv08HPPS7EMm9C910Pm/W8pf/u/tiDR0S6ZRADeJOlRaVqOEFhm4Uixu4U
-        NPSruaQ85lvz9znzHKhRpWXFd0aglRj3mpJvbUIxEFvBt3LuimSgHl1XHedffeFwluZjEz
-        +v8DwwjSLp26HyR7BGLIzfnGQnkleztC4200qm3Ds7BDgzel0IWUcvAQKLXPmA==
-Date:   Thu, 21 Sep 2023 15:26:43 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Andrew Lunn <andrew@lunn.ch>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, max.zhen@amd.com,
-        sonal.santan@amd.com, stefano.stabellini@xilinx.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH V13 0/5] Generate device tree node for pci devices
-Message-ID: <20230921152611.19e07907@bootlin.com>
-In-Reply-To: <CAL_JsqKNC1Qv+fucobnzoXmxUYNockWR=BbGhds2tNAYZWqgOA@mail.gmail.com>
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
-        <ZP96feVs2ev7098Y@smile.fi.intel.com>
-        <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
-        <ZQGaSr+G5qu/8nJZ@smile.fi.intel.com>
-        <20230915193008.6d87b8a0@bootlin.com>
-        <ZQf5huX2AMuf9kHC@smile.fi.intel.com>
-        <CAL_JsqKNC1Qv+fucobnzoXmxUYNockWR=BbGhds2tNAYZWqgOA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 21 Sep 2023 15:27:31 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C313A1505;
+        Thu, 21 Sep 2023 10:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=CC2gkTGhITx2Tkn4hzBnyxcQlVD3H0K9p7hCx7iKc0I=; b=RX/Dh/JlHN7+Dr2mKIx1OHw08j
+        abawgMlrvxjDlsbIPFGzplofhq7VcEHhhGFZr5v8TUs2rmkpzNCwTdiU/ex1Izqw2rmGLteOf6T3b
+        rafTyBkIl6Vl7p+9BVOfWbBV6ztXErezBRlJ0k1UNn9OTHkTcAr7tQi0CZZ2getl6yCEM4qAHxcUF
+        0KrBEHNL0Z7sRA9uEwAO55WvgagpdOLapZsmOUsOq3ojQ/D5eDQ9JBA++gwR1mHYPfVN/hpVeI3CF
+        AADotTfqbGiEqrhzLlKFo3aGvIzijqZ5x69wIwORuvfZRHh61rlcTaxBdznV8HpM6ZdVxWJ73Kr2f
+        hqa/s60A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56250)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qjJk4-0004de-0F;
+        Thu, 21 Sep 2023 14:29:16 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qjJjc-0003ZN-MP; Thu, 21 Sep 2023 14:28:48 +0100
+Date:   Thu, 21 Sep 2023 14:28:48 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        David E Box <david.e.box@intel.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v3 4/5] net: stmmac: enable Intel mGbE 1G/2.5G
+ auto-negotiation support
+Message-ID: <ZQxFEChbKJtsGm2w@shell.armlinux.org.uk>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,73 +102,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 07:20:46 -0500
-Rob Herring <robh@kernel.org> wrote:
+On Thu, Sep 21, 2023 at 08:19:45PM +0800, Choong Yong Liang wrote:
+> +#if IS_ENABLED(CONFIG_INTEL_PMC_IPC)
 
-> On Mon, Sep 18, 2023 at 2:17 AM Andy Shevchenko
-> <andriy.shevchenko@intel.com> wrote:
-> >
-> > On Fri, Sep 15, 2023 at 07:30:08PM +0200, Herve Codina wrote:  
-> > > On Wed, 13 Sep 2023 14:17:30 +0300
-> > > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:  
-> > > > On Tue, Sep 12, 2023 at 02:12:04PM -0500, Rob Herring wrote:  
-> > > > > On Mon, Sep 11, 2023 at 3:37 PM Andy Shevchenko
-> > > > > <andriy.shevchenko@intel.com> wrote:  
-> > > > > > On Tue, Aug 15, 2023 at 10:19:55AM -0700, Lizhi Hou wrote:  
-> >
-> > ...
-> >  
-> > > > > > Can you point out to the ACPI excerpt(s) of the description of anything related
-> > > > > > to the device(s) in question?  
-> > > > >
-> > > > > I don't understand what you are asking for.  
-> > > >
-> > > > Through the email thread it was mentioned that this series was tested on the
-> > > > ACPI enabled platform, Jonathan (IIRC) asked why do we need to have a shadow
-> > > > DT for the something that ACPI already describes. That's why I'm trying to
-> > > > understand if it's the case. and if so, how can we improve the approach.  
-> > >
-> > > Patches from Frank Rowand series [1] are needed to create an of_root_node if a DT
-> > > was not provided by the firmware, bootloader, etc that run the kernel.
-> > >
-> > > [1]: https://lore.kernel.org/lkml/20220624034327.2542112-1-frowand.list@gmail.com/
-> > >
-> > > Current Lizhi's series creates nodes from the PCI host node during the PCI
-> > > enumeration. It creates PCI-PCI bridge and PCI device nodes.
-> > >
-> > > I use these series on an ACPI system.
-> > >
-> > > I need one more missing component: the node related to the PCI host bridge
-> > > This was the purpose of Clement's work. This work was not sent upstream yet and I
-> > > am working on it in order to have a full tree from the of_root to the PCI device
-> > > ie:
-> > >  of_root                  <-- Frank Rowand series
-> > >    + of_host_pci_bridge   <-- Clement's work
-> > >        + pci_bridge       <-- Current Lizhi series
-> > >            + pci_bridge   <-- Current Lizhi series
-> > >             ...
-> > >              + pci_dev    <-- Current Lizhi series
-> > >
-> > > Hope that this status helped.  
-> >
-> > Thanks for the explanation! I suppose it's better to have three series combined
-> > into one and being sent with a better cover letter to explain all this.  
-> 
-> You can go back (years now) and see that. I asked for this to be split
-> up into manageable chunks and not solve multiple problems at once. No
-> point in trying to do DT on top of ACPI if DT on top of DT doesn't
-> work first.
+There shouldn't be any need to make this conditional.
 
-I agree.
+> +static int stmmac_mac_prepare(struct phylink_config *config, unsigned int mode,
+> +			      phy_interface_t interface)
+> +{
+> +	struct net_device *ndev = to_net_dev(config->dev);
+> +	struct stmmac_priv *priv = netdev_priv(ndev);
+> +	int ret = 0;
+> +
+> +	priv->plat->phy_interface = interface;
+> +
+> +	if (priv->plat->config_serdes)
+> +		ret = priv->plat->config_serdes(ndev, priv->plat->bsp_priv);
 
-Hervé
+Please call this "phylink_mac_prepare" and pass the parameters that
+phylink passes you to this function, so we don't end up at a later
+date with people needing to extend this function to do other stuff,
+thus repeating mistakes from earlier.
 
-> 
-> Rob
-
-
+This is what has led to some very yucky code in all those
+"fix_mac_speed" implementations, with duplicated data in the BSPs
+to get the PHY mode and store it separately, etc.
 
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
