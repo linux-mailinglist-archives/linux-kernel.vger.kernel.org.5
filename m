@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EAA7A9BBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8517A9BE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjIUTEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
+        id S229593AbjIUTEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjIUTD5 (ORCPT
+        with ESMTP id S229763AbjIUTEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:03:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1FF89D92;
-        Thu, 21 Sep 2023 10:52:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318732; x=1726854732;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CB1e+1tDos0izps6y7bKpYTFHFvWb1uVC0e3ziRvTvY=;
-  b=mecA3MhG8FsF1L21mW5EE32egHlmVWqjFJFhGlb4kpq8+3WFNyFwOYe5
-   AVLA1N14JzI47A9GpIoKEuqzdP2MRL+oaQy0rY6PAGD8hhxC3ytF/OOjP
-   DQHi/j14luo8t1InVRRC5EgEtqJ7AXax/FSub8DKQ4GEAueW597y+XKAs
-   HeZpdzFJ8u0HjksA48SfAs89sRKddv5hGEd6THec/Hp3WU4pTFJjWGwWs
-   DT4PtivxIs1gfBGJADMpG6ybuxqsiiD3U+q8bAaJVXNUM4kASWgO2LUuI
-   ZmbZWeIP8HufYhLqlguGLN1hYD1Ze/d+owXRUHWMNo4Zis3b/dSz1Dk47
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="379396206"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="379396206"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 06:00:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="812639263"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="812639263"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Sep 2023 06:00:40 -0700
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH net-next] idpf: fix undefined reference to tcp_gro_complete() when !CONFIG_INET
-Date:   Thu, 21 Sep 2023 14:59:36 +0200
-Message-ID: <20230921125936.1621191-1-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 21 Sep 2023 15:04:06 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711EA400EE
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:34:56 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1d6b4735158so713065fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695321295; x=1695926095; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pNpVr3hX07AdKTZ8+Sx0LVisp+9RYkwStP9wMLdYrzw=;
+        b=xjAW3Rx1Yp0Hv+2w3r83byyuEfGwkHcCu5KggzzKcnMuX+fiOG7rPrqPBp3ZvDHUIp
+         yJGyRVXbQkAh1fTbTxI0GLyqT19m0tsD+fdJTJZacsE9LL4pg18DQvXb4T9tcU0g2KC3
+         OVyRLMlsuTN36yo9NgT71PVVn3YfLifEsPoAD+FiNNVsV2tRqxw8NjStJZOvmxWTA12P
+         /WCCUWFFXYgJpN2EKXEIzOMfRmnYvl8+axBUBM5q6OHBFAuR4XCENWNTx4AYxmaGT26i
+         JvizROix5E8TitMDdbwrk6fptGQ7tyX8HxatzECTEEm+Tm6TZNSxNCM8gN2kFhVy+Wj6
+         Gn6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695321295; x=1695926095;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pNpVr3hX07AdKTZ8+Sx0LVisp+9RYkwStP9wMLdYrzw=;
+        b=UoG6dvjeyp0Xesvou2juwnsaQ9CN7Q2/doNQRScBlhPG5ynJCRPfl3PFWTNJw6n/tq
+         fEyzwxClwCgmwxc8nn70in11IdZNJ1nlNs+DAlO4OU0TbIgn7QuvMdjbIFOoWVYcKv8c
+         gdAjhJVxA38w68eu6Tu7mz5SGDx8Hzkbha0FbbnX/FUO6weMoGP6VungmeWNz/xXhgOg
+         /Htd12aZe7bI1PZDGWzAAZ7bp21qjdovhGHdJVHqYBAL22i23WGxlfovPS5jT8M+cwXK
+         vwEpsqIsD5FL/Tu/nNoY3qa9LJbBrgVOw58y7JOqo4MK2qgjiN70xxLABByoo9YlWPK/
+         2Zeg==
+X-Gm-Message-State: AOJu0Yzr3oCPACDbLtTurKzXvBrt/YTk0UeEl/vonVeTlvmYgeIFkq0f
+        zq6zLGTN1vAkz2lXd8AK28dYd1BaezFfPYXNd8jVTZ/NPJNBk+g7juE=
+X-Google-Smtp-Source: AGHT+IFqX3AQtEQOsB1IQQCIx2Q35DO+VOl1a5nyQVZz96a/QlXlu7E2WC2lL+gM1UWaSurybAhPe1nEThyHesRaRIs=
+X-Received: by 2002:a25:d301:0:b0:d7b:a78e:6b2d with SMTP id
+ e1-20020a25d301000000b00d7ba78e6b2dmr8458738ybf.20.1695301372684; Thu, 21 Sep
+ 2023 06:02:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230825112633.236607-1-ulf.hansson@linaro.org>
+ <20230825112633.236607-8-ulf.hansson@linaro.org> <20230921111426.b2vp5hu7ssdtmz3n@bogus>
+In-Reply-To: <20230921111426.b2vp5hu7ssdtmz3n@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Sep 2023 15:02:16 +0200
+Message-ID: <CAPDyKFqHBWtDioepsJuNHEa6ckwtuAOKBLx+LZEZctADTP--3w@mail.gmail.com>
+Subject: Re: [PATCH v3 07/13] cpufreq: scmi: Drop redundant ifdef in scmi_cpufreq_probe()
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_INET is not set, tcp_gro_complete is not compiled, although
-the drivers using it may still be compiled (spotted by Randy):
+On Thu, 21 Sept 2023 at 13:14, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Fri, Aug 25, 2023 at 01:26:27PM +0200, Ulf Hansson wrote:
+> > We have stubs for devm_of_clk_add_hw_provider(), so there should be no need
+> > to protect this with the '#ifdef CONFIG_COMMON_CLK'. Let's drop it to clean
+> > up the code a bit.
+> >
+>
+> No exactly. The stub is under !CONFIG_OF but we need it for !CONFIG_COMMON_CLK.
+> The original build issue reported for which I add this was CONFIG_OF=y &&
+> CONFIG_COMMON_CLK=n.
+>
+> It looks like it is still valid combo though I don't have a handy randconfig
+> to present to you. I prefer to drop this for now if that is OK with you.
 
-aarch64-linux-ld: drivers/net/ethernet/intel/idpf/idpf_txrx.o:
-in function `idpf_rx_rsc.isra.0':
-drivers/net/ethernet/intel/idpf/idpf_txrx.c:2909:(.text+0x40cc):
-undefined reference to `tcp_gro_complete'
+Sure, it's perfectly fine to drop it. It's just a thing I stumbled
+over that isn't really needed in the $subject series!
 
-The drivers need to guard the calls to it manually.
-Return early from the RSC completion function if !CONFIG_INET, it won't
-work properly either way. This effectively makes it be compiled-out
-almost entirely on such builds.
-
-Fixes: 3a8845af66ed ("idpf: add RX splitq napi poll support")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Closes: https://lore.kernel.org/linux-next/4c84eb7b-3dec-467b-934b-8a0240f7fb12@infradead.org
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
-Directly to net-next, build bots are not happy :s
-
-From v1[0]:
- * post the patch as standalone;
- * pick the received tags (Randy, Jake, Przemek).
-
-[0] https://lore.kernel.org/netdev/20230920180745.1607563-1-aleksander.lobakin@intel.com
----
- drivers/net/ethernet/intel/idpf/idpf_txrx.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 6fa79898c42c..aa45afeb6496 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -2876,6 +2876,9 @@ static int idpf_rx_rsc(struct idpf_queue *rxq, struct sk_buff *skb,
- 	if (unlikely(!(ipv4 ^ ipv6)))
- 		return -EINVAL;
- 
-+	if (!IS_ENABLED(CONFIG_INET))
-+		return 0;
-+
- 	rsc_segments = DIV_ROUND_UP(skb->data_len, rsc_seg_len);
- 	if (unlikely(rsc_segments == 1))
- 		return 0;
--- 
-2.41.0
-
+Kind regards
+Uffe
