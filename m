@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3377A964C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4201D7A96C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbjIURHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
+        id S229743AbjIURH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjIURHK (ORCPT
+        with ESMTP id S230194AbjIURHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Sep 2023 13:07:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F37D359D;
-        Thu, 21 Sep 2023 10:03:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E38C5C4E770;
-        Thu, 21 Sep 2023 15:45:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695311117;
-        bh=E1dhxis8ZumBm0hKaOMOgVxtcqW/DF2vSRD3c8E34to=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hnb53gE9VP9wyiDUEYS9uM+cYkAMgpeaQr7Zkpf0rCGGzVG+CalXEkvwN+Nvrlgwn
-         SShkMPiln06WcGb3i3GYwdQqgmB2SkXTR+yQd2iHhdeBhlJkwWBWw9tE5WFfRbjNV+
-         PywkpmRf30b8hWmQupUhSJghVx8L2s7Qnkv2eTdEQB2MzfqZgXK1HOGUCm5HDSSm0s
-         X4NhbhVqZsl1pL04z4TTwAyUI946pLdhf9ycusxuBkbXLz3BK0F9iD9tupyAdb4kgN
-         DfUx88OB9vJBn9cWIN9QjnMbPme61mEW7+BOHGCmSyw9SRc7OhW1JafPQoDNsUsWV5
-         Uh/US7cqytnug==
-Received: (nullmailer pid 396045 invoked by uid 1000);
-        Thu, 21 Sep 2023 15:45:14 -0000
-Date:   Thu, 21 Sep 2023 10:45:14 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>
-Subject: Re: [PATCH 4/4] iio: resolver: add new driver for AD2S1210
-Message-ID: <20230921154514.GA383967-robh@kernel.org>
-References: <20230920170253.203395-1-dlechner@baylibre.com>
- <20230920170253.203395-5-dlechner@baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920170253.203395-5-dlechner@baylibre.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6DB2101
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:03:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D63CCC4E772;
+        Thu, 21 Sep 2023 15:46:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1695311178;
+        bh=XbJgWS2b4Zs6ittxozTQbmeIioM0YEqG8HDmDMXPv/U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EmOPQtjpihFmSGI9lHQLn9ZbTdoa0pDV27Y6p+DgCqQoWSEhawxxqTaWPvbBMcyJx
+         8UpdnxNbLOTXxxk/BLuxsf5jEk3FvH8kQjP6E9KJ5eR44XXCyBAEdKjkqVSBXXwJJL
+         9jM2G7bH41H4C/HV/mVrPcN1LEbU5kxxFGjheoTQ=
+Date:   Thu, 21 Sep 2023 08:46:17 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH 00/10] mm: PCP high auto-tuning
+Message-Id: <20230921084617.b1129a46de247e4a6f0098af@linux-foundation.org>
+In-Reply-To: <87leczwt1o.fsf@yhuang6-desk2.ccr.corp.intel.com>
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920094118.8b8f739125c6aede17c627e0@linux-foundation.org>
+        <87leczwt1o.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 12:02:53PM -0500, David Lechner wrote:
-> This adds a new driver for Analog Devices, Inc. AD2S1210 resolver to
-> digital converter. The driver is based on the staging driver with the
-> following improvements:
-> 
-> Fixes:
-> - Fix use before initialization bug in probe.
-> - Fix not checking error returns in probe.
-> - Remove spi_setup() and spi_set_drvdata() from probe.
-> - Fix ordering of devm_iio_device_register()
-> - Remove incorrect hysteresis logic
-> 
-> Changes:
-> - Use BIT/GENMASK macros.
-> - Use devicetree to get CLKIN frequency (was sysfs attribute).
-> - No longer bit-shift the raw value for IIO_CHAN_INFO_RAW.
-> - Use regmap for register access.
-> - Remove config sysfs attribute.
-> - Use gpio array for mode and resolution gpios.
-> - Invert sample gpio logic and use GPIO_ACTIVE_LOW in devicetree.
-> - Change hysteresis to use IIO_CHAN_INFO_HYSTERESIS instead of custom
->   device attribute.
-> - Rename fexcit attribute to excitation_frequency.
-> - Use devicetree to specify resolution instead of sysfs attribute.
+On Thu, 21 Sep 2023 21:32:35 +0800 "Huang, Ying" <ying.huang@intel.com> wrote:
 
-Why? sysfs allows a user to change at run-time. DT is a firmware 
-change. What/who determines the resolution? Unless it's the hardware 
-design/designer, it probably doesn't belong in DT.
+> >   : It's possible that PCP high auto-tuning doesn't work well for some
+> >   : workloads.  So, when PCP high is tuned by hand via the sysctl knob,
+> >   : the auto-tuning will be disabled.  The PCP high set by hand will be
+> >   : used instead.
+> >
+> >   Is it a bit hacky to disable autotuning when the user alters
+> >   pcp-high?  Would it be cleaner to have a separate on/off knob for
+> >   autotuning?
+> 
+> This was suggested by Mel Gormon,
+> 
+> https://lore.kernel.org/linux-mm/20230714140710.5xbesq6xguhcbyvi@techsingularity.net/
+> 
+> "
+> I'm not opposed to having an adaptive pcp->high in concept. I think it would
+> be best to disable adaptive tuning if percpu_pagelist_high_fraction is set
+> though. I expect that users of that tunable are rare and that if it *is*
+> used that there is a very good reason for it.
+> "
+> 
+> Do you think that this is reasonable?
 
-Rob
+I suppose so, if it's documented!
+
+Documentation/admin-guide/sysctl/vm.rst describes
+percpu_pagelist_high_fraction.
