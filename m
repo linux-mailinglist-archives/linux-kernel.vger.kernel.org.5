@@ -2,172 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87177AA1C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D93A7A9FB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbjIUVFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        id S231991AbjIUU1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbjIUVEd (ORCPT
+        with ESMTP id S231740AbjIUU01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:04:33 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03D0C1130
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:18:13 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-404fbfac998so14804485e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695320292; x=1695925092; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4cxYqhV2vF1/qTyjoXVFQ+TzTovUXbNHaLzLCCyWR1E=;
-        b=Qlq9zJXDeIS16JGmR4ffI0Da3hcLbJhDHM/9qXAnkOw5RuBkYa1soaX9tNq0HZ4uYY
-         3F0gbBhXJB0WsWUzmpNsMhLABSRjf/iZDbpMLCB4MVRm7o1ePzlh6nQkbfP/iCyN42cg
-         FLYMQUzRLCxvFN2oD61BRbYSQJ1gr1O2j4DO1jna6KIPaMO7OyaBBJpkEwTeJQdzfn1l
-         9ts1wnH1mUmz7wlKJGDRwbKApIK4it9lXkt+vOjRNSKIOwtL7i0gAv544Q8oCuz1nWhg
-         IbzBoG2SRNojyfZJgyolTsS8EfvgWF2ymg91xz3E5DBeixn9Pay+ZG23QD7esRpsg4et
-         EjfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320292; x=1695925092;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4cxYqhV2vF1/qTyjoXVFQ+TzTovUXbNHaLzLCCyWR1E=;
-        b=VvPD/8OEZCchNrVmwyLI2jgDANBZsL14OHsHmg5KJiLYsB6zP5XIGAPk3E5Y0yspfY
-         uF8yUKf5CP+X/W02g3+FRiaVD+dZC2915ZqjI9uZ1go8akSR9BJirbjBSdoJjyoVNWM+
-         1QjbxgWIvVew/RthMOKPyDTPm+kwt64nyyndNKH9Td2JaWhz2uYeC2PezKrTaHUoZElA
-         33B+SDkA1eLD6uAcJzJZoyUOZw4JcfsbFuayH/T7d5bW/j2NjmWif5YUYPRXkZPKkMYP
-         A/4b9hS3L7jSWPGgsjDjUH9L+9rXcquJp9H3nGWVGR10UGVXCvMzCZEmKiK5Lhpm9iY+
-         1l9g==
-X-Gm-Message-State: AOJu0Yxd8yeVwysFpAZVjz4uGxk6DE1cJz4HHkGmhlfqWfsmj+7/4ny2
-        rI/sodPUfMoY3Y6H8X1diROvaE8y6VjuBcJYmiiNuUF6
-X-Google-Smtp-Source: AGHT+IGvFbJ6Db71oV5a8RSKNQD5duku5npuZ17s6sJi9JPyuKunEwciIHFTyflTn2v/2DkUgSn7gA==
-X-Received: by 2002:a17:907:75f2:b0:9ae:567f:6f78 with SMTP id jz18-20020a17090775f200b009ae567f6f78mr2060971ejc.19.1695291586361;
-        Thu, 21 Sep 2023 03:19:46 -0700 (PDT)
-Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170906354200b0098ec690e6d7sm814062eja.73.2023.09.21.03.19.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 03:19:46 -0700 (PDT)
-Message-ID: <50814314-55a3-6cff-2e9e-2abf93fa5f1b@blackwall.org>
-Date:   Thu, 21 Sep 2023 13:19:44 +0300
+        Thu, 21 Sep 2023 16:26:27 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC837663E6;
+        Thu, 21 Sep 2023 10:34:22 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38L9bwpW025687;
+        Thu, 21 Sep 2023 10:21:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to : sender :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=4b/ESelDBjK56kwtRxdtopxwC74XrEAu2AYOxOufBuo=;
+ b=S24zo4tWYrJEqowTlMgNOh1+xfmLR68k1SpDA9Laa5AUbrHuPt/ulOpBXea+/LCZ44uX
+ 2yRg1oRr2W6ycOV2y8DNfgn6BrMxhfgI/ApG+kobcpCG+ALgHGE6H0N3bDp3b/9sIghO
+ 13aENecum1UndyQGKxXKnu4tBAPM55zJBS81+8LC0zsyboH6yutLATcy/a5iYFLMN+EL
+ eQ0VhRled5aCn0WpcrUaz61iV1nHa/4npJPJf3v4uH9mB+6aZRdyP9lL7OjoVAelVNDW
+ RDvqFymXT6Qi5tOR9Ezuwr/HUl3NWM9gRFeiY5/ulqFHipAMwpKnInjJED0pfhEZomLR pQ== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t81v9bybp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 10:21:09 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38L9im7H016841;
+        Thu, 21 Sep 2023 10:21:08 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5sd2f722-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 10:21:08 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38LAL3sF60555686
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Sep 2023 10:21:03 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D6CC20063;
+        Thu, 21 Sep 2023 10:21:03 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 597E22004F;
+        Thu, 21 Sep 2023 10:21:03 +0000 (GMT)
+Received: from p1gen4-pw042f0m (unknown [9.196.32.213])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 21 Sep 2023 10:21:03 +0000 (GMT)
+Received: from bblock by p1gen4-pw042f0m with local (Exim 4.96)
+        (envelope-from <bblock@linux.ibm.com>)
+        id 1qjGnu-001pFi-2g;
+        Thu, 21 Sep 2023 12:21:02 +0200
+Date:   Thu, 21 Sep 2023 12:21:02 +0200
+From:   Benjamin Block <bblock@linux.ibm.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Steffen Maier <maier@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        James Bottomley <James.Bottomley@suse.de>,
+        Christof Schmitt <christof.schmitt@de.ibm.com>,
+        Swen Schillig <swen@vnet.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: zfcp: Fix a potential double free in
+ zfcp_port_enqueue
+Message-ID: <20230921102102.GF10864@p1gen4-pw042f0m.fritz.box>
+References: <20230921063915.7703-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20230921063915.7703-1-dinghao.liu@zju.edu.cn>
+Sender: Benjamin Block <bblock@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XdgFg4eL9AXiJ9gD0bGFoh6deskJr6KK
+X-Proofpoint-ORIG-GUID: XdgFg4eL9AXiJ9gD0bGFoh6deskJr6KK
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH net-next v4 5/6] net: bridge: Add a configurable default
- FDB learning limit
-Content-Language: en-US
-To:     Johannes Nixdorf <jnixdorf-oss@avm.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
- <20230919-fdb_limit-v4-5-39f0293807b8@avm.de>
- <cc14cd4a-f3bb-3d6f-5b38-ec73cad32570@blackwall.org>
- <ZQv5aNbgqxCuOKyr@u-jnixdorf.ads.avm.de>
-From:   Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <ZQv5aNbgqxCuOKyr@u-jnixdorf.ads.avm.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_07,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ phishscore=0 lowpriorityscore=0 mlxlogscore=914 clxscore=1011 mlxscore=0
+ adultscore=0 bulkscore=0 impostorscore=0 priorityscore=1501 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309210087
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/23 11:06, Johannes Nixdorf wrote:
-> On Wed, Sep 20, 2023 at 02:00:27PM +0300, Nikolay Aleksandrov wrote:
->> On 9/19/23 11:12, Johannes Nixdorf wrote:
->>> Add a Kconfig option to configure a default FDB learning limit system
->>> wide, so a distributor building a special purpose kernel can limit all
->>> created bridges by default.
->>>
->>> The limit is only a soft default setting and overrideable on a per bridge
->>> basis using netlink.
->>>
->>> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
->>> ---
->>>    net/bridge/Kconfig     | 13 +++++++++++++
->>>    net/bridge/br_device.c |  2 ++
->>>    2 files changed, 15 insertions(+)
->>>
->>> diff --git a/net/bridge/Kconfig b/net/bridge/Kconfig
->>> index 3c8ded7d3e84..c0d9c08088c4 100644
->>> --- a/net/bridge/Kconfig
->>> +++ b/net/bridge/Kconfig
->>> @@ -84,3 +84,16 @@ config BRIDGE_CFM
->>>    	  Say N to exclude this support and reduce the binary size.
->>>    	  If unsure, say N.
->>> +
->>> +config BRIDGE_DEFAULT_FDB_MAX_LEARNED
->>> +	int "Default FDB learning limit"
->>> +	default 0
->>> +	depends on BRIDGE
->>> +	help
->>> +	  Sets a default limit on the number of learned FDB entries on
->>> +	  new bridges. This limit can be overwritten via netlink on a
+Hello Liu Dinghao,
 
-overwritten doesn't sound good, how about This limit can be set (or changed)
+good find.
 
->>> +	  per bridge basis.
->>> +
->>> +	  The default of 0 disables the limit.
->>> +
->>> +	  If unsure, say 0.
->>> diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
->>> index 9a5ea06236bd..3214391c15a0 100644
->>> --- a/net/bridge/br_device.c
->>> +++ b/net/bridge/br_device.c
->>> @@ -531,6 +531,8 @@ void br_dev_setup(struct net_device *dev)
->>>    	br->bridge_ageing_time = br->ageing_time = BR_DEFAULT_AGEING_TIME;
->>>    	dev->max_mtu = ETH_MAX_MTU;
->>> +	br->fdb_max_learned = CONFIG_BRIDGE_DEFAULT_FDB_MAX_LEARNED;
->>> +
->>>    	br_netfilter_rtable_init(br);
->>>    	br_stp_timer_init(br);
->>>    	br_multicast_init(br);
->>>
->>
->> This one I'm not sure about at all. Distributions can just create the bridge
->> with a predefined limit. This is not flexible and just adds
->> one more kconfig option that is rather unnecessary. Why having a kconfig
->> knob is better than bridge creation time limit setting? You still have
->> to create the bridge, so why not set the limit then?
+On Thu, Sep 21, 2023 at 02:39:15PM +0800, Dinghao Liu wrote:
+> When device_register() fails, zfcp_port_release() will be called
+> after put_device(). As a result, the zfcp_ccw_adapter_put() after
+> err_out is redundant because it will be called in the call-back
+> function zfcp_port_release(). Remove it from this error path.
+
+So the reference on the adapter object is doubly put, which may
+lead to a premature free of the adapter object itself. Please mention that
+either in the subject, or description; it makes it easier to see what exactly
+breaks at a glance.
+
 > 
-> The problem I'm trying to solve here are unaware applications. Assuming
-> this change lands in the next Linux release there will still be quite
-> some time until the major applications that create bridges (distribution
-> specific or common network management tools, the container solution of
-> they day, for embedded some random vendor tools, etc.) will pick it
-> up. In this series I chose a default of 0 to not break existing setups
-> that rely on some arbitrary amount of FDB entries, so those unaware
-> applications will create bridges without limits. I added the Kconfig
-> setting so someone who knows their use cases can still set a more fitting
-> default limit.
+> Fixes: f3450c7b9172 ("[SCSI] zfcp: Replace local reference counting with common kref")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/s390/scsi/zfcp_aux.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> More specifically to our use case as an embedded vendor that builds their
-> own kernels and knows they have no use case that requires huge FDB tables,
-> the kernel config allows us to set a safe default limit before starting
-> to teach all our applications and our upstream vendors' code about the
-> new netlink attribute. As this patch is relatively simple, we can also
-> keep it downstream if there is opposition to it here though.
+> diff --git a/drivers/s390/scsi/zfcp_aux.c b/drivers/s390/scsi/zfcp_aux.c
+> index df782646e856..489e6239dedf 100644
+> --- a/drivers/s390/scsi/zfcp_aux.c
+> +++ b/drivers/s390/scsi/zfcp_aux.c
+> @@ -552,7 +552,7 @@ struct zfcp_port *zfcp_port_enqueue(struct zfcp_adapter *adapter, u64 wwpn,
+>  
+>  	if (device_register(&port->dev)) {
+>  		put_device(&port->dev);
+> -		goto err_out;
+> +		return ERR_PTR(retval);
 
-I'm not strongly against, just IMO it is unnecessary. I won't block the 
-set because of this, but it would be nice to get input from others as
-well. If you can recompile your kernel to set a limit, it should be 
-easier to change your app to set the same limit via netlink, but I'm not 
-familiar with your use case.
+I'd rather have a new label at the bottom, in front of the return that is
+already there, and jump to that, instead of a different function exit point.
 
+>  	}
+>  
+>  	write_lock_irq(&adapter->port_list_lock);
+> -- 
+> 2.17.1
+> 
+
+-- 
+Best Regards, Benjamin Block        /        Linux on IBM Z Kernel Development
+IBM Deutschland Research & Development GmbH    /   https://www.ibm.com/privacy
+Vors. Aufs.-R.: Gregor Pillen         /         Geschäftsführung: David Faller
+Sitz der Ges.: Böblingen     /    Registergericht: AmtsG Stuttgart, HRB 243294
