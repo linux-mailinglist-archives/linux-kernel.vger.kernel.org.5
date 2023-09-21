@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F217AA21B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802AF7AA201
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbjIUVMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
+        id S231860AbjIUVLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjIUVLo (ORCPT
+        with ESMTP id S233137AbjIUVF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:11:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038DC9D464
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695318969;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fJuzqw6y7Ip39zFY8UF3H/ph0aENOEUx7vxRau7h7Js=;
-        b=dhCJbHTZOe2fkQ+81EEmeOr794mj5DVYMH6yecZcn/pSi6fGXgGKf4Lnb/edO8ojR4g8kP
-        Nd2zoPStGn76cGKInqAkUt+5do349oBi2KKS08xhmGYMNAZs0iVwxN+pY9qcfYrgZoQkC/
-        zxm1xmhEzkjvaTJgQusKqZRCbL3NPmk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-hGOjfZZbOEaBPn3sdUNEmA-1; Thu, 21 Sep 2023 10:40:48 -0400
-X-MC-Unique: hGOjfZZbOEaBPn3sdUNEmA-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-53347126bf0so113850a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 07:40:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695307247; x=1695912047;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fJuzqw6y7Ip39zFY8UF3H/ph0aENOEUx7vxRau7h7Js=;
-        b=SphPO4+w9Qa1NVSo1I35WCV65B/uRgfVoA8YiTDma1k3KvUFUFXiVdBNRAvmJWc6YY
-         KbZwUB/UvjR3QgBbG/o3kIv8xzwMFQDhwS7KN+yZ07Y+W4g8N/Hu9KLXzvWLcRMnwAMU
-         qlW8eMoVAyfU0hKxABRJPQW17CdEOuStjN1dOd+AExtQUXJc6qIrhSInrLiUq/5U9Oe0
-         B0dFp+QWlpXrYIO7z899jRhWVoHdm0JmkNp/VFh2ej/RjrBnf6PaxexRWVGClU3YO28b
-         1yvDMyzNwrOKYiN5UwFuTYQqOZO6sMXFQGvdcimurkzbw1BsOj2OK/7DX7kWQ+QnMQMg
-         qKBw==
-X-Gm-Message-State: AOJu0YyRIi51Jf/c4GEly+98tXgfSVb7DowRMdqiijybctXsCi0K0qec
-        gUh7/JPWIkifhFI9IvxC4NipNptQINd0FYs6w+aQGCGM8Lta13Ek1sASnHoZUKqxQjGQtK6YJOK
-        ciFH15PUFB/eQED9RplofR9my
-X-Received: by 2002:a17:906:d3:b0:99c:5711:3187 with SMTP id 19-20020a17090600d300b0099c57113187mr4432970eji.6.1695307247352;
-        Thu, 21 Sep 2023 07:40:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGUXkWRy8pyVz5Er6anCQu7FYs2J46jfxMTML3x7ct4qBYd5KH3WxyrVl/hSXMaku8sKa2ejQ==
-X-Received: by 2002:a17:906:d3:b0:99c:5711:3187 with SMTP id 19-20020a17090600d300b0099c57113187mr4432954eji.6.1695307247050;
-        Thu, 21 Sep 2023 07:40:47 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-251-4.dyn.eolo.it. [146.241.251.4])
-        by smtp.gmail.com with ESMTPSA id lt12-20020a170906fa8c00b009a219ecbaf1sm1163364ejb.85.2023.09.21.07.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:40:46 -0700 (PDT)
-Message-ID: <5615a39b3402e7499fd531c928845e102fba6f1c.camel@redhat.com>
-Subject: Re: [net-next PATCH] net: sfp: add quirk for Fiberstone
- GPON-ONU-34-20BI
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Thu, 21 Sep 2023 17:05:26 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5FDAFC09;
+        Thu, 21 Sep 2023 11:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Z/gjZ6NwdeuNXyz1iXfuNTb1780WrCUmfyXB8A74g+o=; b=mDecZEV1D+Pkf7/ecZob0+PcEI
+        ydp21+7Xc4bfOIzUutQLHT7djnvEvIPGcR+X8uvGKkLB1LSGAGof30d4Iz/x2/PooFHIQd+SHN4V4
+        l57farp1zDlyjbX6Wctfvy7L+7NuRZyy3wrFanEnZ3ZHWAxnhPRrvmdsYbdWtQTmAlkY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qjKro-0076AY-OI; Thu, 21 Sep 2023 16:41:20 +0200
+Date:   Thu, 21 Sep 2023 16:41:20 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 21 Sep 2023 16:40:45 +0200
-In-Reply-To: <ZQmkv9o329m98CUG@shell.armlinux.org.uk>
-References: <20230919124720.8210-1-ansuelsmth@gmail.com>
-         <ZQmkv9o329m98CUG@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
+Message-ID: <0098eaf3-717a-4b50-b2a0-4b28b75b0735@lunn.ch>
+References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
+ <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
+ <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+ <37fe9352-ec84-47b8-bb49-9441987ca1b9@lunn.ch>
+ <ZQxPQ9t8/TKcjlo8@shell.armlinux.org.uk>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQxPQ9t8/TKcjlo8@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russel,
+On Thu, Sep 21, 2023 at 03:12:19PM +0100, Russell King (Oracle) wrote:
+> On Thu, Sep 21, 2023 at 03:21:00PM +0200, Andrew Lunn wrote:
+> > > Hi Andrew,
+> > > 
+> > > After conducting a comprehensive study, it seems that implementing
+> > > out-of-band for all link modes might not be feasible. I may have missed some
+> > > key aspects during my analysis.
+> > > 
+> > > Would you be open to sharing a high-level idea of how we could potentially
+> > > make this feasible? Your insights would be greatly appreciated.
+> > 
+> > stmmac_mac_link_up() gets passed interface, speed and duplex. That
+> > tells you what the PHY has negotiated. Is there anything else you need
+> > to know?
+> 
+> The problem is... the stmmac driver is utter bollocks - that information
+> is *not* passed to the BSP. Instead, stmmac parse and store information
+> such as the PHY interface mode at initialisation time. BSPs also re-
+> parse and store e.g. the PHY interface mode at initialisation time.
+> The driver ignores what it gets from phylink.
+> 
+> The driver is basically utter crap. That's an area I _had_ patches to
+> clean up. I no longer do. stmmac is crap crap crap and will stay crap
+> until they become more receptive to patches to fix it, even if the
+> patches are not 100% to their liking but are in fact correct. Maybe
+> if I ever decide to touch that driver in the future. Which I doubt
+> given my recent experience.
 
-On Tue, 2023-09-19 at 14:40 +0100, Russell King (Oracle) wrote:
-> On Tue, Sep 19, 2023 at 02:47:20PM +0200, Christian Marangi wrote:
-> > Fiberstone GPON-ONU-34-20B can operate at 2500base-X, but report 1.2GBd
-> > NRZ in their EEPROM.
-> >=20
-> > The module also require the ignore tx fault fixup similar to Huawei MA5=
-671A
-> > as it gets disabled on error messages with serial redirection enabled.
->=20
-> I'll send you shortly a different approach for the "ignore tx fault"
-> thing that I'd like you to test please.
+Hi Russell
 
-Said patch is not blocking this one, am I correct?
+You pointed out the current proposal will break stuff. Do you see a
+way forward for this patchset which does not first involve actually
+cleaning up of this driver?
 
-Thanks,
-
-Paolo
-
+	Andrew
