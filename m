@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B47E07A9A3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2ACE7A9E09
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbjIUShf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S230433AbjIUTxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjIUSgx (ORCPT
+        with ESMTP id S230269AbjIUTxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:36:53 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3BABF102
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:15:39 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-565e54cb93aso742022a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695320135; x=1695924935; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=f0A4cf8xaLph2RFxNW2e2zC/ozNHYMpBHiQTWSZDrd4=;
-        b=vaFQWQFRQboyjd93z/IzIwa/6PU31P5R3m5s7Z1kwEFA4hxn/od74AXugheRKPem2I
-         fd6jpPF/u3bScW1WDBiCL/4ChgA/2c3rg6obpTKm0Hn8vs6RgZ1QcO0+xdNCeN8Nh/G0
-         2UDf0PNvXdLgSQxSZmm9xsvwKrhZxSPqJr8mLEKP+/HaetlNEaItDApkrENV3CPu7ohX
-         CeU4fo2J6qQvo/9UzZoPdST8+KK13A+sP8JXYd5e8qHZH10G5Qvo3+XfDbMlHV6CzSjW
-         FD3RAEHr0O2vX+7kAdxZfLzergBrio3tfmZGwzP4XkQe/cE3ID6hQ/uS1EG02jjY0BXC
-         MZSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320135; x=1695924935;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f0A4cf8xaLph2RFxNW2e2zC/ozNHYMpBHiQTWSZDrd4=;
-        b=Vnw48Oi+KKSdaQxhwoLc/BQPVxPLecW4N2XhRijWJ+TeSaCcOwSxgsyi0ERwnRyhMr
-         vveRdKUNKHOeJcaLLSO7Q1e/aqTQf8/d0p6K4GHzDFLhX9+2yIsNLQ9Wcd5ZbSOINFBo
-         5kHJ4KToyYwjySAfnV5asinvsJcgmYpeDkm8OBJb5K7qZsJnDLPmPhu7vanbiCHDmjv7
-         l9JMBBXvtPElMAH5b98uBlorvBA6R9HAvH17NoFRidT3TBgAJXbW9XBB9uJQfKEPlv4h
-         EQkDd1y7TmhwhSmpZOc4nrcnsj6eOzWwI4HdyWOeuUCJgPAaITBTabmufIPl5BE6ha9x
-         tiwQ==
-X-Gm-Message-State: AOJu0YzMVNLxIsZ9t6+j4JZCsCL22s8D0VTnyY9e2w1aKaGUD/i+rXNU
-        3jMeWjh21pWyCK5H8o8JBPBJeNdc+OiSrlTwc10G1lvhoHUnXMyH/mGkXA==
-X-Google-Smtp-Source: AGHT+IF6qOrjEY9if7ZapsXGGL1X2pv/FF05y7VvQhm8TwsXueJgwhY8SQCZZx9F8vyaLZqpsJvBOnpMrRr0N4EDD4o=
-X-Received: by 2002:a1f:c6c1:0:b0:495:ec90:997e with SMTP id
- w184-20020a1fc6c1000000b00495ec90997emr5200602vkf.7.1695298135191; Thu, 21
- Sep 2023 05:08:55 -0700 (PDT)
+        Thu, 21 Sep 2023 15:53:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED1990F15;
+        Thu, 21 Sep 2023 10:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695318444; x=1726854444;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HY1sm+rBkYtBd+6vBns4g32g88NP2b9P0RK55lZf5eM=;
+  b=O1+KVf7KYfaUo7bnrEkA2Jd4GC9XnoNkIlyscEjdiTfXzrLbYjTkod/X
+   zDqEgegT8ZL/YkrzJQh+CyqnmUOqKkFFSHIOASsIURIB/MJqOl2AEpf3b
+   gQqK0V6v7uyX4Ka4UgiBkgn6IShskrDBkDDipim97gTBi2hLT4ldxg21N
+   LGiMgNKcGE5vOZMn98vMih6CCs1pzZznu/gjYu4QWFVqP8QR/uEXVkPMr
+   N5WscN1JzcgtE3jndOGl/+yMOD7/4I8fisngE6gTKjvuky6eFaH9ukUH+
+   ijF8NW/BEMLiP8n+2yrr/kXGF9HX6zuU+WnWYDWF+1xhQ3p2DOlaq/OaG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="377792033"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="377792033"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:11:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="747070867"
+X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
+   d="scan'208";a="747070867"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.213]) ([10.254.213.213])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:11:01 -0700
+Message-ID: <4b17d331-957b-44d3-8a19-0b2ccc59150b@linux.intel.com>
+Date:   Thu, 21 Sep 2023 20:10:58 +0800
 MIME-Version: 1.0
-References: <20230920112858.471730572@linuxfoundation.org>
-In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Sep 2023 14:08:44 +0200
-Message-ID: <CA+G9fYsM0Lr8TNQJxsZFDZwcH-rEzkVV+y+x5FX18oH5wm5dRg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/367] 5.4.257-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Sui Jingfeng <suijingfeng@loongson.cn>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
+ domain_alloc_user op
+Content-Language: en-US
+To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
+        robin.murphy@arm.com
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-2-yi.l.liu@intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230921075138.124099-2-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 14:25, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.257 release.
-> There are 367 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.257-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 2023/9/21 15:51, Yi Liu wrote:
+> +/**
+> + * iommu_copy_user_data - Copy iommu driver specific user space data
+> + * @dst_data: Pointer to an iommu driver specific user data that is defined in
+> + *            include/uapi/linux/iommufd.h
+> + * @src_data: Pointer to a struct iommu_user_data for user space data info
+> + * @data_len: Length of current user data structure, i.e. sizeof(struct _dst)
+> + * @min_len: Initial length of user data structure for backward compatibility.
+> + *           This should be offsetofend using the last member in the user data
+> + *           struct that was initially added to include/uapi/linux/iommufd.h
+> + */
+> +static inline int iommu_copy_user_data(void *dst_data,
+> +				       const struct iommu_user_data *src_data,
+> +				       size_t data_len, size_t min_len)
+> +{
+> +	if (WARN_ON(!dst_data || !src_data))
+> +		return -EINVAL;
+> +	if (src_data->len < min_len || data_len < src_data->len)
+> +		return -EINVAL;
+> +	return copy_struct_from_user(dst_data, data_len,
+> +				     src_data->uptr, src_data->len);
+> +}
 
-Following build warnings noticed while building arm64 with allmodconfig
-on stable-rc 5.4 with gcc-8 and gcc-12 toolchains.
+I am not sure that I understand the purpose of "min_len" correctly. It
+seems like it would always be equal to data_len?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Or, it means the minimal data length that the iommu driver requires?
 
-drivers/gpu/drm/mediatek/mtk_drm_gem.c: In function 'mtk_drm_gem_prime_vmap':
-drivers/gpu/drm/mediatek/mtk_drm_gem.c:273:10: warning: returning
-'int' from a function with return type 'void *' makes pointer from
-integer without a cast [-Wint-conversion]
-   return -ENOMEM;
-          ^
-
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VfG47LmPH9MUEuIcMVftu6NsFy/
-
-
-Following commit is causing this build warning.
-
-drm/mediatek: Fix potential memory leak if vmap() fail
-[ Upstream commit 379091e0f6d179d1a084c65de90fa44583b14a70 ]
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Best regards,
+baolu
