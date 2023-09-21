@@ -2,155 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347167A90C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708A17A90C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 04:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjIUCGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 22:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
+        id S229794AbjIUCF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 22:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjIUCGO (ORCPT
+        with ESMTP id S229594AbjIUCFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:06:14 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CC5DE
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 19:06:07 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RrdvG3dRgzNnk6;
-        Thu, 21 Sep 2023 10:02:18 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 21 Sep
- 2023 10:06:04 +0800
-From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
-To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-        <chaitanya.kulkarni@wdc.com>, <axboe@kernel.dk>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next] ubi: block: Fix use-after-free in ubiblock_cleanup
-Date:   Thu, 21 Sep 2023 10:01:42 +0800
-Message-ID: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 20 Sep 2023 22:05:54 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2085.outbound.protection.outlook.com [40.107.94.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BE6C6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 19:05:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QmEQ754dxlyzq5jv27pnqq64H6dh0hboSp4PkhDCPWOcFmDJr2F9llFVk++xMYYbZ4X7czCXupW6YEhdS2euXQj6WjMSuABIa2PdIGOM9FIknICTDzY1oP26OHwmlK8HvmmbnbEsxyzjAuKVKlDEWRs/GDXfOFiMz1tJMBIu/kbfeQtIPxC/bSsx7lFfzNwiq81MlhxtzAISo+SuMgM8YciMC9fkETe0PTKnTH6x7uBohB65M7cYcl74dFcSZc7/DxJQfjgAEzxLCnbtwIzdmoQTQ0O8swA0RKzHaZ30UxPuXixqlWnmjv3upd4a1sGbypG0c+iJAeUBgMGTRawcXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DJUmvuyqLl4xXHH6IgNR9QjdZp+TMuybsMSZy3AZi9I=;
+ b=AFskUOQ9MfuYCU6zPDWwlzSFJzkKHzU5T/Vz/NY8W4cVk7hxo7MXGX/RiPxVk0cqWApxT/Ckrf1Z9ZDXsdK25rJ6u0gK7BbzyOUOnmXSNoL4Ks1BL9I+MDAulWC7wBTbQpPdcHSF1T/az5Hp1TR6bpgpOK5qOJ+3Wk03hEUUoPX0wxJj/KwzOWZyg/QYghkkO7S3ZjCMGCVrSyHda6RZNfGjmKP6XEW/F6gSMFk/OYAxCuyw66ingpSS+69m2x9nMXUkhmR9u4sXF9A7S4hq6fhTKBm5ajFjas+8ocIOl7DcweT/cMfk70YbEPPvLu4zsoaDLFwsNvz/lYM5DipvQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DJUmvuyqLl4xXHH6IgNR9QjdZp+TMuybsMSZy3AZi9I=;
+ b=Yz+ZDm5swP6iZeSohV7jwQsbSMkIDDFmAASTpfOgsp9b4ko8gpWEA45EAOsUvS1e2QFzIlfbBivq5fMsG/7SZFkQAQQGScX+RyR8+FE/+f38Sr5w1JIO5eKhISzaxOxmPS/+Z9YvLZlt1G77Lzye7FtqMSp2xI5CyArqX9Fvk39aWRbKWYNFRaOzRu9zJjWL5CKvSo/hN0q6W9wJ5Om/6NHLNTlO3PcwoQnNl6Y6+hq1XnTj7piJt6ZU9DZjWkxzl4Kufr8UR9/reTbNYV+XeLpWANbvga8+pvxd3BYKL/FA/5nni8NcU0iypX/1kyFr6+p7pDt+7d/TDd4SkAxc/w==
+Received: from MN2PR13CA0007.namprd13.prod.outlook.com (2603:10b6:208:160::20)
+ by PH7PR12MB5710.namprd12.prod.outlook.com (2603:10b6:510:1e1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Thu, 21 Sep
+ 2023 02:05:45 +0000
+Received: from BL6PEPF0001AB4F.namprd04.prod.outlook.com
+ (2603:10b6:208:160:cafe::de) by MN2PR13CA0007.outlook.office365.com
+ (2603:10b6:208:160::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20 via Frontend
+ Transport; Thu, 21 Sep 2023 02:05:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BL6PEPF0001AB4F.mail.protection.outlook.com (10.167.242.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.19 via Frontend Transport; Thu, 21 Sep 2023 02:05:44 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 20 Sep
+ 2023 19:05:27 -0700
+Received: from [10.110.48.28] (10.126.230.35) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 20 Sep
+ 2023 19:05:26 -0700
+Message-ID: <5ac6a387-0ca7-45ca-bebc-c3bdd48452cb@nvidia.com>
+Date:   Wed, 20 Sep 2023 19:05:25 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] Enable >0 order folio memory compaction
+Content-Language: en-US
+To:     Luis Chamberlain <mcgrof@kernel.org>, Zi Yan <ziy@nvidia.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Rohan Puri" <rohan.puri15@gmail.com>,
+        Adam Manzanares <a.manzanares@samsung.com>
+References: <20230912162815.440749-1-zi.yan@sent.com>
+ <ZQuUl2DdwDlzKoeM@bombadil.infradead.org>
+ <ZQuZdkxm/GMyS6wY@bombadil.infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <ZQuZdkxm/GMyS6wY@bombadil.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail202.nvidia.com (10.129.68.7)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4F:EE_|PH7PR12MB5710:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5e1788b6-7bac-4dfe-a37c-08dbba474402
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WFqBBCUcemIRPHgydIVKAgIdV49xH/ZwMsSgf5WM5yXko/2MDM8VInkFtp7HoAz9uqnUEy7Ae+WHYz+OVIDfSIv9pJOVukHtE9Eh6qScM6HMC+HuUlu/Tccd45ql0IKaI1ONTTe2vvNPx01pigdonTh/+mvAY+vMehh5VjA/BT81HRlsESixpkuP/Bn2tO04yvpOenY46wbTTqPqACqqsQlYGe/I4aOq7NTdJRihFYEbAWC3kS+E33cWhYiCpJmF3cYk0gVeLJlna4XyrmBJ5ONmHO4hGz8W7qzjNNWiGVoNvby3DZX9Iw0t45nqNe3PTTmORBcksEVWDahsuauECfRDWAviLIxAkNIHkWWjzRbocdBB+JYgfAn4/u0tQbYcZWHFwb1QOKFTrmofX92XeAqABnsT625SOqmXyrcQHfN8m2rHVwGsKG1D0hJElJUKYzu6N4dasJPhSUMAHT1aMuNtbJ/9xKTRy+rmIhzyWHC5VEzvKHM9lE4XuVGah98R/xlAyqcXMkIlpiYvewDY+rOIEHa+I3/s9fty73JsyVCMvpWGwhg/TUaK6QYLqTKguwNwYezLRubX2cLDNcY2Adlvk8Bc2dhlHscFFKfQJX0piGwKoOabDUtXmh4sQIWv5QerFjKkb9oyDJI0nHvnoHxchtR32rNUptBb87qrUo2tI5KAaiV13GPAcmJGPZ5OzPEi74/ZON4RDd30GQimfZgnG0YqMrNKm0Oh9q13E1fZz779od+3QrYrDvs/e9OUYwO/OZxUzwZSl15hSyIkBg==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(346002)(376002)(451199024)(1800799009)(82310400011)(186009)(46966006)(40470700004)(36840700001)(478600001)(7416002)(8936002)(41300700001)(5660300002)(83380400001)(16576012)(40480700001)(2906002)(70206006)(54906003)(6636002)(70586007)(8676002)(316002)(4326008)(110136005)(31686004)(26005)(2616005)(40460700003)(16526019)(53546011)(426003)(336012)(36860700001)(47076005)(356005)(31696002)(7636003)(82740400003)(36756003)(86362001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 02:05:44.7181
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e1788b6-7bac-4dfe-a37c-08dbba474402
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4F.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5710
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following BUG is reported when a ubiblock is removed:
+On 9/20/23 18:16, Luis Chamberlain wrote:
+> On Wed, Sep 20, 2023 at 05:55:51PM -0700, Luis Chamberlain wrote:
+>> Are there other known recipes test help test this stuff?
+> 
+> You know, it got me wondering... since how memory fragmented a system
+> might be by just running fstests, because, well, we already have
+> that automated in kdevops and it also has LBS support for all the
+> different large block sizes on 4k sector size. So if we just had a
+> way to "measure" or "quantify" memory fragmentation with a score,
+> we could just tally up how we did after 4 hours of testing for each
+> block size with a set of memory on the guest / target node / cloud
+> system.
+> 
+>    Luis
 
- ==================================================================
- BUG: KASAN: slab-use-after-free in ubiblock_cleanup+0x88/0xa0 [ubi]
- Read of size 4 at addr ffff88810c8f3804 by task ubiblock/1716
+I thought about it, and here is one possible way to quantify
+fragmentation with just a single number. Take this with some
+skepticism because it is a first draft sort of thing:
 
- CPU: 5 PID: 1716 Comm: ubiblock Not tainted 6.6.0-rc2+ #135
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
- Call Trace:
-  <TASK>
-  dump_stack_lvl+0x37/0x50
-  print_report+0xd0/0x620
-  kasan_report+0xb6/0xf0
-  ubiblock_cleanup+0x88/0xa0 [ubi]
-  ubiblock_remove+0x121/0x190 [ubi]
-  vol_cdev_ioctl+0x355/0x630 [ubi]
-  __x64_sys_ioctl+0xc7/0x100
-  do_syscall_64+0x3f/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
- RIP: 0033:0x7f08d7445577
- Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 8
- RSP: 002b:00007ffde05a3018 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
- RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f08d7445577
- RDX: 0000000000000000 RSI: 0000000000004f08 RDI: 0000000000000003
- RBP: 0000000000816010 R08: 00000000008163a7 R09: 0000000000000000
- R10: 0000000000000003 R11: 0000000000000206 R12: 0000000000000003
- R13: 00007ffde05a3130 R14: 0000000000000000 R15: 0000000000000000
-  </TASK>
+a) Let BLOCKS be the number of 4KB pages (or more generally, then number
+of smallest sized objects allowed) in the area.
 
- Allocated by task 1715:
-  kasan_save_stack+0x22/0x50
-  kasan_set_track+0x25/0x30
-  __kasan_kmalloc+0x7f/0x90
-  __alloc_disk_node+0x40/0x2b0
-  __blk_mq_alloc_disk+0x3e/0xb0
-  ubiblock_create+0x2ba/0x620 [ubi]
-  vol_cdev_ioctl+0x581/0x630 [ubi]
-  __x64_sys_ioctl+0xc7/0x100
-  do_syscall_64+0x3f/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+b) Let FRAGS be the number of free *or* allocated chunks (no need to
+consider the size of each, as that is automatically taken into
+consideration).
 
- Freed by task 0:
-  kasan_save_stack+0x22/0x50
-  kasan_set_track+0x25/0x30
-  kasan_save_free_info+0x2b/0x50
-  __kasan_slab_free+0x10e/0x190
-  __kmem_cache_free+0x96/0x220
-  bdev_free_inode+0xa4/0xf0
-  rcu_core+0x496/0xec0
-  __do_softirq+0xeb/0x384
+Then:
+       fragmentation percentage = (FRAGS / BLOCKS) * 100%
 
- The buggy address belongs to the object at ffff88810c8f3800
-  which belongs to the cache kmalloc-1k of size 1024
- The buggy address is located 4 bytes inside of
-  freed 1024-byte region [ffff88810c8f3800, ffff88810c8f3c00)
+This has some nice properties. For one thing, it's easy to calculate.
+For another, it can discern between these cases:
 
- The buggy address belongs to the physical page:
- page:00000000d03de848 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10c8f0
- head:00000000d03de848 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
- flags: 0x200000000000840(slab|head|node=0|zone=2)
- page_type: 0xffffffff()
- raw: 0200000000000840 ffff888100042dc0 ffffea0004244400 dead000000000002
- raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
- page dumped because: kasan: bad access detected
+Assume a 12-page area:
 
- Memory state around the buggy address:
-  ffff88810c8f3700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88810c8f3780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- >ffff88810c8f3800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                    ^
-  ffff88810c8f3880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88810c8f3900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ==================================================================
+Case 1) 6 pages allocated allocated unevenly:
 
-Fix it by using a local variable to record the gendisk ID.
+1 page allocated | 1 page free | 1 page allocated | 5 pages free | 4 pages allocated
 
-Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
----
- drivers/mtd/ubi/block.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+fragmentation = (5 FRAGS / 12 BLOCKS) * 100% = 41.7%
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 437c5b83ffe5..309a42aeaa4c 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -447,13 +447,15 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- static void ubiblock_cleanup(struct ubiblock *dev)
- {
-+	int id = dev->gd->first_minor;
-+
- 	/* Stop new requests to arrive */
- 	del_gendisk(dev->gd);
- 	/* Finally destroy the blk queue */
- 	dev_info(disk_to_dev(dev->gd), "released");
- 	put_disk(dev->gd);
- 	blk_mq_free_tag_set(&dev->tag_set);
--	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
-+	idr_remove(&ubiblock_minor_idr, id);
- }
- 
- int ubiblock_remove(struct ubi_volume_info *vi)
+Case 2) 6 pages allocated evenly: every other page is allocated:
+
+fragmentation = (12 FRAGS / 12 BLOCKS) * 100% = 100%
+
+
+
+thanks,
 -- 
-2.31.1
+John Hubbard
+NVIDIA
 
