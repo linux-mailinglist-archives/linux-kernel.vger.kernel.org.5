@@ -2,166 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990117AA3C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445037AA1D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbjIUVtj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 17:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        id S232384AbjIUVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbjIUVtY (ORCPT
+        with ESMTP id S233265AbjIUVFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:49:24 -0400
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2084C448F;
-        Thu, 21 Sep 2023 10:07:52 -0700 (PDT)
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so1127520b3a.0;
-        Thu, 21 Sep 2023 10:07:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316071; x=1695920871;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4YK1weMDx1FKxLRBUAONRFKh9Xh1dDH4kzuT00SLrmA=;
-        b=jYpk4nKWDgQgChDkkVmmFI9i+gI1+c+FU+F5DBZ0RB8h4AOvZL2o17xSmdHiCFMjr9
-         h5SE3gvFMyqb0LeKY41bjZrHvrNIyatJrO5Mh2GgRJJNY1hPRHVmur0pywP/WioORfbo
-         X8TCl9Pa33frjxfgljdzb9pvNWFzZWzDoEGelYV+8u/RdWbo8BABxURiTSH5zdToraMN
-         fhYsNxSLzlz0Ry2EzS7ZRAN0ltz3q6AzibG7oXknu71/j+VgqF7EnumXlSMRP76zDgBv
-         MTOOouZiLuOxfwJXqXcMYojM0pcvo/KGix+T9e7V/W7gQFG45Ai/XDCBe1wT9itGjtOK
-         b5fg==
-X-Gm-Message-State: AOJu0Yx/5n868t349X/eSqsFpmDhTt7L+SIKreDMWRLCtX4piiaMbBc3
-        52mBfwwmb2mdtQEoiCAwEBE1A3yi1yhOqi6w
-X-Google-Smtp-Source: AGHT+IH84N7XN9EgwsRyAozkezBVyE59xu48k9ZHh5955znTtM6G4h5YLzbUH7LWy2Qeh/RbV0bMTQ==
-X-Received: by 2002:a81:91c2:0:b0:59b:4f2d:231 with SMTP id i185-20020a8191c2000000b0059b4f2d0231mr5439104ywg.45.1695300904001;
-        Thu, 21 Sep 2023 05:55:04 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id s185-20020a8182c2000000b00597e912e67esm309130ywf.131.2023.09.21.05.55.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 05:55:02 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59bd2e19c95so11952697b3.0;
-        Thu, 21 Sep 2023 05:55:02 -0700 (PDT)
-X-Received: by 2002:a25:a329:0:b0:d84:e73a:6ac9 with SMTP id
- d38-20020a25a329000000b00d84e73a6ac9mr5019217ybi.24.1695300902378; Thu, 21
- Sep 2023 05:55:02 -0700 (PDT)
+        Thu, 21 Sep 2023 17:05:39 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC5DAFC21;
+        Thu, 21 Sep 2023 11:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=qKm5PjEzUxyMudDyWH1l+GObMoy6S9qVw27naJU6pOw=; b=OUJduL3Hp9PrYXAS7WiSY/LcH1
+        OzGr8ycxrYFQLqMLsxZp2JyY+1HhJQ3G1rEkjVVTPEmQByleh6sMMBuKozPsnpZzvwvvJJ3JLVXzN
+        8J0txZkz8lhtHI4Me/lysAATpn/bfPA9V/KGdeZAs/cZy4vtQmMIazip89Sw2atjKjJo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qjJHr-0075OV-24; Thu, 21 Sep 2023 15:00:07 +0200
+Date:   Thu, 21 Sep 2023 15:00:07 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH net-next v2 07/10] dt-bindings: net: enforce phylink
+ bindings on certain ethernet controllers
+Message-ID: <a8d49992-4fa8-4a9f-b954-79011a3040a8@lunn.ch>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <20230916110902.234273-8-arinc.unal@arinc9.com>
+ <20230918181319.GA1445647-robh@kernel.org>
+ <16710cf9-8911-4fed-8e2d-b19b581446c1@arinc9.com>
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-27-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20230912045157.177966-27-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Sep 2023 14:54:49 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU_P8QM1qrwTJQcDCaKhMDCDnO1G_u=Nx=kuzy9MGuT8Q@mail.gmail.com>
-Message-ID: <CAMuHMdU_P8QM1qrwTJQcDCaKhMDCDnO1G_u=Nx=kuzy9MGuT8Q@mail.gmail.com>
-Subject: Re: [PATCH 26/37] pinctrl: renesas: rzg2l: move ds and oi to SoC
- specific configuration
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16710cf9-8911-4fed-8e2d-b19b581446c1@arinc9.com>
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+> - Link descriptions must be required on ethernet controllers. We don't care
+>   whether some Linux driver can or cannot find the PHY or set up a fixed
+>   link without looking at the devicetree.
 
-On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Move drive strength and output impedance values to SoC specific
-> configuration data structure (struct rzg2l_hwcfg). This allows extending
-> the drive strength support for RZ/G3S. Along with this the DS values
-> were converted to uA for simple integration with RZ/G3S support.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+That can lead to future surprises, and breakage.
 
-Thanks for your patch!
+Something which is not used is not tested, and so sometimes wrong, and
+nobody knows. Say the driver is extended to a new device and actually
+does need to use this never before used information. You then find it
+is wrong, and you get a regression.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+We have had issues like this before. There are four rgmii phy-link
+modes. We have had PHY drivers which ignored one of those modes, it
+silently accepted it, but did not change the hardware to actually use
+that mode. The PHY continues to use its reset defaults or strapping,
+and it worked. A lot of device trees ended up using this mode. And it
+was not the same as reset defaults/strapping.
 
-> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> @@ -133,13 +133,27 @@ struct rzg2l_register_offsets {
->         u16 sd_ch;
->  };
->
-> +/**
-> + * enum rzg2l_iolh_index - starting indexes in IOLH specific arrays
+And then somebody needed that fourth mode, and made it actually
+work. And all those boards wrongly using that mode broke.
 
-indices
+The lesson i learned from that episode is that anything in device tree
+must actually be used and tested.
 
-> + * @RZG2L_IOLH_IDX_3V3: starting index for 3V3 power source
-> + * @RZG2L_IOLH_IDX_MAX: maximum index
-> + */
-> +enum rzg2l_iolh_index {
-> +       RZG2L_IOLH_IDX_3V3 = 0,
-> +       RZG2L_IOLH_IDX_MAX = 4,
-> +};
-> +
->  /**
->   * struct rzg2l_hwcfg - hardware configuration data structure
->   * @regs: hardware specific register offsets
-> + * @iolh_groupa_ua: IOLH group A micro amps specific values
+> Although I see dsa.yaml and dsa-port.yaml mostly consist of describing an
+> ethernet switch with CPU port(s), there're properties that are specific to
+> DSA, such as dsa,member on dsa.yaml and dsa-tag-protocol and label on
+> dsa-port.yaml.
 
-uA (or µA ;-)
+I would say dsa,member does describe the hardware. It provides two
+bits of information:
 
-> + * @iolh_groupb_oi: IOLH group B output impedance specific values
->   * @func_base: base number for port function (see register PFC)
->   */
->  struct rzg2l_hwcfg {
->         const struct rzg2l_register_offsets regs;
-> +       u16 iolh_groupa_ua[RZG2L_IOLH_IDX_MAX];
-> +       u16 iolh_groupb_oi[RZG2L_IOLH_IDX_MAX];
->         u8 func_base;
->  };
->
+Which cluster of switches does this switch belong to. You probably can
+derive it using the DSA links between switches, which is also a
+hardware property. But having it in device tree makes it simpler.
 
-> @@ -708,11 +719,11 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
->                         if (!(cfg & PIN_CFG_IOLH_A))
->                                 return -EINVAL;
->
-> -                       for (index = 0; index < ARRAY_SIZE(iolh_groupa_mA); index++) {
-> -                               if (arg == iolh_groupa_mA[index])
-> +                       for (index = RZG2L_IOLH_IDX_3V3; index < RZG2L_IOLH_IDX_3V3 + 4; index++) {
+Which switch is this within a cluster. You need to be able to say:
+Send this frame out Port X of switch Y. How does a switch know it is
+Y? It could be strapping, which is clearly a hardware property.
 
-I'm not so fond of the hardcoded "+ 4", here and below.
-Please add and use a #define.
+dsa-tag-protocol is similar to phy-mode. It tells you the protocol
+running between the CPU port and the SoC master interface. You often
+can imply it, but again, it could be determined by strapping on the
+switch.
 
-> +                               if (arg == (hwcfg->iolh_groupa_ua[index] / 1000))
->                                         break;
->                         }
-> -                       if (index >= ARRAY_SIZE(iolh_groupa_mA))
-> +                       if (index == (RZG2L_IOLH_IDX_3V3 + 4))
->                                 return -EINVAL;
->
->                         rzg2l_rmw_pin_config(pctrl, IOLH(off), bit, IOLH_MASK, index);
+label is an interesting one, and probably would not be accepted if it
+was proposed now. But it has been around a long time. It also does
+describe the hardware, it is what is printed on the case next to the
+RJ45. To make the user experience simpler, we then try to make the
+linux interface name match the label on the case.
 
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Andrew
