@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AB07A9A4B
+	by mail.lfdr.de (Postfix) with ESMTP id 072467A9A49
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjIUShz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
+        id S230360AbjIUSh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjIUShZ (ORCPT
+        with ESMTP id S229834AbjIUSh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:37:25 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CB4D8685
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:22 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34fcb08d1d5so1009155ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:22 -0700 (PDT)
+        Thu, 21 Sep 2023 14:37:26 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C0DD8687
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:23 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-79f96830e4dso3976939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695320962; x=1695925762; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695320963; x=1695925763; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8/OGVEqmKZ+YrEmaYsT23Mong0SvETBYb//Qn3SwQyE=;
-        b=ouP89gePGLkXltybMGwkkustlfFAplUbJ4vP8U3TPcA3954wsu06QRtfnzwyvbYSYs
-         QTVHkUdd32WVcNpJRncn7PZABjuOL6kSBVZA5/n2nwrpfc7UspeBjKI2sCPmEM3Kt5zW
-         wHrwgAgk5ePJk4X5bYIyrevgGO5xLjj+P3TuE6Qn0T6aZvpAevB2QEv5ucKh70Y5YtCh
-         /pwmK27WAxolaya57PNG4z/YSDrVzW8q3s7bm6oHwrL/c2etyw+ELu4SDQrAtVbwrzqd
-         XjerkcEb5mbjB9u9WLAcyoW3KquEhxUKzGQ3PT9ROfv2DZiDl01XgicGqolS6PWTRO1d
-         XnWQ==
+        bh=dMx5R6E0R0h9+pd+QZi7bIoYwQS8EWnvSyRr5gNA3m0=;
+        b=h5zvPxbWi+KBRxy2l33P4Ql1YrEkI5Vx8JkaX3wnEgJgrTip2d0QcU61NZKFXB/ZT4
+         +bilLkvNep0yTxPjbCHKLlY5A6YkiwfKVWsjTCN7ksJCuRSiqvnfLqwvppLCoYEGJumu
+         vuCHLIx2ifF+PsvY37r0fd4azPnN+TqB0WDk7j8Ihho6HeE5uWIJWsTkjqFQWxL2gWij
+         7Uts5c0xhdZOb0cKv63m1Xo+Sbkz1cEZaftBB+TDUcnxnj9XXp/JM4wEU87WAGG1HeNv
+         MU/aMdT3NIEBJh+ofW+2cCCCpQUh/fgqQoD0xZQdHisLwUt1HeO9K4ncQph9yhGJNFP7
+         6ZYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320962; x=1695925762;
+        d=1e100.net; s=20230601; t=1695320963; x=1695925763;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8/OGVEqmKZ+YrEmaYsT23Mong0SvETBYb//Qn3SwQyE=;
-        b=D8EmFImjnAgIi1Ucf3oaqHoszP8dD2ggW2d7BUBI2MRguwV8f9mqKGEV9fNV36COPo
-         pCxxCoNX2TfRFFrja1B9xIOUJxfWL7d6oGFZ1BY+DLWZtcHXducSh9nYZt22gORvq9or
-         4vdw5o3fIT6WyzVWMh/1+mvYf/P9EXvQzx8LnvtKocRyb3LgVOtBFAsNXWMiNfCPXUQ+
-         uG2JphHY14+rDOSJ2mpnmaV9zkwtg5bZP0KejdXNlHFQMxC1FWSGzqJa6gLZ7CEzA4I4
-         3nfrP35VqksvGHl2JvL68YkuqA48rasUY82uEuWDs+BduN2J+NcttQCZKdTbeIkGlTON
-         VkqQ==
-X-Gm-Message-State: AOJu0YzADdMIom8ckhNSDzF+aACwHRIaj8XTZ+zQ+uKIekIhDUg64gMH
-        0wt34Me5XAzqOmP/tjthJw/koA2VwnYxtw7tiArfkw==
-X-Google-Smtp-Source: AGHT+IH0d1Lv9v5XvuHBRWZ4j3Pa5hUPuJ0lr8dkl2Yd+m6TonTxY7UwEf5Qp3o95XPyf+oRWhbkLA==
-X-Received: by 2002:a92:c52d:0:b0:34f:7ba2:50e8 with SMTP id m13-20020a92c52d000000b0034f7ba250e8mr6203745ili.2.1695320961817;
-        Thu, 21 Sep 2023 11:29:21 -0700 (PDT)
+        bh=dMx5R6E0R0h9+pd+QZi7bIoYwQS8EWnvSyRr5gNA3m0=;
+        b=whuWQJxnJHIYDaUx0aZxNZyXZRLxE4WPqXR7tzgpd2o1bKmzRSMIf+zYVRfES78C6a
+         F5AfE4jaaokBZFQREBofEzClZ9Td/0yUvKVCX8hTZ5frULb+uiwqisxd3nOMxxAgpEpf
+         NaZbHpfUKJQe3xchWu3FDekGYDiI8Jxyj0PrpgkUskXUF8xLiifofb2DwQtTUJAX13L+
+         zgV7R3fowwkuMQcbclfAs2g+3h63YJaC8BegtRAxMGfh1p8Vd/VIVJdxrRbsIGOBzAS6
+         gM3P1BUrhLMw3xRGFLWYkjXpt66lWDiBxEVbPQNQLtZsXz93Qv6zypzdglMkBg8ZkNBv
+         IByw==
+X-Gm-Message-State: AOJu0YzKEuD1FsHcjv9gtIxuvAHnfwr3kUjo7ViChV/q/aGRVDmZDm4U
+        jqvSkBOcys+07PHw+1fIhW7Lyg==
+X-Google-Smtp-Source: AGHT+IGg+1Bf4dt5Q006eZUcpXl2xhZHKdXAg7pZKFh2g2e8No0nMLmMw3nV+J6FY9ahF6SJxJmTuQ==
+X-Received: by 2002:a05:6602:3788:b0:792:7c78:55be with SMTP id be8-20020a056602378800b007927c7855bemr6834507iob.0.1695320963064;
+        Thu, 21 Sep 2023 11:29:23 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id o25-20020a02c6b9000000b0042b227eb1ddsm500441jan.55.2023.09.21.11.29.20
+        by smtp.gmail.com with ESMTPSA id o25-20020a02c6b9000000b0042b227eb1ddsm500441jan.55.2023.09.21.11.29.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 11:29:21 -0700 (PDT)
+        Thu, 21 Sep 2023 11:29:22 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 6/8] futex: make futex_parse_waitv() available as a helper
-Date:   Thu, 21 Sep 2023 12:29:06 -0600
-Message-Id: <20230921182908.160080-7-axboe@kernel.dk>
+Subject: [PATCH 7/8] futex: make the vectored futex operations available
+Date:   Thu, 21 Sep 2023 12:29:07 -0600
+Message-Id: <20230921182908.160080-8-axboe@kernel.dk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230921182908.160080-1-axboe@kernel.dk>
 References: <20230921182908.160080-1-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,82 +71,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make it more generically useful, augment it with allowing the caller
-to pass in the wake handler and wake data. Convert the futex_waitv()
-syscall, passing in the default handlers.
+Rename unqueue_multiple() as futex_unqueue_multiple(), and make both
+that and futex_wait_multiple_setup() available for external users. This
+is in preparation for wiring up vectored waits in io_uring.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
  kernel/futex/futex.h    |  5 +++++
- kernel/futex/syscalls.c | 16 +++++++++++-----
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ kernel/futex/waitwake.c | 10 +++++-----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index 76f6c2e0f539..6b6a6b3da103 100644
+index 6b6a6b3da103..8b195d06f4e8 100644
 --- a/kernel/futex/futex.h
 +++ b/kernel/futex/futex.h
-@@ -361,6 +361,11 @@ struct futex_vector {
- 	struct futex_q q;
- };
+@@ -366,6 +366,11 @@ extern int futex_parse_waitv(struct futex_vector *futexv,
+ 			     unsigned int nr_futexes, futex_wake_fn *wake,
+ 			     void *wake_data);
  
-+extern int futex_parse_waitv(struct futex_vector *futexv,
-+			     struct futex_waitv __user *uwaitv,
-+			     unsigned int nr_futexes, futex_wake_fn *wake,
-+			     void *wake_data);
++extern int futex_wait_multiple_setup(struct futex_vector *vs, int count,
++				     int *woken);
++
++extern int futex_unqueue_multiple(struct futex_vector *v, int count);
 +
  extern int futex_wait_multiple(struct futex_vector *vs, unsigned int count,
  			       struct hrtimer_sleeper *to);
  
-diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
-index 2b5cafdfdc50..4b6da9116aa6 100644
---- a/kernel/futex/syscalls.c
-+++ b/kernel/futex/syscalls.c
-@@ -184,12 +184,15 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
-  * @futexv:	Kernel side list of waiters to be filled
-  * @uwaitv:     Userspace list to be parsed
-  * @nr_futexes: Length of futexv
-+ * @wake:	Wake to call when futex is woken
-+ * @wake_data:	Data for the wake handler
+diff --git a/kernel/futex/waitwake.c b/kernel/futex/waitwake.c
+index 6fcf5f723719..61b112897a84 100644
+--- a/kernel/futex/waitwake.c
++++ b/kernel/futex/waitwake.c
+@@ -372,7 +372,7 @@ void futex_wait_queue(struct futex_hash_bucket *hb, struct futex_q *q,
+ }
+ 
+ /**
+- * unqueue_multiple - Remove various futexes from their hash bucket
++ * futex_unqueue_multiple - Remove various futexes from their hash bucket
+  * @v:	   The list of futexes to unqueue
+  * @count: Number of futexes in the list
   *
-  * Return: Error code on failure, 0 on success
+@@ -382,7 +382,7 @@ void futex_wait_queue(struct futex_hash_bucket *hb, struct futex_q *q,
+  *  - >=0 - Index of the last futex that was awoken;
+  *  - -1  - No futex was awoken
   */
--static int futex_parse_waitv(struct futex_vector *futexv,
--			     struct futex_waitv __user *uwaitv,
--			     unsigned int nr_futexes)
-+int futex_parse_waitv(struct futex_vector *futexv,
-+		      struct futex_waitv __user *uwaitv,
-+		      unsigned int nr_futexes, futex_wake_fn *wake,
-+		      void *wake_data)
+-static int unqueue_multiple(struct futex_vector *v, int count)
++int futex_unqueue_multiple(struct futex_vector *v, int count)
  {
- 	struct futex_waitv aux;
- 	unsigned int i;
-@@ -214,6 +217,8 @@ static int futex_parse_waitv(struct futex_vector *futexv,
- 		futexv[i].w.val = aux.val;
- 		futexv[i].w.uaddr = aux.uaddr;
- 		futexv[i].q = futex_q_init;
-+		futexv[i].q.wake = wake;
-+		futexv[i].q.wake_data = wake_data;
- 	}
+ 	int ret = -1, i;
  
- 	return 0;
-@@ -306,7 +311,8 @@ SYSCALL_DEFINE5(futex_waitv, struct futex_waitv __user *, waiters,
- 		goto destroy_timer;
- 	}
+@@ -410,7 +410,7 @@ static int unqueue_multiple(struct futex_vector *v, int count)
+  *  -  0 - Success
+  *  - <0 - -EFAULT, -EWOULDBLOCK or -EINVAL
+  */
+-static int futex_wait_multiple_setup(struct futex_vector *vs, int count, int *woken)
++int futex_wait_multiple_setup(struct futex_vector *vs, int count, int *woken)
+ {
+ 	struct futex_hash_bucket *hb;
+ 	bool retry = false;
+@@ -472,7 +472,7 @@ static int futex_wait_multiple_setup(struct futex_vector *vs, int count, int *wo
+ 		 * was woken, we don't return error and return this index to
+ 		 * userspace
+ 		 */
+-		*woken = unqueue_multiple(vs, i);
++		*woken = futex_unqueue_multiple(vs, i);
+ 		if (*woken >= 0)
+ 			return 1;
  
--	ret = futex_parse_waitv(futexv, waiters, nr_futexes);
-+	ret = futex_parse_waitv(futexv, waiters, nr_futexes, futex_wake_mark,
-+				NULL);
- 	if (!ret)
- 		ret = futex_wait_multiple(futexv, nr_futexes, timeout ? &to : NULL);
+@@ -557,7 +557,7 @@ int futex_wait_multiple(struct futex_vector *vs, unsigned int count,
  
-@@ -421,7 +427,7 @@ SYSCALL_DEFINE4(futex_requeue,
- 	if (!waiters)
- 		return -EINVAL;
+ 		__set_current_state(TASK_RUNNING);
  
--	ret = futex_parse_waitv(futexes, waiters, 2);
-+	ret = futex_parse_waitv(futexes, waiters, 2, futex_wake_mark, NULL);
- 	if (ret)
- 		return ret;
+-		ret = unqueue_multiple(vs, count);
++		ret = futex_unqueue_multiple(vs, count);
+ 		if (ret >= 0)
+ 			return ret;
  
 -- 
 2.40.1
