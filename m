@@ -2,43 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFAA7A968F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6943C7A969C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjIURDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
+        id S229888AbjIURBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjIURDK (ORCPT
+        with ESMTP id S229723AbjIURBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:03:10 -0400
+        Thu, 21 Sep 2023 13:01:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DD31739;
-        Thu, 21 Sep 2023 10:01:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85EC5C4E765;
-        Thu, 21 Sep 2023 14:29:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5862FCC8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:00:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AF82C4E76A;
+        Thu, 21 Sep 2023 14:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695306563;
-        bh=5pqxliWwkemKk42Pc3VBjDLFEFWsPXjl1Fd5EvGj9lc=;
+        s=k20201202; t=1695306572;
+        bh=+i068JrUC9snrrF/aptxkD1gDc/gyHcWbhpnMhJEpI8=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=kp86v85AlW0PiTRcSowcXwNk+7N/m+mCEpy3HLzKWDLLQYRSzsde5Zw4a4N+sEshx
-         yMueOYJrdz2sVQXSPzcQCiwU3RpObeX3NW78bU3k6gsZLF1Shle89Vis62tra2pMiu
-         XgKP3f9aoWBhGxMzSv7z9RR1Rc27VR++yRbVo9d0wr2ZfBxOtmTPTTCYW9Sr0EnNjW
-         qWCwEw5y+GiOSizlEepHCKPD+kFD1y2QtfSyprxM81xaQb0Yvvfgwy4xglkyej8pav
-         kNJrt8Dl4gETkWSxyle8IgiULxbPTsVEPVoGIRuhrUYjkT5TRrNCwR19p5k2CryBQl
-         fsQRJXvVHoHwg==
+        b=KowGEjiCcgXvUWCBv0lqUoM9lhoukicU5tova2ahPaP7PLVe9Ad0a2ovAQFWB03/W
+         Qfdg0KP/xrlWZu7OyKWgpb4zb0BwlR27vpfJxMd3eAoTHcslw7asAfx66vU7ceWNTP
+         7TGS7pOLJbeqXxJjDeXOjVF6yWxUmkir5a2BOprqMnXwkdSdhaMTfmR2VY298pF0wy
+         DpjVD/GpJtWZepTope+ERXAAhaLhLD5VimnE0dvxjzpjF0F9J3YnOAkJdNZ4Gla+Vs
+         +9XhUhduxagNJ7xqTqIPeiQZ9YVU2amorBBoH+Luhs9K94JhPfT7eTxcXgqet13ixO
+         d5WX8llkEEoyQ==
 From:   Vinod Koul <vkoul@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20230918205037.25658-1-quic_nitirawa@quicinc.com>
-References: <20230918205037.25658-1-quic_nitirawa@quicinc.com>
-Subject: Re: [PATCH V4 0/2] Add Phy Configuration support for SC7280
-Message-Id: <169530656019.106263.17026016793514428546.b4-ty@kernel.org>
-Date:   Thu, 21 Sep 2023 16:29:20 +0200
+To:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, Sandor Yu <Sandor.yu@nxp.com>
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, oliver.brown@nxp.com,
+        alexander.stein@ew.tq-group.com, sam@ravnborg.org
+In-Reply-To: <cover.1694047629.git.Sandor.yu@nxp.com>
+References: <cover.1694047629.git.Sandor.yu@nxp.com>
+Subject: Re: (subset) [PATCH v9 0/7] Initial support Cadence
+ MHDP8501(HDMI/DP) for i.MX8MQ
+Message-Id: <169530656692.106263.15400414640520611543.b4-ty@kernel.org>
+Date:   Thu, 21 Sep 2023 16:29:26 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -54,23 +59,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 19 Sep 2023 02:20:35 +0530, Nitin Rawat wrote:
-> This patch adds Phy configuration support for Qualcomm SC7280 SOC.
+On Thu, 07 Sep 2023 09:05:27 +0800, Sandor Yu wrote:
+> The patch set initial support Cadence MHDP8501(HDMI/DP) DRM bridge
+> drivers and Cadence HDP-TX PHY(HDMI/DP) drivers for Freescale i.MX8MQ.
 > 
-> Changes from v3:
-> - Addressed dmitry comment to update correct binding for clk entry
+> The patch set compose of DRM bridge drivers and PHY drivers.
 > 
-> Changes from V2:
-> - Addressed Vinod comment to replace upper case character with lower case
+> Both of them need the followed two patches to pass build.
+>   drm: bridge: Cadence: convert mailbox functions to macro functions
+>   phy: Add HDMI configuration options
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] dt-bindings: phy: Add QMP UFS PHY comptible for SC7280
-      commit: 79eeac2e262545077be482b1a1700669e0c7d90c
-[2/2] phy: qcom-qmp-ufs: Add Phy Configuration support for SC7280
-      commit: 8abe9792d1ff7e60f911b56e8a2537be7e903576
+[2/7] phy: Add HDMI configuration options
+      commit: 7f90516edb5cbfa4108b92bb83cbc8ef35a4cccd
+[6/7] phy: freescale: Add DisplayPort PHY driver for i.MX8MQ
+      commit: a2717f1d7c64660679441c407b96103abb7c4a8c
+[7/7] phy: freescale: Add HDMI PHY driver for i.MX8MQ
+      commit: 8e36091a94d2d28e8dccb9bfda081b2e42e951ae
 
 Best regards,
 -- 
