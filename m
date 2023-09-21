@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8097A9934
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9B57A9A64
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbjIUSMN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 14:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
+        id S230015AbjIUSiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjIUSLY (ORCPT
+        with ESMTP id S229802AbjIUSiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:11:24 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003A788485;
-        Thu, 21 Sep 2023 10:38:54 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qjDkX-003HZ5-Oh; Thu, 21 Sep 2023 09:05:21 +0200
-Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qjDkX-0029eD-7S; Thu, 21 Sep 2023 09:05:21 +0200
-Message-ID: <cea63c1eb47c9a438d21bc1fce5a48e4b3235342.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] fbdev: sh7760fb: require FB=y to build cleanly
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-sh@vger.kernel.org
-Date:   Thu, 21 Sep 2023 09:05:20 +0200
-In-Reply-To: <20230921060228.29041-1-rdunlap@infradead.org>
-References: <20230921060228.29041-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Thu, 21 Sep 2023 14:38:14 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05689D66C1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:27:16 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-530ea522f5eso1445020a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695320834; x=1695925634; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h5cABMrQhshDaG6TwwFpOJKeN2scA9eV13qN+CKmNlM=;
+        b=UD/4KelkQFI16ePao3Mivbf5gsFOpwOQDLR62/V+GfvWNMbGkFaRjVxIh4WsFMuoFo
+         OjlKNTQyIji5MxHdL6u4kf+4OeVQDrAPaC0flqcvlTIMKTlKgocl0EuvyHj5HnY0/DFV
+         uCA3D5wBaJGZBHywW9EkXbN6F7fCprPj4rBP+6v40mgUrb8U5ppTKm/nMEJF1cvQE3W5
+         xUnhrX0IJpcthMS9d7R60NE9CVcnhD2rk1HCyIo7mG+ujF89FeugYXyRGtN6rv2hZxbf
+         xQvcWj09MsTLjtOqctyEonkdJtOtNQRri4CmRZPmE6onCu1IlVFJCzYv5c9zevD16SDU
+         0D6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695320834; x=1695925634;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h5cABMrQhshDaG6TwwFpOJKeN2scA9eV13qN+CKmNlM=;
+        b=w+wqCyS8UTZMGBojBKoBYK4Vfoos2ZNh1RB2gz8aP/n0TtxuaqWj79fVrmHLvcAwbZ
+         ZGOHW/WsVeWr7ZCOi0sqPiqlxrbSHy6PyOxcZCqpW9G7nWyidmJYrL3ntEGZPGxFDEmZ
+         eQPqjZ3f++RNVWeVmjkJUTsycJ3axznTLVuhAj23oz4Yojugt7kI4gPsr0AUqh8GbIDq
+         LfgrWNDQKOW3BzTvTnPBVF6R3ZjLLAfqLAOndyyYNa04EdL6P2esDzc9SAujmqAhc/Wj
+         YMfoTAiHSmzv+Fp7Io/l8x8xluDEonyHDPX5IaqDA0RsmAhADbOBqzEDnQeFUi8LaZEd
+         JFTQ==
+X-Gm-Message-State: AOJu0YyejBGahNRDjzCWNtJuJVkpbviyUgYJEAUeN2L8hjsLcnM2CucH
+        Vdll4S7PXKpj9X4oYzY0o9opq6P3N8iE5pajvfwBAA==
+X-Google-Smtp-Source: AGHT+IEXffqDRZSSy+zk6moFm3fhLBE9Wb8UTl/d1dV/OHqhzTh/LfTnV2sRR811+3juzKUhRf6Zkw==
+X-Received: by 2002:a17:906:844b:b0:99c:ad52:b00 with SMTP id e11-20020a170906844b00b0099cad520b00mr3861431ejy.6.1695279998107;
+        Thu, 21 Sep 2023 00:06:38 -0700 (PDT)
+Received: from [172.20.15.189] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id dx26-20020a170906a85a00b0099bcd1fa5b0sm573534ejb.192.2023.09.21.00.06.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 00:06:37 -0700 (PDT)
+Message-ID: <0349897d-8802-b4c9-c867-20d139baf952@linaro.org>
+Date:   Thu, 21 Sep 2023 09:06:38 +0200
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.10
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 1/3] dt-bindings: reserved-memory: rmtfs: Allow guard
+ pages
+Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
+ <20230920-rmtfs-mem-guard-pages-v3-1-305b37219b78@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20230920-rmtfs-mem-guard-pages-v3-1-305b37219b78@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy!
 
-On Wed, 2023-09-20 at 23:02 -0700, Randy Dunlap wrote:
-> Fix build errors when CONFIG_FB=m and CONFIG_FB_SH7760=y:
+
+On 9/21/23 04:37, Bjorn Andersson wrote:
+> On some Qualcomm platforms the firwmare, or hardware, does not
+> gracefully handle memory protection of the rmtfs memory region when
+> placed adjacent to other protected region. Some DeviceTree authors have
+> worked around this issue by explicitly reserving the space around the
+> region, but this prevents such author to use rely on the OS to place the
+> region, through the use of "size" (instead of a fixed location).
 > 
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_probe':
-> sh7760fb.c:(.text+0x374): undefined reference to `framebuffer_alloc'
-> sh2-linux-ld: sh7760fb.c:(.text+0x394): undefined reference to `fb_videomode_to_var'
-> sh2-linux-ld: sh7760fb.c:(.text+0x3a0): undefined reference to `fb_alloc_cmap'
-> sh2-linux-ld: sh7760fb.c:(.text+0x3a4): undefined reference to `register_framebuffer'
-> sh2-linux-ld: sh7760fb.c:(.text+0x3ac): undefined reference to `fb_dealloc_cmap'
-> sh2-linux-ld: sh7760fb.c:(.text+0x434): undefined reference to `framebuffer_release'
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_remove':
-> sh7760fb.c:(.text+0x800): undefined reference to `unregister_framebuffer'
-> sh2-linux-ld: sh7760fb.c:(.text+0x804): undefined reference to `fb_dealloc_cmap'
-> sh2-linux-ld: sh7760fb.c:(.text+0x814): undefined reference to `framebuffer_release'
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0xc): undefined reference to `fb_io_read'
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x10): undefined reference to `fb_io_write'
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
-> sh2-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
+> Introduce a flag to indicate that guard pages need be carved at the
+> beginning and end of the memory region. The user shall account for the
+> two 4k blocks in the defined size.
 > 
-> Fixes: 4a25e41831ee ("video: sh7760fb: SH7760/SH7763 LCDC framebuffer driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Cc: linux-sh@vger.kernel.org
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
->  drivers/video/fbdev/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   .../devicetree/bindings/reserved-memory/qcom,rmtfs-mem.yaml   | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
 > 
-> diff -- a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> --- a/drivers/video/fbdev/Kconfig
-> +++ b/drivers/video/fbdev/Kconfig
-> @@ -1762,7 +1762,7 @@ config FB_COBALT
->  
->  config FB_SH7760
->  	bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
-> -	depends on FB && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
-> +	depends on FB=y && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
->  		|| CPU_SUBTYPE_SH7720 || CPU_SUBTYPE_SH7721)
->  	select FB_IOMEM_HELPERS
->  	help
+> diff --git a/Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.yaml b/Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.yaml
+> index bab982f00485..2d7be508c5a0 100644
+> --- a/Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.yaml
+> +++ b/Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.yaml
+> @@ -26,6 +26,17 @@ properties:
+>       description: >
+>         identifier of the client to use this region for buffers
+>   
+> +  qcom,use-guard-pages:
+> +    type: boolean
+> +    description: >
+> +      Indicates that the firmware, or hardware, does not gracefully handle
+> +      memory protection of this region when placed adjacent to other protected
+> +      memory regions, and that padding around the used portion of the memory
+> +      region is necessary.
+> +
+> +      When this is set, the first and last 4kB should be left unused, and the
+> +      effective size of the region will thereby shrink with 8kB.
+kiB
 
-Actually, Thomas Zimmermann already posted the same patch already on Monday ;-).
-
-See [1].
-
-Adrian
-
-> [1] https://marc.info/?l=dri-devel&m=169502772500717&w=2
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Konrad
