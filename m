@@ -2,129 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1027AA05E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01617A9EE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbjIUUf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        id S230107AbjIUUOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjIUUel (ORCPT
+        with ESMTP id S229786AbjIUUNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:34:41 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4299685D06;
-        Thu, 21 Sep 2023 10:37:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 177461763;
-        Thu, 21 Sep 2023 09:21:33 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A068D3F59C;
-        Thu, 21 Sep 2023 09:20:51 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: [PATCH v1 7/8] arm64: hugetlb: Convert set_huge_pte_at() to take vma
-Date:   Thu, 21 Sep 2023 17:20:06 +0100
-Message-Id: <20230921162007.1630149-8-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921162007.1630149-1-ryan.roberts@arm.com>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
+        Thu, 21 Sep 2023 16:13:44 -0400
+X-Greylist: delayed 4203 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Sep 2023 11:54:45 PDT
+Received: from mail-4327.protonmail.ch (mail-4327.protonmail.ch [185.70.43.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689B4A6169
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1695313222; x=1695572422;
+        bh=gXaY4Zv4HDR4uGZnzyupeALs2dkkGXlQjy8jeXvNVlw=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=dXqcVFMIDOJ+LSIu1xFzwQDlzDPDn/vvpINKK8HHWHWMOEl0oyB/Z9ZqG5WH5FgVF
+         JYLHgpbXoLaG0RPMrwWjuWTX7Vfskpfosq5vKHazLvvHc4+DKGFNkshS+aX5dOot96
+         HE3v9hXgu54tMynlJMQNVl2WUORytJizStpox2J2kKsOQ51tfgnj2oQmmKGBYH1rwa
+         G2HFL++Mi3vtPJ2ujNIiRhKcxaTz2oCCIfOCyxvxMVRYhbFIi0VnNrCQbLEXE+sLW2
+         gWw8XJWPt+m4mGKKg4sgoo8mugGyhvuzy4ekTmwItZ6kOHlDhT0j5D6dFAZdyRrwh1
+         SWV+nx8cMluIg==
+Date:   Thu, 21 Sep 2023 16:20:06 +0000
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>
+Cc:     "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
+Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kernel 4.19.191+
+Message-ID: <P8CgyFkx_9MPXgwLiaVhdarl-IlxfJVH1voL4ttdXP0yJcLyE5nw9y537LZceOC6BkXVxzuwXjQHmeGGUDI_VbPgfDXengI-5A9ua9csUqc=@protonmail.com>
+Feedback-ID: 39510961:user:proton
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to fix a bug, arm64 needs access to the vma inside it's
-implementation of set_huge_pte_at(). Provide for this by converting the
-mm parameter to be a vma. Any implementations that require the mm can
-access it via vma->vm_mm.
+Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on Li=
+nux kernel 4.19.191+
 
-This commit makes the required arm64 modifications. Separate commits
-update the other arches and core code, before the actual bug is fixed in
-arm64.
+Good day from Singapore,
 
-No behavioral changes intended.
+I have just bought vivo V25 Pro 5G (12 GB + 256 GB) Starlight Black Android=
+ Mobile Phone for SGD$600 on 15 Sep 2023 Friday.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- arch/arm64/include/asm/hugetlb.h | 2 +-
- arch/arm64/mm/hugetlbpage.c      | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kerne=
+l 4.19.191+. Are there any severe/critical security vulnerabilities in Linu=
+x kernel 4.19.191+ that will allow government-sponsored or state-backed hac=
+kers or Advanced Persistent Threats (APTs) to take over absolute control of=
+ my brand new vivo mobile phone? Can I download, compile and install the la=
+test Linux kernel 6.5.4 from sources on my brand new vivo mobile phone by m=
+yself? I would like to know how I can do it.
 
-diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
-index f43a38ac1779..efc9025b9d27 100644
---- a/arch/arm64/include/asm/hugetlb.h
-+++ b/arch/arm64/include/asm/hugetlb.h
-@@ -27,7 +27,7 @@ static inline void arch_clear_hugepage_flags(struct page *page)
- pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags);
- #define arch_make_huge_pte arch_make_huge_pte
- #define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
--extern void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-+extern void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
- 			    pte_t *ptep, pte_t pte);
- #define __HAVE_ARCH_HUGE_PTEP_SET_ACCESS_FLAGS
- extern int huge_ptep_set_access_flags(struct vm_area_struct *vma,
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 9c52718ea750..844832511c1e 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -248,9 +248,10 @@ static inline struct folio *hugetlb_swap_entry_to_folio(swp_entry_t entry)
- 	return page_folio(pfn_to_page(swp_offset_pfn(entry)));
- }
- 
--void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-+void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
- 			    pte_t *ptep, pte_t pte)
- {
-+	struct mm_struct *mm = vma->vm_mm;
- 	size_t pgsize;
- 	int i;
- 	int ncontig;
-@@ -571,5 +572,5 @@ pte_t huge_ptep_modify_prot_start(struct vm_area_struct *vma, unsigned long addr
- void huge_ptep_modify_prot_commit(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep,
- 				  pte_t old_pte, pte_t pte)
- {
--	set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
-+	set_huge_pte_at(vma, addr, ptep, pte);
- }
--- 
-2.25.1
+Details are as follows.
 
+Retail Shop: @ Ang Mo Kio Central
+Purchase Time: Around 7 PM in the evening, PayNow record of SGD$600 shows 7=
+.13 PM Singapore Time
+
+Model: V2158
+RAM: 12 GB
+ROM: 256 GB
+Color: Starlight Black
+Checker: *****406
+Manufacturing Date?: 2022.09.28
+
+Funtouch OS 13
+
+Processor:
+Mediatek
+3.0 GHz
+Dimensity 1300=20
+Octa-core
+
+RAM:
+12.00+8.00 GB
+
+Android version:
+13
+
+Phone storage:
+256 GB
+
+Status
+=3D=3D=3D=3D=3D=3D
+
+IMEI (sim slot 1)
+868*********994
+
+IMEI (sim slot 2)
+868*********986
+
+IMEI SV
+34
+
+MEID:
+**********4AF0
+
+Serial Number: 10A*********12Z
+
+Other number: 6 93**** ***973
+
+Software information
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+OS version
+Funtouch OS 13 Global
+
+Hardware version
+MP_0.1
+
+Build number
+PD2204BF_EX_A_13.1.13.12.W20
+
+Baseband version
+MOLY.NR15.R3.TC19.PR4.SP.V1.P74
+
+LINUX Kernel version
+4.19.191+
+#1 Mon Jul 17 17:58:52 CST 2023
+
+Compile time
+Jul 17, 2023 17:29:43
+
+Android security update
+July 1, 2023
+
+Google Play system update
+July 1, 2022
+
+Phone/device price: one time payment of SGD$600 (I had thought of paying us=
+ing Atome 3 monthly installments of SGD$216 but decided against it eventual=
+ly)=20
+Other items: Screen Protective Membrane $20 + camera lens protective cover =
+$10 + shock resistant phone cover $20: SGD$50
+Grand Total: SGD$650
+
+Full phone specifications - vivo V25 Pro 5G: https://www.gsmarena.com/vivo_=
+v25_pro-11771.php
+
+I have decided to buy this vivo mobile phone because my Samsung Galaxy A32 =
+5G mobile phone SGD$338 has now become extremely slow in performance and la=
+gs like hell. Maybe too many apps were installed.
+Opening and using apps is now a slow and painful experience. The phone came=
+ra is even worse. Taking a photo or selfie takes 2-3 seconds. If you move t=
+he phone by a bit before the 3 seconds is up, your photo or selfie will tur=
+n out very blur. So you need to set a timer of 2 seconds when you take a se=
+lfie or photo. Taking videos with the phone camera is also very laggy and c=
+hoppy. The recorded video will turn out to be choppy.
+
+I had bought the Samsung Galaxy A32 5G mobile phone SGD$338 on 6 Oct 2021. =
+I have used the Samsung mobile phone for 1 year 11 months 10 days [ALMOST 2=
+ YEARS] (as of 16 Sep 2023 Sat) and it is getting slower and slower by the =
+day. Maybe the Singapore Government had planted a spyware and/or rootkit on=
+ my Samsung mobile phone.
+
+I need to ask manufacturer Samsung why my Samsung mobile phone is getting s=
+o slow and laggy. Is it because it is too cheap and too low end??
+
+I certainly hope my brand new vivo mobile phone is a good purchase and it w=
+ill last me for another 5-6 years without getting slow and laggy.
+
+My bank balance as of 22 Sep 2023 Friday is SGD$3,592. I am 45 years old. T=
+hat is all and everything I have, besides a HDB 2-room RENTAL flat under th=
+e Public Rental Housing Scheme meant for the EXTREMELY POOR in Singapore.
+
+The Michael Kors private event at Mandarin Gallery Orchard Singapore on 21 =
+Sep 2023 Thursday at 7.30 PM Singapore Time is the very 1st event where I h=
+ave taken lots of selfies and lots of Full HD videos with this brand new vi=
+vo mobile phone. I must say taking selfies with the front camera is very fa=
+st. I am able to take 3-4 selfies in quick succession. There is no lag at a=
+ll. Female celebrities who grace this event are XinLin Khaw, He Ying Ying, =
+and Hazelle Teo to name a few.
+
+Regards,
+
+Mr. Turritopsis Dohrnii Teo En Ming
+Targeted Individual in Singapore
+Blogs:
+https://tdtemcerts.blogspot.com
+https://tdtemcerts.wordpress.com
+GIMP also stands for Government-Induced Medical Problems.
+
+Bachelor of Engineering (2nd Class Lower Honors) degree in Mechanical Engin=
+eering with Aerospace Specialization, National University of Singapore (Gra=
+duated December 2006)
+Diploma in Mechatronics Engineering, Singapore Polytechnic (Graduated 1998)
+Diploma in Computer Networking, Singapore Polytechnic (Graduated 2017)
+Studied CCNA and CISSP 5-day boot camps at NTUC Learning Hub in Singapore
+GCE "O" Level Top Student Year 1994, Ahmad Ibrahim Secondary School, Singap=
+ore
+I have setup, configured and deployed 22 Fortigate firewalls for 20 compani=
+es/organizations in Singapore so far (as of 22 Sep 2023 Fri)
+EOF
+
+
+
+
+Sent with Proton Mail secure email.
