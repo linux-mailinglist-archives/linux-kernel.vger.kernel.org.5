@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966CC7AA31F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526517AA42C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjIUVsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S232721AbjIUWCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbjIUVsE (ORCPT
+        with ESMTP id S232706AbjIUWBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:48:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41744E5ED;
-        Thu, 21 Sep 2023 14:35:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7798DC433C8;
-        Thu, 21 Sep 2023 21:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695332113;
-        bh=5Q9lwGR3nLKBoAjsox+oX7kPsbdEMYb7iKizTcyIEOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uxztyUIjTWdwT+T1RURT7taDdPu4y4tAUJ+xv6/zZZsitNKABQhT2GZiX20iIWaL0
-         zfSGS+251U61Rj8sStvXGs+j7SKdKBhxTzCaH8jgQ9MIA7nMwyQPugWgSlhDhCkSzz
-         P9S5gowLsHTIHgUK42c687Dl/6ngzJq/IWMZonmgYppUoh3R3pnWlAJXiacMygyWcJ
-         PEfytyy16Y0k+gC2ewR7UwtESEkc2r3Pgb8p32fd6e3UVCKOfOAOYvv9/1qxJQSaw6
-         sLRLGeBWF5KvCsewHYO2AvNF1kEn0lyF25xsP5VOzWT+m4jwea15Lqnyak186DEPGm
-         IHsbhYacPqmMQ==
-Date:   Thu, 21 Sep 2023 23:35:07 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org, Minjie Du <duminjie@vivo.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: gpio: remove error checks with debugfs
-Message-ID: <20230921213507.pfs3gp5uwgemsqoe@zenone.zhora.eu>
-References: <20230921084016.3434-1-wsa+renesas@sang-engineering.com>
+        Thu, 21 Sep 2023 18:01:55 -0400
+Received: from out-228.mta0.migadu.com (out-228.mta0.migadu.com [91.218.175.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C1E1FF3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 14:51:12 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 07:35:19 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1695333070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqdCzsBT+posAOrgjqZp1RU0wbImVm1bMLt0YyYT58w=;
+        b=jvHndayovKeUtX9KhNDnrwvpHYFAY3TGK25k0jym2yigvLtNswLLxKT6Iy0gnikZPeX0Ea
+        9E+iGa5XeByTvqs/zPZqR1u20L7keWeogvvrl433gR3hgExeYnV91T9Q1Wb9KDJ4Ic91lH
+        DRkHzMDCMUsHvHVQlZao+wq6tDL5sqbHKJOX/eVy2cbLpLzp/p7RhaKUdDs63DArSV80Nc
+        /0UlofEZsEnKUE79VvJQDZOheJCmXNIeKvtMomamt0kJgN1KUChQ1Cxln1n7tKHWhQb3o5
+        kUdDzQD+B+oIiLbouzSjs/cLjOvw7xVyOynXPFGXyMx4hAB2VRXRIh8v5sZTtg==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   John Watts <contact@jookia.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Aleksandr Shubin <privatesub2@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v6 0/3] Add support for Allwinner PWM on D1/T113s/R329
+ SoCs
+Message-ID: <ZQy3F_VtOL3XWcl0@titan>
+References: <20230824114038.891493-1-privatesub2@gmail.com>
+ <ZPfn-0OAL7-3DCmt@titan>
+ <20230921212736.nw6ctlimtrxfksbu@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230921084016.3434-1-wsa+renesas@sang-engineering.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230921212736.nw6ctlimtrxfksbu@pengutronix.de>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On Thu, Sep 21, 2023 at 11:27:36PM +0200, Uwe Kleine-König wrote:
+> Hi John,
+> 
+> On Wed, Sep 06, 2023 at 12:46:19PM +1000, John Watts wrote:
+> > On Thu, Aug 24, 2023 at 02:40:24PM +0300, Aleksandr Shubin wrote:
+> > > This series adds support for PWM controller on new
+> > > Allwinner's SoCs, such as D1, T113s and R329. The implemented driver
+> > > provides basic functionality for control PWM channels.
+> > 
+> > I have tested this patch and earlier versions successfully on a Mango Pi MQ
+> > Dual and verified it outputs a PWM signal.
+> 
+> If you want that documented, the usual thing to do is to include a
+> Tested-by: tag in your reply.
 
-[...]
+That's a good idea! I'll take a closer look under a scope and against the data
+sheet and give another tested-by then when I can. I'm not sure how close that
+gets to a reviewed-by but I don't have the experience in driver development to
+know if something is off in the design.
 
-> diff --git a/drivers/i2c/busses/i2c-gpio.c b/drivers/i2c/busses/i2c-gpio.c
-> index e5a5b9e8bf2c..fb35a75fe0e3 100644
-> --- a/drivers/i2c/busses/i2c-gpio.c
-> +++ b/drivers/i2c/busses/i2c-gpio.c
-> @@ -263,15 +263,10 @@ static void i2c_gpio_fault_injector_init(struct platform_device *pdev)
->  	 * 'fault-injector' dir there. Until then, we have a global dir with
->  	 * all adapters as subdirs.
->  	 */
-> -	if (!i2c_gpio_debug_dir) {
-> +	if (!i2c_gpio_debug_dir)
->  		i2c_gpio_debug_dir = debugfs_create_dir("i2c-fault-injector", NULL);
-> -		if (!i2c_gpio_debug_dir)
-> -			return;
-> -	}
->  
->  	priv->debug_dir = debugfs_create_dir(pdev->name, i2c_gpio_debug_dir);
-> -	if (!priv->debug_dir)
-> -		return;
+> 
+> Best regards
+> Uwe
 
-nice... this reminds me of some more cleanups that needs to be
-done elsewhere.
-
-Another good thing that comes out from this patch is that if a
-debgufs entry is not created it's not a big deal and we shouldn't
-return but move ahead with the function execution.
-
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
-
-Andi
+John.
