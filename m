@@ -2,146 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB757A9D72
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1FC7A9CF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjIUThS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
+        id S229661AbjIUT0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjIUThB (ORCPT
+        with ESMTP id S229640AbjIUTZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:37:01 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C41FBB33
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:12:33 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ad8bba8125so172000466b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:12:33 -0700 (PDT)
+        Thu, 21 Sep 2023 15:25:59 -0400
+Received: from mail-ua1-x94a.google.com (mail-ua1-x94a.google.com [IPv6:2607:f8b0:4864:20::94a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4B1E6CE1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:25:53 -0700 (PDT)
+Received: by mail-ua1-x94a.google.com with SMTP id a1e0cc1a2514c-7a52a27dcc0so1247329241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695323552; x=1695928352; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ln8pAXov2i3W9jm1L6DymijJbQvZk3PVbO+zm8QE4Tk=;
-        b=S373tAqMm0OSLe8ccVaqtclKSPf62bjkwoM5pxazLkqmEKdxhANXGyVBOnJ7cl67qI
-         uKgX5YBDYRB52PJeAvKAnzl47FChzi1EfnmrOlgAm0hTPJ2WXUBzPYbAoQSoHMtczQqL
-         4Pl7/deynA/1c9WoEHSFX+9WsBnSFV7mzyi6deZkdVOWpmB1NNL3nLt1IxON6QR5hnb5
-         Nye9kUbKCHU1XH+0eVRxFe0P9XIVUpEqRO4MF+RjURkWSWTurYab3OeWtoIKVXvTZ7EE
-         52kqwsVEGbb8+UC0oLuVKRHSm3WnFm5c9pxyfg6lazHyYOlmSYQrPNt63lwWPUy0QKOO
-         domQ==
+        d=google.com; s=20230601; t=1695324352; x=1695929152; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yNCF6Zt81nxj8UQ8gNIU503gdPKJ22mbn5cyKbzYsNE=;
+        b=3CYaPaag9BgPyD/BSrLigOIsBL/JhgHEiJqtsg7RdQb6EqM7Ne69H2AT+WjY6BV1d/
+         F2Dp/JJy35Hne4gWVdvbeozduZDEzPXugIcbC7RwxGgSRGpFHNQoiCwaW4SYWdCf5hWM
+         +eNaGfDVUnRO7jBqqKcDqxqLzyfG+VUh5TZedBP8u+DbYDIOvmLSB3X/ood5yjI9AnaS
+         UA5/nNPLsBsb/nL3VuueNyzigngkEu1FJNziPdmBsht6JRATVh/BeleU/yVn+AnVyNnL
+         t4KJadsN99/8GbdJ3NdpEK8v+/cP+pCY30+63rZ1aaIwQZtRbUt8/YKoR8wgYWpegl1j
+         dUgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695323552; x=1695928352;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ln8pAXov2i3W9jm1L6DymijJbQvZk3PVbO+zm8QE4Tk=;
-        b=YaYHJXVwHgS2LbUv+i3zzpKgKpnjCBNNySNSD/PwLDMC6CmzQhQaiVIUXCysVHfVKU
-         VgyErS/Qi2VCyKr3WwD5ZuzEarecTHrPlXMhCSpzhZ9UyQUf06Yot7kW56QfjS5ziuNZ
-         mqs7EGG7qRsf/RRLCxvWnvqbRLFkCbSWxiJp1Xwbow94fHtq76sVv9rQbYmNtmT7ZuB1
-         u1l5ksi0MdiivoAkfCRm10UOPlowMgGi5psjDiQhFE8smawWkwttSWrU0RItCLotevxA
-         4LPlSyCihl/rYRqjKdbk6kjApX2YC5WB/qvMejus5E2xuIElYsQtvPmE0OEgyXoEE/pd
-         JhIg==
-X-Gm-Message-State: AOJu0YynWRxy//oE23VqrT5VZltlx/O2lsfP5StkclBZQGLrd+Mzf38a
-        dfONiusWyToYWSXvA+6587uUVg2m/zLnc0l/Rvc=
-X-Google-Smtp-Source: AGHT+IHSDm/lGTyJTnqjqg3B4/6aDvlgdKLxA2WrrHf6uT8+eulEAGpPC8J4aUHwdlDrn7eA8iqZAg==
-X-Received: by 2002:a7b:c3cf:0:b0:402:f536:2d3e with SMTP id t15-20020a7bc3cf000000b00402f5362d3emr4452684wmj.14.1695283084637;
-        Thu, 21 Sep 2023 00:58:04 -0700 (PDT)
-Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id v4-20020a05600c214400b003fef19bb55csm1151252wml.34.2023.09.21.00.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 00:58:04 -0700 (PDT)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org, howells@redhat.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH 4/4] fs/pipe: use spinlock in pipe_read() only if there is a watch_queue
-Date:   Thu, 21 Sep 2023 09:57:55 +0200
-Message-Id: <20230921075755.1378787-4-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230921075755.1378787-1-max.kellermann@ionos.com>
-References: <20230921075755.1378787-1-max.kellermann@ionos.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695324352; x=1695929152;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yNCF6Zt81nxj8UQ8gNIU503gdPKJ22mbn5cyKbzYsNE=;
+        b=FkzyXFlWSx8xRHP3w0hGOLPnp/II+Jl5np/opgSL3Z/5r5ugMsPdJFLLqlZOBVMj+A
+         E23b8iNarJp4WvBcLQQ3bCDpUQqnTrJO8xs+A8Ogiyrvu2HpvEAbOOcLXXc/ChlGAJcF
+         bbU2nQeRv6+r2PPUIiBm+1m+hRJrN2Bz1yywiqLNUzH4PCikd6U5nWMYVTxyDQoVSJln
+         gC1maaTI0o5s7eBPg4i1Nz6yPPUgaWyiSZ8bner2zIHYiufaXmQS5mZpC7DVLARBrxC8
+         PaQ29r8/ocy+CBxDqfUFnl2w8T4V4CsdtJFCXk4Y7QIVbqIBzXucfQ0/lRfTD/4BiSLk
+         UohQ==
+X-Gm-Message-State: AOJu0YyORvqTivwHSCRF56T2qJltaXKrKK66ZHVZo87kr4y3a+T/mwru
+        hTVwR0YuRkpm7iNAIKHO0hInhQzgZDoZCuQMLA==
+X-Google-Smtp-Source: AGHT+IG9HZjc3JIk5MEyIpSba4YkGUvBiWvtiXnmfI90PzuqCpAGn0qssQW1hqGUZeqIx/17RfnWLbC0RMIskQMPDg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:690c:d8f:b0:59b:5a5b:3a91 with
+ SMTP id da15-20020a05690c0d8f00b0059b5a5b3a91mr235089ywb.2.1695283130297;
+ Thu, 21 Sep 2023 00:58:50 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 07:58:48 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALf3C2UC/x2NSw7CMAwFr1J5jaXU4VO4CkJVkzjUG1McVIqq3
+ p3AYhYzi/dWKGzCBS7NCsazFHlolXbXQBwHvTNKqg7kyLsztVhepnH6YDKZ2QqKZlEJgyYc3/i U8KOv4eSJMOK+S4fQ5aPzzFBXJ+Msy//xetu2Lx6W2eyBAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695283129; l=2260;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=yG7G6SjuBc3zLcpp7gnhrmEb8A3RYwBew7uUX2315CY=; b=Yl+wEYYRm8WEbB2hhRaqUxc1tVIoc6ZKIs0c9VOUvp7taB3+qAlHxPrlAMZm8qubfP1QqWv9s
+ qlGem8Mov1TAxEmbCRIduUctIT2LKxA/mRraFOOFJzFPh6rM/HxWvj/
+X-Mailer: b4 0.12.3
+Message-ID: <20230921-strncpy-drivers-infiniband-hw-qib-qib_iba7322-c-v1-1-373727763f5b@google.com>
+Subject: [PATCH] IB/qib: replace deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there is no watch_queue, holding the pipe mutex is enough to
-prevent concurrent writes, and we can avoid the spinlock.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1]
+and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-O_NOTIFICATION_QUEUE is an exotic and rarely used feature, and of all
-the pipes that exist at any given time, only very few actually have a
-watch_queue, therefore it appears worthwile to optimize the common
-case.
+We know `txselect_list` is expected to be NUL-terminated based on its
+use in `param_get_string()`:
+| int param_get_string(char *buffer, const struct kernel_param *kp)
+| {
+| 	const struct kparam_string *kps = kp->str;
+| 	return scnprintf(buffer, PAGE_SIZE, "%s\n", kps->string);
+| }
 
-This patch does not optimize pipe_resize_ring() where the spinlocks
-could be avoided as well; that does not seem like a worthwile
-optimization because this function is not called often.
+Note that `txselect_list` is assigned to `kp_txselect`'s string field:
+| static struct kparam_string kp_txselect = {
+| 	.string = txselect_list,
+| 	.maxlen = MAX_ATTEN_LEN
+| };
 
-Related commits:
+Wherein it is then assigned the set and get methods:
+| module_param_call(txselect, setup_txselect, param_get_string,
+| 		  &kp_txselect, S_IWUSR | S_IRUGO);
 
-- commit 8df441294dd3 ("pipe: Check for ring full inside of the
-  spinlock in pipe_write()")
-- commit b667b8673443 ("pipe: Advance tail pointer inside of wait
-  spinlock in pipe_read()")
-- commit 189b0ddc2451 ("pipe: Fix missing lock in pipe_resize_ring()")
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- fs/pipe.c | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
+Note: build-tested
+---
+ drivers/infiniband/hw/qib/qib_iba7322.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 939def02c18c..da557eff9560 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -322,14 +322,34 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
+diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
+index 9d2dd135b784..f93906d8fc09 100644
+--- a/drivers/infiniband/hw/qib/qib_iba7322.c
++++ b/drivers/infiniband/hw/qib/qib_iba7322.c
+@@ -6127,7 +6127,7 @@ static int setup_txselect(const char *str, const struct kernel_param *kp)
+ 			TXDDS_TABLE_SZ + TXDDS_EXTRA_SZ + TXDDS_MFG_SZ);
+ 		return -EINVAL;
+ 	}
+-	strncpy(txselect_list, str, ARRAY_SIZE(txselect_list) - 1);
++	strscpy(txselect_list, str, sizeof(txselect_list));
  
- 			if (!buf->len) {
- 				pipe_buf_release(pipe, buf);
--				spin_lock_irq(&pipe->rd_wait.lock);
-+
-+				if (pipe_has_watch_queue(pipe)) {
-+					/* if the pipe has a
-+					 * watch_queue, we need
-+					 * additional protection by
-+					 * the spinlock because
-+					 * notifications get posted
-+					 * with only this spinlock, no
-+					 * mutex
-+					 */
-+
-+					spin_lock_irq(&pipe->rd_wait.lock);
- #ifdef CONFIG_WATCH_QUEUE
--				if (buf->flags & PIPE_BUF_FLAG_LOSS)
--					pipe->note_loss = true;
-+					if (buf->flags & PIPE_BUF_FLAG_LOSS)
-+						pipe->note_loss = true;
- #endif
--				tail++;
--				pipe->tail = tail;
--				spin_unlock_irq(&pipe->rd_wait.lock);
-+					tail++;
-+					pipe->tail = tail;
-+					spin_unlock_irq(&pipe->rd_wait.lock);
-+				} else {
-+					/* without a watch_queue, we
-+					 * can simply increment the
-+					 * tail without the spinlock -
-+					 * the mutex is enough
-+					 */
-+
-+					pipe->tail = ++tail;
-+				}
- 			}
- 			total_len -= chars;
- 			if (!total_len)
--- 
-2.39.2
+ 	xa_for_each(&qib_dev_table, index, dd)
+ 		if (dd->deviceid == PCI_DEVICE_ID_QLOGIC_IB_7322)
+
+---
+base-commit: 2cf0f715623872823a72e451243bbf555d10d032
+change-id: 20230921-strncpy-drivers-infiniband-hw-qib-qib_iba7322-c-48d5b8f603ee
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
