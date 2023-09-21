@@ -2,209 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEF27A9960
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4BD7A9DAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjIUSOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        id S231178AbjIUTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjIUSNg (ORCPT
+        with ESMTP id S231395AbjIUToq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:13:36 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84B483E6;
-        Thu, 21 Sep 2023 10:23:15 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B2AC466072B4;
-        Thu, 21 Sep 2023 08:54:38 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695282879;
-        bh=mxa+TQ9McxKXTWkBAdGpIkOnbJ9KXBTRLFoX7g4x3U4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=aOx3li4jlzpntW7uZPRu6InVLWX1CEWeAd6xYNw5Cu5ySnF3GxElIKu/WXg6KjDcF
-         SpIv2sTg+zYMgzBZADkIltCPzyj40Z42PGN+SI6+iQ0rpbvTjH5vJ5cuRS63vGk3Xp
-         jis6cjJteeDzGPYtOGuSNWvAn8Dc0O4ED2WlXBRcM5US63j09hwqiWLSmr13atHZI2
-         hWnvBochrfDGcR3KhXDJku8+GR8uaPGigvxWIVES9sMIU3F7KyQ9PJMvX0xNhd6CPy
-         IhWVhKQd26cnucXe/AtKomFmpxc7ubr7kgVpAzJiqVCzHJkmyVSyURn6FA3LXK9rrw
-         leS8AqnHoNEAQ==
-Message-ID: <eb6cc1dd-1df9-3b68-1f72-d536189c7b4d@collabora.com>
-Date:   Thu, 21 Sep 2023 09:54:35 +0200
+        Thu, 21 Sep 2023 15:44:46 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A1510D76C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:31:20 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4053c6f0da0so1640145e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1695324664; x=1695929464; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uXl3XjtNY+qQUGAfKFbAOhIfMu203xufyzo0Jfa0XyY=;
+        b=iRPclcbEziiuXphFxRjzycEIzgzVvfixovnnY4z5rMoA8nZQhVSi2TzjFvZhuYnott
+         F1ZFDsMMxSO4O99WzxyJDTcpo4zhddeK3Q0OVoDfH/ypn6AdIdHlwqmlkxqkLp5B5q5w
+         QolScV9TwCk/GfZ8CelkWOwX7wqK5Hd60a2nzZnX9XrFQfi089RIYsnxhgoUiubdtu1M
+         fYrd7hOnuxK14aKZyIBbRtuw1/1Ck3zFJRyJElwQ9rqKV6Kt8iWTdnfDCjW9BIx7q2ds
+         Fvwenutawy+gAoF8SGE8c1XYI3Wt2jp6gs/TxVghZX4jDiHEHmDJJHFoQ1xqpUakJpqV
+         Q3ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695324664; x=1695929464;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uXl3XjtNY+qQUGAfKFbAOhIfMu203xufyzo0Jfa0XyY=;
+        b=EIomeeeB/V89W4OcanAsjfM9p/vo8KY8X/uxW1l6z+fg5Z6QZssFj/uG5h0HGklT0T
+         ErRZbMDaHRZl/WP7FSLPF710ZaPHBt2aKs454kkUxCYUWiM9orlaNooNKbV9CF+gdvvs
+         1xf8zs5WGdzPZktVo63EumdLGtbJvy4quInL1n2WtVWrgjCRC3+dmE+HZFjU1Hsi7qvZ
+         TNiGOiX6jP4ohe3fwFL13C0KkpumwIopf2AQrXDlQssCZlVmVfXJvs3AJTYyUnEWDhIJ
+         kKeC93b5rHCPx7sg3McEvk2H0dvnlXNuIjTtR2KNLfth/JorlVN2+6LmQyr/IfP3Bjhj
+         2J9g==
+X-Gm-Message-State: AOJu0Yy0Utwjs//cQhKMjUEySipkhjZ5/2x0BwDCQkw82qw6Absw4fvz
+        9+rKgIVA9XsOwsCicZL+qlxAQkfRJa7vRBCPFPI=
+X-Google-Smtp-Source: AGHT+IF1pBtqoHJupqJB89JDTv8U2tPiwASllgBiXga49KhWXGoCCYdQLyGMzig5D0GLqGXQxvk2QQ==
+X-Received: by 2002:ac2:44ce:0:b0:503:f:1343 with SMTP id d14-20020ac244ce000000b00503000f1343mr3999054lfm.19.1695283079562;
+        Thu, 21 Sep 2023 00:57:59 -0700 (PDT)
+Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
+        by smtp.gmail.com with ESMTPSA id v4-20020a05600c214400b003fef19bb55csm1151252wml.34.2023.09.21.00.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 00:57:59 -0700 (PDT)
+From:   Max Kellermann <max.kellermann@ionos.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org, howells@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH 1/4] pipe: reduce padding in struct pipe_inode_info
+Date:   Thu, 21 Sep 2023 09:57:52 +0200
+Message-Id: <20230921075755.1378787-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 4/4] thermal/drivers/mediatek/lvts_thermal: add mt7988
- support
-Content-Language: en-US
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230920175001.47563-1-linux@fw-web.de>
- <20230920175001.47563-5-linux@fw-web.de>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230920175001.47563-5-linux@fw-web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 20/09/23 19:50, Frank Wunderlich ha scritto:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> Add Support for Mediatek Filogic 880/MT7988 LVTS.
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
-> v2:
-> - use 105°C for hw shutdown
-> - move constants to binding file
-> - change coeff.a to temp_factor and coeff.b to temp_offset
-> - change to lvts to lvts-ap (Application Processor)
-> - drop comments about efuse offsets
-> - change comment of mt8195 to be similar to mt7988
-> ---
->   drivers/thermal/mediatek/lvts_thermal.c | 46 +++++++++++++++++++++++++
->   1 file changed, 46 insertions(+)
-> 
-> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> index c2669f405a94..8fd1dc5adb16 100644
-> --- a/drivers/thermal/mediatek/lvts_thermal.c
-> +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> @@ -82,6 +82,8 @@
->   #define LVTS_GOLDEN_TEMP_DEFAULT	50
->   #define LVTS_COEFF_A_MT8195			-250460
->   #define LVTS_COEFF_B_MT8195			250460
-> +#define LVTS_COEFF_A_MT7988			-204650
-> +#define LVTS_COEFF_B_MT7988			204650
->   
->   #define LVTS_MSR_IMMEDIATE_MODE		0
->   #define LVTS_MSR_FILTERED_MODE		1
-> @@ -89,6 +91,7 @@
->   #define LVTS_MSR_READ_TIMEOUT_US	400
->   #define LVTS_MSR_READ_WAIT_US		(LVTS_MSR_READ_TIMEOUT_US / 2)
->   
-> +#define LVTS_HW_SHUTDOWN_MT7988		105000
+This has no effect on 64 bit because there are 10 32-bit integers
+surrounding the two bools, but on 32 bit architectures, this reduces
+the struct size by 4 bytes by merging the two bools into one word.
 
-I would simply reuse the definition of LVTS_HW_SHUTDOWN_MT8195....
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ include/linux/pipe_fs_i.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->   #define LVTS_HW_SHUTDOWN_MT8195		105000
->   
->   #define LVTS_MINIMUM_THRESHOLD		20000
-> @@ -1269,6 +1272,41 @@ static int lvts_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> +/*
-> + * LVTS MT7988
-> + */
-> +
-
-Please remove this big comment block, that's not needed.
-
-> +static const struct lvts_ctrl_data mt7988_lvts_ap_data_ctrl[] = {
-> +	{
-> +		.cal_offset = { 0x00, 0x04, 0x08, 0x0c }, //918,91C,920,924
-
-This 918,91c,etc comment is not necessary
-
-> +		.lvts_sensor = {
-> +			{ .dt_id = MT7988_CPU_0 }, // CPU 0,1
-
-If you want to retain those comments, you shall use the right style.
-
-{ .dt_id = MT7988_CPU_0 }, /* CPU 0,1 */
-{ .. } /* CPU 2,3 */
-{ .. } /* Internal 2.5G PHY 1 */
-
-etc
-
-> +			{ .dt_id = MT7988_CPU_1 }, // CPU 2,3
-> +			{ .dt_id = MT7988_ETH2P5G_0 }, // internal 2.5G Phy 1
-> +			{ .dt_id = MT7988_ETH2P5G_1 }  // internal 2.5G Phy 2
-> +		},
-> +		.num_lvts_sensor = 4,
-> +		.offset = 0x0,
-> +		.hw_tshut_temp = LVTS_HW_SHUTDOWN_MT7988,
-> +	},
-> +	{
-> +		.cal_offset = { 0x14, 0x18, 0x1c, 0x20 }, //92C,930,934,938
-
-comment not needed
-
-> +		.lvts_sensor = {
-> +			{ .dt_id = MT7988_TOPS_0}, // TOPS > +			{ .dt_id = MT7988_TOPS_1}, // TOPS
-
-The dt_id definition already says "TOPS", this comment is not needed.
-
-> +			{ .dt_id = MT7988_ETHWARP_0}, // WED 1
-> +			{ .dt_id = MT7988_ETHWARP_1}  // WED 2
-
-Same comment about the format; /* WED 1 */
-
-> +		},
-> +		.num_lvts_sensor = 4,
-> +		.offset = 0x100,
-> +		.hw_tshut_temp = LVTS_HW_SHUTDOWN_MT7988,
-> +	}
-> +};
-> +
-> +/*
-> + * LVTS MT8195
-> + */
-
-Please also remove this big comment block, it's not needed.
-
-Apart from that, this patch looks good; v3 will be the golden one :-)
-
-Cheers,
-Angelo
-
-> +
->   static const struct lvts_ctrl_data mt8195_lvts_mcu_data_ctrl[] = {
->   	{
->   		.cal_offset = { 0x04, 0x07 },
-> @@ -1348,6 +1386,13 @@ static const struct lvts_ctrl_data mt8195_lvts_ap_data_ctrl[] = {
->   	}
->   };
->   
-> +static const struct lvts_data mt7988_lvts_ap_data = {
-> +	.lvts_ctrl	= mt7988_lvts_ap_data_ctrl,
-> +	.num_lvts_ctrl	= ARRAY_SIZE(mt7988_lvts_ap_data_ctrl),
-> +	.temp_factor	= LVTS_COEFF_A_MT7988,
-> +	.temp_offset	= LVTS_COEFF_B_MT7988,
-> +};
-> +
->   static const struct lvts_data mt8195_lvts_mcu_data = {
->   	.lvts_ctrl	= mt8195_lvts_mcu_data_ctrl,
->   	.num_lvts_ctrl	= ARRAY_SIZE(mt8195_lvts_mcu_data_ctrl),
-> @@ -1363,6 +1408,7 @@ static const struct lvts_data mt8195_lvts_ap_data = {
->   };
->   
->   static const struct of_device_id lvts_of_match[] = {
-> +	{ .compatible = "mediatek,mt7988-lvts-ap", .data = &mt7988_lvts_ap_data },
->   	{ .compatible = "mediatek,mt8195-lvts-mcu", .data = &mt8195_lvts_mcu_data },
->   	{ .compatible = "mediatek,mt8195-lvts-ap", .data = &mt8195_lvts_ap_data },
->   	{},
+diff --git a/include/linux/pipe_fs_i.h b/include/linux/pipe_fs_i.h
+index 608a9eb86bff..598a411d7da2 100644
+--- a/include/linux/pipe_fs_i.h
++++ b/include/linux/pipe_fs_i.h
+@@ -62,9 +62,6 @@ struct pipe_inode_info {
+ 	unsigned int tail;
+ 	unsigned int max_usage;
+ 	unsigned int ring_size;
+-#ifdef CONFIG_WATCH_QUEUE
+-	bool note_loss;
+-#endif
+ 	unsigned int nr_accounted;
+ 	unsigned int readers;
+ 	unsigned int writers;
+@@ -72,6 +69,9 @@ struct pipe_inode_info {
+ 	unsigned int r_counter;
+ 	unsigned int w_counter;
+ 	bool poll_usage;
++#ifdef CONFIG_WATCH_QUEUE
++	bool note_loss;
++#endif
+ 	struct page *tmp_page;
+ 	struct fasync_struct *fasync_readers;
+ 	struct fasync_struct *fasync_writers;
+-- 
+2.39.2
 
