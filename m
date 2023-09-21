@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 873087A97EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8DA7A9741
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjIUR2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        id S229639AbjIURMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbjIUR16 (ORCPT
+        with ESMTP id S229837AbjIURKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:27:58 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137674BBCC;
-        Thu, 21 Sep 2023 10:16:27 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c56bc62351so1040675ad.0;
-        Thu, 21 Sep 2023 10:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695316587; x=1695921387; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wHAAa/gf3HGuegRT5iGO1X/UDqUCnuMi0knFAFkXKOk=;
-        b=CTJKSzI5GibbGvoI0aDOFnejz6Rygibm90Q/C+96PosqsgKckVxmNhKZgqbAvfNxZd
-         lsgmDs2BV1Fbs32MYcSa/CjjnsSoG3xideKD+zyif5SZ/5OMe5TQGhi4XsmGVdkaTRoq
-         EUAIzRPBwHU+A94R9kwU+TDOcGtsRYdVHv1SZyFihLR4Q3d3JxYPOPePxm7uAoPgkulb
-         AKZD/INRBtGRuQLxSTOqSrvFA8NIKqfGcIz/2jP0Fsm1dawgLr+uT7CxZhaX8OYJoe9s
-         QOQd0MUuXSAJh+42MpW8d3UC/fEoh+Ri4apq9l9LE/Di9mJUcPv5Uz/ry9+xZf+eMGCL
-         UxHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316587; x=1695921387;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wHAAa/gf3HGuegRT5iGO1X/UDqUCnuMi0knFAFkXKOk=;
-        b=cOh2gFI7J/cPkuzDaOLA0JmOetIyBo48bx3fWNmDf8BwyaqMy4vEtj+3Ns/Y6jEdGT
-         0sBMW+L2Pe7jT+J5nRrenxSOWHuUbNDPy/nGtjBRydWOoFGbDE+uSvvUCiwVTxbMUMS/
-         Tw6TS1pZZnRrDQsR/IXMiCrU82aCSW0/50lyXXHMQltRJKCC/hjQ4/bowV6sbu1R3XWQ
-         bHbaU+qdcan4d+KHgGxWNJw8NXmt3gV6L4LUGE0sD503Fyb499gbBcvZlyqGipkIstmg
-         Q8/oKzZWG7vFOt0qS+hLIRKjuo2hq/3hnakJu9Tdxu6OxHOyRqFR3eHbPhrUpNrHZsq1
-         BUQA==
-X-Gm-Message-State: AOJu0YyNLfE3/LCzqg7ES88n2tfuLblF0pLQxuTL+WLvmNJ1YfcTuW+r
-        odaefg+0dOeMN6fUoPNAe+SKiV7wd0lXh6yTCRgU0Or8Wck=
-X-Google-Smtp-Source: AGHT+IEEAoTieOt7JBo611DbKMEQLNIQHeQKET+XBzRN4TEZwZCj6f9gZGsvGxet3THq3IAnB4Z9vjjCYPpbv0Ffs8g=
-X-Received: by 2002:a17:90a:130c:b0:26d:1eff:619f with SMTP id
- h12-20020a17090a130c00b0026d1eff619fmr5078989pja.2.1695301138803; Thu, 21 Sep
- 2023 05:58:58 -0700 (PDT)
+        Thu, 21 Sep 2023 13:10:55 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CC842681;
+        Thu, 21 Sep 2023 10:06:12 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxnuveQAxl+IoqAA--.14247S3;
+        Thu, 21 Sep 2023 21:10:54 +0800 (CST)
+Received: from [0.0.0.0] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxnd7MQAxlS0cNAA--.28996S3;
+        Thu, 21 Sep 2023 21:10:45 +0800 (CST)
+Message-ID: <cab7d157-946e-6b8f-1b29-5618a0ac0da6@loongson.cn>
+Date:   Thu, 21 Sep 2023 21:10:36 +0800
 MIME-Version: 1.0
-References: <20230920184647.84316-1-festevam@gmail.com>
-In-Reply-To: <20230920184647.84316-1-festevam@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 21 Sep 2023 09:58:47 -0300
-Message-ID: <CAOMZO5AjMGA5TtTJH2b7Fs_C3bj84UZr378FVsp5S+ver8_WpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 net] net: dsa: mv88e6xxx: Avoid EEPROM timeout when
- EEPROM is absent
-To:     kuba@kernel.org
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        l00g33k@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>,
-        Florian Fainelli <florian.fainelli@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5.4 000/367] 5.4.257-rc1 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20230920112858.471730572@linuxfoundation.org>
+ <CA+G9fYsM0Lr8TNQJxsZFDZwcH-rEzkVV+y+x5FX18oH5wm5dRg@mail.gmail.com>
+Content-Language: en-US
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <CA+G9fYsM0Lr8TNQJxsZFDZwcH-rEzkVV+y+x5FX18oH5wm5dRg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dxnd7MQAxlS0cNAA--.28996S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7CF17WryktFWxtFWfXFy8tFc_yoW8uFW5pF
+        W5t34Yyr4jyr47tan7Zr1Sva4Yyan3J3y7Wr1DWry3uF1UWF4xKw1v9rZIvF9rWFWkKa1U
+        tr4qga4jva109rbCm3ZEXasCq-sJn29KB7ZKAUJUUUUA529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_Jw0_GFyle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0L0ePUUUU
+        U==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 3:47=E2=80=AFPM Fabio Estevam <festevam@gmail.com> =
-wrote:
+Hi,
 
-> --- a/drivers/net/dsa/mv88e6xxx/chip.c
-> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-> @@ -3012,14 +3012,16 @@ static void mv88e6xxx_hardware_reset(struct mv88e=
-6xxx_chip *chip)
->                  * from the wrong location resulting in the switch bootin=
-g
->                  * to wrong mode and inoperable.
->                  */
-> -               mv88e6xxx_g1_wait_eeprom_done(chip);
-> +               if (chip->info->ops->get_eeprom)
-> +                       mv88e6xxx_g2_eeprom_wait(chip);
 
-Just realized that I should also remove the
-mv88e6xxx_g1_wait_eeprom_done() definition, as it becomes unused now.
+On 2023/9/21 20:08, Naresh Kamboju wrote:
+> On Wed, 20 Sept 2023 at 14:25, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+>> This is the start of the stable review cycle for the 5.4.257 release.
+>> There are 367 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+>> Anything received after that time might be too late.
+>>
+>> The whole patch series can be found in one patch at:
+>>          https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.257-rc1.gz
+>> or in the git tree and branch at:
+>>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
+> Following build warnings noticed while building arm64 with allmodconfig
+> on stable-rc 5.4 with gcc-8 and gcc-12 toolchains.
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> drivers/gpu/drm/mediatek/mtk_drm_gem.c: In function 'mtk_drm_gem_prime_vmap':
+> drivers/gpu/drm/mediatek/mtk_drm_gem.c:273:10: warning: returning
+> 'int' from a function with return type 'void *' makes pointer from
+> integer without a cast [-Wint-conversion]
+>     return -ENOMEM;
+>            ^
 
-I will send a v3 with such a change, but will wait for more comments first.
+
+Well, this is easy to solve.
+For the Linux-5.4 kernel, we should use "return -ERR_PTR(-ENOMEM)" instead of "return -ENOMEM".
+Since, newer version kernel prefer to return error code instead of error pointer.
+See below commit for more information.
+
+commit <7e542ff8b463>  ("drm/mediatek: Use struct dma_buf_map in GEM 
+vmap ops")
+commit <49a3f51dfeee> ("drm/gem: Use struct dma_buf_map in GEM vmap ops 
+and convert GEM backends")
+
+
+> Links:
+>   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VfG47LmPH9MUEuIcMVftu6NsFy/
+>
+>
+> Following commit is causing this build warning.
+>
+> drm/mediatek: Fix potential memory leak if vmap() fail
+> [ Upstream commit 379091e0f6d179d1a084c65de90fa44583b14a70 ]
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+
