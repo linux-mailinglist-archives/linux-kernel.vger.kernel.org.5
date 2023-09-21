@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 884ED7AA0B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBEB7AA21A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjIUUrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S232428AbjIUVMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbjIUUrB (ORCPT
+        with ESMTP id S232128AbjIUVLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:47:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AC990F12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318443; x=1726854443;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Msw4IpRBg5UAkrhphCxUeE+v0uEt43SFzf7qsAETac8=;
-  b=NG8MsCT0CuXvoVHZ+9KL0gg6AOAYvwolup45XBRBSqoYV0st3LGCHtr/
-   VPdcfHee+obsOLBG4+Asj21FQQ3wZ+1awC5EnQJc7bxvF8/sSsaZup15N
-   db1C3giANs7HaDS5BM/onXBsPKOZB7jWSdcHQ7DA7Gp0ZDFQzNqECG1NI
-   Y2H6teq0mUfXgWl0qCJrvVM1C9NEmQPfLl84gQXwu4DvYxN1HBqfdyfLQ
-   Kk9jRLYXA8PVc9DV72mqPTUyEIPBQCIUr/yf+iZx9FZL++QaKvzZPnBSY
-   Ssinz2nmxRgBMvrAnLwIX0ITd5syNtsiLzaFboOiWFWuFzxfZEEdM94cN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="377729757"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="377729757"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 23:30:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="920606351"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="920606351"
-Received: from sunyi-station.sh.intel.com (HELO ysun46-mobl.sh.intel.com) ([10.239.159.10])
-  by orsmga005.jf.intel.com with ESMTP; 20 Sep 2023 23:30:00 -0700
-From:   Yi Sun <yi.sun@intel.com>
-To:     dave.hansen@intel.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     sohil.mehta@intel.com, ak@linux.intel.com,
-        ilpo.jarvinen@linux.intel.com, heng.su@intel.com,
-        tony.luck@intel.com, yi.sun@linux.intel.com, yu.c.chen@intel.com,
-        Yi Sun <yi.sun@intel.com>
-Subject: [PATCH v7 3/3] tools/testing/fpu: Add a 'count' column.
-Date:   Thu, 21 Sep 2023 14:29:00 +0800
-Message-Id: <20230921062900.864679-4-yi.sun@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230921062900.864679-1-yi.sun@intel.com>
-References: <20230921062900.864679-1-yi.sun@intel.com>
+        Thu, 21 Sep 2023 17:11:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307576591;
+        Thu, 21 Sep 2023 10:10:10 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 06:33:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695278002;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=21/sHHhPFb02fGPHa3KkXtpaGJfqAhmJb2ONZ+dfxgE=;
+        b=kffYTUpmFWZ8SevQMW1o5EKjL8NYywiYYUhOD/lM0/tB3zQO7AVIZWg/K0kojaWiLhsMY+
+        7ejXUxlBYLo3s3Dsqyz5pwrHQ7a3H674l1gFWUxTSm7mD1m4rLsH09rda1KPfHhb6aokY4
+        9/QdVf9vcu1zKuX3rD+BzltP5xG2xoJ8AfuktAMg2/dFXfRf411XuMZWxfRu7bs5a1AT8n
+        RBIJfpdy9p530vG/fCouWlIw4D7RfyCfpGvy3jLefaVjMjyXGVHosDuYnzifBk5RWn7YYU
+        45qn/KuRToMm3sdZOy3qvy77bg3fJg2j2d/N04R79fyIH8IHGo1NmHXlLq7RyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695278002;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=21/sHHhPFb02fGPHa3KkXtpaGJfqAhmJb2ONZ+dfxgE=;
+        b=pzqETBwGfDKW9QSDK3fXbAcdLk26ZXNGuOWJ4duXVU89tF7AXXrfG8NIELLf23n8JaO83D
+        tvD0MTdpzMfq83Ag==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/debug: Update stale reference to sched_debug.c
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230920130025.412071-3-bigeasy@linutronix.de>
+References: <20230920130025.412071-3-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169527800193.27769.18165184060342435320.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Show the total number of each combination of event-RFBM-XINUSE. Users can
-identify which data is noise and focus more on useful data.
+The following commit has been merged into the sched/core branch of tip:
 
-Signed-off-by: Yi Sun <yi.sun@intel.com>
+Commit-ID:     622f0a1d544fa88dda10d27727835e825c84ae0f
+Gitweb:        https://git.kernel.org/tip/622f0a1d544fa88dda10d27727835e825c84ae0f
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Wed, 20 Sep 2023 15:00:25 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 21 Sep 2023 08:30:19 +02:00
 
-diff --git a/tools/testing/fpu/xsave-latency-trace.sh b/tools/testing/fpu/xsave-latency-trace.sh
-index d45563984fd6..b2f7c3d0dd65 100755
---- a/tools/testing/fpu/xsave-latency-trace.sh
-+++ b/tools/testing/fpu/xsave-latency-trace.sh
-@@ -99,11 +99,14 @@ function insert_line() {
- 
- # Show the results of the trace statistics
- function get_latency_stat() {
-+	cnt=`get_combs_cnt`
-+
- 	SQL_CMD "create table $table_results (
- 		id INTEGER PRIMARY KEY AUTOINCREMENT,
- 		event_name TEXT,
- 		RFBM INT,
- 		XINUSE INT,
-+		CNT INT,
- 		lat_min INT,
- 		lat_max INT,
- 		lat_avg INT,
-@@ -121,14 +124,18 @@ function get_latency_stat() {
- 		lat_avg=`round $lat_avg`
- 		lat_tail_avg=`round $lat_tail_avg`
- 
-+		count=`SQL_CMD "SELECT count(*) from $table_raw
-+			where event_name=\"$event_name\" and RFBM=$RFBM and
-+			XINUSE=$XINUSE;"`
-+
- 		SQL_CMD "INSERT INTO $table_results
--			(event_name, RFBM,XINUSE, lat_min, lat_max, lat_avg, lat_tail_avg)
--			VALUES (\"$event_name\", $RFBM, $XINUSE, $lat_min, $lat_max,
-+			(event_name,RFBM,XINUSE, CNT, lat_min, lat_max, lat_avg, lat_tail_avg)
-+			VALUES (\"$event_name\", $RFBM, $XINUSE, $count, $lat_min, $lat_max,
- 			$lat_avg, $lat_tail_avg);"
- 	done
- 
- 	SQL_CMD_HEADER "select event_name[EVENTs],printf('0x%x',RFBM)[RFBM],
--			printf('0x%x',XINUSE)[XINUSE],lat_min,lat_max,lat_avg,
-+			printf('0x%x',XINUSE)[XINUSE],CNT,lat_min,lat_max,lat_avg,
- 			lat_tail_avg[lat_avg(97%)]
- 			from $table_results;"
- }
--- 
-2.34.1
+sched/debug: Update stale reference to sched_debug.c
 
+Since commit:
+
+   8a99b6833c884 ("sched: Move SCHED_DEBUG sysctl to debugfs")
+
+The sched_debug interface moved from /proc to debugfs. The comment
+mentions still the outdated proc interfaces.
+
+Update the comment, point to the current location of the interface.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230920130025.412071-3-bigeasy@linutronix.de
+---
+ kernel/sched/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 132dfd1..5e34a8c 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -8,7 +8,7 @@
+  */
+ 
+ /*
+- * This allows printing both to /proc/sched_debug and
++ * This allows printing both to /sys/kernel/debug/sched/debug and
+  * to the console
+  */
+ #define SEQ_printf(m, x...)			\
