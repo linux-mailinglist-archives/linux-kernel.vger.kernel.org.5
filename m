@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0317AAA72
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0655B7AAA7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbjIVHkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S231493AbjIVHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbjIVHkt (ORCPT
+        with ESMTP id S229534AbjIVHl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:40:49 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0CB6FF7;
-        Fri, 22 Sep 2023 00:40:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3803DDA7;
-        Fri, 22 Sep 2023 00:41:16 -0700 (PDT)
-Received: from [10.57.65.11] (unknown [10.57.65.11])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65CC23F5A1;
-        Fri, 22 Sep 2023 00:40:29 -0700 (PDT)
-Message-ID: <3358e732-8df9-4408-8249-384b102f5d75@arm.com>
-Date:   Fri, 22 Sep 2023 08:40:26 +0100
+        Fri, 22 Sep 2023 03:41:57 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F976CA;
+        Fri, 22 Sep 2023 00:41:50 -0700 (PDT)
+X-UUID: 7bfb6668591b11ee8051498923ad61e6-20230922
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=HGCnvwcd8cVtCc2Ygte0CSRexon0TASbfmdWfu3Bytc=;
+        b=DhISx0GCIsJ0WZIHoXGN9ZE+oVN+JcZdauwVP4tcnVAGiZO0aNP0L33c7hcn8uW3qwyFjIHgHQCri3g/IxST5IUvMIWoe5lGOfJj57y/65+ZZzeey0ApdC1bRMJJ46EeBv6CWMrWUSHkZ5DYmm6MqSPDAR4yO91tpFYvXh8t3TM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:27dd69c0-6e9f-4e4e-b022-f74c7dd5b9a5,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:5f78ec9,CLOUDID:e1c700f0-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 7bfb6668591b11ee8051498923ad61e6-20230922
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1732564576; Fri, 22 Sep 2023 15:41:47 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 22 Sep 2023 15:41:46 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 22 Sep 2023 15:41:46 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Moudy Ho <moudy.ho@mediatek.com>
+Subject: [PATCH v6 00/13] add support MDP3 on MT8195 platform
+Date:   Fri, 22 Sep 2023 15:41:32 +0800
+Message-ID: <20230922074145.11977-1-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 8/8] arm64: hugetlb: Fix set_huge_pte_at() to work with
- all swap entries
-Content-Language: en-GB
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
- <20230921162007.1630149-9-ryan.roberts@arm.com>
- <217bb956-b9f6-1057-914b-436d4c775a8b@bytedance.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <217bb956-b9f6-1057-914b-436d4c775a8b@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,123 +71,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2023 03:54, Qi Zheng wrote:
-> Hi Ryan,
-> 
-> On 2023/9/22 00:20, Ryan Roberts wrote:
->> When called with a swap entry that does not embed a PFN (e.g.
->> PTE_MARKER_POISONED or PTE_MARKER_UFFD_WP), the previous implementation
->> of set_huge_pte_at() would either cause a BUG() to fire (if
->> CONFIG_DEBUG_VM is enabled) or cause a dereference of an invalid address
->> and subsequent panic.
->>
->> arm64's huge pte implementation supports multiple huge page sizes, some
->> of which are implemented in the page table with contiguous mappings. So
->> set_huge_pte_at() needs to work out how big the logical pte is, so that
->> it can also work out how many physical ptes (or pmds) need to be
->> written. It does this by grabbing the folio out of the pte and querying
->> its size.
->>
->> However, there are cases when the pte being set is actually a swap
->> entry. But this also used to work fine, because for huge ptes, we only
->> ever saw migration entries and hwpoison entries. And both of these types
->> of swap entries have a PFN embedded, so the code would grab that and
->> everything still worked out.
->>
->> But over time, more calls to set_huge_pte_at() have been added that set
->> swap entry types that do not embed a PFN. And this causes the code to go
->> bang. The triggering case is for the uffd poison test, commit
->> 99aa77215ad0 ("selftests/mm: add uffd unit test for UFFDIO_POISON"),
->> which sets a PTE_MARKER_POISONED swap entry. But review shows there are
->> other places too (PTE_MARKER_UFFD_WP).
->>
->> So the root cause is due to commit 18f3962953e4 ("mm: hugetlb: kill
->> set_huge_swap_pte_at()"), which aimed to simplify the interface to the
->> core code by removing set_huge_swap_pte_at() (which took a page size
->> parameter) and replacing it with calls to set_huge_swap_pte_at() where
->> the size was inferred from the folio, as descibed above. While that
->> commit didn't break anything at the time, 
-> 
-> If it didn't break anything at that time, then shouldn't the Fixes tag
-> be added to this commit?
-> 
->> it did break the interface
->> because it couldn't handle swap entries without PFNs. And since then new
->> callers have come along which rely on this working.
-> 
-> So the Fixes tag should be added only to the commit that introduces the
-> first new callers?
+Changes since v5:
+- Rebase on v6.6-rc2.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786511
+- Dependent bindings:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786520
+- Integrate MMSY/MUTEX structure in "mdp_probe".
+- Fix the build warnings that were detected by the linux-media
+  build scripts tool.
 
-Well I guess it's a matter of point of view; My view is that 18f3962953e4 is the
-buggy change because it broke the interface to not be able to handle swap
-entries which do not contain PFNs. The fact that there were no callers that used
-the interface in this way at the time of the commit is irrelevant in my view.
-But I already added 2 fixes tags; one for the buggy commit, and the other for
-the commit containing the new user of the interface.
+Changes since v4:
+- Rebase on v6.6-rc1
+- Remove any unnecessary DTS settings.
+- Adjust the usage of MOD and clock in blending components.
 
-> 
-> Other than that, LGTM.
+Changes since v3:
+- Depend on :
+  [1] https://patchwork.kernel.org/project/linux-media/list/?series=719841
+- Suggested by Krzysztof, integrating all newly added bindings for
+  the mt8195 MDP3 into the file "mediatek,mt8195-mdp3.yaml".
+- Revise MDP3 nodes with generic names.
 
-Thanks!
+Changes since v2:
+- Depend on :
+  [1] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711592
+  [2] MDP3: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711618
+- Suggested by Rob to revise MDP3 bindings to pass dtbs check
+- Add parallel paths feature.
+- Add blended components settings.
 
-> 
-> Thanks,
-> Qi
-> 
->>
->> Now that we have modified the set_huge_pte_at() interface to pass the
->> vma, we can extract the huge page size from it and fix this issue.
->>
->> I'm tagging the commit that added the uffd poison feature, since that is
->> what exposed the problem, as well as the original change that broke the
->> interface. Hopefully this is valuable for people doing bisect.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> Fixes: 18f3962953e4 ("mm: hugetlb: kill set_huge_swap_pte_at()")
->> Fixes: 8a13897fb0da ("mm: userfaultfd: support UFFDIO_POISON for hugetlbfs")
->> ---
->>   arch/arm64/mm/hugetlbpage.c | 17 +++--------------
->>   1 file changed, 3 insertions(+), 14 deletions(-)
->>
->> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
->> index 844832511c1e..a08601a14689 100644
->> --- a/arch/arm64/mm/hugetlbpage.c
->> +++ b/arch/arm64/mm/hugetlbpage.c
->> @@ -241,13 +241,6 @@ static void clear_flush(struct mm_struct *mm,
->>       flush_tlb_range(&vma, saddr, addr);
->>   }
->>   -static inline struct folio *hugetlb_swap_entry_to_folio(swp_entry_t entry)
->> -{
->> -    VM_BUG_ON(!is_migration_entry(entry) && !is_hwpoison_entry(entry));
->> -
->> -    return page_folio(pfn_to_page(swp_offset_pfn(entry)));
->> -}
->> -
->>   void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
->>                   pte_t *ptep, pte_t pte)
->>   {
->> @@ -258,13 +251,10 @@ void set_huge_pte_at(struct vm_area_struct *vma,
->> unsigned long addr,
->>       unsigned long pfn, dpfn;
->>       pgprot_t hugeprot;
->>   -    if (!pte_present(pte)) {
->> -        struct folio *folio;
->> -
->> -        folio = hugetlb_swap_entry_to_folio(pte_to_swp_entry(pte));
->> -        ncontig = num_contig_ptes(folio_size(folio), &pgsize);
->> +    ncontig = num_contig_ptes(huge_page_size(hstate_vma(vma)), &pgsize);
->>   -        for (i = 0; i < ncontig; i++, ptep++)
->> +    if (!pte_present(pte)) {
->> +        for (i = 0; i < ncontig; i++, ptep++, addr += pgsize)
->>               set_pte_at(mm, addr, ptep, pte);
->>           return;
->>       }
->> @@ -274,7 +264,6 @@ void set_huge_pte_at(struct vm_area_struct *vma, unsigned
->> long addr,
->>           return;
->>       }
->>   -    ncontig = find_num_contig(mm, addr, ptep, &pgsize);
->>       pfn = pte_pfn(pte);
->>       dpfn = pgsize >> PAGE_SHIFT;
->>       hugeprot = pte_pgprot(pte);
+Changes since v1:
+- Depend on :
+  [1] MDP3 : https://patchwork.kernel.org/project/linux-mediatek/list/?series=698872
+  [2] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=684959
+- Fix compilation failure due to use of undeclared identifier in file "mtk-mdp3-cmdq.c"
+
+Hello,
+
+This patch is used to add support for MDP3 on the MT8195 platform that
+contains more picture quality components, and can arrange more pipelines
+through two sets of MMSYS and MUTEX respectively.
+
+Moudy Ho (13):
+  media: platform: mtk-mdp3: add support second sets of MMSYS
+  media: platform: mtk-mdp3: add support second sets of MUTEX
+  media: platform: mtk-mdp3: introduce more pipelines from MT8195
+  media: platform: mtk-mdp3: introduce more MDP3 components
+  media: platform: mtk-mdp3: add checks for dummy components
+  media: platform: mtk-mdp3: avoid multiple driver registrations
+  media: platform: mtk-mdp3: extend GCE event waiting in RDMA and WROT
+  media: platform: mtk-mdp3: add support for blending multiple
+    components
+  media: platform: mtk-mdp3: add mt8195 platform configuration
+  media: platform: mtk-mdp3: add mt8195 shared memory configurations
+  media: platform: mtk-mdp3: add mt8195 MDP3 component settings
+  media: platform: mtk-mdp3: add support for parallel pipe to improve
+    FPS
+  media: platform: mtk-mdp3: fix uninitialized variable in
+    mdp_path_config()
+
+ .../platform/mediatek/mdp3/mdp_cfg_data.c     | 729 +++++++++++++-
+ .../platform/mediatek/mdp3/mdp_reg_aal.h      |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_color.h    |  31 +
+ .../media/platform/mediatek/mdp3/mdp_reg_fg.h |  23 +
+ .../platform/mediatek/mdp3/mdp_reg_hdr.h      |  31 +
+ .../platform/mediatek/mdp3/mdp_reg_merge.h    |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_ovl.h      |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_pad.h      |  21 +
+ .../platform/mediatek/mdp3/mdp_reg_rdma.h     |  24 +
+ .../platform/mediatek/mdp3/mdp_reg_rsz.h      |   2 +
+ .../platform/mediatek/mdp3/mdp_reg_tdshp.h    |  34 +
+ .../platform/mediatek/mdp3/mdp_reg_wrot.h     |   8 +
+ .../platform/mediatek/mdp3/mdp_sm_mt8195.h    | 283 ++++++
+ .../platform/mediatek/mdp3/mtk-img-ipi.h      |   4 +
+ .../platform/mediatek/mdp3/mtk-mdp3-cfg.h     |   2 +
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 442 +++++++--
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.h    |   1 +
+ .../platform/mediatek/mdp3/mtk-mdp3-comp.c    | 895 +++++++++++++++++-
+ .../platform/mediatek/mdp3/mtk-mdp3-comp.h    |  93 +-
+ .../platform/mediatek/mdp3/mtk-mdp3-core.c    | 139 ++-
+ .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  50 +-
+ .../platform/mediatek/mdp3/mtk-mdp3-m2m.c     |  15 +
+ .../platform/mediatek/mdp3/mtk-mdp3-regs.c    |  18 +
+ .../platform/mediatek/mdp3/mtk-mdp3-regs.h    |   1 +
+ .../platform/mediatek/mdp3/mtk-mdp3-vpu.c     |   3 +-
+ 25 files changed, 2745 insertions(+), 179 deletions(-)
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_aal.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_color.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_fg.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_hdr.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_merge.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_ovl.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_pad.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_tdshp.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_sm_mt8195.h
+
+-- 
+2.18.0
 
