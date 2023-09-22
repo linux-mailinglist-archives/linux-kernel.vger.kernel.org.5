@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB217ABB3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CBD7ABB42
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjIVVxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 17:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S229980AbjIVVy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 17:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjIVVxw (ORCPT
+        with ESMTP id S229674AbjIVVy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 17:53:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC1FCA;
-        Fri, 22 Sep 2023 14:53:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD7D6C433C7;
-        Fri, 22 Sep 2023 21:53:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695419626;
-        bh=N3Dz+vxCmsz2/Y3Z5iSJBrL8PYLkn2PrfmVPk92gy9k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z1jNOx1vPMrYz+6RETg78xQz51AFZcjpvo/xLWu6riRNWX/v+S3V6ZSvRP2EWmdYB
-         KdaEZO40Mr8bMLpX2+M8kwfwS2XS5QaRnwoTqUieqXCpnJQLlKuPYpxezeYYEpojO6
-         zYR/cuFqw3h1o9agttqYhTb3iXVznR7wZ3orfNz/FitXS5wm9pgU5lSxkeej4AoqJ7
-         7UVrt60v7ryEsnAtR72WMsxG9e7DVE8fYw8baebCGPQqsWCk/vxX76zImqRIZLYBgo
-         CfJSujRHg+Kzxy2nZ7g4RjggZjNv3IAJ/U/4r/ZK0mtWdpUoPiWG8ST9I/zoetP1ys
-         R2VApQeVkSCCw==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so4619812e87.1;
-        Fri, 22 Sep 2023 14:53:46 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxCdkR7WcMxYPkvh2M+KhLTj04RZI/Jn5AElordIu1z0nO0eZoA
-        zOnSSF455dPCXqSyer0724gtobawhVeRCRuYa4M=
-X-Google-Smtp-Source: AGHT+IE22tb6NDZhf8tsSCgX1RkcEii4xfJbpgNtZAHGFG7uB7OQt0BkdV2ZcEIx+5HrnU4r7EjJiN+2uqlPDKb2tvc=
-X-Received: by 2002:a19:6710:0:b0:503:95d:f2bd with SMTP id
- b16-20020a196710000000b00503095df2bdmr552070lfc.34.1695419624892; Fri, 22 Sep
- 2023 14:53:44 -0700 (PDT)
+        Fri, 22 Sep 2023 17:54:56 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB663FB
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 14:54:49 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c02e232c48so48670111fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 14:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695419688; x=1696024488; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/7c/oVDshAtS1tuVwC10Rg8pKnTEHEmvA4PAkfR7yFw=;
+        b=VKCgJvUxWz94ECwr1VTVteEa/tL/HwYlpkr80qg8cuwmelHMkjoQsbV8NS9QDyI85K
+         1gaYnmTZhvW1I8Oc5kVrGykUCWadgerWQD+O+FsQmTmxy5ZS7gJrB070AGMzNXy/DEQe
+         c7s899MKfJqAEkU+RG4ghL4VNPaBQLoEdu+gU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695419688; x=1696024488;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/7c/oVDshAtS1tuVwC10Rg8pKnTEHEmvA4PAkfR7yFw=;
+        b=BwQE9EdZ2ghASJDIo2ElFe7Og3wrV45Jm9q+LHWMsD9cb9FGOtstQvYNsItlBqmp0y
+         MTCFhjK3z7/HTbdMfQ/5vS8Z9oVu1sTNg6cIZEbbY6jjcMcUrbYjlRSc8LC2S/yzk4cF
+         Uo20Nh48+iuTKDV3fUxa9YXEPmvODsZ+mRQTL3Ualp4Rk/8x/sqLIJ8YjAeYc0XGvjOm
+         rmJFbBxc1+xk1BP7Udv9JrKMwcO57pgH/xVju3wGoupuLPByC4ipMLuDxp5IZ0ixTOvW
+         uOke744LhaGsCofzBx1A1Y2W/+okZ3CF2g+/m67OCAULYnj++l5WNIt8JYYzFP35eBWx
+         viOQ==
+X-Gm-Message-State: AOJu0YwlM0ECUrmsokGszV66ikf3efn8aGVwzSoPetqWQCxyJWZ4ZJJv
+        +Wif6nadfgnBytSUoYfmATJZHo+Vw6hyOJiWH7AN+Q==
+X-Google-Smtp-Source: AGHT+IFqBQ9m6cEHlfgPZ1B6LtM3dzQO5UTlrujPO5byQq0rStgb2iQQqBzg/dzkHnhTV6MLei3X7/hNVsZxdNYxgNY=
+X-Received: by 2002:a2e:3505:0:b0:2bc:d8cb:59fe with SMTP id
+ z5-20020a2e3505000000b002bcd8cb59femr424762ljz.8.1695419688131; Fri, 22 Sep
+ 2023 14:54:48 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 22 Sep 2023 14:54:47 -0700
 MIME-Version: 1.0
-References: <20230906093720.1070929-1-linan122@huawei.com> <e67775c0-2d41-5541-a644-e5239ada3333@huaweicloud.com>
- <CAPhsuW5+Qxa4SKoaFrqZWKDmLaR0arXV7vqDX-Hy_OCEjmtA1w@mail.gmail.com> <5e08c3aa-7bd5-f5dd-3d38-b93fb772ea56@huaweicloud.com>
-In-Reply-To: <5e08c3aa-7bd5-f5dd-3d38-b93fb772ea56@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 22 Sep 2023 14:53:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4pP5yJGJyfA67754Y-5GOABrUmNRb9FK75=Jfa=zBGMQ@mail.gmail.com>
-Message-ID: <CAPhsuW4pP5yJGJyfA67754Y-5GOABrUmNRb9FK75=Jfa=zBGMQ@mail.gmail.com>
-Subject: Re: [PATCH] md/raid1: only update stack limits with the device in use
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Li Nan <linan122@huawei.com>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
+In-Reply-To: <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+ <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com> <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Fri, 22 Sep 2023 14:54:47 -0700
+Message-ID: <CAE-0n53dqHONzMTd_ZC-fKWTzDVq6Wqwo4OFZMUcghZ5SD5RhA@mail.gmail.com>
+Subject: Re: [PATCH v3 6/7] drm/msm/dp: add pm_runtime_force_suspend()/resume()
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, dianders@chromium.org, vkoul@kernel.org,
+        daniel@ffwll.ch, airlied@gmail.com, agross@kernel.org,
+        andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 9, 2023 at 7:24=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> =E5=9C=A8 2023/09/09 4:42, Song Liu =E5=86=99=E9=81=93:
-> > On Wed, Sep 6, 2023 at 11:30=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.co=
-m> wrote:
-> >>
-> >> Hi,
-> >>
-> >> =E5=9C=A8 2023/09/06 17:37, Li Nan =E5=86=99=E9=81=93:
-> >>> Spare device affects array stack limits is unreasonable. For example,
-> >>> create a raid1 with two 512 byte devices, the logical_block_size of a=
-rray
-> >>> will be 512. But after add a 4k devcie as spare, logical_block_size o=
-f
-> >>> array will change as follows.
-> >>>
-> >>>     mdadm -C /dev/md0 -n 2 -l 10 /dev/sd[ab]   //sd[ab] is 512
-> >>>     //logical_block_size of md0: 512
-> >>>
-> >>>     mdadm --add /dev/md0 /dev/sdc                      //sdc is 4k
-> >>>     //logical_block_size of md0: 512
-> >>>
-> >>>     mdadm -S /dev/md0
-> >>>     mdadm -A /dev/md0 /dev/sd[ab]
-> >>>     //logical_block_size of md0: 4k
-> >>>
-> >>> This will confuse users, as nothing has been changed, why did the
-> >>> logical_block_size of array change?
-> >>>
-> >>> Now, only update logical_block_size of array with the device in use.
-> >>>
-> >>> Signed-off-by: Li Nan <linan122@huawei.com>
-> >>> ---
-> >>>    drivers/md/raid1.c | 19 ++++++++-----------
-> >>>    1 file changed, 8 insertions(+), 11 deletions(-)
-> >>>
-> >>> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> >>> index 95504612b7e2..d75c5dd89e86 100644
-> >>> --- a/drivers/md/raid1.c
-> >>> +++ b/drivers/md/raid1.c
-> >>> @@ -3140,19 +3140,16 @@ static int raid1_run(struct mddev *mddev)
-> >>
-> >> I'm not sure about this behaviour, 'logical_block_size' can be
-> >> increased while adding new underlying disk, the key point is not when
-> >> to increase 'logical_block_size'. If there is a mounted fs, or
-> >> partition in the array, I think the array will be corrupted.
+Quoting Dmitry Baryshkov (2023-09-19 02:50:12)
+> On Mon, 18 Sept 2023 at 20:48, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
 > >
-> > How common is such fs/partition corruption? I think some fs and partiti=
-on
-> > table can work properly with 512=3D>4096 change?
+> >
+> > On 9/15/2023 6:21 PM, Dmitry Baryshkov wrote:
+> > > On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> > >> Add pm_runtime_force_suspend()/resume() to complete incorporating pm
+> > >> runtime framework into DP driver. Both dp_pm_prepare() and dp_pm_complete()
+> > >> are added to set hpd_state to correct state. After resume, DP driver will
+> > >> re training its main link after .hpd_enable() callback enabled HPD
+> > >> interrupts and bring up display accordingly.
+> > > How will it re-train the main link? What is the code path for that?
+> >
+> > 1) for edp, dp_bridge_atomic_enable(), called from framework, to start
+> > link training and bring up display.
 >
-> For fs, that should depend on fs bs that is usually set in mkfs, if bs
-> is less than 4096, then such fs can't be mounted.
+> And this path doesn't use .hpd_enable() which you have mentioned in
+> the commit message. Please don't try to shorten the commit message.
+> You see, I have had questions to several of them, which means that
+> they were not verbose enough.
 >
-> For partition, that is much worse, start sector and end sector will stay
-> the same, while sector size is changed. And 4096 -> 512 change is the
-> same.
+> >
+> > 2) for external DP, HPD_PLUG_INT will be generated to start link
+> > training and bring up display.
+>
+> This should be hpd_notify, who starts link training, not some event.
 
-Thanks for this information.
+I think this driver should train the link during atomic_enable(), not
+hpd_notify() (or directly from the irq handler). The drm_bridge_funcs
+talk a bit about when the clocks and timing signals are supposed to be
+enabled. For example, struct drm_bridge_funcs::atomic_pre_enable() says
+the "display pipe (i.e.  clocks and timing signals) feeding this bridge
+will not yet be running when this callback is called". And struct
+drm_bridge_funcs::atomic_enable() says "this callback must enable the
+display link feeding the next bridge in the chain if there is one."
 
-> >>
-> >> Perhaps once that array is started, logical_block_size should not be
-> >> changed anymore, this will require 'logical_block_size' to be metadate
-> >> inside raid superblock. And the array should deny any new disk with
-> >> bigger logical_block_size.
+That looks to me like link training, i.e. the display link, should
+happen in the enable path and not hpd_notify. It looks like link
+training could fail, but when that happens I believe the driver should
+call drm_connector_set_link_status_property() with
+DRM_MODE_LINK_STATUS_BAD. The two callers of that which exist in the
+tree also call drm_kms_helper_hotplug_event() or
+drm_kms_helper_connector_hotplug_event() after updating the link so that
+userspace knows to try again.
 
-I really hope we can avoid adding this to the raid superblock. But I am not
-sure what would be a better solution (that is also backward compatible).
-Do we have real world reports of such issues?
-
-Thanks,
-Song
+It would be nice if there was some drm_bridge_set_link_status_bad() API
+that bridge drivers could use to signal that the link status is bad and
+call the hotplug helper. Maybe it could also record some diagnostics
+about which bridge failed to setup the link and stop the atomic_enable()
+chain for that connector.
