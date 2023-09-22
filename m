@@ -2,135 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF697AA664
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2C17AA666
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbjIVBK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 21:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
+        id S229975AbjIVBMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjIVBKZ (ORCPT
+        with ESMTP id S229497AbjIVBMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 21:10:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EE4122
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 18:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695344972;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R22aP8cvuvHgsRSlkpYF9RgXwgDt5sXPX6aie3Yt8vI=;
-        b=QTQTSqD+Fd46pvhuJfT5LgTXstbxEAttZCRrpZFO3ubQ+qzXCZxtq/p4Ov1xo/UN++SZTg
-        DAPaRazSsPUyADMCDzXBPrWpv34UKdiIPMcfGqweV9fPjVWaKfBOaaJfBe88RftWPfW27G
-        8Xqgoqce331PwTSvORp1sex99mmvIds=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-316-NdYook5eMLa2EVpSr1Nipg-1; Thu, 21 Sep 2023 21:09:27 -0400
-X-MC-Unique: NdYook5eMLa2EVpSr1Nipg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 88C97811E7B;
-        Fri, 22 Sep 2023 01:09:26 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E6A14492C37;
-        Fri, 22 Sep 2023 01:09:19 +0000 (UTC)
-Date:   Fri, 22 Sep 2023 09:09:14 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Saranya Muruganandam <saranyamohan@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        stable@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Wensheng <zhangwensheng@huaweicloud.com>,
-        Zhong Jinghua <zhongjinghua@huawei.com>,
-        Hillf Danton <hdanton@sina.com>, Yu Kuai <yukuai3@huawei.com>,
-        Dennis Zhou <dennis@kernel.org>
-Subject: Re: [PATCH] block: fix use-after-free of q->q_usage_counter
-Message-ID: <ZQzpOhe6Rk3pOtBc@fedora>
-References: <20230921182012.3965572-1-saranyamohan@google.com>
+        Thu, 21 Sep 2023 21:12:24 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9DFCC;
+        Thu, 21 Sep 2023 18:12:18 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c00b37ad84so28144111fa.0;
+        Thu, 21 Sep 2023 18:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695345137; x=1695949937; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Rq82wx/J2BnMt9Mh1FLCBxp+NcwkPBk3LgXjrklglE=;
+        b=fNBqvxnKsSSWVewrSz8ANnaRPSA+vYHsGWDqzpjqBx1U34KhT38p8vgh+qVUyDfR3b
+         j0W8Vf8EbBssackNH64pV7Hjl0d+iU8aMe6p1ran1AjApv0Su09SAYLDtF9BJWCdWIpZ
+         6xgoFLPvqaRci4mdEOwWHsqFsKuXNcn9VdcLvOpAsu+GvuC47ty9rblxhtpGPtiRxjU3
+         ZqihiLJ1LjeKIlvC4RNoDbYixAwWVs2a/G85ZGVC8wDapvrsJMK3bIwuqDKoHNpNMChc
+         MLYXi7XJgdnXoQp8c0g90GijfPAqP12MD1/yHnW8qZ2JV9IP3i17TAtsoElm96MRgOf7
+         rR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695345137; x=1695949937;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Rq82wx/J2BnMt9Mh1FLCBxp+NcwkPBk3LgXjrklglE=;
+        b=FcdFch78L+OB8wbo39o6hCQ2nru/Ep08DlUAoO7lVcCPRuO3Vob70hlM0432Nsq+wA
+         LqdUEhL9pVuahPZv87r6ttWqfK5AhWrMeFMedU7nh9jIHWaE5GHdEB7p/4feek3vteBB
+         dm9WYP10zoTIAGwhLoZgdCm+52jlsgbXa7vJuwAFByS9T3RELfkj93eUNq2Qc9h+HsdA
+         np+pQWlVVKr4gE+zaztiWDLuOEE7pWma8u18d+xVz7eryquCcYcyd3ZkuO3+FsfOulru
+         s9zL8n2UgtHZBH0KdipYI+1fMI0M02jt3wLCZrIMkM+aOMkgxMH1590RO1Q1d/JJ9hLL
+         +SWg==
+X-Gm-Message-State: AOJu0YylfA5FLnxVRhksmSj5JW+uDTan/Y/9EMMZxflgP0SFdBfGGLKc
+        A8fDjR1SPh9LhOYsdv/RYbTFL9mvQVe8Dw==
+X-Google-Smtp-Source: AGHT+IHcUyeJmxxV2sQ3q19siVjabbSs1LW6kJYyDzbwc1nSxLC9hL0WXQXDMCU3cO/jSZxEAf4CWw==
+X-Received: by 2002:a2e:98cb:0:b0:2c0:2124:7a06 with SMTP id s11-20020a2e98cb000000b002c021247a06mr6138901ljj.45.1695345136772;
+        Thu, 21 Sep 2023 18:12:16 -0700 (PDT)
+Received: from i-vetokaappi.home.lan (dsl-hkibng42-56733b-36.dhcp.inet.fi. [86.115.59.36])
+        by smtp.gmail.com with ESMTPSA id l6-20020a2e7006000000b002b6e77e87fcsm609446ljc.68.2023.09.21.18.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 18:12:16 -0700 (PDT)
+From:   =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: qcom: apq8026-samsung-matisse-wifi: Fix inverted hall sensor
+Date:   Fri, 22 Sep 2023 04:12:11 +0300
+Message-Id: <20230922011211.115234-1-matti.lehtimaki@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921182012.3965572-1-saranyamohan@google.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 11:20:12AM -0700, Saranya Muruganandam wrote:
-> From: Ming Lei <ming.lei@redhat.com>
-> 
-> commit d36a9ea5e7766961e753ee38d4c331bbe6ef659b upstream.
-> 
-> For blk-mq, queue release handler is usually called after
-> blk_mq_freeze_queue_wait() returns. However, the
-> q_usage_counter->release() handler may not be run yet at that time, so
-> this can cause a use-after-free.
-> 
-> Fix the issue by moving percpu_ref_exit() into blk_free_queue_rcu().
-> Since ->release() is called with rcu read lock held, it is agreed that
-> the race should be covered in caller per discussion from the two links.
-> 
-> Backport-notes: Not a clean cherry-pick since a lot has changed,
-> however essentially the same fix.
-> 
-> Reported-by: Zhang Wensheng <zhangwensheng@huaweicloud.com>
-> Reported-by: Zhong Jinghua <zhongjinghua@huawei.com>
-> Link: https://lore.kernel.org/linux-block/Y5prfOjyyjQKUrtH@T590/T/#u
-> Link: https://lore.kernel.org/lkml/Y4%2FmzMd4evRg9yDi@fedora/
-> Cc: Hillf Danton <hdanton@sina.com>
-> Cc: Yu Kuai <yukuai3@huawei.com>
-> Cc: Dennis Zhou <dennis@kernel.org>
-> Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> Link: https://lore.kernel.org/r/20221215021629.74870-1-ming.lei@redhat.com
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
-> ---
->  block/blk-core.c  | 2 --
->  block/blk-sysfs.c | 2 ++
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index d0d0dd8151f7..e5eeec801f56 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -414,8 +414,6 @@ void blk_cleanup_queue(struct request_queue *q)
->  		blk_mq_sched_free_requests(q);
->  	mutex_unlock(&q->sysfs_lock);
->  
-> -	percpu_ref_exit(&q->q_usage_counter);
-> -
->  	/* @q is and will stay empty, shutdown and put */
->  	blk_put_queue(q);
->  }
-> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> index 8c5816364dd1..9174137a913c 100644
-> --- a/block/blk-sysfs.c
-> +++ b/block/blk-sysfs.c
-> @@ -726,6 +726,8 @@ static void blk_free_queue_rcu(struct rcu_head *rcu_head)
->  {
->  	struct request_queue *q = container_of(rcu_head, struct request_queue,
->  					       rcu_head);
-> +
-> +	percpu_ref_exit(&q->q_usage_counter);
->  	kmem_cache_free(blk_requestq_cachep, q);
->  }
+Fix hall sensor GPIO polarity and also allow disabling the sensor.
+Remove unneeded interrupt.
 
-Looks fine.
+Fixes: f15623bda1dc ("ARM: dts: qcom: Add support for Samsung Galaxy Tab 4 10.1 (SM-T530)")
+Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+---
+ arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-BTW, you should have provided target stable tree release info, otherwise how
-you expect people to review?
-
-Thanks,
-Ming
+diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
+index 884d99297d4c..f516e0426bb9 100644
+--- a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
++++ b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
+@@ -45,11 +45,11 @@ gpio-hall-sensor {
+ 
+ 		event-hall-sensor {
+ 			label = "Hall Effect Sensor";
+-			gpios = <&tlmm 110 GPIO_ACTIVE_HIGH>;
+-			interrupts = <&tlmm 110 IRQ_TYPE_EDGE_FALLING>;
++			gpios = <&tlmm 110 GPIO_ACTIVE_LOW>;
+ 			linux,input-type = <EV_SW>;
+ 			linux,code = <SW_LID>;
+ 			debounce-interval = <15>;
++			linux,can-disable;
+ 			wakeup-source;
+ 		};
+ 	};
+-- 
+2.39.2
 
