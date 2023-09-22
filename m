@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 385977AAF76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31897AAF79
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbjIVK0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
+        id S232230AbjIVK3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbjIVK0b (ORCPT
+        with ESMTP id S229532AbjIVK32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:26:31 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2914319E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:26:23 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-403012f276dso22509295e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695378382; x=1695983182; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQDUb7KhUsZMyWCvkCoiLMEvV1UXgf+f9G42+tW7AOU=;
-        b=ZD7ZoKisQfqQk1+tFCsdTJgS0cakydVGo1/j+3TJ4Zguzyy0qskUWOZE99CHgbWV3W
-         c0xpeKCbigpZpaV3X0Yhvf7FVVrWjagyr705/OMm9NOw/UBBdLQdqmj9YvNHTuAhl6yo
-         UwFKx64t/+qmBdjQtuPcf09VVOeVZEmy7F4ToBGGQnzJWiNY5UIPfLuGdyzpzOFe9ceg
-         mJS6lDvwg/5TAhVN67QJS0wkkKsDsTNsShPGi5NA4Ar0n18g69SWGdZB5pLelTHJj9p/
-         tRvsYs1SM5NQom5UfdGxhdAoDREQ7BjlMNdO5D2gllBAVRZ7tn1rKyRfA4f4+xClQLhR
-         Q0qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695378382; x=1695983182;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JQDUb7KhUsZMyWCvkCoiLMEvV1UXgf+f9G42+tW7AOU=;
-        b=cFA1eKGSLUuYOWf1Xp9TvL9UXAEZ0tGpNU5TBCvOEfn/rI0RO1TdHZNkfPcRsipfGT
-         Wq0S7MjiuGcC57LvUpAJm15L++aXJodcO5eZ7Ga3uA8vO6q5GnNP6Rwp9eW+9MZ0I7LT
-         7WCYucQdXBhd2kPWLJYlldJ6st+kkjPCQRKpSsBwOu7xok+Csv5LGZcXA2Z73bwJhrLn
-         Wwktfl02fqYU3IA/VWoHYek4wrnxV4Iatl+RNx7OovYggvwKRbfkaMl2hOqoSOwlkDtF
-         hMOUOu5/Se0iUkleURXFUs5LtI/EPe4dQFpnp3e99e+buANcakEhUgc+B56bPakKkTOY
-         sv7g==
-X-Gm-Message-State: AOJu0Yzd8hGckrPVOiAN7lu9Elti+vShfTsnRFeODG/wIsbpl68E4Nyr
-        DHt86urWVr3RB5YMRN1Wk10=
-X-Google-Smtp-Source: AGHT+IFvePphPdNIKfKGW8D7MsTKJ3Cmw1WB287qz+/HbX/dGgAURvsfIz3qxNEVYDsiZ6A3hj1KbA==
-X-Received: by 2002:a05:600c:3d8c:b0:405:315f:e676 with SMTP id bi12-20020a05600c3d8c00b00405315fe676mr3839473wmb.3.1695378382367;
-        Fri, 22 Sep 2023 03:26:22 -0700 (PDT)
-Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
-        by smtp.gmail.com with ESMTPSA id e15-20020a05600c218f00b00402ff8d6086sm4228515wme.18.2023.09.22.03.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 03:26:21 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 22 Sep 2023 12:26:19 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: [GIT PULL] scheduler fix
-Message-ID: <ZQ1ryz9yFQ3Bcc3J@gmail.com>
+        Fri, 22 Sep 2023 06:29:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01C1CE
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:28:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695378515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ncEFTKmOctQzbh/NrWetlUFTCq9f4mLOYEczx2dd7dw=;
+        b=UirEXNzdjhktRSI57kffnPxwB/2jYeZ07FArXzZviYBmaQlpsKYtP0dVdWNFcM3Sza9PgH
+        gfBhHFCErpBuWhEUHucS0XASOfj8Z9bM6mFjQNP2xjOnPQlOJwbHD6VdZeS8ebQH911OaL
+        NSLXtf2kMZ1Ud7aCFs+w1l70cxOIeDw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-196-8NF42pJKPOaI5Cuo1sMl-Q-1; Fri, 22 Sep 2023 06:28:32 -0400
+X-MC-Unique: 8NF42pJKPOaI5Cuo1sMl-Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0545F803491;
+        Fri, 22 Sep 2023 10:28:32 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC10371128F;
+        Fri, 22 Sep 2023 10:28:30 +0000 (UTC)
+Date:   Fri, 22 Sep 2023 18:28:27 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "chenjiahao (C)" <chenjiahao16@huawei.com>
+Cc:     thunder.leizhen@huawei.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        conor.dooley@microchip.com, alexghiti@rivosinc.com,
+        ajones@ventanamicro.com, jszhang@kernel.org,
+        sunilvl@ventanamicro.com, robh@kernel.org, bjorn@rivosinc.com,
+        zephray@outlook.com, akpm@linux-foundation.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] riscv: kdump: fix crashkernel reserving problem on
+ RISC-V
+Message-ID: <ZQ1sSzUueObu7KZH@MiWiFi-R3L-srv>
+References: <20230922030722.708267-1-chenjiahao16@huawei.com>
+ <ZQ0/aK6cg8oNloA4@MiWiFi-R3L-srv>
+ <c590ac5d-91b9-ec3b-6899-a18c16c9f980@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <c590ac5d-91b9-ec3b-6899-a18c16c9f980@huawei.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 09/22/23 at 05:33pm, chenjiahao (C) wrote:
+> 
+> On 2023/9/22 15:16, Baoquan He wrote:
+> > Hi Jiahao,
+> > 
+> > On 09/22/23 at 11:07am, Chen Jiahao wrote:
+> > > When testing on risc-v QEMU environment with "crashkernel="
+> > > parameter enabled, a problem occurred with the following
+> > > message:
+> > > 
+> > > [    0.000000] crashkernel low memory reserved: 0xf8000000 - 0x100000000 (128 MB)
+> > > [    0.000000] crashkernel reserved: 0x0000000177e00000 - 0x0000000277e00000 (4096 MB)
+> > > [    0.000000] ------------[ cut here ]------------
+> > > [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/resource.c:779 __insert_resource+0x8e/0xd0
+> > > [    0.000000] Modules linked in:
+> > > [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc2-next-20230920 #1
+> > > [    0.000000] Hardware name: riscv-virtio,qemu (DT)
+> > > [    0.000000] epc : __insert_resource+0x8e/0xd0
+> > > [    0.000000]  ra : insert_resource+0x28/0x4e
+> > > [    0.000000] epc : ffffffff80017344 ra : ffffffff8001742e sp : ffffffff81203db0
+> > > [    0.000000]  gp : ffffffff812ece98 tp : ffffffff8120dac0 t0 : ff600001f7ff2b00
+> > > [    0.000000]  t1 : 0000000000000000 t2 : 3428203030303030 s0 : ffffffff81203dc0
+> > > [    0.000000]  s1 : ffffffff81211e18 a0 : ffffffff81211e18 a1 : ffffffff81289380
+> > > [    0.000000]  a2 : 0000000277dfffff a3 : 0000000177e00000 a4 : 0000000177e00000
+> > > [    0.000000]  a5 : ffffffff81289380 a6 : 0000000277dfffff a7 : 0000000000000078
+> > > [    0.000000]  s2 : ffffffff81289380 s3 : ffffffff80a0bac8 s4 : ff600001f7ff2880
+> > > [    0.000000]  s5 : 0000000000000280 s6 : 8000000a00006800 s7 : 000000000000007f
+> > > [    0.000000]  s8 : 0000000080017038 s9 : 0000000080038ea0 s10: 0000000000000000
+> > > [    0.000000]  s11: 0000000000000000 t3 : ffffffff80a0bc00 t4 : ffffffff80a0bc00
+> > > [    0.000000]  t5 : ffffffff80a0bbd0 t6 : ffffffff80a0bc00
+> > > [    0.000000] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+> > > [    0.000000] [<ffffffff80017344>] __insert_resource+0x8e/0xd0
+> > > [    0.000000] ---[ end trace 0000000000000000 ]---
+> > > [    0.000000] Failed to add a Crash kernel resource at 177e00000
+> > > 
+> > > The crashkernel memory has been allocated successfully, whereas
+> > > it failed to insert into iomem_resource. This is due to the
+> > This is a warning, not a failure, right? Inserting crashk_*res into
+> > iomem_resource has been successful, just the repeated inserting cause
+> > the warning. Maybe, we should tell this in log clearly? Other than minor
+> > concern, this looks good to me, thanks for the testing and this fix:
+> 
+> Thanks for reviewing. Actually this is not only a warning message.
+> Since when failure occurs in riscv's init_resources(),
+> 
+> error:
+> 	release_child_resources(&iomem_resource);
+> 
+> will get called, already added crashkernel memory will hence
+> get removed. To verify this, I have checked but cannot find
+> crashkernel memory in /proc/iomem when this problem occurs.
 
-Please pull the latest sched/urgent git tree from:
+I see, I was mistaken then. Thanks for telling.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2023-09-22
-
-   # HEAD: cff9b2332ab762b7e0586c793c431a8f2ea4db04 kernel/sched: Modify initial boot task idle setup
-
-Fix a PF_IDLE initialization bug that generated warnings on tiny-RCU.
-
- Thanks,
-
-	Ingo
-
------------------->
-Liam R. Howlett (1):
-      kernel/sched: Modify initial boot task idle setup
-
-
- kernel/sched/core.c | 2 +-
- kernel/sched/idle.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2299a5cfbfb9..802551e0009b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9269,7 +9269,7 @@ void __init init_idle(struct task_struct *idle, int cpu)
- 	 * PF_KTHREAD should already be set at this point; regardless, make it
- 	 * look like a proper per-CPU kthread.
- 	 */
--	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
-+	idle->flags |= PF_KTHREAD | PF_NO_SETAFFINITY;
- 	kthread_set_per_cpu(idle, cpu);
- 
- #ifdef CONFIG_SMP
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 342f58a329f5..5007b25c5bc6 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -373,6 +373,7 @@ EXPORT_SYMBOL_GPL(play_idle_precise);
- 
- void cpu_startup_entry(enum cpuhp_state state)
- {
-+	current->flags |= PF_IDLE;
- 	arch_cpu_idle_prepare();
- 	cpuhp_online_idle(state);
- 	while (1)
