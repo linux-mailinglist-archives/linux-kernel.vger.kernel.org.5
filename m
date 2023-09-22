@@ -2,99 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9778C7AAF75
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBBE7AAF56
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbjIVK03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        id S233232AbjIVKUU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 06:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjIVK00 (ORCPT
+        with ESMTP id S232558AbjIVKUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:26:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1EFA9;
-        Fri, 22 Sep 2023 03:26:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AC5D51F8A8;
-        Fri, 22 Sep 2023 10:26:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695378378;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b4AvMudYjwCrVMWQjwvaN8DzatOa9/zfzofVKveg1pg=;
-        b=tsiD5VsQYcpHO8ajHr1h3pxzqNxc+L9pmaBiM0rQZCs7rGr/NVrbcx0s9pOvGSoph67yY/
-        TebdOVih+9mG225vKDsLMd7IuktVSwMKBEsPgWt+eGDAL84r8Xo3336db9sdwz6lTmHr8n
-        sHZN0fd1bnU4SPXj2aSsaExqk1UH2yg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695378378;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b4AvMudYjwCrVMWQjwvaN8DzatOa9/zfzofVKveg1pg=;
-        b=OsVHhogZ2UOSBN5YsdPA5MQ6ypl+w+Nbiyen+aKWeOYqa2bZaWyOMjUqYAAXrrh073XWg2
-        UowJPBEpC/gevuAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 793F913597;
-        Fri, 22 Sep 2023 10:26:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uO7AHMprDWXregAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 22 Sep 2023 10:26:18 +0000
-Date:   Fri, 22 Sep 2023 12:19:43 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [GIT PULL v2] timestamp fixes
-Message-ID: <20230922101943.GA13697@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
- <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
- <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
- <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+        Fri, 22 Sep 2023 06:20:16 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2BCA9;
+        Fri, 22 Sep 2023 03:20:08 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RsSnZ4kGqz67nNy;
+        Fri, 22 Sep 2023 18:15:14 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 22 Sep
+ 2023 11:20:06 +0100
+Date:   Fri, 22 Sep 2023 11:20:05 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jiaqi Yan <jiaqiyan@google.com>, <linuxarm@huawei.com>
+CC:     <shiju.jose@huawei.com>, "Luck, Tony" <tony.luck@intel.com>,
+        <dave.hansen@linux.intel.com>, <jon.grimm@amd.com>,
+        <vilas.sridharan@amd.com>, David Rientjes <rientjes@google.com>,
+        <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
+        <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+        <james.morse@arm.com>, <david@redhat.com>, <jthoughton@google.com>,
+        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
+        <pgonda@google.com>, <duenwen@google.com>,
+        <mike.malvestuto@intel.com>, <gthelen@google.com>,
+        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
+        <prime.zeng@hisilicon.com>
+Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
+ for set of scrub attributes
+Message-ID: <20230922111740.000046d7@huawei.com>
+In-Reply-To: <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
+References: <20230915172818.761-1-shiju.jose@huawei.com>
+        <20230915172818.761-3-shiju.jose@huawei.com>
+        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 12:28:13PM -0700, Linus Torvalds wrote:
-> On Thu, 21 Sept 2023 at 11:51, Jeff Layton <jlayton@kernel.org> wrote:
-> >
-> > We have many, many inodes though, and 12 bytes per adds up!
-> 
-> That was my thinking, but honestly, who knows what other alignment
-> issues might eat up some - or all - of the theoreteical 12 bytes.
-> 
-> It might be, for example, that the inode is already some aligned size,
-> and that the allocation alignment means that the size wouldn't
-> *really* shrink at all.
-> 
-> So I just want to make clear that I think the 12 bytes isn't
-> necessarily there. Maybe you'd get it, maybe it would be hidden by
-> other things.
+On Thu, 21 Sep 2023 17:07:04 -0700
+Jiaqi Yan <jiaqiyan@google.com> wrote:
 
-I think all filesystem developers appreciate when struct inode shrinks,
-it's usually embedded with additional data and the size grows. I'm on a
-mission to squeeze btrfs_inode under 1024 so it fits better to the slab
-pages and currently it's about 1100 bytes. 1024 is within reach but it
-gets harder to find potential space savings.
+> On Fri, Sep 15, 2023 at 10:29 AM <shiju.jose@huawei.com> wrote:
+> >
+> > From: Shiju Jose <shiju.jose@huawei.com>
+> >
+> > Add sysfs documentation entries for the set of attributes those are
+> > exposed in /sys/class/scrub/ by the scrub driver. These attributes
+> > support configuring parameters of a scrub device.
+> >
+> > Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> > ---
+> >  .../ABI/testing/sysfs-class-scrub-configure   | 82 +++++++++++++++++++
+> >  1 file changed, 82 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-class-scrub-configure b/Documentation/ABI/testing/sysfs-class-scrub-configure
+> > new file mode 100644
+> > index 000000000000..347e2167dc62
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-class-scrub-configure
+> > @@ -0,0 +1,82 @@
+> > +What:          /sys/class/scrub/
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               The scrub/ class subdirectory belongs to the
+> > +               scrubber subsystem.
+> > +
+> > +What:          /sys/class/scrub/scrubX/
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               The /sys/class/scrub/scrub{0,1,2,3,...} directories  
+> 
+> This API (sysfs interface) is very specific to the ACPI interface
+> defined for hardware patrol scrubber. I wonder can we have some
+> interface that is more generic, for a couple of reasons:
+
+Agreed that it makes sense to define a broad interface.  We have
+some hardware focused drivers we can't share yet (IP rules until
+a release date in the near future) where this is a reasonable fit
+- but indeed there are others such as mapping this to DDR ECS
+where it isn't a great mapping.
+
+I'd love to come up with an interface that has the right blend
+of generality and flexibility.  That is easiest done before we have
+any implementation merged.
+
+> 
+> 1. I am not aware of any chip/platform hardware that implemented the
+> hw ps part defined in ACPI RASF/RAS2 spec. So I am curious what the
+> RAS experts from different hardware vendors think about this. For
+> example, Tony and Dave from Intel, Jon and Vilas from AMD. Is there
+> any hardware platform (if allowed to disclose) that implemented ACPI
+> RASF/RAS2? If so, will vendors continue to support the control of
+> patrol scrubber using the ACPI spec? If not (as Tony said in [1], will
+> the vendor consider starting some future platform?
+> 
+> If we are unlikely to get the vendor support, creating this ACPI
+> specific sysfs API (and the driver implementations) in Linux seems to
+> have limited meaning.
+
+There is a bit of a chicken and egg problem here. Until there is 
+reasonable support in kernel (or it looks like there will be),
+BIOS teams push back on a requirement to add the tables.
+I'd encourage no one to bother with RASF - RAS2 is much less
+ambiguous.
+
+> 
+> > +               correspond to each scrub device.
+> > +
+> > +What:          /sys/class/scrub/scrubX/name
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               (RO) name of the memory scrub device
+> > +
+> > +What:          /sys/class/scrub/scrubX/regionY/  
+> 
+> 2. I believe the concept of "region" here is probably from
+> PATROL_SCRUB defined in “APCI section 5.2.20.5. Parameter Block". It
+> is indeed powerful: if a process's physical memory spans over multiple
+> memory controllers, OS can in theory scrub chunks of the memory
+> belonging to the process. However, from a previous discussion [1],
+> "From a h/w perspective it might always be complex". IIUC, the address
+> translation from physical address to channel address is hard to
+> achieve, and probably that's one of the tech reasons the patrol scrub
+> ACPI spec is not in practice implemented?
+
+Next bit is kind of an aside as I mostly agree with your conclusions ;)
+
+This obviously depends on your memory interleave. You want to present
+physical address ranges as single controllable regions - probably
+most interesting being stuff that maps to NUMA nodes.  The short
+answer is that any firmware control will end up writing to all the
+memory controllers involved in a given PA range - firmware can easily
+establish which those are.
+
+A memory controller can support multiple scrub regions
+which map from a PA range to a particular set of RAM addresses
+- that's implementation specific. The memory controller is getting
+the host PA and can carry out appropriate hashing if it wants to.
+Many scrub solutions won't do this - in which case it's max one
+region per memory controller (mapped by firmware to one region per
+interleave set - assuming interleave sets take in whole memory
+controllers - which they normally do).
+
+I would expect existing systems (not design with this differentiated
+scrub in mind) to only support scrub control by PA range at the
+granularity of interleave sets.
+
+Note that this general question of PA based controls also
+maps to things like resource control (resctl) where it's only interesting
+to partition memory bandwidth such that the partition applies to the
+whole interleave set - that's done for ARM systems anyway by having
+the userspace interface pretend there is only one control, but
+write the settings to all actual controllers involved. Not sure what
+x86 does.
+
+Taking a few examples that I know of.  All 4 socket server - with
+control of these as bios options ;).
+Assuming individual memory controllers don't allow scrub to be
+configured by PA range.
+
+1. Full system memory interleave (people do this form of crazy)
+   In that case, there is only one set of firmware controls
+   that write to the interfaces of every memory controller.  Depending
+   on the interleave design that may still allow multiple regions.
+  
+2. Socket wide memory interleave.  In that case, firmware controls
+   need to effect all memory controllers in that socket if the
+   requested 'region' maps to them.  So 4 PA regions. 
+
+3. Die wide memory interleave.  Finer granularity of control
+   so perhaps 8 PA rgiones.
+
+4. Finer granularity (there are reasons to do this for above mentioned
+   bandwidth resource control which you can only do if not interleaving
+   across multiple controllers).
+
+
+
+> 
+> So my take is, control at the granularity of the memory controller is
+> probably a nice compromise. 
+> Both OS and userspace can get a pretty
+> decent amount of flexibility, start/stop/adjust speed of the scrubbing
+> on a memory controller; meanwhile it doesn't impose too much pain to
+> hardware vendors when they provide these features in hardware. In
+> terms of how these controls/features will be implemented, I imagine it
+> could be implemented:
+> * via hardware registers that directly or indirectly control on memory
+> controllers
+> * via ACPI if the situation changes in 10 years (and the RASF/RAS2/PCC
+> drivers implemented in this patchset can be directly plugged into)
+> * a kernel-thread that uses cpu read to detect memory errors, if
+> hardware support is unavailable or not good enough
+> 
+
+I more or less agree, but would tweak a little.
+
+1) Allow for multiple regions per memory controller - that's needed
+   for RASF etc anyway - because as far as they are concerned there
+   is only one interface presented.
+2) Tie the interface to interleave sets, not memory controllers.
+   NUMA nodes often being a good stand in for those.
+   Controlling memory controllers separately for parts of an interleave
+   isn't something I'd think was very useful.  This will probably get
+   messy in the future though and the complexity could be pushed to
+   a userspace tool - as long as enough info is available elsewhere
+   in sysfs.  So need those memory controller directories you propose
+   to include info on the PA ranges that they are involved in backing
+   (which to keep things horrible, can change at runtime via memory
+    hotplug and remapping of host physical address ranges on CXL etc)
+
+> Given these possible backends of scrubbing, I think a more generic
+> sysfs API that covers and abstracts these backends will be more
+> valuable right now. I haven’t thought thoroughly, but how about
+> defining the top-level interface as something like
+> “/sys/devices/system/memory_controller_scrubX/”, or
+> “/sys/class/memory_controllerX/scrub”?
+
+No particular harm in the rename of the directory I guess.
+Though some of those 'memory_controllers' would be virtual as they
+wouldn't correspond to actual memory controllers but rather to
+sets of them.
+
+Jonathan
+
+> 
+> [1] https://lore.kernel.org/linux-mm/SJ1PR11MB6083BF93E9A88E659CED5EC4FC3F9@SJ1PR11MB6083.namprd11.prod.outlook.com/T/#m13516ee35caa05b506080ae805bee14f9f958d43
+
+> 
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               The /sys/class/scrub/scrubX/region{0,1,2,3,...}
+> > +               directories correspond to each scrub region under a scrub device.
+> > +               Scrub region is a physical address range for which scrub may be
+> > +               separately controlled. Regions may overlap in which case the
+> > +               scrubbing rate of the overlapped memory will be at least that
+> > +               expected due to each overlapping region.
+> > +
+> > +What:          /sys/class/scrub/scrubX/regionY/addr_base
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               (RW) The base of the address range of the memory region
+> > +               to be patrol scrubbed.
+> > +               On reading, returns the base of the memory region for
+> > +               the actual address range(The platform calculates
+> > +               the nearest patrol scrub boundary address from where
+> > +               it can start scrubbing).
+> > +
+> > +What:          /sys/class/scrub/scrubX/regionY/addr_size
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               (RW) The size of the address range to be patrol scrubbed.
+> > +               On reading, returns the size of the memory region for
+> > +               the actual address range.
+> > +
+> > +What:          /sys/class/scrub/scrubX/regionY/enable
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               (WO) Start/Stop scrubbing the memory region.
+> > +               1 - enable the memory scrubbing.
+> > +               0 - disable the memory scrubbing..
+> > +
+> > +What:          /sys/class/scrub/scrubX/regionY/speed_available
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               (RO) Supported range for the partol speed(scrub rate)
+> > +               by the scrubber for a memory region.
+> > +               The unit of the scrub rate vary depends on the scrubber.
+> > +
+> > +What:          /sys/class/scrub/scrubX/regionY/speed
+> > +Date:          September 2023
+> > +KernelVersion: 6.7
+> > +Contact:       linux-kernel@vger.kernel.org
+> > +Description:
+> > +               (RW) The partol speed(scrub rate) on the memory region specified and
+> > +               it must be with in the supported range by the scrubber.
+> > +               The unit of the scrub rate vary depends on the scrubber.
+> > --
+> > 2.34.1
+> >
+> >  
+> 
+
