@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB8E7AB97B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B287AB97F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbjIVSnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
+        id S233539AbjIVSoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233443AbjIVSnS (ORCPT
+        with ESMTP id S231789AbjIVSoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:43:18 -0400
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE3CAB;
-        Fri, 22 Sep 2023 11:43:13 -0700 (PDT)
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1c43b4b02c1so21255675ad.3;
-        Fri, 22 Sep 2023 11:43:13 -0700 (PDT)
+        Fri, 22 Sep 2023 14:44:20 -0400
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90B6A9;
+        Fri, 22 Sep 2023 11:44:10 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-690fa0eea3cso2353275b3a.0;
+        Fri, 22 Sep 2023 11:44:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695408193; x=1696012993;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G45tsaRVnQarxNiDw5nhtDFW/SFrpMwDHk6k5h9JLNI=;
-        b=EZeedL58mUMbl5vXMyD+3AKUX2U8AadZ3FpK1hUiy/1fH9+RLHHv19kfso260CmehG
-         zOxvU4lvigcgdR4wvdBjfRulnQ4mqGrys6ffVsW9o5wqteGEewvQWpFjqWLS7zkAYLJY
-         GcZO7qChHg/CGKtdlGXVFT+CGnbO4ya/B+PUlajaxJe6jsNKYhJ04gkm/BT88ANwpKq/
-         WLo/xK/50bXnke+NkCpk9oT2iwNIZt+j1y/tUftn154MUbyCzS/f9AofHuVf1NWv5Wfj
-         mZFOjwjKSlumKWR9PE/YWJENSiw+fGLf4BFsyvof/SHTG21l6XZ0/nXzBPLITP1UeaYy
-         cX9A==
-X-Gm-Message-State: AOJu0YzjHrP5nI1cs1sDnz5X7Z7WXYyTdCwEFUkN/3PnD3W7nS6X/BUJ
-        jZcQX8GaKaOMSO1AeJJF5vS+uGJ6UuM=
-X-Google-Smtp-Source: AGHT+IHR0oww9NARymoguRZjRSZ1K8ZJLMCiQdWgkelQ549GZG1OOOSByrXeBlT/DbnRC/QW1exoXw==
-X-Received: by 2002:a17:902:8604:b0:1c5:ad14:908f with SMTP id f4-20020a170902860400b001c5ad14908fmr221082plo.39.1695408192626;
-        Fri, 22 Sep 2023 11:43:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695408250; x=1696013050;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2aqVYOhUUnir1QTQiM0S+aPULzJZYtBBaxGwEOM8XUA=;
+        b=j/9FIb0rT66vX6nUU4UehcEHur2bpYQDZE/I1EuQcVzf9hPyYs/VD3iADlZnu/UZK/
+         M09gJ2NXoSVBDqOMHKBhBokQHbNmFdMjd7V2DaZdGu74veJgMkEJqaHTYA9QzPpJShmT
+         ZH+cJ2OZaiFDm6foD/s0w70ihzG7bGbM1On/QeY4wZSGUpGB5iJ/J6MZl6NqbEBZgT9x
+         1AqqwRgrXk/AII0TdNu8/DkIc70EwY+XR1BqHaGcPjJQxlvOmYQd30h0KoENH3lBp3TL
+         kWfwUpJbidREPQ4ipTseXtR47K6xcf5k/g5BDlVyNAsU6S9NU6agf9NAzbk8VLcjaJ1j
+         WmCQ==
+X-Gm-Message-State: AOJu0YxTM7CZ1M/W+kX8fFrOqFtsaTA5zbcp2XhiFd79f7xIGfdM/AID
+        Wx1MP2bxV/PEYmA8J59tcjU=
+X-Google-Smtp-Source: AGHT+IHFWVfqxcx8M7H2NkTdmZ/h6CEuOxaJpfbdDeDzoU2LB58p+VwAxwoKTwgsc99gRYB+0fK2TQ==
+X-Received: by 2002:a05:6a20:8f13:b0:10f:be0:4dce with SMTP id b19-20020a056a208f1300b0010f0be04dcemr532364pzk.8.1695408250118;
+        Fri, 22 Sep 2023 11:44:10 -0700 (PDT)
 Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170902a50400b001b567bbe82dsm3809002plq.150.2023.09.22.11.43.11
+        by smtp.gmail.com with ESMTPSA id g1-20020a62e301000000b0068bbd43a6e2sm3633497pfh.10.2023.09.22.11.44.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 11:43:12 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 18:42:29 +0000
+        Fri, 22 Sep 2023 11:44:09 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 18:43:26 +0000
 From:   Wei Liu <wei.liu@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] PCI: hv: Annotate struct hv_dr_state with __counted_by
-Message-ID: <ZQ3gFXgoccQ7BE6/@liuwe-devbox-debian-v2>
-References: <20230922175257.work.900-kees@kernel.org>
+To:     Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        vkuznets@redhat.com, ssengar@microsoft.com
+Subject: Re: [PATCH] x86/hyperv: Add common print prefix "Hyper-V" in hv_init
+Message-ID: <ZQ3gTjYESikJu9LL@liuwe-devbox-debian-v2>
+References: <1695123361-8877-1-git-send-email-ssengar@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230922175257.work.900-kees@kernel.org>
+In-Reply-To: <1695123361-8877-1-git-send-email-ssengar@linux.microsoft.com>
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:52:57AM -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Tue, Sep 19, 2023 at 04:36:01AM -0700, Saurabh Sengar wrote:
+> Add "#define pr_fmt()" in hv_init.c to use "Hyper-V:" as common
+> print prefix for all pr_*() statements in this file.
 > 
-> As found with Coccinelle[1], add __counted_by for struct hv_dr_state.
+> Remove the "Hyper-V:" already prefixed in couple of prints.
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: "Krzysztof Wilczyński" <kw@linux.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: linux-hyperv@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+Applied to hyperv-fixes. Thanks.
