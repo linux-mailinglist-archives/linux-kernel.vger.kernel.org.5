@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675BE7AB24C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC7B7AB24D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbjIVMlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 08:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
+        id S233068AbjIVMlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 08:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjIVMlT (ORCPT
+        with ESMTP id S232760AbjIVMli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 08:41:19 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9488F;
-        Fri, 22 Sep 2023 05:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yvGliCzM7qR9cjwG6OFrxm7XoeY8chqa33iD7TfYF9g=; b=lZm9bmh9bX4vJV7N6gXQkI3orG
-        zGDpsAFxG6Z8J3pwy7jZY5q9zdQBewF7xPzkwVqKcnIXeOpSMLDiT9vx91NXTJL4TKTDfqMxl8VmF
-        00A8OH6092aKIauO2XgRfqHFoT6s/Q949MDmsDVAKpowyBYFcwu71cpJcLQSreWpKQ3NtsiVHMwoh
-        +Bt9QjogKZdkYYbb09Sm03zcoKIdFB2rRi1f2Z7BqckuRb1t0OcnP7aOwqqncjkWwJgBFYQO2zT90
-        bPYGmJc+fnBXeqB5Kc7zpYjRzqfIhLdY4TdjI3sN0w2JfpuF/l64bNxiSsOPpJ4SScHNBucvTZL1F
-        Y9zblyZg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55764)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qjfSL-0006d7-0y;
-        Fri, 22 Sep 2023 13:40:25 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qjfSD-0004Zz-QK; Fri, 22 Sep 2023 13:40:17 +0100
-Date:   Fri, 22 Sep 2023 13:40:17 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Marek Vasut <marex@denx.de>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Crispin <john@phrozen.org>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH net-next v2 00/10] define and enforce phylink bindings
-Message-ID: <ZQ2LMe9aa1ViBcSH@shell.armlinux.org.uk>
-References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+        Fri, 22 Sep 2023 08:41:38 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EC5196
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:41:32 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-770ef334b4fso116325285a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:41:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1695386491; x=1695991291; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N9+4wg+HvQjn8Tza5j/+95ICGHkpfpV9B3BnmaDCax4=;
+        b=d//4Qh6dyRMHDT2g3a2N5iIfX9jlopGuQ61+rZgBB8FF+q+v0cr+VTI+forR984D1/
+         BpD5yt7BmRoI37xoJnKDKKSIdLJ+eYOxn+sLuUwpAY2yy8EOHi7M7cG6M550SjwPzwpa
+         k6LxrcEhQ/P4FqMYplmzhDqJALc3scCe7jJVfjtHWlk/kyfbZJS/U886XB355ZkJtAna
+         CYU8rjONRXz0RwIy1fBtg3yPviw+lR4BU7nlDATO6gP4TiJqiRdfN28fDrDyLWzjJmOF
+         1GRQ3wSoUK5d3gd4jhBYdidd5ARgdH3ZBARg7PSF52N2trQOvkoy5lkB+xEhaggYLev+
+         oE1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695386491; x=1695991291;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N9+4wg+HvQjn8Tza5j/+95ICGHkpfpV9B3BnmaDCax4=;
+        b=TkSUtVPxHQs848PA2DYFFzL4eImj8ZIthaDetgpfoZItGR4s/+tjOzqsSjVw969OBN
+         Fz4ZR41RRvMoNc3YidLNZ0jeFMomcWwT9Ri8ZrhRMiBuK82vaZi6bOuA1xMxW1jguGeg
+         XxjrCJYWh3bqMI67mcecca40NEVgk7VEBr4jNJfmlSB269AFL+vuHJX6kCGS/D/FnDXf
+         SCP1IoxGUvkvOcwFcvqMYPeTA0ilYqh+XKqS1W9jKPIXNUfNRJzbCA3bykMEpimby4+y
+         4XPjSVjwDk09Xbna4K33pyLKyZfLx/SCloY0jC6nRHVj2zqX9OtWpR55uZoprkWlVL7c
+         oHQw==
+X-Gm-Message-State: AOJu0YwXgQiKeWWOq9QvPlVK2L9ZRwds3wmvEDbEi81xlr+IQNJmExXJ
+        nAmgoaU0+NMuTYQk7hItrZRQdg==
+X-Google-Smtp-Source: AGHT+IHZUGi7eIWQUvwurrjhwZAXvsjOtNC1C38Z7pyQadDkGDO1CCUf1Jp9zTCAUl/T8vTtva0wOQ==
+X-Received: by 2002:a05:620a:371e:b0:767:e994:ff03 with SMTP id de30-20020a05620a371e00b00767e994ff03mr2794453qkb.15.1695386491706;
+        Fri, 22 Sep 2023 05:41:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05620a056d00b007740c0e52edsm1209968qkp.89.2023.09.22.05.41.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 05:41:30 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qjfTO-000Y4I-9h;
+        Fri, 22 Sep 2023 09:41:30 -0300
+Date:   Fri, 22 Sep 2023 09:41:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] iommu/virtio: Make use of ops->iotlb_sync_map
+Message-ID: <20230922124130.GD13795@ziepe.ca>
+References: <20230918-viommu-sync-map-v2-0-f33767f6cf7a@linux.ibm.com>
+ <20230918-viommu-sync-map-v2-1-f33767f6cf7a@linux.ibm.com>
+ <ae7e513b-eb86-97e2-bed0-3cca91b8c959@arm.com>
+ <20230919081519.GA3860249@myrica>
+ <20230919144649.GT13795@ziepe.ca>
+ <20230922075719.GB1361815@myrica>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230916110902.234273-1-arinc.unal@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20230922075719.GB1361815@myrica>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,60 +83,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 02:08:52PM +0300, Arınç ÜNAL wrote:
-> Hello there.
+On Fri, Sep 22, 2023 at 08:57:19AM +0100, Jean-Philippe Brucker wrote:
+> > > They're not strictly equivalent: this check works around a temporary issue
+> > > with the IOMMU core, which calls map/unmap before the domain is
+> > > finalized.
+> > 
+> > Where? The above points to iommu_create_device_direct_mappings() but
+> > it doesn't because the pgsize_bitmap == 0:
 > 
-> This patch series defines phylink bindings and enforces them for the
-> ethernet controllers that need them.
+> __iommu_domain_alloc() sets pgsize_bitmap in this case:
 > 
-> Some schemas had to be changed to properly enforce phylink bindings for all
-> of the affected ethernet controllers. Some of the documents of these
-> ethernet controllers were non json-schema, which had to be converted.
-> 
-> I will convert the remaining documents to json-schema while this patch
-> series receives reviews.
+>         /*
+>          * If not already set, assume all sizes by default; the driver
+>          * may override this later
+>          */
+>         if (!domain->pgsize_bitmap)
+>                 domain->pgsize_bitmap = bus->iommu_ops->pgsize_bitmap;
 
-I can't say that I'm comfortable with this. We appear to be defining
-bindings based on software implementation, and a desire for the DT
-tooling to enforce what the software implementation wants. Isn't this
-against the aims of device tree and device tree binding documentation?
-Seems to me like feature-creep.
+Dirver's shouldn't do that.
 
-The bindings that phylink parses are already documented in the
-ethernet controller yaml document. Specifically:
+The core code was fixed to try again with mapping reserved regions to
+support these kinds of drivers.
 
-- phylink does not parse the phy-mode property, that is left to the
-  implementation to pass to phylink, which can implement it any
-  which way they choose (and even default to something.)
-
-- phylink does not require a phy property - phylink does expect a PHY
-  to be attached, but how that PHY is attached is up to the ethernet
-  controller driver. It may call one of the phylink functions that
-  parses the phy property, or it may manually supply the phy device to
-  phylink. Either way, phylink does not itself require a PHY property.
-
-- phylink does not require a sfp property - this obviously is optional.
-
-So, all in all, ethernet-controller already describes it, and to create
-a DT binding document that pretends that phylink requires any of this
-stuff is, in my mind, wrong.
-
-DSA requires certain properties by dint of the parsing and setup of
-phylink being in generic code - this is not because phylink requires
-certain properties, but phylink does require certain information in
-order to function correctly.
-
-The issue here is _how_ phylink gets that information, and as I state
-above, it _can_ come from DT, but it can also be given that information
-manually.
-
-As an example, there are plenty of drivers in the tree which try to
-parse a phy node, and if that's not present, they try to see if a PHY
-exists at a default# bus address.
-
-We seem to be digging outselves a hole here, where "phylink must have
-these properties". No, that is wrong.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Jason
