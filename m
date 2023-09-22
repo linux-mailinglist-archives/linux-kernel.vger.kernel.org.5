@@ -2,452 +2,1903 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BECEF7AAF59
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA6E7AAF54
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbjIVKUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
+        id S229654AbjIVKTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233253AbjIVKUj (ORCPT
+        with ESMTP id S232230AbjIVKTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:20:39 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2086.outbound.protection.outlook.com [40.107.244.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB594
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:20:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=myUA7u9jU/B2Gpdn4xtuRe9+UdA5Ijhn+thC5lR5Xwdt7E5P8tIvwhgn2Sv3UaKzkibIbj9zfw1MMkUAe/KdflLwbjxSGQfRuUcHV53CXT5O6mYNQqr7WZnKOkTtbzz307GLs2VYnfKo/erBSwn2EV1q/xIbFs89jJC8g3ak+8j2gVfF7X6BcYnG09orAzaI3fz4UrcEt6gJanzwTgKrkJvlhjBxUA3X3ZWW49//CxvjDvSpeJy7nImKVvtuJRm+p9/8y5M2AcVjw11WJFud5cLD4k+sVaB/JTTQ/aJyktts82JrLF104cmj4QjxJaDXhjO+uiDbmJhpKv6or2SulA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lWdFKqdqFvcKr0tggVILraPrUN5NAaGzalvfyAF5imM=;
- b=OWOEkf79BLnxZFLfiudyuF2RrvSbMOzWnZXS5eR9jgCWCvz4qgez6JWdMTSZRtWfYFvWZCaYvThqHwQAALbpJUZXg1tygW5LaqFB3g/E38NKtnlqsmfeBVJD8mKCOfn0Gy4DPlH8IEXTu3e9d8Y84SaojUcKmnVmoY/GxT8nosaD05OF7qHItJ90kEueD3dLLBfUH1AWqFnSWxP9QPb606mlRZPF4Os8AQatxgbk1mdg83FKYs/8gIv9oN3oAuizYW3o9QEW9cy+xZgYBgSEpVSyNCNArsAhitf2uOd36h/29tz/lTHImnn2Z6fqQCEY+qnvuEHylX6Xjp1Ga6mlkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lWdFKqdqFvcKr0tggVILraPrUN5NAaGzalvfyAF5imM=;
- b=Aewha2pFMga9jNOB/gYeKlrRZHz3GdULPFCyl1iYvybHd6+PMK0RGq15E+qmOCmo3blM7QIEj9W83XXaR781OI+GWluULEuNyeIrRW5aFn8/X2Q2wF7Phdb/W47wGbtStTyrZ8vKmvfTagL3Deardybv4hP9uRibHrNmQx/yORI=
-Received: from CYXPR02CA0050.namprd02.prod.outlook.com (2603:10b6:930:cd::10)
- by MW3PR12MB4428.namprd12.prod.outlook.com (2603:10b6:303:57::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Fri, 22 Sep
- 2023 10:20:27 +0000
-Received: from CY4PEPF0000EE39.namprd03.prod.outlook.com
- (2603:10b6:930:cd:cafe::5f) by CYXPR02CA0050.outlook.office365.com
- (2603:10b6:930:cd::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.34 via Frontend
- Transport; Fri, 22 Sep 2023 10:20:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE39.mail.protection.outlook.com (10.167.242.13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.20 via Frontend Transport; Fri, 22 Sep 2023 10:20:27 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 22 Sep 2023 06:19:30 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10A718F;
+        Fri, 22 Sep 2023 03:19:20 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MA4eR1030864;
+        Fri, 22 Sep 2023 12:18:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=EerirS/eMPpCFF2WVIwoG90vKsP2Tri82ZALKyAu6Q4=; b=Pa
+        5GhxP/qn+j/g7e4mB/Qz3zoDiRj6JrHkQgsVFAHt/5eLwLpmp2uPLcztsXelilQz
+        fzZZPuPfM1r0y9dRbjjnDdKd4R4h8DGB29EF2hr+hGWwNajBcUOuN+dDUMXZXi9c
+        DHsq7oCJuH5G7WPxtkGvO2zIl0PH9Fu8UTGyQQcfsook91xcw5UMdc5U0EtOWCwu
+        7pqkGx56dw4iBsIJqFWxtaRI4nKqrBVhIkiELzVqTA7bthHW56Y44t0FPHPNxGAe
+        qS2GmeZJHRNWwhlGO3pejECcw9UXyR459G/Y3ljlL4mD4fzsF3Ulk+jUJQsc2rCq
+        IdWgPZCev4xE1Z6UyNqA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt72x49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 12:18:59 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8CD61100051;
+        Fri, 22 Sep 2023 12:18:58 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 80C092194E0;
+        Fri, 22 Sep 2023 12:18:58 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Sep
- 2023 05:20:23 -0500
-Received: from xhdipdslab59.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Fri, 22 Sep 2023 05:20:15 -0500
-From:   Abhijit Gangurde <abhijit.gangurde@amd.com>
-To:     <gregkh@linuxfoundation.org>, <masahiroy@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <Nipun.Gupta@amd.com>, <nikhil.agarwal@amd.com>,
-        <puneet.gupta@amd.com>, <git@amd.com>, <michal.simek@amd.com>,
-        Abhijit Gangurde <abhijit.gangurde@amd.com>,
-        Nipun Gupta <nipun.gupta@amd.com>,
-        "Pieter Jansen van Vuuren" <pieter.jansen-van-vuuren@amd.com>
-Subject: [PATCH v5 5/5] cdx: add sysfs for subsystem, class and revision
-Date:   Fri, 22 Sep 2023 15:48:28 +0530
-Message-ID: <20230922101828.33456-6-abhijit.gangurde@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230922101828.33456-1-abhijit.gangurde@amd.com>
-References: <20230922101828.33456-1-abhijit.gangurde@amd.com>
+ 2023 12:18:57 +0200
+Message-ID: <75457051-d32b-a8bf-1cb5-1922f18df292@foss.st.com>
+Date:   Fri, 22 Sep 2023 12:18:56 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE39:EE_|MW3PR12MB4428:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4dcd3c4-e81e-459c-4ce8-08dbbb558acd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7R6rzVhaekV7YotWhunvbH/p15Zu/5Czrf/gl94z+GxS9mz37G1p7xnvMsElrws+z0IoY70RnE5x27AWTR9Vd3BHFTqqYLTRij4C11iGCRxIyIHLibvY3X3jjkpyAZFRI1EoAbybkcNu6QosBRWsN9kwgK5VsCjKyN2OgsGk3qbGz8lFgRfaYRdXsBsh1rDBY5dFx1F4vTF+wwn7ZBEehtGoBiIYrcGcVseEkATFkkRDVT/0dXfCE5/pJYNXtOkbEbZ+AwkChST2O/lPo41IchHu44UPKlQVAtc8e2agqLx7P/str5naj+Nd9/DiExBlPYVBPBGGT8IBHafoohssJCfE9uJDXpSo8ak/n4IpTjLPveSWZO8aBvl82npmr+uQZOJfB07XHwibxl46tz1RUOAJeOvmO55g4FsNBfYEfc6NjB+esSnuqHwCCeE28REYRzxLUq4mXJXhWVh3swDJuJQpYhErzpm80Pv0mYKDiBGE7QCAhtON/4+iNNEtS2jGZzHiuX9OJcT+oahHVxTy27V7O++2YCcpla3CDHKFAmubSneTUjGzf3L8QIGueC1ti/4ZA5gQEZD5qlFUd6P+tVafljeg3H7BGW1d8GXls4oJqDCXTWn9/RdpTlWvtXBlYyJQdz3Vzf+I+V4Aa7MJFTIutjB1V/jFgatSADFq+qdVE2d1xHATivFIacyBw8tVc+Q8IfPMkUy/Q/xndDzGkee7c+em9KqjdG+Fiyh7EzRgkOlHjL1RRRxuWvkAA64UNamoSiwcrUrtkwZWWyD/j/WFvcWwLQyIq1ssUIgr7wvXzAD5+eHZYfaFErvGM59v
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(39860400002)(376002)(82310400011)(1800799009)(186009)(451199024)(230921699003)(46966006)(40470700004)(36840700001)(6666004)(82740400003)(40480700001)(356005)(86362001)(40460700003)(81166007)(2616005)(1076003)(26005)(36756003)(336012)(426003)(83380400001)(110136005)(44832011)(316002)(70206006)(54906003)(70586007)(2906002)(47076005)(36860700001)(8936002)(8676002)(4326008)(41300700001)(30864003)(478600001)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 10:20:27.7288
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4dcd3c4-e81e-459c-4ce8-08dbbb558acd
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE39.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4428
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] ARM: dts: stm32: omit unused pinctrl groups from dtb
+ files
+Content-Language: en-US
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, <kernel@pengutronix.de>
+References: <20230920123130.2821706-1-s.hauer@pengutronix.de>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230920123130.2821706-1-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_08,2023-09-21_01,2023-05-22_02
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CDX controller provides subsystem vendor, subsystem device, class and
-revision info of the device along with vendor and device ID in native
-endian format. CDX Bus system uses this information to bind the cdx
-device to the cdx device driver.
+Hi Sascha
 
-Co-developed-by: Puneet Gupta <puneet.gupta@amd.com>
-Signed-off-by: Puneet Gupta <puneet.gupta@amd.com>
-Co-developed-by: Nipun Gupta <nipun.gupta@amd.com>
-Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
-Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
-Tested-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
----
- Changes in v5:
- - None
+On 9/20/23 14:31, Sascha Hauer wrote:
+> stm32mp15-pinctrl.dtsi contains nearly all pinctrl groups collected from
+> all boards. Most of them end up unused by a board and only waste binary
+> space. Add /omit-if-no-ref/ to the groups to scrub the unused groups
+> from the dtbs.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
 
- Changes in v4:
- - None
+Applied on stm32-next.
 
- Changes in v3:
- - None
+Thanks.
+Alex
 
- Changes in v2:
- - Improve documentation and commit message
 
- Documentation/ABI/testing/sysfs-bus-cdx | 45 +++++++++++++++++++++++++
- drivers/cdx/cdx.c                       | 29 +++++++++++++++-
- drivers/cdx/cdx.h                       |  8 +++++
- drivers/cdx/controller/mcdi_functions.c |  7 ++++
- include/linux/cdx/cdx_bus.h             | 27 +++++++++++++--
- include/linux/mod_devicetable.h         | 10 ++++++
- scripts/mod/devicetable-offsets.c       |  4 +++
- scripts/mod/file2alias.c                |  8 +++++
- 8 files changed, 135 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-cdx b/Documentation/ABI/testing/sysfs-bus-cdx
-index d25875359741..e71a6daccfbe 100644
---- a/Documentation/ABI/testing/sysfs-bus-cdx
-+++ b/Documentation/ABI/testing/sysfs-bus-cdx
-@@ -70,6 +70,36 @@ Description:
- 		of a device manufacturer.
- 		Combination of Vendor ID and Device ID identifies a device.
- 
-+What:		/sys/bus/cdx/devices/.../subsystem_vendor
-+Date:		July 2023
-+Contact:	puneet.gupta@amd.com
-+Description:
-+		Subsystem Vendor ID for this CDX device, in hexadecimal.
-+		Subsystem Vendor ID is 16 bit identifier specific to the
-+		card manufacturer.
-+
-+What:		/sys/bus/cdx/devices/.../subsystem_device
-+Date:		July 2023
-+Contact:	puneet.gupta@amd.com
-+Description:
-+		Subsystem Device ID for this CDX device, in hexadecimal
-+		Subsystem Device ID is 16 bit identifier specific to the
-+		card manufacturer.
-+
-+What:		/sys/bus/cdx/devices/.../class
-+Date:		July 2023
-+Contact:	puneet.gupta@amd.com
-+Description:
-+		This file contains the class of the CDX device, in hexadecimal.
-+		Class is 24 bit identifier specifies the functionality of the device.
-+
-+What:		/sys/bus/cdx/devices/.../revision
-+Date:		July 2023
-+Contact:	puneet.gupta@amd.com
-+Description:
-+		This file contains the revision field of the CDX device, in hexadecimal.
-+		Revision is 8 bit revision identifier of the device.
-+
- What:		/sys/bus/cdx/devices/.../reset
- Date:		March 2023
- Contact:	nipun.gupta@amd.com
-@@ -96,3 +126,18 @@ Description:
- 		For example::
- 
- 		  # echo 1 > /sys/bus/cdx/devices/.../remove
-+
-+What:		/sys/bus/cdx/devices/.../modalias
-+Date:		July 2023
-+Contact:	nipun.gupta@amd.com
-+Description:
-+		This attribute indicates the CDX ID of the device.
-+		That is in the format:
-+		cdx:vXXXXdXXXXsvXXXXsdXXXXcXXXXXX,
-+		where:
-+
-+		    - vXXXX contains the vendor ID;
-+		    - dXXXX contains the device ID;
-+		    - svXXXX contains the subsystem vendor ID;
-+		    - sdXXXX contains the subsystem device ID;
-+		    - cXXXXXX contains the device class.
-diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-index 7687b9371210..b7d5e1a3b410 100644
---- a/drivers/cdx/cdx.c
-+++ b/drivers/cdx/cdx.c
-@@ -181,7 +181,10 @@ cdx_match_one_device(const struct cdx_device_id *id,
- {
- 	/* Use vendor ID and device ID for matching */
- 	if ((id->vendor == CDX_ANY_ID || id->vendor == dev->vendor) &&
--	    (id->device == CDX_ANY_ID || id->device == dev->device))
-+	    (id->device == CDX_ANY_ID || id->device == dev->device) &&
-+	    (id->subvendor == CDX_ANY_ID || id->subvendor == dev->subsystem_vendor) &&
-+	    (id->subdevice == CDX_ANY_ID || id->subdevice == dev->subsystem_device) &&
-+	    !((id->class ^ dev->class) & id->class_mask))
- 		return id;
- 	return NULL;
- }
-@@ -327,6 +330,10 @@ static DEVICE_ATTR_RO(field)
- 
- cdx_config_attr(vendor, "0x%04x\n");
- cdx_config_attr(device, "0x%04x\n");
-+cdx_config_attr(subsystem_vendor, "0x%04x\n");
-+cdx_config_attr(subsystem_device, "0x%04x\n");
-+cdx_config_attr(revision, "0x%02x\n");
-+cdx_config_attr(class, "0x%06x\n");
- 
- static ssize_t remove_store(struct device *dev,
- 			    struct device_attribute *attr,
-@@ -372,6 +379,17 @@ static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_WO(reset);
- 
-+static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
-+			     char *buf)
-+{
-+	struct cdx_device *cdx_dev = to_cdx_device(dev);
-+
-+	return sprintf(buf, "cdx:v%04Xd%04Xsv%04Xsd%04Xc%06X\n", cdx_dev->vendor,
-+			cdx_dev->device, cdx_dev->subsystem_vendor, cdx_dev->subsystem_device,
-+			cdx_dev->class);
-+}
-+static DEVICE_ATTR_RO(modalias);
-+
- static ssize_t driver_override_store(struct device *dev,
- 				     struct device_attribute *attr,
- 				     const char *buf, size_t count)
-@@ -403,6 +421,11 @@ static struct attribute *cdx_dev_attrs[] = {
- 	&dev_attr_reset.attr,
- 	&dev_attr_vendor.attr,
- 	&dev_attr_device.attr,
-+	&dev_attr_subsystem_vendor.attr,
-+	&dev_attr_subsystem_device.attr,
-+	&dev_attr_class.attr,
-+	&dev_attr_revision.attr,
-+	&dev_attr_modalias.attr,
- 	&dev_attr_driver_override.attr,
- 	NULL,
- };
-@@ -634,6 +657,10 @@ int cdx_device_add(struct cdx_dev_params *dev_params)
- 	cdx_dev->req_id = dev_params->req_id;
- 	cdx_dev->vendor = dev_params->vendor;
- 	cdx_dev->device = dev_params->device;
-+	cdx_dev->subsystem_vendor = dev_params->subsys_vendor;
-+	cdx_dev->subsystem_device = dev_params->subsys_device;
-+	cdx_dev->class = dev_params->class;
-+	cdx_dev->revision = dev_params->revision;
- 	cdx_dev->bus_num = dev_params->bus_num;
- 	cdx_dev->dev_num = dev_params->dev_num;
- 	cdx_dev->cdx = dev_params->cdx;
-diff --git a/drivers/cdx/cdx.h b/drivers/cdx/cdx.h
-index c436ac7ac86f..d17b5a501e8d 100644
---- a/drivers/cdx/cdx.h
-+++ b/drivers/cdx/cdx.h
-@@ -16,21 +16,29 @@
-  * @parent: Associated CDX controller
-  * @vendor: Vendor ID for CDX device
-  * @device: Device ID for CDX device
-+ * @subsys_vendor: Sub vendor ID for CDX device
-+ * @subsys_device: Sub device ID for CDX device
-  * @bus_num: Bus number for this CDX device
-  * @dev_num: Device number for this device
-  * @res: array of MMIO region entries
-  * @res_count: number of valid MMIO regions
-  * @req_id: Requestor ID associated with CDX device
-+ * @class: Class of the CDX Device
-+ * @revision: Revision of the CDX device
-  */
- struct cdx_dev_params {
- 	struct cdx_controller *cdx;
- 	u16 vendor;
- 	u16 device;
-+	u16 subsys_vendor;
-+	u16 subsys_device;
- 	u8 bus_num;
- 	u8 dev_num;
- 	struct resource res[MAX_CDX_DEV_RESOURCES];
- 	u8 res_count;
- 	u32 req_id;
-+	u32 class;
-+	u8 revision;
- };
- 
- /**
-diff --git a/drivers/cdx/controller/mcdi_functions.c b/drivers/cdx/controller/mcdi_functions.c
-index 0e1e35d91242..65dca2aa1d3f 100644
---- a/drivers/cdx/controller/mcdi_functions.c
-+++ b/drivers/cdx/controller/mcdi_functions.c
-@@ -120,6 +120,13 @@ int cdx_mcdi_get_dev_config(struct cdx_mcdi *cdx,
- 
- 	dev_params->vendor = MCDI_WORD(outbuf, CDX_BUS_GET_DEVICE_CONFIG_OUT_VENDOR_ID);
- 	dev_params->device = MCDI_WORD(outbuf, CDX_BUS_GET_DEVICE_CONFIG_OUT_DEVICE_ID);
-+	dev_params->subsys_vendor = MCDI_WORD(outbuf,
-+					      CDX_BUS_GET_DEVICE_CONFIG_OUT_SUBSYS_VENDOR_ID);
-+	dev_params->subsys_device = MCDI_WORD(outbuf,
-+					      CDX_BUS_GET_DEVICE_CONFIG_OUT_SUBSYS_DEVICE_ID);
-+	dev_params->class = MCDI_DWORD(outbuf,
-+				       CDX_BUS_GET_DEVICE_CONFIG_OUT_DEVICE_CLASS) & 0xFFFFFF;
-+	dev_params->revision = MCDI_BYTE(outbuf, CDX_BUS_GET_DEVICE_CONFIG_OUT_DEVICE_REVISION);
- 
- 	return 0;
- }
-diff --git a/include/linux/cdx/cdx_bus.h b/include/linux/cdx/cdx_bus.h
-index ac715bc84315..245ef7e26d5d 100644
---- a/include/linux/cdx/cdx_bus.h
-+++ b/include/linux/cdx/cdx_bus.h
-@@ -40,6 +40,19 @@ typedef int (*cdx_dev_configure_cb)(struct cdx_controller *cdx,
- 				    u8 bus_num, u8 dev_num,
- 				    struct cdx_device_config *dev_config);
- 
-+/**
-+ * CDX_DEVICE - macro used to describe a specific CDX device
-+ * @vend: the 16 bit CDX Vendor ID
-+ * @dev: the 16 bit CDX Device ID
-+ *
-+ * This macro is used to create a struct cdx_device_id that matches a
-+ * specific device. The subvendor and subdevice fields will be set to
-+ * CDX_ANY_ID.
-+ */
-+#define CDX_DEVICE(vend, dev) \
-+	.vendor = (vend), .device = (dev), \
-+	.subvendor = CDX_ANY_ID, .subdevice = CDX_ANY_ID
-+
- /**
-  * CDX_DEVICE_DRIVER_OVERRIDE - macro used to describe a CDX device with
-  *                              override_only flags.
-@@ -48,10 +61,12 @@ typedef int (*cdx_dev_configure_cb)(struct cdx_controller *cdx,
-  * @driver_override: the 32 bit CDX Device override_only
-  *
-  * This macro is used to create a struct cdx_device_id that matches only a
-- * driver_override device.
-+ * driver_override device. The subvendor and subdevice fields will be set to
-+ * CDX_ANY_ID.
-  */
- #define CDX_DEVICE_DRIVER_OVERRIDE(vend, dev, driver_override) \
--	.vendor = (vend), .device = (dev), .override_only = (driver_override)
-+	.vendor = (vend), .device = (dev), .subvendor = CDX_ANY_ID,\
-+	.subdevice = CDX_ANY_ID, .override_only = (driver_override)
- 
- /**
-  * struct cdx_ops - Callbacks supported by CDX controller.
-@@ -92,6 +107,10 @@ struct cdx_controller {
-  * @cdx: CDX controller associated with the device
-  * @vendor: Vendor ID for CDX device
-  * @device: Device ID for CDX device
-+ * @subsystem_vendor: Subsystem Vendor ID for CDX device
-+ * @subsystem_device: Subsystem Device ID for CDX device
-+ * @class: Class for the CDX device
-+ * @revision: Revision of the CDX device
-  * @bus_num: Bus number for this CDX device
-  * @dev_num: Device number for this device
-  * @res: array of MMIO region entries
-@@ -109,6 +128,10 @@ struct cdx_device {
- 	struct cdx_controller *cdx;
- 	u16 vendor;
- 	u16 device;
-+	u16 subsystem_vendor;
-+	u16 subsystem_device;
-+	u32 class;
-+	u8 revision;
- 	u8 bus_num;
- 	u8 dev_num;
- 	struct resource res[MAX_CDX_DEV_RESOURCES];
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index b0678b093cb2..aa3c28781248 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -935,6 +935,12 @@ enum {
-  * struct cdx_device_id - CDX device identifier
-  * @vendor: Vendor ID
-  * @device: Device ID
-+ * @subvendor: Subsystem vendor ID (or CDX_ANY_ID)
-+ * @subdevice: Subsystem device ID (or CDX_ANY_ID)
-+ * @class: Device class
-+ *         Most drivers do not need to specify class/class_mask
-+ *         as vendor/device is normally sufficient.
-+ * @class_mask: Limit which sub-fields of the class field are compared.
-  * @override_only: Match only when dev->driver_override is this driver.
-  *
-  * Type of entries in the "device Id" table for CDX devices supported by
-@@ -943,6 +949,10 @@ enum {
- struct cdx_device_id {
- 	__u16 vendor;
- 	__u16 device;
-+	__u16 subvendor;
-+	__u16 subdevice;
-+	__u32 class;
-+	__u32 class_mask;
- 	__u32 override_only;
- };
- 
-diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
-index abe65f8968dd..7a659aa3114a 100644
---- a/scripts/mod/devicetable-offsets.c
-+++ b/scripts/mod/devicetable-offsets.c
-@@ -265,6 +265,10 @@ int main(void)
- 	DEVID(cdx_device_id);
- 	DEVID_FIELD(cdx_device_id, vendor);
- 	DEVID_FIELD(cdx_device_id, device);
-+	DEVID_FIELD(cdx_device_id, subvendor);
-+	DEVID_FIELD(cdx_device_id, subdevice);
-+	DEVID_FIELD(cdx_device_id, class);
-+	DEVID_FIELD(cdx_device_id, class_mask);
- 	DEVID_FIELD(cdx_device_id, override_only);
- 
- 	return 0;
-diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 38120f932b0d..abc4781d5db7 100644
---- a/scripts/mod/file2alias.c
-+++ b/scripts/mod/file2alias.c
-@@ -1458,6 +1458,10 @@ static int do_cdx_entry(const char *filename, void *symval,
- {
- 	DEF_FIELD(symval, cdx_device_id, vendor);
- 	DEF_FIELD(symval, cdx_device_id, device);
-+	DEF_FIELD(symval, cdx_device_id, subvendor);
-+	DEF_FIELD(symval, cdx_device_id, subdevice);
-+	DEF_FIELD(symval, cdx_device_id, class);
-+	DEF_FIELD(symval, cdx_device_id, class_mask);
- 	DEF_FIELD(symval, cdx_device_id, override_only);
- 
- 	switch (override_only) {
-@@ -1475,6 +1479,10 @@ static int do_cdx_entry(const char *filename, void *symval,
- 
- 	ADD(alias, "v", vendor != CDX_ANY_ID, vendor);
- 	ADD(alias, "d", device != CDX_ANY_ID, device);
-+	ADD(alias, "sv", subvendor != CDX_ANY_ID, subvendor);
-+	ADD(alias, "sd", subdevice != CDX_ANY_ID, subdevice);
-+	ADD(alias, "c", class_mask == 0xFFFFFF, class);
-+
- 	return 1;
- }
- 
--- 
-2.25.1
+>   arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 228 ++++++++++++++++++++
+>   1 file changed, 228 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+> index e1df345801dc2..da475d6cb8dc2 100644
+> --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+> @@ -6,6 +6,7 @@
+>   #include <dt-bindings/pinctrl/stm32-pinfunc.h>
+>   
+>   &pinctrl {
+> +	/omit-if-no-ref/
+>   	adc1_ain_pins_a: adc1-ain-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 11, ANALOG)>, /* ADC1_INP2 */
+> @@ -17,12 +18,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	adc1_in6_pins_a: adc1-in6-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 12, ANALOG)>;
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	adc12_ain_pins_a: adc12-ain-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 3, ANALOG)>, /* ADC1 in13 */
+> @@ -32,6 +35,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	adc12_ain_pins_b: adc12-ain-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 12, ANALOG)>, /* ADC1 in6 */
+> @@ -39,6 +43,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	adc12_usb_cc_pins_a: adc12-usb-cc-pins-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 4, ANALOG)>, /* ADC12 in18 */
+> @@ -46,6 +51,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	cec_pins_a: cec-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 15, AF4)>;
+> @@ -55,12 +61,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	cec_sleep_pins_a: cec-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 15, ANALOG)>; /* HDMI_CEC */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	cec_pins_b: cec-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 6, AF5)>;
+> @@ -70,24 +78,28 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	cec_sleep_pins_b: cec-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 6, ANALOG)>; /* HDMI_CEC */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dac_ch1_pins_a: dac-ch1-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 4, ANALOG)>;
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dac_ch2_pins_a: dac-ch2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 5, ANALOG)>;
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dcmi_pins_a: dcmi-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 8,  AF13)>,/* DCMI_HSYNC */
+> @@ -109,6 +121,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dcmi_sleep_pins_a: dcmi-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 8,  ANALOG)>,/* DCMI_HSYNC */
+> @@ -129,6 +142,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dcmi_pins_b: dcmi-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 4,  AF13)>,/* DCMI_HSYNC */
+> @@ -146,6 +160,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dcmi_sleep_pins_b: dcmi-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 4,  ANALOG)>,/* DCMI_HSYNC */
+> @@ -162,6 +177,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dcmi_pins_c: dcmi-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 4,  AF13)>,/* DCMI_HSYNC */
+> @@ -181,6 +197,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	dcmi_sleep_pins_c: dcmi-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 4,  ANALOG)>,/* DCMI_HSYNC */
+> @@ -199,6 +216,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_pins_a: rgmii-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
+> @@ -230,6 +248,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_sleep_pins_a: rgmii-sleep-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
+> @@ -250,6 +269,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_pins_b: rgmii-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
+> @@ -281,6 +301,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_sleep_pins_b: rgmii-sleep-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
+> @@ -301,6 +322,7 @@ pins1 {
+>   		 };
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_pins_c: rgmii-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
+> @@ -332,6 +354,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_sleep_pins_c: rgmii-sleep-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
+> @@ -352,6 +375,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_pins_d: rgmii-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
+> @@ -382,6 +406,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_sleep_pins_d: rgmii-sleep-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
+> @@ -401,6 +426,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_pins_e: rgmii-4 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
+> @@ -424,6 +450,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rgmii_sleep_pins_e: rgmii-sleep-4 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
+> @@ -441,6 +468,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rmii_pins_a: rmii-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 13, AF11)>, /* ETH1_RMII_TXD0 */
+> @@ -461,6 +489,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rmii_sleep_pins_a: rmii-sleep-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 13, ANALOG)>, /* ETH1_RMII_TXD0 */
+> @@ -475,6 +504,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rmii_pins_b: rmii-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 5, AF0)>, /* ETH1_CLK */
+> @@ -502,6 +532,7 @@ pins4 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rmii_sleep_pins_b: rmii-sleep-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 2, ANALOG)>, /* ETH1_MDIO */
+> @@ -516,6 +547,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rmii_pins_c: rmii-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 13, AF11)>, /* ETH1_RMII_TXD0 */
+> @@ -536,6 +568,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ethernet0_rmii_sleep_pins_c: rmii-sleep-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 13, ANALOG)>, /* ETH1_RMII_TXD0 */
+> @@ -550,6 +583,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	fmc_pins_a: fmc-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('D', 4, AF12)>, /* FMC_NOE */
+> @@ -575,6 +609,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	fmc_sleep_pins_a: fmc-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 4, ANALOG)>, /* FMC_NOE */
+> @@ -594,6 +629,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	fmc_pins_b: fmc-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 4, AF12)>, /* FMC_NOE */
+> @@ -623,6 +659,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	fmc_sleep_pins_b: fmc-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 4, ANALOG)>, /* FMC_NOE */
+> @@ -649,6 +686,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c1_pins_a: i2c1-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
+> @@ -659,6 +697,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c1_sleep_pins_a: i2c1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 12, ANALOG)>, /* I2C1_SCL */
+> @@ -666,6 +705,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c1_pins_b: i2c1-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 14, AF5)>, /* I2C1_SCL */
+> @@ -676,6 +716,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c1_sleep_pins_b: i2c1-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 14, ANALOG)>, /* I2C1_SCL */
+> @@ -683,6 +724,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_pins_a: i2c2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 4, AF4)>, /* I2C2_SCL */
+> @@ -693,6 +735,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_sleep_pins_a: i2c2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 4, ANALOG)>, /* I2C2_SCL */
+> @@ -700,6 +743,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_pins_b1: i2c2-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 5, AF4)>; /* I2C2_SDA */
+> @@ -709,12 +753,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_sleep_pins_b1: i2c2-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 5, ANALOG)>; /* I2C2_SDA */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_pins_c: i2c2-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 1, AF4)>, /* I2C2_SCL */
+> @@ -725,6 +771,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_pins_sleep_c: i2c2-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 1, ANALOG)>, /* I2C2_SCL */
+> @@ -732,6 +779,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c5_pins_a: i2c5-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 11, AF4)>, /* I2C5_SCL */
+> @@ -742,6 +790,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c5_sleep_pins_a: i2c5-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 11, ANALOG)>, /* I2C5_SCL */
+> @@ -750,6 +799,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c5_pins_b: i2c5-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 0, AF4)>, /* I2C5_SCL */
+> @@ -760,6 +810,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c5_sleep_pins_b: i2c5-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 0, ANALOG)>, /* I2C5_SCL */
+> @@ -767,6 +818,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2s2_pins_a: i2s2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 3, AF5)>, /* I2S2_SDO */
+> @@ -778,6 +830,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2s2_sleep_pins_a: i2s2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 3, ANALOG)>, /* I2S2_SDO */
+> @@ -786,6 +839,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2s2_pins_b: i2s2-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C',  3, AF5)>, /* I2S2_SDO */
+> @@ -797,6 +851,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2s2_sleep_pins_b: i2s2-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 3, ANALOG)>, /* I2S2_SDO */
+> @@ -805,6 +860,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_pins_a: ltdc-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G',  7, AF14)>, /* LCD_CLK */
+> @@ -841,6 +897,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_sleep_pins_a: ltdc-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G',  7, ANALOG)>, /* LCD_CLK */
+> @@ -874,6 +931,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_pins_b: ltdc-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 14, AF14)>, /* LCD_CLK */
+> @@ -910,6 +968,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_sleep_pins_b: ltdc-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 14, ANALOG)>, /* LCD_CLK */
+> @@ -943,6 +1002,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_pins_c: ltdc-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B',  1, AF9)>,  /* LTDC_R6 */
+> @@ -978,6 +1038,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_sleep_pins_c: ltdc-sleep-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 1, ANALOG)>,  /* LTDC_R6 */
+> @@ -1005,6 +1066,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_pins_d: ltdc-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G',  7, AF14)>; /* LCD_CLK */
+> @@ -1046,6 +1108,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_sleep_pins_d: ltdc-sleep-3 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G',  7, ANALOG)>, /* LCD_CLK */
+> @@ -1079,6 +1142,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_pins_e: ltdc-4 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('H',  2, AF14)>, /* LTDC_R0 */
+> @@ -1121,6 +1185,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	ltdc_sleep_pins_e: ltdc-sleep-4 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H',  2, ANALOG)>, /* LTDC_R0 */
+> @@ -1154,6 +1219,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	mco1_pins_a: mco1-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 13, AF2)>; /* MCO1 */
+> @@ -1163,12 +1229,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	mco1_sleep_pins_a: mco1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 13, ANALOG)>; /* MCO1 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	mco2_pins_a: mco2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G', 2, AF1)>; /* MCO2 */
+> @@ -1178,12 +1246,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	mco2_sleep_pins_a: mco2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G', 2, ANALOG)>; /* MCO2 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_pins_a: m-can1-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('H', 13, AF9)>; /* CAN1_TX */
+> @@ -1197,6 +1267,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_sleep_pins_a: m_can1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 13, ANALOG)>, /* CAN1_TX */
+> @@ -1204,6 +1275,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_pins_b: m-can1-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 12, AF9)>; /* CAN1_TX */
+> @@ -1217,6 +1289,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_sleep_pins_b: m_can1-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 12, ANALOG)>, /* CAN1_TX */
+> @@ -1224,6 +1297,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_pins_c: m-can1-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('H', 13, AF9)>; /* CAN1_TX */
+> @@ -1237,6 +1311,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_sleep_pins_c: m_can1-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 13, ANALOG)>, /* CAN1_TX */
+> @@ -1244,6 +1319,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_pins_d: m-can1-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('D', 1, AF9)>; /* CAN1_TX */
+> @@ -1257,6 +1333,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can1_sleep_pins_d: m_can1-sleep-3 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 1, ANALOG)>, /* CAN1_TX */
+> @@ -1264,6 +1341,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can2_pins_a: m-can2-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 13, AF9)>; /* CAN2_TX */
+> @@ -1277,6 +1355,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	m_can2_sleep_pins_a: m_can2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 13, ANALOG)>, /* CAN2_TX */
+> @@ -1284,6 +1363,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm1_pins_a: pwm1-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 9, AF1)>, /* TIM1_CH1 */
+> @@ -1295,6 +1375,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm1_sleep_pins_a: pwm1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 9, ANALOG)>, /* TIM1_CH1 */
+> @@ -1303,6 +1384,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm1_pins_b: pwm1-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 9, AF1)>; /* TIM1_CH1 */
+> @@ -1312,12 +1394,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm1_sleep_pins_b: pwm1-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 9, ANALOG)>; /* TIM1_CH1 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm1_pins_c: pwm1-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 11, AF1)>; /* TIM1_CH2 */
+> @@ -1326,12 +1410,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm1_sleep_pins_c: pwm1-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 11, ANALOG)>; /* TIM1_CH2 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm2_pins_a: pwm2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 3, AF1)>; /* TIM2_CH4 */
+> @@ -1341,12 +1427,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm2_sleep_pins_a: pwm2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 3, ANALOG)>; /* TIM2_CH4 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm3_pins_a: pwm3-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 7, AF2)>; /* TIM3_CH2 */
+> @@ -1356,12 +1444,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm3_sleep_pins_a: pwm3-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 7, ANALOG)>; /* TIM3_CH2 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm3_pins_b: pwm3-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 5, AF2)>; /* TIM3_CH2 */
+> @@ -1371,12 +1461,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm3_sleep_pins_b: pwm3-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 5, ANALOG)>; /* TIM3_CH2 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm4_pins_a: pwm4-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 14, AF2)>, /* TIM4_CH3 */
+> @@ -1387,6 +1479,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm4_sleep_pins_a: pwm4-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 14, ANALOG)>, /* TIM4_CH3 */
+> @@ -1394,6 +1487,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm4_pins_b: pwm4-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 13, AF2)>; /* TIM4_CH2 */
+> @@ -1403,12 +1497,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm4_sleep_pins_b: pwm4-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 13, ANALOG)>; /* TIM4_CH2 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm5_pins_a: pwm5-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 11, AF2)>; /* TIM5_CH2 */
+> @@ -1418,12 +1514,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm5_sleep_pins_a: pwm5-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 11, ANALOG)>; /* TIM5_CH2 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm5_pins_b: pwm5-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 11, AF2)>, /* TIM5_CH2 */
+> @@ -1435,6 +1533,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm5_sleep_pins_b: pwm5-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 11, ANALOG)>, /* TIM5_CH2 */
+> @@ -1443,6 +1542,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm8_pins_a: pwm8-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 2, AF3)>; /* TIM8_CH4 */
+> @@ -1452,12 +1552,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm8_sleep_pins_a: pwm8-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 2, ANALOG)>; /* TIM8_CH4 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm8_pins_b: pwm8-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 5, AF3)>, /* TIM8_CH1 */
+> @@ -1469,6 +1571,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm8_sleep_pins_b: pwm8-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 5, ANALOG)>, /* TIM8_CH1 */
+> @@ -1478,6 +1581,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm12_pins_a: pwm12-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 6, AF2)>; /* TIM12_CH1 */
+> @@ -1487,12 +1591,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	pwm12_sleep_pins_a: pwm12-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 6, ANALOG)>; /* TIM12_CH1 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_clk_pins_a: qspi-clk-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 10, AF9)>; /* QSPI_CLK */
+> @@ -1502,12 +1608,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_clk_sleep_pins_a: qspi-clk-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* QSPI_CLK */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_bk1_pins_a: qspi-bk1-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 8, AF10)>, /* QSPI_BK1_IO0 */
+> @@ -1520,6 +1628,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_bk1_sleep_pins_a: qspi-bk1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 8, ANALOG)>, /* QSPI_BK1_IO0 */
+> @@ -1529,6 +1638,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_bk2_pins_a: qspi-bk2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 2, AF9)>, /* QSPI_BK2_IO0 */
+> @@ -1541,6 +1651,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_bk2_sleep_pins_a: qspi-bk2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('H', 2, ANALOG)>, /* QSPI_BK2_IO0 */
+> @@ -1550,6 +1661,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_cs1_pins_a: qspi-cs1-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 6, AF10)>; /* QSPI_BK1_NCS */
+> @@ -1559,12 +1671,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_cs1_sleep_pins_a: qspi-cs1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 6, ANALOG)>; /* QSPI_BK1_NCS */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_cs2_pins_a: qspi-cs2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 0, AF10)>; /* QSPI_BK2_NCS */
+> @@ -1574,12 +1688,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	qspi_cs2_sleep_pins_a: qspi-cs2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 0, ANALOG)>; /* QSPI_BK2_NCS */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2a_pins_a: sai2a-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 5, AF10)>, /* SAI2_SCK_A */
+> @@ -1592,6 +1708,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2a_sleep_pins_a: sai2a-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 5, ANALOG)>, /* SAI2_SCK_A */
+> @@ -1601,6 +1718,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2a_pins_b: sai2a-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('I', 6, AF10)>,	/* SAI2_SD_A */
+> @@ -1612,6 +1730,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2a_sleep_pins_b: sai2a-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 6, ANALOG)>,  /* SAI2_SD_A */
+> @@ -1620,6 +1739,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2a_pins_c: sai2a-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 13, AF10)>, /* SAI2_SCK_A */
+> @@ -1631,6 +1751,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2a_sleep_pins_c: sai2a-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 13, ANALOG)>, /* SAI2_SCK_A */
+> @@ -1639,6 +1760,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_pins_a: sai2b-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 12, AF10)>, /* SAI2_SCK_B */
+> @@ -1654,6 +1776,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_sleep_pins_a: sai2b-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 11, ANALOG)>, /* SAI2_SD_B */
+> @@ -1663,6 +1786,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_pins_b: sai2b-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+> @@ -1670,12 +1794,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_sleep_pins_b: sai2b-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_pins_c: sai2b-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+> @@ -1683,12 +1809,14 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_sleep_pins_c: sai2b-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_pins_d: sai2b-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('H', 2, AF10)>, /* SAI2_SCK_B */
+> @@ -1704,6 +1832,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai2b_sleep_pins_d: sai2b-sleep-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('H', 2, ANALOG)>, /* SAI2_SCK_B */
+> @@ -1713,6 +1842,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai4a_pins_a: sai4a-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 5, AF10)>; /* SAI4_SD_A */
+> @@ -1722,12 +1852,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sai4a_sleep_pins_a: sai4a-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 5, ANALOG)>; /* SAI4_SD_A */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> @@ -1747,6 +1879,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> @@ -1771,6 +1904,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_init_pins_a: sdmmc1-b4-init-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> @@ -1783,6 +1917,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
+> @@ -1794,6 +1929,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_pins_b: sdmmc1-b4-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> @@ -1813,6 +1949,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_od_pins_b: sdmmc1-b4-od-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> @@ -1837,6 +1974,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_b4_sleep_pins_b: sdmmc1-b4-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
+> @@ -1848,6 +1986,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_dir_pins_a: sdmmc1-dir-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 2, AF11)>, /* SDMMC1_D0DIR */
+> @@ -1863,6 +2002,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_dir_init_pins_a: sdmmc1-dir-init-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 2, AF11)>, /* SDMMC1_D0DIR */
+> @@ -1874,6 +2014,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_dir_sleep_pins_a: sdmmc1-dir-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 2, ANALOG)>, /* SDMMC1_D0DIR */
+> @@ -1883,6 +2024,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_dir_pins_b: sdmmc1-dir-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 2, AF11)>, /* SDMMC1_D0DIR */
+> @@ -1898,6 +2040,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc1_dir_sleep_pins_b: sdmmc1-dir-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 2, ANALOG)>, /* SDMMC1_D0DIR */
+> @@ -1907,6 +2050,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_b4_pins_a: sdmmc2-b4-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> @@ -1926,6 +2070,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_b4_od_pins_a: sdmmc2-b4-od-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> @@ -1950,6 +2095,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_b4_sleep_pins_a: sdmmc2-b4-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 14, ANALOG)>, /* SDMMC2_D0 */
+> @@ -1961,6 +2107,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_b4_pins_b: sdmmc2-b4-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> @@ -1980,6 +2127,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_b4_od_pins_b: sdmmc2-b4-od-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> @@ -2004,6 +2152,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_pins_a: sdmmc2-d47-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, AF9)>, /* SDMMC2_D4 */
+> @@ -2016,6 +2165,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_sleep_pins_a: sdmmc2-d47-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, ANALOG)>, /* SDMMC2_D4 */
+> @@ -2025,6 +2175,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_pins_b: sdmmc2-d47-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, AF9)>,  /* SDMMC2_D4 */
+> @@ -2037,6 +2188,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_sleep_pins_b: sdmmc2-d47-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, ANALOG)>, /* SDMMC2_D4 */
+> @@ -2046,6 +2198,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_pins_c: sdmmc2-d47-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, AF9)>, /* SDMMC2_D4 */
+> @@ -2058,6 +2211,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_sleep_pins_c: sdmmc2-d47-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, ANALOG)>, /* SDMMC2_D4 */
+> @@ -2067,6 +2221,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_pins_d: sdmmc2-d47-3 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, AF9)>, /* SDMMC2_D4 */
+> @@ -2076,6 +2231,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_sleep_pins_d: sdmmc2-d47-sleep-3 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, ANALOG)>, /* SDMMC2_D4 */
+> @@ -2086,6 +2242,7 @@ pins {
+>   	};
+>   
+>   	sdmmc2_d47_pins_e: sdmmc2-d47-4 {
+> +	/omit-if-no-ref/
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, AF9)>,	/* SDMMC2_D4 */
+>   				 <STM32_PINMUX('A', 9, AF10)>,	/* SDMMC2_D5 */
+> @@ -2097,6 +2254,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc2_d47_sleep_pins_e: sdmmc2-d47-sleep-4 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 8, ANALOG)>, /* SDMMC2_D4 */
+> @@ -2106,6 +2264,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc3_b4_pins_a: sdmmc3-b4-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 0, AF9)>, /* SDMMC3_D0 */
+> @@ -2125,6 +2284,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc3_b4_od_pins_a: sdmmc3-b4-od-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 0, AF9)>, /* SDMMC3_D0 */
+> @@ -2149,6 +2309,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc3_b4_sleep_pins_a: sdmmc3-b4-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 0, ANALOG)>, /* SDMMC3_D0 */
+> @@ -2160,6 +2321,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc3_b4_pins_b: sdmmc3-b4-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 0, AF9)>, /* SDMMC3_D0 */
+> @@ -2179,6 +2341,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc3_b4_od_pins_b: sdmmc3-b4-od-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 0, AF9)>, /* SDMMC3_D0 */
+> @@ -2203,6 +2366,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	sdmmc3_b4_sleep_pins_b: sdmmc3-b4-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 0, ANALOG)>, /* SDMMC3_D0 */
+> @@ -2214,6 +2378,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spdifrx_pins_a: spdifrx-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G', 12, AF8)>; /* SPDIF_IN1 */
+> @@ -2221,12 +2386,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spdifrx_sleep_pins_a: spdifrx-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G', 12, ANALOG)>; /* SPDIF_IN1 */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi1_pins_b: spi1-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 5, AF5)>, /* SPI1_SCK */
+> @@ -2242,6 +2409,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi2_pins_a: spi2-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF5)>, /* SPI2_SCK */
+> @@ -2257,6 +2425,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi2_pins_b: spi2-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('I', 1, AF5)>, /* SPI2_SCK */
+> @@ -2272,6 +2441,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi2_pins_c: spi2-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('I', 1, AF5)>, /* SPI2_SCK */
+> @@ -2286,6 +2456,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi4_pins_a: spi4-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
+> @@ -2300,6 +2471,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi5_pins_a: spi5-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 7, AF5)>, /* SPI5_SCK */
+> @@ -2315,6 +2487,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	stusb1600_pins_a: stusb1600-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('I', 11, GPIO)>;
+> @@ -2322,6 +2495,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_pins_a: uart4-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 11, AF6)>; /* UART4_TX */
+> @@ -2335,6 +2509,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_idle_pins_a: uart4-idle-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 11, ANALOG)>; /* UART4_TX */
+> @@ -2345,6 +2520,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_sleep_pins_a: uart4-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G', 11, ANALOG)>, /* UART4_TX */
+> @@ -2352,6 +2528,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_pins_b: uart4-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('D', 1, AF8)>; /* UART4_TX */
+> @@ -2365,6 +2542,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_pins_c: uart4-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('G', 11, AF6)>; /* UART4_TX */
+> @@ -2378,6 +2556,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_pins_d: uart4-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 13, AF8)>; /* UART4_TX */
+> @@ -2391,6 +2570,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_idle_pins_d: uart4-idle-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 13, ANALOG)>; /* UART4_TX */
+> @@ -2401,6 +2581,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart4_sleep_pins_d: uart4-sleep-3 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 13, ANALOG)>, /* UART4_TX */
+> @@ -2408,6 +2589,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart5_pins_a: uart5-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 13, AF14)>; /* UART5_TX */
+> @@ -2421,6 +2603,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart7_pins_a: uart7-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 8, AF7)>; /* UART7_TX */
+> @@ -2436,6 +2619,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart7_pins_b: uart7-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 7, AF7)>; /* UART7_TX */
+> @@ -2449,6 +2633,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart7_pins_c: uart7-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 8, AF7)>; /* UART7_TX */
+> @@ -2462,6 +2647,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart7_idle_pins_c: uart7-idle-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 8, ANALOG)>; /* UART7_TX */
+> @@ -2472,6 +2658,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart7_sleep_pins_c: uart7-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('E', 8, ANALOG)>, /* UART7_TX */
+> @@ -2479,6 +2666,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart8_pins_a: uart8-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 1, AF8)>; /* UART8_TX */
+> @@ -2492,6 +2680,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	uart8_rtscts_pins_a: uart8rtscts-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('G', 7, AF8)>, /* UART8_RTS */
+> @@ -2500,6 +2689,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart1_pins_a: usart1-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 12, AF7)>; /* USART1_RTS */
+> @@ -2513,6 +2703,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart1_idle_pins_a: usart1-idle-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('A', 12, ANALOG)>, /* USART1_RTS */
+> @@ -2520,6 +2711,7 @@ pins1 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart1_sleep_pins_a: usart1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 12, ANALOG)>, /* USART1_RTS */
+> @@ -2527,6 +2719,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_pins_a: usart2-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 5, AF7)>, /* USART2_TX */
+> @@ -2542,6 +2735,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_sleep_pins_a: usart2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 5, ANALOG)>, /* USART2_TX */
+> @@ -2551,6 +2745,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_pins_b: usart2-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('F', 5, AF7)>, /* USART2_TX */
+> @@ -2566,6 +2761,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_sleep_pins_b: usart2-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('F', 5, ANALOG)>, /* USART2_TX */
+> @@ -2575,6 +2771,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_pins_c: usart2-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('D', 5, AF7)>, /* USART2_TX */
+> @@ -2590,6 +2787,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_idle_pins_c: usart2-idle-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('D', 5, ANALOG)>, /* USART2_TX */
+> @@ -2607,6 +2805,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart2_sleep_pins_c: usart2-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('D', 5, ANALOG)>, /* USART2_TX */
+> @@ -2616,6 +2815,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_pins_a: usart3-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>; /* USART3_TX */
+> @@ -2629,6 +2829,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_idle_pins_a: usart3-idle-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>; /* USART3_TX */
+> @@ -2639,6 +2840,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_sleep_pins_a: usart3-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2646,6 +2848,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_pins_b: usart3-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
+> @@ -2661,6 +2864,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_idle_pins_b: usart3-idle-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2678,6 +2882,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_sleep_pins_b: usart3-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2687,6 +2892,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_pins_c: usart3-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
+> @@ -2702,6 +2908,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_idle_pins_c: usart3-idle-2 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2719,6 +2926,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_sleep_pins_c: usart3-sleep-2 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2728,6 +2936,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_pins_d: usart3-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
+> @@ -2743,6 +2952,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_idle_pins_d: usart3-idle-3 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2755,6 +2965,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_sleep_pins_d: usart3-sleep-3 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2764,6 +2975,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_pins_e: usart3-4 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
+> @@ -2779,6 +2991,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_idle_pins_e: usart3-idle-4 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2796,6 +3009,7 @@ pins3 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_sleep_pins_e: usart3-sleep-4 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+> @@ -2805,6 +3019,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart3_pins_f: usart3-5 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
+> @@ -2820,12 +3035,14 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usbotg_hs_pins_a: usbotg-hs-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 10, ANALOG)>; /* OTG_ID */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usbotg_fs_dp_dm_pins_a: usbotg-fs-dp-dm-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('A', 11, ANALOG)>, /* OTG_FS_DM */
+> @@ -2835,6 +3052,7 @@ pins {
+>   };
+>   
+>   &pinctrl_z {
+> +	/omit-if-no-ref/
+>   	i2c2_pins_b2: i2c2-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 0, AF3)>; /* I2C2_SCL */
+> @@ -2844,12 +3062,14 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c2_sleep_pins_b2: i2c2-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 0, ANALOG)>; /* I2C2_SCL */
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c4_pins_a: i2c4-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 4, AF6)>, /* I2C4_SCL */
+> @@ -2860,6 +3080,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c4_sleep_pins_a: i2c4-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 4, ANALOG)>, /* I2C4_SCL */
+> @@ -2867,6 +3088,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c6_pins_a: i2c6-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 6, AF2)>, /* I2C6_SCL */
+> @@ -2877,6 +3099,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	i2c6_sleep_pins_a: i2c6-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 6, ANALOG)>, /* I2C6_SCL */
+> @@ -2884,6 +3107,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi1_pins_a: spi1-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('Z', 0, AF5)>, /* SPI1_SCK */
+> @@ -2899,6 +3123,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	spi1_sleep_pins_a: spi1-sleep-0 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 0, ANALOG)>, /* SPI1_SCK */
+> @@ -2907,6 +3132,7 @@ pins {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart1_pins_b: usart1-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('Z', 7, AF7)>; /* USART1_TX */
+> @@ -2920,6 +3146,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart1_idle_pins_b: usart1-idle-1 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('Z', 7, ANALOG)>; /* USART1_TX */
+> @@ -2930,6 +3157,7 @@ pins2 {
+>   		};
+>   	};
+>   
+> +	/omit-if-no-ref/
+>   	usart1_sleep_pins_b: usart1-sleep-1 {
+>   		pins {
+>   			pinmux = <STM32_PINMUX('Z', 7, ANALOG)>, /* USART1_TX */
 
