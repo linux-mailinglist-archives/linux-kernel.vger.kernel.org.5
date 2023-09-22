@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0057AA9AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F807AA9AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjIVHFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
+        id S230180AbjIVHFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjIVHFH (ORCPT
+        with ESMTP id S229556AbjIVHFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:05:07 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFBB192;
-        Fri, 22 Sep 2023 00:05:00 -0700 (PDT)
+        Fri, 22 Sep 2023 03:05:47 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B0718F;
+        Fri, 22 Sep 2023 00:05:41 -0700 (PDT)
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M74bwP024089;
-        Fri, 22 Sep 2023 02:04:37 -0500
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M75TbA047640;
+        Fri, 22 Sep 2023 02:05:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695366277;
-        bh=ZoxXZ3Y37cG93Q4rzhxBeq+p7DzB6VmKffMfMcF/QFc=;
+        s=ti-com-17Q1; t=1695366329;
+        bh=LTJ02Jb2rpuPbIq/vd3dyF6Rpb23oYrvV/Lj91cx8s8=;
         h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=PyLgQVhMUGbUpfsQ4lBYHBbg17QVJjkI2cg2azeZg3679NqvcPQrzoY91+j1/Zlac
-         lImXdEqTfrB958/Rb2aNCx23ToQpNFqpyrqoDsmTBslWudAzX46PckcIRmI8c0R1GM
-         YY1jEgZi8/n/QQT4xwIed6Dc2Qg8mtaJJOrqzwjo=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M74bql078327
+        b=KjciD4qGHxN6BIilDkQZXbEdYWg4sUtgTep9YcYF5vtvAzJ6Be/U+K0QFN/pex5Yd
+         kmRzDWTCZB11Bpkb0VlSglU4ycxKPClrH5cORFL5lzt9z06x+H+irJ3EvIEepGjjeR
+         g7tBWmYQ7yb+k2cGXZ8IcRwOYGp2y5znCcheHlfw=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M75TjQ078961
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 Sep 2023 02:04:37 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 22 Sep 2023 02:05:29 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 22
- Sep 2023 02:04:36 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2023 02:05:28 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 22 Sep 2023 02:04:36 -0500
+ Frontend Transport; Fri, 22 Sep 2023 02:05:29 -0500
 Received: from [10.24.69.199] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M74Wal056954;
-        Fri, 22 Sep 2023 02:04:32 -0500
-Message-ID: <c64625b5-ef67-70a7-4190-ae0fae9951bc@ti.com>
-Date:   Fri, 22 Sep 2023 12:34:31 +0530
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M75N5F048136;
+        Fri, 22 Sep 2023 02:05:24 -0500
+Message-ID: <ef27a0e4-6ce6-5690-85de-a2162255bbfb@ti.com>
+Date:   Fri, 22 Sep 2023 12:35:23 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [RFC PATCH net-next 3/4] net: ti: icssg-prueth: Add support for
- ICSSG switch firmware on AM654 PG2.0 EVM
+Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: add TAPRIO offload
+ support
 Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Roger Quadros <rogerq@kernel.org>, Simon Horman <horms@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
+To:     Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Richard Cochran <richardcochran@gmail.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <srk@ti.com>, <r-gunasekaran@ti.com>, Pekka Varis <p-varis@ti.com>
-References: <20230830110847.1219515-1-danishanwar@ti.com>
- <20230830110847.1219515-4-danishanwar@ti.com>
- <1fb683f4-d762-427b-98b7-8567ca1f797c@lunn.ch>
- <0d70cebf-8fd0-cf04-ccc2-6f240b27ecca@ti.com>
- <12c11462-5449-b100-5f92-f66c775237fa@kernel.org>
- <3fbf9514-8f9f-d362-9006-1fd435540e67@ti.com>
- <09931a97-df62-9803-967f-df6135dc3be7@ti.com>
- <055e781e-f614-4436-9d8d-e60e17fac5c9@lunn.ch>
- <92864bda-3028-f8be-0e27-487024d1a874@ti.com>
- <fa86c001-e01e-45b8-b6f4-514e8c507f02@lunn.ch>
+        "David S. Miller" <davem@davemloft.net>, <vladimir.oltean@nxp.com>,
+        Simon Horman <horms@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>, Roger Quadros <rogerq@ti.com>
+References: <20230921070031.795788-1-danishanwar@ti.com>
+ <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
+ <f54b6cd6-3f9f-4a4c-a14d-de2201f1e8b0@lunn.ch>
 From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <fa86c001-e01e-45b8-b6f4-514e8c507f02@lunn.ch>
+In-Reply-To: <f54b6cd6-3f9f-4a4c-a14d-de2201f1e8b0@lunn.ch>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/23 19:07, Andrew Lunn wrote:
->> Thanks for the offline discussion and explanations. As discussed, we can
->> not have one combined firmware to do both switch operations and dual
->> emac operations. It is required to have two different firmwares.
->> Currently which firmware to load is decided by flag 'is_switch_mode'
->> which is set / unset by devlink. I will not use devlink here as asked by
->> you. Instead, I'll use the approach suggested by you.
->> ndo_open() will load the dual mac firmware. I'll swap to switch firmware
->> when the second port is added to the same bridge as the first port.
+On 21/09/23 22:05, Andrew Lunn wrote:
+> On Thu, Sep 21, 2023 at 01:42:36PM +0300, Roger Quadros wrote:
+>> Hi Danish,
 >>
->> I will re-work the changes and post v2 soon.
+>> On 21/09/2023 10:00, MD Danish Anwar wrote:
+>>
+>> Can you please retain patch authorhsip?
+>>
+>>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+>>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+>>> configuration.
 > 
-> I'm sceptical you can actually make this work correctly, but lets see
-> what v2 contains.
+> Does the switch version of the firmware support this?
 > 
 
-Sure. I will try to make this work and post v2 once it's ready.
+Yes. Switch firmware also supports EST.
 
 >      Andrew
 
