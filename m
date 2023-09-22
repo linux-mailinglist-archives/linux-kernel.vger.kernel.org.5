@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F387AB9DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8F27AB9DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbjIVTIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 15:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
+        id S233854AbjIVTJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 15:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbjIVTIt (ORCPT
+        with ESMTP id S233816AbjIVTJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 15:08:49 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FD1C1;
-        Fri, 22 Sep 2023 12:08:43 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7ab9488f2f0so154971241.3;
-        Fri, 22 Sep 2023 12:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695409722; x=1696014522; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7L9HvqDP5WJky24lmHONuk63n7kfCDpjCwpcpj0vxMA=;
-        b=Mi/5vk+W/rYXHqn8ZjMSE9WEFZH0UK7eboKSAemx5t8p+j3rx10R6ryXBV2eNPVYUH
-         ZjIZtkGDXkNAX0oRqMElAMSG4aqM3FFF8bnYRw3b0lAqz6WhggA9Twffra4v2YVh762M
-         HLOwXm6xq5QAc9WEqrIj9TuH0Y7FEDSaM+wJ1S4s1/+9/RpuUQR07ZWXdfhhVf3B8fsw
-         gQKPjXVrC02FzTfeDs2IhfL+cDP3FYPvvc758rU6FKUjbd+RtCYxbOv7oLaszwFQyVDT
-         R6M9QUggKVTVVpyztzqE2Cbsxn+QqcZMItykOsZzB+M8JE5BzPNquVt3Fs7YIgacy3S/
-         dnJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695409722; x=1696014522;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7L9HvqDP5WJky24lmHONuk63n7kfCDpjCwpcpj0vxMA=;
-        b=mzqaorlbKx7AILa+GmrMOYFm0SX1NB+WAGOLbK9MCFoDLMwn8RODJob1F6H/WJb9ju
-         yalJxAzber2cDQhGWE0uK295JYTg4HH9Yc9NmQxtFZvE00PrfHPnfqzpXLpf1/czWwGn
-         100F/f7FoDSJES1mBlAjQbegHPe3HVAiuQfXbM8mobiR4pC5PktaG9IH24Zipa5yxeRE
-         ar74V+zN03eIMKPsAkqrNLzLwCsYw6K+PV4ioEJxIgtK/B4NwZulEqFAKtbfFnnCg/3j
-         s3jFGXAGidVLS17LCu7+ue1EBDKPqthrDXBeGXiwWDwg7KdPnr6eZsiT5cfCMm/lFCZO
-         7IoA==
-X-Gm-Message-State: AOJu0YyepZU/X4ZmhCabvyz6AYIPGnlciE3roy9w0dPznuyddDFLRflH
-        edZAz19Th+Vo5oZhzbXklQ9MT/Vvixu3TX84djQ=
-X-Google-Smtp-Source: AGHT+IEIuHwatFh1RJWylUlf8xGj74/AAV7K6EqAqxS9YaAsvTvQZCNSlpedgXwBetK5NHqFPcDAKpBDiR2hEQSg3vk=
-X-Received: by 2002:a1f:ed45:0:b0:490:29bb:670b with SMTP id
- l66-20020a1fed45000000b0049029bb670bmr114533vkh.12.1695409722407; Fri, 22 Sep
- 2023 12:08:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
-In-Reply-To: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
-From:   Robert Nelson <robertcnelson@gmail.com>
-Date:   Fri, 22 Sep 2023 14:08:16 -0500
-Message-ID: <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
-Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
-To:     Drew Fustini <dfustini@baylibre.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Fri, 22 Sep 2023 15:09:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EB492;
+        Fri, 22 Sep 2023 12:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695409767; x=1726945767;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VYJY4FDZFMc6MaW1N7f842npIFM179p1eBa4lIdfLwo=;
+  b=j9oYI/PD7cafYDJWX0bx9oOuXQ/yB+cUBtew0QUIBbvwRVxYGLa3EarW
+   HnbkVC+QzP1/PNZHae2Wa02JCWVJdd0JXHpn1gdKHEoH+eP5OBxlYD0BY
+   pdEgMXU9CURmBPyHBghOut7C4Nlncy3J8xF+PDM7whY7SO5iTjF1uu4sf
+   iS0H7jYOb4/UHUGIyoI0cb6dCKwjxQ7kpC4Fo3uRUvy5s7hgMDFq2iIWw
+   j8Em2caLfFr61VRcSUFOjx4Rb7fOVmO3ZaoHYFQs3KLChZPPRstBHB4ZW
+   8yXaViUsRuV/nnlIX342L+1OVF3bK3BdC4McciuGY1SkPABOB4kbXQT6u
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="380819092"
+X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
+   d="scan'208";a="380819092"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 12:09:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="750939180"
+X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
+   d="scan'208";a="750939180"
+Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Sep 2023 12:09:16 -0700
+Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qjlWc-0001BA-2l;
+        Fri, 22 Sep 2023 19:09:14 +0000
+Date:   Sat, 23 Sep 2023 03:08:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] ARM: dts: aspeed: yosemite4: Add i2c-mux/eeprom
+ devices
+Message-ID: <202309230217.cHc3qLuk-lkp@intel.com>
+References: <20230922064127.283625-2-Delphine_CC_Chiu@wiwynn.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922064127.283625-2-Delphine_CC_Chiu@wiwynn.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 8:51=E2=80=AFPM Drew Fustini <dfustini@baylibre.com=
-> wrote:
->
-> This series adds support for the eMMC on the BeagleV Ahead and the
-> Sipeed LicheePi 4A. This allows the kernel to boot with the rootfs on
-> eMMC.
->
-> I tested on top of v6.6-rc2 with this config [1]. I was able to boot
-> both the Ahead [2] and LPi4a [3] from eMMC. The following prerequisites
-> are required:
->
->   [PATCH v2] riscv: dts: thead: set dma-noncoherent to soc bus [4]
->
-> I pushed a branch [5] with this patch series and the above patch for
-> those that find a git branch easier to test.
->
-> Please note that only the MMC controller connected to the eMMC device
-> is enabled in the device trees for these two boards. I did not yet
-> attempt to configure and use the microSD card slot. My preference is to
-> address that in a future patch series.
->
-> References:
-> [1] https://gist.github.com/pdp7/5fbdcf2a65eb1abdd3a29d519c19cdd2
-> [2] https://gist.github.com/pdp7/91a801a5f8d1070c53509eda9800ad78
-> [3] https://gist.github.com/pdp7/1445c3c991e88fd69c60165cef65726a
-> [4] https://lore.kernel.org/linux-riscv/20230912072232.2455-1-jszhang@ker=
-nel.org/
-> [5] https://github.com/pdp7/linux/tree/b4/th1520-mmc
+Hi Delphine,
 
-This patchset came out very nice!
+kernel test robot noticed the following build errors:
 
-v6.6-rc2 with Last RFC v2:
+[auto build test ERROR on krzk/for-next]
+[also build test ERROR on linus/master v6.6-rc2 next-20230921]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[    4.066630] mmc0: SDHCI controller on ffe7080000.mmc
-[ffe7080000.mmc] using PIO
+url:    https://github.com/intel-lab-lkp/linux/commits/Delphine-CC-Chiu/ARM-dts-aspeed-yosemite4-Add-i2c-mux-eeprom-devices/20230922-144218
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git for-next
+patch link:    https://lore.kernel.org/r/20230922064127.283625-2-Delphine_CC_Chiu%40wiwynn.com
+patch subject: [PATCH v1 1/1] ARM: dts: aspeed: yosemite4: Add i2c-mux/eeprom devices
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20230923/202309230217.cHc3qLuk-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230923/202309230217.cHc3qLuk-lkp@intel.com/reproduce)
 
-debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309230217.cHc3qLuk-lkp@intel.com/
 
-/dev/mmcblk0:
- Timing cached reads:   1516 MB in  2.00 seconds =3D 758.09 MB/sec
- Timing buffered disk reads:  84 MB in  3.01 seconds =3D  27.94 MB/sec
+All errors (new ones prefixed by >>):
 
-vs v6.6-rc2 with this patchset:
+>> Error: arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts:1229.1-7 Label or path jtag1 not found
+>> FATAL ERROR: Syntax error parsing input tree
 
- [    4.096837] mmc0: SDHCI controller on ffe7080000.mmc
-[ffe7080000.mmc] using DMA
-
-debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
-
-/dev/mmcblk0:
- Timing cached reads:   1580 MB in  2.00 seconds =3D 790.97 MB/sec
- Timing buffered disk reads: 418 MB in  3.00 seconds =3D 139.11 MB/sec
-
-Regards,
-
---=20
-Robert Nelson
-https://rcn-ee.com/
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
