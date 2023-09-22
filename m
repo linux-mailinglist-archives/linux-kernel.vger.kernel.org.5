@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7687AABB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD8B7AABAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbjIVICP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S232161AbjIVIFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbjIVIBi (ORCPT
+        with ESMTP id S232054AbjIVIFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:01:38 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FDB1700
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:00:35 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-405290ab4b6so86355e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:00:35 -0700 (PDT)
+        Fri, 22 Sep 2023 04:05:18 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943071F05
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:03:51 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-64cca551ae2so10425276d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695369633; x=1695974433; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+UjjrLZjWkpNjZJQ1IoOHoJ/1t1H4lLZHSoX3tWgt70=;
-        b=W/QqtKIIzvFTdtAKQJQL5SEw9O/gIM2nfM+dTUSSV5rWcVZ9D+kuY6nfp6G7DyHIZI
-         ZNaO0qlbYADS9SviVif4b7pOiW5tf1I0qVMTupEX5L89bAnBTVOQGwifGO4L1LdEsFp9
-         8UocGtx2x1IN+c6vXsa9Z/+4Nqt3qGT1vcIXy8pj47Cuu2zjxs4twKTJvwXkjASzp+74
-         /Ai7CEhBkkTpLASGE5gxEEVdLHV+hxPWGKUXlP2jFl2Rb//+cWfpgHA6Q22hu93hmaS2
-         Et2KawUfM3/7Jkc94cuUnI6ztdnVqFcxydddxpAPk2eBVHw/Ebx7kZftg2rRcerWQPkX
-         x8CQ==
+        d=google.com; s=20230601; t=1695369830; x=1695974630; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ef1lz4NaECWVWSkMTH/C2VI1iTg3OW5SLvb2NYIpXHw=;
+        b=qftf6imrqBV0Y3hzXIyLPR1dsR/W2LFIruYgfAAl2PAyPVm4Zt/yJGi/fwhsYrVZHT
+         FCZxfvQKBcaW6X9+Y4de1H+RNfVHbF9kzQ0+3Hr99PeK/lpqbhKjs9mzBE44eB10CQ/y
+         yzyiQTQsjJk5L6DljdIEr9ThVBvmw0lz0OGpjpw1WjTz0HsFzVeX282GbVwH5cpEtdf+
+         i7w7+9mfii7/yDOVmcCuJcYpTyh4nPcRfyk/CDnk9sKJNT744H7MrDvJ+YrwANgDA99D
+         lYykLDvGOA84Kwg0Nkoj7lCviKdi4O8IjPHkPlKF+MuFZclaUn2rEKzV2fU7P3p3Qcf1
+         heqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695369633; x=1695974433;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+UjjrLZjWkpNjZJQ1IoOHoJ/1t1H4lLZHSoX3tWgt70=;
-        b=h6FTxu1JPkMTy51yaJUt7DJzS7oQ8htnnHpS6yV3Orx4+bN5dWALgYyiIGnSm5e5E1
-         SIygiL4IKNqapGoG2cLwnKDxu+t6F4bM/dRYoUqZYbxwte+sCwVaMgJt4eupYrXlLRmv
-         QKX7eozEwTv3w3R39UwkQxt2W7RGjaZ1bLZw4D5sb+8FDb4xOMoGa5vTOC9+uhlnrQLt
-         nrDPZbW59jwz+w8cbdW88Ih1zOaHXdfY170Zw23vyB01Y2lh610ZAdZvc336DRJQFjo3
-         l9MA7eVEbuYYzpIDji60pmgBUhdsltMn4YGBL/iHZMMVte0krtU6PQSIKyBFRKLowBNp
-         KJdw==
-X-Gm-Message-State: AOJu0YxCEXJL0NeOrfnJIipfQj4EebWTIGtuOuzfWPYwh1wFGPlUOHw3
-        4iIJLc2Cs9zJv7rPmT/raXEJjaGPBfcn5YLwl7IemQ==
-X-Google-Smtp-Source: AGHT+IGQZRhV08IW4GnVCFuKz9j5xLN7/Qte12FOb8z8jWXFkQSHP/kpUfIaPVqlQjrtdtlek15PWupfiPw1wJW9c/U=
-X-Received: by 2002:a7b:cd07:0:b0:3fe:f32f:c57f with SMTP id
- f7-20020a7bcd07000000b003fef32fc57fmr50536wmj.0.1695369633354; Fri, 22 Sep
- 2023 01:00:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695369830; x=1695974630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ef1lz4NaECWVWSkMTH/C2VI1iTg3OW5SLvb2NYIpXHw=;
+        b=PV/k1ZZ9kY8LPy1KRmfWtvMVuil6FD06HOg6w8/5WXRoGH86clGOGOxg7Oubcon3O4
+         X8oH/kwMEBFYfe02WxmUhVaLpSycUGjOuwiPnEGzkT+MEKaHfC5BXaHWPBIoXV2xHVWa
+         ItBSO+CdrQhiIXkVJkdU5PvgzFp7Kq7zhckopHWiV8S/pqQM2Zf02pRjNhE0AT4wuKwX
+         B6JNqiC97ZD3EeTjYIviz0Ro3ngutnrrGWRaNMGa7Aff7WpWcTVERXpb+UqnPb25btIE
+         z6/10xLI927cCcXrwFa+k5/2A7fhPffvzhCbc3PErF2YQW+x2z6xcBJqu9b6lLXozne/
+         DrCQ==
+X-Gm-Message-State: AOJu0YyN/oAVkSr0VPXJt72m1q3yx+/2Dfqxqp4Shbr4ZosSN8NVrXYP
+        HIy1aqa3BX5n2ZIX4l9Y7sUCpnkp9xD0flS1zGUQbQ==
+X-Google-Smtp-Source: AGHT+IE7UI6I9WiH64qEClOouVDFNt1yTkDjY6ASv+xhQWngrbykoKa0FWDxLHcMX+9s76JZ51uHd0M5apwUwqihULw=
+X-Received: by 2002:a0c:cd02:0:b0:62f:f2f0:2af3 with SMTP id
+ b2-20020a0ccd02000000b0062ff2f02af3mr9041416qvm.41.1695369830373; Fri, 22 Sep
+ 2023 01:03:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230920-kunit-kasan-fixes-v1-0-1a0fc261832d@riseup.net> <20230920-kunit-kasan-fixes-v1-2-1a0fc261832d@riseup.net>
-In-Reply-To: <20230920-kunit-kasan-fixes-v1-2-1a0fc261832d@riseup.net>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 22 Sep 2023 16:00:21 +0800
-Message-ID: <CABVgOSk6cvPHs3CsoG0FgHz9Y1OT31ZCk=eu5cCOXyg03uNpBA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] kunit: Add kunit_move_action_to_top_or_reset() to
- reorder actions
-To:     Arthur Grillo <arthurgrillo@riseup.net>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        tales.aparecida@gmail.com, andrealmeid@riseup.net,
-        mairacanal@riseup.net, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ca098d0605ee003a"
+References: <20230720173956.3674987-1-glider@google.com> <20230720173956.3674987-4-glider@google.com>
+ <ZLpqXXLLj4vL/xaT@smile.fi.intel.com>
+In-Reply-To: <ZLpqXXLLj4vL/xaT@smile.fi.intel.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 22 Sep 2023 10:03:14 +0200
+Message-ID: <CAG_fn=XLVQs=PSZVZ9cuh=SbTjG9B0bZsim_2xKDmnju4CHuSA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
@@ -75,221 +74,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000ca098d0605ee003a
-Content-Type: text/plain; charset="UTF-8"
-
-On Wed, 20 Sept 2023 at 14:12, Arthur Grillo <arthurgrillo@riseup.net> wrote:
+On Fri, Jul 21, 2023 at 1:22=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Kunit, if we allocate a resource A and B on this order, with its
-> deferred actions to free them. The resource stack would be something
-> like this:
+> On Thu, Jul 20, 2023 at 07:39:54PM +0200, Alexander Potapenko wrote:
+> > The config implements the algorithm compressing memory tags for ARM MTE
+> > during swapping.
+> >
+> > The algorithm is based on RLE and specifically targets 128-byte buffers
+> > of tags corresponding to a single page. In the common case a buffer
+> > can be compressed into 63 bits, making it possible to store it without
+> > additional memory allocation.
 >
->          +---------+
->          | free(B) |
->          +---------+
->          |   ...   |
->          +---------+
->          | free(A) |
->          +---------+
+> ...
 >
-> If the deferred action of A accesses B, this would cause a
-> use-after-free bug. To solve that, we need a way to change the order
-> of actions.
+> > +Programming Interface
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > + .. kernel-doc:: arch/arm64/mm/mtecomp.c
 >
-> Create a function to move an action to the top of the resource stack,
-> as shown in the diagram below.
+> :export:
+
+Done
+
+> > +
 >
->          +---------+    +---------+
->          | free(B) |    | free(A) |
->          +---------+    +---------+
->          |   ...   | -> | free(B) |
->          +---------+    +---------+
->          | free(A) |    |   ...   |
->          +---------+    +---------+
+> Is it dangling trailing blank line? Drop it.
+
+Sorry, it's hard to attribute this comment. I am assuming it is
+related to Documentation/arch/arm64/mte-tag-compression.rst - done.
+
+> ...
 >
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> ---
-
-Thanks. This is a really interesting patch: my hope was that something
-like this wouldn't be necessary, as in most cases freeing things in
-the reverse order to which they were created is the right thing to do.
-
-It looks like, from the comments on patch 3, this may no longer be
-necessary? Is that so?
-
-Otherwise, if you have a real use case for it, I've no objection to
-KUnit adding this as a feature (though I'd probably add some
-documentation suggesting that it's best avoided if you can order your
-allocations / calls better).
-
-Cheers,
--- David
-
->  include/kunit/resource.h | 17 +++++++++++++++++
->  lib/kunit/resource.c     | 19 +++++++++++++++++++
->  2 files changed, 36 insertions(+)
+> > +#include <linux/bitmap.h>
 >
-> diff --git a/include/kunit/resource.h b/include/kunit/resource.h
-> index c7383e90f5c9..c598b23680e3 100644
-> --- a/include/kunit/resource.h
-> +++ b/include/kunit/resource.h
-> @@ -479,4 +479,21 @@ void kunit_remove_action(struct kunit *test,
->  void kunit_release_action(struct kunit *test,
->                           kunit_action_t *action,
->                           void *ctx);
-> +
-> +/**
-> + * kunit_move_action_to_top_or_reset - Move a previously added action to the top
-> + *                                    of the order of actions calls.
-> + * @test: Test case to associate the action with.
-> + * @action: The function to run on test exit
-> + * @ctx: Data passed into @func
-> + *
-> + * Reorder the action stack, by moving the desired action to the top.
-> + *
-> + * Returns:
-> + *   0 on success, an error if the action could not be inserted on the top.
-> + */
-> +int kunit_move_action_to_top_or_reset(struct kunit *test,
-> +                                     kunit_action_t *action,
-> +                                     void *ctx);
-> +
->  #endif /* _KUNIT_RESOURCE_H */
-> diff --git a/lib/kunit/resource.c b/lib/kunit/resource.c
-> index f0209252b179..fe40a34b62a6 100644
-> --- a/lib/kunit/resource.c
-> +++ b/lib/kunit/resource.c
-> @@ -176,3 +176,22 @@ void kunit_release_action(struct kunit *test,
->         }
->  }
->  EXPORT_SYMBOL_GPL(kunit_release_action);
-> +
-> +int kunit_move_action_to_top_or_reset(struct kunit *test,
-> +                                     kunit_action_t *action,
-> +                                     void *ctx)
-> +{
-> +       struct kunit_action_ctx match_ctx;
-> +       struct kunit_resource *res;
-> +
-> +       match_ctx.func = action;
-> +       match_ctx.ctx = ctx;
-> +       res = kunit_find_resource(test, __kunit_action_match, &match_ctx);
-> +       if (res) {
-> +               kunit_remove_action(test, action, ctx);
-> +               return kunit_add_action_or_reset(test, action, ctx);
-> +       }
-> +
-
-if (!res), this doesn't call the action, so the _or_reset() part of
-this doesn't quite make sense.
-
-As I understand it, there are three cases handled here:
-1. The action already existed, and we were able to recreate it at the top.
-2. The action already existed, but we were unable to recreate it.
-3. The action did not previously exist.
-
-In this case, for (1), the action is successfully moved to the top.
-This is the "good case".
-For (2), we run the action immediately (the idea being that it's
-better to not leak memory).
-For (3), we do nothing, the action is never run.
-
-My guess, from the name ending in _or_reset, (3) should:
-- Try to defer the action. If deferring it fails, run the action immediately.
-
-Or possibly, always run the action immediately in case (3).
-
-Whatever we want, we need to decide on what happens here and document them.
-
-And of course, we can get some of those behaviours without needing to
-call kunit_find_resource() at all, just by calling
-kunit_remove_action(...)
-kunit_add_action_or_reset()
-unconditionally.
-
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(kunit_move_action_to_top_or_reset);
+> > +#include <linux/bitops.h>
 >
+> This is guaranteed to be included by bitmap.h.
+
+I think we'd better stick to IWYU here.
+Ingo's patch: https://git.kernel.org/pub/scm/linux/kernel/git/mingo/tip.git=
+/commit/?id=3D32b1e9e4f5774951a3a80604a39fa1f0674c1833
+specifically adds bitmap.h where bits.h is already present, without
+removing the latter.
+Although there might not be general consensus on this in the kernel
+right now, I think Ingo's "Fast Kernel Headers" set out a good
+direction.
+
+>
+> > +/*
+> > + * Sizes of compressed values. These depend on MTE_TAG_SIZE and
+>
+> of the
+
+This comment is gone now
+
+>
+> > +     out_tags[0] =3D prev_tag;
+>
+> out_tags[cur_idx] ?
+
+Yeah, looks more readable. Done.
+
+>
+> > +     for (i =3D 0; i < MTE_PAGE_TAG_STORAGE; i++) {
+> > +             for (j =3D 0; j < 2; j++) {
+> > +                     cur_tag =3D j ? (tags[i] % 16) : (tags[i] / 16);
+> > +                     if (cur_tag =3D=3D prev_tag) {
+> > +                             out_sizes[cur_idx]++;
+>
+> > +                     } else {
+> > +                             cur_idx++;
+> > +                             prev_tag =3D cur_tag;
+> > +                             out_tags[cur_idx] =3D prev_tag;
+> > +                             out_sizes[cur_idx] =3D 1;
+>
+> Looking more at this I think there is still a room for improvement. I can=
+'t
+> come up right now with a proposal (lunch time :-), but I would look into
+>
+>         do {
+>                 ...
+>         } while (i < MTE_...);
+>
+> approach.
+
+We can e.g. get rid of the nested loop and iterate over tags instead
+of bytes (see v5)
+
+
+> > +static size_t mte_size_to_ranges(size_t size)
+> > +{
+> > +     size_t largest_bits;
+>
+> > +     size_t ret =3D 0;
+>
+> Redundant assignment. Please, check again all of them.
+
+Done.
+
+> > +
+> > +     largest_bits =3D (size =3D=3D 8) ? MTE_BITS_PER_LARGEST_IDX_INLIN=
+E :
+> > +                                  MTE_BITS_PER_LARGEST_IDX;
+> > +     ret =3D (size * 8 + MTE_BITS_PER_SIZE - largest_bits) /
+>
+> Hmm... I thought that we moved BYTES_TO_BITS() to the generic header...
+> Okay, never mind.
+
+Ack
+
+> > +           (MTE_BITS_PER_TAG + MTE_BITS_PER_SIZE);
+> > +     return ret;
+>
+>         return (...) / ...;
+
+Done
+
+> > +}
+>
+> ...
+>
+> > +static size_t mte_alloc_size(unsigned int num_ranges)
+> > +{
+> > +     size_t sizes[4] =3D { 8, 16, 32, 64 };
+>
+> Hooray! And now it's not needed anymore...
+>
+> > +     unsigned int i;
+> > +
+> > +     for (i =3D 0; i < ARRAY_SIZE(sizes); i++) {
+>
+> ...as sizes[i] is equivalent of (8 << i).
+
+It's gone now.
+
+> ...
+>
+> > +/**
+> > + * mte_compress() - compress the given tag array.
+> > + * @tags: 128-byte array to read the tags from.
+> > + *
+> > + * Compresses the tags and returns a 64-bit opaque handle pointing to =
+the
+> > + * tag storage. May allocate memory, which is freed by @mte_release_ha=
+ndle().
+>
+> + blank line here.
+
+Done (here and in other places in the file), but I'm wondering why
+https://docs.kernel.org/doc-guide/kernel-doc.html does not mandate it.
+
+>
+> > + * Returns: 64-bit tag storage handle.
+> > + */
+>
+> ...
+>
+> > +     /*
+> > +      * mte_compress_to_buf() only initializes the bits that mte_decom=
+press()
+> > +      * will read. But when the tags are stored in the handle itself, =
+it must
+> > +      * have all its bits initialized.
+> > +      */
+> > +     unsigned long result =3D 0;
+>
+>         // Actually it's interesting how it's supposed to work on 32-bit
+>         // builds...
+
+It is not supposed to work on 32 bit.
+First, the code is in arch/arm64 :)
+Second, 32-bit CPUs do not support MTE (which reserves the four upper
+bits of the address)
+
+
+>
+> > +static unsigned long mte_bitmap_read(const unsigned long *bitmap,
+> > +                                  unsigned long *pos, unsigned long bi=
+ts)
+> > +{
+> > +     unsigned long result;
+> > +
+> > +     result =3D bitmap_read(bitmap, *pos, bits);
+> > +     *pos +=3D bits;
+> > +     return result;
+>
+>         unsigned long start =3D *pos;
+>
+>         *pos +=3D bits;
+>         return bitmap_read(bitmap, start, bits);
+
+Done, thanks!
+
+> > +}
+>
+> ...
+>
+> > +     unsigned short r_sizes[46], sum =3D 0;
+>
+> See below.
+>
+> ...
+>
+> It's cleaner and more robust to have
+>
+>         sum =3D 0;
+>
+> here.
+
+Moved it inside the loop init statement
+
+
 > --
-> 2.41.0
+> With Best Regards,
+> Andy Shevchenko
 >
 
---000000000000ca098d0605ee003a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
-H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
-riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
-impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
-qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
-yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD+
-HMlWgOatsOgN/fPJzVXnAZ6AjyVEpXFSTvrioFxPEzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA5MjIwODAwMzNaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEACQ8DSLVA86tGJWUweagD
-6StfrKRZR+FPBWvOEE1Ko1pMMkLD8PN4eshle9TpruGolw3j66c8k5ATj2YjhObhycqrZWzs3Cbl
-wTIjaE4XioXindwn3ksR216BBFpTLRKAV7DjJ21o9KUzgxVgtGrXcb9uAMQakSoTtQFJrvzwNMUR
-o7CxfdX90cppIQ+5hiiwrXj36fh9CW5W8ijpLEcqAFN30zXF1IdKl/F3LUrGdUoYRQYLpAEw3q9o
-FDaZmidwyDdAW2jgiJg2JzBl6+ZI0KdNNSkc6UFT/nZF8GzrmHZKWb10cYRDXhLqRdI1kGuFGPTw
-U7SGJSRJmOnQuTKjoA==
---000000000000ca098d0605ee003a--
+Thank you!
