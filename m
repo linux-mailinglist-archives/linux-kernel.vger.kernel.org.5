@@ -2,137 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE987AB804
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1637AB80A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjIVRrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
+        id S232885AbjIVRtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjIVRrA (ORCPT
+        with ESMTP id S230053AbjIVRtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:47:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D211494
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:46:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48C83C433C7;
-        Fri, 22 Sep 2023 17:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695404811;
-        bh=fFQxg4Rz4GjFZugxozdndSgNXISpfnkbSpJ11bW+6OA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jRLqWf9mSuD59sCEiQszieC9KPYDD/iNV/2RGV4Xdqt0cnH/s/H9SYypt0yo2zgmO
-         54MLtIg6ulX/hGC1S3Xv9FTFWVZghM3zlLb3pj2VrFUF973M24PScMfpZaZX8UwzD5
-         9GSE7xii8ByH5bCW7cuXWGHHeFFj7AyeCtk58Wa2anrTS6sM87Qz9bOsleIEY79qB6
-         0oOTRZORaulf4T/SSst+w+JOaqe7Gt6ikwlqVKwq6mAYs6qP6QSjsu/Bl2X8d1vSES
-         MbbWluj4wLah3zEVzS5+WR7tDxrFrm1Y/achLiOkrdBYoDYtWkcqPJX0ZLZFHNFOvk
-         9fBtxjPpFgIBg==
-Received: (nullmailer pid 3342355 invoked by uid 1000);
-        Fri, 22 Sep 2023 17:46:49 -0000
-Date:   Fri, 22 Sep 2023 12:46:49 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-Message-ID: <20230922174649.GA3320366-robh@kernel.org>
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
- <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
- <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
+        Fri, 22 Sep 2023 13:49:08 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AB199
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:49:01 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A3B5EE0002;
+        Fri, 22 Sep 2023 17:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695404940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8uEZMn+z2Ga5O+jw4orgjY44OmW9D5RYF/9+50MV1Xc=;
+        b=dVOwTsL2ddY5edxQxhpLBRNKyeUx+MCOhIj17OekyWIl0uzLKqJ2p1PLFt+3V8KxE+A1q2
+        +GnEDU6khGLlLgt6MTsa2cNH/5Htg0RkL1utdE2iT1T0g/P38yrNc0wgjb/a25fDlC57Zp
+        z0DOC0RtJkQNjN1HJThDNtiK5uL1eZEXDaSRXdkYQTukYsXmgqKikvTVC2rOwqNa+f5Rwa
+        /bVZHS8Y3saw48/ZIHXURjUc6sTSdPm/x+aDyzSUCbvoKI4sFr5vV7GvvWeArOMBkZZ7bj
+        8Bl5T+dU18iSYCy4lrWrANCimollp5sQrkPM+Qc8SWl7hvjtR+qLus+KFW0gdw==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v10 0/3] NVMEM cells in sysfs
+Date:   Fri, 22 Sep 2023 19:48:51 +0200
+Message-Id: <20230922174854.611975-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 11:01:18AM -0600, Simon Glass wrote:
-> Hi Rob,
-> 
-> On Fri, 22 Sept 2023 at 10:00, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Thu, Sep 21, 2023 at 1:45 PM Simon Glass <sjg@chromium.org> wrote:
-> > >
-> > > Binman[1] is a tool for creating firmware images. It allows you to
-> > > combine various binaries and place them in an output file.
-> > >
-> > > Binman uses a DT schema to describe an image, in enough detail that
-> > > it can be automatically built from component parts, disassembled,
-> > > replaced, listed, etc.
-> > >
-> > > Images are typically stored in flash, which is why this binding is
-> > > targeted at mtd. Previous discussion is at [2] [3].
-> > >
-> > > [1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
-> > > [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
-> > > [3] https://www.spinics.net/lists/devicetree/msg626149.html
-> >
-> > You missed:
-> >
-> > https://github.com/devicetree-org/dt-schema/pull/110
-> >
-> > where I said: We certainly shouldn't duplicate the existing partitions
-> > bindings. What's missing from them (I assume we're mostly talking
-> > about "fixed-partitions" which has been around forever I think (before
-> > me))?
-> >
-> > To repeat, unless there is some reason binman partitions conflict with
-> > fixed-partitions, you need to start there and extend it. From what's
-> > posted here, it neither conflicts nor needs extending.
-> 
-> I think at this point I am just hopelessly confused. Have you taken a
-> look at the binman schema? [1]
+Hello,
 
-Why do I need to? That's used for some tool and has nothing to do with a 
-device's DTB. However, I thought somewhere in this discussion you showed 
-it under a flash device node. Then I care because then it overlaps with 
-what we already have for partitions. If I misunderstood that, then just 
-put your schema with your tool. Only users of the tool should care about 
-the tool's schema.
+As part of a previous effort, support for dynamic NVMEM layouts was
+brought into mainline, helping a lot in getting information from NVMEM
+devices at non-static locations. One common example of NVMEM cell is the
+MAC address that must be used. Sometimes the cell content is mainly (or
+only) useful to the kernel, and sometimes it is not. Users might also
+want to know the content of cells such as: the manufacturing place and
+date, the hardware version, the unique ID, etc. Two possibilities in
+this case: either the users re-implement their own parser to go through
+the whole device and search for the information they want, or the kernel
+can expose the content of the cells if deemed relevant. This second
+approach sounds way more relevant than the first one to avoid useless
+code duplication, so here is a series bringing NVMEM cells content to
+the user through sysfs.
 
-> 
-> I saw this file, which seems to extend a partition.
-> 
-> Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
+Here is a real life example with a Marvell Armada 7040 TN48m switch:
 
-IIRC, that's a different type where partition locations are stored in 
-the flash, so we don't need location and size in DT. 
+$ nvmem=/sys/bus/nvmem/devices/1-00563/
+$ for i in `ls -1 $nvmem/cells/*`; do basename $i; hexdump -C $i | head -n1; done
+country-code@77
+00000000  54 57                                             |TW|
+crc32@88
+00000000  bb cd 51 98                                       |..Q.|
+device-version@49
+00000000  02                                                |.|
+diag-version@80
+00000000  56 31 2e 30 2e 30                                 |V1.0.0|
+label-revision@4c
+00000000  44 31                                             |D1|
+mac-address@2c
+00000000  18 be 92 13 9a 00                                 |......|
+manufacture-date@34
+00000000  30 32 2f 32 34 2f 32 30  32 31 20 31 38 3a 35 39  |02/24/2021 18:59|
+manufacturer@72
+00000000  44 4e 49                                          |DNI|
+num-macs@6e
+00000000  00 40                                             |.@|
+onie-version@61
+00000000  32 30 32 30 2e 31 31 2d  56 30 31                 |2020.11-V01|
+platform-name@50
+00000000  38 38 46 37 30 34 30 2f  38 38 46 36 38 32 30     |88F7040/88F6820|
+product-name@d
+00000000  54 4e 34 38 4d 2d 50 2d  44 4e                    |TN48M-P-DN|
+serial-number@19
+00000000  54 4e 34 38 31 50 32 54  57 32 30 34 32 30 33 32  |TN481P2TW2042032|
+vendor@7b
+00000000  44 4e 49                                          |DNI|
 
-> 
-> I was assuming that I should create a top-level compatible = "binman"
-> node, with subnodes like compatible = "binman,bl31-atf", for example.
-> I should use the compatible string to indicate the contents, right?
+This layout with a cells/ folder containing one file per cell has been
+legitimately challenged by John Thomson. I am not against the idea of
+having a sub-folder per cell but I did not find a relevant way to do
+that so for know I did not change the sysfs organization. If someone
+really wants this other layout, please provide a code snipped which I
+can integrate.
 
-Yes for subnodes, and we already have some somewhat standard ones for 
-"u-boot" and "u-boot-env". Though historically, "label" was used. 
+Current support does not include:
+* The knowledge of the type of data (binary vs. ASCII), so by default
+  all cells are exposed in binary form.
+* Write support.
 
-Top-level, meaning the root of the DT? That sound like just something 
-for the tool, so I don't care, but it doesn't belong in the DTB.
+Changes in v10:
+* All preparation patches have been picked-up by Srinivas.
+* Rebased on top of v6.6-rc1.
+* Fix an error path in the probe due to the recent additions.
 
-> 
-> Re extending, what is the minimum I can do? Are you looking for
-> something like a "compress" property that indicates that the entry is
-> compressed?
-> 
-> I'm really just a bit lost.
+Changes in v9:
+* Hopefully fixed the creation of sysfs entries when describing the
+  cells using the legacy layout, as reported by Chen-Yu.
+* Dropped the nvmem-specific device list and used the driver core list
+  instead as advised by Greg.
 
-Me too.
+Changes in v8:
+* Fix a compilation warning whith !CONFIG_NVMEM_SYSFS.
+* Add a patch to return NULL when no layout is found (reported by Dan
+  Carpenter).
+* Fixed the documentation as well as the cover letter regarding the
+  addition of addresses in the cell names.
 
-Rob
+Changes in v7:
+* Rework the layouts registration mechanism to use the platform devices
+  logic.
+* Fix the two issues reported by Daniel Golle and Chen-Yu Tsai, one of
+  them consist in suffixing '@<offset>' to the cell name to create the
+  sysfs files in order to be sure they are all unique.
+* Update the doc.
+
+Changes in v6:
+* ABI documentation style fixes reported by Randy Dunlap:
+  s|cells/ folder|"cells" folder|
+  Missing period at the end of the final note.
+  s|Ex::|Example::|
+* Remove spurious patch from the previous resubmission.
+
+Resending v5:
+* I forgot the mailing list in my former submission, both are absolutely
+  identical otherwise.
+
+Changes in v5:
+* Rebased on last -rc1, fixing a conflict and skipping the first two
+patches already taken by Greg.
+* Collected tags from Greg.
+* Split the nvmem patch into two, one which just moves the cells
+  creation and the other which adds the cells.
+
+Changes in v4:
+* Use a core helper to count the number of cells in a list.
+* Provide sysfs attributes a private member which is the entry itself to
+  avoid the need for looking up the nvmem device and then looping over
+  all the cells to find the right one.
+
+Changes in v3:
+* Patch 1 is new: fix a style issue which bothered me when reading the
+  core.
+* Patch 2 is new: Don't error out when an attribute group does not
+  contain any attributes, it's easier for developers to handle "empty"
+  directories this way. It avoids strange/bad solutions to be
+  implemented and does not cost much.
+* Drop the is_visible hook as it is no longer needed.
+* Stop allocating an empty attribute array to comply with the sysfs core
+  checks (this check has been altered in the first commits).
+* Fix a missing tab in the ABI doc.
+
+Changes in v2:
+* Do not mention the cells might become writable in the future in the
+  ABI documentation.
+* Fix a wrong return value reported by Dan and kernel test robot.
+* Implement .is_bin_visible().
+* Avoid overwriting the list of attribute groups, but keep the cells
+  attribute group writable as we need to populate it at run time.
+* Improve the commit messages.
+* Give a real life example in the cover letter.
+
+
+Miquel Raynal (3):
+  nvmem: core: Rework layouts to become platform devices
+  ABI: sysfs-nvmem-cells: Expose cells through sysfs
+  nvmem: core: Expose cells through sysfs
+
+ Documentation/ABI/testing/sysfs-nvmem-cells |  21 ++
+ drivers/nvmem/core.c                        | 257 +++++++++++++++++---
+ drivers/nvmem/layouts/onie-tlv.c            |  39 ++-
+ drivers/nvmem/layouts/sl28vpd.c             |  39 ++-
+ include/linux/nvmem-provider.h              |  11 +-
+ 5 files changed, 318 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
+
+-- 
+2.34.1
+
