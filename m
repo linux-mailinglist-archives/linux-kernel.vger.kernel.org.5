@@ -2,109 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB47B7AAA5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872DA7AAA5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbjIVHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
+        id S231502AbjIVHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbjIVHfT (ORCPT
+        with ESMTP id S231489AbjIVHfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:35:19 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415F4180;
-        Fri, 22 Sep 2023 00:35:13 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50306b2920dso2454516e87.0;
-        Fri, 22 Sep 2023 00:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695368111; x=1695972911; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Oy45YenucE8oRMKm/eENUEeL+y1T17GqDbCULn2o6w=;
-        b=kCJB5/uJApp1HQbJX9yrZWnH4+Y0f06Dgi0qZZdGl5GDOR5CeueLszfWH1AIW6hzUh
-         eNGd61Ly1AouRJsCi8x3tsnclvmNOqhTe2/yp/SBOzjryJXAou7ou87ZJYfsvnkKHDkL
-         6ogm7KXj2QxHLuckgEMYtdQ+cOfbkv28/A8k8PMpi+ClX+qu4cmlgLWiGMFxNlIl9aFB
-         h/651N4VnFrRi1D/1AfS7J7xxWq7JF8AWDnnlK0s2d54kfQm6sOjjf0OaajH3BhWtiod
-         YqycDxiH46hc3FVhpMlhLSuxj0Dj35AeOTjmt4db+0He3Zik//oPmD4pXgxED9hhsrtv
-         4jaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695368111; x=1695972911;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Oy45YenucE8oRMKm/eENUEeL+y1T17GqDbCULn2o6w=;
-        b=BlEGnoLENWhdrwNhe5HfISvid0Tyo4ekzYcCWBh0kfoOsOd1ZIBzvKqbi24JSym7FE
-         Y4pCmQOYldhlwtXGW0G+EIgwOgYajqcgvUXmNtxHQ+Tq3W56Sok+kkeGLe7Xj+K5kZoz
-         Bljm73t0VhZai3jR3f5fpMrMy+x7DFHd/mCAkkAa+QNfsx0YdHpcMu4wtu3pLyHSVMry
-         nK+6n/yJSr1YG4NpK116gY27IBXvs5bfzLXk63T66PtY0kftaYGrfXRlvvp8wSl0LnDI
-         Bj0MSBbxaCr7vWdI/5wrdMF8fYEzZwAUbaSFzE6NxXc3wmG9mk7XF/XEUPv7tVf/fLJN
-         uAAA==
-X-Gm-Message-State: AOJu0Ywh1ztjyn7AwN3r+9CKNZO1qPW0aTGB9oPB7RGcmPcDa5qNiFOv
-        VHUln7u5Nndg8btgCLQotXXWq2RdBdOwCl61Ggk=
-X-Google-Smtp-Source: AGHT+IEIp99taTTtcP+/DJGM8A2PpWPZTtlPf5EWevOYjrp3rT6lM19S9mupjgbMwAL4NLoj/nlIbRC9Einl/zcS2wU=
-X-Received: by 2002:a05:6512:110d:b0:501:bf37:1fb3 with SMTP id
- l13-20020a056512110d00b00501bf371fb3mr703965lfg.24.1695368111204; Fri, 22 Sep
- 2023 00:35:11 -0700 (PDT)
+        Fri, 22 Sep 2023 03:35:18 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44507C2;
+        Fri, 22 Sep 2023 00:35:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695368108; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=n9wVQ3pfoBvTx0TdZ/TxHP6hT3lhos3psc+qkOV0quLn7NsePI0XqchVGr0/LnuMrk
+    LLikuqSUkfpVCKWyUItXDvTpbJHUKwVDmqLfmYG+g0Fr2iZnfT1T2zPL5gJUbK0fuQrv
+    6vaXu8TEtsp52iupfMy1RuHjpk56g6rlGya42CgYGNJvvIzB5e2lBKpRKPglTLW+46Ib
+    RpT+L/5k+hNnSjw0KcAsML5ElpNGx4WsnBaJZfyFkHYx5TZEea99pUvS5Zsa8bk38hgn
+    2PyciDMH5qgqQxL9NccVF6tuTEtWIy7jNumuwpEXW82SI4/qmzYQexo0d6YHz0rOFS+E
+    WSHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695368108;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=D5ImVpCLkXISi+bVaGBTi//vA7N/Q4GRoHQQ/PDmcPs=;
+    b=QfB6OuDjfOB6mHRQvBtWHUnpuFYUjR4G8sqfu6t92UvpeOugOKv5k5Fd9YiX55g/yK
+    WAAxdJlVPDOY8aFEf2y7kZcuHMW2TgHF69O0vSSEIy9yvhscrRQcTK8O+uMRudu0E4zY
+    KPf/yBcBQ6rF+lcEIsOqDzxgpPbQC8vYDv71dGDMacaUxr/anDii5pVyDIy1B5UGmYyk
+    +iGunZH2EtwR4Sr+FPuJuuHD3YG/gZv/BWflYXAZZoWgkpaDYBmg6ybiuoe4nAETCNrX
+    jsMgugHQjs+EtFIPB4JQ+LeR4uPaP7qAuWzrRfXxuRF7OPvS111pxb57Vh750wH4iUtV
+    o/0A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695368108;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=D5ImVpCLkXISi+bVaGBTi//vA7N/Q4GRoHQQ/PDmcPs=;
+    b=XJ1sqLV1E8Dj637EjSGDAqpbhqAs8QRS2vB7zIme/lMYXkameCECFzaOqPT29LfUig
+    auZpEtc5iPtjOp8kalhSaHohNOHUhZkZyTBQH08nolPI29bXonEul+56shpYjXZ3c3BT
+    18d0L98XjXqqG+sM0B0UoCXU6rjrlN+MFVb8w8WVw/318u1cghWWRqVPbIEwcNU2C6T4
+    CmpSA9JUgbuDxRzcKzijNUcMe5WdbJF+syRFEb10MjSS5DMVXjBDTOSJyhczxqHZ633h
+    4qCAizgCJKwHgK9nIuhC3uvom9Yset0nJHhkTD3uk874JJF9YX+mYHpg7oQQtibc69qG
+    3prA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695368108;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=D5ImVpCLkXISi+bVaGBTi//vA7N/Q4GRoHQQ/PDmcPs=;
+    b=EzxYb4tdhahf+ur3fB66cA1oawZQAIYRED3kEOoCLax7JuSldBrhdcjlKFzZN2poAq
+    ICAF0V7s5lEL2IWDy2Bw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8Z/h"
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id R04c57z8M7Z8Sa3
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 22 Sep 2023 09:35:08 +0200 (CEST)
+Date:   Fri, 22 Sep 2023 09:35:00 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] soc: qcom: rmtfs: Support discarding guard pages
+Message-ID: <ZQ1DmSRIe56WQmnK@gerhold.net>
+References: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
+ <20230920-rmtfs-mem-guard-pages-v3-2-305b37219b78@quicinc.com>
+ <ZQyFliFYV7dUwGJg@gerhold.net>
+ <j5ivvbjprgdcekujzjiobk7gpoaz3jxpnda5dsgoh6f4hsn5id@3ug5i74ubkqf>
 MIME-Version: 1.0
-References: <JH0PR04MB7072A4B6946EAEEB1EB8B0BE8AF6A@JH0PR04MB7072.apcprd04.prod.outlook.com>
- <8734zfx2bo.fsf@jogness.linutronix.de>
-In-Reply-To: <8734zfx2bo.fsf@jogness.linutronix.de>
-From:   Enlin Mu <enlinmu@gmail.com>
-Date:   Fri, 22 Sep 2023 15:34:44 +0800
-Message-ID: <CAAfh-jOnirbUjUYDhWqqUe8kPL=1FcDdZoSax5R-nGwO1CO60g@mail.gmail.com>
-Subject: Re: [PATCH] printk: add cpu id information to printk() output
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Enlin Mu <enlin.mu@outlook.com>, pmladek@suse.com,
-        rostedt@goodmis.org, senozhatsky@chromium.org,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        enlin.mu@unisoc.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <j5ivvbjprgdcekujzjiobk7gpoaz3jxpnda5dsgoh6f4hsn5id@3ug5i74ubkqf>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Ogness <john.ogness@linutronix.de> =E4=BA=8E2023=E5=B9=B49=E6=9C=8815=
-=E6=97=A5=E5=91=A8=E4=BA=94 16:34=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 2023-09-15, Enlin Mu <enlin.mu@outlook.com> wrote:
-> > Sometimes we want to print cpu id of printk() messages to consoles
-> >
-> > diff --git a/include/linux/threads.h b/include/linux/threads.h
-> > index c34173e6c5f1..6700bd9a174f 100644
-> > --- a/include/linux/threads.h
-> > +++ b/include/linux/threads.h
-> > @@ -34,6 +34,9 @@
-> >  #define PID_MAX_LIMIT (CONFIG_BASE_SMALL ? PAGE_SIZE * 8 : \
-> >       (sizeof(long) > 4 ? 4 * 1024 * 1024 : PID_MAX_DEFAULT))
-> >
-> > +#define CPU_ID_SHIFT 23
-> > +#define CPU_ID_MASK  0xff800000
->
-> This only supports 256 CPUs. I think it doesn't make sense to try to
-> squish CPU and Task IDs into 32 bits.
->
-> What about introducing a caller_id option to always only print the CPU
-> ID? Or do you really need Task _and_ CPU?
-Yes, I need it.
-For SOC manufacturer, sometimes cpu is not stable, we need some debug
-tools for this exceptions.
-When an exception occurs, we may not be able to detect it in a timely
-manner, but through Task _and_ CPU, we can roughly locate the CPU at
-the time of the exception.
+eOn Thu, Sep 21, 2023 at 07:51:42PM -0700, Bjorn Andersson wrote:
+> On Thu, Sep 21, 2023 at 08:04:06PM +0200, Stephan Gerhold wrote:
+> > On Wed, Sep 20, 2023 at 07:37:31PM -0700, Bjorn Andersson wrote:
+> > > In some configurations, the exact placement of the rmtfs shared memory
+> > > region isn't so strict. The DeviceTree author can then choose to use the
+> > > "size" property and rely on the OS for placement (in combination with
+> > > "alloc-ranges", if desired).
+> > > 
+> > > But on some platforms the rmtfs memory region may not be allocated
+> > > adjacent to regions allocated by other clients. Add support for
+> > > discarding the first and last 4k block in the region, if
+> > > qcom,use-guard-pages is specified in DeviceTree.
+> > > 
+> > > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > > ---
+> > >  drivers/soc/qcom/rmtfs_mem.c | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > > 
+> > > diff --git a/drivers/soc/qcom/rmtfs_mem.c b/drivers/soc/qcom/rmtfs_mem.c
+> > > index f83811f51175..83bba9321e72 100644
+> > > --- a/drivers/soc/qcom/rmtfs_mem.c
+> > > +++ b/drivers/soc/qcom/rmtfs_mem.c
+> > > @@ -200,6 +200,15 @@ static int qcom_rmtfs_mem_probe(struct platform_device *pdev)
+> > >  	rmtfs_mem->client_id = client_id;
+> > >  	rmtfs_mem->size = rmem->size;
+> > >  
+> > > +	/*
+> > > +	 * If requested, discard the first and last 4k block in order to ensure
+> > > +	 * that the rmtfs region isn't adjacent to other protected regions.
+> > > +	 */
+> > > +	if (of_property_present(node, "qcom,use-guard-pages")) {
+> > 
+> > I think of_property_read_bool() would be more fitting here. Right now
+> > of_property_present() is just a wrapper around of_property_read_bool().
+> > Semantically reading a bool fits better here though. :-)
+> > 
+> 
+> Are you saying that you would prefer this to be a bool, so hat you can
+> give it a "false" value? Or you are simply saying "it walks like a
+> boolean, quacks like a boolean, let's use the boolean accessor"?
+> 
 
-Thanks
+The latter. I would expect that of_property_present() is used for
+properties which usually have a value, while of_property_read_bool()
+is used for pure bool values which can be present or not but must not
+have a value. I think a "bool" in terms of DT is simply a present or
+not-present property without any value?
 
-Enlin
+For example consider
 
->
-> John Ogness
+  regulator-min-microvolts = <4200000000>;
+  regulator-always-on;
+
+Then I would expect
+
+  - of_property_present(..., "regulator-min-microvolts"), but
+  - of_property_read_bool(..., "regulator-always-on")
+
+Does that make sense? :D
+
+> > Feel free to fix that up while applying.
+> > 
+> > FWIW I don't really have an opinion if "qcom,use-guard-pages" is a good
+> > way to describe this in the DT. For the implementation side feel free to
+> > add my
+> > 
+> 
+> Right, I don't think I commented on your suggestion to make the size of
+> the guard page configurable. I am not aware of any current or upcoming
+> reasons for adding such complexity, so I'd simply prefer to stick with a
+> boolean. Should that need arise, I think this model would allow
+> extension to express that.
+> 
+
+I must admit I forgot that I suggested this until now. :')
+I don't see a use case for a different "guard size" either so I think
+it's fine to have it as a bool.
+
+Thanks,
+Stephan
