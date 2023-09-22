@@ -2,101 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59A67AAA3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C5E7AAA3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbjIVH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S231276AbjIVH2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjIVH2I (ORCPT
+        with ESMTP id S230000AbjIVH2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:28:08 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52F2180;
-        Fri, 22 Sep 2023 00:28:01 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38M3QAW4014025;
-        Fri, 22 Sep 2023 09:27:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=0bp+NRqfXUCXmXbjcCA67hlANJccbiq96hkutpc8qzk=; b=Uy
-        BO7y8X7Ny0Oo3Hl4YFrV2KyCU0z/yR0RYevIRGRs2hwXLBgAb97CKGEjcJbynK1a
-        yhowZJfMJzv/+YfEUnM0YlUzgs32UhfY1695rc510idhaEi+z3F20qZza9gWnY0x
-        MvvRGzMHkr9zAeA/MJ6phwNY5G4FqVE+n4wyyh1PQuwdwcoEnOJT3qRJ7I4rw7KB
-        YfIll2jUUQwfeBAVF0bRKqNNg4Q6GUestvkrfk3Phv+01NBTVaTJkBweC9l4cuKb
-        VfNhAmGCbJDXMPzdGft07iRSTdRL9EaKX2Ay271KgSOyM1EHd/9BGZg5EDeygub8
-        b4hjtGSXIlNNwY3vQTgw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt7j2d1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 09:27:45 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D5187100051;
-        Fri, 22 Sep 2023 09:27:44 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CC56F2105B2;
-        Fri, 22 Sep 2023 09:27:44 +0200 (CEST)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Sep
- 2023 09:27:44 +0200
-Message-ID: <614e085b-3c71-a19b-c34b-610501c49aa1@foss.st.com>
-Date:   Fri, 22 Sep 2023 09:27:43 +0200
+        Fri, 22 Sep 2023 03:28:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C1FF7;
+        Fri, 22 Sep 2023 00:28:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D548C433C8;
+        Fri, 22 Sep 2023 07:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695367705;
+        bh=wgQZWXAwvdKZPHFA5FAhGqf9aLotY806Yvs6HB1H2gw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m+ztdVAPrL7mMa6wX1EVnVgqn6QEODSE3XB2mUoauK32b9YeZBmDfaHCQTmgT7PM1
+         Be5C1gftDkFcy+pH35VA+VeDcXx6MQoVLbm4MmO1Wh95Pm4GEcTOwKoLZkyebv+Yyh
+         zeLWA+Mv45IA3K/vkykJg1AfGL2VtHi35MAGrYSYvtV5owsg/mnPOFJ+YBLs6sdxKo
+         pkk/xleZ+5Hs2KW4nCdHKkSr8kgXlXIyoX3EYTYLBt+M6c6WHgUwmVjvL+wZjMjWAG
+         bTa9a4fsAQOzNs66+guBHD2ZTlc8KCuqlgh3JUfF8j47b8FAIh48OEYjyVft+tn7XJ
+         KcSQwH9gV8Y+w==
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-57354433a7dso922940eaf.1;
+        Fri, 22 Sep 2023 00:28:25 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxMhsKrhpWILq4YNMN0EEnLlApQv/v3HLL5YFecPTEQmmDrZ9ey
+        G+kEtP1jf0mgpUCsKwq0A48eEl6jrmBTW6vy5DY=
+X-Google-Smtp-Source: AGHT+IFJFH31u8ht5yLCWJBfJuCh90gnONcYxjRKS5LpCmKkwzgzTqyv6U1+tXkxSg8nibSjTmpqNvJITUrEywuR1Bw=
+X-Received: by 2002:a05:6870:248a:b0:1d5:a377:f360 with SMTP id
+ s10-20020a056870248a00b001d5a377f360mr7476864oaq.41.1695367704525; Fri, 22
+ Sep 2023 00:28:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 0/3] Add SD-card support on STM32MP25
-To:     Yann Gautier <yann.gautier@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Christophe Kerello <christophe.kerello@foss.st.com>
-References: <20230904132212.157405-1-yann.gautier@foss.st.com>
-Content-Language: en-US
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20230904132212.157405-1-yann.gautier@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_05,2023-09-21_01,2023-05-22_02
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230920015559.1877441-1-aik@amd.com> <CAK7LNARrb_NLpBL19LHEdg0WJKsncaUPQLk-wxhR+Rh8sps3jQ@mail.gmail.com>
+ <a6a90c61-e884-4b18-83b7-ca3d2e0378e7@amd.com>
+In-Reply-To: <a6a90c61-e884-4b18-83b7-ca3d2e0378e7@amd.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 22 Sep 2023 16:27:48 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS+PefrZnUO1R4v8pa6V7Mh_R92dNAR96Wucz0tf1HEpg@mail.gmail.com>
+Message-ID: <CAK7LNAS+PefrZnUO1R4v8pa6V7Mh_R92dNAR96Wucz0tf1HEpg@mail.gmail.com>
+Subject: Re: [PATCH kernel] kbuild: get rid of unwanted "+" when
+ CONFIG_LOCALVERSION is set
+To:     Alexey Kardashevskiy <aik@amd.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yann
+On Wed, Sep 20, 2023 at 10:30=E2=80=AFPM Alexey Kardashevskiy <aik@amd.com>=
+ wrote:
+>
+>
+> On 20/9/23 21:59, Masahiro Yamada wrote:
+> > On Wed, Sep 20, 2023 at 10:56=E2=80=AFAM Alexey Kardashevskiy <aik@amd.=
+com> wrote:
+> >>
+> >> The scripts/setlocalversion script correctly tries not adding "+" when
+> >> CONFIG_LOCALVERSION is defined.
+> >
+> > I am afraid you are misunderstanding the script.
+>
+> Possibly :) I should have read of "+set"... sorry :-/ Thanks for
+> spending time looking at this.
+>
+> > CONFIG_LOCALVERSION and the "+" sign is unrelated.
+>
+> How come?
+>
+> scripts/setlocalversion -> if [ "${LOCALVERSION+set}" !=3D "set" ] ->
+> scm_version --short -> echo "+".
+>
+> Where is that LOCALVERSION supposed to come from, and when? Is not
+> LOCALVERSION related to CONFIG_LOCALVERSION?
 
-On 9/4/23 15:22, Yann Gautier wrote:
-> Add sdmmc1 node in SoC DT file, then the pins used on STM32MP257F-EV1
-> board, and then the node in board file for SD-card support.
-> 
-> Yann Gautier (3):
->    arm64: dts: st: add sdmmc1 node in stm32mp251 SoC file
->    arm64: dts: st: add sdmmc1 pins for stm32mp25
->    arm64: dts: st: add SD-card support on STM32MP257F-EV1 board
-> 
->   arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 54 +++++++++++++++++++
->   arch/arm64/boot/dts/st/stm32mp251.dtsi        | 13 +++++
->   arch/arm64/boot/dts/st/stm32mp257f-ev1.dts    | 22 ++++++++
->   3 files changed, 89 insertions(+)
-> 
 
-Series applied on stm32-next.
+1) LOCALVERSION is an environment variable.
 
-Regards
-Alex
+
+  $ LOCALVERSION=3D-foo make
+           or
+  $ make LOCALVERSION=3D-foo
+
+
+
+2) CONFIG_LOCALVERSION is a CONFIG option
+
+  $ make menuconfig
+
+    and set the value.
+
+
+1) and 2) are orthogonal.
+If you set both, you can get both of them.
+
+
+
+
+
+> >> However, instead of grepping for it
+> >> (as it is done for CONFIG_LOCALVERSION_AUTO=3Dy), it relies on LOCALVE=
+RSION
+> >> set in the shell which is not.
+> >>
+> >> Export LOCALVERSION so scripts/setlocalversion could see it and not ad=
+d
+> >> unwanted "+" at the end of the kernelrelease.
+> >>
+> >> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+> >
+> >
+> > So, scripts/setlocalversion will always see
+> > defined LOCALVERSION.
+> >
+> > With your patch, LOCALVERSION would be set to an empty value,
+> > which would make the following condition always false.
+> >
+> > elif [ "${LOCALVERSION+set}" !=3D "set" ]; then
+> >
+> >
+> > Your patch is equivalent to deleting
+> > line 175-183 of scripts/setlocalversion.
+> >
+> > Of course, that is wrong and unacceptable.
+>
+> Ok. What is the right way of getting rid of the "+"? Thanks,
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
