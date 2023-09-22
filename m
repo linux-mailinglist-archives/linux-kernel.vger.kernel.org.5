@@ -2,209 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B030F7ABA56
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21AD7ABAC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjIVUDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 16:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
+        id S229788AbjIVU74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 16:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIVUDO (ORCPT
+        with ESMTP id S229678AbjIVU7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 16:03:14 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A517219B;
-        Fri, 22 Sep 2023 13:03:08 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59f4f80d084so2106817b3.1;
-        Fri, 22 Sep 2023 13:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695412988; x=1696017788; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gQxVwDWGzICCtzIyR/1ybOxtmRno79pEfOcqjcENqi8=;
-        b=k92Na7MQzZl3UDgIoik+tSsBfP/ktc3ogoXB3qSJrn0sDk6MXRExsumh4Pa346ZUP8
-         ZYOtGosibwfRw2yZHNX8oq3hj0heIV59XVgZg2u7FI4xFF8Jdpo912+nm6SgkxYN7+Ir
-         EzCcozDuGMVHYax1s3W/EMXKGnJl/GI3lUFt4YVlfotlIbTB5vP+9ftFNOVbBRBArq3u
-         3frbYxj3gXaVDQsKzAvLHS5GQzcSkORZzglPy9hrSJ0aBQS4SY2NQt5rWQRID/Xzlcup
-         9x2qTmMoGcN6z6Jd3ImptClkjQVstlaej+eJje+vSOoX5AiCAN+bYwXif98Jabyz+kPm
-         KeOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695412988; x=1696017788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gQxVwDWGzICCtzIyR/1ybOxtmRno79pEfOcqjcENqi8=;
-        b=NJ0o4grIzogD5CpKVo+kb5+f4MFGBkAcZ33+FO0uXlwFTZaOxAmQ7l7FN2dqgTd5FG
-         51Aj5uD9uYU3m9YxgAuTwmitPiWX2MZ6LT3Q10u1n2j8xC3meN0hAoZxMT09+jxmbgu6
-         Asi7LSCbAdqDodmWdv2nAqH3tygEK37bGA6FFZVYRywVZFdMuJeLwdddz87YlXf8Bb6l
-         atHVk3HMbBbAdsw21M36AnodRpIYQxQ6/Qo6Id4YAiFEaW7hWZwGlDcw41folHKu7Oz8
-         zk0fb2ePrZb+UqT+D9kQp9rnjZLwML9Og/+bmKFbVqoJrkonGl0mTeDaktIBrsXrOQ/4
-         Gupg==
-X-Gm-Message-State: AOJu0YyyHvnhn8/6IyYJWOID9m0QLlorq1Ob3/NeQZofTLFt4Sj1avUO
-        8nhnr7lzp3p3HjTEFx2FVp10RLCJaat4o8id4dg=
-X-Google-Smtp-Source: AGHT+IHzt5WM9Wp1e/5x78GHrBbk1G/TM58GZnAzfq+tYJUVDOOcij3HKdxqrFvyenoQ7+gvZQKYkFdiTKLyTMB0BHs=
-X-Received: by 2002:a81:5205:0:b0:59b:69cf:72c0 with SMTP id
- g5-20020a815205000000b0059b69cf72c0mr772796ywb.6.1695412987630; Fri, 22 Sep
- 2023 13:03:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230922111247.497-1-ansuelsmth@gmail.com> <20230922111247.497-3-ansuelsmth@gmail.com>
- <13bc074d-30c2-4bbf-8b4c-82f561c844b0@lunn.ch> <650d8af4.5d0a0220.5ce38.2c5e@mx.google.com>
-In-Reply-To: <650d8af4.5d0a0220.5ce38.2c5e@mx.google.com>
-From:   Dave Taht <dave.taht@gmail.com>
-Date:   Fri, 22 Sep 2023 13:02:55 -0700
-Message-ID: <CAA93jw5fXb2d6xqBud3jxO5eQhg0eykOM80p28t7c9gA5AneUw@mail.gmail.com>
-Subject: Re: [net-next PATCH 3/3] net: stmmac: increase TX coalesce timer to 5ms
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-wireless@vger.kernel.org,
-        dave seddon <dave.seddon.ca@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 22 Sep 2023 16:59:52 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4A31A4;
+        Fri, 22 Sep 2023 13:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Subject:References:In-Reply-To:Cc:To:
+        From:Date:Message-Id:Sender:Reply-To:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=reMqHnLawtQWzzJGyWchM0kycFgNaHwuVHMPL5F7/LQ=; b=fwFeoZP8X3SOPmGO0C+SKoLaLG
+        UAKf05bsOetdUDWVacCvVL3SjXif6z0O3NNcDeX2/R9AoKIxklW0DVkMVGiUH76DI2+9q/U/93kHO
+        bNuJPeHtMFR0JJKT4MjBEckZyH2RdH3VzULD/Pw+zP2inGLQvGtVqVNd3wnqS01TNY77T0U9q+wVk
+        rl3NW0T1VqrbVmYNUn4m+pstkERd4VyJW+r7qM5NQJQeiKA/maXRRwLEEz82fnvXMnoZHAm/exTmY
+        F7jM4yvKtti+5FjtFSQbidMffXd456V/d5TWPSxjJzB6J5g9wzFI2cQmKMWVYI8rHZlOJDkk8SNnR
+        K0IQUNYA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qjnEs-00GXz9-2k;
+        Fri, 22 Sep 2023 20:59:05 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
+        id E269230042E; Fri, 22 Sep 2023 22:59:03 +0200 (CEST)
+Message-Id: <20230922200120.011184118@infradead.org>
+User-Agent: quilt/0.65
+Date:   Fri, 22 Sep 2023 22:01:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
+        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
+        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de, steve.shaw@intel.com,
+        marko.makela@mariadb.com, andrei.artemev@intel.com
+In-Reply-To: <20230921104505.717750284@noisy.programming.kicks-ass.net>
+References: <20230921104505.717750284@noisy.programming.kicks-ass.net>
+ <20230921104505.717750284@noisy.programming.kicks-ass.net>
+Subject: futex2 numa stuff
+X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 5:39=E2=80=AFAM Christian Marangi <ansuelsmth@gmail=
-.com> wrote:
->
-> On Fri, Sep 22, 2023 at 02:28:06PM +0200, Andrew Lunn wrote:
-> > On Fri, Sep 22, 2023 at 01:12:47PM +0200, Christian Marangi wrote:
-> > > Commit 8fce33317023 ("net: stmmac: Rework coalesce timer and fix
-> > > multi-queue races") decreased the TX coalesce timer from 40ms to 1ms.
-> > >
-> > > This caused some performance regression on some target (regression wa=
-s
-> > > reported at least on ipq806x) in the order of 600mbps dropping from
-> > > gigabit handling to only 200mbps.
-> > >
-> > > The problem was identified in the TX timer getting armed too much tim=
-e.
-> > > While this was fixed and improved in another commit, performance can =
-be
-> > > improved even further by increasing the timer delay a bit moving from
-> > > 1ms to 5ms.
+Hi!
 
-I am always looking for finding ways to improve interrupt service
-time, rather than paper over the problem by increasing batchi-ness.
+Updated version of patch 15/15 and a few extra patches for testing the
+FUTEX2_NUMA bits. The last patch (17/15) should never be applied for anything
+you care about and exists purely because I'm too lazy to generate actual
+hash-bucket contention.
 
-http://www.taht.net/~d/broadcom_aug9_2018.pdf
+On my 2 node IVB-EP:
 
-But also looking for hard data, particularly as to observed power
-savings. How much power does upping this number save?
+ $ echo FUTEX_SQUASH > /debug/sched/features
 
-I have tried to question other assumptions more modern kernels are
-making, in particular I wish more folk would experience with
-decreasing the overlarge (IMHO) NAPI default of 64 packets to, say 8
-in the mq case, benefiting from multiple arm cores still equipped with
-limited cache, as well as looking at the impact of TLB flushes. Other
-deferred multi-core processing... that is looking good on a modern
-xeon, but might not be so good on a more limited arm, worries me.
+Effectively reducing each node to 1 bucket.
 
-Over here there was an enormous test series recently run against a
-bunch of older arm64s which appears to indicate that memory bandwidth
-is a source of problems:
+ $ numactl -m0 -N0 ./futex_numa -c10 -t2 -n0 -N0 &
+   numactl -m1 -N1 ./futex_numa -c10 -t2 -n0 -N0
 
-https://docs.google.com/document/d/1HxIU_TEBI6xG9jRHlr8rzyyxFEN43zMcJXUFlRu=
-hiUI/edit
+ ...
+ contenders: 16154935
+ contenders: 16202472
 
-We are looking to add more devices to that testbed.
+ $ numactl -m0 -N0 ./futex_numa -c10 -t2 -n0 -N0 &
+   numactl -m1 -N1 ./futex_numa -c10 -t2 -n0 -N1
 
-> > >
-> > > The value is a good balance between battery saving by prevending too
-> > > much interrupt to be generated and permitting good performance for
-> > > internet oriented devices.
-> >
-> > ethtool has a settings you can use for this:
-> >
-> >       ethtool -C|--coalesce devname [adaptive-rx on|off] [adaptive-tx o=
-n|off]
-> >               [rx-usecs N] [rx-frames N] [rx-usecs-irq N] [rx-frames-ir=
-q N]
-> >               [tx-usecs N] [tx-frames N] [tx-usecs-irq N] [tx-frames-ir=
-q N]
-> >               [stats-block-usecs N] [pkt-rate-low N] [rx-usecs-low N]
-> >               [rx-frames-low N] [tx-usecs-low N] [tx-frames-low N]
-> >               [pkt-rate-high N] [rx-usecs-high N] [rx-frames-high N]
-> >               [tx-usecs-high N] [tx-frames-high N] [sample-interval N]
-> >               [cqe-mode-rx on|off] [cqe-mode-tx on|off] [tx-aggr-max-by=
-tes N]
-> >               [tx-aggr-max-frames N] [tx-aggr-time-usecs N]
-> >
-> > If this is not implemented, i suggest you add support for it.
-> >
-> > Changing the default might cause regressions. Say there is a VoIP
-> > application which wants this low latency? It would be safer to allow
-> > user space to configure it as wanted.
-> >
->
-> Yep stmmac already support it. Idea here was to not fallback to use
-> ethtool and find a good value.
->
-> Just for reference before one commit, the value was set to 40ms and
-> nobody ever pointed out regression about VoIP application. Wtih some
-> testing I found 5ms a small increase that restore original perf and
-> should not cause any regression.
+ contenders: 48584991
+ contenders: 48680560
 
-Does this driver have BQL?
+(loop counts, higher is better)
 
-> (for reference keeping this to 1ms cause a lost of about 100-200mbps)
-> (also the tx timer implementation was created before any napi poll logic
-> and before dma interrupt handling was a thing, with the later change I
-> expect this timer to be very little used in VoIP scenario or similar
-> with continuous traffic as napi will take care of handling packet)
+Clearly showing how separating the hashes works. 
 
-I would be pretty interested in a kernel flame graph of the before vs the a=
-fter.
+The first one runs 10 contenders on each node but forces the (numa) futex to
+hash to node 0 for both. This ensures all 20 contenders hash to the same
+bucket and *ouch*.
 
-> Aside from these reason I totally get the concern and totally ok with
-> this not getting applied, was just an idea to push for a common value.
+The second one does the same, except now fully separates the nodes. Performance
+is much improved.
 
-I try to get people to run much longer and more complicated tests such
-as the flent rrul test to see what kind of damage bigger buffers did
-to latency, as well as how other problems might show up. Really
-notable in the above test series was how badly various devices behaved
-over time on that workload. Extremely notable in that test series
-above was how badly the  jetson performed:
+Proving the per-node hashing actually works as advertised.
 
-https://github.com/randomizedcoder/cake/blob/2023_09_02/pfifo_fast/jetson.p=
-ng
+Further:
 
-And the nanopi was weird.
+ $ ./futex_numa -t2 -n50000 -s1 -N
+ ...
+ node: -1
+ node: -1
+ node: 0
+ node: 0
+ node: -1
+ node: -1
+ node: 1
+ node: 1
+ ...
+ total: 8980
 
-https://github.com/randomizedcoder/cake/blob/2023_09_02/pfifo_fast/nanopi-n=
-eo3.png
+Shows how a FUTEX2_NUMA lock can bounce around the nodes. The test has some
+trivial asserts trying to show critical section integrity, but otherwise does
+lock+unlock cycles with a nanosleep.
 
-> Just preferred to handle this here instead of script+userspace :(
-> (the important part is the previous patch)
->
-> --
->         Ansuel
->
---
-Oct 30: https://netdevconf.info/0x17/news/the-maestro-and-the-music-bof.htm=
-l
-Dave T=C3=A4ht CSO, LibreQos
+This both illustrates how to build a (trivial) lock using FUTEX2_NUMA and
+proves the functionality works.
+
+
+
