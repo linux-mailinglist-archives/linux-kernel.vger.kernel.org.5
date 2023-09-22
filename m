@@ -2,179 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 102367AAFDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C347AAFEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbjIVKqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
+        id S233448AbjIVKtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjIVKqK (ORCPT
+        with ESMTP id S229810AbjIVKta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:46:10 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71261AC
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:46:04 -0700 (PDT)
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com [209.85.222.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3A68241DBC
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1695379563;
-        bh=t+yfri1GJX2TAqcf+QwODASIE2sxjrbU+UlJZ8d2HDM=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=WxJHwSCTyN6EQ2zwOIabZmYr7s5odH0iUgTLqc8N3E4/IsfFya2Upo/R7XJ9KApa+
-         PLVvhJ7Zgtemgw495/OKdqoW5Ii62qLar1oYldRu0HOnfPnrJBgXmS2vQVzwpzsAAI
-         5HFZR+B0+ZS91ssNNVDyR+vcd/3n3Zc80xQClptradm2OdPxLBoVQFRwvCTpLogSa9
-         75Ni2fBfVggtXcE6r/yXMK2xrW3TdjIoSrqEs3XjGH1CsrBpzxrcYrWAKg/tkA2UB9
-         rV+YmBAa93qqSWy4TrhtwCB5+eZ2A0g5OIlP6CLR7m5vp5TUNeSsgQF2oUFabEndfz
-         pAmujtgkg2rgg==
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-773c9836d91so221358585a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:46:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695379562; x=1695984362;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t+yfri1GJX2TAqcf+QwODASIE2sxjrbU+UlJZ8d2HDM=;
-        b=rwpH0/7r51YXTgBeDfhpyczE7K8eTgZ2LdyBk+U28zOILzLMbJeWTpc9/J6zHPR8+t
-         Y1XW34dzIZ11xrLZxoyMqZBBRLMAGbcEKQqnwoG4l+0l3p9tylelK2tRUmBhq6eleq4S
-         Yy4PZCCEC0t4kHvYLPdr1mciW4FDAseQAD9m9zOBTkLDb1Gl2Cek6y9gTV5hKkgbCUWM
-         OjZyiWQaBhKsrF44KHhcwmy3LT4mDpwCrD97ttwL5ez+dAVaLDReo5cO92b7YfVIblZp
-         v6qs9Nr8P80uhmo/EIIOg4PFQsFb288XV9GfxJlCrZozZvMDJrjj3hKrX6wL6tHNjd4t
-         nfBg==
-X-Gm-Message-State: AOJu0YwmCPko42ID2jmt1UHhNBoBB+uouWv6W7+uOYZm0JTY27FL9KzI
-        ZhHnN0kmUrs+vHZvwWUo65RpYZp3ktaceJS26X8plsu//NozcAo+nhdmKRcAI6adxtBhTXKKSSX
-        EMVWO59pbCoretOAFWxcfvHVs70fhJlarrG272UAkMjcM5fMG15GJxLznjg==
-X-Received: by 2002:a05:620a:2ac7:b0:76c:ad46:2683 with SMTP id bn7-20020a05620a2ac700b0076cad462683mr6971758qkb.16.1695379562235;
-        Fri, 22 Sep 2023 03:46:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFsox++PPWys6ngzHVyCF3Eihkl1gwpI0tFPIgNbTUyaezen3cYl9nj+cZZ23a8Pw9GmdY7EyJwq7TGifvy6yc=
-X-Received: by 2002:a05:620a:2ac7:b0:76c:ad46:2683 with SMTP id
- bn7-20020a05620a2ac700b0076cad462683mr6971744qkb.16.1695379561942; Fri, 22
- Sep 2023 03:46:01 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 22 Sep 2023 03:46:01 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20230922095039.74878-2-shravan.chippa@microchip.com>
-References: <20230922095039.74878-1-shravan.chippa@microchip.com> <20230922095039.74878-2-shravan.chippa@microchip.com>
-Mime-Version: 1.0
-Date:   Fri, 22 Sep 2023 03:46:01 -0700
-Message-ID: <CAJM55Z-NUwzo9SKtmV_5OegznDjSQEG9DVK7=5x4qnxUkk399A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] dmaengine: sf-pdma: Support of_dma_controller_register()
-To:     shravan chippa <shravan.chippa@microchip.com>,
-        green.wan@sifive.com, vkoul@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, conor+dt@kernel.org, palmer@sifive.com
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 06:49:30 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F25C99;
+        Fri, 22 Sep 2023 03:49:24 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M79Du1020281;
+        Fri, 22 Sep 2023 10:49:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=hpO/ZP6cwcezFYAfpFZFentrmwNE3+cuCJGJa6/4z90=;
+ b=NOEqFXk4ttcd+iqZgyufhpRAyp2pzHxx3cztxChA44mzuyLsDXRj1xgq6F2oSNawmU7g
+ JiMqXY0Vds2RpghxVSITtPohKqE6sy/jlyjkKlkxOayXK4npWLzW9Unx5ZT11C6bxu74
+ rDknlUyVlyBO5R6sKzAM9NiijuTEcxGDnzAV+bE5fQH7sK5jKUfHnsuwzn48X9QHrb75
+ LWmk1z2ew42WUxGcwpoUdeP36uzTEXxNHpLrzmYdASZlBwD6SByY5sRNw++ETKu+qy8p
+ l2UOefhpJLDlm76TGlxONxB7p2kLW8DNnZopmUj2XGfQDrXmdXw23r1XS6M2VTDF+Z6E ag== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u6rsm7n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 10:49:12 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MAnBSi012721
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 10:49:11 GMT
+Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 22 Sep 2023 03:49:07 -0700
+From:   Prashanth K <quic_prashk@quicinc.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hongyu Xie <xy521521@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>, <stable@kernel.org>,
+        Hongyu Xie <xiehongyu1@kylinos.cn>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        "# 5 . 15" <stable@vger.kernel.org>,
+        Prashanth K <quic_prashk@quicinc.com>
+Subject: [PATCH RESEND] xhci: Keep interrupt disabled in initialization until host is running.
+Date:   Fri, 22 Sep 2023 16:18:44 +0530
+Message-ID: <1695379724-28628-1-git-send-email-quic_prashk@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Ph53r2qVzdc-EYX6FSdrGQHCYTJrw-cC
+X-Proofpoint-ORIG-GUID: Ph53r2qVzdc-EYX6FSdrGQHCYTJrw-cC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_08,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 mlxlogscore=686 impostorscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309220091
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-shravan chippa wrote:
-> From: Shravan Chippa <shravan.chippa@microchip.com>
->
-> Update sf-pdma driver to adopt generic DMA device tree bindings.
-> It calls of_dma_controller_register() with sf-pdma specific
-> of_dma_xlate to get the generic DMA device tree helper support
-> and the DMA clients can look up the sf-pdma controller using
-> standard APIs.
->
-> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
-> ---
->  drivers/dma/sf-pdma/sf-pdma.c | 41 +++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->
-> diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
-> index d1c6956af452..c7558c9f9ac3 100644
-> --- a/drivers/dma/sf-pdma/sf-pdma.c
-> +++ b/drivers/dma/sf-pdma/sf-pdma.c
-> @@ -20,6 +20,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/of.h>
-> +#include <linux/of_dma.h>
->  #include <linux/slab.h>
->
->  #include "sf-pdma.h"
-> @@ -490,6 +491,33 @@ static void sf_pdma_setup_chans(struct sf_pdma *pdma)
->  	}
->  }
->
-> +static struct dma_chan *sf_pdma_of_xlate(struct of_phandle_args *dma_spec,
-> +					 struct of_dma *ofdma)
-> +{
-> +	struct sf_pdma *pdma = ofdma->of_dma_data;
-> +	struct device *dev = pdma->dma_dev.dev;
-> +	struct sf_pdma_chan  *chan;
-> +	struct dma_chan *c;
-> +	u32 channel_id;
-> +
-> +	if (dma_spec->args_count != 1) {
-> +		dev_err(dev, "Bad number of cells\n");
-> +		return NULL;
-> +	}
-> +
-> +	channel_id = dma_spec->args[0];
-> +
-> +	chan = &pdma->chans[channel_id];
-> +
-> +	c = dma_get_slave_channel(&chan->vchan.chan);
-> +	if (!c) {
-> +		dev_err(dev, "No more channels available\n");
-> +		return NULL;
-> +	}
-> +
-> +	return c;
-> +}
-> +
->  static int sf_pdma_probe(struct platform_device *pdev)
->  {
->  	struct sf_pdma *pdma;
-> @@ -563,7 +591,20 @@ static int sf_pdma_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->
-> +	ret = of_dma_controller_register(pdev->dev.of_node,
-> +					 sf_pdma_of_xlate, pdma);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev,
-> +			"Can't register SiFive Platform OF_DMA. (%d)\n", ret);
-> +		goto err_unregister;
-> +	}
-> +
+From: Hongyu Xie <xy521521@gmail.com>
 
-Hi Shrivan,
+[ Upstream commit 808925075fb750804a60ff0710614466c396db4 ]
 
-Doesn't this need a matching unregister/free call in the
-sf_pdma_remove function?
+irq is disabled in xhci_quiesce(called by xhci_halt, with bit:2 cleared
+in USBCMD register), but xhci_run(called by usb_add_hcd) re-enable it.
+It's possible that you will receive thousands of interrupt requests
+after initialization for 2.0 roothub. And you will get a lot of
+warning like, "xHCI dying, ignoring interrupt. Shouldn't IRQs be
+disabled?". This amount of interrupt requests will cause the entire
+system to freeze.
+This problem was first found on a device with ASM2142 host controller
+on it.
 
-/Emil
+[tidy up old code while moving it, reword header -Mathias]
 
->  	return 0;
-> +
-> +err_unregister:
-> +	dma_async_device_unregister(&pdma->dma_dev);
-> +
-> +	return ret;
->  }
->
->  static int sf_pdma_remove(struct platform_device *pdev)
-> --
-> 2.34.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Cc: stable@kernel.org
+Signed-off-by: Hongyu Xie <xiehongyu1@kylinos.cn>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20220623111945.1557702-2-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <stable@vger.kernel.org> # 5.15
+Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+---
+ drivers/usb/host/xhci.c | 34 +++++++++++++++++++++-------------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 541fe4d..7ee747e 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -607,8 +607,27 @@ static int xhci_init(struct usb_hcd *hcd)
+ 
+ static int xhci_run_finished(struct xhci_hcd *xhci)
+ {
++	unsigned long	flags;
++	u32		temp;
++
++	/*
++	 * Enable interrupts before starting the host (xhci 4.2 and 5.5.2).
++	 * Protect the short window before host is running with a lock
++	 */
++	spin_lock_irqsave(&xhci->lock, flags);
++
++	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Enable interrupts");
++	temp = readl(&xhci->op_regs->command);
++	temp |= (CMD_EIE);
++	writel(temp, &xhci->op_regs->command);
++
++	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Enable primary interrupter");
++	temp = readl(&xhci->ir_set->irq_pending);
++	writel(ER_IRQ_ENABLE(temp), &xhci->ir_set->irq_pending);
++
+ 	if (xhci_start(xhci)) {
+ 		xhci_halt(xhci);
++		spin_unlock_irqrestore(&xhci->lock, flags);
+ 		return -ENODEV;
+ 	}
+ 	xhci->shared_hcd->state = HC_STATE_RUNNING;
+@@ -619,6 +638,8 @@ static int xhci_run_finished(struct xhci_hcd *xhci)
+ 
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+ 			"Finished xhci_run for USB3 roothub");
++
++	spin_unlock_irqrestore(&xhci->lock, flags);
+ 	return 0;
+ }
+ 
+@@ -667,19 +688,6 @@ int xhci_run(struct usb_hcd *hcd)
+ 	temp |= (xhci->imod_interval / 250) & ER_IRQ_INTERVAL_MASK;
+ 	writel(temp, &xhci->ir_set->irq_control);
+ 
+-	/* Set the HCD state before we enable the irqs */
+-	temp = readl(&xhci->op_regs->command);
+-	temp |= (CMD_EIE);
+-	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+-			"// Enable interrupts, cmd = 0x%x.", temp);
+-	writel(temp, &xhci->op_regs->command);
+-
+-	temp = readl(&xhci->ir_set->irq_pending);
+-	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+-			"// Enabling event ring interrupter %p by writing 0x%x to irq_pending",
+-			xhci->ir_set, (unsigned int) ER_IRQ_ENABLE(temp));
+-	writel(ER_IRQ_ENABLE(temp), &xhci->ir_set->irq_pending);
+-
+ 	if (xhci->quirks & XHCI_NEC_HOST) {
+ 		struct xhci_command *command;
+ 
+-- 
+2.7.4
+
