@@ -2,116 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9157AA9FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDA87AAA30
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjIVHVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        id S231674AbjIVHZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbjIVHVh (ORCPT
+        with ESMTP id S231497AbjIVHZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:21:37 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EF519E;
-        Fri, 22 Sep 2023 00:21:25 -0700 (PDT)
-X-UUID: a1422ab8591811eea33bb35ae8d461a2-20230922
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=wPAZy6ESnioZH+kLVb+rHtDuQKaIt/qY8aIqjrMpNI8=;
-        b=abMw3/OluEkMml71zip8usveH/mS3rnrTEW4CREkdKCLx803z1ThElM50w8qdc7z3Qzgppy/ciS5GCESQYC7N6WQkAAKpvdaRgw1jSDx5NzYcWuSeM/2D7m+fRm8XK6d2pqGm0V1yyoGWH2QqfZNqAGHAu1fSWrlLw6F1SMp6F4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:aff142e0-53b0-4731-a6bb-c22457bfaf7c,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:edff54c3-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: a1422ab8591811eea33bb35ae8d461a2-20230922
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1341433875; Fri, 22 Sep 2023 15:21:21 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Sep 2023 15:21:19 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Sep 2023 15:21:19 +0800
-From:   Moudy Ho <moudy.ho@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Moudy Ho" <moudy.ho@mediatek.com>
-Subject: [PATCH v6 16/16] dt-bindings: display: mediatek: padding: add compatible for MT8195
-Date:   Fri, 22 Sep 2023 15:21:16 +0800
-Message-ID: <20230922072116.11009-17-moudy.ho@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230922072116.11009-1-moudy.ho@mediatek.com>
-References: <20230922072116.11009-1-moudy.ho@mediatek.com>
+        Fri, 22 Sep 2023 03:25:11 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA43E65
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:23:15 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4053a7b36b0so51315e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695367393; x=1695972193; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SNryYotumdA+bHtWcWKnpaeDQs5DtUfVpRI5bYDcet0=;
+        b=nfYVCPFByjvXMRg9OYFguqrZtF9GTv+G0LGtp6c62rLgl0RXRI29PLKyEuEIdGL2pO
+         hOYHM5aIk92ipfqrckBYagSyOX75hL6ftVmi2qHrTbArVZMam9UPnTK/lAUxm/k/W8qp
+         6DHctc4cpuKIqKHKVesoggSu+l/5JsbxPwPam2Pdi5laB0V92RuX1Fr7/4par5TQhtEW
+         x3hpCgR3AuQclOdug06Hc/nRlvcFQyjzpc4mXeEd8ohRz726/JcJz3k78tYcggG2XEHq
+         viQtVouhHEvv1Dp1ZrwmLJQkO8tBVYd2T+2X+mDt/VrF/mukBco7X9ob8pTC7Guo0yTz
+         2chQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695367393; x=1695972193;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SNryYotumdA+bHtWcWKnpaeDQs5DtUfVpRI5bYDcet0=;
+        b=Pn7WDalSaniIt5Jg7JqVX0j2rVfuB2qXvqw2SA9SEzHXxM5yqOT+TS45eTlyAkWXqy
+         t/qjaU7WQ7xHntzcj6Mm6/QYokw8FOSSBE7mHjBmb+z4oREyq6WANyvI5BKdrWCAxnxf
+         4fLdHvCikn3yvYq+A7Jfm2ceF1ar1gq3aANtM+7Vb0EMiM5PJq4YTTq64qK6hhg+1Kqt
+         opw/+KUUFhA+O2zNpaYAJNs9Fgu11T0AsMNrjgo/vEJHGmjCWNI7bSg+jHXoaJN4+nST
+         kzW4nArD4lPNRUdqRXrS8G5QBkV9Xv6GEGM3EtM/z42Cu09L+RdKW7T7fjTXTDYnNY7q
+         YYJA==
+X-Gm-Message-State: AOJu0Yxb1lRkMFkpZgkvplAmTP01NsX67LWUylx55OfxRFqTYr1ivr/N
+        bpDRxCHRnf3ZG01L6tCVqJmF+c1HkhLqhUE5fjMERHr5LWXlZ4SRKOsMYQ==
+X-Google-Smtp-Source: AGHT+IFz5zZGP/nGmJ+xRB+rNqOo286jPo4uJd4tx+TcIcPVPH2xOKdKGl6PWwguEl8KbtuxDzA/VcUtVBxW/0kPDJg=
+X-Received: by 2002:a05:600c:319c:b0:405:320a:44f9 with SMTP id
+ s28-20020a05600c319c00b00405320a44f9mr28714wmp.5.1695367393295; Fri, 22 Sep
+ 2023 00:23:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--0.605700-8.000000
-X-TMASE-MatchedRID: GIpmbigRs3YmeoNhEXvE7G2o1QHNgyqmTJDl9FKHbrmYBF1C0J2QPjQz
-        47GqDWjpxMujmXyGahWAMuqetGVetiVvu9chHp+mavP8b9lJtWr6C0ePs7A07UngwKs5Oejndfs
-        EYn95p1jMEhTpea+dDIkuQ3d6HWsPu1Ii4zlP1MS5oVd3QmEYa8O/L+lMgFvnZq/fVZQlgjNDSz
-        XF+Fvp08SXKPXaAS7AdmtRsRmKkASJZPT2ZDPuzPD2QfzMDLjhIh26TkmSN3fAvpLE+mvX8g==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--0.605700-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: A2674B259BDA25597753A9CF5C6B203C700B88EA8905DFC3C85DC3BD0E88977D2000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230921081810.3584078-1-make_ruc2021@163.com>
+In-Reply-To: <20230921081810.3584078-1-make_ruc2021@163.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 22 Sep 2023 15:22:58 +0800
+Message-ID: <CABVgOS=suPzTKOnGvPKzpA4LnJGkXBjwD0_xEN-r80-o=pT3_w@mail.gmail.com>
+Subject: Re: [PATCH] list: test: potential dereference of null pointer
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000044d15e0605ed7bed"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a compatible string for the PAD block in MediaTek MT8195 that
-is controlled by MDP3.
+--00000000000044d15e0605ed7bed
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
----
- .../bindings/display/mediatek/mediatek,padding.yaml           | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Thu, 21 Sept 2023 at 16:18, Ma Ke <make_ruc2021@163.com> wrote:
+>
+> To avoid the failure of alloc, we could check the return value of
+> kmalloc() and kzalloc().
+>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-index db24801ebc48..636b69133acc 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-@@ -20,7 +20,9 @@ description:
- 
- properties:
-   compatible:
--    const: mediatek,mt8188-padding
-+    enum:
-+      - mediatek,mt8188-padding
-+      - mediatek,mt8195-mdp3-pad
- 
-   reg:
-     maxItems: 1
--- 
-2.18.0
+Fair enough, though I'd want the test to fail in this case (or, at the
+very least, be skipped).
 
+Could we use KUNIT_ASSERT_NOT_NULL() here?
+
+Furthermore, there are a few bugs in the patch, see below.
+
+Cheers,
+-- David
+
+>  lib/list-test.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/lib/list-test.c b/lib/list-test.c
+> index 0cc27de9cec8..9f82cac3a822 100644
+> --- a/lib/list-test.c
+> +++ b/lib/list-test.c
+> @@ -27,9 +27,14 @@ static void list_test_list_init(struct kunit *test)
+>         INIT_LIST_HEAD(&list2);
+>
+>         list4 = kzalloc(sizeof(*list4), GFP_KERNEL | __GFP_NOFAIL);
+> +       if (!list4)
+> +               return;
+
+Instead, let's use:
+KUNIT_ASSERT_NOT_NULL(test, list4)
+
+>         INIT_LIST_HEAD(list4);
+>
+>         list5 = kmalloc(sizeof(*list5), GFP_KERNEL | __GFP_NOFAIL);
+> +       if (!list5)
+
+Shouldn't this be in {}s? We don't want to return unconditionally.
+
+> +               kfree(list5);
+
+We shouldn't free a NULL pointer. Should this be kfree(list4)?
+
+Either way, maybe we should swap the allocations out for
+kunit_kzalloc(), which will automatically free everything on test
+exit.
+
+> +               return;
+
+Again, let's use KUNIT_ASSERT_NOT_NULL() here. Or at the very least,
+call KUNIT_FAIL() to make sure we're noting the test has failed.
+
+>         memset(list5, 0xFF, sizeof(*list5));
+>         INIT_LIST_HEAD(list5);
+>
+> --
+> 2.37.2
+>
+
+--00000000000044d15e0605ed7bed
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBS
+Woxabsr4542V9QQ2Fbwp/ssOezSIAji9abbM+Nb6gDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA5MjIwNzIzMTNaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAbHes8ZzXKqAQJL6NIwn9
+f9DQ5itTnmra+CtKZGP8nf+SiQpaueuaukbiDeMElKzXklHqTFcIZXZhz/uxN9aplJbEhV/1eOkU
+eTIrTniQAvSGDUgn1C3ON0KTAaJgSnF86KpRRLl2zKqZlzltEg5zocVZL1GTWFE83ku7UkZsoIcj
+yvD8WNBoWoZht6p7PWGEbokS9HvQKNjhHhV5fUWMfeFsqYRexATs0FsOue+ni0L3Lf7P8dOYYOsX
+4fq1bs9db31polgjZi3ROHtnp9962gqNOsRqY4BIPo83IIH7nqbwRQ7Ch4c7yEsTermYp11jbgHt
+lDOMXcsd8j59+nB6uw==
+--00000000000044d15e0605ed7bed--
