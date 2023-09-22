@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AC17AAC93
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1397AAC91
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbjIVI0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S232524AbjIVI0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbjIVI00 (ORCPT
+        with ESMTP id S232680AbjIVI0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:26:26 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74E3199;
-        Fri, 22 Sep 2023 01:26:19 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d2e1a72fcca58-690f7bf73ddso1602619b3a.2;
-        Fri, 22 Sep 2023 01:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695371179; x=1695975979; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8TjkO42V3TjmILslatWiNnLGbuZ1pxt7DnaUwvpRCv4=;
-        b=mNi14FsV/wuy7LEBE1bTbgtC/a0Xwmh8B6TJpOoLsM5Q5YcJzkXwo0p7n3rYHihetc
-         jpDum5OhSG/CSBcQdw654yjQgtx+pNOCFuc7us1ZmtwsjoK8pvbsKsle0GeNm7b8g2vD
-         Kv+g78FcpkBXyV13uFHNTx9ZG/+RzG6wChNMxu1HjBEJ1EO8kfr04wzZpp7SIn3mRXnn
-         9IY/0ufEwxWdU23WSuF6mEyV1sXsqsAauOfGgn0fzTraZXewlSWriqw9q9FC0ilzzgkg
-         x92KwAvmcdHVrr93Flq/JbGipJ5an7akD/T+j8d21BQXyY9KdypK40BfYOyg2Q5WHiTg
-         n65A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695371179; x=1695975979;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8TjkO42V3TjmILslatWiNnLGbuZ1pxt7DnaUwvpRCv4=;
-        b=kJcsjMFa8agRIxIUjp/QaqOUxOb2uhYIGZ9atnQTJtO0JIVRiUX6cqZYFpinWe3fYF
-         HSkNA48W9m2VO8y9Or+allG9zkBymhb0BqQvEJMbUe/4iLVw438P58KWPifjqMn/AeOh
-         49tHfIUZ7NS2yFRyVzgWTPiL8oIegIi0JucLaMKNqcogW+lDwkUlFFbKcsLr2lqqYeXH
-         XT2oY7DPQzCIyjkkSphSXbMoXuRWJj9foVZvjWu4Qf396DYvlV7EMqfH8Rf5mnwQTYzE
-         xcD5Vrz+rvRT0ozjZmJl9xcJPCEK+6ttnR4Zkx4LZ7DYCbzqi0BrbruPR6iTQtwG88cl
-         3S3A==
-X-Gm-Message-State: AOJu0YxCyN4CWpcAaO4Gn06UYqipYktIkQ8X092Vp6Tg1SNDEepKGBNH
-        8H7vdkw/A6uISYYwbsIPBFY=
-X-Google-Smtp-Source: AGHT+IHon40oRfrCjQP3QqxMuV6iApwqDxiFYXRlKv8F08B30xQOAiiGxkWExrzE3RWpMbNQN0EBfQ==
-X-Received: by 2002:a05:6a00:cc8:b0:68e:380c:6b15 with SMTP id b8-20020a056a000cc800b0068e380c6b15mr8659120pfv.26.1695371179093;
-        Fri, 22 Sep 2023 01:26:19 -0700 (PDT)
-Received: from localhost.localdomain ([140.112.90.93])
-        by smtp.gmail.com with ESMTPSA id 9-20020aa79209000000b00690d8a119c1sm2643576pfo.206.2023.09.22.01.26.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 01:26:18 -0700 (PDT)
-From:   Jianlin Li <ljianlin99@gmail.com>
-To:     corbet@lwn.net
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jianlin Li <ljianlin99@gmail.com>
-Subject: [PATCH] docs: x86: Update document url in amd-memory-encryption.rst
-Date:   Fri, 22 Sep 2023 16:25:47 +0800
-Message-Id: <20230922082547.522689-1-ljianlin99@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 22 Sep 2023 04:26:13 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2F7CE7;
+        Fri, 22 Sep 2023 01:26:03 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4RsQMW1c9Mz9srm;
+        Fri, 22 Sep 2023 10:25:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1695371159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XHByl+js/YUPP3gf9zZaEGtUeq+uQ1pus0JHx74CtHs=;
+        b=jWAk5WWjD17Th+abAe4pc7Reqbq9ifWaBWjByP4GrzMM3AwOuKiDhMQTZ7p5cf7jAZN8Et
+        RcBme8YUPK7KyeZx89XUkNn6N4HtO0xPMNnwzgYe6qLtQD43SYxKQ5ImN4/VMUpMqBTWcj
+        8aO3uGe1ifaMf2Pth//ADqQoTyXoilJRkEKszDqDYFCt2pJX22rMPdKzdi0lRYIrrDZFKB
+        Eh+Ppqi3jT27kPZs60p1Y9DJk5VctFY2qAid3Lr7ikyH0X21H2vlf+jzyJUuS2sTSXi5Dw
+        EDXWe6qscVekxeIh6yeku1F91mX+yAlxX+v0o3LX+MRer+BNgGqf2VKLwmFWTA==
+Message-ID: <c2b92ff2-d077-4588-9d5c-93dfec0037ee@mailbox.org>
+Date:   Fri, 22 Sep 2023 10:25:55 +0200
 MIME-Version: 1.0
+Subject: Re: [PATCH] Use CRC32 and a 1MiB dictionary for XZ compressed modules
+Content-Language: en-US
+To:     Martin Nybo Andersen <tweek@tweek.dk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Nick Terrell <terrelln@fb.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <3d34a965-ab9c-d549-0c63-c717ab5d2edc@tweek.dk>
+From:   Tor Vic <torvic9@mailbox.org>
+In-Reply-To: <3d34a965-ab9c-d549-0c63-c717ab5d2edc@tweek.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MBO-RS-META: yehc7bqndknetusqe9r11sg8xckoeupk
+X-MBO-RS-ID: 0cfd58da9bd54bab989
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous link to AMD programmer's manual is no longer available.
-Replace it with the new one.
+> 
+> Hello?
 
-Signed-off-by: Jianlin Li <ljianlin99@gmail.com>
----
- Documentation/arch/x86/amd-memory-encryption.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-diff --git a/Documentation/arch/x86/amd-memory-encryption.rst b/Documentation/arch/x86/amd-memory-encryption.rst
-index 934310ce7258..07caa8fff852 100644
---- a/Documentation/arch/x86/amd-memory-encryption.rst
-+++ b/Documentation/arch/x86/amd-memory-encryption.rst
-@@ -130,4 +130,4 @@ SNP feature support.
- 
- More details in AMD64 APM[1] Vol 2: 15.34.10 SEV_STATUS MSR
- 
--[1] https://www.amd.com/system/files/TechDocs/40332.pdf
-+[1] https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/24593.pdf
--- 
-2.25.1
+> Anyone?
+> 
+> Best regards,
+> - Martin
+> 
+> On Fri, 15 Sep 2023, Martin Nybo Andersen wrote:
+> 
+>> Kmod is now using the kernel decompressor which doesn't handle CRC64
+>> and dictionaries larger than 1MiB.
+>>
+>> Fixes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050582
+>> Signed-off-by: Martin Nybo Andersen <tweek@tweek.dk>
+>> ---
+>> scripts/Makefile.modinst | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
+>> index c59cc57286ba..ffbafbd3aeea 100644
+>> --- a/scripts/Makefile.modinst
+>> +++ b/scripts/Makefile.modinst
+>> @@ -144,7 +144,7 @@ endif
+>> quiet_cmd_gzip = GZIP    $@
+>>       cmd_gzip = $(KGZIP) -n -f $<
+>> quiet_cmd_xz = XZ      $@
+>> -      cmd_xz = $(XZ) --lzma2=dict=2MiB -f $<
+>> +      cmd_xz = $(XZ) --check=crc32 --lzma2=dict=1MiB -f $<
 
+I wonder whether it should be guarded with
+     ifdef CONFIG_MODULE_DECOMPRESS
+
+But on the other hand, the difference between 1M and 2M is likely very 
+small in terms of compression ratio.
+
+Cheers,
+Tor Vic
+
+>> quiet_cmd_zstd = ZSTD    $@
+>>       cmd_zstd = $(ZSTD) -T0 --rm -f -q $<
+>>
+>> -- 
+>> 2.40.1
+>>
+>>
+> 
