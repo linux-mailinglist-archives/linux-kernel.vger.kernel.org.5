@@ -2,151 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C067AA8B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9197AA8B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbjIVGC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
+        id S230495AbjIVGDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjIVGCZ (ORCPT
+        with ESMTP id S229706AbjIVGDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:02:25 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2044.outbound.protection.outlook.com [40.107.95.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6D8102
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:02:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jZiQGt621dkSbTnXheAJVPgkhHfuexLB7Gi4orxwv/79c3p3sOBMqHGhl8wrVfDqWOUcdC2mnPqkVr2SKMLQLdPtvVq1FWbgjIpjsUh56fim6S7xG1EsqiRjHEQ2HxIYxUzDN+ljUTqOJ95Dy3AOktJXUgApMY/8BTgMS0QPoLNK/Dj4Lh846hkPP8Ykm7CjlQcXUvaSoknHZxKJ4FXumQXuL054YlYAEGh2yrlo7fVLQ4aI0eMsro6WOeR2sqs3n8WqoAVbTJzDnihRBULEA47MoaALbMQVhCT6ymlzNI7ic7XM3DChhkmb0Dk1kWXQUN42YIl+Dz8yXSVCLQ5dfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KEoPtZXfp1t3oQB7OcsG1yI6Z1V3PXDyNQ/z377MfRs=;
- b=Ni/MLhnvt+iNcFSMwg4MNeosCyAZ4ZHmsDaPATnXJGdAIZaGPZ8jVB/I93qV+cha+1eFMjs1d1pGoVMaVctMUTrHKB4JO7wkq1F3/cb9diCQtJAs2R0IcSoQ1awBHNL1fRb2vToIYCsfhwjzqT20QxvNuvzbebcnAzOWp5eg3ub5DDl0s2hMHK6zoXlObVSAw+ApmhL6Q2ANs2JXgPHCRDuYi75h1Jry8sUtT+oAB3JqoZudXDwa3yrIa2O7mstbI98eoQ4GMzJXo5lrxYr6XuTVhMifmDy9AOPI3oh2j3BfXZA3xBFyzuEZu+ya3SyrD8MD0x/aef5AOL3lut40Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KEoPtZXfp1t3oQB7OcsG1yI6Z1V3PXDyNQ/z377MfRs=;
- b=jDwFOtwzP/S5pt0OHUTMFQRdo1nwVMdMfXJw1CZKa/fFnP9tNdI2QqdFeqmXhubIz+Il0cuPZqbD4hGk6ZuLvMwe/SFm+jaL3ma9hizISCBXxkN7tatbIdnRxGqwtGtoZQmW3tbUDmG3ZSQTOtk4F6BNWDeNxIUUTon8npknKUc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
- by IA1PR12MB6332.namprd12.prod.outlook.com (2603:10b6:208:3e2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.31; Fri, 22 Sep
- 2023 06:02:13 +0000
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a]) by CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a%3]) with mapi id 15.20.6813.017; Fri, 22 Sep 2023
- 06:02:13 +0000
-Message-ID: <a5121152-aeb0-42c5-8ebf-c4ede1e2a884@amd.com>
-Date:   Fri, 22 Sep 2023 16:01:44 +1000
-User-Agent: Mozilla Thunderbird
-Subject: ignore: Re: efi/unaccepted: Use ACPI reclaim memory for unaccepted
- memory table
-Content-Language: en-US
-From:   Alexey Kardashevskiy <aik@amd.com>
-To:     Ard Biesheuvel <ardb@google.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-References: <5a3f1772-15a8-4525-a323-801458247416@amd.com>
-In-Reply-To: <5a3f1772-15a8-4525-a323-801458247416@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN6PR16CA0054.namprd16.prod.outlook.com
- (2603:10b6:805:ca::31) To CH3PR12MB9194.namprd12.prod.outlook.com
- (2603:10b6:610:19f::7)
+        Fri, 22 Sep 2023 02:03:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBCEFB;
+        Thu, 21 Sep 2023 23:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695362620; x=1726898620;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=H0XuqgbqUt5ljQRehQN74Kzg/lYi5jLocq1zdrh6djo=;
+  b=nVcmaxWOc+DfTRPv1Afefivlc239w+CNOH+J8xd+EVvwwfb+rUHwc5ad
+   VDsjd1MtHYYWurnJE8xwFZTyWWWJE4WnWFl5yWaj//lSe3351jTBW4+pB
+   fLPmD4fDZBGcY8hdXK23itF3MtKZPVJm3boz0IoRQGza+/2ktjrZ+Uz67
+   M40lZLD+dMwKjqdVaf4+iSZkLpOBGmJj7yaXs0M5fq6xtDdKE+bAKIPVo
+   WAu4kqmaKwWs3sX1krCMoXC5LfxZ4qAdO5xJI59mVEgU5USoIZB46n9ZA
+   kjwMqnDqblWk0zQ8XdT04OLdnXLD46qJzLEXlYLdJLuHtUZ5Aeph0IykU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="383496364"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="383496364"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 23:03:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="921035819"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="921035819"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.11.250]) ([10.93.11.250])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 23:03:26 -0700
+Message-ID: <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com>
+Date:   Fri, 22 Sep 2023 14:03:23 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|IA1PR12MB6332:EE_
-X-MS-Office365-Filtering-Correlation-Id: 162af672-8cf3-41d6-3764-08dbbb316a56
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1mHnygV8mFvtZoAah5ttSrfuwF/zTxY8K9b6kJfGUN8CtJWwPcZwI/PaqoPQxxYs406FwpD0hdoZZesHcgxK3r/Wh9Z9F3GKKrESPY2Fb1V9K4N6jiTyUtLEuIakP/UbL6bZLYON2xvk+Tr8vNohABW15g6O60dMzD5oE/fdEBX6gOTGiEjoJoASXc2k/QFn+kkLJApPTgPMD33BG1MJTkugdpAIAo+cQo0fu4oiETZMrcKrClKeo+fMHeUQ9vDQNQqFJByfkf7BqzaJWRPh1JGLVASpe1QKX8t/JPTs5atpkVOxRlJEF70aqNUj7PH6FU17E5sg0OsHdJYDGJp6T7mzcK4VPSXGrybt1WuFZFnNI3sA5tb0XR1PELck2u9Iqa5sIzrE+HOcpnM+1TnfyeKoIed9B7p93cAmrMPBLaLN/SOjtIQLHYNzJUIblcT2ZcSxIf1eWfBJXsPh3VryFBMAHxvv9V4paHkOPNEFsVNmlJmxd5S4F4T4gMXarswf9SQE5groEhrzDhzKUJv0N/MKcG4bRvq5aLj2qIeJbTO+SdgIq2eORmDaZqtBdJuenWhBZzPyGkQAsKlXIGn1iRC07Gzg+9yFve/ug589Iyr/jiS9zEZozgZb336ZD/kaqW5di9jTyvjR9egOgdUO1A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(396003)(376002)(366004)(1800799009)(451199024)(186009)(2906002)(8676002)(5660300002)(8936002)(4326008)(41300700001)(66556008)(316002)(6916009)(66476007)(66946007)(36756003)(38100700002)(26005)(478600001)(4744005)(6666004)(6506007)(2616005)(6512007)(53546011)(6486002)(31696002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUJDVFhJSGI2WUdLZ3NnQzYrUjNtenVacGFCMGhQYVpFTjZoR0paOEFJZ1ZR?=
- =?utf-8?B?KzZnazl1SWlZUFJVMUMzenc4MVpsempDb2p0Mjk1VmpEY3hJVitKSG1YK2Ir?=
- =?utf-8?B?b2MxUFU2ZkdPQ3NRSldTOHlrT2cwOTZCbVZKc3RicUdsS0E1Um9wSlcwUkRu?=
- =?utf-8?B?bDRHTXFXWm5laDllazRaTnRublV2aVBiQXVKNWlSNDhEL1Q0THRWUlltS1cw?=
- =?utf-8?B?T2RiUFNKSEJTNUcrOW91RG9pZGZGSUlKK3h1ZFpWV1VyY2lya3BzUmI3ZFZj?=
- =?utf-8?B?UHkydHY4MFZvclN0cndJbDduSVJoS2JOWFdCSmRHaCtYNExHckRObWNBTXl5?=
- =?utf-8?B?ZThCNVloNlBHZ0pnczh2NS9rdksycW5ubVROSmIyazVzR2toTHdzeE1rOXZk?=
- =?utf-8?B?MWV2dzJ5RDJsa0dmVmRuMk9FMU40R3NJaFk5RjZQVk5EMFJaYWZCQ3h4c0tm?=
- =?utf-8?B?d0wyYWp4Ukpmd200VTBIRG5IcFl5WlA3cW5EYlVJUlZOZEN0MW02Vmcram4x?=
- =?utf-8?B?ZGdWQm85MXY5MWU2dEFjeU5hR1RFalVlVlI0ZjE4WG5GUzRFWTBSMVBxaHQ3?=
- =?utf-8?B?c3ovdUV1ZVY1ckhIUFE4bk5kY1dRV1NkaFFPeEpkV0J5dDZjZElTb3VvRXZy?=
- =?utf-8?B?THlLdVduSGlTWDJXUGVDNi9KdGRhQjd2TzFzSDVJeDgyVXhDVlhOZWlUL2lL?=
- =?utf-8?B?Zlh5VlhYZUtwa3dwQm9zWE1rdTFYQ0F0UlA0VFQrZjZJUWwzLzljc2JVcUpk?=
- =?utf-8?B?ZSt0dC82L1Y4ck95REtHY1VRMWVxSkp6aDA0TDlVTFFwQytsZ1JIL2w1WGI3?=
- =?utf-8?B?L1l5YUx5NDVmK0swM1ZDK2J0MFRaRTR2czNXUk1QMWthRU16SFU4MWpWNXN4?=
- =?utf-8?B?WVpJSVMyUWQ3S056RmdnQS9mVHBrWmQ2OWsrUHlxQk15ZjJld1QzZmk3SHRs?=
- =?utf-8?B?M1BjR0xaZ3JwRFkrMFQvaU1lQ3IraVVZZnQ2R1RrSjRJdjhwMVdLWURGeS94?=
- =?utf-8?B?UkhEQ2t2L202TmRCVmJWT2JGZTdvRElsRDBxVkJjVGtPdFUxSFUvTjA4dnpT?=
- =?utf-8?B?VytKSy8vWHNHMjU5S2RhbDA3d1ZPaGhnang5NE5kcDFrbXo2M0I2dVJUNWVa?=
- =?utf-8?B?bHRvQUlyZkN3clJ6bFZjU2dEWC9EOTdweWMxWjBRR3Jwa0ZlMU9NY3VPTjlp?=
- =?utf-8?B?T0xsVndIcEdsbXJSNlFNejFWM2lSRkREZWZzTzVOSjFJV0lLRnkrRGwwbTE3?=
- =?utf-8?B?RzkwN2p6cWgvNTN5MjRnMHZqMjRGWng5dy9DcTVLU0hpSUYzR3dpdExoeUk5?=
- =?utf-8?B?RVlFYjFyblZpV0tlUDBnaEt3cTB5U1gyNm1RcUlmZXZZeTNaTUEzUEVrcjFX?=
- =?utf-8?B?V3hDNlh1R01qcHR5a0NSUUVQWnY5bUtDdkh1Q1N1UE9YdGduWFRNNUk5YmQw?=
- =?utf-8?B?S0FzZm9uL29LSzhPT09YUFNYaG1PNGhUOGl5a0REd1ZlWmpiYlhkYWZJSWxP?=
- =?utf-8?B?aG5hZlFURllpMWlJV3lVWTFNcS9JbUU2bEhTM3JXdkxxNFh3aGZOYk5td2FB?=
- =?utf-8?B?aTFodkxJT09Jem4wUm5DaW5RNE1BZlBIMmlQRGZub21hakJ6cWlxRjE2RFZ6?=
- =?utf-8?B?WHZnRVFldStDMjM5RVZxbmZUdjZwaWw1S1hUUVFubyt0V3pXbmtraXZNV0g4?=
- =?utf-8?B?dS9oNXJQV0JZdUpPdDlManNNZDVOZVJYM2V5QUNQU2dKK2sySS9BTkRmTEVt?=
- =?utf-8?B?RjllRWYvWHFScitVUk5DeFVXNVMwZk55UkxOZjRTUFJwL2xPZXRySkFNQnFD?=
- =?utf-8?B?Yk9Qc2xHcmRNbkFQdU1RbFZ6QWdMRHdCaG9NK1cxZmtEWUdyQjBDbUZCeVlt?=
- =?utf-8?B?OUR6RWdZdy9tK2wyZ054Z3V6OTVlLzNsS0ZENTg3ZE9NUmh2aUs3VnJsYU1O?=
- =?utf-8?B?N1hYTTBjekNBRXY4U0hhdTJDM0JCVUFoSFB0MGdqVjN5Y01rd2JOcitKdGls?=
- =?utf-8?B?TkM4VkdxeENZNDVEWGprR3ZHUFBhMjZPb0txRVhnd0hKZkV0cG82NXJzVDVo?=
- =?utf-8?B?VE5RazFIb3MzYWRUQml6UFMrNkJHR2ttV25lWTlxaUJwdEtOQktpVXk2NXI3?=
- =?utf-8?Q?fx9xa8VNDHt9QnbH5Xz+bOgma?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 162af672-8cf3-41d6-3764-08dbbb316a56
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 06:02:12.6870
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MdLxw+lviL0w5gHqApuf93AkmKeE3f1OgsRqW2Cor9Du31HrsdsAC7xM4CopJa0reHnU9rSQHUZFJTHkBTvWnQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6332
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
+ report faults to userspace
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230914015531.1419405-1-seanjc@google.com>
+ <20230914015531.1419405-8-seanjc@google.com>
+Content-Language: en-US
+In-Reply-To: <20230914015531.1419405-8-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops already reported, never mind. Sorry for the noise.
+On 9/14/2023 9:55 AM, Sean Christopherson wrote:
+> From: Chao Peng <chao.p.peng@linux.intel.com>
+> 
+> Add a new KVM exit type to allow userspace to handle memory faults that
+> KVM cannot resolve, but that userspace *may* be able to handle (without
+> terminating the guest).
+> 
+> KVM will initially use KVM_EXIT_MEMORY_FAULT to report implicit
+> conversions between private and shared memory.  With guest private memory,
+> there will be  two kind of memory conversions:
+> 
+>    - explicit conversion: happens when the guest explicitly calls into KVM
+>      to map a range (as private or shared)
+> 
+>    - implicit conversion: happens when the guest attempts to access a gfn
+>      that is configured in the "wrong" state (private vs. shared)
+> 
+> On x86 (first architecture to support guest private memory), explicit
+> conversions will be reported via KVM_EXIT_HYPERCALL+KVM_HC_MAP_GPA_RANGE,
 
+side topic.
 
-On 22/9/23 14:21, Alexey Kardashevskiy wrote:
-> Hi,
-> 
-> e7761d827e99919c3 broke SNP guests on AMD systems, does not boot and 
-> QEMU exits.
-> 
-> ===
-> commit e7761d827e99919c32400056a884e481ef008ec4 (refs/bisect/bad)
-> Author:     Ard Biesheuvel <ardb@kernel.org>
-> AuthorDate: Wed Aug 16 21:05:57 2023 +0200
-> 
->      efi/unaccepted: Use ACPI reclaim memory for unaccepted memory table
-> ===
-> 
-> Is there a fix for that?
-> 
-> Also, out of curiosity - where was the patch originally posted? I could 
-> not find it anywhere on nntp.lore.kernel.org to reply to it. Thanks,
-> 
+Do we expect to integrate TDVMCALL(MAPGPA) of TDX into KVM_HC_MAP_GPA_RANGE?
 
+> but reporting KVM_EXIT_HYPERCALL for implicit conversions is undesriable
+> as there is (obviously) no hypercall, and there is no guarantee that the
+> guest actually intends to convert between private and shared, i.e. what
+> KVM thinks is an implicit conversion "request" could actually be the
+> result of a guest code bug.
+> 
+> KVM_EXIT_MEMORY_FAULT will be used to report memory faults that appear to
+> be implicit conversions.
+> 
+> Place "struct memory_fault" in a second anonymous union so that filling
+> memory_fault doesn't clobber state from other yet-to-be-fulfilled exits,
+> and to provide additional information if KVM does NOT ultimately exit to
+> userspace with KVM_EXIT_MEMORY_FAULT, e.g. if KVM suppresses (or worse,
+> loses) the exit, as KVM often suppresses exits for memory failures that
+> occur when accessing paravirt data structures.  The initial usage for
+> private memory will be all-or-nothing, but other features such as the
+> proposed "userfault on missing mappings" support will use
+> KVM_EXIT_MEMORY_FAULT for potentially _all_ guest memory accesses, i.e.
+> will run afoul of KVM's various quirks.
 
--- 
-Alexey
+So when exit reason is KVM_EXIT_MEMORY_FAULT, how can we tell which 
+field in the first union is valid?
+
+When exit reason is not KVM_EXIT_MEMORY_FAULT, how can we know the info 
+in the second union run.memory is valid without a run.memory.valid field?
+
+> Use bit 3 for flagging private memory so that KVM can use bits 0-2 for
+> capturing RWX behavior if/when userspace needs such information.
+> 
+> Note!  To allow for future possibilities where KVM reports
+> KVM_EXIT_MEMORY_FAULT and fills run->memory_fault on _any_ unresolved
+> fault, KVM returns "-EFAULT" (-1 with errno == EFAULT from userspace's
+> perspective), not '0'!  Due to historical baggage within KVM, exiting to
+> userspace with '0' from deep callstacks, e.g. in emulation paths, is
+> infeasible as doing so would require a near-complete overhaul of KVM,
+> whereas KVM already propagates -errno return codes to userspace even when
+> the -errno originated in a low level helper.
+> 
+> Link: https://lore.kernel.org/all/20230908222905.1321305-5-amoorthy@google.com
+> Cc: Anish Moorthy <amoorthy@google.com>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Co-developed-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   Documentation/virt/kvm/api.rst | 24 ++++++++++++++++++++++++
+>   include/linux/kvm_host.h       | 15 +++++++++++++++
+>   include/uapi/linux/kvm.h       | 24 ++++++++++++++++++++++++
+>   3 files changed, 63 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 21a7578142a1..e28a13439a95 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6702,6 +6702,30 @@ array field represents return values. The userspace should update the return
+>   values of SBI call before resuming the VCPU. For more details on RISC-V SBI
+>   spec refer, https://github.com/riscv/riscv-sbi-doc.
+>   
+> +::
+> +
+> +		/* KVM_EXIT_MEMORY_FAULT */
+> +		struct {
+> +  #define KVM_MEMORY_EXIT_FLAG_PRIVATE	(1ULL << 3)
+> +			__u64 flags;
+> +			__u64 gpa;
+> +			__u64 size;
+> +		} memory;
+> +
+> +KVM_EXIT_MEMORY_FAULT indicates the vCPU has encountered a memory fault that
+> +could not be resolved by KVM.  The 'gpa' and 'size' (in bytes) describe the
+> +guest physical address range [gpa, gpa + size) of the fault.  The 'flags' field
+> +describes properties of the faulting access that are likely pertinent:
+> +
+> + - KVM_MEMORY_EXIT_FLAG_PRIVATE - When set, indicates the memory fault occurred
+> +   on a private memory access.  When clear, indicates the fault occurred on a
+> +   shared access.
+> +
+> +Note!  KVM_EXIT_MEMORY_FAULT is unique among all KVM exit reasons in that it
+> +accompanies a return code of '-1', not '0'!  errno will always be set to EFAULT
+> +or EHWPOISON when KVM exits with KVM_EXIT_MEMORY_FAULT, userspace should assume
+> +kvm_run.exit_reason is stale/undefined for all other error numbers.
+> +
+
+Initially, this section is the copy of struct kvm_run and had comments 
+for each field accordingly. Unfortunately, the consistence has not been 
+well maintained during the new filed being added.
+
+Do we expect to fix it?
+
+>   ::
+>   
+>       /* KVM_EXIT_NOTIFY */
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 4e741ff27af3..d8c6ce6c8211 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -2327,4 +2327,19 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
+>   /* Max number of entries allowed for each kvm dirty ring */
+>   #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+>   
+> +static inline void kvm_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
+> +						 gpa_t gpa, gpa_t size,
+> +						 bool is_write, bool is_exec,
+> +						 bool is_private)
+> +{
+> +	vcpu->run->exit_reason = KVM_EXIT_MEMORY_FAULT;
+> +	vcpu->run->memory_fault.gpa = gpa;
+> +	vcpu->run->memory_fault.size = size;
+> +
+> +	/* RWX flags are not (yet) defined or communicated to userspace. */
+> +	vcpu->run->memory_fault.flags = 0;
+> +	if (is_private)
+> +		vcpu->run->memory_fault.flags |= KVM_MEMORY_EXIT_FLAG_PRIVATE;
+> +}
+> +
+>   #endif
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index bd1abe067f28..d2d913acf0df 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -274,6 +274,7 @@ struct kvm_xen_exit {
+>   #define KVM_EXIT_RISCV_SBI        35
+>   #define KVM_EXIT_RISCV_CSR        36
+>   #define KVM_EXIT_NOTIFY           37
+> +#define KVM_EXIT_MEMORY_FAULT     38
+>   
+>   /* For KVM_EXIT_INTERNAL_ERROR */
+>   /* Emulate instruction failed. */
+> @@ -541,6 +542,29 @@ struct kvm_run {
+>   		struct kvm_sync_regs regs;
+>   		char padding[SYNC_REGS_SIZE_BYTES];
+>   	} s;
+> +
+> +	/*
+> +	 * This second exit union holds structs for exit types which may be
+> +	 * triggered after KVM has already initiated a different exit, or which
+> +	 * may be ultimately dropped by KVM.
+> +	 *
+> +	 * For example, because of limitations in KVM's uAPI, KVM x86 can
+> +	 * generate a memory fault exit an MMIO exit is initiated (exit_reason
+> +	 * and kvm_run.mmio are filled).  And conversely, KVM often disables
+> +	 * paravirt features if a memory fault occurs when accessing paravirt
+> +	 * data instead of reporting the error to userspace.
+> +	 */
+> +	union {
+> +		/* KVM_EXIT_MEMORY_FAULT */
+> +		struct {
+> +#define KVM_MEMORY_EXIT_FLAG_PRIVATE	(1ULL << 3)
+> +			__u64 flags;
+> +			__u64 gpa;
+> +			__u64 size;
+> +		} memory_fault;
+> +		/* Fix the size of the union. */
+> +		char padding2[256];
+> +	};
+>   };
+>   
+>   /* for KVM_REGISTER_COALESCED_MMIO / KVM_UNREGISTER_COALESCED_MMIO */
 
