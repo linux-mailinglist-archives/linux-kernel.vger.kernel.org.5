@@ -2,136 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46A67AB677
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500467AB678
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjIVQuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
+        id S230292AbjIVQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjIVQuE (ORCPT
+        with ESMTP id S229533AbjIVQut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:50:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39140F1;
-        Fri, 22 Sep 2023 09:49:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 511B3C433C8;
-        Fri, 22 Sep 2023 16:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695401396;
-        bh=0xBnXjW3loV9628S4jtACHr/cDQh7s6GnO30Dk/zW84=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FzSy6ZoF/w80FXor4EBOcj8a3gitrilQBH11kEMNDtoklpAIqaI6Z/OrnBloHghoX
-         t+Tpq9ksXFkhNXW0slSG/HSQXaCEsMsGAKNobpy9cUMdOA8c6A8rTHoetOm0ZTNkzs
-         KL38kGIfTQrdv2UqR7oSYhzbVfrQ0dUT4BYnNCOc=
-Date:   Fri, 22 Sep 2023 18:49:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Clark <robdclark@chromium.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jon Hunter <jonathanh@nvidia.com>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 6.1 000/139] 6.1.55-rc1 review
-Message-ID: <2023092218-nacho-urgent-9466@gregkh>
-References: <20230920112835.549467415@linuxfoundation.org>
- <79a96d41-1b79-51b4-fda0-743b853213b9@nvidia.com>
- <7e0355bd-64cd-f6c2-b720-e4643579078c@nvidia.com>
- <53c9f81e-55b9-b8bb-7821-cb124780d4c0@roeck-us.net>
- <CAJs_Fx6-AWA1fxgV1u=ycn2YXm3D0GnGQeC1UR8QwVXFKDGJqw@mail.gmail.com>
- <2023092216-poser-nickname-b882@gregkh>
- <2023092209-qualified-consumer-84bb@gregkh>
+        Fri, 22 Sep 2023 12:50:49 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83756114
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:50:42 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3ae093798c0so1106415b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695401442; x=1696006242; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=99AiTC6PdKmEKuFs5VDntv38vtb1p0JCkXRHFl2kGNA=;
+        b=QITJsAC6eUpXyEryXkjusQf9seU+wR2KSgePaa36GQiaWHplPA23J/DAWBEV/19sMR
+         72jqFI1uHKmm6GtGi8j2B9M5hqIpoqMZb6NHRCZPEzmJB6n1MJBuWzBRfcpx55ULJtpY
+         VcjstJKk1hFk7ljvRjLh18RJPQKSHrwQc19Wg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695401442; x=1696006242;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=99AiTC6PdKmEKuFs5VDntv38vtb1p0JCkXRHFl2kGNA=;
+        b=At+/o+oD9+CNYah4jkEZCLmDMdbDYYHbFqGwT+c21D1WoDM21rl3vHoj4A/xioC8u6
+         R2I8Ze/g5l1Dfs0HzQl8MKcW8NUn832li9tZClPNGh2PUKwUQuk3jyye0V1+QFPMWKfH
+         gKsDKTsJ03CEQtoJn27AeCDNw1w2JXyAwyK22nLGqtDa3XllbAmN1J66lKf/8xed/U6I
+         1W5HaNho9wYQq7Z+ruFFflz0vhdAwNrTmWZhQPkWTc9baO0KhVzfyNVWHUkqwZqUwnKz
+         s9QxgEwzBhqTNNhfJ7gcStFbSrCOnvYFWyDJVwZP0mqz/g95nqjCGw1ZfWX1LJhCZSQl
+         A+vg==
+X-Gm-Message-State: AOJu0Yxzobc84ZX8XzAqqrh0NLiz34/rqzpBJpWjZiqpk3x2T6HhApsr
+        LIQdHR/JgE+iVs7jdmKg97GkbA==
+X-Google-Smtp-Source: AGHT+IEpOxNDz3Q8e2NMc7jrDxBaDbnPEashckoS/7e9rXXy723/ranlh3V0DHfIcRFFfaQYNxs0Uw==
+X-Received: by 2002:a05:6808:1312:b0:3a7:6b1c:8142 with SMTP id y18-20020a056808131200b003a76b1c8142mr294681oiv.25.1695401441834;
+        Fri, 22 Sep 2023 09:50:41 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id w30-20020a63935e000000b0057e7ae47893sm319628pgm.47.2023.09.22.09.50.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 09:50:41 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Mirko Lindner <mlindner@marvell.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v2] sky2: Make sure there is at least one frag_addr available
+Date:   Fri, 22 Sep 2023 09:50:39 -0700
+Message-Id: <20230922165036.gonna.464-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3027; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=D3wJYtNT+fehH+dInexP+yE206U6nroRdgV+blpgkJU=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDcXf2S6cAcLFqAOzju8F3xU0g4vs2DhpWBo9i
+ y9AMlhf1BWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3F3wAKCRCJcvTf3G3A
+ Jh5ND/96fenf2yO4Fqd07XMPqa6DS2scTmmqjljStWjvAz43/k1J1kxDY6XNrwPwNrPHzy4xLEg
+ go1s8Y/WUCT5z79TuqTZ0U9HSNYNdL2o3WoCeGrLjqvT7dEGQXt9TjGwRV0WAkntvnIn1xkEb7J
+ YAEbembiRiToiE/sbiHRbyOquDKSorqWtWETg/HGdHRFaRIclYUdLjv/RJe+N0lT1ZNulNXGsV2
+ IbhTprdB50zHbHM65wmHOoRGOtWx+iNL856q/7/9DGf8TURtBizSDuSfLWNI4GA5s+ABlS0q0c0
+ KncfWy3dv241llYKivdUwz7/4kgKO0IREV4SeJvEkHO9h2FSey6gSlslnCKf8P+g8CdcURllSOt
+ OrLrqYYFjIw7lEiX2v7hkjTLIzGaOIv9h4PXRoq4M4djR7PV/B8FWYrgKbOUVEG1a9iyUy4KlK+
+ XtxnUnhlj4Az3WlsZ7lf8sqXlAxsUUJ6wK/rVBDTtlgrdeFgsObARhi56X0pg2LS5IKfVA1A0Pe
+ OmtzPfDwtE565FYrofTCSHSWj2dzD1UKWV0HF6SQFbs0LqYGHgQtTGJc1GN1rnbK5+Wq6lJyqkP
+ AUT5praPLaRrsygNTE4T18KFKVdqxKMI9ZzVd40k3H2Bxn5fBZ9iuc7Bpk4qTTydjVdrITOCpy9
+ 73xJjbt nPTopGDg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023092209-qualified-consumer-84bb@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 06:25:45PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Sep 22, 2023 at 06:17:25PM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 22, 2023 at 08:00:31AM -0700, Rob Clark wrote:
-> > > On Fri, Sep 22, 2023 at 7:52 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > >
-> > > > On 9/22/23 05:31, Jon Hunter wrote:
-> > > > >
-> > > > > On 22/09/2023 10:45, Jon Hunter wrote:
-> > > > >> Hi Greg,
-> > > > >>
-> > > > >> On 20/09/2023 12:28, Greg Kroah-Hartman wrote:
-> > > > >>> This is the start of the stable review cycle for the 6.1.55 release.
-> > > > >>> There are 139 patches in this series, all will be posted as a response
-> > > > >>> to this one.  If anyone has any issues with these being applied, please
-> > > > >>> let me know.
-> > > > >>>
-> > > > >>> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> > > > >>> Anything received after that time might be too late.
-> > > > >>>
-> > > > >>> The whole patch series can be found in one patch at:
-> > > > >>>     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.55-rc1.gz
-> > > > >>> or in the git tree and branch at:
-> > > > >>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > > >>> and the diffstat can be found below.
-> > > > >>>
-> > > > >>> thanks,
-> > > > >>>
-> > > > >>> greg k-h
-> > > > >>
-> > > > >> I am seeing some suspend failures with this update ...
-> > > > >>
-> > > > >> Test results for stable-v6.1:
-> > > > >>      11 builds:    11 pass, 0 fail
-> > > > >>      28 boots:    28 pass, 0 fail
-> > > > >>      130 tests:    124 pass, 6 fail
-> > > > >>
-> > > > >> Linux version:    6.1.55-rc1-gd5ace918366e
-> > > > >> Boards tested:    tegra124-jetson-tk1, tegra186-p2771-0000,
-> > > > >>                  tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-> > > > >>                  tegra20-ventana, tegra210-p2371-2180,
-> > > > >>                  tegra210-p3450-0000, tegra30-cardhu-a04
-> > > > >>
-> > > > >> Test failures:    tegra124-jetson-tk1: pm-system-suspend.sh
-> > > > >>                  tegra186-p2771-0000: pm-system-suspend.sh
-> > > > >>                  tegra20-ventana: pm-system-suspend.sh
-> > > > >>                  tegra30-cardhu-a04: pm-system-suspend.sh
-> > > > >>
-> > > > >> Bisect is underway.
-> > > > >
-> > > > >
-> > > > > Bisect for this issue is also pointing to ...
-> > > > >
-> > > > > Rob Clark <robdclark@chromium.org>
-> > > > >       interconnect: Fix locking for runpm vs reclaim
-> > > > >
-> > > > > Looks like all the Tegra issues are related to this.
-> > > > >
-> > > >
-> > > > This isn't surprising because upstream commit 136191703038 ("interconnect: Teach
-> > > > lockdep about icc_bw_lock order") silently fixes it without Fixes: tag. If you
-> > > > look into that patch you'll see that the the missing call to mutex_unlock() is
-> > > > added to icc_sync_state().
-> > > 
-> > > Oh, indeed, it looks like that hunk ended up in the wrong commit, and
-> > > I didn't notice because both were merged at the same time
-> > 
-> > Thanks, I've queued that fix up now as well.
-> 
-> And that breaks on older kernels, let me drop the interconnect patches
-> completely and I'll wait for someone to submit a full, working, set for
-> stable inclusion to add them back at a later time if wanted.
+In the pathological case of building sky2 with 16k PAGE_SIZE, the
+frag_addr[] array would never be used, so the original code was correct
+that size should be 0. But the compiler now gets upset with 0 size arrays
+in places where it hasn't eliminated the code that might access such an
+array (it can't figure out that in this case an rx skb with fragments
+would never be created). To keep the compiler happy, make sure there is
+at least 1 frag_addr in struct rx_ring_info:
 
-Ok, I'll just do that for 5.10, and leave it for the others.
+   In file included from include/linux/skbuff.h:28,
+                    from include/net/net_namespace.h:43,
+                    from include/linux/netdevice.h:38,
+                    from drivers/net/ethernet/marvell/sky2.c:18:
+   drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_unmap_skb':
+   include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
+     416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
+         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/marvell/sky2.c:1257:17: note: in expansion of macro 'dma_unmap_page'
+    1257 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
+         |                 ^~~~~~~~~~~~~~
+   In file included from drivers/net/ethernet/marvell/sky2.c:41:
+   drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
+    2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
+         |                         ^~~~~~~~~
 
-greg k-h
+With CONFIG_PAGE_SIZE_16KB=y, PAGE_SHIFT == 14, so:
+
+  #define ETH_JUMBO_MTU   9000
+
+causes "ETH_JUMBO_MTU >> PAGE_SHIFT" to be 0. Use "?: 1" to solve this build warning.
+
+Cc: Mirko Lindner <mlindner@marvell.com>
+Cc: Stephen Hemminger <stephen@networkplumber.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309191958.UBw1cjXk-lkp@intel.com/
+Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v2 - improve commit message, add Ack
+v1 - https://lore.kernel.org/netdev/20230920202509.never.299-kees@kernel.org/
+---
+ drivers/net/ethernet/marvell/sky2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/sky2.h b/drivers/net/ethernet/marvell/sky2.h
+index ddec1627f1a7..8d0bacf4e49c 100644
+--- a/drivers/net/ethernet/marvell/sky2.h
++++ b/drivers/net/ethernet/marvell/sky2.h
+@@ -2195,7 +2195,7 @@ struct rx_ring_info {
+ 	struct sk_buff	*skb;
+ 	dma_addr_t	data_addr;
+ 	DEFINE_DMA_UNMAP_LEN(data_size);
+-	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
++	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT ?: 1];
+ };
+ 
+ enum flow_control {
+-- 
+2.34.1
+
