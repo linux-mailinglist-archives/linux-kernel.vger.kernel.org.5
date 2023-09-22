@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9377ABC68
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2397ABC6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjIVXjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 19:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
+        id S230284AbjIVXoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 19:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjIVXjm (ORCPT
+        with ESMTP id S229628AbjIVXoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 19:39:42 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980821A1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 16:39:36 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-415155b2796so66241cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 16:39:36 -0700 (PDT)
+        Fri, 22 Sep 2023 19:44:54 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345DE1A2;
+        Fri, 22 Sep 2023 16:44:48 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c328b53aeaso27243215ad.2;
+        Fri, 22 Sep 2023 16:44:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695425975; x=1696030775; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Im+zOMVypPEia8MVs6KRCiMY7tEGPMADLH1faEZpG8=;
-        b=GVjK1JuHmXaLO6w3JhyU+SYpIZ4Lf6lAiXdAj1bfSaSCnPcx7tLyoXazDRTDS9wW17
-         xLvQdHm4N+LCzjvtySDWSujmnSwrYNgVsKp1KFspqeHESICFqZ2I/+SWsSoSsh0IQIER
-         spxN9guLw/UtwvybFSwfWgHyANOC572eJHWxfCpRTuDhY/Gaz2iomM2D9jSu86WnCux5
-         RDz8NKFEyOV+jc1u09f7aFeqJAb+Bsny71k+EdlLNPYO+4M1vSso3hQyURJSHVN4vGFw
-         fbfo3DmQORQN5rlzYUqybh1Fy3SpYmr6AJXeWxGAIlh8NQb+iT5tJlaoMr1hNUX47HAI
-         VMmw==
+        d=gmail.com; s=20230601; t=1695426287; x=1696031087; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=MZpY1IZ4bUrCy8aga9AziYMkBusuoXKm+AQsy7SMzlw=;
+        b=I7qHZ9FGWnL1tI9P5bkbztyAZgioK+j4J0gCHGbOsoaH+8+JD0ZE1fRwRbKZVoWHSx
+         +jjoDB42lb/HZHYQk4WZu+FsCWpV9itrI/UeyMtpsQKCSCOQNHu/q/MG2haYr6lHqPib
+         q57qW/x5l8vOw0InM0lD3JZeCm4lsRBD/uelVV/GqDDxdDO74z+18fsoLo16Xs57y5XM
+         8efU7SDOjXI+nb9khHcC2JpaQLA1cDvcHl4kuXztrYXPTGll/ve5Qjd1WcJ8R/+x8N7U
+         VKp1MPWqbyRMFnnEKyWs2AWBoRYe3HwbjXwD3yYyRI9BAGlXHEEU8R9BHcoxDo2/g0OR
+         wdyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695425975; x=1696030775;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Im+zOMVypPEia8MVs6KRCiMY7tEGPMADLH1faEZpG8=;
-        b=J2avS0yo37j3VGfzcqRJucU3s659fO8xmdDAmZ6MNOzAFhGkF+mXPkpt1mtMOH+2UX
-         mpWZrNCdHyXEJOQNaX19s6Nfx097rwLCNKuUsDefJ7b0xmW20DXQA1x4FYlslitid+iu
-         uITVpRtt36rZ52yHN19q0Z/QfunlusrQiRheTD/fIBW6536uIBfbLh9PdTXLf57QumbT
-         Iah2vzuM6QGv2aSx0/+W0jVGg2HkaG/w2zBgOuoZCfiBIWgTelJJOTH8yeLyeC7LUplD
-         F9mvcDt0xNFXHcqN0EmOsCmpVqEtdq+YWeH0BrIu/v7cB7NH/Hpao0udSis/FMQ5KfQr
-         fDnw==
-X-Gm-Message-State: AOJu0YxmMSPIKG4lfYL28D7f4f5BH6D7CEzLkmeHM3urtYG9kFRDDu6n
-        q8tPvzbGCH0s9q4o2zRWN/s7ntpbmu1F5QkphpF2wA==
-X-Google-Smtp-Source: AGHT+IFVZjVuHQd8Fqrz/Pbsl23SeiMNn6a2XOn/teOInfmWdqwud/8Hv9MwItGOLmgG2jBGD5mVG4k0cwESNTNIz+U=
-X-Received: by 2002:a05:622a:307:b0:418:4db:afab with SMTP id
- q7-20020a05622a030700b0041804dbafabmr50047qtw.9.1695425975627; Fri, 22 Sep
- 2023 16:39:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695426287; x=1696031087;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MZpY1IZ4bUrCy8aga9AziYMkBusuoXKm+AQsy7SMzlw=;
+        b=ETSpG2vvgIS12V7H20jnw7Z63xi/SYYP312uWc3EN0CHoK7DUD1lTJQGBCgntUbFQ3
+         oHoYS4wFZaYChd0I8RMr0eEhxTxaHJER7HfNf3wMs5MU1l/NbGhMy5cPVqXuiKsskbqM
+         dN6uphzzWw/i7A3NfkhIT91xwJWRkPqtimCZEmonvyzQMYnK8Wx+/urisQYMxCifACrw
+         EY1Jx8A7AKYmItXs5tTV4Lwnmtl0xuQWaxVRUfEqI9Cyk/PuDKowg3iJbOx1EiwpNu3q
+         vziyHrzzfTeVQyoigT9C/PLK505//4Sy7l7WGgsmbFAVxkhUEj30HVpOzP+aMwc+C/E4
+         PJLQ==
+X-Gm-Message-State: AOJu0Yx+qbIrJpTk5gJGlASL1Og7BXYf3m/ARdLLbBpg4ub4WLs4gstZ
+        pKobyFGG9C+j76Ie9ne6LPY=
+X-Google-Smtp-Source: AGHT+IHPZg/jEObdNDGRmdgw7+V6Y5CcHs7Cn0XPXcjakXuhni912sY281xDPaXUI/vI2QikxYCUEQ==
+X-Received: by 2002:a17:902:ab01:b0:1b8:66f6:87a3 with SMTP id ik1-20020a170902ab0100b001b866f687a3mr802257plb.52.1695426287474;
+        Fri, 22 Sep 2023 16:44:47 -0700 (PDT)
+Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:32b8:255a:115:8538])
+        by smtp.gmail.com with ESMTPSA id l19-20020a170902d35300b001bf5e24b2a8sm4076519plk.174.2023.09.22.16.44.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 16:44:46 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: [PATCH] perf record: Fix BTF type checks in the off-cpu profiling
+Date:   Fri, 22 Sep 2023 16:44:44 -0700
+Message-ID: <20230922234444.3115821-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-References: <20230922113923.3621959-1-make_ruc2021@163.com>
-In-Reply-To: <20230922113923.3621959-1-make_ruc2021@163.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 22 Sep 2023 16:39:23 -0700
-Message-ID: <CAGS_qxqGFP5nWmvGmUJYDWXTndyq_HCVZDpYeNr9UFTk3zJ_DA@mail.gmail.com>
-Subject: Re: [PATCH v2] list: test: potential dereference of null pointer
-To:     Ma Ke <make_ruc2021@163.com>
-Cc:     davidgow@google.com, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 4:40=E2=80=AFAM Ma Ke <make_ruc2021@163.com> wrote:
->
-> To avoid the failure of alloc, we could check the return value of
-> kmalloc() and kzalloc().
+The BTF func proto for a tracepoint has one more argument than the
+actual tracepoint function since it has a context argument at the
+begining.  So it should compare to 5 when the tracepoint has 4
+arguments.
 
-Thanks, that's a good point, some suggestions below.
-And also a question for David Gow whenever he sees this.
+  typedef void (*btf_trace_sched_switch)(void *, bool, struct task_struct *, struct task_struct *, unsigned int);
 
->
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> ---
->  lib/list-test.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/lib/list-test.c b/lib/list-test.c
-> index 0cc27de9cec8..70e898976dbf 100644
-> --- a/lib/list-test.c
-> +++ b/lib/list-test.c
-> @@ -27,9 +27,18 @@ static void list_test_list_init(struct kunit *test)
->         INIT_LIST_HEAD(&list2);
->
->         list4 =3D kzalloc(sizeof(*list4), GFP_KERNEL | __GFP_NOFAIL);
-> +       if (!list4) {
-> +               KUNIT_FAIL(test, "Initialising list4 failed.\n");
-> +               return;
-> +       }
+Also, recent change in the perf tool would use a hand-written minimal
+vmlinux.h to generate BTF in the skeleton.  So it won't have the info
+of the tracepoint.  Anyway it should use the kernel's vmlinux BTF to
+check the type in the kernel.
 
-Note: we can replace this with a one-liner
-  KUNIT_ASSERT_NOT_NULL(test, list4);
+Fixes: b36888f71c85 ("perf record: Handle argument change in sched_switch")
+Cc: Song Liu <song@kernel.org>
+Cc: Hao Luo <haoluo@google.com>
+CC: bpf@vger.kernel.org
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_off_cpu.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
->         INIT_LIST_HEAD(list4);
->
->         list5 =3D kmalloc(sizeof(*list5), GFP_KERNEL | __GFP_NOFAIL);
-> +       if (!list5) {
-> +               kfree(list4);
+diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
+index 01f70b8e705a..21f4d9ba023d 100644
+--- a/tools/perf/util/bpf_off_cpu.c
++++ b/tools/perf/util/bpf_off_cpu.c
+@@ -98,7 +98,7 @@ static void off_cpu_finish(void *arg __maybe_unused)
+ /* v5.18 kernel added prev_state arg, so it needs to check the signature */
+ static void check_sched_switch_args(void)
+ {
+-	const struct btf *btf = bpf_object__btf(skel->obj);
++	const struct btf *btf = btf__load_vmlinux_btf();
+ 	const struct btf_type *t1, *t2, *t3;
+ 	u32 type_id;
+ 
+@@ -116,7 +116,8 @@ static void check_sched_switch_args(void)
+ 		return;
+ 
+ 	t3 = btf__type_by_id(btf, t2->type);
+-	if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 4) {
++	/* btf_trace func proto has one more argument for the context */
++	if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 5) {
+ 		/* new format: pass prev_state as 4th arg */
+ 		skel->rodata->has_prev_state = true;
+ 	}
+-- 
+2.42.0.515.g380fc7ccd1-goog
 
-We can also replace this check with the one-liner
-  KUNIT_ASSERT_NOT_NULL(test, list5);
-
-But we'd need to migrate the kzalloc() call to use kunit_kzalloc():
-  kunit_kzalloc(test, sizeof(*list4), GFP_KERNEL | __GFP_NOFAIL);
-that way we don't have to manually free list4.
-
-I'm not sure why the original version didn't use the kunit helpers to
-begin with.
-Perhaps David would remember.
-
-A quick lazy ^F over the original patch didn't find anything afaict,
-https://lore.kernel.org/linux-kselftest/a127aeaa-e5ba-2d8d-0894-936e0563750=
-8@kernel.org/T/#u
-
-
-> +               KUNIT_FAIL(test, "Initialising list5 failed.\n");
-> +               return;
-> +       }
-
-Daniel
