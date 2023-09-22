@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A41A7AAC74
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB157AAC73
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbjIVITd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S232173AbjIVIT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjIVITa (ORCPT
+        with ESMTP id S232163AbjIVITh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:19:30 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B18EF7;
-        Fri, 22 Sep 2023 01:19:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VscqxyT_1695370757;
-Received: from 30.221.145.107(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VscqxyT_1695370757)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Sep 2023 16:19:19 +0800
-Message-ID: <0f5bbe93-1875-ff9b-a1d8-8518a8cf3e84@linux.alibaba.com>
+        Fri, 22 Sep 2023 04:19:37 -0400
+Received: from out-211.mta0.migadu.com (out-211.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5237CBB
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:19:29 -0700 (PDT)
+Message-ID: <7f222dae-c256-a625-6846-dd22e16687fb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695370767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=imHpJXjN7oTKFJS9REtYSyqNmmkpWVduPz1WiGdeDhQ=;
+        b=aaqU6sR2Ls4axHOb/Ybmaf9uLXm07hG4eJMU3sKyN+oEFzI61M9Yp4tWEae7xyLZYHQXjC
+        Ts3Y7eEeCyCQFA0hv0IgmszkamVHxn2C0wdntuxz+AybAfs3Ellb6XmL6ILM+9N/rl2Ca4
+        0BtKTuYV12xdb+Gu3qGbUFEdJ1rvYfw=
 Date:   Fri, 22 Sep 2023 16:19:17 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v9 1/7] perf pmu: "Compat" supports regular expression
- matching identifiers
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1695037955-107983-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1695037955-107983-2-git-send-email-renyu.zj@linux.alibaba.com>
- <CAP-5=fUxfJT-gxKB+Ls3drUeQ0sy55uydi8Y36gumUnaFSYeqA@mail.gmail.com>
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-In-Reply-To: <CAP-5=fUxfJT-gxKB+Ls3drUeQ0sy55uydi8Y36gumUnaFSYeqA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Subject: Re: [PATCH v4 4/8] hugetlb: perform vmemmap restoration on a list of
+ pages
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20230918230202.254631-1-mike.kravetz@oracle.com>
+ <20230918230202.254631-5-mike.kravetz@oracle.com>
+ <b9d03e01-7582-8ec9-d219-941184166835@linux.dev>
+ <20230919205756.GB425719@monkey>
+ <CED64A95-00E8-4B52-A77A-8B13D2795507@linux.dev>
+ <2FDB2018-74AE-4514-9B43-01664A8E5DBF@linux.dev>
+ <20230921011223.GC4065@monkey>
+ <306da2a1-0dd4-e858-930f-211947a466d2@linux.dev>
+ <20230921215810.GA21193@monkey>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230921215810.GA21193@monkey>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,119 +71,294 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-在 2023/9/21 上午2:36, Ian Rogers 写道:
-> On Mon, Sep 18, 2023 at 4:52 AM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+On 2023/9/22 05:58, Mike Kravetz wrote:
+> On 09/21/23 17:31, Muchun Song wrote:
 >>
->> The jevent "Compat" is used for uncore PMU alias or metric definitions.
+>> On 2023/9/21 09:12, Mike Kravetz wrote:
+>>> On 09/20/23 11:03, Muchun Song wrote:
+>>>>> On Sep 20, 2023, at 10:56, Muchun Song <muchun.song@linux.dev> wrote:
+>>>>>> On Sep 20, 2023, at 04:57, Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>>>>> On 09/19/23 17:52, Muchun Song wrote:
+>>>>>>> On 2023/9/19 07:01, Mike Kravetz wrote:
+>>> +/**
+>>> + * hugetlb_vmemmap_restore_folios - restore vmemmap for every folio on the list.
+>>> + * @h:		struct hstate.
+>>> + * @folio_list:	list of folios.
+>>> + * @restored:	Set to number of folios for which vmemmap was restored
+>>> + *		successfully if caller passes a non-NULL pointer.
+>>> + *
+>>> + * Return: %0 if vmemmap exists for all folios on the list.  If an error is
+>>> + *		encountered restoring vmemmap for ANY folio, an error code
+>>> + *		will be returned to the caller.  It is then the responsibility
+>>> + *		of the caller to check the hugetlb vmemmap optimized flag of
+>>> + *		each folio to determine if vmemmap was actually restored.
+>>> + *		Note that processing is stopped when first error is encountered.
+>>> + */
+>>> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
+>>> +					struct list_head *folio_list,
+>>> +					unsigned long *restored)
+>> How about changing parameter of @restored to a list_head type which
+>> returns the non-optimized (previously) or vmemmap-restored-sucessful huge
+>> pages?
+>> In which case, the caller could traverse this returned list to free
+>> them first like you have implemented in bulk_vmemmap_restore_enomem(),
+>> it will be more efficient. The meaning of returned value should also
+>> be changed accordingly since update_and_free_pages_bulk() wants to
+>> whether there is a vmemmap-optimized huge page being restored sucessfully
+>> to determine if it should clear hugetlb flag. So
+>> hugetlb_vmemmap_restore_folios()
+>> could return how many huge pages being restored successful, if a negative
+>> number is returned meaning there is some error in the process of restoring
+>> of vmemmap.
 >>
->> The same PMU driver has different PMU identifiers due to different
->> hardware versions and types, but they may have some common PMU event.
->> Since a Compat value can only match one identifier, when adding the
->> same event alias to PMUs with different identifiers, each identifier
->> needs to be defined once, which is not streamlined enough.
->>
->> So let "Compat" support using regular expression to match identifiers
->> for uncore PMU alias. For example, if the "Compat" value is set to
->> "43401|43c01", it would be able to match PMU identifiers such as "43401"
->> or "43c01", which correspond to CMN600_r0p0 or CMN700_r0p0.
->>
->> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
->> ---
->>  tools/perf/util/pmu.c | 23 +++++++++++++++++++++--
->>  tools/perf/util/pmu.h |  1 +
->>  2 files changed, 22 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index e215985..7e2242f 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -28,6 +28,7 @@
->>  #include "strbuf.h"
->>  #include "fncache.h"
->>  #include "util/evsel_config.h"
->> +#include <regex.h>
->>
->>  struct perf_pmu perf_pmu__fake = {
->>         .name = "fake",
->> @@ -875,6 +876,24 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->>         return res;
->>  }
->>
->> +bool pmu_uncore_identifier_match(const char *compat, const char *id)
->> +{
->> +       regex_t re;
->> +       regmatch_t pmatch[1];
->> +       int match;
->> +
->> +       if (regcomp(&re, compat, REG_EXTENDED) != 0) {
->> +               /* Warn unable to generate match particular string. */
->> +               pr_info("Invalid regular expression %s\n", compat);
->> +               return false;
->> +       }
->> +
->> +       match = !regexec(&re, id, 1, pmatch, 0);
-> 
-> I wonder if we can make the regular expressions like
-> "^(434|436|43c|43a)" more like "(434|436|43c|43a).*", so that we fully
-> match the id string, by here doing:
-> 
-> if (match) {
->   /* Ensure a full match. */
->   match = pmatch[0].rm_so == 0 && pmatch[0].rm_eo == strlen(id);
-> }
-> 
+> I had similar thoughts.  An updated patch based on this approach is below.
+> When creating the patch, I discovered that using the function return code
+> for both number of vmemmap restored pages as well as error code was
+> unnecessary.  Just checking !list_empty() of non-optimized pages tells us
+> if any were restored or could be freed.
 
-Ok, will do.
+I also thought about this. But there is a little different. If HVO
+is disabled, we will always clear the hugetlb flag twice since the
+list couldn't be empty, I thought it is an optimization for HVO-disabled
+case.
 
+>
+>  From b79f6eeb7a11644830bddfc43d2219c149d26405 Mon Sep 17 00:00:00 2001
+> From: Mike Kravetz <mike.kravetz@oracle.com>
+> Date: Sun, 10 Sep 2023 16:14:50 -0700
+> Subject: [PATCH] hugetlb: perform vmemmap restoration on a list of pages
+>
+> The routine update_and_free_pages_bulk already performs vmemmap
+> restoration on the list of hugetlb pages in a separate step.  In
+> preparation for more functionality to be added in this step, create a
+> new routine hugetlb_vmemmap_restore_folios() that will restore
+> vmemmap for a list of folios.
+>
+> This new routine must provide sufficient feedback about errors and
+> actual restoration performed so that update_and_free_pages_bulk can
+> perform optimally.
+>
+> Special care must be taken when encountering an error from
+> hugetlb_vmemmap_restore_folios.  We want to continue making as much
+> forward progress as possible.  A new routine bulk_vmemmap_restore_error
+> handles this specific situation.
+>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>   mm/hugetlb.c         | 94 +++++++++++++++++++++++++++++++-------------
+>   mm/hugetlb_vmemmap.c | 36 +++++++++++++++++
+>   mm/hugetlb_vmemmap.h | 10 +++++
+>   3 files changed, 112 insertions(+), 28 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 70fedf8682c4..11de3f885065 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1834,50 +1834,88 @@ static void update_and_free_hugetlb_folio(struct hstate *h, struct folio *folio,
+>   		schedule_work(&free_hpage_work);
+>   }
+>   
+> -static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
+> +static void bulk_vmemmap_restore_error(struct hstate *h,
+> +					struct list_head *list,
+> +					struct list_head *non_op_folios)
+>   {
+>   	struct folio *folio, *t_folio;
+> -	bool clear_dtor = false;
+>   
+> -	/*
+> -	 * First allocate required vmemmmap (if necessary) for all folios on
+> -	 * list.  If vmemmap can not be allocated, we can not free folio to
+> -	 * lower level allocator, so add back as hugetlb surplus page.
+> -	 * add_hugetlb_folio() removes the page from THIS list.
+> -	 * Use clear_dtor to note if vmemmap was successfully allocated for
+> -	 * ANY page on the list.
+> -	 */
+> -	list_for_each_entry_safe(folio, t_folio, list, lru) {
+> -		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
+> +	if (!list_empty(non_op_folios)) {
+> +		/*
+> +		 * Free any restored hugetlb pages so that restore of the
+> +		 * entire list can be retried.
+> +		 * The idea is that in the common case of ENOMEM errors freeing
+> +		 * hugetlb pages with vmemmap we will free up memory so that we
+> +		 * can allocate vmemmap for more hugetlb pages.
+> +		 */
+> +		list_for_each_entry_safe(folio, t_folio, non_op_folios, lru) {
+> +			list_del(&folio->lru);
+> +			spin_lock_irq(&hugetlb_lock);
+> +			__clear_hugetlb_destructor(h, folio);
+> +			spin_unlock_irq(&hugetlb_lock);
+> +			update_and_free_hugetlb_folio(h, folio, false);
+> +			cond_resched();
+> +		}
+> +	} else {
+> +		/*
+> +		 * In the case where vmemmap was not restored for ANY folios,
+> +		 * we loop through them trying to restore individually in the
+> +		 * hope that someone elsewhere may have done something to cause
+> +		 * success (such as freeing some memory).
+> +		 * If unable to restore a hugetlb page, the hugetlb page is
+> +		 * made a surplus page and removed from the list.
+> +		 * If are able to restore vmemmap for one hugetlb page, we free
+> +		 * it and quit processing the list to retry the bulk operation.
+> +		 */
+> +		list_for_each_entry_safe(folio, t_folio, list, lru)
+>   			if (hugetlb_vmemmap_restore(h, &folio->page)) {
+>   				spin_lock_irq(&hugetlb_lock);
+>   				add_hugetlb_folio(h, folio, true);
+>   				spin_unlock_irq(&hugetlb_lock);
+> -			} else
+> -				clear_dtor = true;
+> -		}
+> +			} else {
+> +				list_del(&folio->lru);
+> +				spin_lock_irq(&hugetlb_lock);
+> +				__clear_hugetlb_destructor(h, folio);
+> +				spin_unlock_irq(&hugetlb_lock);
+> +				update_and_free_hugetlb_folio(h, folio, false);
+> +				cond_resched();
+> +				break;
+> +			}
+>   	}
+> +}
+> +
+> +static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
+> +{
+> +	int ret;
+> +	LIST_HEAD(non_op_folio);
+> +	struct folio *folio, *t_folio;
+>   
+>   	/*
+> -	 * If vmemmmap allocation was performed on any folio above, take lock
+> -	 * to clear destructor of all folios on list.  This avoids the need to
+> -	 * lock/unlock for each individual folio.
+> -	 * The assumption is vmemmap allocation was performed on all or none
+> -	 * of the folios on the list.  This is true expect in VERY rare cases.
+> +	 * First allocate required vmemmmap (if necessary) for all folios.
+> +	 * Carefully handle errors and free up any available hugetlb pages
+> +	 * in an effort to make forward progress.
+>   	 */
+> -	if (clear_dtor) {
+> +retry:
+> +	ret = hugetlb_vmemmap_restore_folios(h, list, &non_op_folio);
+> +	if (ret < 0) {
+> +		bulk_vmemmap_restore_error(h, list, &non_op_folio);
+> +		goto retry;
+> +	}
+> +
+> +	/*
+> +	 * At this point, list should be empty, and there should only be
+> +	 * pages on the non_op_folio list.  free those entries.  Do note
+> +	 * that the non_op_folio list could be empty.
+> +	 */
+> +	VM_WARN_ON(!list_empty(list));
+> +	if (!list_empty(&non_op_folio)) {
+>   		spin_lock_irq(&hugetlb_lock);
+> -		list_for_each_entry(folio, list, lru)
+> +		list_for_each_entry(folio, &non_op_folio, lru)
+>   			__clear_hugetlb_destructor(h, folio);
+>   		spin_unlock_irq(&hugetlb_lock);
+>   	}
+>   
+> -	/*
+> -	 * Free folios back to low level allocators.  vmemmap and destructors
+> -	 * were taken care of above, so update_and_free_hugetlb_folio will
+> -	 * not need to take hugetlb lock.
+> -	 */
+> -	list_for_each_entry_safe(folio, t_folio, list, lru) {
+> +	list_for_each_entry_safe(folio, t_folio, &non_op_folio, lru) {
+>   		update_and_free_hugetlb_folio(h, folio, false);
+>   		cond_resched();
+>   	}
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index 4558b814ffab..f827d4efcf8e 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -480,6 +480,42 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+>   	return ret;
+>   }
+>   
+> +/**
+> + * hugetlb_vmemmap_restore_folios - restore vmemmap for every folio on the list.
+> + * @h:			hstate.
+> + * @folio_list:		list of folios.
+> + * @non_op_list:	Output list of folio for which vmemmap exists.
+> + *
+> + * Return: %0 if vmemmap exists for all folios on the list and all entries have
+> + *		been moved to non_op_list.  If an error is encountered restoring
+> + *		vmemmap for ANY folio, an error code will be returned to the
+> + *		caller.  Processing en entries stops when the first error is
+> + *		encountered.  folios processed before the error with vmemmap
+> + *		will reside on the non_op_list.  The folio that experienced the
+> + *		error and all non-processed folios will remain on folio_list.
+> + */
+> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
+> +					struct list_head *folio_list,
+> +					struct list_head *non_op_list)
 
-> I think longer term we can use jevents.py to generate a pmu-events.l,
-> which would have a contents something like:
-> 
-> (434|436|43c|43a).*  { return PMU_....;}
-> 
-> That should make the matching faster but may add some restrictions
-> onto the regular expression.
+non_optimized_list or vmemmap_intact_list? The abbreviation is not 
+straightforward.
 
-Could you please describe the function of pmu-event.l in more detail? I may not fully understand it.
+> +{
+> +	struct folio *folio, *t_folio;
+> +	int ret = 0;
+> +
+> +	list_for_each_entry_safe(folio, t_folio, folio_list, lru) {
+> +		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
 
-Thanks,
-Jing
+hugetlb_vmemmap_restore() has this check as well, so it is unnecessary here.
 
-> 
-> Thanks,
-> Ian
-> 
->> +       regfree(&re);
->> +
->> +       return match;
->> +}
->> +
->>  static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *pe,
->>                                         const struct pmu_events_table *table __maybe_unused,
->>                                         void *vdata)
->> @@ -915,8 +934,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
->>         if (!pe->compat || !pe->pmu)
->>                 return 0;
->>
->> -       if (!strcmp(pmu->id, pe->compat) &&
->> -           pmu_uncore_alias_match(pe->pmu, pmu->name)) {
->> +       if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
->> +                       pmu_uncore_identifier_match(pe->compat, pmu->id)) {
->>                 perf_pmu__new_alias(pmu,
->>                                 pe->name,
->>                                 pe->desc,
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index bd5d804..fc155ce 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -240,6 +240,7 @@ void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
->>  char *perf_pmu__getcpuid(struct perf_pmu *pmu);
->>  const struct pmu_events_table *pmu_events_table__find(void);
->>  const struct pmu_metrics_table *pmu_metrics_table__find(void);
->> +bool pmu_uncore_identifier_match(const char *compat, const char *id);
->>
->>  int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
->>
->> --
->> 1.8.3.1
->>
+> +			ret = hugetlb_vmemmap_restore(h, &folio->page);
+> +			if (ret)
+> +				goto out;
+
+Maybe we could drop the label ("out") and just breaking or returning from
+here is enough.
+
+> +		}
+> +
+> +		/* Add non-optimized folios to output list */
+> +		list_move(&folio->lru, non_op_list);
+> +	}
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+>   /* Return true iff a HugeTLB whose vmemmap should and can be optimized. */
+>   static bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+>   {
+> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
+> index c512e388dbb4..e6378ae5c5b6 100644
+> --- a/mm/hugetlb_vmemmap.h
+> +++ b/mm/hugetlb_vmemmap.h
+> @@ -19,6 +19,9 @@
+>   
+>   #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+>   int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
+> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
+> +					struct list_head *folio_list,
+> +					struct list_head *non_op_folios);
+
+It is better to keep 3rd name (non_op_folios) consistent with where it is
+defined (it is non_op_list).
+
+>   void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
+>   void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list);
+>   
+> @@ -45,6 +48,13 @@ static inline int hugetlb_vmemmap_restore(const struct hstate *h, struct page *h
+>   	return 0;
+>   }
+>   
+> +static int hugetlb_vmemmap_restore_folios(const struct hstate *h,
+> +					struct list_head *folio_list,
+> +					struct list_head *non_op_folios)
+> +{
+> +	return 0;
+> +}
+> +
+>   static inline void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+>   {
+>   }
+
