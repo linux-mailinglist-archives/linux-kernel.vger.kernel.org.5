@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD947AAA63
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87137AAA66
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbjIVHgs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 03:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S231544AbjIVHhW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 03:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbjIVHgp (ORCPT
+        with ESMTP id S231254AbjIVHhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:36:45 -0400
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4406CA;
-        Fri, 22 Sep 2023 00:36:34 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso3012672e87.1;
-        Fri, 22 Sep 2023 00:36:34 -0700 (PDT)
+        Fri, 22 Sep 2023 03:37:20 -0400
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C86EC2;
+        Fri, 22 Sep 2023 00:37:14 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50308217223so2977034e87.3;
+        Fri, 22 Sep 2023 00:37:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695368192; x=1695972992;
+        d=1e100.net; s=20230601; t=1695368231; x=1695973031;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vQ5IUNNW5XM0w46Ddjoo+5lCOw4ZdTJm+91GIKNdxYo=;
-        b=F8nI8370Qbux1ph7sbr5r0aQYJuqXCMhEIb26wdZPG6pnBAvL9S0Xqou6xw02cVeng
-         NJBIpR/BOKx29AzX0sjPoXuHzz3l86O//g08fTX5Cq8qni5N4DpmfEwwHUyt0xY5XgdL
-         pkjWjl/hRCWkLH78xBhAh2U+6c69Cbd5X9QqMRIhYfOgkQV89hZk4X199xgn4bPM0vsw
-         oSJLfl+WFgebinanLtDSebg1Rw89JFgQi+xUre0atBUiIg6+cn+2tPEI615mC7TqhnSK
-         dEj3xkeCaNtA6Olh44CRSLUaHT5vls3YWsLs8ValGyA47egCRW2jkNFBEIfxiToyQM5t
-         Uhwg==
-X-Gm-Message-State: AOJu0YxtZWlnepVkTojYF1iWHeZE4hbx+37UnDJrncUvk1jBWHRpqnc4
-        +mMPzU8TWYa/MadbXwZL/nshonE7AxyuodfY
-X-Google-Smtp-Source: AGHT+IE25bTwJIqMhBCVIBuA0pFEOwWoOS9O8hgHB2uNKuf1U5opnOaqgPaBCy0Gjrw5QijKLNEFtQ==
-X-Received: by 2002:a05:6512:547:b0:502:ab7b:e477 with SMTP id h7-20020a056512054700b00502ab7be477mr6176358lfl.53.1695368192210;
-        Fri, 22 Sep 2023 00:36:32 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id l8-20020ac25548000000b004fe2f085d5csm619954lfk.299.2023.09.22.00.36.31
+        bh=f/AwkMqcydRXtjTPwCiDk2wI5A7HmbHim06+U2RTEk8=;
+        b=KsZyMNwFEGsq1yOuPmKCae7mAnuMZDeAR+hox/xVQt4KpJz2ll80St7Z69tG83yFXw
+         94WS1c6vc42Ivq7XGSbJbNalRxEqdCEt59n8ppoFhJykaYDUiTDZyb+4BeoAQ7bml9G5
+         zFzNddaHaAH/dkg8KzaduLFooqrOXec0rgoMGRe4nnoK6ztan6/QqmgIm4Rt9zqjdQiZ
+         HcbLj7GrZvYwuKUZwJk43CNqLeXjbcsp+wpWJPsiE8IqG/5vi1pwoJt1QPUsQSLnqv7t
+         kGgXL626ec1sVVUYsWqmF60Lbm9J6Ue/A81pOQWovibQ19Rugsruet5qGfovt6bn9eP/
+         Rsbg==
+X-Gm-Message-State: AOJu0YwqvOzeEfWag9AKTYvwbZBQ0PoxP6YGaOEsSNdqAMP6fpBEB2F3
+        G8I0UYPXka+CDUl3vzO6Je5+P0boRs76pcr/
+X-Google-Smtp-Source: AGHT+IEvATs3i/pFs3zL5O5gTMQn1d2NKdo1QUITAGRN48aYbq0uUqyyArLMRflMu89Pwaie498TYA==
+X-Received: by 2002:a05:6512:208c:b0:500:acf1:b42f with SMTP id t12-20020a056512208c00b00500acf1b42fmr6255825lfr.53.1695368230788;
+        Fri, 22 Sep 2023 00:37:10 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id v25-20020a197419000000b004fdc0023a47sm617625lfe.238.2023.09.22.00.37.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 00:36:31 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2c008d8fd07so30451541fa.1;
-        Fri, 22 Sep 2023 00:36:31 -0700 (PDT)
-X-Received: by 2002:a2e:7808:0:b0:2bc:b6a3:5a9 with SMTP id
- t8-20020a2e7808000000b002bcb6a305a9mr6713573ljc.37.1695368191602; Fri, 22 Sep
- 2023 00:36:31 -0700 (PDT)
+        Fri, 22 Sep 2023 00:37:10 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2c02e232c48so30366231fa.1;
+        Fri, 22 Sep 2023 00:37:10 -0700 (PDT)
+X-Received: by 2002:a2e:908c:0:b0:2bc:da4a:4649 with SMTP id
+ l12-20020a2e908c000000b002bcda4a4649mr6786575ljg.22.1695368230179; Fri, 22
+ Sep 2023 00:37:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230921132823.5723-1-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20230921132823.5723-1-wsa+renesas@sang-engineering.com>
+References: <20230921085752.8686-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20230921085752.8686-1-wsa+renesas@sang-engineering.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 22 Sep 2023 09:36:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWwnGNL-Jr+c=7z0cPiddF05MgFSKFVHSdVvjT_aKkKNA@mail.gmail.com>
-Message-ID: <CAMuHMdWwnGNL-Jr+c=7z0cPiddF05MgFSKFVHSdVvjT_aKkKNA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm: renesas: rcar-du: use proper naming for R-Car
+Date:   Fri, 22 Sep 2023 09:36:57 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVkn1saSGo_71cwfAaia4L_2q-91HqePTvXxer9j_JfOQ@mail.gmail.com>
+Message-ID: <CAMuHMdVkn1saSGo_71cwfAaia4L_2q-91HqePTvXxer9j_JfOQ@mail.gmail.com>
+Subject: Re: [PATCH] i2c: mux: gpio: adhere to coding style
 To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
 Cc:     linux-renesas-soc@vger.kernel.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -70,17 +68,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 2:58 AM Wolfram Sang
+On Fri, Sep 22, 2023 at 1:51 AM Wolfram Sang
 <wsa+renesas@sang-engineering.com> wrote:
-> Not RCAR, but R-Car.
+> Advertise our coding style by following it :)
 >
 > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> ---
->
-> Changes since v1:
-> * rebased to 6.6-rc2
-> * added tag from Kieran (Thanks!)
 
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
