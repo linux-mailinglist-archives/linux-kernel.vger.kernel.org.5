@@ -2,283 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE5D7AB4A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047B97AB48E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbjIVPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S232465AbjIVPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjIVPTo (ORCPT
+        with ESMTP id S231173AbjIVPRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:19:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4291A100
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695395978; x=1726931978;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5JiJ3ki9XOt9pmx24LVzMFsOP2njaM1lOzq256mNqVQ=;
-  b=n5ibx8kSlMi4mLC7U2QndFirF5TQvj2M8DeThhYUKXtxv1VHB5e3Ryvc
-   76Pf3u35xr+6nSSxsetOjR+CR51j7/Fnzexu5KVRd7h68Jk2B48yUUNBo
-   O3U3fDm6BiYc25a98VvkCiEdHMyOheRlpitHGohDdC98MnKv7ZRgr+339
-   SzmW9TOy7/h4L2CcLhk9nUj35Lo2MXfKNSG20O/Gd2AaZVvIpJl9ylD+c
-   reo67EiB8sXkpvUhloqVk337usj4I1Hkj86LVRHTAOvEmETF65KGhHfQj
-   xCQ7Of5/WABMhTaXppQsklcx+XRpJKcCfRP9hGHFKbrxebsKioWRP2fuq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="360235292"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="360235292"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 08:19:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="741133231"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="741133231"
-Received: from cascade.sh.intel.com ([10.239.48.35])
-  by orsmga007.jf.intel.com with ESMTP; 22 Sep 2023 08:19:34 -0700
-From:   Jingqi Liu <Jingqi.liu@intel.com>
-To:     iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Jingqi Liu <Jingqi.liu@intel.com>
-Subject: [PATCH v2 3/3] iommu/vt-d: debugfs: Support dumping a specified page table
-Date:   Fri, 22 Sep 2023 23:16:36 +0800
-Message-Id: <20230922151636.77139-4-Jingqi.liu@intel.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20230922151636.77139-1-Jingqi.liu@intel.com>
-References: <20230922151636.77139-1-Jingqi.liu@intel.com>
+        Fri, 22 Sep 2023 11:17:13 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046DBA1;
+        Fri, 22 Sep 2023 08:17:07 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MEcPXC007646;
+        Fri, 22 Sep 2023 15:16:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=j+Qc3pIBgo5kicmDkbyiNqlYk1YzVlOWKWhwzFhQ6vo=;
+ b=kwRtLKmCekSZfYQY7MQspD07uAwriFQUcuQ77QVAZA10Ud4dW3VP6Cvt6yVGCYYWu/pL
+ hJ/stH/6ywyW4GD+iqVhcCpqf31pVVx8dWs5ny3rz9tcM8xBB8tVLH4K0R0gV2gfiNKN
+ zPE6Z50ho9Le4SPvA9wquHusTCVrvIAKAvF8lMHz31IUoG6YC8Yds6qr80L4+mtnP1vA
+ RgGbFPwqsim4LIbJUsJ52z3Z9ZUcxSKL7rvN5oQwxGqIE0D3ZHKBAVOjiQL5iF2oPlEE
+ HVAb2NJmOrXvgrrBDlKIJ3cJbkLxpLgY1P5PBo8I9+EZoezwuLVIZi5YwPUMdH28xcy8 Dg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u5n289a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 15:16:53 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MFGqHR000592
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 15:16:52 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 22 Sep 2023 08:16:52 -0700
+Date:   Fri, 22 Sep 2023 08:16:51 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: Re: [PATCH V2] crypto: qcom-rng - Add hw_random interface support
+Message-ID: <20230922151651.GA437346@hu-bjorande-lv.qualcomm.com>
+References: <20230905062420.3983268-1-quic_omprsing@quicinc.com>
+ <20230920030408.3181394-1-quic_omprsing@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230920030408.3181394-1-quic_omprsing@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Tr-6h0JYolkqjt6KcstqhMzgElmMyY4z
+X-Proofpoint-GUID: Tr-6h0JYolkqjt6KcstqhMzgElmMyY4z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_13,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 spamscore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1011 adultscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220131
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original debugfs only dumps all page tables without pasid. With
-pasid supported, the page table with pasid also needs to be dumped.
+On Wed, Sep 20, 2023 at 08:34:08AM +0530, Om Prakash Singh wrote:
+> Add hw_random interface support in qcom-rng driver as new IP block
+> in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
+> to generate true random number.
+> 
+> Keeping current rng_alg interface as well for random number generation
+> using Kernel Crypto API.
+> 
+> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> ---
+> 
+> Changes in V2:
+> - Updated patch to fix the return value from qcom_rng_generate() to be
+>   consistent with current implementation
 
-This patch supports dumping a specified page table in legacy mode or
-scalable mode with or without a specified pasid.
+As far as I can tell you didn't change this, see below.
 
-For legacy mode, according to bus number and DEVFN, traverse the root
-table and context table to get the pointer of page table in the
-context table entry, then dump the specified page table.
+> - Updated patch to make it more concise
+> - Removed unnecessary use local variable and it's initialization
+> - Updated patch to use devm_hwrng_register() instead of hwrng_register()
+> - Updated subject line of the patch
+> 
+> This patch is depends on [1]
+> [1] https://lore.kernel.org/lkml/20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org/
+> 
+>  drivers/crypto/qcom-rng.c | 65 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 58 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
+> index fb54b8cfc35f..e5a574a3cc59 100644
+> --- a/drivers/crypto/qcom-rng.c
+> +++ b/drivers/crypto/qcom-rng.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/clk.h>
+>  #include <linux/crypto.h>
+> +#include <linux/hw_random.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+> @@ -32,13 +33,18 @@ struct qcom_rng {
+>  	struct mutex lock;
+>  	void __iomem *base;
+>  	struct clk *clk;
+> -	unsigned int skip_init;
+> +	struct qcom_rng_of_data *of_data;
+>  };
+>  
+>  struct qcom_rng_ctx {
+>  	struct qcom_rng *rng;
+>  };
+>  
+> +struct qcom_rng_of_data {
+> +	bool skip_init;
+> +	bool hwrng_support;
+> +};
+> +
+>  static struct qcom_rng *qcom_rng_dev;
+>  
+>  static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+> @@ -70,7 +76,7 @@ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+>  		}
+>  	} while (currsize < max);
+>  
+> -	return 0;
+> +	return currsize;
 
-For scalable mode, according to bus number, DEVFN and pasid, traverse
-the root table, context table, pasid directory and pasid table to get
-the pointer of page table in the pasid table entry, then dump the
-specified page table..
+As I pointed out in my previous review, if the qcom_rng_read() is
+requested to read a number of bytes (max) that is not evenly divisible
+with 4 (WORD_SZ) the loop will exit without accounting for the last
+bytes copied...
 
-Examples are as follows:
-1) Dump the page table of device "0000:00:1f.0" that only supports
-   legacy mode.
-   $ sudo cat
-   /sys/kernel/debug/iommu/intel/0000:00:1f.0/0/domain_translation_struct
+>  }
+>  
+>  static int qcom_rng_generate(struct crypto_rng *tfm,
+> @@ -92,6 +98,9 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
+>  	mutex_unlock(&rng->lock);
+>  	clk_disable_unprepare(rng->clk);
+>  
+> +	if (ret == dlen)
 
-2) Dump the page table of device "0000:00:0a.0" with PASID "1" that
-   supports scalable mode.
-   $ sudo cat
-   /sys/kernel/debug/iommu/intel/0000:00:0a.0/1/domain_translation_struct
+...this means that if dlen % 4, you're changing the return value of this
+function from 0 to dlen.
 
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Jingqi Liu <Jingqi.liu@intel.com>
----
- drivers/iommu/intel/debugfs.c | 163 +++++++++++++++++++++++++---------
- 1 file changed, 121 insertions(+), 42 deletions(-)
+> +		ret = 0;
+> +
+>  	return ret;
+>  }
+>  
+> @@ -101,6 +110,13 @@ static int qcom_rng_seed(struct crypto_rng *tfm, const u8 *seed,
+>  	return 0;
+>  }
+>  
+> +static int qcom_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+> +{
+> +	struct qcom_rng *qrng = (struct qcom_rng *)rng->priv;
 
-diff --git a/drivers/iommu/intel/debugfs.c b/drivers/iommu/intel/debugfs.c
-index 9128febba3c6..51f0e022c06e 100644
---- a/drivers/iommu/intel/debugfs.c
-+++ b/drivers/iommu/intel/debugfs.c
-@@ -352,58 +352,137 @@ static void pgtable_walk_level(struct seq_file *m, struct dma_pte *pde,
- 	}
- }
- 
--static int __show_device_domain_translation(struct device *dev, void *data)
-+static int domain_translation_struct_show(struct seq_file *m, void *unused)
- {
--	struct dmar_domain *domain;
--	struct seq_file *m = data;
--	u64 path[6] = { 0 };
-+	struct device_domain_info *info;
-+	struct show_domain_info *sinfo;
-+	bool scalable, found = false;
-+	struct dmar_drhd_unit *drhd;
-+	struct intel_iommu *iommu;
-+	u16 devfn, bus, seg;
- 
--	domain = to_dmar_domain(iommu_get_domain_for_dev(dev));
--	if (!domain)
--		return 0;
-+	if (!m || !m->private) {
-+		seq_puts(m, "Invalid device or pasid!\n");
-+		return -EINVAL;
-+	}
- 
--	seq_printf(m, "Device %s @0x%llx\n", dev_name(dev),
--		   (u64)virt_to_phys(domain->pgd));
--	seq_puts(m, "IOVA_PFN\t\tPML5E\t\t\tPML4E\t\t\tPDPE\t\t\tPDE\t\t\tPTE\n");
-+	sinfo = (struct show_domain_info*)m->private;
-+	if (!sinfo->dev ||
-+	    !dev_iommu_priv_get(sinfo->dev) ||
-+	    (sinfo->pasid == IOMMU_PASID_INVALID)) {
-+		seq_puts(m, "Please specify device or pasid!\n");
-+		return -ENODEV;
-+	}
- 
--	pgtable_walk_level(m, domain->pgd, domain->agaw + 2, 0, path);
--	seq_putc(m, '\n');
-+	info = dev_iommu_priv_get(sinfo->dev);
-+	bus = info->bus;
-+	devfn = info->devfn;
-+	seg = info->segment;
- 
--	/* Don't iterate */
--	return 1;
--}
-+	rcu_read_lock();
-+	for_each_active_iommu(iommu, drhd) {
-+		struct context_entry *context;
-+		u64 pgd, path[6] = { 0 };
-+		u32 sts, agaw;
- 
--static int show_device_domain_translation(struct device *dev, void *data)
--{
--	struct iommu_group *group;
-+		if (seg != iommu->segment)
-+			continue;
- 
--	device_lock(dev);
--	group = iommu_group_get(dev);
--	device_unlock(dev);
--	if (!group)
--		return 0;
-+		sts = dmar_readl(iommu->reg + DMAR_GSTS_REG);
-+		if (!(sts & DMA_GSTS_TES)) {
-+			seq_printf(m, "DMA Remapping is not enabled on %s\n",
-+				   iommu->name);
-+			continue;
-+		}
-+		if (dmar_readq(iommu->reg + DMAR_RTADDR_REG) & DMA_RTADDR_SMT)
-+			scalable = true;
-+		else
-+			scalable = false;
- 
--	/*
--	 * The group->mutex is held across the callback, which will
--	 * block calls to iommu_attach/detach_group/device. Hence,
--	 * the domain of the device will not change during traversal.
--	 *
--	 * All devices in an iommu group share a single domain, hence
--	 * we only dump the domain of the first device. Even though,
--	 * this code still possibly races with the iommu_unmap()
--	 * interface. This could be solved by RCU-freeing the page
--	 * table pages in the iommu_unmap() path.
--	 */
--	iommu_group_for_each_dev(group, data, __show_device_domain_translation);
--	iommu_group_put(group);
-+		/*
-+		 * The iommu->lock is held across the callback, which will
-+		 * block calls to domain_attach/domain_detach. Hence,
-+		 * the domain of the device will not change during traversal.
-+		 *
-+		 * Traversing page table possibly races with the iommu_unmap()
-+		 * interface. This could be solved by RCU-freeing the page
-+		 * table pages in the iommu_unmap() path.
-+		 */
-+		spin_lock(&iommu->lock);
- 
--	return 0;
--}
-+		context = iommu_context_addr(iommu, bus, devfn, 0);
-+		if (!context || !context_present(context))
-+			goto iommu_unlock;
- 
--static int domain_translation_struct_show(struct seq_file *m, void *unused)
--{
--	return bus_for_each_dev(&pci_bus_type, NULL, m,
--				show_device_domain_translation);
-+		if (scalable) {	/* scalable mode */
-+			struct pasid_dir_entry *dir_tbl, *dir_entry;
-+			struct pasid_entry *pasid_tbl, *pasid_tbl_entry;
-+			u16 pasid_dir_size, dir_idx, tbl_idx, pgtt;
-+			u64 pasid_dir_ptr;
-+
-+			pasid_dir_ptr = context->lo & VTD_PAGE_MASK;
-+			pasid_dir_size = get_pasid_dir_size(context);
-+
-+			/* Dump specified device domain mappings with PASID. */
-+			dir_idx = sinfo->pasid >> PASID_PDE_SHIFT;
-+			tbl_idx = sinfo->pasid & PASID_PTE_MASK;
-+
-+			dir_tbl = phys_to_virt(pasid_dir_ptr);
-+			dir_entry = &dir_tbl[dir_idx];
-+
-+			pasid_tbl = get_pasid_table_from_pde(dir_entry);
-+			if (!pasid_tbl)
-+				goto iommu_unlock;
-+
-+			pasid_tbl_entry = &pasid_tbl[tbl_idx];
-+			if (!pasid_pte_is_present(pasid_tbl_entry))
-+				goto iommu_unlock;
-+
-+			/*
-+			 * According to PASID Granular Translation Type(PGTT),
-+			 * get the page table pointer.
-+			 */
-+			pgtt = (u16)(pasid_tbl_entry->val[0] & GENMASK_ULL(8, 6)) >> 6;
-+			agaw = (u8)(pasid_tbl_entry->val[0] & GENMASK_ULL(4, 2)) >> 2;
-+
-+			switch (pgtt) {
-+				case PASID_ENTRY_PGTT_FL_ONLY:
-+					pgd = pasid_tbl_entry->val[2];
-+					break;
-+				case PASID_ENTRY_PGTT_SL_ONLY:
-+				case PASID_ENTRY_PGTT_NESTED:
-+					pgd = pasid_tbl_entry->val[0];
-+					break;
-+				default:
-+					goto iommu_unlock;
-+			}
-+			pgd &= VTD_PAGE_MASK;
-+		} else { /* legacy mode */
-+			pgd = context->lo & VTD_PAGE_MASK;
-+			agaw = context->hi & 7;
-+		}
-+
-+		seq_printf(m, "Device %04x:%02x:%02x.%x ",
-+			   iommu->segment, bus, PCI_SLOT(devfn), PCI_FUNC(devfn));
-+
-+		if (scalable)
-+			seq_printf(m, "with pasid %x @0x%llx\n", sinfo->pasid, pgd);
-+		else
-+			seq_printf(m, "@0x%llx\n", pgd);
-+
-+		seq_printf(m, "%-17s\t%-18s\t%-18s\t%-18s\t%-18s\t%-s\n",
-+			   "IOVA_PFN", "PML5E", "PML4E", "PDPE", "PDE", "PTE");
-+		pgtable_walk_level(m, phys_to_virt(pgd), agaw + 2, 0, path);
-+
-+		found = true;
-+iommu_unlock:
-+		spin_unlock(&iommu->lock);
-+		if (found)
-+			break;
-+	}
-+	rcu_read_unlock();
-+
-+	return 0;
- }
- DEFINE_SHOW_ATTRIBUTE(domain_translation_struct);
- 
--- 
-2.21.3
+You missed Herbert's request in [1], which I presume implies that
+qcom_hwrng should be moved into struct qcom_rng, which would mean that
+you can get the qrng by container_of().
 
+[1] https://lore.kernel.org/lkml/ZQQvlXvGy8p01uJS@gondor.apana.org.au/
+
+> +
+> +	return qcom_rng_read(qrng, data, max);
+> +}
+> +
+>  static int qcom_rng_enable(struct qcom_rng *rng)
+>  {
+>  	u32 val;
+> @@ -136,7 +152,7 @@ static int qcom_rng_init(struct crypto_tfm *tfm)
+>  
+>  	ctx->rng = qcom_rng_dev;
+>  
+> -	if (!ctx->rng->skip_init)
+> +	if (!ctx->rng->of_data->skip_init)
+>  		return qcom_rng_enable(ctx->rng);
+>  
+>  	return 0;
+> @@ -157,6 +173,12 @@ static struct rng_alg qcom_rng_alg = {
+>  	}
+>  };
+>  
+> +static struct hwrng qcom_hwrng = {
+> +	.name = "qcom-hwrng",
+> +	.read = qcom_hwrng_read,
+> +	.quality = 1024,
+> +};
+
+Which would mean not adding this static global variable...
+
+Regards,
+Bjorn
