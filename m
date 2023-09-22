@@ -2,131 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA277AAA87
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37C37AAA93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbjIVHnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        id S231872AbjIVHn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbjIVHmN (ORCPT
+        with ESMTP id S231739AbjIVHnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:42:13 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E905B1A2;
-        Fri, 22 Sep 2023 00:42:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CC2DDA7;
-        Fri, 22 Sep 2023 00:42:43 -0700 (PDT)
-Received: from [10.57.65.11] (unknown [10.57.65.11])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3AA23F5A1;
-        Fri, 22 Sep 2023 00:41:54 -0700 (PDT)
-Message-ID: <af6a0bb0-4645-4667-aa0e-e78fac3aad28@arm.com>
-Date:   Fri, 22 Sep 2023 08:41:54 +0100
+        Fri, 22 Sep 2023 03:43:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291ACE4F;
+        Fri, 22 Sep 2023 00:42:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89EB6C43395;
+        Fri, 22 Sep 2023 07:42:16 +0000 (UTC)
+Message-ID: <86729293-ad37-4f2e-bff7-c49d166e02df@xs4all.nl>
+Date:   Fri, 22 Sep 2023 09:42:15 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/8] Fix set_huge_pte_at() panic on arm64
-Content-Language: en-GB
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
- <20230921093026.230b2991be551093e397f462@linux-foundation.org>
- <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com> <ZQx/f35o0zT2lug4@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZQx/f35o0zT2lug4@arm.com>
+Subject: Re: [PATCH v16 0/7] Support Nuvoton NPCM Video Capture/Encode Engine
+Content-Language: en-US, nl
+To:     Marvin Lin <milkfafa@gmail.com>, mchehab@kernel.org,
+        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        andrzej.p@collabora.com
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kflin@nuvoton.com
+References: <20230922062405.2571850-1-milkfafa@gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230922062405.2571850-1-milkfafa@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 18:38, Catalin Marinas wrote:
-> On Thu, Sep 21, 2023 at 05:35:54PM +0100, Ryan Roberts wrote:
->> On 21/09/2023 17:30, Andrew Morton wrote:
->>> On Thu, 21 Sep 2023 17:19:59 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>> Ryan Roberts (8):
->>>>   parisc: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   powerpc: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   riscv: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   s390: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   sparc: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   mm: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   arm64: hugetlb: Convert set_huge_pte_at() to take vma
->>>>   arm64: hugetlb: Fix set_huge_pte_at() to work with all swap entries
->>>>
->>>>  arch/arm64/include/asm/hugetlb.h              |  2 +-
->>>>  arch/arm64/mm/hugetlbpage.c                   | 22 ++++----------
->>>>  arch/parisc/include/asm/hugetlb.h             |  2 +-
->>>>  arch/parisc/mm/hugetlbpage.c                  |  4 +--
->>>>  .../include/asm/nohash/32/hugetlb-8xx.h       |  3 +-
->>>>  arch/powerpc/mm/book3s64/hugetlbpage.c        |  2 +-
->>>>  arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  2 +-
->>>>  arch/powerpc/mm/nohash/8xx.c                  |  2 +-
->>>>  arch/powerpc/mm/pgtable.c                     |  7 ++++-
->>>>  arch/riscv/include/asm/hugetlb.h              |  2 +-
->>>>  arch/riscv/mm/hugetlbpage.c                   |  3 +-
->>>>  arch/s390/include/asm/hugetlb.h               |  8 +++--
->>>>  arch/s390/mm/hugetlbpage.c                    |  8 ++++-
->>>>  arch/sparc/include/asm/hugetlb.h              |  8 +++--
->>>>  arch/sparc/mm/hugetlbpage.c                   |  8 ++++-
->>>>  include/asm-generic/hugetlb.h                 |  6 ++--
->>>>  include/linux/hugetlb.h                       |  6 ++--
->>>>  mm/damon/vaddr.c                              |  2 +-
->>>>  mm/hugetlb.c                                  | 30 +++++++++----------
->>>>  mm/migrate.c                                  |  2 +-
->>>>  mm/rmap.c                                     | 10 +++----
->>>>  mm/vmalloc.c                                  |  5 +++-
->>>>  22 files changed, 80 insertions(+), 64 deletions(-)
->>>
->>> Looks scary but it's actually a fairly modest patchset.  It could
->>> easily be all rolled into a single patch for ease of backporting. 
->>> Maybe Greg has an opinion?
->>
->> Yes, I thought about doing that; or perhaps 2 patches - one for the interface
->> change across all arches and core code, and one for the actual bug fix?
+Hi Marvin,
+
+Thank you for all your work! I have pushed these patches to our staging branch
+and they should appear in kernel 6.8.
+
+Note that dts patches do not go through the media subsystem, so whoever is in
+charge of that will have to pick that one up.
+
+Regards,
+
+	Hans
+
+On 22/09/2023 08:23, Marvin Lin wrote:
+> This patch series add DTS node, dt-bindings document and drivers for Video
+> Capture/Differentiation Engine (VCD) and Encoding Compression Engine (ECE)
+> present on Nuvoton NPCM SoCs.
 > 
-> I think this would make more sense, especially if we want to backport
-> it. The first patch would have no functional change, only an interface
-> change, followed by the arm64 fix.
-
-OK I'll do it like this for v2.
-
+> As described in the datasheet NPCM750D_DS_Rev_1.0, the VCD can capture a
+> frame from digital video input and compare two frames in memory, and then
+> the ECE can compress the frame data into HEXTILE format which is defined
+> in Remote Framebuffer Protocol (RFC 6143, chapter 7.7.4. Hextile Encoding).
+> 
+> The output of v4l2-compliance:
+> v4l2-compliance 1.23.0-4996, 64 bits, 64-bit time_t
+> v4l2-compliance SHA: 9431e4b26b48 2023-02-13 14:51:47
+> 
+> Compliance test for npcm-video device /dev/video0:
+> 
+> Driver Info:
+>         Driver name      : npcm-video
+>         Card type        : NPCM Video Engine
+>         Bus info         : platform:npcm-video
+>         Driver version   : 6.1.12
+>         Capabilities     : 0x84200001
+>                 Video Capture
+>                 Streaming
+>                 Extended Pix Format
+>                 Device Capabilities
+>         Device Caps      : 0x04200001
+>                 Video Capture
+>                 Streaming
+>                 Extended Pix Format
+> 
+> Required ioctls:
+>         test VIDIOC_QUERYCAP: OK
+>         test invalid ioctls: OK
+> 
+> Allow for multiple opens:
+>         test second /dev/video0 open: OK
+>         test VIDIOC_QUERYCAP: OK
+>         test VIDIOC_G/S_PRIORITY: OK
+>         test for unlimited opens: OK
+> 
+> Debug ioctls:
+>         test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+>         test VIDIOC_LOG_STATUS: OK (Not Supported)
+> 
+> Input ioctls:
+>         test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+>         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>         test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+>         test VIDIOC_ENUMAUDIO: OK (Not Supported)
+>         test VIDIOC_G/S/ENUMINPUT: OK
+>         test VIDIOC_G/S_AUDIO: OK (Not Supported)
+>         Inputs: 1 Audio Inputs: 0 Tuners: 0
+> 
+> Output ioctls:
+>         test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+>         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>         test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+>         test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+>         test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+>         Outputs: 0 Audio Outputs: 0 Modulators: 0
+> 
+> Input/Output configuration ioctls:
+>         test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+>         test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK
+>         test VIDIOC_DV_TIMINGS_CAP: OK
+>         test VIDIOC_G/S_EDID: OK (Not Supported)
+> 
+> Control ioctls (Input 0):
+>         test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+>         test VIDIOC_QUERYCTRL: OK
+>         test VIDIOC_G/S_CTRL: OK
+>         test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+>                 warn: v4l2-test-controls.cpp(1139): V4L2_CID_DV_RX_POWER_PRESENT not found for input 0
+>         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+>         test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>         Standard Controls: 1 Private Controls: 2
+> 
+> Format ioctls (Input 0):
+>         test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+>         test VIDIOC_G/S_PARM: OK (Not Supported)
+>         test VIDIOC_G_FBUF: OK (Not Supported)
+>         test VIDIOC_G_FMT: OK
+>         test VIDIOC_TRY_FMT: OK
+>         test VIDIOC_S_FMT: OK
+>         test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+>         test Cropping: OK (Not Supported)
+>         test Composing: OK (Not Supported)
+>         test Scaling: OK (Not Supported)
+> 
+> Codec ioctls (Input 0):
+>         test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+>         test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+>         test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+> 
+> Buffer ioctls (Input 0):
+>         test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>         test VIDIOC_EXPBUF: OK
+>         test Requests: OK (Not Supported)
+> 
+> Total for npcm-video device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 1
+> 
+> Changes in v16:
+>   - Fix sparse warnings.
+>   - Shorten V4L2_CID_NPCM_RECT_COUNT control name.
+> 
+> Changes in v15:
+>   - Drop VOLATILE flag from V4L2_CID_NPCM_RECT_COUNT control and update
+>     value by v4l2_ctrl_s_ctrl.
+>   - Add more explanations in comment/document for V4L2_CID_NPCM_RECT_COUNT.
+> 
+> Changes in v14:
+>   - Modify the flow of setting resolution and queue setup
+>   - Correct the control type (TYPE_MENU) of selecting between two modes.
+>   - Let ECE could be optional (only supports PIX_FMT_RGB565 if ECE is not
+>     enabled in DT).
+> 
+> Changes in v13:
+>   - Modify the flow for capturing next frame
+>   - Modify the behavior of resolution change interrupt
+>   - Move GFXI dt-bindings document to
+>     Documentation/devicetree/bindings/soc/nuvoton/nuvoton,gfxi.yaml
+> 
+> Changes in v12:
+>   - Modify the flow for detecting resolution change and raise
+>     V4L2_EVENT_SOURCE_CHANGE event.
+>   - Add V4L2_PIX_FMT_RGB565 format support.
+> 
+> Changes in v11:
+>   - Replace "u8/u16/u32" with "unsigned int" for generic local variables.
+>   - Correct subsystem prefixes, drop redundant words in commit subject, and
+>     add more information in commit message.
+> 
+> Changes in v10:
+>   - drivers/media/platform/nuvoton/npcm-video.c
+>     * Let short functions to be inline function.
+>     * Correct return type of some functions, and properly handle return
+>       value by callers.
+>     * Correct the timing of removing rect_list and the flow of FIFO overrun
+>       case in irq.
+>     * Adjust line breaks, indentations, and style of variable declarations.
+> 
+> Changes in v9:
+>   - Change ECE node name to "video-codec".
+>   - Drop redundant "bindings for" in commit subject of patch 2/7.
+>   - Refine the format of VCD/ECE dt-binding document.
+> 
+> Changes in v8:
+>   - Let VCD/ECE to be 2 separate nodes and update dt-binding documents.
+>   - Move register definitions out to a local header file.
+>   - Driver refinements (add error handling for memory allocation, remove
+>     unnecessary condition check and introduce "goto"s to handle similar
+>     error recovery paths).
+>   - Correct properties and typo in GFXI dt-binding document.
+> 
+> Changes in v7:
+>   - Add uapi documents for driver-specific controls.
+>   - Implement driver-specific controls for switching capture mode and
+>     getting the count of compressed HEXTILE rectangles.
+>   - Drop unnecessary "enum_framesizes" and "enum_frameintervals" functions.
+>   - Include the output of v4l2-compliance in cover letter.
+> 
+> Changes in v6:
+>   - Support NPCM845 and add compatible "nuvoton,npcm845-video".
+>   - Correct pixel format to V4L2_PIX_FMT_HEXTILE which is newly added in
+>     this patch series.
+> 
+> Changes in v5:
+>   - Simplify function prefix "nuvoton_" to "npcm_".
+>   - Increase VCD_BUSY_TIMEOUT_US and ECE_POLL_TIMEOUT_US to 300ms to
+>     prevent polling timeout when ECC is enabled or system is busy.
+> 
+> Changes in v4:
+>   - Fix compile warning reported by kernel test robot.
+> 
+> Changes in v3:
+>   - Add video driver entry in MAINTAINERS.
+>   - Change config name to CONFIG_VIDEO_NPCM_VCD_ECE.
+>   - Reduce the waiting time after resetting the VCD/ECE module.
+>   - Correct data types of some variables.
+> 
+> Changes in v2:
+>   - Add Hextile document and locate with vendor formats.
+> 
+> Marvin Lin (7):
+>   ARM: dts: nuvoton: Add node for NPCM VCD and ECE engine
+>   media: dt-bindings: nuvoton: Add NPCM VCD and ECE engine
+>   dt-bindings: soc: nuvoton: Add NPCM GFXI
+>   media: v4l: Add HEXTILE compressed format
+>   media: v4l2-ctrls: Add user control base for Nuvoton NPCM controls
+>   media: uapi: Add controls for NPCM video driver
+>   media: nuvoton: Add driver for NPCM video capture and encoding engine
+> 
+>  .../bindings/media/nuvoton,npcm-ece.yaml      |   43 +
+>  .../bindings/media/nuvoton,npcm-vcd.yaml      |   72 +
+>  .../bindings/soc/nuvoton/nuvoton,gfxi.yaml    |   39 +
+>  .../userspace-api/media/drivers/index.rst     |    1 +
+>  .../media/drivers/npcm-video.rst              |   66 +
+>  .../media/v4l/pixfmt-reserved.rst             |    7 +
+>  MAINTAINERS                                   |   12 +
+>  .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   |   23 +
+>  drivers/media/platform/Kconfig                |    1 +
+>  drivers/media/platform/Makefile               |    1 +
+>  drivers/media/platform/nuvoton/Kconfig        |   15 +
+>  drivers/media/platform/nuvoton/Makefile       |    2 +
+>  drivers/media/platform/nuvoton/npcm-regs.h    |  152 ++
+>  drivers/media/platform/nuvoton/npcm-video.c   | 1831 +++++++++++++++++
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+>  include/uapi/linux/npcm-video.h               |   41 +
+>  include/uapi/linux/v4l2-controls.h            |    6 +
+>  include/uapi/linux/videodev2.h                |    1 +
+>  18 files changed, 2314 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/nuvoton,npcm-ece.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/nuvoton,npcm-vcd.yaml
+>  create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton,gfxi.yaml
+>  create mode 100644 Documentation/userspace-api/media/drivers/npcm-video.rst
+>  create mode 100644 drivers/media/platform/nuvoton/Kconfig
+>  create mode 100644 drivers/media/platform/nuvoton/Makefile
+>  create mode 100644 drivers/media/platform/nuvoton/npcm-regs.h
+>  create mode 100644 drivers/media/platform/nuvoton/npcm-video.c
+>  create mode 100644 include/uapi/linux/npcm-video.h
 > 
 
