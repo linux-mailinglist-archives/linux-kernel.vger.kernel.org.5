@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 250A57AA7E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B823D7AA7E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbjIVEgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
+        id S229931AbjIVEgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjIVEge (ORCPT
+        with ESMTP id S230248AbjIVEgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:36:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D852E18F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:36:28 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8571d5e71aso2203978276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:36:28 -0700 (PDT)
+        Fri, 22 Sep 2023 00:36:36 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6770F192
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:36:30 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-690c2fec489so1666309b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695357388; x=1695962188; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695357390; x=1695962190; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFCV0sch6yU/8LYuNDFjRf1SrTydnK4Yn1LXrMsCSk4=;
-        b=yXERfMhY4eBgTkKkc75ZyeMIdpnGWdA75CrRE8zXbbt+Q7Xl0wlfNNATH2T4OfOpS7
-         w2t+T59imlmUC77GplKSx09TzP96vffUY54q2b90PsA0CvBJWBNNeCKa3lQgk9Pf4End
-         8OpP5yi1mYxQ6x41+89Kje2Ayg8xZ9sQZQNIhi0jdt6+tZdBOmkdbxXPWZdu0gdw8A0Z
-         nW1keo/5k1zZM215s8/vzUmQU4EPj845jfAUZgC3o8c6Y/YDd9xXgLECz1UKbTX6/E8Y
-         olcj83NMpKeA1llx9vAjD/L1up2+O8O8asL+gDhEhU92T/mFB5RlzzXmetqx/BVoyteI
-         /n/Q==
+        bh=r/KUuuQt1wtLnvbtfLVYFf0YPn4pz5Wk+u9cse4uVUE=;
+        b=g0DrD1J3I/aBzq1Qo1EPcvjmJzgMiJ7/EkxODsE9SfoSVZYfby0JdYQaQgapzAquBI
+         MqQpezaUPoCRhxSkDEv0cqDG/zZSAENwct5dQ3kcOv51udpojGyZuvSQcePfPMk0st5S
+         /DMEuRM2wVCZgTyRHn7cwbO8gFnjbhuOAuFmwO3P7kGPocjCnXApXX1kqykNoDW5km+o
+         7bvZxD2gsr1WhwFOo26L/mn3j3pzB4820BZIj8SpvU+C/Sb3l5x7UaL/It0yisa1QRsj
+         JXk5GDF8iC7AXwu+tL4G3g/Ob77HOLlTD1skRkhz/JmilgpA7vKwH28A8bRLY4lQSvl8
+         tLIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695357388; x=1695962188;
+        d=1e100.net; s=20230601; t=1695357390; x=1695962190;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFCV0sch6yU/8LYuNDFjRf1SrTydnK4Yn1LXrMsCSk4=;
-        b=RoSOpqbEUqRdBDuvMBxUDQFVo+dhsQV/yVGTdM8pK46k14DbQ2OcObwR9jdE3aMfdh
-         vKR+QmxtA5QY+zVcYXSGjD1gI/nJtk15rzOw4GeyFhH6As1KqWMjRfHD9HBxQOnsOIkN
-         VYuj5qzhNkVkLRcHMk/9pWoaLdWv0IfDAPxDdjP4CFM1hVI5PrdsaopZVlvULjBNEe5I
-         mF23RVdPlrabhG6c6QHvC5UMGEWazS66sJRM7LojvwyISfDv4PDXOiRIT2L8KTDmI38V
-         hQ2SQvB+1DMu7XiA12+FbMlFduOyoyCugJ/nxqHwhuiSAfqlHkdSCpkwNEJTHIyQXbcv
-         9Xhg==
-X-Gm-Message-State: AOJu0YxSd60EeYZ7Hkpt+dhP0oHXAaF5tupubSKL61GMgOS9SPLpO0AH
-        j/0CGbm2jCw+AMtsr6fMN2vaAfUXeS/WjRAVLpbyHjIMKQL1thJZEIzeITK+5PfNpSzL67vkevV
-        0OE05q1gC1IwKLgwAZYUlqMv5pXeBZa2W23bUsRlLw30QCpzzvKXBhOODZDVCG+w/O1ZXZuI=
-X-Google-Smtp-Source: AGHT+IHV7SMIXl/z2ZcUCI9wh8uElpYjP827jcLFnNhWQLUNorHifjF1jTcRD63C6a9rfv1vjhH5LttK/Cqh
+        bh=r/KUuuQt1wtLnvbtfLVYFf0YPn4pz5Wk+u9cse4uVUE=;
+        b=Zk5TwSpS8IkexpdbsRmYHMald7app7AWG9tWIS/XrGySl2pzzsUBwtRnrMlPVz+Buw
+         BnDkHGu8HWUD5XixNJDNOHGuPFRMj+DDqM8e9bfRWKg5m51aW4R7dBRy35u1T3u9xHz6
+         TKrbjCNI+D4FAKK/vR3Q4lS9jAOPlWsW10iFahnALpu8kplVsgaB7OaULPzqEGLcKMIi
+         UWe2SF9e4noxv1jVMfQIgfIBiG3yFhtMMbSVGbIV+4Fa0jHy1dVRSWzzo0EoLwE98yTg
+         bvFyR1d/SbzEs4hnq+aHacXD5qX2gQ1qO1Ojtiv0XncrC2guMORdfSb79KtUTZ4EIO2i
+         D80w==
+X-Gm-Message-State: AOJu0YwB+bbnZzcTMfucM3RR/XeAmr7BN1BM7jWGakfDkbLVNe2KSoB5
+        hC0A5mAap6O9uhULn4xJTK2+kI2Gb04q030IvBelysmh0ln/8UzOCUZd1Zjux3D9u66Nu9e5wvX
+        SIosWncvCF0AOrw5QAen7J7UKebg17JQL49E5qj+oCtWmdV9kR4SNFAY8T649yOH0Ip79bFg=
+X-Google-Smtp-Source: AGHT+IECV1YgzUdYwFj51w3+MPI0hZIbAXhqIaJV6YqJbBEazjIHb5LEGCWnetMW+pkWTk6eGtYnxd4OSB2N
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a25:4081:0:b0:d10:5b67:843c with SMTP id
- n123-20020a254081000000b00d105b67843cmr96648yba.4.1695357387716; Thu, 21 Sep
- 2023 21:36:27 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 04:36:00 +0000
+ (user=jstultz job=sendgmr) by 2002:a05:6a00:c91:b0:690:3793:17f9 with SMTP id
+ a17-20020a056a000c9100b00690379317f9mr127074pfv.6.1695357389355; Thu, 21 Sep
+ 2023 21:36:29 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 04:36:01 +0000
 In-Reply-To: <20230922043616.19282-1-jstultz@google.com>
 Mime-Version: 1.0
 References: <20230922043616.19282-1-jstultz@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922043616.19282-3-jstultz@google.com>
-Subject: [PATCH 2/3] test-ww_mutex: Fix potential workqueue corruption
+Message-ID: <20230922043616.19282-4-jstultz@google.com>
+Subject: [PATCH 3/3] test-ww_mutex: Make sure we bail out instead of livelock
 From:   John Stultz <jstultz@google.com>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     John Stultz <jstultz@google.com>,
@@ -64,7 +64,7 @@ Cc:     John Stultz <jstultz@google.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joelaf@google.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        kernel-team@android.com
+        kernel-team@android.com, Li Zhijian <zhijianx.li@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -76,30 +76,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases running with the test-ww_mutex code, I was seeing
-odd behavior where sometimes it seemed flush_workqueue was
-returning before all the work threads were finished.
+I've seen what appears to be livelocks in the stress_inorder_work()
+function, and looking at the code it is clear we can have a case
+where we continually retry acquiring the locks and never check to
+see if we have passed the specified timeout.
 
-Often this would cause strange crashes as the mutexes would be
-freed while they were being used.
+This patch reworks that function so we always check the timeout
+before iterating through the loop again.
 
-Looking at the code, there is a lifetime problem as the
-controlling thread that spawns the work allocates the
-"struct stress" structures that are passed to the workqueue
-threads. Then when the workqueue threads are finished,
-they free the stress struct that was passed to them.
-
-Unfortunately the workqueue work_struct node is in the stress
-struct. Which means the work_struct is freed before the work
-thread returns and while flush_workqueue is waiting.
-
-It seems like a better idea to have the controlling thread
-both allocate and free the stress structures, so that we can
-be sure we don't corrupt the workqueue by freeing the structure
-prematurely.
-
-So this patch reworks the test to do so, and with this change
-I no longer see the early flush_workqueue returns.
+I believe others may have hit this previously here:
+https://lore.kernel.org/lkml/895ef450-4fb3-5d29-a6ad-790657106a5a@intel.com/
 
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -110,85 +96,40 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Cc: kernel-team@android.com
+Reported-by: Li Zhijian <zhijianx.li@intel.com>
+Link: https://lore.kernel.org/lkml/895ef450-4fb3-5d29-a6ad-790657106a5a@intel.com/
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
- kernel/locking/test-ww_mutex.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ kernel/locking/test-ww_mutex.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
-index 9bceba65858a..358d66150426 100644
+index 358d66150426..78719e1ef1b1 100644
 --- a/kernel/locking/test-ww_mutex.c
 +++ b/kernel/locking/test-ww_mutex.c
-@@ -479,7 +479,6 @@ static void stress_inorder_work(struct work_struct *work)
- 	} while (!time_after(jiffies, stress->timeout));
+@@ -465,17 +465,18 @@ static void stress_inorder_work(struct work_struct *work)
+ 			ww_mutex_unlock(&locks[order[n]]);
  
- 	kfree(order);
--	kfree(stress);
- }
+ 		if (err == -EDEADLK) {
+-			ww_mutex_lock_slow(&locks[order[contended]], &ctx);
+-			goto retry;
++			if (!time_after(jiffies, stress->timeout)) {
++				ww_mutex_lock_slow(&locks[order[contended]], &ctx);
++				goto retry;
++			}
+ 		}
  
- struct reorder_lock {
-@@ -544,7 +543,6 @@ static void stress_reorder_work(struct work_struct *work)
- 	list_for_each_entry_safe(ll, ln, &locks, link)
- 		kfree(ll);
- 	kfree(order);
--	kfree(stress);
- }
- 
- static void stress_one_work(struct work_struct *work)
-@@ -565,8 +563,6 @@ static void stress_one_work(struct work_struct *work)
++		ww_acquire_fini(&ctx);
+ 		if (err) {
+ 			pr_err_once("stress (%s) failed with %d\n",
+ 				    __func__, err);
  			break;
  		}
- 	} while (!time_after(jiffies, stress->timeout));
 -
--	kfree(stress);
- }
+-		ww_acquire_fini(&ctx);
+ 	} while (!time_after(jiffies, stress->timeout));
  
- #define STRESS_INORDER BIT(0)
-@@ -577,15 +573,24 @@ static void stress_one_work(struct work_struct *work)
- static int stress(int nlocks, int nthreads, unsigned int flags)
- {
- 	struct ww_mutex *locks;
--	int n;
-+	struct stress *stress_array;
-+	int n, count;
- 
- 	locks = kmalloc_array(nlocks, sizeof(*locks), GFP_KERNEL);
- 	if (!locks)
- 		return -ENOMEM;
- 
-+	stress_array = kmalloc_array(nthreads, sizeof(*stress_array),
-+				     GFP_KERNEL);
-+	if (!stress_array) {
-+		kfree(locks);
-+		return -ENOMEM;
-+	}
-+
- 	for (n = 0; n < nlocks; n++)
- 		ww_mutex_init(&locks[n], &ww_class);
- 
-+	count = 0;
- 	for (n = 0; nthreads; n++) {
- 		struct stress *stress;
- 		void (*fn)(struct work_struct *work);
-@@ -609,9 +614,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
- 		if (!fn)
- 			continue;
- 
--		stress = kmalloc(sizeof(*stress), GFP_KERNEL);
--		if (!stress)
--			break;
-+		stress = &stress_array[count++];
- 
- 		INIT_WORK(&stress->work, fn);
- 		stress->locks = locks;
-@@ -626,6 +629,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
- 
- 	for (n = 0; n < nlocks; n++)
- 		ww_mutex_destroy(&locks[n]);
-+	kfree(stress_array);
- 	kfree(locks);
- 
- 	return 0;
+ 	kfree(order);
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
