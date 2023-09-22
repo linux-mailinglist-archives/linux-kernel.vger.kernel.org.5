@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE897AAA36
+	by mail.lfdr.de (Postfix) with ESMTP id 24B1D7AAA35
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjIVH1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        id S230526AbjIVH1E convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 03:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbjIVH0l (ORCPT
+        with ESMTP id S230000AbjIVH07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:26:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A17DE6A;
-        Fri, 22 Sep 2023 00:26:19 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 09:26:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695367577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6gtB/j1aJ/v54tV0PTQ7LW78TWmuTnW88E+MNr8Zzbc=;
-        b=zAUpq1Z6lwsBmAdroV/pNRDfHu6BTjZHV09Fy6xTJusAK3k7MO2EJvsNjmSiv3KmzrqYW0
-        U7pxSAkcHEXMuNJJcmUsezuKhRg79S/9/g9tVXUSGTQNaNLyDfyj599Tk0EoJmQ+PaO0Ej
-        xJKVkXU+UlFHTLcHkwWgatqf3GURoLkZ9+3lwyExyXwh/C0dYvyJKJskNaCUXB5iXjOeyc
-        zcL9n+IK6RpvdCZfNljxykIJxZ6Vu4v8nH0z6FO0ZaEKsREOCq//KbohzBzZd/nNFx77de
-        FNJd8noV/kI9Vbv3LYyZ6EMm7hibZKlCVIp3dmteJ88uOYPqWwhMmEtGCsIDgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695367577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6gtB/j1aJ/v54tV0PTQ7LW78TWmuTnW88E+MNr8Zzbc=;
-        b=7Bc/A7kODDY2eUV5JhgyXJ+mE5qj9cz/GAe83+rGVd7TroDCdTEyh1lyIJeJCu04Wxkny6
-        Sein6bbaGP37xBCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ferenc Fejes <primalgamer@gmail.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>
-Subject: Re: [RFC PATCH net-next 1/2] net: Use SMP threads for backlog NAPI.
-Message-ID: <20230922072614.aT8vDgAy@linutronix.de>
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814093528.117342-2-bigeasy@linutronix.de>
- <0a842574fd0acc113ef925c48d2ad9e67aa0e101.camel@redhat.com>
- <20230920155754.KzYGXMWh@linutronix.de>
- <2eb9af65d098bb54ed54178d7269e7197d6de5a0.camel@gmail.com>
+        Fri, 22 Sep 2023 03:26:59 -0400
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14B3180
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:26:52 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50336768615so3173237e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:26:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695367609; x=1695972409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXsd1b2HRQxm3wtxgsmQVAMbBcD1igw/pC47NjUT4mc=;
+        b=uyRyhNu1rwll2fj/pvdCy1iusAlglrGq84TlV6GPHKmtOgYlCS8GIoHoip12oPxaRl
+         opa3Calf6iwkQ1h2MhEdq312Ustp3uGu+HTKsNNSF0vPovhdijU1gY3QaMjlsqiviwbr
+         6VEoT4l55O6WAjVEEkK9TGts1Qgn767DCeTNjvowWJcSoRRsnJ3u5mG6y7ZqjndJtIlp
+         oLiruneQPmBCEqB9DNQpXGbar1PGtlqac+vK+rZNmlLTebJH/yp0lWAxfG1XoQAxCxXS
+         fvBQlqQvbnWv9c6WRBdIO4f9AVOfTrzxQNjn+QxH6Vmwyg2NbZbrmT3T3mrl+7JcPHu5
+         gJhg==
+X-Gm-Message-State: AOJu0Yy6CE9SJ/P4PIBRKqqF+mBgJM1Q5J0kSv9Xwt8H26HDu3O4EcpJ
+        VEi5M+uNuAUEApzKxxpdiDqLBAYb/KbOrz4u
+X-Google-Smtp-Source: AGHT+IGdAqGwPHe5zO6caUMy23XYhRVY51R3Q0ET3uRKLJoRuWjjpWcjmcn/BG9qAFtC0KNB8FiS6g==
+X-Received: by 2002:a05:6512:783:b0:503:31dc:7d64 with SMTP id x3-20020a056512078300b0050331dc7d64mr6952224lfr.21.1695367608568;
+        Fri, 22 Sep 2023 00:26:48 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id e2-20020ac25462000000b005032eaf1781sm619653lfn.203.2023.09.22.00.26.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 00:26:48 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2c038a1e2e6so28066911fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:26:48 -0700 (PDT)
+X-Received: by 2002:a2e:2e15:0:b0:2bd:1f81:fc47 with SMTP id
+ u21-20020a2e2e15000000b002bd1f81fc47mr7929173lju.22.1695367608089; Fri, 22
+ Sep 2023 00:26:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2eb9af65d098bb54ed54178d7269e7197d6de5a0.camel@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230905021209.1412987-1-zhangshida@kylinos.cn> <20230920095248.GC13143@google.com>
+In-Reply-To: <20230920095248.GC13143@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 22 Sep 2023 09:26:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXVqLdWdbVKU+nj2=jVDyFh9gD6rvuTpjdQehjqTr56mw@mail.gmail.com>
+Message-ID: <CAMuHMdXVqLdWdbVKU+nj2=jVDyFh9gD6rvuTpjdQehjqTr56mw@mail.gmail.com>
+Subject: Re: [PATCH] mfd: cs42l43: fix defined but not used warnings
+To:     Lee Jones <lee@kernel.org>
+Cc:     zhangshida <starzhangzsd@gmail.com>, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn, k2ci <kernel-bot@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-21 12:41:33 [+0200], Ferenc Fejes wrote:
-> Hi!
-Hi,
+Hi Lee,
 
-> > If we could somehow define a DoS condition once we are overwhelmed
-> > with
-> > packets, then we could act on it and throttle it. This in turn would
-> > allow a SCHED_FIFO priority without the fear of a lockup if the
-> > system
-> > is flooded with packets.
-> 
-> Can this be avoided if we reuse gro_flush_timeout as the maximum time
-> the NAPI thread can be scheduled?
+On Wed, Sep 20, 2023 at 12:07 PM Lee Jones <lee@kernel.org> wrote:
+> On Tue, 05 Sep 2023, zhangshida wrote:
+> > From: Shida Zhang <zhangshida@kylinos.cn>
+> >
+> > Warnings were generated during compiling for functions like
+> > cs42l43_*_{resume,suspend}:
+> >
+> > ../drivers/mfd/cs42l43.c:1138:12: error: ‘cs42l43_runtime_resume’ defined but not used [-Werror=unused-function]
+> >  1138 | static int cs42l43_runtime_resume(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~~~~~~~~
+> > ../drivers/mfd/cs42l43.c:1124:12: error: ‘cs42l43_runtime_suspend’ defined but not used [-Werror=unused-function]
+> >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~~~~~~~~~
+> > ../drivers/mfd/cs42l43.c:1106:12: error: ‘cs42l43_resume’ defined but not used [-Werror=unused-function]
+> >  1106 | static int cs42l43_resume(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~
+> > ../drivers/mfd/cs42l43.c:1076:12: error: ‘cs42l43_suspend’ defined but not used [-Werror=unused-function]
+> >  1076 | static int cs42l43_suspend(struct device *dev)
+> >
+> > Fix it by guarding it with CONFIG_PM/CONFIG_PM_SLEEP.
+> >
+> > Reported-by: k2ci <kernel-bot@kylinos.cn>
+> > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> > ---
+> >  drivers/mfd/cs42l43.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
+> > index 37b23e9bae82..e589a61c118d 100644
+> > --- a/drivers/mfd/cs42l43.c
+> > +++ b/drivers/mfd/cs42l43.c
+> > @@ -1073,6 +1073,7 @@ void cs42l43_dev_remove(struct cs42l43 *cs42l43)
+> >  }
+> >  EXPORT_SYMBOL_NS_GPL(cs42l43_dev_remove, MFD_CS42L43);
+> >
+> > +#ifdef CONFIG_PM_SLEEP
+> >  static int cs42l43_suspend(struct device *dev)
+> >  {
+> >       struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
+> > @@ -1120,7 +1121,9 @@ static int cs42l43_resume(struct device *dev)
+> >
+> >       return 0;
+> >  }
+> > +#endif
+> >
+> > +#ifdef CONFIG_PM
+> >  static int cs42l43_runtime_suspend(struct device *dev)
+> >  {
+> >       struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
+> > @@ -1176,6 +1179,7 @@ static int cs42l43_runtime_resume(struct device *dev)
+> >
+> >       return ret;
+> >  }
+> > +#endif
+> >
+> >  EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
+> >       SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
+>
+> I see a bunch of drivers using PM helpers and not many of them are
+> are being guarded by ugly #ifery.  Please find out what they're doing to
+> solve the same issue and replicate that instead.
+>
+> Here's a really big hint:
+>
+>   `git log --oneline 02313a90095fb`
 
-First your run time needs to be accounted somehow. I observed that some
-cards/ systems tend pull often a few packets on each interrupt and
-others pull more packets at a time.
-So probably packets in a time frame would make sense. Maybe even plus
-packet size assuming larger packets require more processing time.
+And there's no need to create another fix, as a Good Old fix is
+available (and still not upstream):
+https://lore.kernel.org/all/20230822114914.340359-1-ckeepax@opensource.cirrus.com
 
-If you run at SCHED_OTHER you don't care, you can keep it running. With
-SCHED_FIFO you would need to decide:
-- how much is too much
-- what to do once you reach too much
+Gr{oetje,eeting}s,
 
-Once you reach too much you could:
-- change the scheduling policy to SCHED_OTHER and keep going until it is
-  no longer "too much in a given period" so you can flip it back.
+                        Geert
 
-- stop processing for a period of time and risk packet loss which is
-  defined as better than to continue.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-- pulling packets and dropping them instead of injecting into the stack.
-  Using xdp/ebpf might be easy since there is an API for that. One could
-  even peek at packets to decide if some can be kept.
-  This would rely on the fact that the system can do this quick enough
-  under a DoS condition.
-
-> 
-> Ferenc
-
-Sebastian
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
