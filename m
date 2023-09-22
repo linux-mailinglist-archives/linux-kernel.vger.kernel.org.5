@@ -2,263 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046997AAD2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D24A7AAD2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbjIVIxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S232512AbjIVIxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIVIxR (ORCPT
+        with ESMTP id S232356AbjIVIxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:53:17 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F208799;
-        Fri, 22 Sep 2023 01:53:10 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c1ff5b741cso17175165ad.2;
-        Fri, 22 Sep 2023 01:53:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695372790; x=1695977590; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmDcovxKvO6RGlBrllGnpgrERZDZ08169YqpcOuuzVw=;
-        b=gLoXiVK4nC0zQDQ/chG76nc5yVDOBlCMqkbFIqbdp9AwAKnX/alVQKg41PjieUO88J
-         q+7Bq3Fqdd/HLGuryUEunJ3oRtAq+LSMp7gGJfm/Cy3Xyhr3E8fgc+jAaAWFdsm1VEWh
-         tIh5cxxRS7iBQYRevzVfHY3t4ecuRnTj6f/H7dZ12/2vDffGU6ZegDvVmddqfKgYUCsS
-         sVXJg2jZ4ll6xwoD4Y+l/H7bGZxUYcD9dfjHbPcyUuiGtxoHuMs7ce7ysJmlhlibsiZn
-         Pg2HBQ2OVg2P0EZGcIiZXg8bsIKFPUmkSas3YQQOLP0x/nggIdIIOEItTJl9LCFYFLRa
-         K58A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695372790; x=1695977590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jmDcovxKvO6RGlBrllGnpgrERZDZ08169YqpcOuuzVw=;
-        b=t+JoqWz0kxRy9+D4wAmJvzaAlJrvILyQbY3Lwf+frnfPY9i5Rs4LhftjStf/mgVgPW
-         uOXs6s+wdlqqkpSQxSCBRgcDbecZezgaoqPe8QdAQSww7iQgxmPHYyVCOc2lGSEG7+vG
-         7M2cod74qZ8WiBgdLoCl4HDbLPcuxXMC66rnKZAT/f16isGgYV+ZPvp9ShQuJWjGTmBj
-         l8VY43lxwa3jPMeYS/PnU6Vg4e5FMJBNSUaJu2rooZeo0PQ3Za7znIheRkFBe4Oc6M/N
-         lojI6QRHuamJfQV3KysoYxWkjk4ew7yCi5rnA5BITsplEpVL6Q3OD1QHPgwwuK4Xajkq
-         Py9g==
-X-Gm-Message-State: AOJu0YwemcYPN8wpAQN9IuZwGaUEdYMYFhDwkGL7sBMSvPmxAzEFZZBg
-        +7t8OpLUGyNX2zrxV5ceoi57aAjIDwU=
-X-Google-Smtp-Source: AGHT+IEPKyWNSGrewvC5a67oYrqAAbBav4kJG0DkCzoDLAWACqbFkza++XFW6a39FBqODDtrcE4uBw==
-X-Received: by 2002:a17:902:e812:b0:1c0:7e86:4f6 with SMTP id u18-20020a170902e81200b001c07e8604f6mr8915200plg.14.1695372790246;
-        Fri, 22 Sep 2023 01:53:10 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id u2-20020a17090282c200b001bc445e2497sm2916011plz.79.2023.09.22.01.53.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 01:53:09 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id E0E1A81B96C9; Fri, 22 Sep 2023 15:53:06 +0700 (WIB)
-Date:   Fri, 22 Sep 2023 15:53:06 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Changhui Zhong <czhong@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Block Devices <linux-block@vger.kernel.org>
-Cc:     Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai3@huawei.com>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [bug report] RIP: 0010:throtl_trim_slice+0xc6/0x320 caused
- kernel panic
-Message-ID: <ZQ1V8rcSdKg_Jfgh@debian.me>
-References: <CAGVVp+Vt6idZtxfU9jF=VSbu145Wi-d-WnAZx_hEfOL8yLZgBA@mail.gmail.com>
+        Fri, 22 Sep 2023 04:53:45 -0400
+X-Greylist: delayed 156361 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Sep 2023 01:53:33 PDT
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3838BE8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1695372809; x=1695632009;
+        bh=ts4PF4d/DPQcSKzx9O++pjI9MrnIEG183Yqs4UuldsY=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=TvvJFo9zKUKVOBKC0nkSJImrJdbhmBDXc23Nj6ybYmc2HCbZq0QEyF39+8gLQ9XSa
+         D0L/gFVLKt0cG6YrIoTkVLSbDcfWjA7aywYBAPlUhd2Y2U9htOKZsNXbrrYz7ybkZI
+         GrgJ48vEWz6pnIHypJu8yFo79GPsERs6RUVNXRnmNfMt00g45SP8fRPFbDulU9sbkV
+         ix42urZucMwD4XR6XEfjKIa3uQwpG5QKn5OAvEGJh4fKm0P8kCY3GGzbyDRjnDGV6W
+         L5UMpYYWg2QL7KBcgB0ceaniBsx2sfz6W90QwEGtMQKwc6Tfk2reejosBsbukrIi1J
+         Kq3rVlplecK/w==
+Date:   Fri, 22 Sep 2023 08:53:22 +0000
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        rust-for-linux@vger.kernel.org
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 2/2] rust: arc: remove `ArcBorrow` in favour of `WithRef`
+Message-ID: <63223594-1bbe-c4f2-ea82-9b34c66ba1f6@proton.me>
+In-Reply-To: <20230921213440.202017-3-wedsonaf@gmail.com>
+References: <20230921213440.202017-1-wedsonaf@gmail.com> <20230921213440.202017-3-wedsonaf@gmail.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DThIrotSsoUQK5EI"
-Content-Disposition: inline
-In-Reply-To: <CAGVVp+Vt6idZtxfU9jF=VSbu145Wi-d-WnAZx_hEfOL8yLZgBA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---DThIrotSsoUQK5EI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Sep 22, 2023 at 10:10:45AM +0800, Changhui Zhong wrote:
-> Hello,
+On 21.09.23 23:34, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
 >=20
-> triggered below issue with branch 'for-next',please help check,
+> With GATs, we don't need a separate type to represent a borrowed object
+> with a refcount, we can just use Rust's regular shared borrowing. In
+> this case, we use `&WithRef<T>` instead of `ArcBorrow<'_, T>`.
 >=20
-> INFO: HEAD of cloned kernel:
-> commit d975b468819a142a49c8e7db83feb07c3018c550
-> Merge: 58fac6aac7a2 df137dff93fc
-> Author: Jens Axboe <axboe@kernel.dk>
-> Date:   Wed Sep 13 13:16:19 2023 -0600
+> Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+
+I only have a very small comment below, so
+
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+
+> ---
+>   rust/kernel/sync.rs     |   2 +-
+>   rust/kernel/sync/arc.rs | 180 ++++++++++++++--------------------------
+>   2 files changed, 62 insertions(+), 120 deletions(-)
 >=20
->     Merge branch 'io_uring-futex' into for-next
+> diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
+> index d219ee518eff..083494884500 100644
+> --- a/rust/kernel/sync.rs
+> +++ b/rust/kernel/sync.rs
+> @@ -12,7 +12,7 @@
+>   pub mod lock;
+>   mod locked_by;
 >=20
->     * io_uring-futex:
->       io_uring: add support for vectored futex waits
->       futex: make the vectored futex operations available
->       futex: make futex_parse_waitv() available as a helper
->       futex: add wake_data to struct futex_q
->       io_uring: add support for futex wake and wait
->       futex: abstract out a __futex_wake_mark() helper
->       futex: factor out the futex wake handling
->       futex: move FUTEX2_VALID_MASK to futex.h
->       futex: Validate futex value against futex size
->       futex: Flag conversion
->       futex: Extend the FUTEX2 flags
->       futex: Clarify FUTEX2 flags
+> -pub use arc::{Arc, ArcBorrow, UniqueArc};
+> +pub use arc::{Arc, UniqueArc, WithRef};
+>   pub use condvar::CondVar;
+>   pub use lock::{mutex::Mutex, spinlock::SpinLock};
+>   pub use locked_by::LockedBy;
+> diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+> index 86bff1e0002c..5948e42b9c8f 100644
+> --- a/rust/kernel/sync/arc.rs
+> +++ b/rust/kernel/sync/arc.rs
+> @@ -105,14 +105,14 @@
+>   /// Coercion from `Arc<Example>` to `Arc<dyn MyTrait>`:
+>   ///
+>   /// ```
+> -/// use kernel::sync::{Arc, ArcBorrow};
+> +/// use kernel::sync::{Arc, WithRef};
+>   ///
+>   /// trait MyTrait {
+>   ///     // Trait has a function whose `self` type is `Arc<Self>`.
+>   ///     fn example1(self: Arc<Self>) {}
+>   ///
+> -///     // Trait has a function whose `self` type is `ArcBorrow<'_, Self=
+>`.
+> -///     fn example2(self: ArcBorrow<'_, Self>) {}
+> +///     // Trait has a function whose `self` type is `&WithRef<Self>`.
+> +///     fn example2(self: &WithRef<Self>) {}
+>   /// }
+>   ///
+>   /// struct Example;
+> @@ -130,9 +130,48 @@ pub struct Arc<T: ?Sized> {
+>       _p: PhantomData<WithRef<T>>,
+>   }
 >=20
+> +/// An instance of `T` with an attached reference count.
+> +///
+> +/// # Examples
+> +///
+> +/// ```
+> +/// use kernel::sync::{Arc, WithRef};
+> +///
+> +/// struct Example;
+> +///
+> +/// fn do_something(e: &WithRef<Example>) -> Arc<Example> {
+> +///     e.into()
+> +/// }
+> +///
+> +/// let obj =3D Arc::try_new(Example)?;
+> +/// let cloned =3D do_something(obj.as_with_ref());
+> +///
+> +/// // Assert that both `obj` and `cloned` point to the same underlying =
+object.
+> +/// assert!(core::ptr::eq(&*obj, &*cloned));
+> +/// ```
+> +///
+> +/// Using `WithRef<T>` as the type of `self`:
+> +///
+> +/// ```
+> +/// use kernel::sync::{Arc, WithRef};
+> +///
+> +/// struct Example {
+> +///     _a: u32,
+> +///     _b: u32,
+> +/// }
+> +///
+> +/// impl Example {
+> +///     fn use_reference(self: &WithRef<Self>) {
+> +///         // ...
+> +///     }
+> +/// }
+> +///
+> +/// let obj =3D Arc::try_new(Example { _a: 10, _b: 20 })?;
+> +/// obj.as_with_ref().use_reference();
+> +/// ```
+>   #[pin_data]
+>   #[repr(C)]
+> -struct WithRef<T: ?Sized> {
+> +pub struct WithRef<T: ?Sized> {
+>       refcount: Opaque<bindings::refcount_t>,
+>       data: T,
+>   }
+
+I do not really like the position of this definition in this file.
+It should be further down with the other code (like the
+`impl<T: ?Sized> From<&WithRef<T>> for Arc<T>`).
+
+> @@ -215,16 +254,16 @@ unsafe fn from_inner(inner: NonNull<WithRef<T>>) ->=
+ Self {
+>           }
+>       }
 >=20
-> reproduce steps:
-> echo "+cpuset +cpu +io" > /sys/fs/cgroup/cgroup.subtree_control
-> mkdir /sys/fs/cgroup/test
-> MAJ=3D$(ls -l /dev/"$disk" | awk -F ',' '{print $1}' | awk -F ' ' '{print=
- $NF}')
-> MIN=3D$(ls -l /dev/"$disk" | awk -F ',' '{print $2}' | awk -F ' ' '{print=
- $1}')
-> echo "$MAJ:$MIN wbps=3D1024" > /sys/fs/cgroup/test/io.max
-> echo $$ > /sys/fs/cgroup/test/cgroup.procs
-> dd if=3D/dev/zero of=3D/dev/$disk bs=3D10k count=3D1 oflag=3Ddirect &
-> dd if=3D/dev/zero of=3D/dev/$disk bs=3D10k count=3D1 oflag=3Ddirect &
-> wait
+> -    /// Returns an [`ArcBorrow`] from the given [`Arc`].
+> +    /// Returns a [`WithRef`] from the given [`Arc`].
+>       ///
+> -    /// This is useful when the argument of a function call is an [`ArcB=
+orrow`] (e.g., in a method
+> -    /// receiver), but we have an [`Arc`] instead. Getting an [`ArcBorro=
+w`] is free when optimised.
+> +    /// This is useful when the argument of a function call is a [`WithR=
+ef`] (e.g., in a method
+> +    /// receiver), but we have an [`Arc`] instead. Getting a [`WithRef`]=
+ is free when optimised.
+>       #[inline]
+> -    pub fn as_arc_borrow(&self) -> ArcBorrow<'_, T> {
+> +    pub fn as_with_ref(&self) -> &WithRef<T> {
+>           // SAFETY: The constraint that the lifetime of the shared refer=
+ence must outlive that of
+> -        // the returned `ArcBorrow` ensures that the object remains aliv=
+e and that no mutable
+> +        // the returned `WithRef` ensures that the object remains alive =
+and that no mutable
+>           // reference can be created.
+> -        unsafe { ArcBorrow::new(self.ptr) }
+> +        unsafe { self.ptr.as_ref() }
+>       }
 >=20
-> console log:
-> [ 1979.303330] divide error: 0000 [#1] PREEMPT SMP NOPTI
-> [ 1979.308393] CPU: 28 PID: 0 Comm: swapper/28 Not tainted 6.6.0-rc1+ #1
-> [ 1979.314837] Hardware name: Dell Inc. PowerEdge R7525/0590KW, BIOS
-> 2.6.6 01/13/2022
-> [ 1979.322402] RIP: 0010:throtl_trim_slice+0xc6/0x320
-> [ 1979.327195] Code: 00 00 48 89 e8 48 f7 f1 48 29 d5 74 9f 40 0f b6
-> f6 48 89 df 89 34 24 e8 f8 f5 ff ff 8b 34 24 b9 e8 03 00 00 48 89 df
-> 48 f7 e5 <48> f7 f1 49 03 85 f8 01 00 00 49 89 c7 e8 78 e0 ff ff ba ff
-> ff ff
-> [ 1979.345942] RSP: 0018:ffffadf9c2484dc0 EFLAGS: 00010847
-> [ 1979.351169] RAX: ffffffffffffd8f0 RBX: ffff8f5486a99800 RCX: 000000000=
-00003e8
-> [ 1979.358300] RDX: 000000000000270f RSI: 0000000000000001 RDI: ffff8f548=
-6a99800
-> [ 1979.365435] RBP: 0000000000002710 R08: ffffffffffffffff R09: ffff8f565=
-a67b818
-> [ 1979.372565] R10: ffff8f5486a99810 R11: ffff8f565a67b830 R12: 000000000=
-0000001
-> [ 1979.379698] R13: ffff8f5486a99808 R14: 0000000000000001 R15: 000000000=
-0000021
-> [ 1979.386833] FS:  0000000000000000(0000) GS:ffff8f5677d00000(0000)
-> knlGS:0000000000000000
-> [ 1979.394916] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1979.400663] CR2: 00007f7db5443250 CR3: 0000000459420000 CR4: 000000000=
-0350ee0
-> [ 1979.407797] Call Trace:
-> [ 1979.410250]  <IRQ>
-> [ 1979.412270]  ? die+0x33/0x90
-> [ 1979.415157]  ? do_trap+0xe0/0x110
-> [ 1979.418476]  ? throtl_trim_slice+0xc6/0x320
-> [ 1979.422662]  ? do_error_trap+0x65/0x80
-> [ 1979.426412]  ? throtl_trim_slice+0xc6/0x320
-> [ 1979.430600]  ? exc_divide_error+0x36/0x50
-> [ 1979.434612]  ? throtl_trim_slice+0xc6/0x320
-> [ 1979.438800]  ? asm_exc_divide_error+0x16/0x20
-> [ 1979.443163]  ? throtl_trim_slice+0xc6/0x320
-> [ 1979.447347]  tg_dispatch_one_bio+0xf0/0x1e0
-> [ 1979.451533]  throtl_pending_timer_fn+0x1e5/0x510
-> [ 1979.456152]  ? __pfx_throtl_pending_timer_fn+0x10/0x10
-> [ 1979.461287]  ? __pfx_throtl_pending_timer_fn+0x10/0x10
-> [ 1979.466427]  call_timer_fn+0x27/0x130
-> [ 1979.470096]  __run_timers.part.0+0x1ee/0x280
-> [ 1979.474368]  ? srso_return_thunk+0x5/0x10
-> [ 1979.478379]  ? __hrtimer_run_queues+0x121/0x2b0
-> [ 1979.482914]  ? srso_return_thunk+0x5/0x10
-> [ 1979.486925]  ? srso_return_thunk+0x5/0x10
-> [ 1979.490939]  ? srso_return_thunk+0x5/0x10
-> [ 1979.494953]  run_timer_softirq+0x26/0x50
-> [ 1979.498878]  __do_softirq+0xcb/0x2ab
-> [ 1979.502459]  __irq_exit_rcu+0xa1/0xc0
-> [ 1979.506124]  sysvec_apic_timer_interrupt+0x72/0x90
-> [ 1979.510917]  </IRQ>
-> [ 1979.513021]  <TASK>
-> [ 1979.515128]  asm_sysvec_apic_timer_interrupt+0x16/0x20
-> [ 1979.520265] RIP: 0010:mwait_idle+0x4f/0x70
-> [ 1979.524365] Code: 31 d2 48 89 d1 65 48 8b 04 25 80 18 03 00 0f 01
-> c8 48 8b 00 a8 08 75 13 eb 07 0f 00 2d 96 f3 36 00 31 c0 48 89 c1 fb
-> 0f 01 c9 <fa> 65 48 8b 04 25 80 18 03 00 f0 80 60 02 df e9 6d 3f 01 00
-> 0f ae
-> [ 1979.543111] RSP: 0018:ffffadf9c04a7ed0 EFLAGS: 00000246
-> [ 1979.548338] RAX: 0000000000000000 RBX: ffff8f548019cd40 RCX: 000000000=
-0000000
-> [ 1979.555471] RDX: 0000000000000000 RSI: 0000000000000087 RDI: 000000000=
-016e484
-> [ 1979.562605] RBP: 0000000000000000 R08: ffff8f5677d22a80 R09: 000000000=
-0000000
-> [ 1979.569738] R10: 00000000000001dc R11: 0000000000000000 R12: 000000000=
-0000000
-> [ 1979.576868] R13: 0000000000000000 R14: 0000000000000000 R15: 000000000=
-0000000
-> [ 1979.584009]  default_idle_call+0x28/0xd0
-> [ 1979.587938]  cpuidle_idle_call+0x125/0x160
-> [ 1979.592036]  ? sched_clock_cpu+0xb/0x190
-> [ 1979.595963]  do_idle+0x7b/0xe0
-> [ 1979.599022]  cpu_startup_entry+0x19/0x20
-> [ 1979.602949]  start_secondary+0x115/0x140
-> [ 1979.606875]  secondary_startup_64_no_verify+0x17d/0x18b
-> [ 1979.612104]  </TASK>
-> [ 1979.614293] Modules linked in: binfmt_misc dm_crypt raid10 raid1
-> raid0 dm_raid raid456 async_raid6_recov async_memcpy async_pq
-> async_xor xor async_tx raid6_pq loop tls rpcsec_gss_krb5 auth_rpcgss
-> nfsv4 dns_resolver nfs lockd grace fscache netfs rfkill sunrpc
-> dm_multipath ipmi_ssif intel_rapl_msr intel_rapl_common amd64_edac
-> edac_mce_amd kvm_amd kvm mgag200 i2c_algo_bit dcdbas acpi_ipmi
-> drm_shmem_helper irqbypass ipmi_si drm_kms_helper dell_smbios rapl
-> wmi_bmof pcspkr dell_wmi_descriptor ipmi_devintf k10temp ptdma
-> i2c_piix4 ipmi_msghandler acpi_power_meter drm fuse xfs libcrc32c
-> sd_mod t10_pi sg ahci libahci crct10dif_pclmul crc32_pclmul
-> crc32c_intel libata ghash_clmulni_intel tg3 ccp sp5100_tco wmi
-> dm_mirror dm_region_hash dm_log dm_mod [last unloaded: scsi_debug]
-> [ 1979.681931] ---[ end trace 0000000000000000 ]---
-> [ 1979.706620] pstore: backend (erst) writing error (-22)
-> [ 1979.711761] RIP: 0010:throtl_trim_slice+0xc6/0x320
-> [ 1979.716555] Code: 00 00 48 89 e8 48 f7 f1 48 29 d5 74 9f 40 0f b6
-> f6 48 89 df 89 34 24 e8 f8 f5 ff ff 8b 34 24 b9 e8 03 00 00 48 89 df
-> 48 f7 e5 <48> f7 f1 49 03 85 f8 01 00 00 49 89 c7 e8 78 e0 ff ff ba ff
-> ff ff
-> [ 1979.735301] RSP: 0018:ffffadf9c2484dc0 EFLAGS: 00010847
-> [ 1979.740527] RAX: ffffffffffffd8f0 RBX: ffff8f5486a99800 RCX: 000000000=
-00003e8
-> [ 1979.747659] RDX: 000000000000270f RSI: 0000000000000001 RDI: ffff8f548=
-6a99800
-> [ 1979.754793] RBP: 0000000000002710 R08: ffffffffffffffff R09: ffff8f565=
-a67b818
-> [ 1979.761924] R10: ffff8f5486a99810 R11: ffff8f565a67b830 R12: 000000000=
-0000001
-> [ 1979.769056] R13: ffff8f5486a99808 R14: 0000000000000001 R15: 000000000=
-0000021
-> [ 1979.776190] FS:  0000000000000000(0000) GS:ffff8f5677d00000(0000)
-> knlGS:0000000000000000
-> [ 1979.784278] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1979.790023] CR2: 00007f7db5443250 CR3: 0000000459420000 CR4: 000000000=
-0350ee0
-> [ 1979.797155] Kernel panic - not syncing: Fatal exception in interrupt
-> [ 1979.805797] Kernel Offset: 0x30600000 from 0xffffffff81000000
-> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> [ 1979.835382] ---[ end Kernel panic - not syncing: Fatal exception in
-> interrupt ]---
+>       /// Compare whether two [`Arc`] pointers reference the same underly=
+ing object.
+> @@ -234,20 +273,17 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
+>   }
+>=20
+>   impl<T: 'static> ForeignOwnable for Arc<T> {
+> -    type Borrowed<'a> =3D ArcBorrow<'a, T>;
+> +    type Borrowed<'a> =3D &'a WithRef<T>;
+>=20
+>       fn into_foreign(self) -> *const core::ffi::c_void {
+>           ManuallyDrop::new(self).ptr.as_ptr() as _
+>       }
+>=20
+> -    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a,=
+ T> {
+> +    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> &'a WithRef<T=
+> {
+>           // SAFETY: By the safety requirement of this function, we know =
+that `ptr` came from
+> -        // a previous call to `Arc::into_foreign`.
+> -        let inner =3D NonNull::new(ptr as *mut WithRef<T>).unwrap();
+> -
+> -        // SAFETY: The safety requirements of `from_foreign` ensure that=
+ the object remains alive
+> -        // for the lifetime of the returned value.
+> -        unsafe { ArcBorrow::new(inner) }
+> +        // a previous call to `Arc::into_foreign`. The safety requiremen=
+ts of `from_foreign` ensure
+> +        // that the object remains alive for the lifetime of the returne=
+d value.
+> +        unsafe { &*(ptr.cast::<WithRef<T>>()) }
+>       }
+>=20
+>       unsafe fn from_foreign(ptr: *const core::ffi::c_void) -> Self {
+> @@ -320,119 +356,25 @@ fn from(item: Pin<UniqueArc<T>>) -> Self {
+>       }
+>   }
+>=20
+> -/// A borrowed reference to an [`Arc`] instance.
+> -///
+> -/// For cases when one doesn't ever need to increment the refcount on th=
+e allocation, it is simpler
+> -/// to use just `&T`, which we can trivially get from an `Arc<T>` instan=
+ce.
+> -///
+> -/// However, when one may need to increment the refcount, it is preferab=
+le to use an `ArcBorrow<T>`
+> -/// over `&Arc<T>` because the latter results in a double-indirection: a=
+ pointer (shared reference)
+> -/// to a pointer (`Arc<T>`) to the object (`T`). An [`ArcBorrow`] elimin=
+ates this double
+> -/// indirection while still allowing one to increment the refcount and g=
+etting an `Arc<T>` when/if
+> -/// needed.
+> -///
+> -/// # Invariants
+> -///
+> -/// There are no mutable references to the underlying [`Arc`], and it re=
+mains valid for the
+> -/// lifetime of the [`ArcBorrow`] instance.
+> -///
+> -/// # Example
+> -///
+> -/// ```
+> -/// use kernel::sync::{Arc, ArcBorrow};
+> -///
+> -/// struct Example;
+> -///
+> -/// fn do_something(e: ArcBorrow<'_, Example>) -> Arc<Example> {
+> -///     e.into()
+> -/// }
+> -///
+> -/// let obj =3D Arc::try_new(Example)?;
+> -/// let cloned =3D do_something(obj.as_arc_borrow());
+> -///
+> -/// // Assert that both `obj` and `cloned` point to the same underlying =
+object.
+> -/// assert!(core::ptr::eq(&*obj, &*cloned));
+> -/// # Ok::<(), Error>(())
+> -/// ```
+> -///
+> -/// Using `ArcBorrow<T>` as the type of `self`:
+> -///
+> -/// ```
+> -/// use kernel::sync::{Arc, ArcBorrow};
+> -///
+> -/// struct Example {
+> -///     a: u32,
+> -///     b: u32,
+> -/// }
+> -///
+> -/// impl Example {
+> -///     fn use_reference(self: ArcBorrow<'_, Self>) {
+> -///         // ...
+> -///     }
+> -/// }
+> -///
+> -/// let obj =3D Arc::try_new(Example { a: 10, b: 20 })?;
+> -/// obj.as_arc_borrow().use_reference();
+> -/// # Ok::<(), Error>(())
+> -/// ```
+> -pub struct ArcBorrow<'a, T: ?Sized + 'a> {
+> -    inner: NonNull<WithRef<T>>,
+> -    _p: PhantomData<&'a ()>,
+> -}
+> -
+> -// This is to allow [`ArcBorrow`] (and variants) to be used as the type =
+of `self`.
+> -impl<T: ?Sized> core::ops::Receiver for ArcBorrow<'_, T> {}
+> -
+> -// This is to allow `ArcBorrow<U>` to be dispatched on when `ArcBorrow<T=
+>` can be coerced into
+> -// `ArcBorrow<U>`.
+> -impl<T: ?Sized + Unsize<U>, U: ?Sized> core::ops::DispatchFromDyn<ArcBor=
+row<'_, U>>
+> -    for ArcBorrow<'_, T>
+> -{
+> -}
+> -
+> -impl<T: ?Sized> Clone for ArcBorrow<'_, T> {
+> -    fn clone(&self) -> Self {
+> -        *self
+> -    }
+> -}
+> -
+> -impl<T: ?Sized> Copy for ArcBorrow<'_, T> {}
+> -
+> -impl<T: ?Sized> ArcBorrow<'_, T> {
+> -    /// Creates a new [`ArcBorrow`] instance.
+> -    ///
+> -    /// # Safety
+> -    ///
+> -    /// Callers must ensure the following for the lifetime of the return=
+ed [`ArcBorrow`] instance:
+> -    /// 1. That `inner` remains valid;
+> -    /// 2. That no mutable references to `inner` are created.
+> -    unsafe fn new(inner: NonNull<WithRef<T>>) -> Self {
+> -        // INVARIANT: The safety requirements guarantee the invariants.
+> -        Self {
+> -            inner,
+> -            _p: PhantomData,
+> -        }
+> -    }
+> -}
+
+I think here would be the correct location. Another option would be
+to move this code up to the definition. I don't think this is important,
+so I can maybe just create an issue and let this be someone's first contrib=
+ution.
+
+> +// This is to allow [`WithRef`] (and variants) to be used as the type of=
+ `self`.
+> +impl<T: ?Sized> core::ops::Receiver for WithRef<T> {}
+>=20
+> -impl<T: ?Sized> From<ArcBorrow<'_, T>> for Arc<T> {
+> -    fn from(b: ArcBorrow<'_, T>) -> Self {
+> +impl<T: ?Sized> From<&WithRef<T>> for Arc<T> {
+> +    fn from(b: &WithRef<T>) -> Self {
+>           // SAFETY: The existence of `b` guarantees that the refcount is=
+ non-zero. `ManuallyDrop`
+>           // guarantees that `drop` isn't called, so it's ok that the tem=
+porary `Arc` doesn't own the
+>           // increment.
+> -        ManuallyDrop::new(unsafe { Arc::from_inner(b.inner) })
+> +        ManuallyDrop::new(unsafe { Arc::from_inner(b.into()) })
+>               .deref()
+>               .clone()
+>       }
+>   }
+>=20
+> -impl<T: ?Sized> Deref for ArcBorrow<'_, T> {
+> +impl<T: ?Sized> Deref for WithRef<T> {
+>       type Target =3D T;
+>=20
+>       fn deref(&self) -> &Self::Target {
+> -        // SAFETY: By the type invariant, the underlying object is still=
+ alive with no mutable
+> -        // references to it, so it is safe to create a shared reference.
+> -        unsafe { &self.inner.as_ref().data }
+> +        &self.data
+>       }
+>   }
+>=20
+> --
+> 2.34.1
 >=20
 
-Does v6.6-rc2 have this issue? v6.5?
 
---=20
-An old man doll... just what I always wanted! - Clara
-
---DThIrotSsoUQK5EI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQ1V4QAKCRD2uYlJVVFO
-o+p5AP9XCYsKKf8KIaxJM31rHVVfInEfE26wXar/0Vm05I5AWwEAotCgSwzMmfTV
-jvzkNU6xMeLymT8Q2qJpTfqfBaZgagM=
-=UZ9I
------END PGP SIGNATURE-----
-
---DThIrotSsoUQK5EI--
