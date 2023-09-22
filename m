@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089B17AAAC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2447AAAC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbjIVHuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        id S231840AbjIVHua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbjIVHuL (ORCPT
+        with ESMTP id S231834AbjIVHu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:50:11 -0400
-Received: from mx12lb.world4you.com (mx12lb.world4you.com [81.19.149.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE8F19C;
-        Fri, 22 Sep 2023 00:50:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sw-optimization.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4cbMygGp9uogMxBbKSPpHm/fjDurwwZEgvsXEFU9RNA=; b=wEdMDiiNDDdZqiLCicthKEUI+0
-        WTtV7XdnyB2Jq0z1Igwdaa64pw6JbaIoincNcfX4LgexUUoBirew/mSisrzfcX/8DxD7Hq8JBNyfA
-        FWPywOSDVfMVYpBYpZgaWBFtypfTBC/rr961QllnOKIfCF/aq9FkuU04EHpSsj1HgjRU=;
-Received: from [195.192.57.194] (helo=[192.168.0.20])
-        by mx12lb.world4you.com with esmtpa (Exim 4.96)
-        (envelope-from <eas@sw-optimization.com>)
-        id 1qjavJ-0001VD-2X;
-        Fri, 22 Sep 2023 09:50:02 +0200
-Message-ID: <8d18106d-444e-9346-26cc-3767540df5d8@sw-optimization.com>
-Date:   Fri, 22 Sep 2023 09:49:59 +0200
+        Fri, 22 Sep 2023 03:50:26 -0400
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4031A1;
+        Fri, 22 Sep 2023 00:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1695369016; x=1695628216;
+        bh=svD5R8HOfCiUeWJaoG9Nh1jRNjjm6cAho76nVkSbQB4=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=gdklLWmIkNgmCW24lNa1GrS1wTm4j+RS69aqR4H6P58tuwb4AaEimsMTY1AIZc7Lq
+         +PtVMher9wReM5M9/D4dAiLwUMwY8HkAEKg6asmbOq0B1hgw6IlJQ8seUfa+3FmGXz
+         L6ytaM78BcsDDyRISkXw3vjI8ByIv7v1PtARF0DvoyFIN77HeTfH28osoA1gsz3Txx
+         Zx2w2ivd8uT6X481htGEkCiS/6r7CYS6GXxmS2SR26xQPSo8qscKyosM8b+AM6gRxL
+         IpR7Z6lQ1iqq3hn8ZZ97WXsyNUbcS3mVklD3peudT+QhAIO3KndEQ2agw+LJkYqrPJ
+         Lsh5RePpbCKKw==
+Date:   Fri, 22 Sep 2023 07:50:07 +0000
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        rust-for-linux@vger.kernel.org
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 1/2] rust: arc: rename `ArcInner` to `WithRef`
+Message-ID: <cdadc162-a425-a29d-194b-f4ab033dfed5@proton.me>
+In-Reply-To: <20230921213440.202017-2-wedsonaf@gmail.com>
+References: <20230921213440.202017-1-wedsonaf@gmail.com> <20230921213440.202017-2-wedsonaf@gmail.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
-To:     Olivier Dautricourt <olivierdautricourt@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
-References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
- <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
- <ZQyWsvcQCJgmG5aO@freebase>
-Content-Language: de-DE
-From:   Eric Schwarz <eas@sw-optimization.com>
-In-Reply-To: <ZQyWsvcQCJgmG5aO@freebase>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Olivier,
+On 21.09.23 23:34, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>=20
+> This is in preparation for removing `ArcBorrow` and making `WithRef`
+> public.
+>=20
+> This is a pure name change with no functional changes intended.
+>=20
+> Suggested-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 
->> Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
->>> Sparse complains because we first take the lock in msgdma_tasklet -> move
->>> locking to msgdma_chan_desc_cleanup.
->>> In consequence, move calling of msgdma_chan_desc_cleanup outside of the
->>> critical section of function msgdma_tasklet.
->>>
->>> Use spin_unlock_irqsave/restore instead of just spinlock/unlock to keep
->>> state of irqs while executing the callbacks.
->>
->> What about the locking in the IRQ handler msgdma_irq_handler() itself? -
->> Shouldn't spin_unlock_irqsave/restore() be used there as well instead of
->> just spinlock/unlock()?
-> 
-> IMO no:
-> It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
-> The irq handler cannot be preempted by the tasklet, so the
-> spin_lock/unlock version is ok. However the tasklet could be interrupted
-> by the Hard IRQ hence the disabling of irqs with save/restore when
-> entering critical section.
-> 
-> It should not be needed to keep interrupts locally disabled while invoking
-> callbacks, will add this to the commit description.
-> 
-> [1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-Thanks for the link. I have read differently here [2] w/ special 
-emphasis on "Lesson 3: spinlocks revisited.".
-
-[2] https://www.kernel.org/doc/Documentation/locking/spinlocks.txt
-
-Cheers
-Eric
