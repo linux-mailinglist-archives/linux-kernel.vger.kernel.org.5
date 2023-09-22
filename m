@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420D77AB988
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAB57AB987
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbjIVSpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S233629AbjIVSpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbjIVSpl (ORCPT
+        with ESMTP id S233267AbjIVSpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:45:41 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DDDB9;
-        Fri, 22 Sep 2023 11:45:35 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-59c0281d72dso31432327b3.0;
-        Fri, 22 Sep 2023 11:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695408335; x=1696013135; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V/RXg7qoPV29Yjmc4Aum7okgMz0oycXOx15sVeIcRmM=;
-        b=c8xGCiNh42xlD3RgXriO06cl8/WOztLGxAeV/LHN0gH5RAQm9eDDvLKJzhhvnd48BC
-         aHmmen3es2ZekPjTrWLG3U0iWX4cISMMIuwxCUtbZPuPUDvdMKHFLXfx11xtn4RoKrXQ
-         t65GLuXXaTSGZQ6+STHjED9nFW2NgQfTXRDDkTKMVOxLop+xYriqIUSBcOTOprQZgd9R
-         D1Bix1D3JfCmS9Mvg/fzVwDhKftSnHj1s1oP7dzSPSsoILuyzuelUVNaTIXlmgDkIORK
-         f+aObheFPpVidLn2ofITcYS2kEGUhzlk5jvCZ52f8yNJaxV2XNA8hE52UAgxC1knkRMS
-         +1ig==
+        Fri, 22 Sep 2023 14:45:36 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ACCCE
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:45:30 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1d661636928so3630795fac.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:45:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695408335; x=1696013135;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V/RXg7qoPV29Yjmc4Aum7okgMz0oycXOx15sVeIcRmM=;
-        b=aW46rhVbcTURyCgF3lQejRTv1QRkHssESYe8ZhOr50tICHE+kHX6kpGSdmqjE1BHd+
-         OBRAD0vbAi9rBzKy6iTc1AVIYU8hBT5rdsh8d05Pqc5uIfxex32YPkh5rlz3EuV8jBCd
-         KBOICB/1yAZfUpG/+NIz94ctf/uG7w7UuNydxV/WCdSOLXWglz3FEknMvC4RQcWTAsUl
-         oQAM2RSc98dpc4q6Zklkc/uyWn5foZRWC8g2eMRdPXPWIhezw6gkr0dzEyvGdJpjxEyn
-         VlKHzMl1xEzGaNDo6UY2OvkoATNC/lWz1mfoPEwWScKlHvFLIQt/wF0AAlpU7e0+8lkA
-         jSUg==
-X-Gm-Message-State: AOJu0Yyvznd666GDAMzJ6VUP6nD3F3dd4RHQpaXCGoZ/E4fD4PlQVE8I
-        WSXNCwZbUBR5UZ2i1PBMkWIBU94O5ac1bAjLleePk3TW3Cv9CicZ
-X-Google-Smtp-Source: AGHT+IEJGuXkGoE5AoXH2Ej5LLIiwCK3pJP5rkiNaJ+MP8w/xC9pPc/vjysUkvkG7okFXh2JN6w+5WqePXRZgsUvips=
-X-Received: by 2002:a0d:c084:0:b0:59b:1763:bff9 with SMTP id
- b126-20020a0dc084000000b0059b1763bff9mr606135ywd.49.1695408334726; Fri, 22
- Sep 2023 11:45:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695408330; x=1696013130;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GHvNmYe/7oDClcplq/l4st43cibTO0++q9/bZ4CRfVg=;
+        b=hA35T5szPub7FAK7Vs4/v2lSn7PxQ1Co1+dVH7+qi9Q4Uu/TLbUI1jvCM9pjne6EPU
+         F+L8EqiQi41gE/xHRxcamIvYR/nMn/+2yi7NSc3vWIK3YOgdjxkZKcbNRA2iX3OEsZXh
+         rX7OUfHKdS2SSIem/uCWRgXHwMKlLGJMary88hmOwjv1Mc4ciMfqEMKHbDMqvx5D4tLz
+         DFIsZFWAMvoVuK18snx3+/PqLQePkkQbHpwpe/sqbgrdZPmtf63XtjET68AoVS9kzJhS
+         BBWjlBC5nHUiVZ7mVo9hkvdv+4N9Bu47SZphcMwgGWG8jc03/Nb/CSHf11neklsXEBfD
+         5WEw==
+X-Gm-Message-State: AOJu0Yws0b+lPIEJ1h0JctlT5/3xENGgkdpnwT9UeceV+IoL78tZjcP1
+        RDcKut2KEqFjJpcaPQZ6v56q6mANesvqh2jyS7smeJqoYVt5
+X-Google-Smtp-Source: AGHT+IFiASI9I+d8YTUCo6Y0vNaIA/fxB263Ct4bKd8VHzbQGqJwkImy0blDArhh27yCdEN8Po8MmPHoyJQnS02bMBtbXz2usie9
 MIME-Version: 1.0
-References: <20230830165949.127475-1-ojeda@kernel.org> <ZO+CBdxxuDBrdDR8@gpm.stappers.nl>
-In-Reply-To: <ZO+CBdxxuDBrdDR8@gpm.stappers.nl>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 22 Sep 2023 20:45:23 +0200
-Message-ID: <CANiq72kMS8UoYpg0hW1=UDAAkytEoeyqGzg+Sys8VSaucr+HzQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] MAINTAINERS: update Rust webpage
-To:     Geert Stappers <stappers@stappers.nl>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
+X-Received: by 2002:a05:6870:a899:b0:1dc:27f6:79df with SMTP id
+ eb25-20020a056870a89900b001dc27f679dfmr101638oab.2.1695408330133; Fri, 22 Sep
+ 2023 11:45:30 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 11:45:30 -0700
+In-Reply-To: <CABNemfqP+=-ttkMwLWTQfoio9yQvHS+yBe6n7CJ0jBoWpF907g@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004456170605f703e5@google.com>
+Subject: Re: [syzbot] [mm?] linux-next test error: WARNING in page_add_anon_rmap
+From:   syzbot <syzbot+6ccbcd15a17f3e1cde38@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, w1s2d5@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 7:53=E2=80=AFPM Geert Stappers <stappers@stappers.n=
-l> wrote:
->
-> It looks like "mdbook" and "webbrowser view-source" confirms it is.
+Hello,
 
-Yeah, it is, with some pre- & post-processing to add some extra features.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> Where to find the source for the MarkDownBook?
+Reported-and-tested-by: syzbot+6ccbcd15a17f3e1cde38@syzkaller.appspotmail.com
 
-It is now published at https://github.com/Rust-for-Linux/rust-for-linux.com=
-.
+Tested on:
 
-> Reviewed-by: Geert Stappers <stappers@stappers.nl>
+commit:         7fc7222d Add linux-next specific files for 20230918
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79253779bcbe3130
+dashboard link: https://syzkaller.appspot.com/bug?extid=6ccbcd15a17f3e1cde38
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-Thanks!
-
-Cheers,
-Miguel
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
