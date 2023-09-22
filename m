@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 599C87AA6E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1817AA6F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjIVCLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 22:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S230078AbjIVCSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 22:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjIVCLM (ORCPT
+        with ESMTP id S229497AbjIVCSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 22:11:12 -0400
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8A8F1;
-        Thu, 21 Sep 2023 19:11:03 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qjVd2-00GxCV-E2; Fri, 22 Sep 2023 10:10:49 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Sep 2023 10:10:51 +0800
-Date:   Fri, 22 Sep 2023 10:10:51 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 6.6
-Message-ID: <ZQz3qxwwAjDaqi5V@gondor.apana.org.au>
-References: <Yr1XPJsAH2l1cx3A@gondor.apana.org.au>
- <Y0zcWCmNmdXnX8RP@gondor.apana.org.au>
- <Y1thZ/+Gh/ONyf7x@gondor.apana.org.au>
- <Y7fmtJHWT1Zx+A1j@gondor.apana.org.au>
- <ZARrt99wJb7IhoY4@gondor.apana.org.au>
- <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
- <ZHQe9A8CC93iCFMG@gondor.apana.org.au>
- <ZKtH5zrS4pR22PGT@gondor.apana.org.au>
- <ZOLcCC523FoBAyv0@gondor.apana.org.au>
- <ZPAiMYaqUslSyZ6+@gondor.apana.org.au>
+        Thu, 21 Sep 2023 22:18:36 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7F0CE;
+        Thu, 21 Sep 2023 19:18:28 -0700 (PDT)
+Received: from kwepemi500024.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RsG7x3PY9zVl1r;
+        Fri, 22 Sep 2023 10:15:25 +0800 (CST)
+Received: from [10.67.109.31] (10.67.109.31) by kwepemi500024.china.huawei.com
+ (7.221.188.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 22 Sep
+ 2023 10:18:25 +0800
+Message-ID: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
+Date:   Fri, 22 Sep 2023 10:18:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPAiMYaqUslSyZ6+@gondor.apana.org.au>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From:   Cai Xinchen <caixinchen1@huawei.com>
+Subject: [BUG?] fsconfig restart_syscall failed
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <dhowells@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.109.31]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500024.china.huawei.com (7.221.188.100)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus:
+Hello:
+   I am doing some test for kernel 6.4, util-linux version:2.39.1.
+Have you encountered similar problems? If there is a fix, please
+let me know.
+Thank you very much
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+--------------------------------------------------
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+util-linux version 2.39.1 call mount use fsopen->fsconfig->fsmount->close
+instead of mount syscall.
 
-are available in the Git repository at:
+And use this shell test:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p3 
+#!/bin/bash
+mkdir -p /tmp/cgroup/cgrouptest
+while true
+do
+         mount -t cgroup -o none,name=foo cgroup /tmp/cgroup/cgrouptest
+         ret=$?
+         if [ $ret -ne 0 ];then
+                 echo "mount failed , $ret"
+         fi
+         umount /tmp/cgroup/cgrouptest
+         ret=$?
+         if [ $ret -ne 0 ];then
+                 echo "umount failed, $ret"
+         fi
+done
 
-for you to fetch changes up to 21155620fbf2edbb071144894ff9d67ba9a1faa0:
+And as a result, we mount cgroup immediately after umount, it will return
+failed.
 
-  crypto: sm2 - Fix crash caused by uninitialized context (2023-09-20 13:10:10 +0800)
+in fsconfig syscall, we find this stack:
 
-----------------------------------------------------------------
-This push fixes a regression in sm2.
-----------------------------------------------------------------
+SYSCALL_DEFINE5(fsconfig, ...)
+         vfs_fsconfig_locked
+                 if (fc->phase != FS_CONTEXT_CREATE_PARAMS)
+                         return -EBUSY;
 
-Tianjia Zhang (1):
-      crypto: sm2 - Fix crash caused by uninitialized context
+                 vfs_get_tree
+                         fc->ops->get_tree // cgroup1_get_tree
+                                 if (!ret && !percpu_ref_tryget_live
+(&ctx->root->cgrp.self.refcnt))
+                                         ret = 1;
+                                 ...
+                                 if (unlikely(ret > 0)) {
+                                         msleep(10);
+                                         restart_syscall();
+                                 }
+                 ...
+                 fc->phase = FS_CONTEXT_FAILED;
 
- crypto/sm2.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+in mount syscall, no function will check fs->phase, and fc is recreate
+in monnt syscall. However, in fdconfig syscall, fc->phase is not initial as
+FS_CONTEXT_CREATE_PARAMS, restart_syscall will return -EBUSY. fc is created
+in fsopen syscall.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
