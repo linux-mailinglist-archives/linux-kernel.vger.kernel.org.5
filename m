@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAE17AB412
+	by mail.lfdr.de (Postfix) with ESMTP id 051E67AB411
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjIVOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
+        id S231736AbjIVOvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjIVOvT (ORCPT
+        with ESMTP id S231687AbjIVOva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:51:19 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1487C6;
-        Fri, 22 Sep 2023 07:51:12 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B3957E0003;
-        Fri, 22 Sep 2023 14:51:09 +0000 (UTC)
+        Fri, 22 Sep 2023 10:51:30 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C66180
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:51:24 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B41AA6000B;
+        Fri, 22 Sep 2023 14:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695394271;
+        t=1695394282;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u4bMcSqfVOcLKjBh3MpHcTy2ewquY/v0eZ6t5YcYSsU=;
-        b=aeUW8/R7sdrtUu5bKQ8tM0mSms8cN/RJt/US1tLdgOeJ8VqkZmv1ABIrObo1nhXqnyb8w2
-        luF8XvJcx8yhvaZl6pJv4GqW1WA/B+R49WG4e1g7djUry4lVoAyqICvIiiWZ3hfjB91HZp
-        i8gTSsFL0QECUrxUORXzVtr+tcQGjSgiCcLwXn7xfisfOFsqB0UbuN344Fa8E7KnX8HeXo
-        aHQ/x9DcLz1Wwpp8GcKK+9u7kvnMVkKaKTdtYvt+Tn/ug500Bfuzo1QH1eFP8zVkT6Bzdo
-        zpImVtFxJquP2fTyN8z7VSiZf8i0b/QuWGMENXdFIFcQ8WwhB8oQ8cXXxYDTzw==
+        bh=XoRUll6CaorBhs0khbfmRz9BF9/JTkYhq0xhHzZ3EUM=;
+        b=ex4JyoMjQ1GB/sXvlDYbkr5R/96btL6C1gZgOnfYfsrwAh92b5cF40Go53MegJ5I0xwv3/
+        hO9PNGlRcP2zlAYmdNI9HO7XnD+GSCliVsIRQ9nC+210FkZh1FA188FXxEBBawpkPOgm2r
+        BaQHPgYtGGyXu7hIAcZcIGT1Ow9nkUHejkz8tuCXNWIvk2sxYGkeyo/WwBy0x9ZZ5IfTPR
+        qxWOsWrayM8AMV+tdnaZ5Tu8FiccEe2VLAs4XE8B1h4CJgVRI0wHuhcEx+B7+hOuUMB6mr
+        8K8veM4IEAATv7QzSvfwuhpDfIr1iVqWB1nIS5jDCuoHfi87g2X+eXTGf+K/iA==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>, mani@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        quic_charante@quicinc.com, quic_kaushalk@quicinc.com,
-        quic_pkondeti@quicinc.com, stable@vger.kernel.org
-Subject: Re: [PATCH v5] mtd: rawnand: qcom: Unmap the right resource upon probe failure
-Date:   Fri, 22 Sep 2023 16:51:09 +0200
-Message-Id: <20230922145109.578247-1-miquel.raynal@bootlin.com>
+To:     Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org
+Cc:     linus.walleij@linaro.org, b.spranger@linutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: map_ram: prevent use of point and unpoint when NO_XIP is set
+Date:   Fri, 22 Sep 2023 16:51:21 +0200
+Message-Id: <20230922145121.578332-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230913070702.12707-1-quic_bibekkum@quicinc.com>
+In-Reply-To: <20230919113320.16953-1-shivamurthy.shastri@linutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'5279f4a9eed3ee7d222b76511ea7a22c89e7eefd'
+X-linux-mtd-patch-commit: b'3cff177fc2793a362d784c912f536e69a755925e'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,15 +56,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-13 at 07:07:02 UTC, Bibek Kumar Patro wrote:
-> We currently provide the physical address of the DMA region
-> rather than the output of dma_map_resource() which is obviously wrong.
+On Tue, 2023-09-19 at 11:33:20 UTC, Shivamurthy Shastri wrote:
+> When the DT property no-unaligned-direct-access is set, map->phys is set
+> to NO_XIP. With this property set, the flash should not be exposed
+> directly to MTD users, since it cannot be mapped.
 > 
-> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> map_ram() exposes the flash direct access unconditionally which leads to
+> access errors (when the bus width does not match the RAM width).
+> 
+> Therefore do not set point and unpoint when NO_XIP is set.
+> 
+> Signed-off-by: Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>
+> Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
