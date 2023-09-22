@@ -2,185 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 564547AAF6B
+	by mail.lfdr.de (Postfix) with ESMTP id A6A627AAF6C
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbjIVKYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S233335AbjIVKYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbjIVKYb (ORCPT
+        with ESMTP id S233325AbjIVKYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:24:31 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7D094;
-        Fri, 22 Sep 2023 03:24:25 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id B16D55C01FE;
-        Fri, 22 Sep 2023 06:24:22 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 22 Sep 2023 06:24:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695378262; x=1695464662; bh=A0
-        XJfKTmT4m+q8kCLVyRa+uLfx4AGYjYo6nvHEPffdA=; b=GTD+dHmCDg7zufMm6p
-        oXcyZ+t63bJq7ylCADy4w931wBNORB8rG7UgSuVklWYaRFEuOu5aHNZPdmFLtMSB
-        z08eD/Nn6jXWMniDEwxD6LzsXcUQY4xp/b361ExdTROSjpzbetbVHE6P9YdNyyTk
-        FbqHNIjP2GQoOpdXqMlCic1dRIPLPsL8eMdwb9gzq9Zw/o1AtzkuzcCLyEBmv4vZ
-        h62U+uKA0DR84cWYdYFyqck9MZx3RBdh4J/6tHOGcr8DWS8xO5HYizYl8A2od3AC
-        N7ItA4WkWiLmcQ08OrP5ECW3BYkyKlTB3yWL0PvnpqGNd0Qw38ES8tZzGKWyV1Ys
-        HnAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695378262; x=1695464662; bh=A0XJfKTmT4m+q
-        8kCLVyRa+uLfx4AGYjYo6nvHEPffdA=; b=XRMNJeYlK72hMxhN/3An8PUSvQ8Zs
-        vbI4+6agWjVM0MapR6INJWexsglDbkRUw7pMOeIsBfBSF1u+I+kdSQvu6VXoH+54
-        Z/11Tc1BobX2Np+7T6CZYURaptzhz+rjsXYOkbASJLozDJx5cK15NSxhAmYM/AUZ
-        2e/5zWEHJJ0/0Dh/sZCMk+2887tX7mUlo91limrXLcG3vC8EvaPFrtrEGYowlpVv
-        bJwczwlEqcyEZFYWJpM6WMohIUBeGFVTD3Nm0+YmHX/TYx7JUGeiE8thTOq/mSsD
-        xVTDZaCp7sMtOHrzFQyaurf9kLy1W5x/zJs1rN0uiPf3yxciqCOhWPvZw==
-X-ME-Sender: <xms:VWsNZbfMidwvWFraBYFRXS97Td5dBI8J6aWczIKGH9GzVo7dKde-ug>
-    <xme:VWsNZROwQmd7C5eHy7HCavTbeiJDi-sa8u40DwxSzQv57cVYG2cl6DVofq5gWmhO7
-    BdN_Ko9aLNudgs32Pw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekkedgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepveefvdekgeejhfeggfejteeuieffhfevudeuudevtddukeejtedtteekveeg
-    geehnecuffhomhgrihhnpehlihgsvghrrgdrtghhrghtnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:VWsNZUhieqRV1B_7-A9rXHAwppqWiOJmbfNefxyUCnpIwmSi_LTZ-Q>
-    <xmx:VWsNZc_0q0vWpQNsjCzyvmhLDB2LiEAZ27YGR210PK2-VcJEDfzZqg>
-    <xmx:VWsNZXv6QCPeZDfkr-HcluIRtm_i5zyhivYKZ1VJ7SHdmx5ybHMDCQ>
-    <xmx:VmsNZQT1iCfOjJrZSE_aRFDPAoIBWBhFtEF6QCpv81Zg_gYD8WOK5w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EF820B60089; Fri, 22 Sep 2023 06:24:20 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        Fri, 22 Sep 2023 06:24:45 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8BA199;
+        Fri, 22 Sep 2023 03:24:37 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-65643a83758so10769366d6.0;
+        Fri, 22 Sep 2023 03:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695378276; x=1695983076; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b+sS5ruO/tJtyGPGVsniRs9AZP10u/hXHZPj6vvFmKQ=;
+        b=lIOzsN2UF0gRjS95bfQsCKgE204oeODw8AkkkwQyRzsqlHWSi8rA2zpS756Np35+8z
+         fyGJOPcUGaj+9PB4naOYnp94XSLHpt+kjJslcyTJ+v6CPW7/dmksOdXya9Pcj65opaSb
+         wk5oHlLnPmpBjh1d48CVSWtBDiGwWmAaw4jiGHWFj9B2nxe0svL+xtwhGHVGUZu9UulH
+         hkiHggBUU5vG3ccZuPr+GtYJ+4wbMRd098ZiL8UiZFhtRwKgFMq5UxeSe0kbthIS4obD
+         3KHT9TSouhI2SWbyabpSuqnXhWELRqnFxHmBvHtA1I2OXQdZ+D6xOlGxdYXZ49JFDZVK
+         oqcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695378276; x=1695983076;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b+sS5ruO/tJtyGPGVsniRs9AZP10u/hXHZPj6vvFmKQ=;
+        b=eouMD7oE6xiuflK8D+b/6kiApF2sY3hzC8Fr2NRuNh8hrBQAWefvMTgdy2gbOce8sP
+         iQvp+sAQ8F+GDzaDMwmoAdLIINIXydOSZrKqblc7pGE3E7yPOc2hb7gxWwHRieeLX5VC
+         PbRWaJC16jSGohJLehDXPKg1d1uOR5VsoAMcQA8HLZFk7E4ab/IQw5OOtIzaTg+jeD3e
+         4DnL4hmA0Ix8YHrCPbuffmoP7ZTJ7VJxPixp/vBE512T6fqHJzWmqYWCoTPAJ53irjj4
+         YJN1JcAcC3Bw90v42Iwnd95v3iNI8LauKrzYvd7uJj69wgGexjp25/J88jxhY/YNG7KV
+         c8ww==
+X-Gm-Message-State: AOJu0YwSEYaZH5WlAM/3Bgccd7TrfA4cpZkXdUdgK20QKWAqYpSXIXRy
+        OZcXV8BC8j+XWmz2nrDkqA5DveLNuQt9cW+i8WA=
+X-Google-Smtp-Source: AGHT+IEqGOptK6T11L+6bLUsmFEwjPl0re5HVN67VdjbkuxfCObeqWlhioKlnxhYW9JIfUlxqZC3cZmbtJGtEBQKR9M=
+X-Received: by 2002:a05:6214:560d:b0:658:698e:bbca with SMTP id
+ mg13-20020a056214560d00b00658698ebbcamr6454569qvb.44.1695378276617; Fri, 22
+ Sep 2023 03:24:36 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <68ca306c-5ea2-437e-b7f1-68bad88557a0@app.fastmail.com>
-In-Reply-To: <20230913214944.59804-7-blarson@amd.com>
-References: <20230913214944.59804-1-blarson@amd.com>
- <20230913214944.59804-7-blarson@amd.com>
-Date:   Fri, 22 Sep 2023 06:24:00 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Brad Larson" <blarson@amd.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
-        linux-spi@vger.kernel.org,
-        "Adrian Hunter" <adrian.hunter@intel.com>, alcooperx@gmail.com,
-        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        brendan.higgins@linux.dev,
-        "Brian Norris" <briannorris@chromium.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "David Gow" <davidgow@google.com>, gsomlo@gmail.com,
-        "Greg Ungerer" <gerg@linux-m68k.org>,
-        "Hal Feng" <hal.feng@starfivetech.com>,
-        "Hitomi Hasegawa" <hasegawa-hitomi@fujitsu.com>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
-        "Krzysztof Kozlowski" <krzk@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org, "Lee Jones" <lee@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Mark Brown" <broonie@kernel.org>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Samuel Holland" <samuel@sholland.org>,
-        "Serge Semin" <fancer.lancer@gmail.com>,
-        "Shuah Khan" <skhan@linuxfoundation.org>,
-        suravee.suthikulpanit@amd.com,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        "Tony Huang" <tonyhuang.sunplus@gmail.com>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>, vaishnav.a@ti.com,
-        "Walker Chen" <walker.chen@starfivetech.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Yinbo Zhu" <zhuyinbo@loongson.cn>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v16 6/6] soc: amd: Add support for AMD Pensando SoC Controller
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn> <20230920-muppet-wad-ee76f3112651@wendy>
+In-Reply-To: <20230920-muppet-wad-ee76f3112651@wendy>
+From:   Chen Wang <unicornxw@gmail.com>
+Date:   Fri, 22 Sep 2023 18:24:25 +0800
+Message-ID: <CAHAQgRA+uN2xG=imVe4fuSyGxjDQk-AOo4r5b4bvAcTuEewwiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/11] Add Milk-V Pioneer RISC-V board support
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, at 17:49, Brad Larson wrote:
-> The Pensando SoC controller is a SPI connected companion device
-> that is present in all Pensando SoC board designs.  The essential
-> board management registers are accessed on chip select 0 with
-> board mgmt IO support accessed using additional chip selects.
+Regards,
+
+unicornx
+
+Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=882=
+0=E6=97=A5=E5=91=A8=E4=B8=89 18:01=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Signed-off-by: Brad Larson <blarson@amd.com>
-> ---
+> On Wed, Sep 20, 2023 at 02:33:48PM +0800, Chen Wang wrote:
+> > Milk-V Pioneer [1] is a developer motherboard based on SOPHON SG2042 [2=
+]
+> > in a standard mATX form factor. Add minimal device
+> > tree files for the SG2042 SOC and the Milk-V Pioneer board.
 >
-> v15 changes:
-> - Drop custom ioctl and use existing miscdevice interface.
-> - Delete unused definitions in amd-pensando-ctrl.h 
-> - Makefile change to compile for ARCH_PENSANDO
+> Please run dtbs_check with W=3D1 set & fix the below issues:
+>
+> sg2042-cpus.dtsi:1600.25-1607.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@0: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1609.25-1616.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@1: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1618.25-1625.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@2: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1627.25-1634.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@3: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1636.25-1643.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@4: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1645.25-1652.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@5: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1654.25-1661.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@6: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1663.25-1670.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@7: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1672.25-1679.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@8: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1681.25-1688.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@9: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1690.27-1697.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@10: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1699.27-1706.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@11: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1708.27-1715.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@12: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1717.27-1724.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@13: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1726.27-1733.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@14: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:1735.27-1742.5: Warning (unit_address_vs_reg): /cpus/l2-=
+cache@15: node has a unit name, but no reg or ranges property
+> sg2042-cpus.dtsi:256.15-275.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@0: duplicate unit-address (also used in node /cpus/l2-cache@0)
+> sg2042-cpus.dtsi:277.15-296.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@1: duplicate unit-address (also used in node /cpus/l2-cache@1)
+> sg2042-cpus.dtsi:298.15-317.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@2: duplicate unit-address (also used in node /cpus/l2-cache@2)
+> sg2042-cpus.dtsi:319.15-338.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@3: duplicate unit-address (also used in node /cpus/l2-cache@3)
+> sg2042-cpus.dtsi:340.15-359.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@4: duplicate unit-address (also used in node /cpus/l2-cache@4)
+> sg2042-cpus.dtsi:361.15-380.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@5: duplicate unit-address (also used in node /cpus/l2-cache@5)
+> sg2042-cpus.dtsi:382.15-401.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@6: duplicate unit-address (also used in node /cpus/l2-cache@6)
+> sg2042-cpus.dtsi:403.15-422.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@7: duplicate unit-address (also used in node /cpus/l2-cache@7)
+> sg2042-cpus.dtsi:424.15-443.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@8: duplicate unit-address (also used in node /cpus/l2-cache@8)
+> sg2042-cpus.dtsi:445.15-464.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@9: duplicate unit-address (also used in node /cpus/l2-cache@9)
+> sg2042-cpus.dtsi:466.17-485.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@10: duplicate unit-address (also used in node /cpus/l2-cache@10)
+> sg2042-cpus.dtsi:487.17-506.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@11: duplicate unit-address (also used in node /cpus/l2-cache@11)
+> sg2042-cpus.dtsi:508.17-527.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@12: duplicate unit-address (also used in node /cpus/l2-cache@12)
+> sg2042-cpus.dtsi:529.17-548.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@13: duplicate unit-address (also used in node /cpus/l2-cache@13)
+> sg2042-cpus.dtsi:550.17-569.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@14: duplicate unit-address (also used in node /cpus/l2-cache@14)
+> sg2042-cpus.dtsi:571.17-590.5: Warning (unique_unit_address_if_enabled): =
+/cpus/cpu@15: duplicate unit-address (also used in node /cpus/l2-cache@15)
+>
+> Thanks,
+> Conor.
 
-Hi Brad,
+I find the rootcause is due to following code in DTS:
+```
+                l2_cache0: l2-cache@0 {
+                        compatible =3D "cache";
+                        cache-block-size =3D <64>;
+                        cache-level =3D <2>;
+                        cache-size =3D <1048576>;
+                        cache-sets =3D <1024>;
+                        cache-unified;
+                };
+```
+To differ 16 l2-cache controller, we add <unit-address>, but due to
+the l2-cache controller on sg2042 has no address, no reg property is
+added here. That's why dtbs_check warns "node has a unit name, but no
+reg or ranges property". I just double-confirmed with sophgo
+engineers, they  told me there is really no address for the cache
+controller for sg2042.
 
-I'm sorry I've been out of the loop for so long, and I hope
-we can find a way to manage your SoC support soon. My impression
-is that the normal support patches (1, 3, 4, and 5) are largely
-uncontroversial, while the SoC controller support seems like
-we are still not converging onto something that is ready to
-merge, so I would suggest you split the two parts and send
-the basic support for inclusion in linux-6.7 while we continue
-to discuss the soc controller driver.
+One solution I use here is to provide unique name for the l2-cache
+node. I learn this from  "arch/arm64/boot/dts/hisilicon/hi3660.dtsi"
+and seems this work and pass dtbs_check with W=3D1. For example:
+```
+                l2_cache0: l2-cache0 {
+                        compatible =3D "cache";
+                        cache-block-size =3D <64>;
+                        cache-level =3D <2>;
+                        cache-size =3D <1048576>;
+                        cache-sets =3D <1024>;
+                        cache-unified;
+                };
 
-Please remove any references to the soc controller from the
-dts files and send that first series to:soc@kernel.org
-cc:linux-arm-kernel (and the other interested parties) so
-I can pick those up.
-
-Regarding the soc controller driver, let me try to give
-you my impression of where we are:
-
-- you have gone through 16 revisions already, which is way
-  too much for a public review, we should have been able
-  to find a solution earlier than that, and this is partly
-  our fault on the reviewer side, and I'm sorry about that.
-
-- Andy's latest comments and a lot of the earlier reviews
-  were focused on implementation details. While those comments
-  are helpful suggestions for improving the code, they miss
-  the larger point about the system design that I'm worried
-  about and probably don't help you actually get it merged.
-
-- The main problem I still see is that this driver completely
-  bypasses our normal kernel abstractions and instead creates
-  a low-level passthrough interface for handling kernel
-  functionality in userspace. This creates a liability both
-  for the user ABI and the kernel implementation and prevents
-  any 
-
-- There is a chance that your design is in fact the
-  best way to handle this particular hardware, but it is
-  your job to write a convincing explanation of why this
-  platform is different from all the others in the patch
-  description. Your current one-paragraph text does not
-  explain this at all.
- 
-I would suggest you prioritize getting the other patches
-included for the moment, but we can keep discussion the
-API design for this driver either in this thread or on the
-#armlinux IRC channel (irc.libera.chat) in parallel if you
-like. In order to help you here, I would need either
-the documentation of the SPI software interface, or the
-source code for the userspace tool.
-
-     Arnd 
+                l2_cache1: l2-cache1 {
+                        compatible =3D "cache";
+                        cache-block-size =3D <64>;
+                        cache-level =3D <2>;
+                        cache-size =3D <1048576>;
+                        cache-sets =3D <1024>;
+                        cache-unified;
+                };
+                ......
+```
+But I remember as mentioned in
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetr=
+ee-basics.html#generic-names-recommendation,
+node names should be generic. So I have two questions here:
+- Should I use "cache-controller" instead of "l2-cache", though I see
+"l2-cache" is used in many places but not listed in
+devicetree-specification.
+- Even if I replace "l2-cache" with "cache-controller", I think
+"cache-controller0", "cache-controller1" ... are not generic name, but
+due to sg2042 does not have address for cache controller, how to
+handle this problem?
