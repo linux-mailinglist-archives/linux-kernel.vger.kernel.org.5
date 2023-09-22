@@ -2,169 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A747AAE21
+	by mail.lfdr.de (Postfix) with ESMTP id 9218E7AAE22
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbjIVJcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
+        id S233150AbjIVJc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233196AbjIVJcc (ORCPT
+        with ESMTP id S232864AbjIVJch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:32:32 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FF01980
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:31:33 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3200bc30666so1730254f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:31:33 -0700 (PDT)
+        Fri, 22 Sep 2023 05:32:37 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCDD195;
+        Fri, 22 Sep 2023 02:31:48 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a76d882052so1220447b6e.0;
+        Fri, 22 Sep 2023 02:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1695375092; x=1695979892; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lV1vLMgIGx4rvSnOJBSF85XJaepjxLerEmm9st1yuuc=;
-        b=GIjBPaXiHZafVv4dgdY8ptLkNw1I0+IV3ZY4YgvvWe9F0RGXZnMKc2pY4NQto6qChe
-         EqCIQNtD/rJgki2HWswC1VblDtseFKZP8ihefyuHh5/4wp0/faY3/Ea7k9y4yXubkaBg
-         oXS4OikzRcDOXkMlEyhiXlYTfCuWmSQp+i8CSdqKd4ONGHtUxX3qRJmYDEJ3fyBArcej
-         sbX8vAK91tngigC4FJioPfCJpNQInyKGbuTsCl+DSsFgfgOUOaZDwaYvsd80LxS6WZM1
-         Gfqsd8ucn+AYlLhBXHR3cfRqhVPfIdeFzQtGPqBXEpFH0taSXhF+7+4dltD1fIaBN0jr
-         2Dfg==
+        d=gmail.com; s=20230601; t=1695375108; x=1695979908; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=byNWqpfCSFBatN+/XHuP3AQTcj9dJwp561+awvfzUsE=;
+        b=T3PHD8cPJxSQ/p9K7c9ffrPQ4n2SLvzcUcLFh/76sKKQoyEaxwkZsXyIZEaJO3w0Gn
+         M0IT1zvZypza4MAZHAbkHpvC+gsg8mD7bVBwcLiSq9pPuEFwMpQ9GsSEJoDtyOhnOalQ
+         h51/xFnuGepsSBiM2j9P/G6DMgwUoVQ415TgXYOAK+EcrzHHzqldb2t9y69xsMMjjkWx
+         97z90n7+lrAqI5/mRLuc57iFWKhIylVPIBfry+3OPxo13yL6lZlkn2C6lp6l5sdCyFHc
+         bYGPH5z+EvxREh9X5piPhVBG2xRP4rMxJmolLeLV4mc+U/QQ2NMpq85kw/lntKiLRcRF
+         BSWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695375092; x=1695979892;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lV1vLMgIGx4rvSnOJBSF85XJaepjxLerEmm9st1yuuc=;
-        b=iFecnizh9s+e9OU7WOcp88aj9uwp7GCjrhRpAiIcm+z9jy3/V/3/OdIrMNqNZmB6Kz
-         IysOBAuGv62uynvwbhWgm6VcCRRb+I+UIWsqLlZF5+xGpO1pK9uzge4crToX2iMrfV0P
-         4Or42dJVdyKZVX3mTZ+OV73Fqo8jcaKD9t2BXqSmds9JXhDbSSath7wWxdtgi+sSjN4U
-         VFSDtmib0HLb0r9nJeJL+DyhjzvtF7Oayf6sRoQfTn5zzRL2E5mo47Wac38c7IDJKFiF
-         DEqcV4u9dcZwCRSzBCDkkriJVcmwL5y+kXgyRWPjuQmE+t+XKb77I2zYziORCcY7XCTn
-         xkzw==
-X-Gm-Message-State: AOJu0YwQWZRqYXRgapoVsT607vTrDGuOK5w9nzGpk9ZreAioyYKglkaW
-        jH6wCSJ/Tluoeq4jb/iyzgCf2A==
-X-Google-Smtp-Source: AGHT+IG7989tVVxjAY0hhMJTcXV84q0wlOkDdX1G022GWYzIHacKiKDv5TuWzHf5P1p9+yl1oqePpw==
-X-Received: by 2002:a5d:457a:0:b0:317:dd94:ed38 with SMTP id a26-20020a5d457a000000b00317dd94ed38mr6484316wrc.42.1695375091808;
-        Fri, 22 Sep 2023 02:31:31 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id y7-20020adfd087000000b00317f70240afsm3929643wrh.27.2023.09.22.02.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 02:31:30 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v3 2/2] i2c: muxes: pca954x: Enable features on MAX7357/MAX7358
-Date:   Fri, 22 Sep 2023 11:31:16 +0200
-Message-ID: <20230922093117.3030977-2-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1695375108; x=1695979908;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=byNWqpfCSFBatN+/XHuP3AQTcj9dJwp561+awvfzUsE=;
+        b=fJDuu12WdjonQQcxnrf7jhMQLJhXBHDUgLKFJkcp+8ku4dUZWjK9hxe4KjvI8jpQTN
+         0r6xIDt9wu8hwviIJz5MrKewZT+pcECWZb1fqoHDqhiD9GdEqSWnfIgYysb0wOze7EE2
+         fWBQ7DI2TJ7kvrlowDMv+VEHcquZkbDHOMFAJoccdKgn98Oq9obK7QTZPvI3Z2zp+KDo
+         wqg5zLEWaH+hxeCWLp4kcT6RUnlL6E6coN6xa88nCT0qzscO0akBJMekCyFZ3lY6OjNK
+         yhCxCf3Pbw3yjL6949UbqEtS8dpwVewdM/kxx56525u7DzHSOwnr4agHkYRwNs7lzdrD
+         tHGg==
+X-Gm-Message-State: AOJu0YxLT84vQt6sm0dcS8Tyjjva394yCEBYhB98PcyP0KYbC6EFy5bf
+        4mRR3LxOFyFaKOsnIqZM1Fk=
+X-Google-Smtp-Source: AGHT+IH7tWZMylz8azAetF3ai4HZJKBMuaTHqqoWwTfPu9gh3SICvwqlQM6AW1jjsA5N4CIkdbaXyg==
+X-Received: by 2002:a05:6808:618f:b0:3a4:24aa:b556 with SMTP id dn15-20020a056808618f00b003a424aab556mr7148804oib.13.1695375107653;
+        Fri, 22 Sep 2023 02:31:47 -0700 (PDT)
+Received: from [192.168.31.134] ([122.172.81.240])
+        by smtp.gmail.com with ESMTPSA id c198-20020a6335cf000000b00565d82769d1sm2731648pga.77.2023.09.22.02.31.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 02:31:47 -0700 (PDT)
+Message-ID: <786d197a-a2b5-2507-f5d7-24e8224a3922@gmail.com>
+Date:   Fri, 22 Sep 2023 15:01:37 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] thermal: imx8mm_thermal: Fix function pointer declaration
+ by adding identifier name
+Content-Language: en-US
+To:     rafael@kernel.org, daniel.lezcano@linaro.org, rui.zhang@intel.com,
+        amitk@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com
+Cc:     linux-imx@nxp.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230917083443.3220-1-bragathemanick0908@gmail.com>
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+In-Reply-To: <20230917083443.3220-1-bragathemanick0908@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Detect that max7357 is being used and run custom init sequence.
-Enable additional features based on DT settings and unconditionally
-release the shared interrupt pin after 1.6 seconds and allow to use
-it as reset.
+On 17/09/23 14:04, Bragatheswaran Manickavel wrote:
+> Added identifier names to respective definitions for fix
+> warnings reported by checkpatch.pl
+>
+> WARNING: function definition argument 'void *' should also have an identifier name
+> WARNING: function definition argument 'int *' should also have an identifier name
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> ---
+>   drivers/thermal/imx8mm_thermal.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/thermal/imx8mm_thermal.c b/drivers/thermal/imx8mm_thermal.c
+> index 14111ccf6e4c..5dc6c18f12df 100644
+> --- a/drivers/thermal/imx8mm_thermal.c
+> +++ b/drivers/thermal/imx8mm_thermal.c
+> @@ -78,7 +78,7 @@
+>   struct thermal_soc_data {
+>   	u32 num_sensors;
+>   	u32 version;
+> -	int (*get_temp)(void *, int *);
+> +	int (*get_temp)(void *data, int *temp);
+>   };
+>   
+>   struct tmu_sensor {
 
-These features aren't enabled by default & its up to board designer
-to enable the same as it may have unexpected side effects.
+Hi Team, Could someone help in reviewing it.
 
-These should be validated for proper functioning & detection of devices
-in secondary bus as sometimes it can cause secondary bus being disabled.
-
-The init sequence is not run for max7358 that needs to be unlocked
-first, but that would need the unimplemented function
-i2c_probe_func_quick_write().
-
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
----
-Changes in V3:
-- Delete unused #define
-- Update pca954x_init
-- Update commit message
-
-Changes in V2:
-- Update comments
-- Update check for DT properties
----
- drivers/i2c/muxes/i2c-mux-pca954x.c | 38 ++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 2219062104fb..91c7c1d13c89 100644
---- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-+++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -57,6 +57,20 @@
- 
- #define PCA954X_IRQ_OFFSET 4
- 
-+/*
-+ * MAX7357's configuration register is writeable after POR, but
-+ * can be locked by setting the basic mode bit. MAX7358 configuration
-+ * register is locked by default and needs to be unlocked first.
-+ * The configuration register holds the following settings:
-+ */
-+#define MAX7357_CONF_INT_ENABLE			BIT(0)
-+#define MAX7357_CONF_FLUSH_OUT			BIT(1)
-+#define MAX7357_CONF_RELEASE_INT		BIT(2)
-+#define MAX7357_CONF_DISCON_SINGLE_CHAN		BIT(4)
-+#define MAX7357_CONF_PRECONNECT_TEST		BIT(7)
-+
-+#define MAX7357_POR_DEFAULT_CONF		BIT(0)
-+
- enum pca_type {
- 	max_7356,
- 	max_7357,
-@@ -463,6 +477,7 @@ static void pca954x_cleanup(struct i2c_mux_core *muxc)
- 
- static int pca954x_init(struct i2c_client *client, struct pca954x *data)
- {
-+	u8 conf = MAX7357_POR_DEFAULT_CONF;
- 	int ret;
- 
- 	if (data->idle_state >= 0)
-@@ -470,7 +485,28 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
- 	else
- 		data->last_chan = 0; /* Disconnect multiplexer */
- 
--	ret = i2c_smbus_write_byte(client, data->last_chan);
-+	if (device_is_compatible(&client->dev, "maxim,max7357") &&
-+	    i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
-+		/*
-+		 * The interrupt signal is shared with the reset pin. Release the
-+		 * interrupt after 1.6 seconds to allow using the pin as reset.
-+		 * The interrupt isn't serviced yet.
-+		 */
-+		conf |= MAX7357_CONF_RELEASE_INT;
-+
-+		if (device_property_read_bool(&client->dev, "maxim,isolate-stuck-channel"))
-+			conf |= MAX7357_CONF_DISCON_SINGLE_CHAN;
-+		if (device_property_read_bool(&client->dev, "maxim,send-flush-out-sequence"))
-+			conf |= MAX7357_CONF_FLUSH_OUT;
-+		if (device_property_read_bool(&client->dev,
-+					      "maxim,preconnection-wiggle-test-enable"))
-+			conf |= MAX7357_CONF_PRECONNECT_TEST;
-+
-+		ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
-+	} else {
-+		ret = i2c_smbus_write_byte(client, data->last_chan);
-+	}
-+
- 	if (ret < 0)
- 		data->last_chan = 0;
- 
--- 
-2.41.0
+Thanks,
+Bragathe
 
