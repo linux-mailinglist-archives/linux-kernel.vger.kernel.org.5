@@ -2,145 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACB77AAE41
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF54D7AAE46
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbjIVJf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
+        id S233131AbjIVJfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbjIVJfu (ORCPT
+        with ESMTP id S233030AbjIVJfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:35:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBD4194
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695375294;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4R2VSWRD7MwQzZdu/lEnfh4YG4jsT6A99YZfwGb8Ggg=;
-        b=VyaQCRaY/LdOTYUaT3/sQMTlri54zeC6MEJQ4xoB3TEOGZEWrR28yhxcqjqCAp6MF2tKpA
-        IHIt7CAvPRX+IAg3c29Lnzs59AdzG4cUJSw+qlzT7KMLuwoqT+7vFLbtCIUTQF9wGpdeRN
-        sF0Jb/vZHIyjK76iGvcrKDmaCjQb0fg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-196--vhzaNQfPxaAr7mZzRqKqA-1; Fri, 22 Sep 2023 05:34:51 -0400
-X-MC-Unique: -vhzaNQfPxaAr7mZzRqKqA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B5A811C06EC4;
-        Fri, 22 Sep 2023 09:34:50 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 112E510F1BE7;
-        Fri, 22 Sep 2023 09:34:49 +0000 (UTC)
-Date:   Fri, 22 Sep 2023 17:34:46 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Jaeseon Sim <jason.sim@samsung.com>
-Cc:     "urezki@gmail.com" <urezki@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>
-Subject: Re: [PATCH] mm/vmalloc: Remove WARN_ON_ONCE related to
- adjust_va_to_fit_type
-Message-ID: <ZQ1ftk5yDBv+p6A4@MiWiFi-R3L-srv>
-References: <CGME20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65@epcms1p1>
- <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        Fri, 22 Sep 2023 05:35:30 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2111.outbound.protection.outlook.com [40.107.223.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6393C19C
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:35:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q0S4aViD9HmqAXl/24f35dl+Ly2rcQAHO/hGWmIi3S9zoN1LYxpf9zIpuCgy/ekAXgZAwFo9vHIbtuo3Ae6ohok7lG1HBja/ev/kcfOOn/TO+XX9MT3xgk/qGNYU3OOvWI0YxIZNgqTvN4e7frFownQaR/llphUtTQiA3M8xYVt1ghVokgtNu6DBh2Tph8mEclRTq9/mra/cJkfxnT+Kc+o+XWOgxRCzTKkCbLCtJyizjAxapxufsyy3M1qRMeIgRTE4+nRiUuls1ek7ZhHQ7ylPuGJfwXN3kA8GbRx3JpTQaa+bLOIk1cs1GFx8wT9pD+xoeSW7tJVIRqa/q98TsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4SWMohgR48+Z7ATdvITsU+9kcNSbC/Zm9qf8mMGNwGE=;
+ b=AmycBqkthcumKngbsgXK/QAU4+bN3WZdW5kkoAUTt3dxFB5uJ/c2nHiMhNS68HjAwoR9xiAmSgA39JY8EbAclBlrYpACrizFO1hG+1X7jh81b8fFiDZrTTIk8SZP5w3hEtvpjwyh5kOw5r5bPRO670ir04Wk0l0xV/vgGJuJW8u06nzhL4HRtrK4mZIMQ2twOPGr+1/7tJTatq/S0VcW+8ZV5J8EOS112Z0JPGcIOfcfK8hR5lumpljNd8kGlEgdwZgvu2Isw0mEdYXQQd6ZkVX+ANG9rJf0OC74A1a4RI9QOZdc+2dbFs4ql1wYkfZbEMU9lYfseSX2HpRDgpdCfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4SWMohgR48+Z7ATdvITsU+9kcNSbC/Zm9qf8mMGNwGE=;
+ b=JTDuzNaNfnIyBFA45brYIA06JCMP7Z0XuO503iDv898UdBgV/NTOSrrCKbN9TfcRsj9XyV+oainVzUpROzMcthIpQBxSZUjnGymtSEULS32w5gb8F0VBzVSQPKKSLCyCLeoedIMp5w1Fr4SdJ+Zm5Ma4r4i0NvkZFWl/cP6PLbY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by IA0PR04MB8836.namprd04.prod.outlook.com (2603:10b6:208:486::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.10; Fri, 22 Sep
+ 2023 09:35:21 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::cd38:f20f:5778:a25]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::cd38:f20f:5778:a25%7]) with mapi id 15.20.6838.010; Fri, 22 Sep 2023
+ 09:35:19 +0000
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     bliang@analogixsemi.com, qwen@analogixsemi.com,
+        hsinyi@chromium.org, Xin Ji <xji@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/bridge: Add 200ms delay to wait FW HPD status stable
+Date:   Fri, 22 Sep 2023 17:34:49 +0800
+Message-Id: <20230922093450.3574349-1-xji@analogixsemi.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0041.apcprd02.prod.outlook.com
+ (2603:1096:3:18::29) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6739:EE_|IA0PR04MB8836:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1dbc6357-05c4-4a4e-40e2-08dbbb4f3c6a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1yMrcuLUJo+qTVEt3qk5bFiwzhNsfRtvCgCozSiJtiXmwv39BjKkDZK5NSYGg4nWQDICosC5vGvKLh6+RCE5R9Uo7xspZRvUc3JL9W1pCUo7NcxeRNlBxpf0DiZcCh5ysgUR+QXTKUAJuvY+3BCgdpCwnyz10VNkZ0aagmKZOdajBHiTKNkJIOFMQYFR0kZqlOFNgG5J5qZWEJVeojWd2r2yPnaR5a45kn5O8UEBna2pMO/bacIqjHJRtaWw4o6kCeZcg4yU/aW8xvSGFBnrXwkKNsgvUwGoIKfJHwMi8XhEgDxUO/6kqUbFzoyXSGdNUhSeMUGY9llADzY1bwxTYOoTFSqsc1ZqvU55FXAxok2I5qlddwHOi74I8D3uK9fEYstAEY62cnbN7RAiagfNDTQXYvxlAAJuEMu3JoahvW1M+CqaEug8P+WVPHz9CpOcy9+VjglnG9X1eajrmoHBsEEBbwrPdqYJbRWsTgeonsf7ylb8kY+5TKrSjT+X34mY3S/z7HZ5YIuRQW11QBAMYiQ9/DAvtVIDNUNwsdfKhnHqncXjRWd+avMaOb8HleKtjcl8TeR25Rbi7KL15rPgTPYahoi3+i/sqMAOAp3SpH+EBb/lvJR3Z1T9Y1vbjtnt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(366004)(39850400004)(136003)(186009)(1800799009)(451199024)(110136005)(6512007)(316002)(38350700002)(26005)(38100700002)(66946007)(1076003)(66556008)(66476007)(36756003)(41300700001)(2616005)(478600001)(6486002)(6506007)(52116002)(6666004)(7416002)(4744005)(2906002)(83380400001)(86362001)(8676002)(8936002)(4326008)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AquI0YzhsO6z0W9O9wO/ooulAGNoPqoMhj0raWSmEQMQR7H90BfAX3GKRpTo?=
+ =?us-ascii?Q?N/o2rHfd5ocT5x+MRuoUPE92AOb4cmunfVNqs6cGlnD3+upgHuQ7G3vS4Exi?=
+ =?us-ascii?Q?6X6D3tzHX+7mnjn0UU8e/djtPxynT4HvcDFWDb3vjHJrol/P9ZER4RISytmT?=
+ =?us-ascii?Q?BcVil/798lCoT8zPg6o0OH0tmAg5r/CCldWLmTxXWSRjJOAxNsOCl+qTT1BP?=
+ =?us-ascii?Q?mH8IWdvTc2mCCMoSLUVEzCqHvk5dk9ff6L3n1JOD7SK4v4XyNx6s4cOuYmL4?=
+ =?us-ascii?Q?5Ug+cU9LghIkk6177VhBLYGqCLY+TY/pEBuO+5dknDcLW8LHR59eyr/MqNVE?=
+ =?us-ascii?Q?RAUX99fHfMV+TU/+xEXpakV5yXWnCgDErcZiVc9vsIKdEEJou3K0L8klkmqt?=
+ =?us-ascii?Q?1R0Uc1YlCvF6JtV2trlCJtohe7KOfZbLeKjdff16D2dtvuwBAsG0U4/jMBFn?=
+ =?us-ascii?Q?herXk1pCNTtZBqw3AMTJc2ehszOD0vWn1JUctvxwbDiDaouD77eeZ9IyqBDp?=
+ =?us-ascii?Q?+yaFVKRZFti8o2t6MxjUeTq6Ir3NPPUfnRrhQuSXgi90IWiid7GUNh5tj7+s?=
+ =?us-ascii?Q?JcvR9xz7jUtlc+72sTPkDgzUxpAAjl2IgT0ihoJF7Mpv2BX+BF1Qklz/1CwK?=
+ =?us-ascii?Q?gdmyOs/noPAwyvPNoDEvjo560RmUVtiwfgN7DL1YpTnY22tHnbewvfuAuB/a?=
+ =?us-ascii?Q?Vv/jDC+/XnRowGfucha87lCK1AlXSytHYrLUSPzmu/i8oKt4Cmr2In9Ta0zc?=
+ =?us-ascii?Q?IcER7aZDkZF4WpqgQVLb0qDYhnpM/d5LUoIGv1DU07gDd2SSm2v3wYkf13jF?=
+ =?us-ascii?Q?TShPiiCTfVbYVFM1OHIMyxOQx7rjIqvBB/l+ciwxJJKZNWm4flKdTtPhhmI9?=
+ =?us-ascii?Q?jkS7wNDzx40qmdXLPnzti2Ch9BqFJowZqTUSSiXRdNrIg0Z0PvvNHaYGTeKR?=
+ =?us-ascii?Q?s6KuaBC01PuvAm1vqQE6pTjjrXrVPiikThMWEj/IMm3AAz3KgVD9wsSJYD6L?=
+ =?us-ascii?Q?Ituzeq9KUUyy8E0AmESvEIDLooCJCHpgez7VmCK4qU3yWPmo8ZJhbJz6wv+4?=
+ =?us-ascii?Q?WUaci09ok8Wyi46y9IMQVZpFFvmdD1EtffoU5wYEdcLzkqi0/9Us9uJgHSgG?=
+ =?us-ascii?Q?hyVfp50kvUxd11Oa7DPhNz6BPIucDex+FQi5iOLdKgg9w1xWUtYV30dqynF9?=
+ =?us-ascii?Q?CTQb5fAnVyw4EUhHEj7vkuWH/0G7hmurNQFsKWYjoEREfDfUQMaTTd42jl4B?=
+ =?us-ascii?Q?8EDr9eUGTIFHCpqxipjzSIGE7o1A0h6SCPFPtjHtp+tTaUvgx0YyIpamNP43?=
+ =?us-ascii?Q?YISah/Ixpo6GtwaOJ+t7dP12CNz/ue9BEZUNlmFLAqnVJ4j9oO7hCYR+ZIjq?=
+ =?us-ascii?Q?jxFsjrstF6YhGxLBGWFI7iG2R7JTrLrLUokv2uQuFTukJAsx5qFd8a1Og0Ie?=
+ =?us-ascii?Q?3n64U/YJ+UqJ+EyvTNMIbQUATIYQgvestrG+XxjHISbPvKJMuLsUDhI8fLAf?=
+ =?us-ascii?Q?ueTmIqBqFy1p1vvleXq+iQhTePTlhJjU9AHL+3nQL0F3m5tmc+Wm2K8ZqVYX?=
+ =?us-ascii?Q?OSQBVexSkW7YL1KK4N25etwxsj+vsAeN2kDrbSRy?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1dbc6357-05c4-4a4e-40e2-08dbbb4f3c6a
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 09:35:19.5119
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FhwDKxEOz796zM41H3S2JZMaTso6J0ZuQ63IqPkvBvXM0U1OmHZ1YekTiLXZ7JyjgTg3+3snFrna0L2S9CteYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR04MB8836
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jaeseon,
+For the no-interrupt design (sink device is panel, polling HPD
+status when chip power on), anx7625 FW has more than 200ms HPD
+de-bounce time in FW, for the safety to get HPD status, driver
+better to wait 200ms before HPD detection after OS resume back.
 
-On 09/22/23 at 03:27pm, Jaeseon Sim wrote:
-> There's panic issue as follows when do alloc_vmap_area:
-> 
-> Kernel panic - not syncing: kernel: panic_on_warn set ...
-> 
-> page allocation failure: order:0, mode:0x800(GFP_NOWAIT)
-> Call Trace:
-> warn_alloc+0xf4/0x190
-> __alloc_pages_slowpath+0xe0c/0xffc
-> __alloc_pages+0x250/0x2d0
-> new_slab+0x17c/0x4e0
-> ___slab_alloc+0x4e4/0x8a8
-> __slab_alloc+0x34/0x6c
-> kmem_cache_alloc+0x20c/0x2f0
-> adjust_va_to_fit_type
-> __alloc_vmap_area
-> alloc_vmap_area+0x298/0x7fc
-> __get_vm_area_node+0x10c/0x1b4
-> __vmalloc_node_range+0x19c/0x7c0
-> 
-> Commit 1b23ff80b399 ("mm/vmalloc: invoke classify_va_fit_type() in
-> adjust_va_to_fit_type()") moved classify_va_fit_type() into
-> adjust_va_to_fit_type() and used WARN_ON_ONCE() to handle return
-> value of adjust_va_to_fit_type(), just as classify_va_fit_type()
-> was handled.
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I don't get what you are fixing. In commit 1b23ff80b399, we have
-"if (WARN_ON_ONCE(type == NOTHING_FIT))", it's the same as the current
-code. You set panic_on_warn, it will panic in old code before commit
-1b23ff80b399. Isn't it an expected behaviour?
-
-> 
-> There is another path in adjust_va_to_fit_type() which could
-> return failure and will be handled in alloc_vmap_area().
-> Remove WARN_ON_ONCE() for this case.
-> 
-> Fixes: 45c62fc2897d ("mm/vmalloc: Remove WARN_ON_ONCE related to adjust_va_to_fit_type")
-
-The commit id for Fixes tag is wrong.
-
-> Signed-off-by: Jaeseon Sim <jason.sim@samsung.com>
-> ---
->  mm/vmalloc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index ef8599d394fd..4a82b6525d48 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1522,7 +1522,7 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
->  
->          /* Update the free vmap_area. */
->          ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
-> -        if (WARN_ON_ONCE(ret))
-> +        if (ret)
->                  return vend;
->  
->  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
-> @@ -4143,7 +4143,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
->                  ret = adjust_va_to_fit_type(&free_vmap_area_root,
->                                              &free_vmap_area_list,
->                                              va, start, size);
-> -                if (WARN_ON_ONCE(unlikely(ret)))
-> +                if (unlikely(ret))
->                          /* It is a BUG(), but trigger recovery instead. */
->                          goto recovery;
->  
-> -- 
-> 2.17.1
-> 
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 51abe42c639e..8f740154707d 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -1464,6 +1464,9 @@ static int _anx7625_hpd_polling(struct anx7625_data *ctx,
+ 	if (ctx->pdata.intp_irq)
+ 		return 0;
+ 
++	/* Delay 200ms for FW HPD de-bounce */
++	msleep(200);
++
+ 	ret = readx_poll_timeout(anx7625_read_hpd_status_p0,
+ 				 ctx, val,
+ 				 ((val & HPD_STATUS) || (val < 0)),
+-- 
+2.25.1
 
