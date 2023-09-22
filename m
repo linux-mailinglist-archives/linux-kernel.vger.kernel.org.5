@@ -2,154 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67527AAC54
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBEC7AAC62
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbjIVIMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        id S232571AbjIVINT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbjIVILq (ORCPT
+        with ESMTP id S232548AbjIVIMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:11:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA8CE6C;
-        Fri, 22 Sep 2023 01:11:40 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 08:11:38 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695370298;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1p8WzcJOAWfYeWI6UQE2QRNFJdJzCKra8K3fwBKeWYE=;
-        b=ojpQtcDn+LyAKsQwFJpccq0mc9T+icQ5zwJAy9mD/mDkYxbA1wgwN/MTi/sp3f3UKvGShQ
-        CnMEMhN74yG1GEis2wJtbsKBgeDOB3Qo6cMqfkegHFgQvUc1t3rO+ltXRUzrsr/HdTA+vU
-        paVOSSfPn7n+r0tnYJwEdVsJVcj1DYDLhPt2Jfm+mobAxuZGEziyAfFC0yrSeKjmQRCCeJ
-        DOjfgu1wKEZZUPFTKJck5if23NNo5FF/P3KfwkbDHuyjya2HwJ7wtpCSsAFulB4YbG6jGI
-        /frecf0xMVgafYkAK0CK9y+jDlCE9bPw3hmZXj8DWEnao2E4QICTNNyBZqGHJg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695370298;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1p8WzcJOAWfYeWI6UQE2QRNFJdJzCKra8K3fwBKeWYE=;
-        b=byVsDRShUDXLgoVlAO8FzCm+vF3pcbOix7HsbYe9bdUyp/q4TjX3cegaOVr+lbUErZcrph
-        0EyvoRTRRiq/72Bw==
-From:   "tip-bot2 for John Stultz" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/ww_mutex/test: Use prng instead of rng to
- avoid hangs at bootup
-Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230922043616.19282-2-jstultz@google.com>
-References: <20230922043616.19282-2-jstultz@google.com>
+        Fri, 22 Sep 2023 04:12:51 -0400
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3995A1F04;
+        Fri, 22 Sep 2023 01:12:16 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.03,167,1694703600"; 
+   d="scan'208";a="176896542"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 22 Sep 2023 17:12:15 +0900
+Received: from localhost.localdomain (unknown [10.226.92.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E56BC400F937;
+        Fri, 22 Sep 2023 17:12:11 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.au@gmail.com>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v2] alarmtimer: Fix rebind failure
+Date:   Fri, 22 Sep 2023 09:12:08 +0100
+Message-Id: <20230922081208.26334-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <169537029801.27769.5775811116918279412.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+The resources allocated in alarmtimer_rtc_add_device() are not freed
+leading to re-bind failure for the endpoint driver. Fix this issue
+by adding alarmtimer_rtc_remove_device().
 
-Commit-ID:     4812c54dc0498c4b757cbc7f41c1999b5a1c9f67
-Gitweb:        https://git.kernel.org/tip/4812c54dc0498c4b757cbc7f41c1999b5a1c9f67
-Author:        John Stultz <jstultz@google.com>
-AuthorDate:    Fri, 22 Sep 2023 04:35:59 
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 22 Sep 2023 09:43:40 +02:00
-
-locking/ww_mutex/test: Use prng instead of rng to avoid hangs at bootup
-
-Booting w/ qemu without kvm, and with 64 cpus, I noticed we'd
-sometimes hung task watchdog splats in get_random_u32_below()
-when using the test-ww_mutex stress test.
-
-While entropy exhaustion is no longer an issue, the RNG may be
-slower early in boot. The test-ww_mutex code will spawn off
-128 threads (2x cpus) and each thread will call
-get_random_u32_below() a number of times to generate a random
-order of the 16 locks.
-
-This intense use takes time and without kvm, qemu can be slow
-enough that we trip the hung task watchdogs.
-
-For this test, we don't need true randomness, just mixed up
-orders for testing ww_mutex lock acquisitions, so it changes
-the logic to use the prng instead, which takes less time
-and avoids the watchdgos.
-
-Feedback would be appreciated!
-
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230922043616.19282-2-jstultz@google.com
+Fixes: c79108bd19a8 ("alarmtimer: Make alarmtimer platform device child of RTC device")
+Fixes: 7c94caca877b ("alarmtimer: Use wakeup source from alarmtimer platform device")
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
- kernel/locking/test-ww_mutex.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+v1->v2:
+ * Add fixes tag.
+ * Replaced the variable rtc_pdev->alarmtimer_pdev
+ * Added the check rtcdev == rtc before unregistering the real alarmtimer.
+Note:
+ This issue is found while adding irq support for built in RTC
+ found on Renesas PMIC RAA215300 device. This issue should present
+ on all RTC drivers which calls device_init_wakeup() in probe().
+---
+ kernel/time/alarmtimer.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
-index 93cca6e..9bceba6 100644
---- a/kernel/locking/test-ww_mutex.c
-+++ b/kernel/locking/test-ww_mutex.c
-@@ -9,7 +9,7 @@
- #include <linux/delay.h>
- #include <linux/kthread.h>
- #include <linux/module.h>
--#include <linux/random.h>
-+#include <linux/prandom.h>
- #include <linux/slab.h>
- #include <linux/ww_mutex.h>
+diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+index 8d9f13d847f0..04d67de8b1fe 100644
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -61,6 +61,7 @@ static DEFINE_SPINLOCK(freezer_delta_lock);
+ /* rtc timer and device for setting alarm wakeups at suspend */
+ static struct rtc_timer		rtctimer;
+ static struct rtc_device	*rtcdev;
++static struct platform_device	*alarmtimer_pdev;
+ static DEFINE_SPINLOCK(rtcdev_lock);
  
-@@ -386,6 +386,19 @@ struct stress {
- 	int nlocks;
- };
+ /**
+@@ -109,6 +110,7 @@ static int alarmtimer_rtc_add_device(struct device *dev)
+ 		}
  
-+struct rnd_state rng;
-+DEFINE_SPINLOCK(rng_lock);
-+
-+static inline u32 prandom_u32_below(u32 ceil)
+ 		rtcdev = rtc;
++		alarmtimer_pdev = pdev;
+ 		/* hold a reference so it doesn't go away */
+ 		get_device(dev);
+ 		pdev = NULL;
+@@ -123,6 +125,22 @@ static int alarmtimer_rtc_add_device(struct device *dev)
+ 	return ret;
+ }
+ 
++static void alarmtimer_rtc_remove_device(struct device *dev)
 +{
-+	u32 ret;
++	struct rtc_device *rtc = to_rtc_device(dev);
 +
-+	spin_lock(&rng_lock);
-+	ret = prandom_u32_state(&rng) % ceil;
-+	spin_unlock(&rng_lock);
-+	return ret;
++	if (rtcdev == rtc) {
++		module_put(rtc->owner);
++		if (device_may_wakeup(rtc->dev.parent))
++			device_init_wakeup(&alarmtimer_pdev->dev, false);
++
++		platform_device_unregister(alarmtimer_pdev);
++		put_device(dev);
++		alarmtimer_pdev = NULL;
++		rtcdev = NULL;
++	}
 +}
 +
- static int *get_random_order(int count)
+ static inline void alarmtimer_rtc_timer_init(void)
  {
- 	int *order;
-@@ -399,7 +412,7 @@ static int *get_random_order(int count)
- 		order[n] = n;
+ 	rtc_timer_init(&rtctimer, NULL, NULL);
+@@ -130,6 +148,7 @@ static inline void alarmtimer_rtc_timer_init(void)
  
- 	for (n = count - 1; n > 1; n--) {
--		r = get_random_u32_below(n + 1);
-+		r = prandom_u32_below(n + 1);
- 		if (r != n) {
- 			tmp = order[n];
- 			order[n] = order[r];
-@@ -625,6 +638,8 @@ static int __init test_ww_mutex_init(void)
+ static struct class_interface alarmtimer_rtc_interface = {
+ 	.add_dev = &alarmtimer_rtc_add_device,
++	.remove_dev = &alarmtimer_rtc_remove_device,
+ };
  
- 	printk(KERN_INFO "Beginning ww mutex selftests\n");
- 
-+	prandom_seed_state(&rng, get_random_u64());
-+
- 	wq = alloc_workqueue("test-ww_mutex", WQ_UNBOUND, 0);
- 	if (!wq)
- 		return -ENOMEM;
+ static int alarmtimer_rtc_interface_setup(void)
+-- 
+2.25.1
+
