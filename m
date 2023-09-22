@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21757ABA12
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4CA7ABA1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbjIVT2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 15:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        id S233837AbjIVTb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 15:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233942AbjIVT2l (ORCPT
+        with ESMTP id S232377AbjIVTb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 15:28:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF8BAF
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 12:28:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19029C433C7;
-        Fri, 22 Sep 2023 19:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695410915;
-        bh=BmLdFY3csgfqTb8wY8hnwUjYc88tC6pnnfwcHwWy744=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=c4X9IVj5ZCTlN3JowoTT1iu9wOIGAfe2JNj1xmhLSDFN+T6cdp84L+H/6RD+uyRG7
-         QizXM4rVwZ9XrHbdfRLDbMjM2Gb6Lx4eOtR1oRf9Y9mQ5oNaJUj2SKynVsA7YawIKb
-         3GpvKdFzXgqVyXAbqyd2ESg59pwb5L2zXHCkn8yxVmdy9eqqZaGtSo/huCt763kjlg
-         9UdvqF0L231b4zA/F1hGN63zOW1JuRLK2yTMDIMRWBbGGI35PzK8c5TkjTCblnHsn8
-         9n2ryWLA6Ex1tFXGWHcVL7XyHKN7iur4v/R3mmWT2m1F1NTZc2gwvHvKkcTKAdGeeK
-         ih5v+XqFbPWDw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20230922153711.28103-1-rf@opensource.cirrus.com>
-References: <20230922153711.28103-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] regmap: rbtree: Fix wrong register marked as in-cache
- when creating new node
-Message-Id: <169541091366.56362.11146940742767135456.b4-ty@kernel.org>
-Date:   Fri, 22 Sep 2023 20:28:33 +0100
+        Fri, 22 Sep 2023 15:31:56 -0400
+X-Greylist: delayed 161 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Sep 2023 12:31:49 PDT
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A2394;
+        Fri, 22 Sep 2023 12:31:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695410924; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=hqw57XLZtkDLU8tskHINx6s05s6dT3HJ2PDb01kxB7u4aGhj37MyVrmBdAtpLsqm9q
+    B/Fr2g9wSvBYqbT043zbYDiwkj0Brw2z5XeQ+hUV2nUU4JxAHeZN09sOzbb0Opir+lRc
+    EdQn6qVc9DoSPHvtGx5oulk/ToC+Z3rvLWhk5dmyM5f44Sbb7n6Kzl0Vnn9aAr6V3ZJr
+    KjhmwRyTmxzN6bfURpTkejXVg7RS9utu+PwBbFeFv62AhF/Q3Ig0hczqP8kB7hZ3vlXg
+    zOirTBsRSsIdIeNQjfbZyM/uw0Fj0D8fQRiXG4aD11gGL8l2ZlT3rVEFnT2Zscdad5lW
+    dU5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695410924;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=zk3k328hgovnBCBlDXuQXLcoaZsgP5mLEqng5TkR5JQ=;
+    b=n7FHynLHt8a877V/qdEH0TVb466kYjSBKOa2DxYXGIS7WGJwDyKj5nagM7sNKkD9fr
+    p59IR/rPzKeK4/1N72bgR6Z2drU+FVHW2Ws/7Tx4RqZx79UtMDHDcAlVsj8hclE1VsnE
+    STJFDAE8SBJhijE1bmfY2+mGvFIkEhfy9OcPGNGbtbzrnnVF6qn5rS6Us//Rpv6XqVKz
+    stjGelvHqTs83L2LP7HobPWP32QKqy9aRLMq7WgOvSGeskhLJNRsgyWFr0H0u7bJYLjf
+    LkmEBUgvGlFqXmCIJFDWl6reVTWFfxYpjsdw8cugVj52+AMkGOLHTnHfDEIz13oj0wBp
+    CqXw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695410924;
+    s=strato-dkim-0002; d=aepfle.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=zk3k328hgovnBCBlDXuQXLcoaZsgP5mLEqng5TkR5JQ=;
+    b=nl/fH7u6+eOm3Wql3zmZe66L7utnN43GSBmn7WarrEn4dsKKr+nlRWGpAYqz2sQIpw
+    Ty2dKfYyfgQZodmTaeFfw0sH1JNfFpKKnkEW1GjvBi6B5nxmRJJadNePgt+mBtVum05r
+    dxTn4OPVbx/2RX0RjbdunyJPgfDOZ+5pzf0AHoQlIUT3gzfTWJ3cNiuzrIAj9acVIqY8
+    xDFW75wv3HtXmF9xnyMpEQeNgGUaWQI6Vz638FERA9MyY3ibI9Qj0HdMC31voZedEgJh
+    ZR9Zg52KKkPMjllnXRG2fjben53vZ/JERBrSpbgv9EMhM0aWSzzeFN9ynvE23Qf6e3mg
+    Dd0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695410924;
+    s=strato-dkim-0003; d=aepfle.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=zk3k328hgovnBCBlDXuQXLcoaZsgP5mLEqng5TkR5JQ=;
+    b=aJi8fSp0jDQCL+Ql5tLsPIyOVOM5PP9Obox0IbfK55BLJA+7GG7owagLBhFRUWGGtc
+    2cxfafHFPcguif0asEAg==
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzoZG0ivpswfW93lKL5OLSJeaogTnBaSYHCSFyJtwcJv0YWEnfIN"
+Received: from sender
+    by smtp.strato.de (RZmta 49.8.2 AUTH)
+    with ESMTPSA id C041b2z8MJSiHhR
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 22 Sep 2023 21:28:44 +0200 (CEST)
+From:   Olaf Hering <olaf@aepfle.de>
+To:     linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2] hyperv: reduce size of ms_hyperv_info
+Date:   Fri, 22 Sep 2023 21:28:40 +0200
+Message-Id: <20230922192840.3886-1-olaf@aepfle.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 16:37:11 +0100, Richard Fitzgerald wrote:
-> When regcache_rbtree_write() creates a new rbtree_node it was passing the
-> wrong bit number to regcache_rbtree_set_register(). The bit number is the
-> offset __in number of registers__, but in the case of creating a new block
-> regcache_rbtree_write() was not dividing by the address stride to get the
-> number of registers.
-> 
-> Fix this by dividing by map->reg_stride.
-> Compare with regcache_rbtree_read() where the bit is checked.
-> 
-> [...]
+Use the hole prior shared_gpa_boundary to store the result of get_vtl.
+This reduces the size by 8 bytes.
 
-Applied to
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+---
+v2: move vtl up, as suggested by Dexuan Cui
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+ include/asm-generic/mshyperv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
-
-[1/1] regmap: rbtree: Fix wrong register marked as in-cache when creating new node
-      commit: 7a795ac8d49e2433e1b97caf5e99129daf8e1b08
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+index cecd2b7bd033..430f0ae0dde2 100644
+--- a/include/asm-generic/mshyperv.h
++++ b/include/asm-generic/mshyperv.h
+@@ -36,6 +36,7 @@ struct ms_hyperv_info {
+ 	u32 nested_features;
+ 	u32 max_vp_index;
+ 	u32 max_lp_index;
++	u8 vtl;
+ 	union {
+ 		u32 isolation_config_a;
+ 		struct {
+@@ -54,7 +55,6 @@ struct ms_hyperv_info {
+ 		};
+ 	};
+ 	u64 shared_gpa_boundary;
+-	u8 vtl;
+ };
+ extern struct ms_hyperv_info ms_hyperv;
+ extern bool hv_nested;
