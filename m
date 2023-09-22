@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5171F7AAC33
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC6C7AAC42
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjIVILr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        id S232587AbjIVIMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbjIVIL0 (ORCPT
+        with ESMTP id S232489AbjIVILq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:11:26 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71923172E;
-        Fri, 22 Sep 2023 01:11:19 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38M3Q0Kl013675;
-        Fri, 22 Sep 2023 10:11:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type; s=selector1; bh=MTu0R7MXciBuzjCEVdjU
-        /QJRAV5+/VKJ/ZcovBKuFoA=; b=0DzImxo/0qhlvZmuMhJ6Ucv9NGKVv0xCVhvy
-        /++pSMJoyvdI4kLNruWLB9ZTn4a6LuUpUt9XyXDmcaGT4PuUQoUteEOipi52Ik3t
-        BUesQDqbncfRU1JtM5GtURESM4+ZnplqMG1xB2k/l72iq41xa3PFyyNadmw3mtCh
-        ZwA+8Pye7kzRXNeRNXjLn+hJ5uBBNqZdrkSjDlOgiZqr41O80ArsG1Hy9TOm/Nxn
-        ejkP+RQzrafVJe5m4fJyMn2f/fElJJuLEJ/kWiwHeQhBO66NCqK/6clC2rdfgn2c
-        KcgNeUlI7eOKbywk7rEwIlPs0IL2N8LuTH+Bn3N1qoRGwawTYg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt7j9ju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 10:11:02 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3230A10005F;
-        Fri, 22 Sep 2023 10:11:02 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2B31021230D;
-        Fri, 22 Sep 2023 10:11:02 +0200 (CEST)
-Received: from localhost (10.201.21.122) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Sep
- 2023 10:11:01 +0200
-From:   Alexandre Torgue <alexandre.torgue@foss.st.com>
-To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] arm64: dts: st: enable secure arm-wdt watchdog on stm32mp257f-ev1
-Date:   Fri, 22 Sep 2023 10:10:55 +0200
-Message-ID: <20230922081055.6242-3-alexandre.torgue@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
-References: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
+        Fri, 22 Sep 2023 04:11:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E57E61;
+        Fri, 22 Sep 2023 01:11:39 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 08:11:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695370297;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=geNEPFvjv2X0tF060Xkd/gkYK1ZYVMX72QmM0tmt0Sg=;
+        b=4t2Ml+6ms+YGiUdMNzCyd1HU3b5svpkAez+g7/WPUDmvni39qBn1siGeS/Nim+C4crgOoe
+        NUSPim8FcBUwhQvA4DqZEWA4K7Ren3uD/SgfyoDt4n3FspcIJ7lthp3ALw7Hn4m4DSx2/J
+        m2YiNjJGURK09bXUEVmHGLFBTyYDIfPS6psJJZYSLVQxjHzRkEwFOWQa/fu1fA2lv5Z+38
+        yYlFfsYzkEDui6SlGKIqW1TwpIMfByj6G20v1ZVRw5SyLsQ/SJyuv8u4ax+JblfjTdohIT
+        qvMC4Q2DdI5WpMfIhkZF4dJMfge+AKyaQf3z420GJI/Eqhk9AO6IDC6UabESAQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695370297;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=geNEPFvjv2X0tF060Xkd/gkYK1ZYVMX72QmM0tmt0Sg=;
+        b=tYkk6tq4bBwOXxiWGlFsM6p7E46uo1bNvu6Aw+IwIc9s6KcYwjGbO+B30kOiEUPunG9VwP
+        IvMMBL0hIr4emvDQ==
+From:   "tip-bot2 for John Stultz" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/ww_mutex/test: Make sure we bail out
+ instead of livelock
+Cc:     Li Zhijian <zhijianx.li@intel.com>,
+        John Stultz <jstultz@google.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230922043616.19282-4-jstultz@google.com>
+References: <20230922043616.19282-4-jstultz@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_06,2023-09-21_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169537029684.27769.17114350620697997504.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the watchdog and define the default timeout to 32 seconds.
+The following commit has been merged into the locking/core branch of tip:
 
-Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Commit-ID:     cfa92b6d52071aaa8f27d21affdcb14e7448fbc1
+Gitweb:        https://git.kernel.org/tip/cfa92b6d52071aaa8f27d21affdcb14e7448fbc1
+Author:        John Stultz <jstultz@google.com>
+AuthorDate:    Fri, 22 Sep 2023 04:36:01 
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 22 Sep 2023 09:43:41 +02:00
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 6c3b83c2b48f..85891124a3a9 100644
---- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-+++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -63,6 +63,11 @@
- 	status = "okay";
- };
+locking/ww_mutex/test: Make sure we bail out instead of livelock
+
+I've seen what appears to be livelocks in the stress_inorder_work()
+function, and looking at the code it is clear we can have a case
+where we continually retry acquiring the locks and never check to
+see if we have passed the specified timeout.
+
+This patch reworks that function so we always check the timeout
+before iterating through the loop again.
+
+I believe others may have hit this previously here:
+
+  https://lore.kernel.org/lkml/895ef450-4fb3-5d29-a6ad-790657106a5a@intel.com/
+
+Reported-by: Li Zhijian <zhijianx.li@intel.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230922043616.19282-4-jstultz@google.com
+---
+ kernel/locking/test-ww_mutex.c |  9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 358d661..78719e1 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -465,17 +465,18 @@ retry:
+ 			ww_mutex_unlock(&locks[order[n]]);
  
-+&arm_wdt {
-+	timeout-sec = <32>;
-+	status = "okay";
-+};
-+
- &usart2 {
- 	pinctrl-names = "default", "idle", "sleep";
- 	pinctrl-0 = <&usart2_pins_a>;
--- 
-2.17.1
-
+ 		if (err == -EDEADLK) {
+-			ww_mutex_lock_slow(&locks[order[contended]], &ctx);
+-			goto retry;
++			if (!time_after(jiffies, stress->timeout)) {
++				ww_mutex_lock_slow(&locks[order[contended]], &ctx);
++				goto retry;
++			}
+ 		}
+ 
++		ww_acquire_fini(&ctx);
+ 		if (err) {
+ 			pr_err_once("stress (%s) failed with %d\n",
+ 				    __func__, err);
+ 			break;
+ 		}
+-
+-		ww_acquire_fini(&ctx);
+ 	} while (!time_after(jiffies, stress->timeout));
+ 
+ 	kfree(order);
