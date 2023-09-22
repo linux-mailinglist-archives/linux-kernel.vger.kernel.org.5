@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CE87AB8F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5987AB8FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjIVSR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        id S231844AbjIVSSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbjIVSR0 (ORCPT
+        with ESMTP id S231365AbjIVSSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:17:26 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091BA9F
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:17:20 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34deefc2016so7730795ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:17:20 -0700 (PDT)
+        Fri, 22 Sep 2023 14:18:15 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1CD9F
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:18:08 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so22552725ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:18:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695406639; x=1696011439; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aNM5qFpuQrwUs+7E90Z8RXHKxODmGjt566L854L1cyY=;
-        b=f8Xu1n9DKITCfh6xg3x3f4i30pXwiYxdg5V1SqmRhHXkqaK4W0zxWCnAghfqflhoHG
-         Z+1jFgtCux6dd7ZQXQ9a4/2cBoMRDaz3VM/f+k0+vT0z9BDzc5iMocOKrtwL5fbSqU5Y
-         HSnVLE969EtaahtX6JZmClimmGMKAUAA+pMuKNbQqRmnJ9BrRuRRfdDK3NN2lRTMF/EF
-         +aTNm+4jLL+W+h/X37X/v92/FzLjJItlbGPVHPCEGNw9uMHzgiBid8R4mgr9OAyk+B24
-         IW96TBrQ6WPPAuz9QX+MJnoGfpX2knshZDPazYwcXLBj+GugPN+OvwQlAQ0j+43SjCga
-         aAmw==
+        d=chromium.org; s=google; t=1695406688; x=1696011488; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l4T/fTfBwkAD/muqS7Lm7m+/C+nhl1XGVqC9ttPy9eA=;
+        b=MGEnSZ5DvLoOIcKKMbU6bsWVx1QGxFDEfjRso+SeDZ1c0ST9rD35Hw1u3cdnEFlO95
+         a85vrPMSDS90VVCy7DbU/JrVvf5SLAfy4IEpnG7XOJfrl5j2yDPYOhSUrOa/pfA2WQJ4
+         C4WQbFy+bg3FkEs/NOyLd8UBmheBFHOE7j/qU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695406639; x=1696011439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aNM5qFpuQrwUs+7E90Z8RXHKxODmGjt566L854L1cyY=;
-        b=PIEl4UzGuGbk/Rti8z1jgsBgHELUscpC6DarUY7BCkr0T6f9rtPwlhQqpAyTjbyXuP
-         XQX/YpzFfv/wS1nvpfNUWd3PqCPNqqlFQIUG8lMFu0ifmwIefyDzUZEBqpbE7H12flDZ
-         balv5KHlaoLCa7tsKYKlNSM+cJ1PXwPRL0kdTNBtEA8HVkWyLwhHmBqjU5chg1tq9dVq
-         ReRmixLQ2jcpuftLGuDyHTiTboTi2C5+rhcpoCFKCgl0kN4CdsqQRI2p+HrSrfngRN+W
-         +GniCvt+SamUR8i0+tnM6PNd28txW0HtecfD+Sh9YwoNXITSTSk0szr0Lv1x7lmD5We/
-         aeug==
-X-Gm-Message-State: AOJu0Yw0hDcLdckkQ8qbsSIma1nABCqf4Sx0TroWFEeIQ1bmRPeRIbmJ
-        4r90y9eC52BOEQZn8OQbnmkke1TeMkgZYJRwhgo=
-X-Google-Smtp-Source: AGHT+IH3vBuwlb7tT1ZO/MwNPf/qLy/ukjsoYKbcDRGSaUZyDgxOn51t2h6VWV/K44gsIhpmG1+w6x4QseJXh1HPWAk=
-X-Received: by 2002:a05:6e02:1bcb:b0:351:1ac0:e1cf with SMTP id
- x11-20020a056e021bcb00b003511ac0e1cfmr391126ilv.4.1695406639285; Fri, 22 Sep
- 2023 11:17:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695406688; x=1696011488;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l4T/fTfBwkAD/muqS7Lm7m+/C+nhl1XGVqC9ttPy9eA=;
+        b=Pzi6yRQfyswxkiRgYFj2C//cSVYyo14Ex5BoGWfuymOp4txuoCjy9E4dI60I6c6tFn
+         TWRtXM+On73mBn7PXOiYjpa0S+sNOtaH5gULm/1dKdbhAFb8qBYC+Ns1BUswtTzFJA6L
+         SsU/KknDLLtWa3Ln31g4eBOmW+pHfA+zecjOedL0aLZSe7MsPE2koJcp1FnpLoPYAp4x
+         ZWyaPboHNkDWJ0Nw0ZbYqQUFUvJ3eet6eaZl/xMrL3w2Zt1IX68PgW/bS805WbnXlq/Q
+         HwU5q45BEQnswVngaa2Th6YqATJM4E5AVl7imscLtpP7rqR5SeF6FFKIpAV9Tqbzp5Mj
+         Sg9g==
+X-Gm-Message-State: AOJu0YzAKQjT/6wTyNZmT+Myurz6DN4YxtzlmXNcK+zjILCZ+UrqVdVr
+        w3u+luo5YWrQ4NdRL8j/6mmjZA==
+X-Google-Smtp-Source: AGHT+IH5/bxePU0F2RoHuDHcwpnFv3qhRHMIDj1hzz6KjFthqubQPCi6uc81wCdHv55oKzyGphjbaA==
+X-Received: by 2002:a17:902:d48f:b0:1c3:6d97:e89e with SMTP id c15-20020a170902d48f00b001c36d97e89emr297047plg.58.1695406688329;
+        Fri, 22 Sep 2023 11:18:08 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e3-20020a17090301c300b001b531e8a000sm3797390plh.157.2023.09.22.11.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 11:18:07 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 11:18:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        David Ahern <dsahern@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Alex Elder <elder@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dev@openvswitch.org,
+        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 14/14] net: sched: Annotate struct tc_pedit with
+ __counted_by
+Message-ID: <202309221117.160257BAB@keescook>
+References: <20230922172449.work.906-kees@kernel.org>
+ <20230922172858.3822653-14-keescook@chromium.org>
 MIME-Version: 1.0
-References: <20230922172211.1704917-1-cerasuolodomenico@gmail.com>
-In-Reply-To: <20230922172211.1704917-1-cerasuolodomenico@gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Fri, 22 Sep 2023 11:17:08 -0700
-Message-ID: <CAKEwX=M3jxusnwx3weQFr-WYN-fONPgA-5d59eVJksaTOSsANA@mail.gmail.com>
-Subject: Re: [PATCH] mm: zswap: fix potential memory corruption on duplicate store
-To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922172858.3822653-14-keescook@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,52 +97,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:22=E2=80=AFAM Domenico Cerasuolo
-<cerasuolodomenico@gmail.com> wrote:
->
-> While stress-testing zswap a memory corruption was happening when writing
-> back pages. __frontswap_store used to check for duplicate entries before
-> attempting to store a page in zswap, this was because if the store fails
-> the old entry isn't removed from the tree. This change removes duplicate
-> entries in zswap_store before the actual attempt.
->
-> Based on commit ce9ecca0238b ("Linux 6.6-rc2")
->
-> Fixes: 42c06a0e8ebe ("mm: kill frontswap")
-> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+On Fri, Sep 22, 2023 at 10:28:56AM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct tc_pedit.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Cc: Jiri Pirko <jiri@resnulli.us>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  mm/zswap.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 412b1409a0d7..9146f9f19061 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1218,6 +1218,19 @@ bool zswap_store(struct folio *folio)
->         if (!zswap_enabled || !tree)
->                 return false;
->
-> +       /*
-> +        * If this is a duplicate, it must be removed before attempting t=
-o store
-> +        * it, otherwise, if the store fails the old page won't be remove=
-d from
-> +        * the tree, and it might be written back overriding the new data=
-.
-> +        */
-> +       spin_lock(&tree->lock);
-> +       dupentry =3D zswap_rb_search(&tree->rbroot, offset);
-> +       if (dupentry) {
-> +               zswap_duplicate_entry++;
-> +               zswap_invalidate_entry(tree, dupentry);
-> +       }
-> +       spin_unlock(&tree->lock);
-> +
->         /*
->          * XXX: zswap reclaim does not work with cgroups yet. Without a
->          * cgroup-aware entry LRU, we will push out entries system-wide b=
-ased on
-> --
+>  net/sched/act_pedit.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
+> index 1ef8fcfa9997..77c407eff3b0 100644
+> --- a/net/sched/act_pedit.c
+> +++ b/net/sched/act_pedit.c
+> @@ -515,11 +515,11 @@ static int tcf_pedit_dump(struct sk_buff *skb, struct tc_action *a,
+>  		spin_unlock_bh(&p->tcf_lock);
+>  		return -ENOBUFS;
+>  	}
+> +	opt->nkeys = parms->tcfp_nkeys;
+>  
+>  	memcpy(opt->keys, parms->tcfp_keys,
+>  	       flex_array_size(opt, keys, parms->tcfp_nkeys));
+>  	opt->index = p->tcf_index;
+> -	opt->nkeys = parms->tcfp_nkeys;
+>  	opt->flags = parms->tcfp_flags;
+>  	opt->action = p->tcf_action;
+>  	opt->refcnt = refcount_read(&p->tcf_refcnt) - ref;
+> -- 
 > 2.34.1
->
+
+Gustavo pointed out that the annotation half of this patch in missing.
+My mistake! I will figure out where it went. :P Ah, the joys of
+splitting up a treewide patch series...
+
+-- 
+Kees Cook
