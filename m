@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDF47AA804
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4247AA80C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjIVE4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48620 "EHLO
+        id S230464AbjIVE7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjIVE4n (ORCPT
+        with ESMTP id S230251AbjIVE66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:56:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E5C192;
-        Thu, 21 Sep 2023 21:56:37 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M4k6aW013750;
-        Fri, 22 Sep 2023 04:56:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=EiyrVszxV+n0FlX6MPnzPakvLq1YyUZurlSVrBbAqeA=;
- b=CrsLfFHnwRtTn4BpmWtnCIIzMInQWyeL0nyje6nJr4wHBXI9iwQGRxfBCXYGSuOf/IfQ
- B0WMtkUzuidWmrZ5kOqMNPL+9TIUdFo6tmO1pca6QV+pwYT8C+7eNPKjfDpy+BaQMeI1
- FpJslQxqEYUDVWWFck1f6NTu6Y07XW5svKXxiSUdTPRemu0RlDWzD8nfHdc5/SitEYXK
- Ltv/cvuIulgeMLrYV1iIO99zCJQj+Uw1cAGkt8xhgya/PdyhQhqZaYr5oPwyrgdm6w6V
- Z8dEtX3y5Ch0UqOzmET0He+R1xF258KOUXKLWdsjykhaNdrklj6P0cbGNY4Tg48aNoo4 wg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8uknrwgv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 04:56:23 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38M4uMVS028256
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 04:56:22 GMT
-Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 21 Sep
- 2023 21:56:15 -0700
-Message-ID: <3443f988-a7b8-4d62-9d6d-464fa1b4cf08@quicinc.com>
-Date:   Fri, 22 Sep 2023 10:26:12 +0530
+        Fri, 22 Sep 2023 00:58:58 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2346C18F;
+        Thu, 21 Sep 2023 21:58:51 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M4wZRr058488;
+        Thu, 21 Sep 2023 23:58:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695358715;
+        bh=VLZM3xldAZGN9fJ0GFaHTBTZtonLiMksU7x95qlCs9s=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Id3ma9XIe6Vu7gl0MCNlJCZVRjcSM2npgZf55Kw+uyN7jHDqwvno+gcLLUWrc53Q4
+         t9kfk6hdZGQvujeVF3d9TK4MRj/0UkAsKluaLW7sO2XMYld3WsMQqHIXoYpUDUHaYB
+         ohNagKvdVqlwS+vhctqpHBE8sErBMlC+LA9dHZoU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M4wZbD040273
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 Sep 2023 23:58:35 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Sep 2023 23:58:34 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Sep 2023 23:58:34 -0500
+Received: from [10.24.69.199] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M4wTa5019904;
+        Thu, 21 Sep 2023 23:58:30 -0500
+Message-ID: <ab89486b-1a3d-918b-b083-071372559fbf@ti.com>
+Date:   Fri, 22 Sep 2023 10:28:29 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: add TAPRIO offload
  support
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <abel.vesa@linaro.org>,
-        <quic_wcheng@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <1695291692-18850-1-git-send-email-quic_rohiagar@quicinc.com>
- <1695291692-18850-6-git-send-email-quic_rohiagar@quicinc.com>
- <CAA8EJpqsKpcABmkR0+ciOxhohTSmhL4SSxBj6BijMVLfkMv02A@mail.gmail.com>
- <c7a588d0-3135-4a87-87f4-825bdcac203b@quicinc.com>
- <CAA8EJpqf+AVYeGYunVJsknER94LW14gTE2ZdWFMh-KxhX0zGZA@mail.gmail.com>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <CAA8EJpqf+AVYeGYunVJsknER94LW14gTE2ZdWFMh-KxhX0zGZA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: GA7igdMs2VE9n3SAMkt8ZGZj7ax2-iV7
-X-Proofpoint-ORIG-GUID: GA7igdMs2VE9n3SAMkt8ZGZj7ax2-iV7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_02,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 phishscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309220042
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
+To:     Roger Quadros <rogerq@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <vladimir.oltean@nxp.com>,
+        Simon Horman <horms@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <srk@ti.com>, <r-gunasekaran@ti.com>, Roger Quadros <rogerq@ti.com>
+References: <20230921070031.795788-1-danishanwar@ti.com>
+ <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
+From:   MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,241 +75,640 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/09/23 16:12, Roger Quadros wrote:
+> Hi Danish,
+> 
+> On 21/09/2023 10:00, MD Danish Anwar wrote:
+> 
+> Can you please retain patch authorhsip?
+> 
 
-On 9/21/2023 8:16 PM, Dmitry Baryshkov wrote:
-> On Thu, 21 Sept 2023 at 15:10, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
+Sure Roger. This patch was not applying clearly on latest linux-next so
+I had to manually apply it. I must have lost authorship while doing
+this. I will reset the authorship.
+
+>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+>> configuration. EST allows express queue traffic to be scheduled
+>> (placed) on the wire at specific repeatable time intervals. In
+>> Linux kernel, EST configuration is done through tc command and
+>> the taprio scheduler in the net core implements a software only
+>> scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+>> user indicate "flag 2" in the command which is then parsed by
+>> taprio scheduler in net core and indicate that the command is to
+>> be offloaded to h/w. taprio then offloads the command to the
+>> driver by calling ndo_setup_tc() ndo ops. This patch implements
+>> ndo_setup_tc() to offload EST configuration to ICSSG.
 >>
->> On 9/21/2023 5:36 PM, Dmitry Baryshkov wrote:
->>> On Thu, 21 Sept 2023 at 13:21, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
->>>> Add support for USB3 QMP PHY found in SDX75 platform.
->>>>
->>>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
->>>> ---
->>>>    drivers/phy/qualcomm/phy-qcom-qmp-usb.c | 165 ++++++++++++++++++++++++++++++++
->>>>    1 file changed, 165 insertions(+)
->>>>
->>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
->>>> index 2a094f2..3145814 100644
->>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
->>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
->>>> @@ -24,6 +24,7 @@
->>>>    #include "phy-qcom-qmp-pcs-misc-v4.h"
->>>>    #include "phy-qcom-qmp-pcs-usb-v4.h"
->>>>    #include "phy-qcom-qmp-pcs-usb-v5.h"
->>>> +#include "phy-qcom-qmp-pcs-usb-v6.h"
->>>>
->>>>    /* QPHY_SW_RESET bit */
->>>>    #define SW_RESET                               BIT(0)
->>>> @@ -151,6 +152,17 @@ static const unsigned int qmp_v5_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
->>>>           [QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR,
->>>>    };
->>>>
->>>> +static const unsigned int qmp_v6_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
->>>> +       [QPHY_SW_RESET]                 = QPHY_V6_PCS_SW_RESET,
->>>> +       [QPHY_START_CTRL]               = QPHY_V6_PCS_START_CONTROL,
->>>> +       [QPHY_PCS_STATUS]               = QPHY_V6_PCS_PCS_STATUS1,
->>>> +       [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V6_PCS_POWER_DOWN_CONTROL,
->>>> +
->>>> +       /* In PCS_USB */
->>>> +       [QPHY_PCS_AUTONOMOUS_MODE_CTRL] = QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL,
->>>> +       [QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR,
->>>> +};
->>>> +
->>>>    static const struct qmp_phy_init_tbl ipq9574_usb3_serdes_tbl[] = {
->>>>           QMP_PHY_INIT_CFG(QSERDES_COM_SYSCLK_EN_SEL, 0x1a),
->>>>           QMP_PHY_INIT_CFG(QSERDES_COM_BIAS_EN_CLKBUFLR_EN, 0x08),
->>>> @@ -871,6 +883,134 @@ static const struct qmp_phy_init_tbl sdx65_usb3_uniphy_rx_tbl[] = {
->>>>           QMP_PHY_INIT_CFG(QSERDES_V5_RX_SIGDET_ENABLES, 0x00),
->>>>    };
->>>>
->>>> +static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_serdes_tbl[] = {
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE1, 0x9e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE1, 0x06),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x02),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x16),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x36),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORECLK_DIV_MODE1, 0x04),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x2e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x82),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x82),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE1, 0xab),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE1, 0xea),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE1, 0x02),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x01),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE1_MODE1, 0x25),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE2_MODE1, 0x02),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE1, 0xb7),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE1, 0x1e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE0, 0xb7),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE0, 0x1e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE0, 0x9e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE0, 0x06),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x02),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x16),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x36),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x12),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x34),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x82),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE0, 0xab),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE0, 0xea),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE0, 0x02),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE1_MODE0, 0x25),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE2_MODE0, 0x02),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_BG_TIMER, 0x0e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_EN_CENTER, 0x01),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER1, 0x31),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER2, 0x01),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_BUF_ENABLE, 0x0a),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_EN_SEL, 0x1a),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_CFG, 0x14),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORE_CLK_EN, 0x20),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_CONFIG_1, 0x16),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_1, 0xb6),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_2, 0x4b),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_3, 0x37),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_ADDITIONAL_MISC, 0x0c),
->>>> +};
->>>> +
->>>> +static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_tx_tbl[] = {
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_TX, 0x00),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_RX, 0x00),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_OFFSET_TX, 0x1f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_OFFSET_RX, 0x09),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_1, 0xf5),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_3, 0x3f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_4, 0x3f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_5, 0x5f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_RCV_DETECT_LVL_2, 0x12),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_TX_PI_QEC_CTRL, 0x21),
->>>> +};
->>>> +
->>>> +static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_rx_tbl[] = {
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FO_GAIN, 0x0a),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SO_GAIN, 0x06),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_FO_GAIN, 0x2f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x7f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_COUNT_LOW, 0xff),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_COUNT_HIGH, 0x0f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_PI_CONTROLS, 0x99),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_THRESH1, 0x08),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_THRESH2, 0x08),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_GAIN1, 0x00),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_GAIN2, 0x0a),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_AUX_DATA_TCOARSE_TFINE, 0xa0),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_VGA_CAL_CNTRL1, 0x54),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_VGA_CAL_CNTRL2, 0x0f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_GM_CAL, 0x13),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL2, 0x0f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL3, 0x4a),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL4, 0x0a),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_IDAC_TSETTLE_LOW, 0x07),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x47),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CNTRL, 0x04),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_DEGLITCH_CNTRL, 0x0e),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_LOW, 0x3f),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH, 0xbf),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH2, 0xff),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH3, 0xdf),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH4, 0xed),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_LOW, 0xdc),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH, 0x5c),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH2, 0x9c),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH3, 0x1d),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH4, 0x09),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_DFE_EN_TIMER, 0x04),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_DFE_CTLE_POST_CAL_OFFSET, 0x38),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_DCC_CTRL1, 0x0c),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_VTH_CODE, 0x10),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CAL_CTRL1, 0x14),
->>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CAL_TRIM, 0x08),
->>>> +};
->>>> +
->>>> +static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_pcs_tbl[] = {
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_REFGEN_REQ_CONFIG1, 0x21),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_RX_SIGDET_LVL, 0xaa),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_CDR_RESET_TIME, 0x0a),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_PCS_TX_RX_CONFIG, 0x0c),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG1, 0x4b),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG5, 0x10),
->>>> +};
->>>> +
->>>> +static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_pcs_usb_tbl[] = {
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
->>>> +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
->>>> +};
->>>> +
->>>>    static const struct qmp_phy_init_tbl sm8350_usb3_uniphy_tx_tbl[] = {
->>>>           QMP_PHY_INIT_CFG(QSERDES_V5_TX_LANE_MODE_1, 0xa5),
->>>>           QMP_PHY_INIT_CFG(QSERDES_V5_TX_LANE_MODE_2, 0x82),
->>>> @@ -1531,6 +1671,28 @@ static const struct qmp_phy_cfg sdx65_usb3_uniphy_cfg = {
->>>>           .has_pwrdn_delay        = true,
->>>>    };
->>>>
->>>> +static const struct qmp_phy_cfg sdx75_usb3_uniphy_cfg = {
->>>> +       .lanes                  = 1,
->>>> +       .offsets                = &qmp_usb_offsets_v5,
->>> This should be v6
->> We discussed in the last version that it is ok if the offsets are same,
->> we can keep v5.
->> Please Correct me if my understanding was wrong.
->> https://lore.kernel.org/all/CAA8EJprS3vxQbOGZnsipRGi4MiyZj3X5HpMan3Q6Z732aWfJ_g@mail.gmail.com/
-> And I keep my feedback here:
->
-> Generic rule: the name of the struct should match the Vn found in the
-> register names inside.
-Ok Sure. Will update this.
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>> Cc: Roger Quadros <rogerq@ti.com>
+>> Cc: Andrew Lunn <andrew@lunn.ch>
+>>
+>> Changes from v1 to v2:
+>> *) Rebased on the latest next-20230821 linux-next.
+>> *) Dropped the RFC tag as merge window is open now.
+>> *) Splitted this patch from the switch mode series [v1].
+>> *) Removed TODO comment as asked by Andrew and Roger.
+>> *) Changed Copyright to 2023 as asked by Roger.
+>>
+>> v1: https://lore.kernel.org/all/20230830110847.1219515-1-danishanwar@ti.com/
+>>
+>>  drivers/net/ethernet/ti/Makefile             |   3 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.h |   7 +
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.c    | 286 +++++++++++++++++++
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.h    | 119 ++++++++
+>>  5 files changed, 418 insertions(+), 2 deletions(-)
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
+>>
+>> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+>> index 34fd7a716ba6..0df60ded1b2d 100644
+>> --- a/drivers/net/ethernet/ti/Makefile
+>> +++ b/drivers/net/ethernet/ti/Makefile
+>> @@ -37,5 +37,6 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
+>>  		  icssg/icssg_config.o \
+>>  		  icssg/icssg_mii_cfg.o \
+>>  		  icssg/icssg_stats.o \
+>> -		  icssg/icssg_ethtool.o
+>> +		  icssg/icssg_ethtool.o \
+>> +		  icssg/icssg_qos.o
+>>  obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> index 6635b28bc672..89c301716926 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> @@ -1166,7 +1166,7 @@ static int emac_phy_connect(struct prueth_emac *emac)
+>>  	return 0;
+>>  }
+>>  
+>> -static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>>  {
+>>  	u32 hi_rollover_count, hi_rollover_count_r;
+>>  	struct prueth_emac *emac = clockops_data;
+>> @@ -1403,6 +1403,8 @@ static int emac_ndo_open(struct net_device *ndev)
+>>  		napi_enable(&emac->tx_chns[i].napi_tx);
+>>  	napi_enable(&emac->napi_rx);
+>>  
+>> +	icssg_qos_tas_init(ndev);
+>> +
+>>  	/* start PHY */
+>>  	phy_start(ndev->phydev);
+>>  
+>> @@ -1669,6 +1671,7 @@ static const struct net_device_ops emac_netdev_ops = {
+>>  	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
+>>  	.ndo_eth_ioctl = emac_ndo_ioctl,
+>>  	.ndo_get_stats64 = emac_ndo_get_stats64,
+>> +	.ndo_setup_tc = icssg_qos_ndo_setup_tc,
+>>  };
+>>  
+>>  /* get emac_port corresponding to eth_node name */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> index 8b6d6b497010..5712a65bced4 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> @@ -37,6 +37,7 @@
+>>  #include "icssg_config.h"
+>>  #include "icss_iep.h"
+>>  #include "icssg_switch_map.h"
+>> +#include "icssg_qos.h"
+>>  
+>>  #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
+>>  #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
+>> @@ -174,6 +175,9 @@ struct prueth_emac {
+>>  
+>>  	struct pruss_mem_region dram;
+>>  
+>> +	struct prueth_qos qos;
+>> +	struct work_struct ts_work;
+>> +
+>>  	struct delayed_work stats_work;
+>>  	u64 stats[ICSSG_NUM_STATS];
+>>  };
+>> @@ -285,4 +289,7 @@ u32 icssg_queue_level(struct prueth *prueth, int queue);
+>>  void emac_stats_work_handler(struct work_struct *work);
+>>  void emac_update_hardware_stats(struct prueth_emac *emac);
+>>  int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
+>> +
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts);
+>> +
+>>  #endif /* __NET_TI_ICSSG_PRUETH_H */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> new file mode 100644
+>> index 000000000000..63a19142ee69
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> @@ -0,0 +1,286 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Texas Instruments ICSSG PRUETH QoS submodule
+>> + * Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#include <linux/printk.h>
+>> +#include "icssg_prueth.h"
+>> +#include "icssg_switch_map.h"
+>> +
+>> +static void tas_update_fw_list_pointers(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +
+>> +	if ((readb(tas->active_list)) == TAS_LIST0) {
+>> +		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST0;
+>> +		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST1;
+>> +	} else {
+>> +		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST1;
+>> +		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST0;
+>> +	}
+>> +}
+>> +
+>> +static void tas_update_maxsdu_table(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	u16 __iomem *max_sdu_tbl_ptr;
+>> +	u8 gate_idx;
+>> +
+>> +	/* update the maxsdu table */
+>> +	max_sdu_tbl_ptr = emac->dram.va + TAS_QUEUE_MAX_SDU_LIST;
+>> +
+>> +	for (gate_idx = 0; gate_idx < TAS_MAX_NUM_QUEUES; gate_idx++)
+>> +		writew(tas->max_sdu_table.max_sdu[gate_idx], &max_sdu_tbl_ptr[gate_idx]);
+>> +}
+>> +
+>> +static void tas_reset(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < TAS_MAX_NUM_QUEUES; i++)
+>> +		tas->max_sdu_table.max_sdu[i] = 2048;
+>> +
+>> +	tas_update_maxsdu_table(emac);
+>> +
+>> +	writeb(TAS_LIST0, tas->active_list);
+>> +
+>> +	memset_io(tas->fw_active_list, 0, sizeof(*tas->fw_active_list));
+>> +	memset_io(tas->fw_shadow_list, 0, sizeof(*tas->fw_shadow_list));
+>> +}
+>> +
+>> +static int tas_set_state(struct prueth_emac *emac, enum tas_state state)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	int ret;
+>> +
+>> +	if (tas->state == state)
+>> +		return 0;
+>> +
+>> +	switch (state) {
+>> +	case TAS_STATE_RESET:
+>> +		tas_reset(emac);
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_RESET);
+>> +		tas->state = TAS_STATE_RESET;
+>> +		break;
+>> +	case TAS_STATE_ENABLE:
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_ENABLE);
+>> +		tas->state = TAS_STATE_ENABLE;
+>> +		break;
+>> +	case TAS_STATE_DISABLE:
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_DISABLE);
+>> +		tas->state = TAS_STATE_DISABLE;
+>> +		break;
+>> +	default:
+>> +		netdev_err(emac->ndev, "%s: unsupported state\n", __func__);
+>> +		ret = -EINVAL;
+>> +		break;
+>> +	}
+>> +
+>> +	if (ret)
+>> +		netdev_err(emac->ndev, "TAS set state failed %d\n", ret);
+>> +	return ret;
+>> +}
+>> +
+>> +static int tas_set_trigger_list_change(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	struct ptp_system_timestamp sts;
+>> +	u32 change_cycle_count;
+>> +	u32 cycle_time;
+>> +	u64 base_time;
+>> +	u64 cur_time;
+>> +
+>> +	cycle_time = admin_list->cycle_time - 4; /* -4ns to compensate for IEP wraparound time */
+>> +	base_time = admin_list->base_time;
+>> +	cur_time = prueth_iep_gettime(emac, &sts);
+>> +
+>> +	if (base_time > cur_time)
+>> +		change_cycle_count = DIV_ROUND_UP_ULL(base_time - cur_time, cycle_time);
+>> +	else
+>> +		change_cycle_count = 1;
+>> +
+>> +	writel(cycle_time, emac->dram.va + TAS_ADMIN_CYCLE_TIME);
+>> +	writel(change_cycle_count, emac->dram.va + TAS_CONFIG_CHANGE_CYCLE_COUNT);
+>> +	writeb(admin_list->num_entries, emac->dram.va + TAS_ADMIN_LIST_LENGTH);
+>> +
+>> +	/* config_change cleared by f/w to ack reception of new shadow list */
+>> +	writeb(1, &tas->config_list->config_change);
+>> +	/* config_pending cleared by f/w when new shadow list is copied to active list */
+>> +	writeb(1, &tas->config_list->config_pending);
+>> +
+>> +	return emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_TRIGGER);
+>> +}
+>> +
+>> +static int tas_update_oper_list(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	u32 tas_acc_gate_close_time = 0;
+>> +	u8 idx, gate_idx, val;
+>> +	int ret;
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	for (idx = 0; idx < admin_list->num_entries; idx++) {
+>> +		writeb(admin_list->entries[idx].gate_mask,
+>> +		       &tas->fw_shadow_list->gate_mask_list[idx]);
+>> +		tas_acc_gate_close_time += admin_list->entries[idx].interval;
+>> +
+>> +		/* extend last entry till end of cycle time */
+>> +		if (idx == admin_list->num_entries - 1)
+>> +			writel(admin_list->cycle_time,
+>> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +		else
+>> +			writel(tas_acc_gate_close_time,
+>> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +	}
+>> +
+>> +	/* clear remaining entries */
+>> +	for (idx = admin_list->num_entries; idx < TAS_MAX_CMD_LISTS; idx++) {
+>> +		writeb(0, &tas->fw_shadow_list->gate_mask_list[idx]);
+>> +		writel(0, &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +	}
+>> +
+>> +	/* update the Array of gate close time for each queue in each window */
+>> +	for (idx = 0 ; idx < admin_list->num_entries; idx++) {
+>> +		/* On Linux, only PRUETH_MAX_TX_QUEUES are supported per port */
+>> +		for (gate_idx = 0; gate_idx < PRUETH_MAX_TX_QUEUES; gate_idx++) {
+>> +			u8 gate_mask_list_idx = readb(&tas->fw_shadow_list->gate_mask_list[idx]);
+>> +			u32 gate_close_time = 0;
+>> +
+>> +			if (gate_mask_list_idx & BIT(gate_idx))
+>> +				gate_close_time = readl(&tas->fw_shadow_list->win_end_time_list[idx]);
+>> +
+>> +			writel(gate_close_time,
+>> +			       &tas->fw_shadow_list->gate_close_time_list[idx][gate_idx]);
+>> +		}
+>> +	}
+>> +
+>> +	/* tell f/w to swap active & shadow list */
+>> +	ret = tas_set_trigger_list_change(emac);
+>> +	if (ret) {
+>> +		netdev_err(emac->ndev, "failed to swap f/w config list: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Wait for completion */
+>> +	ret = readb_poll_timeout(&tas->config_list->config_change, val, !val,
+>> +				 USEC_PER_MSEC, 10 * USEC_PER_MSEC);
+>> +	if (ret) {
+>> +		netdev_err(emac->ndev, "TAS list change completion time out\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int emac_set_taprio(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *taprio = emac->qos.tas.taprio_admin;
+>> +	int ret;
+>> +
+>> +	if (taprio->cmd == TAPRIO_CMD_DESTROY)
+>> +		return tas_set_state(emac, TAS_STATE_DISABLE);
+>> +
+>> +	if (taprio->cmd != TAPRIO_CMD_REPLACE)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	ret = tas_update_oper_list(emac);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return tas_set_state(emac, TAS_STATE_ENABLE);
+>> +}
+>> +
+>> +static void emac_cp_taprio(struct tc_taprio_qopt_offload *from,
+>> +			   struct tc_taprio_qopt_offload *to)
+>> +{
+>> +	int i;
+>> +
+>> +	*to = *from;
+>> +	for (i = 0; i < from->num_entries; i++)
+>> +		to->entries[i] = from->entries[i];
+>> +}
+>> +
+>> +static int emac_setup_taprio(struct net_device *ndev, struct tc_taprio_qopt_offload *taprio)
+> 
+> Please change this to
+> 	static int emac_setup_taprio(struct net_device *ndev, void *type_data)
+> 
+> and later add
+> 	struct tc_taprio_qopt_offload *taprio = type_data;
 
-Thanks,
-Rohit.
->
->> Thanks,
->> Rohit.
->>>> +
->>>> +       .serdes_tbl             = sdx75_usb3_uniphy_serdes_tbl,
->>>> +       .serdes_tbl_num         = ARRAY_SIZE(sdx75_usb3_uniphy_serdes_tbl),
->>>> +       .tx_tbl                 = sdx75_usb3_uniphy_tx_tbl,
->>>> +       .tx_tbl_num             = ARRAY_SIZE(sdx75_usb3_uniphy_tx_tbl),
->>>> +       .rx_tbl                 = sdx75_usb3_uniphy_rx_tbl,
->>>> +       .rx_tbl_num             = ARRAY_SIZE(sdx75_usb3_uniphy_rx_tbl),
->>>> +       .pcs_tbl                = sdx75_usb3_uniphy_pcs_tbl,
->>>> +       .pcs_tbl_num            = ARRAY_SIZE(sdx75_usb3_uniphy_pcs_tbl),
->>>> +       .pcs_usb_tbl            = sdx75_usb3_uniphy_pcs_usb_tbl,
->>>> +       .pcs_usb_tbl_num        = ARRAY_SIZE(sdx75_usb3_uniphy_pcs_usb_tbl),
->>>> +       .vreg_list              = qmp_phy_vreg_l,
->>>> +       .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
->>>> +       .regs                   = qmp_v6_usb3phy_regs_layout,
->>>> +       .pcs_usb_offset         = 0x1000,
->>>> +
->>>> +       .has_pwrdn_delay        = true,
->>>> +};
->>>> +
->>>>    static const struct qmp_phy_cfg sm8350_usb3_uniphy_cfg = {
->>>>           .lanes                  = 1,
->>>>
->>>> @@ -2243,6 +2405,9 @@ static const struct of_device_id qmp_usb_of_match_table[] = {
->>>>                   .compatible = "qcom,sdx65-qmp-usb3-uni-phy",
->>>>                   .data = &sdx65_usb3_uniphy_cfg,
->>>>           }, {
->>>> +               .compatible = "qcom,sdx75-qmp-usb3-uni-phy",
->>>> +               .data = &sdx75_usb3_uniphy_cfg,
->>>> +       }, {
->>>>                   .compatible = "qcom,sm6115-qmp-usb3-phy",
->>>>                   .data = &qcm2290_usb3phy_cfg,
->>>>           }, {
->>>> --
->>>> 2.7.4
->>>>
->
->
+Sure.
+
+>> +{
+>> +	struct prueth_emac *emac = netdev_priv(ndev);
+>> +	struct tc_taprio_qopt_offload *est_new;
+>> +	int ret, idx;
+>> +
+>> +	if (!netif_running(ndev)) {
+>> +		netdev_err(ndev, "interface is down, link speed unknown\n");
+>> +		return -ENETDOWN;
+>> +	}
+> 
+> Do we really need this?
+> 
+> How about handling the taprio->cmd with a switch statement
+> and adding helper functions for each case?
+> 
+
+emac_set_taprio() is already doing something like this.
+It only implements TAPRIO_CMD_REPLACE and TAPRIO_CMD_DESTROY. Others are
+not supported.
+
+static int emac_set_taprio(struct prueth_emac *emac)
+{
+	struct tc_taprio_qopt_offload *taprio = emac->qos.tas.taprio_admin;
+	int ret;
+
+	if (taprio->cmd == TAPRIO_CMD_DESTROY)
+		return tas_set_state(emac, TAS_STATE_DISABLE);
+
+	if (taprio->cmd != TAPRIO_CMD_REPLACE)
+		return -EOPNOTSUPP;
+
+	ret = tas_update_oper_list(emac);
+	if (ret)
+		return ret;
+
+	return tas_set_state(emac, TAS_STATE_ENABLE);
+}
+
+emac_setup_taprio() is first doing all the neccessary check and then
+calling emac_set_taprio(), which actually perform actions based on the
+taprio->cmd. I think I'll keep this as it is.
+
+> So emac_setup_taprio() reduces to
+> 
+> static int emac_setup_taprio(struct net_device *ndev, void *type_data)
+> {
+> 	struct tc_taprio_qopt_offload *taprio = type_data;
+> 	int err = 0;
+> 
+>         switch (taprio->cmd) {
+>         case TAPRIO_CMD_REPLACE:
+>                 err = emac_taprio_replace(ndev, taprio);
+>                 break;
+>         case TAPRIO_CMD_DESTROY:
+>                 emac_taprio_destroy(ndev);
+>                 break;
+>         case TAPRIO_CMD_STATS:
+>                 emac_taprio_stats(ndev, &taprio->stats);
+>                 break;
+>         case TAPRIO_CMD_QUEUE_STATS:
+>                 emac_taprio_queue_stats(ndev, &taprio->queue_stats);
+>                 break;
+>         default:
+>                 err = -EOPNOTSUPP;
+>         }
+> 
+> 	return err;
+> }
+> 
+>> +
+>> +	if (taprio->cycle_time_extension) {
+>> +		netdev_err(ndev, "Failed to set cycle time extension");
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	if (taprio->num_entries == 0 ||
+>> +	    taprio->num_entries > TAS_MAX_CMD_LISTS) {
+>> +		netdev_err(ndev, "unsupported num_entries %ld in taprio config\n",
+>> +			   taprio->num_entries);
+> 
+> please use NL_SET_ERR_MSG_FMT_MOD(taprio->mqprio->extack, ...)
+> 
+
+Sure. I'll use this.
+
+> 
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* If any time_interval is 0 in between the list, then exit */
+>> +	for (idx = 0; idx < taprio->num_entries; idx++) {
+>> +		if (taprio->entries[idx].interval == 0) {
+>> +			netdev_err(ndev, "0 interval in taprio config not supported\n");
+> 
+> NL_SET_ERR_MSG_MOD()
+> 
+
+Sure.
+
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>> +	if (emac->qos.tas.taprio_admin)
+>> +		devm_kfree(&ndev->dev, emac->qos.tas.taprio_admin);
+>> +
+>> +	est_new = devm_kzalloc(&ndev->dev,
+>> +			       struct_size(est_new, entries, taprio->num_entries),
+>> +			       GFP_KERNEL);
+>> +	emac_cp_taprio(taprio, est_new);
+>> +	emac->qos.tas.taprio_admin = est_new;
+>> +	ret = emac_set_taprio(emac);
+>> +	if (ret)
+>> +		devm_kfree(&ndev->dev, est_new);
+> 
+> The checks and other code can be moved to relavant helper functions.
+> 
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>> +			   void *type_data)
+>> +{
+>> +	switch (type) {
+>> +	case TC_SETUP_QDISC_TAPRIO:
+>> +		return emac_setup_taprio(ndev, type_data);
+>> +	default:
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +}
+>> +
+>> +void icssg_qos_tas_init(struct net_device *ndev)
+>> +{
+>> +	struct prueth_emac *emac = netdev_priv(ndev);
+>> +	bool need_setup = false;
+>> +	struct tas_config *tas;
+>> +
+>> +	tas = &emac->qos.tas.config;
+>> +
+>> +	if (tas->state == TAS_STATE_ENABLE)
+>> +		need_setup = true;
+>> +
+>> +	tas->config_list = emac->dram.va + TAS_CONFIG_CHANGE_TIME;
+>> +	tas->active_list = emac->dram.va + TAS_ACTIVE_LIST_INDEX;
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	tas_set_state(emac, TAS_STATE_RESET);
+>> +
+>> +	if (need_setup)
+>> +		emac_set_taprio(emac);
+>> +}
+> 
+> Do you have any cleanup to do on ndo_stop()?
+> 
+
+No. No cleanup is there in ndo_stop().
+
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.h b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+>> new file mode 100644
+>> index 000000000000..4e2ddf81d5ec
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+>> @@ -0,0 +1,119 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#ifndef __NET_TI_ICSSG_QOS_H
+>> +#define __NET_TI_ICSSG_QOS_H
+>> +
+>> +#include <linux/atomic.h>
+>> +#include <linux/netdevice.h>
+>> +#include <net/pkt_sched.h>
+>> +
+>> +/**
+>> + * Maximum number of gate command entries in each list.
+>> + */
+>> +#define TAS_MAX_CMD_LISTS   (16)
+>> +
+>> +/**
+>> + * Maximum number of transmit queues supported by implementation
+>> + */
+>> +#define TAS_MAX_NUM_QUEUES  (8)
+>> +
+>> +/**
+>> + * Minimum cycle time supported by implementation (in ns)
+>> + */
+>> +#define TAS_MIN_CYCLE_TIME  (1000000)
+>> +
+>> +/**
+>> + * Minimum TAS window duration supported by implementation (in ns)
+>> + */
+>> +#define TAS_MIN_WINDOW_DURATION  (10000)
+>> +
+>> +/**
+>> + * List number 0 or 1. Also the value at memory location TAS_ACTIVE_LIST_INDEX
+>> + */
+>> +enum tas_list_num {
+>> +	TAS_LIST0 = 0,
+>> +	TAS_LIST1 = 1
+>> +};
+>> +
+>> +/**
+>> + * state of TAS in f/w
+>> + */
+>> +enum tas_state {
+>> +	/* PRU's are idle */
+>> +	TAS_STATE_DISABLE = 0,
+>> +	/* Enable TAS */
+>> +	TAS_STATE_ENABLE = 1,
+>> +	/* Firmware will reset the state machine */
+>> +	TAS_STATE_RESET = 2,
+>> +};
+>> +
+>> +/**
+>> + * Config state machine variables. See IEEE Std 802.1Q-2018 8.6.8.4
+>> + */
+>> +struct tas_config_list {
+>> +	/* New list is copied at this time */
+>> +	u64 config_change_time;
+>> +	/* config change error counter, incremented if
+>> +	 * admin->BaseTime < current time and TAS_enabled is true
+>> +	 */
+>> +	u32 config_change_error_counter;
+>> +	/* True if list update is pending */
+>> +	u8 config_pending;
+>> +	/* Set to true when application trigger updating of admin list
+>> +	 * to active list, cleared when configChangeTime is updated
+>> +	 */
+>> +	u8 config_change;
+>> +};
+>> +
+>> +/**
+>> + * Max SDU table. See IEEE Std 802.1Q-2018 12.29.1.1
+>> + */
+>> +struct tas_max_sdu_table {
+>> +	u16 max_sdu[TAS_MAX_NUM_QUEUES];
+>> +};
+>> +
+>> +/**
+>> + * TAS List Structure based on firmware memory map
+>> + */
+>> +struct tas_firmware_list {
+>> +	/* window gate mask list */
+>> +	u8 gate_mask_list[TAS_MAX_CMD_LISTS];
+>> +	/* window end time list */
+>> +	u32 win_end_time_list[TAS_MAX_CMD_LISTS];
+>> +	/* Array of gate close time for each queue in each window */
+>> +	u32 gate_close_time_list[TAS_MAX_CMD_LISTS][TAS_MAX_NUM_QUEUES];
+>> +};
+>> +
+>> +/**
+>> + * Main Time Aware Shaper Handle
+>> + */
+>> +struct tas_config {
+>> +	enum tas_state state;
+>> +	struct tas_max_sdu_table max_sdu_table;
+>> +	/* Config change variables */
+>> +	struct tas_config_list __iomem *config_list;
+>> +	/* Whether list 1 or list 2 is the operating list */
+>> +	u8 __iomem *active_list;
+>> +	/* active List pointer, used by firmware */
+>> +	struct tas_firmware_list __iomem *fw_active_list;
+>> +	/* shadow List pointer, used by driver */
+>> +	struct tas_firmware_list __iomem *fw_shadow_list;
+>> +};
+>> +
+>> +struct prueth_qos_tas {
+>> +	struct tc_taprio_qopt_offload *taprio_admin;
+>> +	struct tc_taprio_qopt_offload *taprio_oper;
+>> +	struct tas_config config;
+>> +};
+>> +
+>> +struct prueth_qos {
+>> +	/* IET data structure goes here */
+>> +	struct prueth_qos_tas tas;
+>> +};
+>> +
+>> +void icssg_qos_tas_init(struct net_device *ndev);
+>> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>> +			   void *type_data);
+>> +#endif /* __NET_TI_ICSSG_QOS_H */
+>>
+>> base-commit: 940fcc189c51032dd0282cbee4497542c982ac59	
+> 
+
+-- 
+Thanks and Regards,
+Danish
