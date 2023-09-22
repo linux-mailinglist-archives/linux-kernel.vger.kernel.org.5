@@ -2,170 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC187AAE30
+	by mail.lfdr.de (Postfix) with ESMTP id F2B687AAE32
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbjIVJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        id S233157AbjIVJe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbjIVJeA (ORCPT
+        with ESMTP id S233186AbjIVJeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:34:00 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C385ACD2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:33:53 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6DA581F461;
-        Fri, 22 Sep 2023 09:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695375232; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/oT88nNiQNdO60Vz7Y3YIUI4gJHlhQxjqQ04Nk/WTPQ=;
-        b=qHzDnWtQsHr42UNv1vhtX0ug8W76HeSkVJvl4raHZMJYDu8vrcHuMjDjSdhVzkdr9EgmNV
-        USWJihfu0JJwkcE/6rMy0wr2TnDSuB5iSHYmqT0lzUp9KCXJO2taQYbTqhedij7sdXwPQG
-        gtYzO9dG0cfJh2TFsbgOf1li5GOx//M=
-Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 150202C142;
-        Fri, 22 Sep 2023 09:33:52 +0000 (UTC)
-Date:   Fri, 22 Sep 2023 11:33:51 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v2 04/11] printk: nbcon: Provide functions to mark
- atomic write sections
-Message-ID: <ZQ1ff96wS03ctA-v@alley>
-References: <20230919230856.661435-1-john.ogness@linutronix.de>
- <20230919230856.661435-5-john.ogness@linutronix.de>
+        Fri, 22 Sep 2023 05:34:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061E0CDE;
+        Fri, 22 Sep 2023 02:34:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E5EC433C9;
+        Fri, 22 Sep 2023 09:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695375248;
+        bh=3sau3zGAqT64PlvL93L3t5WW9upTsJ7zh15tcnTdr5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hhaIBnCaAbuCpSxAopP2bOKGZnEbjsw1ElAoo3Zz7BnAv+l/F+pFaAiLxFA9ny7H4
+         9L3mO0A6LcrzntFIYgI89H2ltGDEBIp8buJfoqqX2Oket8WLh5QH4+7vA52PjIoXmF
+         zewHVEDJJ5s7nk3si4FZfbeiSKzOb+PQs0ixFTAuCpuG4a7+rn8HDBUBtzxA5Z7LmQ
+         9DxTufr/nkZ/j9CT/d7cv8Tjl14CVfZvwM5GTA2Jm9SOkAMYeEIgEsSi7Kk/Fh87yA
+         C7Y3P8pP44GUxZbrjNnO7rg1kLoKIIy5/7H2qkrSrshAyEnkdWKtxFpFjNqPVSTvqh
+         bwiFNK1GyFDMQ==
+Date:   Fri, 22 Sep 2023 10:34:01 +0100
+From:   Simon Horman <horms@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@aculab.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 07/11] iov_iter: Add a kernel-type iterator-only
+ iteration function
+Message-ID: <20230922093401.GW224399@kernel.org>
+References: <20230920222231.686275-1-dhowells@redhat.com>
+ <20230920222231.686275-8-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919230856.661435-5-john.ogness@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230920222231.686275-8-dhowells@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2023-09-20 01:14:49, John Ogness wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Wed, Sep 20, 2023 at 11:22:27PM +0100, David Howells wrote:
+> Add an iteration function that can only iterate over kernel internal-type
+> iterators (ie. BVEC, KVEC, XARRAY) and not user-backed iterators (ie. UBUF
+> and IOVEC).  This allows for smaller iterators to be built when it is known
+> the caller won't have a user-backed iterator.
 > 
-> WARN/OOPS/PANIC require printing out immediately since the
-> regular printing method (and in the future, the printing
-> threads) might not be able to run.
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> cc: Jens Axboe <axboe@kernel.dk>
+> cc: Christoph Hellwig <hch@lst.de>
+> cc: Christian Brauner <christian@brauner.io>
+> cc: Matthew Wilcox <willy@infradead.org>
+> cc: Linus Torvalds <torvalds@linux-foundation.org>
+> cc: David Laight <David.Laight@ACULAB.COM>
+> cc: linux-block@vger.kernel.org
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-mm@kvack.org
+> ---
+>  include/linux/iov_iter.h | 31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
 > 
-> Add per-CPU state to denote the priority/urgency of the output
-> and provide functions to mark the beginning and end of sections
-> where the urgent messages are generated.
-> 
-> Note that when a CPU is in a priority elevated state, flushing
-> only occurs when dropping back to a lower priority. This allows
-> the full set of printk records (WARN/OOPS/PANIC output) to be
-> stored in the ringbuffer before beginning to flush the backlog.
-
-The above paragraph is a bit confusing. The code added by this patch
-does not do any flushing. I guess that this last paragraph is supposed
-to explain why the "nesting" array is needed. I would write
-something like:
-
-"The state also counts nesting of printing contexts per-priority.
-It will be later used to prevent flushing in nested contexts."
-
-That said, I am not sure if the special handling of nested contexts
-is needed. But let's discuss it in the patch introducing the flush
-funtions.
-
-> --- a/kernel/printk/nbcon.c
-> +++ b/kernel/printk/nbcon.c
-> @@ -961,6 +961,95 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
->  	return nbcon_context_exit_unsafe(ctxt);
+> diff --git a/include/linux/iov_iter.h b/include/linux/iov_iter.h
+> index 270454a6703d..a94d605d7386 100644
+> --- a/include/linux/iov_iter.h
+> +++ b/include/linux/iov_iter.h
+> @@ -271,4 +271,35 @@ size_t iterate_and_advance(struct iov_iter *iter, size_t len, void *priv,
+>  	return iterate_and_advance2(iter, len, priv, NULL, ustep, step);
 >  }
 >  
 > +/**
-> + * struct nbcon_cpu_state - Per CPU printk context state
-> + * @prio:	The current context priority level
-> + * @nesting:	Per priority nest counter
-> + */
-> +struct nbcon_cpu_state {
-> +	enum nbcon_prio		prio;
-> +	int			nesting[NBCON_PRIO_MAX];
-> +};
-> +
-> +static DEFINE_PER_CPU(struct nbcon_cpu_state, nbcon_pcpu_state);
-> +static struct nbcon_cpu_state early_nbcon_pcpu_state __initdata;
-> +
-> +/**
-> + * nbcon_get_cpu_state - Get the per CPU console state pointer
+> + * iterate_and_advance_kernel - Iterate over a kernel iterator
+> + * @iter: The iterator to iterate over.
+> + * @len: The amount to iterate over.
+> + * @priv: Data for the step functions.
+
+nit: an entry for @priv2 belongs here
+
+> + * @step: Processing function; given kernel addresses.
 > + *
-> + * Returns either a pointer to the per CPU state of the current CPU or to
-> + * the init data state during early boot.
+> + * Like iterate_and_advance2(), but rejected UBUF and IOVEC iterators and does
+> + * not take a user-step function.
 > + */
-> +static __ref struct nbcon_cpu_state *nbcon_get_cpu_state(void)
+> +static __always_inline
+> +size_t iterate_and_advance_kernel(struct iov_iter *iter, size_t len, void *priv,
+> +				  void *priv2, iov_step_f step)
 > +{
-> +	if (!printk_percpu_data_ready())
-> +		return &early_nbcon_pcpu_state;
 
-My first thought, was that this was racy. I was afraid that
-printk_percpu_data_ready() could change value inside
-atomit_enter()/exit() area. But it actually could not happen.
-Anyway, it might worth a comment. Something like:
-
-	/*
-	 * The value of __printk_percpu_data_ready is modified in normal
-	 * context. As a result it could never change inside a nbcon
-	 * atomic context.
-	 */
-	if (!printk_percpu_data_ready())
-		return &early_nbcon_pcpu_state;
-
-> +
-> +	return this_cpu_ptr(&nbcon_pcpu_state);
-> +}
-> +
-> +/**
-> + * nbcon_atomic_exit - Exit a context that enforces atomic printing
-> + * @prio:	Priority of the context to leave
-> + * @prev_prio:	Priority of the previous context for restore
-> + *
-> + * Context:	Any context. Enables migration.
-> + *
-> + * @prev_prio is the priority returned by the corresponding
-> + * nbcon_atomic_enter().
-> + */
-> +void nbcon_atomic_exit(enum nbcon_prio prio, enum nbcon_prio prev_prio)
-> +{
-> +	struct nbcon_cpu_state *cpu_state;
-> +
-> +	cpu_state = nbcon_get_cpu_state();
-
-I would add a consistency check:
-
-	WARN_ON_ONCE(cpu_state->nesting[cpu_state->prio] <= 0)
-
-> +	/*
-> +	 * Undo the nesting of nbcon_atomic_enter() at the CPU state
-> +	 * priority.
-> +	 */
-> +	cpu_state->nesting[cpu_state->prio]--;
-> +
-> +	/*
-> +	 * Restore the previous priority, which was returned by
-> +	 * nbcon_atomic_enter().
-> +	 */
-> +	cpu_state->prio = prev_prio;
-> +
-> +	migrate_enable();
-> +}
-
-Best Regards,
-Petr
+...
