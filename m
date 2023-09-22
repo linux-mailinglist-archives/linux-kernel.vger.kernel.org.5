@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14217AAC6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF26A7AAC41
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjIVILx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S232315AbjIVILt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbjIVIL2 (ORCPT
+        with ESMTP id S232075AbjIVIL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:11:28 -0400
+        Fri, 22 Sep 2023 04:11:29 -0400
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C612F1985;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51DB1734;
         Fri, 22 Sep 2023 01:11:19 -0700 (PDT)
 Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38M3QBi7003962;
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38M3QAq6003954;
         Fri, 22 Sep 2023 10:11:02 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version:content-type; s=
-        selector1; bh=Ll3q+d7qJRZQ1dQlukS/+mz6Xi234zuXF2SWIz0fdz4=; b=ds
-        T3eVsCBy15GHMbT/Wqk6kE3XnpoQOeaNZ46W/PvkBvtPQ4A+MEdJs9XXoSFZoxEe
-        PMLQ0dbJSHgUuKNmw6ffGiWEXeVi2iADrN8WHRtPX4KVptWA48WwU8GEvS6EMEWI
-        h1t8LWUo3kFyb1aGwBzbOCMlMFeC0SIFh68AMEcWIJy7vuXCO74mNN4w6LNNzxaA
-        Ng5d74xW3YRchZLvGLJAWrj6nY2fAhUurRWweQaTM4mC4ls3IkG+Ect+bLy1vqdZ
-        BsnSSavYFIZakcm4e90WjxPE+X+MhBH+VCTfzRg2A0UDGYueYRnVzU9bg/9TToX3
-        20mUDBWl3PJEMCoykDUw==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type; s=selector1; bh=4DBHArcLHHs3PcEL5s63
+        o1s4aDBzEADhjTJ8QgH11SE=; b=3TBBmhJrxkfzes/j+RcYqliLB0vq+d4PYtGO
+        hxYt4mTnMZ/Q250+lc+rLeA4wT1Su1kS88/G/oUrasBsiVaxE2aRlREu8rb+igE8
+        7E68SBpsbJkSnIRwd4NQc0sFQK1jALqBuFhg/0oYGnUaHxC+p0s2U0Qik1CZiTS4
+        6nqofbYiQo2or0+I5sBTUl5GVPyvudf4g978E4a+waiT/WZJmkKnTNyh1puDPqg9
+        kRAAVMROYDPn/puHQBNEcDCyJYfzRBMK1RcJp9swNwWHXDX6dHo2GOi6/lwFYWfB
+        Va/LunRiw0VvslhXt8XJK3SbRvCodn314WRwQ/HZzBGWWZGZ1A==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt7aa8e-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt7aa8d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 22 Sep 2023 10:11:02 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B461A100056;
-        Fri, 22 Sep 2023 10:11:00 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 73266100051;
+        Fri, 22 Sep 2023 10:11:01 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A9BFB21230D;
-        Fri, 22 Sep 2023 10:11:00 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6BCD921230E;
+        Fri, 22 Sep 2023 10:11:01 +0200 (CEST)
 Received: from localhost (10.201.21.122) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Sep
- 2023 10:11:00 +0200
+ 2023 10:11:01 +0200
 From:   Alexandre Torgue <alexandre.torgue@foss.st.com>
 To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
@@ -49,10 +49,12 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 0/2] Declare and enable watchdog on stm32mp25
-Date:   Fri, 22 Sep 2023 10:10:53 +0200
-Message-ID: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
+Subject: [PATCH 1/2] arm64: dts: st: add arm-wdt node for watchdog support on stm32mp251
+Date:   Fri, 22 Sep 2023 10:10:54 +0200
+Message-ID: <20230922081055.6242-2-alexandre.torgue@foss.st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
+References: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.201.21.122]
@@ -70,20 +72,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Secure ARM watchdog is used on stm32mp25 relying on SMC to configure
-and kick the watchdog. It is set to 32 seconds on stm32mp257f-ev1
-board.
+Add the node to use the ARM SMC watchdog support. It will
+use a dedicated smc-id to configure and kick the watchdog.
 
-Regards
-Alex
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 
-Alexandre Torgue (2):
-  arm64: dts: st: add arm-wdt node for watchdog support on stm32mp251
-  arm64: dts: st: enable secure arm-wdt watchdog on stm32mp257f-ev1
-
- arch/arm64/boot/dts/st/stm32mp251.dtsi     | 6 ++++++
- arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 5 +++++
- 2 files changed, 11 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index d7cb05d534ac..124403f5f1f4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -28,6 +28,12 @@
+ 		interrupt-parent = <&intc>;
+ 	};
+ 
++	arm_wdt: watchdog {
++		compatible = "arm,smc-wdt";
++		arm,smc-id = <0xb200005a>;
++		status = "disabled";
++	};
++
+ 	clocks {
+ 		ck_flexgen_08: ck-flexgen-08 {
+ 			#clock-cells = <0>;
 -- 
 2.17.1
+
