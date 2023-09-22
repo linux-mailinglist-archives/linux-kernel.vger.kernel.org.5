@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440917AB930
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6127AB93A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbjIVScM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
+        id S233220AbjIVSf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233267AbjIVScL (ORCPT
+        with ESMTP id S229664AbjIVSf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:32:11 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A09C1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:32:03 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-578a62c088cso2984697a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:32:03 -0700 (PDT)
+        Fri, 22 Sep 2023 14:35:27 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2F0AC
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:35:21 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31f7638be6eso2453640f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:35:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695407523; x=1696012323; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ngBf+ICvbxi0AiCYVulY76r9llgqXQtbJzL3HizOtVw=;
-        b=THn26/uovqc6YYrJhCHEn9NZwjIxqhMByK+6Z6snN6B/UuS3mnUduGhdG5MDM3Hikg
-         RYmbD/9kfrbH629kT36/LB9VTzVTWSXoHsKuZpwt2ZhCamkHYVGK5KSnjrwqI0M9R0z4
-         fNlbdFxf012kTFbatXD2Bp1HGu27p87yUEiVc=
+        d=linaro.org; s=google; t=1695407720; x=1696012520; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J9ePrVfdNy/JzYRXiuwdT/jgHodsIKRvT6Kq8KoBVSc=;
+        b=drXB3KZdD4j3ybh06C1KoNUB2WZsoB+lExp+KueeUACwPM8aRrBfT9aTRtcL2Kskok
+         frYDYinNaQ0Y0TKNLHNwMvQ1Tnr2fpasN+hhmarEMhrChzzxQaSK7Dywud6DT1wKpaUP
+         XynlfzmB1S4xJeLW7PZSrx8jJfdHNxNH3NdAxxqTs1gZ8vb/cJ56odPYLd1+/8KULdjY
+         SXzTW+fNMUxDkwybH71j3yEqxBXLqXP6+m189M958wVSCzW3iT3m19ba8VpN8lbhtv8f
+         hIwEIICDALP4fOwUgW5pul3aEWmunipxMu7sRXEz9cnqdEgKY3kJYIr8S3oN/LlVjKqd
+         2+5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695407523; x=1696012323;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1695407720; x=1696012520;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ngBf+ICvbxi0AiCYVulY76r9llgqXQtbJzL3HizOtVw=;
-        b=B0mA17HrDzOOw+9VQ+XWU85yXV/axogRU5FMjn+plaXdXt0ysHE6w7438quTh5WBAU
-         n5adrrtU3UmM9s3altFFO9EWOdd70r/v92lIq841fVQYDZ0C7rb9rlZE/xVA8xsBpSW0
-         V9E2PTLnVe/sQ+8pVSRPDANq0dIzeyJEYVaa8mpRWZxz2PSl7JUwMIo1LndW97GzJe9l
-         kZ59gk+d67o3uqvGT6SsoB6nozonFrxauLS+Y1Cxg8u0HHGEnAEu/NHIYxCeHR1W3x9I
-         2D/4MLevmLeaNallPa9f2yRmNtagKzu/B2TUaJQU84UJHfOdmQgpV5WWAt6ZWhzMWRii
-         HEiw==
-X-Gm-Message-State: AOJu0Yzk7BsN0VLo2+jhqf9YmsZx3HfBOEy2uFAM/AB0RI7HLDjdugaG
-        lzD5cxnLqXn1yE5ZkZibNolO/g==
-X-Google-Smtp-Source: AGHT+IGMpVeVaBKxQRuTd7FExBg+6JvbIKew4fzduHUrzQv2ncVyYW9f1qAq9F1UrlDz3W3OfJNzAg==
-X-Received: by 2002:a17:90a:428b:b0:268:535f:7c15 with SMTP id p11-20020a17090a428b00b00268535f7c15mr5122344pjg.0.1695407523130;
-        Fri, 22 Sep 2023 11:32:03 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 14-20020a17090a004e00b0025dc5749b4csm5726599pjb.21.2023.09.22.11.32.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 11:32:02 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 11:32:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Yosry Ahmed <yosryahmed@google.com>,
-        Yu Zhao <yuzhao@google.com>, Miaohe Lin <linmiaohe@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: Annotate struct mem_cgroup_threshold_ary with
- __counted_by
-Message-ID: <202309221128.6AC35E3@keescook>
-References: <20230922175327.work.985-kees@kernel.org>
- <CALvZod5xVhR_Feq7Wp_P9BLjYHJCxqvA6BmHmzwGzw34niDQ2g@mail.gmail.com>
+        bh=J9ePrVfdNy/JzYRXiuwdT/jgHodsIKRvT6Kq8KoBVSc=;
+        b=FgJTPI3iUtGQSd9QD7I1GvoqPTmPYdvCoI0FQP89DDWFSrJLb4WSVWWLvDoEpQ1zfH
+         nqQEMNLJmo0eOg3Izz7alZT04GFIl1qI7P7vHg9TA0guZwvwKsyAHTDzkhSfyi0Pldsf
+         3Glbr7y1VIQVGtkX+OeC1RuhU5lEiwncdwFeT4OkxwBrFoHeg3ZkZyP3hKwTxxh6oNPQ
+         8jyNyw1W0Jl2CFs+0uPCEnG75TdTcr7vPCSBJeK8KcQejBj2CZgMh7Y95cDJaohE3NHN
+         kOefUUGsEITonTgkrrBKBLut5T9DChkNlbFprX7J9MkmAPgCU0S4L36yxyFSEdah/q/6
+         prKQ==
+X-Gm-Message-State: AOJu0Ywf6r1we7UmwEBpUSsL5HqlKLlBO8l6zNN1mkVQCM9adAWRuXhd
+        I6GxeMD2gK+RNuoP9ikeQU/3Gw==
+X-Google-Smtp-Source: AGHT+IGHNHeD3T2yar23Ec3UH67UtsxfVcBnSqULhmwaYiv+OLl4leNTFgBuPq0hiT5BDrQsK26dyQ==
+X-Received: by 2002:a5d:60c5:0:b0:31f:b91f:23ef with SMTP id x5-20020a5d60c5000000b0031fb91f23efmr441114wrt.51.1695407719864;
+        Fri, 22 Sep 2023 11:35:19 -0700 (PDT)
+Received: from [192.168.192.175] (181.red-88-28-23.dynamicip.rima-tde.net. [88.28.23.181])
+        by smtp.gmail.com with ESMTPSA id m16-20020a5d4a10000000b003200c918c81sm5000406wrq.112.2023.09.22.11.35.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 11:35:19 -0700 (PDT)
+Message-ID: <52ba27b9-79d5-f9cc-450f-fe831e65769a@linaro.org>
+Date:   Fri, 22 Sep 2023 20:35:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALvZod5xVhR_Feq7Wp_P9BLjYHJCxqvA6BmHmzwGzw34niDQ2g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/6] mtd: parsers: ar7: remove support
+Content-Language: en-US
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+ <20230922061530.3121-3-wsa+renesas@sang-engineering.com>
+ <20230922163903.3f49ea2a@xps-13> <ZQ3VA/2pAC3Do1Xd@ninjato>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <ZQ3VA/2pAC3Do1Xd@ninjato>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 11:25:56AM -0700, Shakeel Butt wrote:
-> On Fri, Sep 22, 2023 at 10:53 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Prepare for the coming implementation by GCC and Clang of the __counted_by
-> > attribute. Flexible array members annotated with __counted_by can have
-> > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> > functions).
-> >
-> > As found with Coccinelle[1], add __counted_by for struct mem_cgroup_threshold_ary.
-> >
-> > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> >
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Shakeel Butt <shakeelb@google.com>
-> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: Michal Hocko <mhocko@suse.com>
-> > Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/memcontrol.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 45d0c10e86cc..e0cfab58ab71 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -143,7 +143,7 @@ struct mem_cgroup_threshold_ary {
-> >         /* Size of entries[] */
-> >         unsigned int size;
-> >         /* Array of thresholds */
-> > -       struct mem_cgroup_threshold entries[];
-> > +       struct mem_cgroup_threshold entries[] __counted_by(size);
+On 22/9/23 19:55, Wolfram Sang wrote:
 > 
-> Does 'size' here have to be a member of the same struct as entries? We
-> have nodeinfo[] in struct mem_cgroup whose size is nr_node_ids which
-> is global. Will __counted_by() work for that?
+>> I'm not sure it is wise to merge defconfig changes through mtd. Would
+>> you mind sending this change aside to avoid potential conflicts? Each
+>> patch can live on their own anyway.
+> 
+> Yup, I can send a seperate patch for it.
+> 
+>>>   drivers/mtd/parsers/Kconfig    |   5 --
+>>>   drivers/mtd/parsers/Makefile   |   1 -
+>>>   drivers/mtd/parsers/ar7part.c  | 129 ---------------------------------
+>>
+>> Do you have other changes related to this file in your tree? It failed
+>> to apply on my side.
+> 
+> No change. Plain v6.6-rc2. I used "--irreversible-delete", though. Maybe
+> this is causing issues? As I stated in the cover-letter, I wonder if all
+> this should go via MIPS. But there hasn't been any discussion about it
+> yet.
 
-Not presently, no. This may come in future expansions of the feature.
-We're also hoping to gain expressions for places where a size isn't a
-native count, like for big endian, or a byte count that includes the
-entire struct, etc. For now, though, the feature is narrowly scoped just
-to get the common case landed.
+MIPS tree for the whole series certainly makes sense.
 
--Kees
-
--- 
-Kees Cook
