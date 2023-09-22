@@ -2,108 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 075C37AB422
+	by mail.lfdr.de (Postfix) with ESMTP id B34987AB424
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbjIVOw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
+        id S231799AbjIVOxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbjIVOwv (ORCPT
+        with ESMTP id S231912AbjIVOw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:52:51 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA7DCCD
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:52:45 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-79f96830e4dso16632239f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:52:45 -0700 (PDT)
+        Fri, 22 Sep 2023 10:52:59 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C82194;
+        Fri, 22 Sep 2023 07:52:53 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c43b4b02c1so17718365ad.3;
+        Fri, 22 Sep 2023 07:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695394364; x=1695999164; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XGBYO+nGsfARnhytIjtXueAfrl2OO+PPabMy9Va5wj4=;
-        b=Gsozdjr0yB6Dukx9DZaNaIoQQGxkGWQr0NlfaevtP6a268LG0IUOXFm+vUA50udr1e
-         WY3Z7E+8/wPsY012JCscRuy/PMc2CzjiyLbjSgaE29wHvqXvVkD2HIqZM9WBLBDbgZvN
-         MirjtCmZghtqBN6TXVc3St6eg0VYwWVxXYXFbZpSGF6KM7vBs6dEgyc++lqiVHv7ywD8
-         u971FtQUiGTFr/46V+cWuRHFh5Xt3lzycCirO2DfGFCmFqZfHRlyjsJncMpneyXzTiS6
-         jwe/XYPEEhSVPT1J1ZzixcVk6Pyt62Gmt2C/qyHH9hca+wvBVOlE/YoslVj6yDOeNSNA
-         ljoQ==
+        d=gmail.com; s=20230601; t=1695394372; x=1695999172; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=uFOz5B5cvfyphqLib4XjPgRuoCQemaGEyuj1nS/YTcY=;
+        b=XyusmUfHx/7qJFb+Gs/345cx28Cx9fJQ8OEXwZssHKO+m4SkGf9XT3hlDOGtRNL+bh
+         4aoFCGiNs18hm+xyxu8u0dl+F98h6y/CoyClV9Rng6AXKxPqky2gJRSz2ux1xYroHumc
+         3yIVdF8E9pU/2Gre41mFqP+4t8vC2bPzrERQkoNw/v3HVPlYzYNk5S9tCro6gp27o8Zc
+         504PH4jjvT2haixWi+G27rc9qgP6IM4+6UbexoNfVKjOIP6gjxUHU637dLTfDTNhoCCS
+         9xbvnwPiUg7r5u5fTT6CkhLuguRrEOpCNqcQOVWDjv6M2h3GObyiClJ6NRMJULC+Y4vF
+         7MIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695394364; x=1695999164;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XGBYO+nGsfARnhytIjtXueAfrl2OO+PPabMy9Va5wj4=;
-        b=MU+0bAKB5Gm+I118IluPNU07GnLMEmN5FU2I6cncLDXeDFyn2K2rgcegOsyMdJWUxO
-         wjpAyUYiq9vYj67muIEsizDYQaZeoIH86KXnZSY7Eoye58Al4UgD5YMAC99Ohb39Dlnc
-         JwoB1TLbzghsVJUoGyTRc8ur1IxF98JISm2HaIbmCpbe95PDBHI7giuLoMBtLwaoMBQX
-         rFlj/LhDKqtpZ62Zw2BWRVdZrAT/HYOS/0uuKE43YWCkUtCFuipACPWYH5+4JOb+olZN
-         aBNyryG+XbBIEFB83IhYMO3h1X2bRPUFgRLCRd34MkBFbECYD7glT2mVr6ZEc8MbEzuM
-         bkQQ==
-X-Gm-Message-State: AOJu0YzFNY5CZavVVzid5s1vKcmyXOzoEAa6SuoXG51sGoFSX9kFV0bm
-        mmpA95/3yKQPwOjsXqHLeMKhXUTArdnwBuhCvnxuoQ==
-X-Google-Smtp-Source: AGHT+IHL+yk7dBzL5o0l69gGgjqHjcXQNUnZMdMJ4Sb6UB7QjvTxV14vW94S8kAVl6A/F98FWOzisg==
-X-Received: by 2002:a05:6602:3788:b0:792:7c78:55be with SMTP id be8-20020a056602378800b007927c7855bemr9005827iob.0.1695394364539;
-        Fri, 22 Sep 2023 07:52:44 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id f6-20020a056638022600b0042b2d43ee3fsm1017020jaq.82.2023.09.22.07.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 07:52:43 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     hch@lst.de, ming.lei@redhat.com, bvanassche@acm.org,
-        chengming.zhou@linux.dev
-Cc:     kbusch@kernel.org, mst@redhat.com,
-        damien.lemoal@opensource.wdc.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20230913151616.3164338-1-chengming.zhou@linux.dev>
-References: <20230913151616.3164338-1-chengming.zhou@linux.dev>
-Subject: Re: [PATCH v2 0/5] blk-mq: optimize queue_rqs() support
-Message-Id: <169539436327.239461.11694929564219340558.b4-ty@kernel.dk>
-Date:   Fri, 22 Sep 2023 08:52:43 -0600
+        d=1e100.net; s=20230601; t=1695394372; x=1695999172;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uFOz5B5cvfyphqLib4XjPgRuoCQemaGEyuj1nS/YTcY=;
+        b=cmQL2hNEXMKZx2GUX2CCEN7jEvlwfveDnK10I9bAe4gvtM04zGJI3TsZPAuQd3rMgN
+         TZDJQimL3uzbUv+KHdIMxdxP08StoIKjP0FzpF3wnGaw6ZpzfpKJHYXwQ/7tcHnyyi6C
+         ei4oCFE6qvR+YjtgEqYrqIzcJuBrQhouLBeLC498LIiDdrRXzK6MfKB1zKBrDh0sqyk9
+         uIgwpD7uio9R9bllHm//bONBFkTocSiK2hhsHU8pK8ua9NiADHPFaKFlCNMmCe/Vq9Y3
+         7hnOWqK0CIkApZ0VAH9r/50TyHoKw0b6cS0VXubo7DJuydie9vAOlK39rxMth7tJpaDV
+         QOCQ==
+X-Gm-Message-State: AOJu0Ywh8pBlB37jMIrIY4f1QUe7j6dEn+qiA0G/fJc5qqXHMRA55Epm
+        iW7/JB03Pvz52dt0/Qh1JH0=
+X-Google-Smtp-Source: AGHT+IEZN572fa6bFTfpRChjwE2UuVpBnja/f797TYM8J0DmFRetiu2CQF9UKBb4yh5diMB89nb/qg==
+X-Received: by 2002:a17:902:e808:b0:1c4:3ea7:4328 with SMTP id u8-20020a170902e80800b001c43ea74328mr10800989plg.45.1695394372514;
+        Fri, 22 Sep 2023 07:52:52 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u15-20020a170902e5cf00b001c0af36dd64sm3548071plf.162.2023.09.22.07.52.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 07:52:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <53c9f81e-55b9-b8bb-7821-cb124780d4c0@roeck-us.net>
+Date:   Fri, 22 Sep 2023 07:52:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 6.1 000/139] 6.1.55-rc1 review
+Content-Language: en-US
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        robdclark@chromium.org
+References: <20230920112835.549467415@linuxfoundation.org>
+ <79a96d41-1b79-51b4-fda0-743b853213b9@nvidia.com>
+ <7e0355bd-64cd-f6c2-b720-e4643579078c@nvidia.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <7e0355bd-64cd-f6c2-b720-e4643579078c@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 13 Sep 2023 15:16:11 +0000, chengming.zhou@linux.dev wrote:
-> Changes in v2:
->   - Drop the patch that fixes a potential race in request timeout
->     from this series.
->   - Rebased on the newest block/for-next branch.
+On 9/22/23 05:31, Jon Hunter wrote:
 > 
-> The current queue_rqs() support has limitation that it can't work on
-> shared tags queue, which is resolved by patch 1-3. We move the account
-> of active requests to where we really allocate the driver tag.
+> On 22/09/2023 10:45, Jon Hunter wrote:
+>> Hi Greg,
+>>
+>> On 20/09/2023 12:28, Greg Kroah-Hartman wrote:
+>>> This is the start of the stable review cycle for the 6.1.55 release.
+>>> There are 139 patches in this series, all will be posted as a response
+>>> to this one.  If anyone has any issues with these being applied, please
+>>> let me know.
+>>>
+>>> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+>>> Anything received after that time might be too late.
+>>>
+>>> The whole patch series can be found in one patch at:
+>>>     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.55-rc1.gz
+>>> or in the git tree and branch at:
+>>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+>>> and the diffstat can be found below.
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>
+>> I am seeing some suspend failures with this update ...
+>>
+>> Test results for stable-v6.1:
+>>      11 builds:    11 pass, 0 fail
+>>      28 boots:    28 pass, 0 fail
+>>      130 tests:    124 pass, 6 fail
+>>
+>> Linux version:    6.1.55-rc1-gd5ace918366e
+>> Boards tested:    tegra124-jetson-tk1, tegra186-p2771-0000,
+>>                  tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+>>                  tegra20-ventana, tegra210-p2371-2180,
+>>                  tegra210-p3450-0000, tegra30-cardhu-a04
+>>
+>> Test failures:    tegra124-jetson-tk1: pm-system-suspend.sh
+>>                  tegra186-p2771-0000: pm-system-suspend.sh
+>>                  tegra20-ventana: pm-system-suspend.sh
+>>                  tegra30-cardhu-a04: pm-system-suspend.sh
+>>
+>> Bisect is underway.
 > 
-> [...]
+> 
+> Bisect for this issue is also pointing to ...
+> 
+> Rob Clark <robdclark@chromium.org>
+>       interconnect: Fix locking for runpm vs reclaim
+> 
+> Looks like all the Tegra issues are related to this.
+> 
 
-Applied, thanks!
+This isn't surprising because upstream commit 136191703038 ("interconnect: Teach
+lockdep about icc_bw_lock order") silently fixes it without Fixes: tag. If you
+look into that patch you'll see that the the missing call to mutex_unlock() is
+added to icc_sync_state().
 
-[1/5] blk-mq: account active requests when get driver tag
-      commit: b8643d682669994b3f57c3440df3d4f9cb735f35
-[2/5] blk-mq: remove RQF_MQ_INFLIGHT
-      commit: 48554df6bf2b1e83f70749bf4b4d7914f8b3c01d
-[3/5] blk-mq: support batched queue_rqs() on shared tags queue
-      commit: 434097ee375fff36bc5037524609ffd6199f11da
-[4/5] blk-mq: update driver tags request table when start request
-      commit: 217b613a53d3a430aa2e5d1523819dc271f02ff0
-[5/5] block/null_blk: add queue_rqs() support
-      commit: d78bfa1346ab1fe04d20aa45a0678d1fc866f37c
-
-Best regards,
--- 
-Jens Axboe
-
-
+Guenter
 
