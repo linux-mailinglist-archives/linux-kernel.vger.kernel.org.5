@@ -2,69 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 934097AB3FF
+	by mail.lfdr.de (Postfix) with ESMTP id DDA2F7AB400
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjIVOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
+        id S231627AbjIVOpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbjIVOpB (ORCPT
+        with ESMTP id S231157AbjIVOpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:45:01 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95186C6
+        Fri, 22 Sep 2023 10:45:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C41D2100
         for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:44:55 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38M71ctN016438;
-        Fri, 22 Sep 2023 09:44:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:references:in-reply-to:subject:date:message-id
-        :mime-version:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=XJqRG5xI5bhaWjmEpLSFVPWC2U94D2ZplOTSDb1L+QY=; b=
-        UB14mOzOmBVaA+jPLL0P/g3SYikUVcYEK5aqq+uvViKyqKHCeGuIQE/IJ0MVYPwa
-        UkHn2as5a/1ZL40E+eSzE7nAMVaFqQ5+sMqFE+sFnU6i+AX7R5vPiDu+9YNDXg7I
-        bmmDnQTxu5oRtRsQdKdNQqE2QpalWAhslLABgqVm26plWBmpk8ekNnwM3pAP5EVs
-        3TYaAk7zQ6yMGwdu7r47adtT4vJObS35K7lC5lzsqZ/i69PbP8NKeRTO57mrpG2Q
-        ygeqewPdOIZqh6oMidoyTQ6joT+DMoyNCTUKmCAbaGXDuJcXsk8VOVY0Gp7KDCCV
-        i5gd9TF0qny0emCt1/10Xg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t8tvhsan3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 09:44:32 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 22 Sep
- 2023 15:44:30 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Fri, 22 Sep 2023 15:44:30 +0100
-Received: from LONN2DGDQ73 (LONN2DGDQ73.ad.cirrus.com [198.61.65.157])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7D4B815B9;
-        Fri, 22 Sep 2023 14:44:30 +0000 (UTC)
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-To:     'Takashi Iwai' <tiwai@suse.de>
-CC:     'Mark Brown' <broonie@kernel.org>,
-        'Jaroslav Kysela' <perex@perex.cz>,
-        'Takashi Iwai' <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com> <87a5tecm2m.wl-tiwai@suse.de>
-In-Reply-To: <87a5tecm2m.wl-tiwai@suse.de>
-Subject: RE: [PATCH v1 0/2] ALSA: cs35l41: prevent old firmwares using unsupported commands
-Date:   Fri, 22 Sep 2023 15:44:30 +0100
-Message-ID: <005e01d9ed63$4b605550$e220fff0$@opensource.cirrus.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2CA4DA7;
+        Fri, 22 Sep 2023 07:45:32 -0700 (PDT)
+Received: from [10.34.100.121] (e126645.nice.arm.com [10.34.100.121])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CC7F3F67D;
+        Fri, 22 Sep 2023 07:44:53 -0700 (PDT)
+Message-ID: <63713cac-605a-c647-baf7-b172c02f8336@arm.com>
+Date:   Fri, 22 Sep 2023 16:44:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+Content-Language: en-US
+To:     Valentin Schneider <vschneid@redhat.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, quentin.perret@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
+ <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
+ <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
+ <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+ <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
+ <xhsmha5tjvfgm.mognet@vschneid.remote.csb>
+From:   Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <xhsmha5tjvfgm.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQK3Dt8Nv883/5uOfTFCurOQPlFa6QMKDBpDrlRXuLA=
-Content-Language: en-gb
-X-Proofpoint-ORIG-GUID: ovuDJwJ7rBXnOnHp7tW06c-LVZ-Rwdoo
-X-Proofpoint-GUID: ovuDJwJ7rBXnOnHp7tW06c-LVZ-Rwdoo
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,56 +57,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Friday, September 22, 2023 3:36 PM
-> To: Stefan Binding <sbinding@opensource.cirrus.com>
-> Cc: Mark Brown <broonie@kernel.org>; Jaroslav Kysela
-> <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; alsa-devel@alsa-
-> project.org; linux-kernel@vger.kernel.org;
-> patches@opensource.cirrus.com
-> Subject: Re: [PATCH v1 0/2] ALSA: cs35l41: prevent old firmwares
-using
-> unsupported commands
+On 9/18/23 14:22, Valentin Schneider wrote:
+> On 15/09/23 23:40, Shrikanth Hegde wrote:
+>> On 9/15/23 5:30 PM, Valentin Schneider wrote:
+>>> On 14/09/23 23:26, Shrikanth Hegde wrote:
+>>>> On 9/14/23 9:51 PM, Valentin Schneider wrote:
+>>>>> On 13/09/23 17:18, Shrikanth Hegde wrote:
+>>>>>> sysctl_sched_energy_aware is available for the admin to disable/enable
+>>>>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
+>>>>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
+>>>>>> valid cpufreq policy, frequency invariant load tracking. It is possible
+>>>>>> platform when booting may not have EAS capability, but can do that after.
+>>>>>> For example, changing/registering the cpufreq policy.
+>>>>>>
+>>>>>> At present, though platform doesn't support EAS, this sysctl is still
+>>>>>> present and it ends up calling rebuild of sched domain on write to 1 and
+>>>>>> NOP when writing to 0. That is confusing and un-necessary.
+>>>>>>
+>>>>>
+>>>>
+>>>> Hi Valentin, Thanks for taking a look at this patch.
+>>>>
+>>>>> But why would you write to it in the first place? Or do you mean to use
+>>>>> this as an indicator for userspace that EAS is supported?
+>>>>>
+>>>>
+>>>> Since this sysctl is present and its value being 1, it gives the
+>>>> impression to the user that EAS is supported when it is not.
+>>>> So its an attempt to correct that part.
+>>>>
+>>>
+>>> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
+>>> supported? And on top of it, prevent all writes when EAS isn't supported
+>>> (perf domains cannot be built, so there would be no point in forcing a
+>>> rebuild that will do nothing).
+>>
+>> Yes. That's another way. Thats what I had as possible approach in
+>> https://lore.kernel.org/lkml/d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com/
+>>
 > 
-> On Fri, 22 Sep 2023 16:28:16 +0200,
-> Stefan Binding wrote:
-> >
-> > Some systems use older firmware which does not support newer
-> commands
-> > which are used to enable external boost. For those systems, we can
-> > workaround this by writing the registers directly.
-> >
-> > We can use the firmware version, stored inside cs_dsp, to
-determine
-> > whether or not the command is supported.
-> > To achieve this, it requires a cleanup in the api, to pass the
-cs_dsp
-> > struct into the function.
-> >
-> > We can also remove the redundant boolean firmware_running from the
-> HDA
-> > driver, and use the equivalent state inside cs_dsp.
+> Thanks for the link; and apologies for bringing up topics that have been
+> discussed already.
 > 
-> So those are fixes needed for 6.6 kernel?  Or they are something
-new?
+>>
+>>
+>>>
+>>> I can never remember how to properly use the sysctl API, so that's a very
+>>> crude implementation, but something like so?
+>>>
+>>> ---
+>>>
+>>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>>> index 05a5bc678c089..dadfc5afc4121 100644
+>>> --- a/kernel/sched/topology.c
+>>> +++ b/kernel/sched/topology.c
+>>> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>>>   	if (write && !capable(CAP_SYS_ADMIN))
+>>>   		return -EPERM;
+>>>
+>>> +	if (!sched_energy_enabled()) {
+>>
+>> Use of sched_energy_enabled won't work as Pierre has indicated.
+>>
+>> Instead this can be done by adding those checks in a helper function to
+>> do similar checks as done build_perf_domains.
+>>
+>> I can send v4 with this approach if it makes more sense. Please let me know.
+>>
+> 
+> So what I'm thinking is the standard approach seems to be to keep the knobs
+> visible, but change how reads/writes to them are handled.
+> 
+> For instance, SMT support has
+> 
+>    /sys/devices/system/cpu/smt
+>      /control
+>      /active
+> 
+> And a system with CONFIG_HOTPLUG_SMT=y but no actual hardware SMT will
+> have:
+> 
+>      /control = notsupported
+>      /active  = 0
 
-These are to fix the issue that was reported on the Lenovo Legion 7
-16ACHg6,
-which was introduced after the fixes to CS35L41 HDA System Suspend.
 
-Thanks,
-Stefan
+Having such interface for EAS would be ideal no ?
+/active:
+would be the equivalent of the current sysctl_sched_energy_aware
+
+/control:
+would show whether CONFIG_SCHED_DEBUG was set and all the conditions
+to have EAS enabled are satisfied.
+
+Possible states for SMT:
+---
+static const char *smt_states[] = {
+	[CPU_SMT_ENABLED]		= "on",             // EAS possible and running
+	[CPU_SMT_DISABLED]		= "off",            // EAS possible and not running
+	[CPU_SMT_FORCE_DISABLED]	= "forceoff",       // not applicable for EAS
+	[CPU_SMT_NOT_SUPPORTED]		= "notsupported",   // system with smt or not asymmetric or no freq invariance
+	[CPU_SMT_NOT_IMPLEMENTED]	= "notimplemented", // CONFIG_SCHED_DEBUG=n
+};
+---
+
 
 > 
-> > This chain is based on Mark's branch, since the api change was
-made to
-> > the function in sound/soc/codecs/cs35l41-lib.c.
+> So IMO it would make sense to keep sched_energy_aware around, but make it
+> read 0 and prevent writes for systems that have the software support
+> compiled but don't have the actual hardware support.
 > 
-> I'd need a PR from Mark before applying those, then.
+> In a pinch it also helps to know if CONFIG_ENERGY_MODEL was selected,
+> though that's obvious enough with CONFIG_SCHED_DEBUG=y.
 > 
-> 
-> thanks,
-> 
-> Takashi
-
