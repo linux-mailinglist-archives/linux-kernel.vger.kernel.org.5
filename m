@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 681147AA7DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A837B7AA7DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjIVEd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
+        id S230222AbjIVEge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbjIVEdY (ORCPT
+        with ESMTP id S229634AbjIVEg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:33:24 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537111A3;
-        Thu, 21 Sep 2023 21:33:18 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M4XA8l054449;
-        Thu, 21 Sep 2023 23:33:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695357190;
-        bh=sPi8IWhsurZuVI4C0oDweJzzyHYzgz84oN1PgJCbQZQ=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=icvzly8+WQnxm0GrkC/fXz2J5XiuAEF0G4vxem7vLfgCGqSPRh0nKEB7UUTeW33Yz
-         aSef1mP4RxlCcS71zE+ja8SMdgKGzY969LfuSI8PzC7zxohW1i2lpgRQM/ahoE9Qam
-         7uRLjHUDR6vL2gfYiQvML5rXGF31dNQJS5OG9W7Y=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M4XAFe024296
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Sep 2023 23:33:10 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Sep 2023 23:33:10 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Sep 2023 23:33:09 -0500
-Received: from [10.24.69.199] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M4X5qM034427;
-        Thu, 21 Sep 2023 23:33:06 -0500
-Message-ID: <0d520999-f556-a982-6ea1-9fe831e8f3ea@ti.com>
-Date:   Fri, 22 Sep 2023 10:03:05 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 3/4] arm64: dts: ti: k3-am654-idk: Add ICSSG Ethernet
- ports
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        <afd@ti.com>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-References: <20230921060913.721336-1-danishanwar@ti.com>
- <20230921060913.721336-4-danishanwar@ti.com>
- <a39316d6-8804-4dc4-b5d8-a2dfd82b972e@lunn.ch>
-From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <a39316d6-8804-4dc4-b5d8-a2dfd82b972e@lunn.ch>
+        Fri, 22 Sep 2023 00:36:29 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A990122
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:36:24 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bfccec7f3so25745457b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695357383; x=1695962183; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Wb1Iw9NYXgo0vQhW3xtBazJ18EX/K35qNPNM7O7eg4s=;
+        b=Grn58Zba5/F7XGjCIaHt1Pfw5yJZPQGcm2DQUTLVVV0REPffF/FSx7IEU4y9wb1zWn
+         MhJx6KfjPf1bgs/tkO5KlUuz8Aw+4H8JWAyn64b7vv0GlJubcuxcDV0LDSKPrhzoSXBl
+         DzEpq3STxPKxZr1zDkZVQV6YTBrCDz9KIPan0WuDVk2tM4uJP2be73swv6w3p8OmZXSv
+         rk4SqFG1/Y4B0qup1l0T4sSDVJTep5MHGVnMbCwYX1Ol82vSwuk0u8KkGTigMoKSllB+
+         aJkLSjGfTZBT4BOTlZCNCGmzMFHgTLfQX7s2UInRVtE8fXlF7i7Yg2wwH43Y9ZStv4zw
+         gAlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695357383; x=1695962183;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wb1Iw9NYXgo0vQhW3xtBazJ18EX/K35qNPNM7O7eg4s=;
+        b=DAEdLnC1gbO89EQxcIQhOZPwO7CitQfGg/ri2LI9OcGtgP2P6rKr5dBpXqKyuPNlMY
+         B5hhIU21+BXio+CA8dKHnihDVNqCJpT7BZ3VOCfb74P9Nx8h8vLLmA2a1/2lheBD6sQL
+         3x95igpfUaqNq24SYkJYBQilDn4q4tfg0rq5yhKUF9QwvQc9Dek47YiiYrIHs2doz0GZ
+         +DUSbUAZU48PuPwG/co0cQSQR0vQpi0aHzft/UFg1cvirgt7Gta5wkEK97Y3KzMtw17V
+         eGGSIjNo1fV0r/ZAYZdOW5OBYvFQEn4qZhMWSxgHpl7Hnpb8QQChT2FnA44/Ez0masXx
+         I0lg==
+X-Gm-Message-State: AOJu0YxBC5veHUQnd3MlzWOWzDToycZaFExnB11ES8kLI3WZa2JB1JkG
+        JB5RCc81lYXI5QkNTFJoIReAu30iiRqXWvDKdFvkHuWQNw/sz4ZdDZb4UeTRQ1vL+jISrtD7v/1
+        kp2siHFFj+J3kpr6JTPgxCuJnOBHnzDiRdd/AIkMNLZWuMFpmZzqWlF6xvnB541RdU6mm6vA=
+X-Google-Smtp-Source: AGHT+IGbd6AWEysig4QWQuxkv28qojZ8CcpMG/2rUN3pSzwc+TYYl61hbfoK80M81eVfa+nIynPS23nFnSsL
+X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
+ (user=jstultz job=sendgmr) by 2002:a81:d105:0:b0:59c:b9b:8940 with SMTP id
+ w5-20020a81d105000000b0059c0b9b8940mr111966ywi.8.1695357383116; Thu, 21 Sep
+ 2023 21:36:23 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 04:35:58 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Message-ID: <20230922043616.19282-1-jstultz@google.com>
+Subject: [PATCH 0/3] Fixes for test-ww_mutex stress test
+From:   John Stultz <jstultz@google.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <jstultz@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joelaf@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,32 +74,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/23 21:44, Andrew Lunn wrote:
->> +	/* Dual Ethernet application node on PRU-ICSSG0 */
->> +	/* Dual Ethernet application node on PRU-ICSSG1 */
-> 
-> Not relevant to this patch, but to the ongoing discussions around
-> adding switchdev support.
-> 
-> Are these two PRU-ICSSG instances completely separate? It is
-> physically impossible to combine these four ethernet ports in one
-> acceleration domain? It will always be two separate switches, and if
-> frames need to go from one switch to the other it happens in software?
-> 
+As part of recent stabilizing of the proxy-execution series,
+I've seen a number of issues from the test-ww_mutex module.
 
-Yes Andrew, these PRU-ICSSG instances are completely separate.
-AM654x-IDK has 3 PRU-ICSSG instances (ICSSG0, ICSSG1, ICSSG2). Each
-instance has two slices i.e. two physical ports. Totaling the ports
-count to 6. The two slices of a single ICSSG instance can be combined in
-the same acceleration domain. However ICSSG ports of different instances
-can not be combined together.
+This test is great for shaking out problems in the patches, but
+in some cases it seems the patch series has made it easier to
+uncover problems in the test-ww_mutex stress tests.
 
-The switching in firmware can only happen between two ports in the same
-instance. To do switching between ports of different ICSSG instance,
-switching will be required to be done in software.
+So this patch series provides a few fixes that I've come up with
+in testing with qemu using large cpu counts.
 
->        Andrew
+Feedback would be greatly appreciated!
+
+thanks
+-john
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Joel Fernandes <joelaf@google.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: kernel-team@android.com
+
+John Stultz (3):
+  test-ww_mutex: Use prng instead of rng to avoid hangs at bootup
+  test-ww_mutex: Fix potential workqueue corruption
+  test-ww_mutex: Make sure we bail out instead of livelock
+
+ kernel/locking/test-ww_mutex.c | 48 ++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 14 deletions(-)
 
 -- 
-Thanks and Regards,
-Danish
+2.42.0.515.g380fc7ccd1-goog
+
