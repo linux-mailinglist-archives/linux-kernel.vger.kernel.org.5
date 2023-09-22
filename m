@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FE37AAE5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACCD7AAE6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbjIVJjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
+        id S231503AbjIVJlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjIVJi7 (ORCPT
+        with ESMTP id S230490AbjIVJlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:38:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279E7197
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:38:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D5BC433C7;
-        Fri, 22 Sep 2023 09:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695375533;
-        bh=6x7OVLHHQ75Pnr2xNF7AcbI629MqB8424pBLt1b4zJY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AE2G41lCD8oy6p9WUm4ci2i1unJemR9tqF7c5SAXFqBtaQ25hWiz7CEG+VQ7BxK6a
-         FxC26RZC9Hvhz02QHpQDjipk2/5ZuU94M17DYRxnjPan7auMzmiyT0Sk0DAlB4Wyb5
-         vMjvxrH8T9vvNDyuq8ommbMoxVfdI4R55Z9tlWLhARthdUxT0Y/tn2lvqOU5ARWq9k
-         91lN9S39OLfMsoMOFwMuB0fw7Fe+NRQrTLpFTK4yKpJKNJzu+eZTvbGSP5xnMZ3L6T
-         EJ4WNdInIf5L15hPsonKHqR6nTPGtGeBOTN7SA0Za6NAblIfH72MCcTxy30Ce5BIyL
-         C6iD0ME3hoAYA==
-Date:   Fri, 22 Sep 2023 10:38:45 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Yong-Xuan Wang <yongxuan.wang@sifive.com>
-Cc:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
-        greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
-        alex@ghiti.fr, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Guo Ren <guoren@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Charlie Jenkins <charlie@rivosinc.com>,
-        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
-        David Hildenbrand <david@redhat.com>,
-        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] RISC-V: Detect and Enable Svadu Extension Support
-Message-ID: <20230922-italics-pursuit-424b1ad71ef1@spud>
-References: <20230922085701.3164-1-yongxuan.wang@sifive.com>
- <20230922085701.3164-2-yongxuan.wang@sifive.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="utwYTRBgGxs2RSTx"
-Content-Disposition: inline
-In-Reply-To: <20230922085701.3164-2-yongxuan.wang@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Fri, 22 Sep 2023 05:41:04 -0400
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89309192;
+        Fri, 22 Sep 2023 02:40:57 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.181.203.255])
+        by mail-app2 (Coremail) with SMTP id by_KCgA3r3odYQ1lJWmuAA--.3668S4;
+        Fri, 22 Sep 2023 17:40:50 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Vadim Fedorenko <vadfed@fb.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ptp: ocp: Fix error handling in ptp_ocp_device_init
+Date:   Fri, 22 Sep 2023 17:40:44 +0800
+Message-Id: <20230922094044.28820-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgA3r3odYQ1lJWmuAA--.3668S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtryfWFW5ZFW3WFy5tFyfXrb_yoW3GFc_Gw
+        1j9FWxWryvkw1kGw1rGw1xZrWIkrnFvr47Crs5tF93A39avF45Xr98uryUGw4DWw4rGrWU
+        ZasIqr1xAr4q9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb28Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
+        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
+        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
+        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+        1lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
+        Y20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgAGBmUMUaAikwAHss
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,35 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When device_add() fails, ptp_ocp_dev_release() will be called
+after put_device(). Therefore, it seems that the
+ptp_ocp_dev_release() before put_device() is redundant.
 
---utwYTRBgGxs2RSTx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 773bda964921 ("ptp: ocp: Expose various resources on the timecard.")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/ptp/ptp_ocp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Fri, Sep 22, 2023 at 08:56:47AM +0000, Yong-Xuan Wang wrote:
-> We detect Svadu extension support from DTB and add arch_has_hw_pte_young()
-> to enable optimization in MGLRU and __wp_page_copy_user() if Svadu
-> extension is available.
->=20
-> Co-developed-by: Jinyu Tang <tjytimi@163.com>
-> Signed-off-by: Jinyu Tang <tjytimi@163.com>
-> Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
+index 20a974ced8d6..a7a6947ab4bc 100644
+--- a/drivers/ptp/ptp_ocp.c
++++ b/drivers/ptp/ptp_ocp.c
+@@ -3998,7 +3998,6 @@ ptp_ocp_device_init(struct ptp_ocp *bp, struct pci_dev *pdev)
+ 	return 0;
+ 
+ out:
+-	ptp_ocp_dev_release(&bp->dev);
+ 	put_device(&bp->dev);
+ 	return err;
+ }
+-- 
+2.17.1
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---utwYTRBgGxs2RSTx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ1gpQAKCRB4tDGHoIJi
-0m5MAQCRz8PBnOE4Bp1PoLmi9u02FVUOL0CJOkyE2NVDSwChwAD9HVYje5mmlwS7
-mUCfIPG0oUVn8wjDaQ1qsoHh6UPyHgA=
-=9y+/
------END PGP SIGNATURE-----
-
---utwYTRBgGxs2RSTx--
