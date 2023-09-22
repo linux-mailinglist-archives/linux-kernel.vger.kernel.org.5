@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441EF7AB5E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF907AB60F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjIVQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        id S231604AbjIVQeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjIVQ3L (ORCPT
+        with ESMTP id S229636AbjIVQeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:29:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A195C198
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:28:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695400097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x72lG+xKk/KRLpNMD1Ia6gvA7sLEGeCIka5YNzmFMi0=;
-        b=ACRAqJMRXm346vEEOsJfCzXjQV1PLiwrgf7jfefLqNe9T+GfwBrupnCxvu/nulUU68nF4T
-        SyU62QtJZ0cBWstX2JjQvjPJQv1zRh9a7nymuKs6sW+pwdvVQwi998MGRJVdFe9rdJFyL4
-        2SFfU74ynAttf1n+eNJ/TIBwRs5Pye4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-0GpvakwdN-WYiOskGSW5Kg-1; Fri, 22 Sep 2023 12:28:16 -0400
-X-MC-Unique: 0GpvakwdN-WYiOskGSW5Kg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-403ca0e2112so17964195e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:28:16 -0700 (PDT)
+        Fri, 22 Sep 2023 12:34:06 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1845A114;
+        Fri, 22 Sep 2023 09:34:00 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32008e339adso2304862f8f.2;
+        Fri, 22 Sep 2023 09:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695400438; x=1696005238; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mkDZtszQ+UHkMPtdGr7RA5ZQQqpUUNchTvgj6snT3r4=;
+        b=iZfMstvZFrs6WMN+DRIfjxSHkncKo9HFg/Cwxtmlo87X0CHvfK7bVYPHtELj2YAwSp
+         set9eXdSZUXHr6toWU/xFgUIkwuIQwkPi0KnWwPXZHWo4afsUF3XlrkdYE+z85P0Rp4d
+         YRgvICCn7CXeYWCzVy9CI7vRg8JeBBBhsARLiAlNds2RpChq3XQVOpR79MX9lfjmWnBc
+         AGFNqMYsJeNPot8SIYBWs6sd9ekA8PQuf8lyrniqXk/1qzJM/Oxgfd5YPm/ksxlBbrod
+         OKqNVddhef07w85/bOJgmnsnfrqGXHjArFL4oiisGDBpjTLFvtgfCqbRqRevYYSAizVT
+         9rnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695400095; x=1696004895;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x72lG+xKk/KRLpNMD1Ia6gvA7sLEGeCIka5YNzmFMi0=;
-        b=FE6rc95hE9F7jTtTszec6HlFG6vMeX5SH92/74LslzVxUHpWg4Gi0Cm88qoyRl+BsB
-         KFkYXC26y4wT/d6bdBrpH28/0KikNNSwpiPtzh7VSaJZQnHJ4x221qA9xy3YkNUS/DC+
-         ZjoOmqyQ8/2fB1c5RO3u+TGTcuMWlXuAy5MQ0cZM1HP6cTjC3glacEUIUSoJUtkH2vng
-         OvSUgSP1Qb7IchQFx+ZKQeNx6czF4dIpSg525pglisgfeye15bDwfdMI2asIzZSb5ibR
-         BbEekZQudw9u8THURFge8X5hcy9Epedxns9wm9kojtB3+UYZc+TqQHf1ah+zaoiXBp3q
-         TQWQ==
-X-Gm-Message-State: AOJu0YwLT1QR4i033eHG41ibCcJjIirdI+M0ioKpmf5YMVDiSFaWTdFD
-        gW6CSkd3Vfr8/hbj9lwTeMxdEQmnkK9BtBSRtc25QcovndRk3y44bW1oKmBe6X/3k6AcSQHzxDz
-        uJMqN+HiAN6XH0TxrEhfRsJJ/wGaYpAZO
-X-Received: by 2002:a05:600c:2144:b0:3fb:e2af:49f6 with SMTP id v4-20020a05600c214400b003fbe2af49f6mr7691409wml.39.1695400094911;
-        Fri, 22 Sep 2023 09:28:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG+zkN+p9+ExvAygDXJgbRgOGkdEXlgk4Zzuk9d1edzxgcDsqvwCHeXS0vwpIgm/924g+QCBg==
-X-Received: by 2002:a05:600c:2144:b0:3fb:e2af:49f6 with SMTP id v4-20020a05600c214400b003fbe2af49f6mr7691392wml.39.1695400094621;
-        Fri, 22 Sep 2023 09:28:14 -0700 (PDT)
-Received: from vschneid.remote.csb ([80.214.213.87])
-        by smtp.gmail.com with ESMTPSA id 15-20020a05600c020f00b00401d8810c8bsm7876938wmi.15.2023.09.22.09.28.13
+        d=1e100.net; s=20230601; t=1695400438; x=1696005238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mkDZtszQ+UHkMPtdGr7RA5ZQQqpUUNchTvgj6snT3r4=;
+        b=svsSNcdpz5om+FXRufbD+DKYpl2r6KRJbRzaR16HZuJTP96amvwp+xSz9vaYO0+q3E
+         l7UNua/Ev4Sr7Y5++c6Ucfa5y8ib9uESBSRfqqNO7FcOgFcNneGXfW1a2e3Yn14aK1ix
+         zcCIiSBspVK1hp3edFSBdFLodWVQqHduZwVSPM93wJmPeAbzgzRD17IcIPjXM9nSdfGL
+         vmo18EBQmmFjNPZvx3LDZdX+AZVR3i+U93xEXEmjS0IvE8soTFA3v8bBP+EUGUX8Bmsr
+         27cNr9I8FMPNH8b9lCe9anxwgBjjRdIy1WI16NNAR0SFtuS/isPA5zeqTSj4e47HBaDd
+         6B1w==
+X-Gm-Message-State: AOJu0YyVw4LYSLtfgq0aiuvJ1qN5KCF1luw6O5Yk0IVxn/qyaR8O2vOx
+        q/elTrM/OIdrPszIdK6cUC3oxDgu6942VINa
+X-Google-Smtp-Source: AGHT+IEzVs58OCT4qIw+qVb7rJWnifIFxLH/lm7FSkAJ2vjb/rKjkFs+p1w/R40zERMnyKBkYnY1ww==
+X-Received: by 2002:a5d:6a8c:0:b0:31f:f2dc:db7d with SMTP id s12-20020a5d6a8c000000b0031ff2dcdb7dmr132107wru.65.1695400438208;
+        Fri, 22 Sep 2023 09:33:58 -0700 (PDT)
+Received: from freebase (oliv-cloud.duckdns.org. [78.196.47.215])
+        by smtp.gmail.com with ESMTPSA id p14-20020adfe60e000000b003197b85bad2sm4857547wrm.79.2023.09.22.09.33.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 09:28:14 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Eric DeVolder <eric.devolder@oracle.com>,
-        linux-kernel@vger.kernel.org, bhe@redhat.com, vgoyal@redhat.com,
-        dyoung@redhat.com, ebiederm@xmission.com, kexec@lists.infradead.org
-Cc:     sourabhjain@linux.ibm.com, konrad.wilk@oracle.com,
-        boris.ostrovsky@oracle.com, eric.devolder@oracle.com
-Subject: Re: [PATCH] kexec: change locking mechanism to a mutex
-In-Reply-To: <20230921215938.2192-1-eric.devolder@oracle.com>
-References: <20230921215938.2192-1-eric.devolder@oracle.com>
-Date:   Fri, 22 Sep 2023 18:28:12 +0200
-Message-ID: <xhsmh7coiuq8z.mognet@vschneid.remote.csb>
+        Fri, 22 Sep 2023 09:33:57 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 18:33:56 +0200
+From:   Olivier Dautricourt <olivierdautricourt@gmail.com>
+To:     Eric Schwarz <eas@sw-optimization.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
+Message-ID: <ZQ3B9NWVmLvaVhJX@freebase>
+References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
+ <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
+ <ZQyWsvcQCJgmG5aO@freebase>
+ <8d18106d-444e-9346-26cc-3767540df5d8@sw-optimization.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d18106d-444e-9346-26cc-3767540df5d8@sw-optimization.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/23 17:59, Eric DeVolder wrote:
-> The design decision to use the atomic lock is described in the comment
-> from kexec_internal.h, cited above. However, examining the code of
-> __crash_kexec():
->
->         if (kexec_trylock()) {
->                 if (kexec_crash_image) {
->                         ...
->                 }
->                 kexec_unlock();
->         }
->
-> reveals that the use of kexec_trylock() here is actually a "best effort"
-> due to the atomic lock.  This atomic lock, prior to crash hotplug,
-> would almost always be assured (another kexec syscall could hold the lock
-> and prevent this, but that is about it).
->
-> So at the point where the capture kernel would be invoked, if the lock
-> is not obtained, then kdump doesn't occur.
->
-> It is possible to instead use a mutex with proper waiting, and utilize
-> mutex_trylock() as the "best effort" in __crash_kexec(). The use of a
-> mutex then avoids all the lock acquisition problems that were revealed
-> by the crash hotplug activity.
->
+Hi Eric,
 
-@Dave thanks for the Cc, I'd have missed this otherwise.
+On Fri, Sep 22, 2023 at 09:49:59AM +0200, Eric Schwarz wrote:
+> Hello Olivier,
+> 
+> > > Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
+> > > > Sparse complains because we first take the lock in msgdma_tasklet -> move
+> > > > locking to msgdma_chan_desc_cleanup.
+> > > > In consequence, move calling of msgdma_chan_desc_cleanup outside of the
+> > > > critical section of function msgdma_tasklet.
+> > > > 
+> > > > Use spin_unlock_irqsave/restore instead of just spinlock/unlock to keep
+> > > > state of irqs while executing the callbacks.
+> > > 
+> > > What about the locking in the IRQ handler msgdma_irq_handler() itself? -
+> > > Shouldn't spin_unlock_irqsave/restore() be used there as well instead of
+> > > just spinlock/unlock()?
+> > 
+> > IMO no:
+> > It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
+> > The irq handler cannot be preempted by the tasklet, so the
+> > spin_lock/unlock version is ok. However the tasklet could be interrupted
+> > by the Hard IRQ hence the disabling of irqs with save/restore when
+> > entering critical section.
+> > 
+> > It should not be needed to keep interrupts locally disabled while invoking
+> > callbacks, will add this to the commit description.
+> > 
+> > [1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
+> 
+> Thanks for the link. I have read differently here [2] w/ special emphasis on
+> "Lesson 3: spinlocks revisited.".
+> 
+> [2] https://www.kernel.org/doc/Documentation/locking/spinlocks.txt
+> 
 
+This chapter [2] says that our code must use irq versions of spin_lock
+because our handler does indeed play with the lock. However this
+requirement does not apply to the irq handler itself, as we know that the
+interrupt line is disabled during the execution of the handler (and our
+handler is not shared with another irq).
 
-Prior to the atomic thingie, we actually had a mutex and did
-mutex_trylock() in __crash_kexec(). I'm a bit confused as this looks like a
-revert of
-  05c6257433b7 ("panic, kexec: make __crash_kexec() NMI safe")
-with just the helpers kept in - this doesn't seem to address any of the
-original issues regarding NMIs?
+Kr,
+Olivier
 
-Sebastian raised some good points in [1] regarding these issues.
-The main hurdle pointed out there is, if we end up in the slowpath during
-the unlock, then we can can up acquiring the ->wait_lock which isn't NMI
-safe.
-
-This is even worse on PREEMPT_RT, as both trylock and the unlock can end up
-acquiring the ->wait_lock.
-
-[1]: https://lore.kernel.org/all/YqyZ%2FUf14qkYtMDX@linutronix.de/
-
+> Cheers
+> Eric
