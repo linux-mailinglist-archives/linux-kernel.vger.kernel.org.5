@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EDD7AB798
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D0C7AB7A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbjIVRdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        id S233217AbjIVRdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbjIVRch (ORCPT
+        with ESMTP id S233343AbjIVRcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:32:37 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983FCE65
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:32:20 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68cbbff84f6so2817032b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:32:20 -0700 (PDT)
+        Fri, 22 Sep 2023 13:32:43 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A8210D5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:32:22 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c3bd829b86so21494545ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695403939; x=1696008739; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695403942; x=1696008742; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a+ctTEyoq7sOv+FAZHxESomcnOOr3ZQuAJoEIOqh0C4=;
-        b=UuKce93VG0e+CnY0IZZgkXR9jc1srhHiQc0zcBceV/Y8SRRKORAd+jS47SNPyNuZK+
-         YyGDUbVOwNVgybxRxAn+woZAze0wwhsxXddnDLkx2zH1MeViSla+bx3AmAsJ6sFMqgRH
-         xxxz6Y58dAWbpe9MY/dpIU+JCX8i9qNuhnU3A=
+        bh=Q96X+e6e2GphA8WEKNidppfkY54O3UO5SgYggFHsXis=;
+        b=NPXZjHvy8DIF9H/py75WTffi2Hgh5VL59J+34EDw/TkjIkHlVAo9ft1lJdNvk/9wMH
+         hL7loSmLXoRReiTt26X4GAAR61iCJktd1BKnqBm02fB8tNZ9apwCdgHK5HJFZ0n4fLBf
+         HI3icySjCOqxel5ae4bHHr0ZpceA3GRXT/jqU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695403939; x=1696008739;
+        d=1e100.net; s=20230601; t=1695403942; x=1696008742;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a+ctTEyoq7sOv+FAZHxESomcnOOr3ZQuAJoEIOqh0C4=;
-        b=nGPjxs2U67GS0aU6pUUa3cdjMAoFjtPSWsOsHTJfHzsfBh5FULL7bzaj9RgH+i9mUP
-         HpJIeqhMYe2m7C95sazZyVCx8iHMqiEIcaZ4seOkqcsIIEIhtthOIYzxUOjB+Asc/sbm
-         R7aIwK9+Wzzz899gOavytoRLPkvz3/H4dONC1r7lqvarv9lSbj/i1RIbFJeqAI8i/LjZ
-         h80tPGk6TFr61GP3krzvHFPl4dqqWJ695S9rxD3moDg1ex4uJ9uLAOa3ZmEwR+XVWwuX
-         GKK4iBYYyKM9CKZ06Bk6yAFEQW4ixido2iBf5zm7Tr70avjJI7TbZfPQkv7PXM6XAXn6
-         CeQw==
-X-Gm-Message-State: AOJu0YztVHtHYYAyYRraRusC40QvJ649mVdBQPZ4Jx7kwn47vOih0vZr
-        d3WvU08b0TagUMKYvtni9UyVKg==
-X-Google-Smtp-Source: AGHT+IGZINPrndYCPLa8pxZjQeyOixXkCQ4eVwDFgIj0jLODtLc8O+0pX1bYtili/8yHN3d3WOPJ2A==
-X-Received: by 2002:a05:6a20:7486:b0:159:c07d:66f0 with SMTP id p6-20020a056a20748600b00159c07d66f0mr394741pzd.6.1695403939647;
-        Fri, 22 Sep 2023 10:32:19 -0700 (PDT)
+        bh=Q96X+e6e2GphA8WEKNidppfkY54O3UO5SgYggFHsXis=;
+        b=E+zMuSsSz/4L4KCFeiyYorQcJdKP0O+mtuehrD/tanfJTtncPPbzsZhwrRTfkaT/5x
+         O7eTqhxhBe7TXdMjYOX7LK2EW8m72KitiWVQ3KwYNdmJ2RpSQlv9BNeyRd8jqtLOo4Qd
+         hSXk9bi4s2MpwEmR4SL6vIAgAD/0ed4eZd8ajuMA5VAWsI77m2dBF3LUay5VSeGptIPv
+         43cp2YeHgdem9GWpgtZhDxXB/RpB20Wvzcmguvh5b861YFhy6rikh2T8DeLSG5q0rl2J
+         WG6T93YnoF9Wg8rkK5vHUWPfclNXYuJdP3LscCvS+POSVrSm9SspLGRGsJrH35mQrkZY
+         cypA==
+X-Gm-Message-State: AOJu0Yz0bMnbcr+NEyIfxhwwW57LKVWjCU6ArzLiQ5batskLsrPzsAE+
+        F48m+BUPk25uAmGWQ3ebmZtgXg==
+X-Google-Smtp-Source: AGHT+IGAxXQtNJ8nl1p3a9LhlKf8DFrSzgWUu5f+sJxoG9OHUQ6hTEmo2fNcrqkYhNmsZiKz4XPh9A==
+X-Received: by 2002:a17:902:e843:b0:1c5:69fa:23e9 with SMTP id t3-20020a170902e84300b001c569fa23e9mr100975plg.58.1695403941990;
+        Fri, 22 Sep 2023 10:32:21 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y10-20020a62b50a000000b0064fd4a6b306sm3460263pfe.76.2023.09.22.10.32.17
+        by smtp.gmail.com with ESMTPSA id p11-20020a170902eacb00b001bf5c12e9fesm3758147pld.125.2023.09.22.10.32.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 22 Sep 2023 10:32:19 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     David Airlie <airlied@gmail.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Emma Anholt <emma@anholt.net>, Evan Quan <evan.quan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
         Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Chris Wilson <chris@chris-wilson.co.uk>,
         John Harrison <john.c.harrison@Intel.com>,
         Andi Shyti <andi.shyti@linux.intel.com>,
         Matthew Brost <matthew.brost@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Emma Anholt <emma@anholt.net>, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
         Rob Clark <robdclark@gmail.com>,
         Abhinav Kumar <quic_abhinavk@quicinc.com>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
@@ -96,32 +96,31 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
         linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
         nouveau@lists.freedesktop.org,
         virtualization@lists.linux-foundation.org, llvm@lists.linux.dev,
         linux-hardening@vger.kernel.org
-Subject: [PATCH 2/9] drm/amdgpu/discovery: Annotate struct ip_hw_instance with __counted_by
-Date:   Fri, 22 Sep 2023 10:32:07 -0700
-Message-Id: <20230922173216.3823169-2-keescook@chromium.org>
+Subject: [PATCH 3/9] drm/i915/selftests: Annotate struct perf_series with __counted_by
+Date:   Fri, 22 Sep 2023 10:32:08 -0700
+Message-Id: <20230922173216.3823169-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230922173110.work.084-kees@kernel.org>
 References: <20230922173110.work.084-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1428; i=keescook@chromium.org;
- h=from:subject; bh=i2UpbGfuADbvlbxlhkLDZa/xyj6FED75tdnO2fZlmjo=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDc+dEehHl9nbm4bhCFwpbMmpO3Xxql5kFxhRj
- Diayf24WdaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3PnQAKCRCJcvTf3G3A
- JvkkEACyRaaPJcAJJrT69OHPNJ7Sh8M7AKH2fzwSzceuPqxB6RysYYS6VR2iPdaDZg9zSS+vTbb
- fL60uv9o1ah81G8VJPhZppP9CtgmmA8a42Bpbs53luiTn/LGzycDXWPETOIgJGNsrJMgTFQyPMo
- 241VVShLmM8kxtLnJkLOnDZEqzjh4lSZG5ygNcH9YpR0LH3S9yhYSaBm0oamf3UpID1Xs/g89RE
- 2GjQlWgZzPdM7WCNcNNAIhK00fTWSD5DmnFGm50TziH8XWc8eGZZ2VknCk1GbO1UtJO7OW7lysZ
- dzxYyw9Eifo8NVwr14wp43rm0towIlCQv++/9z7OLpwblt6E0YNRNpTjv9DQV+xS5euSf4ETfjV
- IJ9vdSq6WjnidZkTBKdhROCuszJxRQ9b3HqXm169h7IYEdXvDeMvTQ2xgv9UwiFYpPlLImhrCYh
- r/oOkRSzfxf22LJvTsqX/WXIRpOCLm1gQa2ApJjyfzEXAegAaVehjC7856bxlgo+pE5tqm7PAvm
- JLb5hweD/O8L+7Tf7ij2oggZ9HmU2VGBIGVs0/EP7R6GeKLWO5KBBVa3/aADP01hJ2ZTfyjJsLl
- NqBiuVwLDZSWs6x18B1633XvJJtLwLIUg5eA8U/N4Q1qXUMezt3ySBuq4TSxO56Xod8iBUwzCfw TsBbpN+0JCLa/Ag==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1705; i=keescook@chromium.org;
+ h=from:subject; bh=SbNV7tt6Hho3aemFjM+WsFyDqpMFvSNtroJg7EF/6LY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDc+e99M+BFyGmat9Yjgpanw6UekhSMQhhAVfe
+ PzecbdVf2uJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3PngAKCRCJcvTf3G3A
+ JhPmD/oDoTfSn61jeN+hZ6qtbqMVL0umbxgqdZnXY/WBbLuBKV20tcaMAcUgkDgD7IZTf9vLT7N
+ QvsK/I3NzdeyXN9KRjg9P26c5TGRnuFhT5ow/Mmpjw2ZfwY/adYsynGhgMsY1zCzocr9Klih2M5
+ ONqETCgHopA10PwXUTZcfeylbqK62rRaYAWtkuoi0RcYjB0ba0MiguwtlB6nrG6fwv2owEKE9yZ
+ q2M6NVTsjfrdnESUtkpr+ZQMSdTP4DYj6WZCs8PEing/sqS9G43U/93adZtoUdXHfx6OIvtf4kR
+ QVJDI5f2FtS/OLpfsJPETvUFATNLl9zt+qYEEI6Xo/nwVAIDi10lef4gFjjLtPRlK+1R5w0hwDl
+ vKJUW0WgT4cnNhXnSosMUxrlYOzDiiFUv22K7MRCjwllhPuoEqIvmEu2skXTbfOi++COJZQENGW
+ mjr4E/cj8Pue9+KM7OxnSvfWccW9jLZfobZ+Mt3QO0uwzIKFw3tbN6roSBWKQjPzGVWZBhoB7P/
+ YBx8LyLPlIme4RIAinnRTvKcRBVmPKq0z5qb+ZrfdbS5SyUax0buA8IufSmAFbFNMVWiehiR7kj
+ m3qIzz42RIlit5ahExdpEPXkGeqqxLI86EouMV1p14sfdA6bPnL2FdLAyVYLHh92VJ7BRKvGmB7 gVsy2dUkMQ94AOw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -140,36 +139,40 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct ip_hw_instance.
+As found with Coccinelle[1], add __counted_by for struct perf_series.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 Cc: David Airlie <airlied@gmail.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: John Harrison <john.c.harrison@Intel.com>
+Cc: Andi Shyti <andi.shyti@linux.intel.com>
+Cc: Matthew Brost <matthew.brost@intel.com>
+Cc: intel-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 2 +-
+ drivers/gpu/drm/i915/selftests/i915_request.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-index d1bc7b212520..be4c97a3d7bf 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-@@ -662,7 +662,7 @@ struct ip_hw_instance {
- 	u8  harvest;
- 
- 	int num_base_addresses;
--	u32 base_addr[];
-+	u32 base_addr[] __counted_by(num_base_addresses);
+diff --git a/drivers/gpu/drm/i915/selftests/i915_request.c b/drivers/gpu/drm/i915/selftests/i915_request.c
+index a9b79888c193..acae30a04a94 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_request.c
++++ b/drivers/gpu/drm/i915/selftests/i915_request.c
+@@ -1924,7 +1924,7 @@ struct perf_stats {
+ struct perf_series {
+ 	struct drm_i915_private *i915;
+ 	unsigned int nengines;
+-	struct intel_context *ce[];
++	struct intel_context *ce[] __counted_by(nengines);
  };
  
- struct ip_hw_id {
+ static int cmp_u32(const void *A, const void *B)
 -- 
 2.34.1
 
