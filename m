@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8377AB05B
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0377AB059
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbjIVLPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
+        id S233574AbjIVLQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjIVLPM (ORCPT
+        with ESMTP id S230156AbjIVLQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:15:12 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6D1AF;
-        Fri, 22 Sep 2023 04:15:06 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5043120ffbcso2420894e87.2;
-        Fri, 22 Sep 2023 04:15:05 -0700 (PDT)
+        Fri, 22 Sep 2023 07:16:25 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4A1AC;
+        Fri, 22 Sep 2023 04:16:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso3322084e87.1;
+        Fri, 22 Sep 2023 04:16:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695381304; x=1695986104; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=12f5yyT0VcPpXHLkpH7MFmQ/cCt4mwm5CuEcr3HwBqw=;
-        b=HCd2tLAm3gJbK09WMZivh7k3m9MrWocOE2xYG9S3LiIWV/xoMHdDTQYk72ioIvso98
-         YXHh02qNOI8ALYZgbvwkbiOB4b4dC7qLZCA3Qjn30vZ/HheyjvwtatgUdXto7vf23WTb
-         wV9LmgppYzT06cMcpMFuWoRhe8EqYzeCaXaaK2Lezkqe125yh36veH905bQo8i7K1yED
-         lhfJe4XiwSJzF6NpUUBw6hzR7JS9OS1tjXwTddlj4r/BfIE2KeGmRnFI7Sh/IXu6lMcz
-         jh5xyCt8fpkupC4P0kiR4mFYshUbmCkqLrdYb2JmIPYCc++fqAXwlKlOpaZW1qPkHgf9
-         zoIw==
+        d=gmail.com; s=20230601; t=1695381378; x=1695986178; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9THroEikiL60Yi8fcuQ2zOCWbKMjxLA15+wfPD4+rk8=;
+        b=XWcrk36LErSz9FQfU5G3Qc8MV4yZvGckoRZGh0S5w4xy76sNGCEz9OTMARfeVwu4+T
+         pbXCXTQobWxq6sJGFMgjE1wnGNNUpKrUhTB8CExDTBhz97vzFZTweAuMEYwJNgrx03HF
+         huW8XhcnCIGeZAf0X2LfD24C27B7F0GN65q1c2wVgJ/JhzE83yJTyLxYpdAjfO4Dyv1D
+         IEdJOCv07HOPs7ZvnV40+ZwUbVPkMdzNEkKPfZUOKUD8hu/3X6KHwvlVgITzrR3md8xa
+         FrA35w7+YLjMkTZpS/Fvh8Ubn4svsbFrOZYDq01IFiNo23VGZaikSTd0DVQUKxWizNom
+         RKJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695381304; x=1695986104;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=12f5yyT0VcPpXHLkpH7MFmQ/cCt4mwm5CuEcr3HwBqw=;
-        b=Xq16ot0VQXtJQaBovYEt1rA1xonZjLD3iQ1bTXoI0HB4FidpXBFSR1zBJ8xpRXpFK5
-         2UEb3V3jJj9BNb9m3WIuGKGoaA+CjVluIFQPy21pP1dUoncZCnsHFnM7TgEMrXu1W43q
-         FfucecRYi7+l3CNgtsYsqBPmAAUBXs24HDB0/ZdsBs3YoI6YcCNqx08FgnW4W3vAEwDT
-         KtDDNvAvMRI5Hx444JdLCgw86pVVWqooJqKFnKt83rv96lfOgNEifYj+dkGzoCnASq0r
-         N8/WdnpUTs8auof20JtHTJsjBlzp+IbtUlESa4w2yxhQJcfpgkxA9+4/Rm25CCUNholo
-         L3fQ==
-X-Gm-Message-State: AOJu0Yxsohpj/JXsHX46CWdPv1nZy3SfjZkztAVrTY4HijRKGYxz/727
-        dIFgJFzeHhn1zyBc5uwdDos=
-X-Google-Smtp-Source: AGHT+IGTsCyYllBO4l7k+xEQT18giXRjSmXex4cYTRopU2IrAJdzJXSNvDpxxwYoljSAmGj/H0Be7w==
-X-Received: by 2002:a19:8c14:0:b0:500:ac10:1641 with SMTP id o20-20020a198c14000000b00500ac101641mr7174543lfd.46.1695381301847;
-        Fri, 22 Sep 2023 04:15:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695381378; x=1695986178;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9THroEikiL60Yi8fcuQ2zOCWbKMjxLA15+wfPD4+rk8=;
+        b=VpZMGa06c5YjCpGs1pbpgYG5IjoKOY0dEINyAF1elZ612vDwLrQ7WYgNC3daQ4WVip
+         aZCcKIc/U7/HjEbnAFCoDigBAYL+v9+Ud9gcbt31RD5jxBADr3gvw6AmcOsOI0RNHyJm
+         Q2jstiYvlb8ypr2ouL9019gBXk56y1q/+sJW0HQTN6Q5LiZ/PDyLAFztUqycm//q7x/j
+         2PrxysASKIbWioO/97cdkmSYPGuBT8w+coDWx2frylb8aBpzoyZoSlOO753fgkp/JdD9
+         Eq3oJCiEWCj9QZK/4hxnw/4ZLszxSytujEDR6FrllFyPj7V/gBMPbOmqgx5ffqVGIMH7
+         6EtQ==
+X-Gm-Message-State: AOJu0Yz5GueauLAMVVwy+T6q23G6L3OlIaA/ZufqjWNCufgR/SfIPnIv
+        FZ9bjsocEW9+xhLwhZi266M=
+X-Google-Smtp-Source: AGHT+IGH0g7GdaLcu+vhdbeg1Ghm9EkTuNXO3uj3oWWqslzygJw2+deXocBIMhOo93Jihtiv6fpS/Q==
+X-Received: by 2002:a05:6512:2013:b0:502:ffdf:b098 with SMTP id a19-20020a056512201300b00502ffdfb098mr6463433lfb.6.1695381377612;
+        Fri, 22 Sep 2023 04:16:17 -0700 (PDT)
 Received: from dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id c11-20020a19760b000000b0050338c5c1f3sm690352lff.14.2023.09.22.04.14.59
+        by smtp.gmail.com with ESMTPSA id eq25-20020a056512489900b004fe1f1c0ee4sm696297lfb.82.2023.09.22.04.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:15:00 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 14:14:52 +0300
+        Fri, 22 Sep 2023 04:16:16 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 14:16:08 +0300
 From:   Matti Vaittinen <mazziesaccount@gmail.com>
 To:     Matti Vaittinen <mazziesaccount@gmail.com>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
@@ -64,12 +65,14 @@ Cc:     Jonathan Cameron <jic23@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Benjamin Bara <bbara93@gmail.com>, linux-iio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/6] Support ROHM BM1390 pressure sensor
-Message-ID: <cover.1695380366.git.mazziesaccount@gmail.com>
+Subject: [PATCH v3 1/6] tools: iio: iio_generic_buffer ensure alignment
+Message-ID: <029b4e3e18c76b330b606f5b14699e5ee4e5ed35.1695380366.git.mazziesaccount@gmail.com>
+References: <cover.1695380366.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GWs1Q0lOeljR7ll2"
+        protocol="application/pgp-signature"; boundary="ubfT4fawWH07RnEo"
 Content-Disposition: inline
+In-Reply-To: <cover.1695380366.git.mazziesaccount@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,94 +84,71 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---GWs1Q0lOeljR7ll2
+--ubfT4fawWH07RnEo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-ROHM BM1390 Pressure sensor (BM1390GLV-Z) can measure pressures ranging
-=66rom 300 hPa to 1300 hPa with configurable measurement averaging and an
-internal FIFO. The sensor does also provide temperature measurements
-although, according to the data sheet, sensor performs internal
-temperature compensation for the MEMS.
+The iio_generic_buffer can return garbage values when the total size of
+scan data is not a multiple of largest element in the scan. This can be
+demonstrated by reading a scan consisting for example of one 4 byte and
+one 2 byte element, where the 4 byte elemnt is first in the buffer.
 
-Sensor does also contain IIR filter implemented in HW. The data-sheet
-says the IIR filter can be configured to be "weak", "middle" or
-"strong". Some RMS noise figures are provided in data sheet but no
-accurate maths for the filter configurations is provided.
+The IIO generic buffert code does not take into accunt the last two
+padding bytes that are needed to ensure that the 4byte data for next
+scan is correctly aligned.
 
-I actually asked if we can define 3db frequencies corresponding to these
-IIR filter settings - and I received values 0.452Hz, 0.167Hz, and 0.047Hz
-but I am not at all sure we understood each others with the HW
-colleagues... Hence, the IIR filter configuration is not supported by this
-driver and the filter is just configured to the "middle" setting.
-(at least for now)
+Add padding bytes required to align the next sample into the scan size.
 
-It would also be possible to not use IIR filter but just do some simple
-averaging. I wonder if it would make sense to implement the OVERSAMPLING
-value setting so that if this value is written, IIR filter is disabled and
-number of samples to be averaged is set to value requested by
-OVERSAMPLING. The data-sheet has a mention that if IIR is used, the
-number of averaged samples must be set to a fixed value.
+Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+---
+Please note, This one could have RFC in subject.:
+I attempted to write the fix so that the alignment is done based on the
+biggest channel data. This may be wrong. Maybe a fixed 8 byte alignment
+should be used instead? This patch can be dropped from the series if the
+fix is not correct / agreed.
 
-The FIFO measurement mode (in sensor hardware) is only measuring the
-pressure and not the temperature. The driver measures temperature when
-FIFO is flushed and simply uses the same measured temperature value to
-all reported temperatures. This should not be a problem when temperature
-is not changing very rapidly (several degrees C / second) but allows users
-to get the temperature measurements from sensor without any additional
-logic.
+ tools/iio/iio_generic_buffer.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-This driver has received limited amount of testing this far. It's in a
-state 'works on my machine, for my use cases' - and all feedback is
-appreciated!
-
-Revision history:
-Major changes here, please see the head room of individual patches for
-more detailed list.
-v2 =3D> v3:
-	rebased on v6.6-rc2
-	added three IIO fixup patches so numbering of patches changed
-	dt-bindings/MAINTAINERS: No changes
-	bm1390 driver:
-	 - various cleanups and fixes
-	 - do not disable IRQ
-	 - fix temperature reading when FIFO is used
-	 - separate buffer and trigger initialization
-
-v1 =3D> v2:
-	rebased on v6.6-rc1
-	dt-bindings:
-	  - fix compatible in the example
-	sensor driver:
-	  - drop unnecessary write_raw callback
-	  - plenty of small improvements and fixes
-	MAINTAINERS:
-	  - No changes
-
-Matti Vaittinen (6):
-  tools: iio: iio_generic_buffer ensure alignment
-  iio: improve doc for available_scan_mask
-  iio: try searching for exact scan_mask
-  dt-bindings: Add ROHM BM1390 pressure sensor
-  iio: pressure: Support ROHM BU1390
-  MAINTAINERS: Add ROHM BM1390
-
- .../bindings/iio/pressure/rohm,bm1390.yaml    |  52 +
- MAINTAINERS                                   |   6 +
- drivers/iio/industrialio-buffer.c             |  25 +-
- drivers/iio/pressure/Kconfig                  |   9 +
- drivers/iio/pressure/Makefile                 |   1 +
- drivers/iio/pressure/rohm-bm1390.c            | 930 ++++++++++++++++++
- include/linux/iio/iio.h                       |   4 +-
- tools/iio/iio_generic_buffer.c                |  15 +-
- 8 files changed, 1034 insertions(+), 8 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/iio/pressure/rohm,bm1=
-390.yaml
- create mode 100644 drivers/iio/pressure/rohm-bm1390.c
-
-
-base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
+index 44bbf80f0cfd..fc562799a109 100644
+--- a/tools/iio/iio_generic_buffer.c
++++ b/tools/iio/iio_generic_buffer.c
+@@ -54,9 +54,12 @@ enum autochan {
+ static unsigned int size_from_channelarray(struct iio_channel_info *channe=
+ls, int num_channels)
+ {
+ 	unsigned int bytes =3D 0;
+-	int i =3D 0;
++	int i =3D 0, max =3D 0;
++	unsigned int misalignment;
+=20
+ 	while (i < num_channels) {
++		if (channels[i].bytes > max)
++			max =3D channels[i].bytes;
+ 		if (bytes % channels[i].bytes =3D=3D 0)
+ 			channels[i].location =3D bytes;
+ 		else
+@@ -66,6 +69,16 @@ static unsigned int size_from_channelarray(struct iio_ch=
+annel_info *channels, in
+ 		bytes =3D channels[i].location + channels[i].bytes;
+ 		i++;
+ 	}
++	/*
++	 * We wan't the data in next sample to also be properly aligned so
++	 * we'll add padding at the end if needed. TODO: should we use fixed
++	 * 8 byte alignment instead of the size of the biggest samnple?
++	 */
++	misalignment =3D bytes % max;
++	if (misalignment) {
++		printf("Misalignment %u. Adding Padding %u\n", misalignment,  max - misa=
+lignment);
++		bytes +=3D max - misalignment;
++	}
+=20
+ 	return bytes;
+ }
 --=20
 2.41.0
 
@@ -185,19 +165,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---GWs1Q0lOeljR7ll2
+--ubfT4fawWH07RnEo
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUNdygACgkQeFA3/03a
-ocUr3AgAr4DSyXT3RXXG1SAtclZKpXISF6C1bGtCrCBsAKCPLTSrvI6q+GQJemz9
-+49PimaiU4H0xqgkcveRIP5AYLcPIhh4tnVnbechXWlOLATvpm9wruryNRWoA/2m
-jDjyCbhuzDNyCkb/kCqh50EOPG8FFgWQ2UdscMyNYCpgghdupBM8bRWWJ2fy8oX9
-WBk3WH5tWunFkHi46Kd0KAN/dEi+7MzmqT8U0BYZYzb4UfHrre9lFlX787vn/vIG
-JIsQueodkrSLQnN/aIoMHKqNDjsTPn4KaFeVrrzrZkZ8AfkRIoqVP3ESU2iZ9Qay
-AD5mETRtGZ/smsQd1a+iUcGlOOlGfA==
-=+Mnu
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUNd3gACgkQeFA3/03a
+ocWxrAf+OjGyX8noJscOhtQe6df8AGR7ncgBjoEJfcbetKg7x8In5EzuCgdp7PBr
+lM7r/JvyzjTqbRGPSDaLfagdcxMBoBZGHYF9Kr0MeNwZjTwGOrp08XE8hfjgzzw6
+rqt7YLw3hM/YY17Iy/JVmLeP/DHcxElSQkgoh4LN6wmrJUUhgel9oxiyyd2IXZi1
+af1Svhcp4egFc8qd7LOn23YKWPZOdASQzY418oVJn0+MVkCQZ8j6Tg5VLtmrorsf
+TReq9MVPhFVAuJ3qtjSxZJ34bzMEaxgOS3OrIT47DQ0wbams6vYtcvcEMGrByvX+
+t8fK00BIB8eKUfgcSLcj7J50hKFHFA==
+=aouA
 -----END PGP SIGNATURE-----
 
---GWs1Q0lOeljR7ll2--
+--ubfT4fawWH07RnEo--
