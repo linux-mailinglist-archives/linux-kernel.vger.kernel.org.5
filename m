@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5C47AA811
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 07:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47737AA819
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 07:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjIVFF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 01:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
+        id S229641AbjIVFMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 01:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjIVFFY (ORCPT
+        with ESMTP id S229509AbjIVFMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 01:05:24 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3006::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686C5192
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 22:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bit8.no;
-        s=ds202309; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=6Od13/3fA9p6r3To7pH1NWJ/wZE5gax46uKKnGwYrU0=; b=GXmtp+KWJSEM2gVG6mCKhyrgMQ
-        HbmsqEwRMwL8xZgZW7K2IObcZLKzB3VfDCvUzq3kVAshSdcuXUrZzc7loQB1mvyKJBdE2gPnJKDz5
-        yfKt6qYFRRcEwVI5KwzTQ1V80PIj5KuKRzUXdwS69Ujo49h8IK+RWBhd/U6FZWmWbv6kKBRRpnFq2
-        4piFyFzvqEr0RUJE3fpQSe36IxOFHd3xHhxKUwd4SitKT2+G8Zjd8c0FJo4kxwesKsbUBlX0Gm0+1
-        6UASC9tiP9oFjCmRo4wvEFXk/BFRX0Evf+nUp8mG11SL/frRVnkcDKP6sm0htrfAUz38qD7B2NOfC
-        J8ohncfw==;
-Received: from [84.215.119.50] (port=62593 helo=[192.168.0.2])
-        by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <Yca@bit8.no>)
-        id 1qjYLr-00F4YU-8A
-        for linux-kernel@vger.kernel.org;
-        Fri, 22 Sep 2023 07:05:15 +0200
-Message-ID: <d6a24c1b-872c-42e6-8100-ddaa39782f44@bit8.no>
-Date:   Fri, 22 Sep 2023 07:05:13 +0200
+        Fri, 22 Sep 2023 01:12:16 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B7B18F;
+        Thu, 21 Sep 2023 22:12:06 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38M5B8Jr83708355, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38M5B8Jr83708355
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 13:11:08 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 22 Sep 2023 13:11:07 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 22 Sep 2023 13:11:06 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c]) by
+ RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c%5]) with mapi id
+ 15.01.2375.007; Fri, 22 Sep 2023 13:11:06 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "bjorn@mork.no" <bjorn@mork.no>
+Subject: RE: [PATCH net-next v2 1/2] r8152: remove queuing rx packets in driver
+Thread-Topic: [PATCH net-next v2 1/2] r8152: remove queuing rx packets in
+ driver
+Thread-Index: AQHZ6qdYyQovugIsME21Grz+cVcRerAhiHwAgACHqzCAArZ0gIABgcUA
+Date:   Fri, 22 Sep 2023 05:11:05 +0000
+Message-ID: <9e03e260818940bcb37828eea83e0137@realtek.com>
+References: <20230919031351.7334-429-nic_swsd@realtek.com>
+         <20230919031351.7334-430-nic_swsd@realtek.com>
+         <369f3139-4e63-4327-8745-2d72d7dfea8f@lunn.ch>
+         <1a57cf3f867d4dfd991ef1d4024c931b@realtek.com>
+ <50a8ec7dece0100c931fd187e19e14dd1ca1a0e9.camel@redhat.com>
+In-Reply-To: <50a8ec7dece0100c931fd187e19e14dd1ca1a0e9.camel@redhat.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.228.6]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Yca@bit8.no>
-Subject: Open Source X unification under TAHZIHN?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I talked about how TAHZIHN is a concept of The Gyad that unifies SIDH 
-related efforts in computer design, and ZINH related designs in electronics.
-
-And how openSUSE was closest to a OS effort under TAHZIHN.
-
-But why not try to unify all Open Source efforts under TAHZIHN?
-
-Open Source X would be this.
-
-I made a little logo and post on my blog about this: https://bit8.no/?p=240
-
-Compared to openSUSE, I would have tightened it up with this logo. (They 
-lizardlicking theme of openSUSE probably confuses people.) And a low 
-jitter kernel for smooth operation. I would also use the Oswald Google 
-Font here (as on this site).
-
-Peace,
-Ywe.
-
-
-
-
+UGFvbG8gQWJlbmkgPHBhYmVuaUByZWRoYXQuY29tPg0KPiBTZW50OiBUaHVyc2RheSwgU2VwdGVt
+YmVyIDIxLCAyMDIzIDk6MzkgUE0NClsuLi5dDQo+IE9uZSBvZiB0aGUga2V5IHBvaW50cyBpbiBK
+YWt1YidzIHJlcGx5IGlzIHRoYXQgdGhlIGJ1cnN0IG11c3QgZXhjZWVkDQo+IHRoZSBidWRnZXQg
+YnkgYSBsaW1pdGVkIG51bWJlciBvZiBwYWNrZXRzOg0KPiANCj4gIk5vdGhpbmcgd2lsbCBleHBs
+b2RlIGlmIHdlIHByb2Nlc3MgYSBmZXcgbW9yZSBwYWNrZXRzIHRoYW4gYnVkZ2V0DQo+IChhc3N1
+bWluZyBidWRnZXQgPiAwKSINCj4gDQo+IEhvdyBtYW55IHBhY2tldHMgY2FuIGNvbnRhaW4gYXQg
+bW9zdCBhIHNpbmdsZSBVUkI/DQoNCkkgdGhpbmsgaXQgZGVwZW5kcyBvbg0KMS4gaWYgdGhlIHBh
+Y2tldHMgY29taW5nIGNvbnRpbnVhbGx5DQoyLiB0aGUgc2l6ZSBvZiB0aGUgcGFja2V0DQoNClRo
+ZSBVUkIgd291bGQgYmUgY29tcGxldGVkIHdoZW4NCjEuIHRoZSBkZXZpY2UgZG9lc24ndCByZWNl
+aXZlIGFueSBwYWNrZXQgZHVyaW5nIHNldmVyYWwgdXMuDQoyLiB0aGUgZGVzaXJlZCBzaXplIGlz
+IHJlYWNoZWQuDQoNCkZvciAyLjVHIE5JQyB3aXRoIHRoZSBwYWNrZXRzIG9mIDE1MTQgYnl0ZXMs
+IGEgdXJiIGF0IG1vc3QgY29udGFpbnMgYWJvdXQgMjEgcGFja2V0cy4NCklmIGFsbCBwYWNrZXQg
+YXJlIDYwIGJ5dGVzLCB0aGUgbnVtYmVyIHdvdWxkIGJlIGFib3V0IDM5MC4NCklmIHRoZSBhdmVy
+YWdlIHNpemUgb2YgdGhlIHBhY2tldHMgaXMgNDg4IGJ5dGVzLCB0aGUgbnVtYmVyIGlzIGFib3V0
+IDY0Lg0KDQo+IElmIHRoYXQgbnVtYmVyIGNhbiBiZSBzaWduaWZpY2FudCBncmVhdGVyIHRoZW4g
+dGhlIG5hcGkgYnVkZ2V0LCBJIHRoaW5rDQo+IHdlIGFyZSBiZXR0ZXIgb2ZmIGtlZXBpbmcgdGhl
+IHBhY2tldCBpbiB0aGUgcXVldWUgLSBvdGhlcndpc2UgdGhlIHdob2xlDQo+IHN5c3RlbSBsYXRl
+bmN5L3N0YWJpbGl0eSB3b3VsZCBiZSBhZmZlY3RlZC4NCg0KU2hvdWxkIEkgZ28gYmFjayB0aGUg
+cGF0Y2ggd2l0aCBxdWV1aW5nIHRoZSByeCBwYWNrZXQgaW4gZHJpdmVyPw0KDQpCZXN0IFJlZ2Fy
+ZHMsDQpIYXllcw0KDQo=
