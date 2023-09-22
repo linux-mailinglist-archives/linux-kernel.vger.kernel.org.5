@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D731C7AA7D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B857AA7D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbjIVEdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        id S230256AbjIVEdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjIVEdB (ORCPT
+        with ESMTP id S230167AbjIVEdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:33:01 -0400
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94A0122;
-        Thu, 21 Sep 2023 21:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1695357173; x=1695616373;
-        bh=ky/I5+eIsKo29UW7LB/TUWn+eMis8pbYkCdUWOTJTCU=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=lebD5170GbFvzAq/iof9+JOGY3rOV27SIS+0NKBm9tuYXpVXB+1J1GKAddb0ibn0P
-         guS+eAyJGJooecutx8cudw6Z22TrBDrRawLwi7Oah6H4acHuTghd68pgMpgJzWuZxM
-         cagXhLrN2nO8YPHKVUFBfHsjkTf1Xyof+NXAsb8Y13FK0SKyx+xDLi4pw6u2UHeq6R
-         vpKccgp2XCREA6CUm9o1Ka1sPXN8kI2wccFRzzm1uBudC//ch29WdlGBnBtPmYg75/
-         E4I7PGTxdUMveQglqThgqSH/q/FTLIASrHHvwOtq0/l7id1ifzeZSb5WFrPE2B+uid
-         Sjt2qutVJIcOg==
-Date:   Fri, 22 Sep 2023 04:32:41 +0000
-To:     Johannes Roith <johannes@gnu-linux.rocks>
-From:   Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Cc:     jikos@kernel.org, andi.shyti@kernel.org,
-        benjamin.tissoires@redhat.com, christophe.jaillet@wanadoo.fr,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH v7] HID: mcp2200: added driver for GPIOs of MCP2200
-Message-ID: <87r0mqhlp6.fsf@protonmail.com>
-In-Reply-To: <20230921164928.170383-1-johannes@gnu-linux.rocks>
-References: <20230921164928.170383-1-johannes@gnu-linux.rocks>
-Feedback-ID: 26003777:user:proton
+        Fri, 22 Sep 2023 00:33:11 -0400
+X-Greylist: delayed 10626 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Sep 2023 21:33:05 PDT
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B714F1;
+        Thu, 21 Sep 2023 21:33:04 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 7504A71B;
+        Thu, 21 Sep 2023 21:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1695357184;
+        bh=8YhJXVZbP6dpiyW7g8fmW82LVz5b6CyHIGSx77XYF/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R+K7lrPyYUJBRH6oCed7c7Uh3zR6NY2mxFM8Jzu3HDl0p58goA/QDt3biPMGB5JtD
+         Uh7UbkX66lCSsd3zUVDwcRhpuXJ/LLTlXKEoLMMwBJ00M0u1CqngDB+Vz1PpDjEbTY
+         Hd+28RTTMeDZkSeVpVLJc+mYhfZYLQjF5ifG+FEY=
+Date:   Thu, 21 Sep 2023 21:33:03 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-watchdog@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Eddie James <eajames@linux.ibm.com>,
+        Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Subject: Re: [PATCH] watchdog: aspeed: Add sysfs attributes for reset mask
+ bits
+Message-ID: <06a2428d-e1f3-4ecd-bd42-f3e25ffdbced@hatter.bewilderbeest.net>
+References: <20230922013542.29136-2-zev@bewilderbeest.net>
+ <91be26169ebbddf3c05cd19626478246cb72a72a.camel@codeconstruct.com.au>
+ <85ddf493-934f-75c4-7a3a-728289c1ee09@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <85ddf493-934f-75c4-7a3a-728289c1ee09@roeck-us.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep, 2023 18:49:28 +0200 "Johannes Roith" <johannes@gnu-linux.ro=
-cks> wrote:
-> Added a gpiochip compatible driver to control the 8 GPIOs of
-> the MCP2200 by using the HID interface.
+On Thu, Sep 21, 2023 at 09:24:40PM PDT, Guenter Roeck wrote:
+>On 9/21/23 21:16, Andrew Jeffery wrote:
+>>On Thu, 2023-09-21 at 18:35 -0700, Zev Weiss wrote:
+>>>The AST2500 and AST2600 watchdog timers provide the ability to control
+>>>which devices are reset by the watchdog timer via a reset mask
+>>>resgister.  Previously the driver ignored that register, leaving
+>>>whatever configuration it found at boot and offering no way of
+>>>altering its settings.  Add a 'reset_ctrl' sysfs subdirectory with a
+>>>file per bit so that userspace can determine which devices the reset
+>>>is applied to.
+>>>
+>>>Note that not all bits in the hardware register are exposed -- in
+>>>particular, the ARM CPU and SOC/misc reset bits are left hidden since
+>>>clearing them can render the system unable to reboot.
+>>>
+>>>Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>>>---
+>>>
+>>>I'm porting OpenBMC to a platform that requires that the LPC controller remain
+>>>un-reset by a BMC reboot.  With this patch userspace can control the reset
+>>>mask of the Aspeed watchdog timer, with a few bits remaining unexposed so as
+>>>to prevent some almost-certainly undesirable situations.  If there are other
+>>>bits that people feel shouldn't be exposed (or conversely if someone feels
+>>>strongly that the "dangerous" bits _should_ be exposed) I can adjust
+>>>accordingly.
+>>
+>>
+>>Is there a reason this has to be managed by userspace? It sounds a lot
+>>like a property of platform design, in which case exposing this feature
+>>in the devicetree might be a better approach.
+>>
 >
-> Using GPIOs with alternative functions (GP0<->SSPND, GP1<->USBCFG,
-> GP6<->RXLED, GP7<->TXLED) will reset the functions, if set (unset by
-> default).
+>Same sentiment here.
 >
-> The driver was tested while also using the UART of the chip. Setting
-> and reading the GPIOs has no effect on the UART communication. However,
-> a reset is triggered after the CONFIGURE command. If the GPIO Direction
-> is constantly changed, this will affect the communication at low baud
-> rates. This is a hardware problem of the MCP2200 and is not caused by
-> the driver.
+>Guenter
 >
-> Signed-off-by: Johannes Roith <johannes@gnu-linux.rocks>
-> ---
+>
 
-Reviewed-by: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Yes, and indeed the same thing occurred to me, too, though unfortunately 
+not until just *after* I sent the patch...I'll rework it as a DT thing 
+instead.
+
+Thanks,
+Zev
 
