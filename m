@@ -2,43 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 978B87AADA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19A87AAD97
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjIVJPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
+        id S232898AbjIVJPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbjIVJPH (ORCPT
+        with ESMTP id S232885AbjIVJPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:15:07 -0400
+        Fri, 22 Sep 2023 05:15:09 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CEF194;
-        Fri, 22 Sep 2023 02:15:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914C0195;
+        Fri, 22 Sep 2023 02:15:02 -0700 (PDT)
 Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RsRPZ1yGYz15NQ1;
-        Fri, 22 Sep 2023 17:12:50 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RsRPc4Vbxz15NR5;
+        Fri, 22 Sep 2023 17:12:52 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 22 Sep 2023 17:14:58 +0800
+ 15.1.2507.31; Fri, 22 Sep 2023 17:15:00 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Yunsheng Lin <linyunsheng@huawei.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next v10 0/6] introduce page_pool_alloc() related API
-Date:   Fri, 22 Sep 2023 17:11:32 +0800
-Message-ID: <20230922091138.18014-1-linyunsheng@huawei.com>
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: [PATCH net-next v10 1/6] page_pool: fragment API support for 32-bit arch with 64-bit DMA
+Date:   Fri, 22 Sep 2023 17:11:33 +0800
+Message-ID: <20230922091138.18014-2-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20230922091138.18014-1-linyunsheng@huawei.com>
+References: <20230922091138.18014-1-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -55,81 +58,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In [1] & [2] & [3], there are usecases for veth and virtio_net
-to use frag support in page pool to reduce memory usage, and it
-may request different frag size depending on the head/tail
-room space for xdp_frame/shinfo and mtu/packet size. When the
-requested frag size is large enough that a single page can not
-be split into more than one frag, using frag support only have
-performance penalty because of the extra frag count handling
-for frag support.
+Currently page_pool_alloc_frag() is not supported in 32-bit
+arch with 64-bit DMA because of the overlap issue between
+pp_frag_count and dma_addr_upper in 'struct page' for those
+arches, which seems to be quite common, see [1], which means
+driver may need to handle it when using fragment API.
 
-So this patchset provides a page pool API for the driver to
-allocate memory with least memory utilization and performance
-penalty when it doesn't know the size of memory it need
-beforehand.
+It is assumed that the combination of the above arch with an
+address space >16TB does not exist, as all those arches have
+64b equivalent, it seems logical to use the 64b version for a
+system with a large address space. It is also assumed that dma
+address is page aligned when we are dma mapping a page aligned
+buffer, see [2].
 
-1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
-2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
-3. https://github.com/alobakin/linux/tree/iavf-pp-frag
+That means we're storing 12 bits of 0 at the lower end for a
+dma address, we can reuse those bits for the above arches to
+support 32b+12b, which is 16TB of memory.
 
-V10: Use fragment instead of frag in English docs.
-     Remove PP_FLAG_PAGE_FRAG usage in idpf driver.
+If we make a wrong assumption, a warning is emitted so that
+user can report to us.
 
-V9: Update some performance info in patch 2.
+1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
+2. https://lore.kernel.org/all/20230818145145.4b357c89@kernel.org/
 
-V8: Store the dma addr on a shifted u32 instead of using
-    dma_addr_t explicitly for 32-bit arch with 64-bit DMA.
-    Update document according to discussion in v7.
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+CC: Lorenzo Bianconi <lorenzo@kernel.org>
+CC: Alexander Duyck <alexander.duyck@gmail.com>
+CC: Liang Chen <liangchen.linux@gmail.com>
+CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+CC: Guillaume Tucker <guillaume.tucker@collabora.com>
+CC: Matthew Wilcox <willy@infradead.org>
+CC: Linux-MM <linux-mm@kvack.org>
+---
+ include/linux/mm_types.h        | 13 +------------
+ include/net/page_pool/helpers.h | 20 ++++++++++++++------
+ net/core/page_pool.c            | 14 +++++++++-----
+ 3 files changed, 24 insertions(+), 23 deletions(-)
 
-V7: Fix a compile error, a few typo and use kernel-doc syntax.
-
-V6: Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag to fail the page_pool
-    creation for 32-bit arch with 64-bit DMA when driver tries to
-    do the page splitting itself, adjust the requested size to
-    include head/tail room in veth, and rebased on the latest
-    next-net.
-
-v5 RFC: Add a new page_pool_cache_alloc() API, and other minor
-        change as discussed in v4. As there seems to be three
-        comsumers that might be made use of the new API, so
-        repost it as RFC and CC the relevant authors to see
-        if the new API fits their need.
-
-V4. Fix a typo and add a patch to update document about frag
-    API, PAGE_POOL_DMA_USE_PP_FRAG_COUNT is not renamed yet
-    as we may need a different thread to discuss that.
-
-V3: Incorporate changes from the disscusion with Alexander,
-    mostly the inline wraper, PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-    change split to separate patch and comment change.
-V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
-    virtio_net usecase in the cover letter.
-V1: Drop RFC tag and page_pool_frag patch.
-
-Yunsheng Lin (6):
-  page_pool: fragment API support for 32-bit arch with 64-bit DMA
-  page_pool: unify frag_count handling in page_pool_is_last_frag()
-  page_pool: remove PP_FLAG_PAGE_FRAG
-  page_pool: introduce page_pool[_cache]_alloc() API
-  page_pool: update document about fragment API
-  net: veth: use newly added page pool API for veth with xdp
-
- Documentation/networking/page_pool.rst        |   4 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 -
- .../net/ethernet/hisilicon/hns3/hns3_enet.c   |   3 +-
- drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   3 -
- .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
- .../net/ethernet/mellanox/mlx5/core/en_main.c |   2 +-
- drivers/net/veth.c                            |  25 +-
- drivers/net/wireless/mediatek/mt76/mac80211.c |   2 +-
- include/linux/mm_types.h                      |  13 +-
- include/net/page_pool/helpers.h               | 227 +++++++++++++++---
- include/net/page_pool/types.h                 |   6 +-
- net/core/page_pool.c                          |  31 ++-
- net/core/skbuff.c                             |   2 +-
- 13 files changed, 241 insertions(+), 81 deletions(-)
-
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 36c5b43999e6..74b49c4c7a52 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -125,18 +125,7 @@ struct page {
+ 			struct page_pool *pp;
+ 			unsigned long _pp_mapping_pad;
+ 			unsigned long dma_addr;
+-			union {
+-				/**
+-				 * dma_addr_upper: might require a 64-bit
+-				 * value on 32-bit architectures.
+-				 */
+-				unsigned long dma_addr_upper;
+-				/**
+-				 * For frag page support, not supported in
+-				 * 32-bit architectures with 64-bit DMA.
+-				 */
+-				atomic_long_t pp_frag_count;
+-			};
++			atomic_long_t pp_frag_count;
+ 		};
+ 		struct {	/* Tail pages of compound page */
+ 			unsigned long compound_head;	/* Bit zero is set */
+diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+index 94231533a369..8e1c85de4995 100644
+--- a/include/net/page_pool/helpers.h
++++ b/include/net/page_pool/helpers.h
+@@ -197,7 +197,7 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+ 	page_pool_put_full_page(pool, page, true);
+ }
+ 
+-#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
++#define PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA	\
+ 		(sizeof(dma_addr_t) > sizeof(unsigned long))
+ 
+ /**
+@@ -211,17 +211,25 @@ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+ 	dma_addr_t ret = page->dma_addr;
+ 
+-	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+-		ret |= (dma_addr_t)page->dma_addr_upper << 16 << 16;
++	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA)
++		ret <<= PAGE_SHIFT;
+ 
+ 	return ret;
+ }
+ 
+-static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
++static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+ {
++	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA) {
++		page->dma_addr = addr >> PAGE_SHIFT;
++
++		/* We assume page alignment to shave off bottom bits,
++		 * if this "compression" doesn't work we need to drop.
++		 */
++		return addr != (dma_addr_t)page->dma_addr << PAGE_SHIFT;
++	}
++
+ 	page->dma_addr = addr;
+-	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+-		page->dma_addr_upper = upper_32_bits(addr);
++	return false;
+ }
+ 
+ static inline bool page_pool_put(struct page_pool *pool)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 77cb75e63aca..8a9868ea5067 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -211,10 +211,6 @@ static int page_pool_init(struct page_pool *pool,
+ 		 */
+ 	}
+ 
+-	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+-	    pool->p.flags & PP_FLAG_PAGE_FRAG)
+-		return -EINVAL;
+-
+ #ifdef CONFIG_PAGE_POOL_STATS
+ 	pool->recycle_stats = alloc_percpu(struct page_pool_recycle_stats);
+ 	if (!pool->recycle_stats)
+@@ -359,12 +355,20 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+ 	if (dma_mapping_error(pool->p.dev, dma))
+ 		return false;
+ 
+-	page_pool_set_dma_addr(page, dma);
++	if (page_pool_set_dma_addr(page, dma))
++		goto unmap_failed;
+ 
+ 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+ 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+ 
+ 	return true;
++
++unmap_failed:
++	WARN_ON_ONCE("unexpected DMA address, please report to netdev@");
++	dma_unmap_page_attrs(pool->p.dev, dma,
++			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
++			     DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WEAK_ORDERING);
++	return false;
+ }
+ 
+ static void page_pool_set_pp_info(struct page_pool *pool,
 -- 
 2.33.0
 
