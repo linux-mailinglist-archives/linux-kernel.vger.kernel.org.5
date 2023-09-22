@@ -2,121 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE17C7AA959
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778657AA98E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjIVGwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        id S229943AbjIVGzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjIVGwM (ORCPT
+        with ESMTP id S229623AbjIVGzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:52:12 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10837100;
-        Thu, 21 Sep 2023 23:52:07 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M6F6qt017118;
-        Fri, 22 Sep 2023 06:52:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=QrFI+LL+qZNMwtBZMTKshk+weo88lynbxPxp1R/ewT8=;
- b=A+KcsVsNaNHIV9N6pkMc6P6JPsPXF46zcKzmIpN6ButECkRGXy1pzPX+nxlbqISFGZw4
- Vbhc0xNkaiKUbrxZB0+btcYLj5IxWkq710N1T63TqeQ9/iTU1e1bynDmfmCSnSqcsIyv
- lFrlq8JkCCGWLnUeNHLvvkpkm+4sFdaYn8DyAx6YKeVQcktspaSxVWCMsN6gMVVcbhue
- fBZKVp7fpU9JjtgJpq8yrl2eDkZHYKWynjXGmxxhJtZsfG32ddb+wyxA+UE3sS4P7wRV
- GRrgEvxSmVeBxheOIMg9WlQb2y6B1/VM9m6jhq0BkerOZkNyLVc4hW3PPeus2oHjWU48 mA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u6ah5qf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 06:52:03 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38M6q2Bl025115
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 06:52:02 GMT
-Received: from [10.218.28.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 21 Sep
- 2023 23:51:58 -0700
-Message-ID: <23d0ef96-ca51-4fe0-b2e6-af0e188fbb6d@quicinc.com>
-Date:   Fri, 22 Sep 2023 12:21:55 +0530
+        Fri, 22 Sep 2023 02:55:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6D0102
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:55:29 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D647321C47;
+        Fri, 22 Sep 2023 06:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695365727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j1UXkIX7PgB9a+J0veY2Drx28CRiXF/v4BDQq2G9vDY=;
+        b=ks8tfM2/+BomuV8RcvIe/Ay38m9ZdkBwdHui++JtBxgfdkW0JViPTsA7Z4SRs6Wdkqp5+k
+        7E65RV7En0sr6SPG6RZl1adkp+qfDKIByDutAivXLBFE97HwETUhCSdE3V5Wl0694DxA/I
+        EkWVe+0BRVoUu0ISWNcyUu09b2ozUSc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695365727;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j1UXkIX7PgB9a+J0veY2Drx28CRiXF/v4BDQq2G9vDY=;
+        b=Xh0TFS/ebPdUHJUOI9aYVIZO0vbCwA8PqqC9P3wmyPtbIBjYiUX/jheFptxcWPalHUsBpe
+        /IAvAjSO/lAcJ+Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD49E13478;
+        Fri, 22 Sep 2023 06:55:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5AWrKV86DWU5DwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 22 Sep 2023 06:55:27 +0000
+Message-ID: <210044a1-1f07-b579-bdf5-3f9ac8fbdc8c@suse.cz>
+Date:   Fri, 22 Sep 2023 08:55:27 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Raghavendra Kakarla <quic_rkakarla@quicinc.com>
-Subject: Re: [PATCH] arm64: dts: qcom: Enable RPMh Sleep stats
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <quic_mkshah@quicinc.com>, <quic_lsrao@quicinc.com>
-References: <20230920052349.9907-1-quic_rkakarla@quicinc.com>
- <68fb2f4f-ba21-21b0-ddbe-aab92991ec44@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/4] mm/slub: refactor calculate_order() and
+ calc_slab_order()
 Content-Language: en-US
-In-Reply-To: <68fb2f4f-ba21-21b0-ddbe-aab92991ec44@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: S08FMbPyEiKG-p_0sW-WmlnncyumFY46
-X-Proofpoint-ORIG-GUID: S08FMbPyEiKG-p_0sW-WmlnncyumFY46
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_04,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxlogscore=730 priorityscore=1501 lowpriorityscore=0 spamscore=0
- suspectscore=0 clxscore=1015 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220056
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Jay Patel <jaypatel@linux.ibm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230908145302.30320-6-vbabka@suse.cz>
+ <20230908145302.30320-10-vbabka@suse.cz> <ZQr1SwNeNA+nTpzW@feng-clx>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZQr1SwNeNA+nTpzW@feng-clx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+On 9/20/23 15:36, Feng Tang wrote:
+> On Fri, Sep 08, 2023 at 10:53:07PM +0800, Vlastimil Babka wrote:
+>> After the previous cleanups, we can now move some code from
+>> calc_slab_order() to calculate_order() so it's executed just once, and
+>> do some more cleanups.
+>> 
+>> - move the min_order and MAX_OBJS_PER_PAGE evaluation to
+>>   calc_slab_order().
+> 
+> Nit: here is to 'move ... to calculate_order()'?
 
-Thank you for your review. will address your comments in next patch.
+Oops, right, fixed.
 
+> I tried this patch series with normal boot on a desktop and one 2
+> socket server: patch 2/4 doesn't change order of any slab, and patch
+> 3/4 does make the slab order of big objects more consistent.
+> 
+> Thanks for making the code much cleaner! And for the whole series, 
+> 
+> Reviewed-by: Feng Tang <feng.tang@intel.com>
 
-Regards,
+Thanks! Applied.
 
-Raghavendra K.
-
-On 9/20/2023 3:15 PM, Konrad Dybcio wrote:
->
->
-> On 9/20/23 07:23, Raghavendra Kakarla wrote:
->> Add device node for Sleep stats driver which provides various
->> low power mode stats on sa8775p SoC.
->>
->> Signed-off-by: Raghavendra Kakarla <quic_rkakarla@quicinc.com>
+> 
+>> - change calc_slab_order() parameter min_objects to min_order
+>> 
+>> Also make MAX_OBJS_PER_PAGE check more robust by considering also
+>> min_objects in addition to slub_min_order. Otherwise this is not a
+>> functional change.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 >> ---
-> The subject must include the platform name
->>   arch/arm64/boot/dts/qcom/sa8775p.dtsi | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi 
->> b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> index 9f4f58e831a4..23ae404da02e 100644
->> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> @@ -1912,6 +1912,11 @@
->>               #clock-cells = <0>;
->>           };
->>   +        sram@c3f0000 {
->> +            compatible = "qcom,rpmh-stats";
->> +            reg = <0x0c3f0000 0x400>;
-> Please test your patches before sending. This one has clearly
-> hasn't been.
->
-> Konrad
+>>  mm/slub.c | 19 +++++++++----------
+>>  1 file changed, 9 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index f04eb029d85a..1c91f72c7239 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -4110,17 +4110,12 @@ static unsigned int slub_min_objects;
+>>   * the smallest order which will fit the object.
+>>   */
+>>  static inline unsigned int calc_slab_order(unsigned int size,
+>> -		unsigned int min_objects, unsigned int max_order,
+>> +		unsigned int min_order, unsigned int max_order,
+>>  		unsigned int fract_leftover)
+>>  {
+>> -	unsigned int min_order = slub_min_order;
+>>  	unsigned int order;
+>>  
+>> -	if (order_objects(min_order, size) > MAX_OBJS_PER_PAGE)
+>> -		return get_order(size * MAX_OBJS_PER_PAGE) - 1;
+>> -
+>> -	for (order = max(min_order, (unsigned int)get_order(min_objects * size));
+>> -			order <= max_order; order++) {
+>> +	for (order = min_order; order <= max_order; order++) {
+>>  
+>>  		unsigned int slab_size = (unsigned int)PAGE_SIZE << order;
+>>  		unsigned int rem;
+>> @@ -4139,7 +4134,7 @@ static inline int calculate_order(unsigned int size)
+>>  	unsigned int order;
+>>  	unsigned int min_objects;
+>>  	unsigned int max_objects;
+>> -	unsigned int nr_cpus;
+>> +	unsigned int min_order;
+>>  
+>>  	min_objects = slub_min_objects;
+>>  	if (!min_objects) {
+>> @@ -4152,7 +4147,7 @@ static inline int calculate_order(unsigned int size)
+>>  		 * order on systems that appear larger than they are, and too
+>>  		 * low order on systems that appear smaller than they are.
+>>  		 */
+>> -		nr_cpus = num_present_cpus();
+>> +		unsigned int nr_cpus = num_present_cpus();
+>>  		if (nr_cpus <= 1)
+>>  			nr_cpus = nr_cpu_ids;
+>>  		min_objects = 4 * (fls(nr_cpus) + 1);
+>> @@ -4160,6 +4155,10 @@ static inline int calculate_order(unsigned int size)
+>>  	max_objects = order_objects(slub_max_order, size);
+>>  	min_objects = min(min_objects, max_objects);
+>>  
+>> +	min_order = max(slub_min_order, (unsigned int)get_order(min_objects * size));
+>> +	if (order_objects(min_order, size) > MAX_OBJS_PER_PAGE)
+>> +		return get_order(size * MAX_OBJS_PER_PAGE) - 1;
+>> +
+>>  	/*
+>>  	 * Attempt to find best configuration for a slab. This works by first
+>>  	 * attempting to generate a layout with the best possible configuration and
+>> @@ -4176,7 +4175,7 @@ static inline int calculate_order(unsigned int size)
+>>  	 * long as at least single object fits within slub_max_order.
+>>  	 */
+>>  	for (unsigned int fraction = 16; fraction > 1; fraction /= 2) {
+>> -		order = calc_slab_order(size, min_objects, slub_max_order,
+>> +		order = calc_slab_order(size, min_order, slub_max_order,
+>>  					fraction);
+>>  		if (order <= slub_max_order)
+>>  			return order;
+>> -- 
+>> 2.42.0
+>> 
+>> 
+
