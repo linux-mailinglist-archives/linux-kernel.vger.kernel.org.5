@@ -2,266 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A16A47AB620
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3EC7AB623
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjIVQga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S231805AbjIVQhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbjIVQg1 (ORCPT
+        with ESMTP id S229636AbjIVQhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:36:27 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDAB1A8;
-        Fri, 22 Sep 2023 09:36:20 -0700 (PDT)
-Received: from [192.168.68.123] (unknown [177.98.21.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 07D7166072C1;
-        Fri, 22 Sep 2023 17:36:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695400578;
-        bh=StzjijuhgshkM93uzVvI9X0zOsS0vaEICTCqvv1AW6Y=;
+        Fri, 22 Sep 2023 12:37:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9DF122;
+        Fri, 22 Sep 2023 09:36:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A942BC433C7;
+        Fri, 22 Sep 2023 16:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695400615;
+        bh=UcxSmCpY9SiyWTuxDlWknweZxffx3l6QCiHvON61L98=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YLzGYijeq7dOen6ZKmdrS0orLODfS40iAVBGl01OQSxYXzqIDRsuYqk0KHP78on5o
-         lSyooWiwt0qEvw7BSCcEh7p0iOHjOr1RQjRsLVLkiwdzgF1mAzWiKRMILJYGKY4MNx
-         9aB2txvmW0d4RG5rVulZ2JtyALEGtab6m2xxMBcPWM5h3xJG2ho31YDxih4N2ICu14
-         wet2oDaJGcKRdGcNezBpflp7Hqz5RKhkWsYTtgeIUxo3+iJ2+V+pLRVGhpaz9PoDvj
-         +mqi49QuEWnBjcopvkJiFJg4GaXtiYs6cTbvBVXyK8oiV+R7vucn137CF0sh/Bk2JZ
-         7SaWsky7yFosg==
-Message-ID: <f8e0caab-32f4-bae4-ef0d-1511c48d67e2@collabora.com>
-Date:   Fri, 22 Sep 2023 13:36:08 -0300
+        b=Vx57RgFMQIU55PYEx02ZUVdV8c7ljxiBxLf4RE0lSnBEE78kRuFnbHimQlMPnWH6U
+         tcAYVkMXtheAdAimoEKi9dtI4oF2lSpFxC2IB9T32wcdCanf6nXnEJerSIyJZMQpB3
+         a0xZCTT2pGUBQWZYPysxJjos7drws4XdaVUs6YfMxAkokt+K1WiTexDLofC7YiSsLl
+         6KKEOLYYsH88Y4ooGDFdQ9KRgUqQEftqJ5xcZjD011zresshYhD7lxHgctZnUsHU1h
+         DUqHzx4REK1HYkpy8CQmDpqG/u1DBTPczNSvf+yLXRISXJG9ifJ+1CShxJoDi9y59C
+         x/cq1YqyHAj6w==
+Message-ID: <6309e45e-b1f7-0167-ff54-f1a86437a910@kernel.org>
+Date:   Fri, 22 Sep 2023 09:36:55 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 5/7] drm: ci: Update xfails
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC] ata: libata: increase PMP SRST timeout to 10s
 Content-Language: en-US
-To:     Vignesh Raman <vignesh.raman@collabora.com>, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     daniels@collabora.com, emma@anholt.net,
-        gustavo.padovan@collabora.com, linux-arm-msm@vger.kernel.org,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        david.heidelberg@collabora.com, linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-References: <20230914085426.883255-1-vignesh.raman@collabora.com>
- <20230914085426.883255-6-vignesh.raman@collabora.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20230914085426.883255-6-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Matthias Schiffer <mschiffer@universe-factory.net>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <dcbe606ac716e01f103f8aa62f0201cdb8f3efa0.1695394865.git.mschiffer@universe-factory.net>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <dcbe606ac716e01f103f8aa62f0201cdb8f3efa0.1695394865.git.mschiffer@universe-factory.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi o/
-
-On 14/09/2023 05:54, Vignesh Raman wrote:
-> Update amdgpu-stoney-fails, mediatek-mt8173-flakes,
-> mediatek-mt8173-fails, rockchip-rk3399-fails, rockchip-rk3399-flakes,
-> rockchip-rk3288-flakes, i915-cml-fails, i915-cml-flakes,
-> msm-apq8016-flakes files.
+On 2023/09/22 9:18, Matthias Schiffer wrote:
+> On certain devices(*), this device probe failures for SATA disks after
+> wakeup from S2RAM, which often led to the disks not to be detected again.
 > 
-> Add tests that fail sometimes into the *-flakes file and tests
-> that are failing into the *-fails file.
+>     ata1: softreset failed (1st FIS failed)
 > 
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> (*) Observed for disks connected to the internal SATA controller of the
+> QNAP TS-453B, which is a "SATA controller: Intel Corporation
+> Celeron/Pentium Silver Processor SATA Controller (rev 06)".
+> 
+> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
 > ---
 > 
-> v2:
->    - No changes
+> I'm sending this as an RFC, as I don't think it makes sense to increase the
+> timeout unconditionally - maybe it should be some kind of device quirk, if
+> there isn't any better fix.
 > 
-> v3:
->    - No changes
+> See text below for more information.
 > 
-> v4:
->    - No changes
+>  include/linux/libata.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/include/linux/libata.h b/include/linux/libata.h
+> index be2f0cee1601..9194030527b6 100644
+> --- a/include/linux/libata.h
+> +++ b/include/linux/libata.h
+> @@ -256,7 +256,7 @@ enum {
+>  	 * advised to wait only for the following duration before
+>  	 * doing SRST.
+>  	 */
+> -	ATA_TMOUT_PMP_SRST_WAIT	= 5000,
+> +	ATA_TMOUT_PMP_SRST_WAIT	= 10000,
+>  
+>  	/* When the LPM policy is set to ATA_LPM_MAX_POWER, there might
+>  	 * be a spurious PHY event, so ignore the first PHY event that
 > ---
->   .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt    |  1 -
->   drivers/gpu/drm/ci/xfails/i915-cml-fails.txt     |  1 -
->   drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt    |  2 ++
->   drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt    |  1 +
->   .../gpu/drm/ci/xfails/mediatek-mt8173-fails.txt  |  2 --
->   .../gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt | 16 ++++++++++++++++
->   drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt |  2 ++
->   .../gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt |  1 +
->   .../gpu/drm/ci/xfails/rockchip-rk3399-fails.txt  |  4 ++--
->   .../gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt |  3 +++
->   10 files changed, 27 insertions(+), 6 deletions(-)
+> 
+> I'm running plain Debian 12 rather than the QNAP OS (I believe the original
+> software does not support S2RAM at all). The issue I'm describing exists at
+> least since kernel 5.15; I've never run older kernels on this hardware. The
+> mainboard has 2 SATA controllers, both handled by the ahci driver:
+> 
+>     # lspci | grep SATA
+>     00:12.0 SATA controller: Intel Corporation Celeron/Pentium Silver Processor SATA Controller (rev 06)
+>     02:00.0 SATA controller: ASMedia Technology Inc. 106x SATA/RAID Controller (rev 01)
+> 
+> The first two channels ata1 and ata2 are connected to the Intel controller,
+> while the ASMedia is responsible for ata3 through ata14. I have the same hard
+> drives connected to ata2, ata3, and ata4 (ata1 has a different model), and I'm
+> seeing the timeout issue after suspend only on ata1 and ata2, so it is specific
+> to the Intel controller rather than the drive model.
+> 
+> On Debian's default 6.1.52 kernel, a wakeup looks like the following *in the
+> good case*, where all disks are successfully brought up again (unfortunately,
+> journald doesn't seem to have recorded correct timing information; roughly
+> 22 seconds pass between the "starting disk" and final "link up"). I have
+> redacted lines for the unused ata{5..14} ports for conciseness.
+> 
+>     ACPI: PM: Waking up from system sleep state S3
+>     sd 2:0:0:0: [sdc] Starting disk
+>     sd 3:0:0:0: [sdd] Starting disk
+>     sd 1:0:0:0: [sdb] Starting disk
+>     sd 0:0:0:0: [sda] Starting disk
+>     ata3: link is slow to respond, please be patient (ready=0)
+>     ata4: link is slow to respond, please be patient (ready=0)
+>     ata2: found unknown device (class 0)
+>     ata1: found unknown device (class 0)
+>     ata1: softreset failed (1st FIS failed)
+>     ata2: softreset failed (1st FIS failed)
+>     ata3: COMRESET failed (errno=-16)
+>     ata4: COMRESET failed (errno=-16)
+>     ata1: found unknown device (class 0)
+>     ata2: found unknown device (class 0)
+>     ata3: link is slow to respond, please be patient (ready=0)
+>     ata4: link is slow to respond, please be patient (ready=0)
+>     ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     ata3.00: configured for UDMA/133
+>     ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     ata4.00: configured for UDMA/133
+>     ata1: softreset failed (1st FIS failed)
+>     ata2: softreset failed (1st FIS failed)
+>     ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     ata2.00: configured for UDMA/133
+>     ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     ata1.00: configured for UDMA/133
+> 
+> On the same kernel, another wakeup might look like this:
+> 
+>     ACPI: PM: Waking up from system sleep state S3
+>     sd 2:0:0:0: [sdd] Starting disk
+>     sd 3:0:0:0: [sdc] Starting disk
+>     sd 0:0:0:0: [sda] Starting disk
+>     sd 1:0:0:0: [sdb] Starting disk
+>     ata2: SATA link down (SStatus 0 SControl 300)
+>     ata3: link is slow to respond, please be patient (ready=0)
+>     ata4: link is slow to respond, please be patient (ready=0)
+>     ata1: SATA link down (SStatus 0 SControl 300)
+>     ata3: COMRESET failed (errno=-16)
+>     ata4: COMRESET failed (errno=-16)
+>     ata1: SATA link down (SStatus 0 SControl 300)
+>     ata1: limiting SATA link speed to <unknown>
+>     ata3: link is slow to respond, please be patient (ready=0)
+>     ata4: link is slow to respond, please be patient (ready=0)
+>     ata2: SATA link down (SStatus 0 SControl 300)
+>     ata2: limiting SATA link speed to <unknown>
+>     ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     ata3.00: configured for UDMA/133
+>     ata4.00: configured for UDMA/133
+>     ata1: SATA link down (SStatus 0 SControl 3F0)
+>     ata1.00: disable device
+>     ata2: SATA link down (SStatus 0 SControl 3F0)
+>     ata2.00: disable device
+>     sd 1:0:0:0: rejecting I/O to offline device
+>     sd 0:0:0:0: rejecting I/O to offline device
+>     ata2.00: detaching (SCSI 1:0:0:0)
+>     ata1.00: detaching (SCSI 0:0:0:0)
+>     sd 0:0:0:0: [sda] Start/Stop Unit failed: Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK
+>     sd 1:0:0:0: [sdb] Start/Stop Unit failed: Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK
+>     sd 0:0:0:0: PM: dpm_run_callback(): scsi_bus_resume+0x0/0x90 [scsi_mod] returns -5
+>     sd 1:0:0:0: PM: dpm_run_callback(): scsi_bus_resume+0x0/0x90 [scsi_mod] returns -5
+>     sd 0:0:0:0: PM: failed to resume async: error -5
+>     sd 1:0:0:0: PM: failed to resume async: error -5
+> 
+> With my patch applied, the following log is generated instead:
+> 
+>     [   63.748299] ACPI: PM: Waking up from system sleep state S3
+>     [   63.767111] sd 2:0:0:0: [sdc] Starting disk
+>     [   63.767181] sd 3:0:0:0: [sdd] Starting disk
+>     [   63.776402] sd 0:0:0:0: [sdb] Starting disk
+>     [   63.776500] sd 1:0:0:0: [sda] Starting disk
+>     [   69.121513] ata4: link is slow to respond, please be patient (ready=0)
+>     [   69.125531] ata3: link is slow to respond, please be patient (ready=0)
+>     [   69.133538] ata2: link is slow to respond, please be patient (ready=0)
+>     [   69.133557] ata1: link is slow to respond, please be patient (ready=0)
+>     [   73.803763] ata4: COMRESET failed (errno=-16)
+>     [   73.807805] ata3: COMRESET failed (errno=-16)
+>     [   73.815780] ata2: found unknown device (class 0)
+>     [   73.815800] ata1: found unknown device (class 0)
+>     [   73.975799] ata2: softreset failed (device not ready)
+>     [   73.975813] ata1: softreset failed (device not ready)
+>     [   79.157124] ata4: link is slow to respond, please be patient (ready=0)
+>     [   79.161116] ata3: link is slow to respond, please be patient (ready=0)
+>     [   79.329119] ata1: link is slow to respond, please be patient (ready=0)
+>     [   79.329129] ata2: link is slow to respond, please be patient (ready=0)
+>     [   80.781376] ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     [   80.792790] ata3.00: configured for UDMA/133
+>     [   80.837437] ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     [   80.843358] ata4.00: configured for UDMA/133
+>     [   82.309565] ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     [   82.334217] ata2.00: configured for UDMA/133
+>     [   84.009745] ata1: found unknown device (class 0)
+>     [   84.169743] ata1: softreset failed (device not ready)
+>     [   85.425859] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     [   85.486518] ata1.00: configured for UDMA/133
+> 
+> Compared to the previous "good" log
+> - ata1 and ata2 got "link is slow to respond" messages
+> - the "softreset failed" error changed from "1st FIS failed" to "device not
+>   ready"
+> - I haven't seen any failures to bring up drives in 10+ wakeups, where it would
+>   fail in roughly 1 out of 3 tries without the increased timeout
+> 
+> I also saw the resume improvements going on in
+> https://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/libata.git/, so next I
+> took kernel 6.5.4 and applied all patches from the for-6.6 and for-6.7 branches
+> from that repo on top. The first thing I noticed with this new kernel was a
+> regression:
+> 
+>     16:24:25 : PM: suspend exit
+>     16:24:25 : ata2: SATA link down (SStatus 0 SControl 300)
+>     16:24:25 : ata2.00: Entering active power mode
+>     16:24:25 : ata1: SATA link down (SStatus 0 SControl 300)
+>     16:24:25 : ata1.00: Entering active power mode
+>     16:24:30 : ata3: link is slow to respond, please be patient (ready=0)
+>     16:24:30 : ata4: link is slow to respond, please be patient (ready=0)
+>     16:24:35 : ata2.00: qc timeout after 10000 msecs (cmd 0x40)
+>     16:24:35 : ata1.00: qc timeout after 10000 msecs (cmd 0x40)
+>     16:24:35 : ata1.00: VERIFY failed (err_mask=0x4)
+>     16:24:35 : ata2.00: VERIFY failed (err_mask=0x4)
+>     16:24:35 : ata2: SATA link down (SStatus 0 SControl 300)
+>     16:24:35 : ata2: limiting SATA link speed to <unknown>
+>     16:24:41 : ata4: link is slow to respond, please be patient (ready=0)
+>     16:24:41 : ata3: link is slow to respond, please be patient (ready=0)
+>     16:24:41 : ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:24:41 : ata4.00: Entering active power mode
+>     16:24:41 : ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:24:41 : ata3.00: Entering active power mode
+>     16:24:41 : ata4.00: configured for UDMA/133
+>     16:24:41 : ata3.00: configured for UDMA/133
+>     16:24:41 : ata1: SATA link down (SStatus 0 SControl 300)
+>     16:24:41 : ata1: limiting SATA link speed to <unknown>
+>     16:24:47 : ata1: SATA link down (SStatus 0 SControl 3F0)
+>     16:24:47 : ata1.00: disable device
+>     16:24:47 : ata2: SATA link down (SStatus 0 SControl 3F0)
+>     16:24:47 : ata2.00: disable device
+>     16:24:47 : ata1.00: detaching (SCSI 0:0:0:0)
+>     16:24:47 : ata2.00: detaching (SCSI 1:0:0:0)
+> 
+> For the ASMedia controller, the new kernel fixes the "COMRESET failed" messages,
+> but on the Intel controller, two new errors have appeared ("qc timeout" and
+> "VERIFY failed"), and my drives are missing again.
 
-I found an error in the script that updates the flakes from a pipeline, 
-it was adding errors in *-flakes.txt instead of *-fails.txt even when it 
-was consistently failing.
+These errors are being address by a series that is about to be applied:
 
-I have a partial fix where it works if -flakes.txt is empty (otherwise 
-it duplicates flakes and fails) 
-https://gitlab.freedesktop.org/-/snippets/7655
+https://lore.kernel.org/linux-ide/yq134z7577n.fsf@ca-mkp.ca.oracle.com/T/#m255ef5cc9b64b971765e8b6551aacee860fd1325
 
-Could you please regenerate these files with this new version of the script?
-Btw, I'm improving the script and I'll submit a RFC proposing to include 
-it as a handy tool in ci folder.
+This series addresses various issues with libata resume, including what you are
+seeing above, which causes the drives to fail resume and disappear, or worth, a
+hang on resume. Could you please try to apply these patches and test with them ?
+The "link is slow to respond" message is fairly normal and overall, there is up
+to 1min timeout before giving up on the drive. So this should not be an issue.
 
-Thanks,
-Helen
-
+If you still see a problem with your system, we can increase the timeout to
+avoid that "1st FIS failed" error.
 
 > 
-> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
-> index bd9392536e7c..58bfded8a3fc 100644
-> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
-> @@ -1,7 +1,6 @@
->   kms_addfb_basic@bad-pitch-65536,Fail
->   kms_addfb_basic@bo-too-small,Fail
->   kms_async_flips@invalid-async-flip,Fail
-> -kms_atomic@plane-immutable-zpos,Fail
->   kms_atomic_transition@plane-toggle-modeset-transition,Fail
->   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
->   kms_bw@linear-tiling-1-displays-3840x2160p,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
-> index 6139b410e767..5f513c638beb 100644
-> --- a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
-> @@ -1,4 +1,3 @@
-> -kms_color@ctm-0-25,Fail
->   kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
->   kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
->   kms_flip_scaled_crc@flip-32bpp-xtile-to-64bpp-xtile-downscaling,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt b/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
-> index 0514a7b3fdb0..f06f1a5b16f9 100644
-> --- a/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
-> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
-> @@ -7,6 +7,8 @@ kms_bw@linear-tiling-3-displays-3840x2160p
->   kms_bw@linear-tiling-4-displays-1920x1080p
->   kms_bw@linear-tiling-4-displays-2560x1440p
->   kms_bw@linear-tiling-4-displays-3840x2160p
-> +kms_color@ctm-0-25
-> +kms_cursor_legacy@torture-move
->   kms_draw_crc@draw-method-xrgb8888-render-xtiled
->   kms_flip@flip-vs-suspend
->   kms_flip_scaled_crc@flip-32bpp-ytile-to-64bpp-ytile-downscaling
-> diff --git a/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt b/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
-> index fc41d13a2d56..3aee1f11ee90 100644
-> --- a/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
-> +++ b/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
-> @@ -8,6 +8,7 @@ kms_bw@linear-tiling-3-displays-3840x2160p
->   kms_bw@linear-tiling-4-displays-1920x1080p
->   kms_bw@linear-tiling-4-displays-2560x1440p
->   kms_bw@linear-tiling-4-displays-3840x2160p
-> +kms_cursor_legacy@torture-bo
->   kms_flip@blocking-wf_vblank
->   kms_flip@wf_vblank-ts-check
->   kms_flip@wf_vblank-ts-check-interruptible
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> index 671916067dba..c8e64bbfd480 100644
-> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> @@ -1,5 +1,4 @@
->   kms_3d,Fail
-> -kms_addfb_basic@addfb25-bad-modifier,Fail
->   kms_bw@linear-tiling-1-displays-1920x1080p,Fail
->   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
->   kms_bw@linear-tiling-1-displays-3840x2160p,Fail
-> @@ -11,7 +10,6 @@ kms_bw@linear-tiling-3-displays-2560x1440p,Fail
->   kms_bw@linear-tiling-3-displays-3840x2160p,Fail
->   kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
->   kms_color@pipe-B-invalid-gamma-lut-sizes,Fail
-> -kms_force_connector_basic@force-connector-state,Fail
->   kms_force_connector_basic@force-edid,Fail
->   kms_force_connector_basic@force-load-detect,Fail
->   kms_force_connector_basic@prune-stale-modes,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> index e69de29bb2d1..9ed6722df2c2 100644
-> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> @@ -0,0 +1,16 @@
-> +core_setmaster_vs_auth
-> +kms_addfb_basic@addfb25-bad-modifier
-> +kms_color@invalid-gamma-lut-sizes
-> +kms_cursor_legacy@cursor-vs-flip-atomic
-> +kms_cursor_legacy@cursor-vs-flip-legacy
-> +kms_force_connector_basic@force-connector-state
-> +kms_hdmi_inject@inject-4k
-> +kms_plane_scaling@plane-scaler-with-pixel-format-unity-scaling
-> +kms_plane_scaling@plane-upscale-with-modifiers-20x20
-> +kms_plane_scaling@plane-upscale-with-pixel-format-20x20
-> +kms_plane_scaling@plane-upscale-with-rotation-20x20
-> +kms_plane_scaling@planes-downscale-factor-0-25-upscale-20x20
-> +kms_plane_scaling@planes-downscale-factor-0-5-upscale-20x20
-> +kms_plane_scaling@planes-downscale-factor-0-75-upscale-20x20
-> +kms_prop_blob@invalid-set-prop
-> +kms_prop_blob@invalid-set-prop-any
-> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt b/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
-> index 0e3b60d3fade..cd48a8c1d569 100644
-> --- a/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
-> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
-> @@ -1,3 +1,5 @@
-> +kms_cursor_legacy@forked-bo
-> +kms_cursor_legacy@forked-move
->   kms_force_connector_basic@force-connector-state
->   kms_force_connector_basic@force-edid
->   kms_force_connector_basic@force-load-detect
-> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
-> index 45c54c75c899..081fe6f8d488 100644
-> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
-> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
-> @@ -1,6 +1,7 @@
->   kms_addfb_basic@addfb25-bad-modifier
->   kms_cursor_crc@.*
->   kms_flip@basic-flip-vs-wf_vblank
-> +kms_flip@blocking-wf_vblank
->   kms_invalid_mode@int-max-clock,Crash
->   kms_pipe_crc_basic@.*
->   kms_properties@connector-properties-atomic,Crash
-> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
-> index 6db08ba6b008..029a3be3164d 100644
-> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
-> @@ -2,14 +2,13 @@ kms_color@legacy-gamma,Fail
->   kms_color@pipe-A-legacy-gamma,Fail
->   kms_color@pipe-B-legacy-gamma,Fail
->   kms_flip@basic-flip-vs-wf_vblank,Fail
-> -kms_flip@blocking-wf_vblank,Fail
->   kms_flip@dpms-vs-vblank-race,Fail
->   kms_flip@flip-vs-absolute-wf_vblank,Fail
->   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
->   kms_flip@flip-vs-blocking-wf-vblank,Fail
->   kms_flip@flip-vs-panning,Fail
->   kms_flip@flip-vs-panning-interruptible,Fail
-> -kms_flip@flip-vs-wf_vblank-interruptible,Fail
-> +kms_flip@modeset-vs-vblank-race,Fail
->   kms_flip@plain-flip-fb-recreate,Fail
->   kms_flip@plain-flip-fb-recreate-interruptible,Fail
->   kms_flip@plain-flip-ts-check,Fail
-> @@ -35,3 +34,4 @@ kms_plane_multiple@atomic-pipe-B-tiling-none,Fail
->   kms_plane_multiple@tiling-none,Fail
->   kms_prime@basic-crc,Fail
->   kms_rmfb@close-fd,Fail
-> +kms_universal_plane@universal-plane-pipe-B-functional,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
-> index 4c0539b4beaf..869426a02cbd 100644
-> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
-> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
-> @@ -1,7 +1,10 @@
->   
-> +kms_color@gamma
->   kms_cursor_crc@.*
-> +kms_flip@blocking-wf_vblank
->   kms_flip@dpms-vs-vblank-race-interruptible
->   kms_flip@flip-vs-expired-vblank
-> +kms_flip@flip-vs-wf_vblank-interruptible
->   kms_flip@modeset-vs-vblank-race-interruptible
->   kms_pipe_crc_basic@.*
->   kms_pipe_crc_basic@compare-crc-sanitycheck-pipe-A
+> The new messages could be fixed by adding libata.ata_probe_timeout=30 to the
+> cmdline; I still consider this a regression, as it wasn't necessary before.
+> With the added cmdline:
+> 
+>     16:34:17 : PM: suspend exit
+>     16:34:22 : ata3: link is slow to respond, please be patient (ready=0)
+>     16:34:22 : ata4: link is slow to respond, please be patient (ready=0)
+>     16:34:22 : ata2: found unknown device (class 0)
+>     16:34:22 : ata1: found unknown device (class 0)
+>     16:34:27 : ata1: softreset failed (1st FIS failed)
+>     16:34:27 : ata2: softreset failed (1st FIS failed)
+>     16:34:32 : ata1: found unknown device (class 0)
+>     16:34:32 : ata2: found unknown device (class 0)
+>     16:34:32 : ata3: link is slow to respond, please be patient (ready=0)
+>     16:34:32 : ata4: link is slow to respond, please be patient (ready=0)
+>     16:34:35 : ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:34:35 : ata3.00: Entering active power mode
+>     16:34:35 : ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:34:35 : ata4.00: Entering active power mode
+>     16:34:35 : ata3.00: configured for UDMA/133
+>     16:34:35 : ata4.00: configured for UDMA/133
+>     16:34:37 : ata1: softreset failed (1st FIS failed)
+>     16:34:37 : ata2: softreset failed (1st FIS failed)
+>     16:34:38 : ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:34:38 : ata2.00: Entering active power mode
+>     16:34:38 : ata2.00: configured for UDMA/133
+>     16:34:40 : ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:34:40 : ata1.00: Entering active power mode
+>     16:34:40 : ata1.00: configured for UDMA/133
+> 
+> Okay, we're back at the "1st FIS failed" message. I actually haven't tried
+> suspending with this kernel a lot, so I don't know how often my drives would
+> go missing in this setup, but I assume it's similar to kernel 6.1 (the first
+> two logs I posted), as the error messages look the same.
+> 
+> Finally, I took that last kernel and also applied my timeout increase patch on
+> top, resulting in the following log:
+> 
+>     16:48:33 : PM: suspend exit
+>     16:48:39 : ata3: link is slow to respond, please be patient (ready=0)
+>     16:48:39 : ata4: link is slow to respond, please be patient (ready=0)
+>     16:48:39 : ata2: link is slow to respond, please be patient (ready=0)
+>     16:48:39 : ata1: link is slow to respond, please be patient (ready=0)
+>     16:48:43 : ata1: found unknown device (class 0)
+>     16:48:43 : ata2: found unknown device (class 0)
+>     16:48:44 : ata2: softreset failed (device not ready)
+>     16:48:44 : ata1: softreset failed (device not ready)
+>     16:48:49 : ata4: link is slow to respond, please be patient (ready=0)
+>     16:48:49 : ata3: link is slow to respond, please be patient (ready=0)
+>     16:48:49 : ata2: link is slow to respond, please be patient (ready=0)
+>     16:48:49 : ata1: link is slow to respond, please be patient (ready=0)
+>     16:48:51 : ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:48:51 : ata3.00: Entering active power mode
+>     16:48:51 : ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:48:51 : ata4.00: Entering active power mode
+>     16:48:51 : ata3.00: configured for UDMA/133
+>     16:48:51 : ata4.00: configured for UDMA/133
+>     16:48:52 : ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:48:52 : ata2.00: Entering active power mode
+>     16:48:52 : ata2.00: configured for UDMA/133
+>     16:48:54 : ata1: found unknown device (class 0)
+>     16:48:54 : ata1: softreset failed (device not ready)
+>     16:48:56 : ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+>     16:48:56 : ata1.00: Entering active power mode
+>     16:48:56 : ata1.00: configured for UDMA/133
+> 
+> We got our "link is slow to respond" and "device not ready" back for ata1/ata2,
+> and enabling the drives after wakeup seems to be reliable.
+> 
+> Unfortunately, I don't know much about (S)ATA, so I have no idea what is
+> actually going on here. In any case, I'd prefer my kernel not to lose my drives
+> on a regular basis, so I'll gladly take any pointers on what the best way to fix
+> this is :)
+> 
+> Best regards,
+> Matthias
+
+-- 
+Damien Le Moal
+Western Digital Research
+
