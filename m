@@ -2,191 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0317AB9F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4718B7ABA01
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbjIVTWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 15:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        id S233860AbjIVTYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 15:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjIVTWm (ORCPT
+        with ESMTP id S229590AbjIVTYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 15:22:42 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 382F9A3;
-        Fri, 22 Sep 2023 12:22:36 -0700 (PDT)
-Received: from DESKTOP-4OLSCEK. (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A5489212C5CE;
-        Fri, 22 Sep 2023 12:22:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A5489212C5CE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695410555;
-        bh=o0eOhrQ2qy/nejECaGDjff9cSGUav4nkz0bEC/QwN/0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bYsShCofRHECCOLxVQ4NAkSR32P54vF1Lbs3/cYhfluj2GvZsrh6UWEw/XSZDTsE/
-         x7jfUpAvWXxxA8xo5rAnKoDsjgINWd9p9572g8ytzNjmRVlXHSyfDJtUG8aO1hkHj8
-         T8+TLif1OhkK8zolRoR1XraRvI6T5sHU9SBrb4s8=
-Date:   Fri, 22 Sep 2023 12:22:31 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
- alignment
-Message-ID: <20230922192231.GA1828-beaub@linux.microsoft.com>
-References: <20230914131102.179100-1-cleger@rivosinc.com>
- <20230914131700.0ba3ee80@gandalf.local.home>
- <20230914132956.569dad45@gandalf.local.home>
- <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
+        Fri, 22 Sep 2023 15:24:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7EEA3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 12:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695410636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FWz2594PebN6/sZ7Xi+2z+TcUg7W+ur8FNaCU/72PSU=;
+        b=TpipMnCNDn8LonxEwrttBqSSomWq0dojiUbPi2BfG6uD4FznWUgWPu0FiRc5OluBCwzvip
+        OoB9owAHLDVm2Cqvja2bFzDXO75oWNmxH5jVJg8SLVxl2a8jeiHHmYaRtu61++dxLn3oGC
+        ssug70SG4lndXbvRWvocS7Z23KekUS4=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-140-nMDscAA8M-a30vb7Nh5MOQ-1; Fri, 22 Sep 2023 15:23:55 -0400
+X-MC-Unique: nMDscAA8M-a30vb7Nh5MOQ-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3adbc8aaf29so3753849b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 12:23:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695410634; x=1696015434;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FWz2594PebN6/sZ7Xi+2z+TcUg7W+ur8FNaCU/72PSU=;
+        b=XMf5R669vO2HLya4T34KdRr961IhnEJ5aBU10eX9O9RieN+1DCog97Sue/mqKVS54t
+         lxx9bErPnwWWl1Lb2wc6RqPYKlwnqctHK7TgirRGZuYLWhait3ASXaof8q0s8Re+teq9
+         HN767g1zvBeUpcoD+aM1+5k0xJSF1yJm+9d3ZYWfPzBOZsC2t4cFWmOfw3oo5hgt4TyQ
+         RzwA9TvoQo5F7/2EXZIr4dGW9JNGzapoUHOQmNA7OOgDIfHJrDvInAeY/MIRfvdmPhEY
+         fiHNNpB1xUZJl7TI+hyO071bgM/zBtz2GkfsGMri31Gaxf7HwFXzrgtcIl3Gzx7LAi6A
+         HROA==
+X-Gm-Message-State: AOJu0YzIPMu4xiwCstvsrX7kjEgWAmwPhwAG/9k4Wf4f7oK7gQsC7rIU
+        KFXAc8A3WsDDQFvVfRQs+9vV6WS9BsXIWB4BIKRmyhOh863Y4Vq3speXPBfzHmaRXW9PeY4wRPv
+        drEXhbwXO0YfHNALnhs4xzXdn
+X-Received: by 2002:a05:6808:f0b:b0:3a7:6385:28ac with SMTP id m11-20020a0568080f0b00b003a7638528acmr776349oiw.4.1695410634471;
+        Fri, 22 Sep 2023 12:23:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF7i3t/aNow9fEg4WVwOXQACcWlQdpl28s/1sD0IP5eE9lXMGuH+nE1i0GSI+4FI9Z5yq196Q==
+X-Received: by 2002:a05:6808:f0b:b0:3a7:6385:28ac with SMTP id m11-20020a0568080f0b00b003a7638528acmr776333oiw.4.1695410634158;
+        Fri, 22 Sep 2023 12:23:54 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id a27-20020ac844bb000000b004035843ec96sm1681935qto.89.2023.09.22.12.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 12:23:53 -0700 (PDT)
+Message-ID: <b9d52ce542021b88fe602bdd93434d0ddaa188e5.camel@redhat.com>
+Subject: Re: [PATCH v1] drm/dp/mst: fix missing modeset unlock for MST port
+ detect
+From:   Lyude Paul <lyude@redhat.com>
+To:     imre.deak@intel.com
+Cc:     Ramya SR <quic_rsr@quicinc.com>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Wayne Lin <Wayne.Lin@amd.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Fri, 22 Sep 2023 15:23:52 -0400
+In-Reply-To: <ZQ3pbVHRXMiLfUCf@ideak-desk.fi.intel.com>
+References: <1694753689-29782-1-git-send-email-quic_rsr@quicinc.com>
+         <19ce2cd9abfd3bdf3ea91f9bceb43206e4740c2e.camel@redhat.com>
+         <ZQ3pbVHRXMiLfUCf@ideak-desk.fi.intel.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 02:59:12PM +0200, Clément Léger wrote:
-> 
-> 
-> On 14/09/2023 19:29, Steven Rostedt wrote:
-> > On Thu, 14 Sep 2023 13:17:00 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> >> Now lets look at big endian layout:
-> >>
-> >>  uaddr = 0xbeef0004
-> >>  enabler = 1;
-> >>
-> >>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
-> >>                                     ^
-> >>                                     addr: 0xbeef0004
-> >>
-> >> 				(enabler is set )
-> >>
-> >> 	bitoffset = uaddr & (sizeof(unsigned long) - 1); bitoffset = 4
-> >> 	bit_offset *= 8;				 bitoffset = 32
-> >> 	uaddr &= ~(sizeof(unsigned long) - 1);		 uaddr = 0xbeef0000
-> >>
-> >> 	ptr = kaddr + (uaddr & ~PAGE_MASK);
-> >>
-> >> 	clear_bit(1 + 32, ptr);
-> >>
-> >>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
-> >>                                   ^
-> >> 				bit 33 of 0xbeef0000
-> >>
-> >> I don't think that's what you expected!
-> > 
-> > I believe the above can be fixed with:
-> > 
-> > 	bit_offset = uaddr & (sizeof(unsigned long) - 1);
-> > 	if (bit_offset) {
-> > #ifdef CONFIG_CPU_BIG_ENDIAN
-> > 		bit_offest = 0;
-> > #else
-> > 		bit_offset *= BITS_PER_BYTE;
-> > #endif
-> > 		uaddr &= ~(sizeof(unsigned long) - 1);
-> > 	}
-> > 
-> > -- Steve
-> 
-> 
-> Actually, after looking more in depth at that, it seems like there are
-> actually 2 problems that can happen.
-> 
-> First one is atomic access misalignment due to enable_size == 4 and
-> uaddr not being aligned on a (long) boundary on 64 bits architecture.
-> This can generate misaligned exceptions on various architectures. This
-> can be fixed in a more general way according to Masami snippet.
-> 
-> Second one that I can see is on 64 bits, big endian architectures with
-> enable_size == 4. In that case, the bit provided by the userspace won't
-> be correctly set since this code kind of assume that the atomic are done
-> on 32bits value. Since the kernel assume long sized atomic operation, on
-> big endian 64 bits architecture, the updated bit will actually be in the
-> next 32 bits word.
-> 
-> Can someone confirm my understanding ?
-> 
+=E2=80=A6ugh, thanks for catching that :|
 
-I have a ppc 64bit BE VM I've been validating this on. If we do the
-shifting within user_events (vs a generic set_bit_aligned approach)
-64bit BE does not need additional bit manipulation. However, if we were
-to blindly pass the address and bit as is to set_bit_aligned() it
-assumes the bit number is for a long, not a 32 bit word. So for that
-approach we would need to offset the bit in the unaligned case.
+yes you're completely right - NAK on this patch then
 
-Here's a patch I have that I've validated on ppc64 BE, aarch64 LE, and
-x86_64 LE. I personally feel more comfortable with this approach than
-the generic set_bit_aligned() one.
+On Fri, 2023-09-22 at 22:22 +0300, Imre Deak wrote:
+> On Fri, Sep 22, 2023 at 03:02:23PM -0400, Lyude Paul wrote:
+> >=20
+> > Oh! wow thank you for catching this:
+> >=20
+> > Reviewed-by: Lyude Paul <lyude@redhat.com>
+> >=20
+> > I will go and push this to drm-misc-next in just a moment
+> >=20
+> > On Fri, 2023-09-15 at 10:24 +0530, Ramya SR wrote:
+> > > Modeset mutex unlock is missing in drm_dp_mst_detect_port function.
+> > > This will lead to deadlock if calling the function multiple times in
+> > > an atomic operation, for example, getting imultiple MST ports status
+> > > for a DP MST bonding scenario.
+> > >=20
+> > > Signed-off-by: Ramya SR <quic_rsr@quicinc.com>
+> > > ---
+> > >  drivers/gpu/drm/display/drm_dp_mst_topology.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/=
+gpu/drm/display/drm_dp_mst_topology.c
+> > > index ed96cfc..d6512c4 100644
+> > > --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
+> > > +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
+> > > @@ -4154,7 +4154,7 @@ drm_dp_mst_detect_port(struct drm_connector *co=
+nnector,
+> > > =20
+> > >  	ret =3D drm_modeset_lock(&mgr->base.lock, ctx);
+> > >  	if (ret)
+> > > -		goto out;
+> > > +		goto fail;
+> > > =20
+> > >  	ret =3D connector_status_disconnected;
+> > > =20
+> > > @@ -4181,6 +4181,8 @@ drm_dp_mst_detect_port(struct drm_connector *co=
+nnector,
+> > >  		break;
+> > >  	}
+> > >  out:
+> > > +	drm_modeset_unlock(&mgr->base.lock);
+>=20
+> Isn't this supposed to be unlocked only by drm_helper_probe_detect_ctx()
+> / drm_helper_probe_detect() ?
+>=20
+> > > +fail:
+> > >  	drm_dp_mst_topology_put_port(port);
+> > >  	return ret;
+> > >  }
+> >=20
+> > --=20
+> > Cheers,
+> >  Lyude Paul (she/her)
+> >  Software Engineer at Red Hat
+> >=20
+>=20
 
-Thanks,
--Beau
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index e3f2b8d72e01..ae854374d0b7 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -162,6 +162,23 @@ struct user_event_validator {
- 	int			flags;
- };
- 
-+static inline void align_addr_bit(unsigned long *addr, int *bit)
-+{
-+	if (IS_ALIGNED(*addr, sizeof(long)))
-+		return;
-+
-+	*addr = ALIGN_DOWN(*addr, sizeof(long));
-+
-+	/*
-+	 * We only support 32 and 64 bit values. The only time we need
-+	 * to align is a 32 bit value on a 64 bit kernel, which on LE
-+	 * is always 32 bits, and on BE requires no change.
-+	 */
-+#ifdef __LITTLE_ENDIAN
-+	*bit += 32;
-+#endif
-+}
-+
- typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
- 				   void *tpdata, bool *faulted);
- 
-@@ -481,6 +498,7 @@ static int user_event_enabler_write(struct user_event_mm *mm,
- 	unsigned long *ptr;
- 	struct page *page;
- 	void *kaddr;
-+	int bit = ENABLE_BIT(enabler);
- 	int ret;
- 
- 	lockdep_assert_held(&event_mutex);
-@@ -496,6 +514,8 @@ static int user_event_enabler_write(struct user_event_mm *mm,
- 		     test_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler))))
- 		return -EBUSY;
- 
-+	align_addr_bit(&uaddr, &bit);
-+
- 	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
- 				    &page, NULL);
- 
-@@ -514,9 +534,9 @@ static int user_event_enabler_write(struct user_event_mm *mm,
- 
- 	/* Update bit atomically, user tracers must be atomic as well */
- 	if (enabler->event && enabler->event->status)
--		set_bit(ENABLE_BIT(enabler), ptr);
-+		set_bit(bit, ptr);
- 	else
--		clear_bit(ENABLE_BIT(enabler), ptr);
-+		clear_bit(bit, ptr);
- 
- 	kunmap_local(kaddr);
- 	unpin_user_pages_dirty_lock(&page, 1, true);
