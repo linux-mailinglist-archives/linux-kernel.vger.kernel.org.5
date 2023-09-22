@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE94C7AB3ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E757AB3EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjIVOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
+        id S231767AbjIVOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjIVOle (ORCPT
+        with ESMTP id S230419AbjIVOmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:41:34 -0400
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3E6CD7;
-        Fri, 22 Sep 2023 07:41:27 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
+        Fri, 22 Sep 2023 10:42:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AD7CCD
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:42:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id BF90341EF0;
-        Fri, 22 Sep 2023 14:41:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-        t=1695393686; bh=lDhC+n6ls99EOxSEkF04q5kIJM1xdvRrM1BoHUoxzoE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=lCVyEpNKQCiOkwKuzEN7YClEr0FV8ee6fdpIoePu3wqo/BR8OYcIxVrlzVg4qKhcZ
-         a+GZVHrQlbyWrxHoNQPd/nEn29qcX3iJBl4vFvA94HqjSirm18rNXwsYFEAVRhcYDT
-         lzlioitv43db755lYVTG1TMvqwa1rRMN5TLTSSLVksCdDR7g8xMunzi32UpR6Jl5Hp
-         7Iu/lHT25QI0iLFzhP0mHpIpQslyQ9XmmV8lobjqgeefXihivo7DMhZ/n1Zvqo9s9f
-         XDIDcnV0k4wwslzsNRxZZHN0Fyjqm2JB7aOazFhacD+/2Ue5fOdmrqDodqzCjxtJFJ
-         kHmXoAW0zU1vw==
-Message-ID: <f8b9079f-8ba8-080a-9cbe-6a9fc6530172@marcan.st>
-Date:   Fri, 22 Sep 2023 23:41:17 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH REGRESSION] iommu: Only allocate FQ domains for IOMMUs
- that support them
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-Cc:     Joerg Roedel <jroedel@suse.de>, Neal Gompa <neal@gompa.dev>,
-        "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, stable@vger.kernel.org,
-        regressions@lists.linux.dev
-References: <20230922-iommu-type-regression-v1-1-1ed3825b2c38@marcan.st>
- <2ea199a1-d20d-2fde-d1bd-76ecad14a68d@arm.com>
-Content-Language: en-US
-From:   Hector Martin <marcan@marcan.st>
-In-Reply-To: <2ea199a1-d20d-2fde-d1bd-76ecad14a68d@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6B5C721BAE;
+        Fri, 22 Sep 2023 14:42:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695393731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsYs7teImzxxwbkHtVuHpQ4+rO1AjDnXKTQlq1Zdx9U=;
+        b=BoygnDgUKJeQ1isvTeZiAi3i5Jyc0ksCMasRm8muiX970HbpKbfb5ysuwynC8q9/9hLfXV
+        G6KsiVQQxmhG5n2HYwN/4VYQ/zYXdn/mn7Svp8Ch0xcg46VUyqHsdVhaeQpa0F5kdBMEqe
+        mmTDsNDxkfRGAnFVoLQ6WdD0nigiViM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695393731;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsYs7teImzxxwbkHtVuHpQ4+rO1AjDnXKTQlq1Zdx9U=;
+        b=z7sVCah26jW0ALFIUaWtIb9Y5OAB5fiEH7PLjfuLzu+P4+ato3aiJGj9PZO0SMu7aJ/6qH
+        l1qfyhvUc+CNmnCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C4A113478;
+        Fri, 22 Sep 2023 14:42:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ohNTDMOnDWWABgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 22 Sep 2023 14:42:11 +0000
+Date:   Fri, 22 Sep 2023 16:42:10 +0200
+Message-ID: <875y42clrx.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Stefan Binding <sbinding@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v1 0/2] ALSA: cs35l41: prevent old firmwares using unsupported commands
+In-Reply-To: <8b5a22bf-73e3-45ca-b61b-38482c9caa39@sirena.org.uk>
+References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
+        <87a5tecm2m.wl-tiwai@suse.de>
+        <8b5a22bf-73e3-45ca-b61b-38482c9caa39@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,56 +72,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2023 23.21, Robin Murphy wrote:
-> On 22/09/2023 2:40 pm, Hector Martin wrote:
->> Commit a4fdd9762272 ("iommu: Use flush queue capability") hid the
->> IOMMU_DOMAIN_DMA_FQ domain type from domain allocation. A check was
->> introduced in iommu_dma_init_domain() to fall back if not supported, but
->> this check runs too late: by that point, devices have been attached to
->> the IOMMU, and the IOMMU driver might not expect FQ domains at
->> ops->attach_dev() time.
->>
->> Ensure that we immediately clamp FQ domains to plain DMA if not
->> supported by the driver at device attach time, not later.
->>
->> This regressed apple-dart in v6.5.
+On Fri, 22 Sep 2023 16:38:28 +0200,
+Mark Brown wrote:
 > 
-> Apologies, I missed that apple-dart was doing something unusual here. 
-> However, could we just fix that directly instead?
+> On Fri, Sep 22, 2023 at 04:35:45PM +0200, Takashi Iwai wrote:
+> > Stefan Binding wrote:
 > 
-> diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-> index 2082081402d3..0b8927508427 100644
-> --- a/drivers/iommu/apple-dart.c
-> +++ b/drivers/iommu/apple-dart.c
-> @@ -671,8 +671,7 @@ static int apple_dart_attach_dev(struct iommu_domain 
-> *domain,
->   		return ret;
+> > > This chain is based on Mark's branch, since the api change was made to
 > 
->   	switch (domain->type) {
-> -	case IOMMU_DOMAIN_DMA:
-> -	case IOMMU_DOMAIN_UNMANAGED:
-> +	default:
->   		ret = apple_dart_domain_add_streams(dart_domain, cfg);
->   		if (ret)
->   			return ret;
+> The term is patch series.
 > 
+> > > the function in sound/soc/codecs/cs35l41-lib.c.
 > 
-> That's pretty much where we're headed with the domain_alloc_paging 
-> redesign anyway - at the driver level, operations on a paging domain 
-> should not need to know about the higher-level usage intent of that 
-> domain. Ideally, blocking and identity domains should have their own 
-> distinct ops now as well, but that might be a bit too big a change for 
-> an immediate fix here.
+> > I'd need a PR from Mark before applying those, then.
+> 
+> Or if they're 6.7 stuff I guess I could just carry them.
 
-Sure, but it sounded like if there's a capability for this the core
-should probably use it and not expose the type at all to drivers that
-can't support it :)
+Yes, that's another option.  But there are already changes for HDA
+cs35l41 stuff for 6.7, and you might need to pull from my for-next
+branch beforehand.  A bit messy in either way.
 
-If you think defaulting to that branch in DART is correctly future-proof
-I can make that change. It's not the only driver checking the domain
-type in attach_dev(), but it might be the only one enumerating all the
-options instead of checking for specific cases only (e.g. intel checks
-for IOMMU_DOMAIN_IDENTITY).
 
-- Hector
+thanks,
 
+Takashi
