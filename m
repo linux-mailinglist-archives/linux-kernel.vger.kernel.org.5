@@ -2,157 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 602297AB771
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751BC7AB777
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbjIVR3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S233103AbjIVRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjIVR3S (ORCPT
+        with ESMTP id S231803AbjIVRcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:29:18 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3C4CE9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:29:10 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdf4752c3cso19960355ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695403750; x=1696008550; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qbLpDWUwgzzYPCRaxCJqmb/nv0TKtcjFS6rBqkmcgY=;
-        b=Rmhof9VCSONI8qKtDgVkygB/9N3WKOhTVZNbN1IpQGHyy1Cm/rnPQH4RrzAL29vhf3
-         3xaySxt4zTIVA2CfdsC4DkiOuyIczVoCn/OER7DaWq8UELh5Vzs+H4OBEVxC8Vc/SX5h
-         bIHZ4J+TKjAavKK3Ucs071KIMcDVhPmOY1RbU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695403750; x=1696008550;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4qbLpDWUwgzzYPCRaxCJqmb/nv0TKtcjFS6rBqkmcgY=;
-        b=Pg5fh3Zcfw6jZBggqXFELpoWe/f/lpComerTlk2eAVVfUo6cjon+QLvuxp82rhogeN
-         p99R8K98/4ahoWqx/8ZNGK7m1YxykiJcjd2QNokMiDILMHqaGucsAcsUPt2fkM/u8Tu7
-         DABUMO92Iu+wjjZrWfH/pvB0BqtiAGfcdYq11xIeIPK0WdkmUmV42DdPfuK8SjaAKnaM
-         +J3j9y59tBpRoUyrP5ezbmibSvkbpuWx9GKwwIqaFXgZ4FD1QVH92AvO6/34ZaOUkpcu
-         bAi00wKjfcDuDozmkXulCXdGmMjSh+MYPliBBxC+GV5sGOs96+MLMhxHv/m3oUE55LRt
-         LWoQ==
-X-Gm-Message-State: AOJu0Ywh0ZQe+D/h2Jdv09CCRjtGPtmdlNo+241dJzn6Td8Hr/EgSSKw
-        znDBi2bh5IoGZB1tuxlJb9mhjg==
-X-Google-Smtp-Source: AGHT+IFprIk4Oc3jWBV2j1a3pDx/Ze8ZIDNVrL59U3qfvbK8hQNgJ9g8aEnC5yMh7GVAVWbVI04fiw==
-X-Received: by 2002:a17:903:1109:b0:1bb:d59d:8c57 with SMTP id n9-20020a170903110900b001bbd59d8c57mr130556plh.18.1695403750017;
-        Fri, 22 Sep 2023 10:29:10 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a2-20020a170902ee8200b001b66a71a4a0sm3749961pld.32.2023.09.22.10.29.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:29:04 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dev@openvswitch.org,
-        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 14/14] net: sched: Annotate struct tc_pedit with __counted_by
-Date:   Fri, 22 Sep 2023 10:28:56 -0700
-Message-Id: <20230922172858.3822653-14-keescook@chromium.org>
+        Fri, 22 Sep 2023 13:32:00 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBBBCCA
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:31:15 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id jjzlq1mvsWkeLjjzlquvzJ; Fri, 22 Sep 2023 19:31:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695403873;
+        bh=0c+1nrtaYzzyJr/TMUP01Cfy/oTbrxiF1JN1eoAupD0=;
+        h=From:To:Cc:Subject:Date;
+        b=FoJEE5rScCw656R799hUGXQbCc58OWjIa5E8OZvqmu6yTdTIQQhNJUyZKtGbJahLj
+         uGzKNhw2pvojdCk1iB0lsqaf59t160v76sLLD7JIoDichUPuLplCYAc9iTMSgfBkhk
+         VXxnBjUqMaNNu5BH75vVfaovAz9m5EAS9EDxpJ3h3GZr4IthvKlZpSzuD6SL9FLbRn
+         n+T3HtE0AwUzD56cY/K5qxOY7cUCwwgz9Ij7yqJECG65djgye7BdOXRMQIChjXrZ/4
+         p1aGiDCGlFekZW3M0xGCc8cTEh6Cfh97Daz20o2ZdOqwBjf/JRaWH8whK34h2tqYnC
+         2zwEcPXPMRB6g==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 22 Sep 2023 19:31:13 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 0/3] fs: dlm: Fix some issues related to a buffer in dlm_create_debug_file()
+Date:   Fri, 22 Sep 2023 19:31:07 +0200
+Message-Id: <cover.1695403360.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922172449.work.906-kees@kernel.org>
-References: <20230922172449.work.906-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1707; i=keescook@chromium.org;
- h=from:subject; bh=2t/ZxOWEU2viROo1UvEVFxKv5vcCA9cvfvIY7AUZekI=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDc7XaxqapjSBY/SPBC/x04RSUHK/UIttRsNmQ
- BtJyGkw5WiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3O1wAKCRCJcvTf3G3A
- Jh2RD/0dUjACoTlVEZR/rUTfjAaXcRrjdWj/jRwZhzM+BFjVVrkW2WL4vF8f3OtpT1D37kVC6yt
- 5krc2k1SgI9i4EIbbTCTHDKmLHFMdeNJj5yXkZqGe2kQocQH6O2t4MI9L3hpREI1/FZbqJdfIhP
- O0VkQhiYhU7Nivmec62bTZvgzPCuVjj1QbCRx64McRRzIsCOrxiOJVxaLRn8MXUoag8JHHVtq8N
- C0GRweTtJdTEnvySnkIRdOv1aQSe9bmyu3n6UfeVSb99zjCgoSq6MzdIJIykmvV+ipPWiTOAHXF
- hgcx6Nj7vOyb/udVU8Sy2EyA+QKSJGjs4xelXxxAAt5eYBvynuKGDPq+5enCP676vNeK5lYIcdM
- tjR9wL1D90SxMp0k31niGjQQfhd2hZX207yL3hWHrAmFhKgGM58T6wcW6TJM3kyVNhw0Rsgw57I
- 3Qs/3XpeZD+0L6Yz/nZiIjHP5q0ZEHd8RaV5+RBsuMFOD4sSxoz2dpbIgFlMC5M6rSM3HYp9QRu
- 8bWPWgo4YgaynOSa3gYtVwkMV4winLmyJPRJ1RnvUXpyMWvyDnfoH38MZwyqVEnPdIXXbXejgny
- eDjoni1yyVaDXPOQYroF9Gf+NTE14pE11tfkIsS5+ql+igraxVPAXLcoQzTe5Q1j/7N7pAMKrKE ckNAllL+gDJgldQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+The goal of this serie is to remove a warning when building with W=1.
+(details in patch 2)
 
-As found with Coccinelle[1], add __counted_by for struct tc_pedit.
-Additionally, since the element count member must be set before accessing
-the annotated flexible array member, move its initialization earlier.
+Patch 1 is a preparation step. It is a no-op. The generated code is the same.
+Patch 2 is the real fix.
+Patch 3 is an additionnal clean-up.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+Christophe JAILLET (3):
+  fs: dlm: Simplify buffer size computation in dlm_create_debug_file()
+  fs: dlm: Fix the size of a buffer in dlm_create_debug_file()
+  fs: dlm: Remove some useless memset()
 
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- net/sched/act_pedit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/dlm/debug_fs.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
-index 1ef8fcfa9997..77c407eff3b0 100644
---- a/net/sched/act_pedit.c
-+++ b/net/sched/act_pedit.c
-@@ -515,11 +515,11 @@ static int tcf_pedit_dump(struct sk_buff *skb, struct tc_action *a,
- 		spin_unlock_bh(&p->tcf_lock);
- 		return -ENOBUFS;
- 	}
-+	opt->nkeys = parms->tcfp_nkeys;
- 
- 	memcpy(opt->keys, parms->tcfp_keys,
- 	       flex_array_size(opt, keys, parms->tcfp_nkeys));
- 	opt->index = p->tcf_index;
--	opt->nkeys = parms->tcfp_nkeys;
- 	opt->flags = parms->tcfp_flags;
- 	opt->action = p->tcf_action;
- 	opt->refcnt = refcount_read(&p->tcf_refcnt) - ref;
 -- 
 2.34.1
 
