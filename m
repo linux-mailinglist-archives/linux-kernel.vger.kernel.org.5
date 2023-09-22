@@ -2,167 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7D17AAF08
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8147AAF0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbjIVKBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        id S230398AbjIVKDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbjIVKBg (ORCPT
+        with ESMTP id S229460AbjIVKDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:01:36 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8630192
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:01:29 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=localhost)
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <r.czerwinski@pengutronix.de>)
-        id 1qjcyN-0002V0-3t; Fri, 22 Sep 2023 12:01:19 +0200
-From:   Rouven Czerwinski <r.czerwinski@pengutronix.de>
-To:     =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
-        =?UTF-8?q?M=C3=A5ns=20Rullg=C3=A5rd?= <mans@mansr.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        JaimeLiao <jaimeliao.tw@gmail.com>
-Cc:     kernel@pengutronix.de,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: check nand support for cache reads
-Date:   Fri, 22 Sep 2023 12:01:13 +0200
-Message-ID: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
-X-Mailer: git-send-email 2.42.0
+        Fri, 22 Sep 2023 06:03:45 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53288F;
+        Fri, 22 Sep 2023 03:03:38 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-321530de76eso1719744f8f.0;
+        Fri, 22 Sep 2023 03:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695377017; x=1695981817; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KBcsfPRS8DaMT9oS6VIAEGSvywjj27gVzR+KeQ+aIHQ=;
+        b=Wx8KCIzGjxkVaSbAoPKUhs4C7lez8kc5/HRVazgKt8c05a9YvsK/Hk1vCTChCJTnkk
+         m6nil4RFbPOuv9usuw/M+5+oibCooXi5XgbNeKk243IvKPSjBxR0RzZILzyrhjtUGRrF
+         AXBMEYGUD25eQ480Pxm5iJTWC2KPXI3Qd0qgh8PM8jCXOZWLivrtbBv6azN4WS4x8+IW
+         NMVFgtB6DT5PlE5yZen7PfTzYu0DH0vXvAa8c31AhbXQ2KButpKmelVd88Z3QCzTSUJx
+         1iVHI7AdmammtvvsIQlgDg7LT+1p1yLMR+SXmwwZsckrTbo3qwE7FNgX7IPpBgiNOxle
+         4qng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695377017; x=1695981817;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KBcsfPRS8DaMT9oS6VIAEGSvywjj27gVzR+KeQ+aIHQ=;
+        b=uB9DEeVuWUVNgdsjfT1YEm55Leh0HjylLhf9Wq1DM+YOjpV/5oVJv4qpGrVcMmS1CD
+         nmK40knZ1A2C0Gs4evTJ6tM42taU1btU9ZTLOvI+t9qpS7bWRkE3KOzDdWmG1cwkJ9NK
+         9UI/UAW6ghJFXogqhVHy73J0UnthDOTlL2+3S7Nxz8xjIv1IjpoNh+KEWCJi9AtWv5Jm
+         BVbuz/vYUYW/07HSIfL92ry5SAROrD8WR5P5bK7m5d8BnW+7SPDJWxFJf8AotdfY/HN9
+         9W/ZiYmTauWpp0+7p27sjPu7JL2UumRfIcsgiM1VXsmEtnwweXWnJpGcbve9tM7/xMtm
+         jyqA==
+X-Gm-Message-State: AOJu0YyObUfLs5f+Vy14XDy85luhv6uQK5Dtq7ZxKR3j3lvDE0Ji1DJy
+        lPE93DDylapshNONHrf5VAHe4baBTws=
+X-Google-Smtp-Source: AGHT+IHXNhCOVDN22ezuRhafl1JdUeYEasSvslBktkV+8XLJPt5Xn0a/NOQMNgS1lkaRklCIO6julg==
+X-Received: by 2002:a5d:59c3:0:b0:322:dbc6:8cf7 with SMTP id v3-20020a5d59c3000000b00322dbc68cf7mr2196407wry.16.1695377017142;
+        Fri, 22 Sep 2023 03:03:37 -0700 (PDT)
+Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
+        by smtp.gmail.com with ESMTPSA id x14-20020a05600c21ce00b003fefcbe7fa8sm4217852wmj.28.2023.09.22.03.03.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 03:03:36 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 22 Sep 2023 12:03:34 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Sandipan Das <sandipan.das@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        x86@kernel.org, peterz@infradead.org, leitao@debian.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, leit@fb.com, dcostantino@meta.com,
+        jhladky@redhat.com, eranian@google.com, ananth.narayan@amd.com,
+        ravi.bangoria@amd.com, santosh.shukla@amd.com
+Subject: Re: rom 3540f985652f41041e54ee82aa53e7dbd55739ae Mon Sep 17 00:00:00
+ 2001
+Message-ID: <ZQ1mdoMBJd4PCvZa@gmail.com>
+References: <20230914140604.267672-1-sandipan.das@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: r.czerwinski@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914140604.267672-1-sandipan.das@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both the JEDEC and ONFI specification say that read cache sequential
-support is an optional command. This means that we not only need to
-check whether the individual controller implements the command, we also
-need to check the parameter pages for both ONFI and JEDEC NAND flashes
-before enabling sequential cache reads.
 
-This fixes support for NAND flashes which don't support enabling cache
-reads, i.e. Samsung K9F4G08U0F or Toshiba TC58NVG0S3HTA00.
+* Sandipan Das <sandipan.das@amd.com> wrote:
 
-Sequential cache reads are no only available for ONFI and JEDEC devices,
-if individual vendors implement this, it needs to be enabled per vendor.
+> Zen 4 systems running buggy microcode can hit a WARN_ON() in the PMI
+> handler, as shown below, several times while perf runs. A simple
+> `perf top` run is enough to render the system unusable.
+> 
+> WARNING: CPU: 18 PID: 20608 at arch/x86/events/amd/core.c:944 amd_pmu_v2_handle_irq+0x1be/0x2b0
+> 
+> This happens because the Performance Counter Global Status Register
+> (PerfCntGlobalStatus) has one or more bits set which are considered
+> reserved according to the "AMD64 Architecture Programmer???s Manual,
+> Volume 2: System Programming, 24593". The document can be found at
+> https://www.amd.com/system/files/TechDocs/24593.pdf
+> 
+> To make this less intrusive, warn just once if any reserved bit is set
+> and prompt the user to update the microcode. Also sanitize the value to
+> what the code is handling, so that the overflow events continue to be
+> handled for the number of counters that are known to be sane.
+> 
+> Going forward, the following microcode patch levels are recommended
+> for Zen 4 processors in order to avoid such issues with reserved bits.
+> 
+>   Family=0x19 Model=0x11 Stepping=0x01: Patch=0x0a10113e
+>   Family=0x19 Model=0x11 Stepping=0x02: Patch=0x0a10123e
+>   Family=0x19 Model=0xa0 Stepping=0x01: Patch=0x0aa00116
+>   Family=0x19 Model=0xa0 Stepping=0x02: Patch=0x0aa00212
+> 
+> Commit f2eb058afc57 ("linux-firmware: Update AMD cpu microcode") from
+> the linux-firmware tree has binaries that meet the minimum required
+> patch levels.
+> 
+> Fixes: 7685665c390d ("perf/x86/amd/core: Add PerfMonV2 overflow handling")
+> Reported-by: Jirka Hladky <jhladky@redhat.com>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> [sandipan: add message to prompt users to update microcode]
+> [sandipan: rework commit message and call out required microcode levels]
+> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
 
-Tested on i.MX6Q with a Samsung NAND flash chip that doesn't support
-sequential reads.
+> v2:
+>  - Use pr_warn_once() instead of WARN_ON_ONCE() to prompt users to
+>    update microcode
+>  - Rework commit message and add details of minimum required microcode
+>    patch levels.
 
-Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
+1)
 
-Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
----
-@Martin, Måns:
-I would appreciate if you could test this on your hardware.
+I don't think you ever re-sent this patch with the correct subject line.
+( Or at least it's not in my mbox. )
 
-@Miguel:
-I didn't have the time to test this on ONFI/JEDEC devices with support
-yet, I'd be fine if you hold off merging this.
+2)
 
- drivers/mtd/nand/raw/nand_base.c  | 3 +++
- drivers/mtd/nand/raw/nand_jedec.c | 3 +++
- drivers/mtd/nand/raw/nand_onfi.c  | 3 +++
- include/linux/mtd/jedec.h         | 3 +++
- include/linux/mtd/onfi.h          | 1 +
- include/linux/mtd/rawnand.h       | 1 +
- 6 files changed, 14 insertions(+)
+So if the fix is from Breno Leitao originally, then there should be a:
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d4b55155aeae..1fcac403cee6 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5110,6 +5110,9 @@ static void rawnand_check_cont_read_support(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 
-+	if (!chip->parameters.supports_read_cache)
-+		return;
-+
- 	if (chip->read_retries)
- 		return;
- 
-diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
-index 836757717660..e6ecbc4b2493 100644
---- a/drivers/mtd/nand/raw/nand_jedec.c
-+++ b/drivers/mtd/nand/raw/nand_jedec.c
-@@ -94,6 +94,9 @@ int nand_jedec_detect(struct nand_chip *chip)
- 		goto free_jedec_param_page;
- 	}
- 
-+	if (p->opt_cmd[0] & JEDEC_OPT_CMD_READ_CACHE)
-+		chip->parameters.supports_read_cache;
-+
- 	memorg->pagesize = le32_to_cpu(p->byte_per_page);
- 	mtd->writesize = memorg->pagesize;
- 
-diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index f15ef90aec8c..bf79bf2b5866 100644
---- a/drivers/mtd/nand/raw/nand_onfi.c
-+++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -303,6 +303,9 @@ int nand_onfi_detect(struct nand_chip *chip)
- 			   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
- 	}
- 
-+	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_READ_CACHE)
-+		chip->parameters.supports_read_cache;
-+
- 	onfi = kzalloc(sizeof(*onfi), GFP_KERNEL);
- 	if (!onfi) {
- 		ret = -ENOMEM;
-diff --git a/include/linux/mtd/jedec.h b/include/linux/mtd/jedec.h
-index 0b6b59f7cfbd..56047a4e54c9 100644
---- a/include/linux/mtd/jedec.h
-+++ b/include/linux/mtd/jedec.h
-@@ -21,6 +21,9 @@ struct jedec_ecc_info {
- /* JEDEC features */
- #define JEDEC_FEATURE_16_BIT_BUS	(1 << 0)
- 
-+/* JEDEC Optional Commands */
-+#define JEDEC_OPT_CMD_READ_CACHE	BIT(1)
-+
- struct nand_jedec_params {
- 	/* rev info and features block */
- 	/* 'J' 'E' 'S' 'D'  */
-diff --git a/include/linux/mtd/onfi.h b/include/linux/mtd/onfi.h
-index a7376f9beddf..55ab2e4d62f9 100644
---- a/include/linux/mtd/onfi.h
-+++ b/include/linux/mtd/onfi.h
-@@ -55,6 +55,7 @@
- #define ONFI_SUBFEATURE_PARAM_LEN	4
- 
- /* ONFI optional commands SET/GET FEATURES supported? */
-+#define ONFI_OPT_CMD_READ_CACHE		BIT(1)
- #define ONFI_OPT_CMD_SET_GET_FEATURES	BIT(2)
- 
- struct nand_onfi_params {
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 90a141ba2a5a..766856fcaba8 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -233,6 +233,7 @@ struct nand_parameters {
- 	/* Generic parameters */
- 	const char *model;
- 	bool supports_set_get_features;
-+	bool supports_read_cache;
- 	DECLARE_BITMAP(set_feature_list, ONFI_FEATURE_NUMBER);
- 	DECLARE_BITMAP(get_feature_list, ONFI_FEATURE_NUMBER);
- 
--- 
-2.42.0
+   From: Breno Leitao <leitao@debian.org>
 
+at the beginning of the patch to make authorship clear.
+
+You might also want to add:
+
+  Co-developed-by: Sandipan Das <sandipan.das@amd.com>
+
+to make your contributions clear.
+
+Thanks,
+
+	Ingo
