@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335807AAB83
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C7B7AAC55
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbjIVIFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S232638AbjIVIP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjIVIFf (ORCPT
+        with ESMTP id S232153AbjIVIP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:05:35 -0400
+        Fri, 22 Sep 2023 04:15:27 -0400
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA000E55
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:04:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCB5E77
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:04:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         sang-engineering.com; h=from:to:cc:subject:date:message-id
         :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=k1; bh=WAAxDZzPxYcCGm21BNyqSjh4x8SKsO8gvU5+0ZgsA/8=; b=T0UiFe
-        q1th/GBTpGw+oKYS2+mS4LDfO9FUIzWlVBdF9TuuuVVP/qtjLSD41biuOPvvs+jn
-        kEM74tbnZhqk1R44Nuk3Ap7SF+Gpim+aVxCl254VJe+dxzHAFFgqFcLidWWMtrzg
-        F2rD8oq8dYrowr2XWsN+xOhjSHVz/Pol2tiJtt0AM9SXRf5CinVLQyl7rFgD54HL
-        qErJ9iAml7MI4+RJdslcVhoiTDVsMnh8vlClBpqv0FJR2TUR+TTKxieo/vbHNrnA
-        TpGkb1aaYAPhoP+x81twW0AOadF7Bps6jRCdNLHHvYQO/Jr5G/9WjnYxX112rQSC
-        FjRgIk8qD/0e59dA==
-Received: (qmail 1310933 invoked from network); 22 Sep 2023 10:04:28 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 10:04:28 +0200
-X-UD-Smtp-Session: l3s3148p1@GEnEDu4FdMIujntX
+         s=k1; bh=pHJcS4UElq8U7kAaQXym1rTExhuP+pYyemAHmyY2Czw=; b=icSGGA
+        Gfx3nv8ST6SL5e7NRDXsWtKNN50lhY7mgiTjey35koSVNpgWQ00ZyDw6P1wD2S3X
+        Wijo4LbPdMVGmv47f30bvqsvhF96yYBk/RoRaI9V1Xp2UDUCgdt02CMIrxbd2ugm
+        MpK22LQenJwGNdH9wzL89eBaGiqZXFicglg/UwNjlYdiaON8tpE8m8kt7NPLkTyQ
+        lgQqsUVbJSWIK7dN822qesVkAujBLCOb36Q0bXRtBeNVY4Ti2fA7Nhv11H7LTokK
+        rxKchCoFolOSNWHNbpWxwAlRHoJN1efSK7IE+ogk7ZEbMrEtkrmkNr5afuTTOFSY
+        4l4XAGc7lEazAReA==
+Received: (qmail 1310986 invoked from network); 22 Sep 2023 10:04:29 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 10:04:29 +0200
+X-UD-Smtp-Session: l3s3148p1@DQrODu4FesIujntX
 From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
 To:     linux-renesas-soc@vger.kernel.org
 Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
+        Antti Palosaari <crope@iki.fi>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] media: i2c: drop check because i2c_unregister_device() is NULL safe
-Date:   Fri, 22 Sep 2023 10:04:19 +0200
-Message-Id: <20230922080421.35145-3-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 3/3] media: dvb-frontends: drop check because i2c_unregister_device() is NULL safe
+Date:   Fri, 22 Sep 2023 10:04:20 +0200
+Message-Id: <20230922080421.35145-4-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230922080421.35145-1-wsa+renesas@sang-engineering.com>
 References: <20230922080421.35145-1-wsa+renesas@sang-engineering.com>
@@ -63,22 +59,22 @@ Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
 Build tested only. Please apply to your tree.
 
- drivers/media/i2c/rdacm20.c | 3 +--
+ drivers/media/dvb-frontends/m88ds3103.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-index f4e2e2f3972a..b4647bda8c21 100644
---- a/drivers/media/i2c/rdacm20.c
-+++ b/drivers/media/i2c/rdacm20.c
-@@ -625,8 +625,7 @@ static int rdacm20_probe(struct i2c_client *client)
- 	v4l2_ctrl_handler_free(&dev->ctrls);
- error:
- 	media_entity_cleanup(&dev->sd.entity);
--	if (dev->sensor)
--		i2c_unregister_device(dev->sensor);
-+	i2c_unregister_device(dev->sensor);
+diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+index cf037b61b226..26c67ef05d13 100644
+--- a/drivers/media/dvb-frontends/m88ds3103.c
++++ b/drivers/media/dvb-frontends/m88ds3103.c
+@@ -1920,8 +1920,7 @@ static void m88ds3103_remove(struct i2c_client *client)
  
- 	dev_err(&client->dev, "probe failed\n");
+ 	dev_dbg(&client->dev, "\n");
+ 
+-	if (dev->dt_client)
+-		i2c_unregister_device(dev->dt_client);
++	i2c_unregister_device(dev->dt_client);
+ 
+ 	i2c_mux_del_adapters(dev->muxc);
  
 -- 
 2.30.2
