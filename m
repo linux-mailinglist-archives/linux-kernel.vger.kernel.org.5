@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAB57AB987
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C3D7AB98E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbjIVSpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        id S232969AbjIVSrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233267AbjIVSpg (ORCPT
+        with ESMTP id S229526AbjIVSrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:45:36 -0400
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ACCCE
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:45:30 -0700 (PDT)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1d661636928so3630795fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:45:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695408330; x=1696013130;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GHvNmYe/7oDClcplq/l4st43cibTO0++q9/bZ4CRfVg=;
-        b=hA35T5szPub7FAK7Vs4/v2lSn7PxQ1Co1+dVH7+qi9Q4Uu/TLbUI1jvCM9pjne6EPU
-         F+L8EqiQi41gE/xHRxcamIvYR/nMn/+2yi7NSc3vWIK3YOgdjxkZKcbNRA2iX3OEsZXh
-         rX7OUfHKdS2SSIem/uCWRgXHwMKlLGJMary88hmOwjv1Mc4ciMfqEMKHbDMqvx5D4tLz
-         DFIsZFWAMvoVuK18snx3+/PqLQePkkQbHpwpe/sqbgrdZPmtf63XtjET68AoVS9kzJhS
-         BBWjlBC5nHUiVZ7mVo9hkvdv+4N9Bu47SZphcMwgGWG8jc03/Nb/CSHf11neklsXEBfD
-         5WEw==
-X-Gm-Message-State: AOJu0Yws0b+lPIEJ1h0JctlT5/3xENGgkdpnwT9UeceV+IoL78tZjcP1
-        RDcKut2KEqFjJpcaPQZ6v56q6mANesvqh2jyS7smeJqoYVt5
-X-Google-Smtp-Source: AGHT+IFiASI9I+d8YTUCo6Y0vNaIA/fxB263Ct4bKd8VHzbQGqJwkImy0blDArhh27yCdEN8Po8MmPHoyJQnS02bMBtbXz2usie9
+        Fri, 22 Sep 2023 14:47:20 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD107A9;
+        Fri, 22 Sep 2023 11:47:14 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38MIkSKe091507;
+        Fri, 22 Sep 2023 13:46:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695408388;
+        bh=cq21rBVdOpIQWHJQomoMydox8rjIZNV029jEU1u+BA0=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=RUtV8dMGc+ffZFwHwkBFZhGlhMRkErwJNIGn43Vsh5vEhoyGLsE+RQDySJ+ZGE4Zc
+         nkrzG4sX3h3UtBpLUbwxOAfjeCb4MZK3E8QyjRvpDa/gQ1LcYGWj9i/VA8x2e5NVsS
+         js44uEISyfKh7gULgQwAlwwAmZJhTGUwqjvlymtU=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38MIkSJB033965
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 22 Sep 2023 13:46:28 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 22
+ Sep 2023 13:46:27 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 22 Sep 2023 13:46:27 -0500
+Received: from [10.250.38.120] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38MIkQJO022248;
+        Fri, 22 Sep 2023 13:46:26 -0500
+Message-ID: <7e43a7e0-f6af-94da-59db-377b790ca363@ti.com>
+Date:   Fri, 22 Sep 2023 13:46:26 -0500
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:a899:b0:1dc:27f6:79df with SMTP id
- eb25-20020a056870a89900b001dc27f679dfmr101638oab.2.1695408330133; Fri, 22 Sep
- 2023 11:45:30 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 11:45:30 -0700
-In-Reply-To: <CABNemfqP+=-ttkMwLWTQfoio9yQvHS+yBe6n7CJ0jBoWpF907g@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004456170605f703e5@google.com>
-Subject: Re: [syzbot] [mm?] linux-next test error: WARNING in page_add_anon_rmap
-From:   syzbot <syzbot+6ccbcd15a17f3e1cde38@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, w1s2d5@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 04/20] drm/imagination/uapi: Add PowerVR driver UAPI
+Content-Language: en-US
+To:     Adam Jackson <ajax@redhat.com>,
+        Sarah Walker <sarah.walker@imgtec.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-doc@vger.kernel.org>,
+        <hns@goldelico.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <matthew.brost@intel.com>, <corbet@lwn.net>,
+        <luben.tuikov@amd.com>, <dakr@redhat.com>,
+        <donald.robson@imgtec.com>, <devicetree@vger.kernel.org>,
+        <conor+dt@kernel.org>, <mripard@kernel.org>,
+        <matt.coster@imgtec.com>, <robh+dt@kernel.org>,
+        <faith.ekstrand@collabora.com>, <linux-kernel@vger.kernel.org>,
+        <boris.brezillon@collabora.com>, <tzimmermann@suse.de>,
+        <christian.koenig@amd.com>
+References: <20230906095542.3280699-1-sarah.walker@imgtec.com>
+ <20230906095542.3280699-5-sarah.walker@imgtec.com>
+ <CAD_bs+qdnVPYbmtzqcpCC8xdLVNvDb8uNccsd=P6YX+sgMG6Xg@mail.gmail.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <CAD_bs+qdnVPYbmtzqcpCC8xdLVNvDb8uNccsd=P6YX+sgMG6Xg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 9/22/23 12:57 PM, Adam Jackson wrote:
+> 
+> On Wed, Sep 6, 2023 at 5:57 AM Sarah Walker <sarah.walker@imgtec.com <mailto:sarah.walker@imgtec.com>> wrote:
+> 
+> 
+>     + *    :BYPASS_CACHE: There are very few situations where this flag is useful.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Could you also expand on what these few useful situations are?
 
-Reported-and-tested-by: syzbot+6ccbcd15a17f3e1cde38@syzkaller.appspotmail.com
+Andrew
 
-Tested on:
-
-commit:         7fc7222d Add linux-next specific files for 20230918
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=79253779bcbe3130
-dashboard link: https://syzkaller.appspot.com/bug?extid=6ccbcd15a17f3e1cde38
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+>     + *       By default, the device flushes its memory caches after every job.
+> 
+> 
+> Presumably BYPASS_CACHE does something other than "after every job". Is that "never" or something else? Would be good if the comment was explicit.
+> - ajax
