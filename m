@@ -2,128 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542FC7AB8F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CE87AB8F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbjIVSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
+        id S230322AbjIVSR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbjIVSPi (ORCPT
+        with ESMTP id S229932AbjIVSR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:15:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEEAA7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:15:32 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8191a1d5acso3319981276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:15:32 -0700 (PDT)
+        Fri, 22 Sep 2023 14:17:26 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091BA9F
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:17:20 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34deefc2016so7730795ab.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:17:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695406531; x=1696011331; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yisyY0FcmMhu1UJ/oaYmui5M8B9s34gvtt+JkaXaZJE=;
-        b=xKbjJFawPq3P2Rqp0AoelvxFAsmjkVVaYt6RF52xu7mhDWUmn2RIYRafiPyWdLGAdx
-         1HFv9cniAx/PuVPNcOqYzqox0JCKxh3AE9S6oSqiKJZ5UkWVgsXjk7+slaDn6pxBonJh
-         bApAhc7pKa/QKigrL94SXCkbJfwGaWtznY4ieIK5JKzD4AQGQLLlih7bxC0lfH57PZvL
-         /2azdufvdUW3iI1JDAisciV2wrh4uOKZd4GaoK2rkZa3qLHw3hrhJ+dv2jDBsnVb4krP
-         5bpnTGbt7g6dEO93n8f0nHygmpuQTXBT1+z17xeTPRMsfJM6rC/XkxyD2pgB8iSy5MZq
-         bY/g==
+        d=gmail.com; s=20230601; t=1695406639; x=1696011439; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aNM5qFpuQrwUs+7E90Z8RXHKxODmGjt566L854L1cyY=;
+        b=f8Xu1n9DKITCfh6xg3x3f4i30pXwiYxdg5V1SqmRhHXkqaK4W0zxWCnAghfqflhoHG
+         Z+1jFgtCux6dd7ZQXQ9a4/2cBoMRDaz3VM/f+k0+vT0z9BDzc5iMocOKrtwL5fbSqU5Y
+         HSnVLE969EtaahtX6JZmClimmGMKAUAA+pMuKNbQqRmnJ9BrRuRRfdDK3NN2lRTMF/EF
+         +aTNm+4jLL+W+h/X37X/v92/FzLjJItlbGPVHPCEGNw9uMHzgiBid8R4mgr9OAyk+B24
+         IW96TBrQ6WPPAuz9QX+MJnoGfpX2knshZDPazYwcXLBj+GugPN+OvwQlAQ0j+43SjCga
+         aAmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695406531; x=1696011331;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yisyY0FcmMhu1UJ/oaYmui5M8B9s34gvtt+JkaXaZJE=;
-        b=e22N2eTrYXeT0/QVVOborCFwYPO/QxKjZnJeZUO/GKmIsZHd99RwmJgSX34cFTGU+x
-         52K9/5AXUSNb1Tk2K+yyfrGhEh/NXnDsCKS5LukovF4PWHN4VBemUSWZ4EWvoWTo7c1D
-         48CCDhMTmtapIafUgPpAqDxLHroyCXIS5QTqxnzWsBYzU0EzyEakdqxRJotNtW0iluYg
-         UK9aBr/0fWCgg4vVvrVZLCibSupM66a+CS+nB3/LALZyev2VYAacngLgHAQGXBGhfY/c
-         XiYJLMpoeDQYRji1GTo+owxvIvrGZTgJCHl+836JwAXcZUBRh8uqP/PiMb0zDQKSeHxc
-         QOVA==
-X-Gm-Message-State: AOJu0YyjGHTtX5dx5YZYuGRNfAjOpoEq5RerM5mwNXbwWrGyRA/X2C78
-        NzZpAM4h7Y7GXaKP7dkPRxGDNmJ8QSLKxAriSAc=
-X-Google-Smtp-Source: AGHT+IFQ1zANXEZ45PUN85d3Byff5vsjkSZ9yZxDFGwfcMj4yS/9JsNcjoZvrTXXNE/JR+PhfTyQ2mp5VnDjWOxSv2c=
-X-Received: from saranyamohan.svl.corp.google.com ([2620:15c:2a3:200:bdd4:4eee:5b8e:9273])
- (user=saranyamohan job=sendgmr) by 2002:a25:316:0:b0:d7b:8d0c:43f1 with SMTP
- id 22-20020a250316000000b00d7b8d0c43f1mr784ybd.9.1695406531401; Fri, 22 Sep
- 2023 11:15:31 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 11:15:28 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922181528.366670-1-saranyamohan@google.com>
-Subject: [PATCH 6.1] block: fix use-after-free of q->q_usage_counter
-From:   Saranya Muruganandam <saranyamohan@google.com>
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, stable@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Wensheng <zhangwensheng@huaweicloud.com>,
-        Zhong Jinghua <zhongjinghua@huawei.com>,
-        Hillf Danton <hdanton@sina.com>, Yu Kuai <yukuai3@huawei.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Saranya Muruganandam <saranyamohan@google.com>
+        d=1e100.net; s=20230601; t=1695406639; x=1696011439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aNM5qFpuQrwUs+7E90Z8RXHKxODmGjt566L854L1cyY=;
+        b=PIEl4UzGuGbk/Rti8z1jgsBgHELUscpC6DarUY7BCkr0T6f9rtPwlhQqpAyTjbyXuP
+         XQX/YpzFfv/wS1nvpfNUWd3PqCPNqqlFQIUG8lMFu0ifmwIefyDzUZEBqpbE7H12flDZ
+         balv5KHlaoLCa7tsKYKlNSM+cJ1PXwPRL0kdTNBtEA8HVkWyLwhHmBqjU5chg1tq9dVq
+         ReRmixLQ2jcpuftLGuDyHTiTboTi2C5+rhcpoCFKCgl0kN4CdsqQRI2p+HrSrfngRN+W
+         +GniCvt+SamUR8i0+tnM6PNd28txW0HtecfD+Sh9YwoNXITSTSk0szr0Lv1x7lmD5We/
+         aeug==
+X-Gm-Message-State: AOJu0Yw0hDcLdckkQ8qbsSIma1nABCqf4Sx0TroWFEeIQ1bmRPeRIbmJ
+        4r90y9eC52BOEQZn8OQbnmkke1TeMkgZYJRwhgo=
+X-Google-Smtp-Source: AGHT+IH3vBuwlb7tT1ZO/MwNPf/qLy/ukjsoYKbcDRGSaUZyDgxOn51t2h6VWV/K44gsIhpmG1+w6x4QseJXh1HPWAk=
+X-Received: by 2002:a05:6e02:1bcb:b0:351:1ac0:e1cf with SMTP id
+ x11-20020a056e021bcb00b003511ac0e1cfmr391126ilv.4.1695406639285; Fri, 22 Sep
+ 2023 11:17:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230922172211.1704917-1-cerasuolodomenico@gmail.com>
+In-Reply-To: <20230922172211.1704917-1-cerasuolodomenico@gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Fri, 22 Sep 2023 11:17:08 -0700
+Message-ID: <CAKEwX=M3jxusnwx3weQFr-WYN-fONPgA-5d59eVJksaTOSsANA@mail.gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix potential memory corruption on duplicate store
+To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Cc:     sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
-
-commit d36a9ea5e7766961e753ee38d4c331bbe6ef659b upstream.
-
-For blk-mq, queue release handler is usually called after
-blk_mq_freeze_queue_wait() returns. However, the
-q_usage_counter->release() handler may not be run yet at that time, so
-this can cause a use-after-free.
-
-Fix the issue by moving percpu_ref_exit() into blk_free_queue_rcu().
-Since ->release() is called with rcu read lock held, it is agreed that
-the race should be covered in caller per discussion from the two links.
-
-Backport-notes: Not a clean cherry-pick since a lot has changed,
-however essentially the same fix.
-
-Reported-by: Zhang Wensheng <zhangwensheng@huaweicloud.com>
-Reported-by: Zhong Jinghua <zhongjinghua@huawei.com>
-Link: https://lore.kernel.org/linux-block/Y5prfOjyyjQKUrtH@T590/T/#u
-Link: https://lore.kernel.org/lkml/Y4%2FmzMd4evRg9yDi@fedora/
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: Yu Kuai <yukuai3@huawei.com>
-Cc: Dennis Zhou <dennis@kernel.org>
-Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20221215021629.74870-1-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
----
- block/blk-sysfs.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index a582ea0da74f..a82bdec923b2 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -737,6 +737,7 @@ static void blk_free_queue_rcu(struct rcu_head *rcu_head)
- 	struct request_queue *q = container_of(rcu_head, struct request_queue,
- 					       rcu_head);
- 
-+	percpu_ref_exit(&q->q_usage_counter);
- 	kmem_cache_free(blk_get_queue_kmem_cache(blk_queue_has_srcu(q)), q);
- }
- 
-@@ -762,8 +763,6 @@ static void blk_release_queue(struct kobject *kobj)
- 
- 	might_sleep();
- 
--	percpu_ref_exit(&q->q_usage_counter);
--
- 	if (q->poll_stat)
- 		blk_stat_remove_callback(q, q->poll_cb);
- 	blk_stat_free_callback(q->poll_cb);
--- 
-2.42.0.515.g380fc7ccd1-goog
-
+On Fri, Sep 22, 2023 at 10:22=E2=80=AFAM Domenico Cerasuolo
+<cerasuolodomenico@gmail.com> wrote:
+>
+> While stress-testing zswap a memory corruption was happening when writing
+> back pages. __frontswap_store used to check for duplicate entries before
+> attempting to store a page in zswap, this was because if the store fails
+> the old entry isn't removed from the tree. This change removes duplicate
+> entries in zswap_store before the actual attempt.
+>
+> Based on commit ce9ecca0238b ("Linux 6.6-rc2")
+>
+> Fixes: 42c06a0e8ebe ("mm: kill frontswap")
+> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Acked-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  mm/zswap.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 412b1409a0d7..9146f9f19061 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1218,6 +1218,19 @@ bool zswap_store(struct folio *folio)
+>         if (!zswap_enabled || !tree)
+>                 return false;
+>
+> +       /*
+> +        * If this is a duplicate, it must be removed before attempting t=
+o store
+> +        * it, otherwise, if the store fails the old page won't be remove=
+d from
+> +        * the tree, and it might be written back overriding the new data=
+.
+> +        */
+> +       spin_lock(&tree->lock);
+> +       dupentry =3D zswap_rb_search(&tree->rbroot, offset);
+> +       if (dupentry) {
+> +               zswap_duplicate_entry++;
+> +               zswap_invalidate_entry(tree, dupentry);
+> +       }
+> +       spin_unlock(&tree->lock);
+> +
+>         /*
+>          * XXX: zswap reclaim does not work with cgroups yet. Without a
+>          * cgroup-aware entry LRU, we will push out entries system-wide b=
+ased on
+> --
+> 2.34.1
+>
