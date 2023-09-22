@@ -2,93 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02047AB347
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597817AB350
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjIVOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
+        id S234221AbjIVOOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjIVOKR (ORCPT
+        with ESMTP id S234235AbjIVOOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:10:17 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D623100;
-        Fri, 22 Sep 2023 07:10:12 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MAlPgr013694;
-        Fri, 22 Sep 2023 14:10:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=oGkedumiF7qYscPq09Wq92YClO+TfRoVXGPIg+PD0HQ=;
- b=Iar2PsA+0E28/CsFqHGYd7r3UjZPVQpoujsfZeeSjbJ6/Qp2k+RrRyyTSk2CbcMe5kVi
- iGZkGYFWIfUJjQAU67QlAjfKXiGDpQztz/6nBuGrunS70v9JEp63IX3RAT8TqoPxjtnp
- fvxFXe9kr4U74CoyINvW/2jZEIzunz8pOp+63HSNgCYbR99Ix6/6AQgnpQxq0WaYTG9E
- utWo/L/2i/aQsHqTegA3hVbzngUQm1HBL3G2tPZ9KqjjP6uaVJT4Xqihmf6COf1BENfA
- en6G6bFxFgZWP4YG6i22r8+nwv0tNkDcj0lF3TazJuEeqcORzkPYQN3eKeGo+K+kY9U8 6A== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8txga2d8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 14:10:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MEA38a027467
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 14:10:03 GMT
-Received: from [10.48.243.100] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
- 2023 07:10:03 -0700
-Message-ID: <b5fa2ea0-d025-47e3-a1c3-eb7c2f6bc5b7@quicinc.com>
-Date:   Fri, 22 Sep 2023 07:10:02 -0700
+        Fri, 22 Sep 2023 10:14:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC59F19A;
+        Fri, 22 Sep 2023 07:14:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ABDAC43391;
+        Fri, 22 Sep 2023 14:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695392071;
+        bh=T8rFOp5c/QzIwjzIQ5gCHFQ+RtWQM1Gbc96XZKpVHU4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eK6VqpbwghzMdQi7kn4A4v1NS9ocmVHQZD5/dZTDQ40qJQonEckr5J8Ojdu1FOkLr
+         Rds5wpig51H4u4nPPK9hUd5NOHDcc63SAsqq5GsXxi6L0rUX6lNVRfjAPgvbj4l828
+         tLhVbGv4D6PEhZnKGv8aR6vuZeD2K4fG2qxaU7dVpH+5sk27kyHqDG11DlTbQ7f57I
+         86C29NH3uzAeAOAynZMOEBYzU5WXEjeuPLiMVFPf0iwBPxw4DficlLmwfePDKfc1Wo
+         enLtVffSfg4mk2dZNaupAKHUMV6lTTAH9k5y29xFqjZoPATR/OFdJ0sda/fgfmT+oe
+         y0nZigc4EwANA==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2c022ce8114so37445661fa.1;
+        Fri, 22 Sep 2023 07:14:31 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwH+dC4DLLQdAmrJZOo8/yzXDIYv6bqgOi39+85VQfkMedFuI6G
+        bN1WB0h7oQ01aoURI02zlLlMHBtZSufrT9tZDQ==
+X-Google-Smtp-Source: AGHT+IHLg3zvq6lxP7QDJhcamQt8J+/HhjHmr80OQTyA6zn7ImZUA3UUttinPjYNRGBZK7/dvEUb04D//DX6nR71X1s=
+X-Received: by 2002:a2e:b1c7:0:b0:2c0:3429:8167 with SMTP id
+ e7-20020a2eb1c7000000b002c034298167mr7423906lja.11.1695392069409; Fri, 22 Sep
+ 2023 07:14:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug] mhi: ath11k: resume after hibernation is not working
-Content-Language: en-US
-To:     Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
-        <kvalo@kernel.org>, <ath11k@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230922120040.15460-1-jtornosm@redhat.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20230922120040.15460-1-jtornosm@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 5eaN3bOQAHFkZHFd0mV6_XoLmwyPlDDd
-X-Proofpoint-GUID: 5eaN3bOQAHFkZHFd0mV6_XoLmwyPlDDd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_12,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=804 mlxscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220121
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid>
+In-Reply-To: <20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 22 Sep 2023 09:14:15 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+noP32-m5xdUCLFPFBXLxX9Ys1BNFM+9sga6KYTmDzqQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+noP32-m5xdUCLFPFBXLxX9Ys1BNFM+9sga6KYTmDzqQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] of: device: Support 2nd sources of probeable but
+ undiscoverable devices
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>, linux-input@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        andriy.shevchenko@linux.intel.com, broonie@kernel.org,
+        frowand.list@gmail.com, gregkh@linuxfoundation.org,
+        hdegoede@redhat.com, james.clark@arm.com, james@equiv.tech,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/2023 5:00 AM, Jose Ignacio Tornos Martinez wrote:
-> Hello,
-> 
-> We have several machines with QCNFA765 wireless card (WCN6856) and with
-> the same behavior: although hibernation seems to work, post resume is not
-> working due to the wireless card (if the wireless card is disabled or ath11k
-> driver is blacklisted, everything is working).
+On Thu, Sep 21, 2023 at 12:26=E2=80=AFPM Douglas Anderson <dianders@chromiu=
+m.org> wrote:
+>
+> Support for multiple "equivalent" sources for components (also known
+> as second sourcing components) is a standard practice that helps keep
+> cost down and also makes sure that if one component is unavailable due
+> to a shortage that we don't need to stop production for the whole
+> product.
+>
+> Some components are very easy to second source. eMMC, for instance, is
+> fully discoverable and probable so you can stuff a wide variety of
+> similar eMMC chips on your board and things will work without a hitch.
+>
+> Some components are more difficult to second source, specifically
+> because it's difficult for software to probe what component is present
+> on any given board. In cases like this software is provided
+> supplementary information to help it, like a GPIO strap or a SKU ID
+> programmed into an EEPROM. This helpful information can allow the
+> bootloader to select a different device tree. The various different
+> "SKUs" of different Chromebooks are examples of this.
+>
+> Some components are somewhere in between. These in-between components
+> are the subject of this patch. Specifically, these components are
+> easily "probeable" but not easily "discoverable".
+>
+> A good example of a probeable but undiscoverable device is an
+> i2c-connected touchscreen or trackpad. Two separate components may be
+> electrically compatible with each other and may have compatible power
+> sequencing requirements but may require different software. If
+> software is told about the different possible components (because it
+> can't discover them), it can safely probe them to figure out which
+> ones are present.
+>
+> On systems using device tree, if we want to tell the OS about all of
+> the different components we need to list them all in the device
+> tree. This leads to a problem. The multiple sources for components
+> likely use the same resources (GPIOs, interrupts, regulators). If the
+> OS tries to probe all of these components at the same time then it
+> will detect a resource conflict and that's a fatal error.
+>
+> The fact that Linux can't handle these probeable but undiscoverable
+> devices well has had a few consequences:
+> 1. In some cases, we've abandoned the idea of second sourcing
+>    components for a given board, which increases cost / generates
+>    manufacturing headaches.
+> 2. In some cases, we've been forced to add some sort of strapping /
+>    EEPROM to indicate which component is present. This adds difficulty
+>    to manufacturing / refurb processes.
+> 3. In some cases, we've managed to make things work by the skin of our
+>    teeth through slightly hacky solutions. Specifically, if we remove
+>    the "pinctrl" entry from the various options then it won't
+>    conflict. Regulators inherently can have more than one consumer, so
+>    as long as there are no GPIOs involved in power sequencing and
+>    probing devices then things can work. This is how
+>    "sc8280xp-lenovo-thinkpad-x13s" works and also how
+>    "mt8173-elm-hana" works.
+>
+> Let's attempt to do something better. Specifically, we'll allow
+> tagging nodes in the device tree as mutually exclusive from one
+> another. This says that only one of the components in this group is
+> present on any given board. To make it concrete, in my proposal this
+> looks like:
+>
+>   / {
+>     tp_ex_group: trackpad-exclusion-group {
+>     };
 
-This is a known issue being tracked by:
-https://bugzilla.kernel.org/show_bug.cgi?id=214649
+Interesting way to just get a unique identifier. But it could be any
+phandle not used by another group. So just point all the devices in a
+group to one of the devices in the group.
 
-A fix for this issue is under development.
+>   };
+>
+>   &i2c_bus {
+>     tp1: trackpad@10 {
+>       ...
+>       mutual-exclusion-group =3D <&tp_ex_group>;
+>     };
+>     tp2: trackpad@20 {
+>       ...
+>       mutual-exclusion-group =3D <&tp_ex_group>;
+>     };
+>     tp3: trackpad@30 {
+>       ...
+>       mutual-exclusion-group =3D <&tp_ex_group>;
+>     };
+>   };
+>
+> In Linux, we can make things work by simply only probing one of the
+> devices in the group at a time. We can make a mutex per group and
+> enforce locking that mutex around probe. If the first device that gets
+> the mutex fails to probe then it won't try again. If it succeeds then
+> it will acquire the shared resources and future devices (which we know
+> can't be present) will fail to get the shared resources. Future
+> patches could quiet down errors about failing to acquire shared
+> resources or failing to probe if a device is in a
+> mutual-exclusion-group.
 
-/jeff
+This seems like overkill to me. Do we really need groups and a mutex
+for each group? Worst case is what? 2-3 groups of 2-3 devices?
+Instead, what about extending "status" with another value
+("fail-needs-probe"? (fail-xxx is a documented value)). Currently, the
+kernel would just ignore nodes with that status. Then we can process
+those nodes separately 1-by-1. You may just have to change "status"
+via a changeset as there's already some support in some buses (I2C,
+SPI IIRC) for new devices showing up with overlays. I'm not really a
+fan of adding the probe mutex and would prefer if we can serialize
+this with just controlling "status". The challenge at that level is
+knowing if/when you have probed especially if we have to wait on
+modules to load. But if we must serialize with a mutex, with 1 group
+it could be a global mutex and a 1 bit flag in struct device instead.
 
+Rob
