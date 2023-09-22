@@ -2,494 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0381D7AA7B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DEB7AA7C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjIVEZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        id S230345AbjIVE3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbjIVEZM (ORCPT
+        with ESMTP id S230227AbjIVE3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:25:12 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DC1198;
-        Thu, 21 Sep 2023 21:25:04 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M4Or3E124790;
-        Thu, 21 Sep 2023 23:24:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695356693;
-        bh=VonG57fbqNjCppvnIT/oI0EDaHNzBKkijr2y/vpYeQo=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=bGmh01tMFDrT4ahuOXyw2MetUWH/9hPwzUMwD3Okw665BjhY/jbcp2xrh/P+WeDjO
-         tgsAzsE9jy1RSDJedXrMvxgbeCIG7abjIzGFgbdgW0UAx/5Q/ioSFIpol0Yz9NstbP
-         wc+5WDBpL2OSQH6qMwgjiikyWtLpuY2akICujuQQ=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M4OrVe018284
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Sep 2023 23:24:53 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Sep 2023 23:24:53 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Sep 2023 23:24:53 -0500
-Received: from [10.24.69.199] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M4OnOY021300;
-        Thu, 21 Sep 2023 23:24:49 -0500
-Message-ID: <cd2408af-55c4-6f59-dd0e-165fbf1a1c51@ti.com>
-Date:   Fri, 22 Sep 2023 09:54:48 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 3/4] arm64: dts: ti: k3-am654-idk: Add ICSSG Ethernet
- ports
-Content-Language: en-US
-To:     Andrew Davis <afd@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-References: <20230921060913.721336-1-danishanwar@ti.com>
- <20230921060913.721336-4-danishanwar@ti.com>
- <ca832fe3-d5cf-b075-324b-50da40794bb7@ti.com>
-From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <ca832fe3-d5cf-b075-324b-50da40794bb7@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 22 Sep 2023 00:29:12 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2058.outbound.protection.outlook.com [40.107.22.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E6D1AA;
+        Thu, 21 Sep 2023 21:28:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fIrY/v1vmG4R/C8F9oOcpRAMNazU0fJ5C9w4H88SiXDDTPKFLX1hDgsHkggzS1p8SkaRu8KwbpUCezerMouLacRmNbA7MNDZGa4grt5GatLhkbl6StogNbMNio6I0djFghhQBDi4gdGnBf2HdXYkwhXp8QVkMc82EemaF1uJm27zyNupnCjuULfeOD6u+pkXDfjw2kTCflPl6nXzbUKn+aTi9C27XKLsFQbXoHaibppyZy3juNGS9+e0LrQEGK16n91JEE8SD+WSJ/l7SEG6A0d0xZeyKVC78htjwAHMwxl3N8+9LiK1TYAGMV/CXFiCS6eysCsVjgittUY/Ldt73w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ch0fIy8u8ZzKD9dw6NfdlEgvdYMI3x8irCe6QTsdiEI=;
+ b=D7i39q61muuBz4F2TKw8gksm+EHXNncyi/QXqO4ON71mOPQitRNas6Ho7qGS4bQmYpAzitsixwsAfS/Lkvi2awp1QCKhi/B5Yn6NIN8J/nOBJShPGWUD9EP/zbftVAbMjK/5v0jUxDuDUB6B6ATJt/dm9naPIxG7JkmYpYPlyR6af2zOHSrKERwu6/bPssRBZfJJhWNf01nyLlSdmukI3pGEuVbbowFu3KcnL4Fh2fn0RnRjdgAVurC8PrLP0TBWtGh5BjLZDoGe8D4OY/pTm7nY96xFbXGfF/+MlK3fvBfstASixqigiEsIjsUm9bG/c1eeMPespms6DcSyfsdHIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ch0fIy8u8ZzKD9dw6NfdlEgvdYMI3x8irCe6QTsdiEI=;
+ b=VlLuyN0yLobAu9Q6AJhRPjiFactcunRp7s0BIn1W1wDJi4Q3Jl26EAg5+qESkj69ianvnjUXabLI2tugp+xReNxXHxWeLOdZJWLgmsQhfdT0KsSlNenazfOdan4baYYnyDRBbc9q2NaWlbRm1vIEDcIiK2rcPQty06cD+KXaxB4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AS8PR04MB8851.eurprd04.prod.outlook.com (2603:10a6:20b:42e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Fri, 22 Sep
+ 2023 04:28:57 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6792.026; Fri, 22 Sep 2023
+ 04:28:56 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     christophe.jaillet@wanadoo.fr
+Cc:     Frank.li@nxp.com, bhelgaas@google.com, hch@infradead.org,
+        imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: [PATCH v2 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Date:   Fri, 22 Sep 2023 00:28:36 -0400
+Message-Id: <20230922042836.3311689-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: PH7PR17CA0016.namprd17.prod.outlook.com
+ (2603:10b6:510:324::19) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB8851:EE_
+X-MS-Office365-Filtering-Correlation-Id: 705c4718-dbc7-470d-0730-08dbbb246f47
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gEnN5iZ3hfrZVgq0qL+t+CWfkapi/9ziOccaFx6xHJ2TFlbZaM25Y19xOeNyIUbrRrtk+AY9viyVyG/KYbJmHxP9jHPKec0RZIatVcV/C+rlzFb2f0vISbkiMGrbjda8AiwhvZk2Tj9iKRUW5oSUObMDuFxeHgAIz3sOdWXe7LilTUgKskybb8V7OfYIuNK8+m3Gz192DbW2l42ALtPIOrto8qJfsaYHP7D+PaJxh3RKtncdYXxAmZXOMwnrPuiayPl1Uima2SSu3gpe8sBGTGJ1mhzVwJYaAGOhX28H+zxyHoxdBwi8lRKv+NLQHHaKtDkH6ZoOE41n+qoLtzJNUDKsW+LID81DbsSYoQQ0UwXwT+znxZn2xkZ93OQAHpC/ItpRzC5iZepAatt7ssUuMgDvfsM+6DrbFjTH6AcC5qq4npz7XoNmjMIuY6wd5FqUWLuYSx1a00G6zj+y6dX8gd5dB46I54cUMpyVhwqbFpwx6CeYSDDgY5RTzH0LPSJkfwlLfvuwtyVrcKx0ABqARZIZYsDhBy4I5BPUL1sCrWyV7vS4y8ul09CKAOQqF56K04R8VhoxTUqNDAOepuSNc17bHwWVifSnFh/UW85pD8JQrPhctNoLrz1ntZxooSnm3MnjUWDoM+bhW58hLjjmvGOUo38sab1AMSirtURS2BY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(366004)(39860400002)(376002)(1800799009)(451199024)(186009)(6666004)(38350700002)(38100700002)(1076003)(6512007)(2616005)(86362001)(7416002)(4326008)(36756003)(5660300002)(8936002)(2906002)(6506007)(66476007)(66946007)(66556008)(6486002)(52116002)(6916009)(41300700001)(316002)(26005)(478600001)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WNcGkH5YfBpfyFMsHSCfaCh/tt0QnQyrp5v7z8+sMU5o17lGJrKjstxf5PWG?=
+ =?us-ascii?Q?VcpB/ssdWamagxNdqts83OqZEKL3Ck3SfIo2432ZL7KoQwzLnVKgxnJ8FycE?=
+ =?us-ascii?Q?dz/ycGNB5Q3NL0ifR4YAJWUQ5+vwDbY+JG9KGyYpCL+d0wF8VromGHVYac2k?=
+ =?us-ascii?Q?hftLwwZBEEX2sLbGcLoRzYEw/c1DygDStnf9nVq+5NpZuD2D/4LiPo8QyKJp?=
+ =?us-ascii?Q?OPH7RQeUhXEdakFdc4lpvoSf5+IAZaUSCJcVBw9co1QgRmazvaNcAVLHlug8?=
+ =?us-ascii?Q?khcohfX5jm7XQFsAAyULhipVziwCkXqN64unEzyaVPvLwyJm523/2cdx+pOI?=
+ =?us-ascii?Q?YfAr2tuPebEpmDu2OTXRKE1TovERZ+gyvLEhrzTwYWO0I19AdQ2emiUwoD0/?=
+ =?us-ascii?Q?K87aR2AYe21sX/7lfHBMbPXBBibOikyJQ8umW7rdfB40ldGPFmMkh6TR18PJ?=
+ =?us-ascii?Q?s19IPehqNFi7TLJkVZdrhyLj5mQkrBSMz4TPbe47n3TuK5XFGBrpECsnQgxs?=
+ =?us-ascii?Q?WqLdhfmHNvBDDunqMh591piBNRQQY7jSmPCOmEOrtdNrFzBdpeukiCK0UbTR?=
+ =?us-ascii?Q?BqTKIjdRk4eY2hUebsh1EabWTzOxDVfQCBBa12YrQio4HzuKvlEHUKARtkHg?=
+ =?us-ascii?Q?2sUsrNO9TtwDeMh5jSUUKBnzHLg25cjrb6cW5nAcBGSpbu+EhggavQ3raIaY?=
+ =?us-ascii?Q?+M6ERn03Hie7rTKiQNwbp1vbeCnOm/2KqooUlEnYj6xQ3e3JH4POFYEWgXZ2?=
+ =?us-ascii?Q?1+Ok36MqB24CCynpBaN2QthZRZM8XCeTw4AE7DKSCI3MVwwAERrQGkE2cbYv?=
+ =?us-ascii?Q?FVO4IOf9MgOz/CWPWOklDMn0HXz/bUp3PO9cV4c2ZARaU1mr3y40VuWu1f6u?=
+ =?us-ascii?Q?+Csgaa5Wbyltr7uIplL2FI7iHKt7v5HmzEA/bSpW3ZUR46+SCHozpdwIOrlk?=
+ =?us-ascii?Q?sDw9Nmj/3FD1qeib31dR7X0IXW5xTWnpFbzEoCEJmiW1PONifKP8t1Rt65R3?=
+ =?us-ascii?Q?/ggHZEhNX0LnU3gMmvxSteZYt5Yq23djdeaCwLfUZEDnnz0f2SGjy0QCYkAZ?=
+ =?us-ascii?Q?HHAWGuG8Yjyn8k0lC7b8Lm2YNFx/rb4av6bRrLP0Q+hP/Fa1bLZOJsq+h/yP?=
+ =?us-ascii?Q?dkgzwgT7K0VKOOh+bxB0Nr70AMTO3VQQ4tZoCCDVqAuV2wtmQz1rCO8Vo0fH?=
+ =?us-ascii?Q?hsM7CwfmwkdeFAfgwN33V3LE7hQQSmormJIM4hqz1SJz5ayO5RQAK1Zi4ADm?=
+ =?us-ascii?Q?yO6mTyZ3k/k/Vtv8aYDdnWrPJhbw0/H4RjGwgbh9gibdVqdSj5+7h1Ocv3QH?=
+ =?us-ascii?Q?HNTVJmUrTsNmdt7ZejS4mAux141ffvPihcXWQOhXAnoTbqmgsVHe9RBU/zbr?=
+ =?us-ascii?Q?yFj3/OIFVpNiwWskR7cy57+mQqCTiiMuhrEwCJfJ2WhzIQ/xL2jdcerhtJS3?=
+ =?us-ascii?Q?gew6kR+hiSNvv4DeuoiyaJZ2TmWqKsIXmM3BeQMiixHpUaCh11JDvya5hiEh?=
+ =?us-ascii?Q?9e5aN+Qui/8LamMZO7eBpcM2toSORGFDaNnIH0F3JWe7YO29lAOZ5WYAwGks?=
+ =?us-ascii?Q?3ZtBiP+AbhEyw4wIlko=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 705c4718-dbc7-470d-0730-08dbbb246f47
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 04:28:56.7340
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7hXAINvKAJocNDMqZ+KTdEDkY9Tqr2Qk6orHWU9L/aFISryKpBuviqoBPWRA6QnKNgQ9W5oDIQ/zmzNcJC86Jg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8851
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guanhua Gao <guanhua.gao@nxp.com>
 
+Set DMA mask and coherent DMA mask to enable 64-bit addressing.
 
-On 21/09/23 23:03, Andrew Davis wrote:
-> On 9/21/23 1:09 AM, MD Danish Anwar wrote:
->> The IDK application board has 4 Gigabit Ethernet ports.
->>
->> This patch adds support for the 4 Gigabit Ethernet ports
->> which are provided by ICSSG0 and ICSSG1.
->> The IEP0 SYNC_OUT0 pins are used for PPS out on the IDK card.
->>
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/Makefile          |   2 +
->>   arch/arm64/boot/dts/ti/k3-am654-idk.dtso | 296 +++++++++++++++++++++++
->>   2 files changed, 298 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/ti/k3-am654-idk.dtso
->>
->> diff --git a/arch/arm64/boot/dts/ti/Makefile
->> b/arch/arm64/boot/dts/ti/Makefile
->> index 85c91f5e832e..ff3f90bf0333 100644
->> --- a/arch/arm64/boot/dts/ti/Makefile
->> +++ b/arch/arm64/boot/dts/ti/Makefile
->> @@ -51,6 +51,7 @@ dtb-$(CONFIG_ARCH_K3) +=
->> k3-am6548-iot2050-advanced-m2.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am654-common-board.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
->> +dtb-$(CONFIG_ARCH_K3) += k3-am654-idk.dtbo
-> 
-> You'll want to apply this at build time to the base-board so this
-> overlay can be tested, no more orphan DTBO files[0]. So instead do:
-> 
+Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-I was not aware about having orphan DTBO files. I will do the suggested
-change.
+Notes:
+    change from v1 to v2
+    - Remove 32bit DMA mask set.
 
-> k3-am654-idk-dtbs := k3-am654-base-board.dtb k3-am654-idk.dtbo
-> dtb-$(CONFIG_ARCH_K3) += k3-am654-idk.dtb
-> 
-> Then you can drop the extra "+= -@" line below too, symbols
-> will be added for you.
-> 
-> Andrew
-> 
-> [0]
-> https://lore.kernel.org/all/CAL_Jsq+GR3hP6hFvFn2z5aXvSXnh9butD3aKZ-y_XJgx0_YPTw@mail.gmail.com/
-> 
->>   dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
->>     # Boards with J7200 SoC
->> @@ -79,3 +80,4 @@ DTC_FLAGS_k3-am62-lp-sk += -@
->>   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
->>   DTC_FLAGS_k3-j721e-common-proc-board += -@
->>   DTC_FLAGS_k3-j721s2-common-proc-board += -@
->> +DTC_FLAGS_k3-am654-common-board += -@
->> diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
->> b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
->> new file mode 100644
->> index 000000000000..7aa10827ed65
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
->> @@ -0,0 +1,296 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/**
->> + * DT overlay for IDK application board on AM654 EVM
->> + *
->> + * Copyright (C) 2018-2023 Texas Instruments Incorporated -
->> https://www.ti.com/
->> + */
->> +
->> +/dts-v1/;
->> +/plugin/;
->> +
->> +#include <dt-bindings/net/ti-dp83867.h>
->> +#include "k3-pinctrl.h"
->> +
->> +&{/} {
->> +    aliases {
->> +        ethernet3 = "/icssg0-eth/ethernet-ports/port@0";
->> +        ethernet4 = "/icssg0-eth/ethernet-ports/port@1";
->> +        ethernet5 = "/icssg1-eth/ethernet-ports/port@0";
->> +        ethernet6 = "/icssg1-eth/ethernet-ports/port@1";
->> +    };
->> +
->> +    /* Dual Ethernet application node on PRU-ICSSG0 */
->> +    icssg0_eth: icssg0-eth {
->> +        compatible = "ti,am654-icssg-prueth";
->> +        pinctrl-names = "default";
->> +        pinctrl-0 = <&icssg0_rgmii_pins_default>;
->> +        sram = <&msmc_ram>;
->> +        ti,prus = <&pru0_0>, <&rtu0_0>, <&tx_pru0_0>, <&pru0_1>,
->> <&rtu0_1>, <&tx_pru0_1>;
->> +        firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
->> +
->> +        ti,pruss-gp-mux-sel = <2>,    /* MII mode */
->> +                      <2>,
->> +                      <2>,
->> +                      <2>,    /* MII mode */
->> +                      <2>,
->> +                      <2>;
->> +
->> +        ti,mii-g-rt = <&icssg0_mii_g_rt>;
->> +        ti,mii-rt = <&icssg0_mii_rt>;
->> +        ti,iep = <&icssg0_iep0>,  <&icssg0_iep1>;
->> +
->> +        interrupt-parent = <&icssg0_intc>;
->> +        interrupts = <24 0 2>, <25 1 3>;
->> +        interrupt-names = "tx_ts0", "tx_ts1";
->> +
->> +        dmas = <&main_udmap 0xc100>, /* egress slice 0 */
->> +               <&main_udmap 0xc101>, /* egress slice 0 */
->> +               <&main_udmap 0xc102>, /* egress slice 0 */
->> +               <&main_udmap 0xc103>, /* egress slice 0 */
->> +               <&main_udmap 0xc104>, /* egress slice 1 */
->> +               <&main_udmap 0xc105>, /* egress slice 1 */
->> +               <&main_udmap 0xc106>, /* egress slice 1 */
->> +               <&main_udmap 0xc107>, /* egress slice 1 */
->> +
->> +               <&main_udmap 0x4100>, /* ingress slice 0 */
->> +               <&main_udmap 0x4101>, /* ingress slice 1 */
->> +               <&main_udmap 0x4102>, /* mgmnt rsp slice 0 */
->> +               <&main_udmap 0x4103>; /* mgmnt rsp slice 1 */
->> +        dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
->> +                "tx1-0", "tx1-1", "tx1-2", "tx1-3",
->> +                "rx0", "rx1";
->> +
->> +        ethernet-ports {
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            icssg0_emac0: port@0 {
->> +                reg = <0>;
->> +                phy-handle = <&icssg0_phy0>;
->> +                phy-mode = "rgmii-id";
->> +                ti,syscon-rgmii-delay = <&scm_conf 0x4100>;
->> +                /* Filled in by bootloader */
->> +                local-mac-address = [00 00 00 00 00 00];
->> +            };
->> +            icssg0_emac1: port@1 {
->> +                reg = <1>;
->> +                phy-handle = <&icssg0_phy1>;
->> +                phy-mode = "rgmii-id";
->> +                ti,syscon-rgmii-delay = <&scm_conf 0x4104>;
->> +                /* Filled in by bootloader */
->> +                local-mac-address = [00 00 00 00 00 00];
->> +            };
->> +        };
->> +    };
->> +
->> +    /* Dual Ethernet application node on PRU-ICSSG1 */
->> +    icssg1_eth: icssg1-eth {
->> +        compatible = "ti,am654-icssg-prueth";
->> +        pinctrl-names = "default";
->> +        pinctrl-0 = <&icssg1_rgmii_pins_default>;
->> +        sram = <&msmc_ram>;
->> +        ti,prus = <&pru1_0>, <&rtu1_0>, <&tx_pru1_0>, <&pru1_1>,
->> <&rtu1_1>, <&tx_pru1_1>;
->> +        firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
->> +
->> +        ti,pruss-gp-mux-sel = <2>,    /* MII mode */
->> +                      <2>,
->> +                      <2>,
->> +                      <2>,    /* MII mode */
->> +                      <2>,
->> +                      <2>;
->> +
->> +        ti,mii-g-rt = <&icssg1_mii_g_rt>;
->> +        ti,mii-rt = <&icssg1_mii_rt>;
->> +        ti,iep = <&icssg1_iep0>,  <&icssg1_iep1>;
->> +
->> +        interrupt-parent = <&icssg1_intc>;
->> +        interrupts = <24 0 2>, <25 1 3>;
->> +        interrupt-names = "tx_ts0", "tx_ts1";
->> +
->> +        dmas = <&main_udmap 0xc200>, /* egress slice 0 */
->> +               <&main_udmap 0xc201>, /* egress slice 0 */
->> +               <&main_udmap 0xc202>, /* egress slice 0 */
->> +               <&main_udmap 0xc203>, /* egress slice 0 */
->> +               <&main_udmap 0xc204>, /* egress slice 1 */
->> +               <&main_udmap 0xc205>, /* egress slice 1 */
->> +               <&main_udmap 0xc206>, /* egress slice 1 */
->> +               <&main_udmap 0xc207>, /* egress slice 1 */
->> +
->> +               <&main_udmap 0x4200>, /* ingress slice 0 */
->> +               <&main_udmap 0x4201>, /* ingress slice 1 */
->> +               <&main_udmap 0x4202>, /* mgmnt rsp slice 0 */
->> +               <&main_udmap 0x4203>; /* mgmnt rsp slice 1 */
->> +        dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
->> +                "tx1-0", "tx1-1", "tx1-2", "tx1-3",
->> +                "rx0", "rx1";
->> +
->> +        ethernet-ports {
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            icssg1_emac0: port@0 {
->> +                reg = <0>;
->> +                phy-handle = <&icssg1_phy0>;
->> +                phy-mode = "rgmii-id";
->> +                ti,syscon-rgmii-delay = <&scm_conf 0x4110>;
->> +                /* Filled in by bootloader */
->> +                local-mac-address = [00 00 00 00 00 00];
->> +            };
->> +            icssg1_emac1: port@1 {
->> +                reg = <1>;
->> +                phy-handle = <&icssg1_phy1>;
->> +                phy-mode = "rgmii-id";
->> +                ti,syscon-rgmii-delay = <&scm_conf 0x4114>;
->> +                /* Filled in by bootloader */
->> +                local-mac-address = [00 00 00 00 00 00];
->> +            };
->> +        };
->> +    };
->> +};
->> +
->> +&main_pmx0 {
->> +
->> +    icssg0_mdio_pins_default: icssg0-mdio-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x0294, PIN_INPUT, 0) /* (AE26)
->> PRG0_MDIO0_MDIO */
->> +            AM65X_IOPAD(0x0298, PIN_OUTPUT, 0) /* (AE28)
->> PRG0_MDIO0_MDC */
->> +        >;
->> +    };
->> +
->> +    icssg0_rgmii_pins_default: icssg0-rgmii-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x0244, PIN_INPUT, 2) /* (AB28)
->> PRG0_PRU1_GPO0.PRG0_RGMII2_RD0 */
->> +            AM65X_IOPAD(0x0248, PIN_INPUT, 2) /* (AC28)
->> PRG0_PRU1_GPO1.PRG0_RGMII2_RD1 */
->> +            AM65X_IOPAD(0x024c, PIN_INPUT, 2) /* (AC27)
->> PRG0_PRU1_GPO2.PRG0_RGMII2_RD2 */
->> +            AM65X_IOPAD(0x0250, PIN_INPUT, 2) /* (AB26)
->> PRG0_PRU1_GPO3.PRG0_RGMII2_RD3 */
->> +            AM65X_IOPAD(0x0274, PIN_OUTPUT, 2) /* (AC25)
->> PRG0_PRU1_GPO12.PRG0_RGMII2_TD0 */
->> +            AM65X_IOPAD(0x0278, PIN_OUTPUT, 2) /* (AD25)
->> PRG0_PRU1_GPO13.PRG0_RGMII2_TD1 */
->> +            AM65X_IOPAD(0x027c, PIN_OUTPUT, 2) /* (AD24)
->> PRG0_PRU1_GPO14.PRG0_RGMII2_TD2 */
->> +            AM65X_IOPAD(0x0280, PIN_OUTPUT, 2) /* (AE27)
->> PRG0_PRU1_GPO15.PRG0_RGMII2_TD3 */
->> +            AM65X_IOPAD(0x0284, PIN_INPUT, 2) /* (AC24)
->> PRG0_PRU1_GPO16.PRG0_RGMII2_TXC */
->> +            AM65X_IOPAD(0x0270, PIN_OUTPUT, 2) /* (AB24)
->> PRG0_PRU1_GPO11.PRG0_RGMII2_TX_CTL */
->> +            AM65X_IOPAD(0x025c, PIN_INPUT, 2) /* (AB27)
->> PRG0_PRU1_GPO6.PRG0_RGMII2_RXC */
->> +            AM65X_IOPAD(0x0254, PIN_INPUT, 2) /* (AA25)
->> PRG0_PRU1_GPO4.PRG0_RGMII2_RX_CTL */
->> +
->> +            AM65X_IOPAD(0x01f4, PIN_INPUT, 2) /* (V24)
->> PRG0_PRU0_GPO0.PRG0_RGMII1_RD0 */
->> +            AM65X_IOPAD(0x01f8, PIN_INPUT, 2) /* (W25)
->> PRG0_PRU0_GPO1.PRG0_RGMII1_RD1 */
->> +            AM65X_IOPAD(0x01fc, PIN_INPUT, 2) /* (W24)
->> PRG0_PRU0_GPO2.PRG0_RGMII1_RD2 */
->> +            AM65X_IOPAD(0x0200, PIN_INPUT, 2) /* (AA27)
->> PRG0_PRU0_GPO3.PRG0_RGMII1_RD3 */
->> +            AM65X_IOPAD(0x0224, PIN_OUTPUT, 2) /* (AD27)
->> PRG0_PRU0_GPO12.PRG0_RGMII1_TD0 */
->> +            AM65X_IOPAD(0x0228, PIN_OUTPUT, 2) /* (AC26)
->> PRG0_PRU0_GPO13.PRG0_RGMII1_TD1 */
->> +            AM65X_IOPAD(0x022c, PIN_OUTPUT, 2) /* (AD26)
->> PRG0_PRU0_GPO14.PRG0_RGMII1_TD2 */
->> +            AM65X_IOPAD(0x0230, PIN_OUTPUT, 2) /* (AA24)
->> PRG0_PRU0_GPO15.PRG0_RGMII1_TD3 */
->> +            AM65X_IOPAD(0x0234, PIN_INPUT, 2) /* (AD28)
->> PRG0_PRU0_GPO16.PRG0_RGMII1_TXC */
->> +            AM65X_IOPAD(0x0220, PIN_OUTPUT, 2) /* (AB25)
->> PRG0_PRU0_GPO11.PRG0_RGMII1_TX_CTL */
->> +            AM65X_IOPAD(0x020c, PIN_INPUT, 2) /* (Y25)
->> PRG0_PRU0_GPO6.PRG0_RGMII1_RXC */
->> +            AM65X_IOPAD(0x0204, PIN_INPUT, 2) /* (Y24)
->> PRG0_PRU0_GPO4.PRG0_RGMII1_RX_CTL */
->> +        >;
->> +    };
->> +
->> +    icssg0_iep0_pins_default: icssg0-iep0-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x0240, PIN_INPUT, 2) /* (U24)
->> PRG0_PRU0_GPO19.PRG0_IEP0_EDC_SYNC_OUT0 */
->> +        >;
->> +    };
->> +
->> +    icssg1_mdio_pins_default: icssg1-mdio-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x0180, PIN_INPUT, 0) /* (AD18)
->> PRG1_MDIO0_MDIO */
->> +            AM65X_IOPAD(0x0184, PIN_OUTPUT, 0) /* (AH18)
->> PRG1_MDIO0_MDC */
->> +        >;
->> +    };
->> +
->> +    icssg1_rgmii_pins_default: icssg1-rgmii-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x0130, PIN_INPUT, 2) /* (AH24)
->> PRG1_PRU1_GPO0.PRG1_RGMII2_RD0 */
->> +            AM65X_IOPAD(0x0134, PIN_INPUT, 2) /* (AH23)
->> PRG1_PRU1_GPO1.PRG1_RGMII2_RD1 */
->> +            AM65X_IOPAD(0x0138, PIN_INPUT, 2) /* (AG21)
->> PRG1_PRU1_GPO2.PRG1_RGMII2_RD2 */
->> +            AM65X_IOPAD(0x013c, PIN_INPUT, 2) /* (AH22)
->> PRG1_PRU1_GPO3.PRG1_RGMII2_RD3 */
->> +            AM65X_IOPAD(0x0160, PIN_OUTPUT, 2) /* (AE20)
->> PRG1_PRU1_GPO12.PRG1_RGMII2_TD0 */
->> +            AM65X_IOPAD(0x0164, PIN_OUTPUT, 2) /* (AF19)
->> PRG1_PRU1_GPO13.PRG1_RGMII2_TD1 */
->> +            AM65X_IOPAD(0x0168, PIN_OUTPUT, 2) /* (AH19)
->> PRG1_PRU1_GPO14.PRG1_RGMII2_TD2 */
->> +            AM65X_IOPAD(0x016c, PIN_OUTPUT, 2) /* (AG19)
->> PRG1_PRU1_GPO15.PRG1_RGMII2_TD3 */
->> +            AM65X_IOPAD(0x0170, PIN_INPUT, 2) /* (AE19)
->> PRG1_PRU1_GPO16.PRG1_RGMII2_TXC */
->> +            AM65X_IOPAD(0x015c, PIN_OUTPUT, 2) /* (AC20)
->> PRG1_PRU1_GPO11.PRG1_RGMII2_TX_CTL */
->> +            AM65X_IOPAD(0x0148, PIN_INPUT, 2) /* (AG22)
->> PRG1_PRU1_GPO6.PRG1_RGMII2_RXC */
->> +            AM65X_IOPAD(0x0140, PIN_INPUT, 2) /* (AE21)
->> PRG1_PRU1_GPO4.PRG1_RGMII2_RX_CTL */
->> +
->> +            AM65X_IOPAD(0x00e0, PIN_INPUT, 2) /* (AE22)
->> PRG1_PRU0_GPO0.PRG1_RGMII1_RD0 */
->> +            AM65X_IOPAD(0x00e4, PIN_INPUT, 2) /* (AG24)
->> PRG1_PRU0_GPO1.PRG1_RGMII1_RD1 */
->> +            AM65X_IOPAD(0x00e8, PIN_INPUT, 2) /* (AF23)
->> PRG1_PRU0_GPO2.PRG1_RGMII1_RD2 */
->> +            AM65X_IOPAD(0x00ec, PIN_INPUT, 2) /* (AD21)
->> PRG1_PRU0_GPO3.PRG1_RGMII1_RD3 */
->> +            AM65X_IOPAD(0x0110, PIN_OUTPUT, 2) /* (AH20)
->> PRG1_PRU0_GPO12.PRG1_RGMII1_TD0 */
->> +            AM65X_IOPAD(0x0114, PIN_OUTPUT, 2) /* (AH21)
->> PRG1_PRU0_GPO13.PRG1_RGMII1_TD1 */
->> +            AM65X_IOPAD(0x0118, PIN_OUTPUT, 2) /* (AG20)
->> PRG1_PRU0_GPO14.PRG1_RGMII1_TD2 */
->> +            AM65X_IOPAD(0x011c, PIN_OUTPUT, 2) /* (AD19)
->> PRG1_PRU0_GPO15.PRG1_RGMII1_TD3 */
->> +            AM65X_IOPAD(0x0120, PIN_INPUT, 2) /* (AD20)
->> PRG1_PRU0_GPO16.PRG1_RGMII1_TXC */
->> +            AM65X_IOPAD(0x010c, PIN_OUTPUT, 2) /* (AF21)
->> PRG1_PRU0_GPO11.PRG1_RGMII1_TX_CTL */
->> +            AM65X_IOPAD(0x00f8, PIN_INPUT, 2) /* (AF22)
->> PRG1_PRU0_GPO6.PRG1_RGMII1_RXC */
->> +            AM65X_IOPAD(0x00f0, PIN_INPUT, 2) /* (AG23)
->> PRG1_PRU0_GPO4.PRG1_RGMII1_RX_CTL */
->> +        >;
->> +    };
->> +
->> +    icssg1_iep0_pins_default: icssg1-iep0-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x012c, PIN_INPUT, 2) /* (AG26)
->> PRG1_PRU0_GPO19.PRG1_IEP0_EDC_SYNC_OUT0 */
->> +        >;
->> +    };
->> +};
->> +
->> +&icssg0_mdio {
->> +    status = "okay";
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&icssg0_mdio_pins_default>;
->> +    #address-cells = <1>;
->> +    #size-cells = <0>;
->> +
->> +    icssg0_phy0: ethernet-phy@0 {
->> +        reg = <0>;
->> +        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->> +        ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->> +    };
->> +
->> +    icssg0_phy1: ethernet-phy@3 {
->> +        reg = <3>;
->> +        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->> +        ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->> +    };
->> +};
->> +
->> +&icssg0_iep0 {
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&icssg0_iep0_pins_default>;
->> +};
->> +
->> +&icssg1_mdio {
->> +    status = "okay";
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&icssg1_mdio_pins_default>;
->> +    #address-cells = <1>;
->> +    #size-cells = <0>;
->> +
->> +    icssg1_phy0: ethernet-phy@0 {
->> +        reg = <0>;
->> +        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->> +        ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->> +    };
->> +
->> +    icssg1_phy1: ethernet-phy@3 {
->> +        reg = <3>;
->> +        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->> +        ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->> +    };
->> +};
->> +
->> +&icssg1_iep0 {
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&icssg1_iep0_pins_default>;
->> +};
+ drivers/pci/controller/dwc/pci-layerscape-ep.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+index de4c1758a6c33..026bf08611e13 100644
+--- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
++++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+@@ -249,6 +249,11 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+ 
+ 	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+ 
++	/* set 64-bit DMA mask and coherent DMA mask */
++	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
++	if (ret)
++		return ret;
++
+ 	platform_set_drvdata(pdev, pcie);
+ 
+ 	ret = dw_pcie_ep_init(&pci->ep);
 -- 
-Thanks and Regards,
-Danish
+2.34.1
+
