@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBFA7AB2DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C437AB2DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbjIVNmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
+        id S234154AbjIVNnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234124AbjIVNmW (ORCPT
+        with ESMTP id S234097AbjIVNnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 09:42:22 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86967195
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:42:16 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BED6F40E01AC;
-        Fri, 22 Sep 2023 13:42:14 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id eBn7QlVu5tOr; Fri, 22 Sep 2023 13:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695390132; bh=YP/GpBaY3aJ3tL35B85TIBU2s0KkU0hbtRyFI9Ecda0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bFtPNWapK5HnoRZVwOurOhvDdloKFJnED+Y+eAShLa7SJaJapLEXbE0LV3gCgSXkA
-         sjQuY9YGxRllFMICUa2mdzWF2FbdcB1lk1X5fq7XnCancG4Ni998bonb84kQmF2iAr
-         BVgU64PuGmgo4mB0rQ2hLUYhb8prnLHpMNPzKZM3wnSTjmdHEbqlCQns4h8RRt9bIF
-         SJqZiBFj2leOPiB9vLUsmY7lYooSU9AWVidkNh4JEaeEKmBbDPYdzhYLC4VAXGFyjN
-         QuAy3Ho8BFyDoWfgb4Tfj34aOTdzV9RnncvbGVrma1BtgOkCPwqUwAu8EVJjj2/HgG
-         AXChfsLsqDgsoGGPdPREecrMXBBbODtN0rb+olvFt2cgw+ykcuVkSFjUgNyRzL2p69
-         F0Z8d3C1CIjjehzrdkZG2H5MpSbysvS4Gq/FJ5kfwa6F/WOaQr/9Ytpjscfz2zDub+
-         2my3XeEp/sbG9oauwMaiRePz7Ti3OoU06Jc+I1dIVKVoA2Y2mnZUxsAvp1kk7UmdNI
-         2m0fYSc0Iz5Hk6DTjC2P3w686czElvvXEGpwtXnKS0FKXGVTI3J/5B20Rt44Il8z78
-         K5mOdCuVWaKRRQg4Op0oASjKMvAynNaCoyfHlPX0/Ge7MNo/xGnZhVLhRsUVvlTaAi
-         Boa31w1iofHvULqUs22zpFDw=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 044C240E01A1;
-        Fri, 22 Sep 2023 13:42:05 +0000 (UTC)
-Date:   Fri, 22 Sep 2023 15:42:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 18/30] x86/microcode: Handle "nosmt" correctly
-Message-ID: <20230922134200.GIZQ2ZqKbKM/bZHbQ4@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065501.899886649@linutronix.de>
+        Fri, 22 Sep 2023 09:43:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF12CE;
+        Fri, 22 Sep 2023 06:43:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F9E2C433C8;
+        Fri, 22 Sep 2023 13:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695390192;
+        bh=j5vHMaZNulwNl93JoC0zZV0oxBkj6KYr0yGyd8QJbdo=;
+        h=From:Date:Subject:To:Cc:From;
+        b=t4lJmsa9K4SYFVWm0+sQnhrluecCWx1/h2UO3tdYzyQcNFoCfXBzw4bfLsSDLM5Kx
+         D1FrCraIUpto64iBPGytXJiDuL8rmZ+8YiRCw+0Z0QZD3iEW8Gu1jhbjYKWG5zpphB
+         DEdXCPR2i2uNEZD436cJqqKEX8fORj60xmlaiav6NBjHg5Yz24XBhRx1z3kg3//l+E
+         wSaLRnXqdtQu8WjhwjdvzYTqxcocXGrqP0fT9CiU6pBwrU94hV6BRz0QtUn84QYcZA
+         TswjEsDPPdvC6DlOA5shAnsgAK/X2vxv9NrPZcvq5I8DMYIiO1BS1K8tPEzFhhTouo
+         ExFYVtjSAgA9A==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Fri, 22 Sep 2023 14:42:55 +0100
+Subject: [PATCH] kselftest/arm64: Validate SVCR in streaming SVE stress
+ test
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230912065501.899886649@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230922-arm64-ssve-validate-svcr-v1-1-f518960eaeda@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAN6ZDWUC/x3MSwqAMAwA0atI1gZstaJeRVyUGjXgj0SKIN7d4
+ vItZh5QEiaFLntAKLLysSeYPIOw+H0m5DEZbGHLorUGvWx1haqRMPqVR38RagyCpakbZ52rptB
+ Ayk+hie9/3Q/v+wEf+CEVagAAAA==
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1353; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=j5vHMaZNulwNl93JoC0zZV0oxBkj6KYr0yGyd8QJbdo=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlDZns61ov5A5gcZVF0zAW559z+8Z0qx8tajKUMDpd
+ tkqOphqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZQ2Z7AAKCRAk1otyXVSH0KOeB/
+ 9r2n2qtsZF3r9yWVP4nOm48WJ3hFIrTcWeN+ScxVXkjqsE9cdscqgh645B5PY54xzcJF6Q2NcPBtoZ
+ N0VTsagWZXTcbXrX5Phoy1xXlaUq6/KTSLL/PstOYP2i86Jkhxv3Rw8+Ajtuc55mogX0Vv5uXMGDxJ
+ /hVZsOgBKAtFMQgHo3D7aoR2HwjvmlYSDvYT4dudhvfMAVpz0hOyfHvnfeOAS+1l8LFQOCjNtyLKs5
+ o2FtzXBmcjaN6pQk1z9aeWniPT/tzo3WjgeJV8V2HKQBjhS9qw/hmToLC0rc96rBLWFl88NU6SqKrx
+ MH480RiImZ1PgC6BQbT9vEhnfF6rmT
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just textual nitpicks. Otherwise looks nice.
+In the ZA and ZT test programs we explicitly validate that PSTATE.ZA is as
+expected on each loop but we do not do the equivalent for our streaming
+SVE test, add a check that we are still in streaming mode on every loop
+in case that goes wrong.
 
-On Tue, Sep 12, 2023 at 09:58:12AM +0200, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> On CPUs where microcode loading is not NMI safe the SMT sibling which is
-> parked in one of the play_dead() variants, these parked CPUs still react
-> on NMIs.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/arm64/fp/sve-test.S | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-s/, these parked CPUs still react/still reacts/.
+diff --git a/tools/testing/selftests/arm64/fp/sve-test.S b/tools/testing/selftests/arm64/fp/sve-test.S
+index 4328895dfc87..547d077e3517 100644
+--- a/tools/testing/selftests/arm64/fp/sve-test.S
++++ b/tools/testing/selftests/arm64/fp/sve-test.S
+@@ -473,6 +473,13 @@ function _start
+ //	mov	x8, #__NR_sched_yield	// Encourage preemption
+ //	svc	#0
+ 
++#ifdef SSVE
++	mrs	x0, S3_3_C4_C2_2	// SVCR should have ZA=0,SM=1
++	and	x1, x0, #3
++	cmp	x1, #1
++	b.ne	svcr_barf
++#endif
++
+ 	mov	x21, #0
+ 0:	mov	x0, x21
+ 	bl	check_zreg
+@@ -553,3 +560,15 @@ function vl_barf
+ 	mov	x1, #1
+ 	svc	#0
+ endfunction
++
++function svcr_barf
++	mov	x10, x0
++
++	puts	"Bad SVCR: "
++	mov	x0, x10
++	bl	putdecn
++
++	mov	x8, #__NR_exit
++	mov	x1, #1
++	svc	#0
++endfunction
 
-Simpler.
+---
+base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+change-id: 20230921-arm64-ssve-validate-svcr-316852554fc8
 
-> So if a NMI hits while the primary thread updates the microcode
-> the resulting behaviour is undefined. The default play_dead()
-> implementation on modern CPUs is using MWAIT, which is not guaranteed to
-> be safe against an microcode update which affects MWAIT.
-
-s/an //
-
-> +/*
-> + *  Ensure that all required CPUs which are present and have been booted
-> + *  once are online.
-> + *
-> + *    To pass this check, all primary threads must be online.
-> + *
-> + *    If the microcode load is not safe against NMI then all SMT threads
-> + *    must be online as well because they still react on NMI when they are
-
-s/react on NMI/react to NMIs/
-
-> + *    soft-offlined and parked in one of the play_dead() variants. So if a
-> + *    NMI hits while the primary thread updates the microcode the resulting
-> + *    behaviour is undefined. The default play_dead() implementation on
-> + *    modern CPUs is using MWAIT, which is also not guaranteed to be safe
-
-s/is using/uses/
-
-> --- a/arch/x86/kernel/cpu/microcode/internal.h
-> +++ b/arch/x86/kernel/cpu/microcode/internal.h
-> @@ -20,18 +20,17 @@ enum ucode_state {
->  
->  struct microcode_ops {
->  	enum ucode_state (*request_microcode_fw)(int cpu, struct device *dev);
-> -
->  	void (*microcode_fini_cpu)(int cpu);
->  
->  	/*
-> -	 * The generic 'microcode_core' part guarantees that
-> -	 * the callbacks below run on a target cpu when they
-> -	 * are being called.
-> +	 * The generic 'microcode_core' part guarantees that the callbacks
-> +	 * below run on a target cpu when they are being called.
-
-s/cpu/CPU/
-
-while at it.
-
->  	 * See also the "Synchronization" section in microcode_core.c.
->  	 */
-> -	enum ucode_state (*apply_microcode)(int cpu);
-> -	int (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
-> -	void (*finalize_late_load)(int result);
-> +	enum ucode_state	(*apply_microcode)(int cpu);
-> +	int			(*collect_cpu_info)(int cpu, struct cpu_signature *csig);
-> +	void			(*finalize_late_load)(int result);
-> +	unsigned int		nmi_safe	: 1;
->  };
-
+Best regards,
 -- 
-Regards/Gruss,
-    Boris.
+Mark Brown <broonie@kernel.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
