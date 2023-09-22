@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A87137AAA66
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE9B7AAA69
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbjIVHhW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 03:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S231517AbjIVHhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjIVHhU (ORCPT
+        with ESMTP id S231254AbjIVHhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:37:20 -0400
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C86EC2;
-        Fri, 22 Sep 2023 00:37:14 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50308217223so2977034e87.3;
-        Fri, 22 Sep 2023 00:37:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695368231; x=1695973031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f/AwkMqcydRXtjTPwCiDk2wI5A7HmbHim06+U2RTEk8=;
-        b=KsZyMNwFEGsq1yOuPmKCae7mAnuMZDeAR+hox/xVQt4KpJz2ll80St7Z69tG83yFXw
-         94WS1c6vc42Ivq7XGSbJbNalRxEqdCEt59n8ppoFhJykaYDUiTDZyb+4BeoAQ7bml9G5
-         zFzNddaHaAH/dkg8KzaduLFooqrOXec0rgoMGRe4nnoK6ztan6/QqmgIm4Rt9zqjdQiZ
-         HcbLj7GrZvYwuKUZwJk43CNqLeXjbcsp+wpWJPsiE8IqG/5vi1pwoJt1QPUsQSLnqv7t
-         kGgXL626ec1sVVUYsWqmF60Lbm9J6Ue/A81pOQWovibQ19Rugsruet5qGfovt6bn9eP/
-         Rsbg==
-X-Gm-Message-State: AOJu0YwqvOzeEfWag9AKTYvwbZBQ0PoxP6YGaOEsSNdqAMP6fpBEB2F3
-        G8I0UYPXka+CDUl3vzO6Je5+P0boRs76pcr/
-X-Google-Smtp-Source: AGHT+IEvATs3i/pFs3zL5O5gTMQn1d2NKdo1QUITAGRN48aYbq0uUqyyArLMRflMu89Pwaie498TYA==
-X-Received: by 2002:a05:6512:208c:b0:500:acf1:b42f with SMTP id t12-20020a056512208c00b00500acf1b42fmr6255825lfr.53.1695368230788;
-        Fri, 22 Sep 2023 00:37:10 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id v25-20020a197419000000b004fdc0023a47sm617625lfe.238.2023.09.22.00.37.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 00:37:10 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2c02e232c48so30366231fa.1;
-        Fri, 22 Sep 2023 00:37:10 -0700 (PDT)
-X-Received: by 2002:a2e:908c:0:b0:2bc:da4a:4649 with SMTP id
- l12-20020a2e908c000000b002bcda4a4649mr6786575ljg.22.1695368230179; Fri, 22
- Sep 2023 00:37:10 -0700 (PDT)
+        Fri, 22 Sep 2023 03:37:34 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EE4F7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :mime-version:content-transfer-encoding; s=k1; bh=5/L2thHtWZKVXF
+        Yu87PpUqSLgjaKxLn7tKqu43zTTQ0=; b=ESd9dfqP1Gin/0Vqzn+Uvd3nrACKlb
+        ooXTPhCJvWIWEHbm5olbEsNLmsBbTAMZiI0/yT252y5quyHLPmxD50iCMUB4ue8h
+        iApsVdS1I95nrzeiOyB/8VlDlv8mv3UuzzzN95bo8d1st2RNGaz3CjvGz5HhCrgq
+        NhfC9HpXqQUBaEpU1Z3Sr+BK07s3wtNBlw6AxD25ePFXcESxrGUsSdFB876nB101
+        pIuPkID6FQiwV7L5YaGgBKq40NgdxOXPSEbZb6aeJaxA+ByNljPLwBNUyEvyJf1d
+        uz2OaEqkmci+q02W+okDyj4ysMKta21FP2dTE0XnG6dtEe6AqJ6yBmmA==
+Received: (qmail 1299584 invoked from network); 22 Sep 2023 09:37:23 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 09:37:23 +0200
+X-UD-Smtp-Session: l3s3148p1@ENbBre0F5NgujntX
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: tilcdc: don't use devm_pinctrl_get_select_default() in probe
+Date:   Fri, 22 Sep 2023 09:37:13 +0200
+Message-Id: <20230922073714.6164-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20230921085752.8686-1-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20230921085752.8686-1-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 22 Sep 2023 09:36:57 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVkn1saSGo_71cwfAaia4L_2q-91HqePTvXxer9j_JfOQ@mail.gmail.com>
-Message-ID: <CAMuHMdVkn1saSGo_71cwfAaia4L_2q-91HqePTvXxer9j_JfOQ@mail.gmail.com>
-Subject: Re: [PATCH] i2c: mux: gpio: adhere to coding style
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 1:51 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Advertise our coding style by following it :)
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Since commit ab78029ecc34 ("drivers/pinctrl: grab default handles from
+device core"), we can rely on device core for setting the default pins.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+ drivers/gpu/drm/tilcdc/tilcdc_panel.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_panel.c b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
+index 9aefd010acde..68093d6b6b16 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_panel.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
+@@ -6,7 +6,6 @@
+ 
+ #include <linux/backlight.h>
+ #include <linux/gpio/consumer.h>
+-#include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ 
+ #include <video/display_timing.h>
+@@ -308,7 +307,6 @@ static int panel_probe(struct platform_device *pdev)
+ 	struct backlight_device *backlight;
+ 	struct panel_module *panel_mod;
+ 	struct tilcdc_module *mod;
+-	struct pinctrl *pinctrl;
+ 	int ret;
+ 
+ 	/* bail out early if no DT data: */
+@@ -342,10 +340,6 @@ static int panel_probe(struct platform_device *pdev)
+ 
+ 	tilcdc_module_init(mod, "panel", &panel_module_ops);
+ 
+-	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+-	if (IS_ERR(pinctrl))
+-		dev_warn(&pdev->dev, "pins are not configured\n");
+-
+ 	panel_mod->timings = of_get_display_timings(node);
+ 	if (!panel_mod->timings) {
+ 		dev_err(&pdev->dev, "could not get panel timings\n");
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
