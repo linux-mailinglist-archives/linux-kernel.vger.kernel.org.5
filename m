@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9867ABA69
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806457ABA6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbjIVUM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 16:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
+        id S232543AbjIVUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 16:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbjIVUMz (ORCPT
+        with ESMTP id S231640AbjIVUOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 16:12:55 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADB0A9;
-        Fri, 22 Sep 2023 13:12:49 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b11cc499c2so75849566b.2;
-        Fri, 22 Sep 2023 13:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695413568; x=1696018368; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oLN4bH4coEcvi6teZvOLHVyuO9WrCZeFHK+MQxHhiSE=;
-        b=Q+MDi79B34rn0IDIq1eh/yY2iHVurOgFyUiqsg/xPtxsnFofbZbLvqldyT2ctgUX1y
-         W7caN0KeXe2/qDZWnveUDcyXS/ngusLxMrXj4aJwJewp4XS+AtXQKy4NoND3RmQu4VPG
-         kyX34p+7LHpG/P5GqTuSzZX3H+uCP9Nfdj64tPNT5wB9750761OkCH9XGtt1oZee1Ylh
-         s3tCL/71yYNu4T8j/mtDT8W0U0TveMZpO8fLyIMUpx70n/hAz/MGofFLQitdhP6wzshg
-         3C0Zm8FEDihdWoGXl4L8IaSAUTbJbrvSR2DiAUvhx5v6BIhMdIGdTS52HcPATmCbKN1t
-         Oj2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695413568; x=1696018368;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oLN4bH4coEcvi6teZvOLHVyuO9WrCZeFHK+MQxHhiSE=;
-        b=twT8Bv4NFQ1BqicyOBp6QMNPc7Lh2bJGws5JnsaFdxHjrBHqfpeV/whrWcb7eGkxAm
-         DvSeTbIikr8I3eBu1ujw5B4+Ewx4TCzXndIXzPk0btSIYGBGDmmON5q03xhMN1vGIUJ1
-         oPw+O8GfHsR+qH/KVH673AJwCnSbyMd4rSss0uLNg97Z70CiZe8+PMr43NlUBUX1HuAW
-         GWnvxwvyfL1bRDEy3jsHhRkQLgs8mIwGHDJ453CNmbzIKatSLTD0wl9rQGRR/ne+pJFk
-         k4GXuLAisr8DKVsS5XS5b8PT/Q9NNspc95t6YVsH2XpO+xuEu7L7lnkya89j2FSlT9Tt
-         jtJw==
-X-Gm-Message-State: AOJu0YzVBbUuEO4yDgQUpfgb0Q1UfhFYJjjolNn+75d3g71x4bZ6wSqU
-        QZXvEpImIuz8y/VA7hVKBy8=
-X-Google-Smtp-Source: AGHT+IF7G+E5H3ZPGE5wynI5t2ubz7n8rEDRMyWSsuis7DkkkZP6qj1ZyGy+rEZaWqQCRHQKvfooLQ==
-X-Received: by 2002:a17:906:5a5d:b0:9ae:699d:8a29 with SMTP id my29-20020a1709065a5d00b009ae699d8a29mr299359ejc.6.1695413567731;
-        Fri, 22 Sep 2023 13:12:47 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5af6b6.dynamic.kabel-deutschland.de. [95.90.246.182])
-        by smtp.gmail.com with ESMTPSA id k3-20020a17090646c300b009ae57888718sm3101778ejs.207.2023.09.22.13.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 13:12:47 -0700 (PDT)
-From:   Nikita Bune <w1s2d5@gmail.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Nikita Bune <w1s2d5@gmail.com>, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/watchdog: fix checkpatch error
-Date:   Fri, 22 Sep 2023 22:10:25 +0200
-Message-Id: <20230922201025.64164-1-w1s2d5@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 22 Sep 2023 16:14:30 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5261A1;
+        Fri, 22 Sep 2023 13:14:22 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MHFtPR007589;
+        Fri, 22 Sep 2023 20:14:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=NgRpAkhzKriKeE+mmGAbxxYqqefTbZ8SS17ABWCMxkI=;
+ b=YAJkL8k7057JSFN+pG69m5wDJEAazcTgEEfouLWt0RQgJTe8S0Cm73bOg2NT96uZfiRg
+ kmKubJO2oOXETAwumLh6jI7KxY/mUPTUTOJBHO1kDirq8JICBOsYa70XUdYPMHPumyU3
+ +ah4CA3EfyPPC5pZR7yqGGCY7Faw44cV7iATmFEHQUYQ75sDAqAW3VIswTLcivBb4Uej
+ brAbR99/nzCPM/L+QMfWhxthCyLEdajtsB4dl4b60shSAV5WGH/Spzc9iuKNapWso+Ru
+ Xcq39iHuRqdz+Uht4Z7hsg+zwjJeAfX0lgcJB/eVdTxs1X06SRlvZWu+EE1SO1lGWQiA Vg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u6ak190-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 20:14:11 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MKEApk018631
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 20:14:11 GMT
+Received: from [10.110.109.178] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 13:14:07 -0700
+Message-ID: <804f9910-4eb0-590f-3bc1-b074cc4a53a4@quicinc.com>
+Date:   Fri, 22 Sep 2023 13:14:06 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] soc: qcom: Switch to EXPORT_SYMBOL_GPL()
+Content-Language: en-US
+To:     Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20230922184817.5183-1-quic_uchalich@quicinc.com>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <20230922184817.5183-1-quic_uchalich@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Zw4F3fzzXyKACMf-ID0yj5EkltCkzfhg
+X-Proofpoint-ORIG-GUID: Zw4F3fzzXyKACMf-ID0yj5EkltCkzfhg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_18,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ suspectscore=0 clxscore=1015 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220171
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,26 +82,565 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch ERROR: do not initialise statics to 0
+On 9/22/2023 11:48 AM, Unnathi Chalicheemala wrote:
+> Switch to GPL version of EXPORT_SYMBOL for Qualcomm SoC drivers.
+> 
+> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
 
-Signed-off-by: Nikita Bune <w1s2d5@gmail.com>
----
- drivers/watchdog/uniphier_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+LGTM. Thank you. 
 
-diff --git a/drivers/watchdog/uniphier_wdt.c b/drivers/watchdog/uniphier_wdt.c
-index 8e9242c23022..7a080600d865 100644
---- a/drivers/watchdog/uniphier_wdt.c
-+++ b/drivers/watchdog/uniphier_wdt.c
-@@ -41,7 +41,7 @@
- #define WDT_PERIOD_MIN			1
- #define WDT_PERIOD_MAX			128
- 
--static unsigned int timeout = 0;
-+static unsigned int timeout;
- static bool nowayout = WATCHDOG_NOWAYOUT;
- 
- struct uniphier_wdt_dev {
+Reviewed-by: Trilok Soni <quic_tsoni@quicinc.com> 
+
+
+> ---
+>  drivers/soc/qcom/cmd-db.c            |  8 +++---
+>  drivers/soc/qcom/kryo-l2-accessors.c |  4 +--
+>  drivers/soc/qcom/ocmem.c             |  6 ++---
+>  drivers/soc/qcom/pdr_interface.c     |  8 +++---
+>  drivers/soc/qcom/qcom-geni-se.c      | 38 ++++++++++++++--------------
+>  drivers/soc/qcom/qcom_aoss.c         |  6 ++---
+>  drivers/soc/qcom/qmi_encdec.c        |  6 ++---
+>  drivers/soc/qcom/qmi_interface.c     | 20 +++++++--------
+>  drivers/soc/qcom/rpmh.c              |  8 +++---
+>  drivers/soc/qcom/smd-rpm.c           |  2 +-
+>  drivers/soc/qcom/smem.c              |  2 +-
+>  drivers/soc/qcom/wcnss_ctrl.c        |  2 +-
+>  12 files changed, 55 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/cmd-db.c b/drivers/soc/qcom/cmd-db.c
+> index 34c40368d5b5..a5fd68411bed 100644
+> --- a/drivers/soc/qcom/cmd-db.c
+> +++ b/drivers/soc/qcom/cmd-db.c
+> @@ -133,7 +133,7 @@ int cmd_db_ready(void)
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(cmd_db_ready);
+> +EXPORT_SYMBOL_GPL(cmd_db_ready);
+>  
+>  static int cmd_db_get_header(const char *id, const struct entry_header **eh,
+>  			     const struct rsc_hdr **rh)
+> @@ -193,7 +193,7 @@ u32 cmd_db_read_addr(const char *id)
+>  
+>  	return ret < 0 ? 0 : le32_to_cpu(ent->addr);
+>  }
+> -EXPORT_SYMBOL(cmd_db_read_addr);
+> +EXPORT_SYMBOL_GPL(cmd_db_read_addr);
+>  
+>  /**
+>   * cmd_db_read_aux_data() - Query command db for aux data.
+> @@ -218,7 +218,7 @@ const void *cmd_db_read_aux_data(const char *id, size_t *len)
+>  
+>  	return rsc_offset(rsc_hdr, ent);
+>  }
+> -EXPORT_SYMBOL(cmd_db_read_aux_data);
+> +EXPORT_SYMBOL_GPL(cmd_db_read_aux_data);
+>  
+>  /**
+>   * cmd_db_read_slave_id - Get the slave ID for a given resource address
+> @@ -240,7 +240,7 @@ enum cmd_db_hw_type cmd_db_read_slave_id(const char *id)
+>  	addr = le32_to_cpu(ent->addr);
+>  	return (addr >> SLAVE_ID_SHIFT) & SLAVE_ID_MASK;
+>  }
+> -EXPORT_SYMBOL(cmd_db_read_slave_id);
+> +EXPORT_SYMBOL_GPL(cmd_db_read_slave_id);
+>  
+>  #ifdef CONFIG_DEBUG_FS
+>  static int cmd_db_debugfs_dump(struct seq_file *seq, void *p)
+> diff --git a/drivers/soc/qcom/kryo-l2-accessors.c b/drivers/soc/qcom/kryo-l2-accessors.c
+> index 7886af4fd726..50cd710c5e82 100644
+> --- a/drivers/soc/qcom/kryo-l2-accessors.c
+> +++ b/drivers/soc/qcom/kryo-l2-accessors.c
+> @@ -32,7 +32,7 @@ void kryo_l2_set_indirect_reg(u64 reg, u64 val)
+>  	isb();
+>  	raw_spin_unlock_irqrestore(&l2_access_lock, flags);
+>  }
+> -EXPORT_SYMBOL(kryo_l2_set_indirect_reg);
+> +EXPORT_SYMBOL_GPL(kryo_l2_set_indirect_reg);
+>  
+>  /**
+>   * kryo_l2_get_indirect_reg() - read an L2 register value
+> @@ -54,4 +54,4 @@ u64 kryo_l2_get_indirect_reg(u64 reg)
+>  
+>  	return val;
+>  }
+> -EXPORT_SYMBOL(kryo_l2_get_indirect_reg);
+> +EXPORT_SYMBOL_GPL(kryo_l2_get_indirect_reg);
+> diff --git a/drivers/soc/qcom/ocmem.c b/drivers/soc/qcom/ocmem.c
+> index 20f5461d46b9..3cf8ab892a70 100644
+> --- a/drivers/soc/qcom/ocmem.c
+> +++ b/drivers/soc/qcom/ocmem.c
+> @@ -211,7 +211,7 @@ struct ocmem *of_get_ocmem(struct device *dev)
+>  	}
+>  	return ocmem;
+>  }
+> -EXPORT_SYMBOL(of_get_ocmem);
+> +EXPORT_SYMBOL_GPL(of_get_ocmem);
+>  
+>  struct ocmem_buf *ocmem_allocate(struct ocmem *ocmem, enum ocmem_client client,
+>  				 unsigned long size)
+> @@ -267,7 +267,7 @@ struct ocmem_buf *ocmem_allocate(struct ocmem *ocmem, enum ocmem_client client,
+>  
+>  	return ERR_PTR(ret);
+>  }
+> -EXPORT_SYMBOL(ocmem_allocate);
+> +EXPORT_SYMBOL_GPL(ocmem_allocate);
+>  
+>  void ocmem_free(struct ocmem *ocmem, enum ocmem_client client,
+>  		struct ocmem_buf *buf)
+> @@ -294,7 +294,7 @@ void ocmem_free(struct ocmem *ocmem, enum ocmem_client client,
+>  
+>  	clear_bit_unlock(BIT(client), &ocmem->active_allocations);
+>  }
+> -EXPORT_SYMBOL(ocmem_free);
+> +EXPORT_SYMBOL_GPL(ocmem_free);
+>  
+>  static int ocmem_dev_probe(struct platform_device *pdev)
+>  {
+> diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
+> index 0034af927b48..a1b6a4081dea 100644
+> --- a/drivers/soc/qcom/pdr_interface.c
+> +++ b/drivers/soc/qcom/pdr_interface.c
+> @@ -554,7 +554,7 @@ struct pdr_service *pdr_add_lookup(struct pdr_handle *pdr,
+>  	kfree(pds);
+>  	return ERR_PTR(ret);
+>  }
+> -EXPORT_SYMBOL(pdr_add_lookup);
+> +EXPORT_SYMBOL_GPL(pdr_add_lookup);
+>  
+>  /**
+>   * pdr_restart_pd() - restart PD
+> @@ -634,7 +634,7 @@ int pdr_restart_pd(struct pdr_handle *pdr, struct pdr_service *pds)
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(pdr_restart_pd);
+> +EXPORT_SYMBOL_GPL(pdr_restart_pd);
+>  
+>  /**
+>   * pdr_handle_alloc() - initialize the PDR client handle
+> @@ -715,7 +715,7 @@ struct pdr_handle *pdr_handle_alloc(void (*status)(int state,
+>  
+>  	return ERR_PTR(ret);
+>  }
+> -EXPORT_SYMBOL(pdr_handle_alloc);
+> +EXPORT_SYMBOL_GPL(pdr_handle_alloc);
+>  
+>  /**
+>   * pdr_handle_release() - release the PDR client handle
+> @@ -749,7 +749,7 @@ void pdr_handle_release(struct pdr_handle *pdr)
+>  
+>  	kfree(pdr);
+>  }
+> -EXPORT_SYMBOL(pdr_handle_release);
+> +EXPORT_SYMBOL_GPL(pdr_handle_release);
+>  
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_DESCRIPTION("Qualcomm Protection Domain Restart helpers");
+> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+> index ba788762835f..bdcf44b85b2f 100644
+> --- a/drivers/soc/qcom/qcom-geni-se.c
+> +++ b/drivers/soc/qcom/qcom-geni-se.c
+> @@ -199,7 +199,7 @@ u32 geni_se_get_qup_hw_version(struct geni_se *se)
+>  
+>  	return readl_relaxed(wrapper->base + QUP_HW_VER_REG);
+>  }
+> -EXPORT_SYMBOL(geni_se_get_qup_hw_version);
+> +EXPORT_SYMBOL_GPL(geni_se_get_qup_hw_version);
+>  
+>  static void geni_se_io_set_mode(void __iomem *base)
+>  {
+> @@ -272,7 +272,7 @@ void geni_se_init(struct geni_se *se, u32 rx_wm, u32 rx_rfr)
+>  	val |= S_COMMON_GENI_S_IRQ_EN;
+>  	writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
+>  }
+> -EXPORT_SYMBOL(geni_se_init);
+> +EXPORT_SYMBOL_GPL(geni_se_init);
+>  
+>  static void geni_se_select_fifo_mode(struct geni_se *se)
+>  {
+> @@ -364,7 +364,7 @@ void geni_se_select_mode(struct geni_se *se, enum geni_se_xfer_mode mode)
+>  		break;
+>  	}
+>  }
+> -EXPORT_SYMBOL(geni_se_select_mode);
+> +EXPORT_SYMBOL_GPL(geni_se_select_mode);
+>  
+>  /**
+>   * DOC: Overview
+> @@ -481,7 +481,7 @@ void geni_se_config_packing(struct geni_se *se, int bpw, int pack_words,
+>  	if (pack_words || bpw == 32)
+>  		writel_relaxed(bpw / 16, se->base + SE_GENI_BYTE_GRAN);
+>  }
+> -EXPORT_SYMBOL(geni_se_config_packing);
+> +EXPORT_SYMBOL_GPL(geni_se_config_packing);
+>  
+>  static void geni_se_clks_off(struct geni_se *se)
+>  {
+> @@ -512,7 +512,7 @@ int geni_se_resources_off(struct geni_se *se)
+>  	geni_se_clks_off(se);
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_se_resources_off);
+> +EXPORT_SYMBOL_GPL(geni_se_resources_off);
+>  
+>  static int geni_se_clks_on(struct geni_se *se)
+>  {
+> @@ -553,7 +553,7 @@ int geni_se_resources_on(struct geni_se *se)
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(geni_se_resources_on);
+> +EXPORT_SYMBOL_GPL(geni_se_resources_on);
+>  
+>  /**
+>   * geni_se_clk_tbl_get() - Get the clock table to program DFS
+> @@ -594,7 +594,7 @@ int geni_se_clk_tbl_get(struct geni_se *se, unsigned long **tbl)
+>  	*tbl = se->clk_perf_tbl;
+>  	return se->num_clk_levels;
+>  }
+> -EXPORT_SYMBOL(geni_se_clk_tbl_get);
+> +EXPORT_SYMBOL_GPL(geni_se_clk_tbl_get);
+>  
+>  /**
+>   * geni_se_clk_freq_match() - Get the matching or closest SE clock frequency
+> @@ -656,7 +656,7 @@ int geni_se_clk_freq_match(struct geni_se *se, unsigned long req_freq,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_se_clk_freq_match);
+> +EXPORT_SYMBOL_GPL(geni_se_clk_freq_match);
+>  
+>  #define GENI_SE_DMA_DONE_EN BIT(0)
+>  #define GENI_SE_DMA_EOT_EN BIT(1)
+> @@ -684,7 +684,7 @@ void geni_se_tx_init_dma(struct geni_se *se, dma_addr_t iova, size_t len)
+>  	writel_relaxed(GENI_SE_DMA_EOT_BUF, se->base + SE_DMA_TX_ATTR);
+>  	writel(len, se->base + SE_DMA_TX_LEN);
+>  }
+> -EXPORT_SYMBOL(geni_se_tx_init_dma);
+> +EXPORT_SYMBOL_GPL(geni_se_tx_init_dma);
+>  
+>  /**
+>   * geni_se_tx_dma_prep() - Prepare the serial engine for TX DMA transfer
+> @@ -712,7 +712,7 @@ int geni_se_tx_dma_prep(struct geni_se *se, void *buf, size_t len,
+>  	geni_se_tx_init_dma(se, *iova, len);
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_se_tx_dma_prep);
+> +EXPORT_SYMBOL_GPL(geni_se_tx_dma_prep);
+>  
+>  /**
+>   * geni_se_rx_init_dma() - Initiate RX DMA transfer on the serial engine
+> @@ -736,7 +736,7 @@ void geni_se_rx_init_dma(struct geni_se *se, dma_addr_t iova, size_t len)
+>  	writel_relaxed(0, se->base + SE_DMA_RX_ATTR);
+>  	writel(len, se->base + SE_DMA_RX_LEN);
+>  }
+> -EXPORT_SYMBOL(geni_se_rx_init_dma);
+> +EXPORT_SYMBOL_GPL(geni_se_rx_init_dma);
+>  
+>  /**
+>   * geni_se_rx_dma_prep() - Prepare the serial engine for RX DMA transfer
+> @@ -764,7 +764,7 @@ int geni_se_rx_dma_prep(struct geni_se *se, void *buf, size_t len,
+>  	geni_se_rx_init_dma(se, *iova, len);
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_se_rx_dma_prep);
+> +EXPORT_SYMBOL_GPL(geni_se_rx_dma_prep);
+>  
+>  /**
+>   * geni_se_tx_dma_unprep() - Unprepare the serial engine after TX DMA transfer
+> @@ -781,7 +781,7 @@ void geni_se_tx_dma_unprep(struct geni_se *se, dma_addr_t iova, size_t len)
+>  	if (!dma_mapping_error(wrapper->dev, iova))
+>  		dma_unmap_single(wrapper->dev, iova, len, DMA_TO_DEVICE);
+>  }
+> -EXPORT_SYMBOL(geni_se_tx_dma_unprep);
+> +EXPORT_SYMBOL_GPL(geni_se_tx_dma_unprep);
+>  
+>  /**
+>   * geni_se_rx_dma_unprep() - Unprepare the serial engine after RX DMA transfer
+> @@ -798,7 +798,7 @@ void geni_se_rx_dma_unprep(struct geni_se *se, dma_addr_t iova, size_t len)
+>  	if (!dma_mapping_error(wrapper->dev, iova))
+>  		dma_unmap_single(wrapper->dev, iova, len, DMA_FROM_DEVICE);
+>  }
+> -EXPORT_SYMBOL(geni_se_rx_dma_unprep);
+> +EXPORT_SYMBOL_GPL(geni_se_rx_dma_unprep);
+>  
+>  int geni_icc_get(struct geni_se *se, const char *icc_ddr)
+>  {
+> @@ -827,7 +827,7 @@ int geni_icc_get(struct geni_se *se, const char *icc_ddr)
+>  	return err;
+>  
+>  }
+> -EXPORT_SYMBOL(geni_icc_get);
+> +EXPORT_SYMBOL_GPL(geni_icc_get);
+>  
+>  int geni_icc_set_bw(struct geni_se *se)
+>  {
+> @@ -845,7 +845,7 @@ int geni_icc_set_bw(struct geni_se *se)
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_icc_set_bw);
+> +EXPORT_SYMBOL_GPL(geni_icc_set_bw);
+>  
+>  void geni_icc_set_tag(struct geni_se *se, u32 tag)
+>  {
+> @@ -854,7 +854,7 @@ void geni_icc_set_tag(struct geni_se *se, u32 tag)
+>  	for (i = 0; i < ARRAY_SIZE(se->icc_paths); i++)
+>  		icc_set_tag(se->icc_paths[i].path, tag);
+>  }
+> -EXPORT_SYMBOL(geni_icc_set_tag);
+> +EXPORT_SYMBOL_GPL(geni_icc_set_tag);
+>  
+>  /* To do: Replace this by icc_bulk_enable once it's implemented in ICC core */
+>  int geni_icc_enable(struct geni_se *se)
+> @@ -872,7 +872,7 @@ int geni_icc_enable(struct geni_se *se)
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_icc_enable);
+> +EXPORT_SYMBOL_GPL(geni_icc_enable);
+>  
+>  int geni_icc_disable(struct geni_se *se)
+>  {
+> @@ -889,7 +889,7 @@ int geni_icc_disable(struct geni_se *se)
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(geni_icc_disable);
+> +EXPORT_SYMBOL_GPL(geni_icc_disable);
+>  
+>  static int geni_se_probe(struct platform_device *pdev)
+>  {
+> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> index 77f0cf126629..35d35f763eb2 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+> @@ -260,7 +260,7 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(qmp_send);
+> +EXPORT_SYMBOL_GPL(qmp_send);
+>  
+>  static int qmp_qdss_clk_prepare(struct clk_hw *hw)
+>  {
+> @@ -458,7 +458,7 @@ struct qmp *qmp_get(struct device *dev)
+>  	}
+>  	return qmp;
+>  }
+> -EXPORT_SYMBOL(qmp_get);
+> +EXPORT_SYMBOL_GPL(qmp_get);
+>  
+>  /**
+>   * qmp_put() - release a qmp handle
+> @@ -473,7 +473,7 @@ void qmp_put(struct qmp *qmp)
+>  	if (!IS_ERR_OR_NULL(qmp))
+>  		put_device(qmp->dev);
+>  }
+> -EXPORT_SYMBOL(qmp_put);
+> +EXPORT_SYMBOL_GPL(qmp_put);
+>  
+>  static int qmp_probe(struct platform_device *pdev)
+>  {
+> diff --git a/drivers/soc/qcom/qmi_encdec.c b/drivers/soc/qcom/qmi_encdec.c
+> index 5c7161b18b72..bb09eff85cff 100644
+> --- a/drivers/soc/qcom/qmi_encdec.c
+> +++ b/drivers/soc/qcom/qmi_encdec.c
+> @@ -754,7 +754,7 @@ void *qmi_encode_message(int type, unsigned int msg_id, size_t *len,
+>  
+>  	return msg;
+>  }
+> -EXPORT_SYMBOL(qmi_encode_message);
+> +EXPORT_SYMBOL_GPL(qmi_encode_message);
+>  
+>  /**
+>   * qmi_decode_message() - Decode QMI encoded message to C structure
+> @@ -778,7 +778,7 @@ int qmi_decode_message(const void *buf, size_t len,
+>  	return qmi_decode(ei, c_struct, buf + sizeof(struct qmi_header),
+>  			  len - sizeof(struct qmi_header), 1);
+>  }
+> -EXPORT_SYMBOL(qmi_decode_message);
+> +EXPORT_SYMBOL_GPL(qmi_decode_message);
+>  
+>  /* Common header in all QMI responses */
+>  const struct qmi_elem_info qmi_response_type_v01_ei[] = {
+> @@ -810,7 +810,7 @@ const struct qmi_elem_info qmi_response_type_v01_ei[] = {
+>  		.ei_array	= NULL,
+>  	},
+>  };
+> -EXPORT_SYMBOL(qmi_response_type_v01_ei);
+> +EXPORT_SYMBOL_GPL(qmi_response_type_v01_ei);
+>  
+>  MODULE_DESCRIPTION("QMI encoder/decoder helper");
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/soc/qcom/qmi_interface.c b/drivers/soc/qcom/qmi_interface.c
+> index 78d7361fdcf2..bb98b06e87f8 100644
+> --- a/drivers/soc/qcom/qmi_interface.c
+> +++ b/drivers/soc/qcom/qmi_interface.c
+> @@ -223,7 +223,7 @@ int qmi_add_lookup(struct qmi_handle *qmi, unsigned int service,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(qmi_add_lookup);
+> +EXPORT_SYMBOL_GPL(qmi_add_lookup);
+>  
+>  static void qmi_send_new_server(struct qmi_handle *qmi, struct qmi_service *svc)
+>  {
+> @@ -287,7 +287,7 @@ int qmi_add_server(struct qmi_handle *qmi, unsigned int service,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(qmi_add_server);
+> +EXPORT_SYMBOL_GPL(qmi_add_server);
+>  
+>  /**
+>   * qmi_txn_init() - allocate transaction id within the given QMI handle
+> @@ -328,7 +328,7 @@ int qmi_txn_init(struct qmi_handle *qmi, struct qmi_txn *txn,
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(qmi_txn_init);
+> +EXPORT_SYMBOL_GPL(qmi_txn_init);
+>  
+>  /**
+>   * qmi_txn_wait() - wait for a response on a transaction
+> @@ -359,7 +359,7 @@ int qmi_txn_wait(struct qmi_txn *txn, unsigned long timeout)
+>  	else
+>  		return txn->result;
+>  }
+> -EXPORT_SYMBOL(qmi_txn_wait);
+> +EXPORT_SYMBOL_GPL(qmi_txn_wait);
+>  
+>  /**
+>   * qmi_txn_cancel() - cancel an ongoing transaction
+> @@ -375,7 +375,7 @@ void qmi_txn_cancel(struct qmi_txn *txn)
+>  	mutex_unlock(&txn->lock);
+>  	mutex_unlock(&qmi->txn_lock);
+>  }
+> -EXPORT_SYMBOL(qmi_txn_cancel);
+> +EXPORT_SYMBOL_GPL(qmi_txn_cancel);
+>  
+>  /**
+>   * qmi_invoke_handler() - find and invoke a handler for a message
+> @@ -676,7 +676,7 @@ int qmi_handle_init(struct qmi_handle *qmi, size_t recv_buf_size,
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(qmi_handle_init);
+> +EXPORT_SYMBOL_GPL(qmi_handle_init);
+>  
+>  /**
+>   * qmi_handle_release() - release the QMI client handle
+> @@ -717,7 +717,7 @@ void qmi_handle_release(struct qmi_handle *qmi)
+>  		kfree(svc);
+>  	}
+>  }
+> -EXPORT_SYMBOL(qmi_handle_release);
+> +EXPORT_SYMBOL_GPL(qmi_handle_release);
+>  
+>  /**
+>   * qmi_send_message() - send a QMI message
+> @@ -796,7 +796,7 @@ ssize_t qmi_send_request(struct qmi_handle *qmi, struct sockaddr_qrtr *sq,
+>  	return qmi_send_message(qmi, sq, txn, QMI_REQUEST, msg_id, len, ei,
+>  				c_struct);
+>  }
+> -EXPORT_SYMBOL(qmi_send_request);
+> +EXPORT_SYMBOL_GPL(qmi_send_request);
+>  
+>  /**
+>   * qmi_send_response() - send a response QMI message
+> @@ -817,7 +817,7 @@ ssize_t qmi_send_response(struct qmi_handle *qmi, struct sockaddr_qrtr *sq,
+>  	return qmi_send_message(qmi, sq, txn, QMI_RESPONSE, msg_id, len, ei,
+>  				c_struct);
+>  }
+> -EXPORT_SYMBOL(qmi_send_response);
+> +EXPORT_SYMBOL_GPL(qmi_send_response);
+>  
+>  /**
+>   * qmi_send_indication() - send an indication QMI message
+> @@ -851,4 +851,4 @@ ssize_t qmi_send_indication(struct qmi_handle *qmi, struct sockaddr_qrtr *sq,
+>  
+>  	return rval;
+>  }
+> -EXPORT_SYMBOL(qmi_send_indication);
+> +EXPORT_SYMBOL_GPL(qmi_send_indication);
+> diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
+> index 08e09642d7f5..9f26d7f9b9dc 100644
+> --- a/drivers/soc/qcom/rpmh.c
+> +++ b/drivers/soc/qcom/rpmh.c
+> @@ -239,7 +239,7 @@ int rpmh_write_async(const struct device *dev, enum rpmh_state state,
+>  
+>  	return __rpmh_write(dev, state, rpm_msg);
+>  }
+> -EXPORT_SYMBOL(rpmh_write_async);
+> +EXPORT_SYMBOL_GPL(rpmh_write_async);
+>  
+>  /**
+>   * rpmh_write: Write a set of RPMH commands and block until response
+> @@ -270,7 +270,7 @@ int rpmh_write(const struct device *dev, enum rpmh_state state,
+>  	WARN_ON(!ret);
+>  	return (ret > 0) ? 0 : -ETIMEDOUT;
+>  }
+> -EXPORT_SYMBOL(rpmh_write);
+> +EXPORT_SYMBOL_GPL(rpmh_write);
+>  
+>  static void cache_batch(struct rpmh_ctrlr *ctrlr, struct batch_cache_req *req)
+>  {
+> @@ -395,7 +395,7 @@ int rpmh_write_batch(const struct device *dev, enum rpmh_state state,
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(rpmh_write_batch);
+> +EXPORT_SYMBOL_GPL(rpmh_write_batch);
+>  
+>  static int is_req_valid(struct cache_req *req)
+>  {
+> @@ -500,4 +500,4 @@ void rpmh_invalidate(const struct device *dev)
+>  	ctrlr->dirty = true;
+>  	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
+>  }
+> -EXPORT_SYMBOL(rpmh_invalidate);
+> +EXPORT_SYMBOL_GPL(rpmh_invalidate);
+> diff --git a/drivers/soc/qcom/smd-rpm.c b/drivers/soc/qcom/smd-rpm.c
+> index f9fd6177118c..b7056aed4c7d 100644
+> --- a/drivers/soc/qcom/smd-rpm.c
+> +++ b/drivers/soc/qcom/smd-rpm.c
+> @@ -142,7 +142,7 @@ int qcom_rpm_smd_write(struct qcom_smd_rpm *rpm,
+>  	mutex_unlock(&rpm->lock);
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(qcom_rpm_smd_write);
+> +EXPORT_SYMBOL_GPL(qcom_rpm_smd_write);
+>  
+>  static int qcom_smd_rpm_callback(struct rpmsg_device *rpdev,
+>  				 void *data,
+> diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
+> index d4a89d2bb43b..b45f276a662f 100644
+> --- a/drivers/soc/qcom/smem.c
+> +++ b/drivers/soc/qcom/smem.c
+> @@ -368,7 +368,7 @@ bool qcom_smem_is_available(void)
+>  {
+>  	return !!__smem;
+>  }
+> -EXPORT_SYMBOL(qcom_smem_is_available);
+> +EXPORT_SYMBOL_GPL(qcom_smem_is_available);
+>  
+>  static int qcom_smem_alloc_private(struct qcom_smem *smem,
+>  				   struct smem_partition *part,
+> diff --git a/drivers/soc/qcom/wcnss_ctrl.c b/drivers/soc/qcom/wcnss_ctrl.c
+> index ad9942412c58..847160492db8 100644
+> --- a/drivers/soc/qcom/wcnss_ctrl.c
+> +++ b/drivers/soc/qcom/wcnss_ctrl.c
+> @@ -287,7 +287,7 @@ struct rpmsg_endpoint *qcom_wcnss_open_channel(void *wcnss, const char *name, rp
+>  
+>  	return rpmsg_create_ept(_wcnss->channel->rpdev, cb, priv, chinfo);
+>  }
+> -EXPORT_SYMBOL(qcom_wcnss_open_channel);
+> +EXPORT_SYMBOL_GPL(qcom_wcnss_open_channel);
+>  
+>  static void wcnss_async_probe(struct work_struct *work)
+>  {
 -- 
-2.34.1
+---Trilok Soni
 
