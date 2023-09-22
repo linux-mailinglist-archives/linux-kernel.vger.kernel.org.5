@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5978B7AA8DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081C97AA8E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbjIVGQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
+        id S231515AbjIVGQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjIVGQD (ORCPT
+        with ESMTP id S231352AbjIVGQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:16:03 -0400
+        Fri, 22 Sep 2023 02:16:04 -0400
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE119C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:15:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37829194
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         sang-engineering.com; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-type
-        :content-transfer-encoding; s=k1; bh=2sBBi2jpgeawaZPl0+HnKpz9m+O
-        EIzM5p6vt2uhfrK0=; b=mdE61oq/xkEt+fB3rYXRcoE5MD3uLRXFVAf4K8VcEAX
-        Go05nZpG6ZRzMz9lxu76fKMZQBmF+EL2pKptnLYS9pe/heQQ7pKpueysBBqw6VWu
-        PqpE8Eu5ZFzwJl8F4eyq9J5RxdDvHS0GZjmZjiWuj5LEtsi9g0/l1+ooJ+qfCB5h
-        Hggd6KXft/0ZHa/GYtv0VeZEMTTzjXBJHb1bDBcRgWoXpdpa5jCDfWIKoFZHBMEn
-        xE0H/PBpB1ap1whpx2k6LaOcrMtou0LeuE/BoDkePu1nm2WQxgUyLCuP+lhGS4gB
-        /1NyIa88UHxlptb+fxkH3X+wXT/j0khRZhcTwbTfWyg==
-Received: (qmail 1269171 invoked from network); 22 Sep 2023 08:15:44 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 08:15:44 +0200
-X-UD-Smtp-Session: l3s3148p1@uDbeiewFDpoujntX
+        :in-reply-to:references:mime-version:content-transfer-encoding;
+         s=k1; bh=PBIK72HHguYgSAXkX++54+0ynqVyWWRjkT4uhKM7s/E=; b=VDcXh6
+        W7SwgMZtqAVpDOSRcAXl98l56PCM1Q0vXofo9juxeqleGK/Otw6KD7GwJP66WsAb
+        qghVDa1QbHqVmWA5fYBmY1G818UYQLnkk3eNqJcHmZIdHhQjtBadadZjObz2+UtN
+        Qv0PbMBkB8i/j2fJS0BeohX3E79Gm516/yEt/WZ9p5Mb1MBzWpLWh0RLf6L0DILQ
+        +WrrrmfSvMFqp3hgtT++Xc4HYkOC5/SJStwr4JGOD9v9E7G0/mqyZN+qiFPNhvDW
+        p6b9ki/QqfSpaNK6Fq3uxiwcBpr7vfYzQq4xp/LMw6GBPQKVPO9iOtfiFVkINqZ4
+        nmT8eA1gzOcM/dEA==
+Received: (qmail 1269224 invoked from network); 22 Sep 2023 08:15:45 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 08:15:45 +0200
+X-UD-Smtp-Session: l3s3148p1@U0v5iewFHoYujntX
 From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
 To:     linux-mips@vger.kernel.org
 Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next v2 5/6] net: cpmac: remove driver to prepare for platform removal
-Date:   Fri, 22 Sep 2023 08:15:26 +0200
-Message-Id: <20230922061530.3121-6-wsa+renesas@sang-engineering.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 6/6] MIPS: AR7: remove platform
+Date:   Fri, 22 Sep 2023 08:15:27 +0200
+Message-Id: <20230922061530.3121-7-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
 References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -57,82 +53,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AR7 is going to be removed from the Kernel, so remove its networking
-support in form of the cpmac driver. This allows us to remove the
-platform because this driver includes a platform specific header.
+After a discussion about removing VLYNQ support from the Kernel, it was
+concluded that its only user, the AR7 platform can go [1]. Even OpenWRT
+has removed support because these devices are "stuck with 3.18" [2].
 
+[1] https://lore.kernel.org/r/3395161f-2543-46f0-83d9-b918800305e1@gmail.com
+[2] https://openwrt.org/docs/techref/targets/ar7
+
+Suggested-by: Jonas Gorski <jonas.gorski@gmail.com>
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
 Changes since v1:
 * added ack
 
- MAINTAINERS                      |    6 -
- drivers/net/ethernet/ti/Kconfig  |    9 +-
- drivers/net/ethernet/ti/Makefile |    1 -
- drivers/net/ethernet/ti/cpmac.c  | 1251 ------------------------------
- 4 files changed, 1 insertion(+), 1266 deletions(-)
- delete mode 100644 drivers/net/ethernet/ti/cpmac.c
+ arch/mips/Kbuild.platforms              |   1 -
+ arch/mips/Kconfig                       |  22 -
+ arch/mips/ar7/Makefile                  |  11 -
+ arch/mips/ar7/Platform                  |   5 -
+ arch/mips/ar7/clock.c                   | 439 --------------
+ arch/mips/ar7/gpio.c                    | 332 -----------
+ arch/mips/ar7/irq.c                     | 165 ------
+ arch/mips/ar7/memory.c                  |  51 --
+ arch/mips/ar7/platform.c                | 722 ------------------------
+ arch/mips/ar7/prom.c                    | 256 ---------
+ arch/mips/ar7/setup.c                   |  93 ---
+ arch/mips/ar7/time.c                    |  31 -
+ arch/mips/boot/compressed/uart-16550.c  |   5 -
+ arch/mips/configs/ar7_defconfig         | 119 ----
+ arch/mips/include/asm/mach-ar7/ar7.h    | 191 -------
+ arch/mips/include/asm/mach-ar7/irq.h    |  16 -
+ arch/mips/include/asm/mach-ar7/prom.h   |  12 -
+ arch/mips/include/asm/mach-ar7/spaces.h |  22 -
+ 18 files changed, 2493 deletions(-)
+ delete mode 100644 arch/mips/ar7/Makefile
+ delete mode 100644 arch/mips/ar7/Platform
+ delete mode 100644 arch/mips/ar7/clock.c
+ delete mode 100644 arch/mips/ar7/gpio.c
+ delete mode 100644 arch/mips/ar7/irq.c
+ delete mode 100644 arch/mips/ar7/memory.c
+ delete mode 100644 arch/mips/ar7/platform.c
+ delete mode 100644 arch/mips/ar7/prom.c
+ delete mode 100644 arch/mips/ar7/setup.c
+ delete mode 100644 arch/mips/ar7/time.c
+ delete mode 100644 arch/mips/configs/ar7_defconfig
+ delete mode 100644 arch/mips/include/asm/mach-ar7/ar7.h
+ delete mode 100644 arch/mips/include/asm/mach-ar7/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-ar7/prom.h
+ delete mode 100644 arch/mips/include/asm/mach-ar7/spaces.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bdd6e7ce962d..00063d14c70b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5309,12 +5309,6 @@ M:	Bence Csókás <bence98@sch.bme.hu>
- S:	Maintained
- F:	drivers/i2c/busses/i2c-cp2615.c
+diff --git a/arch/mips/Kbuild.platforms b/arch/mips/Kbuild.platforms
+index caad195ba5c1..a2311c4bce6a 100644
+--- a/arch/mips/Kbuild.platforms
++++ b/arch/mips/Kbuild.platforms
+@@ -2,7 +2,6 @@
+ # All platforms listed in alphabetic order
  
--CPMAC ETHERNET DRIVER
--M:	Florian Fainelli <f.fainelli@gmail.com>
--L:	netdev@vger.kernel.org
--S:	Maintained
--F:	drivers/net/ethernet/ti/cpmac.c
--
- CPU FREQUENCY DRIVERS - VEXPRESS SPC ARM BIG LITTLE
- M:	Viresh Kumar <viresh.kumar@linaro.org>
- M:	Sudeep Holla <sudeep.holla@arm.com>
-diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
-index 88b5b1b47779..7a99a86888e9 100644
---- a/drivers/net/ethernet/ti/Kconfig
-+++ b/drivers/net/ethernet/ti/Kconfig
-@@ -6,7 +6,7 @@
- config NET_VENDOR_TI
- 	bool "Texas Instruments (TI) devices"
- 	default y
--	depends on PCI || EISA || AR7 || ARCH_DAVINCI || ARCH_OMAP2PLUS || ARCH_KEYSTONE || ARCH_K3
-+	depends on PCI || EISA || ARCH_DAVINCI || ARCH_OMAP2PLUS || ARCH_KEYSTONE || ARCH_K3
- 	help
- 	  If you have a network (Ethernet) card belonging to this class, say Y.
+ platform-$(CONFIG_MIPS_ALCHEMY)		+= alchemy/
+-platform-$(CONFIG_AR7)			+= ar7/
+ platform-$(CONFIG_ATH25)		+= ath25/
+ platform-$(CONFIG_ATH79)		+= ath79/
+ platform-$(CONFIG_BCM47XX)		+= bcm47xx/
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index bc8421859006..76db82542519 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -202,28 +202,6 @@ config MIPS_ALCHEMY
+ 	select SYS_SUPPORTS_ZBOOT
+ 	select COMMON_CLK
  
-@@ -176,13 +176,6 @@ config TLAN
- 
- 	  Please email feedback to <torben.mathiasen@compaq.com>.
- 
--config CPMAC
--	tristate "TI AR7 CPMAC Ethernet support"
--	depends on AR7
--	select PHYLIB
+-config AR7
+-	bool "Texas Instruments AR7"
+-	select BOOT_ELF32
+-	select COMMON_CLK
+-	select DMA_NONCOHERENT
+-	select CEVT_R4K
+-	select CSRC_R4K
+-	select IRQ_MIPS_CPU
+-	select NO_EXCEPT_FILL
+-	select SWAP_IO_SPACE
+-	select SYS_HAS_CPU_MIPS32_R1
+-	select SYS_HAS_EARLY_PRINTK
+-	select SYS_SUPPORTS_32BIT_KERNEL
+-	select SYS_SUPPORTS_LITTLE_ENDIAN
+-	select SYS_SUPPORTS_MIPS16
+-	select SYS_SUPPORTS_ZBOOT_UART16550
+-	select GPIOLIB
+-	select VLYNQ
 -	help
--	  TI AR7 CPMAC Ethernet support
+-	  Support for the Texas Instruments AR7 System-on-a-Chip
+-	  family: TNETD7100, 7200 and 7300.
 -
- config TI_ICSSG_PRUETH
- 	tristate "TI Gigabit PRU Ethernet driver"
- 	select PHYLIB
-diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
-index 34fd7a716ba6..e38ec9d6c99b 100644
---- a/drivers/net/ethernet/ti/Makefile
-+++ b/drivers/net/ethernet/ti/Makefile
-@@ -8,7 +8,6 @@ obj-$(CONFIG_TI_DAVINCI_EMAC) += cpsw-common.o
- obj-$(CONFIG_TI_CPSW_SWITCHDEV) += cpsw-common.o
- 
- obj-$(CONFIG_TLAN) += tlan.o
--obj-$(CONFIG_CPMAC) += cpmac.o
- obj-$(CONFIG_TI_DAVINCI_EMAC) += ti_davinci_emac.o
- ti_davinci_emac-y := davinci_emac.o davinci_cpdma.o
- obj-$(CONFIG_TI_DAVINCI_MDIO) += davinci_mdio.o
-diff --git a/drivers/net/ethernet/ti/cpmac.c b/drivers/net/ethernet/ti/cpmac.c
+ config ATH25
+ 	bool "Atheros AR231x/AR531x SoC support"
+ 	select CEVT_R4K
+diff --git a/arch/mips/ar7/Makefile b/arch/mips/ar7/Makefile
 deleted file mode 100644
-index 80eeeb463c4f..000000000000
+index cd51c6c6e686..000000000000
+diff --git a/arch/mips/ar7/Platform b/arch/mips/ar7/Platform
+deleted file mode 100644
+index a9257cc01c3c..000000000000
+diff --git a/arch/mips/ar7/clock.c b/arch/mips/ar7/clock.c
+deleted file mode 100644
+index c717acbc5506..000000000000
+diff --git a/arch/mips/ar7/gpio.c b/arch/mips/ar7/gpio.c
+deleted file mode 100644
+index 4ed833b9cc2f..000000000000
+diff --git a/arch/mips/ar7/irq.c b/arch/mips/ar7/irq.c
+deleted file mode 100644
+index f0a7942d393e..000000000000
+diff --git a/arch/mips/ar7/memory.c b/arch/mips/ar7/memory.c
+deleted file mode 100644
+index ce8024c1a54e..000000000000
+diff --git a/arch/mips/ar7/platform.c b/arch/mips/ar7/platform.c
+deleted file mode 100644
+index 215149a85d83..000000000000
+diff --git a/arch/mips/ar7/prom.c b/arch/mips/ar7/prom.c
+deleted file mode 100644
+index 5810d3993fc6..000000000000
+diff --git a/arch/mips/ar7/setup.c b/arch/mips/ar7/setup.c
+deleted file mode 100644
+index 352d5dbc777c..000000000000
+diff --git a/arch/mips/ar7/time.c b/arch/mips/ar7/time.c
+deleted file mode 100644
+index 72aa77d7087b..000000000000
+diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
+index 96d28f211121..09dcd2c561d9 100644
+--- a/arch/mips/boot/compressed/uart-16550.c
++++ b/arch/mips/boot/compressed/uart-16550.c
+@@ -13,11 +13,6 @@
+ #define PORT(offset) (CKSEG1ADDR(UART_BASE) + (offset))
+ #endif
+ 
+-#ifdef CONFIG_AR7
+-#include <ar7.h>
+-#define PORT(offset) (CKSEG1ADDR(AR7_REGS_UART0) + (4 * offset))
+-#endif
+-
+ #ifdef CONFIG_MACH_INGENIC
+ #define INGENIC_UART_BASE_ADDR	(0x10030000 + 0x1000 * CONFIG_ZBOOT_INGENIC_UART)
+ #define PORT(offset) (CKSEG1ADDR(INGENIC_UART_BASE_ADDR) + (4 * offset))
+diff --git a/arch/mips/configs/ar7_defconfig b/arch/mips/configs/ar7_defconfig
+deleted file mode 100644
+index 329c60aa570a..000000000000
+diff --git a/arch/mips/include/asm/mach-ar7/ar7.h b/arch/mips/include/asm/mach-ar7/ar7.h
+deleted file mode 100644
+index 1e8621a6afa3..000000000000
+diff --git a/arch/mips/include/asm/mach-ar7/irq.h b/arch/mips/include/asm/mach-ar7/irq.h
+deleted file mode 100644
+index 46bb730ea970..000000000000
+diff --git a/arch/mips/include/asm/mach-ar7/prom.h b/arch/mips/include/asm/mach-ar7/prom.h
+deleted file mode 100644
+index 9e1d20b06f57..000000000000
+diff --git a/arch/mips/include/asm/mach-ar7/spaces.h b/arch/mips/include/asm/mach-ar7/spaces.h
+deleted file mode 100644
+index a004d94dfbdd..000000000000
 -- 
 2.35.1
 
