@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1007AAAC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5407AAAC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjIVHuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        id S231628AbjIVHum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232034AbjIVHuB (ORCPT
+        with ESMTP id S231755AbjIVHuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:50:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507891A2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695368944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mUrChINedqPMXcgm7a4g3Fw1rlxjkk+Lujf8OPdqplc=;
-        b=iWCkoFqu3+XGO+oc3m4+xsCC37vIk+vh2Z/3jUS6afnELI0Pph54NV6pQzlcjICB1gCwwf
-        0Jh89eurWXUkUSymJyNXX6N1A69zil/AEXcufXK9MwJSXvlz+S4JGKtYZHyfMJP1RJMzZF
-        6v6GNyzORhJZ0W7LgN0aw7JlqS/Z7Gg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-2fFisIm1PlajNRkuEGHdpQ-1; Fri, 22 Sep 2023 03:49:02 -0400
-X-MC-Unique: 2fFisIm1PlajNRkuEGHdpQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3200942185dso1030430f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:49:02 -0700 (PDT)
+        Fri, 22 Sep 2023 03:50:39 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55382FB
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:50:32 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-6586739cfeeso9062426d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695369031; x=1695973831; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8IjNtHtQv+1LrNf3EaPvoTWjbGccdREsCK+hvIYp0r0=;
+        b=HuuptYykEgawEYs2KupWH+5HoTaqw/CZ+uaSR97rEBm7M0mXjWC55DdzJVSBfxJDGr
+         G6v5V5+ytCyUrcpTK6oXOP7YNsjtJwx3e3l9NYKEZPwIAUtiMUXp6CUrUpU5JxiVQ9TR
+         XHF2uv4boaHRPUrKi3cisL+vpPe/IZeon/jS036XQIeJfwtxCwcE3ZJwHdQk2cIW0Eli
+         x8CzIfFLZc8diH/MlzjP0g/GVJfN/j7nEeSjiFO02Whote2I+ZcbVeSSLQfbzAsPK/0l
+         8bu/ZpZYtcjtNaeEpYNsaHuu6eMIZgqZUaPVxL6DM1TAjYwZZaIMpuQA7br2KUYbn8Ny
+         5K6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695368941; x=1695973741;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695369031; x=1695973831;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mUrChINedqPMXcgm7a4g3Fw1rlxjkk+Lujf8OPdqplc=;
-        b=fXH4/TA/YTGtmyW0PnC9SUocx9zBxQOodColWZxrc0A1lNg5yGAgmYrue7CvZmAf7m
-         qVzGkuRETfSEBE7CMSuh/SnqORKuq6HwETPf7lzXkq3vzbB6WsOR96mx4TEWGBvxc2TX
-         cy70na30QsHNS/EsN3KkSluUID9aZLQgmi9qzPcxPgcCCTaLfWR/UH42h2iki+CYMuq0
-         iHUxsGTFeaP1Uce605M1DCibYcACIE+mvP/cJ65dUE6XxaaeNxPAmapPC9EX80s8ZB71
-         A+DJI28MFK/w/83oa475umz186RZpHtGpoUmU/ymqaTU+cUo3dzRPvUOGQ2JXWihIylQ
-         mjjQ==
-X-Gm-Message-State: AOJu0Yy71YUZpMAnlC38Eqbn4rftZGp0VTyhbFNIMzKyKAHi26ynP96o
-        hdGYrCDj7WijHgnUVi9kex4hMFZNEmG6LiqNPdekgF7HaPKGAYpyiGkf9Xe5jXxCYVHVsBx7lKe
-        y99yzG8a3BgVDNNXvj+TrHwAx
-X-Received: by 2002:a5d:5966:0:b0:313:e391:e492 with SMTP id e38-20020a5d5966000000b00313e391e492mr1358470wri.17.1695368941622;
-        Fri, 22 Sep 2023 00:49:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHsL+j01Pw5XaxmoyefOCVvRg5dYpJ8WuCHDVdp80uhbCqWq+8WMVJspNAvm9myjLNXXZO0zA==
-X-Received: by 2002:a5d:5966:0:b0:313:e391:e492 with SMTP id e38-20020a5d5966000000b00313e391e492mr1358452wri.17.1695368941281;
-        Fri, 22 Sep 2023 00:49:01 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71a:7100:dfaf:df8b:54b9:7303? (p200300cbc71a7100dfafdf8b54b97303.dip0.t-ipconnect.de. [2003:cb:c71a:7100:dfaf:df8b:54b9:7303])
-        by smtp.gmail.com with ESMTPSA id x17-20020a5d6b51000000b0031980294e9fsm3738383wrw.116.2023.09.22.00.49.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 00:49:00 -0700 (PDT)
-Message-ID: <2ed9a6c5-bd36-9b9b-7022-34e7ae894f3a@redhat.com>
-Date:   Fri, 22 Sep 2023 09:48:59 +0200
+        bh=8IjNtHtQv+1LrNf3EaPvoTWjbGccdREsCK+hvIYp0r0=;
+        b=jmeYocxnOVijjXFL/MBss5FhuElZJnQUNjXapLfcGrHuy9KKkS1zjDOQspuF9Xo/WT
+         Y00J+Iq1ez7NN5sRg2BCJeluR+DplzYCgBClGavdzuyZE/DR5gb9m/ojX8HQIIXNSCQV
+         iaDqsQjIkAaFvQD5FOPgpfkeWQ0X1W9jvEXfTITrIorogCRjVt2UFwStKjk0Ves2IFgC
+         SK1ZIkXo0YHIBcMf0TGJQitIfgDL99nAEmye8wLoVb5zcPu341ytW5Myr5rHnd7HdE9D
+         cEDnbmXQ4FNp6N7skOJkyLX9jwMgC2e0H4er183u6zw+CR7Z4Xad6Y5cIMzs6L0FKtAS
+         46Mg==
+X-Gm-Message-State: AOJu0YytG0yeVFf7rQz9mY0xCVaZFBrT9ITXZFL1KZZJGoo46tvP1wnM
+        KSuA+lLTZWfdoat09g/mSNxmVzcuQw+tgjcLzNG6cg==
+X-Google-Smtp-Source: AGHT+IFMsKR88GCyuYV7PS69SbQe1IC5OCAQJo3R0UV/mBBlV1Y0m9d7lKn+vt77gQiC0J1KjKsKDTcZsxWT+pv6Pog=
+X-Received: by 2002:a05:6214:4b04:b0:658:4fbc:6938 with SMTP id
+ pj4-20020a0562144b0400b006584fbc6938mr7156233qvb.42.1695369031363; Fri, 22
+ Sep 2023 00:50:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/4] mm: pass set_count and set_reserved to
- __init_single_page
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Yajun Deng <yajun.deng@linux.dev>
-Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, glider@google.com, elver@google.com,
-        dvyukov@google.com, rppt@kernel.org, osalvador@suse.de,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-References: <20230922070923.355656-1-yajun.deng@linux.dev>
- <20230922070923.355656-2-yajun.deng@linux.dev>
- <ZQ1Gg533lODfqvWd@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZQ1Gg533lODfqvWd@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230720173956.3674987-1-glider@google.com> <20230720173956.3674987-2-glider@google.com>
+ <ZLyI+0EL1VztnHLe@yury-ThinkPad> <CAG_fn=V4wyHjXT41byPbAkrZzisZRfKszwM4EUFV-FNWuXXfbw@mail.gmail.com>
+ <ZMG29WmwQFVgTSCv@yury-ThinkPad> <CAG_fn=VrPJj6YowHNki5RGAAs8qvwZpUVN4K9qw=cf4aW7Qw9A@mail.gmail.com>
+ <ZM1XlUbAJ7Qpd6OO@yury-ThinkPad>
+In-Reply-To: <ZM1XlUbAJ7Qpd6OO@yury-ThinkPad>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 22 Sep 2023 09:49:55 +0200
+Message-ID: <CAG_fn=XH3KSpM6nD6kCs6ZVsv5irqih8dK-X0EnnMAAQkEKGXg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.23 09:47, Matthew Wilcox wrote:
-> On Fri, Sep 22, 2023 at 03:09:20PM +0800, Yajun Deng wrote:
->> -		__init_single_page(page, pfn, zone, nid);
->> +		__init_single_page(page, pfn, zone, nid, true, false);
-> 
-> So Linus has just had a big rant about not doing bool flags to
-> functions.  And in particular _multiple_ bool flags to functions.
-> 
-> ie this should be:
-> 
-> #define INIT_PAGE_COUNT		(1 << 0)
-> #define INIT_PAGE_RESERVED	(1 << 1)
-> 
-> 		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
-> 
-> or something similar.
-> 
-> I have no judgement on the merits of this patch so far.  Do you have
-> performance numbers for each of these patches?  Some of them seem quite
-> unlikely to actually help, at least on a machine which is constrained
-> by cacheline fetches.
+> OK. Can you put a comment explaining this? Or maybe would be even
+> better to use BITMAP_LAST_WORD_MASK() here:
+>
+>          mask = BITMAP_LAST_WORD_MASK(nbits);
+>          value &= mask;
+>          ...
+>          map[index] &= (fit ? (~mask << offset)) :
 
-The last patch contains
-
-before:
-node 0 deferred pages initialised in 78ms
-
-after:
-node 0 deferred pages initialised in 72ms
-
-Not earth-shattering :D Maybe with much bigger machines relevant?
-
--- 
-Cheers,
-
-David / dhildenb
-
+I changed GENMASK to BITMAP_LAST_WORD_MASK here, and I think it's
+self-explanatory now, WDYT?
