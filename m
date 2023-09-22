@@ -2,163 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AA47AB340
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F009F7AB341
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbjIVOER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        id S233671AbjIVOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjIVOEQ (ORCPT
+        with ESMTP id S233368AbjIVOEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Sep 2023 10:04:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40C2136;
-        Fri, 22 Sep 2023 07:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695391449; x=1726927449;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BTfvrs5EOPQJfVJYIu6aaO3NsW53LRV0R0jYG09hQ3Y=;
-  b=Gsr0XRxk7MmVs/cpHbgDI60b6qRbwq9NOnYuuvepp27O5qFrokEq0qf9
-   xhY/02rR5miG2+AvmtLna9kr+9NHySIFcgeRWPtt0SAnFvqmp949lO5wk
-   dTEcuXwbtUatU6XtLUKaKMGQGHHsaEXdty8fKI89rni+yPC1UUTqtjulY
-   3CJJygM98IZwfkn933WZ2G+dk9pWoU80LmBNXg+GKCGeGpIQnyrZD/5b+
-   aUBGlsAai+SvDiG1ZVxg/ADjWqHK2ZObpVnLAtoUy2l3CmbOY7hpItgWL
-   VO1o3dTIW34V7+QyzpA08U5mVAsEdOl8TUeldUZscxELoncs/4+GyDeNC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="378122882"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="378122882"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 07:03:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="871253379"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="871253379"
-Received: from placki-mobl.ger.corp.intel.com (HELO [10.213.200.149]) ([10.213.200.149])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 07:02:32 -0700
-Message-ID: <5a92b93c-6c6c-059a-c07b-a8b0b4b2b364@linux.intel.com>
-Date:   Fri, 22 Sep 2023 15:02:30 +0100
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E38F7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:04:07 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C79AD24000A;
+        Fri, 22 Sep 2023 14:04:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695391445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pExq5EY/86tUqekvDpJYB6m3SynqP56IDF4E/AB4Z5k=;
+        b=CStiiwB68UhFaWNyJvW23wdDSD3ddwH74WFVgCG8U6545bJhHiRYjRaS4ZcEqiDpvQPYIH
+        tMrGKNyuwQ8Xx+2UbGKbJUnn0wbXn/KylVZzA9nXKFW4/4AjzqDJ38ccV4/agKr4NNPBRF
+        /LsM+yKlMcGtAU7+nrXZfUbEfdd+HqnDMlyLvex/uEw1bb+V1WCPlSfvmxJrH5AcVYyxOa
+        +MiK5TE1w+uMP1GTp+A7Hmss0wDLYiMb3f6sQ1Zbi28zQkXidzbls8tZnliF73aYRQ31IA
+        qaUP8cNWZlvj0TzysxwcUVKXgZUO/nFKSg9S61fFAuAB0hWZweEWKz4yFZhqzA==
+Date:   Fri, 22 Sep 2023 16:04:00 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>
+Cc:     Martin =?UTF-8?B?SHVuZGViw7hsbA==?= <martin@geanix.com>,
+        =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        JaimeLiao <jaimeliao.tw@gmail.com>, kernel@pengutronix.de,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexander Shiyan <eagle.alexander923@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: check nand support for cache reads
+Message-ID: <20230922160400.034ee828@xps-13>
+In-Reply-To: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
+References: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 6/6] drm/drm-file: Show finer-grained BO sizes in
- drm_show_memory_stats
-Content-Language: en-US
-To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        healych@amazon.com,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        kernel@collabora.com, freedreno@lists.freedesktop.org
-References: <20230919233556.1458793-1-adrian.larumbe@collabora.com>
- <20230919233556.1458793-7-adrian.larumbe@collabora.com>
- <ccfa3697-b015-ff35-fb92-0efcbd1d7d7c@linux.intel.com>
- <6b9c8566-926d-40ff-7907-228d317fab3d@linux.intel.com>
- <rn5metso2yr2kyxix3fh2ub77jpjf6avs754eshgpd2lu33bkw@33way22pozgh>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <rn5metso2yr2kyxix3fh2ub77jpjf6avs754eshgpd2lu33bkw@33way22pozgh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rouven,
 
-On 22/09/2023 12:03, Adrián Larumbe wrote:
-> On 21.09.2023 11:14, Tvrtko Ursulin wrote:
->>
->> On 20/09/2023 16:32, Tvrtko Ursulin wrote:
->>>
->>> On 20/09/2023 00:34, Adrián Larumbe wrote:
->>>> The current implementation will try to pick the highest available size
->>>> display unit as soon as the BO size exceeds that of the previous
->>>> multiplier. That can lead to loss of precision in contexts of low memory
->>>> usage.
->>>>
->>>> The new selection criteria try to preserve precision, whilst also
->>>> increasing the display unit selection threshold to render more accurate
->>>> values.
->>>>
->>>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
->>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
->>>> Reviewed-by: Steven Price <steven.price@arm.com>
->>>> ---
->>>>    drivers/gpu/drm/drm_file.c | 5 ++++-
->>>>    1 file changed, 4 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
->>>> index 762965e3d503..34cfa128ffe5 100644
->>>> --- a/drivers/gpu/drm/drm_file.c
->>>> +++ b/drivers/gpu/drm/drm_file.c
->>>> @@ -872,6 +872,8 @@ void drm_send_event(struct drm_device *dev, struct
->>>> drm_pending_event *e)
->>>>    }
->>>>    EXPORT_SYMBOL(drm_send_event);
->>>> +#define UPPER_UNIT_THRESHOLD 100
->>>> +
->>>>    static void print_size(struct drm_printer *p, const char *stat,
->>>>                   const char *region, u64 sz)
->>>>    {
->>>> @@ -879,7 +881,8 @@ static void print_size(struct drm_printer *p,
->>>> const char *stat,
->>>>        unsigned u;
->>>>        for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
->>>> -        if (sz < SZ_1K)
->>>> +        if ((sz & (SZ_1K - 1)) &&
->>>
->>> IS_ALIGNED worth it at all?
->>>
->>>> +            sz < UPPER_UNIT_THRESHOLD * SZ_1K)
->>>>                break;
->>>
->>> Excuse me for a late comment (I was away). I did not get what what is
->>> special about a ~10% threshold? Sounds to me just going with the lower
->>> unit, when size is not aligned to the higher one, would be better than
->>> sometimes precision-sometimes-not.
->>
->> FWIW both current and the threshold option make testing the feature very
->> annoying.
-> 
-> How so?
+Thanks a lot for the investigation and the patch!
 
-I have to build in the knowledge of implementation details of 
-print_size() into my IGT in order to use the right size BOs, so test is 
-able to verify stats move as expected. It just feels wrong.
+r.czerwinski@pengutronix.de wrote on Fri, 22 Sep 2023 12:01:13 +0200:
 
->> So I'd really propose we simply use smaller unit when unaligned.
-> 
-> Like I said in the previous reply, for drm files whose overall BO size sum is enormous
-> but not a multiple of a MiB, this would render huge number representations in KiB.
-> I don't find this particularly comfortable to read, and then this extra precision
-> would mean nothing to nvtop or gputop, which would have to scale the size to their
-> available screen dimensions when plotting them.
+Would you mind changing the title to
+"mtd: rawnand: Ensure the nand chip supports cached reads"
 
-I don't think numbers in KiB are so huge.
+> Both the JEDEC and ONFI specification say that read cache sequential
+> support is an optional command.
 
-And I don't think people will end up reading them manually a lot anyway, 
-since you have to hunt the pid, and fd, etc.. It is much more realistic 
-that some tool like gputop will be used.
+I clearly overlooked that part, just checking the set/get_features()
+entries as usual, good catch.
 
-And I don't think consistency of units across drivers or whatever 
-matters. Even better to keep userspace parser on their toes and make 
-then follow drm-usage-stats.rst and not any implementations, at some 
-point in time.
+> This means that we not only need to
+> check whether the individual controller implements the command, we also
 
-Regards,
+The controller itself does not implement the command, but may or may
+not support it (can you please update the sentence?).
 
-Tvrtko
+> need to check the parameter pages for both ONFI and JEDEC NAND flashes
+> before enabling sequential cache reads.
+>=20
+> This fixes support for NAND flashes which don't support enabling cache
+> reads, i.e. Samsung K9F4G08U0F or Toshiba TC58NVG0S3HTA00.
+>=20
+> Sequential cache reads are no only available for ONFI and JEDEC devices,
+> if individual vendors implement this, it needs to be enabled per vendor.
+
+Agreed.
+
+> Tested on i.MX6Q with a Samsung NAND flash chip that doesn't support
+> sequential reads.
+>=20
+> Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
+>=20
+
+Please remove this empty line and instead add:
+
+Cc: stable@vger.kernel.org
+
+> Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+> ---
+> @Martin, M=C3=A5ns:
+> I would appreciate if you could test this on your hardware.
+
+That would me much appreciated!
+
+I also added Alexander who also had troubles with this patchset, could
+you check on your setup if that solves the issue?
+
+> @Miguel:
+> I didn't have the time to test this on ONFI/JEDEC devices with support
+> yet, I'd be fine if you hold off merging this.
+
+Of course. I was about to send a revert but that looks a promising fix,
+let's see how it goes.
+
+>=20
+>  drivers/mtd/nand/raw/nand_base.c  | 3 +++
+>  drivers/mtd/nand/raw/nand_jedec.c | 3 +++
+>  drivers/mtd/nand/raw/nand_onfi.c  | 3 +++
+>  include/linux/mtd/jedec.h         | 3 +++
+>  include/linux/mtd/onfi.h          | 1 +
+>  include/linux/mtd/rawnand.h       | 1 +
+>  6 files changed, 14 insertions(+)
+>=20
+
+Thanks,
+Miqu=C3=A8l
