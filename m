@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DCA7AB99E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BEC7AB9A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233729AbjIVSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        id S233766AbjIVSxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjIVSvq (ORCPT
+        with ESMTP id S229526AbjIVSxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:51:46 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B85BA9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:51:40 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-501eec0a373so4411823e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695408698; x=1696013498; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ah1VmvWzOnKnkyFlWIeYuTucJzJ+3NRjWIwcRi6c2zI=;
-        b=K206OWkq6kaxl7G8Ji8lQHvJt62F3PD1ZPRGcCnu8AntaKpKUZwGksoriGB54WH/rR
-         xSixvOssELn7Vsr9eG28bj5gUY6AOI0R9qRAJY4C3AFBlzJb7O8rOX00tzG6MgBzpKXh
-         Mmclg9La7wY5fKGsBa1y7iFIC82FJlvYNJybM=
+        Fri, 22 Sep 2023 14:53:12 -0400
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2221EA9;
+        Fri, 22 Sep 2023 11:53:07 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-692779f583fso1573487b3a.0;
+        Fri, 22 Sep 2023 11:53:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695408698; x=1696013498;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ah1VmvWzOnKnkyFlWIeYuTucJzJ+3NRjWIwcRi6c2zI=;
-        b=pmNSiX27RA/zK45lfXylmhLGm+pdQcS5Jiq/z00l9EsfCg/g9RsfxQflCIFHT98+P8
-         sTYD8+d0XzZPu0YiQx9KedK/Bf/OZcLyC2JtJwhqhI3IryRGJ8nE4EIvk/0iQFCAFYm8
-         B2V0w2CMA7nSpohCcz/4sfkiFkLykN1FoVdB5ViRWq6+cK+LxDC6/2J6W+YNb4ojwnH6
-         F+0oXkGJ7oQkOZMWwWN46DFNeM8nZOgjBa2nl5Jl7yfXN95koskLSdKA6Nezg7ZOdJ2o
-         za/aggX6xQYNUf6RGGf3tDP8GaquQlByMotWxsuSXCDBmRlBKKoHLz+y6pr7ovI99TjG
-         UGKQ==
-X-Gm-Message-State: AOJu0Yyop0p7P8LFFAfHX7fHgIuL+obrcIe68x/5FGGo1BH0gB4X5MK2
-        GCafGCGQgkFRGVZhQVnWCujrtSM2yPn+3t04q8q/wo2N
-X-Google-Smtp-Source: AGHT+IGPw2rtvah69xYK94UX/xkLmHBOU7yvFzKn2Y3C8npvvHdq4nXX+NmKln4HoVAIC3njKbPVGw==
-X-Received: by 2002:a19:6506:0:b0:503:1bb0:a658 with SMTP id z6-20020a196506000000b005031bb0a658mr271777lfb.32.1695408698083;
-        Fri, 22 Sep 2023 11:51:38 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id v22-20020a056402185600b0052a3aa50d72sm2576571edy.40.2023.09.22.11.51.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 11:51:37 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so3068731a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:51:37 -0700 (PDT)
-X-Received: by 2002:aa7:c98b:0:b0:533:310b:a8aa with SMTP id
- c11-20020aa7c98b000000b00533310ba8aamr309019edt.13.1695408696292; Fri, 22 Sep
- 2023 11:51:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695408786; x=1696013586;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/wLBzChvWAaHXw0NzmtTui405IC0LIuO1ZABr92XOq4=;
+        b=Y8Dw1Qt8QBBDWic8oj7A3gbC3aYpfSARv7esO3bwzJhZ4LhxkFqRN2mJpJ+YwxKxwS
+         amIdQCVktMeXEspDfW4tmRbdOaLSSPtbZaOxEPv3ZlHnsy5QYBgVauHKm2cuLs//mZuQ
+         dWr4LR5vGWEu/a6XvNrglfzg4wWdhdg65ahciIFdPDwvy2HyIlo/e9RCRVksqIjsnSpN
+         z4s93n6aS385NeZTNUVjLjwjwqGYGMAumzET+Vb8JMOuOrdhjT2n3GzPvECOzhr7EuHF
+         rzQmGvI9wuCOm0z+xYuNK31notePBl1FhQkIXavJfCq5TnYZX+9czD7yAK+p9aPYV4iu
+         vBew==
+X-Gm-Message-State: AOJu0Ywkyy5ZcloC1j3gw3rkpKIdJItUBzIYNPJEyJf5Yy1t01JA4ZGB
+        VWUmaSk+D583SoMPxt+cQ04=
+X-Google-Smtp-Source: AGHT+IEjoBVa60+ZQKSjWQpIoCIesiRffPKHRCzi43aByoaWcHWH1XO1QyyoWxdGTOA8xff1FjOW5A==
+X-Received: by 2002:a05:6a20:3d21:b0:13d:a903:88e6 with SMTP id y33-20020a056a203d2100b0013da90388e6mr418305pzi.48.1695408786554;
+        Fri, 22 Sep 2023 11:53:06 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id h19-20020a633853000000b0057c3b21c01dsm2276180pgn.49.2023.09.22.11.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 11:53:05 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 18:52:22 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v3 01/15] hyperv-tlfs: Change shared HV_REGISTER_*
+ defines to HV_MSR_*
+Message-ID: <ZQ3iZuuROFm4/7kc@liuwe-devbox-debian-v2>
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-2-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20230922120227.1173720-1-dhowells@redhat.com> <20230922120227.1173720-10-dhowells@redhat.com>
-In-Reply-To: <20230922120227.1173720-10-dhowells@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 22 Sep 2023 11:51:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whyv0cs056T8TvY1f0nOf+Gsb6oRWetxt+LiFZUD4KQCw@mail.gmail.com>
-Message-ID: <CAHk-=whyv0cs056T8TvY1f0nOf+Gsb6oRWetxt+LiFZUD4KQCw@mail.gmail.com>
-Subject: Re: [PATCH v6 09/13] iov_iter: Add a kernel-type iterator-only
- iteration function
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1695407915-12216-2-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sept 2023 at 05:03, David Howells <dhowells@redhat.com> wrote:
->
-> Add an iteration function that can only iterate over kernel internal-type
-> iterators (ie. BVEC, KVEC, XARRAY) and not user-backed iterators (ie. UBUF
-> and IOVEC).  This allows for smaller iterators to be built when it is known
-> the caller won't have a user-backed iterator.
+On Fri, Sep 22, 2023 at 11:38:21AM -0700, Nuno Das Neves wrote:
+> In x86 hyperv-tlfs, HV_REGISTER_ prefix is used to indicate MSRs
+> accessed via rdmsrl/wrmsrl. But in ARM64, HV_REGISTER_ instead indicates
+> VP registers accessed via get/set vp registers hypercall.
+> 
+> This is due to HV_REGISTER_* names being used by hv_set/get_register,
+> with the arch-specific version delegating to the appropriate mechanism.
+> 
+> The problem is, using prefix HV_REGISTER_ for MSRs will conflict with
+> VP registers when they are introduced for x86 in future.
+> 
+> This patch solves the issue by:
+> 
+> 1. Defining all the x86 MSRs with a consistent prefix: HV_X64_MSR_.
+>    This is so HV_REGISTER_ can be reserved for VP registers.
+> 
+> 2. Change the non-arch-specific alias used by hv_set/get_register to
+>    HV_MSR_. This is also happens to be the same name HyperV uses for this
+>    purpose.
 
-This one is pretty ugly, and has no actual users.
+HyperV -> Hyper-V. I can fix this up when I apply this patch.
 
-Without even explaining why we'd care about this abomination, NAK.
+> 
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
 
-If we actyually have some static knowledge of "this will only use
-iterators X/Y/Z", then we should probably pass that in as a constant
-bitmask to the thing, instead of this kind of "kernel only" special
-case.
-
-But even then, we'd want to have actual explicit use-cases, not a
-hypothetical "if you have this situation here's this function".
-
-                 Linus
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
