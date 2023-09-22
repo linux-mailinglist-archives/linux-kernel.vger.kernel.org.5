@@ -2,214 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 047B97AB48E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FC97AB496
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjIVPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
+        id S232546AbjIVPSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbjIVPRN (ORCPT
+        with ESMTP id S229986AbjIVPSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:17:13 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046DBA1;
-        Fri, 22 Sep 2023 08:17:07 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MEcPXC007646;
-        Fri, 22 Sep 2023 15:16:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=j+Qc3pIBgo5kicmDkbyiNqlYk1YzVlOWKWhwzFhQ6vo=;
- b=kwRtLKmCekSZfYQY7MQspD07uAwriFQUcuQ77QVAZA10Ud4dW3VP6Cvt6yVGCYYWu/pL
- hJ/stH/6ywyW4GD+iqVhcCpqf31pVVx8dWs5ny3rz9tcM8xBB8tVLH4K0R0gV2gfiNKN
- zPE6Z50ho9Le4SPvA9wquHusTCVrvIAKAvF8lMHz31IUoG6YC8Yds6qr80L4+mtnP1vA
- RgGbFPwqsim4LIbJUsJ52z3Z9ZUcxSKL7rvN5oQwxGqIE0D3ZHKBAVOjiQL5iF2oPlEE
- HVAb2NJmOrXvgrrBDlKIJ3cJbkLxpLgY1P5PBo8I9+EZoezwuLVIZi5YwPUMdH28xcy8 Dg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u5n289a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 15:16:53 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MFGqHR000592
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 15:16:52 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 22 Sep 2023 08:16:52 -0700
-Date:   Fri, 22 Sep 2023 08:16:51 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Om Prakash Singh <quic_omprsing@quicinc.com>
-CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
-        <robh+dt@kernel.org>, <vkoul@kernel.org>
-Subject: Re: [PATCH V2] crypto: qcom-rng - Add hw_random interface support
-Message-ID: <20230922151651.GA437346@hu-bjorande-lv.qualcomm.com>
-References: <20230905062420.3983268-1-quic_omprsing@quicinc.com>
- <20230920030408.3181394-1-quic_omprsing@quicinc.com>
+        Fri, 22 Sep 2023 11:18:22 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788C0122
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:18:14 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-692a9bc32bcso698973b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695395894; x=1696000694; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=28ycCMVqr+jLHcID+cLGjL2F35QcRv/+OsF8PSg4e9w=;
+        b=ButDVAR9tTC7uXAuV5J2qo4ZQbvJl8oZRiJIqRfLL8Wrj/4DPr8pUXQGcqaNe3cLhK
+         POhz0NNfhCmdVR7Cfq0k/a78GWVXkYaa0M4xf5WA5ae8UGtas3u4jFvwDbqo4CnBv6Ee
+         b+XEZRXiOCQzeijJhPI31QvcFxi9NHI4MtazLywyBkW1C9+5H+9ZQEWn+YX4GXHUq9Pa
+         +zyI7PcWx2QK8klHQWL3P8JatyYCjho8j5Zyi8JpgoQg1tZcH9FKtctvNLFukeGDMur4
+         qNwsqaqmsFImdFQeZ5bswJq0wBvMm51FG0yqKeyfm7SC1TGM7Im97qDY8e0UPehHBJ1f
+         cNBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695395894; x=1696000694;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=28ycCMVqr+jLHcID+cLGjL2F35QcRv/+OsF8PSg4e9w=;
+        b=TZgcADYnSFtFQN09fY/6Sk6fW6K0UbfdcOj/iF0oKYXJrL25n/v7jnIun0Dv4Vh5xU
+         BdMGeEDGbcUOf7bKFHviHkBIi81eI6Qtynsd+FPZetuxhUSNaBXziptYnOCLJKZfVqIl
+         wpQdthsYPrBoU8btYRvjU1JLDldMbMad9q/7JMzVO8bRVoQaTRFXF/rvkSEoiiE7JKcU
+         eDtRxbJ6zSY5haVTX7nujE0wrw4T+nhcT5NSkUZ4uObRFxqZry0GqVvWTwzQVM7lt+l+
+         8SCkIPaClokQ003ZBEiXWmnSuJMUWOREHvkVvG+VY/IaVaOaskMMkZ4+rXP+K/g4Ngph
+         rdpg==
+X-Gm-Message-State: AOJu0YxjapPZZ6zbm7IdW+Ofl92nw3mMQNxO771ZJJp4qEO9TtdDP48Z
+        wVKYNvpluOCc1Pym5Gjup1qpvA==
+X-Google-Smtp-Source: AGHT+IEYqxKV/Zdv/b6QlfOjx23Mb/9uFyIcZZjiFtr8f5V9ahoe0eQHX3dZEw5wH7KcGntm/EnFFg==
+X-Received: by 2002:a05:6a21:4881:b0:14c:9a61:a310 with SMTP id av1-20020a056a21488100b0014c9a61a310mr7787505pzc.24.1695395893958;
+        Fri, 22 Sep 2023 08:18:13 -0700 (PDT)
+Received: from x1 ([2601:1c2:1800:f680:c44:77f:ca7d:adec])
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902e9c600b001c1f4edfb87sm3614450plk.92.2023.09.22.08.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 08:18:13 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 08:18:11 -0700
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
+        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/6] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
+ TH1520 support
+Message-ID: <ZQ2tP48Z19C5xRug@x1>
+References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
+ <20230921-th1520-mmc-v1-1-49f76c274fb3@baylibre.com>
+ <20230922-parish-ice-a22e93dc3027@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230920030408.3181394-1-quic_omprsing@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Tr-6h0JYolkqjt6KcstqhMzgElmMyY4z
-X-Proofpoint-GUID: Tr-6h0JYolkqjt6KcstqhMzgElmMyY4z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_13,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 spamscore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 clxscore=1011 adultscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220131
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230922-parish-ice-a22e93dc3027@spud>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 08:34:08AM +0530, Om Prakash Singh wrote:
-> Add hw_random interface support in qcom-rng driver as new IP block
-> in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
-> to generate true random number.
+On Fri, Sep 22, 2023 at 10:57:36AM +0100, Conor Dooley wrote:
+> Hey Drew,
 > 
-> Keeping current rng_alg interface as well for random number generation
-> using Kernel Crypto API.
+> On Thu, Sep 21, 2023 at 06:49:48PM -0700, Drew Fustini wrote:
+> > Add compatible value for the T-Head TH1520 dwcmshc controller and add
+> > thead,phy-pull-up property.
+> > 
+> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> > ---
+> >  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> > index a43eb837f8da..46b768d46712 100644
+> > --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> > @@ -19,6 +19,7 @@ properties:
+> >        - rockchip,rk3568-dwcmshc
+> >        - rockchip,rk3588-dwcmshc
+> >        - snps,dwcmshc-sdhci
+> > +      - thead,th1520-dwcmshc
+> >  
+> >    reg:
+> >      maxItems: 1
+> > @@ -60,6 +61,9 @@ properties:
+> >      description: Specify the number of delay for tx sampling.
+> >      $ref: /schemas/types.yaml#/definitions/uint8
+> >  
+> > +  thead,phy-pull-up:
+> > +    description: Enable weak pull-up on PHY pads
+> > +    type: boolean
 > 
-> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> ---
-> 
-> Changes in V2:
-> - Updated patch to fix the return value from qcom_rng_generate() to be
->   consistent with current implementation
+> Why is the weak pull-up required? How would the dts author know if they
+> need to use this property?
 
-As far as I can tell you didn't change this, see below.
+This is a good question, and I don't have a good reason beyond it is
+what the vendor SDK was doing.
 
-> - Updated patch to make it more concise
-> - Removed unnecessary use local variable and it's initialization
-> - Updated patch to use devm_hwrng_register() instead of hwrng_register()
-> - Updated subject line of the patch
-> 
-> This patch is depends on [1]
-> [1] https://lore.kernel.org/lkml/20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org/
-> 
->  drivers/crypto/qcom-rng.c | 65 ++++++++++++++++++++++++++++++++++-----
->  1 file changed, 58 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
-> index fb54b8cfc35f..e5a574a3cc59 100644
-> --- a/drivers/crypto/qcom-rng.c
-> +++ b/drivers/crypto/qcom-rng.c
-> @@ -7,6 +7,7 @@
->  #include <linux/acpi.h>
->  #include <linux/clk.h>
->  #include <linux/crypto.h>
-> +#include <linux/hw_random.h>
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
->  #include <linux/kernel.h>
-> @@ -32,13 +33,18 @@ struct qcom_rng {
->  	struct mutex lock;
->  	void __iomem *base;
->  	struct clk *clk;
-> -	unsigned int skip_init;
-> +	struct qcom_rng_of_data *of_data;
->  };
->  
->  struct qcom_rng_ctx {
->  	struct qcom_rng *rng;
->  };
->  
-> +struct qcom_rng_of_data {
-> +	bool skip_init;
-> +	bool hwrng_support;
-> +};
-> +
->  static struct qcom_rng *qcom_rng_dev;
->  
->  static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
-> @@ -70,7 +76,7 @@ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
->  		}
->  	} while (currsize < max);
->  
-> -	return 0;
-> +	return currsize;
+There are only two boards right now using the TH1520 that I know of.
+Both the LPi4a [1] and the Ahead [2] have the pull-up property set on
+all the mmc controller nodes their downstream device trees.
 
-As I pointed out in my previous review, if the qcom_rng_read() is
-requested to read a number of bytes (max) that is not evenly divisible
-with 4 (WORD_SZ) the loop will exit without accounting for the last
-bytes copied...
+Rob suggested on #devicetree that it would be simpler to just enable it
+in the driver and disable support when needed. I like this idea as it
+will simplify this binding patch and the code in the driver patch.
 
->  }
->  
->  static int qcom_rng_generate(struct crypto_rng *tfm,
-> @@ -92,6 +98,9 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
->  	mutex_unlock(&rng->lock);
->  	clk_disable_unprepare(rng->clk);
->  
-> +	if (ret == dlen)
+Thanks,
+Drew
 
-...this means that if dlen % 4, you're changing the return value of this
-function from 0 to dlen.
-
-> +		ret = 0;
-> +
->  	return ret;
->  }
->  
-> @@ -101,6 +110,13 @@ static int qcom_rng_seed(struct crypto_rng *tfm, const u8 *seed,
->  	return 0;
->  }
->  
-> +static int qcom_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-> +{
-> +	struct qcom_rng *qrng = (struct qcom_rng *)rng->priv;
-
-You missed Herbert's request in [1], which I presume implies that
-qcom_hwrng should be moved into struct qcom_rng, which would mean that
-you can get the qrng by container_of().
-
-[1] https://lore.kernel.org/lkml/ZQQvlXvGy8p01uJS@gondor.apana.org.au/
-
-> +
-> +	return qcom_rng_read(qrng, data, max);
-> +}
-> +
->  static int qcom_rng_enable(struct qcom_rng *rng)
->  {
->  	u32 val;
-> @@ -136,7 +152,7 @@ static int qcom_rng_init(struct crypto_tfm *tfm)
->  
->  	ctx->rng = qcom_rng_dev;
->  
-> -	if (!ctx->rng->skip_init)
-> +	if (!ctx->rng->of_data->skip_init)
->  		return qcom_rng_enable(ctx->rng);
->  
->  	return 0;
-> @@ -157,6 +173,12 @@ static struct rng_alg qcom_rng_alg = {
->  	}
->  };
->  
-> +static struct hwrng qcom_hwrng = {
-> +	.name = "qcom-hwrng",
-> +	.read = qcom_hwrng_read,
-> +	.quality = 1024,
-> +};
-
-Which would mean not adding this static global variable...
-
-Regards,
-Bjorn
+[1] https://git.beagleboard.org/beaglev-ahead/BeagleBoard-DeviceTrees/-/blob/v5.10.x-ti-unified/src/riscv/light-beagle-ref.dts
+[2] https://github.com/revyos/thead-kernel/blob/lpi4a/arch/riscv/boot/dts/thead/light-lpi4a-ref.dts
