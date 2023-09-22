@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D31B67AB615
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6EF7AB619
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbjIVQfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
+        id S229644AbjIVQfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjIVQfQ (ORCPT
+        with ESMTP id S229623AbjIVQfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:35:16 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474AC194
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:35:10 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9aa0495f9cfso874647866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695400508; x=1696005308; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gOhjx56+C1/SUOCT4pJr+RaAn7PBsJsy8c2/c8L0wsg=;
-        b=VXldlrG11szZBfan3YaFaOg1qRTFUXItPvz+d594Ed/RZo0X8fDhhFTcT+Tfee5VSP
-         yLE9fyNVXNnPLkw0gSESTe8Z8WM+wGotLZjHCgzE0IfCnJJtL1u/7KVdSA3g4FbBQDNs
-         0yJxayfVAnOtmdEA4zWcMbTKTM0gvJiAOw2es=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695400508; x=1696005308;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gOhjx56+C1/SUOCT4pJr+RaAn7PBsJsy8c2/c8L0wsg=;
-        b=PdS9LDURoBHlSiFkoBkFakAlCo0Fbm+x+P6l8LsAm0Oo2Hdwo8iPx9HkqpNwdmAdpc
-         QME+Eg3GOw6RN+ws9ezUGASiDM9nNXAyzqUvWq9Thy1hJXBlA/EKgs9am6T4Mv226d/C
-         sGSoXeQ7RgGtxGk4SJk4oEqfoASZmcduJGicTeM9wS2bmVPh6ckASzrynwARcPeRImST
-         FZ1rE5PXFrIXFLZ+Htx1WYaoCR2UGtrrZrir3xBKatuTj8pv/H6ZP8b5AJNVP0hT41SZ
-         0s1AZeTShsfi/WBT9xW/za7UPyQRasUogTJQd7U3WFuq6pN/sLyXCTL8H46JI4QPtkIb
-         lFtw==
-X-Gm-Message-State: AOJu0YwspwObodcignxCs3gEJ+0YoBWKTfZs2ghyy8KX1PyWzC0A0k/l
-        mTMtytjPohjy7V4+XuMmUqxVQq7rbrw6LNAUjQuCDgT9
-X-Google-Smtp-Source: AGHT+IGsopiyJB7/2zTHORml3CRqxK7qdsGg7JTq7ttoek7ATkGbuYyWz0EIbrsDuRTEYEgjP9t8ww==
-X-Received: by 2002:a17:906:5357:b0:993:eee4:e704 with SMTP id j23-20020a170906535700b00993eee4e704mr260053ejo.38.1695400508684;
-        Fri, 22 Sep 2023 09:35:08 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id jx10-20020a170906ca4a00b009ad87d1be17sm2892178ejb.22.2023.09.22.09.35.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 09:35:07 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so8589107a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:35:07 -0700 (PDT)
-X-Received: by 2002:a05:6402:27ca:b0:52c:f73:3567 with SMTP id
- c10-20020a05640227ca00b0052c0f733567mr4854122ede.13.1695400507255; Fri, 22
- Sep 2023 09:35:07 -0700 (PDT)
+        Fri, 22 Sep 2023 12:35:41 -0400
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246FC114;
+        Fri, 22 Sep 2023 09:35:34 -0700 (PDT)
+Received: from g550jk.localnet (k10064.upc-k.chello.nl [62.108.10.64])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 2EA7DD0F4B;
+        Fri, 22 Sep 2023 16:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1695400532; bh=Trik2Fp3cY2CgD0hfjMvGBShjwznm5mwm8ZrD31Rg80=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=giDUjNsSKjxev//ztHAX9kkPdkuwYheyNNlkpF/jVatsZ5aFJkxSu9xaMq2CZ5+he
+         nLInojaidcckO2Mv36MboCSDCBC61Pe8AsLPh9GERGk+JtQ53J5ezw9qhr8Cs9e60L
+         TU8ZTXYgVHV51G4iy59TJIFtYeMUFh2dN5YIUqrA=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     linux-arm-msm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>
+Subject: Re: [PATCH 1/2] ARM: qcom: msm8226: Add rpm-master-stats node
+Date:   Fri, 22 Sep 2023 18:35:31 +0200
+Message-ID: <5709950.DvuYhMxLoT@z3ntu.xyz>
+In-Reply-To: <20230922003533.107835-2-matti.lehtimaki@gmail.com>
+References: <20230922003533.107835-1-matti.lehtimaki@gmail.com>
+ <20230922003533.107835-2-matti.lehtimaki@gmail.com>
 MIME-Version: 1.0
-References: <20230922120227.1173720-1-dhowells@redhat.com> <20230922120227.1173720-9-dhowells@redhat.com>
-In-Reply-To: <20230922120227.1173720-9-dhowells@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 22 Sep 2023 09:34:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgW5z-OBA8kbOOoM7dAriOsb1j7n6GaUNjGeg9fPY=JRw@mail.gmail.com>
-Message-ID: <CAHk-=wgW5z-OBA8kbOOoM7dAriOsb1j7n6GaUNjGeg9fPY=JRw@mail.gmail.com>
-Subject: Re: [PATCH v6 08/13] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sept 2023 at 05:02, David Howells <dhowells@redhat.com> wrote:
->
-> iter->copy_mc is only used with a bvec iterator and only by
-> dump_emit_page() in fs/coredump.c so rather than handle this in
-> memcpy_from_iter_mc() where it is checked repeatedly by _copy_from_iter()
-> and copy_page_from_iter_atomic(),
+On Freitag, 22. September 2023 02:35:32 CEST Matti Lehtim=E4ki wrote:
+> Add rpm-master-stats node for MSM8226 and the required RPM MSG RAM
+> slices for memory access.
+>=20
+> Signed-off-by: Matti Lehtim=E4ki <matti.lehtimaki@gmail.com>
 
-This looks fine now, but is missing your sign-off...
+Makes sense from what I can see in msm-3.10 msm8226-v2-pm.dtsi and the driv=
+er=20
+code.
 
-             Linus
+Reviewed-by: Luca Weiss <luca@z3ntu.xyz>
+
+> ---
+>  arch/arm/boot/dts/qcom/qcom-msm8226.dtsi | 32 ++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
+> b/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi index 44f3f0127fd7..98cc5ea637=
+e1
+> 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
+> @@ -56,6 +56,18 @@ pmu {
+>  	rpm: remoteproc {
+>  		compatible =3D "qcom,msm8226-rpm-proc", "qcom,rpm-proc";
+>=20
+> +		master-stats {
+> +			compatible =3D "qcom,rpm-master-stats";
+> +			qcom,rpm-msg-ram =3D <&apss_master_stats>,
+> +					   <&mpss_master_stats>,
+> +					   <&lpss_master_stats>,
+> +					   <&pronto_master_stats>;
+> +			qcom,master-names =3D "APSS",
+> +					    "MPSS",
+> +					    "LPSS",
+> +					    "PRONTO";
+> +		};
+> +
+>  		smd-edge {
+>  			interrupts =3D <GIC_SPI 168 IRQ_TYPE_EDGE_RISING>;
+>  			qcom,ipc =3D <&apcs 8 0>;
+> @@ -742,6 +754,26 @@ sram@fc190000 {
+>  		rpm_msg_ram: sram@fc428000 {
+>  			compatible =3D "qcom,rpm-msg-ram";
+>  			reg =3D <0xfc428000 0x4000>;
+> +
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +			ranges =3D <0 0xfc428000 0x4000>;
+> +
+> +			apss_master_stats: sram@150 {
+> +				reg =3D <0x150 0x14>;
+> +			};
+> +
+> +			mpss_master_stats: sram@b50 {
+> +				reg =3D <0xb50 0x14>;
+> +			};
+> +
+> +			lpss_master_stats: sram@1550 {
+> +				reg =3D <0x1550 0x14>;
+> +			};
+> +
+> +			pronto_master_stats: sram@1f50 {
+> +				reg =3D <0x1f50 0x14>;
+> +			};
+>  		};
+>=20
+>  		tcsr_mutex: hwlock@fd484000 {
+
+
+
+
