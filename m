@@ -2,143 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6ED7AA8FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE3D7AA907
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjIVG0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        id S231394AbjIVG1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbjIVG0V (ORCPT
+        with ESMTP id S231365AbjIVG1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:26:21 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73FD1A2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:26:12 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso126350066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695363971; x=1695968771; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YaYc93wNxc7ZPBHYCHRxs28Q0KfViuylEe4BwwlB5Eg=;
-        b=GRR13ilbskS5+BhKvpk3FnXgyZrlJRbLSTasFdq/jqneRS0TJomdlDqCr2Plxf0HeK
-         1dwCIH7eWAV6BNGO2nilsT18Qoy0w9imaAXENvhitw8yrosAONVqvJos1A6SGRVwwFer
-         95x8fbt+T9XJtPGMhLUJwzixJcfqm2ukZsagG2azpJxclJH348ovC3+rHyjtC7P8cf81
-         xO50LzMjoOpkoGquLjzLDveN39cvCc4VsJzK7ePi78DjRcmap6hhDU/8CnrkosuPh7js
-         ZMpEPhzKhkpdBIKIu8UIymWhQfruqIJnNX7OHQ8lVgqBxtY28fftn4Y/7YTU4wotncnp
-         13WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695363971; x=1695968771;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YaYc93wNxc7ZPBHYCHRxs28Q0KfViuylEe4BwwlB5Eg=;
-        b=D0CvSRxtPmiGEEO/tKdKVIldkMuO8CiwXDcHaICKiykI7hgS2UDbI7Di1MadpzufP7
-         HrwucUB2QFOULJnxux/GbKIxNwRzlIgRXyAaRqr7o2F4cGa0DE9mcRv6aGrVLPORPKhn
-         Fk8ev+AQBYOR9c700WxpFeHjF3jd45TWTkJWTzIjnNKMPNZOpLzcSyrl7utRB4gT6E8U
-         Yt54m/X3t7VOv029nDoVad3QGYtuMKiyANbjQqYiS3xhW6qWJdiubZ/6x46dmHQlWvj1
-         pAbf+1lr7qLfX/HZwuzj1eHJ0I1Z0kTMb61wkdXhPxNLfwYN3wwKDmnV2rLFy9R46u24
-         tSWg==
-X-Gm-Message-State: AOJu0Yx0uyAAozzSlf9CvyC02HWqJzEjx9rxLNGflN2K/8NVeDc3YC08
-        1HvDJNY19PIzyjULJEYkbJ7/diB/+cLBdF6ZwGw=
-X-Google-Smtp-Source: AGHT+IH/ZRAtCX4gvnW+Ifx1FSie3lGsh+hZ6gwBPATtidaGzO/PZFYW02eV/1/BVLEp9VjCl0mSkQ==
-X-Received: by 2002:a17:907:868f:b0:9a5:962c:cb6c with SMTP id qa15-20020a170907868f00b009a5962ccb6cmr2699610ejc.31.1695363971200;
-        Thu, 21 Sep 2023 23:26:11 -0700 (PDT)
-Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id gy6-20020a170906f24600b00992afee724bsm2195519ejb.76.2023.09.21.23.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 23:26:10 -0700 (PDT)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] fs/ceph/debugfs: expose raw metric counters
-Date:   Fri, 22 Sep 2023 08:25:58 +0200
-Message-Id: <20230922062558.1739642-2-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230922062558.1739642-1-max.kellermann@ionos.com>
-References: <20230922062558.1739642-1-max.kellermann@ionos.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 02:27:15 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06574CE
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:27:08 -0700 (PDT)
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230922062706epoutp0166e89d99a99e0924e6291ba2b24d88ac~HJJlw_R6I2466924669epoutp01P
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:27:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230922062706epoutp0166e89d99a99e0924e6291ba2b24d88ac~HJJlw_R6I2466924669epoutp01P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695364026;
+        bh=Hb4LK5km1WEqj6D7AXzSXon9Q0vrfwXxLWOoV26SQdE=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=EmAF6m7JoU8D2EZTeEB/Pa6OJhUy9xxH3BdYD+F4Jl+erdpmvzTGP2MwI9Zobpd5i
+         NBxRaC8IdM8Wc+cmXqQigPl4xPJP1+eStz1Tozgpnu0iUGf7lwHp3sqRmwLXzAXUmm
+         NcyJd7rhPPPLrydPqqj/df+MZ0xDxmcKIsP4HDfw=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20230922062705epcas1p34f0ace6c5a64263ee8e96a68e7bbcd4f~HJJlG8xmN3259332593epcas1p3J;
+        Fri, 22 Sep 2023 06:27:05 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.38.242]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RsMkK0hR2z4x9Pp; Fri, 22 Sep
+        2023 06:27:05 +0000 (GMT)
+X-AuditID: b6c32a38-4dbf8700000027b3-12-650d33b849f7
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FA.B9.10163.8B33D056; Fri, 22 Sep 2023 15:27:05 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH] mm/vmalloc: Remove WARN_ON_ONCE related to
+ adjust_va_to_fit_type
+Reply-To: jason.sim@samsung.com
+Sender: Jaeseon Sim <jason.sim@samsung.com>
+From:   Jaeseon Sim <jason.sim@samsung.com>
+To:     "bhe@redhat.com" <bhe@redhat.com>,
+        "urezki@gmail.com" <urezki@gmail.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        Jaeseon Sim <jason.sim@samsung.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaewon Kim <jaewon31.kim@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
+Date:   Fri, 22 Sep 2023 15:27:04 +0900
+X-CMS-MailID: 20230922062704epcms1p1722f24d4489a0435b339ce21db754ded
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmk+LIzCtJLcpLzFFi42LZdlhTV3enMW+qwZPNTBZz1q9hszj/4Beb
+        xekJi5gset+/YrJYdOASo8XlXXPYLO6t+c9qcefbPHaL1RdZHDg9ds66y+6xeYWWx6ZPk9g9
+        Tsz4zeLxft9VNo++LasYPT5vkgtgj8q2yUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0
+        MFdSyEvMTbVVcvEJ0HXLzAE6TEmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYFag
+        V5yYW1yal66Xl1piZWhgYGQKVJiQnfH2zhLmgkNSFRe/3WBsYGyQ7GLk5JAQMJHo//eerYuR
+        i0NIYAejxKwPn5m6GDk4eAUEJf7uEAapERYIlph1eQkriC0kIC9xdksDI0RcW+LUyovMIDab
+        gKZE14Ut7CC2iICPxLnvh8BmMgucZZJYevQMM8QyXokZ7U9ZIGxpie3LtzJC2KISN1e/ZYex
+        3x+bDxUXkWi9dxaqV1Diwc/dUHEpiTNtS6DmFEusX3OdCcKukTj6ZD9U3Fyi4e1KNohffCUW
+        7fMBCbMIqEr0LLzIBlHiItH2aivYX8xAvyxb+JoZpJwZ6Jf1u/QhShQldv6eywhRwifx7msP
+        K8wnO+Y9gdqqLPHx2wVGkFYJAUmJCbvMIcIeEjufroSGWqDEu98n2Scwys9ChO0sJHtnIexd
+        wMi8ilEstaA4Nz212LDABB6dyfm5mxjBqVLLYgfj3Lcf9A4xMnEwHmKU4GBWEuFN/sSVKsSb
+        klhZlVqUH19UmpNafIjRFOjjicxSosn5wGSdVxJvaGJpYGJmZGJhbGlspiTOe+xVb4qQQHpi
+        SWp2ampBahFMHxMHp1QD0/znP1/pvtq786jtVh3RglTHS2bOp4275zCozDJckHd48krf/3+u
+        xT/KDl/mdvpqxAZG888JiwQnHGLSkW/o29h1TOkos8gxptTHu44Jv/q3XF84ZJmTbMifJ5cv
+        eNoGGvZJp+fMMrhx7/TeiZ3aN+cG872OT+TeZsU598GCbuk9l+aeZTqjurg0Y3HL5KKqZ2WR
+        uz/W3VNkz5CaJFp+KNT/HKuUxMKlv+8ELzqoLOp0ccNxq5znC6W/FJxpDs/5oiV0+nhv3azp
+        uqIrmS5P6g4pm35T2L5KOludaSrj/47G7bmbjuvFSsecff7vUvd/iYNJhz33MB45WLiwfmFu
+        aILorkfrVB/fOjY1aafhwc1KLMUZiYZazEXFiQBwXZhTHgQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65
+References: <CGME20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65@epcms1p1>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable userspace to calculate the current latency, not just the
-average latency since the filesystem was mounted.
+There's panic issue as follows when do alloc_vmap_area:
 
-We have been running this patch for a while on our servers and our
-Prometheus exporter collects these statistics:
+Kernel panic - not syncing: kernel: panic_on_warn set ...
 
- https://github.com/CM4all/Prometheus-Exporters/
- https://github.com/CM4all/Prometheus-Exporters/blob/master/src/KernelExporter.cxx
+page allocation failure: order:0, mode:0x800(GFP_NOWAIT)
+Call Trace:
+warn_alloc+0xf4/0x190
+__alloc_pages_slowpath+0xe0c/0xffc
+__alloc_pages+0x250/0x2d0
+new_slab+0x17c/0x4e0
+___slab_alloc+0x4e4/0x8a8
+__slab_alloc+0x34/0x6c
+kmem_cache_alloc+0x20c/0x2f0
+adjust_va_to_fit_type
+__alloc_vmap_area
+alloc_vmap_area+0x298/0x7fc
+__get_vm_area_node+0x10c/0x1b4
+__vmalloc_node_range+0x19c/0x7c0
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Commit 1b23ff80b399 (=22mm/vmalloc: invoke classify_va_fit_type() in
+adjust_va_to_fit_type()=22) moved classify_va_fit_type() into
+adjust_va_to_fit_type() and used WARN_ON_ONCE() to handle return
+value of adjust_va_to_fit_type(), just as classify_va_fit_type()
+was handled.
+
+There is another path in adjust_va_to_fit_type() which could
+return failure and will be handled in alloc_vmap_area().
+Remove WARN_ON_ONCE() for this case.
+
+Fixes: 45c62fc2897d (=22mm/vmalloc: Remove WARN_ON_ONCE related to adjust_v=
+a_to_fit_type=22)
+Signed-off-by: Jaeseon Sim <jason.sim=40samsung.com>
 ---
- fs/ceph/debugfs.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-index 2abee7e18144..d13a1ab8822a 100644
---- a/fs/ceph/debugfs.c
-+++ b/fs/ceph/debugfs.c
-@@ -170,6 +170,30 @@ static const char * const metric_str[] = {
- 	"metadata",
- 	"copyfrom"
- };
-+
-+static int metrics_counters_show(struct seq_file *s, void *p)
-+{
-+	struct ceph_fs_client *fsc = s->private;
-+	struct ceph_client_metric *cm = &fsc->mdsc->metric;
-+	u64 count, size_bytes, wait_ns;
-+
-+	seq_printf(s, "item count size_bytes wait_ns\n");
-+
-+	for (unsigned i = 0; i < METRIC_MAX; i++) {
-+		struct ceph_metric *m = &cm->metric[i];
-+		spin_lock(&m->lock);
-+		count = m->total;
-+		size_bytes = m->size_sum;
-+		wait_ns = ktime_to_ns(m->latency_sum);
-+		spin_unlock(&m->lock);
-+
-+		seq_printf(s, "%s %llu %llu %llu\n",
-+			   metric_str[i], count, size_bytes, wait_ns);
-+	}
-+
-+	return 0;
-+}
-+
- static int metrics_latency_show(struct seq_file *s, void *p)
- {
- 	struct ceph_fs_client *fsc = s->private;
-@@ -368,6 +392,7 @@ DEFINE_SHOW_ATTRIBUTE(caps);
- DEFINE_SHOW_ATTRIBUTE(mds_sessions);
- DEFINE_SHOW_ATTRIBUTE(status);
- DEFINE_SHOW_ATTRIBUTE(metrics_file);
-+DEFINE_SHOW_ATTRIBUTE(metrics_counters);
- DEFINE_SHOW_ATTRIBUTE(metrics_latency);
- DEFINE_SHOW_ATTRIBUTE(metrics_size);
- DEFINE_SHOW_ATTRIBUTE(metrics_caps);
-@@ -463,6 +488,8 @@ void ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
- 
- 	debugfs_create_file("file", 0444, fsc->debugfs_metrics_dir, fsc,
- 			    &metrics_file_fops);
-+	debugfs_create_file("counters", 0444, fsc->debugfs_metrics_dir, fsc,
-+			    &metrics_counters_fops);
- 	debugfs_create_file("latency", 0444, fsc->debugfs_metrics_dir, fsc,
- 			    &metrics_latency_fops);
- 	debugfs_create_file("size", 0444, fsc->debugfs_metrics_dir, fsc,
--- 
-2.39.2
-
+=C2=A0mm/vmalloc.c=20=7C=204=20++--=0D=0A=C2=A01=20file=20changed,=202=20in=
+sertions(+),=202=20deletions(-)=0D=0A=0D=0Adiff=20--git=20a/mm/vmalloc.c=20=
+b/mm/vmalloc.c=0D=0Aindex=20ef8599d394fd..4a82b6525d48=20100644=0D=0A---=20=
+a/mm/vmalloc.c=0D=0A+++=20b/mm/vmalloc.c=0D=0A=40=40=20-1522,7=20+1522,7=20=
+=40=40=20__alloc_vmap_area(struct=20rb_root=20*root,=20struct=20list_head=
+=20*head,=0D=0A=C2=A0=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20U=
+pdate=20the=20free=20vmap_area.=20*/=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0ret=20=3D=20adjust_va_to_fit_type(root,=20head,=20va,=20nva_start_=
+addr,=20size);=0D=0A-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20if=20(WARN_ON_ONCE=
+(ret))=0D=0A+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20if=20(ret)=0D=0A=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=
+=20vend;=0D=0A=C2=A0=0D=0A=C2=A0=23if=20DEBUG_AUGMENT_LOWEST_MATCH_CHECK=0D=
+=0A=40=40=20-4143,7=20+4143,7=20=40=40=20struct=20vm_struct=20**pcpu_get_vm=
+_areas(const=20unsigned=20long=20*offsets,=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=20=3D=20adjust_va_to=
+_fit_type(&free_vmap_area_root,=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0&free_vmap_area_list,=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0va,=20start,=20size);=0D=0A-=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20if=20(WARN_ON_ONCE(unlik=
+ely(ret)))=0D=0A+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20if=20(unlikely(ret))=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0/*=20It=20is=20a=20BUG(),=20but=20trigger=20recovery=20instead.=20*/=
+=0D=0A=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0goto=20recovery;=0D=0A=C2=A0=
+=0D=0A--=C2=A0=0D=0A2.17.1
