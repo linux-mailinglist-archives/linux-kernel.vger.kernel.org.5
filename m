@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FD67ABBE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C2F7ABBE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbjIVWkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 18:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        id S230157AbjIVWkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 18:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjIVWkk (ORCPT
+        with ESMTP id S230132AbjIVWkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:40:40 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3851519A;
-        Fri, 22 Sep 2023 15:40:34 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c02e232c48so49409711fa.1;
-        Fri, 22 Sep 2023 15:40:34 -0700 (PDT)
+        Fri, 22 Sep 2023 18:40:41 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE3E1A4;
+        Fri, 22 Sep 2023 15:40:35 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c008d8fd07so48947311fa.1;
+        Fri, 22 Sep 2023 15:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695422432; x=1696027232; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695422434; x=1696027234; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tnnYflUXki788FbyEpOYccXKNL0/Zg1ISD6i+gaFKJg=;
-        b=I5KGoDCfhg2FLuq+5+qoq+3u03alPW0wUGN+Pwsz0ngEu9r1jRZ9T9WHZWyBw9GRVt
-         ylXaMU/vIDGU0ATEnXG67cc4WvnydjBfK8XQh1JiIMgWtF3lXbtHsKbZd3jtq1B+RA6c
-         VxAZuRjfdB3pZkCF68YLil09EDT+0fsSR/mmyo2C6bkUzl19fNDVPr8gRsWY9RElu4ov
-         5veZu+ketPy1TNJrANI4QSIHfhDcnaXwLnCO5DmXPK1tTJ1iYTo/Hrux5yi7SlBoSe6o
-         OCtQwX1ArLjP4N/KXmxp1KV7PbGEPXjkQQ8fE+X/u/a5u4I7S5onY43aEyr1SbgWFM+P
-         ormg==
+        bh=l/H0iMbs9oDvkcYDnhpon5p0YhVA9HnElyeHpI8GSo8=;
+        b=JdtXepSlYH3qM59AHOH6dEfQ8lEG+idRt3N8iWbwSbg9i+0AlCbEJtYCiE9PrN4V+t
+         Ed5gtIr/U0aAAQ3dzH4WXKEDDdYlNOcPSvMcM6+uUafZ3cczcXiy2JXowvVMd55rY+5P
+         hTKLNeOv+SLW2fwrafWzN/ejKlolNBM8ZZvEt8bX5U1g7k0wliAOnaP4WTYDiF1aSC6z
+         KQuqXpTjdhidFezVX9gaxRdSpFoWCm1lmRCgYLyad+HH3CB6M04MfVgJJxxen8guXruC
+         AUGeXQ25yfOVWd7AbomHPazZhOEkvFVZ9T+rEPGkWi64LlgV6hCGU7MTRDBPfcs2101Q
+         d9SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695422432; x=1696027232;
+        d=1e100.net; s=20230601; t=1695422434; x=1696027234;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tnnYflUXki788FbyEpOYccXKNL0/Zg1ISD6i+gaFKJg=;
-        b=uAR8V083gMRjMSivi02g1T0V+HNBNjFNxcPPWG42xTtruMlG1hvJ01O0hceQ1vzxGI
-         x83IdTrakTYLIanOc7GIh+GOCsSBoceARKcMRyhkU3Cq7jYacXtq5DtI/PmxS8WPSX4h
-         KV+UFrrcant2u758fXre1DmNk6kOeqPKoFJQOp+5j9RFfCpP9aQxY7hKKQCNRhBEkZU8
-         dnL0z78z1bAh7JahFtQsfp0/oP5cqPBeQKeLE8Pg5WRyiJa/MaFLfLHzm6WKFY4u5klr
-         sW5V5AuCRE62qsc88XH9zXOEnItSxQtlpMRUogILENiOGJZ6Tgatdj6KQTNfp+sc8yPl
-         9kLQ==
-X-Gm-Message-State: AOJu0YytCIovwBS2v+nkQhx1EDOJ4q22hxBmFIZqpCaqbEhCGJvaLHy0
-        PpoQKmAi0L1uJyIf1M7qMfw+U4J2L0YJsA==
-X-Google-Smtp-Source: AGHT+IH1i47Tn5Z8ZtQxbuFYqsiDTKqaWjvOfIq+nP7TxtWUILLH579gVg4VztAXQwuOUFT2N1d37g==
-X-Received: by 2002:a2e:b051:0:b0:2bc:f252:6cc4 with SMTP id d17-20020a2eb051000000b002bcf2526cc4mr401876ljl.10.1695422432122;
-        Fri, 22 Sep 2023 15:40:32 -0700 (PDT)
+        bh=l/H0iMbs9oDvkcYDnhpon5p0YhVA9HnElyeHpI8GSo8=;
+        b=XjRWzJ5AAPuXuKILUDd/dAFA0OK24OL1XdLQ5sXXLmSC/xlkMV6bBnDJdQv+lX7RMC
+         k6n13JIu/h9rp+HqY3cAZ2F1x/TOYgdqzXWMKLTBp9qIZ4z2r/FHcW7x37Pf5A42aQSF
+         okb8aZfq2F2F0BhwCb7InpMbzOn2qs+bRpbC5sInGuYz3ZSa9qMXmu9vUQL1WtI9uAaj
+         LnJ8dqfcH8iol0pK11GaV/CHdXxsgcfyRk9oXZ8oPecbdWi4ae4k6NoXYpqtsET+P13a
+         7kHNvWkSxfZXWoZKZ9m0aRFGYbTGG9LxjNyBDEcHmCCFOT9fiFasJJ2iT4dTCBxvsNy8
+         ES1w==
+X-Gm-Message-State: AOJu0YwEvbMC7MOw8dp0f3IzHVHi1eVzDKjr1w/hOLz6sAY8yAotyNjB
+        FyM7CNEK66OD9Sxm8nwxS9zwe1b8Or/srQ==
+X-Google-Smtp-Source: AGHT+IFSotPp+F5vtMGoBdQYMWOLBcdRTmPQ4DVrOyoHTADi5LfsUpxUClcoiKgb0qQFEDd3oRDA9A==
+X-Received: by 2002:a2e:9ace:0:b0:2b6:9da9:2884 with SMTP id p14-20020a2e9ace000000b002b69da92884mr459394ljj.40.1695422434015;
+        Fri, 22 Sep 2023 15:40:34 -0700 (PDT)
 Received: from i-vetokaappi.home.lan (dsl-hkibng42-56733b-36.dhcp.inet.fi. [86.115.59.36])
-        by smtp.gmail.com with ESMTPSA id j2-20020a2e8502000000b002bfec05a693sm1090423lji.22.2023.09.22.15.40.31
+        by smtp.gmail.com with ESMTPSA id j2-20020a2e8502000000b002bfec05a693sm1090423lji.22.2023.09.22.15.40.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 15:40:31 -0700 (PDT)
+        Fri, 22 Sep 2023 15:40:33 -0700 (PDT)
 From:   =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] pinctrl: qcom: msm8226: Add MPM pin mappings
-Date:   Sat, 23 Sep 2023 01:40:26 +0300
-Message-Id: <20230922224027.85291-2-matti.lehtimaki@gmail.com>
+Subject: [PATCH 2/2] pinctrl: qcom: msm8974: Add MPM pin mappings
+Date:   Sat, 23 Sep 2023 01:40:27 +0300
+Message-Id: <20230922224027.85291-3-matti.lehtimaki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230922224027.85291-1-matti.lehtimaki@gmail.com>
 References: <20230922224027.85291-1-matti.lehtimaki@gmail.com>
@@ -83,39 +83,39 @@ through MPM-connected pins.
 
 Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 ---
- drivers/pinctrl/qcom/pinctrl-msm8226.c | 12 ++++++++++++
+ drivers/pinctrl/qcom/pinctrl-msm8x74.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm8226.c b/drivers/pinctrl/qcom/pinctrl-msm8226.c
-index 994619840a70..1e46a9ab382f 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm8226.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm8226.c
-@@ -612,6 +612,16 @@ static const struct msm_pingroup msm8226_groups[] = {
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm8x74.c b/drivers/pinctrl/qcom/pinctrl-msm8x74.c
+index d5fe62992849..238c83f6ec4f 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm8x74.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm8x74.c
+@@ -1045,6 +1045,16 @@ static const struct msm_pingroup msm8x74_groups[] = {
  
- #define NUM_GPIO_PINGROUPS 117
+ #define NUM_GPIO_PINGROUPS 146
  
-+static const struct msm_gpio_wakeirq_map msm8226_mpm_map[] = {
-+	{ 1, 3 }, { 4, 4 }, { 5, 5 }, { 9, 6 }, { 13, 7 }, { 17, 8 },
-+	{ 21, 9 }, { 27, 10 }, { 29, 11 }, { 31, 12 }, { 33, 13 }, { 35, 14 },
-+	{ 37, 15 }, { 38, 16 }, { 39, 17 }, { 41, 18 }, { 46, 19 }, { 48, 20 },
-+	{ 49, 21 }, { 50, 22 }, { 51, 23 }, { 52, 24 }, { 54, 25 }, { 62, 26 },
-+	{ 63, 27 }, { 64, 28 }, { 65, 29 }, { 66, 30 }, { 67, 31 }, { 68, 32 },
-+	{ 69, 33 }, { 71, 34 }, { 72, 35 }, { 106, 36 }, { 107, 37 },
-+	{ 108, 38 }, { 109, 39 }, { 110, 40 }, { 111, 54 }, { 113, 55 },
++static const struct msm_gpio_wakeirq_map msm8x74_mpm_map[] = {
++	{ 1, 4 }, { 5, 5 }, { 9, 6 }, { 18, 7 }, { 20, 8 }, { 24, 9 },
++	{ 27, 10 }, { 28, 11 }, { 34, 12 }, { 35, 13 }, { 37, 14 }, { 42, 15 },
++	{ 44, 16 }, { 46, 17 }, { 50, 18 }, { 54, 19 }, { 59, 20 }, { 61, 21 },
++	{ 62, 22 }, { 64, 23 }, { 65, 24 }, { 66, 25 }, { 67, 26 }, { 68, 27 },
++	{ 71, 28 }, { 72, 29 }, { 73, 30 }, { 74, 31 }, { 75, 32 }, { 77, 33 },
++	{ 79, 34 }, { 80, 35 }, { 82, 36 }, { 86, 37 }, { 92, 38 }, { 93, 39 },
++	{ 95, 40 }, { 102, 3 }, { 144, 41 },
 +};
 +
- static const struct msm_pinctrl_soc_data msm8226_pinctrl = {
- 	.pins = msm8226_pins,
- 	.npins = ARRAY_SIZE(msm8226_pins),
-@@ -620,6 +630,8 @@ static const struct msm_pinctrl_soc_data msm8226_pinctrl = {
- 	.groups = msm8226_groups,
- 	.ngroups = ARRAY_SIZE(msm8226_groups),
+ static const struct msm_pinctrl_soc_data msm8x74_pinctrl = {
+ 	.pins = msm8x74_pins,
+ 	.npins = ARRAY_SIZE(msm8x74_pins),
+@@ -1053,6 +1063,8 @@ static const struct msm_pinctrl_soc_data msm8x74_pinctrl = {
+ 	.groups = msm8x74_groups,
+ 	.ngroups = ARRAY_SIZE(msm8x74_groups),
  	.ngpios = NUM_GPIO_PINGROUPS,
-+	.wakeirq_map = msm8226_mpm_map,
-+	.nwakeirq_map = ARRAY_SIZE(msm8226_mpm_map),
++	.wakeirq_map = msm8x74_mpm_map,
++	.nwakeirq_map = ARRAY_SIZE(msm8x74_mpm_map),
  };
  
- static int msm8226_pinctrl_probe(struct platform_device *pdev)
+ static int msm8x74_pinctrl_probe(struct platform_device *pdev)
 -- 
 2.39.2
 
