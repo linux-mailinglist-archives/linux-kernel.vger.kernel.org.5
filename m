@@ -2,73 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD267AB44D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3A67AB454
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbjIVPAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
+        id S232343AbjIVPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjIVPAL (ORCPT
+        with ESMTP id S232149AbjIVPAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:00:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1CE196;
-        Fri, 22 Sep 2023 08:00:04 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695394802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yymdn5Ib3vdedE1bKPjXhrIk07DP2toWMx0YBeOSCKc=;
-        b=JCA+KUnb692VWlx1fmj161S4ivDwYTrM1u8X2p5arIqoauHvahJMRyQgJNnCijDhvdZTN5
-        2vhPfci1iBhuF4Qy2zYMF8JGpNHrq0VAOBaIOZz4r3zSiAs1S0WjK2Y/a5ZLPZiRHiR72P
-        REbPguOF78kSQmQ7J0MndgAQ5u9+VLIa/hw1U5uaXSml+++MgocMsUUHEo8yUUBhh55/dy
-        QQw13O85IYkSyENm5eCNprEvBu0VGY6MYJBQev1Uj1n9rrZjN0zSSXrLOJq5WBnRYuLa3i
-        /YCovSEvga/R0iW5oDIVClJYgWEFtXfzNaoHbWAAyTqcD536K6Nb5/nqacqCUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695394802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yymdn5Ib3vdedE1bKPjXhrIk07DP2toWMx0YBeOSCKc=;
-        b=CIDz5h5BcX/Bz/jkuzgX2qYw3Xx+SDJYkCZCT8rgToE1CkxZkoLWZYWz8rraUAqGtvF28b
-        64aTOX6aC7JwbuBQ==
-To:     "Li, Xin3" <xin3.li@intel.com>, "Li, Xin3" <xin3.li@intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Cc:     "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
-Subject: RE: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-In-Reply-To: <SA1PR11MB6734445986E951E686172419A8FFA@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <dda01248-f456-d8d7-5021-ef6b2e7ade2c@suse.com>
- <SA1PR11MB6734F205C2171425415E4F00A8F9A@SA1PR11MB6734.namprd11.prod.outlook.com>
- <SA1PR11MB6734445986E951E686172419A8FFA@SA1PR11MB6734.namprd11.prod.outlook.com>
-Date:   Fri, 22 Sep 2023 17:00:02 +0200
-Message-ID: <87o7hugsnh.ffs@tglx>
+        Fri, 22 Sep 2023 11:00:35 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2786E199;
+        Fri, 22 Sep 2023 08:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:References:
+        In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
+        bh=e3Vz0tH7MeijOYhCrJMXMH52NUfYnF7z8/TCVVMfMcA=; b=jl6XYVcAHjvLe2yNyG3ez4kYiB
+        98VppdFRXq+COgYtWd7/o2BvQ5Dfi0XSrKju03QFtxBTAp79vaxLTDU93/Fc3dEYq6onwPy3zz7ch
+        wZU61jxHbRtCS2HiIUaqXWnfQzWTgmkpi4y8rJ6jjQhSDRCZSsE9xk27ZqSTM50VJ+T8=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qjhdq-00044j-Sn; Fri, 22 Sep 2023 15:00:26 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qjhdq-0005y2-L4; Fri, 22 Sep 2023 15:00:26 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Sean Christopherson <seanjc@google.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH v5 04/10] KVM: pfncache: base offset check on khva rather than gpa
+Date:   Fri, 22 Sep 2023 15:00:03 +0000
+Message-Id: <20230922150009.3319-5-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230922150009.3319-1-paul@xen.org>
+References: <20230922150009.3319-1-paul@xen.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
         SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,21 +54,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22 2023 at 08:16, Xin3 Li wrote:
->> > > +static __always_inline void __wrmsrns(u32 msr, u32 low, u32 high)
->> >
->> > Shouldn't this be named wrmsrns_safe since it has exception handling, similar
->> to
->> > the current wrmsrl_safe.
->> >
->> 
->> Both safe and unsafe versions have exception handling, while the safe
->> version returns an integer to its caller to indicate an exception did
->> happen or not.
->
-> I notice there are several call sites using the safe version w/o
-> checking the return value, should the unsafe version be a better
-> choice in such cases?
+From: Paul Durrant <pdurrant@amazon.com>
 
-Depends. The safe version does not emit a warning on fail. So if the
-callsite truly does not care about the error it's fine.
+After a subsequent patch, the gpa may not always be set whereas khva will
+(as long as the cache valid flag is also set).
+
+No functional change intended.
+
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+---
+ virt/kvm/pfncache.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
+index 17afbb464a70..37bcb4399780 100644
+--- a/virt/kvm/pfncache.c
++++ b/virt/kvm/pfncache.c
+@@ -83,15 +83,18 @@ bool kvm_gpc_check(struct gfn_to_pfn_cache *gpc, unsigned long len)
+ 	if (!gpc->active)
+ 		return false;
+ 
+-	if ((gpc->gpa & ~PAGE_MASK) + len > PAGE_SIZE)
++	if (gpc->generation != slots->generation)
+ 		return false;
+ 
+-	if (gpc->generation != slots->generation || kvm_is_error_hva(gpc->uhva))
++	if (kvm_is_error_hva(gpc->uhva))
+ 		return false;
+ 
+ 	if (!gpc->valid)
+ 		return false;
+ 
++	if (offset_in_page(gpc->khva) + len > PAGE_SIZE)
++		return false;
++
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(kvm_gpc_check);
+-- 
+2.39.2
+
