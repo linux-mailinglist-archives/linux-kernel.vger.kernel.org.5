@@ -2,141 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B83A77AB198
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600297AB18E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbjIVMCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 08:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S233957AbjIVMBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 08:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233961AbjIVMCH (ORCPT
+        with ESMTP id S233646AbjIVMBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 08:02:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65C6194
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695384074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T8z1OFlqreKOrvEDFGvg7LWhEbXRLwVnIrf1SNiRPYE=;
-        b=LBdAUkJO/cGzxF9W1MbCdX2nHNZDzDB8CiECWX8CKa5EB2fYXuzibvepO5eAQvEHtG7gWK
-        4t+gJFhimQq2v/l764wKXiQCi5niuK4VS2JHN6tFld9F5e5d11/HAGe8rAZuGrOLM9hlhq
-        N9UAoaQ0kgGovoXE0+vfO2vDwIzacmk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-267-mSZHRhYUPeeDueoxs7x-Ew-1; Fri, 22 Sep 2023 08:01:11 -0400
-X-MC-Unique: mSZHRhYUPeeDueoxs7x-Ew-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F4443C100C7;
-        Fri, 22 Sep 2023 12:01:10 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A713C15BB8;
-        Fri, 22 Sep 2023 12:01:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <591a70bf016b4317add2d936696abc0f@AcuMS.aculab.com>
-References: <591a70bf016b4317add2d936696abc0f@AcuMS.aculab.com> <20230920222231.686275-1-dhowells@redhat.com>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 00/11] iov_iter: Convert the iterator macros into inline funcs
+        Fri, 22 Sep 2023 08:01:35 -0400
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8691A2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:01:29 -0700 (PDT)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1dc27f7c838so2747956fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:01:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695384088; x=1695988888;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jj2QWvmiK+0WWAcmrF4T0yz3RCgK8HWXoA++/rR1IPw=;
+        b=PyVqteQDg6+ie7W4oZYQZdvHLx/6URh7Hkbg+ancMzRJ4KqqjgDjPk/m4DhSuzUiBS
+         jz98godMujjvcPDljSYfFqImqmPlqla8d8tfEpWW6SXWxYfp8nCxgtX+RlYkkjIQurLh
+         XLb8XwP5GIfHdlv4eolG4NiURF5C8ZXRa9K7gro/l/PT1LCT9rVVdZePt3Ln6sqG8YfL
+         KZonFQtwPXDiS/wO/7MlBMyx0UYukgP4R6pdW5+QZyZuv1Owj8yoS488pF73HjzDDsP1
+         jUy8h5lCdI6gV//+L3/V2DsbMU9LhdKMtoCNkVPeSGBMMkJL1zId2Neqp+qkfVHUclC7
+         hRxw==
+X-Gm-Message-State: AOJu0YwWFtA3n/HNnxwYhRyM+DreOtQZr4s1Ku3wc0eojk/8RwwvqMC5
+        zlvk3uFtyzNzoEh5U0Ys/3sKtqKE/h2AMqVgiXJAvRCIPUDc
+X-Google-Smtp-Source: AGHT+IGQtOov5rgUCSHUmJaUiEHw6Xxzi7sjyCjTogbyObjGLfUVrtFsovgvSWXfW6nmE42beN87+I5IFZm0BLhP45xFVBRc0qio
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1173636.1695384067.1@warthog.procyon.org.uk>
-Date:   Fri, 22 Sep 2023 13:01:07 +0100
-Message-ID: <1173637.1695384067@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Received: by 2002:a05:6870:954d:b0:1d6:41c0:c9bf with SMTP id
+ v13-20020a056870954d00b001d641c0c9bfmr3173482oal.5.1695384088583; Fri, 22 Sep
+ 2023 05:01:28 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 05:01:28 -0700
+In-Reply-To: <000000000000140b1405fce42c66@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005be6710605f15e50@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_conn_del
+From:   syzbot <syzbot+6b9277cad941daf126a2@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, hdanton@sina.com,
+        johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
+        marcel@holtmann.org, netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Laight <David.Laight@ACULAB.COM> wrote:
+syzbot has bisected this issue to:
 
-> >  (8) Move the copy-and-csum code to net/ where it can be in proximity with
-> >      the code that uses it.  This eliminates the code if CONFIG_NET=n and
-> >      allows for the slim possibility of it being inlined.
-> > 
-> >  (9) Fold memcpy_and_csum() in to its two users.
-> > 
-> > (10) Move csum_and_copy_from_iter_full() out of line and merge in
-> >      csum_and_copy_from_iter() since the former is the only caller of the
-> >      latter.
-> 
-> I thought that the real idea behind these was to do the checksum
-> at the same time as the copy to avoid loading the data into the L1
-> data-cache twice - especially for long buffers.
-> I wonder how often there are multiple iov[] that actually make
-> it better than just check summing the linear buffer?
+commit 9a8ec9e8ebb5a7c0cfbce2d6b4a6b67b2b78e8f3
+Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Date:   Thu Mar 30 21:15:50 2023 +0000
 
-It also reduces the overhead for finding the data to checksum in the case the
-packet gets split since we're doing the checksumming as we copy - but with a
-linear buffer, that's negligible.
+    Bluetooth: SCO: Fix possible circular locking dependency on sco_connect_cfm
 
-> I had a feeling that check summing of udp data was done during
-> copy_to/from_user, but the code can't be the copy-and-csum here
-> for that because it is missing support form odd-length buffers.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10b66646680000
+start commit:   bd6c11bc43c4 Merge tag 'net-next-6.6' of git://git.kernel...
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12b66646680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b66646680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+dashboard link: https://syzkaller.appspot.com/bug?extid=6b9277cad941daf126a2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f06d04680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107fdcd0680000
 
-Is there a bug there?
+Reported-by: syzbot+6b9277cad941daf126a2@syzkaller.appspotmail.com
+Fixes: 9a8ec9e8ebb5 ("Bluetooth: SCO: Fix possible circular locking dependency on sco_connect_cfm")
 
-> Intel x86 desktop chips can easily checksum at 8 bytes/clock
-> (But probably not with the current code!).
-> (I've got ~12 bytes/clock using adox and adcx but that loop
-> is entirely horrid and it would need run-time patching.
-> Especially since I think some AMD cpu execute them very slowly.)
-> 
-> OTOH 'rep movs[bq]' copy will copy 16 bytes/clock (32 if the
-> destination is 32 byte aligned - it pretty much won't be).
-> 
-> So you'd need a csum-and-copy loop that did 16 bytes every
-> three clocks to get the same throughput for long buffers.
-> In principle splitting the 'adc memory' into two instructions
-> is the same number of u-ops - but I'm sure I've tried to do
-> that and failed and the extra memory write can happen in
-> parallel with everything else.
-> So I don't think you'll get 16 bytes in two clocks - but you
-> might get it is three.
-> 
-> OTOH for a cpu where memcpy is code loop summing the data in
-> the copy loop is likely to be a gain.
-> 
-> But I suspect doing the checksum and copy at the same time
-> got 'all to complicated' to actually implement fully.
-> With most modern ethernet chips checksumming receive pacakets
-> does it really get used enough for the additional complexity?
-
-You may be right.  That's more a question for the networking folks than for
-me.  It's entirely possible that the checksumming code is just not used on
-modern systems these days.
-
-Maybe Willem can comment since he's the UDP maintainer?
-
-David
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
