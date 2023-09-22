@@ -2,170 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63B07AB395
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34DC7AB3AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjIVO3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
+        id S229668AbjIVOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjIVO3B (ORCPT
+        with ESMTP id S229623AbjIVOaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:29:01 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CDB180
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:28:54 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38ME9ncE026380;
-        Fri, 22 Sep 2023 09:28:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=2y/pDq8C2MEbE0taiLlGdXwcmRd1O1Hg1M6JesaUCFg=; b=
-        YUcJ270evQUWTdBmipfxIo4suI7fMrHg8dXQGgaTv9hV6CXD8Tnl66jetnQYnkIa
-        3gw3E0u09mFRCIpT8sCRVQjfIWKFRWOdZ38lr3Oa854WBoU0iUv4j2Lpv0TsCFw2
-        HW8roawQFVindBuAkhHdelIkk5Mn0S4ONFl+8Ji+1hfEDt8Ae57PAP1O8Nk3UZ4o
-        lag/SKYcMboFNEFpI6IknvHMuQWH9f0xmjouAVgPA8lEOnL2Rqki4Q55Rl0ibvs7
-        5CaZrdIJ4EuSdtJzgdC4AfAPL2hj2Si8XHB5M5e7Qu3oj7QXMbh41Qw6k1y3MStM
-        mX1pK+NtK/z1USRVaNS9Pw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t8tt7h2pv-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 09:28:31 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 22 Sep
- 2023 15:28:28 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Fri, 22 Sep 2023 15:28:28 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 41754356C;
-        Fri, 22 Sep 2023 14:28:28 +0000 (UTC)
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 2/2] ALSA: cs35l41: Fix for old systems which do not support command
-Date:   Fri, 22 Sep 2023 15:28:18 +0100
-Message-ID: <20230922142818.2021103-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
-References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 77OpIBxbP8FD9eLWWyKUrBpFlceO4jw1
-X-Proofpoint-ORIG-GUID: 77OpIBxbP8FD9eLWWyKUrBpFlceO4jw1
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 10:30:46 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50ABF180
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:30:40 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c40ac5b6e7so17775045ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695393040; x=1695997840; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KA5pwz3/DRQHr6a2ee4M3bjnbEYA57TwsoBM67hI6zU=;
+        b=KasGxCGhlZLETJKdrWXwCt6Sdf48q70UTGzJbwZWC64s/HsrhafPEns5rIOCSmMzCF
+         Z5vslQF3uqwntveLyJRT9X55sm2SN9LTyROw1FjsOmgBxDplUWBzYf6ax3BA5UjL4ELb
+         YJsPknZYvqdQlxlzPz5zEqhGnX9Tu6BG6ioY3BFN0N3mSdjWPjyuvkUiP6pxEe6NnfWJ
+         PLkmtSJXOkV0KCojJ/JCp+rGSD8krrci1aKN7jafsYbX+RWwpM95HeeOfmLnmkf1PMs0
+         7NxA3aqKWL8UbhrNt+pus28C2KMT02kQ3ra3JKNW0AJ2IeAxWRuxOn4ft3DclAvaZpdM
+         jwSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695393040; x=1695997840;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KA5pwz3/DRQHr6a2ee4M3bjnbEYA57TwsoBM67hI6zU=;
+        b=sKnHLIADyoTBAbdtrHg/FhjcAPDriEAgiu+HYX+K+k7DLo1XJwgaxQvX/HvNboMl8a
+         HGMypbKF5u+aYq8I7CDh7LmB+FnuHSOM69fHTYXMw7vM9axUw7+RYnPdLmdz+8M6NQF5
+         jns7rJ3EXDvrc+Lphuhh0baW2Xw9How3u8MRZbHd4sklE9V1hZItyh2gtR2ExZhhdLKG
+         0C34rmm/lRCGDoiBhG64A6rAmUMIyLAMnwxyxKqoNFVD2N0UzM+HuV3oq6A7mWr6kVe0
+         pJMdZ+/kiq7H1adfiWJVUX041Mvab3ltrV4TTojt2I7XqnHt0DRJIf3jC70XeFiDcfIf
+         j8kg==
+X-Gm-Message-State: AOJu0Yy2J3CGXJIr5e8U1O6+zVSJDGxtAD7E84O49TqG0e2RO6gnCXWm
+        d8sTsnYx+ybgpk1uqKbudm3CL6XC4gw=
+X-Google-Smtp-Source: AGHT+IE7TdAMSox3QZ9i3XY42vmW+YqwJtHLDXCrkzOQDSyIHqr/K/m4w9DaaKuedrPKXRX2zXN/sfp+lRA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:1cf:b0:1b9:df8f:888c with SMTP id
+ e15-20020a17090301cf00b001b9df8f888cmr102903plh.8.1695393039713; Fri, 22 Sep
+ 2023 07:30:39 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 07:30:38 -0700
+In-Reply-To: <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-8-seanjc@google.com>
+ <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com>
+Message-ID: <ZQ2lDk3iOEz8NNg0@google.com>
+Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
+ report faults to userspace
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some older laptops using cs35l41 use firmware which does not support
-the CSPL_MBOX_CMD_SPK_OUT_ENABLE command.
-Firmware versions v0.28.0 and older do not support this command.
+On Fri, Sep 22, 2023, Xiaoyao Li wrote:
+> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
+> > From: Chao Peng <chao.p.peng@linux.intel.com>
+> > 
+> > Add a new KVM exit type to allow userspace to handle memory faults that
+> > KVM cannot resolve, but that userspace *may* be able to handle (without
+> > terminating the guest).
+> > 
+> > KVM will initially use KVM_EXIT_MEMORY_FAULT to report implicit
+> > conversions between private and shared memory.  With guest private memory,
+> > there will be  two kind of memory conversions:
+> > 
+> >    - explicit conversion: happens when the guest explicitly calls into KVM
+> >      to map a range (as private or shared)
+> > 
+> >    - implicit conversion: happens when the guest attempts to access a gfn
+> >      that is configured in the "wrong" state (private vs. shared)
+> > 
+> > On x86 (first architecture to support guest private memory), explicit
+> > conversions will be reported via KVM_EXIT_HYPERCALL+KVM_HC_MAP_GPA_RANGE,
+> 
+> side topic.
+> 
+> Do we expect to integrate TDVMCALL(MAPGPA) of TDX into KVM_HC_MAP_GPA_RANGE?
 
-Fixes: fa3efcc36aac ("ALSA: cs35l41: Use mbox command to enable speaker output for external boost")
+Yes, that's my expectation.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- include/sound/cs35l41.h        | 2 +-
- sound/pci/hda/cs35l41_hda.c    | 4 ++--
- sound/soc/codecs/cs35l41-lib.c | 6 ++++--
- sound/soc/codecs/cs35l41.c     | 4 ++--
- 4 files changed, 9 insertions(+), 7 deletions(-)
+> > but reporting KVM_EXIT_HYPERCALL for implicit conversions is undesriable
+> > as there is (obviously) no hypercall, and there is no guarantee that the
+> > guest actually intends to convert between private and shared, i.e. what
+> > KVM thinks is an implicit conversion "request" could actually be the
+> > result of a guest code bug.
+> > 
+> > KVM_EXIT_MEMORY_FAULT will be used to report memory faults that appear to
+> > be implicit conversions.
+> > 
+> > Place "struct memory_fault" in a second anonymous union so that filling
+> > memory_fault doesn't clobber state from other yet-to-be-fulfilled exits,
+> > and to provide additional information if KVM does NOT ultimately exit to
+> > userspace with KVM_EXIT_MEMORY_FAULT, e.g. if KVM suppresses (or worse,
+> > loses) the exit, as KVM often suppresses exits for memory failures that
+> > occur when accessing paravirt data structures.  The initial usage for
+> > private memory will be all-or-nothing, but other features such as the
+> > proposed "userfault on missing mappings" support will use
+> > KVM_EXIT_MEMORY_FAULT for potentially _all_ guest memory accesses, i.e.
+> > will run afoul of KVM's various quirks.
+> 
+> So when exit reason is KVM_EXIT_MEMORY_FAULT, how can we tell which field in
+> the first union is valid?
+> 
+> When exit reason is not KVM_EXIT_MEMORY_FAULT, how can we know the info in
+> the second union run.memory is valid without a run.memory.valid field?
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 2fe8c6b0d4cf..ccee065958a3 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -903,6 +903,6 @@ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
- bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
- int cs35l41_mdsync_up(struct regmap *regmap);
- int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l41_boost_type b_type,
--			  int enable, bool firmware_running);
-+			  int enable, struct cs_dsp *dsp);
- 
- #endif /* __CS35L41_H */
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 28f6ef32937d..698fb7c5a028 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -527,7 +527,7 @@ static void cs35l41_hda_play_done(struct device *dev)
- 	dev_dbg(dev, "Play (Complete)\n");
- 
- 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1,
--			      cs35l41->cs_dsp.running);
-+			      &cs35l41->cs_dsp);
- 	if (cs35l41->cs_dsp.running) {
- 		regmap_multi_reg_write(reg, cs35l41_hda_unmute_dsp,
- 				       ARRAY_SIZE(cs35l41_hda_unmute_dsp));
-@@ -546,7 +546,7 @@ static void cs35l41_hda_pause_start(struct device *dev)
- 
- 	regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
- 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0,
--			      cs35l41->cs_dsp.running);
-+			      &cs35l41->cs_dsp);
- }
- 
- static void cs35l41_hda_pause_done(struct device *dev)
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 2ec5fdc875b1..f18fbd4b3ede 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -16,6 +16,8 @@
- 
- #include <sound/cs35l41.h>
- 
-+#define CS35L41_FIRMWARE_OLD_VERSION 0x001C00 /* v0.28.0 */
-+
- static const struct reg_default cs35l41_reg[] = {
- 	{ CS35L41_PWR_CTRL1,			0x00000000 },
- 	{ CS35L41_PWR_CTRL2,			0x00000000 },
-@@ -1213,7 +1215,7 @@ EXPORT_SYMBOL_GPL(cs35l41_safe_reset);
-  * the PLL Lock interrupt, in the IRQ handler.
-  */
- int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l41_boost_type b_type,
--			  int enable, bool firmware_running)
-+			  int enable, struct cs_dsp *dsp)
- {
- 	int ret;
- 	unsigned int gpio1_func, pad_control, pwr_ctrl1, pwr_ctrl3, int_status, pup_pdn_mask;
-@@ -1308,7 +1310,7 @@ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l4
- 			}
- 			regmap_write(regmap, CS35L41_IRQ1_STATUS1, CS35L41_PUP_DONE_MASK);
- 
--			if (firmware_running)
-+			if (dsp->running && dsp->fw_id_version > CS35L41_FIRMWARE_OLD_VERSION)
- 				ret = cs35l41_set_cspl_mbox_cmd(dev, regmap,
- 								CSPL_MBOX_CMD_SPK_OUT_ENABLE);
- 			else
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 4bc64ba71cd6..df326fe90447 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -520,11 +520,11 @@ static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
- 						ARRAY_SIZE(cs35l41_pup_patch));
- 
- 		ret = cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type,
--					    1, cs35l41->dsp.cs_dsp.running);
-+					    1, &cs35l41->dsp.cs_dsp);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
- 		ret = cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type,
--					    0, cs35l41->dsp.cs_dsp.running);
-+					    0, &cs35l41->dsp.cs_dsp);
- 
- 		regmap_multi_reg_write_bypassed(cs35l41->regmap,
- 						cs35l41_pdn_patch,
--- 
-2.34.1
+I'll respond to this separately with a trimmed Cc list.  I suspect this will be
+a rather lengthy conversation, and it has almost nothing to do with guest_memfd.
 
+> > +Note!  KVM_EXIT_MEMORY_FAULT is unique among all KVM exit reasons in that it
+> > +accompanies a return code of '-1', not '0'!  errno will always be set to EFAULT
+> > +or EHWPOISON when KVM exits with KVM_EXIT_MEMORY_FAULT, userspace should assume
+> > +kvm_run.exit_reason is stale/undefined for all other error numbers.
+> > +
+> 
+> Initially, this section is the copy of struct kvm_run and had comments for
+> each field accordingly. Unfortunately, the consistence has not been well
+> maintained during the new filed being added.
+> 
+> Do we expect to fix it?
+
+AFAIK, no one is working on cleaning up this section of the docs, but as always,
+patches are welcome :-)
