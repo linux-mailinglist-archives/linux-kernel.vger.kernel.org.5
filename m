@@ -2,139 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FC97AB496
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B1E7AB49F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbjIVPSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S232663AbjIVPSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjIVPSW (ORCPT
+        with ESMTP id S232677AbjIVPSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:18:22 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788C0122
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:18:14 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-692a9bc32bcso698973b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695395894; x=1696000694; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=28ycCMVqr+jLHcID+cLGjL2F35QcRv/+OsF8PSg4e9w=;
-        b=ButDVAR9tTC7uXAuV5J2qo4ZQbvJl8oZRiJIqRfLL8Wrj/4DPr8pUXQGcqaNe3cLhK
-         POhz0NNfhCmdVR7Cfq0k/a78GWVXkYaa0M4xf5WA5ae8UGtas3u4jFvwDbqo4CnBv6Ee
-         b+XEZRXiOCQzeijJhPI31QvcFxi9NHI4MtazLywyBkW1C9+5H+9ZQEWn+YX4GXHUq9Pa
-         +zyI7PcWx2QK8klHQWL3P8JatyYCjho8j5Zyi8JpgoQg1tZcH9FKtctvNLFukeGDMur4
-         qNwsqaqmsFImdFQeZ5bswJq0wBvMm51FG0yqKeyfm7SC1TGM7Im97qDY8e0UPehHBJ1f
-         cNBw==
+        Fri, 22 Sep 2023 11:18:36 -0400
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E70F199;
+        Fri, 22 Sep 2023 08:18:29 -0700 (PDT)
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3ae0b0e9a0bso972779b6e.3;
+        Fri, 22 Sep 2023 08:18:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695395894; x=1696000694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=28ycCMVqr+jLHcID+cLGjL2F35QcRv/+OsF8PSg4e9w=;
-        b=TZgcADYnSFtFQN09fY/6Sk6fW6K0UbfdcOj/iF0oKYXJrL25n/v7jnIun0Dv4Vh5xU
-         BdMGeEDGbcUOf7bKFHviHkBIi81eI6Qtynsd+FPZetuxhUSNaBXziptYnOCLJKZfVqIl
-         wpQdthsYPrBoU8btYRvjU1JLDldMbMad9q/7JMzVO8bRVoQaTRFXF/rvkSEoiiE7JKcU
-         eDtRxbJ6zSY5haVTX7nujE0wrw4T+nhcT5NSkUZ4uObRFxqZry0GqVvWTwzQVM7lt+l+
-         8SCkIPaClokQ003ZBEiXWmnSuJMUWOREHvkVvG+VY/IaVaOaskMMkZ4+rXP+K/g4Ngph
-         rdpg==
-X-Gm-Message-State: AOJu0YxjapPZZ6zbm7IdW+Ofl92nw3mMQNxO771ZJJp4qEO9TtdDP48Z
-        wVKYNvpluOCc1Pym5Gjup1qpvA==
-X-Google-Smtp-Source: AGHT+IEYqxKV/Zdv/b6QlfOjx23Mb/9uFyIcZZjiFtr8f5V9ahoe0eQHX3dZEw5wH7KcGntm/EnFFg==
-X-Received: by 2002:a05:6a21:4881:b0:14c:9a61:a310 with SMTP id av1-20020a056a21488100b0014c9a61a310mr7787505pzc.24.1695395893958;
-        Fri, 22 Sep 2023 08:18:13 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:c44:77f:ca7d:adec])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902e9c600b001c1f4edfb87sm3614450plk.92.2023.09.22.08.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 08:18:13 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 08:18:11 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 1/6] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
- TH1520 support
-Message-ID: <ZQ2tP48Z19C5xRug@x1>
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
- <20230921-th1520-mmc-v1-1-49f76c274fb3@baylibre.com>
- <20230922-parish-ice-a22e93dc3027@spud>
+        d=1e100.net; s=20230601; t=1695395908; x=1696000708;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rH3oex4JuuDiGcojuJxgW82OemDVXIWofXHS33ZWUIc=;
+        b=wfOHFqijGBDuHWwdg+xAAjFjejFVB/3xLd11QWj4UjffT89mIxxUX+VYNz2vURUrX2
+         zVll98T0k8tELV7tIz01XIiqL9e1S47y17rU6Kcf92g0iTLtrQ5ud0TEprZh7lx3EMCz
+         UYo/ta6KZwXU4BE2oyA2HGbL7BjA0lzjYqhBDiHct39yXF0otD1V5LpioM/mNWGUPwmt
+         Bb/YZHspQWTR5wbkWqHVrZmGA4NZxelBywBcbmIsqsAFYMA1SVg/CK2OfBhOgWYdOleQ
+         u9ejrbXDuRL0ZP/pMcfdo1EzW/h0F+TDqKGaAP6tww/oGZCl+eK5/eXWIQyjuJv7Pdi2
+         Faew==
+X-Gm-Message-State: AOJu0Yxe264e/QOUncOxmhjakzr5rLehTbSoQa/wZMnEMOTNI3ntJ5sJ
+        IKVed1vzUOi037PzuNdcqHw=
+X-Google-Smtp-Source: AGHT+IFL6jnK+1VnWoA0BKTfkAGhIIR5uNawDr9oaB9oYV3du5gT/rycKVzQ024myLLafN53aeC+bQ==
+X-Received: by 2002:a05:6808:df4:b0:3a9:307a:62aa with SMTP id g52-20020a0568080df400b003a9307a62aamr8363337oic.22.1695395908443;
+        Fri, 22 Sep 2023 08:18:28 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:70e9:c86f:4352:fcc? ([2620:15c:211:201:70e9:c86f:4352:fcc])
+        by smtp.gmail.com with ESMTPSA id y5-20020aa78045000000b0069048fe6c8esm3302905pfm.203.2023.09.22.08.18.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 08:18:28 -0700 (PDT)
+Message-ID: <ce9cef41-29e2-4056-a60b-b0e4ee1cc17e@acm.org>
+Date:   Fri, 22 Sep 2023 08:18:26 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922-parish-ice-a22e93dc3027@spud>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] scsi: scsi_error: Fix device reset is not triggered
+Content-Language: en-US
+To:     Wenchao Hao <haowenchao2@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, louhongxiang@huawei.com
+References: <20230922093636.2645961-1-haowenchao2@huawei.com>
+ <20230922093636.2645961-3-haowenchao2@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230922093636.2645961-3-haowenchao2@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:57:36AM +0100, Conor Dooley wrote:
-> Hey Drew,
+On 9/22/23 02:36, Wenchao Hao wrote:
+> Fix the issue of skipping scsi_try_bus_device_reset() for devices
+> which is in progress of removing in following order:
 > 
-> On Thu, Sep 21, 2023 at 06:49:48PM -0700, Drew Fustini wrote:
-> > Add compatible value for the T-Head TH1520 dwcmshc controller and add
-> > thead,phy-pull-up property.
-> > 
-> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> > ---
-> >  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-> > index a43eb837f8da..46b768d46712 100644
-> > --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-> > +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-> > @@ -19,6 +19,7 @@ properties:
-> >        - rockchip,rk3568-dwcmshc
-> >        - rockchip,rk3588-dwcmshc
-> >        - snps,dwcmshc-sdhci
-> > +      - thead,th1520-dwcmshc
-> >  
-> >    reg:
-> >      maxItems: 1
-> > @@ -60,6 +61,9 @@ properties:
-> >      description: Specify the number of delay for tx sampling.
-> >      $ref: /schemas/types.yaml#/definitions/uint8
-> >  
-> > +  thead,phy-pull-up:
-> > +    description: Enable weak pull-up on PHY pads
-> > +    type: boolean
+> T1:					T2:scsi_error_handle
+> __scsi_remove_device
+>    scsi_device_set_state(sdev, SDEV_DEL)
+> 					// would skip device with SDEV_DEL state
+>    					shost_for_each_device()
+> 					  scsi_try_bus_device_reset
+> 					flush all commands
+>   ...
+>   scsi_device is released
 > 
-> Why is the weak pull-up required? How would the dts author know if they
-> need to use this property?
+> Some drivers like smartpqi only implement eh_device_reset_handler,
+> if device reset is skipped, the commands which had been sent to
+> firmware or devices hardware are not cleared. The error handle
+> would flush all these commands in scsi_unjam_host().
+> 
+> When the commands are finished by hardware, use after free issue is
+> triggered.
+> 
+> Add parameter "check_state" to macro shost_for_each_device() to
+> determine if check device status when traversal scsi_device
+> of Scsi_Host, and set this parameter to false when traversal
+> in scsi_error_handle to address this issue.
 
-This is a good question, and I don't have a good reason beyond it is
-what the vendor SDK was doing.
+The above is incomprehensible to me. Please explain more clearly why 
+this change is needed.
 
-There are only two boards right now using the TH1520 that I know of.
-Both the LPi4a [1] and the Ahead [2] have the pull-up property set on
-all the mmc controller nodes their downstream device trees.
+> diff --git a/drivers/scsi/scsi.c b/drivers/scsi/scsi.c
+> index d0911bc28663..db8b9e42267c 100644
+> --- a/drivers/scsi/scsi.c
+> +++ b/drivers/scsi/scsi.c
+> @@ -704,6 +704,23 @@ int scsi_cdl_enable(struct scsi_device *sdev, bool enable)
+>   	return 0;
+>   }
+>   
+> +static int __scsi_device_get(struct scsi_device *sdev, bool check_state)
 
-Rob suggested on #devicetree that it would be simpler to just enable it
-in the driver and disable support when needed. I like this idea as it
-will simplify this binding patch and the code in the driver patch.
+"check_state" is a bad argument name because it does not clearly explain 
+the purpose of this argument. Would "include_deleted" perhaps be a 
+better name?
+
+> +{
+> +	if (check_state &&
+> +	    (sdev->sdev_state == SDEV_DEL || sdev->sdev_state == SDEV_CANCEL))
+> +		goto fail;
+> +	if (!try_module_get(sdev->host->hostt->module))
+> +		goto fail;
+> +	if (!get_device(&sdev->sdev_gendev))
+> +		goto fail_put_module;
+> +	return 0;
+> +
+> +fail_put_module:
+> +	module_put(sdev->host->hostt->module);
+> +fail:
+> +	return -ENXIO;
+> +}
+
+Looking at the above code, I think we need two functions: one that does 
+not include the sdev->sdev_state check and a second function that 
+includes the sdev->sdev_state check (scsi_device_get()) and calls the 
+first. That will result in code that is easier to read than calls to a 
+function with a boolean argument.
+
+> diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
+> index c498a12f7715..e166d053c839 100644
+> --- a/include/scsi/scsi_device.h
+> +++ b/include/scsi/scsi_device.h
+> @@ -389,21 +389,25 @@ extern void __starget_for_each_device(struct scsi_target *, void *,
+>   
+>   /* only exposed to implement shost_for_each_device */
+>   extern struct scsi_device *__scsi_iterate_devices(struct Scsi_Host *,
+> -						  struct scsi_device *);
+> +						  struct scsi_device *,
+> +						  bool);
+>   
+>   /**
+>    * shost_for_each_device - iterate over all devices of a host
+>    * @sdev: the &struct scsi_device to use as a cursor
+>    * @shost: the &struct scsi_host to iterate over
+> + * @check_state: if skip check scsi_device's state to skip some devices
+> + *               scsi_device with SDEV_DEL or SDEV_CANCEL would be skipped
+> + *               if this is true
+>    *
+>    * Iterator that returns each device attached to @shost.  This loop
+>    * takes a reference on each device and releases it at the end.  If
+>    * you break out of the loop, you must call scsi_device_put(sdev).
+>    */
+> -#define shost_for_each_device(sdev, shost) \
+> -	for ((sdev) = __scsi_iterate_devices((shost), NULL); \
+> +#define shost_for_each_device(sdev, shost, check_state) \
+> +	for ((sdev) = __scsi_iterate_devices((shost), NULL, check_state); \
+>   	     (sdev); \
+> -	     (sdev) = __scsi_iterate_devices((shost), (sdev)))
+> +	     (sdev) = __scsi_iterate_devices((shost), (sdev), check_state))
+>   
+>   /**
+>    * __shost_for_each_device - iterate over all devices of a host (UNLOCKED)
+
+Since only the SCSI error handler passes 0 as 'check_state' argument to 
+shost_for_each_device(), instead of adding a boolean argument to that 
+macro, please do the following:
+* Introduce a new macro for the check_state = 1 case.
+* Keep the semantics for shost_for_each_device().
+
+With this approach no SCSI LLDs will have to be modified.
 
 Thanks,
-Drew
 
-[1] https://git.beagleboard.org/beaglev-ahead/BeagleBoard-DeviceTrees/-/blob/v5.10.x-ti-unified/src/riscv/light-beagle-ref.dts
-[2] https://github.com/revyos/thead-kernel/blob/lpi4a/arch/riscv/boot/dts/thead/light-lpi4a-ref.dts
+Bart.
