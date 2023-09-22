@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1AB7ABC03
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8401D7ABC04
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbjIVWwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 18:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        id S230201AbjIVWxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 18:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjIVWwp (ORCPT
+        with ESMTP id S230081AbjIVWxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:52:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA027AB;
-        Fri, 22 Sep 2023 15:52:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54EB9C433C7;
-        Fri, 22 Sep 2023 22:52:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695423159;
-        bh=WpOE5/YOMJhoOrRKC3VTuOefYY+YCBJ0gqxE+bPM+M8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vMU06/uZQoE7+sMmxCUfnkaIc4TbQPw+xy1evSjIiX21OrPo1IYOmUn2r3SUCYQkm
-         QjSiluwmbtqxuEfGHRSs2VWH7LOeJoXRuW3WiiPkHVs50qu0idnALp7V1XsWalZZmT
-         u/GSeT5H721/K/z2aOgETtz4BD2REKdWl6332N3DEZIN0eSuCmEt8PhP40E8UvmTi7
-         P8T6ATfWIHTf9AeK5No1lLcfsrdF8CiOejhLo/eusnPEv7xbfODCOXJT0O91SO8jPi
-         tO98bE0pF7sRnvPt2MMlGcAi94RWbOGCZj//WSW8a7xg4cvQI/6/tZwt3n/X7MWxVN
-         pGGQ73Zi6lufA==
-Received: (nullmailer pid 4077777 invoked by uid 1000);
-        Fri, 22 Sep 2023 22:52:37 -0000
-Date:   Fri, 22 Sep 2023 17:52:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: qcom,msm8226: Add blsp_i2c6
- function
-Message-ID: <169542315692.4077737.2123562166324056718.robh@kernel.org>
-References: <20230922-msm8226-i2c6-v2-0-3fb55c47a084@z3ntu.xyz>
- <20230922-msm8226-i2c6-v2-1-3fb55c47a084@z3ntu.xyz>
+        Fri, 22 Sep 2023 18:53:35 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F695E8;
+        Fri, 22 Sep 2023 15:53:29 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fdd6011f2so2426728b3a.3;
+        Fri, 22 Sep 2023 15:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695423209; x=1696028009; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9kqxgzJgXPyy+SI1U1LrSdsOznmatrZh3nVqMYZ69Ms=;
+        b=fHK34zRd93z+6E1XGCfjQ0NMko9y7gB8qEnc7Zpx/YZ2Q/msQzom0a6gb0zu2/m7ZC
+         aT2b4lQyPHhN4ibVM8XJAP4UyRkXpWWbsgD6qjh947w/mWA4q4dP4jqLSzK5eAMQPBCV
+         y4trP6FCqGoZj+3rGV6A7gvNaENnzYlWs7R4WBgaxu+8QAoMMntucZ6b8KJdo9i7yHDH
+         uqKpKw/UiMJlNK8TV0QdKu/s2xddSbilqt+SY1ag1Aycp34XJ3I6UvN0xBJpQWwTovQl
+         p9ExlTFGy4xL29sKdaaMiJNHz+bPw9q6mp/rYjHKyhrst0A5lWyxCKxtIbtBWHbpQyJ7
+         QCIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695423209; x=1696028009;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9kqxgzJgXPyy+SI1U1LrSdsOznmatrZh3nVqMYZ69Ms=;
+        b=wVdQ4n8KxxZeF6G9eWgkWCfIKrJv0a1yC75gx4Ou7+9gN4LiBPeSlRXgOXbDEaS3xv
+         bfSvdNXe9f1WiIeUX9PAHgUG9mMpII0/HFsn68K7ZuqjXvi27o6wRsnuTROLCa97URhU
+         04/2red14Rgox3h8OMI4P07/eUJkOazEuH1Tj19d4KA3Z308QTfdPkM660VVmTIBHEwM
+         hir15YWPiABG9jfHAfVK6x7VGRX9J/VpPIqfq3nGWymRhr/9UNb/O4aPtKX218fdEwN9
+         FpkOcP1JcMpvRlOjPEmK3bEjm4YfUwYHk8uQFtMhFsultQ0/uo5Mro4FKhgPDlYJ3JWt
+         Ot6A==
+X-Gm-Message-State: AOJu0Yw3NemnvJY7UZizjaetS9iE6SQeMmN45+5rULgnMKf5XEjumEXt
+        5Y7CVP7+1F2bFUS0a+P8g8s=
+X-Google-Smtp-Source: AGHT+IEdhSN5VgGrt4uKNDipxYZlx9F6Hg5pTQceSMECmTTffA4lDsvgZeO4SYQUSBLlIjhD0BDUsg==
+X-Received: by 2002:a05:6a00:189e:b0:68e:496a:7854 with SMTP id x30-20020a056a00189e00b0068e496a7854mr758159pfh.18.1695423208773;
+        Fri, 22 Sep 2023 15:53:28 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id v11-20020aa7808b000000b0068a54866ca8sm3684191pff.134.2023.09.22.15.53.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 15:53:28 -0700 (PDT)
+Message-ID: <6ac73178-374d-4a4d-95b7-3b87bcafff4e@gmail.com>
+Date:   Fri, 22 Sep 2023 19:52:58 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922-msm8226-i2c6-v2-1-3fb55c47a084@z3ntu.xyz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] rust: arc: rename `ArcInner` to `WithRef`
+Content-Language: en-US
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        rust-for-linux@vger.kernel.org
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+References: <20230921213440.202017-1-wedsonaf@gmail.com>
+ <20230921213440.202017-2-wedsonaf@gmail.com>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230921213440.202017-2-wedsonaf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri, 22 Sep 2023 18:55:12 +0200, Luca Weiss wrote:
-> Add the blsp_i2c6 function that can be found on some pins.
+On 9/21/23 18:34, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> This is in preparation for removing `ArcBorrow` and making `WithRef`
+> public.
+> 
+> This is a pure name change with no functional changes intended.
+> 
+> Suggested-by: Björn Roy Baron <bjorn3_gh@protonmail.com>
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 > ---
->  Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+> [...]
 
-Acked-by: Rob Herring <robh@kernel.org>
-
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
