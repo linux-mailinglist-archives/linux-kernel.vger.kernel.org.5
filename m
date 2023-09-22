@@ -2,100 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341297AB4CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD027AB461
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjIVPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S232419AbjIVPBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjIVPa0 (ORCPT
+        with ESMTP id S232556AbjIVPAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:30:26 -0400
-Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0A6A3;
-        Fri, 22 Sep 2023 08:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:References:
-        In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=OnZ8zSAkss2pUJLPO3TlCjqbELhF/Q5FJAtYDHD/8T0=; b=e9jnP1XKXGk6uTnl1Y8k/Il6Ys
-        yNWAouT1UGbBCyEHFe2xRl6m16hNHh8P19R+cdCpYalGS69cvda395sVUg3iwji6Q1iJxuwXw8Zjo
-        TY4E3ivA95PVIxbQCjdjkqnkceIvRpNYobjLltWfuZ/3PsUVh4K5t9YAzrZ1gNylabcs=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1qji6i-0004nj-CD; Fri, 22 Sep 2023 15:30:16 +0000
-Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1qjhdy-0005y2-Oi; Fri, 22 Sep 2023 15:00:34 +0000
-From:   Paul Durrant <paul@xen.org>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
-Subject: [PATCH v5 10/10] KVM: xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
-Date:   Fri, 22 Sep 2023 15:00:09 +0000
-Message-Id: <20230922150009.3319-11-paul@xen.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230922150009.3319-1-paul@xen.org>
-References: <20230922150009.3319-1-paul@xen.org>
+        Fri, 22 Sep 2023 11:00:49 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBCA1A6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:00:43 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-77acb04309dso85744839f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695394842; x=1695999642; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jYn6LvwErM+FWcs1ijUw0l4OdU4J9KJ6IGyuBDg5TUM=;
+        b=nvLbHRZ6HX0KEiCK6ljjoii4i8lRgR2XWob3X20fw9qoVQ26w1w8wXl8mQyKsxjhYm
+         ZIyhTtiVG+nkTILeUFZYteVbJ4CSUNjzh4HQdZ//MaUTXrBVuHGg6onE5kpwN5DIx7ix
+         RmCBLILoMoyLFbym5jRagLB0Ad4Zo7WNrUGXs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695394842; x=1695999642;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jYn6LvwErM+FWcs1ijUw0l4OdU4J9KJ6IGyuBDg5TUM=;
+        b=Q7pCWqFWi4V7byymS5H/1fBaIBNP66arolN4Zs62P8Fmi+NxlRZ4/QtkKnb/maz68X
+         jKbYVRuDG4hQnoXa2JVk2PjFqX2oMT6yZA98ytbFJqkyTOimxkwx9YcCGILOduxxWHJC
+         9gABG0SsbSClsl457QoyZ3z9ptbPego6cSBg54HcweWBnouK6sCfAmozrknYPhIZJLSI
+         prMOHzD5Zxbm3cQs0FhXj9nI8fI2yDjIxxyIupSW6lD4exZaY7oorbR/onDXk4Sjg4RM
+         MOHYdxYS2nQfglS0DiqooOK3GU4/Nr+8KbIY81art62248rz7kNczyDmBrsBqLWoDhix
+         ieLA==
+X-Gm-Message-State: AOJu0YzrYUTKMl02gShYQo78Aogr84sWIgZ6/A2zwoNzBqpj5i64mCkt
+        JRs3pE3IC4HVx9gAj8xROYPv/YcrXf7UF3nSdKaMOQ==
+X-Google-Smtp-Source: AGHT+IFbEGFXJmNzYcTCklkiBTGe0RHiphpx+QFahlodchm827xZVeRdpbGcmTnbPC8j2gcUb6dS/KP3T2t9n71A9EY=
+X-Received: by 2002:a6b:e419:0:b0:799:178c:7be5 with SMTP id
+ u25-20020a6be419000000b00799178c7be5mr9412049iog.17.1695394842589; Fri, 22
+ Sep 2023 08:00:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230920112835.549467415@linuxfoundation.org> <79a96d41-1b79-51b4-fda0-743b853213b9@nvidia.com>
+ <7e0355bd-64cd-f6c2-b720-e4643579078c@nvidia.com> <53c9f81e-55b9-b8bb-7821-cb124780d4c0@roeck-us.net>
+In-Reply-To: <53c9f81e-55b9-b8bb-7821-cb124780d4c0@roeck-us.net>
+From:   Rob Clark <robdclark@chromium.org>
+Date:   Fri, 22 Sep 2023 08:00:31 -0700
+Message-ID: <CAJs_Fx6-AWA1fxgV1u=ycn2YXm3D0GnGQeC1UR8QwVXFKDGJqw@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/139] 6.1.55-rc1 review
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Durrant <pdurrant@amazon.com>
+On Fri, Sep 22, 2023 at 7:52=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+>
+> On 9/22/23 05:31, Jon Hunter wrote:
+> >
+> > On 22/09/2023 10:45, Jon Hunter wrote:
+> >> Hi Greg,
+> >>
+> >> On 20/09/2023 12:28, Greg Kroah-Hartman wrote:
+> >>> This is the start of the stable review cycle for the 6.1.55 release.
+> >>> There are 139 patches in this series, all will be posted as a respons=
+e
+> >>> to this one.  If anyone has any issues with these being applied, plea=
+se
+> >>> let me know.
+> >>>
+> >>> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+> >>> Anything received after that time might be too late.
+> >>>
+> >>> The whole patch series can be found in one patch at:
+> >>>     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.55-rc1.gz
+> >>> or in the git tree and branch at:
+> >>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> >>> and the diffstat can be found below.
+> >>>
+> >>> thanks,
+> >>>
+> >>> greg k-h
+> >>
+> >> I am seeing some suspend failures with this update ...
+> >>
+> >> Test results for stable-v6.1:
+> >>      11 builds:    11 pass, 0 fail
+> >>      28 boots:    28 pass, 0 fail
+> >>      130 tests:    124 pass, 6 fail
+> >>
+> >> Linux version:    6.1.55-rc1-gd5ace918366e
+> >> Boards tested:    tegra124-jetson-tk1, tegra186-p2771-0000,
+> >>                  tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+> >>                  tegra20-ventana, tegra210-p2371-2180,
+> >>                  tegra210-p3450-0000, tegra30-cardhu-a04
+> >>
+> >> Test failures:    tegra124-jetson-tk1: pm-system-suspend.sh
+> >>                  tegra186-p2771-0000: pm-system-suspend.sh
+> >>                  tegra20-ventana: pm-system-suspend.sh
+> >>                  tegra30-cardhu-a04: pm-system-suspend.sh
+> >>
+> >> Bisect is underway.
+> >
+> >
+> > Bisect for this issue is also pointing to ...
+> >
+> > Rob Clark <robdclark@chromium.org>
+> >       interconnect: Fix locking for runpm vs reclaim
+> >
+> > Looks like all the Tegra issues are related to this.
+> >
+>
+> This isn't surprising because upstream commit 136191703038 ("interconnect=
+: Teach
+> lockdep about icc_bw_lock order") silently fixes it without Fixes: tag. I=
+f you
+> look into that patch you'll see that the the missing call to mutex_unlock=
+() is
+> added to icc_sync_state().
 
-Now that all relevant kernel changes and selftests are in place, enable the
-new capability.
+Oh, indeed, it looks like that hunk ended up in the wrong commit, and
+I didn't notice because both were merged at the same time
 
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
----
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: x86@kernel.org
+BR,
+-R
 
-v2:
- - New in this version.
----
- arch/x86/kvm/x86.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d669a8801265..0df06f47801c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4531,7 +4531,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
- 		    KVM_XEN_HVM_CONFIG_SHARED_INFO |
- 		    KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL |
--		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
-+		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
-+		    KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA;
- 		if (sched_info_on())
- 			r |= KVM_XEN_HVM_CONFIG_RUNSTATE |
- 			     KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG;
--- 
-2.39.2
-
+> Guenter
+>
