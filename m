@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC9B7AA914
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6D37AA918
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjIVG2x convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 02:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
+        id S229912AbjIVGb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjIVG2r (ORCPT
+        with ESMTP id S229509AbjIVGbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:28:47 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49761CE;
-        Thu, 21 Sep 2023 23:28:41 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id BDC8324E289;
-        Fri, 22 Sep 2023 14:28:38 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Sep
- 2023 14:28:39 +0800
-Received: from williamqiu-virtual-machine.starfivetech.com (171.223.208.138)
- by EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 22 Sep 2023 14:28:37 +0800
-From:   William Qiu <william.qiu@starfivetech.com>
-To:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-mmc@vger.kernel.org>
-CC:     Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        William Qiu <william.qiu@starfivetech.com>
-Subject: [PATCH v3 3/3] riscv: dts: starfive: add assigned-clock* to limit frquency
-Date:   Fri, 22 Sep 2023 14:28:34 +0800
-Message-ID: <20230922062834.39212-4-william.qiu@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922062834.39212-1-william.qiu@starfivetech.com>
-References: <20230922062834.39212-1-william.qiu@starfivetech.com>
+        Fri, 22 Sep 2023 02:31:24 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3494FCE;
+        Thu, 21 Sep 2023 23:31:17 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RsMlf2dQXzVl8D;
+        Fri, 22 Sep 2023 14:28:14 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 22 Sep 2023 14:31:14 +0800
+Subject: Re: [PATCH v15 2/2] Documentation: add debugfs description for vfio
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <20230901023606.47587-1-liulongfang@huawei.com>
+ <20230901023606.47587-3-liulongfang@huawei.com>
+ <20230915150035.0311e9be.alex.williamson@redhat.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <29e3517e-0322-7b2e-7232-c1af77f778c3@huawei.com>
+Date:   Fri, 22 Sep 2023 14:31:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230915150035.0311e9be.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.110]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In JH7110 SoC, we need to go by-pass mode, so we need add the
-assigned-clock* properties to limit clock frquency.
+On 2023/9/16 5:00, Alex Williamson wrote:
+> On Fri, 1 Sep 2023 10:36:06 +0800
+> liulongfang <liulongfang@huawei.com> wrote:
+> 
+>> From: Longfang Liu <liulongfang@huawei.com>
+>>
+>> 1.Add an debugfs document description file to help users understand
+>> how to use the accelerator live migration driver's debugfs.
+>> 2.Update the file paths that need to be maintained in MAINTAINERS
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  Documentation/ABI/testing/debugfs-vfio | 25 +++++++++++++++++++++++++
+>>  MAINTAINERS                            |  1 +
+>>  2 files changed, 26 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/debugfs-vfio
+>>
+>> diff --git a/Documentation/ABI/testing/debugfs-vfio b/Documentation/ABI/testing/debugfs-vfio
+>> new file mode 100644
+>> index 000000000000..086a8c52df35
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/debugfs-vfio
+>> @@ -0,0 +1,25 @@
+>> +What:		/sys/kernel/debug/vfio
+>> +Date:		Aug 2023
+>> +KernelVersion:  6.6
+> 
+> This is all 6.7 material now and we might be conservative and mark it
+> for Oct 2023.
+>
+OK, I'll modify them all.
 
-Signed-off-by: William Qiu <william.qiu@starfivetech.com>
----
- .../riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	This debugfs file directory is used for debugging
+>> +		of vfio devices, it's a common directory for all vfio devices.
+>> +		Each device should create a device subdirectory under this
+>> +		directory by referencing the public registration interface.
+> 
+> The device sub-directory is already provided by the core.  Thanks,
+>
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index d79f94432b27..d1f2ec308bca 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -205,6 +205,8 @@ &i2c6 {
- 
- &mmc0 {
- 	max-frequency = <100000000>;
-+	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO0_SDCARD>;
-+	assigned-clock-rates = <50000000>;
- 	bus-width = <8>;
- 	cap-mmc-highspeed;
- 	mmc-ddr-1_8v;
-@@ -221,6 +223,8 @@ &mmc0 {
- 
- &mmc1 {
- 	max-frequency = <100000000>;
-+	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO1_SDCARD>;
-+	assigned-clock-rates = <50000000>;
- 	bus-width = <4>;
- 	no-sdio;
- 	no-mmc;
--- 
-2.34.1
+OK, I'll modify it.
 
+Thanks,
+Longfang.
+
+> Alex
+> 
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration
+>> +Date:		Aug 2023
+>> +KernelVersion:  6.6
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	This debugfs file directory is used for debugging
+>> +		of vfio devices that support live migration.
+>> +		The debugfs of each vfio device that supports live migration
+>> +		could be created under this directory.
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/state
+>> +Date:		Aug 2023
+>> +KernelVersion:  6.6
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Read the live migration status of the vfio device.
+>> +		The status of these live migrations includes:
+>> +		ERROR, RUNNING, STOP, STOP_COPY, RESUMING.
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 7b1306615fc0..bd01ca674c60 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -22304,6 +22304,7 @@ L:	kvm@vger.kernel.org
+>>  S:	Maintained
+>>  T:	git https://github.com/awilliam/linux-vfio.git
+>>  F:	Documentation/ABI/testing/sysfs-devices-vfio-dev
+>> +F:	Documentation/ABI/testing/debugfs-vfio
+>>  F:	Documentation/driver-api/vfio.rst
+>>  F:	drivers/vfio/
+>>  F:	include/linux/vfio.h
+> 
+> .
+> 
