@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FD67ABA52
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270427ABA58
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbjIVUAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 16:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
+        id S231862AbjIVUDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 16:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIVUAx (ORCPT
+        with ESMTP id S229540AbjIVUDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 16:00:53 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8867C19B;
-        Fri, 22 Sep 2023 13:00:47 -0700 (PDT)
-Received: from DESKTOP-4OLSCEK. (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CB69F212C5CD;
-        Fri, 22 Sep 2023 13:00:46 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CB69F212C5CD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695412846;
-        bh=pa2lqK8tLRFSFgOMzplmgHoF6LUPfwgF2UX/Kyn0MmE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RaykwJUMG3etwttwdEEJpDTgXvbyop+iEVPs7w6rEMn6QcB6o9n2C0uFeU7OjAcSa
-         7BW2/CCVIeFhoYAahg+P5h9mZGPGfauaMJe/mZnIct0MTWMge9cB743lnAA0Pphv9y
-         wc6ML3YUYP+oBYL1K/58sUZz9UPXAilh1Jvw3/ng=
-Date:   Fri, 22 Sep 2023 13:00:42 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
- alignment
-Message-ID: <20230922200042.GA1981-beaub@linux.microsoft.com>
-References: <20230914131102.179100-1-cleger@rivosinc.com>
- <20230914131700.0ba3ee80@gandalf.local.home>
- <20230914132956.569dad45@gandalf.local.home>
- <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
+        Fri, 22 Sep 2023 16:03:33 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFD51A2;
+        Fri, 22 Sep 2023 13:03:28 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3adc3d94f66so1657979b6e.1;
+        Fri, 22 Sep 2023 13:03:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695413007; x=1696017807;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=92vwJf3WLmkpUBPfM1uX6jdmCsJTt9zpYit4o1iVPi8=;
+        b=rFYOk1ch88uOvZb8zJLWalshSsUk+B77cqUWWub3URXfej/Ap/PzaeN5hzPoxeRt60
+         Iexvc93zFzzk/c6VhD/cS9z8EVFKKYdnxEu0NDVqjRwryMZv435lbU01lp647pPuNAYZ
+         t1j/o2Kc0xv/KSGN1TF1TZHgKvZ7zsNfXX2Tsy/TP8wYSUaBM0SUiv/zkMjX+oAkift2
+         zhkpPX2GA635YnCIEkgLarnszAbAy1V2AUw9NBI3eMti/Bp3e/JCEVm/0TWeEOBeCJ2Q
+         aUqnL7gFW32lswJevXSB4Q3sZzec/I1Ib13IBIh6KMWqkVkrJVcyMJOJ8Axz5yk36T91
+         n7Vg==
+X-Gm-Message-State: AOJu0YyYW3mEy5UK0ix5lMM1sksEryKmSVOiQTnsMgIixbRkm+sUDrdH
+        QPRe3BhmRGR0R1J+QLoGjKg=
+X-Google-Smtp-Source: AGHT+IEP3JVa7YW6iKvp3c2447aJv58pC9gBEASQVTZuq+rvJLqoI+1fmX0Z9I0z5RQGrE60EI+KSw==
+X-Received: by 2002:a05:6808:4d4:b0:3a7:35af:bbc0 with SMTP id a20-20020a05680804d400b003a735afbbc0mr664405oie.54.1695413007358;
+        Fri, 22 Sep 2023 13:03:27 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id fe20-20020a056a002f1400b0068fadc9226dsm3614729pfb.33.2023.09.22.13.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 13:03:26 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 20:02:43 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Message-ID: <ZQ3y47GDfhjf23Rh@liuwe-devbox-debian-v2>
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 02:59:12PM +0200, Clément Léger wrote:
+On Fri, Sep 22, 2023 at 11:38:35AM -0700, Nuno Das Neves wrote:
+> Add mshv, mshv_root, and mshv_vtl modules:
 > 
+> Module mshv is the parent module to the other two. It provides /dev/mshv,
+> plus some common hypercall helper code. When one of the child modules is
+> loaded, it is registered with the mshv module, which then provides entry
+> point(s) to the child module via the IOCTLs defined in uapi/linux/mshv.h.
 > 
-> On 14/09/2023 19:29, Steven Rostedt wrote:
-> > On Thu, 14 Sep 2023 13:17:00 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> >> Now lets look at big endian layout:
-> >>
-> >>  uaddr = 0xbeef0004
-> >>  enabler = 1;
-> >>
-> >>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
-> >>                                     ^
-> >>                                     addr: 0xbeef0004
-> >>
-> >> 				(enabler is set )
-> >>
-> >> 	bitoffset = uaddr & (sizeof(unsigned long) - 1); bitoffset = 4
-> >> 	bit_offset *= 8;				 bitoffset = 32
-> >> 	uaddr &= ~(sizeof(unsigned long) - 1);		 uaddr = 0xbeef0000
-> >>
-> >> 	ptr = kaddr + (uaddr & ~PAGE_MASK);
-> >>
-> >> 	clear_bit(1 + 32, ptr);
-> >>
-> >>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
-> >>                                   ^
-> >> 				bit 33 of 0xbeef0000
-> >>
-> >> I don't think that's what you expected!
-> > 
-> > I believe the above can be fixed with:
-> > 
-> > 	bit_offset = uaddr & (sizeof(unsigned long) - 1);
-> > 	if (bit_offset) {
-> > #ifdef CONFIG_CPU_BIG_ENDIAN
-> > 		bit_offest = 0;
-> > #else
-> > 		bit_offset *= BITS_PER_BYTE;
-> > #endif
-> > 		uaddr &= ~(sizeof(unsigned long) - 1);
-> > 	}
-> > 
-> > -- Steve
+> E.g. When the mshv_root module is loaded, it registers itself, and the
+> MSHV_CREATE_PARTITION IOCTL becomes available in /dev/mshv. That is used to
+> get a partition fd managed by mshv_root.
 > 
+> Similarly for mshv_vtl module, there is MSHV_CREATE_VTL, which creates
+> an fd representing the lower vtl, managed by mshv_vtl.
 > 
-> Actually, after looking more in depth at that, it seems like there are
-> actually 2 problems that can happen.
+> Module mshv_root provides APIs for creating and managing child partitions.
+> It defines abstractions for partitions (vms), vps (vcpus), and other things
+> related to running a guest. It exposes the userspace interfaces for a VMM
+> to manage the guest.
 > 
-> First one is atomic access misalignment due to enable_size == 4 and
-> uaddr not being aligned on a (long) boundary on 64 bits architecture.
-> This can generate misaligned exceptions on various architectures. This
-> can be fixed in a more general way according to Masami snippet.
+> Module mshv_vtl provides VTL (Virtual Trust Level) support for VMMs. In
+> this scenario, the host kernel and VMM run in a higher trust level than the
+> guest, but within the same partition. This provides better isolation and
+> performance.
 > 
-> Second one that I can see is on 64 bits, big endian architectures with
-> enable_size == 4. In that case, the bit provided by the userspace won't
-> be correctly set since this code kind of assume that the atomic are done
-> on 32bits value. Since the kernel assume long sized atomic operation, on
-> big endian 64 bits architecture, the updated bit will actually be in the
-> next 32 bits word.
-> 
-> Can someone confirm my understanding ?
-> 
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
 
-Actually, I take back some of what I said [1]. If a 32-bit on a 64-bit
-kernel comes in on BE, and is aligned, we do need to offset the bits as
-well (just verified on my ppc64 BE VM).
+As far as I can tell, all my comments from the previous version are
+addressed. I believe Saurabh and Boqun's comments are addressed, too.
 
-You should be able to use that patch as a base though and add a flag to
-struct user_event_enabler when this case occurs. Then in the
-align_addr_bit() adjust the bits as well upon aligned cases.
+The code looks good to me, so:
 
-Thanks,
--Beau
+Acked-by: Wei Liu <wei.liu@kernel.org>
 
-1. https://lore.kernel.org/linux-trace-kernel/20230922192231.GA1828-beaub@linux.microsoft.com/
-
-> Clément
+I will wait for some time for others to chime in, just in case the
+community has more comments.
