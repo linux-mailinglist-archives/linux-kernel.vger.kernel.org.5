@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1006E7AAAB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5387AAABE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjIVHsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
+        id S231749AbjIVHt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbjIVHsj (ORCPT
+        with ESMTP id S231738AbjIVHtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:48:39 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D932CA
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:48:34 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-45274236ef6so869783137.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:48:34 -0700 (PDT)
+        Fri, 22 Sep 2023 03:49:25 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1097180
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:49:18 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77410032cedso77725285a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:49:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695368913; x=1695973713; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695368958; x=1695973758; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qAOgao/u9B0r0EeNR2cp3sQtHumqHto+rh8OFb2uoh8=;
-        b=Qg/GqlzZrjmq3MQN3j67tuA2e7hfAvbjK0Wj0eci8Zc4FnBZ+UwxxZNCYny2dshBAF
-         kL5zoX6AQha71fNKqViiOgqwYXFGLglSNeDB4jevLesItHybSWY7iIq9fn1bX6TvSZg6
-         WAHhhB3f12ZLHsS6QzIqR4q19ADWw6C/RIfPSm5D83wOTVjmt9UT5Ti8orPJ8LVQHF+W
-         s6XoSy0rSDNY9yfBMhQ36uUCy6/XASEKcias6JilBz1K6C+TqGWbxa8fblqQkukyjfMN
-         NfFDyTtOq8nhaph1CvnsIIqW3cOu7zSA98Ql0LX2Zfgl2179rGst5LfHHwt+hwKqeoa1
-         /Ezw==
+        bh=AUuGltXQmMiQtfNhApo3EnwtrJAemOB14iW5oMwn1Ng=;
+        b=mOHJsfI9brsViLZsgbKHQ3sPZU2fNpDKlwI9ekZJYBa8ga2kSJOHT3WVc5xvjoGMr3
+         JkbfIZfg6LxN5dGwOlACd+hNeYyUo4UL9rZb3+MDEhT/fHXJ8++pCoSuS52+C9Q0nN/U
+         PiYbg86Wd+aH+mAP7PE74VuUQL1jWZ8iaWc39MR3ZeUlEeP//vcC8mhrqgCVBxfhlV/5
+         Jzw4Yp+ZhxUcGyGEJRsUaiuPg+M0HG1fZYg/RdsBKztVngagmBTLOCi7cbbFnZknYbBP
+         6YTAjdlqM3Zf0J2kQBp1GYka2IKg9kZW3Ke+ZqoiwHDoDDqAiloqmPxquqkC9WuFxQl4
+         7t6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695368913; x=1695973713;
+        d=1e100.net; s=20230601; t=1695368958; x=1695973758;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qAOgao/u9B0r0EeNR2cp3sQtHumqHto+rh8OFb2uoh8=;
-        b=U5E40T+m6DjINn62489du0hKUG3QpwR0mDmidIHGYhZDS437+gezNLPI5L9dek5r4P
-         mxFuAgZHOd4cmt+NLw1TbPjHHqscD131ZDEH6Xmmp5ajCxbl1M7xMzCYY6efkspLwdNW
-         fltRktnVvZkbHWbGl/kDklrYAiw17SgyrHN65x5MydFTkvnSXy1kJyFW1CrN6jBQtxjC
-         nT9gvsodhkY06KP/WysR20GoHX/xnIiBkssoAXCCaAeSbpfEDSHlX31yo79svZBvZrSj
-         GJ4NUCCCcoKT8Fp15lPgw1G8AhBfiYwdweUhaQ6LXzNVWywPhKVrI2DuNh1lIIoT9SWa
-         2XoQ==
-X-Gm-Message-State: AOJu0Yx1gb5Fgad7D/5Vs6FG3RCsXrGcx9jMEVMhTmrvr8eo/WqK1o3Z
-        CmaIQ3wuyd/dYaAfZHXbfoPAvv+bmqlEv1MshCEAuw==
-X-Google-Smtp-Source: AGHT+IFdJLGjtvAG8/1/+PiRTsHeb3LvR2YKD1Qr597IyNHmETWaEkjY4oVTZnhp32fxWp2n/Gl8g7eN1Pwglg9CpCg=
-X-Received: by 2002:a67:e88d:0:b0:452:9b18:b326 with SMTP id
- x13-20020a67e88d000000b004529b18b326mr8342318vsn.10.1695368913153; Fri, 22
- Sep 2023 00:48:33 -0700 (PDT)
+        bh=AUuGltXQmMiQtfNhApo3EnwtrJAemOB14iW5oMwn1Ng=;
+        b=YM4S/Hw4hbgTVAn4W4X6DrhlSD43O8CJgreJ9aBrnhg4GQOorPTGqdV1NR09vXO4l2
+         qf6MLDFtd0hrJSDjYSZ8fcSSZjFJw3LaUaTj9UOvUmS7IX5waEMBu22/99cSru5e6x0o
+         OsDxwYHvdPqQ/8L/W44Rb8I18L02Rx7gETKXuvQWggyvHm8RJuCS/1Kdfvbz10vDoi0B
+         gc6kSE2ZrCh3G4vXJy0Uo0GWzJZdW/dnXnnnhjJdjcaPzeGo6HdGyi29X4/xSJ63Xd5C
+         jLQ3Wbwt9UB/vYbyhe5k3lQjf0F3JCemS5D/IyqLDxRwBOVZpjSBxj/rPKszSDfoOZxr
+         Hq9g==
+X-Gm-Message-State: AOJu0YzDhO24nY8V9JOWTTH+hdKFDPTi+v909d5N/WlgPxClvxr03Ej6
+        YLEsRWBVEy1DldfculnZc2ABEzqF7UL4j1wj2IoTSw==
+X-Google-Smtp-Source: AGHT+IH3o/E3AVABiTEsQRh9oCzwnF1Tp6uR/P9j++EHYyEuKgDdnGMdSSbmO98o+4UibQDwX4KpyUzYPvSZb/nYH90=
+X-Received: by 2002:a0c:f8c9:0:b0:64f:539b:f52a with SMTP id
+ h9-20020a0cf8c9000000b0064f539bf52amr7860375qvo.20.1695368957777; Fri, 22 Sep
+ 2023 00:49:17 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230720173956.3674987-1-glider@google.com> <20230720173956.3674987-2-glider@google.com>
- <ZLyI+0EL1VztnHLe@yury-ThinkPad>
-In-Reply-To: <ZLyI+0EL1VztnHLe@yury-ThinkPad>
+ <ZLyI+0EL1VztnHLe@yury-ThinkPad> <ZL1JarpwxpsB3fhY@yury-ThinkPad>
+In-Reply-To: <ZL1JarpwxpsB3fhY@yury-ThinkPad>
 From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 22 Sep 2023 09:47:53 +0200
-Message-ID: <CAG_fn=X62Mm2AxScRUHv6MxLAy24SXmSLtwXJqYDXi9_og-mMw@mail.gmail.com>
+Date:   Fri, 22 Sep 2023 09:48:41 +0200
+Message-ID: <CAG_fn=U0gcMpmTsfir27w4BwLS4Cp+kHa-CWqS5fX-9RjMCJcw@mail.gmail.com>
 Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
@@ -75,46 +75,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Either way, whatever we decide, let's stay clear with our intentions
+> and mention explicitly that tail bits are either must be zero, or
+> ignored.
 >
-> Regarding the rest of the series:
->  - I still see Evgenii's name in mtecomp.c, and EA0 references;
+> Alexander, can you add the snippet above to the comments for the
+> bitmap_write() and bitmap_read(), as well as in the test? Also, if we
+> decide to clear tail of the input value, would BITMAP_LAST_WORD_MASK()
+> generate better code than GENMASK(nbits - 1, 0) does?
 
-Double-checked there are none in v5 (only the Suggested-by: tag)
+Added the snippet above to bitmap_write(). I think however it is
+obvious that bitmap_read() reads only nbits?
 
->  - git-am throws warning about trailing line;
-
-I checked locally that `git am` does not warn about v5 patches. But
-given that the patches are generated with `git format-patch` I suspect
-they get garbled when you download them, could it be the case?
-
->  - checkpatch warns 7 times;
-
-It now warns 4 times, three warnings are about updating MAINTAINERS (I
-don't think there's need for this), the last one is about
-CONFIG_ARM64_MTE_COMP_KUNIT_TEST not having three lines of description
-text in Kconfig.
-
-> Can you fix all the above before sending the new version?
-
-> Have you tested generic part against BE32, BE64 and LE32 architectures;
-> and arch part against BE64? If not, please do.
-
-I did now.
-
-
-> You're mentioning that the compression ratio is 2 to 20x. Can you
-> share the absolute numbers? If it's 1k vs 2k, I think most people
-> just don't care...
-
-In the other thread I mentioned that although 20x compression is
-reachable, it may not lead to practical savings. I reworded the
-description, having added the absolute numbers.
-
-> Can you share the code that you used to measure the compression ratio?
-> Would it make sense to export the numbers via sysfs?
-
-Done in v5
-
+> Commets are very appreciated.
+>
 > Thanks,
 > Yury
 
