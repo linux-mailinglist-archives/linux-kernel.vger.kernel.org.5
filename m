@@ -2,325 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBBE7AAF56
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FC27AAF5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbjIVKUU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 06:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        id S233226AbjIVKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbjIVKUQ (ORCPT
+        with ESMTP id S232616AbjIVKXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:20:16 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2BCA9;
-        Fri, 22 Sep 2023 03:20:08 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RsSnZ4kGqz67nNy;
-        Fri, 22 Sep 2023 18:15:14 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 22 Sep
- 2023 11:20:06 +0100
-Date:   Fri, 22 Sep 2023 11:20:05 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jiaqi Yan <jiaqiyan@google.com>, <linuxarm@huawei.com>
-CC:     <shiju.jose@huawei.com>, "Luck, Tony" <tony.luck@intel.com>,
-        <dave.hansen@linux.intel.com>, <jon.grimm@amd.com>,
-        <vilas.sridharan@amd.com>, David Rientjes <rientjes@google.com>,
-        <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
-        <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
-        <james.morse@arm.com>, <david@redhat.com>, <jthoughton@google.com>,
-        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
-        <pgonda@google.com>, <duenwen@google.com>,
-        <mike.malvestuto@intel.com>, <gthelen@google.com>,
-        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
-        <prime.zeng@hisilicon.com>
-Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
- for set of scrub attributes
-Message-ID: <20230922111740.000046d7@huawei.com>
-In-Reply-To: <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
-References: <20230915172818.761-1-shiju.jose@huawei.com>
-        <20230915172818.761-3-shiju.jose@huawei.com>
-        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 22 Sep 2023 06:23:03 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C65A9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:22:57 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M9AJ80029275;
+        Fri, 22 Sep 2023 10:22:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : cc : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=SM+FJHOAvc9X1k5lXSldfO6KxCV+8nOx/9yDPCvrn/s=;
+ b=GOImxqVGrUzKdVKNSDIMyLkrDtmiRA68/JGvkmb7RwPS59GTzHbSo1hTg7Q8/Pv2muR6
+ 3Mj91i1q9aqPWfPMi9N7WsHo98oCx48TF7/kCfP3hFL1sMKva8G93cBnOoQyrZB4QhLJ
+ SFySzeZCpdNQNVJBlA10BnMkFyQM0oQTIlnXYC1DQqnXkAMQMwS6yGyvc5IjRgg++SbZ
+ l+HWBgpm1ctm/i8CN5lAbIyhZUVpovu0JpWhdYhB7p4ZcCDt62M84iY9+ruGW/6T6zFK
+ K7vKEe5IvTYUy7ogyvNZ9HoS99U2YF+ykfNEkiR98B8A39GAoIGt4FT3lYmFp1hzwwb0 FQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u6rsj0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 10:22:18 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MAMHVv004095
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 10:22:17 GMT
+Received: from [10.214.227.50] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 03:20:09 -0700
+Message-ID: <a01e7e60-6ead-4a9e-ba90-22a8a6bbd03f@quicinc.com>
+Date:   Fri, 22 Sep 2023 15:50:05 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] iommu/arm-smmu: Introduction of ACTLR for custom
+ prefetch setting
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>, <will@kernel.org>,
+        <joro@8bytes.org>, <jgg@ziepe.ca>, <baolu.lu@linux.intel.com>,
+        <jsnitsel@redhat.com>, <u.kleine-koenig@pengutronix.de>,
+        <vladimir.oltean@nxp.com>, <robh@kernel.org>
+References: <20230915195221.25735-1-quic_bibekkum@quicinc.com>
+ <a682b20a-c87b-65c9-dcf0-abd40fbc4cdd@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>,
+        Charan Teja Kalla <quic_charante@quicinc.com>,
+        <quic_guptap@quicinc.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        <quic_vjitta@quicinc.com>, <quic_pbrahma@quicinc.com>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <a682b20a-c87b-65c9-dcf0-abd40fbc4cdd@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XOIio_pfaiR1yTi_e8_3WyurMqV7ED27
+X-Proofpoint-ORIG-GUID: XOIio_pfaiR1yTi_e8_3WyurMqV7ED27
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_07,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 mlxlogscore=986 impostorscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309220087
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 17:07:04 -0700
-Jiaqi Yan <jiaqiyan@google.com> wrote:
 
-> On Fri, Sep 15, 2023 at 10:29 AM <shiju.jose@huawei.com> wrote:
-> >
-> > From: Shiju Jose <shiju.jose@huawei.com>
-> >
-> > Add sysfs documentation entries for the set of attributes those are
-> > exposed in /sys/class/scrub/ by the scrub driver. These attributes
-> > support configuring parameters of a scrub device.
-> >
-> > Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-> > ---
-> >  .../ABI/testing/sysfs-class-scrub-configure   | 82 +++++++++++++++++++
-> >  1 file changed, 82 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-class-scrub-configure b/Documentation/ABI/testing/sysfs-class-scrub-configure
-> > new file mode 100644
-> > index 000000000000..347e2167dc62
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-class-scrub-configure
-> > @@ -0,0 +1,82 @@
-> > +What:          /sys/class/scrub/
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               The scrub/ class subdirectory belongs to the
-> > +               scrubber subsystem.
-> > +
-> > +What:          /sys/class/scrub/scrubX/
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               The /sys/class/scrub/scrub{0,1,2,3,...} directories  
+
+On 9/18/2023 4:49 PM, Robin Murphy wrote:
+> On 2023-09-15 20:52, Bibek Kumar Patro wrote:
+>> Hi community,
+>>
+>> I have a requirement which I'm looking for inputs from the community.
+>> Currently in QCOM SOCs ACTLR register is used to store the custom
+>> prefetcher setting by each client opting to use this feature.
+>> This helps to store the next set of instructions to be prefetched
+>> as per the value stored.This could help in a significant performance 
+>> bump.
+>> Requirement is to create an universal and flexible interface to store
+>> and set this prefetch value which is unique for each SID.
+>>
+>> Currently this ACTLR property is stored for each client as
+>> DT property of smmu has following fields as mentioned:
+>>
+>>     actlr-cells = <no of fields>
+>>     actlrs = <SID MASK ACTLR_value>
+>>
+>> These entries are parsed in arm-smmu layer and is stored in a table
+>> containing actrl values corresponding to each SID and MASK. This ACTLR
+>> value is then used during contextbank initialisation. Hence this entire
+>> DT entry process is being carried out by arm-smmu layer.
+>>
+>> I'm trying to envise a design where client can set this property in
+>> their own DT entry as per their required value in case they have this
+>> use-case. Here ACTLR value can be populated as 3rd optional field
+>> in iommu-cells property which is already being used by clients to store
+>> SID and MASK(optional) as mentioned:
+>>
+>>     iommu-cells = <SID MASK(optional) ACTLR value(optional)>
+>>
+>> This would help to avoid additional property in client DT as
+>> exisiting DT property can be extrapolated to store the same. And this
+>> prefetcher value can be set into the ARM_SMMU_CB_ACTLR register
+>> during context bank inititalisation.
+>> This patch is still WIP, so would like to get inputs and advise
+>> from community on this design implementation or any alternate approach
+>> to this requirement.
 > 
-> This API (sysfs interface) is very specific to the ACPI interface
-> defined for hardware patrol scrubber. I wonder can we have some
-> interface that is more generic, for a couple of reasons:
-
-Agreed that it makes sense to define a broad interface.  We have
-some hardware focused drivers we can't share yet (IP rules until
-a release date in the near future) where this is a reasonable fit
-- but indeed there are others such as mapping this to DDR ECS
-where it isn't a great mapping.
-
-I'd love to come up with an interface that has the right blend
-of generality and flexibility.  That is easiest done before we have
-any implementation merged.
-
-> 
-> 1. I am not aware of any chip/platform hardware that implemented the
-> hw ps part defined in ACPI RASF/RAS2 spec. So I am curious what the
-> RAS experts from different hardware vendors think about this. For
-> example, Tony and Dave from Intel, Jon and Vilas from AMD. Is there
-> any hardware platform (if allowed to disclose) that implemented ACPI
-> RASF/RAS2? If so, will vendors continue to support the control of
-> patrol scrubber using the ACPI spec? If not (as Tony said in [1], will
-> the vendor consider starting some future platform?
-> 
-> If we are unlikely to get the vendor support, creating this ACPI
-> specific sysfs API (and the driver implementations) in Linux seems to
-> have limited meaning.
-
-There is a bit of a chicken and egg problem here. Until there is 
-reasonable support in kernel (or it looks like there will be),
-BIOS teams push back on a requirement to add the tables.
-I'd encourage no one to bother with RASF - RAS2 is much less
-ambiguous.
-
-> 
-> > +               correspond to each scrub device.
-> > +
-> > +What:          /sys/class/scrub/scrubX/name
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               (RO) name of the memory scrub device
-> > +
-> > +What:          /sys/class/scrub/scrubX/regionY/  
-> 
-> 2. I believe the concept of "region" here is probably from
-> PATROL_SCRUB defined in “APCI section 5.2.20.5. Parameter Block". It
-> is indeed powerful: if a process's physical memory spans over multiple
-> memory controllers, OS can in theory scrub chunks of the memory
-> belonging to the process. However, from a previous discussion [1],
-> "From a h/w perspective it might always be complex". IIUC, the address
-> translation from physical address to channel address is hard to
-> achieve, and probably that's one of the tech reasons the patrol scrub
-> ACPI spec is not in practice implemented?
-
-Next bit is kind of an aside as I mostly agree with your conclusions ;)
-
-This obviously depends on your memory interleave. You want to present
-physical address ranges as single controllable regions - probably
-most interesting being stuff that maps to NUMA nodes.  The short
-answer is that any firmware control will end up writing to all the
-memory controllers involved in a given PA range - firmware can easily
-establish which those are.
-
-A memory controller can support multiple scrub regions
-which map from a PA range to a particular set of RAM addresses
-- that's implementation specific. The memory controller is getting
-the host PA and can carry out appropriate hashing if it wants to.
-Many scrub solutions won't do this - in which case it's max one
-region per memory controller (mapped by firmware to one region per
-interleave set - assuming interleave sets take in whole memory
-controllers - which they normally do).
-
-I would expect existing systems (not design with this differentiated
-scrub in mind) to only support scrub control by PA range at the
-granularity of interleave sets.
-
-Note that this general question of PA based controls also
-maps to things like resource control (resctl) where it's only interesting
-to partition memory bandwidth such that the partition applies to the
-whole interleave set - that's done for ARM systems anyway by having
-the userspace interface pretend there is only one control, but
-write the settings to all actual controllers involved. Not sure what
-x86 does.
-
-Taking a few examples that I know of.  All 4 socket server - with
-control of these as bios options ;).
-Assuming individual memory controllers don't allow scrub to be
-configured by PA range.
-
-1. Full system memory interleave (people do this form of crazy)
-   In that case, there is only one set of firmware controls
-   that write to the interfaces of every memory controller.  Depending
-   on the interleave design that may still allow multiple regions.
-  
-2. Socket wide memory interleave.  In that case, firmware controls
-   need to effect all memory controllers in that socket if the
-   requested 'region' maps to them.  So 4 PA regions. 
-
-3. Die wide memory interleave.  Finer granularity of control
-   so perhaps 8 PA rgiones.
-
-4. Finer granularity (there are reasons to do this for above mentioned
-   bandwidth resource control which you can only do if not interleaving
-   across multiple controllers).
-
-
-
-> 
-> So my take is, control at the granularity of the memory controller is
-> probably a nice compromise. 
-> Both OS and userspace can get a pretty
-> decent amount of flexibility, start/stop/adjust speed of the scrubbing
-> on a memory controller; meanwhile it doesn't impose too much pain to
-> hardware vendors when they provide these features in hardware. In
-> terms of how these controls/features will be implemented, I imagine it
-> could be implemented:
-> * via hardware registers that directly or indirectly control on memory
-> controllers
-> * via ACPI if the situation changes in 10 years (and the RASF/RAS2/PCC
-> drivers implemented in this patchset can be directly plugged into)
-> * a kernel-thread that uses cpu read to detect memory errors, if
-> hardware support is unavailable or not good enough
+> At the very least this would need to be in a implementation-specific 
+> backend, since everything about ACTLR is implementation-defined; there 
+> could be bits in there that the driver needs to manage itself and 
+> clients have absolutely no business overriding (e.g. the MMU-500 errata 
+> workarounds). The generic driver can't know what's valid, nor what the 
+> consequences are of not being able to satisfy a particular setting. Then 
+> there's still the question of what if two clients ask for different 
+> settings but want to attach to the same context?
 > 
 
-I more or less agree, but would tweak a little.
+Thanks Robin for you inputs. We had some rounds of discussions
+internally after going through your concerns mentioned above.
 
-1) Allow for multiple regions per memory controller - that's needed
-   for RASF etc anyway - because as far as they are concerned there
-   is only one interface presented.
-2) Tie the interface to interleave sets, not memory controllers.
-   NUMA nodes often being a good stand in for those.
-   Controlling memory controllers separately for parts of an interleave
-   isn't something I'd think was very useful.  This will probably get
-   messy in the future though and the complexity could be pushed to
-   a userspace tool - as long as enough info is available elsewhere
-   in sysfs.  So need those memory controller directories you propose
-   to include info on the PA ranges that they are involved in backing
-   (which to keep things horrible, can change at runtime via memory
-    hotplug and remapping of host physical address ranges on CXL etc)
+> It's also questionable whether this would belong in DT at all, since it 
+> has a bit of a smell of software policv about it.
 
-> Given these possible backends of scrubbing, I think a more generic
-> sysfs API that covers and abstracts these backends will be more
-> valuable right now. I haven’t thought thoroughly, but how about
-> defining the top-level interface as something like
-> “/sys/devices/system/memory_controller_scrubX/”, or
-> “/sys/class/memory_controllerX/scrub”?
+ACTLR data which we feed into this register is client specific but at
+the same time client won't have the provision to set a value as per
+their choice.Similar to what SID and MASK value currently is which
+is specific for each client but at the same time client don't have
+the liberty to choose these values as per their choice.Hence this
+was the initial motivation to move it to client specific DT property.
+Also this would have helped us to match and set each ACTLR value with
+corresponding SID and MASK for each client during the device attachment
+to SMMU.
 
-No particular harm in the rename of the directory I guess.
-Though some of those 'memory_controllers' would be virtual as they
-wouldn't correspond to actual memory controllers but rather to
-sets of them.
+For many years we have been supporting ACTLR settings on all of our
+SoCs with a device tree table. Iur downstream implementation is at [1].
+This has worked us very well and did not see any need for client
+specific customization as such. Since passing register content via
+device tree is highly discouraged and also since ACTLR is
+implementation-defined as rightly mentioned for which client doesn't
+have the liberty to choose the value to be set here, we are moving the
+configuration data to driver and apply these settings as per SoC needs.
 
-Jonathan
+We will host these data now in implementation specific backend driver
+as suggested in Lookup table kind of format. Table will contain the SID
+MASK and ACTLR value which can be used to populate the prefetch value
+for each context bank during SMMU configuration probe.
+This implementation should also prevent clients having liberty to go
+and modify the actlr entry.
 
+I'll send in the next RFC patch for review of the driver based design.
+
+[1]
+https://git.codelinaro.org/clo/la/kernel/msm-5.10/-/blob/kernel.lnx.5.10.r3-rel/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c#L2198
+
+
+> If it could be 
+> sufficiently justified then it would need a proper binding proposal, and 
+> "write this opaque value into this register" type properties are 
+> generally not approved of.
 > 
-> [1] https://lore.kernel.org/linux-mm/SJ1PR11MB6083BF93E9A88E659CED5EC4FC3F9@SJ1PR11MB6083.namprd11.prod.outlook.com/T/#m13516ee35caa05b506080ae805bee14f9f958d43
-
-> 
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               The /sys/class/scrub/scrubX/region{0,1,2,3,...}
-> > +               directories correspond to each scrub region under a scrub device.
-> > +               Scrub region is a physical address range for which scrub may be
-> > +               separately controlled. Regions may overlap in which case the
-> > +               scrubbing rate of the overlapped memory will be at least that
-> > +               expected due to each overlapping region.
-> > +
-> > +What:          /sys/class/scrub/scrubX/regionY/addr_base
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               (RW) The base of the address range of the memory region
-> > +               to be patrol scrubbed.
-> > +               On reading, returns the base of the memory region for
-> > +               the actual address range(The platform calculates
-> > +               the nearest patrol scrub boundary address from where
-> > +               it can start scrubbing).
-> > +
-> > +What:          /sys/class/scrub/scrubX/regionY/addr_size
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               (RW) The size of the address range to be patrol scrubbed.
-> > +               On reading, returns the size of the memory region for
-> > +               the actual address range.
-> > +
-> > +What:          /sys/class/scrub/scrubX/regionY/enable
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               (WO) Start/Stop scrubbing the memory region.
-> > +               1 - enable the memory scrubbing.
-> > +               0 - disable the memory scrubbing..
-> > +
-> > +What:          /sys/class/scrub/scrubX/regionY/speed_available
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               (RO) Supported range for the partol speed(scrub rate)
-> > +               by the scrubber for a memory region.
-> > +               The unit of the scrub rate vary depends on the scrubber.
-> > +
-> > +What:          /sys/class/scrub/scrubX/regionY/speed
-> > +Date:          September 2023
-> > +KernelVersion: 6.7
-> > +Contact:       linux-kernel@vger.kernel.org
-> > +Description:
-> > +               (RW) The partol speed(scrub rate) on the memory region specified and
-> > +               it must be with in the supported range by the scrubber.
-> > +               The unit of the scrub rate vary depends on the scrubber.
-> > --
-> > 2.34.1
-> >
-> >  
+> Thanks,
+> Robin.
 > 
 
+Thanks,
+Bibek
+
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 14 ++++++++++++++
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.h |  6 ++++++
+>>   2 files changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index a86acd76c1df..2dd3796e30ea 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -917,11 +917,20 @@ static void arm_smmu_write_s2cr(struct 
+>> arm_smmu_device *smmu, int idx)
+>>       arm_smmu_gr0_write(smmu, ARM_SMMU_GR0_S2CR(idx), reg);
+>>   }
+>>
+>> +static void arm_smmu_write_actlr(struct arm_smmu_device *smmu, int idx)
+>> +{
+>> +    struct arm_smmu_actlr *actlr = smmu->actlrs + idx;
+>> +
+>> +    u32 reg = FIELD_PREP(ARM_SMMU_CB_ACTLR, actlrs->actlr);
+>> +}
+>> +
+>>   static void arm_smmu_write_sme(struct arm_smmu_device *smmu, int idx)
+>>   {
+>>       arm_smmu_write_s2cr(smmu, idx);
+>>       if (smmu->smrs)
+>>           arm_smmu_write_smr(smmu, idx);
+>> +    if (smmu->actlrs)
+>> +        arm_smmu_write_actlr(smmu, idx);
+>>   }
+>>
+>>   /*
+>> @@ -1031,6 +1040,7 @@ static int arm_smmu_master_alloc_smes(struct 
+>> device *dev)
+>>       for_each_cfg_sme(cfg, fwspec, i, idx) {
+>>           u16 sid = FIELD_GET(ARM_SMMU_SMR_ID, fwspec->ids[i]);
+>>           u16 mask = FIELD_GET(ARM_SMMU_SMR_MASK, fwspec->ids[i]);
+>> +        u32 actlr = FIELD_GET(ARM_SMMU_CB_ACTLR, fwspec->ids[i]);
+>>
+>>           if (idx != INVALID_SMENDX) {
+>>               ret = -EEXIST;
+>> @@ -1524,6 +1534,10 @@ static int arm_smmu_of_xlate(struct device 
+>> *dev, struct of_phandle_args *args)
+>>
+>>       if (args->args_count > 1)
+>>           fwid |= FIELD_PREP(ARM_SMMU_SMR_MASK, args->args[1]);
+>> +
+>> +    if (args->args_count > 2)
+>> +        fwid |= FIELD_PREP(ARM_SMMU_CB_ACTLR, args->args[2]);
+>> +
+>>       else if (!of_property_read_u32(args->np, "stream-match-mask", 
+>> &mask))
+>>           fwid |= FIELD_PREP(ARM_SMMU_SMR_MASK, mask);
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> index 703fd5817ec1..7d402ab58dc8 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> @@ -274,6 +274,11 @@ struct arm_smmu_smr {
+>>       bool                pinned;
+>>   };
+>>
+>> +struct arm_smmu_actlr {
+>> +    struct arm_smmu_smr smr;
+>> +    u32 actlr;
+>> +};
+>> +
+>>   struct arm_smmu_device {
+>>       struct device            *dev;
+>>
+>> @@ -312,6 +317,7 @@ struct arm_smmu_device {
+>>       u16                smr_mask_mask;
+>>       struct arm_smmu_smr        *smrs;
+>>       struct arm_smmu_s2cr        *s2crs;
+>> +    struct arm_smmu_actlr        *actlrs;
+>>       struct mutex            stream_map_mutex;
+>>
+>>       unsigned long            va_size;
+>> -- 
+>> 2.17.1
+>>
