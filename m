@@ -2,161 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B077AB698
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFC37AB696
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbjIVQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        id S232145AbjIVQ5Z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 12:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjIVQ50 (ORCPT
+        with ESMTP id S229538AbjIVQ5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:57:26 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DFB198;
-        Fri, 22 Sep 2023 09:57:18 -0700 (PDT)
-Received: from g550jk.localnet (k10064.upc-k.chello.nl [62.108.10.64])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 01F29CFADA;
-        Fri, 22 Sep 2023 16:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1695401807; bh=rK5mAbbiQpqlLCWKbud4SA+Xd793oMxnhhSEUiqVv/w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=TaNlayt6gRWpSNQ0zSytpOvDi8n403zBwEqlSZfulE94+TaduxD2u4h1t+k0+5vQq
-         0SA9PpSvKSoHvNRP9XzPySVYsbJ1EARl00BFMI3t5e1p59bWQDmwu+8GoyuRxuWp2D
-         gMjmQx2UVwyFVFM2G9Ve9Q1Dm1aXGLmZQ7JlWQLE=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Rob Herring <robh@kernel.org>,
-        Andy Gross <andy.gross@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Craig Tatlor <ctatlor97@gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: qcom: msm8974: correct qfprom node size
-Date:   Fri, 22 Sep 2023 18:56:46 +0200
-Message-ID: <4831735.GXAFRqVoOG@z3ntu.xyz>
-In-Reply-To: <12394955.O9o76ZdvQC@z3ntu.xyz>
-References: <20230130-msm8974-qfprom-v2-1-3839cf41d9ee@z3ntu.xyz>
- <ff6fwomoik6kz4jtbm5jac7jahrtcia5fb6dj5ykxg7xt574sn@ti42sevqj6pk>
- <12394955.O9o76ZdvQC@z3ntu.xyz>
+        Fri, 22 Sep 2023 12:57:23 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D88F1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:57:17 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qjjSa-00017W-09;
+        Fri, 22 Sep 2023 12:56:56 -0400
+Message-ID: <ad7546055971c69ff386ed666ca9338c0db1b01c.camel@surriel.com>
+Subject: Re: [PATCH 1/2] hugetlbfs: extend hugetlb_vma_lock to private VMAs
+From:   Rik van Riel <riel@surriel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com
+Date:   Fri, 22 Sep 2023 12:56:55 -0400
+In-Reply-To: <20230922164408.GA224968@monkey>
+References: <20230920021811.3095089-1-riel@surriel.com>
+         <20230920021811.3095089-2-riel@surriel.com> <20230921224201.GB21193@monkey>
+         <c3309a3486df6ad2901d4d5c23e7bc6f4b8a9a24.camel@surriel.com>
+         <20230922164408.GA224968@monkey>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sonntag, 6. August 2023 12:47:51 CEST Luca Weiss wrote:
-> Hi Bjorn,
+On Fri, 2023-09-22 at 09:44 -0700, Mike Kravetz wrote:
 > 
-> On Montag, 31. Juli 2023 23:45:21 CEST Bjorn Andersson wrote:
-> > On Thu, Jun 15, 2023 at 08:20:41PM +0200, Konrad Dybcio wrote:
-> > > On 15.06.2023 20:17, Luca Weiss wrote:
-> > > > From: Craig Tatlor <ctatlor97@gmail.com>
-> > > > 
-> > > > The qfprom actually has size 0x3000, so adjust the reg.
-> > > > 
-> > > > Note that the non-ECC-corrected qfprom can be found at 0xfc4b8000
-> > > > (-0x4000). The current reg points to the ECC-corrected qfprom block
-> > > > which should have equivalent values at all offsets compared to the
-> > > > non-corrected version.
-> > > > 
-> > > > [luca@z3ntu.xyz: extract to standalone patch and adjust for review
-> > > > comments]
-> > > > 
-> > > > Fixes: c59ffb519357 ("arm: dts: msm8974: Add thermal zones, tsens and
-> > > > qfprom nodes") Signed-off-by: Craig Tatlor <ctatlor97@gmail.com>
-> > > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> > > > ---
-> > > 
-> > > Not sure of the actual size of the region, maybe Bjorn can help..
-> > > 
-> > > Downstream 3.10 suggests 0x60F0, 0x20F0 after adjusting for the ECC
-> > > offset
-> > 
-> > There is indeed 0x3000 bytes until the next region, but afaict the
-> > corrected ECC values only cover the first 0x800 bytes thereof.
-> > 
-> > Can you please let me know if this patch fixes a problem, or just
-> > makes the numbers look better?
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index f906c5fa4d09..8f3d5895fffc 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -372,6 +372,11 @@ static void
+> __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
+>                 struct hugetlb_vma_lock *vma_lock = vma-
+> >vm_private_data;
+>  
+>                 __hugetlb_vma_unlock_write_put(vma_lock);
+> +       } else if (__vma_private_lock(vma)) {
+> +               struct resv_map *resv_map = vma_resv_map(vma);
+> +
+> +               /* no free for anon vmas, but still need to unlock */
+> +               up_write(&resv_map->rw_sema);
+>         }
+>  }
 > 
-> Initially this patch came from a different direction, to make space to use
-> the PVS bits for cpufreq. Since Konrad said in earlier revisions that I
-> should always use the +0x4000 space for the ECC-corrected variant I've
-> switched to that.
-> 
-> If you think it's not useful to have the qfprom size reflect the actual
-> size, we can also drop this patch since I don't think it's actually
-> necessary for anything that I have lying around in some branches.
-> 
-> I think I've just sent the current patch to make sure the hardware
-> description (dts) is as accurate as possible, but of course since any info
-> on Qualcomm is very restricted it could also be a bit wrong.
 
-Hi Bjorn,
+Nice catch. I'll add that.
 
-this patch is still lying in my inbox. Do you think it's correct or incorrect 
-- so should we drop it?
+I was still trying to reproduce the bug here.
 
-Regards
-Luca
+The libhugetlbfs code compiles with the offending bits
+commented out, but the misaligned_offset test wasn't
+causing trouble on my test VM here.
 
-> 
-> Regards
-> Luca
-> 
-> > Regards,
-> > Bjorn
-> > 
-> > > Konrad
-> > > 
-> > > > Changes in v2:
-> > > > - Keep base offset but expand reg from 0x1000 to 0x3000 (Konrad)
-> > > > - Link to v1:
-> > > > https://lore.kernel.org/r/20230130-msm8974-qfprom-v1-1-975aa0e5e083@z3
-> > > > n
-> > > > tu.xyz ---
-> > > > 
-> > > >  arch/arm/boot/dts/qcom-msm8974.dtsi | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi
-> > > > b/arch/arm/boot/dts/qcom-msm8974.dtsi index 7ed0d925a4e9..3156fe25967f
-> > > > 100644
-> > > > --- a/arch/arm/boot/dts/qcom-msm8974.dtsi
-> > > > +++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
-> > > > @@ -1194,7 +1194,7 @@ restart@fc4ab000 {
-> > > > 
-> > > >  		qfprom: qfprom@fc4bc000 {
-> > > >  		
-> > > >  			compatible = "qcom,msm8974-qfprom",
-> 
-> "qcom,qfprom";
-> 
-> > > > -			reg = <0xfc4bc000 0x1000>;
-> > > > +			reg = <0xfc4bc000 0x3000>;
-> > > > 
-> > > >  			#address-cells = <1>;
-> > > >  			#size-cells = <1>;
-> > > > 
-> > > > ---
-> > > > base-commit: 858fd168a95c5b9669aac8db6c14a9aeab446375
-> > > > change-id: 20230130-msm8974-qfprom-619c0e8f26eb
-> > > > 
-> > > > Best regards,
+Given the potential negative impact of moving from a
+per-VMA lock to a per-backing-address_space lock, I'll
+keep the 3 patches separate, and in the order they are
+in now.
 
+Let me go spin and test v2.
 
-
-
+-- 
+All Rights Reversed.
