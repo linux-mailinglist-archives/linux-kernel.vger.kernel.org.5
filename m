@@ -2,232 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E0D7AA9A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6907AA9A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbjIVHCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S230207AbjIVHDG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Sep 2023 03:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjIVHCH (ORCPT
+        with ESMTP id S229556AbjIVHDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:02:07 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B5F192
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:02:00 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-986d8332f50so228041466b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695366119; x=1695970919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2jMuggZZvKYcFUdy/dK+81rshpboXDd4s3uqzGI3A5Y=;
-        b=K5rxQq5ot5FxzBgxgpFlZHjgXFbXo4MEKdyvaJJ1BlTG77yJ0Uzdo/PJadBIRP9xgF
-         KxIbg91/4ISsMI4PSClorRXx78SbHHQAVDSVIT0dkAoYSUfyRVc9B4t/VqItJuosrrc7
-         SxU09qWm73WFE9mh58y9te4l4uu3E37hCcyhGN/wIEO6GAD2eyH0LfNnbkh1QuO0k99G
-         QV9ccgkb2DuS3o3cO9uMq8kl2uc3a7OhLKEe01cRe38yh+kbHYAJrOvRAKrxcnzFo8WT
-         /RkW0YxPdj2AVXPcgPA4vgypJLeMyRSyUaf42WInxud7QgxGB0Xgnpaxxq4GB0Q6dj+c
-         FaRw==
+        Fri, 22 Sep 2023 03:03:04 -0400
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C56C18F;
+        Fri, 22 Sep 2023 00:02:58 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d8181087dc9so2017988276.3;
+        Fri, 22 Sep 2023 00:02:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695366119; x=1695970919;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jMuggZZvKYcFUdy/dK+81rshpboXDd4s3uqzGI3A5Y=;
-        b=FXvQZhLRavf7FHXviY3ph3EZPqPP+urgT8cqOiZMmjeJQnKSwjOUzCTb+g+/rJH2Q0
-         93x0SpULFUFjE2DvfV9403mM16m7cDzY85H8lnBu+TkiXMpVesQBi5mEj0sWqtg6RAFQ
-         7jWa/ZUJy5W3Tq2pZmfqPlvP2GDims/IgJ3HPe0lJK0Mjf8PxnKyPORdcCUbdrX+uJA1
-         ZuXaR9tpke/zUwXS2dCAIiMRGsTB1JxBdzDPRUTGzYOxkedJszckDglKiJWIzANrTX/x
-         Jh9SRk9MMMXlvBqeAtm+9/luBQdfrFFSzHophyV0UpOtM6oVLOObFFSffgmMAYqwVWoI
-         /Wjw==
-X-Gm-Message-State: AOJu0Yxd20j+uaIZHzQnWTp29vu4ZH+7MnXayW3dhgPevW3iBoHjB0fP
-        69asMZ4v1D4GHqpDd66aEzG4ZA==
-X-Google-Smtp-Source: AGHT+IG0i7UDbq0G1Fggapv+viejE9QTHLY0IXIcvKnvjvzePXoImlcw3a294mo0jaA03y9ttLUk9Q==
-X-Received: by 2002:a17:906:519c:b0:9ae:5be8:ff90 with SMTP id y28-20020a170906519c00b009ae5be8ff90mr3193946ejk.68.1695366119042;
-        Fri, 22 Sep 2023 00:01:59 -0700 (PDT)
-Received: from [10.41.192.245] ([77.241.232.19])
-        by smtp.gmail.com with ESMTPSA id k20-20020a170906681400b0099bd046170fsm2220195ejr.104.2023.09.22.00.01.57
+        d=1e100.net; s=20230601; t=1695366177; x=1695970977;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IhjVAE7WlPuKD4pmT6JIj2Ntx2AmY+YJOfXX6OuQXmU=;
+        b=xS4Tf5TaEdSSHfrqv/8KVu2xv7TRkUl9x6nMXoih5lNN4RzVb+JGMcPWckQZ188lu5
+         k/BLmTCyHKX71yeiBZr9w5ruOWo7ePpGDp8GGPKkbfir6O6DYwCZFGR740MFkuQreXea
+         NHZBSoNupYTIoPNmh0yd5L23hlQJsBB1P0JyaCsjVX5/iW3hKq0k3k1MX30D7a8a3Avn
+         sXikHIUt+P840r5iq3BrTEIhvYITMBviG1DAqvFAMIH0Nd9vnCXa9BJkjebHK0FMs91c
+         L0NtBg9y/DF6A9pllY2h5PFXU/7lcCbL8qFua3L5LMk3U/8txl2Y6J7xbGwA94dI7qLD
+         PlOA==
+X-Gm-Message-State: AOJu0YziDqPt+flh0TkQ1lJbRwV8Bl1P9z0G0rWYlyTEzPsJ6cqmBzxD
+        K+BvY5XRfOnFoGdhz8R/ysCse2An7gaZHlBK
+X-Google-Smtp-Source: AGHT+IHU3R9BixLEiGapSAOaK4OqP289PS0J0IqlCcqabEwUnRI6MfLhpFMIR6x0C7eS6hxbBRQ3hQ==
+X-Received: by 2002:a25:2741:0:b0:d81:afb1:bf77 with SMTP id n62-20020a252741000000b00d81afb1bf77mr6903254ybn.28.1695366177212;
+        Fri, 22 Sep 2023 00:02:57 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id d23-20020a25e617000000b00d800eb5ac2asm731031ybh.65.2023.09.22.00.02.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 00:01:58 -0700 (PDT)
-Message-ID: <da77e965-2893-097a-b438-85787c43dcb0@linaro.org>
-Date:   Fri, 22 Sep 2023 09:01:41 +0200
+        Fri, 22 Sep 2023 00:02:56 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d815a5eee40so2024287276.2;
+        Fri, 22 Sep 2023 00:02:56 -0700 (PDT)
+X-Received: by 2002:a25:311:0:b0:d7b:9d44:7574 with SMTP id
+ 17-20020a250311000000b00d7b9d447574mr7198081ybd.64.1695366176664; Fri, 22 Sep
+ 2023 00:02:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-Content-Language: en-US
-To:     Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org
-Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Rob Herring <robh@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+References: <20230921125351.3954-1-wsa+renesas@sang-engineering.com> <20230921125351.3954-3-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20230921125351.3954-3-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 22 Sep 2023 09:02:43 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU0OYDKhrveQWmQ1PUFZ46FzuhpeBv62sFq=j2EbppO2A@mail.gmail.com>
+Message-ID: <CAMuHMdU0OYDKhrveQWmQ1PUFZ46FzuhpeBv62sFq=j2EbppO2A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] i2c: rcar: improve accuracy for R-Car Gen3+
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 20:45, Simon Glass wrote:
-> Binman[1] is a tool for creating firmware images. It allows you to
-> combine various binaries and place them in an output file.
-> 
-> Binman uses a DT schema to describe an image, in enough detail that
-> it can be automatically built from component parts, disassembled,
-> replaced, listed, etc.
-> 
-> Images are typically stored in flash, which is why this binding is
-> targeted at mtd. Previous discussion is at [2] [3].
-> 
-> [1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
-> [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
-> [3] https://www.spinics.net/lists/devicetree/msg626149.html
-> 
-> Signed-off-by: Simon Glass <sjg@chromium.org>
+On Fri, Sep 22, 2023 at 2:05 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> With some new registers, SCL can be calculated to be closer to the
+> desired rate. Apply the new formula for R-Car Gen3 device types.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
-> 
->  .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
->  .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
->  .../bindings/mtd/partitions/partitions.yaml   |  1 +
->  MAINTAINERS                                   |  5 ++
->  4 files changed, 117 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> new file mode 100644
-> index 00000000000000..c792d5a37b700a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Google LLC
-> +
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binman firmware layout
-> +
-> +maintainers:
-> +  - Simon Glass <sjg@chromium.org>
-> +
-> +description: |
-> +  The binman node provides a layout for firmware, used when packaging firmware
-> +  from multiple projects. For now it just supports a very simple set of
-> +  features, as a starting point for discussion.
-> +
-> +  Documentation for Binman is available at:
-> +
-> +  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-> +
-> +  with the current image-description format at:
-> +
-> +  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-> +
-> +properties:
-> +  compatible:
-> +    const: u-boot,binman
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    firmware {
-> +      binman {
-> +        compatible = "u-boot,binman";
-> +
-> +        u-boot {
+>
+> Change since v2:
+> * swapped SCHD/SCLD to match ordering of datasheets
 
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+Gr{oetje,eeting}s,
 
-> +          size = <0xa0000>;
-> +        };
-> +
-> +        atf-bl31 {
-> +          offset = <0x100000>;
-> +        };
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-> new file mode 100644
-> index 00000000000000..8003eb4f1a994f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Google LLC
-> +
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/binman/entry.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binman entry
-> +
-> +maintainers:
-> +  - Simon Glass <sjg@chromium.org>
-> +
-> +description: |
-> +  The entry node specifies a single entry in the firmware.
-> +
-> +  Entries have a specific type, such as "u-boot" or "atf-bl31". If the type
-> +  is missing, the name is used as the type.
-> +
-> +  Note: This definition is intended to be hierarchical, so that entries can
-> +  appear in other entries. Schema for that is TBD.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^[-a-z]+(-[0-9]+)?$"
+                        Geert
 
-Why do you need this?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> +
-> +  type:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  offset:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Provides the offset of this entry from the start of its parent section.
-> +      If this is omitted, Binman will determine this by packing the enclosing
-> +      section according to alignment rules, etc.
-> +
-> +  size:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Provides the size of this entry in bytes. If this is omitted, Binman will
-> +      use the content size, along with any alignment information, to determine
-> +      the size of the entry.
-> +
-
-
-Best regards,
-Krzysztof
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
