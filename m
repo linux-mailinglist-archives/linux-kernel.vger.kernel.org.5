@@ -2,74 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CFD7AB2BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878FA7AB2BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbjIVNb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        id S234108AbjIVNbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjIVNbZ (ORCPT
+        with ESMTP id S234068AbjIVNbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 09:31:25 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D3A194
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:31:18 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57354433a7dso1063399eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695389478; x=1695994278; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ji/l+kqDrSYCE8DpK9z+5z+WRklc8aec4o8DdHLKrCQ=;
-        b=VZue6HsZLg65T2YAOmlrmCN1UPtxkVf29nKbcrzCQDYuWBzqfoJmqUrBmFUytWe0sF
-         7v2SVzoNO9uW7wNKnq2OhuGEuRUM43iS8xa5D+LHnEF3QRfjTIvm+R6xWTorisjx7dtI
-         aA0TGvVl0mnLMA0PrvhXJmAdRUdXYeD+ufFGfTw8qOqhBzJlkUhWds+UvSRFHw42SljP
-         PHiBqdRW+uzOqjFX4xGFkdOBB2ME6RJ8GGbhxYe20ssExnLA8oYgSA38MNYVZ2I2dzeG
-         NlAoRO8ObuzKtyneeynqnUimE5i7RPFzC4cTY6sBO+3n3PB6uHO2WvUqJRr/zduqNs1V
-         L2Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695389478; x=1695994278;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ji/l+kqDrSYCE8DpK9z+5z+WRklc8aec4o8DdHLKrCQ=;
-        b=F862zBR2RlRqX1iCTtcs5uG9/6iRL90xdTYg6Ocf/X2V/hcfCzt9oGi3UL3lkGF1IB
-         LIqHhJ4uORhPCA6dKRGe+lep6oBOffOIm/3m1H7ItrKgMBIKQcrcw7abHieYET8oslpJ
-         xw03gIW2j6hbafgDW684t9vKuUzgMwbU+fcVQsrAwq9OS3SmzYqbr7JuE5klkFjNmTJn
-         fF1cvAs5X6v2fsjvoJINuFUFedyXP4tAreFc/TLgUNUxKh3wS4WTUqafJQ3QxsBnQmf0
-         FvEkQbK/0hVn+NVFMNdgFYm/epJ8MRtV/2tMnH04gyvAc/I9YJzzJpY5FIQxhqVyssfl
-         bt2A==
-X-Gm-Message-State: AOJu0Yx/CxUMOcJUM2jf2D640JU1tQHoE1AHx0OEGpUxY0jDuDf1gK95
-        ilIJ3h2BW7McUkIBLn/3xijeswO1r+QdvegowysS7jUC
-X-Google-Smtp-Source: AGHT+IEWAz4jq1VLWA0Mk3JUet3WQPp9RyoFWkLLqpevEKDMzU+KX5SPzSKaZRfXDWmVfbmqnCLP0hb0rliviT0Hr2E=
-X-Received: by 2002:a4a:d086:0:b0:57b:40c8:d296 with SMTP id
- i6-20020a4ad086000000b0057b40c8d296mr6326707oor.3.1695389477986; Fri, 22 Sep
- 2023 06:31:17 -0700 (PDT)
+        Fri, 22 Sep 2023 09:31:38 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC050E8;
+        Fri, 22 Sep 2023 06:31:31 -0700 (PDT)
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 42B7E864E9;
+        Fri, 22 Sep 2023 15:31:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1695389490;
+        bh=QyQZgh18+AEb/uaLubc8YIM3M5wmKXPg7nTWgiyLM4w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YF9fD0pHpL8SzSJrY0vT0DlLryhTyO9TWcsO+cSbleew31hHs4n70XTC6hlHSMjXM
+         Wp+eHma85e4U8x7uqlrdLY5qGEyNGd0Mps0H1hzJDLUjYzv4+QVY2tPkhrD9rhxqnE
+         gG/ehkZ1zVsRtME3MYXeKIojg3nC/73O23dGXmUP169hVFM6BtBR+b1cPeBFzL5TvZ
+         ZYKC1Gw10lHYZgpgW0TQX28tYkd0FTOsDw3F88NEOVXcbD19hw3hMWxCBzuMeT00bf
+         t1yxkYGZDux6yrVBHbuS4wNB51OG4MQ10QHrY/i//rOC+wFrm2c3tlBxhIxq5v8tyj
+         nq3mVbBhQvmmw==
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Lukasz Majewski <lukma@denx.de>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: [PATCH v6 net-next 4/5] net: dsa: microchip: move REG_SW_MAC_ADDR to dev->info->regs[]
+Date:   Fri, 22 Sep 2023 15:31:07 +0200
+Message-Id: <20230922133108.2090612-5-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230922133108.2090612-1-lukma@denx.de>
+References: <20230922133108.2090612-1-lukma@denx.de>
 MIME-Version: 1.0
-From:   Dzmitry Sankouski <dsankouski@gmail.com>
-Date:   Fri, 22 Sep 2023 16:31:07 +0300
-Message-ID: <CABTCjFCe0-Ghy4roZHnuXpRataQVd3OOaPDH-ZvDQxZu11Uvxw@mail.gmail.com>
-Subject: Right place for pmic powermeter code
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm working on pmic s2dos05 driver. It's basically a voltage regulator
-with ADC capable
-of measuring current and power. It is used in portable electronic
-devices, like smartphones,
-for example powering display and touchscreen in Samsung Galaxy S9, so the phone
-is able to estimate display power consumption. In the vendor kernel,
-it just has a bunch of
-sysfs attributes, and the measuring code in the regulator folder.
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Where is the right place to put regulator power code, and where to
-expose it in sysfs?
+Defining macros which have the same name but different values is bad
+practice, because it makes it hard to avoid code duplication. The same
+code does different things, depending on the file it's placed in.
+Case in point, we want to access REG_SW_MAC_ADDR from ksz_common.c, but
+currently we can't, because we don't know which kszXXXX_reg.h to include
+from the common code.
+
+Remove the REG_SW_MAC_ADDR_{0..5} macros from ksz8795_reg.h and
+ksz9477_reg.h, and re-add this register offset to the dev->info->regs[]
+array.
+
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+Changes for v5:
+- New patch
+Changes for v6:
+- None
+---
+ drivers/net/dsa/microchip/ksz8795_reg.h | 7 -------
+ drivers/net/dsa/microchip/ksz9477_reg.h | 7 -------
+ drivers/net/dsa/microchip/ksz_common.c  | 2 ++
+ drivers/net/dsa/microchip/ksz_common.h  | 1 +
+ 4 files changed, 3 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
+index d33db4f86c64..3c9dae53e4d8 100644
+--- a/drivers/net/dsa/microchip/ksz8795_reg.h
++++ b/drivers/net/dsa/microchip/ksz8795_reg.h
+@@ -323,13 +323,6 @@
+ 	((addr) + REG_PORT_1_CTRL_0 + (port) *	\
+ 		(REG_PORT_2_CTRL_0 - REG_PORT_1_CTRL_0))
+ 
+-#define REG_SW_MAC_ADDR_0		0x68
+-#define REG_SW_MAC_ADDR_1		0x69
+-#define REG_SW_MAC_ADDR_2		0x6A
+-#define REG_SW_MAC_ADDR_3		0x6B
+-#define REG_SW_MAC_ADDR_4		0x6C
+-#define REG_SW_MAC_ADDR_5		0x6D
+-
+ #define TABLE_EXT_SELECT_S		5
+ #define TABLE_EEE_V			1
+ #define TABLE_ACL_V			2
+diff --git a/drivers/net/dsa/microchip/ksz9477_reg.h b/drivers/net/dsa/microchip/ksz9477_reg.h
+index 504e085aab52..f3a205ee483f 100644
+--- a/drivers/net/dsa/microchip/ksz9477_reg.h
++++ b/drivers/net/dsa/microchip/ksz9477_reg.h
+@@ -153,13 +153,6 @@
+ #define SW_DOUBLE_TAG			BIT(7)
+ #define SW_RESET			BIT(1)
+ 
+-#define REG_SW_MAC_ADDR_0		0x0302
+-#define REG_SW_MAC_ADDR_1		0x0303
+-#define REG_SW_MAC_ADDR_2		0x0304
+-#define REG_SW_MAC_ADDR_3		0x0305
+-#define REG_SW_MAC_ADDR_4		0x0306
+-#define REG_SW_MAC_ADDR_5		0x0307
+-
+ #define REG_SW_MTU__2			0x0308
+ #define REG_SW_MTU_MASK			GENMASK(13, 0)
+ 
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 173ad8f04671..6c31d51410e3 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -364,6 +364,7 @@ static const struct ksz_dev_ops lan937x_dev_ops = {
+ };
+ 
+ static const u16 ksz8795_regs[] = {
++	[REG_SW_MAC_ADDR]		= 0x68,
+ 	[REG_IND_CTRL_0]		= 0x6E,
+ 	[REG_IND_DATA_8]		= 0x70,
+ 	[REG_IND_DATA_CHECK]		= 0x72,
+@@ -492,6 +493,7 @@ static u8 ksz8863_shifts[] = {
+ };
+ 
+ static const u16 ksz9477_regs[] = {
++	[REG_SW_MAC_ADDR]		= 0x0302,
+ 	[P_STP_CTRL]			= 0x0B04,
+ 	[S_START_CTRL]			= 0x0300,
+ 	[S_BROADCAST_CTRL]		= 0x0332,
+diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+index d180c8a34e27..07c7723dbc37 100644
+--- a/drivers/net/dsa/microchip/ksz_common.h
++++ b/drivers/net/dsa/microchip/ksz_common.h
+@@ -212,6 +212,7 @@ enum ksz_chip_id {
+ };
+ 
+ enum ksz_regs {
++	REG_SW_MAC_ADDR,
+ 	REG_IND_CTRL_0,
+ 	REG_IND_DATA_8,
+ 	REG_IND_DATA_CHECK,
+-- 
+2.20.1
+
