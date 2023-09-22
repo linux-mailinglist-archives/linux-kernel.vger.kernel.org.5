@@ -2,283 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0A27AB07F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4853B7AB082
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbjIVLUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S233624AbjIVLWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbjIVLUw (ORCPT
+        with ESMTP id S233384AbjIVLWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:20:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9D1AC
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695381646; x=1726917646;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n4Hqh+EesdfCfNWk8JXFJpfFC9hBA4g5JNHzJZ8272A=;
-  b=AXW1B+htjfusHmxvJTgol5gn3N++CKxZZNC5GAZtbU80+ZZbgG4HH7+q
-   vAy3w/gdL0iR7oLOWOpoAA+v8Y6aoMXbl2muiTSqNTrrAFdoQEEsTTtuw
-   WgdvOyDzUjA7y8iuvImXiJWPecrPuWxxDCRjuJVONX8KyLgBBpEb2TO+5
-   Hr7PpZcCgig2kEGg9YvSRN2s4cdgmkH0vWopyuoDCMr8+yQsmk/de9q46
-   dpOtbQL4uqGLrGBxJhzpCUEPoHKfz34cO3jchUZB8bDHHdOnd+vVY5vEf
-   8nJLkCvL29DL4Yevo3LFoGasJEhzHqy2qif2nfExiXXy2ilIvs8FUcR8s
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="360183553"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="360183553"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 04:20:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="921121964"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="921121964"
-Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 22 Sep 2023 04:20:42 -0700
-Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjeDA-0000b7-0N;
-        Fri, 22 Sep 2023 11:20:40 +0000
-Date:   Fri, 22 Sep 2023 19:20:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
-        =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        JaimeLiao <jaimeliao.tw@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, kernel@pengutronix.de,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: check nand support for cache reads
-Message-ID: <202309221938.wpGSSUjJ-lkp@intel.com>
-References: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
+        Fri, 22 Sep 2023 07:22:13 -0400
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E24AC;
+        Fri, 22 Sep 2023 04:22:03 -0700 (PDT)
+Received: from [192.168.1.215] (unknown [122.172.83.62])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 15E33161CB4;
+        Fri, 22 Sep 2023 13:21:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1695381720; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ojj9etzDaC5EV1Z4YZ0pUkwqSiZRleEiS16sMRmYFpM=;
+        b=e94AlDA0DDtl9tfN8qv7+o85cWHA9Y3eJwGIxAvh47xgSV11AZPJxLCnc2ZET77BZm6qYv
+        xlrhZt6E5c2yqednC60JhaKBtBWmJijyOkojhzhJlRr+/Z9OqZuyNnQOdrNPeMBBEqphZw
+        7CaDNGZDYXHO2/58vV++WvscGPpg4M4=
+Message-ID: <2467f0fa-94ec-4449-8d7d-765e996dece7@ixit.cz>
+Date:   Fri, 22 Sep 2023 16:51:52 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+To:     paulmck@kernel.org
+Cc:     ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+        dan.carpenter@linaro.org, gregkh@linuxfoundation.org,
+        jbaron@akamai.com, jpoimboe@kernel.org, jstancek@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lkft-triage@lists.linaro.org, ltp@lists.linux.it,
+        mark.rutland@arm.com, peterz@infradead.org, rcu@vger.kernel.org,
+        robin.murphy@arm.com, rostedt@goodmis.org, will@kernel.org
+References: <6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop>
+Subject: Re: [LTP] arm64: Unable to handle kernel execute from non-executable
+ memory at virtual address ffff8000834c13a0
+Content-Language: en-US
+Reply-To: 6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop
+From:   David <david@ixit.cz>
+In-Reply-To: <6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rouven,
+Hello,
 
-kernel test robot noticed the following build warnings:
+On sdm845 cheza board, with 6.5.4 (before running 6.4.x), I saw this 
+issue too. Happened only once, but I can try stress-test it how often it 
+pops up.
+Whole log is here [1]. Used kernel is referenced from full log, kernel 
+extra patches [2].
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc2 next-20230921]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+...
+23-09-22 10:48:53 R SERIAL-CPU> deviceName: Turnip Adreno (TM) 630
+23-09-22 10:48:55 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
+23-09-22 10:48:57 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
+23-09-22 10:49:00 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
+23-09-22 10:49:03 R SERIAL-CPU> Running dEQP on 8 threads in 188-test groups
+23-09-22 10:49:05 R SERIAL-CPU> Running dEQP on 8 threads in 10-test groups
+23-09-22 10:49:08 R SERIAL-CPU> Running dEQP on 8 threads in 378-test groups
+23-09-22 10:49:10 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
+23-09-22 10:49:10 R SERIAL-CPU> Pass: 0, Duration: 0
+23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
+23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     In file 
+../src/compiler/spirv/spirv_to_nir.c:1492
+23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     Image Type 
+operand of OpTypeSampledImage should not have a Dim of Buffer.
+23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     456 bytes into 
+the SPIR-V binary
+23-09-22 10:49:28 R SERIAL-CPU> Pass: 222, Skip: 278, Duration: 17, 
+Remaining: 46:28
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     In file 
+../src/compiler/spirv/spirv_to_nir.c:4772
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: Unsupported SPIR-V 
+capability: SpvCapabilityUniformAndStorageBuffer16BitAccess (4434)
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     36 bytes into 
+the SPIR-V binary
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     In file 
+../src/compiler/spirv/spirv_to_nir.c:4772
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: Unsupported SPIR-V 
+capability: SpvCapabilityUniformAndStorageBuffer16BitAccess (4434)
+23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     36 bytes into 
+the SPIR-V binary
+23-09-22 10:49:43 R SERIAL-CPU> Pass: 1949, Skip: 2551, Duration: 32, 
+Remaining: 9:15
+23-09-22 10:49:44 R SERIAL-CPU> [   73.300176] Unable to handle kernel 
+execute from non-executable memory at virtual address ffffaa213674cd88
+23-09-22 10:49:44 R SERIAL-CPU> [   73.310124] Mem abort info:
+23-09-22 10:49:44 R SERIAL-CPU> [   73.313003]   ESR = 0x000000008600000f
+23-09-22 10:49:44 R SERIAL-CPU> [   73.316859]   EC = 0x21: IABT 
+(current EL), IL = 32 bits
+23-09-22 10:49:44 R SERIAL-CPU> [   73.322318]   SET = 0, FnV = 0
+23-09-22 10:49:44 R SERIAL-CPU> [   73.325464]   EA = 0, S1PTW = 0
+23-09-22 10:49:44 R SERIAL-CPU> [   73.328703]   FSC = 0x0f: level 3 
+permission fault
+23-09-22 10:49:44 R SERIAL-CPU> [   73.333628] swapper pgtable: 4k 
+pages, 48-bit VAs, pgdp=0000000081b1c000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.340513] [ffffaa213674cd88] 
+pgd=100000027ffff003, p4d=100000027ffff003, pud=100000027fffe003, 
+pmd=100000027fff9003, pte=007800008274cf03
+23-09-22 10:49:44 R SERIAL-CPU> [   73.353372] Internal error: Oops: 
+000000008600000f [#1] PREEMPT SMP
+23-09-22 10:49:44 R SERIAL-CPU> [   73.359808] Modules linked in:
+23-09-22 10:49:44 R SERIAL-CPU> [   73.362954] CPU: 1 PID: 0 Comm: 
+swapper/1 Tainted: G        W          6.5.4-g8a16969a8434 #1
+23-09-22 10:49:44 R SERIAL-CPU> [   73.371705] Hardware name: Google 
+Cheza (rev3+) (DT)
+23-09-22 10:49:44 R SERIAL-CPU> [   73.376801] pstate: 20400009 (nzCv 
+daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+23-09-22 10:49:44 R SERIAL-CPU> [   73.383944] pc : 
+in_lookup_hashtable+0x538/0x2000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.388787] lr : rcu_core+0x250/0x640
+23-09-22 10:49:44 R SERIAL-CPU> [   73.392559] sp : ffff80008000bec0
+23-09-22 10:49:44 R SERIAL-CPU> [   73.395962] x29: ffff80008000bec0 
+x28: ffffaa2134116b28 x27: ffffaa2136381840
+23-09-22 10:49:44 R SERIAL-CPU> [   73.403289] x26: 000000000000000a 
+x25: ffff266077371b38 x24: 0000000000000000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.410614] x23: 0000000000000003 
+x22: ffff80008000bf30 x21: ffff266077371ac0
+23-09-22 10:49:44 R SERIAL-CPU> [   73.417940] x20: ffff265f00190000 
+x19: 0000000000000004 x18: 0000000000000000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.425266] x17: ffff7c3f416ea000 
+x16: ffff800080008000 x15: 0000000000000000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.432593] x14: 0000000000000000 
+x13: 0000000000000078 x12: 0000000000000000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.439920] x11: 0000000000000000 
+x10: 0000000000000001 x9 : 0000000000000000
+23-09-22 10:49:44 R SERIAL-CPU> [   73.447245] x8 : ffff80008000be50 x7 
+: 0000000000000000 x6 : ffff266077371b48
+23-09-22 10:49:44 R SERIAL-CPU> [   73.454571] x5 : ffffaa2134216444 x4 
+: fffffc99800bcb20 x3 : ffffaa2135c8be78
+23-09-22 10:49:45 R SERIAL-CPU> [   73.461902] x2 : ffff265f5d7ca700 x1 
+: ffffaa213674cd88 x0 : ffff265f0773e3b0
+23-09-22 10:49:45 R SERIAL-CPU> [   73.469231] Call trace:
+23-09-22 10:49:45 R SERIAL-CPU> [   73.471751] 
+in_lookup_hashtable+0x538/0x2000
+23-09-22 10:49:45 R SERIAL-CPU> [   73.476235] rcu_core_si+0x10/0x1c
+23-09-22 10:49:45 R SERIAL-CPU> [   73.479739] __do_softirq+0x10c/0x284
+23-09-22 10:49:45 R SERIAL-CPU> [   73.483508] ____do_softirq+0x10/0x1c
+23-09-22 10:49:45 R SERIAL-CPU> [   73.487276] call_on_irq_stack+0x24/0x4c
+23-09-22 10:49:45 R SERIAL-CPU> [   73.491310] 
+do_softirq_own_stack+0x1c/0x28
+23-09-22 10:49:45 R SERIAL-CPU> [   73.495609] irq_exit_rcu+0xd8/0xf4
+23-09-22 10:49:45 R SERIAL-CPU> [   73.499197] el1_interrupt+0x38/0x68
+23-09-22 10:49:45 R SERIAL-CPU> [   73.502871] el1h_64_irq_handler+0x18/0x24
+23-09-22 10:49:45 R SERIAL-CPU> [   73.507086] el1h_64_irq+0x64/0x68
+23-09-22 10:49:45 R SERIAL-CPU> [   73.510587] 
+cpuidle_enter_state+0x134/0x2e0
+23-09-22 10:49:45 R SERIAL-CPU> [   73.514973] cpuidle_enter+0x38/0x50
+23-09-22 10:49:45 R SERIAL-CPU> [   73.518648] do_idle+0x1f4/0x264
+23-09-22 10:49:45 R SERIAL-CPU> [   73.521970] cpu_startup_entry+0x28/0x2c
+23-09-22 10:49:45 R SERIAL-CPU> [   73.526005] 
+secondary_start_kernel+0x130/0x150
+23-09-22 10:49:45 R SERIAL-CPU> [   73.530660] 
+__secondary_switched+0xb8/0xbc
+23-09-22 10:49:45 R SERIAL-CPU> [   73.534965] Code: 00000000 00000000 
+00000000 00000000 (0773e3b0)
+23-09-22 10:49:45 R SERIAL-CPU> [   73.541226] ---[ end trace 
+0000000000000000 ]---
+23-09-22 10:49:45 R SERIAL-CPU> [   73.545975] Kernel panic - not 
+syncing: Oops: Fatal exception in interrupt
+23-09-22 10:49:45 R SERIAL-CPU> [   73.553032] SMP: stopping secondary CPUs
+23-09-22 10:49:45 R SERIAL-CPU> [   73.557142] Kernel Offset: 
+0x2a20b4000000 from 0xffff800080000000
+23-09-22 10:49:45 R SERIAL-CPU> [   73.563396] PHYS_OFFSET: 
+0xffffd9a200000000
+23-09-22 10:49:45 R SERIAL-CPU> [   73.567687] CPU features: 
+0x00000000,800140a1,8800721b
+23-09-22 10:49:45 R SERIAL-CPU> [   73.572962] Memory Limit: none
+23-09-22 10:49:45 R SERIAL-CPU> [   73.576106] ---[ end Kernel panic - 
+not syncing: Oops: Fatal exception in interrupt ]---
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Rouven-Czerwinski/mtd-rawnand-check-nand-support-for-cache-reads/20230922-180317
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230922100116.145090-1-r.czerwinski%40pengutronix.de
-patch subject: [PATCH] mtd: rawnand: check nand support for cache reads
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230922/202309221938.wpGSSUjJ-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230922/202309221938.wpGSSUjJ-lkp@intel.com/reproduce)
+David
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309221938.wpGSSUjJ-lkp@intel.com/
+[1] https://gitlab.freedesktop.org/mesa/mesa/-/jobs/49333832
 
-All warnings (new ones prefixed by >>):
+[2] https://gitlab.freedesktop.org/gfx-ci/linux/-/commits/v6.5-for-mesa-ci/
 
-   drivers/mtd/nand/raw/nand_onfi.c: In function 'nand_onfi_detect':
->> drivers/mtd/nand/raw/nand_onfi.c:307:33: warning: statement with no effect [-Wunused-value]
-     307 |                 chip->parameters.supports_read_cache;
-         |                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
---
-   drivers/mtd/nand/raw/nand_jedec.c: In function 'nand_jedec_detect':
->> drivers/mtd/nand/raw/nand_jedec.c:98:33: warning: statement with no effect [-Wunused-value]
-      98 |                 chip->parameters.supports_read_cache;
-         |                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-
-
-vim +307 drivers/mtd/nand/raw/nand_onfi.c
-
-   140	
-   141	/*
-   142	 * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-   143	 */
-   144	int nand_onfi_detect(struct nand_chip *chip)
-   145	{
-   146		struct nand_device *base = &chip->base;
-   147		struct mtd_info *mtd = nand_to_mtd(chip);
-   148		struct nand_memory_organization *memorg;
-   149		struct nand_onfi_params *p = NULL, *pbuf;
-   150		struct onfi_params *onfi;
-   151		bool use_datain = false;
-   152		int onfi_version = 0;
-   153		char id[4];
-   154		int i, ret, val;
-   155		u16 crc;
-   156	
-   157		memorg = nanddev_get_memorg(&chip->base);
-   158	
-   159		/* Try ONFI for unknown chip or LP */
-   160		ret = nand_readid_op(chip, 0x20, id, sizeof(id));
-   161		if (ret || strncmp(id, "ONFI", 4))
-   162			return 0;
-   163	
-   164		/* ONFI chip: allocate a buffer to hold its parameter page */
-   165		pbuf = kzalloc((sizeof(*pbuf) * ONFI_PARAM_PAGES), GFP_KERNEL);
-   166		if (!pbuf)
-   167			return -ENOMEM;
-   168	
-   169		if (!nand_has_exec_op(chip) || chip->controller->supported_op.data_only_read)
-   170			use_datain = true;
-   171	
-   172		for (i = 0; i < ONFI_PARAM_PAGES; i++) {
-   173			if (!i)
-   174				ret = nand_read_param_page_op(chip, 0, &pbuf[i],
-   175							      sizeof(*pbuf));
-   176			else if (use_datain)
-   177				ret = nand_read_data_op(chip, &pbuf[i], sizeof(*pbuf),
-   178							true, false);
-   179			else
-   180				ret = nand_change_read_column_op(chip, sizeof(*pbuf) * i,
-   181								 &pbuf[i], sizeof(*pbuf),
-   182								 true);
-   183			if (ret) {
-   184				ret = 0;
-   185				goto free_onfi_param_page;
-   186			}
-   187	
-   188			crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)&pbuf[i], 254);
-   189			if (crc == le16_to_cpu(pbuf[i].crc)) {
-   190				p = &pbuf[i];
-   191				break;
-   192			}
-   193		}
-   194	
-   195		if (i == ONFI_PARAM_PAGES) {
-   196			const void *srcbufs[ONFI_PARAM_PAGES];
-   197			unsigned int j;
-   198	
-   199			for (j = 0; j < ONFI_PARAM_PAGES; j++)
-   200				srcbufs[j] = pbuf + j;
-   201	
-   202			pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
-   203			nand_bit_wise_majority(srcbufs, ONFI_PARAM_PAGES, pbuf,
-   204					       sizeof(*pbuf));
-   205	
-   206			crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)pbuf, 254);
-   207			if (crc != le16_to_cpu(pbuf->crc)) {
-   208				pr_err("ONFI parameter recovery failed, aborting\n");
-   209				goto free_onfi_param_page;
-   210			}
-   211			p = pbuf;
-   212		}
-   213	
-   214		if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
-   215		    chip->manufacturer.desc->ops->fixup_onfi_param_page)
-   216			chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
-   217	
-   218		/* Check version */
-   219		val = le16_to_cpu(p->revision);
-   220		if (val & ONFI_VERSION_2_3)
-   221			onfi_version = 23;
-   222		else if (val & ONFI_VERSION_2_2)
-   223			onfi_version = 22;
-   224		else if (val & ONFI_VERSION_2_1)
-   225			onfi_version = 21;
-   226		else if (val & ONFI_VERSION_2_0)
-   227			onfi_version = 20;
-   228		else if (val & ONFI_VERSION_1_0)
-   229			onfi_version = 10;
-   230	
-   231		if (!onfi_version) {
-   232			pr_info("unsupported ONFI version: %d\n", val);
-   233			goto free_onfi_param_page;
-   234		}
-   235	
-   236		sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-   237		sanitize_string(p->model, sizeof(p->model));
-   238		chip->parameters.model = kstrdup(p->model, GFP_KERNEL);
-   239		if (!chip->parameters.model) {
-   240			ret = -ENOMEM;
-   241			goto free_onfi_param_page;
-   242		}
-   243	
-   244		memorg->pagesize = le32_to_cpu(p->byte_per_page);
-   245		mtd->writesize = memorg->pagesize;
-   246	
-   247		/*
-   248		 * pages_per_block and blocks_per_lun may not be a power-of-2 size
-   249		 * (don't ask me who thought of this...). MTD assumes that these
-   250		 * dimensions will be power-of-2, so just truncate the remaining area.
-   251		 */
-   252		memorg->pages_per_eraseblock =
-   253				1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
-   254		mtd->erasesize = memorg->pages_per_eraseblock * memorg->pagesize;
-   255	
-   256		memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
-   257		mtd->oobsize = memorg->oobsize;
-   258	
-   259		memorg->luns_per_target = p->lun_count;
-   260		memorg->planes_per_lun = 1 << p->interleaved_bits;
-   261	
-   262		/* See erasesize comment */
-   263		memorg->eraseblocks_per_lun =
-   264			1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
-   265		memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
-   266		memorg->bits_per_cell = p->bits_per_cell;
-   267	
-   268		if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
-   269			chip->options |= NAND_BUSWIDTH_16;
-   270	
-   271		if (p->ecc_bits != 0xff) {
-   272			struct nand_ecc_props requirements = {
-   273				.strength = p->ecc_bits,
-   274				.step_size = 512,
-   275			};
-   276	
-   277			nanddev_set_ecc_requirements(base, &requirements);
-   278		} else if (onfi_version >= 21 &&
-   279			(le16_to_cpu(p->features) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
-   280	
-   281			/*
-   282			 * The nand_flash_detect_ext_param_page() uses the
-   283			 * Change Read Column command which maybe not supported
-   284			 * by the chip->legacy.cmdfunc. So try to update the
-   285			 * chip->legacy.cmdfunc now. We do not replace user supplied
-   286			 * command function.
-   287			 */
-   288			nand_legacy_adjust_cmdfunc(chip);
-   289	
-   290			/* The Extended Parameter Page is supported since ONFI 2.1. */
-   291			if (nand_flash_detect_ext_param_page(chip, p))
-   292				pr_warn("Failed to detect ONFI extended param page\n");
-   293		} else {
-   294			pr_warn("Could not retrieve ONFI ECC requirements\n");
-   295		}
-   296	
-   297		/* Save some parameters from the parameter page for future use */
-   298		if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES) {
-   299			chip->parameters.supports_set_get_features = true;
-   300			bitmap_set(chip->parameters.get_feature_list,
-   301				   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
-   302			bitmap_set(chip->parameters.set_feature_list,
-   303				   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
-   304		}
-   305	
-   306		if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_READ_CACHE)
- > 307			chip->parameters.supports_read_cache;
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
