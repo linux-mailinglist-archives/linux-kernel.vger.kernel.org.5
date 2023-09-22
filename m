@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6729B7AB87B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3E77AB856
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbjIVRxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S233100AbjIVRw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233738AbjIVRxX (ORCPT
+        with ESMTP id S233614AbjIVRwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:53:23 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0451F11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:41 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7fd4c23315so3060941276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:41 -0700 (PDT)
+        Fri, 22 Sep 2023 13:52:37 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D303A1F05
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:39 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c0ecb9a075so20925315ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695405101; x=1696009901; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fPoesx7eIkvIyN/ECBqYvUwy9riOVetGjUtm7GvkcAQ=;
-        b=M9FspRTRg5iKLUT95ZRx1RxpmyXULmaFRUAZqosCYnVR31gFlY6u+D4PFBqe7NINL9
-         zfpnmUF/72y2Lis/TtDgeSTllv3Bq4R3Z98haB2R8jeEThB3/jEcPxHHrJPPvAGQ54yT
-         gn1iSn6XzJ4lDMhyInnHNHBsSdxv7ORmP3QZlmtz80rmb3OgVuEb5l9P/hHPmlGC47QZ
-         9gPBeX7WRpj8qaiAvM8Z0m6NmbmkTIklSI4LqY2ErmwnSRQ4diwdqB4bpaq+gYYavFNH
-         GGjwT/hqHqiKpL5cxscIkPIf4djBExHMjeqwXCxMJ9kwEWMESRMst5aPQiuiQXIq6D88
-         GuAA==
+        d=chromium.org; s=google; t=1695405099; x=1696009899; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=twFznqPJAzdntzHByi/iGsaxmBX3ZQhIhF3BInh8ZW4=;
+        b=az1oUIyRSw9Grl5S1D2v/+ryG62KGBmdLb2hgDUoXb4gwJ1xMy44YlEEY9TAUW5Faj
+         sh298Mb54ZKiX9UTNPGb5O5E0t5H3XLnsjPb6hWr177wNQ3Xz5Q1pAVgiLJh1+oIhsru
+         ydQQIjXZdpQS0xhEiie1do0iAEFBtj/i0oAgg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405101; x=1696009901;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fPoesx7eIkvIyN/ECBqYvUwy9riOVetGjUtm7GvkcAQ=;
-        b=uTub0mOm6RASmbbQZF35p1Q6d1+go6w09CdVtcQPyCxhbz41PyG66ckrkC3wx0nUtM
-         L/EnqRxFbi/sqFlTL4top0KoHkdmdfdnJeKLyxtow0uQsktvHzQxUqoSLpRQCVmMJ+8J
-         7bUvtq5O0lnaqUy15Yn73UvXqkbm/1ynE5+R2sdnUfuFkxUeZVaM9ujHIb+tSvEVWf7v
-         XSafN7kmWWO0OELs5CkhQqrA8QAg1XUz2Umg4BJUSE99dv7XSHz3aktGgehd3q1uJeWp
-         4ViLj7q2sXT6pOsriBuaQ+Y559rVUJDHgEgfkx1vsBNQUJGWCZecq6lZrUroJl9GXjIB
-         GKAg==
-X-Gm-Message-State: AOJu0YxQwEedjmrv8paqGbhixy9KBrHz0S5LG3D4CBbw2kb/yNIktvxb
-        kAP1dzX9m+0GTYCy68EukLWLyCrcORlE/g==
-X-Google-Smtp-Source: AGHT+IEIodY6P8AEfYuvD2zh3y3p9HhvCqmHHHxKT05y8cUv8VPdaP2I7/YajTg2Gkalk2g6RpbDy0/vf2J8Jg==
-X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a5b:d0b:0:b0:d85:ae1e:f696 with SMTP id
- y11-20020a5b0d0b000000b00d85ae1ef696mr927ybp.0.1695405101036; Fri, 22 Sep
- 2023 10:51:41 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 17:51:37 +0000
-In-Reply-To: <20230922044241.322832-1-cmllamas@google.com>
-Mime-Version: 1.0
-References: <20230922044241.322832-1-cmllamas@google.com>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922175138.230331-1-cmllamas@google.com>
-Subject: [PATCH v2] binder: fix memory leaks of spam and pending work
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Li Li <dualli@google.com>, Hang Lu <hangl@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org,
-        syzbot+7f10c1653e35933c0f1e@syzkaller.appspotmail.com,
-        Alice Ryhl <aliceryhl@google.com>, Todd Kjos <tkjos@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695405099; x=1696009899;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=twFznqPJAzdntzHByi/iGsaxmBX3ZQhIhF3BInh8ZW4=;
+        b=oHYmHlGmInzyI/fVf7eNDVLTMRl9RK9hMKVSaKOGtSMU3WRzryxTgdF3T8yPlpar6o
+         XrozTz0MEWajUxq+UBvMUCx8QeHljdQ7RJqBlQds2c8GlvFbB+ZKy2LcPVswfEaXoiwJ
+         WnDhupwG3RpHDf7/BPCNFenEZTpI70jteAaOe6odXIBCrcNR5XXNBokM3RpdhZF3/cfO
+         zy0PTI1vC28Eihyfqe+ebxV90s6DM4s8rDxCH02528HGESIrwxEkn4vqZJt5hU3Enxwb
+         23Fx8lbrg3wQ7yrYorCjH0rfL2CGQLeE9tEEXExJvo196PMUTWKyBky9RXVnTnACQpxe
+         sv/Q==
+X-Gm-Message-State: AOJu0Yw5nnW02YnDKxvQIskWMbHpcGn+jOFr42oQqf3NAOtSYydNYY48
+        qf8jY317JwiltxdSMWrOX3Hd4Q==
+X-Google-Smtp-Source: AGHT+IHB34HabKxPxhlVK2seBKatLPFUq6kU/+85gP5fTKuuek7ZguwnwQJ5Z9ew9kyzRDNm5r1Vvw==
+X-Received: by 2002:a17:902:c409:b0:1c3:ed30:cdf4 with SMTP id k9-20020a170902c40900b001c3ed30cdf4mr268638plk.4.1695405099157;
+        Fri, 22 Sep 2023 10:51:39 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y24-20020a1709027c9800b001c3267ae31bsm3752412pll.301.2023.09.22.10.51.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 10:51:38 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Kees Cook <keescook@chromium.org>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: [PATCH] video: fbdev: mmp: Annotate struct mmphw_ctrl with __counted_by
+Date:   Fri, 22 Sep 2023 10:51:37 -0700
+Message-Id: <20230922175137.work.062-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1221; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=n796F6gX1K105GWhE1qUnocaNksGRQXNbRMxIxep6mI=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdQpfO6l85dcFKBvYH3iqyyXKMRFw4FsqlSgo
+ l0M82mlouCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UKQAKCRCJcvTf3G3A
+ JmosEACKrvk+R5bxR/JWhJvcODkoIL4vvUwiWD0CFpi5Eymp+XCYI6ln5AmRkbBljl2C+DOn9lP
+ /xGwXy7Cldh8FdZeGkKIveevk2iaNkfiRfUYIe8FtSoT3+Ot2WLc7oOVp/w6rRDhnM4XFwfvawe
+ ZpJLfH5kaiJOjyeBi82kQMkZ7UI2C8mT8OuPyWgNnsOFn6zsREp4WT6n2vsY8er/KNCNVlz2Z7A
+ X5E2TU039VS17sTVtcJPPHE+RR0Uhrtk4dIE8LVq0gQ4e4xcpZbQ4uebgTfEkfmdyZ99ifS0bFf
+ Eg41SJykV3lWoJAoubku8CFdF8gJTaAf6Cu3WuSCRdnYBJLieTTvidvMeFxZNvikF0n61qp1N0r
+ 4NuEuRqdYuoV+2yADJzRVU/jGEop6VKrfo4D5WSyeCZgXU/R7O+sUlKUyhqUY1RJWm64VCosD8/
+ 3fg8BzxzcGNhSCXl6rOP9eLOW4uybKcDn73YoWnLbebH7U2uljs3qa082E7FLcVFByIvFKVH77Q
+ g6KXVDWHGrsiJlrNJHDoFHlFAR9Ew7cD/GI6uNA9bWm+ggsZCUhTcRXT1peqy0nWTznTL+3Gav3
+ ocDpFhl3eFcdHGCnBW42PofiKK0C/IhdUL2mYalkf1nGk3IzI0GfA4F0/rvJvBjQoCW/FDOHvZM
+ 5TiuKMR MK5e3B+w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,69 +85,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A transaction complete work is allocated and queued for each
-transaction. Under certain conditions the work->type might be marked as
-BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT to notify userspace about
-potential spamming threads or as BINDER_WORK_TRANSACTION_PENDING when
-the target is currently frozen.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-However, these work types are not being handled in binder_release_work()
-so they will leak during a cleanup. This was reported by syzkaller with
-the following kmemleak dump:
+As found with Coccinelle[1], add __counted_by for struct mmphw_ctrl.
 
-BUG: memory leak
-unreferenced object 0xffff88810e2d6de0 (size 32):
-  comm "syz-executor338", pid 5046, jiffies 4294968230 (age 13.590s)
-  hex dump (first 32 bytes):
-    e0 6d 2d 0e 81 88 ff ff e0 6d 2d 0e 81 88 ff ff  .m-......m-.....
-    04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81573b75>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
-    [<ffffffff83d41873>] kmalloc include/linux/slab.h:599 [inline]
-    [<ffffffff83d41873>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83d41873>] binder_transaction+0x573/0x4050 drivers/android/binder.c:3152
-    [<ffffffff83d45a05>] binder_thread_write+0x6b5/0x1860 drivers/android/binder.c:4010
-    [<ffffffff83d486dc>] binder_ioctl_write_read drivers/android/binder.c:5066 [inline]
-    [<ffffffff83d486dc>] binder_ioctl+0x1b2c/0x3cf0 drivers/android/binder.c:5352
-    [<ffffffff816b25f2>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff816b25f2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
-    [<ffffffff816b25f2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b25f2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Fix the leaks by kfreeing these work types in binder_release_work() and
-handle them as a BINDER_WORK_TRANSACTION_COMPLETE cleanup.
-
-Cc: stable@vger.kernel.org
-Fixes: 0567461a7a6e ("binder: return pending info for frozen async txns")
-Fixes: a7dc1e6f99df ("binder: tell userspace to dump current backtrace when detected oneway spamming")
-Reported-by: syzbot+7f10c1653e35933c0f1e@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=7f10c1653e35933c0f1e
-Suggested-by: Alice Ryhl <aliceryhl@google.com>
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-v2 - Handle also peding work and merge with transaction complete as
-     suggested by Alice Ryhl. Add corresponding new tags.
-v1 - https://lore.kernel.org/all/20230922044241.322832-1-cmllamas@google.com/
----
- drivers/android/binder.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/video/fbdev/mmp/hw/mmp_ctrl.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 367afac5f1bf..92128aae2d06 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -4812,6 +4812,8 @@ static void binder_release_work(struct binder_proc *proc,
- 				"undelivered TRANSACTION_ERROR: %u\n",
- 				e->cmd);
- 		} break;
-+		case BINDER_WORK_TRANSACTION_PENDING:
-+		case BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT:
- 		case BINDER_WORK_TRANSACTION_COMPLETE: {
- 			binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
- 				"undelivered TRANSACTION_COMPLETE\n");
+diff --git a/drivers/video/fbdev/mmp/hw/mmp_ctrl.h b/drivers/video/fbdev/mmp/hw/mmp_ctrl.h
+index 167585a889d3..719b99a9bc77 100644
+--- a/drivers/video/fbdev/mmp/hw/mmp_ctrl.h
++++ b/drivers/video/fbdev/mmp/hw/mmp_ctrl.h
+@@ -1406,7 +1406,7 @@ struct mmphw_ctrl {
+ 
+ 	/*pathes*/
+ 	int path_num;
+-	struct mmphw_path_plat path_plats[];
++	struct mmphw_path_plat path_plats[] __counted_by(path_num);
+ };
+ 
+ static inline int overlay_is_vid(struct mmp_overlay *overlay)
 -- 
-2.42.0.515.g380fc7ccd1-goog
+2.34.1
 
