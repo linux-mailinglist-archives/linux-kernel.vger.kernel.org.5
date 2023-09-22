@@ -2,178 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0647C7AACC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60327AACC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjIVIgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        id S232566AbjIVIgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjIVIgn (ORCPT
+        with ESMTP id S229476AbjIVIgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:36:43 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BB899
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:36:15 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so1491252b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695371775; x=1695976575; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RICN8tort+CWLhQVSIa56+kaySuy9xkNGnfuP8kUQqc=;
-        b=ai9yrCLfMgYecX1TwSjw1MSxfZ+DTTw9hIpklIUEzd9HwAEZwDRRhdonxBnuj9mCSf
-         6yYHNUFLOOmvwL2gtoRTzlRQyAFkdEw7Qs//kym4jZC+oNCt4GqF9SZD+weCsbpay59I
-         JNUnWpn72CeAZksLhCaRHiroAJi2Ej2HcGBY7zT/uE+ewxi2aPvbO4OXwXR7BA/ngyF4
-         EbyJwZhsP3SZo16GTeCWYLfFivM9snZ1654VapK7vL95EXIJNWnA5bpL91XcG+z5hAPN
-         K/ZGfp2YKsDcza//zlI0yKhvR039lVl7eZwGyEtKRDG3ESKIY5W22Io/t5ijpXqOtIFv
-         GaTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695371775; x=1695976575;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RICN8tort+CWLhQVSIa56+kaySuy9xkNGnfuP8kUQqc=;
-        b=XUV3bKy4+t3qgCF/WJMjecFu1MVug0lXp9TAPNxJLYMMMiZQp62CBU/MOhpV3Hetpx
-         zxm20MORPx3/BBace//Wf26Q3xPiSR5ihfbJixBrFvSvwel9HOW1B0O6ufMY8bQ13u1g
-         3IpTzd7lR3bSaIZ4dVmH/7JosSzgjbJYVJTIfTs7sFRMbbXcXquIaMmpjfVEuTx1GACX
-         oDpCqglLHRyT/EV4Wf3tt0YRJNDq2UB7r39nW0A1xMipbgPwQvpPT9rY1uF1/VdQZseM
-         Hgl0CC8/MrvVeRKiJ/xTKb62MGAKGO1IcR7zJkCl6lzClxSbmsaz6AKmUYURafYS//Op
-         fEiQ==
-X-Gm-Message-State: AOJu0YziQlOEnGzfITLH5Iquz3bhpCVBIMMrLF2vNNqZg4iAq4aTZaZm
-        Nxn1VIe3jgB07DCQQ0BBNZGICs5/qVDZHvO9sqU=
-X-Google-Smtp-Source: AGHT+IHQicYWUr71AoSVKdMJTN6JBrukXsgFBu6GSXWiWDNZ+lmpI706oyztJpAziLn93L03VpRJ3g==
-X-Received: by 2002:a05:6a20:9187:b0:15a:2d98:bc81 with SMTP id v7-20020a056a20918700b0015a2d98bc81mr8767748pzd.53.1695371775244;
+        Fri, 22 Sep 2023 04:36:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 279009E;
         Fri, 22 Sep 2023 01:36:15 -0700 (PDT)
-Received: from [10.254.1.169] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id z1-20020a170902708100b001bb0eebd90asm2860013plk.245.2023.09.22.01.36.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 01:36:14 -0700 (PDT)
-Message-ID: <82c0a442-c7d7-d0f1-54de-7a5e7e6a31d5@bytedance.com>
-Date:   Fri, 22 Sep 2023 16:36:04 +0800
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B69FDA7;
+        Fri, 22 Sep 2023 01:36:52 -0700 (PDT)
+Received: from [10.57.65.11] (unknown [10.57.65.11])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F7F03F67D;
+        Fri, 22 Sep 2023 01:36:09 -0700 (PDT)
+Message-ID: <fc85f58e-e8ed-4b24-a3e5-d6288156595e@arm.com>
+Date:   Fri, 22 Sep 2023 09:36:07 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: Re: [PATCH net-next 2/2] sock: Fix improper heuristic on raising
- memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujtsu.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230920132545.56834-1-wuyun.abel@bytedance.com>
- <20230920132545.56834-2-wuyun.abel@bytedance.com>
- <20230921190156.s4oygohw4hud42tx@google.com>
-Content-Language: en-US
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20230921190156.s4oygohw4hud42tx@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/8] riscv: hugetlb: Convert set_huge_pte_at() to take
+ vma
+Content-Language: en-GB
+To:     Alexandre Ghiti <alex@ghiti.fr>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+References: <20230921162007.1630149-1-ryan.roberts@arm.com>
+ <20230921162007.1630149-4-ryan.roberts@arm.com>
+ <7bbceed4-c5f6-42d4-5d94-060032b73385@ghiti.fr>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <7bbceed4-c5f6-42d4-5d94-060032b73385@ghiti.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/23 3:01 AM, Shakeel Butt wrote:
-> On Wed, Sep 20, 2023 at 09:25:41PM +0800, Abel Wu wrote:
->> Before sockets became aware of net-memcg's memory pressure since
->> commit e1aab161e013 ("socket: initial cgroup code."), the memory
->> usage would be granted to raise if below average even when under
->> protocol's pressure. This provides fairness among the sockets of
->> same protocol.
+On 22/09/2023 08:54, Alexandre Ghiti wrote:
+> Hi Ryan,
+> 
+> On 21/09/2023 18:20, Ryan Roberts wrote:
+>> In order to fix a bug, arm64 needs access to the vma inside it's
+>> implementation of set_huge_pte_at(). Provide for this by converting the
+>> mm parameter to be a vma. Any implementations that require the mm can
+>> access it via vma->vm_mm.
 >>
->> That commit changes this because the heuristic will also be
->> effective when only memcg is under pressure which makes no sense.
->> Fix this by skipping this heuristic when under memcg pressure.
+>> This commit makes the required riscv modifications. Separate commits
+>> update the other arches and core code, before the actual bug is fixed in
+>> arm64.
 >>
->> Fixes: e1aab161e013 ("socket: initial cgroup code.")
->> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+>> No behavioral changes intended.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 >> ---
->>   net/core/sock.c | 10 +++++++++-
->>   1 file changed, 9 insertions(+), 1 deletion(-)
+>>   arch/riscv/include/asm/hugetlb.h | 2 +-
+>>   arch/riscv/mm/hugetlbpage.c      | 3 ++-
+>>   2 files changed, 3 insertions(+), 2 deletions(-)
 >>
->> diff --git a/net/core/sock.c b/net/core/sock.c
->> index 379eb8b65562..ef5cf6250f17 100644
->> --- a/net/core/sock.c
->> +++ b/net/core/sock.c
->> @@ -3093,8 +3093,16 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
->>   	if (sk_has_memory_pressure(sk)) {
->>   		u64 alloc;
->>   
->> -		if (!sk_under_memory_pressure(sk))
->> +		if (memcg && mem_cgroup_under_socket_pressure(memcg))
->> +			goto suppress_allocation;
->> +
->> +		if (!sk_under_global_memory_pressure(sk))
->>   			return 1;
+>> diff --git a/arch/riscv/include/asm/hugetlb.h b/arch/riscv/include/asm/hugetlb.h
+>> index 34e24f078cc1..be1ac8582bc2 100644
+>> --- a/arch/riscv/include/asm/hugetlb.h
+>> +++ b/arch/riscv/include/asm/hugetlb.h
+>> @@ -17,7 +17,7 @@ void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+>>               pte_t *ptep, unsigned long sz);
+>>     #define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
+>> -void set_huge_pte_at(struct mm_struct *mm,
+>> +void set_huge_pte_at(struct vm_area_struct *vma,
+>>                unsigned long addr, pte_t *ptep, pte_t pte);
+>>     #define __HAVE_ARCH_HUGE_PTEP_GET_AND_CLEAR
+>> diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
+>> index 96225a8533ad..7cdbf0960772 100644
+>> --- a/arch/riscv/mm/hugetlbpage.c
+>> +++ b/arch/riscv/mm/hugetlbpage.c
+>> @@ -177,11 +177,12 @@ pte_t arch_make_huge_pte(pte_t entry, unsigned int
+>> shift, vm_flags_t flags)
+>>       return entry;
+>>   }
+>>   -void set_huge_pte_at(struct mm_struct *mm,
+>> +void set_huge_pte_at(struct vm_area_struct *vma,
+>>                unsigned long addr,
+>>                pte_t *ptep,
+>>                pte_t pte)
+>>   {
+>> +    struct mm_struct *mm = vma->vm_mm;
+>>       int i, pte_num;
+>>         if (!pte_napot(pte)) {
 > 
-> I am onboard with replacing sk_under_memory_pressure() with
-> sk_under_global_memory_pressure(). However suppressing on memcg pressure
-> is a behavior change from status quo and need more thought and testing.
 > 
-> I think there are three options for this hunk:
+> You can add:
 > 
-> 1. proposed patch
-> 2. Consider memcg pressure only for !in_softirq().
-> 3. Don't consider memcg pressure at all.
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+Thanks!
+
 > 
-> All three options are behavior change from the status quo but with
-> different risk levels. (1) may reintroduce the regression fixed by
-> 720ca52bcef22 ("net-memcg: avoid stalls when under memory pressure").
+> I realize that we may have the same issue with our contig pte implementation
+> (called napot in riscv) as we don't handle swap/migration entries at all. So I
+> guess we need something similar, and I'll implement it (unless you want to do it
+> of course, but I guess it's easier for me to test). 
 
-Just for the record, it is same for the current upstream implementation
-if the socket reaches average usage. Taking option 2 will fix this too.
+Yes -I'll leave you to do the riscv part.
 
-> (2) is more inlined with 720ca52bcef22. (3) has the risk to making memcg
-> limits ineffective.
+> One (maybe stupid) question
+> though: wouldn't it be possible to extract the contig pte size from the value of
+> ptep instead of using a vma?
+
+Not for arm64: We support contpmd, pmd and contpte entries as backing for the
+logical huge pte, depending on size. So without the size, we can't distinguish
+between a coincidentally-aligned pmd entry vs a contpmd entry (which is just a
+fixed size block of pmd entries).
+
+Discussion with Christophe on the powerpc patch triggered some thinking; There
+is theoretical problem with my current approach because there is one call site
+in the core code that calls set_huge_pte_at(&init_mm). I've changed that to:
+
+  struct vm_area_struct vma = TLB_FLUSH_VMA(&init_mm, 0);
+  set_huge_pte_at(&vma);
+
+knowing that this will never actually get called for arm64 because we return
+PAGE_SIZE for arch_vmap_pte_range_map_size() and all other arches just take the
+mm and ignore the rest of the vma. So it's safe, but fragile.
+
+But it looks like riscv overrides arch_vmap_pte_range_map_size() and therefore
+the call will be made there. And if riscv also needs to determine the size from
+the vma, then bang.
+
+So I'm going to rework it to continue to pass the mm in, but also add a size
+parameter. Then it's totally safe. Will post a v2 later today.
+
+Thanks,
+Ryan
+
 > 
-> IMHO we should go with (2) as there is already a precedence in
-> 720ca52bcef22.
+> Thanks,
+> 
+> Alex
+> 
 
-Yes, I agree. Actually applying option(2) would make this patch quite
-similar to the previous version[a], except the below part:
-
-  	/* Under limit. */
-  	if (allocated <= sk_prot_mem_limits(sk, 0)) {
-  		sk_leave_memory_pressure(sk);
--		return 1;
-+		if (!under_memcg_pressure)
-+			return 1;
-  	}
-
-My original thought is to inherit the behavior of tcpmem pressure.
-There are also 3 levels of memcg pressure named low/medium/critical,
-but considering that the 'low' level is too much conservative for
-socket allocation, I made the following match:
-
-	PROTOCOL	MEMCG		ACTION
-	-----------------------------------------------------
-	low		<medium		allow allocation
-	pressure	medium		be more conservative
-	high		critical	throttle
-
-which also seems align with the design[b] of memcg pressure. Anyway
-I will take option (2) and post v2.
-
-Thanks & Best,
-	Abel
-
-[a] 
-https://lore.kernel.org/lkml/20230901062141.51972-4-wuyun.abel@bytedance.com/
-[b] 
-https://docs.kernel.org/admin-guide/cgroup-v1/memory.html#memory-pressure
