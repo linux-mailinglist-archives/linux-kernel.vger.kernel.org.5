@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FB17ABB22
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E637ABB28
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjIVVa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 17:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S230122AbjIVVbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 17:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjIVVal (ORCPT
+        with ESMTP id S229982AbjIVVam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 17:30:41 -0400
+        Fri, 22 Sep 2023 17:30:42 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB7EFB;
-        Fri, 22 Sep 2023 14:30:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B576F7;
+        Fri, 22 Sep 2023 14:30:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695418235; x=1726954235;
+  t=1695418236; x=1726954236;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=LTJvjLbkvuQx4wE/Sd6xPXoCn0gNEKM0z+EbfC949UM=;
-  b=Nxuyt8IUn4OrG1JZrz74MVL2Wjj4CZ9c7MgbfD3D0rqyJZgHq5iEX+od
-   2yEmbO/XUZX1WTmAiTPX07RkuZD2qQ5iDJc4KavZXufnHQHTW2ySMiVMg
-   ggoGUjd1v0HIuxs/SkfXETcnBp/OhipYosAEiN5H8BMGU5ePOPt3F/VjU
-   5LudrkK/klDIEQ01YBeDBgHoc4atCJ1Sr9BaA5IcnkmKwmla8YLyA9V6i
-   VZrZLGJPCm0KjhqCPMHcwFlIW1YKowjlAQeCETZVi7/uU3sqQPciHJgPn
-   RCy1Tn2EpzAU0VkOoo8W5EYduUnNAbZqGeDIK4B+OG9xNFem7mdD/DoLT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="371264694"
+  bh=tM4JJBMIkXbKSMqXfFcmrOXZSw4Fq/7w/bTUHxLxgmA=;
+  b=S87kNyRaQ8XNDZGJSpizdwIG4Hs9N8xCwl0Ia+pnr1lQWfq0DJt2gzeZ
+   m8dhwx7ltQRYVtmksfC4Nx227NOGr5/zilmP99F3DlbYJJfttf1uMUCCB
+   4s2Ay6vtVnI3ewYAtHK2ZA6J7LutLgyMddQ1uwVKypmOvIoZIwbvPtV0k
+   zCgSR/xvdBpGHVajgWyH4wniETsXZUspteKolHQ0yT5ncocrsF7qtzq02
+   IdVfdz5PKavG0k+twziLQrmJY6KN0jZP4Rb0I5BHnv47ENY80EnCTfyRQ
+   Ly3j3dYwlLPEePKSR5xxxVyu4uvXXVyisxXx1DZ1S2B/1Uui8LKxsa6dM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="371264697"
 X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="371264694"
+   d="scan'208";a="371264697"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 14:30:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="747685324"
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="747685327"
 X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="747685324"
+   d="scan'208";a="747685327"
 Received: from linux.intel.com ([10.54.29.200])
   by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 14:30:33 -0700
 Received: from debox1-desk4.intel.com (unknown [10.212.188.234])
-        by linux.intel.com (Postfix) with ESMTP id 684BA580DB2;
+        by linux.intel.com (Postfix) with ESMTP id 881D1580BBE;
         Fri, 22 Sep 2023 14:30:33 -0700 (PDT)
 From:   "David E. Box" <david.e.box@linux.intel.com>
 To:     linux-kernel@vger.kernel.org, david.e.box@linux.intel.com,
         platform-driver-x86@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
         rajvi.jingar@linux.intel.com
-Subject: [PATCH 06/11] platform/x86/intel/pmc: Split pmc_core_ssram_get_pmc()
-Date:   Fri, 22 Sep 2023 14:30:27 -0700
-Message-Id: <20230922213032.1770590-7-david.e.box@linux.intel.com>
+Subject: [PATCH 07/11] platform/x86/intel/pmc: Find and register PMC telemetry entries
+Date:   Fri, 22 Sep 2023 14:30:28 -0700
+Message-Id: <20230922213032.1770590-8-david.e.box@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230922213032.1770590-1-david.e.box@linux.intel.com>
 References: <20230922213032.1770590-1-david.e.box@linux.intel.com>
@@ -64,249 +64,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each PMC has an associated SSRAM device for accessing additional counters.
-However, only the first is discoverable as a PCI device to the OS. The
-remaining devices are hidden but their BARs are still accessible and their
-addresses are stored in the BAR of the exposed device. Clean up the code
-handling the SSRAM discovery. Create two separate functions for finding the
-primary and secondary PMCs.  Also changes the return type from void to
-allow returning an error when failing to find the primary PMC.
+The PMC SSRAM device contains counters that are structured in Intel
+Platform Monitoring Technology (PMT) telemetry regions. Look for and
+register these telemetry regions from the driver so that they may be read
+using the Intel PMT ABI.
 
 Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 ---
- drivers/platform/x86/intel/pmc/core.h       |   2 +-
- drivers/platform/x86/intel/pmc/core_ssram.c | 127 ++++++++++++++------
- drivers/platform/x86/intel/pmc/mtl.c        |  10 +-
- 3 files changed, 96 insertions(+), 43 deletions(-)
+ drivers/platform/x86/intel/pmc/Kconfig      |  1 +
+ drivers/platform/x86/intel/pmc/core_ssram.c | 52 +++++++++++++++++++++
+ 2 files changed, 53 insertions(+)
 
-diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
-index ccf24e0f5e50..edaa70067e41 100644
---- a/drivers/platform/x86/intel/pmc/core.h
-+++ b/drivers/platform/x86/intel/pmc/core.h
-@@ -492,7 +492,7 @@ int pmc_core_resume_common(struct pmc_dev *pmcdev);
- int get_primary_reg_base(struct pmc *pmc);
- extern void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev);
- 
--extern void pmc_core_ssram_init(struct pmc_dev *pmcdev);
-+extern int pmc_core_ssram_init(struct pmc_dev *pmcdev);
- 
- int spt_core_init(struct pmc_dev *pmcdev);
- int cnp_core_init(struct pmc_dev *pmcdev);
+diff --git a/drivers/platform/x86/intel/pmc/Kconfig b/drivers/platform/x86/intel/pmc/Kconfig
+index b526597e4deb..d2f651fbec2c 100644
+--- a/drivers/platform/x86/intel/pmc/Kconfig
++++ b/drivers/platform/x86/intel/pmc/Kconfig
+@@ -7,6 +7,7 @@ config INTEL_PMC_CORE
+ 	tristate "Intel PMC Core driver"
+ 	depends on PCI
+ 	depends on ACPI
++	depends on INTEL_PMT_TELEMETRY
+ 	help
+ 	  The Intel Platform Controller Hub for Intel Core SoCs provides access
+ 	  to Power Management Controller registers via various interfaces. This
 diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c b/drivers/platform/x86/intel/pmc/core_ssram.c
-index 13fa16f0d52e..ab5cc07fb177 100644
+index ab5cc07fb177..b2abaf106bc5 100644
 --- a/drivers/platform/x86/intel/pmc/core_ssram.c
 +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
-@@ -35,20 +35,20 @@ static inline u64 get_base(void __iomem *addr, u32 offset)
- 	return lo_hi_readq(addr + offset) & GENMASK_ULL(63, 3);
- }
+@@ -12,6 +12,8 @@
+ #include <linux/io-64-nonatomic-lo-hi.h>
  
--static void
-+static int
- pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
- 		 const struct pmc_reg_map *reg_map, int pmc_index)
- {
- 	struct pmc *pmc = pmcdev->pmcs[pmc_index];
+ #include "core.h"
++#include "../vsec.h"
++#include "../pmt/telemetry.h"
  
- 	if (!pwrm_base)
--		return;
-+		return -ENODEV;
+ #define SSRAM_HDR_SIZE		0x100
+ #define SSRAM_PWRM_OFFSET	0x14
+@@ -21,6 +23,49 @@
+ #define SSRAM_IOE_OFFSET	0x68
+ #define SSRAM_DEVID_OFFSET	0x70
  
- 	/* Memory for primary PMC has been allocated in core.c */
- 	if (!pmc) {
- 		pmc = devm_kzalloc(&pmcdev->pdev->dev, sizeof(*pmc), GFP_KERNEL);
- 		if (!pmc)
--			return;
-+			return -ENOMEM;
- 	}
- 
- 	pmc->map = reg_map;
-@@ -57,77 +57,128 @@ pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
- 
- 	if (!pmc->regbase) {
- 		devm_kfree(&pmcdev->pdev->dev, pmc);
--		return;
-+		return -ENOMEM;
- 	}
- 
- 	pmcdev->pmcs[pmc_index] = pmc;
-+
-+	return 0;
- }
- 
--static void
--pmc_core_ssram_get_pmc(struct pmc_dev *pmcdev, void __iomem *ssram, u32 offset,
--		       int pmc_idx)
-+static int
-+pmc_core_get_secondary_pmc(struct pmc_dev *pmcdev, int pmc_idx, u32 offset)
- {
--	u64 pwrm_base;
-+	struct pci_dev *ssram_pcidev = pmcdev->ssram_pcidev;
-+	const struct pmc_reg_map *map;
-+	void __iomem *main_ssram, *secondary_ssram;
-+	u64 ssram_base, pwrm_base;
- 	u16 devid;
-+	int ret;
-+
-+	if (!pmcdev->regmap_list)
-+		return -ENOENT;
- 
--	if (pmc_idx != PMC_IDX_SOC) {
--		u64 ssram_base = get_base(ssram, offset);
-+	/*
-+	 * The secondary PMC BARS (which are behind hidden PCI devices) are read
-+	 * from fixed offsets in MMIO of the primary PMC BAR.
-+	 */
-+	ssram_base = ssram_pcidev->resource[0].start;
-+	main_ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
-+	if (!main_ssram)
-+		return -ENOMEM;
-+
-+	ssram_base = get_base(main_ssram, offset);
-+	secondary_ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
-+	if (!secondary_ssram) {
-+		ret = -ENOMEM;
-+		goto secondary_remap_fail;
-+	}
- 
--		if (!ssram_base)
--			return;
-+	pwrm_base = get_base(secondary_ssram, SSRAM_PWRM_OFFSET);
-+	devid = readw(secondary_ssram + SSRAM_DEVID_OFFSET);
- 
--		ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
--		if (!ssram)
--			return;
-+	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
-+	if (!map) {
-+		ret = -ENODEV;
-+		goto find_regmap_fail;
- 	}
- 
-+	ret = pmc_core_pmc_add(pmcdev, pwrm_base, map, pmc_idx);
-+
-+find_regmap_fail:
-+	iounmap(secondary_ssram);
-+secondary_remap_fail:
-+	iounmap(main_ssram);
-+
-+	return ret;
-+
-+}
-+
-+static int
-+pmc_core_get_primary_pmc(struct pmc_dev *pmcdev)
++static void
++pmc_add_pmt(struct pmc_dev *pmcdev, u64 ssram_base, void __iomem *ssram)
 +{
-+	struct pci_dev *ssram_pcidev = pmcdev->ssram_pcidev;
-+	const struct pmc_reg_map *map;
-+	void __iomem *ssram;
-+	u64 ssram_base, pwrm_base;
-+	u16 devid;
-+	int ret;
++	struct pci_dev *pcidev = pmcdev->ssram_pcidev;
++	struct intel_vsec_platform_info info = {};
++	struct intel_vsec_header *headers[2] = {};
++	struct intel_vsec_header header;
++	void __iomem *dvsec;
++	u32 dvsec_offset;
++	u32 table, hdr;
 +
-+	if (!pmcdev->regmap_list)
-+		return -ENOENT;
-+
-+	/* The primary PMC (SOC die) BAR is BAR 0 in config space. */
-+	ssram_base = ssram_pcidev->resource[0].start;
 +	ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
 +	if (!ssram)
-+		return -ENOMEM;
++		return;
 +
++	dvsec_offset = readl(ssram + SSRAM_DVSEC_OFFSET);
++	iounmap(ssram);
++
++	dvsec = ioremap(ssram_base + dvsec_offset, SSRAM_DVSEC_SIZE);
++	if (!dvsec)
++		return;
++
++	hdr = readl(dvsec + PCI_DVSEC_HEADER1);
++	header.id = readw(dvsec + PCI_DVSEC_HEADER2);
++	header.rev = PCI_DVSEC_HEADER1_REV(hdr);
++	header.length = PCI_DVSEC_HEADER1_LEN(hdr);
++	header.num_entries = readb(dvsec + INTEL_DVSEC_ENTRIES);
++	header.entry_size = readb(dvsec + INTEL_DVSEC_SIZE);
++
++	table = readl(dvsec + INTEL_DVSEC_TABLE);
++	header.tbir = INTEL_DVSEC_TABLE_BAR(table);
++	header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
++	iounmap(dvsec);
++
++	headers[0] = &header;
++	info.caps = VSEC_CAP_TELEMETRY;
++	info.headers = headers;
++	info.base_addr = ssram_base;
++	info.parent = &pmcdev->pdev->dev;
++
++	intel_vsec_register(pcidev, &info);
++}
++
+ static const struct pmc_reg_map *pmc_core_find_regmap(struct pmc_info *list, u16 devid)
+ {
+ 	for (; list->map; ++list)
+@@ -97,6 +142,9 @@ pmc_core_get_secondary_pmc(struct pmc_dev *pmcdev, int pmc_idx, u32 offset)
+ 	pwrm_base = get_base(secondary_ssram, SSRAM_PWRM_OFFSET);
+ 	devid = readw(secondary_ssram + SSRAM_DEVID_OFFSET);
+ 
++	/* Find and register and PMC telemetry entries */
++	pmc_add_pmt(pmcdev, ssram_base, main_ssram);
++
+ 	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
+ 	if (!map) {
+ 		ret = -ENODEV;
+@@ -136,6 +184,9 @@ pmc_core_get_primary_pmc(struct pmc_dev *pmcdev)
  	pwrm_base = get_base(ssram, SSRAM_PWRM_OFFSET);
  	devid = readw(ssram + SSRAM_DEVID_OFFSET);
  
--	if (pmcdev->regmap_list) {
--		const struct pmc_reg_map *map;
--
--		map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
--		if (map)
--			pmc_core_pmc_add(pmcdev, pwrm_base, map, pmc_idx);
-+	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
-+	if (!map) {
-+		ret = -ENODEV;
-+		goto find_regmap_fail;
- 	}
++	/* Find and register and PMC telemetry entries */
++	pmc_add_pmt(pmcdev, ssram_base, ssram);
++
+ 	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
+ 	if (!map) {
+ 		ret = -ENODEV;
+@@ -182,3 +233,4 @@ int pmc_core_ssram_init(struct pmc_dev *pmcdev)
  
--	if (pmc_idx != PMC_IDX_SOC)
--		iounmap(ssram);
-+	ret = pmc_core_pmc_add(pmcdev, pwrm_base, map, PMC_IDX_MAIN);
-+
-+find_regmap_fail:
-+	iounmap(ssram);
-+
-+	return ret;
+ 	return ret;
  }
- 
--void pmc_core_ssram_init(struct pmc_dev *pmcdev)
-+int pmc_core_ssram_init(struct pmc_dev *pmcdev)
- {
--	void __iomem *ssram;
- 	struct pci_dev *pcidev;
--	u64 ssram_base;
- 	int ret;
- 
- 	pcidev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(20, 2));
- 	if (!pcidev)
--		goto out;
-+		return -ENODEV;
- 
- 	ret = pcim_enable_device(pcidev);
- 	if (ret)
- 		goto release_dev;
- 
--	ssram_base = pcidev->resource[0].start;
--	ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
--	if (!ssram)
--		goto disable_dev;
--
- 	pmcdev->ssram_pcidev = pcidev;
- 
--	pmc_core_ssram_get_pmc(pmcdev, ssram, 0, PMC_IDX_SOC);
--	pmc_core_ssram_get_pmc(pmcdev, ssram, SSRAM_IOE_OFFSET, PMC_IDX_IOE);
--	pmc_core_ssram_get_pmc(pmcdev, ssram, SSRAM_PCH_OFFSET, PMC_IDX_PCH);
-+	ret = pmc_core_get_primary_pmc(pmcdev);
-+	if (ret)
-+		goto disable_dev;
- 
--	iounmap(ssram);
--out:
--	return;
-+	pmc_core_get_secondary_pmc(pmcdev, PMC_IDX_IOE, SSRAM_IOE_OFFSET);
-+	pmc_core_get_secondary_pmc(pmcdev, PMC_IDX_PCH, SSRAM_PCH_OFFSET);
-+
-+	return 0;
- 
- disable_dev:
-+	pmcdev->ssram_pcidev = NULL;
- 	pci_disable_device(pcidev);
- release_dev:
- 	pci_dev_put(pcidev);
-+
-+	return ret;
- }
-diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
-index c3b5f4fe01d1..780874142a90 100644
---- a/drivers/platform/x86/intel/pmc/mtl.c
-+++ b/drivers/platform/x86/intel/pmc/mtl.c
-@@ -990,12 +990,14 @@ int mtl_core_init(struct pmc_dev *pmcdev)
- 	mtl_d3_fixup();
- 
- 	pmcdev->resume = mtl_resume;
--
- 	pmcdev->regmap_list = mtl_pmc_info_list;
--	pmc_core_ssram_init(pmcdev);
- 
--	/* If regbase not assigned, set map and discover using legacy method */
--	if (!pmc->regbase) {
-+	/*
-+	 * If ssram init fails use legacy method to at least get the
-+	 * primary PMC
-+	 */
-+	ret = pmc_core_ssram_init(pmcdev);
-+	if (ret) {
- 		pmc->map = &mtl_socm_reg_map;
- 		ret = get_primary_reg_base(pmc);
- 		if (ret)
++MODULE_IMPORT_NS(INTEL_VSEC);
 -- 
 2.34.1
 
