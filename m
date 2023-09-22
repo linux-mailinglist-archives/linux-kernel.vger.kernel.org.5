@@ -2,234 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949C67ABAE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5287ABAE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjIVVHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 17:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        id S229861AbjIVVIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 17:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjIVVHr (ORCPT
+        with ESMTP id S229798AbjIVVIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 17:07:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE50EC1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 14:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695416815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nbdcwv5Or6Z2+lA87iZfowKftkAW8aJRElWE3un3JwU=;
-        b=KLajG4gKDassIufPK45aIOcx6HdadZV0++RmncxXt2cW3bsg1iEd4axKziwvyPNTPaeCHg
-        9sjXSN7yZf0XkXqkMc/xTScKX2ucJqqEkHE7w/tBsgMl4UHXPROqQsS5ZRmyelYXdkodRP
-        J95rFLt5WqFFq83vGvUscb0HUB0CxvE=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-487-zp3Vnnl1NvuDiNyL76qPQw-1; Fri, 22 Sep 2023 17:06:52 -0400
-X-MC-Unique: zp3Vnnl1NvuDiNyL76qPQw-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-412190efed6so30702981cf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 14:06:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695416812; x=1696021612;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nbdcwv5Or6Z2+lA87iZfowKftkAW8aJRElWE3un3JwU=;
-        b=ta4nAzNtG83I67iK8C9J7ECsTbJg2+GhBDjEu2/zY/ZVB4K9OTiTl+VKx+uSsFDCbC
-         du80q2uTVztJF6J48B41y7UeKX6vsYJQLrFGQpRqUXuwVj/xozhpNzUrj65Jm25vlfFc
-         yODMMYK6bw4bqI4HYHa1yt1A3zBbA3U5VA0WQ9QijOlcTq/H15742FFV8NRfAHOgG3xM
-         81Gk9B8W/s1Z5YNpaMTv5+vKOXHhcU6Pre7hJnTNGujBb5L7Q3CSCepBe3Zdw4QqsvaQ
-         X7NLaxR/v+W0aGwKfRuiWSZKRntNtmzJUgNPLQTvE2jG0P2bsP3HdwegkekH57kElCwG
-         5Z5g==
-X-Gm-Message-State: AOJu0YwRkNyWnd59zVhkQsTdbFBaq0R/J8h5XvLpFE/C2gg0mVkFRG8i
-        IVW3E8COPFY+EyYXbVxJq91aoFmVzHkV/tqRKtGHljYYxGNDb4rneTnnTLAvNtOW56xltAk2L8R
-        KvxBejHgnn1xaKDdSuCyAPdN7
-X-Received: by 2002:ac8:5fd6:0:b0:405:5b23:d0ea with SMTP id k22-20020ac85fd6000000b004055b23d0eamr717400qta.16.1695416811974;
-        Fri, 22 Sep 2023 14:06:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHO77hOhRgl+P8D05v+uElLGmY0PJDkHzsfs38llOhEzF3MZ4ZCYCENWWZ4uGBMCz8o7uGGFw==
-X-Received: by 2002:ac8:5fd6:0:b0:405:5b23:d0ea with SMTP id k22-20020ac85fd6000000b004055b23d0eamr717384qta.16.1695416811681;
-        Fri, 22 Sep 2023 14:06:51 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
-        by smtp.gmail.com with ESMTPSA id t15-20020ac8738f000000b0040324785e4csm1737173qtp.13.2023.09.22.14.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 14:06:51 -0700 (PDT)
-Message-ID: <2f7fbd1b606b4d08b8c8c6eefff5898c8faa697c.camel@redhat.com>
-Subject: Re: [RFT PATCH v2 04/12] drm/nouveau: Call
- drm_atomic_helper_shutdown() or equiv at shutdown time
-From:   Lyude Paul <lyude@redhat.com>
-To:     Douglas Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     airlied@gmail.com, bskeggs@redhat.com, daniel@ffwll.ch,
-        kherbst@redhat.com, linux-kernel@vger.kernel.org,
-        nouveau@lists.freedesktop.org
-Date:   Fri, 22 Sep 2023 17:06:50 -0400
-In-Reply-To: <20230921122641.RFT.v2.4.Ie7588ec6e0f93e8bc700e76b265ad1a7ad6b15ad@changeid>
-References: <20230921192749.1542462-1-dianders@chromium.org>
-         <20230921122641.RFT.v2.4.Ie7588ec6e0f93e8bc700e76b265ad1a7ad6b15ad@changeid>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 22 Sep 2023 17:08:21 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756B7C1;
+        Fri, 22 Sep 2023 14:08:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 582AD60004;
+        Fri, 22 Sep 2023 21:08:10 +0000 (UTC)
+Message-ID: <68103640-acb0-b2f8-fcde-91ab3ed5beab@ovn.org>
+Date:   Fri, 22 Sep 2023 23:09:02 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     i.maximets@ovn.org, "David S. Miller" <davem@davemloft.net>,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Frode Nordahl <frode.nordahl@canonical.com>,
+        Madhu Koriginja <madhu.koriginja@nxp.com>
+Subject: Re: [PATCH net] net: ensure all external references are released in
+ deferred skbuffs
+Content-Language: en-US
+To:     netdev@vger.kernel.org
+References: <20220619003919.394622-1-i.maximets@ovn.org>
+ <d589a999-d4dd-2768-b2d5-89dec64a4a42@ovn.org>
+ <fb65f794-2ead-6518-863e-bf1643ce1b28@ovn.org>
+From:   Ilya Maximets <i.maximets@ovn.org>
+In-Reply-To: <fb65f794-2ead-6518-863e-bf1643ce1b28@ovn.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: i.maximets@ovn.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-actually very glad to see this because I think I've seen one bug in the wil=
-d
-as a result of things not getting shut down :)
+On 9/22/23 21:07, Ilya Maximets wrote:
+> On 9/22/23 15:26, Ilya Maximets wrote:
+>> On 6/19/22 02:39, Ilya Maximets wrote:
+>>> Open vSwitch system test suite is broken due to inability to
+>>> load/unload netfilter modules.  kworker thread is getting trapped
+>>> in the infinite loop while running a net cleanup inside the
+>>> nf_conntrack_cleanup_net_list, because deferred skbuffs are still
+>>> holding nfct references and not being freed by their CPU cores.
+>>>
+>>> In general, the idea that we will have an rx interrupt on every
+>>> CPU core at some point in a near future doesn't seem correct.
+>>> Devices are getting created and destroyed, interrupts are getting
+>>> re-scheduled, CPUs are going online and offline dynamically.
+>>> Any of these events may leave packets stuck in defer list for a
+>>> long time.  It might be OK, if they are just a piece of memory,
+>>> but we can't afford them holding references to any other resources.
+>>>
+>>> In case of OVS, nfct reference keeps the kernel thread in busy loop
+>>> while holding a 'pernet_ops_rwsem' semaphore.  That blocks the
+>>> later modprobe request from user space:
+>>>
+>>>   # ps
+>>>    299 root  R  99.3  200:25.89 kworker/u96:4+
+>>>
+>>>   # journalctl
+>>>   INFO: task modprobe:11787 blocked for more than 1228 seconds.
+>>>         Not tainted 5.19.0-rc2 #8
+>>>   task:modprobe     state:D
+>>>   Call Trace:
+>>>    <TASK>
+>>>    __schedule+0x8aa/0x21d0
+>>>    schedule+0xcc/0x200
+>>>    rwsem_down_write_slowpath+0x8e4/0x1580
+>>>    down_write+0xfc/0x140
+>>>    register_pernet_subsys+0x15/0x40
+>>>    nf_nat_init+0xb6/0x1000 [nf_nat]
+>>>    do_one_initcall+0xbb/0x410
+>>>    do_init_module+0x1b4/0x640
+>>>    load_module+0x4c1b/0x58d0
+>>>    __do_sys_init_module+0x1d7/0x220
+>>>    do_syscall_64+0x3a/0x80
+>>>    entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>>>
+>>> At this point OVS testsuite is unresponsive and never recover,
+>>> because these skbuffs are never freed.
+>>>
+>>> Solution is to make sure no external references attached to skb
+>>> before pushing it to the defer list.  Using skb_release_head_state()
+>>> for that purpose.  The function modified to be re-enterable, as it
+>>> will be called again during the defer list flush.
+>>>
+>>> Another approach that can fix the OVS use-case, is to kick all
+>>> cores while waiting for references to be released during the net
+>>> cleanup.  But that sounds more like a workaround for a current
+>>> issue rather than a proper solution and will not cover possible
+>>> issues in other parts of the code.
+>>>
+>>> Additionally checking for skb_zcopy() while deferring.  This might
+>>> not be necessary, as I'm not sure if we can actually have zero copy
+>>> packets on this path, but seems worth having for completeness as we
+>>> should never defer such packets regardless.
+>>>
+>>> CC: Eric Dumazet <edumazet@google.com>
+>>> Fixes: 68822bdf76f1 ("net: generalize skb freeing deferral to per-cpu lists")
+>>> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+>>> ---
+>>
+>> Happy Friday! :)
+>>
+>> Resurrecting this thread because I managed to reproduce the issue again
+>> on a latest 6.6.0-rc1.
+>>
+>> (It doesn't mean we need to accept this particular patch, I just think
+>> that it's an appropriate discussion thread.)
+>>
+>> It's a bit different testsuite this time.  Last year I had an issue with
+>> OVS testsuite, today I have an issue with OVN testsuite.  Their structure
+>> is very similar, but OVN tests are a fair bit more complex.
+>>
+>> The story is the same:  Each test loads a pack of kernel modules including
+>> OVS and nf_conntrack, sends some traffic, verifies OVN functionality,
+>> stops OVN/OVS and unloads all the previously loaded modules to clean up
+>> the space for the next tests.
+>>
+>> Kernel hangs in the same way as before waiting for nf_conntrack module
+>> to be unloaded:
+>>
+>>   13 root R  100.0  933:17.98 kworker/u80:1+netns
+>>
+>>   CPU: 12 PID: 13 Comm: kworker/u80:1 Not tainted 6.6.0-rc1+ #7
+>>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.1-2.fc36 04/01/2014
+>>   Workqueue: netns cleanup_net
+>>   RIP: 0010:nf_ct_iterate_cleanup+0x35/0x1e0 [nf_conntrack]
+>>   Code: 56 41 55 41 54 49 89 fc 55 31 ed 53 e8 a4 db a8
+>>         ed 48 c7 c7 20 e9 e2 c0 e8 48 f3 a8 ed 39 2d 7e
+>>         2d 01 00 77 14 e9 05 01 00 00 <83> c5 01 3b 2d 6e
+>>         2d 01 00 0f 83 f6 00 00 00 48 8b 15 75 2d 01 00
+>>   RSP: 0018:ffffb23040073d98 EFLAGS: 00000202
+>>   RAX: 000000000001ce57 RBX: ffff98dbfac73958 RCX: ffff98e31f732b38
+>>   RDX: ffff98dbfac00000 RSI: ffffb23040073dd0 RDI: ffffffffc0e2e920
+>>   RBP: 000000000000e72b R08: ffff98e31f732b38 R09: ffff98e31f732b38
+>>   R10: 000000000001d5ce R11: 0000000000000000 R12: ffffffffc0e1b080
+>>   R13: ffffb23040073e28 R14: ffff98dbc47b0600 R15: ffffb23040073dd0
+>>   FS:  0000000000000000(0000) GS:ffff98e31f700000(0000) knlGS:0000000000000000
+>>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>   CR2: 00007f98bd7bca80 CR3: 000000076f420004 CR4: 0000000000370ee0
+>>   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>   Call Trace:
+>>    <NMI>
+>>    ? nmi_cpu_backtrace+0x82/0xf0
+>>    ? nmi_cpu_backtrace_handler+0xd/0x20
+>>    ? nmi_handle+0x5e/0x150
+>>    ? default_do_nmi+0x40/0x100
+>>    ? exc_nmi+0x112/0x190
+>>    ? end_repeat_nmi+0x16/0x67
+>>    ? __pfx_kill_all+0x10/0x10 [nf_conntrack]
+>>    ? nf_ct_iterate_cleanup+0x35/0x1e0 [nf_conntrack]
+>>    ? nf_ct_iterate_cleanup+0x35/0x1e0 [nf_conntrack]
+>>    ? nf_ct_iterate_cleanup+0x35/0x1e0 [nf_conntrack]
+>>    </NMI>
+>>    <TASK>
+>>    nf_conntrack_cleanup_net_list+0xac/0x140 [nf_conntrack]
+>>    cleanup_net+0x213/0x3b0
+>>    process_one_work+0x177/0x340
+>>    worker_thread+0x27e/0x390
+>>    ? __pfx_worker_thread+0x10/0x10
+>>    kthread+0xe2/0x110
+>>    ? __pfx_kthread+0x10/0x10
+>>    ret_from_fork+0x30/0x50
+>>    ? __pfx_kthread+0x10/0x10
+>>    ret_from_fork_asm+0x1b/0x30
+>>    </TASK>
+>>
+>> Since this testsuite is different from what I had issues with before,
+>> I don't really know when the issue first appeared.  It may have been
+>> there even last year.
+>>
+>> I can reproduce the issue with ubuntu 6.2.0-32-generic kernel, but
+>> I don't see it with the latest 5.14.0-284.25.1.el9_2.x86_64 on RHEL9.
+>> It doesn't necessarily mean that RHEL9 doesn't have the issue though,
+>> the testsuite is not 100% reliable.
+>>
+>> I'll try to dig deeper and bisect the problem on the upstream kernel.
+>>
+>> For now it seems like the issue is likely in IPv6 code, because the
+>> tests that trigger it are mostly IPv6-related.
+> 
+> So, I bisected this down to an unsurprising commit:
+> 
+> commit b0e214d212030fe497d4d150bb3474e50ad5d093
+> Author: Madhu Koriginja <madhu.koriginja@nxp.com>
+> Date:   Tue Mar 21 21:28:44 2023 +0530
+> 
+>     netfilter: keep conntrack reference until IPsecv6 policy checks are done
+>     
+>     Keep the conntrack reference until policy checks have been performed for
+>     IPsec V6 NAT support, just like ipv4.
+>     
+>     The reference needs to be dropped before a packet is
+>     queued to avoid having the conntrack module unloadable.
+>     
+>     Fixes: 58a317f1061c ("netfilter: ipv6: add IPv6 NAT support")
+>     Signed-off-by: Madhu Koriginja <madhu.koriginja@nxp.com>
+>     Signed-off-by: Florian Westphal <fw@strlen.de>
+> 
+> This commit repeated the pattern from the old ipv4 commit b59c270104f0
+> ("[NETFILTER]: Keep conntrack reference until IPsec policy checks are done")
+> and hence introduced the exact same issue, but for IPv6.  They both failed
+> to deliver on the "avoid having the conntrack module unloadable" part.
+> 
+> IIUC, the fix should be exactly the same as Eric did for ipv4 in commit
+> 6f0012e35160 ("tcp: add a missing nf_reset_ct() in 3WHS handling").
+> 
+> I can try that and send a fix.
 
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Tested-by: Lyude Paul <lyude@redhat.com>
+Posted a fix here:
+  https://lore.kernel.org/netdev/20230922210530.2045146-1-i.maximets@ovn.org/
 
-On Thu, 2023-09-21 at 12:26 -0700, Douglas Anderson wrote:
-> Based on grepping through the source code this driver appears to be
-> missing a call to drm_atomic_helper_shutdown() (or
-> drm_helper_force_disable_all() if not using atomic) at system shutdown
-> time. Among other things, this means that if a panel is in use that it
-> won't be cleanly powered off at system shutdown time.
->=20
-> The fact that we should call drm_atomic_helper_shutdown() in the case
-> of OS shutdown/restart comes straight out of the kernel doc "driver
-> instance overview" in drm_drv.c.
->=20
-> Suggested-by: Maxime Ripard <mripard@kernel.org>
-> Reviewed-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> This commit is only compile-time tested. I made my best guess about
-> how to fit this into the existing code. If someone wishes a different
-> style, please yell.
->=20
-> (no changes since v1)
->=20
->  drivers/gpu/drm/nouveau/nouveau_display.c  |  9 +++++++++
->  drivers/gpu/drm/nouveau/nouveau_display.h  |  1 +
->  drivers/gpu/drm/nouveau/nouveau_drm.c      | 13 +++++++++++++
->  drivers/gpu/drm/nouveau/nouveau_drv.h      |  1 +
->  drivers/gpu/drm/nouveau/nouveau_platform.c |  6 ++++++
->  5 files changed, 30 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_display.c b/drivers/gpu/drm/=
-nouveau/nouveau_display.c
-> index d8c92521226d..05c3688ccb76 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_display.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_display.c
-> @@ -642,6 +642,15 @@ nouveau_display_fini(struct drm_device *dev, bool su=
-spend, bool runtime)
->  	disp->fini(dev, runtime, suspend);
->  }
-> =20
-> +void
-> +nouveau_display_shutdown(struct drm_device *dev)
-> +{
-> +	if (drm_drv_uses_atomic_modeset(dev))
-> +		drm_atomic_helper_shutdown(dev);
-> +	else
-> +		drm_helper_force_disable_all(dev);
-> +}
-> +
->  static void
->  nouveau_display_create_properties(struct drm_device *dev)
->  {
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_display.h b/drivers/gpu/drm/=
-nouveau/nouveau_display.h
-> index 2ab2ddb1eadf..9df62e833cda 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_display.h
-> +++ b/drivers/gpu/drm/nouveau/nouveau_display.h
-> @@ -47,6 +47,7 @@ void nouveau_display_destroy(struct drm_device *dev);
->  int  nouveau_display_init(struct drm_device *dev, bool resume, bool runt=
-ime);
->  void nouveau_display_hpd_resume(struct drm_device *dev);
->  void nouveau_display_fini(struct drm_device *dev, bool suspend, bool run=
-time);
-> +void nouveau_display_shutdown(struct drm_device *dev);
->  int  nouveau_display_suspend(struct drm_device *dev, bool runtime);
->  void nouveau_display_resume(struct drm_device *dev, bool runtime);
->  int  nouveau_display_vblank_enable(struct drm_crtc *crtc);
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouv=
-eau/nouveau_drm.c
-> index 50589f982d1a..8ecfd66b7aab 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-> @@ -879,6 +879,18 @@ nouveau_drm_remove(struct pci_dev *pdev)
->  	pci_disable_device(pdev);
->  }
-> =20
-> +void
-> +nouveau_drm_device_shutdown(struct drm_device *dev)
-> +{
-> +	nouveau_display_shutdown(dev);
-> +}
-> +
-> +static void
-> +nouveau_drm_shutdown(struct pci_dev *pdev)
-> +{
-> +	nouveau_drm_device_shutdown(pci_get_drvdata(pdev));
-> +}
-> +
->  static int
->  nouveau_do_suspend(struct drm_device *dev, bool runtime)
->  {
-> @@ -1346,6 +1358,7 @@ nouveau_drm_pci_driver =3D {
->  	.id_table =3D nouveau_drm_pci_table,
->  	.probe =3D nouveau_drm_probe,
->  	.remove =3D nouveau_drm_remove,
-> +	.shutdown =3D nouveau_drm_shutdown,
->  	.driver.pm =3D &nouveau_pm_ops,
->  };
-> =20
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_drv.h b/drivers/gpu/drm/nouv=
-eau/nouveau_drv.h
-> index 3666a7403e47..aa936cabb6cf 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_drv.h
-> +++ b/drivers/gpu/drm/nouveau/nouveau_drv.h
-> @@ -327,6 +327,7 @@ struct drm_device *
->  nouveau_platform_device_create(const struct nvkm_device_tegra_func *,
->  			       struct platform_device *, struct nvkm_device **);
->  void nouveau_drm_device_remove(struct drm_device *dev);
-> +void nouveau_drm_device_shutdown(struct drm_device *dev);
-> =20
->  #define NV_PRINTK(l,c,f,a...) do {                                      =
-       \
->  	struct nouveau_cli *_cli =3D (c);                                      =
-  \
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_platform.c b/drivers/gpu/drm=
-/nouveau/nouveau_platform.c
-> index 23cd43a7fd19..b2e82a96411c 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_platform.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_platform.c
-> @@ -50,6 +50,11 @@ static int nouveau_platform_remove(struct platform_dev=
-ice *pdev)
->  	return 0;
->  }
-> =20
-> +static void nouveau_platform_shutdown(struct platform_device *pdev)
-> +{
-> +	nouveau_drm_device_shutdown(platform_get_drvdata(pdev));
-> +}
-> +
->  #if IS_ENABLED(CONFIG_OF)
->  static const struct nvkm_device_tegra_func gk20a_platform_data =3D {
->  	.iommu_bit =3D 34,
-> @@ -94,4 +99,5 @@ struct platform_driver nouveau_platform_driver =3D {
->  	},
->  	.probe =3D nouveau_platform_probe,
->  	.remove =3D nouveau_platform_remove,
-> +	.shutdown =3D nouveau_platform_shutdown,
->  };
+It fixes the problem I have with OVN testsuite.
 
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+> 
+> Would still really like to have some preventive mechanism for this kind of
+> issues though.  Any ideas on that?
+> 
+> Best regards, Ilya Maximets.
 
