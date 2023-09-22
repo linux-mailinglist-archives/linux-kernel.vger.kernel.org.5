@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A627AAA97
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA277AAA87
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbjIVHmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S231921AbjIVHnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjIVHmA (ORCPT
+        with ESMTP id S231725AbjIVHmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:42:00 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1972F18F;
-        Fri, 22 Sep 2023 00:41:52 -0700 (PDT)
-X-UUID: 7d265c96591b11ee8051498923ad61e6-20230922
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+/pJuaWVfK0hGb+ThWfQw2tcR3ge/i6YNChUHLyY9i0=;
-        b=E/y9Us4SS8G5vmy+ynW28R1J2jHaAQUK1jjseQmZSOzHDB3g+uMmBg2Iw2k4wpeCtZxtSjYfzwAg98a817wHI58eeRQN34Dy/ErYUPv/rfq7D0MfxCvMmOTkfRrVNIU6ghL9Bw/cewOFQw2s7CpomSYwScvlej8bBiWyPuyREDg=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:511b6493-76e5-4ff5-b7f5-dd77204c6917,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:636724bf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 7d265c96591b11ee8051498923ad61e6-20230922
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1704723435; Fri, 22 Sep 2023 15:41:49 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Sep 2023 15:41:48 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Sep 2023 15:41:48 +0800
-From:   Moudy Ho <moudy.ho@mediatek.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>
-CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Moudy Ho <moudy.ho@mediatek.com>
-Subject: [PATCH v6 13/13] media: platform: mtk-mdp3: fix uninitialized variable in mdp_path_config()
-Date:   Fri, 22 Sep 2023 15:41:45 +0800
-Message-ID: <20230922074145.11977-14-moudy.ho@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230922074145.11977-1-moudy.ho@mediatek.com>
-References: <20230922074145.11977-1-moudy.ho@mediatek.com>
+        Fri, 22 Sep 2023 03:42:13 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E905B1A2;
+        Fri, 22 Sep 2023 00:42:06 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CC2DDA7;
+        Fri, 22 Sep 2023 00:42:43 -0700 (PDT)
+Received: from [10.57.65.11] (unknown [10.57.65.11])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3AA23F5A1;
+        Fri, 22 Sep 2023 00:41:54 -0700 (PDT)
+Message-ID: <af6a0bb0-4645-4667-aa0e-e78fac3aad28@arm.com>
+Date:   Fri, 22 Sep 2023 08:41:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--1.823600-8.000000
-X-TMASE-MatchedRID: KmnKUkn6ieOhL93N5VXnFISvKOGqLLPKFKliqHKCaOkqNag3uuW+4vhT
-        6/pHvNpJzmy+RYEtL0m0k1objFiL4GGN6M1vhJ4HXP5rFAucBUG4vBuE2X0HlVxTR00Ss4P6+Vi
-        hXqn9xLHGUnHlYVkOyLEivwZSlRnNGbjm5ZdalUGeAiCmPx4NwGmRqNBHmBvepuP9zg477pEqtq
-        5d3cxkNRM5v80OeBIlEWExHZty1DxGMYElNJjuepGZ9wEbtJXwDMBYsHoRkg0CoZVi1XtD0xZOM
-        F5EGm8nofEg3HTMQR5X0aNkMmvjXK/XFoPK0hZ9dATQdtPksR+3/JiWOe6GXXSWgQ2GpXdZhztL
-        VWA1eE9DDKa3G4nrLQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.823600-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 97E294BC74714BAF4319193F36B1863E47EFD0E8B321CD7A9527EA9A416A7C542000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/8] Fix set_huge_pte_at() panic on arm64
+Content-Language: en-GB
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        SeongJae Park <sj@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20230921162007.1630149-1-ryan.roberts@arm.com>
+ <20230921093026.230b2991be551093e397f462@linux-foundation.org>
+ <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com> <ZQx/f35o0zT2lug4@arm.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZQx/f35o0zT2lug4@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,49 +77,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the build warnings that were detected by the linux-media
-build scripts tool:
+On 21/09/2023 18:38, Catalin Marinas wrote:
+> On Thu, Sep 21, 2023 at 05:35:54PM +0100, Ryan Roberts wrote:
+>> On 21/09/2023 17:30, Andrew Morton wrote:
+>>> On Thu, 21 Sep 2023 17:19:59 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>> Ryan Roberts (8):
+>>>>   parisc: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   powerpc: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   riscv: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   s390: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   sparc: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   mm: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   arm64: hugetlb: Convert set_huge_pte_at() to take vma
+>>>>   arm64: hugetlb: Fix set_huge_pte_at() to work with all swap entries
+>>>>
+>>>>  arch/arm64/include/asm/hugetlb.h              |  2 +-
+>>>>  arch/arm64/mm/hugetlbpage.c                   | 22 ++++----------
+>>>>  arch/parisc/include/asm/hugetlb.h             |  2 +-
+>>>>  arch/parisc/mm/hugetlbpage.c                  |  4 +--
+>>>>  .../include/asm/nohash/32/hugetlb-8xx.h       |  3 +-
+>>>>  arch/powerpc/mm/book3s64/hugetlbpage.c        |  2 +-
+>>>>  arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  2 +-
+>>>>  arch/powerpc/mm/nohash/8xx.c                  |  2 +-
+>>>>  arch/powerpc/mm/pgtable.c                     |  7 ++++-
+>>>>  arch/riscv/include/asm/hugetlb.h              |  2 +-
+>>>>  arch/riscv/mm/hugetlbpage.c                   |  3 +-
+>>>>  arch/s390/include/asm/hugetlb.h               |  8 +++--
+>>>>  arch/s390/mm/hugetlbpage.c                    |  8 ++++-
+>>>>  arch/sparc/include/asm/hugetlb.h              |  8 +++--
+>>>>  arch/sparc/mm/hugetlbpage.c                   |  8 ++++-
+>>>>  include/asm-generic/hugetlb.h                 |  6 ++--
+>>>>  include/linux/hugetlb.h                       |  6 ++--
+>>>>  mm/damon/vaddr.c                              |  2 +-
+>>>>  mm/hugetlb.c                                  | 30 +++++++++----------
+>>>>  mm/migrate.c                                  |  2 +-
+>>>>  mm/rmap.c                                     | 10 +++----
+>>>>  mm/vmalloc.c                                  |  5 +++-
+>>>>  22 files changed, 80 insertions(+), 64 deletions(-)
+>>>
+>>> Looks scary but it's actually a fairly modest patchset.  It could
+>>> easily be all rolled into a single patch for ease of backporting. 
+>>> Maybe Greg has an opinion?
+>>
+>> Yes, I thought about doing that; or perhaps 2 patches - one for the interface
+>> change across all arches and core code, and one for the actual bug fix?
+> 
+> I think this would make more sense, especially if we want to backport
+> it. The first patch would have no functional change, only an interface
+> change, followed by the arm64 fix.
 
-drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:
-	In function 'mdp_path_config.isra':
-drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:443:51:
-	warning: 'ctx' may be used uninitialized [-Wmaybe-uninitialized]
-  443 |                    out = CFG_COMP(MT8195, ctx->param, outputs[0]);
-      |                                           ~~~^~~~~~~
-drivers/media/platform/mediatek/mdp3/mtk-img-ipi.h:137:25: note:
-	in definition of macro 'CFG_COMP'
-  137 |         (IS_ERR_OR_NULL(comp) ? 0 : _CFG_COMP(plat, comp, mem))
-      |                         ^~~~
-drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:396:30:
-	note: 'ctx' was declared here
-  396 |         struct mdp_comp_ctx *ctx;
-      |
+OK I'll do it like this for v2.
 
-Fixes: 61890ccaefaf ("media: platform: mtk-mdp3: add MediaTek MDP3 driver")
-Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
----
- drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-index 15a0b944745e..4a8d941178aa 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-@@ -436,13 +436,13 @@ static int mdp_path_config(struct mdp_dev *mdp, struct mdp_cmdq_cmd *cmd,
- 		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
- 			continue;
- 
-+		ctx = &path->comps[index];
- 		if (CFG_CHECK(MT8183, p_id))
- 			out = CFG_COMP(MT8183, ctx->param, outputs[0]);
- 		else if (CFG_CHECK(MT8195, p_id))
- 			out = CFG_COMP(MT8195, ctx->param, outputs[0]);
- 
- 		compose = path->composes[out];
--		ctx = &path->comps[index];
- 		ret = call_op(ctx, config_frame, cmd, compose);
- 		if (ret)
- 			return ret;
--- 
-2.18.0
+> 
 
