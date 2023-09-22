@@ -2,212 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4BC7AB0F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0977AB0FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbjIVLc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        id S233920AbjIVLeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbjIVLcQ (ORCPT
+        with ESMTP id S233897AbjIVLeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:32:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A086CCC4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695382279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YZNprSzbt9e8k58JcxEUqpXJf2zPy5yDQe5/rD+YGMw=;
-        b=TBtYrJcW3WHB7YGJHHqSLNMrn13sWmK21TF0DCO74GIWWx/gdgIQJJZr2es5tbswG0JPDk
-        6b1h6RZ2QtQ85rF9dWIOa8AEVoNl+wgB4fKoje6s2MZgKTFwNY6+LHlru0DnuXUZrFOAtD
-        JVyyGeHCMG1t8JD9lOzAF8oolYp1pic=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-44-75ozITHwPxqfRUZSOFIvLw-1; Fri, 22 Sep 2023 07:31:16 -0400
-X-MC-Unique: 75ozITHwPxqfRUZSOFIvLw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6EA2B101A529;
-        Fri, 22 Sep 2023 11:31:15 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CD1420268D6;
-        Fri, 22 Sep 2023 11:31:12 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Matthew Wilcox <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v3 10/10] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
-Date:   Fri, 22 Sep 2023 12:30:38 +0100
-Message-ID: <20230922113038.1135236-11-dhowells@redhat.com>
-In-Reply-To: <20230922113038.1135236-1-dhowells@redhat.com>
-References: <20230922113038.1135236-1-dhowells@redhat.com>
+        Fri, 22 Sep 2023 07:34:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FB71704
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695382404; x=1726918404;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DWOJth9SAhsf121pRp2Ml1H0h4Ug0qdnTAHCb+GTV20=;
+  b=mHnP4bNs/K+CCfrc1J+yTl6aUmN4h+uW7vq3SCh5wqs5dmIo1cuOh9yG
+   XKHi6AEmR5wd0D7Pb+C1uw3IRkzu8iomzef5LLAkJa6g3VoUeEMGsT0DJ
+   4NuDrK7US08Zltff+jFKroycTkG9MA63UxGFGHJk9QGTZINynFlT2bQub
+   PQiuyGGFW4v3+7NBWd9skrtgaSYygTx7tCArE0rUk+Tn1KpTkkAHMoSOy
+   AbMyF/iKKERT6oXpS6fXUuGtjBdOi9VC+g7YeCbbgqHtxCNzYUw4135gP
+   EyqWtHNGbnp+63VEcvOKDPMvimfYz0w2P5MyhbQhyDl8fDDZblEoE/VBH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="411744447"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="411744447"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 04:31:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="871215136"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="871215136"
+Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 22 Sep 2023 04:31:42 -0700
+Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qjeNo-0000bg-1m;
+        Fri, 22 Sep 2023 11:31:40 +0000
+Date:   Fri, 22 Sep 2023 19:30:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: drivers/remoteproc/stm32_rproc.c:122:12: sparse: sparse: incorrect
+ type in assignment (different address spaces)
+Message-ID: <202309221940.9AnFVhVs-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kunit tests to benchmark 256MiB copies to a UBUF iterator and an IOVEC
-iterator.  This attaches a userspace VM with a mapped file in it
-temporarily to the test thread.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   27bbf45eae9ca98877a2d52a92a188147cd61b07
+commit: 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 remoteproc: stm32: use correct format strings on 64-bit
+date:   3 months ago
+config: csky-randconfig-r121-20230906 (https://download.01.org/0day-ci/archive/20230922/202309221940.9AnFVhVs-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230922/202309221940.9AnFVhVs-lkp@intel.com/reproduce)
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Andrew Morton <akpm@linux-foundation.org>
-cc: Christoph Hellwig <hch@lst.de>
-cc: Christian Brauner <brauner@kernel.org>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Al Viro <viro@zeniv.linux.org.uk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: David Hildenbrand <david@redhat.com>
-cc: John Hubbard <jhubbard@nvidia.com>
-cc: Brendan Higgins <brendanhiggins@google.com>
-cc: David Gow <davidgow@google.com>
-cc: linux-kselftest@vger.kernel.org
-cc: kunit-dev@googlegroups.com
-cc: linux-mm@kvack.org
-cc: linux-fsdevel@vger.kernel.org
----
- lib/kunit_iov_iter.c | 95 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309221940.9AnFVhVs-lkp@intel.com/
 
-diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
-index 2fbe6f2afb26..d5b7517f4f47 100644
---- a/lib/kunit_iov_iter.c
-+++ b/lib/kunit_iov_iter.c
-@@ -1325,6 +1325,99 @@ static void *__init iov_kunit_create_source(struct kunit *test, size_t npages)
- 	return scratch;
- }
- 
-+/*
-+ * Time copying 256MiB through an ITER_UBUF.
-+ */
-+static void __init iov_kunit_benchmark_ubuf(struct kunit *test)
-+{
-+	struct iov_iter iter;
-+	unsigned int samples[IOV_KUNIT_NR_SAMPLES];
-+	ktime_t a, b;
-+	ssize_t copied;
-+	size_t size = 256 * 1024 * 1024, npages = size / PAGE_SIZE;
-+	void *scratch;
-+	int i;
-+	u8 __user *buffer;
-+
-+	/* Allocate a huge buffer and populate it with pages. */
-+	buffer = iov_kunit_create_user_buf(test, npages, NULL);
-+
-+	/* Create a single large buffer to copy to/from. */
-+	scratch = iov_kunit_create_source(test, npages);
-+
-+	/* Perform and time a bunch of copies. */
-+	kunit_info(test, "Benchmarking copy_to_iter() over UBUF:\n");
-+	for (i = 0; i < IOV_KUNIT_NR_SAMPLES; i++) {
-+		size_t remain = size;
-+
-+		a = ktime_get_real();
-+		do {
-+			size_t part = min(remain, PAGE_SIZE);
-+
-+			iov_iter_ubuf(&iter, ITER_SOURCE, buffer, part);
-+			copied = copy_from_iter(scratch, part, &iter);
-+			KUNIT_EXPECT_EQ(test, copied, part);
-+			remain -= part;
-+		} while (remain > 0);
-+		b = ktime_get_real();
-+		samples[i] = ktime_to_us(ktime_sub(b, a));
-+	}
-+
-+	iov_kunit_benchmark_print_stats(test, samples);
-+	KUNIT_SUCCEED();
-+}
-+
-+/*
-+ * Time copying 256MiB through an ITER_IOVEC.
-+ */
-+static void __init iov_kunit_benchmark_iovec(struct kunit *test)
-+{
-+	struct iov_iter iter;
-+	struct iovec *iov;
-+	unsigned int samples[IOV_KUNIT_NR_SAMPLES];
-+	ktime_t a, b;
-+	ssize_t copied;
-+	size_t size = 256 * 1024 * 1024, npages = size / PAGE_SIZE, part;
-+	size_t ioc = size / PAGE_SIZE;
-+	void *scratch;
-+	int i;
-+	u8 __user *buffer;
-+
-+	iov = kunit_kmalloc_array(test, ioc, sizeof(*iov), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, iov);
-+
-+	/* Allocate a huge buffer and populate it with pages. */
-+	buffer = iov_kunit_create_user_buf(test, npages, NULL);
-+
-+	/* Create a single large buffer to copy to/from. */
-+	scratch = iov_kunit_create_source(test, npages);
-+
-+	/* Split the target over a number of iovecs */
-+	copied = 0;
-+	for (i = 0; i < ioc; i++) {
-+		part = size / ioc;
-+		iov[i].iov_base = buffer + copied;
-+		iov[i].iov_len = part;
-+		copied += part;
-+	}
-+	iov[i - 1].iov_len += size - part;
-+
-+	/* Perform and time a bunch of copies. */
-+	kunit_info(test, "Benchmarking copy_to_iter() over IOVEC:\n");
-+	for (i = 0; i < IOV_KUNIT_NR_SAMPLES; i++) {
-+		iov_iter_init(&iter, ITER_SOURCE, iov, npages, size);
-+
-+		a = ktime_get_real();
-+		copied = copy_from_iter(scratch, size, &iter);
-+		b = ktime_get_real();
-+		KUNIT_EXPECT_EQ(test, copied, size);
-+		samples[i] = ktime_to_us(ktime_sub(b, a));
-+	}
-+
-+	iov_kunit_benchmark_print_stats(test, samples);
-+	KUNIT_SUCCEED();
-+}
-+
- /*
-  * Time copying 256MiB through an ITER_KVEC.
-  */
-@@ -1611,6 +1704,8 @@ static struct kunit_case __refdata iov_kunit_cases[] = {
- 	KUNIT_CASE(iov_kunit_extract_pages_kvec),
- 	KUNIT_CASE(iov_kunit_extract_pages_bvec),
- 	KUNIT_CASE(iov_kunit_extract_pages_xarray),
-+	KUNIT_CASE(iov_kunit_benchmark_ubuf),
-+	KUNIT_CASE(iov_kunit_benchmark_iovec),
- 	KUNIT_CASE(iov_kunit_benchmark_kvec),
- 	KUNIT_CASE(iov_kunit_benchmark_bvec),
- 	KUNIT_CASE(iov_kunit_benchmark_bvec_split),
+sparse warnings: (new ones prefixed by >>)
+>> drivers/remoteproc/stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     expected void *va
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *va @@
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     got void *va
+>> drivers/remoteproc/stm32_rproc.c:644:17: sparse: sparse: cast removes address space '__iomem' of expression
 
+vim +122 drivers/remoteproc/stm32_rproc.c
+
+13140de09cc2dd Fabien Dessenne 2019-05-14  114  
+13140de09cc2dd Fabien Dessenne 2019-05-14  115  static int stm32_rproc_mem_alloc(struct rproc *rproc,
+13140de09cc2dd Fabien Dessenne 2019-05-14  116  				 struct rproc_mem_entry *mem)
+13140de09cc2dd Fabien Dessenne 2019-05-14  117  {
+13140de09cc2dd Fabien Dessenne 2019-05-14  118  	struct device *dev = rproc->dev.parent;
+13140de09cc2dd Fabien Dessenne 2019-05-14  119  	void *va;
+13140de09cc2dd Fabien Dessenne 2019-05-14  120  
+03bd158e1535e6 Arnd Bergmann   2023-06-09  121  	dev_dbg(dev, "map memory: %pad+%zx\n", &mem->dma, mem->len);
+13140de09cc2dd Fabien Dessenne 2019-05-14 @122  	va = ioremap_wc(mem->dma, mem->len);
+13140de09cc2dd Fabien Dessenne 2019-05-14  123  	if (IS_ERR_OR_NULL(va)) {
+03bd158e1535e6 Arnd Bergmann   2023-06-09  124  		dev_err(dev, "Unable to map memory region: %pad+0x%zx\n",
+13140de09cc2dd Fabien Dessenne 2019-05-14  125  			&mem->dma, mem->len);
+13140de09cc2dd Fabien Dessenne 2019-05-14  126  		return -ENOMEM;
+13140de09cc2dd Fabien Dessenne 2019-05-14  127  	}
+13140de09cc2dd Fabien Dessenne 2019-05-14  128  
+13140de09cc2dd Fabien Dessenne 2019-05-14  129  	/* Update memory entry va */
+13140de09cc2dd Fabien Dessenne 2019-05-14  130  	mem->va = va;
+13140de09cc2dd Fabien Dessenne 2019-05-14  131  
+13140de09cc2dd Fabien Dessenne 2019-05-14  132  	return 0;
+13140de09cc2dd Fabien Dessenne 2019-05-14  133  }
+13140de09cc2dd Fabien Dessenne 2019-05-14  134  
+
+:::::: The code at line 122 was first introduced by commit
+:::::: 13140de09cc2dd5e5166ad42292bb82af4e23cef remoteproc: stm32: add an ST stm32_rproc driver
+
+:::::: TO: Fabien Dessenne <fabien.dessenne@st.com>
+:::::: CC: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
