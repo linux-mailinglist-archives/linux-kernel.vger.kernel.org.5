@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B92C7AB2C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA327AB2C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbjIVNbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
+        id S234118AbjIVNbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbjIVNbi (ORCPT
+        with ESMTP id S234076AbjIVNbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Sep 2023 09:31:38 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0670618F;
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88A2CE;
         Fri, 22 Sep 2023 06:31:30 -0700 (PDT)
 Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 97D7E86199;
-        Fri, 22 Sep 2023 15:31:28 +0200 (CEST)
+        by phobos.denx.de (Postfix) with ESMTPSA id 2EA498641B;
+        Fri, 22 Sep 2023 15:31:29 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
         s=phobos-20191101; t=1695389489;
-        bh=R5H5pwFQF0fsWQf2aZE1BSfKXRJEkCye58IvcZZU6FY=;
+        bh=vmNuVlqmEFXjO6DC8o8YTxJvDDK3OrOeO1xwI+V/cgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mIleYrcf8MA5hRBolfx8Y/e98kXj/Rveeewh/vrJNZ68G8sOxqANL7wlr57jnn6Kh
-         rXOioPizuz4f72l6BdiwV2pm2CClp04P/EYSjJYXRIzRuZYs839gV7rx9bsx/fmt2o
-         j+BWajHDIrzEq+7ZgYk7kYoQHHQKUOB4LZcYdhYNNo3u0r5RcI/dRpJnUzqu07sFZU
-         gIhA1gb0IVcIYSfm+SW73G7rtJmil/9c3Ks5kXWFwt1lIjrktIqOmC2oWXNEDj4FTr
-         6fXrX3oNMSisypEE2eWOdM4LlKHdl2KI1iYlXGTgB4ZiWlDDKBArVq0LGUS5bd0yxt
-         eHmRFWL9o1NGw==
+        b=FxL5MQHqGuWEup0bG/OLgUuVLV2gnj/kwBJidjetD7K50dp15z6zxvsjP1T2u4LKt
+         S6vBSEtxxt1M5ihjluf1gfJmWrAinKWkzxnz+ST2fSA9Qb9SfcuIUdbBgU0qZ8QrRi
+         k5o5pXW2fZPnjgcRAYEaecQiZKnPPW18d5dRW2kZTrlXAtSXW717TZzafYlKG1PynQ
+         aE95s7+k370mP0OKz+M1NK6hYZkYQWG6ZvIQPsYCABJ5uMS1KqKj5P4mBCpr7TTbak
+         1DM71VvJEaMkv+WZe9Goi7ZVEEcdanchQty4aoKjp0+nMPaMOWwBZ1otXHQM+uUr3m
+         N8ePwr0uivYcw==
 From:   Lukasz Majewski <lukma@denx.de>
 To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
         Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
@@ -44,9 +44,9 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         Lukasz Majewski <lukma@denx.de>,
         Florian Fainelli <florian.fainelli@broadcom.com>
-Subject: [PATCH v6 net-next 1/5] net: dsa: propagate extack to ds->ops->port_hsr_join()
-Date:   Fri, 22 Sep 2023 15:31:04 +0200
-Message-Id: <20230922133108.2090612-2-lukma@denx.de>
+Subject: [PATCH v6 net-next 2/5] net: dsa: notify drivers of MAC address changes on user ports
+Date:   Fri, 22 Sep 2023 15:31:05 +0200
+Message-Id: <20230922133108.2090612-3-lukma@denx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230922133108.2090612-1-lukma@denx.de>
 References: <20230922133108.2090612-1-lukma@denx.de>
@@ -66,14 +66,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Drivers can provide meaningful error messages which state a reason why
-they can't perform an offload, and dsa_slave_changeupper() already has
-the infrastructure to propagate these over netlink rather than printing
-to the kernel log. So pass the extack argument and modify the xrs700x
-driver's port_hsr_join() prototype.
-
-Also take the opportunity and use the extack for the 2 -EOPNOTSUPP cases
-from xrs700x_hsr_join().
+In some cases, drivers may need to veto the changing of a MAC address on
+a user port. Such is the case with KSZ9477 when it offloads a HSR device,
+because it programs the MAC address of multiple ports to a shared
+hardware register. Those ports need to have equal MAC addresses for the
+lifetime of the HSR offload.
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: Lukasz Majewski <lukma@denx.de>
@@ -84,118 +81,49 @@ Changes for v5:
 Changes for v6:
 - None
 ---
- drivers/net/dsa/xrs700x/xrs700x.c | 18 ++++++++++++------
- include/net/dsa.h                 |  3 ++-
- net/dsa/port.c                    |  5 +++--
- net/dsa/port.h                    |  3 ++-
- net/dsa/slave.c                   |  2 +-
- 5 files changed, 20 insertions(+), 11 deletions(-)
+ include/net/dsa.h | 10 ++++++++++
+ net/dsa/slave.c   |  7 +++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
-index 753fef757f11..5b02e9e426fd 100644
---- a/drivers/net/dsa/xrs700x/xrs700x.c
-+++ b/drivers/net/dsa/xrs700x/xrs700x.c
-@@ -548,7 +548,8 @@ static void xrs700x_bridge_leave(struct dsa_switch *ds, int port,
- }
- 
- static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
--			    struct net_device *hsr)
-+			    struct net_device *hsr,
-+			    struct netlink_ext_ack *extack)
- {
- 	unsigned int val = XRS_HSR_CFG_HSR_PRP;
- 	struct dsa_port *partner = NULL, *dp;
-@@ -562,16 +563,21 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
- 	if (ret)
- 		return ret;
- 
--	/* Only ports 1 and 2 can be HSR/PRP redundant ports. */
--	if (port != 1 && port != 2)
-+	if (port != 1 && port != 2) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Only ports 1 and 2 can offload HSR/PRP");
- 		return -EOPNOTSUPP;
-+	}
- 
--	if (ver == HSR_V1)
-+	if (ver == HSR_V1) {
- 		val |= XRS_HSR_CFG_HSR;
--	else if (ver == PRP_V1)
-+	} else if (ver == PRP_V1) {
- 		val |= XRS_HSR_CFG_PRP;
--	else
-+	} else {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Only HSR v1 and PRP v1 can be offloaded");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	dsa_hsr_foreach_port(dp, ds, hsr) {
- 		if (dp->index != port) {
 diff --git a/include/net/dsa.h b/include/net/dsa.h
-index 0b9c6aa27047..426724808e76 100644
+index 426724808e76..d98439ea6146 100644
 --- a/include/net/dsa.h
 +++ b/include/net/dsa.h
-@@ -1198,7 +1198,8 @@ struct dsa_switch_ops {
- 	 * HSR integration
- 	 */
- 	int	(*port_hsr_join)(struct dsa_switch *ds, int port,
--				 struct net_device *hsr);
-+				 struct net_device *hsr,
-+				 struct netlink_ext_ack *extack);
- 	int	(*port_hsr_leave)(struct dsa_switch *ds, int port,
- 				  struct net_device *hsr);
+@@ -969,6 +969,16 @@ struct dsa_switch_ops {
+ 			       struct phy_device *phy);
+ 	void	(*port_disable)(struct dsa_switch *ds, int port);
  
-diff --git a/net/dsa/port.c b/net/dsa/port.c
-index 37ab238e8304..5f01bd4f9dec 100644
---- a/net/dsa/port.c
-+++ b/net/dsa/port.c
-@@ -2024,7 +2024,8 @@ void dsa_shared_port_link_unregister_of(struct dsa_port *dp)
- 		dsa_shared_port_setup_phy_of(dp, false);
- }
- 
--int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr)
-+int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr,
-+		      struct netlink_ext_ack *extack)
- {
- 	struct dsa_switch *ds = dp->ds;
- 	int err;
-@@ -2034,7 +2035,7 @@ int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr)
- 
- 	dp->hsr_dev = hsr;
- 
--	err = ds->ops->port_hsr_join(ds, dp->index, hsr);
-+	err = ds->ops->port_hsr_join(ds, dp->index, hsr, extack);
- 	if (err)
- 		dp->hsr_dev = NULL;
- 
-diff --git a/net/dsa/port.h b/net/dsa/port.h
-index dc812512fd0e..334879964e2c 100644
---- a/net/dsa/port.h
-+++ b/net/dsa/port.h
-@@ -103,7 +103,8 @@ int dsa_port_phylink_create(struct dsa_port *dp);
- void dsa_port_phylink_destroy(struct dsa_port *dp);
- int dsa_shared_port_link_register_of(struct dsa_port *dp);
- void dsa_shared_port_link_unregister_of(struct dsa_port *dp);
--int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr);
-+int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr,
-+		      struct netlink_ext_ack *extack);
- void dsa_port_hsr_leave(struct dsa_port *dp, struct net_device *hsr);
- int dsa_port_tag_8021q_vlan_add(struct dsa_port *dp, u16 vid, bool broadcast);
- void dsa_port_tag_8021q_vlan_del(struct dsa_port *dp, u16 vid, bool broadcast);
++
++	/*
++	 * Notification for MAC address changes on user ports. Drivers can
++	 * currently only veto operations. They should not use the method to
++	 * program the hardware, since the operation is not rolled back in case
++	 * of other errors.
++	 */
++	int	(*port_set_mac_address)(struct dsa_switch *ds, int port,
++					const unsigned char *addr);
++
+ 	/*
+ 	 * Compatibility between device trees defining multiple CPU ports and
+ 	 * drivers which are not OK to use by default the numerically smallest
 diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 48db91b33390..2b3d89b77121 100644
+index 2b3d89b77121..4c3e502d7e16 100644
 --- a/net/dsa/slave.c
 +++ b/net/dsa/slave.c
-@@ -2862,7 +2862,7 @@ static int dsa_slave_changeupper(struct net_device *dev,
- 		}
- 	} else if (is_hsr_master(info->upper_dev)) {
- 		if (info->linking) {
--			err = dsa_port_hsr_join(dp, info->upper_dev);
-+			err = dsa_port_hsr_join(dp, info->upper_dev, extack);
- 			if (err == -EOPNOTSUPP) {
- 				NL_SET_ERR_MSG_WEAK_MOD(extack,
- 							"Offloading not supported");
+@@ -457,6 +457,13 @@ static int dsa_slave_set_mac_address(struct net_device *dev, void *a)
+ 	if (!is_valid_ether_addr(addr->sa_data))
+ 		return -EADDRNOTAVAIL;
+ 
++	if (ds->ops->port_set_mac_address) {
++		err = ds->ops->port_set_mac_address(ds, dp->index,
++						    addr->sa_data);
++		if (err)
++			return err;
++	}
++
+ 	/* If the port is down, the address isn't synced yet to hardware or
+ 	 * to the DSA master, so there is nothing to change.
+ 	 */
 -- 
 2.20.1
 
