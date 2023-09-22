@@ -2,218 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F005F7AAD56
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498DE7AAD57
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjIVJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:03:36 -0400
+        id S232810AbjIVJDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:03:47 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjIVJDf (ORCPT
+        with ESMTP id S232719AbjIVJDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:03:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4459399
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:03:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18462C433C7;
-        Fri, 22 Sep 2023 09:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695373408;
-        bh=VxDh6zlUkPlWGqASD5pZQ2AZHV1SUFg3JBNsX74h6z0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BsUFrPIAY1OS1Zfdp8N3eq0cRMTskTJVk/XIo9c+h0Ccn+PHuhFmWxlFmglMYVHsL
-         2QQgtK9xlJf6zT6sZNVbzntL/2r2iCHufg+F2LcP+pGBEISHxpaqmQcjhDpUx/6wGT
-         wvGrd/8tOJy0QSyi3cvZ4bPPNEq9P7yr4rWEHg5grSxcvoauZDeDbjLfzt7hqGCkhb
-         sWVvbByGw3Bya/UHZRS0XC4rZedzy74ivqV7GezYNNFyTp63WY4a0K7Fu/s5Ur6Ts4
-         EFaN3HTh6dVNWtOrFFaNW6ZASn68UaL9zzMwjelyc0285pBkFx6PDibfcZoSp2DjJQ
-         IU7E7zp/xFVUQ==
-Message-ID: <3eef2d49-d13e-40cf-a633-94b52948b065@kernel.org>
-Date:   Fri, 22 Sep 2023 12:03:23 +0300
+        Fri, 22 Sep 2023 05:03:45 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC6EFB
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:03:39 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32001d16a14so1785727f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1695373417; x=1695978217; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JwCuwBRzQRtzIIEcUqVCtqKyAERbE1Vs3ON90clTwDo=;
+        b=RHLtSQ/dcfFp/hTxnjPBGQj74xTbBt7b4lGy81ESxwdy37hrR09Em98GhyGJDhTwiQ
+         WtvfCQx3Vmq48trhhrz4YQ7E1RnTu8fm07ef1/DpD6INrVqVZi2ZxFIVCrtild+EHdPW
+         VUfdG+i//mewoeGxwN0qahTbL91gArR+GTpTp8zD+L/5J0uurY23MnaR7c638eEEEN9a
+         r7F0V/MNqgdRjh+px7thyS/pOaH0KsNu/No9deG04BGQveDUufQjk4Zg/OZqQqrDMad/
+         57qfoo/jSqdqgy7kLB9Fd7nSFQb3kMRNzRRDfiK9Q5m45VReUYgxTSlhFO6wOE9DrPu0
+         1b5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695373417; x=1695978217;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JwCuwBRzQRtzIIEcUqVCtqKyAERbE1Vs3ON90clTwDo=;
+        b=Qvipt/vZawiFL0om7ijuvZbQ6zDu3aw5QUk4VI+xPEufLQAHiTSM+0I/7p6uwMW7MG
+         koXCuoHBKhkDdkmHjJmxVBFMa677KjW4Phq8gGDFh/vW4GBofGUl9Oc335ODy6rthTz0
+         vCNvS6ZvjrJoxWRNmHg3uVS6dfSshZOQnahJf3eklKcP3Z0QiwzDmDUdCrCSzFZOOtai
+         xymTj8qZK3E4GiaDphU+DT0tF7K6ljF1VMj1q6tifHRVgsg5FLkBWxdQa1RNLFZK/f5W
+         i4MDlt+ViZhuRL97p88Gv7Nz51Pv9pXpyjuTK3APDxPEoyLWlObK7tlLO+YmKH3p3Sp1
+         QQ0Q==
+X-Gm-Message-State: AOJu0YyVr3EW1XzatWNQvVQ/E1oyvfciv3RArQd6eOU7pD5csPrFE9dd
+        4gFA1bynl0WW4IVV1VDFgI3injpArgmWEK07Yc23lA==
+X-Google-Smtp-Source: AGHT+IFeB10/VQrvywgM5PXIIic/lGYOF01ufz889h5rxkcb+djbm+QO4vNfMX9sYbEOBbVgKOQ24g==
+X-Received: by 2002:adf:e7c9:0:b0:317:3f70:9dc4 with SMTP id e9-20020adfe7c9000000b003173f709dc4mr6353076wrn.31.1695373417393;
+        Fri, 22 Sep 2023 02:03:37 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id x17-20020a5d6511000000b0031fd849e797sm3917553wru.105.2023.09.22.02.03.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 02:03:36 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+To:     broonie@kernel.org, zev@bewilderbeest.net,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies from DT
+Date:   Fri, 22 Sep 2023 11:03:29 +0200
+Message-ID: <20230922090330.1570350-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: ti: am642-evm: Add overlay for NAND
- expansion card
-To:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, david@gibson.dropbear.id.au
-Cc:     vigneshr@ti.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srk@ti.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Siddharth Vadapalli <s-vadapalli@ti.com>
-References: <20230920133450.54226-1-rogerq@kernel.org>
- <20230920133450.54226-3-rogerq@kernel.org>
- <20230920135802.3ej2wcuaruqjidel@uncouth>
- <e8f26137-1284-4f45-a74d-a0a5f2aa2f93@kernel.org>
- <20230920164424.rrjvm6nvtv4ysyrw@unreal>
- <c7ec6ccd-37de-244d-0b3b-cb5d13bae539@ti.com>
- <6f2b38f8-1962-46f2-a095-b1eaf99ed407@kernel.org>
- <f79f521b-bfaf-27d2-f152-2f2f21d6f2b7@ti.com>
-Content-Language: en-US
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <f79f521b-bfaf-27d2-f152-2f2f21d6f2b7@ti.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Naresh Solanki <Naresh.Solanki@9elements.com>
 
+Instead of hardcoding a single supply, retrieve supplies from DT.
 
-On 21/09/2023 20:23, Andrew Davis wrote:
-> On 9/21/23 6:37 AM, Roger Quadros wrote:
->> On 20/09/2023 20:06, Andrew Davis wrote:
->>> On 9/20/23 11:44 AM, Nishanth Menon wrote:
->>>> On 18:18-20230920, Roger Quadros wrote:
->>>>>
->>>>>
->>>>> On 20/09/2023 16:58, Nishanth Menon wrote:
->>>>>> On 16:34-20230920, Roger Quadros wrote:
->>>>>>> The NAND expansion card plugs in over the HSE (High Speed Expansion)
->>>>>>> connector. Add support for it.
->>>>>>>
->>>>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>>>>> ---
->>>>>>>    arch/arm64/boot/dts/ti/Makefile               |   1 +
->>>>>>>    arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++++++++++
->>>>>>>    2 files changed, 141 insertions(+)
->>>>>>>    create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
->>>>>>>
->>>>>>> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
->>>>>>> index 06d6f264f292..ece74085a6be 100644
->>>>>>> --- a/arch/arm64/boot/dts/ti/Makefile
->>>>>>> +++ b/arch/arm64/boot/dts/ti/Makefile
->>>>>>> @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
->>>>>>>      # Boards with AM64x SoC
->>>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
->>>>>>> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtbo
->>>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
->>>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
->>>>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
->>>>>>
->>>>>> Also see https://lore.kernel.org/all/20230911165610.GA1362932-robh@kernel.org/
->>>>>>
->>>>>> you may not get the dtbo installed when doing make dtbs_install
->>>>>>
->>>>>> [...]
->>>>>>
->>>>>
->>>>> $ v8make dtbs_install INSTALL_DTBS_PATH=/tmp
->>>>>     INSTALL /tmp/ti/k3-am625-beagleplay.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-phyboard-lyra-rdk.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-sk.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dahlia.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dev.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-yavia.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-dahlia.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-dev.dtb
->>>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-yavia.dtb
->>>>>     INSTALL /tmp/ti/k3-am62-lp-sk.dtb
->>>>>     INSTALL /tmp/ti/k3-am62x-sk-hdmi-audio.dtbo
->>>>>     INSTALL /tmp/ti/k3-am62a7-sk.dtb
->>>>>     INSTALL /tmp/ti/k3-am62p5-sk.dtb
->>>>>     INSTALL /tmp/ti/k3-am642-evm.dtb
->>>>>     INSTALL /tmp/ti/k3-am642-evm-nand.dtbo
->>>>> ^^^^
->>>>>     INSTALL /tmp/ti/k3-am642-phyboard-electra-rdk.dtb
->>>>>     INSTALL /tmp/ti/k3-am642-sk.dtb
->>>>>
->>>>>
->>>>> What did I miss?
->>>>
->>>> I missed it, actually. See Rob's comment:
->>>> https://lore.kernel.org/all/CAL_Jsq+GR3hP6hFvFn2z5aXvSXnh9butD3aKZ-y_XJgx0_YPTw@mail.gmail.com/
->>>>
->>>> Having orphan dtbo is apparently frowned upon
->>>>
->>>
->>> And if you apply these overlays to the base DTB then it gets
->>> symbols added automatically, no need for your patch [1/2] here.
->>>
->>
->> Is this OK?
->>
->>     k3-am642-evm-nand-dtbs := k3-am642-evm.dtb k3-am642-evm-nand.dtbo
->>     dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtb
->>
->> So patch 1 is not required in this case but we have an
->> extra dtb file which is not really required.
->>
-> 
-> While I agree we will end up with several pre-overlayed DTB files
-> that are arguably not required as they could be later built/applied,
-> until we find a better way to check at build time these overlays
-> need applied to something as a test.
-> 
->> I have 2 more issues to point out
->>
->> 1)
->> With existing examples e.g. J7200 EVM
->> wouldn't  k3-j7200-evm.dtb include the k3-j7200-evm-quad-port-eth-exp.dtbo?
->> Is this what we really want?
->>
->> likewise for k3-j721e-evm.dtb and k3-am654-gp-evm.dtb
->>
-> 
-> Yes, that is the idea, the base-board.dtb is just the raw main board, but
-> the "EVM" when you buy it comes with the quad-port daughtercard attached.
-> That is what we consider the "EVM" and the DTB names match that.
-> 
->> 2)
->> Another issue (unrelated to this change) is the below warning:
->>
->>     arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #address-cells value
->>     arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #size-cells value
->>
->> This is because we use the 'ranges' property in the gpmc0 node
->> and the compiler doesn't know the #address/size-cells of the
->> parent node.
->>
->> Is there a trick to specify it in the dtso file?
->>
-> 
-> Hmm, seems like a tricky one. Do you really need to do the ranges here?
-> Could you use the default `ranges;` for gpmc0? Then do the range translation
-> down inside the nand node to keep the partition addresses sane.
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+---
+ drivers/regulator/userspace-consumer.c | 43 ++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 3 deletions(-)
 
-GPMC has separate address spaces per chip select. 
-
-From Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-  ranges:
-    minItems: 1
-    description: |
-      Must be set up to reflect the memory layout with four
-      integer values for each chip-select line in use,
-      <cs-number> 0 <physical address of mapping> <size>
-
-The ranges location in the device tree overlay is correct. The overlay is
-meaningless without the base tree.
-
-The correct solution would be to fix dtc so it doesn't print this warning
-for DT overlays.
-
-i.e.
-
-diff --git a/scripts/dtc/checks.c b/scripts/dtc/checks.c
-index 9f31d2607182..dcb0a6f6f3fb 100644
---- a/scripts/dtc/checks.c
-+++ b/scripts/dtc/checks.c
-@@ -1203,6 +1203,9 @@ static void check_avoid_default_addr_size(struct check *c, struct dt_info *dti,
-        if (!reg && !ranges)
-                return;
+diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
+index 97f075ed68c9..a3d3e1e6ca74 100644
+--- a/drivers/regulator/userspace-consumer.c
++++ b/drivers/regulator/userspace-consumer.c
+@@ -115,11 +115,32 @@ static const struct attribute_group attr_group = {
+ 	.is_visible =  attr_visible,
+ };
  
-+       if (streq(node->name, "__overlay__"))
-+               return;
++#define SUPPLY_SUFFIX "-supply"
++#define SUPPLY_SUFFIX_LEN 7
 +
-        if (node->parent->addr_cells == -1)
-                FAIL(c, dti, node, "Relying on default #address-cells value");
++static int get_num_supplies(struct platform_device *pdev)
++{
++	struct  property *prop;
++	int num_supplies = 0;
++
++	for_each_property_of_node(pdev->dev.of_node, prop) {
++		const char *prop_name = prop->name;
++		int len = strlen(prop_name);
++
++		if (len > SUPPLY_SUFFIX_LEN &&
++		    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
++			num_supplies++;
++		}
++	}
++	return num_supplies;
++}
++
+ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+ {
+ 	struct regulator_userspace_consumer_data tmpdata;
+ 	struct regulator_userspace_consumer_data *pdata;
+ 	struct userspace_consumer_data *drvdata;
++	struct  property *prop;
+ 	int ret;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+@@ -131,11 +152,27 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+ 		memset(pdata, 0, sizeof(*pdata));
+ 
+ 		pdata->no_autoswitch = true;
+-		pdata->num_supplies = 1;
+-		pdata->supplies = devm_kzalloc(&pdev->dev, sizeof(*pdata->supplies), GFP_KERNEL);
++		pdata->num_supplies = get_num_supplies(pdev);
++
++		pdata->supplies = devm_kzalloc(&pdev->dev, pdata->num_supplies *
++					       sizeof(*pdata->supplies), GFP_KERNEL);
+ 		if (!pdata->supplies)
+ 			return -ENOMEM;
+-		pdata->supplies[0].supply = "vout";
++
++		for_each_property_of_node(pdev->dev.of_node, prop) {
++			const char *prop_name = prop->name;
++			int len = strlen(prop_name);
++
++			if (len > SUPPLY_SUFFIX_LEN &&
++			    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
++				char *supply_name = devm_kzalloc(&pdev->dev,
++								 len - SUPPLY_SUFFIX_LEN + 1,
++								 GFP_KERNEL);
++				strscpy(supply_name, prop_name, len - SUPPLY_SUFFIX_LEN);
++				supply_name[len - SUPPLY_SUFFIX_LEN] = '\0';
++				pdata->supplies[0].supply = supply_name;
++			}
++		}
+ 	}
+ 
+ 	if (pdata->num_supplies < 1) {
 
-
+base-commit: 451e85e29c9d6f20639d4cfcff4b9dea280178cc
 -- 
-cheers,
--roger
+2.41.0
+
