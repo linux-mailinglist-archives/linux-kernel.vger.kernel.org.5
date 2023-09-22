@@ -2,124 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4B37AA809
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3020C7AA810
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 07:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjIVE6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        id S230251AbjIVFDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 01:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjIVE6v (ORCPT
+        with ESMTP id S229584AbjIVFDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:58:51 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6629B192;
-        Thu, 21 Sep 2023 21:58:45 -0700 (PDT)
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A1BED212C5B7;
-        Thu, 21 Sep 2023 21:58:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A1BED212C5B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695358724;
-        bh=+yXMZYNsMsvn2jwwDbQl1ZwR5DmyfHWdhUieAsjjntE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZV8FpA5rQIGeeqhPqT4DBWcgP+m3qnVc4ZFfXauyHrMtr98EOzQ1wYPpgAl/NxFTM
-         cM2GWtz3RpyVULVnoqz0MAQ0g/yv/US4sVIPpE0Zc4+te1K+nhtiCi+dzHqQt/xz8d
-         +QyjT7tMhmkicZfXAlaVkFiDXVJBwFShF4dWdjOM=
-From:   Saurabh Sengar <ssengar@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com
-Cc:     minipli@grsecurity.net, ssengar@microsoft.com
-Subject: [PATCH v2] x86/hyperv: Remove hv_vtl_early_init initcall
-Date:   Thu, 21 Sep 2023 21:58:40 -0700
-Message-Id: <1695358720-27681-1-git-send-email-ssengar@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 01:03:42 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7162C194
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 22:03:29 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c4194f769fso14418885ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 22:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1695359009; x=1695963809; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eKfvtCzoPO1DjRH7hqL/PCP8n2qTK2huPA+M1ou1kWk=;
+        b=FwGewhCC5HKma6r5rqI6P2X3O27I5AexLq1aWMQ5AVZLvIRv0bUVveR7vzOpzOzng2
+         xAB5PM8RBCwMhKBVevp7QEdWj8S1cEy12lZJ4E6X5g1xcbQDt/HOEJg7qumcZUzC4WQc
+         6mn8PemkY+2B5mRpE2mzkpn88OwNkzVR75s+NAaK3dp/NDpB2KtLnuoFl93Y5VNevlIc
+         LDlWRmM+udJv7MvAXVk/J4/1VzAjSKCIayNrIn17yzWTOxU8LIyqT/YgaHzR+CRhScPh
+         29CgLo/nACgxpSFk1RFzuXlErW6HoWrznzs7wVwkkB6pRpEE6G49sPHEOXJ7+hZzJ89q
+         IXcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695359009; x=1695963809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eKfvtCzoPO1DjRH7hqL/PCP8n2qTK2huPA+M1ou1kWk=;
+        b=b86D8F4pl27XldgdIUkOriHOaCn/Csbz0bh9hehb/9I+m9l1f4UjUlkvueK3e3nMJk
+         yh4EeSpas1Y3jwiSGmCRzce88cxM575FtcG17rNK91QeOOgimkj8NhI58+tyD/288S+z
+         0zYBhsaFnxeUsiDWk0D5jl2Dl6AVr39Dyq7DGGSN7wi9eCADNB59ORuitvq+ceP9NGIS
+         KrONqspuNhCecSTUubm71SxfhPm0ywdEU3+vP+9rAWjM/pB1mcR0MgOMAHP8mPTNFM8Y
+         MGQGm9aseJXx/f59zSUilTIyGLOzUEBS31+r/jnYU+utxYNS/JocDJHglTm+RXlaMFeG
+         jctg==
+X-Gm-Message-State: AOJu0Yw9WEkVqHzMRfweRcTUOxXwM842GVprmpNA4ZzsqsEyBDAOT0Nn
+        9ZUmMGK6yzerLIvEtgGZZBWBSg==
+X-Google-Smtp-Source: AGHT+IFeu1EA7GyGKW4frzHTSmVZS0RTtP2XJVF07Ex6N8rmUJE7dIUep7oHw3F8G6mpIGwAto30ww==
+X-Received: by 2002:a17:903:2305:b0:1c2:36a:52a5 with SMTP id d5-20020a170903230500b001c2036a52a5mr7889794plh.57.1695359008731;
+        Thu, 21 Sep 2023 22:03:28 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id jk13-20020a170903330d00b001bbd8cf6b57sm2466460plb.230.2023.09.21.22.03.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 22:03:28 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qjYK5-003xpJ-0X;
+        Fri, 22 Sep 2023 15:03:25 +1000
+Date:   Fri, 22 Sep 2023 15:03:25 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Pankaj Raghav <p.raghav@samsung.com>,
+        Pankaj Raghav <kernel@pankajraghav.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        da.gomez@samsung.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
+        gost.dev@samsung.com, riteshh@linux.ibm.com
+Subject: Re: [RFC 00/23] Enable block size > page size in XFS
+Message-ID: <ZQ0gHRvrbZUjO/rA@dread.disaster.area>
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+ <ZQd4IPeVI+o6M38W@dread.disaster.area>
+ <ZQewKIfRYcApEYXt@bombadil.infradead.org>
+ <CGME20230918050749eucas1p13c219481b4b08c1d58e90ea70ff7b9c8@eucas1p1.samsung.com>
+ <ZQfbHloBUpDh+zCg@dread.disaster.area>
+ <806df723-78cf-c7eb-66a6-1442c02126b3@samsung.com>
+ <ZQuxvAd2lxWppyqO@bombadil.infradead.org>
+ <ZQvNVAfZMjE3hgmN@bombadil.infradead.org>
+ <ZQvczBjY4vTLJFBp@dread.disaster.area>
+ <ZQvuNaYIukAnlEDM@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQvuNaYIukAnlEDM@bombadil.infradead.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has been cases reported where HYPERV_VTL_MODE is enabled by mistake,
-on a non Hyper-V platforms. This causes the hv_vtl_early_init function to
-be called in an non Hyper-V/VTL platforms which results the memory
-corruption.
+On Thu, Sep 21, 2023 at 12:18:13AM -0700, Luis Chamberlain wrote:
+> On Thu, Sep 21, 2023 at 04:03:56PM +1000, Dave Chinner wrote:
+> > On Wed, Sep 20, 2023 at 09:57:56PM -0700, Luis Chamberlain wrote:
+> > > On Wed, Sep 20, 2023 at 08:00:12PM -0700, Luis Chamberlain wrote:
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=large-block-linus
+> > > > 
+> > > > I haven't tested yet the second branch I pushed though but it applied without any changes
+> > > > so it should be good (usual famous last words).
+> > > 
+> > > I have run some preliminary tests on that branch as well above using fsx
+> > > with larger LBA formats running them all on the *same* system at the
+> > > same time. Kernel is happy.
+> 
+> <-- snip -->
+> 
+> > So I just pulled this, built it and run generic/091 as the very
+> > first test on this:
+> > 
+> > # ./run_check.sh --mkfs-opts "-m rmapbt=1 -b size=64k" --run-opts "-s xfs_64k generic/091"
+> 
+> The cover letter for this patch series acknowledged failures in fstests.
 
-Remove the early_initcall for hv_vtl_early_init and call it at the end of
-hyperv_init to make sure it is never called in a non Hyper-V platform by
-mistake.
+But this is a new update, which you said fixed various issues, and
+you posted this in direct response to the bug report I gave you.
 
-Reported-by: Mathias Krause <minipli@grsecurity.net>
-Closes: https://lore.kernel.org/lkml/40467722-f4ab-19a5-4989-308225b1f9f0@grsecurity.net/
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Acked-by: Mathias Krause <minipli@grsecurity.net>
----
-This patch is dependent on :
-https://lore.kernel.org/lkml/1695182675-13405-1-git-send-email-ssengar@linux.microsoft.com/
-[V2]
-- Fix HYPERV_VTL_MODE=n compilation flow
-- Updated commit s/vhv_vtl_early_init/hv_vtl_early_init
+> For kdevops now, we borrow the same last linux-next baseline:
+> 
+> git grep "generic/091" workflows/fstests/expunges/6.6.0-rc2-large-block-linus-nobdev
+> workflows/fstests/expunges/6.6.0-rc2-large-block-linus-nobdev/xfs/unassigned/xfs_reflink_1024.txt:generic/091 # possible regression
+> workflows/fstests/expunges/6.6.0-rc2-large-block-linus-nobdev/xfs/unassigned/xfs_reflink_16k.txt:generic/091
+> workflows/fstests/expunges/6.6.0-rc2-large-block-linus-nobdev/xfs/unassigned/xfs_reflink_32k.txt:generic/091
+> workflows/fstests/expunges/6.6.0-rc2-large-block-linus-nobdev/xfs/unassigned/xfs_reflink_64k_4ks.txt:generic/091
+> 
+> So well, we already know this fails.
 
+*cough*
 
- arch/x86/hyperv/hv_init.c       | 3 +++
- arch/x86/hyperv/hv_vtl.c        | 3 +--
- arch/x86/include/asm/mshyperv.h | 2 ++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+-You- know it already fails.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index f0128fd4031d..608f4fe41fb7 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -610,6 +610,9 @@ void __init hyperv_init(void)
- 	/* Find the VTL */
- 	ms_hyperv.vtl = get_vtl();
- 
-+	if (ms_hyperv.vtl > 0) /* non default VTL */
-+		hv_vtl_early_init();
-+
- 	return;
- 
- clean_guest_os_id:
-diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
-index 36a562218010..999f5ac82fe9 100644
---- a/arch/x86/hyperv/hv_vtl.c
-+++ b/arch/x86/hyperv/hv_vtl.c
-@@ -215,7 +215,7 @@ static int hv_vtl_wakeup_secondary_cpu(int apicid, unsigned long start_eip)
- 	return hv_vtl_bringup_vcpu(vp_id, start_eip);
- }
- 
--static int __init hv_vtl_early_init(void)
-+int __init hv_vtl_early_init(void)
- {
- 	/*
- 	 * `boot_cpu_has` returns the runtime feature support,
-@@ -230,4 +230,3 @@ static int __init hv_vtl_early_init(void)
- 
- 	return 0;
- }
--early_initcall(hv_vtl_early_init);
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index 033b53f993c6..896445edc6a8 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -340,8 +340,10 @@ static inline u64 hv_get_non_nested_register(unsigned int reg) { return 0; }
- 
- #ifdef CONFIG_HYPERV_VTL_MODE
- void __init hv_vtl_init_platform(void);
-+int __init hv_vtl_early_init(void);
- #else
- static inline void __init hv_vtl_init_platform(void) {}
-+static inline int __init hv_vtl_early_init(void) { return 0; }
- #endif
- 
- #include <asm-generic/mshyperv.h>
+And you are expecting people who try the code to somehow know
+that you've explicitly ignored this fsx failure, especially after
+all your words to tell us how much fsx testing it has passed?
+
+And that's kinda my point - you're effusing about how much fsx
+testing this has passed, yet it istill fails after just a handful of
+ops in generic/091. The dissonance could break windows...
+
+----
+
+Fundamentally, when it comes to data integrity, it important to
+exercise as much of the operational application space as quickly as
+possible as it is that breadth of variation in operations that
+flushes out more bugs and helps stabilises the code faster.
+
+Why do you think we talk about the massive test matrix most
+filesytsems have and how long it takes to iterate so much? It's
+because iterating that complex test matrix is how we find all the
+whacky, weird bugs in the code.
+
+Concentrating on a single test configuration and running it over and
+over again won't find bugs in code it doesn't exercise no matter how
+long it is run for. Running such a setup in an automated environment
+doesn't mean you get better code coverage, it just means you cover
+the same narrow set of corner cases faster and more times. If it
+works once, it should work a million times. Iterating it a billion
+more times doesn't tell us anything additional, either.
+
+Put simply: performing deep, homogenous testing on code that has known
+data corruption bugs outside the narrow scope of the test case is
+not telling us anything useful about the overall state of the code.
+Indeed, turning off failing tests that are critical to validating the
+correct operation of the code you are modifying is bad practice.
+
+For code changes like this, all fsx testing in fstests should pass
+before you post anything for review - even for an RFC. There is no
+point reviewing code that doesn't work properly, nor wasting
+people's time by encouraging them to test it when it's clear to you
+that it's going to fail in various important ways.
+
+Hence I think your testing is focussing on the wrong things and I
+suspect that you've misunderstood the statements of "we'll need
+billions of fsx ops to test this code" that various people have made
+really meant.  You've elevated running billions of fsx ops to your
+primary "it works" gating condition, at the expense of making sure
+all the other parts of the filesystem still work correctly.
+
+The reality is that the returns from fsx diminish as the number of
+ops go up. Once you've run the first hundred million fsx ops for a
+given operations set, the chance that the next 100M ops will find a
+new problem is -greatly- reduced. The vast majority of problems will
+be found in the first 10M ops that are run in any given fsx
+operation, and few bugs are found beyond the 100M mark. Yes, we
+occasionally find one up in the billions, but that's rare and most
+definitely not somethign to focus on when still developing RFC level
+code.
+
+Different fsx configurations change the operation set that is run -
+mixing DIO reads with buffered writes, turning mmap on and off,
+using AIO or io_uring rather than synchronous IO, etc. These all
+exercise different code paths and corner cases and have vastly
+different code interactions, and that is what we need to cover when
+developing new code.
+
+IOWs, we need coverage of the *entire operation space*, not just the
+same narrow set of operations run billions of time.  A wide focus
+requires billions of ops to cover because it requires lots of
+different application configurations to be run. In constrast, there
+are only three fs configurations that matter: bs < PS, bs == PS and
+bs > PS.
+
+For example, 16kB, 32kB and 64kB filesystem configs exercise exactly
+the same code paths in exactly the same way (e.g. both have non-zero
+miniumum folio orders but only differ by what that order is). Hence
+running the same test application configs on these different
+filessytem configurations does actually not improve code coverage of
+the testing at all. Testing all of them only increases the resources
+required to the test a change, it does not improve the quality of
+coverage of the testing being performed at all....
+
+Hence I'd strongly suggest that, for the next posting of these
+cahnge, you focus on making fstests pass without turning off any
+failing tests, and that fsx is run with a wide variety of
+configurations (e.g. modify all the fstests cases to run for a
+configurable number of ops (e.g. via SOAK_DURATION)). We just don't
+care at this point about finding that 1 in 10^15 ops bug because
+it's code in development; what we actually care about is that
+-everything- works correctly for the vast majority of use cases....
+
+-Dave.
 -- 
-2.34.1
-
+Dave Chinner
+david@fromorbit.com
