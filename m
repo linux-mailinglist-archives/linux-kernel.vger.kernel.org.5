@@ -2,138 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBF87AAA39
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7009C7AA9F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjIVH1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        id S230493AbjIVHTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbjIVH1X (ORCPT
+        with ESMTP id S229796AbjIVHTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:27:23 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9171AB;
-        Fri, 22 Sep 2023 00:27:17 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-578cc95db68so1098283a12.1;
-        Fri, 22 Sep 2023 00:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695367636; x=1695972436; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0JwtvcMX0Vd+Xc7guGazpkfS0KLQ5uU83L1DMPcX7c0=;
-        b=TyTvhvxxuwRNqM/Rph87+4tLo5evjFQi5MGEgDJ9qeq+sOUWSzPha8rnN+EeRf6WYX
-         R0XDpZUwqV05JYeFftjreIRQKT3YZBCl5NEevljGty9sqSj/cKqKXnC05ucS5qb3JZhF
-         QE7nobBvTS1TvB/rVzvs8BSeheou4MqAqTKyXcVhzfDM5dMdkmf4DNTThkMASsQAd4Qy
-         lpuafkTczBiM3Np3RRhzrppQGlz11kwL4wp5mHlka1wlrqzYA0oMiSElmKmeF+0c0kAU
-         Uy2uenWf1I+vvPRJyP/dVQajPatdYQbspv0mUlzE6T8+ofojhxHuFj/T1qtInpR5bTJk
-         oziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695367636; x=1695972436;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0JwtvcMX0Vd+Xc7guGazpkfS0KLQ5uU83L1DMPcX7c0=;
-        b=wxH6w1USulOb/y987XaVJqtPz0BLF60yArQEQkb4tMR7ptC897zH3jjknuhM3nyhKy
-         UOWZSBXh0aM9yqFj6nSxHN//t7iuN/fNeH9uAn8RdZvyF7jXp/osgM94TrLnDvMaiIa5
-         Pq6uBup2xSU25ftrDrOXG3Zk6TJCmx/sW4cXaRgm8p6yYZ9kUWPq0miIShVlTy8SmA3J
-         W+iNNLKn2JQ5f06V+te+62c6UayrrqErJLc/qmkG0JhqpjHCyxNSOoNY1aZaW4XNapB2
-         HOxhGf88W8c9EnKZU7tLtvHfZFWhApbYlPqU3mSGI79uUVm15XizH6xawXWh/YZ9AETI
-         I1Bg==
-X-Gm-Message-State: AOJu0YxkM+AwPGmqRnFTSivMmcKuwySGUA0H99Dltl8bmNPqj6z5HzEZ
-        8stOJ+c4QCuMOtq0q/V0UyM=
-X-Google-Smtp-Source: AGHT+IFbYG6pVjqpMpgJyBCuwhUS40Y/AbHgpCrvrwP3q5cCTs2qJY5nAHnR9EEHahteB8WiHojLRA==
-X-Received: by 2002:a17:90a:ec12:b0:276:86e0:2e45 with SMTP id l18-20020a17090aec1200b0027686e02e45mr7722483pjy.43.1695367636179;
-        Fri, 22 Sep 2023 00:27:16 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a190900b0026fa1931f66sm2826648pjg.9.2023.09.22.00.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 00:27:14 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id EF58F81B96CF; Fri, 22 Sep 2023 14:18:18 +0700 (WIB)
-Date:   Fri, 22 Sep 2023 14:18:18 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
-        primalmotion <primalmotion@pm.me>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux USB <linux-usb@vger.kernel.org>
-Subject: Re: Fwd: unable to boot when monitor is attached
-Message-ID: <ZQ0_upwsFTIduIRQ@debian.me>
-References: <5eb57bfe-94a4-136b-497e-deeb31846db1@gmail.com>
+        Fri, 22 Sep 2023 03:19:38 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0D0EC2;
+        Fri, 22 Sep 2023 00:19:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9E51DA7;
+        Fri, 22 Sep 2023 00:20:07 -0700 (PDT)
+Received: from [192.168.68.106] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11BBC3F5A1;
+        Fri, 22 Sep 2023 00:19:20 -0700 (PDT)
+Message-ID: <f6ad20a0-2f3f-414a-845a-948f6d06aaf3@arm.com>
+Date:   Fri, 22 Sep 2023 08:19:18 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5zNn6a6lC8WX+A05"
-Content-Disposition: inline
-In-Reply-To: <5eb57bfe-94a4-136b-497e-deeb31846db1@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/8] powerpc: hugetlb: Convert set_huge_pte_at() to
+ take vma
+Content-Language: en-GB
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20230921162007.1630149-1-ryan.roberts@arm.com>
+ <20230921162007.1630149-3-ryan.roberts@arm.com>
+ <9864a7eb-004d-14c6-c2bd-bb9333fe67be@csgroup.eu>
+ <0958d813-15f8-5ed5-1e20-08b8feb465ad@csgroup.eu>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <0958d813-15f8-5ed5-1e20-08b8feb465ad@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22/09/2023 07:44, Christophe Leroy wrote:
+> 
+> 
+> Le 21/09/2023 à 20:43, Christophe Leroy a écrit :
+>>
+>>
+>> Le 21/09/2023 à 18:20, Ryan Roberts a écrit :
+>>> In order to fix a bug, arm64 needs access to the vma inside it's
+>>> implementation of set_huge_pte_at(). Provide for this by converting the
+>>> mm parameter to be a vma. Any implementations that require the mm can
+>>> access it via vma->vm_mm.
+>>>
+>>> This commit makes the required powerpc modifications. Separate commits
+>>> update the other arches and core code, before the actual bug is fixed in
+>>> arm64.
+>>>
+>>> No behavioral changes intended.
+>>
+>> This patch doesn't build, allthough I have also applied patch 1. Is
+>> something missing ?
+>>
+>>     CALL    scripts/checksyscalls.sh
+>>     CC      arch/powerpc/kernel/setup-common.o
+>> In file included from arch/powerpc/kernel/setup-common.c:37:
+>> ./include/linux/hugetlb.h: In function 'huge_ptep_modify_prot_commit':
+>> ./include/linux/hugetlb.h:987:28: error: passing argument 1 of
+>> 'set_huge_pte_at' from incompatible pointer type
+>> [-Werror=incompatible-pointer-types]
+>>     987 |         set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
+>>         |                         ~~~^~~~~~~
+>>         |                            |
+>>         |                            struct mm_struct *
+>> In file included from ./arch/powerpc/include/asm/hugetlb.h:13,
+>>                    from ./include/linux/hugetlb.h:815:
+>> ./arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h:49:45: note: expected
+>> 'struct vm_area_struct *' but argument is of type 'struct mm_struct *'
+>>      49 | void set_huge_pte_at(struct vm_area_struct *vma, unsigned long
+>> addr, pte_t *ptep, pte_t pte);
+>>         |                      ~~~~~~~~~~~~~~~~~~~~~~~^~~
+>> cc1: all warnings being treated as errors
+>> make[4]: *** [scripts/Makefile.build:243:
+> 
+> Oh, I realised that it requires patch 6 to build properly. This is not 
+> good. Your series should be bisectable, that means it must build and run 
+> successfully after each patch. Therefore you have to squash patches 1 to 
+> 7 all togethers.
 
---5zNn6a6lC8WX+A05
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah my bad - sorry about that. I thought it would be better to separate the
+changes for each arch. But as already suggested by Andrew and Catalin, I'll
+squash the first 7 patches into 1 for v2.
 
-On Fri, Jul 07, 2023 at 07:10:13AM +0700, Bagas Sanjaya wrote:
-> Hi,
->=20
-> I notice a regression report on Bugzilla [1]. Quoting from it:
->=20
-> >=20
-> > In the latest 6.3 and 6.4, it is impossible for me to boot my laptop if=
- my DELL U2720Q monitor is plugged in (USB-C). I have to unplug it, then bo=
-ot. As soon as the first second of boot went through, I can plug in my moni=
-tor and there is no issue afterward. There is no issue waking up after susp=
-end. Only when it boots.
-> >=20
-> > See the attached pictures of the trace. The trace itself seems random (=
-at least to me :)). I tried several things, like removing any attached USB =
-devices from the monitor built-in USB-hub, but that does not change anythin=
-g. (there is a keyboard and trackpad attached).
->=20
-> See Bugzilla for the full thread.
->=20
-> Unfortunately, the reporter can only provide photos of kernel trace
-> (as he doesn't have any other means to extract kernel logs, maybe
-> connecting over serial helps; see Bugzilla for these attachments).
->=20
-> Anyway, I'm adding it to regzbot so that it doesn't fall through
-> cracks unnoticed:
->=20
-> #regzbot introduced: v6.1..v6.3 https://bugzilla.kernel.org/show_bug.cgi?=
-id=3D217637
-> #regzbot title: unable to boot with Dell U2720Q monitor attached
->=20
+> 
+> I'll send you comments on the powerpc part in another mail.
+> 
+> Christophe
 
-A PureBoot developer noted that this regression is firmware bug
-(see Bugzilla), thus:
-
-#regzbot inconclusive: firmware bug, fixing the kernel only workarounds bug=
-gy firmware
-
-Thanks.
-
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---5zNn6a6lC8WX+A05
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQ0/tAAKCRD2uYlJVVFO
-oytiAQDhMFXIMa+wDyLn9PG9q2fzQL4Vy+IYfbh3qAPSVGCrVAD8CbahBPeHB79o
-TJQTY3QecxcTIqJMtI7lVcfRLbYCQAQ=
-=DCBu
------END PGP SIGNATURE-----
-
---5zNn6a6lC8WX+A05--
