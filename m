@@ -2,99 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3FF7AB17E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F363C7AB183
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbjIVL65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        id S233859AbjIVL7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233921AbjIVL6x (ORCPT
+        with ESMTP id S229644AbjIVL7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:58:53 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C001B2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:58:46 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:d3ea:1c7:41fd:3038])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6520B6607298;
-        Fri, 22 Sep 2023 12:58:44 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695383924;
-        bh=m/nPO3u2dtkBOwJtWh5MiRmfd1HuFw6fSZbWZsf3Wv0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JiYUUHY31kwZsSWTaJSvOhWIjm7sm1VXUhtIKi9S5m+lKJPDFPoo4LhF9Lc/4BJqG
-         fI8T9NF+owxbdmgbZYsUDGNY5Y5jCJHYc4LkEHok5cLTtvNw1ZGaobR8ttPdneOZcr
-         LqFJnTm6DY2q+Jp82tEVIU/Ex7Tzhv3mDDWvA/8GzhtiDskyIOxQ5Z+uqnbJhb1TLe
-         kM8tURuEBXloVJis/5hpZTGoF2rpKJdiXMF9LEXhnfIeEbhTFZipFG3brEk52/+01S
-         1ukjKdPXTWPAUqamteWN7+ikfwVfdcQqCBWzoA/tOyzsqrUprYATWizD3gwzriQAwU
-         xLvVDQEV3uPUg==
-Date:   Fri, 22 Sep 2023 13:58:42 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v4 6/8] drm/gpuvm: add drm_gpuvm_flags to
- drm_gpuvm
-Message-ID: <20230922135842.242c865d@collabora.com>
-In-Reply-To: <20230920144343.64830-7-dakr@redhat.com>
-References: <20230920144343.64830-1-dakr@redhat.com>
-        <20230920144343.64830-7-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 22 Sep 2023 07:59:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24E0FB;
+        Fri, 22 Sep 2023 04:59:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 733CFC433C7;
+        Fri, 22 Sep 2023 11:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695383973;
+        bh=ORzIDixyYNN/jJb/Sxa5K2h12YMiO0mDofirvWtUYDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fbA9AsP6p4xsjJaKQy9RAcs3SFDkJUxohUtLbQfIivmE20XLy+RMcYpcwNxR+Y33d
+         mqGSO32J30z4pjw1IUvNWnfU27xq7uksjaYhXUpPOzTrlR8fj/8lcNE5GBZZHyX7FU
+         IlNnm93Nhzzs2RpERpkh0yqFoR/fGKcvMtM1/0MRy3LDIvcf4ikJIq4xpiEiCKEzBE
+         Rk9bUkaKnEhyaCzWgSKEEHX5OHCLPshTO8ueyaJAnF5VLtlDn0euzEvuOvhFaEEdJs
+         9oGHb78rRcxDQa57tYaUDigbJtw8Dqg+8QptH5vNcKT+bSHL8RP+XPGV2McBFYXCDC
+         KbjE0uN4eFWnA==
+Date:   Fri, 22 Sep 2023 13:59:28 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bill O'Donnell <billodo@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 7/8] autofs: convert autofs to use the new mount api
+Message-ID: <20230922-vorbringen-spaghetti-946729122076@brauner>
+References: <20230922041215.13675-1-raven@themaw.net>
+ <20230922041215.13675-8-raven@themaw.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230922041215.13675-8-raven@themaw.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sep 2023 16:42:39 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+> +	fsparam_fd	("fd",			Opt_fd),
 
-> +/**
-> + * enum drm_gpuvm_flags - flags for struct drm_gpuvm
+> +/*
+> + * Open the fd.  We do it here rather than in get_tree so that it's done in the
+> + * context of the system call that passed the data and not the one that
+> + * triggered the superblock creation, lest the fd gets reassigned.
 > + */
-> +enum drm_gpuvm_flags {
-> +	/**
-> +	 * @DRM_GPUVM_USERBITS: user defined bits
-> +	 */
-> +	DRM_GPUVM_USERBITS = (1 << 0),
+> +static int autofs_parse_fd(struct fs_context *fc, int fd)
+>  {
+> +	struct autofs_sb_info *sbi = fc->s_fs_info;
+>  	struct file *pipe;
+>  	int ret;
+>  
+>  	pipe = fget(fd);
+>  	if (!pipe) {
+> -		pr_err("could not open pipe file descriptor\n");
+> +		errorf(fc, "could not open pipe file descriptor");
+>  		return -EBADF;
+>  	}
+>  
+>  	ret = autofs_check_pipe(pipe);
+>  	if (ret < 0) {
+> -		pr_err("Invalid/unusable pipe\n");
+> +		errorf(fc, "Invalid/unusable pipe");
+>  		fput(pipe);
+>  		return -EBADF;
+>  	}
 
-Nit: I tried declaring driver-specific flags, and I find this
-counter-intuitive. You basically end up with something like:
+> +static int autofs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  {
+> +		return autofs_parse_fd(fc, result.int_32);
 
-enum my_gpuvm_flags {
-	MY_FLAG_X = DRM_GPUVM_USERBITS,
-	MY_FLAG_Y = DRM_GPUVM_USERBITS << 1,
-};
+Mah, so there's a difference between the new and the old mount api that we
+should probably hide on the VFS level for fsparam_fd. Basically, if you're
+coming through the new mount api via fsconfig(FSCONFIG_SET_FD, fd) then the vfs
+will have done param->file = fget(fd) for you already so there's no need to
+call fget() again. We can just take ownership of the reference that the vfs
+took for us.
 
-instead of the usual
+But if we're coming in through the old mount api then we need to call fget.
+There's nothing wrong with your code but it doesn't take advantage of the new
+mount api which would be unfortunate. So I folded a small extension into this
+see [1].
 
-enum my_gpuvm_flags {
-	MY_FLAG_X = BIT(0),
-	MY_FLAG_Y = BIT(1),
-};
+There's an unrelated bug in fs_param_is_fd() that I'm also fixing see [2].
 
-pattern.
+I've tested both changes with the old and new mount api.
 
-Another issue I see coming is if we end up adding more core flags and
-drivers start falling short of bits for their own flags. This makes me
-wonder if we shouldn't kill this notion of USER flags and let drivers
-store their flags in some dedicated field, given they're likely to
-derive drm_gpuvm and drm_gpuva with their own object anyway.
+[1]:
+diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+index 3f2dfed428f9..0477bce7d277 100644
+--- a/fs/autofs/inode.c
++++ b/fs/autofs/inode.c
+@@ -150,13 +150,20 @@ struct autofs_fs_context {
+  * context of the system call that passed the data and not the one that
+  * triggered the superblock creation, lest the fd gets reassigned.
+  */
+-static int autofs_parse_fd(struct fs_context *fc, int fd)
++static int autofs_parse_fd(struct fs_context *fc, struct autofs_sb_info *sbi,
++                          struct fs_parameter *param,
++                          struct fs_parse_result *result)
+ {
+-       struct autofs_sb_info *sbi = fc->s_fs_info;
+        struct file *pipe;
+        int ret;
 
-> +};
-> +
+-       pipe = fget(fd);
++       if (param->type == fs_value_is_file) {
++               /* came through the new api */
++               pipe = param->file;
++               param->file = NULL;
++       } else {
++               pipe = fget(result->uint_32);
++       }
+        if (!pipe) {
+                errorf(fc, "could not open pipe file descriptor");
+                return -EBADF;
+@@ -165,14 +172,15 @@ static int autofs_parse_fd(struct fs_context *fc, int fd)
+        ret = autofs_check_pipe(pipe);
+        if (ret < 0) {
+                errorf(fc, "Invalid/unusable pipe");
+-               fput(pipe);
++               if (param->type != fs_value_is_file)
++                       fput(pipe);
+                return -EBADF;
+        }
+
+        if (sbi->pipe)
+                fput(sbi->pipe);
+
+-       sbi->pipefd = fd;
++       sbi->pipefd = result->uint_32;
+        sbi->pipe = pipe;
+
+        return 0;
+
+[2]:
+From 2f9171200505c82e744a235c85377e36ed190109 Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Fri, 22 Sep 2023 13:49:05 +0200
+Subject: [PATCH] fsconfig: ensure that dirfd is set to aux
+
+The code in fs_param_is_fd() expects param->dirfd to be set to the fd
+that was used to set param->file to initialize result->uint_32. So make
+sure it's set so users like autofs using FSCONFIG_SET_FD with the new
+mount api can rely on this to be set to the correct value.
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ fs/fsopen.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/fsopen.c b/fs/fsopen.c
+index ce03f6521c88..6593ae518115 100644
+--- a/fs/fsopen.c
++++ b/fs/fsopen.c
+@@ -465,6 +465,7 @@ SYSCALL_DEFINE5(fsconfig,
+ 		param.file = fget(aux);
+ 		if (!param.file)
+ 			goto out_key;
++		param.dirfd = aux;
+ 		break;
+ 	default:
+ 		break;
+-- 
+2.34.1
 
