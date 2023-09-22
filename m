@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 431567AB117
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935C17AB11E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233786AbjIVLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S233795AbjIVLoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233769AbjIVLmt (ORCPT
+        with ESMTP id S233384AbjIVLoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:42:49 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C067100
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:42:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EC2E621A9E;
-        Fri, 22 Sep 2023 11:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695382961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=65+lm7d+dGRTiOMAyApVmU/Xt+Gy4JHwF9IUeIK1m1Q=;
-        b=yJPzw4jKA78/KuVPeDtJPzXDAGBL5vPvSoxnuXVCM8RAh2RYriDdPP+yZAKS1CutJLntVi
-        FFh4Iud6erKaiL6VZAjIt13auEAuC/Ru/cFgGCnz0KDuU75TY/uTVxI288PcND9Fv3aST4
-        gkCLkcAXbu43vZ1RiVGQ5jRQknt5Ec0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695382961;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=65+lm7d+dGRTiOMAyApVmU/Xt+Gy4JHwF9IUeIK1m1Q=;
-        b=fLpi/29qParzWJqJjq1VQuYRYSpCWpAK2Bu9U9mzTnpOu+5h7/MOI5YeDEWFf+l3OCP1Wd
-        cS4+u8sAD88kp2DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D311113478;
-        Fri, 22 Sep 2023 11:42:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id w6kLL7F9DWXnJAAAMHmgww
-        (envelope-from <chrubis@suse.cz>); Fri, 22 Sep 2023 11:42:41 +0000
-Date:   Fri, 22 Sep 2023 13:43:26 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Petr Vorel <pvorel@suse.cz>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH] sched/rt: Disallow writing invalid values to
- sched_rt_period_us
-Message-ID: <ZQ193uwifmWWbqSP@yuki>
-References: <20230901154355.5351-1-chrubis@suse.cz>
- <20230901174529.GB364687@pevik>
- <ZPIqsmTbJh7z-LcO@yuki>
- <ZQ1iabFEs93OZMSE@gmail.com>
+        Fri, 22 Sep 2023 07:44:01 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B40102;
+        Fri, 22 Sep 2023 04:43:53 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so270672566b.1;
+        Fri, 22 Sep 2023 04:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695383031; x=1695987831; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1I3gNmUlZMGbKyjyOXpthLU4hKIFkiFyB/Tjb6zLBfA=;
+        b=OL3deMoZ6Wl2Q5FwHCv3eZXPpK0Ri4tJq5EVxYMrIHfyt4fXJQMFYGTimVuMuM4PJm
+         o6tVMiPKcbZESdZymIOBToj9xtXCjY7uldAm7T/zEfqjYX/c6Glg5KWOvpVPqiO+AhVg
+         0hFLGW4g83ETBrxoToora7NHg+Zle5TdNcn3hUt6qkKakzhd05sazER8Yw/DaEYt0du9
+         r52Uc+b2a1tnPO5QUtBQMrxfrGaLdYtTPdX0wWlZdfgKZQg1g9ai/DKipz2C9DlYVnUD
+         pLWlYUBoZNJUDLUsp3poEVnJTbePuDOXNNORQ0/anIIZ03aHcx+PRCsCEtwXDQ+RG/DE
+         Nckg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695383031; x=1695987831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1I3gNmUlZMGbKyjyOXpthLU4hKIFkiFyB/Tjb6zLBfA=;
+        b=aH5SAM0vR7lyRh603/kPJ9/AiZB7RzH4kfZ6Y+Vttxb7a6vraKEaad5+bqqe4c3iF7
+         t4SFZ5F2mSCttek9/z4Z/B1wYSXUqvBHKo+GYZibvukizMp/fe2SBsvOVGIzr592SVCR
+         Pt6z60DIxO+t/j53ixMPazgEvZ2FUzcEhkaFGNrRNz98SYGgmmR0mkb9xAqb/4kYr/q6
+         KeF1WvG4+wsLB8FLPiiX2ipiXsfTuXr8RwSat8pYYVLx1oZBjocvIOfG7hAP0A6pKV/w
+         lPF+sYCVUfveQC6TWkB18kySpoDLZDUQ5GKpYvRSmXfbz/H7tutEZL+2S8uCFhrn3QYE
+         yJvQ==
+X-Gm-Message-State: AOJu0YyMSQPiUjHhOumInYM4NRqUnuzzCOpW9Ld1jTytzd+DB1oZzHDr
+        J0xY8pwd1vlfTp8FZ8WKhY8=
+X-Google-Smtp-Source: AGHT+IHbAXqA0Cb2XWyQ2fjc+0jrFxYIM22/f7Ic2xZbRFXNDej9vFnrqWPJSAAS359M2c/RD7DCkA==
+X-Received: by 2002:a17:906:109:b0:9aa:e07:d421 with SMTP id 9-20020a170906010900b009aa0e07d421mr7270525eje.43.1695383031474;
+        Fri, 22 Sep 2023 04:43:51 -0700 (PDT)
+Received: from skbuf ([188.25.255.147])
+        by smtp.gmail.com with ESMTPSA id f12-20020a1709062c4c00b0099ca4f61a8bsm2618242ejh.92.2023.09.22.04.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 04:43:51 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 14:43:48 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH v5 net-next 5/5] net: dsa: microchip: Enable HSR
+ offloading for KSZ9477
+Message-ID: <20230922114348.ivbfcgi7lkmcsymp@skbuf>
+References: <20230920114343.1979843-1-lukma@denx.de>
+ <20230920114343.1979843-1-lukma@denx.de>
+ <20230920114343.1979843-6-lukma@denx.de>
+ <20230920114343.1979843-6-lukma@denx.de>
+ <20230921193224.l3ojpdcsb4bpfl7d@skbuf>
+ <20230922132904.750688b6@wsk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZQ1iabFEs93OZMSE@gmail.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230922132904.750688b6@wsk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> > > Documentation/scheduller/sched-rt-group.rst [1] specifies this as values from -1 to
-> > > (INT_MAX - 1), I guess due int range. Looking into proc_dointvec_minmax() [2]
-> > > even INT_MAX would pass the check. I suppose we can do nothing about that,
-> > > because there is no value in sysctl_vals[] which would represent INT_MAX - 1.
-> > > 
-> > > And you specify in LTP test range: from -1 to INT_MAX.
-> > > 
-> > > But even much shorter value than INT_MAX fails:
-> > > 
-> > > $ echo 1234567 > /proc/sys/kernel/sched_rt_runtime_us
-> > > sh: echo: write error: Invalid argument
-> > 
-> > That is because runtime_us must be < period_us by definition, since
-> > runtime_us defines how much time is allocated from the period_us. I
-> > guess that this is not described good enough in the kernel docs.
+On Fri, Sep 22, 2023 at 01:29:04PM +0200, Lukasz Majewski wrote:
+> Unfortunately, yes...
 > 
-> Mind adding a second patch to your series, clarifying 
-> Documentation/scheduler/sched-rt-group.rst?
+> The code as it is now -> would set for port lan1 0x21 and lan2 0x22.
+> 
+> However the setup shall be 0x23 for both ports.
+> 
+> More info here:
+> https://github.com/Microchip-Ethernet/EVB-KSZ9477/issues/98#issuecomment-1701557449
+> 
+> I will setup this register from dev->hsr_ports when both HSR ports are
+> known.
 
-Yes, that is the plan. I've been working on LTP release for past two
-weeks so this has been postponed. I will get to it hopefully next week.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Testing after making changes is key.
