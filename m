@@ -2,162 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2557AB3BE
+	by mail.lfdr.de (Postfix) with ESMTP id CD1797AB3BF
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjIVOff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S230324AbjIVOfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjIVOfe (ORCPT
+        with ESMTP id S230043AbjIVOfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:35:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AD6100
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695393327; x=1726929327;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nBdjcYkSZ8EzFUwfpHhwC6yu0/jZkLM6N9BlmSP/mkw=;
-  b=llhFVD7/yMHIldxsd3iH42WBt0SEybeL/jNyQoVLmxL2X2Li/b0KYM3P
-   OqBl7RU8kmiqoClSStUSZa8YcaknsMIZUT24OjXiy1er/T9WT96ujO6zv
-   Q0lJZde28UOas63krdxnkNDnuorbFajYale1OfSKWQ3bwqHKVPVb7xuDH
-   FQrV/34Q73b6RhPcUD2m7tnF+gPNHG3ZHzizX3fw22VYJC7k/5V3Av/kO
-   tSTn9c7xAx/oN5yqAJAmDdjcd+Ymzg9FoAKBvkdo+AdMyFuFhygd5B7PD
-   ikwdowges1vP9RAn2RCgXOrLUdfqI5j2mK7xpd5ZEd6OGEfuHKRzAQOQA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="467138061"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="467138061"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 07:35:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="921181698"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="921181698"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 07:35:23 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qjhFX-0000000HD0X-3fE8;
-        Fri, 22 Sep 2023 17:35:19 +0300
-Date:   Fri, 22 Sep 2023 17:35:19 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Potapenko <glider@google.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v5 0/5] Implement MTE tag compression for swapped pages
-Message-ID: <ZQ2mJ9rK7xNoMykL@smile.fi.intel.com>
-References: <20230922080848.1261487-1-glider@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922080848.1261487-1-glider@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 10:35:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1F0C6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:35:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BAEA11FEF7;
+        Fri, 22 Sep 2023 14:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695393345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+e8d8EPK3+d0DLp3Ownkw5Gy/YEy3/TX5WBpNFkkHhs=;
+        b=k2bw/NDzRNlzjlXfoDwV3zQ+0HxJ1u6oYae0ynND2XpbnAgC+RKpNCKmqwp2fwx5VUA0vD
+        +ft3uiwAY93ePcAqMe85VNN+fAzZpYat2tG95K/f1RuqpPo6FB9EE+eefBgAiHUSRbKaJF
+        FreAckPgto5+pZd0FZvmdxWpuw08lSU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695393345;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+e8d8EPK3+d0DLp3Ownkw5Gy/YEy3/TX5WBpNFkkHhs=;
+        b=3keSnqGF2eopnJ9IzKCWAO7qhD15ckTn/p1j3CKnAWbaWWeTAN7K3+AeLHkn6yPhLaqfy4
+        U84SiBiWWAl/fEAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8DD1913478;
+        Fri, 22 Sep 2023 14:35:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /v2GIUGmDWXlAgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 22 Sep 2023 14:35:45 +0000
+Date:   Fri, 22 Sep 2023 16:35:45 +0200
+Message-ID: <87a5tecm2m.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v1 0/2] ALSA: cs35l41: prevent old firmwares using unsupported commands
+In-Reply-To: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
+References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Olek, who internally is being developed something similar to your first
-patch here.
+On Fri, 22 Sep 2023 16:28:16 +0200,
+Stefan Binding wrote:
+> 
+> Some systems use older firmware which does not support newer commands
+> which are used to enable external boost. For those systems, we can
+> workaround this by writing the registers directly.
+> 
+> We can use the firmware version, stored inside cs_dsp, to determine
+> whether or not the command is supported.
+> To achieve this, it requires a cleanup in the api, to pass the cs_dsp
+> struct into the function.
+> 
+> We can also remove the redundant boolean firmware_running from the HDA
+> driver, and use the equivalent state inside cs_dsp.
 
-On Fri, Sep 22, 2023 at 10:08:42AM +0200, Alexander Potapenko wrote:
-> Currently, when MTE pages are swapped out, the tags are kept in the
-> memory, occupying PAGE_SIZE/32 bytes per page. This is especially
-> problematic for devices that use zram-backed in-memory swap, because
-> tags stored uncompressed in the heap effectively reduce the available
-> amount of swap memory.
-> 
-> The RLE-based algorithm suggested by Evgenii Stepanov and implemented in
-> this patch series is able to efficiently compress fixed-size tag buffers,
-> resulting in practical compression ratio between 2.5x and 4x. In most
-> cases it is possible to store the compressed data in 63-bit Xarray values,
-> resulting in no extra memory allocations.
-> 
-> Our measurements show that the proposed algorithm provides better
-> compression than existing kernel compression algorithms (LZ4, LZO,
-> LZ4HC, ZSTD) can offer.
-> 
-> To implement compression/decompression, we also extend <linux/bitmap.h>
-> with methods to read/write bit values at arbitrary places in the map.
-> 
-> We refactor arch/arm64/mm/mteswap.c to support both the compressed
-> (CONFIG_ARM64_MTE_COMP) and non-compressed case. For the former, in
-> addition to tag compression, we move tag allocation from kmalloc() to
-> separate kmem caches, providing greater locality and relaxing the
-> alignment requirements.
-> 
-> v5:
->  - fixed comments by Andy Shevchenko, Catalin Marinas, and Yury Norov
->  - added support for 16K- and 64K pages
->  - more efficient bitmap_write() implementation
-> 
-> v4:
->  - fixed a bunch of comments by Andy Shevchenko and Yury Norov
->  - added Documentation/arch/arm64/mte-tag-compression.rst
-> 
-> v3:
->  - as suggested by Andy Shevchenko, use
->    bitmap_get_value()/bitmap_set_value() written by Syed Nayyar Waris
->  - switched to unsigned long to reduce typecasts
->  - simplified the compression code
-> 
-> v2:
->  - as suggested by Yuri Norov, replace the poorly implemented struct
->    bitq with <linux/bitmap.h>
-> 
-> 
-> 
-> Alexander Potapenko (4):
->   lib/test_bitmap: add tests for bitmap_{read,write}()
->   arm64: mte: implement CONFIG_ARM64_MTE_COMP
->   arm64: mte: add a test for MTE tags compression
->   arm64: mte: add compression support to mteswap.c
-> 
-> Syed Nayyar Waris (1):
->   lib/bitmap: add bitmap_{read,write}()
-> 
->  Documentation/arch/arm64/index.rst            |   1 +
->  .../arch/arm64/mte-tag-compression.rst        | 245 +++++++++
->  arch/arm64/Kconfig                            |  21 +
->  arch/arm64/include/asm/mtecomp.h              |  13 +
->  arch/arm64/mm/Makefile                        |   7 +
->  arch/arm64/mm/mtecomp.c                       | 467 ++++++++++++++++++
->  arch/arm64/mm/mtecomp.h                       |  12 +
->  arch/arm64/mm/mteswap.c                       |  20 +-
->  arch/arm64/mm/mteswap.h                       |  12 +
->  arch/arm64/mm/mteswap_comp.c                  |  60 +++
->  arch/arm64/mm/mteswap_nocomp.c                |  38 ++
->  arch/arm64/mm/test_mtecomp.c                  | 287 +++++++++++
->  include/linux/bitmap.h                        |  68 +++
->  lib/test_bitmap.c                             | 115 +++++
->  14 files changed, 1355 insertions(+), 11 deletions(-)
->  create mode 100644 Documentation/arch/arm64/mte-tag-compression.rst
->  create mode 100644 arch/arm64/include/asm/mtecomp.h
->  create mode 100644 arch/arm64/mm/mtecomp.c
->  create mode 100644 arch/arm64/mm/mtecomp.h
->  create mode 100644 arch/arm64/mm/mteswap.h
->  create mode 100644 arch/arm64/mm/mteswap_comp.c
->  create mode 100644 arch/arm64/mm/mteswap_nocomp.c
->  create mode 100644 arch/arm64/mm/test_mtecomp.c
-> 
-> -- 
-> 2.42.0.515.g380fc7ccd1-goog
-> 
+So those are fixes needed for 6.6 kernel?  Or they are something new?
 
--- 
-With Best Regards,
-Andy Shevchenko
+> This chain is based on Mark's branch, since the api change was made to
+> the function in sound/soc/codecs/cs35l41-lib.c.
+
+I'd need a PR from Mark before applying those, then.
 
 
+thanks,
+
+Takashi
