@@ -2,131 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F009F7AB341
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02047AB347
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbjIVOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S233380AbjIVOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbjIVOEQ (ORCPT
+        with ESMTP id S229796AbjIVOKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:04:16 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E38F7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:04:07 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C79AD24000A;
-        Fri, 22 Sep 2023 14:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695391445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pExq5EY/86tUqekvDpJYB6m3SynqP56IDF4E/AB4Z5k=;
-        b=CStiiwB68UhFaWNyJvW23wdDSD3ddwH74WFVgCG8U6545bJhHiRYjRaS4ZcEqiDpvQPYIH
-        tMrGKNyuwQ8Xx+2UbGKbJUnn0wbXn/KylVZzA9nXKFW4/4AjzqDJ38ccV4/agKr4NNPBRF
-        /LsM+yKlMcGtAU7+nrXZfUbEfdd+HqnDMlyLvex/uEw1bb+V1WCPlSfvmxJrH5AcVYyxOa
-        +MiK5TE1w+uMP1GTp+A7Hmss0wDLYiMb3f6sQ1Zbi28zQkXidzbls8tZnliF73aYRQ31IA
-        qaUP8cNWZlvj0TzysxwcUVKXgZUO/nFKSg9S61fFAuAB0hWZweEWKz4yFZhqzA==
-Date:   Fri, 22 Sep 2023 16:04:00 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Cc:     Martin =?UTF-8?B?SHVuZGViw7hsbA==?= <martin@geanix.com>,
-        =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        JaimeLiao <jaimeliao.tw@gmail.com>, kernel@pengutronix.de,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexander Shiyan <eagle.alexander923@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: check nand support for cache reads
-Message-ID: <20230922160400.034ee828@xps-13>
-In-Reply-To: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
-References: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 22 Sep 2023 10:10:17 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D623100;
+        Fri, 22 Sep 2023 07:10:12 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MAlPgr013694;
+        Fri, 22 Sep 2023 14:10:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=oGkedumiF7qYscPq09Wq92YClO+TfRoVXGPIg+PD0HQ=;
+ b=Iar2PsA+0E28/CsFqHGYd7r3UjZPVQpoujsfZeeSjbJ6/Qp2k+RrRyyTSk2CbcMe5kVi
+ iGZkGYFWIfUJjQAU67QlAjfKXiGDpQztz/6nBuGrunS70v9JEp63IX3RAT8TqoPxjtnp
+ fvxFXe9kr4U74CoyINvW/2jZEIzunz8pOp+63HSNgCYbR99Ix6/6AQgnpQxq0WaYTG9E
+ utWo/L/2i/aQsHqTegA3hVbzngUQm1HBL3G2tPZ9KqjjP6uaVJT4Xqihmf6COf1BENfA
+ en6G6bFxFgZWP4YG6i22r8+nwv0tNkDcj0lF3TazJuEeqcORzkPYQN3eKeGo+K+kY9U8 6A== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8txga2d8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 14:10:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MEA38a027467
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 14:10:03 GMT
+Received: from [10.48.243.100] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 07:10:03 -0700
+Message-ID: <b5fa2ea0-d025-47e3-a1c3-eb7c2f6bc5b7@quicinc.com>
+Date:   Fri, 22 Sep 2023 07:10:02 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [bug] mhi: ath11k: resume after hibernation is not working
+Content-Language: en-US
+To:     Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
+        <kvalo@kernel.org>, <ath11k@lists.infradead.org>,
+        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230922120040.15460-1-jtornosm@redhat.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230922120040.15460-1-jtornosm@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5eaN3bOQAHFkZHFd0mV6_XoLmwyPlDDd
+X-Proofpoint-GUID: 5eaN3bOQAHFkZHFd0mV6_XoLmwyPlDDd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_12,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=804 mlxscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220121
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rouven,
+On 9/22/2023 5:00 AM, Jose Ignacio Tornos Martinez wrote:
+> Hello,
+> 
+> We have several machines with QCNFA765 wireless card (WCN6856) and with
+> the same behavior: although hibernation seems to work, post resume is not
+> working due to the wireless card (if the wireless card is disabled or ath11k
+> driver is blacklisted, everything is working).
 
-Thanks a lot for the investigation and the patch!
+This is a known issue being tracked by:
+https://bugzilla.kernel.org/show_bug.cgi?id=214649
 
-r.czerwinski@pengutronix.de wrote on Fri, 22 Sep 2023 12:01:13 +0200:
+A fix for this issue is under development.
 
-Would you mind changing the title to
-"mtd: rawnand: Ensure the nand chip supports cached reads"
+/jeff
 
-> Both the JEDEC and ONFI specification say that read cache sequential
-> support is an optional command.
-
-I clearly overlooked that part, just checking the set/get_features()
-entries as usual, good catch.
-
-> This means that we not only need to
-> check whether the individual controller implements the command, we also
-
-The controller itself does not implement the command, but may or may
-not support it (can you please update the sentence?).
-
-> need to check the parameter pages for both ONFI and JEDEC NAND flashes
-> before enabling sequential cache reads.
->=20
-> This fixes support for NAND flashes which don't support enabling cache
-> reads, i.e. Samsung K9F4G08U0F or Toshiba TC58NVG0S3HTA00.
->=20
-> Sequential cache reads are no only available for ONFI and JEDEC devices,
-> if individual vendors implement this, it needs to be enabled per vendor.
-
-Agreed.
-
-> Tested on i.MX6Q with a Samsung NAND flash chip that doesn't support
-> sequential reads.
->=20
-> Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
->=20
-
-Please remove this empty line and instead add:
-
-Cc: stable@vger.kernel.org
-
-> Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
-> ---
-> @Martin, M=C3=A5ns:
-> I would appreciate if you could test this on your hardware.
-
-That would me much appreciated!
-
-I also added Alexander who also had troubles with this patchset, could
-you check on your setup if that solves the issue?
-
-> @Miguel:
-> I didn't have the time to test this on ONFI/JEDEC devices with support
-> yet, I'd be fine if you hold off merging this.
-
-Of course. I was about to send a revert but that looks a promising fix,
-let's see how it goes.
-
->=20
->  drivers/mtd/nand/raw/nand_base.c  | 3 +++
->  drivers/mtd/nand/raw/nand_jedec.c | 3 +++
->  drivers/mtd/nand/raw/nand_onfi.c  | 3 +++
->  include/linux/mtd/jedec.h         | 3 +++
->  include/linux/mtd/onfi.h          | 1 +
->  include/linux/mtd/rawnand.h       | 1 +
->  6 files changed, 14 insertions(+)
->=20
-
-Thanks,
-Miqu=C3=A8l
