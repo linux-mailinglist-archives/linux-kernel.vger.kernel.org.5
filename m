@@ -2,256 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF10C7AB6EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113AD7AB6F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbjIVRNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        id S232287AbjIVRO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjIVRNO (ORCPT
+        with ESMTP id S231687AbjIVROz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:13:14 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8A2198
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:13:08 -0700 (PDT)
-Received: from ginger.. (unknown [177.98.21.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1657766072EA;
-        Fri, 22 Sep 2023 18:13:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695402786;
-        bh=mYqNzaVa8rUp5o26I1uJ3mQ3jGacUsFFx+AyBCt6Pf4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Osb7VSp/oyxsb6/bK0+6jdUc3HATDaIVeRCWdoIdca8eRdkynll+m+NPTQ3dW6l6O
-         WRC6w4Bz0Hod8JdWSrW9D1yF5vqtz+MPfLSLAgdcJnkZA70DtIkVSB3muey0bzi12U
-         7PCH9m9sYne9Zwp1J4NgDAZXsZNisStqoJ0RDGm/2XWH+YyjfRHJ5qOYGYjba/L+0f
-         e3VXXy0ncPWhbT4qNEkyIXG98Ratf5rnHL5zJC2jgZj+4XZ3QqvSU8pFFMrHZ5NLtC
-         yYY6gqYKzl0LI0bw576b3+t6INh3QCr93e5dk3QPi4oG1X6gqGc3HCm6O9Er9vbHe+
-         wR254xnA1iFfw==
-From:   Helen Koike <helen.koike@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     airlied@gmail.com, daniel@ffwll.ch, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, mairacanal@riseup.net,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        daniel@fooishbar.org, vignesh.raman@collabora.com,
-        jani.nikula@linux.intel.com, mripard@kernel.org,
-        michel.daenzer@mailbox.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com
-Subject: [PATCH v2 2/2] drm/ci: add tests on vkms
-Date:   Fri, 22 Sep 2023 14:12:37 -0300
-Message-Id: <20230922171237.550762-3-helen.koike@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922171237.550762-1-helen.koike@collabora.com>
-References: <20230922171237.550762-1-helen.koike@collabora.com>
+        Fri, 22 Sep 2023 13:14:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE465197;
+        Fri, 22 Sep 2023 10:14:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C60EC433C8;
+        Fri, 22 Sep 2023 17:14:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695402888;
+        bh=RATeZnXh5R72GIn+XDIT+T4I9Ey9Dt25YMsmWUhQM1k=;
+        h=From:Subject:Date:To:Cc:From;
+        b=o/4UwmRgvVgOrjivAZ0m2Yp8TDz52mHti/dCTL2sfkQcSJuPMzlDIluOBnvqFXYD+
+         CxHYtc9eF5F4VlqHq3juQHqwx8G3pfckhSGlnTqVx0D4mOILYlZc0+m8ueqmdrIkuN
+         vQdfTa5f7ko3QROIKMUQcPBnM1bt62OqKQkRM0fYkAcQnj7lNWY33R5NisTSwmeC3M
+         WR8CjRHqf/pFIUXM3Is/j+ViOx2OhIkKRV6IjJIXRqsv3rs3MNo2A626KAA6OKyieO
+         so8kqb5eoFDgx6GddHxQX4lWw9z+dEnA+eRsfAJBuW9vIT2JTe84E7FFMTQxOg2PLl
+         KuUYbB8g4pbXg==
+From:   Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+Date:   Fri, 22 Sep 2023 13:14:39 -0400
+Message-Id: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIDLDWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyLHQUlJIzE
+ vPSU3UzU4B8JSMDI2MDSyND3eSSzNxUXdMk80QzI4tEkyRLUyWg2oKi1LTMCrA50bG1tQBXw+L
+ xVwAAAA==
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2634; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=RATeZnXh5R72GIn+XDIT+T4I9Ey9Dt25YMsmWUhQM1k=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlDcuGuFF5a+fCeaA02G7XyP4SUITqXWcEhddVl
+ pUMI5rHcZKJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZQ3LhgAKCRAADmhBGVaC
+ FVDZEACWaWtx8XKSHyv+QPSPgv21QuoUzBkMMJiaicQvu63y6uFY7cNRcVE6YquS0WwW3AidxAR
+ wvPXe0tS9EsUzwKMdb29WFzy6ftqJj1vVdQDIWD+lIE2ywO6G6rGOLLjhOucQuiMbcnDoj4kUfk
+ Wb9BcBnqqWQJC+UJd92dV+stZgJ+vrHGHiN3n6x54Oe67xI7s6k8t04ybGT5KDHW0lKfQbXWD5S
+ NLdnn31Au8xE6gTLaLqKco/q1yjQpGLeWiQt8h9L0JFS/UXd30ahuki0LWZLh+Vqppwg099r+rV
+ IQnEeobAP1tKKXLI9M/5xzPU49QVhgmG/ixnucX12t3SNIG38kYgv/5JtLJT4OPqhwuPBQgcnSv
+ cuXjNwmON5rlGZHKvA7DdQbgscRcWLd64v1jcEYQ7JS4mgY6Mx9OV/hpD60pF4rkfPIFKFETjMo
+ IxlfJFERXdHgymKUb7BINuwC9eI4yB8z3pOgMMfw1eeUUvNpS6r88Hix+Suhc5ay/7Ne0NH68EJ
+ YBceJVU7VM9iGPc+jmj4Ya27fr0jKdr8qidY++g/K/E9Vn3wEezCeTT2PTc3NSnTlo4+4mckzn6
+ Y8aXxGTD/qJ4ukjH7hvKKK10ENSBehzbwrmwHtTl2YeZMRMvgaJE35fCJ1U5B67YaxitY1JrROX
+ MLZTVrRZDTltulQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add job that runs igt on top of vkms.
+My initial goal was to implement multigrain timestamps on most major
+filesystems, so we could present them to userland, and use them for
+NFSv3, etc.
 
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
+With the current implementation however, we can't guarantee that a file
+with a coarse grained timestamp modified after one with a fine grained
+timestamp will always appear to have a later value. This could confuse
+some programs like make, rsync, find, etc. that depend on strict
+ordering requirements for timestamps.
 
+The goal of this version is more modest: fix XFS' change attribute.
+XFS's change attribute is bumped on atime updates in addition to other
+deliberate changes. This makes it unsuitable for export via nfsd.
+
+Jan Kara suggested keeping this functionality internal-only for now and
+plumbing the fine grained timestamps through getattr [1]. This set takes
+a slightly different approach and has XFS use the fine-grained attr to
+fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+
+While we keep fine-grained timestamps in struct inode, when presenting
+the timestamps via getattr, we truncate them at a granularity of number
+of ns per jiffy, which allows us to smooth over the fuzz that causes
+ordering problems.
+
+This set only converts XFS to use this scheme. All of the other
+commonly-exported local filesystems have a native change attribute and
+wouldn't clearly benefit from mgtime support at this time. Still, it
+should be possible to add this support to other filesystems in the
+future, as the need arises (bcachefs?).
+
+I'd like to see this go in for v6.7 if possible, so getting it into
+linux-next now would be great if there are no objections.
+
+[1]: https://lore.kernel.org/linux-fsdevel/20230920124823.ghl6crb5sh4x2pmt@quack3/
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
+Jeff Layton (5):
+      fs: add infrastructure for multigrain timestamps
+      fs: optimize away some fine-grained timestamp updates
+      fs: have setattr_copy handle multigrain timestamps appropriately
+      fs: add timestamp_truncate_to_gran helper
+      xfs: switch to multigrain timestamps
 
-See pipeline: https://gitlab.freedesktop.org/helen.fornazier/linux/-/pipelines/990494
-
-v2:
-- do not mv modules to /lib/modules in the job definition, leave it to
-  crosvm-runner.sh
+ fs/attr.c                       |  52 ++++++++++++--
+ fs/inode.c                      | 151 ++++++++++++++++++++++++++++++++++++----
+ fs/xfs/libxfs/xfs_trans_inode.c |   6 +-
+ fs/xfs/xfs_iops.c               |  26 +++++--
+ fs/xfs/xfs_super.c              |   2 +-
+ include/linux/fs.h              |  64 ++++++++++++++++-
+ 6 files changed, 269 insertions(+), 32 deletions(-)
 ---
- MAINTAINERS                                   |  1 +
- drivers/gpu/drm/ci/build.sh                   |  1 -
- drivers/gpu/drm/ci/gitlab-ci.yml              |  1 +
- drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
- drivers/gpu/drm/ci/image-tags.yml             |  2 +-
- drivers/gpu/drm/ci/test.yml                   | 23 ++++++++++++++-
- drivers/gpu/drm/ci/x86_64.config              |  1 +
- .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |  0
- drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 29 +++++++++++++++++++
- drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 10 +++++++
- 10 files changed, 68 insertions(+), 6 deletions(-)
- delete mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+base-commit: f8f2d6d669b91ea98ec8f182c22e06d3d0663e15
+change-id: 20230921-ctime-5b7a628a4b95
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 740a2ce2689c..e47dbe31d221 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6813,6 +6813,7 @@ L:	dri-devel@lists.freedesktop.org
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/gpu/vkms.rst
-+F:	drivers/gpu/drm/ci/xfails/vkms*
- F:	drivers/gpu/drm/vkms/
- 
- DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
-diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-index 7b014287a041..9e510e77098b 100644
---- a/drivers/gpu/drm/ci/build.sh
-+++ b/drivers/gpu/drm/ci/build.sh
-@@ -146,7 +146,6 @@ fi
- 
- mkdir -p artifacts/install/lib
- mv install/* artifacts/install/.
--rm -rf artifacts/install/modules
- ln -s common artifacts/install/ci-common
- 
- for image in ${KERNEL_IMAGE_NAME}; do
-diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-index 522f83db1a07..c86ee5a51012 100644
---- a/drivers/gpu/drm/ci/gitlab-ci.yml
-+++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-@@ -120,6 +120,7 @@ stages:
-   - rockchip
-   - virtio-gpu
-   - lint
-+  - software-driver
- 
- # YAML anchors for rule conditions
- # --------------------------------
-diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
-index 2bb759165063..c7f83d1b72e9 100755
---- a/drivers/gpu/drm/ci/igt_runner.sh
-+++ b/drivers/gpu/drm/ci/igt_runner.sh
-@@ -21,9 +21,9 @@ cat /sys/kernel/debug/dri/*/state
- set -e
- 
- # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
--if [ "$IGT_FORCE_DRIVER" = "amdgpu" ]; then
--    mv /install/modules/lib/modules/* /lib/modules/.
--    modprobe amdgpu
-+if [ "$IGT_FORCE_DRIVER" = "amdgpu" || "$IGT_FORCE_DRIVER" = "vkms" ]; then
-+    mv /install/modules/lib/modules/* /lib/modules/. || true
-+    modprobe --first-time "$IGT_FORCE_DRIVER"
- fi
- 
- if [ -e "/install/xfails/$DRIVER_NAME-$GPU_VERSION-skips.txt" ]; then
-diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
-index f051b6c547c5..e05077ee29d2 100644
---- a/drivers/gpu/drm/ci/image-tags.yml
-+++ b/drivers/gpu/drm/ci/image-tags.yml
-@@ -4,7 +4,7 @@ variables:
-    DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
- 
-    DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
--   DEBIAN_BUILD_TAG: "${CONTAINER_TAG}"
-+   DEBIAN_BUILD_TAG: "2023-09-20-vkms-module-2"
- 
-    KERNEL_ROOTFS_TAG: "${CONTAINER_TAG}"
- 
-diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-index 6473cddaa7a9..69a5337fd989 100644
---- a/drivers/gpu/drm/ci/test.yml
-+++ b/drivers/gpu/drm/ci/test.yml
-@@ -332,4 +332,25 @@ virtio_gpu:none:
-     - igt:x86_64
-   rules:
-     # TODO: current issue: malloc(): corrupted top size. Fix and remove this rule.
--    - when: never
-\ No newline at end of file
-+    - when: never
-+
-+vkms:none:
-+  stage: software-driver
-+  variables:
-+    DRIVER_NAME: vkms
-+    GPU_VERSION: none
-+  extends:
-+    - .test-gl
-+  tags:
-+    - kvm
-+  script:
-+    - ln -sf $CI_PROJECT_DIR/install /install
-+    - mv install/bzImage /lava-files/bzImage
-+    - mkdir -p /lib/modules
-+    - mkdir -p $CI_PROJECT_DIR/results
-+    - ln -sf $CI_PROJECT_DIR/results /results
-+    - ./install/crosvm-runner.sh ./install/igt_runner.sh
-+  needs:
-+    - debian/x86_64_test-gl
-+    - testing:x86_64
-+    - igt:x86_64
-\ No newline at end of file
-diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
-index 1cbd49a5b23a..8eaba388b141 100644
---- a/drivers/gpu/drm/ci/x86_64.config
-+++ b/drivers/gpu/drm/ci/x86_64.config
-@@ -24,6 +24,7 @@ CONFIG_DRM=y
- CONFIG_DRM_PANEL_SIMPLE=y
- CONFIG_PWM_CROS_EC=y
- CONFIG_BACKLIGHT_PWM=y
-+CONFIG_DRM_VKMS=m
- 
- # Strip out some stuff we don't need for graphics testing, to reduce
- # the build.
-diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
-deleted file mode 100644
-index e69de29bb2d1..000000000000
-diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-new file mode 100644
-index 000000000000..a65196a19222
---- /dev/null
-+++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-@@ -0,0 +1,29 @@
-+kms_cursor_crc@cursor-rapid-movement-128x128,Fail
-+kms_cursor_crc@cursor-rapid-movement-128x42,Fail
-+kms_cursor_crc@cursor-rapid-movement-256x256,Fail
-+kms_cursor_crc@cursor-rapid-movement-256x85,Fail
-+kms_cursor_crc@cursor-rapid-movement-32x10,Fail
-+kms_cursor_crc@cursor-rapid-movement-32x32,Fail
-+kms_cursor_crc@cursor-rapid-movement-512x170,Fail
-+kms_cursor_crc@cursor-rapid-movement-512x512,Fail
-+kms_cursor_crc@cursor-rapid-movement-64x21,Fail
-+kms_cursor_crc@cursor-rapid-movement-64x64,Fail
-+kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
-+kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
-+kms_cursor_legacy@cursor-vs-flip-atomic,Fail
-+kms_cursor_legacy@cursor-vs-flip-legacy,Fail
-+kms_cursor_legacy@cursor-vs-flip-toggle,Fail
-+kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
-+kms_cursor_legacy@cursorA-vs-flipA-toggle,Fail
-+kms_cursor_legacy@flip-vs-cursor-atomic,Fail
-+kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
-+kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
-+kms_cursor_legacy@flip-vs-cursor-legacy,Fail
-+kms_flip@flip-vs-expired-vblank-interruptible,Fail
-+kms_flip@plain-flip-fb-recreate,Fail
-+kms_pipe_crc_basic@nonblocking-crc,Fail
-+kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
-+kms_pipe_crc_basic@suspend-read-crc,Fail
-+kms_plane@plane-panning-bottom-right-suspend,Fail
-+kms_universal_plane@universal-plane-pipe-A-sanity,Fail
-+kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
-\ No newline at end of file
-diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-new file mode 100644
-index 000000000000..07aa62cff108
---- /dev/null
-+++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-@@ -0,0 +1,10 @@
-+# Hits:
-+# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-+# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
-+kms_prop_blob@invalid-get-prop
-+
-+# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
-+kms_invalid_mode@int-max-clock
-+
-+# Suspend seems to be broken
-+.*suspend.*
-\ No newline at end of file
+Best regards,
 -- 
-2.34.1
+Jeff Layton <jlayton@kernel.org>
 
