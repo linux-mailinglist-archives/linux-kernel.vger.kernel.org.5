@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAC27ABA22
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C97F7AB8CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbjIVTgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 15:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S232277AbjIVSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbjIVR7e (ORCPT
+        with ESMTP id S233538AbjIVSFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:59:34 -0400
+        Fri, 22 Sep 2023 14:05:09 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326C04211
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:57:46 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81a76a11eeso3071368276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:57:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1664223
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:57:48 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81d85aae7cso437482276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:57:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695405465; x=1696010265; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695405467; x=1696010267; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIUVdWYJzS23SUkOVUGYlHJuolUCd+SBS6YJzjY/W/M=;
-        b=j6jMO0KPP+GHBicZNd3LVMZSQuXiS/dwN9sDBeANBHBoOrl6GWQqcBMeYr+OhfGW41
-         j9DARkjCnZgGSkLQcbz2WN6qW1frdj3oCH4ytTmmXC3yQ8QLuYd6ANgEmbPFi+ZMhO/2
-         QojDnZ+NojRvcRFAVk5DLP+aIbCt2o5iCNj+r2udzeGho/0Wr1Bf7yD1ZIAh9zeJ/5+Y
-         bnXcN+PNpLvDvIiP7kQBWTmMys97Lr5W7o9XlZIm4rjFchkQTs6S3Qeg9Cx8z0DR7W+c
-         rx1b+qrC/O01Wcwk4hBmmEuUoSD+GtApnNOU1FGwwpi99VqjIcj+/LOmi44D5yZJultX
-         NfOg==
+        bh=3CSLPc6OXSIH75VPEK2Or6+ByoA8DGo3BCTW1zZyxTA=;
+        b=XSDFVFUj0s4Agwlv19dfVnA8fyANS3Lio1Mu22DmB1ClvVA1YT+CSVeqE0EWxIbDkm
+         SAOwHueWm2RAHr7SLAyT7mtrmUF/p3ORh/dRzumeM8ShBlB/eZ49uVQkTDrPZvOXa3XG
+         U29dF0ipmdT7qgaXW/sTeHjT5QcTJTbW0lQMSCXZoeo/RTkaUTIwfORnOtEzIRVTLqd8
+         bXAbpQVdO5Lhp7LQ1XxgAJ4MTH98wJEJ9XVqEtqyOKGB7vCX6eCUAODfsLHNMKALhOHf
+         9vlWXS0Zt6co266BHa3btRr3isBFVGn1eqvxEeXTsc7qG3q58Ws3hXBi5lb3+lId+t+K
+         Pq+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405465; x=1696010265;
+        d=1e100.net; s=20230601; t=1695405467; x=1696010267;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIUVdWYJzS23SUkOVUGYlHJuolUCd+SBS6YJzjY/W/M=;
-        b=iKDFFQsOPKlg6WnUBMf94UsKFs/BkVdwDojLnr2CJSxFp0HUsOgF2+H0K26+La8R44
-         D+59NRt99cRZNn1ptePJ2AB5vrCfjaCEOt0Nid7McoSQjWKuCiVA5nIsAnnqHhp30jct
-         i8yLfMwRp+jMeI6FssEw8v77ItN9ls8YALe0oUWnDEXwRg1OEx8D/YLlwOcqe5Ofn1bg
-         qRkBX75N9+Sngi3DRswItZVgCOhpYVR2Q1ku/TZ3p1X/8pCml2sV7V787uiFHi2Qpa0V
-         JZYWZDmWmtbbdtGTXYioT9qn8l+jdZp14naNQCNEsE02tGtg8L2q/d7Q0WyJuSWNLa4G
-         3fww==
-X-Gm-Message-State: AOJu0YyOeVueKE26nYYJqgB4Ci0+1uql1mNtxyg2tdOwwVR0B4eklVZQ
-        wEBTvcV5aXkvTjNQ40pr6/uCPp2qtBxafoyg
-X-Google-Smtp-Source: AGHT+IGRY7CHNarSt8hxzLUxdPvhzPSOwb+6g2+4WOANIpjP9cYGG1L1f1r5GlTbEtZccPZQJPzwzGGJFWlsxbc8
+        bh=3CSLPc6OXSIH75VPEK2Or6+ByoA8DGo3BCTW1zZyxTA=;
+        b=IwnWH1DYAPMya73C4veAFt0ga+a0hCiDNIhEvPpvZ1Efq6f0fonuf+GxaX/7TtbBuj
+         mI8F/oLTbrg9io/KaFONYzsYlQKO6N3eMLASZ4fPTHQGoDgM4tdfJJfIBzmSwcaWPIa4
+         nKPuHdsKmzV4hYYTigeVGFp9JEP1pVPD9I8Gq67bCCmPxufc78XPirUNQ+sauYaAVVoX
+         N3RB0qVeLqptt9sAPTeL9wCKsc2mT4CjuBSdO96yNfkncocogB0fbX3BJZrTleurn1F1
+         jp+0IwJkBAXzTo1oxbl/kwGAlWMYnnQ0VZHGLOKyoBLx6AT3tGfryctVFh23DPK+4rP6
+         qO9A==
+X-Gm-Message-State: AOJu0YzF5JLAoqQhYrXuXmTbM5xhR3ncYfBz515OwLn6cdp8PCKzaetL
+        lq7jfdg/MudyZLK5aVQyWRMY3Sw4lcdJk/0f
+X-Google-Smtp-Source: AGHT+IH/GVgcWoyTnI6CjuidQQj2eCHCb/7OcETmpcRHx+mMydVisjSv3mlfwbIqt/FcEH+WIvuFEmX/eSnvqJcR
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:6942:0:b0:d80:cf4:7e80 with SMTP id
- e63-20020a256942000000b00d800cf47e80mr453ybc.7.1695405465321; Fri, 22 Sep
- 2023 10:57:45 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 17:57:39 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a25:8304:0:b0:d86:5913:55cb with SMTP
+ id s4-20020a258304000000b00d86591355cbmr1694ybk.0.1695405467283; Fri, 22 Sep
+ 2023 10:57:47 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 17:57:40 +0000
 In-Reply-To: <20230922175741.635002-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230922175741.635002-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922175741.635002-2-yosryahmed@google.com>
-Subject: [PATCH v2 1/2] mm: memcg: refactor page state unit helpers
+Message-ID: <20230922175741.635002-3-yosryahmed@google.com>
+Subject: [PATCH v2 2/2] mm: memcg: normalize the value passed into memcg_rstat_updated()
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Shakeel Butt <shakeelb@google.com>
@@ -67,135 +67,77 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memcg_page_state_unit() is currently used to identify the unit of a
-memcg state item so that all stats in memory.stat are in bytes. However,
-it lies about the units of WORKINGSET_* stats. These stats actually
-represent pages, but we present them to userspace as a scalar number of
-events. In retrospect, maybe those stats should have been memcg "events"
-rather than memcg "state".
+memcg_rstat_updated() uses the value of the state update to keep track
+of the magnitude of pending updates, so that we only do a stats flush
+when it's worth the work. Most values passed into memcg_rstat_updated()
+are in pages, however, a few of them are actually in bytes or KBs.
 
-In preparation for using memcg_page_state_unit() for other purposes that
-need to know the truthful units of different stat items, break it down
-into two helpers:
-- memcg_page_state_unit() retuns the actual unit of the item.
-- memcg_page_state_output_unit() returns the unit used for output.
+To put this into perspective, a 512 byte slab allocation today would
+look the same as allocating 512 pages. This may result in premature
+flushes, which means unnecessary work and latency.
 
-Use the latter instead of the former in memcg_page_state_output() and
-lruvec_page_state_output(). While we are at it, let's show cgroup v1
-some love and add memcg_page_state_local_output() for consistency.
+Normalize all the state values passed into memcg_rstat_updated() to
+pages. Round up non-zero sub-page to 1 page, because
+memcg_rstat_updated() ignores 0 page updates.
 
-No functional change intended.
-
+Fixes: 5b3be698a872 ("memcg: better bounds on the memcg stats updates")
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- mm/memcontrol.c | 44 +++++++++++++++++++++++++++++++++-----------
- 1 file changed, 33 insertions(+), 11 deletions(-)
+ mm/memcontrol.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 927c64d3cbcb..308cc7353ef0 100644
+index 308cc7353ef0..d1a322a75172 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1535,7 +1535,7 @@ static const struct memory_stat memory_stats[] = {
- 	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
- };
+@@ -763,6 +763,22 @@ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+ 	return x;
+ }
  
--/* Translate stat items to the correct unit for memory.stat output */
-+/* The actual unit of the state item, not the same as the output unit */
- static int memcg_page_state_unit(int item)
- {
- 	switch (item) {
-@@ -1543,6 +1543,22 @@ static int memcg_page_state_unit(int item)
- 	case MEMCG_ZSWAP_B:
- 	case NR_SLAB_RECLAIMABLE_B:
- 	case NR_SLAB_UNRECLAIMABLE_B:
-+		return 1;
-+	case NR_KERNEL_STACK_KB:
-+		return SZ_1K;
-+	default:
-+		return PAGE_SIZE;
-+	}
++static int memcg_page_state_unit(int item);
++
++/*
++ * Normalize the value passed into memcg_rstat_updated() to be in pages. Round
++ * up non-zero sub-page updates to 1 page as zero page updates are ignored.
++ */
++static int memcg_state_val_in_pages(int idx, int val)
++{
++	int unit = memcg_page_state_unit(idx);
++
++	if (!val || unit == PAGE_SIZE)
++		return val;
++	else
++		return max(val * unit / PAGE_SIZE, 1UL);
 +}
 +
-+/* Translate stat items to the correct unit for memory.stat output */
-+static int memcg_page_state_output_unit(int item)
-+{
-+	/*
-+	 * Workingset state is actually in pages, but we export it to userspace
-+	 * as a scalar count of events, so special case it here.
-+	 */
-+	switch (item) {
- 	case WORKINGSET_REFAULT_ANON:
- 	case WORKINGSET_REFAULT_FILE:
- 	case WORKINGSET_ACTIVATE_ANON:
-@@ -1551,17 +1567,23 @@ static int memcg_page_state_unit(int item)
- 	case WORKINGSET_RESTORE_FILE:
- 	case WORKINGSET_NODERECLAIM:
- 		return 1;
--	case NR_KERNEL_STACK_KB:
--		return SZ_1K;
- 	default:
--		return PAGE_SIZE;
-+		return memcg_page_state_unit(item);
- 	}
+ /**
+  * __mod_memcg_state - update cgroup memory statistics
+  * @memcg: the memory cgroup
+@@ -775,7 +791,7 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ 		return;
+ 
+ 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
+-	memcg_rstat_updated(memcg, val);
++	memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
  }
  
- static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
- 						    int item)
- {
--	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
-+	return memcg_page_state(memcg, item) *
-+		memcg_page_state_output_unit(item);
-+}
-+
-+static inline unsigned long memcg_page_state_local_output(
-+		struct mem_cgroup *memcg, int item)
-+{
-+	return memcg_page_state_local(memcg, item) *
-+		memcg_page_state_output_unit(item);
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+@@ -826,7 +842,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 	/* Update lruvec */
+ 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+ 
+-	memcg_rstat_updated(memcg, val);
++	memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
+ 	memcg_stats_unlock();
  }
  
- static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
-@@ -4106,9 +4128,8 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
- 
--		nr = memcg_page_state_local(memcg, memcg1_stats[i]);
--		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i],
--			   nr * memcg_page_state_unit(memcg1_stats[i]));
-+		nr = memcg_page_state_local_output(memcg, memcg1_stats[i]);
-+		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i], nr);
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
-@@ -4134,9 +4155,9 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
- 
--		nr = memcg_page_state(memcg, memcg1_stats[i]);
-+		nr = memcg_page_state_output(memcg, memcg1_stats[i]);
- 		seq_buf_printf(s, "total_%s %llu\n", memcg1_stat_names[i],
--			   (u64)nr * memcg_page_state_unit(memcg1_stats[i]));
-+			       (u64)nr);
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
-@@ -6614,7 +6635,8 @@ static int memory_stat_show(struct seq_file *m, void *v)
- static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
- 						     int item)
- {
--	return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
-+	return lruvec_page_state(lruvec, item) *
-+		memcg_page_state_output_unit(item);
- }
- 
- static int memory_numa_stat_show(struct seq_file *m, void *v)
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
