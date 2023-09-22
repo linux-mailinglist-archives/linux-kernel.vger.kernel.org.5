@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C297AAD32
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF957AAD35
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbjIVIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S232676AbjIVIz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjIVIzL (ORCPT
+        with ESMTP id S232389AbjIVIz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:55:11 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD85EE8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:05 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27666e94ad7so1533634a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:05 -0700 (PDT)
+        Fri, 22 Sep 2023 04:55:26 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D74CE8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:20 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-78f1210e27fso826203241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20230601.gappssmtp.com; s=20230601; t=1695372905; x=1695977705; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:to:from:subject
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=c0lvfh2z34kklQghRPHMgySN4X7ueSLfP71qd/q8Psw=;
-        b=w+C+kntTlRV4SjhIRAiDw/IFA8Ua/rLpwYwF2wXCbpK9yY2IF6cAUffnZBOAazDAAy
-         SJ/whFZEfZa0v46N9AmStPx8E70H0QADo99QjEryzBdykEkrW9WJ7GklOaB+gTUluihf
-         VJatWxfO9d0PXtZF6zHwxV7mFpdr5EbLUG+LOb2evKaleIPxlwGpQkyRyDubO5qvHg95
-         PHkZAoqTqeoKyo81Unn8yh/2N0sBfONP7F0LieXvSCWxM47jqdD6PwQ/jPxdVA26EEMy
-         L+P8PaPM4JRulEIEw95z/WoTVho9KgxmAuYa2bTj6Caho05oSkLj/OAT5ey2AO/PJIre
-         zr0Q==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695372919; x=1695977719; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LjLeoVmWga2Czo5HEnWmv6lh1/myqO9IrzlR/KySfMw=;
+        b=vICeILXHenR+m4ChRibohyEpqBjbE24EQKFXxSgf6Pf2CvPuNs0ytRv8E4nwgpqMNJ
+         bLNI167Mm9xG8A0hRy3nHpGV1hU8PHDIWgWc0Ec5t+dZigHEMGVSZ6BPQMFsIsPdhIo4
+         TkE18b33/vFxkVnNBOYg6FHwYAIQiE2G/VThBFSqxYxVOIn3S23LIaj7uAJIY4DRNr0P
+         cFBSHotcT2xMPsSLZsMragyihZ9GHaL44It9W+5Er4Ho9zN1MpP4Z1QkS/i0eW4hpO6Q
+         186gH/BOtJjdqLgHro+Hdi1GpT4WZrmHc9ofSv+sC6cnZiBrtIjY9JWQBMKJJOrv9LuC
+         uLVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695372905; x=1695977705;
-        h=content-transfer-encoding:mime-version:date:to:from:subject
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c0lvfh2z34kklQghRPHMgySN4X7ueSLfP71qd/q8Psw=;
-        b=Rm4v6GGCYzJsN2PHzHWOK3U/OEx7ewXheKKKsog+0CcxY5zJVqRcbKY5le7CZg+7+I
-         7peCcuGNY7l82K1W2dSDZsXeHu+UZN5hdP7BSGGAiXfhbsc5lobVoDsy0uQmKHtfZQQT
-         ZYJ8Crn/pK7E4da0/8Duljdh5w9EC3Zolz5/N0DX29sA9CKEGTd20RC4IPdb5Y+R8JE6
-         8pdjI+N+8GwhaOFlseL9cv6oD9WfKElNKSMvSfhbcllyBXKCMmMshWjC2L1j7VzeVZLE
-         55/Nf5TperLk6oIYtkXrsc+SciXOjTryAYcW7uOqjSjrN7M1ODruE+3injResb+C8cqn
-         EQSw==
-X-Gm-Message-State: AOJu0Yz2CSqHR4b3K1WnewM4/WgSXD33UdUkZHLk6Gk+ygIu3MDy08zq
-        s94D36DhQbexje3wEBI/PrPn6A==
-X-Google-Smtp-Source: AGHT+IGVuCEWfM4GWuwLP0lEt6K5tzvKJGmMMe92XWJ9s/Bt6uPaeyTVva1kQ3Pbo+bF0/nDxRn+Pg==
-X-Received: by 2002:a17:90a:db82:b0:26b:513a:30b0 with SMTP id h2-20020a17090adb8200b0026b513a30b0mr3137713pjv.10.1695372905217;
-        Fri, 22 Sep 2023 01:55:05 -0700 (PDT)
-Received: from centos78 (60-248-88-209.hinet-ip.hinet.net. [60.248.88.209])
-        by smtp.googlemail.com with ESMTPSA id l6-20020a170902f68600b001c41e1e9ca7sm2911372plg.215.2023.09.22.01.55.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Sep 2023 01:55:04 -0700 (PDT)
-Message-ID: <4d58c52bffc20b0668b17977c8e813abbd219bf0.camel@areca.com.tw>
-Subject: [PATCH V2 2/3] scsi: arcmsr: support new PCI device ID 1883 and
- 1886 Raid controllers
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 22 Sep 2023 16:55:05 +0800
+        d=1e100.net; s=20230601; t=1695372919; x=1695977719;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LjLeoVmWga2Czo5HEnWmv6lh1/myqO9IrzlR/KySfMw=;
+        b=hhQH85i2fbXjycbhbNwCqzHAbHAL4ecDRKNGNsoHAhd1gYyB9MnYqUwUlfMie0j1iX
+         KwMq03Ic2IBt5ix40cOGhLpjXfjapDE0XTTzqVbtztO0TMdnv7XV5HCpH2J2h8ci7cI3
+         0ewQHfat6qI7+TYrHBzhc2Y0i2fALb67qa//2ykr0u/RIK70H+u92u7tuyhAW9q7+mF1
+         oPrxiyg3V55h6WVjVTCQhnSB934w78BLEgZZk+kFTjVQJEasQ2iYJ+RueO2+oN8w6Vr/
+         AxFkrEpxzii5mRtunc0+WhJE/U4RxWOiJpmbHK6+LNlT1lBo4NVdMEuCwJfmoV3TlwEr
+         F+2A==
+X-Gm-Message-State: AOJu0YyXqsSxfzUbs2K4/6Fv5dDaRc3C62zf7PAFjwdTqdogd0R3UWOf
+        us2Q6GcyF5CrShwgC6mBspPRB0TtjYy2iqjtcHJe7g==
+X-Google-Smtp-Source: AGHT+IHxBsOgjmUjvNUAwgBatLq3JI3ZZybm6kF6ybmwSMCK+7+qdXf1lXb/OX+D7+N66qahGHj4fyuD/t0by/dm+Xk=
+X-Received: by 2002:a67:ffd2:0:b0:450:c666:fe14 with SMTP id
+ w18-20020a67ffd2000000b00450c666fe14mr8133779vsq.30.1695372919337; Fri, 22
+ Sep 2023 01:55:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230920075500.96260-1-brgl@bgdev.pl> <20230920075500.96260-2-brgl@bgdev.pl>
+ <ZQr4oMx0+A3qHPVC@smile.fi.intel.com>
+In-Reply-To: <ZQr4oMx0+A3qHPVC@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 22 Sep 2023 10:55:08 +0200
+Message-ID: <CAMRc=MdasSJXgms0KrvNTJg2oj9ywb5ZjwpPD2s_fWWsFiyaTg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] bitmap: define a cleanup function for bitmaps
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,58 +74,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+On Wed, Sep 20, 2023 at 3:50=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Sep 20, 2023 at 09:54:57AM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Add support for autopointers for bitmaps allocated with bitmap_alloc()
+> > et al.
+>
+> Haven't I given a tag? (Probably this is significant change...) Whatever,
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-This patch supports Areca new PCI device ID 1883 and 1886 Raid controllers
+Yeah, I dropped it due to the NULL-pointer check change.
 
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
-
-diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
-index 8f20d9c..2f80a6a 100644
---- a/drivers/scsi/arcmsr/arcmsr.h
-+++ b/drivers/scsi/arcmsr/arcmsr.h
-@@ -78,9 +78,13 @@ struct device_attribute;
- #ifndef PCI_DEVICE_ID_ARECA_1203
- #define PCI_DEVICE_ID_ARECA_1203	0x1203
- #endif
-+#ifndef PCI_DEVICE_ID_ARECA_1883
-+#define PCI_DEVICE_ID_ARECA_1883	0x1883
-+#endif
- #ifndef PCI_DEVICE_ID_ARECA_1884
- #define PCI_DEVICE_ID_ARECA_1884	0x1884
- #endif
-+#define PCI_DEVICE_ID_ARECA_1886_0	0x1886
- #define PCI_DEVICE_ID_ARECA_1886	0x188A
- #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
- #define	ARCMSR_MINUTES			(1000 * 60 * 60)
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index e2c71ab..22a204e 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -214,8 +214,12 @@ static struct pci_device_id arcmsr_device_id_table[] = {
- 		.driver_data = ACB_ADAPTER_TYPE_A},
- 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1880),
- 		.driver_data = ACB_ADAPTER_TYPE_C},
-+	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1883),
-+		.driver_data = ACB_ADAPTER_TYPE_C},
- 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1884),
- 		.driver_data = ACB_ADAPTER_TYPE_E},
-+	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886_0),
-+		.driver_data = ACB_ADAPTER_TYPE_F},
- 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886),
- 		.driver_data = ACB_ADAPTER_TYPE_F},
- 	{0, 0}, /* Terminating entry */
-@@ -4794,9 +4798,11 @@ static const char *arcmsr_info(struct Scsi_Host *host)
- 	case PCI_DEVICE_ID_ARECA_1680:
- 	case PCI_DEVICE_ID_ARECA_1681:
- 	case PCI_DEVICE_ID_ARECA_1880:
-+	case PCI_DEVICE_ID_ARECA_1883:
- 	case PCI_DEVICE_ID_ARECA_1884:
- 		type = "SAS/SATA";
- 		break;
-+	case PCI_DEVICE_ID_ARECA_1886_0:
- 	case PCI_DEVICE_ID_ARECA_1886:
- 		type = "NVMe/SAS/SATA";
- 		break;
-
+Bart
