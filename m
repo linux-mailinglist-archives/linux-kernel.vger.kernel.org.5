@@ -2,142 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996537AA67B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722A77AA67C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjIVBZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 21:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S229945AbjIVB0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjIVBZf (ORCPT
+        with ESMTP id S229586AbjIVB0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 21:25:35 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA522F1;
-        Thu, 21 Sep 2023 18:25:29 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M1JAUW006017;
-        Fri, 22 Sep 2023 01:25:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=C0IxRojZ/dwDccz4QGvwLNyPhvswR+HvuHxLkTuPw1g=;
- b=fQjzVbGdZDJyYAoi8yMwY/HCpKMcvlF5QEy1HCUKYsYQboW8dWJT+EEyqEZHZCwQ2qJg
- 0zuPfWQwNVMycMsd6wiLNMFrQU1JMsE0FXrLAcMlhv8Q8qWpTxe9kZlLIXzzAtk0OTRV
- V0dmo2FRQrmsUWE/POlNJU6F6EcjeZ+RN7n+DcGYoezjgseH3sG8sF7i3a1xi4PMSF+F
- X95+NX8VBlccUWMFxdeubuh0Ma1Ha2Bclgey2ZSiazZxQzamoODiyQtYcM31rlMiMVv7
- khzumGJ7qyGnZ8yKUOvcD5IP1jJvs97ww2PGk2sYkNa9/DjfmxICY4HeFHANlpT8FIF2 eA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u6agn86-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 01:25:15 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38M1PEfr012221
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 01:25:14 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 21 Sep
- 2023 18:25:07 -0700
-Message-ID: <3372b707-a216-498f-84ab-adb7b6484c91@quicinc.com>
-Date:   Fri, 22 Sep 2023 09:25:07 +0800
+        Thu, 21 Sep 2023 21:26:02 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1EC7F18F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 18:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=FLR5V
+        SYqhjZdAddiOMBK6+vIndH7dJAeROYe1W7Jiyk=; b=mj327/rSd056IG8uKrsAr
+        PD62SZ/MEJHgtpbHLQY/NUk2ewOMdIeFRRgSrZbjhB2R/3asyjAvuCs8SPORHz75
+        vAgF9jJhS2ogiKj1ozqBv6xbRGKClx/g47kUVPC6HJGkDv7h0InQr6gZiTl7q/+d
+        8nqS4zqzAN2WEFOY0fMFtU=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wBH6SQF7Qxlm6O9Aw--.10024S4;
+        Fri, 22 Sep 2023 09:25:37 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     alain.volmat@foss.st.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Ma Ke <make_ruc2021@163.com>
+Subject: [PATCH] drm/gem: avoid potential dereference of error pointers
+Date:   Fri, 22 Sep 2023 09:25:23 +0800
+Message-Id: <20230922012523.3602764-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] arm64: dts: qcom: sm4450: Add RPMH and Global clock
- controller
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>, <maz@kernel.org>, <lee@kernel.org>
-CC:     <robimarko@gmail.com>, <quic_gurus@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
-        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
-        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
-        <quic_bjorande@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20230908065847.28382-1-quic_tengfan@quicinc.com>
- <20230908065847.28382-6-quic_tengfan@quicinc.com>
- <ae4df26d-b74e-f22e-f532-7ff34d139fa3@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <ae4df26d-b74e-f22e-f532-7ff34d139fa3@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: aqhYro06R3iPJu_mRMWifWlR8ObWB5Ht
-X-Proofpoint-ORIG-GUID: aqhYro06R3iPJu_mRMWifWlR8ObWB5Ht
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_01,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxlogscore=912 priorityscore=1501 lowpriorityscore=0 spamscore=0
- suspectscore=0 clxscore=1015 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220010
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: _____wBH6SQF7Qxlm6O9Aw--.10024S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWruFyUWw4rGr47XrWrtFy8Grg_yoW3trc_Wa
+        1UXrnxCry7G3WjvF1jyws8AasYkrZYgF48X3W8tay3Ar40vry8X3y2gF1rGF1UWF4jqFyD
+        ta1xC34YqF9akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRM5l8UUUUUU==
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFRnyC2B9oNhVuwAAs+
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The return value of drm_atomic_get_crtc_state() needs to be
+checked. To avoid use of error pointer 'crtc_state' in case
+of the failure.
 
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/gpu/drm/sti/sti_gdp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-在 9/20/2023 10:33 PM, Konrad Dybcio 写道:
-> 
-> 
-> On 9/8/23 08:58, Tengfei Fan wrote:
->> From: Ajit Pandey <quic_ajipan@quicinc.com>
->>
->> Add device node for RPMH and Global clock controller on Qualcomm
->> SM4450 platform.
->>
->> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sm4450.dtsi | 18 ++++++++++++++++++
->>   1 file changed, 18 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi 
->> b/arch/arm64/boot/dts/qcom/sm4450.dtsi
->> index eb544d875806..2395b1d655a2 100644
->> --- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
->> @@ -3,6 +3,8 @@
->>    * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights 
->> reserved.
->>    */
->> +#include <dt-bindings/clock/qcom,rpmh.h>
->> +#include <dt-bindings/clock/qcom,sm4450-gcc.h>
->>   #include <dt-bindings/gpio/gpio.h>
->>   #include <dt-bindings/interrupt-controller/arm-gic.h>
->>   #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->> @@ -367,6 +369,22 @@
->>               apps_bcm_voter: bcm-voter {
->>                   compatible = "qcom,bcm-voter";
->>               };
->> +
->> +            rpmhcc: clock-controller {
->> +                compatible = "qcom,sm4450-rpmh-clk";
->> +                #clock-cells = <1>;
->> +                clock-names = "xo";
->> +                clocks = <&xo_board>;
-> property
-> property-names
-> 
-> please
-> 
-> Konrad
-Hi Konrad,
-I will adjust these nodes.
-
+diff --git a/drivers/gpu/drm/sti/sti_gdp.c b/drivers/gpu/drm/sti/sti_gdp.c
+index 43c72c2604a0..054ce8455478 100644
+--- a/drivers/gpu/drm/sti/sti_gdp.c
++++ b/drivers/gpu/drm/sti/sti_gdp.c
+@@ -638,6 +638,8 @@ static int sti_gdp_atomic_check(struct drm_plane *drm_plane,
+ 
+ 	mixer = to_sti_mixer(crtc);
+ 	crtc_state = drm_atomic_get_crtc_state(state, crtc);
++	if (IS_ERR(crtc_state))
++		return PTR_ERR(crtc_state);
+ 	mode = &crtc_state->mode;
+ 	dst_x = new_plane_state->crtc_x;
+ 	dst_y = new_plane_state->crtc_y;
 -- 
-Thx and BRs,
-Tengfei Fan
+2.37.2
+
