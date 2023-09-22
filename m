@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CB67AAF2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA4C7AAF32
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbjIVKKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S233236AbjIVKK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbjIVKKW (ORCPT
+        with ESMTP id S233237AbjIVKKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:10:22 -0400
+        Fri, 22 Sep 2023 06:10:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7AE194;
-        Fri, 22 Sep 2023 03:10:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 414A5C433C7;
-        Fri, 22 Sep 2023 10:10:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A49C19E;
+        Fri, 22 Sep 2023 03:10:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16E60C433CA;
+        Fri, 22 Sep 2023 10:10:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695377416;
-        bh=qs6BuWtU48wuJV1hE2FTPkk1Gp3WAFAPmGlZE30SDtk=;
+        s=k20201202; t=1695377447;
+        bh=33Tgy9zFb+25f45bxXvE9vqs5K0swv1i/LRG0rsLIP8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pqqGDqA84PemrzoFyHVx8rz37BMj3iNrdZJXtYP6pIR4gpcn5DUZk92WSSS2XQk4a
-         ARQILOyvPvBptaRiNIqPZiCSjKZwmZvsiQJ7qizCebai5dFqC/DtN0FrbipbTnm9GY
-         L0n807vXhpLbgVTVVuwX+z3fOKlPscV6cP/sUN/Peq5Z++UhdTRE/KRnFUInYUUk4O
-         D5yYWrpi9bamvkJ0vvq7FQMFQt81MLzSNnYGdrVuHAwX/xtORauLMDpLVBJuID1qto
-         I5GPva9QkOnWtY9ZR3js7SyJmqCragXR0/Z1pJXdhC+sTNGZtvRXnH3mC1zW+uuzZw
-         B+8SiBiXTVuqg==
-Date:   Fri, 22 Sep 2023 11:10:10 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     shravan chippa <shravan.chippa@microchip.com>
-Cc:     green.wan@sifive.com, vkoul@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, conor+dt@kernel.org, palmer@sifive.com,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com
-Subject: Re: [PATCH v1 0/3] dma: sf-pdma: various sf-pdma updates for the
- mpfs platform
-Message-ID: <20230922-uninstall-catchy-0986e5b03ae5@spud>
-References: <20230922095039.74878-1-shravan.chippa@microchip.com>
+        b=ZRckGD9LAAQnDK/ghKMPAyO39B4Dc7dD/KtrMuIbVHxFym0bmgfZloMqwY8Oa+abh
+         bTc8ozFDCJKsngLTD8LVVLC54y9eM9cO/bpSCybYzBBG0AIK30FGNQpQHnnpJaWh9f
+         OPnUmrm55U23dce7eswmSUQzYSXE59u0bOmk6g6uCYUYBsU/EqeAkfKClAXk+5y+3D
+         E953C88XqwRTWhXBJrTjk9hdmw5dS5/JUn+XdzIH/SdCr3fjXBPxi5JJW0jHPnPcHa
+         480UWBMKu9RvoxUsoGsYMxM9peExWDWltwdyKwKntJD1LuiBvzM0h4Qumgg4SQj3f4
+         K8tvW0zIDSNxw==
+Date:   Fri, 22 Sep 2023 12:10:44 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] i2c: cp2615: replace deprecated strncpy with strscpy
+Message-ID: <ZQ1oJB0Tiop3Z1Fv@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Justin Stitt <justinstitt@google.com>,
+        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-v1-1-11406a996794@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RO6bI1l+vKniNdqv"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="c0LwJnjHZmcinQj0"
 Content-Disposition: inline
-In-Reply-To: <20230922095039.74878-1-shravan.chippa@microchip.com>
+In-Reply-To: <20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-v1-1-11406a996794@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -56,43 +57,59 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---RO6bI1l+vKniNdqv
+--c0LwJnjHZmcinQj0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hey,
-
-On Fri, Sep 22, 2023 at 03:20:36PM +0530, shravan chippa wrote:
-> From: Shravan Chippa <shravan.chippa@microchip.com>
+On Wed, Sep 20, 2023 at 08:08:52AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
 >=20
-> This series does the following
-> 1. Adds a PolarFire SoC specific compatible and code to support for
-> out-of-order dma transfers=20
+> We should prefer more robust and less ambiguous string interfaces.
 >=20
-> 2. Adds generic device tree bindings support by using=20
-> of_dma_controller_register()
+> We expect name to be NUL-terminated based on its numerous uses with
+> functions that expect NUL-terminated strings.
 >=20
-> Shravan Chippa (3):
->   dmaengine: sf-pdma: Support of_dma_controller_register()
->   dt-bindings: dma: sf-pdma: add new compatible name
->   dmaengine: sf-pdma: add mpfs-pdma compatible name
+> For example in i2c-core-base.c +1533:
+> | dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
+>=20
+> NUL-padding is not required as `adap` is already zero-alloacted with:
+> | adap =3D devm_kzalloc(&usbif->dev, sizeof(struct i2c_adapter), GFP_KERN=
+EL);
+>=20
+> With the above in mind, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+>=20
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
+cpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
+tml [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-It looks like you're missing a patch here that adds this new set of
-compatibles to the devicetree?
+Applied to for-next, thanks!
 
-Thanks,
-Conor.
 
---RO6bI1l+vKniNdqv
+--c0LwJnjHZmcinQj0
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ1oAgAKCRB4tDGHoIJi
-0hETAQD3M7YmAYcVjH2SfvhEE8ixW2UyQGqhtPDtF4p+qJZUlQD+PK9qylqRlXx7
-sWZDm79u7daNsqBrQd5W434CWITDHgg=
-=wohC
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUNaCQACgkQFA3kzBSg
+KbZcVg/9E7peMn7vHeP47JzLjr4NVIkVY//5HALFdYGqXGp3VKTizc45nquNyd9j
+6BFcXqSC+d1DxJ5hiwuNPRoQc0ftZhaFUweAeucZHh/Gg3iPnK395lVv+WAVIeu8
+6DeK8sKeQmBJcQyX9xcPHypJfs3eW2i99KuPhz/97hDNLy4XezL50QOpzBSuarGE
+cbelsLwxxaOED+dtW9B5kgTrpNeKdIaBskoufFrOxNYn911cLv+bN0TRXks7tW94
+ytVLqdF7A/KH+0QNC1X2mnMcf13hRexZ8K946T/8+Caa1pnAJnzZWmwWsKqX4HPT
+6uLU1wQaG5ZrBryF6mItiISL0dRb7qNToS5/oPGHbgq2Pr7nV9JAW62kP18eNcKG
+zOP8QApoTzbzSASUR9y6xLhhhaXNvEkAK08HGfcJMtL8gVuJGqfm0eQoiwGTQoTp
+gP5rsfDKLgVar5dGkGMQ9OJaR7inQjHjGy0gkQ5+FT0yY0hWANH0eEq0EXmy71/z
+suSZZKZJlJK7s6EwS9l4NJlSk/whexyW86srKBq0ilYe+B0KrTnAJaDgxN1HJ8cx
+FUkLgfoEuEeuMBCA2E6iymbaB6nl93j7nvl6Y7cqKzJdsbWwoPfpfL+51kKTp4bR
+6SoUWGORqbZpku27IhTlRZgEqFnr+GXvGW2y8hW3UiWNrHpKw80=
+=V3V8
 -----END PGP SIGNATURE-----
 
---RO6bI1l+vKniNdqv--
+--c0LwJnjHZmcinQj0--
