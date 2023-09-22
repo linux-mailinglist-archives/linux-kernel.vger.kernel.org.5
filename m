@@ -2,97 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B397AB70F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573BD7AB71C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbjIVRQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        id S229891AbjIVRU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbjIVRQP (ORCPT
+        with ESMTP id S229532AbjIVRUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:16:15 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200391A5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:16:08 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c5dd017b30so16781675ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:16:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695402967; x=1696007767; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ICBL/Q4jbf7cf4gR4zY8Pazn4MfjoBlTiYldqzQrKlk=;
-        b=BWQIRm3eUX4ZBoJ1U57MYmaIbPdf8z5SesOZqHrXyqm/tIcJKfKxXVm9Ksj8HT7CRX
-         zDEztsz5fpzUChAX3JySlC09KbWyvZYC0q2GuLgRtBMR+xEHhpB60s2FKMlLE5TMPfb7
-         x9VHwlp1N1qomZ3ZmOlgZgj/mJHUaeaKxrj7s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695402967; x=1696007767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ICBL/Q4jbf7cf4gR4zY8Pazn4MfjoBlTiYldqzQrKlk=;
-        b=d1e0l0nw30JZspgLRgLGhG0duYBItEVnS/MHo7w/HBYBvCb8zVcKBrtbp0Z2As+rTJ
-         3PcShHM/k2eG43BDxPkOTlIhR19cgd9JZir8G3Mf+0eIuM0uT/lCeRqUeW5A78yWDzlY
-         hrMsq6Se0bsHv5lvxf8BNfuyJ9pskjhmS/WMi5qsMthZy9g2ijHb2OO72ErFtZQDFh2g
-         ww72AF7QOCKG594qAAczKQCKFr2FWN4YMUJLN8KetERqZRvDU/pK16gTXy8KELxKzEe0
-         CFfBS35u60Vut/iseRO+NeLRNiflpGdt+167qB8A7jDUnzd0b83MTmM82m8ULzOLDEPm
-         oCrg==
-X-Gm-Message-State: AOJu0YyhM7x5Og9W6n+CXLJm8mhGmYL5XxJdnrLSC9is9dSrIEWutcBV
-        TdIIq9urd0RI388mWWUaz4V62A==
-X-Google-Smtp-Source: AGHT+IEetMJnHs5bBcV9L3R6HPyKeQTS1z7sgSklrhHfcojQhz5I0wr5ShzBfZ21ocAxIbhohXa34w==
-X-Received: by 2002:a17:902:a416:b0:1c5:ecfc:2650 with SMTP id p22-20020a170902a41600b001c5ecfc2650mr2175732plq.14.1695402967593;
-        Fri, 22 Sep 2023 10:16:07 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001bdbe6c86a9sm3742195plb.225.2023.09.22.10.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:16:07 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 10:16:06 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Green Wan <green.wan@sifive.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        dmaengine@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 00/21] dmaengine: Annotate with __counted_by
-Message-ID: <202309221015.AB63726@keescook>
-References: <20230817235428.never.111-kees@kernel.org>
- <202309151307.F3341BD5A@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309151307.F3341BD5A@keescook>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        Fri, 22 Sep 2023 13:20:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593E1F1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:20:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DC67C433C7;
+        Fri, 22 Sep 2023 17:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1695403218;
+        bh=IRau8b5XGe3qEYgJQvRo4yzSY5zEVQssEPPROArtjug=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SdX6tRI4jMHI7b7K67i9g314zNNszN6vEJLecg9UFiF+cebpsKDyHIsQrhvfjBQX0
+         ky6HdGeB74v+yS+mYqEe0HJyTJzY6Imvxt3ZexpbbSQPfZowZhxVOVf7tquOmjTbgJ
+         tQ8PkASq2Vb+F0t7Nm0KIO9RjyGhZBmZkYaCaObQ=
+Date:   Fri, 22 Sep 2023 10:20:16 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Zach O'Keefe" <zokeefe@google.com>
+Cc:     Yang Shi <shy828301@gmail.com>,
+        Saurabh Singh Sengar <ssengar@linux.microsoft.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v3] mm/thp: fix
+ "mm: thp: kill __transhuge_page_enabled()"
+Message-Id: <20230922102016.95cab3640b17155a846874d9@linux-foundation.org>
+In-Reply-To: <CAAa6QmTnx=kEijosNfq0DEPz4TeHFeOrgtwO0wfEeFUS5hgROw@mail.gmail.com>
+References: <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
+        <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
+        <3e08d48b-7b70-cc7f-0ec1-12ad9b1a33db@redhat.com>
+        <CAAa6QmSNvx7wbZzfhFOyhODTMoBbf6PimnOf2xeAw5NkD1eXVg@mail.gmail.com>
+        <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+        <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com>
+        <ZOijSwCa9NFD6DZI@casper.infradead.org>
+        <9f967665-2cbd-f80b-404e-ac741eab1ced@redhat.com>
+        <CAAa6QmQRFwzXWHEL2d74sX6JuciJeBzprk1NxCWKB6i53gmt6Q@mail.gmail.com>
+        <20230906065817.GA27879@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        <20230920054454.GA26860@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        <CAHbLzkouAZg5BSvnwv_EN6G3qV-nzeX2ced1GRqQDf2rkm992w@mail.gmail.com>
+        <CAAa6QmTnx=kEijosNfq0DEPz4TeHFeOrgtwO0wfEeFUS5hgROw@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -101,17 +66,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 01:08:30PM -0700, Kees Cook wrote:
-> Just a ping on the series... how do these look to you, Vinod?
-> 
-> If you want I can carry them in my tree. Please let me know.
+On Fri, 22 Sep 2023 09:56:21 -0700 "Zach O'Keefe" <zokeefe@google.com> wrote:
 
-I'm now carrying this in my for-next/hardening tree. Let me know if
-you'd prefer I drop it.
+> >From this back/forth with David/Matthew, seems like we're OK saying,
+> "this was a mistake", and that we can take the patch (need some form
+> of Ack or Reviewed-by from them first, to confirm)
 
-Thanks!
+Yup.  And please let's update the changelog to reflect the details
+which have been discussed thus far.
 
--Kees
+If the change *makes sense* for the current kernel then let's proceed,
+regardless of the broken driver issue.
 
--- 
-Kees Cook
+But adding a cc:stable would require extra argumentation, which I will
+be interested to read ;)
+
