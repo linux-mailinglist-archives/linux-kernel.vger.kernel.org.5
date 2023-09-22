@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC46E7AA7AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090B77AA7B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjIVEWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
+        id S230015AbjIVEYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjIVEWi (ORCPT
+        with ESMTP id S229611AbjIVEYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:22:38 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF45122;
-        Thu, 21 Sep 2023 21:22:31 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M4MK34052371;
-        Thu, 21 Sep 2023 23:22:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695356540;
-        bh=kyulGijV0zxvAJJ3W8OSYH3iM+LfZQM4L7zRMaEhuQI=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=m5R0WD5d2ml7PNC+vjQ8nfT42JsKqoF+g3bGCg0M8FoXYHNP+Qqx0TfP9Ma6A5i3U
-         Y33MIQZ9YkzL44IjzfhhLyxhtti7GbzeqxkouFl7iA+rzjLUkj3P+bBd/hPbj1yfDc
-         IqhJONwSEWjlFt1m0PUDqEkMv9614/P4vNzfbqU0=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M4MKuR017155
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Sep 2023 23:22:20 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Sep 2023 23:22:20 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Sep 2023 23:22:20 -0500
-Received: from [10.24.69.199] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M4MG8B078467;
-        Thu, 21 Sep 2023 23:22:16 -0500
-Message-ID: <52572af4-771e-3bd9-b290-74482694f020@ti.com>
-Date:   Fri, 22 Sep 2023 09:52:15 +0530
+        Fri, 22 Sep 2023 00:24:54 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6855A8F;
+        Thu, 21 Sep 2023 21:24:43 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf55a81eeaso14400905ad.0;
+        Thu, 21 Sep 2023 21:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695356683; x=1695961483; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=UANZyGmjU/rf/hK8ONbL0wqx5cYEjVcGLbn13RAx4hk=;
+        b=EkUs6/RqjqU38xsdKSANVcT6mrEL355Bd3PTIZzqnee/awhfWHIJbDFeIFP2zHbB6K
+         iuTu2yaonkwVYdiyQDxhZJaziiK9r1i8qQTZi7hDNpz6g0yX6fK+hv6Qj1FAeIaKt3lr
+         saixZ4wCPFVOkMtQYwLFXzOxrt21QtFCT/t1S6nCpr0hMe9w9Q/dH5W1ENgr62yrd0R5
+         j8/KbWdKiRcH+ZzAcUs5weMYv6gHIZ0MGAancGssaf1VVbPT1iMABxfbY7DXfUv7G/cG
+         tDLH6TRNqaXElCAogs/nNm9iujMQ7nes7zrMv0noGi+8duBddlM62uVHBIYPilsaPceb
+         W50w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695356683; x=1695961483;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UANZyGmjU/rf/hK8ONbL0wqx5cYEjVcGLbn13RAx4hk=;
+        b=XyoLTxU1W7KmjAjtsC8tnBMML5oNiVkZ6CZWVfymyAF+CMwRvRp3tj/lyri5n8DGk5
+         x5F3WiMdKCnCiVvBg9vUSuwgs+wrgfOsAjb+Pu0UPxmJPxEzUA6RkIH4NmGw+aWm/42H
+         yIh0xgpwtqd9Naq8LIdOf3RxdLTtg2bN/HvXIw9uvaT5eimNUa57QfKR9jeT+OSWslFK
+         9bcr/yfv8WYXo4EBimY5RBzmMGvX+5bT7HIk4I9CeGFKsheCXrLhxCz4ygWjo8nDV9tp
+         wPwa7QZVss0/69Z5UuEZP0xGhVbBG03h2fw4XKnI34pWe6lb/rKeUYXClqKB5cELqjLC
+         pYZg==
+X-Gm-Message-State: AOJu0YxVqMyV04pOE4W4o5Q7r/MrwcemkGmHS/C1yvXlCPbMEUAIQGLx
+        mi1Xgw4hjSSsgnm8BEY+VHg=
+X-Google-Smtp-Source: AGHT+IFLeYl/hqcN1av+CN9Hovwsh2LyVNxwX5EzZ0iQs3U418VrmAdETV2vUyQd9SJIl2aRIw9yqg==
+X-Received: by 2002:a17:90a:dc0f:b0:274:84f3:d73a with SMTP id i15-20020a17090adc0f00b0027484f3d73amr7685324pjv.28.1695356682746;
+        Thu, 21 Sep 2023 21:24:42 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t4-20020a17090ae50400b0026f39c90111sm2290286pjy.20.2023.09.21.21.24.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 21:24:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <85ddf493-934f-75c4-7a3a-728289c1ee09@roeck-us.net>
+Date:   Thu, 21 Sep 2023 21:24:40 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
- Ethernet support
+Subject: Re: [PATCH] watchdog: aspeed: Add sysfs attributes for reset mask
+ bits
 Content-Language: en-US
-To:     Andrew Davis <afd@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-References: <20230921060913.721336-1-danishanwar@ti.com>
- <20230921060913.721336-3-danishanwar@ti.com>
- <3b4629c7-5625-f32f-0532-5f50832c1714@ti.com>
-From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <3b4629c7-5625-f32f-0532-5f50832c1714@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+To:     Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Zev Weiss <zev@bewilderbeest.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-watchdog@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        Eddie James <eajames@linux.ibm.com>,
+        Ivan Mikhaylov <i.mikhaylov@yadro.com>
+References: <20230922013542.29136-2-zev@bewilderbeest.net>
+ <91be26169ebbddf3c05cd19626478246cb72a72a.camel@codeconstruct.com.au>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <91be26169ebbddf3c05cd19626478246cb72a72a.camel@codeconstruct.com.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,249 +87,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/23 22:57, Andrew Davis wrote:
-> On 9/21/23 1:09 AM, MD Danish Anwar wrote:
->> ICSSG2 provides dual Gigabit Ethernet support.
+On 9/21/23 21:16, Andrew Jeffery wrote:
+> On Thu, 2023-09-21 at 18:35 -0700, Zev Weiss wrote:
+>> The AST2500 and AST2600 watchdog timers provide the ability to control
+>> which devices are reset by the watchdog timer via a reset mask
+>> resgister.  Previously the driver ignored that register, leaving
+>> whatever configuration it found at boot and offering no way of
+>> altering its settings.  Add a 'reset_ctrl' sysfs subdirectory with a
+>> file per bit so that userspace can determine which devices the reset
+>> is applied to.
 >>
->> For support SR2.0 ICSSG Ethernet firmware:
->> - provide different firmware blobs and use TX_PRU.
->> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
->> - TX timestamp notification comes via INTC interrupt.
+>> Note that not all bits in the hardware register are exposed -- in
+>> particular, the ARM CPU and SOC/misc reset bits are left hidden since
+>> clearing them can render the system unable to reboot.
 >>
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 >> ---
->>   arch/arm64/boot/dts/ti/Makefile               |   4 +-
->>   ...se-board.dts => k3-am654-common-board.dts} |   0
->>   arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 ++++++++++++++++++
->>   3 files changed, 148 insertions(+), 1 deletion(-)
->>   rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts =>
->> k3-am654-common-board.dts} (100%)
->>   create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
 >>
->> diff --git a/arch/arm64/boot/dts/ti/Makefile
->> b/arch/arm64/boot/dts/ti/Makefile
->> index e7b8e2e7f083..85c91f5e832e 100644
->> --- a/arch/arm64/boot/dts/ti/Makefile
->> +++ b/arch/arm64/boot/dts/ti/Makefile
->> @@ -42,12 +42,14 @@ dtb-$(CONFIG_ARCH_K3) +=
->> k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
->>     # Boards with AM65x SoC
->> -k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
->> k3-am654-base-board-rocktech-rk101-panel.dtbo
->> +k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
->> k3-am654-base-board-rocktech-rk101-panel.dtbo
+>> I'm porting OpenBMC to a platform that requires that the LPC controller remain
+>> un-reset by a BMC reboot.  With this patch userspace can control the reset
+>> mask of the Aspeed watchdog timer, with a few bits remaining unexposed so as
+>> to prevent some almost-certainly undesirable situations.  If there are other
+>> bits that people feel shouldn't be exposed (or conversely if someone feels
+>> strongly that the "dangerous" bits _should_ be exposed) I can adjust
+>> accordingly.
 > 
-> Should the k3-am654-gp-evm.dtb not also have this icssg2 support? Does
-> it work
-> to keep this line like before or is there some conflict having both
-> enabled?
+> 
+> Is there a reason this has to be managed by userspace? It sounds a lot
+> like a property of platform design, in which case exposing this feature
+> in the devicetree might be a better approach.
 > 
 
-I have not tested this dtb (k3-am654-gp-evm.dtb). So just to be on the
-safe side I kept gp-evm.dtb as it was. Ideally gp-evm.dtb should have
-icssg2 support as well. But I haven't tested the combination of
-base-board + icssg dtbo + rockteck dtbo. That is why I kept gp-evm dtb
-as it was. Anyways, for ICSSG2's use case only k3-am654-base-board.dtb
-is used so I think it's ok to leave k3-am654-gp-evm.dtb to as it was.
+Same sentiment here.
 
-> Andrew
-> 
->> +k3-am654-base-board-dtbs := k3-am654-common-board.dtb
->> k3-am654-icssg2.dtbo
->>   dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-m2.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
->> +dtb-$(CONFIG_ARCH_K3) += k3-am654-common-board.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
->>   diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> b/arch/arm64/boot/dts/ti/k3-am654-common-board.dts
->> similarity index 100%
->> rename from arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> rename to arch/arm64/boot/dts/ti/k3-am654-common-board.dts
->> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
->> b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
->> new file mode 100644
->> index 000000000000..e91c20947d05
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
->> @@ -0,0 +1,145 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/**
->> + * DT overlay for IDK application board on AM654 EVM
->> + *
->> + * Copyright (C) 2018-2023 Texas Instruments Incorporated -
->> https://www.ti.com/
->> + */
->> +
->> +/dts-v1/;
->> +/plugin/;
->> +
->> +#include <dt-bindings/net/ti-dp83867.h>
->> +#include "k3-pinctrl.h"
->> +
->> +&{/} {
->> +    aliases {
->> +        ethernet1 = &icssg2_emac0;
->> +        ethernet2 = &icssg2_emac1;
->> +    };
->> +
->> +    /* Dual Ethernet application node on PRU-ICSSG2 */
->> +    icssg2_eth: icssg2-eth {
->> +        compatible = "ti,am654-icssg-prueth";
->> +        pinctrl-names = "default";
->> +        pinctrl-0 = <&icssg2_rgmii_pins_default>;
->> +        sram = <&msmc_ram>;
->> +        ti,prus = <&pru2_0>, <&rtu2_0>, <&tx_pru2_0>,
->> +            <&pru2_1>, <&rtu2_1>, <&tx_pru2_1>;
->> +        firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
->> +                "ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
->> +
->> +        ti,pruss-gp-mux-sel = <2>,      /* MII mode */
->> +                      <2>,
->> +                      <2>,
->> +                      <2>,    /* MII mode */
->> +                      <2>,
->> +                      <2>;
->> +
->> +        ti,mii-g-rt = <&icssg2_mii_g_rt>;
->> +        ti,mii-rt = <&icssg2_mii_rt>;
->> +        ti,iep = <&icssg2_iep0>, <&icssg2_iep1>;
->> +
->> +        interrupt-parent = <&icssg2_intc>;
->> +        interrupts = <24 0 2>, <25 1 3>;
->> +        interrupt-names = "tx_ts0", "tx_ts1";
->> +
->> +        dmas = <&main_udmap 0xc300>, /* egress slice 0 */
->> +               <&main_udmap 0xc301>, /* egress slice 0 */
->> +               <&main_udmap 0xc302>, /* egress slice 0 */
->> +               <&main_udmap 0xc303>, /* egress slice 0 */
->> +               <&main_udmap 0xc304>, /* egress slice 1 */
->> +               <&main_udmap 0xc305>, /* egress slice 1 */
->> +               <&main_udmap 0xc306>, /* egress slice 1 */
->> +               <&main_udmap 0xc307>, /* egress slice 1 */
->> +               <&main_udmap 0x4300>, /* ingress slice 0 */
->> +               <&main_udmap 0x4301>; /* ingress slice 1 */
->> +
->> +        dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
->> +                "tx1-0", "tx1-1", "tx1-2", "tx1-3",
->> +                "rx0", "rx1";
->> +        ethernet-ports {
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            icssg2_emac0: port@0 {
->> +                reg = <0>;
->> +                phy-handle = <&icssg2_phy0>;
->> +                phy-mode = "rgmii-id";
->> +                ti,syscon-rgmii-delay = <&scm_conf 0x4120>;
->> +                /* Filled in by bootloader */
->> +                local-mac-address = [00 00 00 00 00 00];
->> +            };
->> +            icssg2_emac1: port@1 {
->> +                reg = <1>;
->> +                phy-handle = <&icssg2_phy1>;
->> +                phy-mode = "rgmii-id";
->> +                ti,syscon-rgmii-delay = <&scm_conf 0x4124>;
->> +                /* Filled in by bootloader */
->> +                local-mac-address = [00 00 00 00 00 00];
->> +            };
->> +        };
->> +    };
->> +};
->> +
->> +&main_pmx0 {
->> +
->> +    icssg2_mdio_pins_default: icssg2-mdio-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x0094, PIN_INPUT, 2) /* (AC19)
->> PRG2_PRU0_GPO7.PRG2_MDIO0_MDIO */
->> +            AM65X_IOPAD(0x00c8, PIN_OUTPUT, 2) /* (AE15)
->> PRG2_PRU1_GPO7.PRG2_MDIO0_MDC */
->> +        >;
->> +    };
->> +
->> +    icssg2_rgmii_pins_default: icssg2-rgmii-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM65X_IOPAD(0x00ac, PIN_INPUT, 2) /* (AH15)
->> PRG2_PRU1_GPO0.PRG2_RGMII2_RD0 */
->> +            AM65X_IOPAD(0x00b0, PIN_INPUT, 2) /* (AC16)
->> PRG2_PRU1_GPO1.PRG2_RGMII2_RD1 */
->> +            AM65X_IOPAD(0x00b4, PIN_INPUT, 2) /* (AD17)
->> PRG2_PRU1_GPO2.PRG2_RGMII2_RD2 */
->> +            AM65X_IOPAD(0x00b8, PIN_INPUT, 2) /* (AH14)
->> PRG2_PRU1_GPO3.PRG2_RGMII2_RD3 */
->> +            AM65X_IOPAD(0x00cc, PIN_OUTPUT, 2) /* (AD15)
->> PRG2_PRU1_GPO8.PRG2_RGMII2_TD0 */
->> +            AM65X_IOPAD(0x00d0, PIN_OUTPUT, 2) /* (AF14)
->> PRG2_PRU1_GPO9.PRG2_RGMII2_TD1 */
->> +            AM65X_IOPAD(0x00d4, PIN_OUTPUT, 2) /* (AC15)
->> PRG2_PRU1_GPO10.PRG2_RGMII2_TD2 */
->> +            AM65X_IOPAD(0x00d8, PIN_OUTPUT, 2) /* (AD14)
->> PRG2_PRU1_GPO11.PRG2_RGMII2_TD3 */
->> +            AM65X_IOPAD(0x00dc, PIN_INPUT, 2) /* (AE14)
->> PRG2_PRU1_GPO16.PRG2_RGMII2_TXC */
->> +            AM65X_IOPAD(0x00c4, PIN_OUTPUT, 2) /* (AC17)
->> PRG2_PRU1_GPO6.PRG2_RGMII2_TX_CTL */
->> +            AM65X_IOPAD(0x00c0, PIN_INPUT, 2) /* (AG15)
->> PRG2_PRU1_GPO5.PRG2_RGMII2_RXC */
->> +            AM65X_IOPAD(0x00bc, PIN_INPUT, 2) /* (AG14)
->> PRG2_PRU1_GPO4.PRG2_RGMII2_RX_CTL */
->> +
->> +            AM65X_IOPAD(0x0078, PIN_INPUT, 2) /* (AF18)
->> PRG2_PRU0_GPO0.PRG2_RGMII1_RD0 */
->> +            AM65X_IOPAD(0x007c, PIN_INPUT, 2) /* (AE18)
->> PRG2_PRU0_GPO1.PRG2_RGMII1_RD1 */
->> +            AM65X_IOPAD(0x0080, PIN_INPUT, 2) /* (AH17)
->> PRG2_PRU0_GPO2.PRG2_RGMII1_RD2 */
->> +            AM65X_IOPAD(0x0084, PIN_INPUT, 2) /* (AG18)
->> PRG2_PRU0_GPO3.PRG2_RGMII1_RD3 */
->> +            AM65X_IOPAD(0x0098, PIN_OUTPUT, 2) /* (AH16)
->> PRG2_PRU0_GPO8.PRG2_RGMII1_TD0 */
->> +            AM65X_IOPAD(0x009c, PIN_OUTPUT, 2) /* (AG16)
->> PRG2_PRU0_GPO9.PRG2_RGMII1_TD1 */
->> +            AM65X_IOPAD(0x00a0, PIN_OUTPUT, 2) /* (AF16)
->> PRG2_PRU0_GPO10.PRG2_RGMII1_TD2 */
->> +            AM65X_IOPAD(0x00a4, PIN_OUTPUT, 2) /* (AE16)
->> PRG2_PRU0_GPO11.PRG2_RGMII1_TD3 */
->> +            AM65X_IOPAD(0x00a8, PIN_INPUT, 2) /* (AD16)
->> PRG2_PRU0_GPO16.PRG2_RGMII1_TXC */
->> +            AM65X_IOPAD(0x0090, PIN_OUTPUT, 2) /* (AE17)
->> PRG2_PRU0_GPO6.PRG2_RGMII1_TX_CTL */
->> +            AM65X_IOPAD(0x008c, PIN_INPUT, 2) /* (AF17)
->> PRG2_PRU0_GPO5.PRG2_RGMII1_RXC */
->> +            AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17)
->> PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
->> +        >;
->> +    };
->> +};
->> +
->> +&icssg2_mdio {
->> +    status = "okay";
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&icssg2_mdio_pins_default>;
->> +    #address-cells = <1>;
->> +    #size-cells = <0>;
->> +
->> +    icssg2_phy0: ethernet-phy@0 {
->> +        reg = <0>;
->> +        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->> +        ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->> +    };
->> +
->> +    icssg2_phy1: ethernet-phy@3 {
->> +        reg = <3>;
->> +        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->> +        ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->> +    };
->> +};
+Guenter
 
--- 
-Thanks and Regards,
-Danish
+
