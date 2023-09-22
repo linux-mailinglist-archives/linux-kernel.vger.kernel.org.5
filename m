@@ -2,234 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F577AA8CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558597AA8E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbjIVGPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
+        id S231327AbjIVGP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjIVGPG (ORCPT
+        with ESMTP id S231159AbjIVGPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:15:06 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117BACE
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:15:00 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bffa8578feso29233801fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695363298; x=1695968098; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QEtm4m/HDUwFzO9pZTdCwrLXK5b58amRC64kf5nHW88=;
-        b=haHFuRswhtJObT3qslzr9cU8L/OlVcDqctjzFFi/9MBEFcHCSSdHFBNDX7ei6YSvyq
-         xkqRIsDfrTu5CZJIxoh3K/B3oLn/I15S1QMc++LlYJ4rHZVEJZ2oPlDNpdSg7UpXU1C0
-         yETFhOHwegSRDMhKM7hCv+IGkPM/uHHwWmveJICG1sKDqseXC+dfqfIXP6TCReQBlnSj
-         KHLEhFqTWHuyOypkvBDW5YwRky1kCr2iyx/NIeyF9VS4iuQ/1nBN/z2ihogUMXFOk4nP
-         90Sny8EVgPeCCfUdF7N2XqXehbz5kUnJNO1DPlHK9guY52pUZsbeUN5aW3mwX1pGfdkD
-         yl6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695363298; x=1695968098;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QEtm4m/HDUwFzO9pZTdCwrLXK5b58amRC64kf5nHW88=;
-        b=bZNXnaXOEwPwfm95UJZVTqhBYwwnBIDMIMUX7iGy1CqJ0zm+RmmBN71nC9aEjjn4Gs
-         DN5vteUiWVkzSvLVB6yscVzxAIt2o5xcSE1cjeP78iiO6S9vsW1rcWaX3LE0Vwt2MitA
-         lG5pkaSCns+jwe2m62fykDiI9nXJqabzkl0UtCge/1CkZGtYPs+Ca/F647vNVrXTjwEj
-         tlBwoIhUNhw39mSKtk9oElBwaH0Oha99dnyePr6g0my+okC1k9K7DI6F709I/y3hH47B
-         rUzKGM7XufZZEoiahHTEOTa2oBJnU3umB1gQDXWISOhsinfQZo8yJERhxeU/4Z1zT7ep
-         FjKQ==
-X-Gm-Message-State: AOJu0Yx5xEwviARaGBzMP6xaqvhDl5WYR/Xy/3wU38mLBXsN+GOTxKJx
-        dfOwxNue2lGsI6PFICYv+Zuqzy+5fFTrpOPume4=
-X-Google-Smtp-Source: AGHT+IHB+RwHSqnzUO4GjQw4umD8/scz/o9r4RC5DbJyzNfaWlXLkiIm7cwVgWW3czoiwfTPDifk9tUtxtwlp/uTmAU=
-X-Received: by 2002:a2e:888c:0:b0:2bb:78ad:56cb with SMTP id
- k12-20020a2e888c000000b002bb78ad56cbmr6444668lji.37.1695363297837; Thu, 21
- Sep 2023 23:14:57 -0700 (PDT)
+        Fri, 22 Sep 2023 02:15:51 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89B7195
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :mime-version:content-transfer-encoding; s=k1; bh=RMnnVl4Ql662w9
+        OZiZW5LKuXonrd4+xLFQeCaWKnYkw=; b=Gp0ZeSxfOZ6uc1qoJJALavCNtjrzhf
+        7Jk3hL22FXDCdzjM0KHFgEs8t4QZiYf/5p/Z4C+YLfffoFwHezrTQmxSEd9vP97n
+        ad7+EvOuhu5Y7eAh4SnHGi9CS6UTIe5jL+sCqNSbmejEkpod8tjBn6sxA9I83Xsa
+        rgfjZeNUNFtQ7JJGvBiO5eORynTrDWCRmwBnV5kyNa/9Pl3BQrFjHOf7tXZwkr4E
+        pleJeU235eenle7hff/L3pobiF/bC8XdrEmjwA1cmxgge++XkT1j9MXv2irkFSpP
+        PsKyBHAOV5XmBE3gjIepBn6AcLgiZZ8R7J2SgG4UUE/ysOJglb4Xp9Fg==
+Received: (qmail 1268966 invoked from network); 22 Sep 2023 08:15:39 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 08:15:39 +0200
+X-UD-Smtp-Session: l3s3148p1@OqhriewF5pkujntX
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 0/6] remove AR7 platform and associated drivers
+Date:   Fri, 22 Sep 2023 08:15:21 +0200
+Message-Id: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 22 Sep 2023 16:14:46 +1000
-Message-ID: <CAPM=9txiBx_jsniqp-F5jGaLafEd1i=ike6kZ7G=ti7e2y-saw@mail.gmail.com>
-Subject: [git pull] drm fixes for 6.6-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Changes since v1:
+* kept uapi define for for serial port type
+* added acks
 
-Regularly scheduled drm fixes, amdgpu, nouveau and i915 with a bunch
-and some misc bits otherwise, nothing to strange or exciting.
+Still valid cover letter from v1:
 
-Dave.
+When trying to get rid of the obsolete VLYNQ bus, Jonas and Florian
+pointed out that its only user, the AR7 platform can probaly go entirely
+[1]. This series does exactly that. Even OpenWRT has removed support
+because these devices are "stuck with 3.18" [2].
 
-drm-fixes-2023-09-22:
-drm fixes for 6.6-rc3
+It removes the drivers first, because watchdog and network include
+platform specific headers. Once the drivers are gone, we remove the
+platform. The patches are based on 6.6-rc2 and created with
+"--irreversible-delete" to save some space.
 
-core:
-- drm_mm test fixes
+My suggestion is that everything is merged via the MIPS tree in one go,
+so we don't have broken drivers because of missing platform headers. But
+maybe there are reasons for a two-cycle removal with the drivers first
+and the platform later?
 
-fbdev:
-- Kconfig fixes
+Looking forward to comments.
 
-ivpu:
-- IRQ-handling fixes
+Happy hacking,
 
-meson:
-- Fix memory leak in HDMI EDID code
+   Wolfram
 
-nouveau:
-- Correct type casting
-- Fix memory leak in scheduler
-- u_memcpya() fixes
 
-i915:
-- Prevent error pointer dereference
-- Fix PMU busyness values when using GuC mode
+[1] https://lore.kernel.org/r/3395161f-2543-46f0-83d9-b918800305e1@gmail.com
+[2] https://openwrt.org/docs/techref/targets/ar7
 
-amdgpu:
-- MST fix
-- Vbios part number reporting fix
-- Fix a possible memory leak in an error case in the RAS code
-- Fix low resolution modes on eDP
 
-amdkfd:
-- Fix GPU address for user queue wptr when GART is not at 0
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70=
-:
+Wolfram Sang (6):
+  serial: 8250: remove AR7 support
+  mtd: parsers: ar7: remove support
+  vlynq: remove bus driver
+  watchdog: ar7_wdt: remove driver to prepare for platform removal
+  net: cpmac: remove driver to prepare for platform removal
+  MIPS: AR7: remove platform
 
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+ MAINTAINERS                             |   13 -
+ arch/arm/configs/pxa_defconfig          |    1 -
+ arch/mips/Kbuild.platforms              |    1 -
+ arch/mips/Kconfig                       |   22 -
+ arch/mips/ar7/Makefile                  |   11 -
+ arch/mips/ar7/Platform                  |    5 -
+ arch/mips/ar7/clock.c                   |  439 --------
+ arch/mips/ar7/gpio.c                    |  332 ------
+ arch/mips/ar7/irq.c                     |  165 ---
+ arch/mips/ar7/memory.c                  |   51 -
+ arch/mips/ar7/platform.c                |  722 -------------
+ arch/mips/ar7/prom.c                    |  256 -----
+ arch/mips/ar7/setup.c                   |   93 --
+ arch/mips/ar7/time.c                    |   31 -
+ arch/mips/boot/compressed/uart-16550.c  |    5 -
+ arch/mips/configs/ar7_defconfig         |  119 ---
+ arch/mips/include/asm/mach-ar7/ar7.h    |  191 ----
+ arch/mips/include/asm/mach-ar7/irq.h    |   16 -
+ arch/mips/include/asm/mach-ar7/prom.h   |   12 -
+ arch/mips/include/asm/mach-ar7/spaces.h |   22 -
+ drivers/Kconfig                         |    2 -
+ drivers/Makefile                        |    1 -
+ drivers/mtd/parsers/Kconfig             |    5 -
+ drivers/mtd/parsers/Makefile            |    1 -
+ drivers/mtd/parsers/ar7part.c           |  129 ---
+ drivers/net/ethernet/ti/Kconfig         |    9 +-
+ drivers/net/ethernet/ti/Makefile        |    1 -
+ drivers/net/ethernet/ti/cpmac.c         | 1251 -----------------------
+ drivers/tty/serial/8250/8250_port.c     |    7 -
+ drivers/vlynq/Kconfig                   |   21 -
+ drivers/vlynq/Makefile                  |    6 -
+ drivers/vlynq/vlynq.c                   |  799 ---------------
+ drivers/watchdog/Kconfig                |    6 -
+ drivers/watchdog/Makefile               |    1 -
+ drivers/watchdog/ar7_wdt.c              |  315 ------
+ include/linux/vlynq.h                   |  149 ---
+ 36 files changed, 1 insertion(+), 5209 deletions(-)
+ delete mode 100644 arch/mips/ar7/Makefile
+ delete mode 100644 arch/mips/ar7/Platform
+ delete mode 100644 arch/mips/ar7/clock.c
+ delete mode 100644 arch/mips/ar7/gpio.c
+ delete mode 100644 arch/mips/ar7/irq.c
+ delete mode 100644 arch/mips/ar7/memory.c
+ delete mode 100644 arch/mips/ar7/platform.c
+ delete mode 100644 arch/mips/ar7/prom.c
+ delete mode 100644 arch/mips/ar7/setup.c
+ delete mode 100644 arch/mips/ar7/time.c
+ delete mode 100644 arch/mips/configs/ar7_defconfig
+ delete mode 100644 arch/mips/include/asm/mach-ar7/ar7.h
+ delete mode 100644 arch/mips/include/asm/mach-ar7/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-ar7/prom.h
+ delete mode 100644 arch/mips/include/asm/mach-ar7/spaces.h
+ delete mode 100644 drivers/mtd/parsers/ar7part.c
+ delete mode 100644 drivers/net/ethernet/ti/cpmac.c
+ delete mode 100644 drivers/vlynq/Kconfig
+ delete mode 100644 drivers/vlynq/Makefile
+ delete mode 100644 drivers/vlynq/vlynq.c
+ delete mode 100644 drivers/watchdog/ar7_wdt.c
+ delete mode 100644 include/linux/vlynq.h
 
-are available in the Git repository at:
+-- 
+2.35.1
 
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-09-22
-
-for you to fetch changes up to 54928f2f8458160e6c7217de78b48064b301e255:
-
-  Merge tag 'amd-drm-fixes-6.6-2023-09-20' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2023-09-22
-15:43:44 +1000)
-
-----------------------------------------------------------------
-drm fixes for 6.6-rc3
-
-core:
-- drm_mm test fixes
-
-fbdev:
-- Kconfig fixes
-
-ivpu:
-- IRQ-handling fixes
-
-meson:
-- Fix memory leak in HDMI EDID code
-
-nouveau:
-- Correct type casting
-- Fix memory leak in scheduler
-- u_memcpya() fixes
-
-i915:
-- Prevent error pointer dereference
-- Fix PMU busyness values when using GuC mode
-
-amdgpu:
-- MST fix
-- Vbios part number reporting fix
-- Fix a possible memory leak in an error case in the RAS code
-- Fix low resolution modes on eDP
-
-amdkfd:
-- Fix GPU address for user queue wptr when GART is not at 0
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      drm: fix up fbdev Kconfig defaults
-
-Cong Liu (1):
-      drm/amdgpu: fix a memory leak in amdgpu_ras_feature_enable
-
-Dan Carpenter (2):
-      nouveau/u_memcpya: fix NULL vs error pointer bug
-      drm/i915/gt: Prevent error pointer dereference
-
-Danilo Krummrich (2):
-      drm/nouveau: fence: fix type cast warning in nouveau_fence_emit()
-      drm/nouveau: sched: fix leaking memory of timedout job
-
-Dave Airlie (4):
-      nouveau/u_memcpya: use vmemdup_user
-      Merge tag 'drm-misc-fixes-2023-09-21' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2023-09-21' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-      Merge tag 'amd-drm-fixes-6.6-2023-09-20' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-
-Hamza Mahfooz (1):
-      drm/amd/display: fix the ability to use lower resolution modes on eDP
-
-Jani Nikula (1):
-      drm/meson: fix memory leak on ->hpd_notify callback
-
-Janusz Krzysztofik (1):
-      drm/tests: Fix incorrect argument in drm_test_mm_insert_range
-
-Jos=C3=A9 Pekkarinen (1):
-      drm/virtio: clean out_fence on complete_submit
-
-Karol Wachowski (1):
-      accel/ivpu/40xx: Fix buttress interrupt handling
-
-Lijo Lazar (1):
-      Revert "drm/amdgpu: Report vbios version instead of PN"
-
-Muhammad Ahmed (1):
-      drm/amd/display: Fix MST recognizes connected displays as one
-
-Thomas Zimmermann (1):
-      fbdev/sh7760fb: Depend on FB=3Dy
-
-Umesh Nerlige Ramappa (1):
-      i915/pmu: Move execlist stats initialization to execlist specific set=
-up
-
-YuBiao Wang (1):
-      drm/amdkfd: Use gpu_offset for user queue's wptr
-
- drivers/accel/ivpu/ivpu_hw_40xx.c                  |  9 ++++++-
- drivers/gpu/drm/Kconfig                            |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c       |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c            |  1 +
- .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c  |  2 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  4 +--
- .../amd/display/dc/dce110/dce110_hw_sequencer.c    | 30 ++++++++++++------=
-----
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c |  8 ++----
- drivers/gpu/drm/amd/display/dc/dcn32/dcn32_mpc.c   |  2 +-
- drivers/gpu/drm/i915/gt/intel_engine_cs.c          |  1 -
- .../gpu/drm/i915/gt/intel_execlists_submission.c   |  2 ++
- drivers/gpu/drm/i915/gt/intel_lrc.c                |  5 ++--
- drivers/gpu/drm/meson/meson_encoder_hdmi.c         |  2 ++
- drivers/gpu/drm/nouveau/nouveau_drv.h              | 19 ++++----------
- drivers/gpu/drm/nouveau/nouveau_exec.c             |  2 +-
- drivers/gpu/drm/nouveau/nouveau_fence.c            |  2 +-
- drivers/gpu/drm/nouveau/nouveau_sched.c            | 12 ++++++---
- drivers/gpu/drm/tests/drm_mm_test.c                |  2 +-
- drivers/gpu/drm/virtio/virtgpu_submit.c            |  1 -
- drivers/video/console/Kconfig                      |  1 +
- drivers/video/fbdev/Kconfig                        |  2 +-
- drivers/video/fbdev/core/Kconfig                   |  2 +-
- 22 files changed, 61 insertions(+), 52 deletions(-)
