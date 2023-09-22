@@ -2,114 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8405C7AAE81
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBEC7AAE80
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjIVJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        id S231197AbjIVJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjIVJoR (ORCPT
+        with ESMTP id S230071AbjIVJoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:44:17 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31381A4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:44:05 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c136ee106so238266266b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695375844; x=1695980644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XdRKYfkU2V6gOP1l0rl+gg/UKXzRcAR814PV9mfsZtg=;
-        b=WxxeXc2+bUNQhb7b5kY1qmO9qTOIfjvGmebVyEYCVbDIEqzHj0/lEepeKkAwrGe1s4
-         IrbP/2T/Nj2zBzZ7ugNveyeVxAQdu7D277NtjFtK2o3lWCWsukNZF6efnHMxJ66tBF8u
-         nClw12vhYogjgi59VW5IyrT7ieL6Q3Wqalv02BX3HUFQBqCUgYeXPSRXdre+XZbC+mYP
-         ZWdSsXq4oFUTwq/rIFMlqY7mAs8sdQ6y/z/9wI9ZhFXi9CRm5ybth1V+P63bT04kgR1V
-         UELqLqoxLkbO44dkNBYIScrmnsxBdYloZwlMfFxtcqzFeNOMPb6Q1pVQU23PdFumBq2h
-         nXoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695375844; x=1695980644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XdRKYfkU2V6gOP1l0rl+gg/UKXzRcAR814PV9mfsZtg=;
-        b=hwicVvv50kQyqpr/Gae7IaBmiQCEPQUzgF79Er0kH2jgg3lV2Rju2NNPu1A+yx4P5j
-         vWhu/RYXO7B27rzKyEsytpBSsQxq19oZ4ydcxBrGjCUCH4RtOmH9GS1xD6BFEiABGaTZ
-         z+t1s3y799S6uSpOHotHc1OeTnpu/+JgW3/66iXCssLF8KQLOrqU0+WmJvFpQsjX+Ukj
-         U+0rrRgH1XTjTcr4lfyU57cdhytVrMgeHOrUzilTF5edCQqpgqyC4XwUzCjtdqBMT5kR
-         ozwPHPXRU0my3JhWCRgglWuvAjSoWEEJ+RS8aUSYgP+5Fxoe/MBMmYVw9nAKUHNF1UVb
-         65Iw==
-X-Gm-Message-State: AOJu0YzD3H4R6oDZpRD1qWNYQiZsbcY0EYk6o+anIPSkEBZNMPqzj1Tm
-        KbL8R77EU9d9PFi4Z662a4fTCXylkDaPa8Kb2KFT7A==
-X-Google-Smtp-Source: AGHT+IGzTDFs3N1XlqmSyonD0tr7m5R1VUvlIn3pnPNhs48aCfG9TawffgF5nbOhhiKcAhIFDyQ4MZdo5LcAry49Zos=
-X-Received: by 2002:a17:906:304b:b0:9a1:af6f:e373 with SMTP id
- d11-20020a170906304b00b009a1af6fe373mr7142302ejd.42.1695375844005; Fri, 22
- Sep 2023 02:44:04 -0700 (PDT)
+        Fri, 22 Sep 2023 05:44:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7D2CE;
+        Fri, 22 Sep 2023 02:44:00 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 09:43:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695375839;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DdaSzg2HylZVoxLdcrNA6goIyqAM9SSlosMciSb6/Ms=;
+        b=LGSJFX6Zrk1mM8jaq/HlxfPOgMA5Lnk9PcU7t8SpptFjqbmx9YYIFqXnI57+F5yZyddWLb
+        msqwmaKpaVHmpTRZfKEwJBacyYrME/N7XB3ywLZY0SrwDHgS8C9SiBoSCQIUdA9GZPOMnV
+        edcuUCcJXsc0Pmup0zCVTiG/M2Jevse55aTSSuryILD8m+SqRr0hf8firf8nATOTpz3d34
+        KqfA7FHYKE9ygWwMeYOAOfeF4ksg7FFUxnMxoZcMKsse7+yLQiWhkZN8YXvHn1nwFXSg01
+        QNlItQ7HSYj5+YWj7caU7z/6wahBDbv/meMLYVwQMqxw2A+en+3tqeVP4CZuHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695375839;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DdaSzg2HylZVoxLdcrNA6goIyqAM9SSlosMciSb6/Ms=;
+        b=nK/OoKjpdDzbbZAu5PNMVu91V5nbypBN2uzBzzZHOGPysbbSh5w4PoZ22YuhZdCwloJ0G2
+        SHKlK7H4PmH2Q6Aw==
+From:   "tip-bot2 for Paolo Bonzini" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/cpu: Clear SVM feature if disabled by BIOS
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230921114940.957141-1-pbonzini@redhat.com>
+References: <20230921114940.957141-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
- <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
- <20230919-70b2f1e368a8face73468dfa@fedora> <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
- <20230919-cc4646dbfb953bd34e05658c@fedora> <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
- <20230922-unclothed-bottom-5531329f9724@spud>
-In-Reply-To: <20230922-unclothed-bottom-5531329f9724@spud>
-From:   yang tylor <tylor_yang@himax.corp-partner.google.com>
-Date:   Fri, 22 Sep 2023 17:43:54 +0800
-Message-ID: <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI device
-To:     Conor Dooley <conor@kernel.org>
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169537583818.27769.18320521458994415527.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
-> > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
->
-> > > > The behavior of "himax,boot_time_fw_upgrade" seems not stable and
-> > > > should be removed. "himax,fw_in_flash", I use the kernel config for
-> > > > user to select.
-> > >
-> > > That seems like a bad idea, we want to be able to build one kernel th=
-at
-> > > works for all hardware at the same time.
-> > >
-> > I see, so I should take that back?
-> > I'll explain more about it.
->
-> Are there particular ICs where the firmware would always be in flash and
-> others where it would never be? Or is this a choice made by the board or
-> system designer?
->
-Most cases it's about the system designer's decision. But some ICs may be f=
-orced
-to use flash because of its architecture(multiple IC inside, need to
-load firmware to
-multiple IC's sram by master IC). But if there is no limitation on
-this part, most system
-designers will prefer flashless.
+The following commit has been merged into the x86/cpu branch of tip:
 
-> Thanks,
-> Conor.
+Commit-ID:     7deda2ce5b33edc6d689e429e3fe75382468b030
+Gitweb:        https://git.kernel.org/tip/7deda2ce5b33edc6d689e429e3fe75382468b030
+Author:        Paolo Bonzini <pbonzini@redhat.com>
+AuthorDate:    Thu, 21 Sep 2023 07:49:40 -04:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 22 Sep 2023 10:55:26 +02:00
 
-Thanks,
-Tylor
+x86/cpu: Clear SVM feature if disabled by BIOS
+
+When SVM is disabled by BIOS, one cannot use KVM but the
+SVM feature is still shown in the output of /proc/cpuinfo.
+On Intel machines, VMX is cleared by init_ia32_feat_ctl(),
+so do the same on AMD and Hygon processors.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230921114940.957141-1-pbonzini@redhat.com
+---
+ arch/x86/include/asm/msr-index.h |  6 +++++-
+ arch/x86/include/asm/svm.h       |  6 ------
+ arch/x86/kernel/cpu/amd.c        | 10 ++++++++++
+ arch/x86/kernel/cpu/hygon.c      | 10 ++++++++++
+ arch/x86/kvm/svm/svm.c           |  8 --------
+ 5 files changed, 25 insertions(+), 15 deletions(-)
+
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 1d11135..6a6b0f7 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -1112,12 +1112,16 @@
+ #define MSR_IA32_VMX_MISC_INTEL_PT                 (1ULL << 14)
+ #define MSR_IA32_VMX_MISC_VMWRITE_SHADOW_RO_FIELDS (1ULL << 29)
+ #define MSR_IA32_VMX_MISC_PREEMPTION_TIMER_SCALE   0x1F
+-/* AMD-V MSRs */
+ 
++/* AMD-V MSRs */
+ #define MSR_VM_CR                       0xc0010114
+ #define MSR_VM_IGNNE                    0xc0010115
+ #define MSR_VM_HSAVE_PA                 0xc0010117
+ 
++#define SVM_VM_CR_VALID_MASK		0x001fULL
++#define SVM_VM_CR_SVM_LOCK_MASK		0x0008ULL
++#define SVM_VM_CR_SVM_DIS_MASK		0x0010ULL
++
+ /* Hardware Feedback Interface */
+ #define MSR_IA32_HW_FEEDBACK_PTR        0x17d0
+ #define MSR_IA32_HW_FEEDBACK_CONFIG     0x17d1
+diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+index 19bf955..fb8366a 100644
+--- a/arch/x86/include/asm/svm.h
++++ b/arch/x86/include/asm/svm.h
+@@ -229,10 +229,6 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+ #define SVM_IOIO_SIZE_MASK (7 << SVM_IOIO_SIZE_SHIFT)
+ #define SVM_IOIO_ASIZE_MASK (7 << SVM_IOIO_ASIZE_SHIFT)
+ 
+-#define SVM_VM_CR_VALID_MASK	0x001fULL
+-#define SVM_VM_CR_SVM_LOCK_MASK 0x0008ULL
+-#define SVM_VM_CR_SVM_DIS_MASK  0x0010ULL
+-
+ #define SVM_NESTED_CTL_NP_ENABLE	BIT(0)
+ #define SVM_NESTED_CTL_SEV_ENABLE	BIT(1)
+ #define SVM_NESTED_CTL_SEV_ES_ENABLE	BIT(2)
+@@ -571,8 +567,6 @@ struct vmcb {
+ 
+ #define SVM_CPUID_FUNC 0x8000000a
+ 
+-#define SVM_VM_CR_SVM_DISABLE 4
+-
+ #define SVM_SELECTOR_S_SHIFT 4
+ #define SVM_SELECTOR_DPL_SHIFT 5
+ #define SVM_SELECTOR_P_SHIFT 7
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index dd8379d..1011ce2 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1031,6 +1031,8 @@ static void zenbleed_check(struct cpuinfo_x86 *c)
+ 
+ static void init_amd(struct cpuinfo_x86 *c)
+ {
++	u64 vm_cr;
++
+ 	early_init_amd(c);
+ 
+ 	/*
+@@ -1082,6 +1084,14 @@ static void init_amd(struct cpuinfo_x86 *c)
+ 
+ 	init_amd_cacheinfo(c);
+ 
++	if (cpu_has(c, X86_FEATURE_SVM)) {
++		rdmsrl(MSR_VM_CR, vm_cr);
++		if (vm_cr & SVM_VM_CR_SVM_DIS_MASK) {
++			pr_notice_once("SVM disabled (by BIOS) in MSR_VM_CR\n");
++			clear_cpu_cap(c, X86_FEATURE_SVM);
++		}
++	}
++
+ 	if (!cpu_has(c, X86_FEATURE_LFENCE_RDTSC) && cpu_has(c, X86_FEATURE_XMM2)) {
+ 		/*
+ 		 * Use LFENCE for execution serialization.  On families which
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index defdc59..16f3463 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -290,6 +290,8 @@ static void early_init_hygon(struct cpuinfo_x86 *c)
+ 
+ static void init_hygon(struct cpuinfo_x86 *c)
+ {
++	u64 vm_cr;
++
+ 	early_init_hygon(c);
+ 
+ 	/*
+@@ -320,6 +322,14 @@ static void init_hygon(struct cpuinfo_x86 *c)
+ 
+ 	init_hygon_cacheinfo(c);
+ 
++	if (cpu_has(c, X86_FEATURE_SVM)) {
++		rdmsrl(MSR_VM_CR, vm_cr);
++		if (vm_cr & SVM_VM_CR_SVM_DIS_MASK) {
++			pr_notice_once("SVM disabled (by BIOS) in MSR_VM_CR\n");
++			clear_cpu_cap(c, X86_FEATURE_SVM);
++		}
++	}
++
+ 	if (cpu_has(c, X86_FEATURE_XMM2)) {
+ 		/*
+ 		 * Use LFENCE for execution serialization.  On families which
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index f283eb4..7b91efb 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -531,8 +531,6 @@ static bool __kvm_is_svm_supported(void)
+ 	int cpu = smp_processor_id();
+ 	struct cpuinfo_x86 *c = &cpu_data(cpu);
+ 
+-	u64 vm_cr;
+-
+ 	if (c->x86_vendor != X86_VENDOR_AMD &&
+ 	    c->x86_vendor != X86_VENDOR_HYGON) {
+ 		pr_err("CPU %d isn't AMD or Hygon\n", cpu);
+@@ -549,12 +547,6 @@ static bool __kvm_is_svm_supported(void)
+ 		return false;
+ 	}
+ 
+-	rdmsrl(MSR_VM_CR, vm_cr);
+-	if (vm_cr & (1 << SVM_VM_CR_SVM_DISABLE)) {
+-		pr_err("SVM disabled (by BIOS) in MSR_VM_CR on CPU %d\n", cpu);
+-		return false;
+-	}
+-
+ 	return true;
+ }
+ 
