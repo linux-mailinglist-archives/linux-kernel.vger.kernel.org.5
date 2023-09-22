@@ -2,351 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3EC7AB623
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9318E7AB625
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjIVQhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S232058AbjIVQiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjIVQhD (ORCPT
+        with ESMTP id S229636AbjIVQiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:37:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9DF122;
-        Fri, 22 Sep 2023 09:36:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A942BC433C7;
-        Fri, 22 Sep 2023 16:36:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695400615;
-        bh=UcxSmCpY9SiyWTuxDlWknweZxffx3l6QCiHvON61L98=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Vx57RgFMQIU55PYEx02ZUVdV8c7ljxiBxLf4RE0lSnBEE78kRuFnbHimQlMPnWH6U
-         tcAYVkMXtheAdAimoEKi9dtI4oF2lSpFxC2IB9T32wcdCanf6nXnEJerSIyJZMQpB3
-         a0xZCTT2pGUBQWZYPysxJjos7drws4XdaVUs6YfMxAkokt+K1WiTexDLofC7YiSsLl
-         6KKEOLYYsH88Y4ooGDFdQ9KRgUqQEftqJ5xcZjD011zresshYhD7lxHgctZnUsHU1h
-         DUqHzx4REK1HYkpy8CQmDpqG/u1DBTPczNSvf+yLXRISXJG9ifJ+1CShxJoDi9y59C
-         x/cq1YqyHAj6w==
-Message-ID: <6309e45e-b1f7-0167-ff54-f1a86437a910@kernel.org>
-Date:   Fri, 22 Sep 2023 09:36:55 -0700
+        Fri, 22 Sep 2023 12:38:11 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3EC114
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:38:04 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5315b70c50dso2775648a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695400681; x=1696005481; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=81baCZiZBsWWLVdud7GS4ITUOINrrEDd6mAWv0/+4bI=;
+        b=FRFrL1mMPt1YHV8mDq93zUOwuEeI71B0yynq/7+urIe/qoCOBn99yE86B5Ju6bHPEZ
+         zqrlUgx1+pjJEaz5iWdPPpgdNVTuCYOzRm5gz6H1gkNjIGE/iVocDuDud8KiwmiMLqFb
+         mVe6ayh3dmrsimZ2wn2+xgPoutdfPxYaOyJf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695400681; x=1696005481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=81baCZiZBsWWLVdud7GS4ITUOINrrEDd6mAWv0/+4bI=;
+        b=M4AzSp/39glxUfVuKJBGxA9fqkVP3ULbHwRoIoC1TQWdQmmtz7AoTSj2X/PUNf63WB
+         GoE3Jt+vm8FwjwZxnG3M4ZgOkb4epzYisADmHXjukkcHZsr04aE8YD0Ov+sk8O3CvApo
+         6PgeWZcqBDDSPsQjy/KxgQhxeQBoDkkTHAO+rcaiyx8+aAis+GPcefGrVNrvguDB+cSm
+         giqDkPfNt8fwwMha0UuLoxC7fU5gH7EH9/O9A7sImIZYSgMDmH/px/4P6pZOX7oVV2i0
+         JyaOYfNM0rqDLW0dLGVo50TgHZzyKTA2Gacg1gM1LAqc/a2PkLo+VsgiBO2cSg6yUy1I
+         R9EQ==
+X-Gm-Message-State: AOJu0YxAC5uI+6Xd/Dj7+Yp2SuoxjExupk3RQk4/kI76s9GTk7Lt093F
+        rQbMohmDCPkB32uRsfYfmcHT7blYwmVlBu6mw2QuKJGh
+X-Google-Smtp-Source: AGHT+IFjYXRQ2p+uRO7kk294GRXdIDaCgnICBFInQ2yN+i7uNe4MGLsKyFPhPatyyLkcl+WUbui1QA==
+X-Received: by 2002:aa7:da81:0:b0:525:76fc:f559 with SMTP id q1-20020aa7da81000000b0052576fcf559mr7877473eds.41.1695400680637;
+        Fri, 22 Sep 2023 09:38:00 -0700 (PDT)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
+        by smtp.gmail.com with ESMTPSA id e23-20020a056402089700b00530bc7cf377sm2480242edy.12.2023.09.22.09.37.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 09:37:59 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-405459d9a96so1135e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:37:59 -0700 (PDT)
+X-Received: by 2002:a05:600c:6021:b0:405:38d1:e146 with SMTP id
+ az33-20020a05600c602100b0040538d1e146mr723wmb.4.1695400679482; Fri, 22 Sep
+ 2023 09:37:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC] ata: libata: increase PMP SRST timeout to 10s
-Content-Language: en-US
-To:     Matthias Schiffer <mschiffer@universe-factory.net>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <dcbe606ac716e01f103f8aa62f0201cdb8f3efa0.1695394865.git.mschiffer@universe-factory.net>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <dcbe606ac716e01f103f8aa62f0201cdb8f3efa0.1695394865.git.mschiffer@universe-factory.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230918125851.310-1-johan+linaro@kernel.org> <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
+ <ZQlIveJVdvyV2Ygy@hovoldconsulting.com> <CAD=FV=XBG7auVVyHn5uvahSZZxp5qBfp4+A9NwFqahdN6XrbZA@mail.gmail.com>
+ <ZQqemN8P2VKgxhsV@hovoldconsulting.com> <CAD=FV=XK87TZuPy+d2r2g5QhowmghE-m9pGHe9-X7jnXAw9z1g@mail.gmail.com>
+ <ZQ1Zm6ec9NuBvqpl@hovoldconsulting.com>
+In-Reply-To: <ZQ1Zm6ec9NuBvqpl@hovoldconsulting.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 22 Sep 2023 09:37:43 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=USBJRzqxX9kBP8pp4LKRGpBee+jkHL=KmeQvyfBk2CVQ@mail.gmail.com>
+Message-ID: <CAD=FV=USBJRzqxX9kBP8pp4LKRGpBee+jkHL=KmeQvyfBk2CVQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: i2c-hid: fix handling of unpopulated devices
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        LinusW <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/09/22 9:18, Matthias Schiffer wrote:
-> On certain devices(*), this device probe failures for SATA disks after
-> wakeup from S2RAM, which often led to the disks not to be detected again.
-> 
->     ata1: softreset failed (1st FIS failed)
-> 
-> (*) Observed for disks connected to the internal SATA controller of the
-> QNAP TS-453B, which is a "SATA controller: Intel Corporation
-> Celeron/Pentium Silver Processor SATA Controller (rev 06)".
-> 
-> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
-> ---
-> 
-> I'm sending this as an RFC, as I don't think it makes sense to increase the
-> timeout unconditionally - maybe it should be some kind of device quirk, if
-> there isn't any better fix.
-> 
-> See text below for more information.
-> 
->  include/linux/libata.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/libata.h b/include/linux/libata.h
-> index be2f0cee1601..9194030527b6 100644
-> --- a/include/linux/libata.h
-> +++ b/include/linux/libata.h
-> @@ -256,7 +256,7 @@ enum {
->  	 * advised to wait only for the following duration before
->  	 * doing SRST.
->  	 */
-> -	ATA_TMOUT_PMP_SRST_WAIT	= 5000,
-> +	ATA_TMOUT_PMP_SRST_WAIT	= 10000,
->  
->  	/* When the LPM policy is set to ATA_LPM_MAX_POWER, there might
->  	 * be a spurious PHY event, so ignore the first PHY event that
-> ---
-> 
-> I'm running plain Debian 12 rather than the QNAP OS (I believe the original
-> software does not support S2RAM at all). The issue I'm describing exists at
-> least since kernel 5.15; I've never run older kernels on this hardware. The
-> mainboard has 2 SATA controllers, both handled by the ahci driver:
-> 
->     # lspci | grep SATA
->     00:12.0 SATA controller: Intel Corporation Celeron/Pentium Silver Processor SATA Controller (rev 06)
->     02:00.0 SATA controller: ASMedia Technology Inc. 106x SATA/RAID Controller (rev 01)
-> 
-> The first two channels ata1 and ata2 are connected to the Intel controller,
-> while the ASMedia is responsible for ata3 through ata14. I have the same hard
-> drives connected to ata2, ata3, and ata4 (ata1 has a different model), and I'm
-> seeing the timeout issue after suspend only on ata1 and ata2, so it is specific
-> to the Intel controller rather than the drive model.
-> 
-> On Debian's default 6.1.52 kernel, a wakeup looks like the following *in the
-> good case*, where all disks are successfully brought up again (unfortunately,
-> journald doesn't seem to have recorded correct timing information; roughly
-> 22 seconds pass between the "starting disk" and final "link up"). I have
-> redacted lines for the unused ata{5..14} ports for conciseness.
-> 
->     ACPI: PM: Waking up from system sleep state S3
->     sd 2:0:0:0: [sdc] Starting disk
->     sd 3:0:0:0: [sdd] Starting disk
->     sd 1:0:0:0: [sdb] Starting disk
->     sd 0:0:0:0: [sda] Starting disk
->     ata3: link is slow to respond, please be patient (ready=0)
->     ata4: link is slow to respond, please be patient (ready=0)
->     ata2: found unknown device (class 0)
->     ata1: found unknown device (class 0)
->     ata1: softreset failed (1st FIS failed)
->     ata2: softreset failed (1st FIS failed)
->     ata3: COMRESET failed (errno=-16)
->     ata4: COMRESET failed (errno=-16)
->     ata1: found unknown device (class 0)
->     ata2: found unknown device (class 0)
->     ata3: link is slow to respond, please be patient (ready=0)
->     ata4: link is slow to respond, please be patient (ready=0)
->     ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     ata3.00: configured for UDMA/133
->     ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     ata4.00: configured for UDMA/133
->     ata1: softreset failed (1st FIS failed)
->     ata2: softreset failed (1st FIS failed)
->     ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     ata2.00: configured for UDMA/133
->     ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     ata1.00: configured for UDMA/133
-> 
-> On the same kernel, another wakeup might look like this:
-> 
->     ACPI: PM: Waking up from system sleep state S3
->     sd 2:0:0:0: [sdd] Starting disk
->     sd 3:0:0:0: [sdc] Starting disk
->     sd 0:0:0:0: [sda] Starting disk
->     sd 1:0:0:0: [sdb] Starting disk
->     ata2: SATA link down (SStatus 0 SControl 300)
->     ata3: link is slow to respond, please be patient (ready=0)
->     ata4: link is slow to respond, please be patient (ready=0)
->     ata1: SATA link down (SStatus 0 SControl 300)
->     ata3: COMRESET failed (errno=-16)
->     ata4: COMRESET failed (errno=-16)
->     ata1: SATA link down (SStatus 0 SControl 300)
->     ata1: limiting SATA link speed to <unknown>
->     ata3: link is slow to respond, please be patient (ready=0)
->     ata4: link is slow to respond, please be patient (ready=0)
->     ata2: SATA link down (SStatus 0 SControl 300)
->     ata2: limiting SATA link speed to <unknown>
->     ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     ata3.00: configured for UDMA/133
->     ata4.00: configured for UDMA/133
->     ata1: SATA link down (SStatus 0 SControl 3F0)
->     ata1.00: disable device
->     ata2: SATA link down (SStatus 0 SControl 3F0)
->     ata2.00: disable device
->     sd 1:0:0:0: rejecting I/O to offline device
->     sd 0:0:0:0: rejecting I/O to offline device
->     ata2.00: detaching (SCSI 1:0:0:0)
->     ata1.00: detaching (SCSI 0:0:0:0)
->     sd 0:0:0:0: [sda] Start/Stop Unit failed: Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK
->     sd 1:0:0:0: [sdb] Start/Stop Unit failed: Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK
->     sd 0:0:0:0: PM: dpm_run_callback(): scsi_bus_resume+0x0/0x90 [scsi_mod] returns -5
->     sd 1:0:0:0: PM: dpm_run_callback(): scsi_bus_resume+0x0/0x90 [scsi_mod] returns -5
->     sd 0:0:0:0: PM: failed to resume async: error -5
->     sd 1:0:0:0: PM: failed to resume async: error -5
-> 
-> With my patch applied, the following log is generated instead:
-> 
->     [   63.748299] ACPI: PM: Waking up from system sleep state S3
->     [   63.767111] sd 2:0:0:0: [sdc] Starting disk
->     [   63.767181] sd 3:0:0:0: [sdd] Starting disk
->     [   63.776402] sd 0:0:0:0: [sdb] Starting disk
->     [   63.776500] sd 1:0:0:0: [sda] Starting disk
->     [   69.121513] ata4: link is slow to respond, please be patient (ready=0)
->     [   69.125531] ata3: link is slow to respond, please be patient (ready=0)
->     [   69.133538] ata2: link is slow to respond, please be patient (ready=0)
->     [   69.133557] ata1: link is slow to respond, please be patient (ready=0)
->     [   73.803763] ata4: COMRESET failed (errno=-16)
->     [   73.807805] ata3: COMRESET failed (errno=-16)
->     [   73.815780] ata2: found unknown device (class 0)
->     [   73.815800] ata1: found unknown device (class 0)
->     [   73.975799] ata2: softreset failed (device not ready)
->     [   73.975813] ata1: softreset failed (device not ready)
->     [   79.157124] ata4: link is slow to respond, please be patient (ready=0)
->     [   79.161116] ata3: link is slow to respond, please be patient (ready=0)
->     [   79.329119] ata1: link is slow to respond, please be patient (ready=0)
->     [   79.329129] ata2: link is slow to respond, please be patient (ready=0)
->     [   80.781376] ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     [   80.792790] ata3.00: configured for UDMA/133
->     [   80.837437] ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     [   80.843358] ata4.00: configured for UDMA/133
->     [   82.309565] ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     [   82.334217] ata2.00: configured for UDMA/133
->     [   84.009745] ata1: found unknown device (class 0)
->     [   84.169743] ata1: softreset failed (device not ready)
->     [   85.425859] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     [   85.486518] ata1.00: configured for UDMA/133
-> 
-> Compared to the previous "good" log
-> - ata1 and ata2 got "link is slow to respond" messages
-> - the "softreset failed" error changed from "1st FIS failed" to "device not
->   ready"
-> - I haven't seen any failures to bring up drives in 10+ wakeups, where it would
->   fail in roughly 1 out of 3 tries without the increased timeout
-> 
-> I also saw the resume improvements going on in
-> https://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/libata.git/, so next I
-> took kernel 6.5.4 and applied all patches from the for-6.6 and for-6.7 branches
-> from that repo on top. The first thing I noticed with this new kernel was a
-> regression:
-> 
->     16:24:25 : PM: suspend exit
->     16:24:25 : ata2: SATA link down (SStatus 0 SControl 300)
->     16:24:25 : ata2.00: Entering active power mode
->     16:24:25 : ata1: SATA link down (SStatus 0 SControl 300)
->     16:24:25 : ata1.00: Entering active power mode
->     16:24:30 : ata3: link is slow to respond, please be patient (ready=0)
->     16:24:30 : ata4: link is slow to respond, please be patient (ready=0)
->     16:24:35 : ata2.00: qc timeout after 10000 msecs (cmd 0x40)
->     16:24:35 : ata1.00: qc timeout after 10000 msecs (cmd 0x40)
->     16:24:35 : ata1.00: VERIFY failed (err_mask=0x4)
->     16:24:35 : ata2.00: VERIFY failed (err_mask=0x4)
->     16:24:35 : ata2: SATA link down (SStatus 0 SControl 300)
->     16:24:35 : ata2: limiting SATA link speed to <unknown>
->     16:24:41 : ata4: link is slow to respond, please be patient (ready=0)
->     16:24:41 : ata3: link is slow to respond, please be patient (ready=0)
->     16:24:41 : ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:24:41 : ata4.00: Entering active power mode
->     16:24:41 : ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:24:41 : ata3.00: Entering active power mode
->     16:24:41 : ata4.00: configured for UDMA/133
->     16:24:41 : ata3.00: configured for UDMA/133
->     16:24:41 : ata1: SATA link down (SStatus 0 SControl 300)
->     16:24:41 : ata1: limiting SATA link speed to <unknown>
->     16:24:47 : ata1: SATA link down (SStatus 0 SControl 3F0)
->     16:24:47 : ata1.00: disable device
->     16:24:47 : ata2: SATA link down (SStatus 0 SControl 3F0)
->     16:24:47 : ata2.00: disable device
->     16:24:47 : ata1.00: detaching (SCSI 0:0:0:0)
->     16:24:47 : ata2.00: detaching (SCSI 1:0:0:0)
-> 
-> For the ASMedia controller, the new kernel fixes the "COMRESET failed" messages,
-> but on the Intel controller, two new errors have appeared ("qc timeout" and
-> "VERIFY failed"), and my drives are missing again.
+Hi,
 
-These errors are being address by a series that is about to be applied:
+On Fri, Sep 22, 2023 at 2:08=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
+te:
+>
+> On Wed, Sep 20, 2023 at 08:41:12AM -0700, Doug Anderson wrote:
+> > On Wed, Sep 20, 2023 at 12:26=E2=80=AFAM Johan Hovold <johan@kernel.org=
+> wrote:
+> > > On Tue, Sep 19, 2023 at 11:15:46AM -0700, Doug Anderson wrote:
+> > > > On Tue, Sep 19, 2023 at 12:07=E2=80=AFAM Johan Hovold <johan@kernel=
+.org> wrote:
+>
+> > > As I alluded to in the commit message, you probably want to be able t=
+o
+> > > support second-source touchscreen panel followers as well at some poi=
+nt
+> > > and then deferring checking whether device is populated until the pan=
+el
+> > > is powered on is not going to work.
+> >
+> > Yeah, I've been pondering this too. I _think_ it would work OK-ish if
+> > both devices probed and then only one of the two would actually make
+> > the sub-HID devices. So you'd actually see both devices succeed at
+> > probing but only one of them would actually be functional. It's a bit
+> > ugly, though. :(  Maybe marginally better would be if we could figure
+> > out how to have the device which fails to get its interrupt later
+> > unbind itself, if that's possible...
+> >
+> > The only other thought I had would be to have the parent i2c bus
+> > understand that it had children that were panel followers, which it
+> > should be able to do by seeing the "panel" attribute in their device
+> > tree. Then the i2c bus could itself register as a panel follower and
+> > could wait to probe its children until they were powered on. This
+> > could happen in the i2c core so we didn't have to add code like this
+> > to all i2c bus drivers. ...and, if necessary, we could add this to
+> > other busses like SPI. It feels a little awkward but could work.
+>
+> There may be other device on the bus that have nothing to do with
+> panels, but I guess you mean that this would only apply to a subset of
+> the children. In any case, this feels like a hack and layering
+> violation.
 
-https://lore.kernel.org/linux-ide/yq134z7577n.fsf@ca-mkp.ca.oracle.com/T/#m255ef5cc9b64b971765e8b6551aacee860fd1325
+Right, the idea would be to only do this for the subset of children
+that are panel followers.
 
-This series addresses various issues with libata resume, including what you are
-seeing above, which causes the drives to fail resume and disappear, or worth, a
-hang on resume. Could you please try to apply these patches and test with them ?
-The "link is slow to respond" message is fairly normal and overall, there is up
-to 1min timeout before giving up on the drive. So this should not be an issue.
+It definitely doesn't seem ideal, but it also didn't seem too terrible to m=
+e.
 
-If you still see a problem with your system, we can increase the timeout to
-avoid that "1st FIS failed" error.
 
-> 
-> The new messages could be fixed by adding libata.ata_probe_timeout=30 to the
-> cmdline; I still consider this a regression, as it wasn't necessary before.
-> With the added cmdline:
-> 
->     16:34:17 : PM: suspend exit
->     16:34:22 : ata3: link is slow to respond, please be patient (ready=0)
->     16:34:22 : ata4: link is slow to respond, please be patient (ready=0)
->     16:34:22 : ata2: found unknown device (class 0)
->     16:34:22 : ata1: found unknown device (class 0)
->     16:34:27 : ata1: softreset failed (1st FIS failed)
->     16:34:27 : ata2: softreset failed (1st FIS failed)
->     16:34:32 : ata1: found unknown device (class 0)
->     16:34:32 : ata2: found unknown device (class 0)
->     16:34:32 : ata3: link is slow to respond, please be patient (ready=0)
->     16:34:32 : ata4: link is slow to respond, please be patient (ready=0)
->     16:34:35 : ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:34:35 : ata3.00: Entering active power mode
->     16:34:35 : ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:34:35 : ata4.00: Entering active power mode
->     16:34:35 : ata3.00: configured for UDMA/133
->     16:34:35 : ata4.00: configured for UDMA/133
->     16:34:37 : ata1: softreset failed (1st FIS failed)
->     16:34:37 : ata2: softreset failed (1st FIS failed)
->     16:34:38 : ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:34:38 : ata2.00: Entering active power mode
->     16:34:38 : ata2.00: configured for UDMA/133
->     16:34:40 : ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:34:40 : ata1.00: Entering active power mode
->     16:34:40 : ata1.00: configured for UDMA/133
-> 
-> Okay, we're back at the "1st FIS failed" message. I actually haven't tried
-> suspending with this kernel a lot, so I don't know how often my drives would
-> go missing in this setup, but I assume it's similar to kernel 6.1 (the first
-> two logs I posted), as the error messages look the same.
-> 
-> Finally, I took that last kernel and also applied my timeout increase patch on
-> top, resulting in the following log:
-> 
->     16:48:33 : PM: suspend exit
->     16:48:39 : ata3: link is slow to respond, please be patient (ready=0)
->     16:48:39 : ata4: link is slow to respond, please be patient (ready=0)
->     16:48:39 : ata2: link is slow to respond, please be patient (ready=0)
->     16:48:39 : ata1: link is slow to respond, please be patient (ready=0)
->     16:48:43 : ata1: found unknown device (class 0)
->     16:48:43 : ata2: found unknown device (class 0)
->     16:48:44 : ata2: softreset failed (device not ready)
->     16:48:44 : ata1: softreset failed (device not ready)
->     16:48:49 : ata4: link is slow to respond, please be patient (ready=0)
->     16:48:49 : ata3: link is slow to respond, please be patient (ready=0)
->     16:48:49 : ata2: link is slow to respond, please be patient (ready=0)
->     16:48:49 : ata1: link is slow to respond, please be patient (ready=0)
->     16:48:51 : ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:48:51 : ata3.00: Entering active power mode
->     16:48:51 : ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:48:51 : ata4.00: Entering active power mode
->     16:48:51 : ata3.00: configured for UDMA/133
->     16:48:51 : ata4.00: configured for UDMA/133
->     16:48:52 : ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:48:52 : ata2.00: Entering active power mode
->     16:48:52 : ata2.00: configured for UDMA/133
->     16:48:54 : ata1: found unknown device (class 0)
->     16:48:54 : ata1: softreset failed (device not ready)
->     16:48:56 : ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
->     16:48:56 : ata1.00: Entering active power mode
->     16:48:56 : ata1.00: configured for UDMA/133
-> 
-> We got our "link is slow to respond" and "device not ready" back for ata1/ata2,
-> and enabling the drives after wakeup seems to be reliable.
-> 
-> Unfortunately, I don't know much about (S)ATA, so I have no idea what is
-> actually going on here. In any case, I'd prefer my kernel not to lose my drives
-> on a regular basis, so I'll gladly take any pointers on what the best way to fix
-> this is :)
-> 
-> Best regards,
-> Matthias
+> > > I skimmed the thread were you added this, but I'm not sure I saw any
+> > > reason for why powering on the panel follower temporarily during prob=
+e
+> > > would not work?
+> >
+> > My first instinct says we can't do this, but let's think about it...
+> >
+> > In general the "panel follower" API is designed to give all the
+> > decision making about when to power things on and off to the panel
+> > driver, which is controlled by DRM.
+> >
+> > The reason for this is from experience I had when dealing with the
+> > Samsung ATNA33XC20 panel that's on "sc7180-trogdor-homestar". The TCON
+> > on that panel tended to die if you didn't sequence it just right.
+> > Specifically, if you were sending pixels to the panel and then stopped
+> > then you absolutely needed to power the panel off and on again. Folks
+> > I talked to even claimed that the panel was working "to spec" since,
+> > in the "Power Sequencing" section of the eDP spec it clearly shows
+> > that you _must_ turn the panel off and on again after you stop giving
+> > it bits. ...this is despite the fact that no other panel I've worked
+> > with cares. ;-)
+> >
+> > On homestar, since we didn't have the "panel follower" API, we ended
+> > up adding cost to the hardware and putting the panel and touchscreens
+> > on different power rails. However, I wanted to make sure that if we
+> > ran into a similar situation in the future (or maybe if we were trying
+> > to make hardware work that we didn't have control over) that we could
+> > solve it.
+> >
+> > The other reason for giving full control to the panel driver is just
+> > how userspace usually works. Right now userspace tends to power off
+> > panels if they're not used (like if a lid is closed on a laptop) but
+> > doesn't necessarily power off the touchscreen. Thus if the touchscreen
+> > has the ability to keep things powered on then we'd never get to a low
+> > power state.
+>
+> Don't you need to keep the touchscreen powered to support wakeup events
+> (e.g. when not closing the lid)?
 
--- 
-Damien Le Moal
-Western Digital Research
+No. The only reason you'd use panel follower is if the hardware was
+designed such that the touchscreen needed to be power sequenced with
+the panel. If the touchscreen can stay powered when the panel is off
+then it is, by definition, not a panel follower.
 
+For a laptop I don't think most people expect the touchscreen to stay
+powered when the screen is off. I certainly wouldn't expect it. If the
+screen was off and I wanted to interact with the device, I would hit a
+key on the keyboard or touch the trackpad. When the people designing
+sc7180-trogdor chose to have the display and touchscreen share a power
+rail they made a conscious choice that they didn't need the
+touchscreen active when the screen was off.
+
+For the other hardware I'm aware of that needs panel-follower there is
+a single external chip on the board that handles driving the panel and
+the touchscreen. The power sequencing requirements for this chip
+simply don't allow the touchscreen to be powered on while the display
+is off.
+
+One use case where I could intuitively think I might touch a
+touchscreen of a screen that was "off" would be a kiosk of some sort.
+It would make sense there to have two power rails. ...or, I suppose,
+userspace could just choose to turn the backlight off but keep the
+screen (and touchscreen) powered.
+
+
+> And if you close the lid with wakeup disabled, you should still be able
+> to power down the touchscreen as part of suspend, right?
+>
+> > The above all explains why panel followers like the touchscreen
+> > shouldn't be able to keep power on. However, you are specifically
+> > suggesting that we just turn the power on temporarily during probe. As
+> > I think about that, it might be possible? I guess you'd have to
+> > temporarily block DRM from changing the state of the panel while the
+> > touchscreen is probing. Then if the panel was off then you'd turn it
+> > on briefly, do your probe, and then turn it off again. If the panel
+> > was on then by blocking DRM you'd ensure that it stayed on. I'm not
+> > sure how palatable that would be or if there are any other tricky
+> > parts I'm not thinking about.
+>
+> As this would allow actually probing the touchscreen during probe(), as
+> the driver model expects, this seems like a better approach then
+> deferring probe and registration if it's at all doable.
+
+Yeah, I don't 100% know if it's doable but it seems possible.
+Certainly it's something for future investigation.
+
+Luckily, at the moment anything I'm aware of that truly needs panel
+follower also doesn't have multiple sources for a touchscreen.
+
+
+> > > > Thinking that way, is there any reason you can't just move the
+> > > > i2c_hid_init_irq() into __do_i2c_hid_core_initial_power_up()? You
+> > > > could replace the call to enable_irq() with it and then remove the
+> > > > `IRQF_NO_AUTOEN` flag? I think that would also solve the issue if y=
+ou
+> > > > wanted to use a 2nd source + the panel follower concept? Both devic=
+es
+> > > > would probe, but only one of them would actually grab the interrupt
+> > > > and only one of them would actually create real HID devices. We mig=
+ht
+> > > > need to do some work to keep from trying again at every poweron of =
+the
+> > > > panel, but it would probably be workable? I think this would also b=
+e a
+> > > > smaller change...
+> > >
+> > > That was my first idea as well, but conceptually it is more correct t=
+o
+> > > request resources at probe time and not at some later point when you =
+can
+> > > no longer fail probe.
+> > >
+> > > You'd also need to handle the fact that the interrupt may never have
+> > > been requested when remove() is called, which adds unnecessary
+> > > complexity.
+> >
+> > I don't think it's a lot of complexity, is it? Just an extra "if" state=
+ment...
+>
+> Well you'd need keep track of whether the interrupt has been requested
+> or not (and manage serialisation) yourself for a start.
+
+Sure. So I guess an "if" test plus a boolean state variable. I still
+don't think it's a lot of complexity.
+
+
+> But the main reason is still that requesting resources belongs in
+> probe() and should not be deferred to some later random time where you
+> cannot inform driver core of failures (e.g. for probe deferral if the
+> interrupt controller is not yet available).
+
+OK, I guess the -EPROBE_DEFER is technically possible though probably
+not likely in practice. ...so that's a good reason to make sure we
+request the IRQ in probe even in the "panel follower" case. I still
+beleive Benjamin would prefer that this was abstracted out and not in
+the actual probe() routine, but I guess we can wait to hear from him.
+
+One last idea I had while digging would be to wonder if we could
+somehow solve this case with "IRQF_PROBE_SHARED". I guess that doesn't
+work well together with "IRQF_NO_AUTOEN", but conceivably we could
+have the interrupt handler return "IRQ_NONE" if the initial power up
+never happened? I haven't spent much time poking with shared
+interrupts though, so I don't know if there are other side effects...
+
+
+-Doug
