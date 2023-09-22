@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAA67AAC3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DDE7AAC6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbjIVINk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
+        id S232508AbjIVIOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbjIVINJ (ORCPT
+        with ESMTP id S232046AbjIVIN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:13:09 -0400
+        Fri, 22 Sep 2023 04:13:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0452122;
-        Fri, 22 Sep 2023 01:12:31 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 08:12:29 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B9310CE;
+        Fri, 22 Sep 2023 01:12:55 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 08:12:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695370350;
+        s=2020; t=1695370374;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ARBaVfzfcA6faFmUzH9kFAgDWK5n4gM0GoxjOTpPz6U=;
-        b=HvMCXmQzLXKfmNWsJq5fVTrb4KFgTVRumB+bzpnHgDUP6z9edoFcwMEURMjxQL3B0beJil
-        ptpeJ4tyu8hL+9ZPnsMcJQzEV/PLEz8Wk16sZWlMoSl7p3tGRROhdvSKnVh9n9muvHB7H7
-        M1fct/QaVbg6gdfe2sNYRdh6FfFe0zHs5S+2rwYw/eju9mvQu5bMyZzhcLAbHTpp7ET0cZ
-        6vFwLS5QVswAu8bWgMkbJDzL5Nx25YYgal5guFEJrsF0g59HjBi6tpUCoMu4YqgXgIGGMe
-        5aTo2YrEQQ1KtM+VJCPxyOmi6FOfttJqcsUpH0zi72dSvm+bPjQpr+RsnE6jgw==
+        bh=1bPKF4uXOWTIoSsqQJPw+pS2Gpmo355eDwJrUxOtjwg=;
+        b=xhk+63Cch3cU+uADvC7IlKAW251DYefsBjQKhB36n+0f+s9hGNNL8CJ8PZAsuAyXG79kvS
+        PBgqDAtVuPyuLvshILyqxY4+nauqbn76tvuy8BR9Xut7VdIaURnAvcsBpccLCd6FVa7+eI
+        TybtSMBNNDTYAjt7dm3/ep/3WFTtlFSC6RXjygdKX3DK1fmTDNJtv7St12frs8pXtjHd+X
+        nN0GhK5D9rCxaLjGSMxgKhD8dEnuxRRD3g9v+lju4tvz8mUshzK/atXlrIFtvcc4InucZz
+        Eb93rkDKfS7kIvZEmdpz9sYfRTu93Vlr9j5fOYZBGrP2qwZSdg85sK92vtl27g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695370350;
+        s=2020e; t=1695370374;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ARBaVfzfcA6faFmUzH9kFAgDWK5n4gM0GoxjOTpPz6U=;
-        b=fYWeBnxOWlXRTOYT5Qlux+8pPIU5HQwJB0Eo6VIdSeYTT+S2Lyfj/0niWSXwdgmfoSY61U
-        R0BNto10t0+kkxAA==
+        bh=1bPKF4uXOWTIoSsqQJPw+pS2Gpmo355eDwJrUxOtjwg=;
+        b=ze/9UF+wpgyZYw2ONIWYn5fw3d5ljqxSZyOkg7xFD8WJEhE6qu8VEY+zntInDYMve+HdNQ
+        c0711NAZvSCtjeBA==
 From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/bitops: Remove unused __sw_hweight64() assembly
- implementation on x86-32
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [tip: x86/mm] x86/mm: Move arch_memory_failure() and
+ arch_is_platform_page() definitions from <asm/processor.h> to <asm/pgtable.h>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
 MIME-Version: 1.0
-Message-ID: <169537034995.27769.6683093223501252262.tip-bot2@tip-bot2>
+Message-ID: <169537037363.27769.8863382611473061727.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,102 +58,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/asm branch of tip:
+The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     ad424743256b0119bd60a9248db4df5d998000a4
-Gitweb:        https://git.kernel.org/tip/ad424743256b0119bd60a9248db4df5d998000a4
+Commit-ID:     d73a105586434ca919a1a487a467e5664f9300c4
+Gitweb:        https://git.kernel.org/tip/d73a105586434ca919a1a487a467e5664f9300c4
 Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Sat, 22 Jan 2022 13:39:15 +01:00
+AuthorDate:    Fri, 22 Sep 2023 09:29:59 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 22 Sep 2023 09:34:50 +02:00
+CommitterDate: Fri, 22 Sep 2023 09:32:03 +02:00
 
-x86/bitops: Remove unused __sw_hweight64() assembly implementation on x86-32
+x86/mm: Move arch_memory_failure() and arch_is_platform_page() definitions from <asm/processor.h> to <asm/pgtable.h>
 
-Header cleanups in the fast-headers tree highlighted that we have an
-unused assembly implementation for __sw_hweight64():
+<linux/mm.h> relies on these definitions being included first,
+which is true currently due to historic header spaghetti,
+but in the future <asm/processor.h> will not guaranteed to be
+included by the MM code.
 
-    WARNING: modpost: EXPORT symbol "__sw_hweight64" [vmlinux] version ...
+Move these definitions over into a suitable MM header.
 
-__arch_hweight64() on x86-32 is defined in the
-arch/x86/include/asm/arch_hweight.h header as an inline, using
-__arch_hweight32():
+This is a preparatory patch for x86 header dependency simplifications
+and reductions.
 
-  #ifdef CONFIG_X86_32
-  static inline unsigned long __arch_hweight64(__u64 w)
-  {
-          return  __arch_hweight32((u32)w) +
-                  __arch_hweight32((u32)(w >> 32));
-  }
-
-*But* there's also a __sw_hweight64() assembly implementation:
-
-  arch/x86/lib/hweight.S
-
-  SYM_FUNC_START(__sw_hweight64)
-  #ifdef CONFIG_X86_64
-  ...
-  #else /* CONFIG_X86_32 */
-        /* We're getting an u64 arg in (%eax,%edx): unsigned long hweight64(__u64 w) */
-        pushl   %ecx
-
-        call    __sw_hweight32
-        movl    %eax, %ecx                      # stash away result
-        movl    %edx, %eax                      # second part of input
-        call    __sw_hweight32
-        addl    %ecx, %eax                      # result
-
-        popl    %ecx
-        ret
-  #endif
-
-But this __sw_hweight64 assembly implementation is unused - and it's
-essentially doing the same thing that the inline wrapper does.
-
-Remove the assembly version and add a comment about it.
-
-Reported-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org
 ---
- arch/x86/lib/hweight.S | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ arch/x86/include/asm/pgtable.h   | 8 ++++++++
+ arch/x86/include/asm/processor.h | 8 --------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/lib/hweight.S b/arch/x86/lib/hweight.S
-index 12c16c6..0a152e5 100644
---- a/arch/x86/lib/hweight.S
-+++ b/arch/x86/lib/hweight.S
-@@ -36,8 +36,12 @@ SYM_FUNC_START(__sw_hweight32)
- SYM_FUNC_END(__sw_hweight32)
- EXPORT_SYMBOL(__sw_hweight32)
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index d6ad98c..1e12e61 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1708,6 +1708,14 @@ static inline bool pud_user_accessible_page(pud_t pud)
+ }
+ #endif
  
--SYM_FUNC_START(__sw_hweight64)
-+/*
-+ * No 32-bit variant, because it's implemented as an inline wrapper
-+ * on top of __arch_hweight32():
-+ */
- #ifdef CONFIG_X86_64
-+SYM_FUNC_START(__sw_hweight64)
- 	pushq   %rdi
- 	pushq   %rdx
- 
-@@ -66,18 +70,6 @@ SYM_FUNC_START(__sw_hweight64)
- 	popq    %rdx
- 	popq    %rdi
- 	RET
--#else /* CONFIG_X86_32 */
--	/* We're getting an u64 arg in (%eax,%edx): unsigned long hweight64(__u64 w) */
--	pushl   %ecx
--
--	call    __sw_hweight32
--	movl    %eax, %ecx                      # stash away result
--	movl    %edx, %eax                      # second part of input
--	call    __sw_hweight32
--	addl    %ecx, %eax                      # result
--
--	popl    %ecx
--	RET
--#endif
- SYM_FUNC_END(__sw_hweight64)
- EXPORT_SYMBOL(__sw_hweight64)
++#ifdef CONFIG_X86_SGX
++int arch_memory_failure(unsigned long pfn, int flags);
++#define arch_memory_failure arch_memory_failure
++
++bool arch_is_platform_page(u64 paddr);
++#define arch_is_platform_page arch_is_platform_page
 +#endif
++
+ #endif	/* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_X86_PGTABLE_H */
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 0086920..1b2b138 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -726,14 +726,6 @@ enum mds_mitigations {
+ 	MDS_MITIGATION_VMWERV,
+ };
+ 
+-#ifdef CONFIG_X86_SGX
+-int arch_memory_failure(unsigned long pfn, int flags);
+-#define arch_memory_failure arch_memory_failure
+-
+-bool arch_is_platform_page(u64 paddr);
+-#define arch_is_platform_page arch_is_platform_page
+-#endif
+-
+ extern bool gds_ucode_mitigated(void);
+ 
+ #endif /* _ASM_X86_PROCESSOR_H */
