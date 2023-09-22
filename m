@@ -2,569 +2,792 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A977AB1E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53557AB1EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbjIVMM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 08:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S234041AbjIVMPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 08:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbjIVMM6 (ORCPT
+        with ESMTP id S233916AbjIVMPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 08:12:58 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151FF139;
-        Fri, 22 Sep 2023 05:12:48 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VsdTUZ1_1695384764;
-Received: from 30.221.128.225(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VsdTUZ1_1695384764)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Sep 2023 20:12:45 +0800
-Message-ID: <338286fa-fdd7-48d2-c0c9-4d55a4659f4b@linux.alibaba.com>
-Date:   Fri, 22 Sep 2023 20:12:42 +0800
+        Fri, 22 Sep 2023 08:15:18 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BEF99;
+        Fri, 22 Sep 2023 05:15:10 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MA7aMI005683;
+        Fri, 22 Sep 2023 12:15:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=blzyxcdh+2fQoo1NSytfc6fXxI2KT4Xa/hWS2PSa4UY=;
+ b=lTE2ErHSRYMApI7M//5FnqWDeq+mrtgTf0Wv//aCHerH9jiiOuMf4gzS02J7X2KEp+Os
+ oxGxkx6m+pIV6VOl/6eXNBTP30T1OcWZJUUSKaKjN2PU5TYEaH3qs5sdr2pvJ2f8hP+M
+ vsUjXDklQ4rl/8Kmf1ss7+HNLZpYbA+serq9wBwavEsarG98QXmgaLu4/jSyHlKpxmew
+ JVzz9eABbX+jWKn7aowJdndFsav7Lii7+CF/dHjL8WTverzyyw3UoNTMnxd9YjS99PT0
+ Ysnie+0aPWA05ftnQ4IXV+SC1O/HmuJaDOyk4oXilj5HSSCS/a1rcRTZMdra8NlWDp+F KA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t8tsvsp9t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 12:15:03 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38MBRIHK035085;
+        Fri, 22 Sep 2023 12:15:02 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t8ty2fmab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 12:15:02 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38MCCP7t015761;
+        Fri, 22 Sep 2023 12:15:02 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3t8ty2fm9n-1;
+        Fri, 22 Sep 2023 12:15:02 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     stable@vger.kernel.org
+Cc:     joe@perches.com, gregkh@linuxfoundation.org, blamoreaux@vmware.com,
+        linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Subject: [PATCH 4.14.y] drivers core: Use sysfs_emit and sysfs_emit_at for show(device *...) functions
+Date:   Fri, 22 Sep 2023 05:14:54 -0700
+Message-ID: <20230922121454.2735355-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH net-next v3 06/18] net/smc: extend GID to 128bits for
- virtual ISM device
-To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1695302360-46691-1-git-send-email-guwen@linux.alibaba.com>
- <1695302360-46691-7-git-send-email-guwen@linux.alibaba.com>
- <d2878b74-9bd4-dd6b-8ecd-75f22a4730d4@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <d2878b74-9bd4-dd6b-8ecd-75f22a4730d4@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_10,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309220104
+X-Proofpoint-GUID: z2ypZ1ABch_FVB1kW-1Sd1pHN_xztKp_
+X-Proofpoint-ORIG-GUID: z2ypZ1ABch_FVB1kW-1Sd1pHN_xztKp_
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Joe Perches <joe@perches.com>
 
+commit aa838896d87af561a33ecefea1caa4c15a68bc47 upstream.
 
-On 2023/9/22 07:32, Wenjia Zhang wrote:
-> 
-> 
-> On 21.09.23 15:19, Wen Gu wrote:
->> As the SMC-Dv2 protocol introduces virtual ISM devices, whose GIDs
->> are UUIDs generated by software, the maximum length of SMC-D GID has
->> been extended to 128 bits.
->>
-> I think it is necessary to say that the GID is extended to 128 bits only for virtuel ISM device(s).
-> 
+Convert the various sprintf fmaily calls in sysfs device show functions
+to sysfs_emit and sysfs_emit_at for PAGE_SIZE buffer safety.
 
-Thanks, Wenjia. I will make it clear in the next version.
+Done with:
 
->> So this patch adapts the relevant code to make it compatible with
->> 128 bits GID.
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
+$ spatch -sp-file sysfs_emit_dev.cocci --in-place --max-width=80 .
 
-<...>
+And cocci script:
 
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index bacdd97..9e31033 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -1044,7 +1044,8 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
->>   {
->>       int rc = SMC_CLC_DECL_NOSMCDDEV;
->>       struct smcd_dev *smcd;
->> -    int i = 1;
->> +    int i = 1, slot = 1;
->> +    bool is_virtdev;
->>       u16 chid;
->>       if (smcd_indicated(ini->smc_type_v1))
->> @@ -1056,14 +1057,19 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
->>           chid = smc_ism_get_chid(smcd);
->>           if (!smc_find_ism_v2_is_unique_chid(chid, ini, i))
->>               continue;
->> +        is_virtdev = __smc_ism_is_virtdev(chid);
->>           if (!smc_pnet_is_pnetid_set(smcd->pnetid) ||
->>               smc_pnet_is_ndev_pnetid(sock_net(&smc->sk), smcd->pnetid)) {
->> +            /* GID-CHID array is not enough for a virtual GID (128bits) */
->> +            if (is_virtdev && slot >= SMC_MAX_ISM_DEVS)
->> +                continue;
-> 
-> I'm wondering what the check is for. e.g. If slot is 8 after checking if (slot > SMC_MAX_ISM_DEVS) later, then does 
-> makes sense to continue the iteration?
+$ cat sysfs_emit_dev.cocci
+@@
+identifier d_show;
+identifier dev, attr, buf;
+@@
 
-If slot >= SMC_MAX_ISM_DEVS (actually, to be more precise, it should be 'if slot == SMC_MAX_ISM_DEVS', because
-it is impossible to have slot > SMC_MAX_ISM_DEVS here), e.g. slot == SMC_MAX_ISM_DEVS, which means it is the
-last slot of chid-gid array, it can no longer accommodate another virtual ISM device's GID, but it can accommodate
-an ISM device's GID. So here continue the iteration to carry another potential ISM device.
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	return
+-	sprintf(buf,
++	sysfs_emit(buf,
+	...);
+	...>
+}
 
-I will change the judgement to 'if slot == SMC_MAX_ISM_DEVS', to be more precise. Thanks.
+@@
+identifier d_show;
+identifier dev, attr, buf;
+@@
 
->>               ini->ism_dev[i] = smcd;
->>               ini->ism_chid[i] = chid;
->>               ini->is_smcd = true;
->>               rc = 0;
->>               i++;
->> -            if (i > SMC_MAX_ISM_DEVS)
->> +            slot = is_virtdev ? slot + 2 : slot + 1;
->> +            if (slot > SMC_MAX_ISM_DEVS)
->>                   break;
->>           }
->>       }
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	return
+-	snprintf(buf, PAGE_SIZE,
++	sysfs_emit(buf,
+	...);
+	...>
+}
 
-<...>
+@@
+identifier d_show;
+identifier dev, attr, buf;
+@@
 
->> @@ -2135,9 +2146,11 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
->>       struct smc_clc_v2_extension *smc_v2_ext;
->>       struct smc_clc_msg_smcd *pclc_smcd;
->>       unsigned int matches = 0;
->> +    struct smcd_gid smcd_gid;
->>       u8 smcd_version;
->>       u8 *eid = NULL;
->>       int i, rc;
->> +    u16 chid;
->>       if (!(ini->smcd_version & SMC_V2) || !smcd_indicated(ini->smc_type_v2))
->>           goto not_found;
->> @@ -2147,18 +2160,26 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
->>       smcd_v2_ext = smc_get_clc_smcd_v2_ext(smc_v2_ext);
->>       mutex_lock(&smcd_dev_list.mutex);
->> -    if (pclc_smcd->ism.chid)
->> +    if (pclc_smcd->ism.chid) {
->>           /* check for ISM device matching proposed native ISM device */
->> +        smcd_gid.gid = ntohll(pclc_smcd->ism.gid);
->>           smc_check_ism_v2_match(ini, ntohs(pclc_smcd->ism.chid),
->> -                       ntohll(pclc_smcd->ism.gid), &matches);
->> +                       &smcd_gid, &matches);
->> +    }
->>       for (i = 1; i <= smc_v2_ext->hdr.ism_gid_cnt; i++) {
->>           /* check for ISM devices matching proposed non-native ISM
->>            * devices
->>            */
->> -        smc_check_ism_v2_match(ini,
->> -                       ntohs(smcd_v2_ext->gidchid[i - 1].chid),
->> -                       ntohll(smcd_v2_ext->gidchid[i - 1].gid),
->> -                       &matches);
->> +        smcd_gid.gid = ntohll(smcd_v2_ext->gidchid[i - 1].gid);
->> +        chid = ntohs(smcd_v2_ext->gidchid[i - 1].chid);
->> +        if (__smc_ism_is_virtdev(chid)) {
->> +            /* check if extended entry exists and is valid */
->> +            if (i >= smc_v2_ext->hdr.ism_gid_cnt ||
->> +                chid != ntohs(smcd_v2_ext->gidchid[i].chid))
->> +                continue;
->> +            smcd_gid.gid_ext = ntohll(smcd_v2_ext->gidchid[i++].gid);
->> +        }
->> +        smc_check_ism_v2_match(ini, chid, &smcd_gid, &matches);
-> Here is also not that clean with smcd_gid.
-> E.g. the 1st device is a virtual device, then
-> smcd_gid.gid_ext = ntohll(smcd_v2_ext->gidchid[2].gid)
-> while the 2nd device is not virtual one, then the smcd_gid.gid is rewritten, but the smcd_gid.gid_ext is still 
-> ntohll(smcd_v2_ext->gidchid[2].gid)
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	return
+-	scnprintf(buf, PAGE_SIZE,
++	sysfs_emit(buf,
+	...);
+	...>
+}
 
-smcd_gid.gid_ext in code is ensured to be meaningful when used. e.g. only when the device is virtual
-device, the smcd_gid will be used to fill CLC message or to compare with others. So even here 2nd device's
-smcd_gid is wrong, it won't be used.
+@@
+identifier d_show;
+identifier dev, attr, buf;
+expression chr;
+@@
 
-But I agree that we should keep the smcd_gid clean enough, I will check all the places to make it clean.
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	return
+-	strcpy(buf, chr);
++	sysfs_emit(buf, chr);
+	...>
+}
 
-Thanks!
+@@
+identifier d_show;
+identifier dev, attr, buf;
+identifier len;
+@@
 
->>       }
->>       mutex_unlock(&smcd_dev_list.mutex);
-> IMO, I don't think that is a good idea to use the same varable smcd_gid for checking both native ISM device and 
-> non-native ISM device. Because the compiler can LOAD and Store the value you don't really want from the perspective of 
-> optimization.
-> 
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	len =
+-	sprintf(buf,
++	sysfs_emit(buf,
+	...);
+	...>
+	return len;
+}
 
-Are you worried that variables on the stack may be initialized to undefined values? Such as smcd_gid.gid_ext
-of an ISM device here is not assigned a value and could be any value?
+@@
+identifier d_show;
+identifier dev, attr, buf;
+identifier len;
+@@
 
-But in smc_check_ism_v2_match() we do
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	len =
+-	snprintf(buf, PAGE_SIZE,
++	sysfs_emit(buf,
+	...);
+	...>
+	return len;
+}
 
-1. check CHID first, which means the following match will only occur between same type of devices (virtual ISM or ISM)
+@@
+identifier d_show;
+identifier dev, attr, buf;
+identifier len;
+@@
 
-2. query remote gid, with variable smcd_gid.
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+	len =
+-	scnprintf(buf, PAGE_SIZE,
++	sysfs_emit(buf,
+	...);
+	...>
+	return len;
+}
 
-    a. If devices are virtual ISM devices, both smcd_gid.gid and smcd_gid.gid_ext will be checked.
-       e.g. smc_lo_query_rgid().
+@@
+identifier d_show;
+identifier dev, attr, buf;
+identifier len;
+@@
 
-    b. If devices are ISM devices, only smcd_gid.gid will be checked.
-       e.g. smcd_query_rgid() in drivers/s390/net/ism_drv.c
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	<...
+-	len += scnprintf(buf + len, PAGE_SIZE - len,
++	len += sysfs_emit_at(buf, len,
+	...);
+	...>
+	return len;
+}
 
-       static int smcd_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
-                                  u32 vid_valid, u32 vid)
-       {
-             return ism_query_rgid(smcd->priv, rgid->gid, vid_valid, vid);
-                                               ^^^^^^^^ only smcd_gid.gid will be passed to device for querying.
-       }
+@@
+identifier d_show;
+identifier dev, attr, buf;
+expression chr;
+@@
 
-So I think it is safe to use the same variable smcd_gid for both virtual ISM and ISM.
+ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	...
+-	strcpy(buf, chr);
+-	return strlen(buf);
++	return sysfs_emit(buf, chr);
+}
 
-But as the previous reply said, I will make the ISM device's smcd_gid more clean (set smcd_gid.gid_ext to 0)
+Signed-off-by: Joe Perches <joe@perches.com>
+Link: https://lore.kernel.org/r/3d033c33056d88bbe34d4ddb62afd05ee166ab9a.1600285923.git.joe@perches.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[Harshit: backport to 4.14.y -- regenerated the diff with the help of
+coccinelle script in driver/base/ directory.]
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+Only compile tested. This fixes CVE-2022-20166.
+It is not clear whether the CVE was assigned for a demonstrated issue
+or just a theoretical one. In any case it's a good defensive measure
+against future patches that may introduce a real issue if they assume
+this patch is already there.
+---
+ drivers/base/arch_topology.c  |  3 +-
+ drivers/base/cacheinfo.c      | 18 ++++++------
+ drivers/base/core.c           |  8 ++---
+ drivers/base/cpu.c            | 26 ++++++++---------
+ drivers/base/firmware_class.c |  2 +-
+ drivers/base/memory.c         | 24 +++++++--------
+ drivers/base/node.c           | 26 ++++++++---------
+ drivers/base/platform.c       |  2 +-
+ drivers/base/power/sysfs.c    | 55 ++++++++++++++++++-----------------
+ drivers/base/soc.c            |  8 ++---
+ 10 files changed, 87 insertions(+), 85 deletions(-)
 
-Thanks.
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 3da53cc6cf2b..4b965f562d0b 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -41,7 +41,8 @@ static ssize_t cpu_capacity_show(struct device *dev,
+ {
+ 	struct cpu *cpu = container_of(dev, struct cpu, dev);
+ 
+-	return sprintf(buf, "%lu\n", topology_get_cpu_scale(NULL, cpu->dev.id));
++	return sysfs_emit(buf, "%lu\n",
++			  topology_get_cpu_scale(NULL, cpu->dev.id));
+ }
+ 
+ static ssize_t cpu_capacity_store(struct device *dev,
+diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
+index e405ea3ca8d8..1d4969b0478f 100644
+--- a/drivers/base/cacheinfo.c
++++ b/drivers/base/cacheinfo.c
+@@ -388,7 +388,7 @@ static ssize_t size_show(struct device *dev,
+ {
+ 	struct cacheinfo *this_leaf = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%uK\n", this_leaf->size >> 10);
++	return sysfs_emit(buf, "%uK\n", this_leaf->size >> 10);
+ }
+ 
+ static ssize_t shared_cpumap_show_func(struct device *dev, bool list, char *buf)
+@@ -418,11 +418,11 @@ static ssize_t type_show(struct device *dev,
+ 
+ 	switch (this_leaf->type) {
+ 	case CACHE_TYPE_DATA:
+-		return sprintf(buf, "Data\n");
++		return sysfs_emit(buf, "Data\n");
+ 	case CACHE_TYPE_INST:
+-		return sprintf(buf, "Instruction\n");
++		return sysfs_emit(buf, "Instruction\n");
+ 	case CACHE_TYPE_UNIFIED:
+-		return sprintf(buf, "Unified\n");
++		return sysfs_emit(buf, "Unified\n");
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -436,11 +436,11 @@ static ssize_t allocation_policy_show(struct device *dev,
+ 	int n = 0;
+ 
+ 	if ((ci_attr & CACHE_READ_ALLOCATE) && (ci_attr & CACHE_WRITE_ALLOCATE))
+-		n = sprintf(buf, "ReadWriteAllocate\n");
++		n = sysfs_emit(buf, "ReadWriteAllocate\n");
+ 	else if (ci_attr & CACHE_READ_ALLOCATE)
+-		n = sprintf(buf, "ReadAllocate\n");
++		n = sysfs_emit(buf, "ReadAllocate\n");
+ 	else if (ci_attr & CACHE_WRITE_ALLOCATE)
+-		n = sprintf(buf, "WriteAllocate\n");
++		n = sysfs_emit(buf, "WriteAllocate\n");
+ 	return n;
+ }
+ 
+@@ -452,9 +452,9 @@ static ssize_t write_policy_show(struct device *dev,
+ 	int n = 0;
+ 
+ 	if (ci_attr & CACHE_WRITE_THROUGH)
+-		n = sprintf(buf, "WriteThrough\n");
++		n = sysfs_emit(buf, "WriteThrough\n");
+ 	else if (ci_attr & CACHE_WRITE_BACK)
+-		n = sprintf(buf, "WriteBack\n");
++		n = sysfs_emit(buf, "WriteBack\n");
+ 	return n;
+ }
+ 
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index e834087448a4..4f30ab4c3d95 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -766,7 +766,7 @@ ssize_t device_show_ulong(struct device *dev,
+ 			  char *buf)
+ {
+ 	struct dev_ext_attribute *ea = to_ext_attr(attr);
+-	return snprintf(buf, PAGE_SIZE, "%lx\n", *(unsigned long *)(ea->var));
++	return sysfs_emit(buf, "%lx\n", *(unsigned long *)(ea->var));
+ }
+ EXPORT_SYMBOL_GPL(device_show_ulong);
+ 
+@@ -791,7 +791,7 @@ ssize_t device_show_int(struct device *dev,
+ {
+ 	struct dev_ext_attribute *ea = to_ext_attr(attr);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", *(int *)(ea->var));
++	return sysfs_emit(buf, "%d\n", *(int *)(ea->var));
+ }
+ EXPORT_SYMBOL_GPL(device_show_int);
+ 
+@@ -812,7 +812,7 @@ ssize_t device_show_bool(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct dev_ext_attribute *ea = to_ext_attr(attr);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", *(bool *)(ea->var));
++	return sysfs_emit(buf, "%d\n", *(bool *)(ea->var));
+ }
+ EXPORT_SYMBOL_GPL(device_show_bool);
+ 
+@@ -1036,7 +1036,7 @@ static ssize_t online_show(struct device *dev, struct device_attribute *attr,
+ 	device_lock(dev);
+ 	val = !dev->offline;
+ 	device_unlock(dev);
+-	return sprintf(buf, "%u\n", val);
++	return sysfs_emit(buf, "%u\n", val);
+ }
+ 
+ static ssize_t online_store(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index c9463c30b812..f602b2215026 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -154,7 +154,7 @@ static ssize_t show_crash_notes(struct device *dev, struct device_attribute *att
+ 	 * operation should be safe. No locking required.
+ 	 */
+ 	addr = per_cpu_ptr_to_phys(per_cpu_ptr(crash_notes, cpunum));
+-	rc = sprintf(buf, "%Lx\n", addr);
++	rc = sysfs_emit(buf, "%Lx\n", addr);
+ 	return rc;
+ }
+ static DEVICE_ATTR(crash_notes, 0400, show_crash_notes, NULL);
+@@ -165,7 +165,7 @@ static ssize_t show_crash_notes_size(struct device *dev,
+ {
+ 	ssize_t rc;
+ 
+-	rc = sprintf(buf, "%zu\n", sizeof(note_buf_t));
++	rc = sysfs_emit(buf, "%zu\n", sizeof(note_buf_t));
+ 	return rc;
+ }
+ static DEVICE_ATTR(crash_notes_size, 0400, show_crash_notes_size, NULL);
+@@ -318,8 +318,8 @@ static ssize_t print_cpu_modalias(struct device *dev,
+ 	ssize_t n;
+ 	u32 i;
+ 
+-	n = sprintf(buf, "cpu:type:" CPU_FEATURE_TYPEFMT ":feature:",
+-		    CPU_FEATURE_TYPEVAL);
++	n = sysfs_emit(buf, "cpu:type:" CPU_FEATURE_TYPEFMT ":feature:",
++		       CPU_FEATURE_TYPEVAL);
+ 
+ 	for (i = 0; i < MAX_CPU_FEATURES; i++)
+ 		if (cpu_have_feature(i)) {
+@@ -506,56 +506,56 @@ static void __init cpu_dev_register_generic(void)
+ ssize_t __weak cpu_show_meltdown(struct device *dev,
+ 				 struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_spectre_v1(struct device *dev,
+ 				   struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_spectre_v2(struct device *dev,
+ 				   struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_spec_store_bypass(struct device *dev,
+ 					  struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_l1tf(struct device *dev,
+ 			     struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_mds(struct device *dev,
+ 			    struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_tsx_async_abort(struct device *dev,
+ 					struct device_attribute *attr,
+ 					char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_itlb_multihit(struct device *dev,
+ 			    struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_srbds(struct device *dev,
+ 			      struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "Not affected\n");
++	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
+ ssize_t __weak cpu_show_mmio_stale_data(struct device *dev,
+diff --git a/drivers/base/firmware_class.c b/drivers/base/firmware_class.c
+index 4b57cf5bc81d..7cb90e4ac4a6 100644
+--- a/drivers/base/firmware_class.c
++++ b/drivers/base/firmware_class.c
+@@ -698,7 +698,7 @@ static ssize_t firmware_loading_show(struct device *dev,
+ 		loading = fw_state_is_loading(&fw_priv->buf->fw_st);
+ 	mutex_unlock(&fw_lock);
+ 
+-	return sprintf(buf, "%d\n", loading);
++	return sysfs_emit(buf, "%d\n", loading);
+ }
+ 
+ /* Some architectures don't have PAGE_KERNEL_RO */
+diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+index fe1557aa9b10..39359fb9146b 100644
+--- a/drivers/base/memory.c
++++ b/drivers/base/memory.c
+@@ -116,7 +116,7 @@ static ssize_t show_mem_start_phys_index(struct device *dev,
+ 	unsigned long phys_index;
+ 
+ 	phys_index = mem->start_section_nr / sections_per_block;
+-	return sprintf(buf, "%08lx\n", phys_index);
++	return sysfs_emit(buf, "%08lx\n", phys_index);
+ }
+ 
+ /*
+@@ -140,7 +140,7 @@ static ssize_t show_mem_removable(struct device *dev,
+ 	}
+ 
+ out:
+-	return sprintf(buf, "%d\n", ret);
++	return sysfs_emit(buf, "%d\n", ret);
+ }
+ 
+ /*
+@@ -158,17 +158,17 @@ static ssize_t show_mem_state(struct device *dev,
+ 	 */
+ 	switch (mem->state) {
+ 	case MEM_ONLINE:
+-		len = sprintf(buf, "online\n");
++		len = sysfs_emit(buf, "online\n");
+ 		break;
+ 	case MEM_OFFLINE:
+-		len = sprintf(buf, "offline\n");
++		len = sysfs_emit(buf, "offline\n");
+ 		break;
+ 	case MEM_GOING_OFFLINE:
+-		len = sprintf(buf, "going-offline\n");
++		len = sysfs_emit(buf, "going-offline\n");
+ 		break;
+ 	default:
+-		len = sprintf(buf, "ERROR-UNKNOWN-%ld\n",
+-				mem->state);
++		len = sysfs_emit(buf, "ERROR-UNKNOWN-%ld\n",
++				 mem->state);
+ 		WARN_ON(1);
+ 		break;
+ 	}
+@@ -385,7 +385,7 @@ static ssize_t show_phys_device(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+ 	struct memory_block *mem = to_memory_block(dev);
+-	return sprintf(buf, "%d\n", mem->phys_device);
++	return sysfs_emit(buf, "%d\n", mem->phys_device);
+ }
+ 
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+@@ -417,7 +417,7 @@ static ssize_t show_valid_zones(struct device *dev,
+ 	 * This can happen e.g. for ZONE_DMA and ZONE_DMA32
+ 	 */
+ 	if (!test_pages_in_a_zone(start_pfn, start_pfn + nr_pages, &valid_start_pfn, &valid_end_pfn))
+-		return sprintf(buf, "none\n");
++		return sysfs_emit(buf, "none\n");
+ 
+ 	start_pfn = valid_start_pfn;
+ 	nr_pages = valid_end_pfn - start_pfn;
+@@ -459,7 +459,7 @@ static ssize_t
+ print_block_size(struct device *dev, struct device_attribute *attr,
+ 		 char *buf)
+ {
+-	return sprintf(buf, "%lx\n", get_memory_block_size());
++	return sysfs_emit(buf, "%lx\n", get_memory_block_size());
+ }
+ 
+ static DEVICE_ATTR(block_size_bytes, 0444, print_block_size, NULL);
+@@ -473,9 +473,9 @@ show_auto_online_blocks(struct device *dev, struct device_attribute *attr,
+ 			char *buf)
+ {
+ 	if (memhp_auto_online)
+-		return sprintf(buf, "online\n");
++		return sysfs_emit(buf, "online\n");
+ 	else
+-		return sprintf(buf, "offline\n");
++		return sysfs_emit(buf, "offline\n");
+ }
+ 
+ static ssize_t
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 57eef6b24448..a547867c2094 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -162,19 +162,19 @@ static DEVICE_ATTR(meminfo, S_IRUGO, node_read_meminfo, NULL);
+ static ssize_t node_read_numastat(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf,
+-		       "numa_hit %lu\n"
+-		       "numa_miss %lu\n"
+-		       "numa_foreign %lu\n"
+-		       "interleave_hit %lu\n"
+-		       "local_node %lu\n"
+-		       "other_node %lu\n",
+-		       sum_zone_numa_state(dev->id, NUMA_HIT),
+-		       sum_zone_numa_state(dev->id, NUMA_MISS),
+-		       sum_zone_numa_state(dev->id, NUMA_FOREIGN),
+-		       sum_zone_numa_state(dev->id, NUMA_INTERLEAVE_HIT),
+-		       sum_zone_numa_state(dev->id, NUMA_LOCAL),
+-		       sum_zone_numa_state(dev->id, NUMA_OTHER));
++	return sysfs_emit(buf,
++			  "numa_hit %lu\n"
++			  "numa_miss %lu\n"
++			  "numa_foreign %lu\n"
++			  "interleave_hit %lu\n"
++			  "local_node %lu\n"
++			  "other_node %lu\n",
++			  sum_zone_numa_state(dev->id, NUMA_HIT),
++			  sum_zone_numa_state(dev->id, NUMA_MISS),
++			  sum_zone_numa_state(dev->id, NUMA_FOREIGN),
++			  sum_zone_numa_state(dev->id, NUMA_INTERLEAVE_HIT),
++			  sum_zone_numa_state(dev->id, NUMA_LOCAL),
++			  sum_zone_numa_state(dev->id, NUMA_OTHER));
+ }
+ static DEVICE_ATTR(numastat, S_IRUGO, node_read_numastat, NULL);
+ 
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 0ee3cab88f70..d0847c17d725 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -909,7 +909,7 @@ static ssize_t driver_override_show(struct device *dev,
+ 	ssize_t len;
+ 
+ 	device_lock(dev);
+-	len = sprintf(buf, "%s\n", pdev->driver_override);
++	len = sysfs_emit(buf, "%s\n", pdev->driver_override);
+ 	device_unlock(dev);
+ 	return len;
+ }
+diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
+index 156ab57bca77..b660446321c3 100644
+--- a/drivers/base/power/sysfs.c
++++ b/drivers/base/power/sysfs.c
+@@ -101,7 +101,7 @@ static const char ctrl_on[] = "on";
+ static ssize_t control_show(struct device *dev, struct device_attribute *attr,
+ 			    char *buf)
+ {
+-	return sprintf(buf, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 				dev->power.runtime_auto ? ctrl_auto : ctrl_on);
+ }
+ 
+@@ -133,7 +133,8 @@ static ssize_t rtpm_active_time_show(struct device *dev,
+ 	int ret;
+ 	spin_lock_irq(&dev->power.lock);
+ 	update_pm_runtime_accounting(dev);
+-	ret = sprintf(buf, "%i\n", jiffies_to_msecs(dev->power.active_jiffies));
++	ret = sysfs_emit(buf, "%i\n",
++			 jiffies_to_msecs(dev->power.active_jiffies));
+ 	spin_unlock_irq(&dev->power.lock);
+ 	return ret;
+ }
+@@ -146,8 +147,8 @@ static ssize_t rtpm_suspended_time_show(struct device *dev,
+ 	int ret;
+ 	spin_lock_irq(&dev->power.lock);
+ 	update_pm_runtime_accounting(dev);
+-	ret = sprintf(buf, "%i\n",
+-		jiffies_to_msecs(dev->power.suspended_jiffies));
++	ret = sysfs_emit(buf, "%i\n",
++			 jiffies_to_msecs(dev->power.suspended_jiffies));
+ 	spin_unlock_irq(&dev->power.lock);
+ 	return ret;
+ }
+@@ -181,7 +182,7 @@ static ssize_t rtpm_status_show(struct device *dev,
+ 			return -EIO;
+ 		}
+ 	}
+-	return sprintf(buf, p);
++	return sysfs_emit(buf, p);
+ }
+ 
+ static DEVICE_ATTR(runtime_status, 0444, rtpm_status_show, NULL);
+@@ -191,7 +192,7 @@ static ssize_t autosuspend_delay_ms_show(struct device *dev,
+ {
+ 	if (!dev->power.use_autosuspend)
+ 		return -EIO;
+-	return sprintf(buf, "%d\n", dev->power.autosuspend_delay);
++	return sysfs_emit(buf, "%d\n", dev->power.autosuspend_delay);
+ }
+ 
+ static ssize_t autosuspend_delay_ms_store(struct device *dev,
+@@ -218,7 +219,7 @@ static ssize_t pm_qos_resume_latency_show(struct device *dev,
+ 					  struct device_attribute *attr,
+ 					  char *buf)
+ {
+-	return sprintf(buf, "%d\n", dev_pm_qos_requested_resume_latency(dev));
++	return sysfs_emit(buf, "%d\n", dev_pm_qos_requested_resume_latency(dev));
+ }
+ 
+ static ssize_t pm_qos_resume_latency_store(struct device *dev,
+@@ -249,11 +250,11 @@ static ssize_t pm_qos_latency_tolerance_show(struct device *dev,
+ 	s32 value = dev_pm_qos_get_user_latency_tolerance(dev);
+ 
+ 	if (value < 0)
+-		return sprintf(buf, "auto\n");
++		return sysfs_emit(buf, "auto\n");
+ 	else if (value == PM_QOS_LATENCY_ANY)
+-		return sprintf(buf, "any\n");
++		return sysfs_emit(buf, "any\n");
+ 
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ static ssize_t pm_qos_latency_tolerance_store(struct device *dev,
+@@ -286,8 +287,8 @@ static ssize_t pm_qos_no_power_off_show(struct device *dev,
+ 					struct device_attribute *attr,
+ 					char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(dev_pm_qos_requested_flags(dev)
+-					& PM_QOS_FLAG_NO_POWER_OFF));
++	return sysfs_emit(buf, "%d\n", !!(dev_pm_qos_requested_flags(dev)
++					  & PM_QOS_FLAG_NO_POWER_OFF));
+ }
+ 
+ static ssize_t pm_qos_no_power_off_store(struct device *dev,
+@@ -313,8 +314,8 @@ static ssize_t pm_qos_remote_wakeup_show(struct device *dev,
+ 					 struct device_attribute *attr,
+ 					 char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(dev_pm_qos_requested_flags(dev)
+-					& PM_QOS_FLAG_REMOTE_WAKEUP));
++	return sysfs_emit(buf, "%d\n", !!(dev_pm_qos_requested_flags(dev)
++					  & PM_QOS_FLAG_REMOTE_WAKEUP));
+ }
+ 
+ static ssize_t pm_qos_remote_wakeup_store(struct device *dev,
+@@ -343,9 +344,9 @@ static const char _disabled[] = "disabled";
+ static ssize_t
+ wake_show(struct device * dev, struct device_attribute *attr, char * buf)
+ {
+-	return sprintf(buf, "%s\n", device_can_wakeup(dev)
+-		? (device_may_wakeup(dev) ? _enabled : _disabled)
+-		: "");
++	return sysfs_emit(buf, "%s\n", device_can_wakeup(dev)
++			  ? (device_may_wakeup(dev) ? _enabled : _disabled)
++			  : "");
+ }
+ 
+ static ssize_t
+@@ -538,26 +539,26 @@ static DEVICE_ATTR(wakeup_prevent_sleep_time_ms, 0444,
+ static ssize_t rtpm_usagecount_show(struct device *dev,
+ 				    struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%d\n", atomic_read(&dev->power.usage_count));
++	return sysfs_emit(buf, "%d\n", atomic_read(&dev->power.usage_count));
+ }
+ 
+ static ssize_t rtpm_children_show(struct device *dev,
+ 				  struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%d\n", dev->power.ignore_children ?
+-		0 : atomic_read(&dev->power.child_count));
++	return sysfs_emit(buf, "%d\n", dev->power.ignore_children ?
++			  0 : atomic_read(&dev->power.child_count));
+ }
+ 
+ static ssize_t rtpm_enabled_show(struct device *dev,
+ 				 struct device_attribute *attr, char *buf)
+ {
+ 	if ((dev->power.disable_depth) && (dev->power.runtime_auto == false))
+-		return sprintf(buf, "disabled & forbidden\n");
++		return sysfs_emit(buf, "disabled & forbidden\n");
+ 	else if (dev->power.disable_depth)
+-		return sprintf(buf, "disabled\n");
++		return sysfs_emit(buf, "disabled\n");
+ 	else if (dev->power.runtime_auto == false)
+-		return sprintf(buf, "forbidden\n");
+-	return sprintf(buf, "enabled\n");
++		return sysfs_emit(buf, "forbidden\n");
++	return sysfs_emit(buf, "enabled\n");
+ }
+ 
+ static DEVICE_ATTR(runtime_usage, 0444, rtpm_usagecount_show, NULL);
+@@ -568,9 +569,9 @@ static DEVICE_ATTR(runtime_enabled, 0444, rtpm_enabled_show, NULL);
+ static ssize_t async_show(struct device *dev, struct device_attribute *attr,
+ 			  char *buf)
+ {
+-	return sprintf(buf, "%s\n",
+-			device_async_suspend_enabled(dev) ?
+-				_enabled : _disabled);
++	return sysfs_emit(buf, "%s\n",
++			  device_async_suspend_enabled(dev) ?
++			  _enabled : _disabled);
+ }
+ 
+ static ssize_t async_store(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/base/soc.c b/drivers/base/soc.c
+index 1242b2d2e01a..0e7ab127c5c4 100644
+--- a/drivers/base/soc.c
++++ b/drivers/base/soc.c
+@@ -72,13 +72,13 @@ static ssize_t soc_info_get(struct device *dev,
+ 	struct soc_device *soc_dev = container_of(dev, struct soc_device, dev);
+ 
+ 	if (attr == &dev_attr_machine)
+-		return sprintf(buf, "%s\n", soc_dev->attr->machine);
++		return sysfs_emit(buf, "%s\n", soc_dev->attr->machine);
+ 	if (attr == &dev_attr_family)
+-		return sprintf(buf, "%s\n", soc_dev->attr->family);
++		return sysfs_emit(buf, "%s\n", soc_dev->attr->family);
+ 	if (attr == &dev_attr_revision)
+-		return sprintf(buf, "%s\n", soc_dev->attr->revision);
++		return sysfs_emit(buf, "%s\n", soc_dev->attr->revision);
+ 	if (attr == &dev_attr_soc_id)
+-		return sprintf(buf, "%s\n", soc_dev->attr->soc_id);
++		return sysfs_emit(buf, "%s\n", soc_dev->attr->soc_id);
+ 
+ 	return -EINVAL;
+ 
+-- 
+2.38.1
 
->> @@ -2207,7 +2228,7 @@ static void smc_find_ism_v1_device_serv(struct smc_sock *new_smc,
->>       if (!(ini->smcd_version & SMC_V1) || !smcd_indicated(ini->smc_type_v1))
->>           goto not_found;
->>       ini->is_smcd = true; /* prepare ISM check */
->> -    ini->ism_peer_gid[0] = ntohll(pclc_smcd->ism.gid);
->> +    ini->ism_peer_gid[0].gid = ntohll(pclc_smcd->ism.gid);
->>       rc = smc_find_ism_device(new_smc, ini);
->>       if (rc)
->>           goto not_found;
->> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
->> index 125b0d2..c08e138 100644
->> --- a/net/smc/smc_clc.c
->> +++ b/net/smc/smc_clc.c
->> @@ -882,11 +882,13 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>                  ETH_ALEN);
->>       }
->>       if (smcd_indicated(ini->smc_type_v1)) {
->> +        struct smcd_gid smcd_gid;
->> +
->>           /* add SMC-D specifics */
->>           if (ini->ism_dev[0]) {
->>               smcd = ini->ism_dev[0];
->> -            pclc_smcd->ism.gid =
->> -                htonll(smcd->ops->get_local_gid(smcd));
->> +            smcd->ops->get_local_gid(smcd, &smcd_gid);
->> +            pclc_smcd->ism.gid = htonll(smcd_gid.gid);
->>               pclc_smcd->ism.chid =
->>                   htons(smc_ism_get_chid(ini->ism_dev[0]));
->>           }
->> @@ -919,10 +921,11 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>           read_unlock(&smc_clc_eid_table.lock);
->>       }
->>       if (smcd_indicated(ini->smc_type_v2)) {
->> +        struct smcd_gid smcd_gid;
->>           u8 *eid = NULL;
->> +        int slot = 0;
->>           v2_ext->hdr.flag.seid = smc_clc_eid_table.seid_enabled;
->> -        v2_ext->hdr.ism_gid_cnt = ini->ism_offered_cnt;
->>           v2_ext->hdr.smcd_v2_ext_offset = htons(sizeof(*v2_ext) -
->>                   offsetofend(struct smc_clnt_opts_area_hdr,
->>                           smcd_v2_ext_offset) +
->> @@ -934,14 +937,21 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>           if (ini->ism_offered_cnt) {
->>               for (i = 1; i <= ini->ism_offered_cnt; i++) {
->>                   smcd = ini->ism_dev[i];
->> -                gidchids[i - 1].gid =
->> -                    htonll(smcd->ops->get_local_gid(smcd));
->> -                gidchids[i - 1].chid =
->> +                smcd->ops->get_local_gid(smcd, &smcd_gid);
->> +                gidchids[slot].chid =
->>                       htons(smc_ism_get_chid(ini->ism_dev[i]));
->> +                gidchids[slot].gid = htonll(smcd_gid.gid);
->> +                /* virtual-ism takes two slots */
->> +                if (__smc_ism_is_virtdev(gidchids[slot].chid)) {
->> +                    gidchids[slot + 1].chid = gidchids[slot].chid;
->> +                    gidchids[slot + 1].gid = htonll(smcd_gid.gid_ext);
->> +                    slot++;
->> +                }
->> +                slot++;
->>               }
->> -            plen += ini->ism_offered_cnt *
->> -                sizeof(struct smc_clc_smcd_gid_chid);
->> +            plen += slot * sizeof(struct smc_clc_smcd_gid_chid);
->>           }
->> +        v2_ext->hdr.ism_gid_cnt = slot;
->>       }
->>       if (smcr_indicated(ini->smc_type_v2)) {
->>           memcpy(v2_ext->roce, ini->smcrv2.ib_gid_v2, SMC_GID_SIZE);
->> @@ -977,7 +987,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>               vec[i++].iov_len = sizeof(*smcd_v2_ext);
->>               if (ini->ism_offered_cnt) {
->>                   vec[i].iov_base = gidchids;
->> -                vec[i++].iov_len = ini->ism_offered_cnt *
->> +                vec[i++].iov_len = v2_ext->hdr.ism_gid_cnt *
->>                       sizeof(struct smc_clc_smcd_gid_chid);
->>               }
->>           }
->> @@ -1019,12 +1029,14 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
->>       if (first_contact)
->>           clc->hdr.typev2 |= SMC_FIRST_CONTACT_MASK;
->>       if (conn->lgr->is_smcd) {
->> +        struct smcd_gid smcd_gid;
->> +
->>           /* SMC-D specific settings */
->>           memcpy(clc->hdr.eyecatcher, SMCD_EYECATCHER,
->>                  sizeof(SMCD_EYECATCHER));
->> +        conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd, &smcd_gid);
->>           clc->hdr.typev1 = SMC_TYPE_D;
->> -        clc->d0.gid =
->> -            conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd);
->> +        clc->d0.gid = smcd_gid.gid;
->>           clc->d0.token = conn->rmb_desc->token;
->>           clc->d0.dmbe_size = conn->rmbe_size_comp;
->>           clc->d0.dmbe_idx = 0;
->> @@ -1036,6 +1048,7 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
->>                   htons(smc_ism_get_chid(conn->lgr->smcd));
->>               if (eid && eid[0])
->>                   memcpy(clc_v2->d1.eid, eid, SMC_MAX_EID_LEN);
->> +            clc_v2->d1.gid_ext = smcd_gid.gid_ext;
->>               len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
->>               if (first_contact) {
->>                   fce_len = smc_clc_fill_fce(&fce, ini);
->> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
->> index bcf37c8..611763a 100644
->> --- a/net/smc/smc_clc.h
->> +++ b/net/smc/smc_clc.h
->> @@ -281,8 +281,8 @@ struct smc_clc_msg_accept_confirm_v2 {    /* clc accept / confirm message */
->>               struct smcd_clc_msg_accept_confirm_common d0;
->>               __be16 chid;
->>               u8 eid[SMC_MAX_EID_LEN];
->> -            u8 reserved5[8];
->> -        } d1;
->> +            __be64 gid_ext;
->> +        } __packed d1;
->>       };
->>   };
->> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
->> index d520ee6..c36500a 100644
->> --- a/net/smc/smc_core.c
->> +++ b/net/smc/smc_core.c
->> @@ -284,6 +284,9 @@ static int smc_nl_fill_lgr_v2_common(struct smc_link_group *lgr,
->>   {
->>       char smc_host[SMC_MAX_HOSTNAME_LEN + 1];
->>       char smc_eid[SMC_MAX_EID_LEN + 1];
->> +    struct smcd_dev *smcd = lgr->smcd;
->> +    struct smcd_gid smcd_gid;
->> +    bool is_virtdev;
->>       if (nla_put_u8(skb, SMC_NLA_LGR_V2_VER, lgr->smc_version))
->>           goto errv2attr;
->> @@ -299,6 +302,16 @@ static int smc_nl_fill_lgr_v2_common(struct smc_link_group *lgr,
->>       smc_eid[SMC_MAX_EID_LEN] = 0;
->>       if (nla_put_string(skb, SMC_NLA_LGR_V2_NEG_EID, smc_eid))
->>           goto errv2attr;
->> +    smcd->ops->get_local_gid(smcd, &smcd_gid);
->> +    is_virtdev = smc_ism_is_virtdev(smcd);
->> +    if (nla_put_u64_64bit(skb, SMC_NLA_LGR_V2_GID_EXT,
->> +                  is_virtdev ? smcd_gid.gid_ext : 0,
->> +                  SMC_NLA_LGR_V2_PAD))
->> +        goto errv2attr;
->> +    if (nla_put_u64_64bit(skb, SMC_NLA_LGR_V2_PEER_GID_EXT,
->> +                  is_virtdev ? lgr->peer_gid.gid_ext : 0,
->> +                  SMC_NLA_LGR_V2_PAD))
->> +        goto errv2attr;
->>       nla_nest_end(skb, v2_attrs);
->>       return 0;
->> @@ -506,6 +519,7 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
->>   {
->>       char smc_pnet[SMC_MAX_PNETID_LEN + 1];
->>       struct smcd_dev *smcd = lgr->smcd;
->> +    struct smcd_gid smcd_gid;
->>       struct nlattr *attrs;
->>       void *nlh;
->> @@ -521,11 +535,11 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
->>       if (nla_put_u32(skb, SMC_NLA_LGR_D_ID, *((u32 *)&lgr->id)))
->>           goto errattr;
->> +    smcd->ops->get_local_gid(smcd, &smcd_gid);
->>       if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_GID,
->> -                  smcd->ops->get_local_gid(smcd),
->> -                  SMC_NLA_LGR_D_PAD))
->> +                  smcd_gid.gid, SMC_NLA_LGR_D_PAD))
->>           goto errattr;
->> -    if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid,
->> +    if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid.gid,
->>                     SMC_NLA_LGR_D_PAD))
->>           goto errattr;
->>       if (nla_put_u8(skb, SMC_NLA_LGR_D_VLAN_ID, lgr->vlan_id))
->> @@ -1514,7 +1528,8 @@ void smc_lgr_terminate_sched(struct smc_link_group *lgr)
->>   }
->>   /* Called when peer lgr shutdown (regularly or abnormally) is received */
->> -void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
->> +void smc_smcd_terminate(struct smcd_dev *dev, struct smcd_gid *peer_gid,
->> +            unsigned short vlan)
->>   {
->>       struct smc_link_group *lgr, *l;
->>       LIST_HEAD(lgr_free_list);
->> @@ -1522,7 +1537,10 @@ void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
->>       /* run common cleanup function and build free list */
->>       spin_lock_bh(&dev->lgr_lock);
->>       list_for_each_entry_safe(lgr, l, &dev->lgr_list, list) {
->> -        if ((!peer_gid || lgr->peer_gid == peer_gid) &&
->> +        if ((!peer_gid->gid ||
->> +             (lgr->peer_gid.gid == peer_gid->gid &&
->> +              !smc_ism_is_virtdev(dev) ? 1 :
->> +              lgr->peer_gid.gid_ext == peer_gid->gid_ext)) &&
->>               (vlan == VLAN_VID_MASK || lgr->vlan_id == vlan)) {
->>               if (peer_gid) /* peer triggered termination */
->>                   lgr->peer_shutdown = 1;
->> @@ -1859,10 +1877,12 @@ static bool smcr_lgr_match(struct smc_link_group *lgr, u8 smcr_version,
->>       return false;
->>   }
->> -static bool smcd_lgr_match(struct smc_link_group *lgr,
->> -               struct smcd_dev *smcismdev, u64 peer_gid)
->> +static bool smcd_lgr_match(struct smc_link_group *lgr, struct smcd_dev *smcismdev,
->> +               struct smcd_gid *peer_gid)
->>   {
->> -    return lgr->peer_gid == peer_gid && lgr->smcd == smcismdev;
->> +    return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
->> +        smc_ism_is_virtdev(smcismdev) ?
->> +        (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
->>   }
->>   /* create a new SMC connection (and a new link group if necessary) */
->> @@ -1892,7 +1912,7 @@ int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
->>           write_lock_bh(&lgr->conns_lock);
->>           if ((ini->is_smcd ?
->>                smcd_lgr_match(lgr, ini->ism_dev[ini->ism_selected],
->> -                    ini->ism_peer_gid[ini->ism_selected]) :
->> +                    &ini->ism_peer_gid[ini->ism_selected]) :
->>                smcr_lgr_match(lgr, ini->smcr_version,
->>                       ini->peer_systemid,
->>                       ini->peer_gid, ini->peer_mac, role,
->> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
->> index 9f65678..d57eb9b 100644
->> --- a/net/smc/smc_core.h
->> +++ b/net/smc/smc_core.h
->> @@ -17,6 +17,7 @@
->>   #include <linux/pci.h>
->>   #include <rdma/ib_verbs.h>
->>   #include <net/genetlink.h>
->> +#include <net/smc.h>
->>   #include "smc.h"
->>   #include "smc_ib.h"
->> @@ -355,7 +356,7 @@ struct smc_link_group {
->>                           /* max links can be added in lgr */
->>           };
->>           struct { /* SMC-D */
->> -            u64            peer_gid;
->> +            struct smcd_gid        peer_gid;
->>                           /* Peer GID (remote) */
->>               struct smcd_dev        *smcd;
->>                           /* ISM device for VLAN reg. */
->> @@ -417,7 +418,7 @@ struct smc_init_info {
->>       u32            ib_clcqpn;
->>       struct smc_init_info_smcrv2 smcrv2;
->>       /* SMC-D */
->> -    u64            ism_peer_gid[SMC_MAX_ISM_DEVS + 1];
->> +    struct smcd_gid        ism_peer_gid[SMC_MAX_ISM_DEVS + 1];
->>       struct smcd_dev        *ism_dev[SMC_MAX_ISM_DEVS + 1];
->>       u16            ism_chid[SMC_MAX_ISM_DEVS + 1];
->>       u8            ism_offered_cnt; /* # of ISM devices offered */
->> @@ -545,7 +546,7 @@ static inline void smc_set_pci_values(struct pci_dev *pci_dev,
->>   void smc_lgr_put(struct smc_link_group *lgr);
->>   void smcr_port_add(struct smc_ib_device *smcibdev, u8 ibport);
->>   void smcr_port_err(struct smc_ib_device *smcibdev, u8 ibport);
->> -void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid,
->> +void smc_smcd_terminate(struct smcd_dev *dev, struct smcd_gid *peer_gid,
->>               unsigned short vlan);
->>   void smc_smcd_terminate_all(struct smcd_dev *dev);
->>   void smc_smcr_terminate_all(struct smc_ib_device *smcibdev);
->> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
->> index 7ff2152..9c465cc 100644
->> --- a/net/smc/smc_diag.c
->> +++ b/net/smc/smc_diag.c
->> @@ -168,12 +168,14 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
->>           struct smc_connection *conn = &smc->conn;
->>           struct smcd_diag_dmbinfo dinfo;
->>           struct smcd_dev *smcd = conn->lgr->smcd;
->> +        struct smcd_gid smcd_gid;
->>           memset(&dinfo, 0, sizeof(dinfo));
->>           dinfo.linkid = *((u32 *)conn->lgr->id);
->> -        dinfo.peer_gid = conn->lgr->peer_gid;
->> -        dinfo.my_gid = smcd->ops->get_local_gid(smcd);
->> +        dinfo.peer_gid = conn->lgr->peer_gid.gid;
->> +        smcd->ops->get_local_gid(smcd, &smcd_gid);
->> +        dinfo.my_gid = smcd_gid.gid;
->>           dinfo.token = conn->rmb_desc->token;
->>           dinfo.peer_token = conn->peer_token;
->> diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
->> index 8f1ba74..35d31e7 100644
->> --- a/net/smc/smc_ism.c
->> +++ b/net/smc/smc_ism.c
->> @@ -44,7 +44,8 @@ static void smcd_handle_irq(struct ism_dev *ism, unsigned int dmbno,
->>   #endif
->>   /* Test if an ISM communication is possible - same CPC */
->> -int smc_ism_cantalk(u64 peer_gid, unsigned short vlan_id, struct smcd_dev *smcd)
->> +int smc_ism_cantalk(struct smcd_gid *peer_gid, unsigned short vlan_id,
->> +            struct smcd_dev *smcd)
->>   {
->>       return smcd->ops->query_remote_gid(smcd, peer_gid, vlan_id ? 1 : 0,
->>                          vlan_id);
->> @@ -223,7 +224,7 @@ int smc_ism_register_dmb(struct smc_link_group *lgr, int dmb_len,
->>       dmb.dmb_len = dmb_len;
->>       dmb.sba_idx = dmb_desc->sba_idx;
->>       dmb.vlan_id = lgr->vlan_id;
->> -    dmb.rgid = lgr->peer_gid;
->> +    dmb.rgid = lgr->peer_gid.gid;
->>       rc = lgr->smcd->ops->register_dmb(lgr->smcd, &dmb, lgr->smcd->client);
->>       if (!rc) {
->>           dmb_desc->sba_idx = dmb.sba_idx;
->> @@ -354,17 +355,20 @@ struct smc_ism_event_work {
->>   static void smcd_handle_sw_event(struct smc_ism_event_work *wrk)
->>   {
->>       union smcd_sw_event_info ev_info;
->> +    struct smcd_gid peer_gid;
->>       ev_info.info = wrk->event.info;
->>       switch (wrk->event.code) {
->>       case ISM_EVENT_CODE_SHUTDOWN:    /* Peer shut down DMBs */
->> -        smc_smcd_terminate(wrk->smcd, wrk->event.tok, ev_info.vlan_id);
->> +        peer_gid.gid = wrk->event.tok;
->> +        smc_smcd_terminate(wrk->smcd, &peer_gid, ev_info.vlan_id);
->>           break;
->>       case ISM_EVENT_CODE_TESTLINK:    /* Activity timer */
->> +        peer_gid.gid = wrk->event.tok;
->>           if (ev_info.code == ISM_EVENT_REQUEST) {
->>               ev_info.code = ISM_EVENT_RESPONSE;
->>               wrk->smcd->ops->signal_event(wrk->smcd,
->> -                             wrk->event.tok,
->> +                             &peer_gid,
->>                                ISM_EVENT_REQUEST_IR,
->>                                ISM_EVENT_CODE_TESTLINK,
->>                                ev_info.info);
->> @@ -378,10 +382,12 @@ static void smc_ism_event_work(struct work_struct *work)
->>   {
->>       struct smc_ism_event_work *wrk =
->>           container_of(work, struct smc_ism_event_work, work);
->> +    struct smcd_gid smcd_gid;
->>       switch (wrk->event.type) {
->>       case ISM_EVENT_GID:    /* GID event, token is peer GID */
->> -        smc_smcd_terminate(wrk->smcd, wrk->event.tok, VLAN_VID_MASK);
->> +        smcd_gid.gid = wrk->event.tok;
->> +        smc_smcd_terminate(wrk->smcd, &smcd_gid, VLAN_VID_MASK);
->>           break;
->>       case ISM_EVENT_DMB:
->>           break;
->> @@ -530,7 +536,7 @@ int smc_ism_signal_shutdown(struct smc_link_group *lgr)
->>       memcpy(ev_info.uid, lgr->id, SMC_LGR_ID_SIZE);
->>       ev_info.vlan_id = lgr->vlan_id;
->>       ev_info.code = ISM_EVENT_REQUEST;
->> -    rc = lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
->> +    rc = lgr->smcd->ops->signal_event(lgr->smcd, &lgr->peer_gid,
->>                         ISM_EVENT_REQUEST_IR,
->>                         ISM_EVENT_CODE_SHUTDOWN,
->>                         ev_info.info);
->> diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
->> index 2ecc8de..e6ea08c 100644
->> --- a/net/smc/smc_ism.h
->> +++ b/net/smc/smc_ism.h
->> @@ -33,7 +33,8 @@ struct smc_ism_vlanid {            /* VLAN id set on ISM device */
->>   struct smcd_dev;
->> -int smc_ism_cantalk(u64 peer_gid, unsigned short vlan_id, struct smcd_dev *dev);
->> +int smc_ism_cantalk(struct smcd_gid *peer_gid, unsigned short vlan_id,
->> +            struct smcd_dev *dev);
->>   void smc_ism_set_conn(struct smc_connection *conn);
->>   void smc_ism_unset_conn(struct smc_connection *conn);
->>   int smc_ism_get_vlan(struct smcd_dev *dev, unsigned short vlan_id);
->> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
->> index 1177540..9f2c58c 100644
->> --- a/net/smc/smc_pnet.c
->> +++ b/net/smc/smc_pnet.c
->> @@ -1103,8 +1103,8 @@ static void smc_pnet_find_ism_by_pnetid(struct net_device *ndev,
->>       list_for_each_entry(ismdev, &smcd_dev_list.list, list) {
->>           if (smc_pnet_match(ismdev->pnetid, ndev_pnetid) &&
->>               !ismdev->going_away &&
->> -            (!ini->ism_peer_gid[0] ||
->> -             !smc_ism_cantalk(ini->ism_peer_gid[0], ini->vlan_id,
->> +            (!ini->ism_peer_gid[0].gid ||
->> +             !smc_ism_cantalk(&ini->ism_peer_gid[0], ini->vlan_id,
->>                         ismdev))) {
->>               ini->ism_dev[0] = ismdev;
->>               break;
