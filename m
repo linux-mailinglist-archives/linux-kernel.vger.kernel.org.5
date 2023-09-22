@@ -2,203 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5174B7AAC6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD617AABB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbjIVIP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S232106AbjIVIFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbjIVIP3 (ORCPT
+        with ESMTP id S232137AbjIVIFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:15:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F31BCFC
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695369833; x=1726905833;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=hXqglVALXMJQK/Us3wSeREuJlYAj7kj0jQrKrBRpxeE=;
-  b=YatdFWWxqVZ9qKZq2upmgjWU5rnsZUesSpQXUnulPWdd/G2QZAFf3ZHt
-   Kl1kqGSnQO48KtU6hKx22cSwOPzOdw7tl5wR699QuN7cZT7d6U8nc2VXH
-   NCcgHBVVEWoxkj0YhDQZ87fy3Yi4Hrv6hP68bNU8plio0Lhv9Vf6rfedA
-   E1V2mMHDKsx3kJVGeBN0wWCpnEUMcLF9z6Cf/ZEYmGzABAA58GgRcEW47
-   TGUEkMmM6PkUElMXVTOuBlj5T/Dp7qGyDnv02/U4qemtIe3gykyuOjkvL
-   JinK08D/3DQOOYcbD6nvMP+3mr2xiOH8v9qJ/x9LPUB4ehZwugLIUnush
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="378060397"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="378060397"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 01:03:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="862859899"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="862859899"
-Received: from sunyi-station.sh.intel.com (HELO ysun46-mobl.sh.intel.com) ([10.239.159.10])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Sep 2023 01:03:50 -0700
-From:   Yi Sun <yi.sun@intel.com>
-To:     kirill.shutemov@linux.intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Cc:     heng.su@intel.com, yi.sun@linux.intel.com,
-        Yi Sun <yi.sun@intel.com>,
-        Dongcheng Yan <dongcheng.yan@intel.com>
-Subject: [PATCH v2] x86/tdx: Dump TDX version During the TD Bootup
-Date:   Fri, 22 Sep 2023 16:03:22 +0800
-Message-Id: <20230922080322.2071168-1-yi.sun@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 22 Sep 2023 04:05:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1C6CD7;
+        Fri, 22 Sep 2023 01:03:49 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 753DE21AB9;
+        Fri, 22 Sep 2023 08:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695369828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZGIZ1SL3XOn4v/k/jfc0V/Kx2cFAQpv1ro3HElGvJKI=;
+        b=VVAadmS3V5n9yqHi52W+JiUysLV4LVQylZ3Rd+HLfeQes6xs5GDZhRvzzNSdIEyuAon763
+        SCGpgRLdY4W+L+srgUlGbWANiHrRpKVZNXJ/gxgDYSgrjJJ5IHLH+upiO2SLwwxkIQh8lk
+        1a18tDDLcqAcbIELxJHR9b3H2uXIuwg=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EED312C142;
+        Fri, 22 Sep 2023 08:03:47 +0000 (UTC)
+Date:   Fri, 22 Sep 2023 10:03:47 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Enlin Mu <enlinmu@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Enlin Mu <enlin.mu@outlook.com>, rostedt@goodmis.org,
+        senozhatsky@chromium.org, keescook@chromium.org,
+        tony.luck@intel.com, gpiccoli@igalia.com, enlin.mu@unisoc.com,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] printk: add cpu id information to printk() output
+Message-ID: <ZQ1KYyJfZjd33fqL@alley>
+References: <JH0PR04MB7072A4B6946EAEEB1EB8B0BE8AF6A@JH0PR04MB7072.apcprd04.prod.outlook.com>
+ <8734zfx2bo.fsf@jogness.linutronix.de>
+ <CAAfh-jPc+UWMcLPFbYy6rYUh4OU36frkVYVbkhNPNX4L6RG5sA@mail.gmail.com>
+ <2023091547-mug-unlikable-571f@gregkh>
+ <ZQSHJ_786kZNjEDX@alley>
+ <CAAfh-jMvgYfDrgcbj7o4bv83syAhL2d+1r2vn1Yz+FY_Ws81Pw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAfh-jMvgYfDrgcbj7o4bv83syAhL2d+1r2vn1Yz+FY_Ws81Pw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is essential for TD users to be aware of the vendor and version of
-the current TDX. Additionally, they can reference the TDX version when
-reporting bugs or issues.
+On Fri 2023-09-22 15:20:37, Enlin Mu wrote:
+> Petr Mladek <pmladek@suse.com> 于2023年9月16日周六 00:34写道：
+> >
+> > On Fri 2023-09-15 11:53:13, Greg KH wrote:
+> > > On Fri, Sep 15, 2023 at 04:46:02PM +0800, Enlin Mu wrote:
+> > > > John Ogness <john.ogness@linutronix.de> 于2023年9月15日周五 16:34写道：
+> > > > >
+> > > > > On 2023-09-15, Enlin Mu <enlin.mu@outlook.com> wrote:
+> > > > > > Sometimes we want to print cpu id of printk() messages to consoles
+> > > > > >
+> > > > > > diff --git a/include/linux/threads.h b/include/linux/threads.h
+> > > > > > index c34173e6c5f1..6700bd9a174f 100644
+> > > > > > --- a/include/linux/threads.h
+> > > > > > +++ b/include/linux/threads.h
+> > > > > > @@ -34,6 +34,9 @@
+> > > > > >  #define PID_MAX_LIMIT (CONFIG_BASE_SMALL ? PAGE_SIZE * 8 : \
+> > > > > >       (sizeof(long) > 4 ? 4 * 1024 * 1024 : PID_MAX_DEFAULT))
+> > > > > >
+> > > > > > +#define CPU_ID_SHIFT 23
+> > > > > > +#define CPU_ID_MASK  0xff800000
+> > > > >
+> > > > > This only supports 256 CPUs. I think it doesn't make sense to try to
+> > > > > squish CPU and Task IDs into 32 bits.
+> > > > Yes, it is not good way,
+> > > > >
+> > > > > What about introducing a caller_id option to always only print the CPU
+> > > > > ID? Or do you really need Task _and_ CPU?
+> > > >    Yes, I need it.Because I need to know which CPU is printing the
+> > > > log, so that I can identify the current system operation, such as load
+> > > > situation and CPU busy/idle status
+> > >
+> > > The cpu that is printing the log isn't the one that added the log
+> > > message, so I think you will have incorrect data here, right?
+> >
+> > We already store some metadata about the caller:
+> >
+> >  * All fields are set by the printk code except for @seq, which is
+> >  * set by the ringbuffer code.
+> >  */
+> > struct printk_info {
+> >         u64     seq;            /* sequence number */
+> >         u64     ts_nsec;        /* timestamp in nanoseconds */
+> >         u16     text_len;       /* length of text message */
+> >         u8      facility;       /* syslog facility */
+> >         u8      flags:5;        /* internal record flags */
+> >         u8      level:3;        /* syslog level */
+> >         u32     caller_id;      /* thread id or processor id */
+> >
+> >         struct dev_printk_info  dev_info;
+> > };
+> >
+> > The 32-bit caller ID is generated using:
+> >
+> > static inline u32 printk_caller_id(void)
+> > {
+> >         return in_task() ? task_pid_nr(current) :
+> >                 0x80000000 + smp_processor_id();
+> > }
+> >
+> > We could add more metadata and always store the CPU ID and something
+> > like:
+> >
+> >    [CTXT][ Tpid][  Ccpu]
+> >
+> > for example
+> >
+> >    [TASK][  T234][    C4]
+> >    [ IRQ][ T4567][   C17]
+> >    [SIRQ][    T5][    C0]
+> >    [ NMI][  T356][  C128]
+> >
+> Greate!
+> Do you have a plan to push it to linus?
 
-Furthermore, the applications or device drivers running in TD can achieve
-enhanced reliability and flexibility by following the TDX Module ABI
-specification, because there are significant differences between different
-versions of TDX, as mentioned in the "Intel® TDX Module Incompatibilities
-between v1.0 and v1.5" reference. Here are a few examples:
+No. It was just a POC. It would require much more effort to make
+it ready for upstream, see below.
 
-MSR Name		Index		Reason
-----------------------------------------------
-IA32_UARCH_MISC_CTL	0x1B01		From v1.5
-IA32_ARCH_CAPABILITIES	0x010A		Changed in v1.5
-IA32_TSX_CTRL		0x0122		Changed in v1.5
+> > The biggest problem is that it would change the format of the
+> > ringbuffer so that it would require updating external tools,
+> > working with crashdump, especially crash but there are also
+> > alternative python extensions for gdb.
 
-CPUID Leaf	Sub-leaf	Reason
----------------------------------------
-0x7		2		From v1.5
-0x22		0		From v1.5
-0x23		0~3		From v1.5
-0x80000007	0		From v1.5
+It would require patches for the crash tool,
+./scripts/gdb/linux/dmesg.py,
+Documentation/admin-guide/kdump/gdbmacros.txt
 
-During TD initialization, the TDX version info can be obtained by calling
-TDG.SYS.RD. This will fetch the current version of TDX, including the major
-and minor version numbers and vendor ID.
+> > See below POC of the kernel part. It is not even compile tested. The size
+> > of the buffers is updated by a guess. Comments are not updated, ...
 
-The TDCALL TDG.SYS.RD originates from TDX version 1.5. If the error
-TDCALL_INVALID_OPERAND occurs, it should be treated as TDX version 1.0.
+And of course, make the POC working, update comments, ...
 
-Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
-Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
-Signed-off-by: Yi Sun <yi.sun@intel.com>
+I am sorry but I do not have enough time and motivation to do so.
+But I could answer questions, review the patches, ... when any
+interested person start working on it.
 
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index 1d6b863c42b0..0f51123aa0b9 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -37,6 +37,27 @@
- 
- #define TDREPORT_SUBTYPE_0	0
- 
-+/*
-+ * TDX metadata base field id, used by TDCALL TDG.SYS.RD
-+ * See TDX ABI Spec section 3.3.2.3 Global Metadata Fields
-+ */
-+#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
-+#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
-+#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
-+#define TDX_VENDOR_INTEL		0x8086
-+
-+struct tdg_sys_info {
-+	u32 vendor_id;
-+	u16 major_version;
-+	u16 minor_version;
-+};
-+
-+/*
-+ * Fetch TDX Module global-scope metadata field via TDG.SYS.RD TDCALL
-+ * Do NOT change it once initialized.
-+ */
-+static struct tdg_sys_info td_sys_info;
-+
- /* Called from __tdx_hypercall() for unrecoverable failure */
- noinstr void __tdx_hypercall_failed(void)
- {
-@@ -757,6 +778,46 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
- 	return true;
- }
- 
-+/*
-+ * Parse the tdx module version info from the global-scope metadata fields.
-+ */
-+static int tdg_get_sysinfo(void)
-+{
-+	struct tdx_module_output out;
-+	u64 ret;
-+
-+	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_VENDOR_ID_FID, 0, 0,
-+				&out);
-+	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-+		goto version_1_0;
-+	else if (ret)
-+		return ret;
-+
-+	td_sys_info.vendor_id = (u32)(out).r8;
-+
-+	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MAJOR_FID, 0, 0, &out);
-+	if (ret)
-+		return ret;
-+
-+	td_sys_info.major_version = (u16)(out).r8;
-+
-+	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MINOR_FID, 0, 0, &out);
-+	if (ret)
-+		return ret;
-+
-+	td_sys_info.minor_version = (u16)(out).r8;
-+
-+	return 0;
-+
-+	/* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
-+version_1_0:
-+	td_sys_info.vendor_id = TDX_VENDOR_INTEL;
-+	td_sys_info.major_version = 1;
-+	td_sys_info.minor_version = 0;
-+
-+	return 0;
-+}
-+
- void __init tdx_early_init(void)
- {
- 	u64 cc_mask;
-@@ -820,5 +881,9 @@ void __init tdx_early_init(void)
- 	 */
- 	x86_cpuinit.parallel_bringup = false;
- 
--	pr_info("Guest detected\n");
-+	tdg_get_sysinfo();
-+
-+	pr_info("Guest detected. TDX version:%u.%u VendorID: %x\n",
-+		td_sys_info.major_version, td_sys_info.minor_version,
-+		td_sys_info.vendor_id);
- }
-diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-index 7513b3bb69b7..10ecb5dece84 100644
---- a/arch/x86/include/asm/shared/tdx.h
-+++ b/arch/x86/include/asm/shared/tdx.h
-@@ -16,6 +16,7 @@
- #define TDX_GET_REPORT			4
- #define TDX_ACCEPT_PAGE			6
- #define TDX_WR				8
-+#define TDX_SYS_RD			11
- 
- /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
- #define TDCS_NOTIFY_ENABLES		0x9100000000000010
--- 
-2.34.1
-
+Best Regards,
+Petr
