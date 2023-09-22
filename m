@@ -2,51 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE017AABFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180667AABD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbjIVIKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        id S232214AbjIVIIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbjIVIJi (ORCPT
+        with ESMTP id S231888AbjIVIIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:09:38 -0400
+        Fri, 22 Sep 2023 04:08:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2D61981
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:09:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03E04C433CA;
-        Fri, 22 Sep 2023 08:09:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2011A5;
+        Fri, 22 Sep 2023 01:08:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F92BC433C7;
+        Fri, 22 Sep 2023 08:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695370159;
-        bh=gesgJDKBt9RDzx1mXwpHnVS0bL79H7WYB0zJsn8L4gs=;
+        s=k20201202; t=1695370121;
+        bh=EFZdZuA1bgAXV5AvWlugKRnoAhOxAfKWHVnlSpBHmsk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kXI++VKqARiqXJhZfCh8UJGk0/eL1A1I22cQVjhVJVmgTDIGQhuWWkUIzIhnFto/K
-         f+zv1BzXJ/b7Kck3A6G9y7ce9cZ6yaqNWKjcapDD+fPk+Hg6Ct69A5QIDAtnCJT58f
-         TvgGPz44rdMMdEO7o01UsuuEzoSbpQiotkqSd0hT8W0Z/i3RAbOpdiMCVUGHFTJf1R
-         5GBFiryI+K8buRmSQMF8Ubg5QFvGM01vqncI+w8D2Ao5xS/mOMKl2J2TfBWlHF+KR6
-         mz3bAOVnXZvwKr7KA2GJ139Qk6o9t1Z7hIvx5WfXgf2F6RxMaC5CaLsKpHayNSpa15
-         vF6zy836q0lnw==
-Date:   Fri, 22 Sep 2023 11:08:31 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Yajun Deng <yajun.deng@linux.dev>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, muchun.song@linux.dev, glider@google.com,
-        elver@google.com, dvyukov@google.com, osalvador@suse.de,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Subject: Re: [PATCH 1/4] mm: pass set_count and set_reserved to
- __init_single_page
-Message-ID: <20230922080831.GH3303@kernel.org>
-References: <20230922070923.355656-1-yajun.deng@linux.dev>
- <20230922070923.355656-2-yajun.deng@linux.dev>
- <ZQ1Gg533lODfqvWd@casper.infradead.org>
- <2ed9a6c5-bd36-9b9b-7022-34e7ae894f3a@redhat.com>
+        b=UVH7BLlMFJgfpXuwIOQyMJKeDa7uMySj42MzRYs1UY/wWNQ2tuCTY/wOvIpDlq/k/
+         O35vjFv3Yg8edSeTIZQWm4omxME67E3ctvgOJgleY9P2/RG6T3SmHoHJJLFdS3ctLw
+         tr+HovOZyeqp6y/RbkZWtFyISCuaGDTWGchtjioQAqmGIRSFVaTEvqbg75apFUYJEI
+         MUx0sNMMPHgoBDjiaK74rvSf8gZDxPTpkO3CGVuUrCF2l0RfTu6HqfzL2Rtk7xvGnr
+         tXBX2aDMNbxaUNn9fdJwLUEj27V3FxJqxpAMBw5eW10kSI/WMEeTGGifAkd5jq2JTo
+         jRhhF49G7kqfw==
+Date:   Fri, 22 Sep 2023 10:08:36 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Cai Xinchen <caixinchen1@huawei.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [BUG?] fsconfig restart_syscall failed
+Message-ID: <20230922-drillen-muschel-c9bd03acfe00@brauner>
+References: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2ed9a6c5-bd36-9b9b-7022-34e7ae894f3a@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,58 +52,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 09:48:59AM +0200, David Hildenbrand wrote:
-> On 22.09.23 09:47, Matthew Wilcox wrote:
-> > On Fri, Sep 22, 2023 at 03:09:20PM +0800, Yajun Deng wrote:
-> > > -		__init_single_page(page, pfn, zone, nid);
-> > > +		__init_single_page(page, pfn, zone, nid, true, false);
-> > 
-> > So Linus has just had a big rant about not doing bool flags to
-> > functions.  And in particular _multiple_ bool flags to functions.
-> > 
-> > ie this should be:
-> > 
-> > #define INIT_PAGE_COUNT		(1 << 0)
-> > #define INIT_PAGE_RESERVED	(1 << 1)
-> > 
-> > 		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
-> > 
-> > or something similar.
-> > 
-> > I have no judgement on the merits of this patch so far.  Do you have
-> > performance numbers for each of these patches?  Some of them seem quite
-> > unlikely to actually help, at least on a machine which is constrained
-> > by cacheline fetches.
+On Fri, Sep 22, 2023 at 10:18:24AM +0800, Cai Xinchen wrote:
+> Hello:
+>   I am doing some test for kernel 6.4, util-linux version:2.39.1.
+> Have you encountered similar problems? If there is a fix, please
+> let me know.
+> Thank you very much
 > 
-> The last patch contains
+> --------------------------------------------------
 > 
-> before:
-> node 0 deferred pages initialised in 78ms
+> util-linux version 2.39.1 call mount use fsopen->fsconfig->fsmount->close
+> instead of mount syscall.
 > 
-> after:
-> node 0 deferred pages initialised in 72ms
+> And use this shell test:
 > 
-> Not earth-shattering :D Maybe with much bigger machines relevant?
+> #!/bin/bash
+> mkdir -p /tmp/cgroup/cgrouptest
+> while true
+> do
+>         mount -t cgroup -o none,name=foo cgroup /tmp/cgroup/cgrouptest
 
-Patch 3 contains
 
-The following data was tested on an x86 machine with 190GB of RAM.
+> in mount syscall, no function will check fs->phase, and fc is recreate
+> in monnt syscall. However, in fdconfig syscall, fc->phase is not initial as
+> FS_CONTEXT_CREATE_PARAMS, restart_syscall will return -EBUSY. fc is created
+> in fsopen syscall.
 
-before:
-free_low_memory_core_early()    342ms
-
-after:
-free_low_memory_core_early()    286ms
-
-Which is more impressive, but still I'm not convinced that it's worth the
-added complexity and potential subtle bugs.
-
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
+Mount api system calls aren't restartable so that doesn't work. cgroup2
+doesn't have this issue, only cgroup1 has. So cgroup1_get_tree() should
+probably be fixed if anyone cares.
