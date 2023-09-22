@@ -2,144 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46F37AAD3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6AB7AAD4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbjIVIzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        id S232598AbjIVI50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbjIVIzt (ORCPT
+        with ESMTP id S232719AbjIVI5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:55:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE77A9;
-        Fri, 22 Sep 2023 01:55:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B218CC433C9;
-        Fri, 22 Sep 2023 08:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695372943;
-        bh=8QkGhwghTGYPhExKboS3z0PsUiDKGGvXCleAsd5SH5o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CjAAOHnW+m8+RDAztDmFbJSI8mdUHvPboMtroHiybyvatO27zYyfR1Wv55g8Fv01I
-         te0s9HGkJ0VGUxcVzi6S21q5ZnP3kW3G91E9EzkcgwFh/S+KI1A7tuuEMTGE3HIqBt
-         6nRrji+IFh6kZxhnMEpdwcEddc5XEiLgoKEsYESe9+KRFo95Dw/rmUlDTh3/54BTTX
-         9KM5MArpAD0s7o4CKVI6Ii4apE868YOc1Vz8d3/fGW7P9s5e+247+f0d/ycaOQufD9
-         8mHhukuVVMeyYfCV4bv8fVCeskg+IFFN9ztlmxGPfhc3ExSSu6BsWAGJwgW8ktELWJ
-         FSaXLLenObg+g==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-502a4f33440so3234084e87.1;
-        Fri, 22 Sep 2023 01:55:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyoBMjZb8rQESVje9/kRPLVWuTOkCtq5JEZr4gWNmQaTKnELTh/
-        rNJEHyctSpE+6kVmt2HO/SEyUHB8fr33pwPeRNw=
-X-Google-Smtp-Source: AGHT+IF8cgUepodrWyUy99Ge6z4o9GbKwpmdAjZ3R33ypUsIeilkKxYeO+uhK8l2iNZFEKGHs3hnsEm9jfUciGjro48=
-X-Received: by 2002:ac2:5bc5:0:b0:503:79e:fb7b with SMTP id
- u5-20020ac25bc5000000b00503079efb7bmr6817575lfn.68.1695372941964; Fri, 22 Sep
- 2023 01:55:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230918072955.2507221-1-rppt@kernel.org> <20230918072955.2507221-7-rppt@kernel.org>
- <CAPhsuW73NMvdpmyrhGouQSAHEL9wRw_A+8dZ-5R4BU=UHH83cw@mail.gmail.com> <9b73ad3d-cfda-bce5-2589-e8674a58c827@csgroup.eu>
-In-Reply-To: <9b73ad3d-cfda-bce5-2589-e8674a58c827@csgroup.eu>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 22 Sep 2023 01:55:29 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4_3oYhN6LnPPyBVA4VAM=7voXKmcJNKLqiNEUboq1rnA@mail.gmail.com>
-Message-ID: <CAPhsuW4_3oYhN6LnPPyBVA4VAM=7voXKmcJNKLqiNEUboq1rnA@mail.gmail.com>
-Subject: Re: [PATCH v3 06/13] mm/execmem: introduce execmem_data_alloc()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Fri, 22 Sep 2023 04:57:24 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0F7CA
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:57:18 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-53fa455cd94so1338512a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:57:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1695373037; x=1695977837; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F/fCPUALx1igoJTdhtRLyUtdiJnxsv78mR4MUJv4qBk=;
+        b=beGgKb+TWYwjrmuzhVeSyxaEjpST9dGh22eUeEs/44FmdhDJCOv2vqgsCGuKDDmAcV
+         p9TXAUJvJ+dmrRfLicGAL4g90N4IKmpus/7vSgHN2DTrGXRR9z7orZ5qGpDIVwmwikf2
+         LLYdn72GmOaZZV4snGLjY4TFn0hEsSSRjbzDyByolkX3PJS39t1WrL5uQS1u34lr6vk8
+         QDGVPbFw/7p3eXlCCX4X9J7esONLIOuaJaiaLkdD2TWMHeTKkNEKcT6JREYwhyIMhcBu
+         HgFsTUVvi5hpX8rb12dYH/+UMV1O5q0MUEHrysPfzi8jDQveD8d9MbLBFnj/YJgV8Xxv
+         acXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695373037; x=1695977837;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F/fCPUALx1igoJTdhtRLyUtdiJnxsv78mR4MUJv4qBk=;
+        b=GSUoEZP8DM53nNfqehKC8ncEOiPfgCP/Y8BWJERaZgiM82BituCg8gnCaMCU/Lp2DX
+         54PW84RuxWt5pLpV8POGmnbomhcMLaJgd4OB7aUE8cSjymffJU1AC9iAV7rsmeShetcW
+         PPMZ9G+OCcyQMO2qnr9KCWgz9/6hklas7Wm9EVZbBLMv/3CurdLg1UaSO3YFsbNCdl5B
+         wKfWI9mE01ipuiyLPGAl4xsP4d9BkRhAegLdPeEQbeKarufKILkWktnXzwKNi9UaPKd4
+         G7wWpcE7X8D28psF/j+K3GaQ2QY1nh48ccycpFmzAmp7MIGx0Kp/srTDVu6V7Q3lHf2X
+         WR6w==
+X-Gm-Message-State: AOJu0Yx1KfLwIpYzDSusBk9fvwdsNhGUPLgwE/5inCAYFgMiAKXLrJUA
+        bsEFDOqVWzlJmkvcszkqNoc3fw==
+X-Google-Smtp-Source: AGHT+IHQuDmm4XJD/EaaLhVrbzcHCkaG+iIjY/t5jt03Nftlcsx7KXgLd1DRqYf6xW91942noz6xTg==
+X-Received: by 2002:a05:6a21:7899:b0:131:b3fa:eaaa with SMTP id bf25-20020a056a21789900b00131b3faeaaamr7980727pzc.61.1695373037555;
+        Fri, 22 Sep 2023 01:57:17 -0700 (PDT)
+Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id t15-20020a17090a024f00b00256b67208b1sm4815024pje.56.2023.09.22.01.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 01:57:17 -0700 (PDT)
+From:   Yong-Xuan Wang <yongxuan.wang@sifive.com>
+To:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org
+Cc:     greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
+        alex@ghiti.fr, Yong-Xuan Wang <yongxuan.wang@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Guo Ren <guoren@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        wchen <waylingii@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
+        David Hildenbrand <david@redhat.com>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] RISC-V: Detect and Enable Svadu Extension Support
+Date:   Fri, 22 Sep 2023 08:56:47 +0000
+Message-Id: <20230922085701.3164-2-yongxuan.wang@sifive.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230922085701.3164-1-yongxuan.wang@sifive.com>
+References: <20230922085701.3164-1-yongxuan.wang@sifive.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 12:17=E2=80=AFAM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 22/09/2023 =C3=A0 00:52, Song Liu a =C3=A9crit :
-> > On Mon, Sep 18, 2023 at 12:31=E2=80=AFAM Mike Rapoport <rppt@kernel.org=
-> wrote:
-> >>
-> > [...]
-> >> diff --git a/include/linux/execmem.h b/include/linux/execmem.h
-> >> index 519bdfdca595..09d45ac786e9 100644
-> >> --- a/include/linux/execmem.h
-> >> +++ b/include/linux/execmem.h
-> >> @@ -29,6 +29,7 @@
-> >>    * @EXECMEM_KPROBES: parameters for kprobes
-> >>    * @EXECMEM_FTRACE: parameters for ftrace
-> >>    * @EXECMEM_BPF: parameters for BPF
-> >> + * @EXECMEM_MODULE_DATA: parameters for module data sections
-> >>    * @EXECMEM_TYPE_MAX:
-> >>    */
-> >>   enum execmem_type {
-> >> @@ -37,6 +38,7 @@ enum execmem_type {
-> >>          EXECMEM_KPROBES,
-> >>          EXECMEM_FTRACE,
-> >
-> > In longer term, I think we can improve the JITed code and merge
-> > kprobe/ftrace/bpf. to use the same ranges. Also, do we need special
-> > setting for FTRACE? If not, let's just remove it.
->
-> How can we do that ? Some platforms like powerpc require executable
-> memory for BPF and non-exec mem for KPROBE so it can't be in the same
-> area/ranges.
+We detect Svadu extension support from DTB and add arch_has_hw_pte_young()
+to enable optimization in MGLRU and __wp_page_copy_user() if Svadu
+extension is available.
 
-Hmm... non-exec mem for kprobes?
+Co-developed-by: Jinyu Tang <tjytimi@163.com>
+Signed-off-by: Jinyu Tang <tjytimi@163.com>
+Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+---
+ arch/riscv/include/asm/csr.h     | 1 +
+ arch/riscv/include/asm/hwcap.h   | 1 +
+ arch/riscv/include/asm/pgtable.h | 6 ++++++
+ arch/riscv/kernel/cpufeature.c   | 1 +
+ 4 files changed, 9 insertions(+)
 
-       if (strict_module_rwx_enabled())
-               execmem_params.ranges[EXECMEM_KPROBES].pgprot =3D PAGE_KERNE=
-L_ROX;
-       else
-               execmem_params.ranges[EXECMEM_KPROBES].pgprot =3D PAGE_KERNE=
-L_EXEC;
+diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+index 777cb8299551..10648b372a2a 100644
+--- a/arch/riscv/include/asm/csr.h
++++ b/arch/riscv/include/asm/csr.h
+@@ -194,6 +194,7 @@
+ /* xENVCFG flags */
+ #define ENVCFG_STCE			(_AC(1, ULL) << 63)
+ #define ENVCFG_PBMTE			(_AC(1, ULL) << 62)
++#define ENVCFG_HADE			(_AC(1, ULL) << 61)
+ #define ENVCFG_CBZE			(_AC(1, UL) << 7)
+ #define ENVCFG_CBCFE			(_AC(1, UL) << 6)
+ #define ENVCFG_CBIE_SHIFT		4
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index b7b58258f6c7..1013661d6516 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -58,6 +58,7 @@
+ #define RISCV_ISA_EXT_ZICSR		40
+ #define RISCV_ISA_EXT_ZIFENCEI		41
+ #define RISCV_ISA_EXT_ZIHPM		42
++#define RISCV_ISA_EXT_SVADU		43
+ 
+ #define RISCV_ISA_EXT_MAX		64
+ 
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index b2ba3f79cfe9..028b700cd27b 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -629,6 +629,12 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+ 	return __pgprot(prot);
+ }
+ 
++#define arch_has_hw_pte_young arch_has_hw_pte_young
++static inline bool arch_has_hw_pte_young(void)
++{
++	return riscv_has_extension_unlikely(RISCV_ISA_EXT_SVADU);
++}
++
+ /*
+  * THP functions
+  */
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 1cfbba65d11a..ead378c04991 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -178,6 +178,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+ 	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
+ 	__RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
++	__RISCV_ISA_EXT_DATA(svadu, RISCV_ISA_EXT_SVADU),
+ 	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+ 	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+ 	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+-- 
+2.17.1
 
-Do you mean the latter case?
-
-Thanks,
-Song
