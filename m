@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A927AB104
+	by mail.lfdr.de (Postfix) with ESMTP id AE0877AB106
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbjIVLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
+        id S233736AbjIVLiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbjIVLiP (ORCPT
+        with ESMTP id S233384AbjIVLiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:38:15 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31274FB
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:38:09 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0C01640E01A1;
-        Fri, 22 Sep 2023 11:38:07 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id SRsyE2Cjq-7Y; Fri, 22 Sep 2023 11:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695382684; bh=AQm9yEr8BqT/+PpZ1JkB7PoF3iVB8b0Q+lcbIZC+9I8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PsoL/Xd3aXEytaiM5hbYYyQxAwky4c3qr5n8GYtd3Jnj8GkdfQw2lDlSvdryi+vXZ
-         7ALrIttDSEXdaXag70Hg8xxRygRRtjwccwVA1rnDXZbBurTBKzBBpHBehLM5/8VD2d
-         UCR3SRVFm18lEMZJLEFOpSGrtLAZ8F48uSumXYkIDs4WkAPtq/K+xZ4jVf4eW39AAj
-         A0BRXlGSCsxUI9oC7Hii1sXC4VyAYwUAcrmv67sVGiFyEUIJduv+8gnTjuTW8iG2S/
-         RZE5mI8HICPK96x16WGBi8IiBDl1VulVn764iDQNu57OkfpB9f/d2/MDP9aF+F79zQ
-         Hse5CkVG8s7+WE1FfCI0y80lSKQr0QidWEUFEggH9fLSFxR5FsHIm1h4H0OmaqqFiG
-         R0Ol1F5DLhygZrRrgXoHllfXAcyNz6PeTHbNsnw3kSHGfiK3VZCvW/9CNb1teJFieY
-         2urbThpswRMCRAOq7Vz/2ZWLWrrtfETQPGKEC8CBpokM/gxeXsi2AmmZk1Et9B1Lbr
-         /HvcsAh8KM42JgYKS0ntLfX719JlEOlidpUSyMWM9HHHHbKny6FzJ46jBme6Qn9E7U
-         DKGjLxM0sMaYGMA2WJWYyDA7+zC7slzolZVecKp6vcEIKMWXfMj8wAX6LzU3TiAXqe
-         0ALgfsCP507ZTb29hq+Ne7ok=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6F5B040E0176;
-        Fri, 22 Sep 2023 11:37:59 +0000 (UTC)
-Date:   Fri, 22 Sep 2023 13:37:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org, x86@kernel.org
-Subject: Re: [tip: x86/cpu] x86/cpu: Clear SVM feature if disabled by BIOS
-Message-ID: <20230922113754.GEZQ18kuTDSB8W8epS@fat_crate.local>
-References: <20230921114940.957141-1-pbonzini@redhat.com>
- <169537583818.27769.18320521458994415527.tip-bot2@tip-bot2>
- <ZQ1rwSJsO7A4HR8O@gmail.com>
- <CABgObfbiO5Jm-S_1TVi-NdO4GxMsJeagaEHYEFBJ_6ABFdhicg@mail.gmail.com>
+        Fri, 22 Sep 2023 07:38:16 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7EFAC;
+        Fri, 22 Sep 2023 04:38:10 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7a52a27fe03so890636241.0;
+        Fri, 22 Sep 2023 04:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695382690; x=1695987490; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vUgX4U1nDqbgagySgU1QRculQUZhCufDpVd955ye1oU=;
+        b=O304hvCZw4GTnlNls/jJA8ZymGaROphdIcHrADM67r9GR2wna5oXZxqUQwBCTDTsN/
+         iuGQXwUIG2ENvYuZtumVlcXI/zAI7YQ5VCMqLNlakxTqtPt9heJnW41Tc0HQqQCgh9FN
+         6ajHRC2+eHrEJmi0dzEB/Z28ouMvHrjkz90KM53x2rE/pqPJOzLpyuA/5z9ExJw5bCV+
+         bTslQ00/OJbW+THK5nG1n0xLpFZaeRKxqdyQAzKQFiDsb3lZxPTw018YB/JhbBzuj9c7
+         tXuikHcGU8gvq6Ld3nCgM7PWSi9TJpXG54E/3wZgjLCLiBvHvKl12DenndIgLCw4dZK3
+         liLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695382690; x=1695987490;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vUgX4U1nDqbgagySgU1QRculQUZhCufDpVd955ye1oU=;
+        b=GVmpp2mjoATWHBZ4CJDBCYEtvMMhkozDlPL+YLhjuraFo09bS0sm75rqcdzmhFPE01
+         Es1aUzGsllARzMrxA9YmRcPvp6WVtC2rV9KFXJxUEdfyxmMYa9NWr1Xn7jcUX7F34OAw
+         3A7SaFtigpIR1Wjd/QTVpZxw8nv0x4A0C02y4Hz+xnB4eH/luh8iPYxw6uJwJS4mwjvA
+         iCivcxaGj3qQkUXeLpTyI7oRvSHzR5zxMCRKM6bSD7ew7AWDT8XFXW4XfPZCXDntxag8
+         nYx3n4ccbLW5FKcVj3ETeJT5WwCIXF5LqgtoTb0v5GTKgYUoNf19azE3/ibQraTx21dD
+         2Ozw==
+X-Gm-Message-State: AOJu0Yw+1rL85vkrJRl6KdYTg4t6KCah7Dks+wO046nrt9sB0ap7dkGc
+        UaAZBZakR4TiHeyJaa2JoXj+AMDIctpw6HZeAmPsKgAXUjs=
+X-Google-Smtp-Source: AGHT+IGIqGChB6cFXllrHUdzdpIdQVOVkFS2UF0Y14Lbfg8SJ76iH1CyhIQdNFhrHSC5b81fr8ojrgimHPbvL8Dfj8c=
+X-Received: by 2002:a05:6102:7ae:b0:452:8452:8a90 with SMTP id
+ x14-20020a05610207ae00b0045284528a90mr8260920vsg.0.1695382689830; Fri, 22 Sep
+ 2023 04:38:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABgObfbiO5Jm-S_1TVi-NdO4GxMsJeagaEHYEFBJ_6ABFdhicg@mail.gmail.com>
+References: <20230922062405.2571850-1-milkfafa@gmail.com> <86729293-ad37-4f2e-bff7-c49d166e02df@xs4all.nl>
+In-Reply-To: <86729293-ad37-4f2e-bff7-c49d166e02df@xs4all.nl>
+From:   Kun-Fa Lin <milkfafa@gmail.com>
+Date:   Fri, 22 Sep 2023 19:38:01 +0800
+Message-ID: <CADnNmFoXBA7mbs2zNFWOCYaP1TheS50E9vTdSH3uhjea=RuALQ@mail.gmail.com>
+Subject: Re: [PATCH v16 0/7] Support Nuvoton NPCM Video Capture/Encode Engine
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     mchehab@kernel.org, avifishman70@gmail.com, tmaimon77@gmail.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, andrzej.p@collabora.com,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kflin@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 01:18:09PM +0200, Paolo Bonzini wrote:
-> AMD and Hygon pretend that they are different, and use different families
-> for what is effectively the same processor, and that's silly.
+Hi Hans,
 
-Not entirely true. Off and on they come with enablement which is close
-but then a bit different and it is either ifdeffery or do their own
-functions.  For simplicity, we've done "do their own functions" as we
-cannot test the common code on Hygon.
+Thank you so much for your review and time.
 
-> ... because honestly who even thinks of Hygon...
-
-There's that too.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+Marvin
