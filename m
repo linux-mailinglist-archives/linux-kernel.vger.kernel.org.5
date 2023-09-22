@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBEC7AAC62
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6D07AAC52
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbjIVINT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
+        id S232075AbjIVINL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232548AbjIVIMv (ORCPT
+        with ESMTP id S232222AbjIVIMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:12:51 -0400
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3995A1F04;
+        Fri, 22 Sep 2023 04:12:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166ED1BFF;
         Fri, 22 Sep 2023 01:12:16 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.03,167,1694703600"; 
-   d="scan'208";a="176896542"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 22 Sep 2023 17:12:15 +0900
-Received: from localhost.localdomain (unknown [10.226.92.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E56BC400F937;
-        Fri, 22 Sep 2023 17:12:11 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.au@gmail.com>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v2] alarmtimer: Fix rebind failure
-Date:   Fri, 22 Sep 2023 09:12:08 +0100
-Message-Id: <20230922081208.26334-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+Date:   Fri, 22 Sep 2023 08:12:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695370334;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=zIjjyICu9jgMK43t3DhKBMd6B4Guoddzcy+mtiYR0/4=;
+        b=WXQqho3IrubgdyV4BejLJ3/KLwdunxUMlXu9+MVVbExUKBgacvXVTP2TPJcDYpfezxwIET
+        oOaI3w2zhj7ksEbzENU7a3+6w/Bokgj6K4kUmM5Y8J1R7pndzD1PUNCoZF4+xIAFTlzFkI
+        8IKn0VmyoF/DQQm0de7U97259ffZv5TzgyQf/nIUBq9gaZrkIkZ6X4/wxLXgZRyCuG+7Xh
+        bvMh/LUi4cVHbCUyl/BdCSq+jOYnN/RpYTzSK+M7m5/kdQ/ZAq5Xhtm3JMWCNP1ydYomEX
+        n+AmjT8Ju0TT6h3igDTvwYrKTxlTT9PfNxH7q0vQB3XHCn0OSh7V2GH07cuw1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695370334;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=zIjjyICu9jgMK43t3DhKBMd6B4Guoddzcy+mtiYR0/4=;
+        b=BfgeIdM6OQPI6m8b/0GBu0K1GkPNxSjEJ9Vz1NuqKb2tXg9CAyi8+LbnPzM3EaS7bDt/SE
+        tEbQcTVB/ct4ieDA==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] <linux/list.h>: Introduce the
+ list_for_each_reverse() method
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169537033408.27769.12070730521509427015.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The resources allocated in alarmtimer_rtc_add_device() are not freed
-leading to re-bind failure for the endpoint driver. Fix this issue
-by adding alarmtimer_rtc_remove_device().
+The following commit has been merged into the sched/core branch of tip:
 
-Fixes: c79108bd19a8 ("alarmtimer: Make alarmtimer platform device child of RTC device")
-Fixes: 7c94caca877b ("alarmtimer: Use wakeup source from alarmtimer platform device")
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-v1->v2:
- * Add fixes tag.
- * Replaced the variable rtc_pdev->alarmtimer_pdev
- * Added the check rtcdev == rtc before unregistering the real alarmtimer.
-Note:
- This issue is found while adding irq support for built in RTC
- found on Renesas PMIC RAA215300 device. This issue should present
- on all RTC drivers which calls device_init_wakeup() in probe().
----
- kernel/time/alarmtimer.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Commit-ID:     8bf0cdfac7f8aa3fa6151b5c5f5eebdb44a64e89
+Gitweb:        https://git.kernel.org/tip/8bf0cdfac7f8aa3fa6151b5c5f5eebdb44a64e89
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Thu, 21 Sep 2023 11:32:58 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 22 Sep 2023 09:38:42 +02:00
 
-diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
-index 8d9f13d847f0..04d67de8b1fe 100644
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -61,6 +61,7 @@ static DEFINE_SPINLOCK(freezer_delta_lock);
- /* rtc timer and device for setting alarm wakeups at suspend */
- static struct rtc_timer		rtctimer;
- static struct rtc_device	*rtcdev;
-+static struct platform_device	*alarmtimer_pdev;
- static DEFINE_SPINLOCK(rtcdev_lock);
+<linux/list.h>: Introduce the list_for_each_reverse() method
+
+The list_head counterpart of list_for_each_entry_reverse() was missing,
+add it to complete the list handling APIs in <linux/list.h>.
+
+[ This new API is also relied on by a WIP scheduler patch, so this
+  variant is not a theoretical possibility only. ]
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ include/linux/list.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/include/linux/list.h b/include/linux/list.h
+index 164b4d0..1837cae 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -687,6 +687,14 @@ static inline void list_splice_tail_init(struct list_head *list,
+ 	for (pos = (head)->next; !list_is_head(pos, (head)); pos = pos->next)
  
  /**
-@@ -109,6 +110,7 @@ static int alarmtimer_rtc_add_device(struct device *dev)
- 		}
- 
- 		rtcdev = rtc;
-+		alarmtimer_pdev = pdev;
- 		/* hold a reference so it doesn't go away */
- 		get_device(dev);
- 		pdev = NULL;
-@@ -123,6 +125,22 @@ static int alarmtimer_rtc_add_device(struct device *dev)
- 	return ret;
- }
- 
-+static void alarmtimer_rtc_remove_device(struct device *dev)
-+{
-+	struct rtc_device *rtc = to_rtc_device(dev);
++ * list_for_each_reverse - iterate backwards over a list
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @head:	the head for your list.
++ */
++#define list_for_each_reverse(pos, head) \
++	for (pos = (head)->prev; pos != (head); pos = pos->prev)
 +
-+	if (rtcdev == rtc) {
-+		module_put(rtc->owner);
-+		if (device_may_wakeup(rtc->dev.parent))
-+			device_init_wakeup(&alarmtimer_pdev->dev, false);
-+
-+		platform_device_unregister(alarmtimer_pdev);
-+		put_device(dev);
-+		alarmtimer_pdev = NULL;
-+		rtcdev = NULL;
-+	}
-+}
-+
- static inline void alarmtimer_rtc_timer_init(void)
- {
- 	rtc_timer_init(&rtctimer, NULL, NULL);
-@@ -130,6 +148,7 @@ static inline void alarmtimer_rtc_timer_init(void)
- 
- static struct class_interface alarmtimer_rtc_interface = {
- 	.add_dev = &alarmtimer_rtc_add_device,
-+	.remove_dev = &alarmtimer_rtc_remove_device,
- };
- 
- static int alarmtimer_rtc_interface_setup(void)
--- 
-2.25.1
-
++/**
+  * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
+  * @pos:	the &struct list_head to use as a loop cursor.
+  * @head:	the head for your list.
