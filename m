@@ -2,289 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D560A7AB03B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C2E7AB043
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbjIVLKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
+        id S233528AbjIVLNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbjIVLKd (ORCPT
+        with ESMTP id S229800AbjIVLNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:10:33 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F05AF;
-        Fri, 22 Sep 2023 04:10:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BD35421A42;
-        Fri, 22 Sep 2023 11:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695381024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K5HkeXkzzthfd8U0CLhmhJEdApbd+ievN8BTV9ubpQ8=;
-        b=mit0Gxye6HyuiW+DOBVuo7oMIKOfyEaxqthZ2Nc4QVvhW7EFymA9EKyx6Nzj9Q8sYo9gv0
-        boTYB0Y+YB0bdJO21b+woPrtnoni/oLXPXbUgnq8/g4wNw+Ulh/+bv99ZHfv8go+ZbPohc
-        rGlaR5iF/HUDLMHRqUdBltPU0oiw07I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695381024;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K5HkeXkzzthfd8U0CLhmhJEdApbd+ievN8BTV9ubpQ8=;
-        b=/CEs6eKHkBJxI8xXf+vMejsjMwAt3J6IRr4RNWaFN0M37theR5LN03Ves6eCviR3EezLCw
-        qgA2Cq5sHMx/J5Bw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A0A313597;
-        Fri, 22 Sep 2023 11:10:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Gp3aHCB2DWXIEwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Fri, 22 Sep 2023 11:10:24 +0000
-Date:   Fri, 22 Sep 2023 13:10:24 +0200
-Message-ID: <8734z6ea5b.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        Fri, 22 Sep 2023 07:13:14 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEC0180;
+        Fri, 22 Sep 2023 04:13:07 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31f7638be6eso1890521f8f.3;
+        Fri, 22 Sep 2023 04:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695381186; x=1695985986; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mo60L/CqsBXTZMp9OSNBO8agQpgsikCTWPBLj8xU0z8=;
+        b=iYIerVfY1NbBVwujHou3raRdNzAq/EF0Qk2tI0vUChm7hYMLIcfWAF7yTChKMbt/xu
+         tGecAjAF8gDIPCM1bgDJzItbEE5gVYhkVGwH51UOo7HsgntvJKsbNIKwmIuKUIL0vU3S
+         dTru+vzXt5DoHzxDZGIjkpPiofTOc+n+W9U3m9XWvb5oFFc3ZW84uskbwnP8RYnEP+/c
+         s5mFOyC3Wy7PZguQUg+WRixmBShv0+jQc/F3Oic2ZDnNCq7MfNRCV05OpKg7SnApAA/b
+         GQIjcc+Yc0PWThaAiWl5SifhxBBgwhXk2wA/g4xMNCMHOTcZTT9t4EApNcxX40Am0yzW
+         olOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695381186; x=1695985986;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Mo60L/CqsBXTZMp9OSNBO8agQpgsikCTWPBLj8xU0z8=;
+        b=ntKLU+7hRv+7pCDyEnjlTpVnnJC42DN+6XLjuXJSzGE9r/vGMxn0JEAsPcXhZDkmPW
+         h4qdZvql9YyXofpq/AhKfxsedcBObDFeFKVf49jo3XHHweFyXZRDEr68RUFBOUi19dPJ
+         91Y2od2rIYEvMzJIrOm5b+QdnQFgKnnmE030dceZK+2ZaPPUfJQoHlIQqLnq/Gx6kmBc
+         1fGWGKp5A0lXFU6UhKuausSOI27O919xRNOO+bKjDqz3vK53rYWRaFfmQ6qaeQpmiijI
+         JrOZ2brA0rpjjmHPrJrFibRKiRQawKPWsR8AJei1r5oBfXf1bykgE1RLCuIRiIpVM8UW
+         OeFw==
+X-Gm-Message-State: AOJu0YzleksLRo03lHq3nQN6pm60xD2kmiwpNvTnuVafcPYniqe0T9y/
+        GSn+94I1DiSrrQHAbaqEtJw=
+X-Google-Smtp-Source: AGHT+IH7mPXmlPp61fOS1UbXVt881rz7wfseEorF4MkXdznkIZPNZgazS5rBLuHv+qOU+uGgsaXdlQ==
+X-Received: by 2002:a5d:694d:0:b0:314:12c:4322 with SMTP id r13-20020a5d694d000000b00314012c4322mr7281735wrw.4.1695381185667;
+        Fri, 22 Sep 2023 04:13:05 -0700 (PDT)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id g10-20020adffc8a000000b003176c6e87b1sm4191765wrr.81.2023.09.22.04.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 04:13:04 -0700 (PDT)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
-Subject: Re: [PATCH] sound: usb: increase snd_card alloc size
-In-Reply-To: <tfxcs7kxvkumpv2ngnkelc6bsgggpz3uxdnvjwf6cefmjtliua@li433cj6ymgc>
-References: <20230922005152.163640-1-ricardo@marliere.net>
-        <87h6nmegt9.wl-tiwai@suse.de>
-        <877coiedwm.wl-tiwai@suse.de>
-        <tfxcs7kxvkumpv2ngnkelc6bsgggpz3uxdnvjwf6cefmjtliua@li433cj6ymgc>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH 1/3] net: introduce napi_is_scheduled helper
+Date:   Fri, 22 Sep 2023 13:12:45 +0200
+Message-Id: <20230922111247.497-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 12:37:02 +0200,
-Ricardo B. Marliere wrote:
-> 
-> On 23/09/22 11:49AM, Takashi Iwai wrote:
-> > On Fri, 22 Sep 2023 10:46:26 +0200,
-> > Takashi Iwai wrote:
-> > > 
-> > > On Fri, 22 Sep 2023 02:51:53 +0200,
-> > > Ricardo B. Marliere wrote:
-> > > > 
-> > > > Syzbot reports a slab-out-of-bounds read of a snd_card object. When
-> > > > snd_usb_audio_create calls snd_card_new, it passes sizeof(*chip) as the
-> > > > extra_size argument, which is not enough in this case.
-> > > > 
-> > > > Relevant logs below:
-> > > > 
-> > > > BUG: KASAN: slab-out-of-bounds in imon_probe+0x2983/0x3910
-> > > > Read of size 1 at addr ffff8880436a2c71 by task kworker/1:2/777
-> > > > (...)
-> > > > The buggy address belongs to the object at ffff8880436a2000
-> > > >  which belongs to the cache kmalloc-4k of size 4096
-> > > > The buggy address is located 1 bytes to the right of
-> > > >  allocated 3184-byte region [ffff8880436a2000, ffff8880436a2c70)
-> > > > 
-> > > > Reported-by: syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
-> > > > Closes: https://lore.kernel.org/all/000000000000a838aa0603cc74d6@google.co/m
-> > > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > > > ---
-> > > >  sound/usb/card.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/sound/usb/card.c b/sound/usb/card.c
-> > > > index 1b2edc0fd2e9..6578326d33e8 100644
-> > > > --- a/sound/usb/card.c
-> > > > +++ b/sound/usb/card.c
-> > > > @@ -619,7 +619,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
-> > > >  	}
-> > > >  
-> > > >  	err = snd_card_new(&intf->dev, index[idx], id[idx], THIS_MODULE,
-> > > > -			   sizeof(*chip), &card);
-> > > > +			   sizeof(*chip) + 2, &card);
-> > > 
-> > > Sorry, it's no-no.  We have to fix the cause of the OOB access instead
-> > > of papering over with a random number of increase.
-> > > 
-> > > Unfortunately, most important piece of information is trimmed in the
-> > > changelog, so I can't judge what's going on.  The only useful info
-> > > there is that it's something to do with imon driver, but it's
-> > > completely independent from USB-audio.  How does it access to the
-> > > external memory allocated by snd-usb-audio driver at all?
-> > > 
-> > > Before jumping to the solution, we must understand the problem.
-> > 
-> > Now I took a look at the syzbot URL and got more info.
-> > 
-> > Through a quick glance, my wild guess is that two different drivers
-> > are bound to two interfaces of the device, the first one to usb-audio
-> > and the second one to imon.  And imon driver blindly assumes that the
-> > first interface is bound with imon, too, and that can be the cause.
-> > A patch like below (totally untested!) might fix the problem.
-> > 
-> > Can you reproduce the problem in your side?  Or did you pick this up
-> > randomly without testing?
-> 
-> Thanks for the valuable info! I tested your proposed patch and it works.
-> Will you send it as a proper patch or can the maintainers pick it from
-> here?
+We currently have napi_if_scheduled_mark_missed that can be used to
+check if napi is scheduled but that does more thing than simply checking
+it and return a bool. Some driver already implement custom function to
+check if napi is scheduled.
 
-Good to hear!  Then I'll submit a proper patch later.
-Thanks for quick testing.
+Drop these custom function and introduce napi_is_scheduled that simply
+check if napi is scheduled atomically.
 
+Update any driver and code that implement a similar check and instead
+use this new helper.
 
-Takashi
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/net/ethernet/chelsio/cxgb3/sge.c  | 8 --------
+ drivers/net/wireless/realtek/rtw89/core.c | 2 +-
+ include/linux/netdevice.h                 | 5 +++++
+ net/core/dev.c                            | 2 +-
+ 4 files changed, 7 insertions(+), 10 deletions(-)
 
-> 
-> > 
-> > In anyway, let's put media people to Cc.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > --- a/drivers/media/rc/imon.c
-> > +++ b/drivers/media/rc/imon.c
-> > @@ -2427,6 +2427,12 @@ static int imon_probe(struct usb_interface *interface,
-> >  		goto fail;
-> >  	}
-> >  
-> > +	if (first_if->dev.driver != interface->dev.driver) {
-> > +		dev_err(&interface->dev, "inconsistent driver matching\n");
-> > +		ret = -EINVAL;
-> > +		goto fail;
-> > +	}
-> > +
-> >  	if (ifnum == 0) {
-> >  		ictx = imon_init_intf0(interface, id);
-> >  		if (!ictx) {
-> 
-> Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
-> 
-> 
-> Linux garage 6.6.0-rc2-next-20230921-dirty #15 SMP PREEMPT_DYNAMIC Fri Sep 22 07:29:07 -03 2023 x86_64
-> 
-> The programs included with the Debian GNU/Linux system are free software;
-> the exact distribution terms for each program are described in the
-> individual files in /usr/share/doc/*/copyright.
-> 
-> Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-> permitted by applicable law.
-> Last login: Tue Sep 19 21:04:06 UTC 2023 on ttyS0
-> 10:31:03 root@garage ~
-> # ./syz-execprog repsyz
-> 2023/09/22 10:31:08 parsed 1 programs
-> [   43.416521][ T8175] cc1plus (8175) used greatest stack depth: 22080 bytes left
-> [   43.470240][ T8179] cc1plus (8179) used greatest stack depth: 22008 bytes left
-> [   49.171720][ T8224] Adding 124996k swap on ./swap-file.  Priority:0 extents:23 across:1427660k
-> [   49.178542][ T8224] syz-executor (8224) used greatest stack depth: 21096 bytes left
-> 2023/09/22 10:31:15 executed programs: 0
-> [   49.233026][   T55] Bluetooth: hci0: unexpected cc 0x0c03 length: 249 > 1
-> [   49.234270][   T55] Bluetooth: hci0: unexpected cc 0x1003 length: 249 > 9
-> [   49.235218][   T55] Bluetooth: hci0: unexpected cc 0x1001 length: 249 > 9
-> [   49.236338][   T55] Bluetooth: hci0: unexpected cc 0x0c23 length: 249 > 4
-> [   49.237283][   T55] Bluetooth: hci0: unexpected cc 0x0c25 length: 249 > 3
-> [   49.238146][   T55] Bluetooth: hci0: unexpected cc 0x0c38 length: 249 > 2
-> [   49.355885][ T8240] chnl_net:caif_netlink_parms(): no params data found
-> [   49.395950][ T8240] bridge0: port 1(bridge_slave_0) entered blocking state
-> [   49.396944][ T8240] bridge0: port 1(bridge_slave_0) entered disabled state
-> [   49.397714][ T8240] bridge_slave_0: entered allmulticast mode
-> [   49.398831][ T8240] bridge_slave_0: entered promiscuous mode
-> [   49.401610][ T8240] bridge0: port 2(bridge_slave_1) entered blocking state
-> [   49.402380][ T8240] bridge0: port 2(bridge_slave_1) entered disabled state
-> [   49.403189][ T8240] bridge_slave_1: entered allmulticast mode
-> [   49.404311][ T8240] bridge_slave_1: entered promiscuous mode
-> [   49.421315][ T8240] bond0: (slave bond_slave_0): Enslaving as an active interface with an up link
-> [   49.423376][ T8240] bond0: (slave bond_slave_1): Enslaving as an active interface with an up link
-> [   49.440902][ T8240] team0: Port device team_slave_0 added
-> [   49.442592][ T8240] team0: Port device team_slave_1 added
-> [   49.457205][ T8240] batman_adv: batadv0: Adding interface: batadv_slave_0
-> [   49.458088][ T8240] batman_adv: batadv0: The MTU of interface batadv_slave_0 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
-> [   49.461793][ T8240] batman_adv: batadv0: Not using interface batadv_slave_0 (retrying later): interface not active
-> [   49.464566][ T8240] batman_adv: batadv0: Adding interface: batadv_slave_1
-> [   49.465329][ T8240] batman_adv: batadv0: The MTU of interface batadv_slave_1 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
-> [   49.468023][ T8240] batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
-> [   49.491775][ T8240] hsr_slave_0: entered promiscuous mode
-> [   49.493000][ T8240] hsr_slave_1: entered promiscuous mode
-> [   49.576424][ T8240] netdevsim netdevsim1 netdevsim0: renamed from eth0
-> [   49.580029][ T8240] netdevsim netdevsim1 netdevsim1: renamed from eth1
-> [   49.582870][ T8240] netdevsim netdevsim1 netdevsim2: renamed from eth2
-> [   49.585559][ T8240] netdevsim netdevsim1 netdevsim3: renamed from eth3
-> [   49.598460][ T8240] bridge0: port 2(bridge_slave_1) entered blocking state
-> [   49.599405][ T8240] bridge0: port 2(bridge_slave_1) entered forwarding state
-> [   49.600596][ T8240] bridge0: port 1(bridge_slave_0) entered blocking state
-> [   49.601368][ T8240] bridge0: port 1(bridge_slave_0) entered forwarding state
-> [   49.632834][ T8240] 8021q: adding VLAN 0 to HW filter on device bond0
-> [   49.638691][   T23] bridge0: port 1(bridge_slave_0) entered disabled state
-> [   49.651679][   T23] bridge0: port 2(bridge_slave_1) entered disabled state
-> [   49.656749][ T8240] 8021q: adding VLAN 0 to HW filter on device team0
-> [   49.661350][   T31] bridge0: port 1(bridge_slave_0) entered blocking state
-> [   49.662190][   T31] bridge0: port 1(bridge_slave_0) entered forwarding state
-> [   49.673212][  T765] bridge0: port 2(bridge_slave_1) entered blocking state
-> [   49.674679][  T765] bridge0: port 2(bridge_slave_1) entered forwarding state
-> [   49.698632][ T8240] hsr0: Slave A (hsr_slave_0) is not up; please bring it up to get a fully working HSR network
-> [   49.702458][ T8240] hsr0: Slave B (hsr_slave_1) is not up; please bring it up to get a fully working HSR network
-> [   49.778155][ T8240] 8021q: adding VLAN 0 to HW filter on device batadv0
-> [   49.802649][ T8240] veth0_vlan: entered promiscuous mode
-> [   49.806107][ T8240] veth1_vlan: entered promiscuous mode
-> [   49.818270][ T8240] veth0_macvtap: entered promiscuous mode
-> [   49.822124][ T8240] veth1_macvtap: entered promiscuous mode
-> [   49.829757][ T8240] batman_adv: batadv0: Interface activated: batadv_slave_0
-> [   49.833955][ T8240] batman_adv: batadv0: Interface activated: batadv_slave_1
-> [   49.836876][ T8240] netdevsim netdevsim1 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
-> [   49.837861][ T8240] netdevsim netdevsim1 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-> [   49.838840][ T8240] netdevsim netdevsim1 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-> [   49.840126][ T8240] netdevsim netdevsim1 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-> [   49.893587][ T8569] wlan0: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-> [   49.894469][ T8569] wlan0: Creating new IBSS network, BSSID 50:50:50:50:50:50
-> [   49.917314][ T8569] wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-> [   49.918127][ T8569] wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-> [   49.961690][ T8587] UDC core: USB Raw Gadget: couldn't find an available UDC or it's busy
-> [   49.965046][ T8587] misc raw-gadget: fail, usb_gadget_register_driver returned -16
-> [   50.219962][  T765] usb 2-1: new high-speed USB device number 2 using dummy_hcd
-> [   50.459682][  T765] usb 2-1: Using ep0 maxpacket: 16
-> [   50.579830][  T765] usb 2-1: config 1 has too many interfaces: 163, using maximum allowed: 32
-> [   50.581753][  T765] usb 2-1: config 1 has an invalid descriptor of length 7, skipping remainder of the config
-> [   50.583812][  T765] usb 2-1: config 1 has 3 interfaces, different from the descriptor's value: 163
-> [   50.585682][  T765] usb 2-1: config 1 interface 1 altsetting 1 endpoint 0x1 has an invalid bInterval 0, changing to 7
-> [   50.587870][  T765] usb 2-1: config 1 interface 1 altsetting 1 endpoint 0x1 has invalid wMaxPacketSize 0
-> [   50.590104][  T765] usb 2-1: too many endpoints for config 1 interface 2 altsetting 0: 128, using maximum allowed: 30
-> [   50.592292][  T765] usb 2-1: config 1 interface 2 altsetting 0 has 0 endpoint descriptors, different from the interface descriptor's value: 128
-> [   50.594921][  T765] usb 2-1: config 1 interface 2 altsetting 1 endpoint 0x82 has an invalid bInterval 62, changing to 7
-> [   50.597128][  T765] usb 2-1: config 1 interface 2 altsetting 1 endpoint 0x82 has invalid maxpacket 41992, setting to 1024
-> [   50.749794][  T765] usb 2-1: New USB device found, idVendor=15c2, idProduct=0039, bcdDevice=80.f3
-> [   50.751765][  T765] usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-> [   50.753415][  T765] usb 2-1: Product: syz
-> [   50.754255][  T765] usb 2-1: Manufacturer: syz
-> [   50.755247][  T765] usb 2-1: SerialNumber: syz
-> [   50.805761][  T765] imon:imon_find_endpoints: no valid input (IR) endpoint found
-> [   50.807506][  T765] imon 2-1:1.0: unable to initialize intf0, err -19
-> [   50.808934][  T765] imon:imon_probe: failed to initialize context!
-> [   50.810288][  T765] imon 2-1:1.0: unable to register, err -19
-> [   51.069921][  T765] usb 2-1: 2:1 : UAC_AS_GENERAL descriptor not found
-> [   51.113716][  T765] imon 2-1:1.1: inconsistent driver matching
-> [   51.121438][  T765] imon 2-1:1.1: unable to register, err -22
-> [   51.122866][  T765] imon: probe of 2-1:1.1 failed with error -22
-> [   51.132274][  T765] usb 2-1: USB disconnect, device number 2
-> [   51.270491][ T4485] Bluetooth: hci0: command 0x0409 tx timeout
-> 10:31:17 root@garage ~
-> # 
-> 
+diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+index 2e9a74fe0970..71fa2dc19034 100644
+--- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+@@ -2501,14 +2501,6 @@ static int napi_rx_handler(struct napi_struct *napi, int budget)
+ 	return work_done;
+ }
+ 
+-/*
+- * Returns true if the device is already scheduled for polling.
+- */
+-static inline int napi_is_scheduled(struct napi_struct *napi)
+-{
+-	return test_bit(NAPI_STATE_SCHED, &napi->state);
+-}
+-
+ /**
+  *	process_pure_responses - process pure responses from a response queue
+  *	@adap: the adapter
+diff --git a/drivers/net/wireless/realtek/rtw89/core.c b/drivers/net/wireless/realtek/rtw89/core.c
+index 133bf289bacb..bbf4ea3639d4 100644
+--- a/drivers/net/wireless/realtek/rtw89/core.c
++++ b/drivers/net/wireless/realtek/rtw89/core.c
+@@ -1744,7 +1744,7 @@ static void rtw89_core_rx_to_mac80211(struct rtw89_dev *rtwdev,
+ 	struct napi_struct *napi = &rtwdev->napi;
+ 
+ 	/* In low power mode, napi isn't scheduled. Receive it to netif. */
+-	if (unlikely(!test_bit(NAPI_STATE_SCHED, &napi->state)))
++	if (unlikely(!napi_is_scheduled(napi)))
+ 		napi = NULL;
+ 
+ 	rtw89_core_hw_to_sband_rate(rx_status);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index db3d8429d50d..8eac00cd3b92 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -482,6 +482,11 @@ static inline bool napi_prefer_busy_poll(struct napi_struct *n)
+ 	return test_bit(NAPI_STATE_PREFER_BUSY_POLL, &n->state);
+ }
+ 
++static inline bool napi_is_scheduled(struct napi_struct *n)
++{
++	return test_bit(NAPI_STATE_SCHED, &n->state);
++}
++
+ bool napi_schedule_prep(struct napi_struct *n);
+ 
+ /**
+diff --git a/net/core/dev.c b/net/core/dev.c
+index cc03a5758d2d..32ba8002f65a 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6523,7 +6523,7 @@ static int __napi_poll(struct napi_struct *n, bool *repoll)
+ 	 * accidentally calling ->poll() when NAPI is not scheduled.
+ 	 */
+ 	work = 0;
+-	if (test_bit(NAPI_STATE_SCHED, &n->state)) {
++	if (napi_is_scheduled(n)) {
+ 		work = n->poll(n, weight);
+ 		trace_napi_poll(n, work, weight);
+ 	}
+-- 
+2.40.1
+
