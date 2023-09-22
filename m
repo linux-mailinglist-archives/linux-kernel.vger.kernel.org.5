@@ -2,130 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACE97AB852
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6729B7AB87B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbjIVRwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        id S233463AbjIVRxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233167AbjIVRwc (ORCPT
+        with ESMTP id S233738AbjIVRxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:52:32 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D261BCF
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:34 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690d25b1dbdso2241003b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:34 -0700 (PDT)
+        Fri, 22 Sep 2023 13:53:23 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0451F11
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7fd4c23315so3060941276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405094; x=1696009894; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zImIKIqhOC0JjIYPrD3YIO1bPD4ZjWOlSN8lcYpsf6s=;
-        b=nWW16v5k1LbEMTgaTiQp3gfTSU/lEQTL5de4k8P+2xveqaPy6R0Cll85Vkmdjs7m0j
-         28x5zAUjeDNwEVpSgy4gh7l+Asv9qPEUHN517bvXyf2ZU7IDXJp0BVo5LxHarB2b8LO2
-         tsON67yjDAnd9dzYksuEDqwQaIXBZi2bvPmIU=
+        d=google.com; s=20230601; t=1695405101; x=1696009901; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fPoesx7eIkvIyN/ECBqYvUwy9riOVetGjUtm7GvkcAQ=;
+        b=M9FspRTRg5iKLUT95ZRx1RxpmyXULmaFRUAZqosCYnVR31gFlY6u+D4PFBqe7NINL9
+         zfpnmUF/72y2Lis/TtDgeSTllv3Bq4R3Z98haB2R8jeEThB3/jEcPxHHrJPPvAGQ54yT
+         gn1iSn6XzJ4lDMhyInnHNHBsSdxv7ORmP3QZlmtz80rmb3OgVuEb5l9P/hHPmlGC47QZ
+         9gPBeX7WRpj8qaiAvM8Z0m6NmbmkTIklSI4LqY2ErmwnSRQ4diwdqB4bpaq+gYYavFNH
+         GGjwT/hqHqiKpL5cxscIkPIf4djBExHMjeqwXCxMJ9kwEWMESRMst5aPQiuiQXIq6D88
+         GuAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405094; x=1696009894;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zImIKIqhOC0JjIYPrD3YIO1bPD4ZjWOlSN8lcYpsf6s=;
-        b=YxvMvWfwAIfjBnwXEkp023LNolLh4hT0KbyjO/WWbWksiJZnWUtP8ob1GCU3nnQMi5
-         vaAd3hTSMZYVOatULzFYYa3xgCHC70V8XECRCrz8wBPVLvKPejR9TcrkHOj53DvRJC0v
-         usoMt/ztAaa1uoyHckfwPVUtMKOjIiNCMnM7Qqm6Br1gn20o0/vPI62ua7ovk6uwLSVa
-         KxiJ3Ga0CuNxenapKOIzzS1NMGn6do7VytbAlMAYc+uGaHsUGvg3m1lA9A37MsaYbJPz
-         rLIZglb8m0DpK+Z2jkd5YQv4bNrRzYCf03lJEug+twyOBIRSHfuTmbuVv6M2fCq6Rjn0
-         ZccA==
-X-Gm-Message-State: AOJu0Yx/z1x3ofWutsYUIBVNUAAWrG+pR3QpcVRdfq1KPmFjwepuV14d
-        +gjdh1ZDOrxpK7DjC/Z6VMGOb3Od+ShCl3DRY8g=
-X-Google-Smtp-Source: AGHT+IEYYptw0+9UxsBkFMm+xCNLTAlvlc4VwNyOSgculGB2Hj2uBhFKvrLo2zEAv9fjQs4NAvIGMQ==
-X-Received: by 2002:a05:6a00:14c2:b0:690:28d0:b7b3 with SMTP id w2-20020a056a0014c200b0069028d0b7b3mr153527pfu.13.1695405093734;
-        Fri, 22 Sep 2023 10:51:33 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n7-20020aa78a47000000b00690dcba0e17sm3585690pfa.19.2023.09.22.10.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:51:33 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>, Marc Zyngier <maz@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] irqchip/imx-intmux: Annotate struct intmux_data with __counted_by
-Date:   Fri, 22 Sep 2023 10:51:32 -0700
-Message-Id: <20230922175131.work.718-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1459; i=keescook@chromium.org;
- h=from:subject:message-id; bh=mvFgO9v5w2MsRDjwkJuQ6DC2ihWdFPibyg0TMHS5b5Y=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdQj18/exFGglEhzz/3o7XP1T9eIIjqKTUULZ
- ltYTkOtcfmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UIwAKCRCJcvTf3G3A
- Jlj6D/9BqGkE2W574Xw05XGeAb3CJxzSEdnLhcmqWJNeogYU+KV88H3NybOUiCfp9zf+KC1yjg8
- OarGW7ESXkT0amr5GFqz6fzX3V1SXLO/V51G6kJDDj5BbJLWNJK8IJZPQ1nMnyb+wIvjCmCsnzq
- w62V7vklfDGTF92LSXY5cwv5m2x2pObAZUng1ykQLgilxTo15p2ZXgLjk7QpIAt6ghoKcNZ/iqZ
- xt+XzolLJnXDkrl9g1uwT2WKJIBe863fabXwcpvxtcW63AP/Waut3igfrvAxc7ECcFEImfIGK0b
- 71Kj/aEfV6BIQazzTszq/xAcbsITzg2MQUGtrLMdynneIk7l11BifL/CelQNZ7H4Qeh6l+kPVId
- u8AoVMPYH8YR/QXiaOnaHdho2a2l+XT1oLJeFfstRokrOwbLx90eDHpnbIzPeEqWPDmFpQ1NaxY
- CE0iop56AlfvXQwTVQMMLTBn7g6DvEi1+ZbV4qE/Bjyl/NEMpH7pAaw+lrqcGVCcMGXbeq/sh6Z
- qY6i3svt2Red91t7+Is8XG01LbBqfqVzDbx2m9DZg6xxqHTCM/Z0w0UFqXo7B8l/QNCM950hpoZ
- jyyr/mgHUXhjPOFxM4zZfKxP0KqE7PAwo6lN9rYqPM43vpXiBhML88yfSw9Ffe0DMO+aV5qxFFe
- AqWpvZf SE+5Plyw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1695405101; x=1696009901;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fPoesx7eIkvIyN/ECBqYvUwy9riOVetGjUtm7GvkcAQ=;
+        b=uTub0mOm6RASmbbQZF35p1Q6d1+go6w09CdVtcQPyCxhbz41PyG66ckrkC3wx0nUtM
+         L/EnqRxFbi/sqFlTL4top0KoHkdmdfdnJeKLyxtow0uQsktvHzQxUqoSLpRQCVmMJ+8J
+         7bUvtq5O0lnaqUy15Yn73UvXqkbm/1ynE5+R2sdnUfuFkxUeZVaM9ujHIb+tSvEVWf7v
+         XSafN7kmWWO0OELs5CkhQqrA8QAg1XUz2Umg4BJUSE99dv7XSHz3aktGgehd3q1uJeWp
+         4ViLj7q2sXT6pOsriBuaQ+Y559rVUJDHgEgfkx1vsBNQUJGWCZecq6lZrUroJl9GXjIB
+         GKAg==
+X-Gm-Message-State: AOJu0YxQwEedjmrv8paqGbhixy9KBrHz0S5LG3D4CBbw2kb/yNIktvxb
+        kAP1dzX9m+0GTYCy68EukLWLyCrcORlE/g==
+X-Google-Smtp-Source: AGHT+IEIodY6P8AEfYuvD2zh3y3p9HhvCqmHHHxKT05y8cUv8VPdaP2I7/YajTg2Gkalk2g6RpbDy0/vf2J8Jg==
+X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
+ (user=cmllamas job=sendgmr) by 2002:a5b:d0b:0:b0:d85:ae1e:f696 with SMTP id
+ y11-20020a5b0d0b000000b00d85ae1ef696mr927ybp.0.1695405101036; Fri, 22 Sep
+ 2023 10:51:41 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 17:51:37 +0000
+In-Reply-To: <20230922044241.322832-1-cmllamas@google.com>
+Mime-Version: 1.0
+References: <20230922044241.322832-1-cmllamas@google.com>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Message-ID: <20230922175138.230331-1-cmllamas@google.com>
+Subject: [PATCH v2] binder: fix memory leaks of spam and pending work
+From:   Carlos Llamas <cmllamas@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Li Li <dualli@google.com>, Hang Lu <hangl@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org,
+        syzbot+7f10c1653e35933c0f1e@syzkaller.appspotmail.com,
+        Alice Ryhl <aliceryhl@google.com>, Todd Kjos <tkjos@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+A transaction complete work is allocated and queued for each
+transaction. Under certain conditions the work->type might be marked as
+BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT to notify userspace about
+potential spamming threads or as BINDER_WORK_TRANSACTION_PENDING when
+the target is currently frozen.
 
-As found with Coccinelle[1], add __counted_by for struct intmux_data.
+However, these work types are not being handled in binder_release_work()
+so they will leak during a cleanup. This was reported by syzkaller with
+the following kmemleak dump:
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+BUG: memory leak
+unreferenced object 0xffff88810e2d6de0 (size 32):
+  comm "syz-executor338", pid 5046, jiffies 4294968230 (age 13.590s)
+  hex dump (first 32 bytes):
+    e0 6d 2d 0e 81 88 ff ff e0 6d 2d 0e 81 88 ff ff  .m-......m-.....
+    04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81573b75>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff83d41873>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff83d41873>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83d41873>] binder_transaction+0x573/0x4050 drivers/android/binder.c:3152
+    [<ffffffff83d45a05>] binder_thread_write+0x6b5/0x1860 drivers/android/binder.c:4010
+    [<ffffffff83d486dc>] binder_ioctl_write_read drivers/android/binder.c:5066 [inline]
+    [<ffffffff83d486dc>] binder_ioctl+0x1b2c/0x3cf0 drivers/android/binder.c:5352
+    [<ffffffff816b25f2>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff816b25f2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
+    [<ffffffff816b25f2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
+    [<ffffffff816b25f2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
+    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fix the leaks by kfreeing these work types in binder_release_work() and
+handle them as a BINDER_WORK_TRANSACTION_COMPLETE cleanup.
+
+Cc: stable@vger.kernel.org
+Fixes: 0567461a7a6e ("binder: return pending info for frozen async txns")
+Fixes: a7dc1e6f99df ("binder: tell userspace to dump current backtrace when detected oneway spamming")
+Reported-by: syzbot+7f10c1653e35933c0f1e@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=7f10c1653e35933c0f1e
+Suggested-by: Alice Ryhl <aliceryhl@google.com>
+Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/irqchip/irq-imx-intmux.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2 - Handle also peding work and merge with transaction complete as
+     suggested by Alice Ryhl. Add corresponding new tags.
+v1 - https://lore.kernel.org/all/20230922044241.322832-1-cmllamas@google.com/
+---
+ drivers/android/binder.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
-index 6d9a08238c9d..aa041e4dfee0 100644
---- a/drivers/irqchip/irq-imx-intmux.c
-+++ b/drivers/irqchip/irq-imx-intmux.c
-@@ -73,7 +73,7 @@ struct intmux_data {
- 	void __iomem			*regs;
- 	struct clk			*ipg_clk;
- 	int				channum;
--	struct intmux_irqchip_data	irqchip_data[];
-+	struct intmux_irqchip_data	irqchip_data[] __counted_by(channum);
- };
- 
- static void imx_intmux_irq_mask(struct irq_data *d)
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 367afac5f1bf..92128aae2d06 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -4812,6 +4812,8 @@ static void binder_release_work(struct binder_proc *proc,
+ 				"undelivered TRANSACTION_ERROR: %u\n",
+ 				e->cmd);
+ 		} break;
++		case BINDER_WORK_TRANSACTION_PENDING:
++		case BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT:
+ 		case BINDER_WORK_TRANSACTION_COMPLETE: {
+ 			binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
+ 				"undelivered TRANSACTION_COMPLETE\n");
 -- 
-2.34.1
+2.42.0.515.g380fc7ccd1-goog
 
