@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500467AB678
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29E17AB680
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbjIVQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S229989AbjIVQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjIVQut (ORCPT
+        with ESMTP id S229533AbjIVQya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:50:49 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83756114
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:50:42 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3ae093798c0so1106415b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:50:42 -0700 (PDT)
+        Fri, 22 Sep 2023 12:54:30 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8ECF1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:54:24 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-564af0ac494so1708283a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695401442; x=1696006242; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=99AiTC6PdKmEKuFs5VDntv38vtb1p0JCkXRHFl2kGNA=;
-        b=QITJsAC6eUpXyEryXkjusQf9seU+wR2KSgePaa36GQiaWHplPA23J/DAWBEV/19sMR
-         72jqFI1uHKmm6GtGi8j2B9M5hqIpoqMZb6NHRCZPEzmJB6n1MJBuWzBRfcpx55ULJtpY
-         VcjstJKk1hFk7ljvRjLh18RJPQKSHrwQc19Wg=
+        d=gmail.com; s=20230601; t=1695401663; x=1696006463; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0T607sMhgTfYruhqi8wwv+JLqEpq/mk4CQMx7i0zpfk=;
+        b=Ix7wVnHF7+rysk8CvHxR2ql1bjHVV1EoQtTjthM0DJUlLWdB0OmSBZAEo9azvzNbOs
+         78uL+oBMK7lCEN5cWWOLqk/RtMqLhHGr5LUlAIQYVCplXZalHqL7BGCVmF9gTqUKsMCi
+         hjoSPmg92ZHfNuAQsAc1xR0DKj5oHKpCP1oB039EJRE6oICLKVsVukp6xHtm9PCLpvZ8
+         er2Y2wKqPkoiN23ZnrUhF6r51Ph8ZIdGrdNZgdBh4ZIPLirwXeAPqDtCTpWSePMj50i9
+         awEavyzpd0W3zqJAw09ig9ZTYUJJqjOrYMQHZ+BbSRQkcjwR6ZeWPREBLq4IqO82JLMI
+         ZZYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695401442; x=1696006242;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=99AiTC6PdKmEKuFs5VDntv38vtb1p0JCkXRHFl2kGNA=;
-        b=At+/o+oD9+CNYah4jkEZCLmDMdbDYYHbFqGwT+c21D1WoDM21rl3vHoj4A/xioC8u6
-         R2I8Ze/g5l1Dfs0HzQl8MKcW8NUn832li9tZClPNGh2PUKwUQuk3jyye0V1+QFPMWKfH
-         gKsDKTsJ03CEQtoJn27AeCDNw1w2JXyAwyK22nLGqtDa3XllbAmN1J66lKf/8xed/U6I
-         1W5HaNho9wYQq7Z+ruFFflz0vhdAwNrTmWZhQPkWTc9baO0KhVzfyNVWHUkqwZqUwnKz
-         s9QxgEwzBhqTNNhfJ7gcStFbSrCOnvYFWyDJVwZP0mqz/g95nqjCGw1ZfWX1LJhCZSQl
-         A+vg==
-X-Gm-Message-State: AOJu0Yxzobc84ZX8XzAqqrh0NLiz34/rqzpBJpWjZiqpk3x2T6HhApsr
-        LIQdHR/JgE+iVs7jdmKg97GkbA==
-X-Google-Smtp-Source: AGHT+IEpOxNDz3Q8e2NMc7jrDxBaDbnPEashckoS/7e9rXXy723/ranlh3V0DHfIcRFFfaQYNxs0Uw==
-X-Received: by 2002:a05:6808:1312:b0:3a7:6b1c:8142 with SMTP id y18-20020a056808131200b003a76b1c8142mr294681oiv.25.1695401441834;
-        Fri, 22 Sep 2023 09:50:41 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w30-20020a63935e000000b0057e7ae47893sm319628pgm.47.2023.09.22.09.50.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 09:50:41 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Mirko Lindner <mlindner@marvell.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] sky2: Make sure there is at least one frag_addr available
-Date:   Fri, 22 Sep 2023 09:50:39 -0700
-Message-Id: <20230922165036.gonna.464-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1695401663; x=1696006463;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0T607sMhgTfYruhqi8wwv+JLqEpq/mk4CQMx7i0zpfk=;
+        b=Ajtsy9aHw+5roAaGsRCMxm76K5BBJ44tTmMZ4/i36QeSHTGphaczqTIbfr3smvXYVP
+         Mhrth03A463bvDJllHF71b909ApRPvZJ2SDfhsYH2PL05R83FK0o5fCuXQBXdR9UQbfy
+         h1ua9a4l+lHU//w54Wv0Nhq7/wQb5ETYwOifxN7TlZNvgOONkd9NVS1hs3MMwWUBXM1L
+         yT2xrgsoeNKo4rL/E78V+CT4yhf98gGY5XtuzZXAzmvbRazhA39G1i8++yXMiGTmu9aP
+         UNqym+0TE4JQzUacNzKxjz9WGb0kdpNvrCTK15A87csj2vsx8JMU7pNCXEG4Y5ftQg6o
+         gymg==
+X-Gm-Message-State: AOJu0YwBG6zzmhUqIALkkCZxG9J8OiRVtFONf8FT5BRxazNCp5Tagig3
+        2y/ipRfkj/bg4IynnNkgos6PhUhnTtUrRdycUhY=
+X-Google-Smtp-Source: AGHT+IEaf8TDj8druJGx1h/K3t02CoXpiCXsWkvUn8BmOth8vUUzkumZGNAr07h5y9OJmxtZDfwynixe/JwROKF48UA=
+X-Received: by 2002:a17:90b:4b41:b0:26b:219f:3399 with SMTP id
+ mi1-20020a17090b4b4100b0026b219f3399mr215435pjb.35.1695401663298; Fri, 22 Sep
+ 2023 09:54:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3027; i=keescook@chromium.org;
- h=from:subject:message-id; bh=D3wJYtNT+fehH+dInexP+yE206U6nroRdgV+blpgkJU=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDcXf2S6cAcLFqAOzju8F3xU0g4vs2DhpWBo9i
- y9AMlhf1BWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3F3wAKCRCJcvTf3G3A
- Jh5ND/96fenf2yO4Fqd07XMPqa6DS2scTmmqjljStWjvAz43/k1J1kxDY6XNrwPwNrPHzy4xLEg
- go1s8Y/WUCT5z79TuqTZ0U9HSNYNdL2o3WoCeGrLjqvT7dEGQXt9TjGwRV0WAkntvnIn1xkEb7J
- YAEbembiRiToiE/sbiHRbyOquDKSorqWtWETg/HGdHRFaRIclYUdLjv/RJe+N0lT1ZNulNXGsV2
- IbhTprdB50zHbHM65wmHOoRGOtWx+iNL856q/7/9DGf8TURtBizSDuSfLWNI4GA5s+ABlS0q0c0
- KncfWy3dv241llYKivdUwz7/4kgKO0IREV4SeJvEkHO9h2FSey6gSlslnCKf8P+g8CdcURllSOt
- OrLrqYYFjIw7lEiX2v7hkjTLIzGaOIv9h4PXRoq4M4djR7PV/B8FWYrgKbOUVEG1a9iyUy4KlK+
- XtxnUnhlj4Az3WlsZ7lf8sqXlAxsUUJ6wK/rVBDTtlgrdeFgsObARhi56X0pg2LS5IKfVA1A0Pe
- OmtzPfDwtE565FYrofTCSHSWj2dzD1UKWV0HF6SQFbs0LqYGHgQtTGJc1GN1rnbK5+Wq6lJyqkP
- AUT5praPLaRrsygNTE4T18KFKVdqxKMI9ZzVd40k3H2Bxn5fBZ9iuc7Bpk4qTTydjVdrITOCpy9
- 73xJjbt nPTopGDg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+References: <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
+ <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
+ <3e08d48b-7b70-cc7f-0ec1-12ad9b1a33db@redhat.com> <CAAa6QmSNvx7wbZzfhFOyhODTMoBbf6PimnOf2xeAw5NkD1eXVg@mail.gmail.com>
+ <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com> <ZOijSwCa9NFD6DZI@casper.infradead.org>
+ <9f967665-2cbd-f80b-404e-ac741eab1ced@redhat.com> <CAAa6QmQRFwzXWHEL2d74sX6JuciJeBzprk1NxCWKB6i53gmt6Q@mail.gmail.com>
+ <20230906065817.GA27879@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20230920054454.GA26860@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <20230920054454.GA26860@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 22 Sep 2023 09:54:11 -0700
+Message-ID: <CAHbLzkouAZg5BSvnwv_EN6G3qV-nzeX2ced1GRqQDf2rkm992w@mail.gmail.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v3] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+To:     Saurabh Singh Sengar <ssengar@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Zach O'Keefe" <zokeefe@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,67 +82,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the pathological case of building sky2 with 16k PAGE_SIZE, the
-frag_addr[] array would never be used, so the original code was correct
-that size should be 0. But the compiler now gets upset with 0 size arrays
-in places where it hasn't eliminated the code that might access such an
-array (it can't figure out that in this case an rx skb with fragments
-would never be created). To keep the compiler happy, make sure there is
-at least 1 frag_addr in struct rx_ring_info:
+On Tue, Sep 19, 2023 at 10:44=E2=80=AFPM Saurabh Singh Sengar
+<ssengar@linux.microsoft.com> wrote:
+>
+> On Tue, Sep 05, 2023 at 11:58:17PM -0700, Saurabh Singh Sengar wrote:
+> > On Fri, Aug 25, 2023 at 08:09:07AM -0700, Zach O'Keefe wrote:
+> > > On Fri, Aug 25, 2023 at 5:58=E2=80=AFAM David Hildenbrand <david@redh=
+at.com> wrote:
+> > > >
+> > > > On 25.08.23 14:49, Matthew Wilcox wrote:
+> > > > > On Fri, Aug 25, 2023 at 09:59:23AM +0200, David Hildenbrand wrote=
+:
+> > > > >> Especially, we do have bigger ->huge_fault changes coming up:
+> > > > >>
+> > > > >> https://lkml.kernel.org/r/20230818202335.2739663-1-willy@infrade=
+ad.org
+> > >
+> > > FWIW, one of those patches updates the docs to read,
+> > >
+> > > "->huge_fault() is called when there is no PUD or PMD entry present. =
+ This
+> > > gives the filesystem the opportunity to install a PUD or PMD sized pa=
+ge.
+> > > Filesystems can also use the ->fault method to return a PMD sized pag=
+e,
+> > > so implementing this function may not be necessary.  In particular,
+> > > filesystems should not call filemap_fault() from ->huge_fault(). [..]=
+"
+> > >
+> > > Which won't work (in the general case) without this patch (well, at
+> > > least the ->huge_fault() check part).
+> > >
+> > > So, if we're advertising this is the way it works, maybe that gives a
+> > > stronger argument for addressing it sooner vs when the first in-tree
+> > > user depends on it?
+> > >
+> > > > >> If the driver is not in the tree, people don't care.
+> > > > >>
+> > > > >> You really should try upstreaming that driver.
+> > > > >>
+> > > > >>
+> > > > >> So this patch here adds complexity (which I don't like) in order=
+ to keep an
+> > > > >> OOT driver working -- possibly for a short time. I'm tempted to =
+say "please
+> > > > >> fix your driver to not use huge faults in that scenario, it is n=
+o longer
+> > > > >> supported".
+> > > > >>
+> > > > >> But I'm just about to vanish for 1.5 week into vacation :)
+> > > > >>
+> > > > >> @Willy, what are your thoughts?
+> > > > >
+> > > > > Fundamentally there was a bad assumption with the original patch =
+--
+> > > > > it assumed that the only reason to support ->huge_fault was for D=
+AX,
+> > > > > and that's not true.  It's just that the only drivers in-tree whi=
+ch
+> > > > > support ->huge_fault do so in order to support DAX.
+> > > >
+> > > > Okay, and we are willing to continue supporting that then and it's
+> > > > nothing we want to stop OOT drivers from doing.
+> > > >
+> > > > Fine with me; we should probably reflect that in the patch descript=
+ion.
+> > >
+> > > I can change these paragraphs,
+> > >
+> > > "During the review of the above commits, it was determined that in-tr=
+ee
+> > > users weren't affected by the change; most notably, since the only re=
+levant
+> > > user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which i=
+s
+> > > explicitly approved early in approval logic.  However, there is at le=
+ast
+> > > one occurrence where an out-of-tree driver that used
+> > > VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken=
+.
+> > >
+> > > Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+> > > any ->huge_fault handler a chance to handle the fault.  Note that we
+> > > don't validate the file mode or mapping alignment, which is consisten=
+t
+> > > with the behavior before the aforementioned commits."
+> > >
+> > > To read,
+> > >
+> > > "The above commits, however, overfit the existing in-tree use cases,
+> > > and assume that
+> > > the only reason to support ->huge_fault was for DAX (which is
+> > > explicitly approved early in the approval logic).
+> > > This is a bad assumption to make and unnecessarily prevents general
+> > > support of ->huge_fault by filesystems. Allow returning "true" if suc=
+h
+> > > a handler exists, giving the fault path an opportunity to exercise it=
+.
+> > >
+> > > Similarly, the rationale for including the VM_NO_KHUGEPAGED check
+> > > along the fault path was that it didn't alter any in-tree users, but
+> > > was likewise similarly unnecessarily restrictive (and reads odd).
+> > > Remove the check from the fault path."
+> > >
+> >
+> >
+> > Any chance this can make it to 6.6 kernel ?
+>
+> ping
 
-   In file included from include/linux/skbuff.h:28,
-                    from include/net/net_namespace.h:43,
-                    from include/linux/netdevice.h:38,
-                    from drivers/net/ethernet/marvell/sky2.c:18:
-   drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_unmap_skb':
-   include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
-     416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/marvell/sky2.c:1257:17: note: in expansion of macro 'dma_unmap_page'
-    1257 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
-         |                 ^~~~~~~~~~~~~~
-   In file included from drivers/net/ethernet/marvell/sky2.c:41:
-   drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
-    2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-         |                         ^~~~~~~~~
+I think we tend to merge this patch, but anyway it is Andrew's call.
+Included Andrew in this loop.
 
-With CONFIG_PAGE_SIZE_16KB=y, PAGE_SHIFT == 14, so:
-
-  #define ETH_JUMBO_MTU   9000
-
-causes "ETH_JUMBO_MTU >> PAGE_SHIFT" to be 0. Use "?: 1" to solve this build warning.
-
-Cc: Mirko Lindner <mlindner@marvell.com>
-Cc: Stephen Hemminger <stephen@networkplumber.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309191958.UBw1cjXk-lkp@intel.com/
-Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2 - improve commit message, add Ack
-v1 - https://lore.kernel.org/netdev/20230920202509.never.299-kees@kernel.org/
----
- drivers/net/ethernet/marvell/sky2.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/marvell/sky2.h b/drivers/net/ethernet/marvell/sky2.h
-index ddec1627f1a7..8d0bacf4e49c 100644
---- a/drivers/net/ethernet/marvell/sky2.h
-+++ b/drivers/net/ethernet/marvell/sky2.h
-@@ -2195,7 +2195,7 @@ struct rx_ring_info {
- 	struct sk_buff	*skb;
- 	dma_addr_t	data_addr;
- 	DEFINE_DMA_UNMAP_LEN(data_size);
--	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-+	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT ?: 1];
- };
- 
- enum flow_control {
--- 
-2.34.1
-
+>
+> >
+> > - Saurabh
