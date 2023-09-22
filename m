@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE9B7AB076
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5BC7AB07A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233613AbjIVLTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        id S233617AbjIVLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjIVLTd (ORCPT
+        with ESMTP id S233717AbjIVLTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:19:33 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F84A19A;
-        Fri, 22 Sep 2023 04:19:22 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c01d22f332so41413461fa.0;
-        Fri, 22 Sep 2023 04:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695381560; x=1695986360; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LKJ4pb/GBXj2s0ZEnN3vYB7C6zmEZzHwGfNiutIEY6I=;
-        b=Oj5vp+Kxm8r3IOBPnXp8vAUDU2el0Ti82rGxrWvHZ7nhoZ/UIhhO+DrxiSnUlvhWtv
-         RHNPEa99qCwBKQGNosD+XRThAvcxF8wGXGqp2bpDCm7yU0+emnImIqJHKUc8Zp3+A0iE
-         nNyBaf8s1wpSyaaNuvLW/N6+zqWBVwuM72OtQj2X+vHMJNYV0r5xzEsH36G9dHNmZi4X
-         rIi9XgubOZGmT23P1lUMj06k93BCa0GDfZ4uBCvUAMEZfD/62cqj91APz//yXP0j0TxF
-         lrZMTJx7wp322CnpJJgEBKMl2mKUm02s7YqjlzPMzZRb2XdKCeYmDb4tDiLxV6zkFdfz
-         lePw==
+        Fri, 22 Sep 2023 07:19:46 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC25CD9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:19:38 -0700 (PDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9A4BF41DB4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1695381576;
+        bh=1mIxhTKnFz6jPIBGB85iZJtGzL+3q9xOGEF8ZcDvszY=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=sncnI5hhujRbZJa87Wy2M5hnTaqSGgxdN2aMdCOX6Kxql0lojJxt/7OYHLDhITXoC
+         WwyPMTzQJZVdXHl+6ykml6ze/wZvhtddLvnDi5Bdi7Z9eCzPHv6fs8dEqj6f2GGojK
+         eJr1CUFD/hZ0U9YY5i/5N2tWnf7fScSO9R8N2q+e6uB7cQ8gHl8JHdPiNfkbu9Q+VV
+         Ypf9suBpN9R8+60qokxRygZpI7mi5nesCwKtAUHNkm8QfH247uUtGzsodY1NtBhm9K
+         GP3gVZS2fXv34eJDc32GrwH5COyoZVb8YMZPlDMdjV9vUqlLF0tJ8vfOGkYJVnEl8O
+         T68FqWXTUrpYQ==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-414bbfbdf37so20859591cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:19:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695381560; x=1695986360;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LKJ4pb/GBXj2s0ZEnN3vYB7C6zmEZzHwGfNiutIEY6I=;
-        b=OvyMKY7XOWpd1ve9q6AnnV9Sx/zhnrLvLrlCDpGcHyagPuobH7Ab4iJLZ0ILWtgr5g
-         ipTWX/TX/wTlH+Ykd4XE/f8fNk+lTEhmUMoKi1d8UKXbC3SYzIiSgN4M2i7f8Q5U7xmi
-         /82L8fslknLdwA9YTcDgjd1vQQgFVZAq/qb7inHrZOcNvmfNRm7ROQ9mX9FTHigkdXNJ
-         OrgZYAnnMogXKXtMC32gNfWym/pXoeETvpjhxqVjLwcglFCUtwO6yT5/ZaUrBNNTJKzv
-         p49egJ48srYQ4MaYaNFQ301R20uv3lxTmL6lnQDQZSlR9eJTtjEcih9+TnyjvlmcklSv
-         FmaA==
-X-Gm-Message-State: AOJu0YzDYRe5IYlHYMS4QbLFgLlSJdAKmo+lRTlY9fePRCulQYu7aS8Q
-        4nmjB+QLdZ+iY3U3jTUYqpM=
-X-Google-Smtp-Source: AGHT+IG+oiOPAAxNkENKOPJKwXPdOdL+LqBPhsUELBgX3x/wyqS+4CgxD2To9m70c7fMivhzr5ecGg==
-X-Received: by 2002:a05:6512:3ba8:b0:500:c00e:8f15 with SMTP id g40-20020a0565123ba800b00500c00e8f15mr992381lfv.16.1695381560018;
-        Fri, 22 Sep 2023 04:19:20 -0700 (PDT)
-Received: from dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id b20-20020ac247f4000000b00502d9af34aesm693001lfp.120.2023.09.22.04.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:19:19 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 14:19:10 +0300
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Benjamin Bara <bbara93@gmail.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/6] iio: pressure: Support ROHM BU1390
-Message-ID: <2e2857aa26cf06353f6aeb6d2906ee7a8490aa1a.1695380366.git.mazziesaccount@gmail.com>
-References: <cover.1695380366.git.mazziesaccount@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VSgiOLwEw6Wpvd6/"
-Content-Disposition: inline
-In-Reply-To: <cover.1695380366.git.mazziesaccount@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        d=1e100.net; s=20230601; t=1695381575; x=1695986375;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1mIxhTKnFz6jPIBGB85iZJtGzL+3q9xOGEF8ZcDvszY=;
+        b=Sow7xo2N+6Kf2Xztjc27OA0tstl64ngNcW6Z9hTToP1/gxsUxPq6u+MOMZxaGdCLa+
+         TS/6LgCBwcJ31DHSAP1K4V7Khj3/YRwsmdxTGRoUOhi3sEzPBnFlnKcZ5Oa0ZEhwFOuR
+         H8SPDhG6MxWTmMjCGPhNfShTBeea1JuQmMvWGY8lIs28x5PTbGglcPQBMtr/Yc+6bXC5
+         574EMF9XqUxPwmknsokLkNNHlk74JEWY+nPEMfWRyD/e4/kRj1XiKSaU2nV22Scay/Yu
+         E/gNA5WZ/69OmER23UWoB0kaVfifcowpnZSnYTd6i+iXjC4eHNQBU73ksHROenO6uwkb
+         2x3A==
+X-Gm-Message-State: AOJu0YzOPqY2UbHi4l6ixdrIBSTsYlrsX+Vx/zrXmHdUMew+DpqO792J
+        MzsG/3bS6Gf35/bVT8PsMfulEpDX4I0t1GHHEJGjJkTEZtUx7rHenDKpHUUEYEzN575aVCXprOg
+        de+cadqUgpyoTvSPP0z1R5v4WU42rzDTaYmDAqwctuF1XukFL8l3oYm9V3w==
+X-Received: by 2002:a05:622a:1183:b0:417:98a1:3403 with SMTP id m3-20020a05622a118300b0041798a13403mr8762361qtk.25.1695381575614;
+        Fri, 22 Sep 2023 04:19:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF84PCUxr/KMVWHCHR/zUqvpLVX2Rs9nI1gNGBy7jDTcV2nsokG0Xv14fhICpXsCH39rVxLqJq5o09Iq1BDIHM=
+X-Received: by 2002:a05:622a:1183:b0:417:98a1:3403 with SMTP id
+ m3-20020a05622a118300b0041798a13403mr8762342qtk.25.1695381575315; Fri, 22 Sep
+ 2023 04:19:35 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 22 Sep 2023 04:19:34 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <0bd1742c-fa39-4f63-a594-6d325dc6b062@codethink.co.uk>
+References: <20230915072558.118325-1-wangchen20@iscas.ac.cn>
+ <803daa8f-f4bd-34b7-f826-89e1db5f24f6@linaro.org> <CAJM55Z-GMm5Hmk7-QWt8Prvp7qyFzOrQVjOjB7jfoX-oiT_C1A@mail.gmail.com>
+ <862905cc-48c3-2dc9-6032-6ee189a629e6@linaro.org> <CAJM55Z8WDcjRER3ffnj+6V=QWEmudZyaO9z2iPUvreU1okq27A@mail.gmail.com>
+ <0bd1742c-fa39-4f63-a594-6d325dc6b062@codethink.co.uk>
+Mime-Version: 1.0
+Date:   Fri, 22 Sep 2023 04:19:34 -0700
+Message-ID: <CAJM55Z_M47JA3U40whsRnW-nHN+yjyOo6eCUrGBK-=a1VvHuaQ@mail.gmail.com>
+Subject: Re: [PATCH 10/12] serial: 8250_dw: Add Sophgo SG2042 support
+To:     Ben Dooks <ben.dooks@codethink.co.uk>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Wang Chen <unicornxw@gmail.com>,
+        linux-riscv@lists.infradead.org, conor@kernel.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,1088 +87,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ben Dooks wrote:
+> On 15/09/2023 11:23, Emil Renner Berthing wrote:
+> > Krzysztof Kozlowski wrote:
+> >> On 15/09/2023 12:02, Emil Renner Berthing wrote:
+> >>> Krzysztof Kozlowski wrote:
+> >>>> On 15/09/2023 09:25, Wang Chen wrote:
+> >>>>> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> >>>>>
+> >>>>> Add quirk to skip setting the input clock rate for the uarts on the
+> >>>>> Sophgo SG2042 SoC similar to the StarFive JH7100.
+> >>>>>
+> >>>>> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> >>>>
+> >>>> Missing SoB.
+> >>>>
+> >>>>> ---
+> >>>>>   drivers/tty/serial/8250/8250_dw.c | 5 +++--
+> >>>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+> >>>>> index f4cafca1a7da..6c344877a07f 100644
+> >>>>> --- a/drivers/tty/serial/8250/8250_dw.c
+> >>>>> +++ b/drivers/tty/serial/8250/8250_dw.c
+> >>>>> @@ -770,7 +770,7 @@ static const struct dw8250_platform_data dw8250_renesas_rzn1_data = {
+> >>>>>   	.quirks = DW_UART_QUIRK_IS_DMA_FC,
+> >>>>>   };
+> >>>>>
+> >>>>> -static const struct dw8250_platform_data dw8250_starfive_jh7100_data = {
+> >>>>> +static const struct dw8250_platform_data dw8250_skip_set_rate_data = {
+> >>>>
+> >>>> Why? What is wrong with old name?
+> >>>>
+> >>>>>   	.usr_reg = DW_UART_USR,
+> >>>>>   	.quirks = DW_UART_QUIRK_SKIP_SET_RATE,
+> >>>>>   };
+> >>>>> @@ -780,7 +780,8 @@ static const struct of_device_id dw8250_of_match[] = {
+> >>>>>   	{ .compatible = "cavium,octeon-3860-uart", .data = &dw8250_octeon_3860_data },
+> >>>>>   	{ .compatible = "marvell,armada-38x-uart", .data = &dw8250_armada_38x_data },
+> >>>>>   	{ .compatible = "renesas,rzn1-uart", .data = &dw8250_renesas_rzn1_data },
+> >>>>> -	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_starfive_jh7100_data },
+> >>>>> +	{ .compatible = "sophgo,sg2042-uart", .data = &dw8250_skip_set_rate_data },
+> >>>>> +	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_skip_set_rate_data },
+> >>>>
+> >>>> So devices are fully compatible? Then use compatibility and drop this
+> >>>> patch entirely.
+> >>>
+> >>> I'm fine with this, but these are two different companies and SoCs that just
+> >>> happens to have both implemented the Designware UART with an inflexible input
+> >>> clock. So if fx. a real quirk is found on the JH7110 then we'd need to either
+> >>> change the compatible on an unrelated SoC or change compatible on the JH7110 to
+> >>
+> >> Wait, why? The compatible is still there, so you just add here proper
+> >> entry, if ever needed.
+> >
+> > Sorry, I messed up my example by writing JH7110 where I meant JH7100
+> >
+> >>> something like "starfive,jh7100-uart-with-quirk" and "starfive,jh7100-uart" will
+> >>> forever be a quirky way to spell "dw8250 with inflexible input clock".
+> >>> Is that how device trees are supposed to work?
+> >>
+> >> I don't get this part. But anyway if the blocks are really designed or
+> >> done independently and there is no shared part, except the DWC block,
+> >> then indeed the compatibility might be just a coincidence...
+> >>
+> >
+> > It is. Sophgo and StarFive are not the same company. Sophgo are using RISC-V
+> > cores from T-Head and StarFive are using cores from SiFive. They just happen to
+> > both use the Designware UART in the same way.
+>
+> Out of interest, what's the issue with just providing an fixed clock in
+> the device tree for these machines?
 
---VSgiOLwEw6Wpvd6/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You mean adding a "fake" fixed clock to the device tree and specify that in the
+uart nodes? That would break the clock dependency, so then you'd need to add
+some other way to tell the clock framework not to shut down the real clock.
 
-Support for the ROHM BM1390 pressure sensor. The BM1390GLV-Z can measure
-pressures ranging from 300 hPa to 1300 hPa with configurable measurement
-averaging and internal FIFO. The sensor does also provide temperature
-measurements.
-
-Sensor does also contain IIR filter implemented in HW. The data-sheet
-says the IIR filter can be configured to be "weak", "middle" or
-"strong". Some RMS noise figures are provided in data sheet but no
-accurate maths for the filter configurations is provided. Hence, the IIR
-filter configuration is not supported by this driver and the filter is
-configured to the "middle" setting (at least not for now).
-
-The FIFO measurement mode is only measuring the pressure and not the
-temperature. The driver measures temperature when FIFO is flushed and
-simply uses the same measured temperature value to all reported
-temperatures. This should not be a problem when temperature is not
-changing very rapidly (several degrees C / second) but allows users to
-get the temperature measurements from sensor without any additional logic.
-
-This driver allows the sensor to be used in two muitually exclusive ways,
-
-1. With trigger (data-ready IRQ).
-In this case the FIFO is not used as we get data ready for each collected
-sample. Instead, for each data-ready IRQ we read the sample from sensor
-and push it to the IIO buffer.
-
-2. With hardware FIFO and watermark IRQ.
-In this case the data-ready is not used but we enable watermark IRQ. At
-each watermark IRQ we go and read all samples in FIFO and push them to the
-IIO buffer.
-
-Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-
----
-Revision history:
-
-v2 =3D> v3:
-- Read temperature only after FIFO is read to overcome a HW quirck
-- Drop unused defines
-- Allow scanning the pressure only
-- Some clarifying comments added, some made less verbose
-- warn if measurement stp fails
-- use IIO_VAL_FRACTIONAL for pressure scale
-- don't disable IRQ but use timestamp from stack
-- fix amount of samples to read
-- minor styling
-- better separate buffer and trigger parts
-- allow buffer even when there is no IRQ
-  with external trigger to be supported.
-- add completely, utterly useless NULL check because we have the cycles
-  to waste (grumbles)
-
-v1 =3D> v2:
-- prefer s64 over int64_t
-- drop not needed handling of 2's complements
-- plenty of styling changes
-- drop dead code (write_raw)
-- fix typos in comments
-- explain trigger and FIFO usage in commit message
-- do better job at cheking the return values
-- ensure there's no race when checking if triggered buffer is used
-  before enabling the FIFO
-- print warning if register read fails at IRQ handler
-- drop unnecessary warning if IRQ is not given
-- explain why we prefer asynchronous probing
----
- drivers/iio/pressure/Kconfig       |   9 +
- drivers/iio/pressure/Makefile      |   1 +
- drivers/iio/pressure/rohm-bm1390.c | 930 +++++++++++++++++++++++++++++
- 3 files changed, 940 insertions(+)
- create mode 100644 drivers/iio/pressure/rohm-bm1390.c
-
-diff --git a/drivers/iio/pressure/Kconfig b/drivers/iio/pressure/Kconfig
-index 7b4c2af32852..95efa32e4289 100644
---- a/drivers/iio/pressure/Kconfig
-+++ b/drivers/iio/pressure/Kconfig
-@@ -16,6 +16,15 @@ config ABP060MG
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called abp060mg.
-=20
-+config ROHM_BM1390
-+	tristate "ROHM BM1390GLV-Z pressure sensor driver"
-+	depends on I2C
-+	help
-+	  Support for the ROHM BM1390 pressure sensor. The BM1390GLV-Z
-+	  can measure pressures ranging from 300 hPa to 1300 hPa with
-+	  configurable measurement averaging and internal FIFO. The
-+	  sensor does also provide temperature measurements.
-+
- config BMP280
- 	tristate "Bosch Sensortec BMP180/BMP280/BMP380/BMP580 pressure sensor dri=
-ver"
- 	depends on (I2C || SPI_MASTER)
-diff --git a/drivers/iio/pressure/Makefile b/drivers/iio/pressure/Makefile
-index c90f77210e94..436aec7e65f3 100644
---- a/drivers/iio/pressure/Makefile
-+++ b/drivers/iio/pressure/Makefile
-@@ -5,6 +5,7 @@
-=20
- # When adding new entries keep the list in alphabetical order
- obj-$(CONFIG_ABP060MG) +=3D abp060mg.o
-+obj-$(CONFIG_ROHM_BM1390) +=3D rohm-bm1390.o
- obj-$(CONFIG_BMP280) +=3D bmp280.o
- bmp280-objs :=3D bmp280-core.o bmp280-regmap.o
- obj-$(CONFIG_BMP280_I2C) +=3D bmp280-i2c.o
-diff --git a/drivers/iio/pressure/rohm-bm1390.c b/drivers/iio/pressure/rohm=
--bm1390.c
-new file mode 100644
-index 000000000000..82a0cd61d215
---- /dev/null
-+++ b/drivers/iio/pressure/rohm-bm1390.c
-@@ -0,0 +1,930 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * BM1390 ROHM pressure sensor
-+ *
-+ * Copyright (c) 2023, ROHM Semiconductor.
-+ * https://fscdn.rohm.com/en/products/databook/datasheet/ic/sensor/pressur=
-e/bm1390glv-z-e.pdf
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <linux/iio/iio.h>
-+#include <linux/iio/trigger.h>
-+#include <linux/iio/trigger_consumer.h>
-+#include <linux/iio/triggered_buffer.h>
-+
-+#define BM1390_REG_MANUFACT_ID		0x0f
-+#define BM1390_REG_PART_ID		0x10
-+#define BM1390_REG_POWER		0x12
-+#define BM1390_MASK_POWER		BIT(0)
-+#define BM1390_POWER_ON			BM1390_MASK_POWER
-+#define BM1390_POWER_OFF		0x00
-+#define BM1390_REG_RESET		0x13
-+#define BM1390_MASK_RESET		BIT(0)
-+#define BM1390_RESET_RELEASE		BM1390_MASK_RESET
-+#define BM1390_RESET			0x00
-+#define BM1390_REG_MODE_CTRL		0x14
-+#define BM1390_MASK_MEAS_MODE		GENMASK(1, 0)
-+#define BM1390_MASK_DRDY_EN		BIT(4)
-+#define BM1390_MASK_WMI_EN		BIT(2)
-+#define BM1390_MASK_AVE_NUM		GENMASK(7, 5)
-+
-+/*
-+ * Data-sheet states that when the IIR is used, the AVE_NUM must be set to
-+ * value 110b
-+ */
-+#define BM1390_IIR_AVE_NUM		0x06
-+#define BM1390_REG_FIFO_CTRL		0x15
-+#define BM1390_MASK_IIR_MODE		GENMASK(1, 0)
-+#define BM1390_IIR_MODE_OFF		0x0
-+#define BM1390_IIR_MODE_WEAK		0x1
-+#define BM1390_IIR_MODE_MID		0x2
-+#define BM1390_IIR_MODE_STRONG		0x3
-+
-+#define BM1390_MASK_FIFO_LEN		BIT(6)
-+#define BM1390_MASK_FIFO_EN		BIT(7)
-+#define BM1390_WMI_MIN			2
-+#define BM1390_WMI_MAX			3
-+
-+#define BM1390_REG_FIFO_LVL		0x18
-+#define BM1390_MASK_FIFO_LVL		GENMASK(2, 0)
-+#define BM1390_REG_STATUS		0x19
-+#define BM1390_REG_PRESSURE_BASE	0x1a
-+#define BM1390_REG_TEMP_HI		0x1d
-+#define BM1390_REG_TEMP_LO		0x1e
-+#define BM1390_MAX_REGISTER		BM1390_REG_TEMP_LO
-+
-+#define BM1390_ID			0x34
-+
-+/* Regmap configs */
-+static const struct regmap_range bm1390_volatile_ranges[] =3D {
-+	{
-+		.range_min =3D BM1390_REG_STATUS,
-+		.range_max =3D BM1390_REG_STATUS,
-+	},
-+	{
-+		.range_min =3D BM1390_REG_FIFO_LVL,
-+		.range_max =3D BM1390_REG_TEMP_LO,
-+	},
-+};
-+
-+static const struct regmap_access_table bm1390_volatile_regs =3D {
-+	.yes_ranges =3D &bm1390_volatile_ranges[0],
-+	.n_yes_ranges =3D ARRAY_SIZE(bm1390_volatile_ranges),
-+};
-+
-+static const struct regmap_range bm1390_precious_ranges[] =3D {
-+	{
-+		.range_min =3D BM1390_REG_STATUS,
-+		.range_max =3D BM1390_REG_STATUS,
-+	},
-+};
-+
-+static const struct regmap_access_table bm1390_precious_regs =3D {
-+	.yes_ranges =3D &bm1390_precious_ranges[0],
-+	.n_yes_ranges =3D ARRAY_SIZE(bm1390_precious_ranges),
-+};
-+
-+static const struct regmap_range bm1390_read_only_ranges[] =3D {
-+	{
-+		.range_min =3D BM1390_REG_MANUFACT_ID,
-+		.range_max =3D BM1390_REG_PART_ID,
-+	}, {
-+		.range_min =3D BM1390_REG_FIFO_LVL,
-+		.range_max =3D BM1390_REG_TEMP_LO,
-+	},
-+};
-+
-+static const struct regmap_access_table bm1390_ro_regs =3D {
-+	.no_ranges =3D &bm1390_read_only_ranges[0],
-+	.n_no_ranges =3D ARRAY_SIZE(bm1390_read_only_ranges),
-+};
-+
-+static const struct regmap_range bm1390_noinc_read_ranges[] =3D {
-+	{
-+		.range_min =3D BM1390_REG_PRESSURE_BASE,
-+		.range_max =3D BM1390_REG_TEMP_LO,
-+	},
-+};
-+
-+static const struct regmap_access_table bm1390_nir_regs =3D {
-+	.yes_ranges =3D &bm1390_noinc_read_ranges[0],
-+	.n_yes_ranges =3D ARRAY_SIZE(bm1390_noinc_read_ranges),
-+};
-+
-+static const struct regmap_config bm1390_regmap =3D {
-+	.reg_bits =3D 8,
-+	.val_bits =3D 8,
-+	.volatile_table =3D &bm1390_volatile_regs,
-+	.wr_table =3D &bm1390_ro_regs,
-+	.rd_noinc_table =3D &bm1390_nir_regs,
-+	.precious_table =3D &bm1390_precious_regs,
-+	.max_register =3D BM1390_MAX_REGISTER,
-+	.cache_type =3D REGCACHE_RBTREE,
-+	.disable_locking =3D true,
-+};
-+
-+enum {
-+	BM1390_STATE_SAMPLE,
-+	BM1390_STATE_FIFO,
-+};
-+
-+struct bm1390_data_buf {
-+	u32 pressure;
-+	__be16 temp;
-+	s64 ts __aligned(8);
-+};
-+
-+/* BM1390 has FIFO for 4 pressure samples */
-+#define BM1390_FIFO_LENGTH	4
-+
-+struct bm1390_data {
-+	s64 timestamp, old_timestamp;
-+	struct iio_trigger *trig;
-+	struct regmap *regmap;
-+	struct device *dev;
-+	struct bm1390_data_buf buf;
-+	int irq;
-+	unsigned int state;
-+	bool trigger_enabled;
-+	u8 watermark;
-+
-+	/* Prevent accessing sensor during FIFO read sequence */
-+	struct mutex mutex;
-+};
-+
-+enum {
-+	BM1390_CHAN_PRESSURE,
-+	BM1390_CHAN_TEMP,
-+};
-+
-+static const struct iio_chan_spec bm1390_channels[] =3D {
-+	{
-+		.type =3D IIO_PRESSURE,
-+		.info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW),
-+		/*
-+		 * When IIR is used, we must fix amount of averaged samples.
-+		 * Thus we don't allow setting oversampling ratio.
-+		 */
-+		.info_mask_shared_by_type =3D BIT(IIO_CHAN_INFO_SCALE),
-+		.scan_index =3D BM1390_CHAN_PRESSURE,
-+		.scan_type =3D {
-+			.sign =3D 'u',
-+			.realbits =3D 22,
-+			.storagebits =3D 32,
-+			.endianness =3D IIO_LE,
-+		},
-+	},
-+	{
-+		.type =3D IIO_TEMP,
-+		.info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW),
-+		.info_mask_shared_by_type =3D BIT(IIO_CHAN_INFO_SCALE),
-+		.scan_index =3D BM1390_CHAN_TEMP,
-+		.scan_type =3D {
-+			.sign =3D 's',
-+			.realbits =3D 16,
-+			.storagebits =3D 16,
-+			.endianness =3D IIO_BE,
-+		},
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(2),
-+};
-+
-+/*
-+ * We can't skip reading the pressure because the watermark IRQ is acked
-+ * only when the pressure data is read from the FIFO.
-+ */
-+static const unsigned long bm1390_scan_masks[] =3D {
-+	BIT(BM1390_CHAN_PRESSURE),
-+	BIT(BM1390_CHAN_PRESSURE) | BIT(BM1390_CHAN_TEMP),
-+	0
-+};
-+
-+static int bm1390_read_temp(struct bm1390_data *data, int *temp)
-+{
-+	__be16 temp_raw;
-+	int ret;
-+
-+	ret =3D regmap_bulk_read(data->regmap, BM1390_REG_TEMP_HI, &temp_raw,
-+			       sizeof(temp_raw));
-+	if (ret)
-+		return ret;
-+
-+	*temp =3D be16_to_cpu(temp_raw);
-+
-+	return 0;
-+}
-+
-+static int bm1390_pressure_read(struct bm1390_data *data, u32 *pressure)
-+{
-+	/* Pressure data is in 3 8-bit registers */
-+	u8 raw[3];
-+	int ret;
-+
-+	ret =3D regmap_bulk_read(data->regmap, BM1390_REG_PRESSURE_BASE,
-+			       raw, sizeof(raw));
-+	if (ret < 0)
-+		return ret;
-+
-+	*pressure =3D (u32)(raw[2] >> 2 | raw[1] << 6 | raw[0] << 14);
-+
-+	return 0;
-+}
-+
-+ /* The enum values map directly to register bits */
-+enum bm1390_meas_mode {
-+	BM1390_MEAS_MODE_STOP =3D 0x0,
-+	BM1390_MEAS_MODE_1SHOT =3D 0x1,
-+	BM1390_MEAS_MODE_CONTINUOUS =3D 0x2,
-+};
-+
-+static int bm1390_meas_set(struct bm1390_data *data, enum bm1390_meas_mode=
- mode)
-+{
-+	return regmap_update_bits(data->regmap, BM1390_REG_MODE_CTRL,
-+				  BM1390_MASK_MEAS_MODE, mode);
-+}
-+
-+/*
-+ * If the trigger is not used we just wait until the measurement has
-+ * completed. The data-sheet says maximum measurement cycle (regardless
-+ * the AVE_NUM) is 200 mS so let's just sleep at least that long. If speed
-+ * is needed the trigger should be used.
-+ */
-+#define BM1390_MAX_MEAS_TIME_MS 205
-+
-+static int bm1390_read_data(struct bm1390_data *data,
-+			struct iio_chan_spec const *chan, int *val, int *val2)
-+{
-+	int ret, warn;
-+
-+	mutex_lock(&data->mutex);
-+	/*
-+	 * We use 'continuous mode' even for raw read because according to the
-+	 * data-sheet an one-shot mode can't be used with IIR filter.
-+	 */
-+	ret =3D bm1390_meas_set(data, BM1390_MEAS_MODE_CONTINUOUS);
-+	if (ret)
-+		goto unlock_out;
-+
-+	switch (chan->type) {
-+	case IIO_PRESSURE:
-+		msleep(BM1390_MAX_MEAS_TIME_MS);
-+		ret =3D bm1390_pressure_read(data, val);
-+		break;
-+	case IIO_TEMP:
-+		msleep(BM1390_MAX_MEAS_TIME_MS);
-+		ret =3D bm1390_read_temp(data, val);
-+		break;
-+	default:
-+		ret =3D -EINVAL;
-+	}
-+	warn =3D bm1390_meas_set(data, BM1390_MEAS_MODE_STOP);
-+	if (warn)
-+		dev_warn(data->dev, "Failed to stop measurementi (%d)\n", warn);
-+unlock_out:
-+	mutex_unlock(&data->mutex);
-+
-+	return ret;
-+}
-+
-+static int bm1390_read_raw(struct iio_dev *idev,
-+			   struct iio_chan_spec const *chan,
-+			   int *val, int *val2, long mask)
-+{
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	int ret;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_SCALE:
-+		if (chan->type =3D=3D IIO_TEMP) {
-+			*val =3D 31;
-+			*val2 =3D 250000;
-+
-+			return IIO_VAL_INT_PLUS_MICRO;
-+		} else if (chan->type =3D=3D IIO_PRESSURE) {
-+			/*
-+			 * pressure in hPa is register value divided by 2048.
-+			 * This means kPa is 1/20480 times the register value,
-+			 */
-+			*val =3D 1;
-+			*val2 =3D 2048;
-+
-+			return IIO_VAL_FRACTIONAL;
-+		}
-+
-+		return -EINVAL;
-+	case IIO_CHAN_INFO_RAW:
-+		ret =3D iio_device_claim_direct_mode(idev);
-+		if (ret)
-+			return ret;
-+
-+		ret =3D bm1390_read_data(data, chan, val, val2);
-+		iio_device_release_direct_mode(idev);
-+		if (ret)
-+			return ret;
-+
-+		return IIO_VAL_INT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int __bm1390_fifo_flush(struct iio_dev *idev, unsigned int samples,
-+			       s64 timestamp)
-+{
-+	/* BM1390_FIFO_LENGTH is small so we shouldn't run out of stack */
-+	struct bm1390_data_buf buffer[BM1390_FIFO_LENGTH];
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	int smp_lvl, ret, i, warn, dummy;
-+	u64 sample_period;
-+	__be16 temp =3D 0;
-+
-+	ret =3D regmap_read(data->regmap, BM1390_REG_FIFO_LVL, &smp_lvl);
-+	if (ret)
-+		return ret;
-+
-+	smp_lvl =3D FIELD_GET(BM1390_MASK_FIFO_LVL, smp_lvl);
-+	if (!smp_lvl)
-+		return 0;
-+
-+	if (smp_lvl > BM1390_FIFO_LENGTH) {
-+		/*
-+		 * The fifo holds maximum of 4 samples so valid values
-+		 * should be 0, 1, 2, 3, 4 - rest are probably bit errors
-+		 * in I2C line. Don't overflow if this happens.
-+		 */
-+		dev_err(data->dev, "bad FIFO level %d\n", smp_lvl);
-+		smp_lvl =3D BM1390_FIFO_LENGTH;
-+	}
-+
-+	sample_period =3D timestamp - data->old_timestamp;
-+	do_div(sample_period, smp_lvl);
-+
-+	if (samples && smp_lvl > samples)
-+		smp_lvl =3D samples;
-+
-+
-+	/*
-+	 * After some testing it appears that the temperature is not readable
-+	 * untill the FIFO access has been done after the WMI. Thus, we need
-+	 * to read the all pressure values to memory and read the temperature
-+	 * only after that.
-+	 */
-+	for (i =3D 0; i < smp_lvl; i++) {
-+		/*
-+		 * When we start reading data from the FIFO the sensor goes to
-+		 * special FIFO reading mode. If any other register is accessed
-+		 * during the FIFO read, samples can be dropped. Prevent access
-+		 * until FIFO_LVL is read. We have mutex locked and we do also
-+		 * go performing reading of FIFO_LVL even if this read fails.
-+		 */
-+		if (test_bit(BM1390_CHAN_PRESSURE, idev->active_scan_mask)) {
-+			ret =3D bm1390_pressure_read(data, &buffer[i].pressure);
-+			if (ret)
-+				break;
-+		}
-+
-+		/*
-+		 * Old timestamp is either the previous sample IRQ time,
-+		 * previous flush-time or, if this was first sample, the enable
-+		 * time. When we add a sample period to that we should get the
-+		 * best approximation of the time-stamp we are handling.
-+		 *
-+		 * Idea is to always keep the "old_timestamp" matching the
-+		 * timestamp which we are currently handling.
-+		 */
-+		data->old_timestamp +=3D sample_period;
-+		buffer[i].ts =3D data->old_timestamp;
-+	}
-+	/* Reading the FIFO_LVL closes the FIFO access sequence */
-+	warn =3D regmap_read(data->regmap, BM1390_REG_FIFO_LVL, &dummy);
-+	if (warn)
-+		dev_warn(data->dev, "Closing FIFO sequence failed\n");
-+
-+	if (ret)
-+		return ret;
-+
-+	if (test_bit(BM1390_CHAN_TEMP, idev->active_scan_mask)) {
-+		ret =3D regmap_bulk_read(data->regmap, BM1390_REG_TEMP_HI, &temp,
-+				       sizeof(temp));
-+		if (ret)
-+			return ret;
-+		pr_info("Temp before reading the FIFO %u\n", be16_to_cpu(temp));
-+	}
-+
-+	if (ret)
-+		return ret;
-+
-+	for (i =3D 0; i < smp_lvl; i++) {
-+		buffer[i].temp =3D temp;
-+		iio_push_to_buffers_with_timestamp(idev, &buffer[i],
-+						   buffer[i].ts);
-+	}
-+
-+	return smp_lvl;
-+}
-+
-+static int bm1390_fifo_flush(struct iio_dev *idev, unsigned int samples)
-+{
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	s64 timestamp;
-+	int ret;
-+
-+	/*
-+	 * If fifo_flush is being called from IRQ handler we know the stored
-+	 * timestamp is fairly accurate for the last stored sample. If we are
-+	 * called as a result of a read operation from userspace and hence
-+	 * before the watermark interrupt was triggered, take a timestamp
-+	 * now. We can fall anywhere in between two samples so the error in this
-+	 * case is at most one sample period.
-+	 * We need to have the IRQ disabled or we risk of messing-up
-+	 * the timestamps. If we are ran from IRQ, then the
-+	 * IRQF_ONESHOT has us covered - but if we are ran by the
-+	 * user-space read we need to disable the IRQ to be on a safe
-+	 * side. We do this usng synchronous disable so that if the
-+	 * IRQ thread is being ran on other CPU we wait for it to be
-+	 * finished.
-+	 */
-+
-+	timestamp =3D iio_get_time_ns(idev);
-+	mutex_lock(&data->mutex);
-+	ret =3D __bm1390_fifo_flush(idev, samples, timestamp);
-+	mutex_unlock(&data->mutex);
-+
-+	return ret;
-+}
-+
-+static int bm1390_set_watermark(struct iio_dev *idev, unsigned int val)
-+{
-+	struct bm1390_data *data =3D iio_priv(idev);
-+
-+	if (val < BM1390_WMI_MIN || val > BM1390_WMI_MAX)
-+		return -EINVAL;
-+
-+	mutex_lock(&data->mutex);
-+	data->watermark =3D val;
-+	mutex_unlock(&data->mutex);
-+
-+	return 0;
-+}
-+
-+static const struct iio_info bm1390_info =3D {
-+	.read_raw =3D &bm1390_read_raw,
-+	.validate_trigger =3D iio_validate_own_trigger,
-+	.hwfifo_set_watermark =3D bm1390_set_watermark,
-+	.hwfifo_flush_to_buffer =3D bm1390_fifo_flush,
-+};
-+
-+static int bm1390_chip_init(struct bm1390_data *data)
-+{
-+	int ret;
-+
-+	ret =3D regmap_write_bits(data->regmap, BM1390_REG_POWER,
-+				BM1390_MASK_POWER, BM1390_POWER_ON);
-+	if (ret)
-+		return ret;
-+
-+	msleep(1);
-+
-+	ret =3D regmap_write_bits(data->regmap, BM1390_REG_RESET,
-+				BM1390_MASK_RESET, BM1390_RESET);
-+	if (ret)
-+		return ret;
-+
-+	msleep(1);
-+
-+	ret =3D regmap_write_bits(data->regmap, BM1390_REG_RESET,
-+				BM1390_MASK_RESET, BM1390_RESET_RELEASE);
-+	if (ret)
-+		return ret;
-+
-+	msleep(1);
-+
-+	ret =3D regmap_reinit_cache(data->regmap, &bm1390_regmap);
-+	if (ret) {
-+		dev_err(data->dev, "Failed to reinit reg cache\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * Default to use IIR filter in "middle" mode. Also the AVE_NUM must
-+	 * be fixed when IIR is in use.
-+	 */
-+	ret =3D regmap_update_bits(data->regmap, BM1390_REG_MODE_CTRL,
-+				 BM1390_MASK_AVE_NUM, BM1390_IIR_AVE_NUM);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_update_bits(data->regmap, BM1390_REG_FIFO_CTRL,
-+				  BM1390_MASK_IIR_MODE, BM1390_IIR_MODE_MID);
-+}
-+
-+static int bm1390_fifo_set_wmi(struct bm1390_data *data)
-+{
-+	u8 regval;
-+
-+	regval =3D data->watermark - BM1390_WMI_MIN;
-+	regval =3D FIELD_PREP(BM1390_MASK_FIFO_LEN, regval);
-+
-+	return regmap_update_bits(data->regmap, BM1390_REG_FIFO_CTRL,
-+				  BM1390_MASK_FIFO_LEN, regval);
-+}
-+
-+static int bm1390_fifo_enable(struct iio_dev *idev)
-+{
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	int ret;
-+
-+	/* We can't do buffered stuff without IRQ as we never get WMI */
-+	if (data->irq <=3D 0)
-+		return -EINVAL;
-+
-+	mutex_lock(&data->mutex);
-+	if (data->trigger_enabled) {
-+		ret =3D -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	/* Update watermark to HW */
-+	ret =3D bm1390_fifo_set_wmi(data);
-+	if (ret)
-+		goto unlock_out;
-+
-+	/* Enable WMI_IRQ */
-+	ret =3D regmap_set_bits(data->regmap, BM1390_REG_MODE_CTRL,
-+			      BM1390_MASK_WMI_EN);
-+	if (ret)
-+		goto unlock_out;
-+
-+	/* Enable FIFO */
-+	ret =3D regmap_set_bits(data->regmap, BM1390_REG_FIFO_CTRL,
-+			      BM1390_MASK_FIFO_EN);
-+	if (ret)
-+		goto unlock_out;
-+
-+	data->state =3D BM1390_STATE_FIFO;
-+
-+	data->old_timestamp =3D iio_get_time_ns(idev);
-+	ret =3D bm1390_meas_set(data, BM1390_MEAS_MODE_CONTINUOUS);
-+
-+unlock_out:
-+	mutex_unlock(&data->mutex);
-+
-+	return ret;
-+}
-+
-+static int bm1390_fifo_disable(struct iio_dev *idev)
-+{
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	int ret;
-+
-+	msleep(1);
-+
-+	mutex_lock(&data->mutex);
-+	/* Disable FIFO */
-+	ret =3D regmap_clear_bits(data->regmap, BM1390_REG_FIFO_CTRL,
-+				BM1390_MASK_FIFO_EN);
-+	if (ret)
-+		goto unlock_out;
-+
-+	data->state =3D BM1390_STATE_SAMPLE;
-+
-+	/* Disable WMI_IRQ */
-+	ret =3D regmap_clear_bits(data->regmap, BM1390_REG_MODE_CTRL,
-+				 BM1390_MASK_WMI_EN);
-+	if (ret)
-+		goto unlock_out;
-+
-+	ret =3D bm1390_meas_set(data, BM1390_MEAS_MODE_STOP);
-+
-+unlock_out:
-+	mutex_unlock(&data->mutex);
-+
-+	return ret;
-+}
-+
-+static int bm1390_buffer_postenable(struct iio_dev *idev)
-+{
-+	/*
-+	 * If we use data-ready trigger, then the IRQ masks should be handled by
-+	 * trigger enable and the hardware buffer is not used but we just update
-+	 * results to the IIO FIFO when data-ready triggers.
-+	 */
-+	if (iio_device_get_current_mode(idev) =3D=3D INDIO_BUFFER_TRIGGERED)
-+		return 0;
-+
-+	return bm1390_fifo_enable(idev);
-+}
-+
-+static int bm1390_buffer_predisable(struct iio_dev *idev)
-+{
-+	if (iio_device_get_current_mode(idev) =3D=3D INDIO_BUFFER_TRIGGERED)
-+		return 0;
-+
-+	return bm1390_fifo_disable(idev);
-+}
-+
-+static const struct iio_buffer_setup_ops bm1390_buffer_ops =3D {
-+	.postenable =3D bm1390_buffer_postenable,
-+	.predisable =3D bm1390_buffer_predisable,
-+};
-+
-+static irqreturn_t bm1390_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf =3D p;
-+	struct iio_dev *idev =3D pf->indio_dev;
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	int ret, status;
-+
-+	/* DRDY is acked by reading status reg */
-+	ret =3D regmap_read(data->regmap, BM1390_REG_STATUS, &status);
-+	if (ret || !status)
-+		return IRQ_NONE;
-+
-+	dev_dbg(data->dev, "DRDY trig status 0x%x\n", status);
-+
-+	if (test_bit(BM1390_CHAN_PRESSURE, idev->active_scan_mask)) {
-+		ret =3D bm1390_pressure_read(data, &data->buf.pressure);
-+		if (ret) {
-+			dev_warn(data->dev, "sample read failed %d\n", ret);
-+			return IRQ_NONE;
-+		}
-+	}
-+
-+	if (test_bit(BM1390_CHAN_TEMP, idev->active_scan_mask)) {
-+		ret =3D regmap_bulk_read(data->regmap, BM1390_REG_TEMP_HI,
-+				       &data->buf.temp, sizeof(data->buf.temp));
-+		if (ret) {
-+			dev_warn(data->dev, "temp read failed %d\n", ret);
-+			return IRQ_HANDLED;
-+		}
-+	}
-+
-+	iio_push_to_buffers_with_timestamp(idev, &data->buf, data->timestamp);
-+	iio_trigger_notify_done(idev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+/* Get timestamps and wake the thread if we need to read data */
-+static irqreturn_t bm1390_irq_handler(int irq, void *private)
-+{
-+	struct iio_dev *idev =3D private;
-+	struct bm1390_data *data =3D iio_priv(idev);
-+
-+	data->timestamp =3D iio_get_time_ns(idev);
-+
-+	if (data->state =3D=3D BM1390_STATE_FIFO || data->trigger_enabled)
-+		return IRQ_WAKE_THREAD;
-+
-+	return IRQ_NONE;
-+}
-+
-+static irqreturn_t bm1390_irq_thread_handler(int irq, void *private)
-+{
-+	struct iio_dev *idev =3D private;
-+	struct bm1390_data *data =3D iio_priv(idev);
-+	int ret =3D IRQ_NONE;
-+
-+	mutex_lock(&data->mutex);
-+
-+	if (data->trigger_enabled) {
-+		iio_trigger_poll_nested(data->trig);
-+		ret =3D IRQ_HANDLED;
-+	} else if (data->state =3D=3D BM1390_STATE_FIFO) {
-+		int ok;
-+
-+		ok =3D __bm1390_fifo_flush(idev, BM1390_FIFO_LENGTH,
-+					 data->timestamp);
-+		if (ok > 0)
-+			ret =3D IRQ_HANDLED;
-+	}
-+
-+	mutex_unlock(&data->mutex);
-+
-+	return ret;
-+}
-+
-+static int bm1390_set_drdy_irq(struct bm1390_data *data, bool en)
-+{
-+	if (en)
-+		return regmap_set_bits(data->regmap, BM1390_REG_MODE_CTRL,
-+				       BM1390_MASK_DRDY_EN);
-+	return regmap_clear_bits(data->regmap, BM1390_REG_MODE_CTRL,
-+				 BM1390_MASK_DRDY_EN);
-+}
-+
-+static int bm1390_trigger_set_state(struct iio_trigger *trig,
-+				    bool state)
-+{
-+	struct bm1390_data *data =3D iio_trigger_get_drvdata(trig);
-+	int ret =3D 0;
-+
-+	mutex_lock(&data->mutex);
-+
-+	if (data->trigger_enabled =3D=3D state)
-+		goto unlock_out;
-+
-+	if (data->state =3D=3D BM1390_STATE_FIFO) {
-+		dev_warn(data->dev, "Can't set trigger when FIFO enabled\n");
-+		ret =3D -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	data->trigger_enabled =3D state;
-+
-+	if (state) {
-+		ret =3D bm1390_meas_set(data, BM1390_MEAS_MODE_CONTINUOUS);
-+		if (ret)
-+			goto unlock_out;
-+	} else {
-+		int dummy;
-+
-+		ret =3D bm1390_meas_set(data, BM1390_MEAS_MODE_STOP);
-+		if (ret)
-+			goto unlock_out;
-+
-+		/*
-+		 * We need to read the status register in order to ACK the
-+		 * data-ready which may have been generated just before we
-+		 * disabled the measurement.
-+		 */
-+		ret =3D regmap_read(data->regmap, BM1390_REG_STATUS, &dummy);
-+		if (ret)
-+			dev_warn(data->dev, "status read failed\n");
-+	}
-+
-+	ret =3D bm1390_set_drdy_irq(data, state);
-+
-+unlock_out:
-+	mutex_unlock(&data->mutex);
-+
-+	return ret;
-+}
-+
-+static const struct iio_trigger_ops bm1390_trigger_ops =3D {
-+	.set_trigger_state =3D bm1390_trigger_set_state,
-+};
-+
-+static int bm1390_setup_buffer(struct bm1390_data *data, struct iio_dev *i=
-dev)
-+{
-+	int ret;
-+
-+	ret =3D devm_iio_triggered_buffer_setup(data->dev, idev,
-+					      &iio_pollfunc_store_time,
-+					      &bm1390_trigger_handler,
-+					      &bm1390_buffer_ops);
-+
-+	if (ret)
-+		return dev_err_probe(data->dev, ret,
-+				     "iio_triggered_buffer_setup FAIL\n");
-+
-+	idev->available_scan_masks =3D bm1390_scan_masks;
-+
-+	return 0;
-+}
-+
-+static int bm1390_setup_trigger(struct bm1390_data *data, struct iio_dev *=
-idev,
-+				int irq)
-+{
-+	struct iio_trigger *itrig;
-+	char *name;
-+	int ret;
-+
-+	itrig =3D devm_iio_trigger_alloc(data->dev, "%sdata-rdy-dev%d", idev->nam=
-e,
-+					    iio_device_id(idev));
-+	if (!itrig)
-+		return -ENOMEM;
-+
-+	data->trig =3D itrig;
-+
-+	itrig->ops =3D &bm1390_trigger_ops;
-+	iio_trigger_set_drvdata(itrig, data);
-+
-+	name =3D devm_kasprintf(data->dev, GFP_KERNEL, "%s-bm1390",
-+			      dev_name(data->dev));
-+	if (name =3D=3D NULL)
-+		return -ENOMEM;
-+
-+	ret =3D devm_request_threaded_irq(data->dev, irq, bm1390_irq_handler,
-+					&bm1390_irq_thread_handler,
-+					IRQF_ONESHOT, name, idev);
-+	if (ret)
-+		return dev_err_probe(data->dev, ret, "Could not request IRQ\n");
-+
-+
-+	ret =3D devm_iio_trigger_register(data->dev, itrig);
-+	if (ret)
-+		return dev_err_probe(data->dev, ret,
-+				     "Trigger registration failed\n");
-+
-+	return 0;
-+}
-+
-+static int bm1390_probe(struct i2c_client *i2c)
-+{
-+	struct bm1390_data *data;
-+	struct regmap *regmap;
-+	struct iio_dev *idev;
-+	struct device *dev;
-+	unsigned int part_id;
-+	int ret;
-+
-+	dev =3D &i2c->dev;
-+
-+	regmap =3D devm_regmap_init_i2c(i2c, &bm1390_regmap);
-+	if (IS_ERR(regmap))
-+		return dev_err_probe(dev, PTR_ERR(regmap),
-+				     "Failed to initialize Regmap\n");
-+
-+	ret =3D devm_regulator_get_enable(dev, "vdd");
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get regulator\n");
-+
-+	ret =3D regmap_read(regmap, BM1390_REG_PART_ID, &part_id);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to access sensor\n");
-+
-+	if (part_id !=3D BM1390_ID)
-+		dev_warn(dev, "unknown device 0x%x\n", part_id);
-+
-+	idev =3D devm_iio_device_alloc(dev, sizeof(*data));
-+	if (!idev)
-+		return -ENOMEM;
-+
-+	data =3D iio_priv(idev);
-+	data->regmap =3D regmap;
-+	data->dev =3D dev;
-+	data->irq =3D i2c->irq;
-+	/*
-+	 * For now we just allow BM1390_WMI_MIN to BM1390_WMI_MAX and
-+	 * discard every other configuration when triggered mode is not used.
-+	 */
-+	data->watermark =3D BM1390_WMI_MAX;
-+	mutex_init(&data->mutex);
-+
-+	idev->channels =3D bm1390_channels;
-+	idev->num_channels =3D ARRAY_SIZE(bm1390_channels);
-+	idev->name =3D "bm1390";
-+	idev->info =3D &bm1390_info;
-+	idev->modes =3D INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
-+
-+	ret =3D bm1390_chip_init(data);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "sensor init failed\n");
-+
-+	ret =3D bm1390_setup_buffer(data, idev);
-+	if (ret)
-+		return ret;
-+
-+	/* No trigger if we don't have IRQ for data-ready and WMI */
-+	if (i2c->irq > 0) {
-+		ret =3D bm1390_setup_trigger(data, idev, i2c->irq);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret =3D devm_iio_device_register(dev, idev);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+				     "Unable to register iio device\n");
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id bm1390_of_match[] =3D {
-+	{ .compatible =3D "rohm,bm1390glv-z" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, bm1390_of_match);
-+
-+static const struct i2c_device_id bm1390_id[] =3D {
-+	{ "bm1390glv-z", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, bm1390_id);
-+
-+static struct i2c_driver bm1390_driver =3D {
-+	.driver =3D {
-+		.name =3D "bm1390",
-+		.of_match_table =3D bm1390_of_match,
-+		/*
-+		 * Probing explicitly requires a few millisecond of sleep.
-+		 * Enabling the VDD regulator may include ramp up rates.
-+		 */
-+		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
-+	},
-+	.probe =3D bm1390_probe,
-+	.id_table =3D bm1390_id,
-+};
-+module_i2c_driver(bm1390_driver);
-+
-+MODULE_AUTHOR("Matti Vaittinen <mazziesaccount@gmail.com>");
-+MODULE_DESCRIPTION("Driver for ROHM BM1390 pressure sensor");
-+MODULE_LICENSE("GPL");
---=20
-2.41.0
-
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---VSgiOLwEw6Wpvd6/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUNeC4ACgkQeFA3/03a
-ocWAoQf+MC2BIvolPhDkjDPu0zg7NMWyevVerkH9Ym3t+6NY3ZjoHEr19hIbLNYR
-Oi6abbCaL7HCZ48HKlbe1eJg6/4dBsG1j9esSaiVXbziMGeMaIP+AVUv2Xg9u7WH
-m6BBgI5xWpccnZRv74G72UIAhzEGGDx9ZbEhKyz0zPWkAkE3RZLUqs5XRhdgDuwL
-Ro+569i1uLH8mdNpTt7OGxVZ2wHh548P6gtvJsNPHT7r7TAB9EbW7EHxnkx9XYWQ
-D+oipy0e1Rt7oXctxhPjgSmXn7y6s6K3DW4yueXt4ARDDdwd/ZsJfcwlBo754ln8
-IUSEzefP/Kovh8RxhOTQ3ZzPkdHX4w==
-=4F2K
------END PGP SIGNATURE-----
-
---VSgiOLwEw6Wpvd6/--
+/Emil
