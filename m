@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1C67AB408
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B048C7AB40C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjIVOsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S231656AbjIVOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjIVOsP (ORCPT
+        with ESMTP id S231157AbjIVOuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:48:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5C0180
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:48:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B67FAC433C9;
-        Fri, 22 Sep 2023 14:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695394088;
-        bh=MOhFtSxywGBpaqP+/PDz7RXVCPUbnemaokEwfMmBonY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KlAYPKrG13tOQTGsGM+XdpmN2DJRaTkS/TM8UYhSO4pkDN8UsBgPgD8cCIHLTJbPQ
-         IG1CuSDapXaqT+WeQDUbGm230ecSUaDJfiHkX6Joo4+5AhgU7hlrfZIpGhhnr4d6j9
-         6tteYJ+qhV4xUWQdsUyyhE64VnhArtYLOJu9qv65SaExEjMp1Hdx1gJ0mP4hWBzeU9
-         oBDsHVw1VbZ2iTjjSo10M5seJyA8Ous4uD+vxAcdqt1zUW0BIX+EcChGyecpEpzUc1
-         qYazKBatGp4EFmGRFVTfbkuFuay4U8PJh6LJskJPFGapvXFYPza0jsOpzeWatQNZP+
-         QZJttlhGL6c8w==
-Date:   Fri, 22 Sep 2023 15:48:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Stefan Binding <sbinding@opensource.cirrus.com>
-Cc:     'Takashi Iwai' <tiwai@suse.de>, 'Jaroslav Kysela' <perex@perex.cz>,
-        'Takashi Iwai' <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v1 0/2] ALSA: cs35l41: prevent old firmwares using
- unsupported commands
-Message-ID: <8adda3b7-90f0-4d0b-b990-669a591becad@sirena.org.uk>
-References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
- <87a5tecm2m.wl-tiwai@suse.de>
- <005e01d9ed63$4b605550$e220fff0$@opensource.cirrus.com>
+        Fri, 22 Sep 2023 10:50:24 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BFFC6;
+        Fri, 22 Sep 2023 07:50:18 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MElJcZ024672;
+        Fri, 22 Sep 2023 14:50:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=i6x/TP+VdD+IpejFbiiPt7d7OBRe18+V3yJHFK61Ht8=;
+ b=oJlfTjlg2SO6aAIx7k5knFDvqEgQjUXzektgkm+pL/mg9X2VgGs5oaUAKXBRDYJkw+/Y
+ ODTRRvM3NRlJPHZItZUF+oO4LI5Nq2KpQTvI5L54lZKlCWuiv5nVGqzAA/o0hj0IXQoL
+ k4wz4z0Qg+goRBbJS7fSVcO7nVKSUjCfr2mBNn4ncMFxPVW3FiXRDFOtE9sB5g3QKE/5
+ mtTm2tPqQECyYK7/DsmSd2fR9XyB580CsIv3DP6p8HI69AX1cjkyGJ9G6c0TOJ0jR8mk
+ B51fNI2E8ETMmTzR9YCTziP2hTips6wSoBX9YuMOvyIzMerMrTMR28/CuBFjorv0avMm YA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u9ha1j9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 14:50:11 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MEoAdY007093
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 14:50:10 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 07:50:10 -0700
+Message-ID: <e40a1dca-f23e-af32-320e-bf66a894bc6c@quicinc.com>
+Date:   Fri, 22 Sep 2023 08:50:09 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YQfCH/+O2F9Rglbu"
-Content-Disposition: inline
-In-Reply-To: <005e01d9ed63$4b605550$e220fff0$@opensource.cirrus.com>
-X-Cookie: A day without sunshine is like night.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v2 2/2] bus: mhi: host: Take irqsave lock after TRE is
+ generated
+Content-Language: en-US
+To:     Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>, Hemant Kumar <quic_hemantk@quicinc.com>,
+        "Lazarus Motha" <quic_lmotha@quicinc.com>
+References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
+ <1694594861-12691-3-git-send-email-quic_qianyu@quicinc.com>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <1694594861-12691-3-git-send-email-quic_qianyu@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 2cYyCUbgZG-ljFoHfBRafUj9TAYFo3pi
+X-Proofpoint-ORIG-GUID: 2cYyCUbgZG-ljFoHfBRafUj9TAYFo3pi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_13,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 spamscore=0 priorityscore=1501 phishscore=0
+ suspectscore=0 malwarescore=0 clxscore=1015 mlxlogscore=590 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220127
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/13/2023 2:47 AM, Qiang Yu wrote:
+> From: Hemant Kumar <quic_hemantk@quicinc.com>
+> 
+> Take irqsave lock after TRE is generated to avoid deadlock due to core
+> getting interrupts enabled as local_bh_enable must not be called with
+> irqs disabled based on upstream patch.
 
---YQfCH/+O2F9Rglbu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Where is local_bh_enable() being called?  What patch?  What is upstream 
+of the codebase you submitted this to?  Why is it safe to call 
+mhi_gen_tre() without the lock?
 
-On Fri, Sep 22, 2023 at 03:44:30PM +0100, Stefan Binding wrote:
-
-> > So those are fixes needed for 6.6 kernel?  Or they are something
-> new?
-
-> These are to fix the issue that was reported on the Lenovo Legion 7
-> 16ACHg6,
-> which was introduced after the fixes to CS35L41 HDA System Suspend.
-
-Could you be more specific about which fixes these are and which tree
-they're in?  If they're fixes then I don't have anything queued for 6.6
-so I'm confused about why you say there's a dependency on my tree.
-
---YQfCH/+O2F9Rglbu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUNqSIACgkQJNaLcl1U
-h9A/Ogf/biZHy048dz2KHe8iObwC+lZhV5DTWj/Pj8I3PIvn9kkIGQaUqzZLN1Kg
-JUrnxb83CnArTEoeFJO/oa48ZGfY20p30AqNIzmPQ50kE4rEGIp3adBMXUEovr64
-zBRnLiDsh6lbltPt+oTQOF5bO2V39AuKmHYiGEpE0yQbAATOva53Roscyz7PnLAm
-USTUAV317CdEvMAI17EabnvwKSsLugyNfrF+3lI2yweSGItJlJlla88kqTeOyBfE
-GAzSsMJWyuVwQaJ36+UMd23oDwQDEh6sYJXYtr1dSyITw27ujxkgSZdB9TbiB0Lm
-A8c02pWrJA6VDC2W5l/4NoDYokQQRA==
-=/X3M
------END PGP SIGNATURE-----
-
---YQfCH/+O2F9Rglbu--
