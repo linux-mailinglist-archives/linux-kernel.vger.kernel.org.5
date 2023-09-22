@@ -2,293 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD8B7AABAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5174B7AAC6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbjIVIFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
+        id S232474AbjIVIP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbjIVIFS (ORCPT
+        with ESMTP id S232303AbjIVIP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:05:18 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943071F05
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:03:51 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-64cca551ae2so10425276d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695369830; x=1695974630; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ef1lz4NaECWVWSkMTH/C2VI1iTg3OW5SLvb2NYIpXHw=;
-        b=qftf6imrqBV0Y3hzXIyLPR1dsR/W2LFIruYgfAAl2PAyPVm4Zt/yJGi/fwhsYrVZHT
-         FCZxfvQKBcaW6X9+Y4de1H+RNfVHbF9kzQ0+3Hr99PeK/lpqbhKjs9mzBE44eB10CQ/y
-         yzyiQTQsjJk5L6DljdIEr9ThVBvmw0lz0OGpjpw1WjTz0HsFzVeX282GbVwH5cpEtdf+
-         i7w7+9mfii7/yDOVmcCuJcYpTyh4nPcRfyk/CDnk9sKJNT744H7MrDvJ+YrwANgDA99D
-         lYykLDvGOA84Kwg0Nkoj7lCviKdi4O8IjPHkPlKF+MuFZclaUn2rEKzV2fU7P3p3Qcf1
-         heqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695369830; x=1695974630;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ef1lz4NaECWVWSkMTH/C2VI1iTg3OW5SLvb2NYIpXHw=;
-        b=PV/k1ZZ9kY8LPy1KRmfWtvMVuil6FD06HOg6w8/5WXRoGH86clGOGOxg7Oubcon3O4
-         X8oH/kwMEBFYfe02WxmUhVaLpSycUGjOuwiPnEGzkT+MEKaHfC5BXaHWPBIoXV2xHVWa
-         ItBSO+CdrQhiIXkVJkdU5PvgzFp7Kq7zhckopHWiV8S/pqQM2Zf02pRjNhE0AT4wuKwX
-         B6JNqiC97ZD3EeTjYIviz0Ro3ngutnrrGWRaNMGa7Aff7WpWcTVERXpb+UqnPb25btIE
-         z6/10xLI927cCcXrwFa+k5/2A7fhPffvzhCbc3PErF2YQW+x2z6xcBJqu9b6lLXozne/
-         DrCQ==
-X-Gm-Message-State: AOJu0YyN/oAVkSr0VPXJt72m1q3yx+/2Dfqxqp4Shbr4ZosSN8NVrXYP
-        HIy1aqa3BX5n2ZIX4l9Y7sUCpnkp9xD0flS1zGUQbQ==
-X-Google-Smtp-Source: AGHT+IE7UI6I9WiH64qEClOouVDFNt1yTkDjY6ASv+xhQWngrbykoKa0FWDxLHcMX+9s76JZ51uHd0M5apwUwqihULw=
-X-Received: by 2002:a0c:cd02:0:b0:62f:f2f0:2af3 with SMTP id
- b2-20020a0ccd02000000b0062ff2f02af3mr9041416qvm.41.1695369830373; Fri, 22 Sep
- 2023 01:03:50 -0700 (PDT)
+        Fri, 22 Sep 2023 04:15:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F31BCFC
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695369833; x=1726905833;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hXqglVALXMJQK/Us3wSeREuJlYAj7kj0jQrKrBRpxeE=;
+  b=YatdFWWxqVZ9qKZq2upmgjWU5rnsZUesSpQXUnulPWdd/G2QZAFf3ZHt
+   Kl1kqGSnQO48KtU6hKx22cSwOPzOdw7tl5wR699QuN7cZT7d6U8nc2VXH
+   NCcgHBVVEWoxkj0YhDQZ87fy3Yi4Hrv6hP68bNU8plio0Lhv9Vf6rfedA
+   E1V2mMHDKsx3kJVGeBN0wWCpnEUMcLF9z6Cf/ZEYmGzABAA58GgRcEW47
+   TGUEkMmM6PkUElMXVTOuBlj5T/Dp7qGyDnv02/U4qemtIe3gykyuOjkvL
+   JinK08D/3DQOOYcbD6nvMP+3mr2xiOH8v9qJ/x9LPUB4ehZwugLIUnush
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="378060397"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="378060397"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 01:03:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="862859899"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="862859899"
+Received: from sunyi-station.sh.intel.com (HELO ysun46-mobl.sh.intel.com) ([10.239.159.10])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Sep 2023 01:03:50 -0700
+From:   Yi Sun <yi.sun@intel.com>
+To:     kirill.shutemov@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-kernel@vger.kernel.org
+Cc:     heng.su@intel.com, yi.sun@linux.intel.com,
+        Yi Sun <yi.sun@intel.com>,
+        Dongcheng Yan <dongcheng.yan@intel.com>
+Subject: [PATCH v2] x86/tdx: Dump TDX version During the TD Bootup
+Date:   Fri, 22 Sep 2023 16:03:22 +0800
+Message-Id: <20230922080322.2071168-1-yi.sun@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230720173956.3674987-1-glider@google.com> <20230720173956.3674987-4-glider@google.com>
- <ZLpqXXLLj4vL/xaT@smile.fi.intel.com>
-In-Reply-To: <ZLpqXXLLj4vL/xaT@smile.fi.intel.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 22 Sep 2023 10:03:14 +0200
-Message-ID: <CAG_fn=XLVQs=PSZVZ9cuh=SbTjG9B0bZsim_2xKDmnju4CHuSA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 1:22=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Jul 20, 2023 at 07:39:54PM +0200, Alexander Potapenko wrote:
-> > The config implements the algorithm compressing memory tags for ARM MTE
-> > during swapping.
-> >
-> > The algorithm is based on RLE and specifically targets 128-byte buffers
-> > of tags corresponding to a single page. In the common case a buffer
-> > can be compressed into 63 bits, making it possible to store it without
-> > additional memory allocation.
->
-> ...
->
-> > +Programming Interface
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > + .. kernel-doc:: arch/arm64/mm/mtecomp.c
->
-> :export:
+It is essential for TD users to be aware of the vendor and version of
+the current TDX. Additionally, they can reference the TDX version when
+reporting bugs or issues.
 
-Done
+Furthermore, the applications or device drivers running in TD can achieve
+enhanced reliability and flexibility by following the TDX Module ABI
+specification, because there are significant differences between different
+versions of TDX, as mentioned in the "Intel® TDX Module Incompatibilities
+between v1.0 and v1.5" reference. Here are a few examples:
 
-> > +
->
-> Is it dangling trailing blank line? Drop it.
+MSR Name		Index		Reason
+----------------------------------------------
+IA32_UARCH_MISC_CTL	0x1B01		From v1.5
+IA32_ARCH_CAPABILITIES	0x010A		Changed in v1.5
+IA32_TSX_CTRL		0x0122		Changed in v1.5
 
-Sorry, it's hard to attribute this comment. I am assuming it is
-related to Documentation/arch/arm64/mte-tag-compression.rst - done.
+CPUID Leaf	Sub-leaf	Reason
+---------------------------------------
+0x7		2		From v1.5
+0x22		0		From v1.5
+0x23		0~3		From v1.5
+0x80000007	0		From v1.5
 
-> ...
->
-> > +#include <linux/bitmap.h>
->
-> > +#include <linux/bitops.h>
->
-> This is guaranteed to be included by bitmap.h.
+During TD initialization, the TDX version info can be obtained by calling
+TDG.SYS.RD. This will fetch the current version of TDX, including the major
+and minor version numbers and vendor ID.
 
-I think we'd better stick to IWYU here.
-Ingo's patch: https://git.kernel.org/pub/scm/linux/kernel/git/mingo/tip.git=
-/commit/?id=3D32b1e9e4f5774951a3a80604a39fa1f0674c1833
-specifically adds bitmap.h where bits.h is already present, without
-removing the latter.
-Although there might not be general consensus on this in the kernel
-right now, I think Ingo's "Fast Kernel Headers" set out a good
-direction.
+The TDCALL TDG.SYS.RD originates from TDX version 1.5. If the error
+TDCALL_INVALID_OPERAND occurs, it should be treated as TDX version 1.0.
 
->
-> > +/*
-> > + * Sizes of compressed values. These depend on MTE_TAG_SIZE and
->
-> of the
+Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
+Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
+Signed-off-by: Yi Sun <yi.sun@intel.com>
 
-This comment is gone now
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 1d6b863c42b0..0f51123aa0b9 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -37,6 +37,27 @@
+ 
+ #define TDREPORT_SUBTYPE_0	0
+ 
++/*
++ * TDX metadata base field id, used by TDCALL TDG.SYS.RD
++ * See TDX ABI Spec section 3.3.2.3 Global Metadata Fields
++ */
++#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
++#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
++#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
++#define TDX_VENDOR_INTEL		0x8086
++
++struct tdg_sys_info {
++	u32 vendor_id;
++	u16 major_version;
++	u16 minor_version;
++};
++
++/*
++ * Fetch TDX Module global-scope metadata field via TDG.SYS.RD TDCALL
++ * Do NOT change it once initialized.
++ */
++static struct tdg_sys_info td_sys_info;
++
+ /* Called from __tdx_hypercall() for unrecoverable failure */
+ noinstr void __tdx_hypercall_failed(void)
+ {
+@@ -757,6 +778,46 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+ 	return true;
+ }
+ 
++/*
++ * Parse the tdx module version info from the global-scope metadata fields.
++ */
++static int tdg_get_sysinfo(void)
++{
++	struct tdx_module_output out;
++	u64 ret;
++
++	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_VENDOR_ID_FID, 0, 0,
++				&out);
++	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
++		goto version_1_0;
++	else if (ret)
++		return ret;
++
++	td_sys_info.vendor_id = (u32)(out).r8;
++
++	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MAJOR_FID, 0, 0, &out);
++	if (ret)
++		return ret;
++
++	td_sys_info.major_version = (u16)(out).r8;
++
++	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MINOR_FID, 0, 0, &out);
++	if (ret)
++		return ret;
++
++	td_sys_info.minor_version = (u16)(out).r8;
++
++	return 0;
++
++	/* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
++version_1_0:
++	td_sys_info.vendor_id = TDX_VENDOR_INTEL;
++	td_sys_info.major_version = 1;
++	td_sys_info.minor_version = 0;
++
++	return 0;
++}
++
+ void __init tdx_early_init(void)
+ {
+ 	u64 cc_mask;
+@@ -820,5 +881,9 @@ void __init tdx_early_init(void)
+ 	 */
+ 	x86_cpuinit.parallel_bringup = false;
+ 
+-	pr_info("Guest detected\n");
++	tdg_get_sysinfo();
++
++	pr_info("Guest detected. TDX version:%u.%u VendorID: %x\n",
++		td_sys_info.major_version, td_sys_info.minor_version,
++		td_sys_info.vendor_id);
+ }
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index 7513b3bb69b7..10ecb5dece84 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -16,6 +16,7 @@
+ #define TDX_GET_REPORT			4
+ #define TDX_ACCEPT_PAGE			6
+ #define TDX_WR				8
++#define TDX_SYS_RD			11
+ 
+ /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
+ #define TDCS_NOTIFY_ENABLES		0x9100000000000010
+-- 
+2.34.1
 
->
-> > +     out_tags[0] =3D prev_tag;
->
-> out_tags[cur_idx] ?
-
-Yeah, looks more readable. Done.
-
->
-> > +     for (i =3D 0; i < MTE_PAGE_TAG_STORAGE; i++) {
-> > +             for (j =3D 0; j < 2; j++) {
-> > +                     cur_tag =3D j ? (tags[i] % 16) : (tags[i] / 16);
-> > +                     if (cur_tag =3D=3D prev_tag) {
-> > +                             out_sizes[cur_idx]++;
->
-> > +                     } else {
-> > +                             cur_idx++;
-> > +                             prev_tag =3D cur_tag;
-> > +                             out_tags[cur_idx] =3D prev_tag;
-> > +                             out_sizes[cur_idx] =3D 1;
->
-> Looking more at this I think there is still a room for improvement. I can=
-'t
-> come up right now with a proposal (lunch time :-), but I would look into
->
->         do {
->                 ...
->         } while (i < MTE_...);
->
-> approach.
-
-We can e.g. get rid of the nested loop and iterate over tags instead
-of bytes (see v5)
-
-
-> > +static size_t mte_size_to_ranges(size_t size)
-> > +{
-> > +     size_t largest_bits;
->
-> > +     size_t ret =3D 0;
->
-> Redundant assignment. Please, check again all of them.
-
-Done.
-
-> > +
-> > +     largest_bits =3D (size =3D=3D 8) ? MTE_BITS_PER_LARGEST_IDX_INLIN=
-E :
-> > +                                  MTE_BITS_PER_LARGEST_IDX;
-> > +     ret =3D (size * 8 + MTE_BITS_PER_SIZE - largest_bits) /
->
-> Hmm... I thought that we moved BYTES_TO_BITS() to the generic header...
-> Okay, never mind.
-
-Ack
-
-> > +           (MTE_BITS_PER_TAG + MTE_BITS_PER_SIZE);
-> > +     return ret;
->
->         return (...) / ...;
-
-Done
-
-> > +}
->
-> ...
->
-> > +static size_t mte_alloc_size(unsigned int num_ranges)
-> > +{
-> > +     size_t sizes[4] =3D { 8, 16, 32, 64 };
->
-> Hooray! And now it's not needed anymore...
->
-> > +     unsigned int i;
-> > +
-> > +     for (i =3D 0; i < ARRAY_SIZE(sizes); i++) {
->
-> ...as sizes[i] is equivalent of (8 << i).
-
-It's gone now.
-
-> ...
->
-> > +/**
-> > + * mte_compress() - compress the given tag array.
-> > + * @tags: 128-byte array to read the tags from.
-> > + *
-> > + * Compresses the tags and returns a 64-bit opaque handle pointing to =
-the
-> > + * tag storage. May allocate memory, which is freed by @mte_release_ha=
-ndle().
->
-> + blank line here.
-
-Done (here and in other places in the file), but I'm wondering why
-https://docs.kernel.org/doc-guide/kernel-doc.html does not mandate it.
-
->
-> > + * Returns: 64-bit tag storage handle.
-> > + */
->
-> ...
->
-> > +     /*
-> > +      * mte_compress_to_buf() only initializes the bits that mte_decom=
-press()
-> > +      * will read. But when the tags are stored in the handle itself, =
-it must
-> > +      * have all its bits initialized.
-> > +      */
-> > +     unsigned long result =3D 0;
->
->         // Actually it's interesting how it's supposed to work on 32-bit
->         // builds...
-
-It is not supposed to work on 32 bit.
-First, the code is in arch/arm64 :)
-Second, 32-bit CPUs do not support MTE (which reserves the four upper
-bits of the address)
-
-
->
-> > +static unsigned long mte_bitmap_read(const unsigned long *bitmap,
-> > +                                  unsigned long *pos, unsigned long bi=
-ts)
-> > +{
-> > +     unsigned long result;
-> > +
-> > +     result =3D bitmap_read(bitmap, *pos, bits);
-> > +     *pos +=3D bits;
-> > +     return result;
->
->         unsigned long start =3D *pos;
->
->         *pos +=3D bits;
->         return bitmap_read(bitmap, start, bits);
-
-Done, thanks!
-
-> > +}
->
-> ...
->
-> > +     unsigned short r_sizes[46], sum =3D 0;
->
-> See below.
->
-> ...
->
-> It's cleaner and more robust to have
->
->         sum =3D 0;
->
-> here.
-
-Moved it inside the loop init statement
-
-
-> --
-> With Best Regards,
-> Andy Shevchenko
->
-
-Thank you!
