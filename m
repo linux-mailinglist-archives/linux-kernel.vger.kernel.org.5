@@ -2,82 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 286307AA71E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D4F7AA722
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjIVCw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 22:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S229733AbjIVCyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 22:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjIVCwy (ORCPT
+        with ESMTP id S229497AbjIVCyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 22:52:54 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85C8B192
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 19:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=CNIjK
-        qWBYJRXMJgT7L7SM8zG22UEzfPx+zde9DnsbOI=; b=P3OD9GfqgQpqnkjdxgyCF
-        XZW69zBrwX20z8puFpc8xII0vUPke0ph8AI3nvbnV8yCCkBUwnNaAXP0M1+PunIa
-        rdwKU3iM0h/y8ERfIz+UyOhlRTtLxMIvbmLcjUabCrNKrr8K7nlQeJUYQC3K2KxY
-        AMaZ1pgTmx1Mks4j/qhs6U=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wCXlmJkAQ1lBhMMCw--.10183S4;
-        Fri, 22 Sep 2023 10:52:32 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     mchehab+huawei@kernel.org, sboyd@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] spmi: hisi-spmi-controller: fix potential memory leak in spmi_controller_probe()
-Date:   Fri, 22 Sep 2023 10:52:16 +0800
-Message-Id: <20230922025216.3604978-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Thu, 21 Sep 2023 22:54:54 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D72198
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 19:54:46 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6926d5ad926so236360b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 19:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1695351286; x=1695956086; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=br+/C/v821nNYRFlkBHOr44NAy7oCmXwb/N/stsA46I=;
+        b=iieGcXJyMSUNUOMFkMI8NGO223qUzApef48rY6IMCTl3FpfdAFBmg5wjFjgydijixc
+         yUkTmPo15sAqVGkpS0PVBltlbJZBgT8FJ/X2ufRYw6f4kRGmuHxg3AiiTPtZGaNZoXa1
+         787dxbAJXnJdRTESFaKdsWgYgbN3/3hZWlqxbUWPBaGbCXWxg9LbY53FVrUhWitM7iSg
+         dQYjccukqgfMz4GpYXdIky1R+hNKPDgHcDcoKwiLK+lXG3maGfYtd9o17AyQpysZCZvk
+         eoHqp0rWQ0qhLpdUMTjRmM+z+VQhaG6iMSMFRzabmAZu0R0aozWtjTdIhwwKkjHJ1sPh
+         7AkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695351286; x=1695956086;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=br+/C/v821nNYRFlkBHOr44NAy7oCmXwb/N/stsA46I=;
+        b=ZymipTltomu6k8x97PcOeZ5qO2YY6unywlf5W1Lwpkwl7+JJtTM9THW7h/N7Kw4irA
+         jg2ngy8o0G0L8c2+vK+MFVlswJJhjDlQ7AA1np+vJa9LB7tuQAyG93BdC8Ix27cikW8T
+         wN0EVmidxyd+Z9lAfcfFhdx8rCXln7nDkZg8GSbXgYgULTLv/hyGZQqkxWpJHhpHPYtu
+         jaTU9pvSztk7Rcc9gfwbqyzy5KF+OVSTwljB5Rfem+28/fQB9WLkyV38at2i9LaE0fHK
+         dq30MuFRBaRuchYXzPS+cCbKUiAk1V9789DR1BvM+njkXOAPet1lifiog3rwVFkM8Uwg
+         mUrA==
+X-Gm-Message-State: AOJu0YwfkJhDJ7jlBeZ9eAsOL7AaCXGndvm3BDJEPN3uVTlhRk/k+TTx
+        vQuAcMl8jGQN/h+coi9GSWhAzA==
+X-Google-Smtp-Source: AGHT+IE6azF5uKJJ3m1Yb0ly5UPZHOK7EZhY5CJWIi1/96fWzCl6d26UEkh5dqVknV//4FTGeJthoQ==
+X-Received: by 2002:a05:6a20:c1aa:b0:15c:b7ba:e9ba with SMTP id bg42-20020a056a20c1aa00b0015cb7bae9bamr6999312pzb.0.1695351285575;
+        Thu, 21 Sep 2023 19:54:45 -0700 (PDT)
+Received: from [10.84.155.178] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id gp24-20020a17090adf1800b00268032f6a64sm3855746pjb.25.2023.09.21.19.54.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 19:54:45 -0700 (PDT)
+Message-ID: <217bb956-b9f6-1057-914b-436d4c775a8b@bytedance.com>
+Date:   Fri, 22 Sep 2023 10:54:32 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCXlmJkAQ1lBhMMCw--.10183S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr1rCw47ZFyDGw13Xr13urg_yoWkKwc_Cr
-        48GFW7ur1kCrW2kwn5tr4rJF9Yva48Xw10k3W0qw17Ja9Yv3Z0qry7XrWDZrW8JFs8Ar13
-        Gr1jvF48A3W8AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRthFxDUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbivgvyC1Zci0HukAABsz
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v1 8/8] arm64: hugetlb: Fix set_huge_pte_at() to work with
+ all swap entries
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+References: <20230921162007.1630149-1-ryan.roberts@arm.com>
+ <20230921162007.1630149-9-ryan.roberts@arm.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230921162007.1630149-9-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-spmi_controller_alloc() allocates a memory space for ctrl. When some
-errors occur, ctrl should be handled by spmi_controller_put() and set
-spmi_controller->controller = NULL because spmi_controller->controller
-has a dangling pointer to the freed memory. When the failure happens,
-the function returns without calling spmi_controller_put() and setting
-spmi_controller->controller = NULL, which will lead to a memory leak.
+Hi Ryan,
 
-When the failure happens, we can fix it by calling spmi_controller_put()
-and setting spmi_controller->controller = NULL in all of the places
-where we call spmi_controller_put().
+On 2023/9/22 00:20, Ryan Roberts wrote:
+> When called with a swap entry that does not embed a PFN (e.g.
+> PTE_MARKER_POISONED or PTE_MARKER_UFFD_WP), the previous implementation
+> of set_huge_pte_at() would either cause a BUG() to fire (if
+> CONFIG_DEBUG_VM is enabled) or cause a dereference of an invalid address
+> and subsequent panic.
+> 
+> arm64's huge pte implementation supports multiple huge page sizes, some
+> of which are implemented in the page table with contiguous mappings. So
+> set_huge_pte_at() needs to work out how big the logical pte is, so that
+> it can also work out how many physical ptes (or pmds) need to be
+> written. It does this by grabbing the folio out of the pte and querying
+> its size.
+> 
+> However, there are cases when the pte being set is actually a swap
+> entry. But this also used to work fine, because for huge ptes, we only
+> ever saw migration entries and hwpoison entries. And both of these types
+> of swap entries have a PFN embedded, so the code would grab that and
+> everything still worked out.
+> 
+> But over time, more calls to set_huge_pte_at() have been added that set
+> swap entry types that do not embed a PFN. And this causes the code to go
+> bang. The triggering case is for the uffd poison test, commit
+> 99aa77215ad0 ("selftests/mm: add uffd unit test for UFFDIO_POISON"),
+> which sets a PTE_MARKER_POISONED swap entry. But review shows there are
+> other places too (PTE_MARKER_UFFD_WP).
+> 
+> So the root cause is due to commit 18f3962953e4 ("mm: hugetlb: kill
+> set_huge_swap_pte_at()"), which aimed to simplify the interface to the
+> core code by removing set_huge_swap_pte_at() (which took a page size
+> parameter) and replacing it with calls to set_huge_swap_pte_at() where
+> the size was inferred from the folio, as descibed above. While that
+> commit didn't break anything at the time, 
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- drivers/spmi/hisi-spmi-controller.c | 1 +
- 1 file changed, 1 insertion(+)
+If it didn't break anything at that time, then shouldn't the Fixes tag
+be added to this commit?
 
-diff --git a/drivers/spmi/hisi-spmi-controller.c b/drivers/spmi/hisi-spmi-controller.c
-index 9cbd473487cb..5b3cfa7f5056 100644
---- a/drivers/spmi/hisi-spmi-controller.c
-+++ b/drivers/spmi/hisi-spmi-controller.c
-@@ -321,6 +321,7 @@ static int spmi_controller_probe(struct platform_device *pdev)
- 
- err_put_controller:
- 	spmi_controller_put(ctrl);
-+	spmi_controller->controller = NULL;
- 	return ret;
- }
- 
--- 
-2.37.2
+> it did break the interface
+> because it couldn't handle swap entries without PFNs. And since then new
+> callers have come along which rely on this working.
 
+So the Fixes tag should be added only to the commit that introduces the
+first new callers?
+
+Other than that, LGTM.
+
+Thanks,
+Qi
+
+> 
+> Now that we have modified the set_huge_pte_at() interface to pass the
+> vma, we can extract the huge page size from it and fix this issue.
+> 
+> I'm tagging the commit that added the uffd poison feature, since that is
+> what exposed the problem, as well as the original change that broke the
+> interface. Hopefully this is valuable for people doing bisect.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> Fixes: 18f3962953e4 ("mm: hugetlb: kill set_huge_swap_pte_at()")
+> Fixes: 8a13897fb0da ("mm: userfaultfd: support UFFDIO_POISON for hugetlbfs")
+> ---
+>   arch/arm64/mm/hugetlbpage.c | 17 +++--------------
+>   1 file changed, 3 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+> index 844832511c1e..a08601a14689 100644
+> --- a/arch/arm64/mm/hugetlbpage.c
+> +++ b/arch/arm64/mm/hugetlbpage.c
+> @@ -241,13 +241,6 @@ static void clear_flush(struct mm_struct *mm,
+>   	flush_tlb_range(&vma, saddr, addr);
+>   }
+>   
+> -static inline struct folio *hugetlb_swap_entry_to_folio(swp_entry_t entry)
+> -{
+> -	VM_BUG_ON(!is_migration_entry(entry) && !is_hwpoison_entry(entry));
+> -
+> -	return page_folio(pfn_to_page(swp_offset_pfn(entry)));
+> -}
+> -
+>   void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
+>   			    pte_t *ptep, pte_t pte)
+>   {
+> @@ -258,13 +251,10 @@ void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
+>   	unsigned long pfn, dpfn;
+>   	pgprot_t hugeprot;
+>   
+> -	if (!pte_present(pte)) {
+> -		struct folio *folio;
+> -
+> -		folio = hugetlb_swap_entry_to_folio(pte_to_swp_entry(pte));
+> -		ncontig = num_contig_ptes(folio_size(folio), &pgsize);
+> +	ncontig = num_contig_ptes(huge_page_size(hstate_vma(vma)), &pgsize);
+>   
+> -		for (i = 0; i < ncontig; i++, ptep++)
+> +	if (!pte_present(pte)) {
+> +		for (i = 0; i < ncontig; i++, ptep++, addr += pgsize)
+>   			set_pte_at(mm, addr, ptep, pte);
+>   		return;
+>   	}
+> @@ -274,7 +264,6 @@ void set_huge_pte_at(struct vm_area_struct *vma, unsigned long addr,
+>   		return;
+>   	}
+>   
+> -	ncontig = find_num_contig(mm, addr, ptep, &pgsize);
+>   	pfn = pte_pfn(pte);
+>   	dpfn = pgsize >> PAGE_SHIFT;
+>   	hugeprot = pte_pgprot(pte);
