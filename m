@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6520C7AA65C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6B47AA65A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjIVBGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 21:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S229969AbjIVBG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjIVBGd (ORCPT
+        with ESMTP id S229452AbjIVBGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 21:06:33 -0400
+        Thu, 21 Sep 2023 21:06:24 -0400
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041E6195;
-        Thu, 21 Sep 2023 18:06:27 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LIsR7Z018736;
-        Fri, 22 Sep 2023 01:06:09 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48898F5;
+        Thu, 21 Sep 2023 18:06:19 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LIsMBb011444;
+        Fri, 22 Sep 2023 01:06:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=PaV2/eM0GTH4uo+cZQYOKUgL2TPNKr4vxGBi/Auf04c=;
- b=bfUxlRQpdJ4bBoRxasUV9RwYTDGBe3oVsuLOsIsIb5LcOXdHd6yXw8i75zzYfJgOc0Zs
- qzDsQVxZB8PINutrlwU/SHg7YFUj6Mx2EzmJm9zPpt8uHbw5FvJcg4oPyEwfusEVCgWQ
- kqrI03p0/6c8OJPQ/q+ewyFZiQiLLHjg/g26ykYbCT/Pfg4XJr5nLZ4QSr9/2kYWSciZ
- T2BM0EIJdbgjfoQ+pZ/iJNRbem4lPZTjnP2AmJEBNFoLqrMKrLNyLTnwiN3w3MaI0HFx
- EVoLLiWcZe8eEiCdvPTJm0RVKvLKhbOCIY5vLS7ackLP/Ips4W8/7oPkNMBD6+N+XJRF Bg== 
+ bh=4sks/tXUf4xnsCRkMVuUcEHqv0ac9dFEzdYVSS3K4j4=;
+ b=nbBk3USv2ADqkP1SFu0ySv/4aWSTK3NHGHAlYHRAd5wo4JcnFciUoFuiIrUcjWKDceOz
+ aJe4Ts8yxjBwbqCatq4vSP3rHJjtzWUXAlKExRXs1WjCOHCdwBxQBq/7DCRIVRgDOTQQ
+ XuswiCaJ0LmHTRGohP5xHChZvOrZRbsZcPg6IPgnDHxtZ//6/ALcj73+dSYzkUzoj2w9
+ oanfV794xKJ8SUqQAwNEZE+oyEKzRezXfDKkAYbwnQHHCOGBywhcij4Us8LfczO7pBZ9
+ 3pIlzh3VrFpT2e///04fGjwzEcR1e8P40fe0pJjII6DurJEEe3FoA7SZarLwOC8sDnSw AA== 
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t8tt00ka9-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t8tsvrkag-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Sep 2023 01:06:09 +0000
+        Fri, 22 Sep 2023 01:06:10 +0000
 Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38LMjJbi040584;
-        Fri, 22 Sep 2023 01:06:08 GMT
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38LMeF9L040575;
+        Fri, 22 Sep 2023 01:06:10 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t8u19bn40-1
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t8u19bn4u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Sep 2023 01:06:08 +0000
+        Fri, 22 Sep 2023 01:06:10 +0000
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38M164sv032168;
-        Fri, 22 Sep 2023 01:06:08 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38M164sx032168;
+        Fri, 22 Sep 2023 01:06:09 GMT
 Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3t8u19bn0m-4;
-        Fri, 22 Sep 2023 01:06:07 +0000
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3t8u19bn0m-5;
+        Fri, 22 Sep 2023 01:06:09 +0000
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 00/10] PCI/treewide: PCIe capability access cleanups
-Date:   Thu, 21 Sep 2023 21:05:54 -0400
-Message-Id: <169534443603.456601.11816529763697878783.b4-ty@oracle.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-scsi@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH] scsi: ufs: do not look for unsupported vdd-hba-max-microamp
+Date:   Thu, 21 Sep 2023 21:05:55 -0400
+Message-Id: <169534443606.456601.439761904656869208.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230913122748.29530-1-ilpo.jarvinen@linux.intel.com>
-References: <20230913122748.29530-1-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <20230906113302.201888-1-krzysztof.kozlowski@linaro.org>
+References: <20230906113302.201888-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -63,11 +67,11 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-22_01,2023-09-21_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=957 phishscore=0 mlxscore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
  definitions=main-2309220008
-X-Proofpoint-GUID: nHAfgE7Y28nFPrLNBjnRIzOL48I-snaf
-X-Proofpoint-ORIG-GUID: nHAfgE7Y28nFPrLNBjnRIzOL48I-snaf
+X-Proofpoint-GUID: HNAUVlPRhNXLEOv6kAT5tu68crePIR1j
+X-Proofpoint-ORIG-GUID: HNAUVlPRhNXLEOv6kAT5tu68crePIR1j
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -78,24 +82,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 15:27:38 +0300, Ilpo Järvinen wrote:
+On Wed, 06 Sep 2023 13:33:02 +0200, Krzysztof Kozlowski wrote:
 
-> Instead of custom code to extract the PCIe capabilities, make the code
-> more obvious using FIELD_GET/PREP().
+> Bindings do not allow vdd-hba-max-microamp property and the driver does
+> not use it (does not control load of vdd-hba supply).  Skip looking for
+> this property to avoid misleading dmesg messages:
 > 
-> Also cleanup some duplicated defines in e1000e.
+>   ufshcd-qcom 1d84000.ufs: ufshcd_populate_vreg: unable to find vdd-hba-max-microamp
 > 
-> I've only put Jonathan's Reviewed-by to patches I didn't modify
-> significantly.
 > 
 > [...]
 
 Applied to 6.7/scsi-queue, thanks!
 
-[07/10] scsi: esas2r: Use FIELD_GET() to extract PCIe capability fields
-        https://git.kernel.org/mkp/scsi/c/5532f2495150
-[08/10] scsi: qla2xxx: Use FIELD_GET() to extract PCIe capability fields
-        https://git.kernel.org/mkp/scsi/c/dc1d7b363301
+[1/1] scsi: ufs: do not look for unsupported vdd-hba-max-microamp
+      https://git.kernel.org/mkp/scsi/c/2c99e3d7d2cb
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
