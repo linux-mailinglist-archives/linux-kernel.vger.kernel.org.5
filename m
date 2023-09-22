@@ -2,160 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B74B7AB3FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AF67AB3FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbjIVOna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S231486AbjIVOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjIVOn1 (ORCPT
+        with ESMTP id S230339AbjIVOoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:43:27 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E2B19C
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:43:21 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-4142ca41b89so14308641cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1695393800; x=1695998600; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q9o0eyPrPED08Whg4Z5ZxhQWffqyfOzmMnSHg2K2zdA=;
-        b=UpAwaXJT3I6vbqIg2skPxeCDHNTg0PmzslN/9+KecqqnVGXaWVja/gGBo3WYPuufp6
-         Q8ov6v/MgRAFoaH+6VwQtbT06snzR2mOfWiCFNyE/qfoUXxOg84CCJc+HSgA3h69RtIr
-         AvuGgvSGCaQXvhf6qLt+WsoeA7we2plSkAJrXY6XPs8KCrn+iFpkkv0P7MhoPLYO8XaB
-         c2cv6SZvphukvL4Bh+jX0AdQl9HAT7dO+/oPSsRewZMIHK+vIbluVMVEDgnbjSi5DW2Q
-         Gv79cAZO91p9hQHOzDqRTeWXSqrZy7VPQpAv8XqThmtjTCxe7Bl1G/zqZYt1d6lEUV3T
-         iJzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695393800; x=1695998600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q9o0eyPrPED08Whg4Z5ZxhQWffqyfOzmMnSHg2K2zdA=;
-        b=hL5dJluSK/1izOB0s978HMAGrna9qtZJE0n0oQBFFInhQMHCXgyL7GRWiVvILzhqoI
-         IA7Q8xUd5PjQJJNhNIpZaYWnUVkflv0anrWfJOY5AwUIKDzEmn8o1z8Z6fIn0Ue4zD0c
-         xFpdw5123vj1zJL4GMVRZB2x+wURZKel4FBgvCx79Fjp38HXtEkE4gJ6LNc/ePvbqyie
-         bfnSgASkI95ZfRexWulNkKV7CZjWKwLe7a6Qkh4cBDArEQO25nsQtA2MulSZEPPFjFEw
-         qR3GLVHTdX1gN0Z8rpxIyWOFuZho7jSUJQRL5r5ZzOUWpfkMz4vodwaMrEpLXgxfKKsw
-         5prw==
-X-Gm-Message-State: AOJu0YyphLPjG+5aWKLOCGusnB5Ru25f35W9jPkr5ZwPwnWiWEymwC/p
-        H1D2YJGntftWk5dWTDGsgyPTU+jFadkUXQ7iUd4hpg==
-X-Google-Smtp-Source: AGHT+IEj51Pc90r3QxMhk9K9tsL2rFrHblPnj7OXP5XQsNQ+DtOoZ8Qs/4DE3nnUfLiohjWib5sRDYhb1JtZkQYm084=
-X-Received: by 2002:ac8:5a16:0:b0:40f:ef6d:1a31 with SMTP id
- n22-20020ac85a16000000b0040fef6d1a31mr10433299qta.13.1695393800409; Fri, 22
- Sep 2023 07:43:20 -0700 (PDT)
+        Fri, 22 Sep 2023 10:44:18 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7335DC6;
+        Fri, 22 Sep 2023 07:44:12 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MEBvdu025832;
+        Fri, 22 Sep 2023 14:44:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=LbFeoloWRxRrwi9BvqCwJ3WHW3JbWo1zCUDcGy9w4i8=;
+ b=PDl2TtNwP9vcGPNS2zIcEmknyPJHYcGx+264sOsxdMWRLKArd9ZfJqVWjgwr5FwAQysh
+ 5ZDHLk5vXxat30e1VL8TQ8ZqwIrev4KZv4I/lV49oBHTLMlH34CeKjnWoV2y9kqrJVQd
+ +0okmgiGF0MX6+5wF07xLO5ej3qlO9Br1doHuzQjTbATtilF8Nt7c/gBn7tzfGbPay+W
+ VY2n91QTuSIGEuQtG7j6Dzxp7l7ickzHJnGwv05RMIKrVkKmZSa0AcgT29h2eSitoemn
+ UuaBCVK2YCWmg5+cllZ0kR67kGvuQ8gp42MuxulIppSRav0vJvKnP32PiLF77oWNDW0f Aw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u9ha169-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 14:44:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MEi58N026898
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 14:44:05 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 07:44:04 -0700
+Message-ID: <af4fc816-d75b-997d-6d37-a774f5eb96ae@quicinc.com>
+Date:   Fri, 22 Sep 2023 08:44:03 -0600
 MIME-Version: 1.0
-References: <20230906112605.2286994-1-usama.arif@bytedance.com>
-In-Reply-To: <20230906112605.2286994-1-usama.arif@bytedance.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 22 Sep 2023 10:42:44 -0400
-Message-ID: <CA+CK2bAfV=tpv_DK1621pU26Gy09zR+4E=AzR76Y9=zNYUc8SA@mail.gmail.com>
-Subject: Re: [v4 0/4] mm: hugetlb: Skip initialization of gigantic tail struct
- pages if freed by HVO
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
-        rppt@kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com, fam.zheng@bytedance.com,
-        liangma@liangbit.com, punit.agrawal@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v2 1/2] bus: mhi: host: Add spinlock to protect WP access
+ when queueing TREs
+Content-Language: en-US
+To:     Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>
+References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
+ <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hweOo_-hxqLmD1dGwUGyMy4GAL7LCy1l
+X-Proofpoint-ORIG-GUID: hweOo_-hxqLmD1dGwUGyMy4GAL7LCy1l
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_13,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 spamscore=0 priorityscore=1501 phishscore=0
+ suspectscore=0 malwarescore=0 clxscore=1011 mlxlogscore=814 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220126
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 7:26=E2=80=AFAM Usama Arif <usama.arif@bytedance.com=
-> wrote:
->
-> This series moves the boot time initialization of tail struct pages of a
-> gigantic page to later on in the boot. Only the
-> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct pages
-> are initialized at the start. If HVO is successful, then no more tail str=
-uct
-> pages need to be initialized. For a 1G hugepage, this series avoid
-> initialization of 262144 - 63 =3D 262081 struct pages per hugepage.
->
-> When tested on a 512G system (which can allocate max 500 1G hugepages), t=
-he
-> kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without th=
-is
-> patchseries to running init is 3.9 seconds. With this patch it is 1.2 sec=
-onds.
-> This represents an approximately 70% reduction in boot time and will
-> significantly reduce server downtime when using a large number of
-> gigantic pages.
+On 9/13/2023 2:47 AM, Qiang Yu wrote:
+> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> 
+> Protect WP accesses such that multiple threads queueing buffers for
+> incoming data do not race and access the same WP twice. Ensure read and
+> write locks for the channel are not taken in succession by dropping the
+> read lock from parse_xfer_event() such that a callback given to client
+> can potentially queue buffers and acquire the write lock in that process.
+> Any queueing of buffers should be done without channel read lock acquired
+> as it can result in multiple locks and a soft lockup.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+> ---
+>   drivers/bus/mhi/host/main.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index dcf627b..13c4b89 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -642,6 +642,7 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>   			mhi_del_ring_element(mhi_cntrl, tre_ring);
+>   			local_rp = tre_ring->rp;
+>   
+> +			read_unlock_bh(&mhi_chan->lock);
 
-My use case is different, but this patch series benefits it. I have a
-virtual machines with a large number of hugetlb pages. The RSS size of
-the VM after boot is much smaller with this series:
+This doesn't work due to the write_lock_irqsave(&mhi_chan->lock, flags); 
+on line 591.
 
-Before: 9G
-After: 600M
+I really don't like that we are unlocking the mhi_chan while still using 
+it.  It opens up a window where the mhi_chan state can be updated 
+between here and the client using the callback to queue a buf.
 
-The VM has 500 1G pages, and 512G total RAM. I would add this to the
-description, that this series can help reduce the VM overhead and boot
-performance for those who are using hugetlb pages in the VMs.
+Perhaps we need a new lock that just protects the wp, and needs to be 
+only grabbed while mhi_chan->lock is held?
 
-Also, DEFERRED_STRUCT_PAGE_INIT is a requirement for this series to
-work, and should be added into documentation.
+>   			/* notify client */
+>   			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
+>   
+> @@ -667,6 +668,7 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>   					kfree(buf_info->cb_buf);
+>   				}
+>   			}
+> +			read_lock_bh(&mhi_chan->lock);
+>   		}
+>   		break;
+>   	} /* CC_EOT */
+> @@ -1204,6 +1206,9 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>   	int eot, eob, chain, bei;
+>   	int ret;
+>   
+> +	/* Protect accesses for reading and incrementing WP */
+> +	write_lock_bh(&mhi_chan->lock);
+> +
+>   	buf_ring = &mhi_chan->buf_ring;
+>   	tre_ring = &mhi_chan->tre_ring;
+>   
+> @@ -1221,8 +1226,10 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>   
+>   	if (!info->pre_mapped) {
+>   		ret = mhi_cntrl->map_single(mhi_cntrl, buf_info);
+> -		if (ret)
+> +		if (ret) {
+> +			write_unlock_bh(&mhi_chan->lock);
+>   			return ret;
+> +		}
+>   	}
+>   
+>   	eob = !!(flags & MHI_EOB);
+> @@ -1239,6 +1246,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>   	mhi_add_ring_element(mhi_cntrl, tre_ring);
+>   	mhi_add_ring_element(mhi_cntrl, buf_ring);
+>   
+> +	write_unlock_bh(&mhi_chan->lock);
+> +
+>   	return 0;
+>   }
+>   
 
-Pasha
-
-> Thanks,
-> Usama
->
-> [v3->v4]:
-> - rebase ontop of patch "hugetlb: set hugetlb page flag before optimizing=
- vmemmap".
-> - freeze head struct page ref count.
-> - Change order of operations to initialize head struct page -> initialize
-> the necessary tail struct pages -> attempt HVO -> initialize the rest of =
-the
-> tail struct pages if HVO fails.
-> - (Mike Rapoport and Muchun Song) remove "_vmemmap" suffix from memblock =
-reserve
-> noinit flags anf functions.
->
-> [v2->v3]:
-> - (Muchun Song) skip prep of struct pages backing gigantic hugepages
-> at boot time only.
-> - (Muchun Song) move initialization of tail struct pages to after
-> HVO is attempted.
->
-> [v1->v2]:
-> - (Mike Rapoport) Code quality improvements (function names, arguments,
-> comments).
->
-> [RFC->v1]:
-> - (Mike Rapoport) Change from passing hugepage_size in
-> memblock_alloc_try_nid_raw for skipping struct page initialization to
-> using MEMBLOCK_RSRV_NOINIT flag
->
-> Usama Arif (4):
->   mm: hugetlb_vmemmap: Use nid of the head page to reallocate it
->   memblock: pass memblock_type to memblock_setclr_flag
->   memblock: introduce MEMBLOCK_RSRV_NOINIT flag
->   mm: hugetlb: Skip initialization of gigantic tail struct pages if
->     freed by HVO
->
->  include/linux/memblock.h |  9 ++++++
->  mm/hugetlb.c             | 61 ++++++++++++++++++++++++++++++++++------
->  mm/hugetlb_vmemmap.c     |  4 +--
->  mm/hugetlb_vmemmap.h     |  9 +++---
->  mm/internal.h            |  3 ++
->  mm/memblock.c            | 48 ++++++++++++++++++++++---------
->  mm/mm_init.c             |  2 +-
->  7 files changed, 107 insertions(+), 29 deletions(-)
->
-> --
-> 2.25.1
->
->
