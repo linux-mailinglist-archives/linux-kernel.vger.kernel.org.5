@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916AD7ABC56
+	by mail.lfdr.de (Postfix) with ESMTP id DCF527ABC57
 	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjIVXae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 19:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        id S230416AbjIVXah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 19:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjIVXaU (ORCPT
+        with ESMTP id S230203AbjIVXaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 19:30:20 -0400
+        Fri, 22 Sep 2023 19:30:21 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD931A1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03EB1A5;
         Fri, 22 Sep 2023 16:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1695425414; x=1726961414;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7cgML4wyfi0+y9S9RT8V0Ga3Vq1qMW5zCA4pDMudExE=;
-  b=hngLUz2W8dIpzbDODHYs9aGHKqKhJxJO7S9JpO/miCilj3wHhUVCwc7g
-   vkF14LVIEedGECdAb2YYvg08yLDQX+3gTI0sQGYlOCXrTwCjlKzy1PaYB
-   gbUJRjYrv7OjPKf9cFEADp4Bpx3vkW7iLLVpj9w8DvgqzbzeKnSjfKRR0
-   ZUF39kWE8pPWdt9sXhS/iYeA4i/kxijPRyGPs/2QsLYjbv/Otwt/i8572
-   6nPuspMWezs+6sWk5c9AfUH7pqES42+x1cPvvtbm80KTcWyBWDtBTuvPF
-   jiijW41VOB501MLOXqdKQdIyK+9Ifkmaq2x+QhfDXRqMSeH28i5n0gjtr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="411896942"
+  bh=cxXofeerr15tyc6seHR71QAwrN0OZbSQ1GKIOtuE5kg=;
+  b=niJZNdQ+CBoqdztM/CInXLpFQsWBMSQu3fxsgMN+y1GNXbkavVCGTG/a
+   Iuo0MQugrAf8D9tUit/N3yuWm3nIjqluajObq0cISPnompLhs21+0ytz6
+   VuWUdGrT9htXlH65V38qRajPSsypHVFS79K2s37xaqNkkcdpmEHeY4urb
+   tqfSoPIPubWk8rcSbCJcWl/kRQuArWtjq1G2qLtwfjkKDIen2uW6ERA5O
+   q2FD76VMXeogfsTc03iT2HZfa1AfA1rmEp9CT33RjxumWd9w2Gg7WcoY+
+   kJq7wQ2gHcq/blJUxhayFSGhtXsdAQeu/eLpq7iJNG3ikp1LOPvPJEDsG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="411896953"
 X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="411896942"
+   d="scan'208";a="411896953"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 16:30:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="921350833"
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="921350837"
 X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="921350833"
+   d="scan'208";a="921350837"
 Received: from jithujos.sc.intel.com ([172.25.103.66])
   by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 16:30:12 -0700
 From:   Jithu Joseph <jithu.joseph@intel.com>
@@ -48,9 +48,9 @@ Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
         platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
         ravi.v.shankar@intel.com, pengfei.xu@intel.com,
         ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v2 3/9] platform/x86/intel/ifs: Gen2 scan image loading
-Date:   Fri, 22 Sep 2023 16:26:00 -0700
-Message-Id: <20230922232606.1928026-4-jithu.joseph@intel.com>
+Subject: [PATCH v2 4/9] platform/x86/intel/ifs: Gen2 Scan test support
+Date:   Fri, 22 Sep 2023 16:26:01 -0700
+Message-Id: <20230922232606.1928026-5-jithu.joseph@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230922232606.1928026-1-jithu.joseph@intel.com>
 References: <20230913183348.1349409-1-jithu.joseph@intel.com>
@@ -68,248 +68,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Scan image loading flow for newer IFS generations are slightly different
-from that of current generation. In newer schemes, loading need not be
-done once for each socket as was done in gen0.
+Width of chunk related bitfields is ACTIVATE_SCAN and SCAN_STATUS MSRs
+are different in newer IFS generation compared to gen0.
 
-Also the width of NUM_CHUNKS bitfield in SCAN_HASHES_STATUS MSR has
-increased from 8 -> 16 bits. Similarly there are width differences for
-CHUNK_AUTHENTICATION_STATUS too.
+Make changes to scan test flow such that MSRs are populated
+appropriately based on the generation supported by hardware.
 
-Further the parameter to AUTHENTICATE_AND_COPY_CHUNK is passed
-differently in newer generations.
+Account for the 8/16 bit MSR bitfield width differences between gen0 and
+newer generations for the scan test trace event too.
 
 Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 ---
- drivers/platform/x86/intel/ifs/ifs.h  |  27 +++++++
- drivers/platform/x86/intel/ifs/load.c | 112 +++++++++++++++++++++++++-
- 2 files changed, 137 insertions(+), 2 deletions(-)
+ drivers/platform/x86/intel/ifs/ifs.h     | 28 +++++++++++++++++++-----
+ include/trace/events/intel_ifs.h         | 16 +++++++-------
+ drivers/platform/x86/intel/ifs/runtest.c | 26 ++++++++++++++++------
+ 3 files changed, 49 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-index d666aeed20fc..43281d456a09 100644
+index 43281d456a09..cd213b89d278 100644
 --- a/drivers/platform/x86/intel/ifs/ifs.h
 +++ b/drivers/platform/x86/intel/ifs/ifs.h
-@@ -137,6 +137,8 @@
- #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
- #define MSR_ACTIVATE_SCAN			0x000002c6
- #define MSR_SCAN_STATUS				0x000002c7
-+#define MSR_SAF_CTRL				0x000004f0
-+
- #define SCAN_NOT_TESTED				0
- #define SCAN_TEST_PASS				1
- #define SCAN_TEST_FAIL				2
-@@ -158,6 +160,19 @@ union ifs_scan_hashes_status {
- 	};
- };
- 
-+union ifs_scan_hashes_status_gen2 {
-+	u64	data;
-+	struct {
-+		u16	chunk_size;
-+		u16	num_chunks;
-+		u32	error_code	:8;
-+		u32	chunks_in_stride :9;
-+		u32	rsvd		:2;
-+		u32	max_core_limit	:12;
-+		u32	valid		:1;
-+	};
-+};
-+
- /* MSR_CHUNKS_AUTH_STATUS bit fields */
- union ifs_chunks_auth_status {
- 	u64	data;
-@@ -170,6 +185,16 @@ union ifs_chunks_auth_status {
- 	};
- };
- 
-+union ifs_chunks_auth_status_gen2 {
-+	u64	data;
-+	struct {
-+		u16	valid_chunks;
-+		u16	total_chunks;
-+		u32	error_code	:8;
-+		u32	rsvd2		:24;
-+	};
-+};
-+
- /* MSR_ACTIVATE_SCAN bit fields */
+@@ -199,9 +199,17 @@ union ifs_chunks_auth_status_gen2 {
  union ifs_scan {
  	u64	data;
-@@ -230,6 +255,7 @@ struct ifs_test_caps {
-  * @scan_details: opaque scan status code from h/w
-  * @cur_batch: number indicating the currently loaded test file
-  * @generation: IFS test generation enumerated by hardware
-+ * @chunk_size: size of a test chunk
-  */
- struct ifs_data {
- 	int	loaded_version;
-@@ -240,6 +266,7 @@ struct ifs_data {
- 	u64	scan_details;
- 	u32	cur_batch;
- 	u32	generation;
-+	u32	chunk_size;
- };
+ 	struct {
+-		u32	start	:8;
+-		u32	stop	:8;
+-		u32	rsvd	:16;
++		union {
++			struct {
++				u8	start;
++				u8	stop;
++				u16	rsvd;
++			} gen0;
++			struct {
++				u16	start;
++				u16	stop;
++			} gen2;
++		};
+ 		u32	delay	:31;
+ 		u32	sigmce	:1;
+ 	};
+@@ -211,9 +219,17 @@ union ifs_scan {
+ union ifs_status {
+ 	u64	data;
+ 	struct {
+-		u32	chunk_num		:8;
+-		u32	chunk_stop_index	:8;
+-		u32	rsvd1			:16;
++		union {
++			struct {
++				u8	chunk_num;
++				u8	chunk_stop_index;
++				u16	rsvd1;
++			} gen0;
++			struct {
++				u16	chunk_num;
++				u16	chunk_stop_index;
++			} gen2;
++		};
+ 		u32	error_code		:8;
+ 		u32	rsvd2			:22;
+ 		u32	control_error		:1;
+diff --git a/include/trace/events/intel_ifs.h b/include/trace/events/intel_ifs.h
+index d7353024016c..af0af3f1d9b7 100644
+--- a/include/trace/events/intel_ifs.h
++++ b/include/trace/events/intel_ifs.h
+@@ -10,25 +10,25 @@
  
- struct ifs_work {
-diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
-index 851c97cc6a6b..6b827247945b 100644
---- a/drivers/platform/x86/intel/ifs/load.c
-+++ b/drivers/platform/x86/intel/ifs/load.c
-@@ -2,6 +2,7 @@
- /* Copyright(c) 2022 Intel Corporation. */
+ TRACE_EVENT(ifs_status,
  
- #include <linux/firmware.h>
-+#include <linux/sizes.h>
- #include <asm/cpu.h>
- #include <asm/microcode.h>
+-	TP_PROTO(int cpu, union ifs_scan activate, union ifs_status status),
++	TP_PROTO(int cpu, int start, int stop, u64 status),
  
-@@ -26,6 +27,11 @@ union meta_data {
+-	TP_ARGS(cpu, activate, status),
++	TP_ARGS(cpu, start, stop, status),
  
- #define IFS_HEADER_SIZE	(sizeof(struct microcode_header_intel))
- #define META_TYPE_IFS	1
-+#define INVALIDATE_STRIDE	0x1UL
-+#define IFS_GEN_STRIDE_AWARE	2
-+#define AUTH_INTERRUPTED_ERROR	5
-+#define IFS_AUTH_RETRY_CT	10
-+
- static  struct microcode_header_intel *ifs_header_ptr;	/* pointer to the ifs image header */
- static u64 ifs_hash_ptr;			/* Address of ifs metadata (hash) */
- static u64 ifs_test_image_ptr;			/* 256B aligned address of test pattern */
-@@ -44,7 +50,10 @@ static const char * const scan_hash_status[] = {
- static const char * const scan_authentication_status[] = {
- 	[0] = "No error reported",
- 	[1] = "Attempt to authenticate a chunk which is already marked as authentic",
--	[2] = "Chunk authentication error. The hash of chunk did not match expected value"
-+	[2] = "Chunk authentication error. The hash of chunk did not match expected value",
-+	[3] = "Reserved",
-+	[4] = "Chunk outside the current stride",
-+	[5] = "Authentication flow interrupted",
- };
+ 	TP_STRUCT__entry(
+ 		__field(	u64,	status	)
+ 		__field(	int,	cpu	)
+-		__field(	u8,	start	)
+-		__field(	u8,	stop	)
++		__field(	u16,	start	)
++		__field(	u16,	stop	)
+ 	),
  
- #define MC_HEADER_META_TYPE_END		(0)
-@@ -154,6 +163,102 @@ static void copy_hashes_authenticate_chunks(struct work_struct *work)
- 	complete(&ifs_done);
- }
+ 	TP_fast_assign(
+ 		__entry->cpu	= cpu;
+-		__entry->start	= activate.start;
+-		__entry->stop	= activate.stop;
+-		__entry->status	= status.data;
++		__entry->start	= start;
++		__entry->stop	= stop;
++		__entry->status	= status;
+ 	),
  
-+static int get_num_chunks(int gen, union ifs_scan_hashes_status_gen2 status)
-+{
-+	return gen >= IFS_GEN_STRIDE_AWARE ? status.chunks_in_stride : status.num_chunks;
-+}
+-	TP_printk("cpu: %d, start: %.2x, stop: %.2x, status: %llx",
++	TP_printk("cpu: %d, start: %.4x, stop: %.4x, status: %.16llx",
+ 		__entry->cpu,
+ 		__entry->start,
+ 		__entry->stop,
+diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
+index 1061eb7ec399..94d486e5d263 100644
+--- a/drivers/platform/x86/intel/ifs/runtest.c
++++ b/drivers/platform/x86/intel/ifs/runtest.c
+@@ -171,21 +171,30 @@ static void ifs_test_core(int cpu, struct device *dev)
+ 	union ifs_status status;
+ 	unsigned long timeout;
+ 	struct ifs_data *ifsd;
++	int to_start, to_stop;
++	int status_chunk;
+ 	u64 msrvals[2];
+ 	int retries;
+ 
+ 	ifsd = ifs_get_data(dev);
+ 
+-	activate.rsvd = 0;
+ 	activate.delay = IFS_THREAD_WAIT;
+ 	activate.sigmce = 0;
+-	activate.start = 0;
+-	activate.stop = ifsd->valid_chunks - 1;
++	to_start = 0;
++	to_stop = ifsd->valid_chunks - 1;
 +
-+static bool need_copy_scan_hashes(struct ifs_data *ifsd)
-+{
-+	return !ifsd->loaded ||
-+		ifsd->generation < IFS_GEN_STRIDE_AWARE ||
-+		ifsd->loaded_version != ifs_header_ptr->rev;
-+}
-+
-+static int copy_hashes_authenticate_chunks_gen2(struct device *dev)
-+{
-+	union ifs_scan_hashes_status_gen2 hashes_status;
-+	union ifs_chunks_auth_status_gen2 chunk_status;
-+	u32 err_code, valid_chunks, total_chunks;
-+	int i, num_chunks, chunk_size;
-+	union meta_data *ifs_meta;
-+	int starting_chunk_nr;
-+	struct ifs_data *ifsd;
-+	u64 linear_addr, base;
-+	u64 chunk_table[2];
-+	int retry_count;
-+
-+	ifsd = ifs_get_data(dev);
-+
-+	if (need_copy_scan_hashes(ifsd)) {
-+		wrmsrl(MSR_COPY_SCAN_HASHES, ifs_hash_ptr);
-+		rdmsrl(MSR_SCAN_HASHES_STATUS, hashes_status.data);
-+
-+		/* enumerate the scan image information */
-+		chunk_size = hashes_status.chunk_size * SZ_1K;
-+		err_code = hashes_status.error_code;
-+
-+		num_chunks = get_num_chunks(ifsd->generation, hashes_status);
-+
-+		if (!hashes_status.valid) {
-+			hashcopy_err_message(dev, err_code);
-+			return -EIO;
-+		}
-+		ifsd->loaded_version = ifs_header_ptr->rev;
-+		ifsd->chunk_size = chunk_size;
++	if (ifsd->generation) {
++		activate.gen2.start = to_start;
++		activate.gen2.stop = to_stop;
 +	} else {
-+		num_chunks = ifsd->valid_chunks;
-+		chunk_size = ifsd->chunk_size;
++		activate.gen0.start = to_start;
++		activate.gen0.stop = to_stop;
 +	}
-+
-+	if (ifsd->generation >= IFS_GEN_STRIDE_AWARE) {
-+		wrmsrl(MSR_SAF_CTRL, INVALIDATE_STRIDE);
-+		rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
-+		if (chunk_status.valid_chunks != 0) {
-+			dev_err(dev, "Couldn't invalidate installed stride - %d\n",
-+				chunk_status.valid_chunks);
-+			return -EIO;
-+		}
-+	}
-+
-+	base = ifs_test_image_ptr;
-+	ifs_meta = (union meta_data *)find_meta_data(ifs_header_ptr, META_TYPE_IFS);
-+	starting_chunk_nr = ifs_meta->starting_chunk;
-+
-+	/* scan data authentication and copy chunks to secured memory */
-+	for (i = 0; i < num_chunks; i++) {
-+		retry_count = IFS_AUTH_RETRY_CT;
-+		linear_addr = base + i * chunk_size;
-+
-+		chunk_table[0] = starting_chunk_nr + i;
-+		chunk_table[1] = linear_addr;
-+		do {
-+			wrmsrl(MSR_AUTHENTICATE_AND_COPY_CHUNK, (u64)chunk_table);
-+			rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
-+			err_code = chunk_status.error_code;
-+		} while (err_code == AUTH_INTERRUPTED_ERROR && --retry_count);
-+
-+		if (err_code) {
-+			ifsd->loading_error = true;
-+			auth_err_message(dev, err_code);
-+			return -EIO;
-+		}
-+	}
-+
-+	valid_chunks = chunk_status.valid_chunks;
-+	total_chunks = chunk_status.total_chunks;
-+
-+	if (valid_chunks != total_chunks) {
-+		ifsd->loading_error = true;
-+		dev_err(dev, "Couldn't authenticate all the chunks. Authenticated %d total %d.\n",
-+			valid_chunks, total_chunks);
-+		return -EIO;
-+	}
-+	ifsd->valid_chunks = valid_chunks;
-+
-+	return 0;
-+}
-+
- static int validate_ifs_metadata(struct device *dev)
- {
- 	struct ifs_data *ifsd = ifs_get_data(dev);
-@@ -206,7 +311,9 @@ static int scan_chunks_sanity_check(struct device *dev)
- 		return ret;
  
- 	ifsd->loading_error = false;
--	ifsd->loaded_version = ifs_header_ptr->rev;
-+
-+	if (ifsd->generation > 0)
-+		return copy_hashes_authenticate_chunks_gen2(dev);
+ 	timeout = jiffies + HZ / 2;
+ 	retries = MAX_IFS_RETRIES;
  
- 	/* copy the scan hash and authenticate per package */
- 	cpus_read_lock();
-@@ -226,6 +333,7 @@ static int scan_chunks_sanity_check(struct device *dev)
- 		ifs_pkg_auth[curr_pkg] = 1;
+-	while (activate.start <= activate.stop) {
++	while (to_start <= to_stop) {
+ 		if (time_after(jiffies, timeout)) {
+ 			status.error_code = IFS_SW_TIMEOUT;
+ 			break;
+@@ -196,13 +205,14 @@ static void ifs_test_core(int cpu, struct device *dev)
+ 
+ 		status.data = msrvals[1];
+ 
+-		trace_ifs_status(cpu, activate, status);
++		trace_ifs_status(cpu, to_start, to_stop, status.data);
+ 
+ 		/* Some cases can be retried, give up for others */
+ 		if (!can_restart(status))
+ 			break;
+ 
+-		if (status.chunk_num == activate.start) {
++		status_chunk = ifsd->generation ? status.gen2.chunk_num : status.gen0.chunk_num;
++		if (status_chunk == to_start) {
+ 			/* Check for forward progress */
+ 			if (--retries == 0) {
+ 				if (status.error_code == IFS_NO_ERROR)
+@@ -211,7 +221,9 @@ static void ifs_test_core(int cpu, struct device *dev)
+ 			}
+ 		} else {
+ 			retries = MAX_IFS_RETRIES;
+-			activate.start = status.chunk_num;
++			ifsd->generation ? (activate.gen2.start = status_chunk) :
++			(activate.gen0.start = status_chunk);
++			to_start = status_chunk;
+ 		}
  	}
- 	ret = 0;
-+	ifsd->loaded_version = ifs_header_ptr->rev;
- out:
- 	cpus_read_unlock();
  
 -- 
 2.25.1
