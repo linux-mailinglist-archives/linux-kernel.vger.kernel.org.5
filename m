@@ -2,232 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940FC7ABBAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DCB7ABBAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjIVWP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 18:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
+        id S230072AbjIVWRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 18:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjIVWP0 (ORCPT
+        with ESMTP id S229469AbjIVWRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:15:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228F619A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 15:15:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F90C433C9;
-        Fri, 22 Sep 2023 22:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695420918;
-        bh=KZAzIlymensHpeS8g6K9kxZZ7WQMm3JO+eEk1l2wXKc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ecQq/UdFUb3wBQ21d31FdbMsyf+eCk9oROSI2WjBVij9BgmBE+wgzcUmrdM71MMLs
-         cajp8iz2/iaXkQ8RS0B9tz3ddv4LV6/rrcbVwqEhQ0cR02NIJgRFqs1CAtbyik97gV
-         w89wASj8VnAm72hC4KZwttoACefzfh9AnJeSTgT7zhJc1eRIzEesiwZkQ/L7mu1pPl
-         r+PCcle9EkqzU/dKV+l2/jN1vG+snxXJr3VTBf0XpHKFWUTIPthR1QdECtsHJqHUN7
-         G1uum3AhRB9OnLDoPOfWV1rexKoZNQBqSDBWNYqIfWsxHQ7tCnH5+rN0IGwe0Mkjsu
-         IVxc3nXI+COBA==
-From:   SeongJae Park <sj@kernel.org>
-To:     =?UTF-8?q?=E6=9D=A8=E6=AC=A2?= <link@vivo.com>
-Cc:     "SeongJae Park" <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DATA ACCESS MONITOR" <damon@lists.linux.dev>,
-        "open list:DATA ACCESS MONITOR" <linux-mm@kvack.org>,
-        "opensource . kernel" <opensource.kernel@vivo.com>
-Subject: Re: [RFC 0/2] Damos filter cleanup code and implement workingset
-Date:   Fri, 22 Sep 2023 22:15:15 +0000
-Message-Id: <20230922221515.66785-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <d060083d-ebdd-4966-9f41-87cef0d2c106@vivo.com>
-References: 
+        Fri, 22 Sep 2023 18:17:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF76D19A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 15:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695421036; x=1726957036;
+  h=from:to:subject:date:message-id:mime-version;
+  bh=IixbLIeMZZwYQb2hTR/zQYYMPvopwFtoJhCtUePjgz0=;
+  b=YptUOuFpymrJ7dmp5a0CycK8C2NxqFoYn3T9PrlbeuU4QvRK7dBqTRCj
+   5bn0SZKDxtZl0nZ0yGJYPl6j/yNXU31gGoL583FyiYWFEtRGGl/wITqxN
+   2LhLTA6vYFdpey8pAlYwMHQ/ngTMQcdUKtBsgA2IiY83c4PLqN614/xc1
+   XLyUdPWDTRDfZAhmDUea8ewbQjlBNt3XN1osHGJ3LF9fy69IxgqJqHkAl
+   qS7HYBcQC3VjchQsXncn7LIQM387yJYsmz4ldbn/dBy0R+ZpnV09T8/zh
+   EEXgbnuMtXTebHQld+UrlJgzXtVg1u1bfaHvAUQnWmQyBrwbfi141z5Gn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="467248276"
+X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
+   d="scan'208";a="467248276"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 15:17:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="921330208"
+X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
+   d="scan'208";a="921330208"
+Received: from tchuang-mobl1.amr.corp.intel.com (HELO jcompost-mobl.amr.corp.intel.com) ([10.212.85.229])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 15:17:15 -0700
+From:   "Compostella, Jeremy" <jeremy.compostella@intel.com>
+To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
+Subject: [PATCH] x86/cpu/intel: Fix MTRR verification for TME enabled platforms
+Date:   Fri, 22 Sep 2023 15:17:14 -0700
+Message-ID: <87v8c1ua39.fsf@jcompost-mobl.amr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Organization: Intel Corporation - 2200 Mission College Blvd. Santa Clara, CA
+        95052. USA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huan,
+On TME enabled platform, BIOS publishes MTRR taking into account Total
+Memory Encryption (TME) reserved bits.
 
-On Fri, 22 Sep 2023 02:54:58 +0000 杨欢 <link@vivo.com> wrote:
+generic_get_mtrr() performs a sanity check of the MTRRs relying on the
+`phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
+`x86_phys_bits' field.  But at the time the generic_get_mtrr()
+function is ran the `x86_phys_bits' has not been updated by
+detect_tme() when TME is enabled.
 
-> HI SJ,
-> 
-> Thanks for your patient response.
+Since the x86_phys_bits does not reflect yet the real maximal physical
+address size yet generic_get_mtrr() complains by logging the following
+messages.
 
-Happy to hear this kind acknowledgement :)
+    mtrr: your BIOS has configured an incorrect mask, fixing it.
+    mtrr: your BIOS has configured an incorrect mask, fixing it.
+    [...]
 
-> > [Some people who received this message don't often get email from sj@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> >
-> > Hi Huan,
-> >
-> >
-> > First of all, thank you for this patch.  I have some high level comments and
-> > questions as below.
-> >
-> > On Tue, 19 Sep 2023 17:52:33 +0800 Huan Yang <link@vivo.com> wrote:
-> >
-> >> Now damos support filter contains two type.
-> >> The first is scheme filter which will invoke each scheme apply,
-> >> second is scheme action filter, which will filter out unwanted action.
-> > IMHO, that's not clear definition of the types.  Conceptually, all the filters
-> > are same.  Nonetheless, they are having different behaviors because they are
-> > handled in different layer depending on which layer is more efficient to handle
-> Thanks for these instructions to help me understand the design idea of 
-> damos filter.
-> > those[1].
-> >
-> > I agree this is complicated and a bit verbose explanation, but I don't feel
-> > your scheme vs action definition is making it easier to understand.
-> >
-> >> But this implement is scattered in different implementations
-> > Indeed the implementation is scattered in core layer and the ops layer
-> > depending on the filter types.  But I think this is needed for efficient
-> > handling of those.
-> 
-> IMO, some simple filter can have a common implement, like anon filter? And,
-> for some special type, each layer offer their own?
+For `x86_phys_bits' to be updated before generic_get_mtrr() runs, this
+patch moves the detect_tme() call from init_intel() to
+early_init_intel().
 
-Do you mean there could be two filter types that better to be handled in
-different layer for efficiency, but share common implementation?  Could you
-please give me a more specific example?
+Signed-off-by: Jeremy Compostella <jeremy.compostella@intel.com>
+---
+ arch/x86/kernel/cpu/intel.c | 174 ++++++++++++++++++------------------
+ 1 file changed, 87 insertions(+), 87 deletions(-)
 
-> 
-> >
-> >> and hard to reuse or extend.
-> >  From your first patch, which extending the filter, the essential change for the
-> > extension is adding another enum to 'enum damos_filter_type' (1 line) and
-> > addition of switch case in '__damos_pa_filter_out()' (3 lines).  I don't think
-> > it looks too complicated.  If you're saying it was hard to understand which
-> Yes, indeed.
-> > part really need to be modifed, I think that makes sense.  But in the case,
-> > we might need more comments rather than structural change.
-> >
-> >> This patchset clean up those filter code, move into filter.c and add header
-> >> to expose filter func.(patch 2)
-> > Again, I agree more code cleanup is needed.  But I'm not sure if this is the
-> > right way.  Especially, I'm unsure if it really need to have a dedicated file.
-> 
-> I think the filter code scatter into each layer may make code hard to 
-> reuse, other ops
-> 
-> may need anon filter or something. So, make code into a dedicated file 
-> may good?
-> 
-> (just my opinion.)
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index be4045628fd3..34c54432bf00 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -184,6 +184,90 @@ static bool bad_spectre_microcode(struct cpuinfo_x86 *c)
+ 	return false;
+ }
+ 
++#define MSR_IA32_TME_ACTIVATE		0x982
++
++/* Helpers to access TME_ACTIVATE MSR */
++#define TME_ACTIVATE_LOCKED(x)		(x & 0x1)
++#define TME_ACTIVATE_ENABLED(x)		(x & 0x2)
++
++#define TME_ACTIVATE_POLICY(x)		((x >> 4) & 0xf)	/* Bits 7:4 */
++#define TME_ACTIVATE_POLICY_AES_XTS_128	0
++
++#define TME_ACTIVATE_KEYID_BITS(x)	((x >> 32) & 0xf)	/* Bits 35:32 */
++
++#define TME_ACTIVATE_CRYPTO_ALGS(x)	((x >> 48) & 0xffff)	/* Bits 63:48 */
++#define TME_ACTIVATE_CRYPTO_AES_XTS_128	1
++
++/* Values for mktme_status (SW only construct) */
++#define MKTME_ENABLED			0
++#define MKTME_DISABLED			1
++#define MKTME_UNINITIALIZED		2
++static int mktme_status = MKTME_UNINITIALIZED;
++
++static void detect_tme(struct cpuinfo_x86 *c)
++{
++	u64 tme_activate, tme_policy, tme_crypto_algs;
++	int keyid_bits = 0, nr_keyids = 0;
++	static u64 tme_activate_cpu0 = 0;
++
++	rdmsrl(MSR_IA32_TME_ACTIVATE, tme_activate);
++
++	if (mktme_status != MKTME_UNINITIALIZED) {
++		if (tme_activate != tme_activate_cpu0) {
++			/* Broken BIOS? */
++			pr_err_once("x86/tme: configuration is inconsistent between CPUs\n");
++			pr_err_once("x86/tme: MKTME is not usable\n");
++			mktme_status = MKTME_DISABLED;
++
++			/* Proceed. We may need to exclude bits from x86_phys_bits. */
++		}
++	} else {
++		tme_activate_cpu0 = tme_activate;
++	}
++
++	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
++		pr_info_once("x86/tme: not enabled by BIOS\n");
++		mktme_status = MKTME_DISABLED;
++		return;
++	}
++
++	if (mktme_status != MKTME_UNINITIALIZED)
++		goto detect_keyid_bits;
++
++	pr_info("x86/tme: enabled by BIOS\n");
++
++	tme_policy = TME_ACTIVATE_POLICY(tme_activate);
++	if (tme_policy != TME_ACTIVATE_POLICY_AES_XTS_128)
++		pr_warn("x86/tme: Unknown policy is active: %#llx\n", tme_policy);
++
++	tme_crypto_algs = TME_ACTIVATE_CRYPTO_ALGS(tme_activate);
++	if (!(tme_crypto_algs & TME_ACTIVATE_CRYPTO_AES_XTS_128)) {
++		pr_err("x86/mktme: No known encryption algorithm is supported: %#llx\n",
++				tme_crypto_algs);
++		mktme_status = MKTME_DISABLED;
++	}
++detect_keyid_bits:
++	keyid_bits = TME_ACTIVATE_KEYID_BITS(tme_activate);
++	nr_keyids = (1UL << keyid_bits) - 1;
++	if (nr_keyids) {
++		pr_info_once("x86/mktme: enabled by BIOS\n");
++		pr_info_once("x86/mktme: %d KeyIDs available\n", nr_keyids);
++	} else {
++		pr_info_once("x86/mktme: disabled by BIOS\n");
++	}
++
++	if (mktme_status == MKTME_UNINITIALIZED) {
++		/* MKTME is usable */
++		mktme_status = MKTME_ENABLED;
++	}
++
++	/*
++	 * KeyID bits effectively lower the number of physical address
++	 * bits.  Update cpuinfo_x86::x86_phys_bits accordingly.
++	 */
++	c->x86_phys_bits -= keyid_bits;
++}
++
+ static void early_init_intel(struct cpuinfo_x86 *c)
+ {
+ 	u64 misc_enable;
+@@ -335,6 +419,9 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ 	 */
+ 	if (detect_extended_topology_early(c) < 0)
+ 		detect_ht_early(c);
++
++	if (cpu_has(c, X86_FEATURE_TME))
++		detect_tme(c);
+ }
+ 
+ static void bsp_init_intel(struct cpuinfo_x86 *c)
+@@ -495,90 +582,6 @@ static void srat_detect_node(struct cpuinfo_x86 *c)
+ #endif
+ }
+ 
+-#define MSR_IA32_TME_ACTIVATE		0x982
+-
+-/* Helpers to access TME_ACTIVATE MSR */
+-#define TME_ACTIVATE_LOCKED(x)		(x & 0x1)
+-#define TME_ACTIVATE_ENABLED(x)		(x & 0x2)
+-
+-#define TME_ACTIVATE_POLICY(x)		((x >> 4) & 0xf)	/* Bits 7:4 */
+-#define TME_ACTIVATE_POLICY_AES_XTS_128	0
+-
+-#define TME_ACTIVATE_KEYID_BITS(x)	((x >> 32) & 0xf)	/* Bits 35:32 */
+-
+-#define TME_ACTIVATE_CRYPTO_ALGS(x)	((x >> 48) & 0xffff)	/* Bits 63:48 */
+-#define TME_ACTIVATE_CRYPTO_AES_XTS_128	1
+-
+-/* Values for mktme_status (SW only construct) */
+-#define MKTME_ENABLED			0
+-#define MKTME_DISABLED			1
+-#define MKTME_UNINITIALIZED		2
+-static int mktme_status = MKTME_UNINITIALIZED;
+-
+-static void detect_tme(struct cpuinfo_x86 *c)
+-{
+-	u64 tme_activate, tme_policy, tme_crypto_algs;
+-	int keyid_bits = 0, nr_keyids = 0;
+-	static u64 tme_activate_cpu0 = 0;
+-
+-	rdmsrl(MSR_IA32_TME_ACTIVATE, tme_activate);
+-
+-	if (mktme_status != MKTME_UNINITIALIZED) {
+-		if (tme_activate != tme_activate_cpu0) {
+-			/* Broken BIOS? */
+-			pr_err_once("x86/tme: configuration is inconsistent between CPUs\n");
+-			pr_err_once("x86/tme: MKTME is not usable\n");
+-			mktme_status = MKTME_DISABLED;
+-
+-			/* Proceed. We may need to exclude bits from x86_phys_bits. */
+-		}
+-	} else {
+-		tme_activate_cpu0 = tme_activate;
+-	}
+-
+-	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
+-		pr_info_once("x86/tme: not enabled by BIOS\n");
+-		mktme_status = MKTME_DISABLED;
+-		return;
+-	}
+-
+-	if (mktme_status != MKTME_UNINITIALIZED)
+-		goto detect_keyid_bits;
+-
+-	pr_info("x86/tme: enabled by BIOS\n");
+-
+-	tme_policy = TME_ACTIVATE_POLICY(tme_activate);
+-	if (tme_policy != TME_ACTIVATE_POLICY_AES_XTS_128)
+-		pr_warn("x86/tme: Unknown policy is active: %#llx\n", tme_policy);
+-
+-	tme_crypto_algs = TME_ACTIVATE_CRYPTO_ALGS(tme_activate);
+-	if (!(tme_crypto_algs & TME_ACTIVATE_CRYPTO_AES_XTS_128)) {
+-		pr_err("x86/mktme: No known encryption algorithm is supported: %#llx\n",
+-				tme_crypto_algs);
+-		mktme_status = MKTME_DISABLED;
+-	}
+-detect_keyid_bits:
+-	keyid_bits = TME_ACTIVATE_KEYID_BITS(tme_activate);
+-	nr_keyids = (1UL << keyid_bits) - 1;
+-	if (nr_keyids) {
+-		pr_info_once("x86/mktme: enabled by BIOS\n");
+-		pr_info_once("x86/mktme: %d KeyIDs available\n", nr_keyids);
+-	} else {
+-		pr_info_once("x86/mktme: disabled by BIOS\n");
+-	}
+-
+-	if (mktme_status == MKTME_UNINITIALIZED) {
+-		/* MKTME is usable */
+-		mktme_status = MKTME_ENABLED;
+-	}
+-
+-	/*
+-	 * KeyID bits effectively lower the number of physical address
+-	 * bits.  Update cpuinfo_x86::x86_phys_bits accordingly.
+-	 */
+-	c->x86_phys_bits -= keyid_bits;
+-}
+-
+ static void init_cpuid_fault(struct cpuinfo_x86 *c)
+ {
+ 	u64 msr;
+@@ -715,9 +718,6 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 
+ 	init_ia32_feat_ctl(c);
+ 
+-	if (cpu_has(c, X86_FEATURE_TME))
+-		detect_tme(c);
+-
+ 	init_intel_misc_features(c);
+ 
+ 	split_lock_init();
+-- 
+2.40.1
 
-Again, I'm not super confident about my understanding.  But sounds like you're
-partly worrying about duplication of some code in each ops implementation
-(modules in same layer).  Please correct me if I'm wrong, with specific,
-detailed and realistic examples.
-
-If my guess is not that wrong, I can agree to the concern.  Nevertheless, we
-already have a dedicated source file for such common code between ops
-implementaions, namely ops-common.c.
-
-That said, we don't have duplicated DAMOS filters implementation code in
-multipe ops implementation at the moment.  It could have such duplication in
-the future, but I think it's not too late to make such cleanup after or just
-before such duplication heppen.  IOW, I'd suggest to not make changes for
-something that _might_ happen in future.
-
-> 
-> > To my humble eyes, it doesn't look like making code clearly easier to read
-> > compared to the current version.  This is probably because I don't feel your
-> > scheme vs action definition is clear to understand.  Neither it is
-> Yes, indeed, current code not clean, the idea didn't take shape.
-> > deduplicating code.  The patch adds lines more that deleted ones, according to
-> > its diffstat.  For the reason, I don't see clear benefit of this change.
-> In this code, maybe just a little benefit when other ops need to filter 
-> anon page? :)
-
-As mentioned above, it's unclear when, how, and for what benefit we will
-support anon pages filter from vaddr.  I'd again suggest to not make change
-only for future change that not clear if we really want to make for now.
-
-> >    I
-> > might be biased, having NIH (Not Invented Here) sindrome, or missing something.
-> > Please let me know if so.
-> >
-> >> And add a new filter "workingset" to protect workingset page.
-> > Can you explain expected use cases of this new filter type in more detail?
-> > Specifically, for what scheme action and under what situation this new filter
-> 
-> IMO, page if marked as workingset, mean page in task's core 
-> workload(maybe have
-> 
-> seen the refault, and trigger refault protect). So, for lru sort or reclaim,
-> 
-> we'd better not touch it?(If any wrong, please let me know.)
-
-Still unclear to me.  Could I ask you more specific and detailed case?
-
-> 
-> > type will be needed?  If you have some test data for the use case and could
-> > share it, it would be very helpful for me to understand why it is needed.
-> 
-> Sorry, this type just from my knowledge of MM, have no test data.
-> 
-> For futher learn of DAMON, I'll try it.
-
-Yes, that will be very helpful.
-
-And from this point, I'm getting an impression that the purpose of this RFC is
-not for making a real change for specific use case that assumed to make real
-benefits, but just for getting opinions about some imaginable changes that
-_might_ be helpful, and _might_ be made in future.  If so, making the point
-more clear would be helpful for me to give you opinion earlier.  If that's the
-case, my opinion is this.  I agree DAMON code has many rooms of improvement in
-terms of readability, so cleanup patches are welcome.  Nevertheless, I'd prefer
-to make changes only when it is reasonable to expect it's providing _real_
-improvement just after be applied, or at least very near and specific future.
-
-
-Thanks,
-SJ
-
-> 
-> >
-> >> Do we need this and cleanup it?
-> > I think I cannot answer for now, and your further clarification and patient
-> > explanation could be helpful.
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/tree/Documentation/mm/damon/design.rst?h=mm-everything-2023-09-20-19-38#n400
-> >
-> >
-> > Thanks,
-> > SJ
-> 
-> Thanks,
-> 
-> Huan
-> 
-> >
-> >> Huan Yang (2):
-> >>    mm/damos/filter: Add workingset page filter
-> >>    mm/damos/filter: Damos filter cleanup
-> >>
-> >>   include/linux/damon.h    |  62 +-----------------
-> >>   mm/damon/Makefile        |   2 +-
-> >>   mm/damon/core-test.h     |   7 ++
-> >>   mm/damon/core.c          |  93 ++++-----------------------
-> >>   mm/damon/filter.c        | 135 +++++++++++++++++++++++++++++++++++++++
-> >>   mm/damon/filter.h        | 119 ++++++++++++++++++++++++++++++++++
-> >>   mm/damon/paddr.c         |  29 +++------
-> >>   mm/damon/reclaim.c       |  48 +++++++++++---
-> >>   mm/damon/sysfs-schemes.c |   1 +
-> >>   9 files changed, 325 insertions(+), 171 deletions(-)
-> >>   create mode 100644 mm/damon/filter.c
-> >>   create mode 100644 mm/damon/filter.h
-> >>
-> >> --
-> >> 2.34.1
-> >>
-> >>
-> 
