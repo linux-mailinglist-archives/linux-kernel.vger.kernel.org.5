@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F807AA9AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CCC7AA9B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjIVHFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        id S229556AbjIVHGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjIVHFr (ORCPT
+        with ESMTP id S230127AbjIVHGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:05:47 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B0718F;
-        Fri, 22 Sep 2023 00:05:41 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38M75TbA047640;
-        Fri, 22 Sep 2023 02:05:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695366329;
-        bh=LTJ02Jb2rpuPbIq/vd3dyF6Rpb23oYrvV/Lj91cx8s8=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=KjciD4qGHxN6BIilDkQZXbEdYWg4sUtgTep9YcYF5vtvAzJ6Be/U+K0QFN/pex5Yd
-         kmRzDWTCZB11Bpkb0VlSglU4ycxKPClrH5cORFL5lzt9z06x+H+irJ3EvIEepGjjeR
-         g7tBWmYQ7yb+k2cGXZ8IcRwOYGp2y5znCcheHlfw=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38M75TjQ078961
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 Sep 2023 02:05:29 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 22
- Sep 2023 02:05:28 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 22 Sep 2023 02:05:29 -0500
-Received: from [10.24.69.199] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38M75N5F048136;
-        Fri, 22 Sep 2023 02:05:24 -0500
-Message-ID: <ef27a0e4-6ce6-5690-85de-a2162255bbfb@ti.com>
-Date:   Fri, 22 Sep 2023 12:35:23 +0530
+        Fri, 22 Sep 2023 03:06:04 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31258197
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 00:05:57 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ea4b:e108:10b2:c4a2])
+        by xavier.telenet-ops.be with bizsmtp
+        id ov5v2A0093uG6wG01v5vaN; Fri, 22 Sep 2023 09:05:56 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qjaEd-004AId-KO;
+        Fri, 22 Sep 2023 09:05:55 +0200
+Date:   Fri, 22 Sep 2023 09:05:55 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] i2c: rcar: reset controller is mandatory for
+ Gen3+
+In-Reply-To: <20230921125351.3954-2-wsa+renesas@sang-engineering.com>
+Message-ID: <eca9a551-1b46-ad3c-97c-fd48852ebace@linux-m68k.org>
+References: <20230921125351.3954-1-wsa+renesas@sang-engineering.com> <20230921125351.3954-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: add TAPRIO offload
- support
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <vladimir.oltean@nxp.com>,
-        Simon Horman <horms@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>, Roger Quadros <rogerq@ti.com>
-References: <20230921070031.795788-1-danishanwar@ti.com>
- <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
- <f54b6cd6-3f9f-4a4c-a14d-de2201f1e8b0@lunn.ch>
-From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <f54b6cd6-3f9f-4a4c-a14d-de2201f1e8b0@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/23 22:05, Andrew Lunn wrote:
-> On Thu, Sep 21, 2023 at 01:42:36PM +0300, Roger Quadros wrote:
->> Hi Danish,
->>
->> On 21/09/2023 10:00, MD Danish Anwar wrote:
->>
->> Can you please retain patch authorhsip?
->>
->>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
->>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
->>> configuration.
-> 
-> Does the switch version of the firmware support this?
-> 
+On Thu, 21 Sep 2023, Wolfram Sang wrote:
+> Initially, we only needed a reset controller to make sure RXDMA works at
+> least once per transfer. Meanwhile, documentation has been updated. It
+> now says that a reset has to be performed prior every transaction, even
+> if it is non-DMA. So, make the reset controller a requirement instead of
+> being optional. And bail out if resetting fails.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>
+> Change since v2:
+> * properly bail out on errors using goto
+>  To make that easier, the reset controller is now probed after the
+>  handling of pm_runtime_put() is determined
 
-Yes. Switch firmware also supports EST.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
->      Andrew
+Gr{oetje,eeting}s,
 
--- 
-Thanks and Regards,
-Danish
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
