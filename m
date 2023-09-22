@@ -2,91 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5947AA70C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53707AA717
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjIVClL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 22:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S230286AbjIVCsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 22:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjIVClJ (ORCPT
+        with ESMTP id S229497AbjIVCsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 22:41:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3977B1A2;
-        Thu, 21 Sep 2023 19:41:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D097C433C7;
-        Fri, 22 Sep 2023 02:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695350462;
-        bh=XhildR46aXcqKC9XbhSD2gq87OCF6FJdshNIl98rDAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l3PefqkGLuAaVdYgWFLjyomMX35Vmckz8mc3nwg4FRyBl3bSvU+v3xdVlnJ8APBW5
-         A6Ziy46T33PNVCL5WJIPB1Sljs42W2ANni4sTi3kGlI3kbWPgZg5V2zGuwfTYPbbdr
-         SVoWbgHjjMRKYO36he0yQI51w6Ygt9FpwpBbze4UMa4WZ5WZgQpaRegAq0IWps0G9S
-         2EodQ22WUye6Z/VrcXw4RU6PGcOsY4nFT5GoGeS5t5mMhDxqNnePp6g+uTwBe0cqxs
-         rQCGGb0UIO5akxq4l+/hfHRZbXGr/1uuklsjqTw+QXcFvmXknRKnP4KccbJZmIj5M6
-         AKrwthOqZaf4A==
-Date:   Thu, 21 Sep 2023 19:41:00 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gaurav Jain <gaurav.jain@nxp.com>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH] crypto: caam/jr - fix Chacha20 + Poly1305 self test
- failure
-Message-ID: <20230922024100.GA935@sol.localdomain>
-References: <20230921124237.2364827-1-gaurav.jain@nxp.com>
+        Thu, 21 Sep 2023 22:48:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11CB19E;
+        Thu, 21 Sep 2023 19:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695350879; x=1726886879;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WjtJKQb906FAD2/Ch7XLbjda8s1yVinX4tQX05erhW4=;
+  b=bNlOXjdRXt783nJXQb+YGuXZeDsxC900HQtzdeHtzEX4iNsXFtu0sZP/
+   vcsu7ps1XcyoQ7E3jl3I/wC+P6V2MkQGT9QeJs10jLimtQL86hzV6h92o
+   /I77QZvSTNnI/r/5tEwMz0LNlyYo49smcxxj8cfg5/PTcL+LvnJex+GBX
+   EwDBSswRkc1bdIninUBmatkELqdSKy+gooc/QRxSpbLcgmP/DXDMxOeiP
+   p7fSQx7yUw7/oyDifynbsS2mXWCPa7beRJFipKtK20npoVtHa7Tp1JfAL
+   RGre0C5ZHQQfhw0rhSHIl4reBnYcjF86I584mOrneSbbHSVqxkeTgPrKo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="360974368"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="360974368"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 19:47:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="920986298"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="920986298"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga005.jf.intel.com with ESMTP; 21 Sep 2023 19:47:55 -0700
+Message-ID: <e7c773f6-969c-0097-1bca-24d276e8a8f6@linux.intel.com>
+Date:   Fri, 22 Sep 2023 10:44:45 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921124237.2364827-1-gaurav.jain@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 09/12] iommu: Make iommu_queue_iopf() more generic
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Liu, Jingqi" <jingqi.liu@intel.com>
+References: <20230914085638.17307-1-baolu.lu@linux.intel.com>
+ <20230914085638.17307-10-baolu.lu@linux.intel.com>
+ <f20b9e78-3a63-ca3e-6c04-1d80ec857898@intel.com>
+ <20230921233402.GC13795@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230921233402.GC13795@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 06:12:37PM +0530, Gaurav Jain wrote:
-> key buffer is not copied in chachapoly_setkey function,
-> results in wrong output for encryption/decryption operation.
-> 
-> fix this by memcpy the key in caam_ctx key arrary
-> 
-> Fixes: d6bbd4eea243 ("crypto: caam/jr - add support for Chacha20 + Poly1305")
-> Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
-> ---
->  drivers/crypto/caam/caamalg.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-> index eba2d750c3b0..066f08a3a040 100644
-> --- a/drivers/crypto/caam/caamalg.c
-> +++ b/drivers/crypto/caam/caamalg.c
-> @@ -575,7 +575,8 @@ static int chachapoly_setkey(struct crypto_aead *aead, const u8 *key,
->  	if (keylen != CHACHA_KEY_SIZE + saltlen)
->  		return -EINVAL;
->  
-> -	ctx->cdata.key_virt = key;
-> +	memcpy(ctx->key, key, keylen);
-> +	ctx->cdata.key_virt = ctx->key;
->  	ctx->cdata.keylen = keylen - saltlen;
->  
 
-Huh, so this driver just ignored the key?  Is anyone using the ChaCha20Poly1305
-support in this driver?  Based on this bug existing, that seems unlikely.  If
-that's the case, wouldn't it be better just to remove the ChaCha20Poly1305
-support from this driver so that the code doesn't need to be maintained?
 
-- Eric
+On 9/22/23 7:34 AM, Jason Gunthorpe wrote:
+> On Thu, Sep 21, 2023 at 11:25:56PM +0800, Liu, Jingqi wrote:
+>>
+>> On 9/14/2023 4:56 PM, Lu Baolu wrote:
+>>> Make iommu_queue_iopf() more generic by making the iopf_group a minimal
+>>> set of iopf's that an iopf handler of domain should handle and respond
+>>> to. Add domain parameter to struct iopf_group so that the handler can
+>>> retrieve and use it directly.
+>>>
+>>> Change iommu_queue_iopf() to forward groups of iopf's to the domain's
+>>> iopf handler. This is also a necessary step to decouple the sva iopf
+>>> handling code from this interface.
+>>>
+>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>> ---
+>>>    include/linux/iommu.h      |  4 ++--
+>>>    drivers/iommu/iommu-sva.h  |  6 ++---
+>>>    drivers/iommu/io-pgfault.c | 49 ++++++++++++++++++++++++++++----------
+>>>    drivers/iommu/iommu-sva.c  |  3 +--
+>>>    4 files changed, 42 insertions(+), 20 deletions(-)
+>>>
+>> ......
+>>
+>>> @@ -112,6 +110,7 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+>>>    {
+>>>    	int ret;
+>>>    	struct iopf_group *group;
+>>> +	struct iommu_domain *domain;
+>>>    	struct iopf_fault *iopf, *next;
+>>>    	struct iommu_fault_param *iopf_param;
+>>>    	struct dev_iommu *param = dev->iommu;
+>>> @@ -143,6 +142,19 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+>>>    		return 0;
+>>>    	}
+>>> +	if (fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID)
+>>> +		domain = iommu_get_domain_for_dev_pasid(dev, fault->prm.pasid, 0);
+>>> +	else
+>>> +		domain = iommu_get_domain_for_dev(dev);
+>>> +
+>>> +	if (!domain || !domain->iopf_handler) {
+>>
+>> Does it need to check if 'domain' is error ?  Like below:
+>>
+>>           if (!domain || IS_ERR(domain) || !domain->iopf_handler)
+> 
+> Urk, yes, but not like that
+> 
+> The IF needs to be moved into the else block as each individual
+> function has its own return convention.
+
+iommu_get_domain_for_dev_pasid() returns an ERR_PTR only if the matching
+domain type is specified (non-zero).
+
+Adding IS_ERR(domain) in the else block will make the code more
+readable. Alternatively we can put a comment around above code to
+explain that ERR_PTR is not a case here.
+
+Best regards,
+baolu
