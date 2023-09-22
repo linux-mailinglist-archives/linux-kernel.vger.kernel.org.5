@@ -2,174 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 950717AACFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453737AACFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjIVIoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
+        id S232797AbjIVIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbjIVIoA (ORCPT
+        with ESMTP id S232764AbjIVIoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:44:00 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180C4CA;
-        Fri, 22 Sep 2023 01:43:50 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M8V6ls014673;
-        Fri, 22 Sep 2023 08:43:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=OLxNwF3Lj8XrOm0ayvRe3v4psWEG2yC9uYbOTbrLQw4=;
- b=T3VFDv6hjRV2w1lKVWd86duga8QkX/KbiYTEOOOldO35yP1fWhz523SECYX8uk+8Gp1S
- 6Dq/KTyh6DqnbmE4xyxwLrweY7GDi/eMwgPwqE+2V9KfC32H0yWRNHbJXGCCM5ezmTMU
- oegO5/yDPnPy+DLT1G2zcGJMZniaMEvNjodwTHkRyGFM2f/lHY1P1CF7zqICDZyqUnGP
- epCjLVdExsbr7efD9V4eqScQ1S6m9woH9bPxDzvEml8h5yyrW95rwAxvB7dk6IDHxmDb
- a4Y6gPwRIWKC7VH9C3Q0I5tBlTo//cj8VfS2QT2QXh8eDuOk/QPvl17HrcfHqIZ4GryO Tw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8tyxhe96-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 08:43:37 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38M8hax8016641
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 08:43:36 GMT
-Received: from hu-gokulsri-blr.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 22 Sep 2023 01:43:32 -0700
-From:   Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
-        <quic_gokulsri@quicinc.com>
-Subject: [PATCH V2 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
-Date:   Fri, 22 Sep 2023 14:13:03 +0530
-Message-ID: <20230922084303.4164046-4-quic_gokulsri@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922084303.4164046-1-quic_gokulsri@quicinc.com>
-References: <20230922084303.4164046-1-quic_gokulsri@quicinc.com>
+        Fri, 22 Sep 2023 04:44:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C471A2;
+        Fri, 22 Sep 2023 01:44:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A04C433C8;
+        Fri, 22 Sep 2023 08:44:10 +0000 (UTC)
+Message-ID: <3e053387-4ba6-49bc-a59a-46854e0a7c26@xs4all.nl>
+Date:   Fri, 22 Sep 2023 10:44:08 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to decoder
+ driver
+Content-Language: en-US, nl
+To:     =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= 
+        <Yunfei.Dong@mediatek.com>,
+        "jkardatzke@google.com" <jkardatzke@google.com>,
+        "nicolas.dufresne@collabora.com" <nicolas.dufresne@collabora.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "frkoenig@chromium.org" <frkoenig@chromium.org>,
+        "stevecho@chromium.org" <stevecho@chromium.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        "nhebert@chromium.org" <nhebert@chromium.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "hsinyi@chromium.org" <hsinyi@chromium.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "nfraprado@collabora.com" <nfraprado@collabora.com>
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+ <20230911125936.10648-13-yunfei.dong@mediatek.com>
+ <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
+ <d4cedcb0-32ed-495d-a8cd-a635d5105824@xs4all.nl>
+ <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
+ <bafc37e8-96e8-41c0-b805-c6477f0d7c4a@xs4all.nl>
+ <CA+ddPcN6EaFERC60_Z_-ZmWzqyUEwxiDCZwt_U6Y-gpaAu76tA@mail.gmail.com>
+ <ff7aa575-c820-4dfa-853f-77438b8b149a@xs4all.nl>
+ <b7d661637eacbda3e83d192b1126fc3970c4f50d.camel@collabora.com>
+ <c3d14f64-bf04-46b9-ac7b-af7ef9014335@xs4all.nl>
+ <00302ac675af858eb11d8398f100921af806bc30.camel@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <00302ac675af858eb11d8398f100921af806bc30.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 72QBVEbP9t0Zwm_1hEWTFSktaNZniQz5
-X-Proofpoint-ORIG-GUID: 72QBVEbP9t0Zwm_1hEWTFSktaNZniQz5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_07,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- mlxscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=864 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220071
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the APCS, A53 PLL, cpu-opp-table nodes to set
-the CPU frequency at 800MHz (idle) or 1.008GHz.
+On 22/09/2023 05:28, Yunfei Dong (董云飞) wrote:
+> Hi Hans,
+> 
+> Thanks for your help to give some good advice.
+> On Wed, 2023-09-20 at 09:20 +0200, Hans Verkuil wrote:
+>>  	 
+>>>>>> In any case, using a control to switch to secure mode and using
+>> a control
+>>>>>> to convert a dmabuf fd to a secure handle seems a poor choice to
+>> me.
+>>>>>>
+>>>>>> I was wondering if it wouldn't be better to create a new
+>> V4L2_MEMORY_ type,
+>>>>>> e.g. V4L2_MEMORY_DMABUF_SECURE (or perhaps _DMABUF_OPTEE). That
+>> ensures that
+>>>>>> once you create buffers for the first time, the driver can
+>> switch into secure
+>>>>>> mode, and until all buffers are released again you know that the
+>> driver will
+>>>>>> stay in secure mode.
+>>>>>
+>>>>> Why do you think the control for setting secure mode is a poor
+>> choice?
+>>>>> There's various places in the driver code where functionality
+>> changes
+>>>>> based on being secure/non-secure mode, so this is very much a
+>> 'global'
+>>>>> setting for the driver. It could be inferred based off a new
+>> memory
+>>>>> type for the queues...which then sets that flag in the driver;
+>> but
+>>>>> that seems like it would be more fragile and would require
+>> checking
+>>>>> for incompatible output/capture memory types. I'm not against
+>> another
+>>>>> way of doing this; but didn't see why you think the proposed
+>> method is
+>>>>> a poor choice.
+>>>>
+>>>> I assume you are either decoding to secure memory all the time, or
+>> not
+>>>> at all. That's something you would want to select the moment you
+>> allocate
+>>>> the first buffer. Using the V4L2_MEMORY_ value would be the
+>> natural place
+>>>> for that. A control can typically be toggled at any time, and it
+>> makes
+>>>> no sense to do that for secure streaming.
+>>>>
+>>>> Related to that: if you pass a dmabuf fd you will need to check
+>> somewhere
+>>>> if the fd points to secure memory or not. You don't want to mix
+>> the two
+>>>> but you want to check that at VIDIOC_QBUF time.
+>>>>
+>>>> Note that the V4L2_MEMORY_ value is already checked in the v4l2
+>> core,
+>>>> drivers do not need to do that.
+>>>
+>>> Just to clarify a bit, and make sure I understand this too. You are
+>> proposing to
+>>> introduce something like:
+>>>
+>>>    V4L2_MEMORY_SECURE_DMABUF
+>>>
+>>> Which like V4L2_MEMORY_DMABUF is meant to import dmabuf, while
+>> telling the
+>>> driver that the memory is secure according to the definition of
+>> "secure" for the
+>>> platform its running on.
+>>>
+>>> This drivers also allocate secure SHM (a standard tee concept) and
+>> have internal
+>>> allocation for reconstruction buffer and some hw specific reference
+>> metadata. So
+>>> the idea would be that it would keep allocation using the dmabuf
+>> heap internal
+>>> APIs ? And decide which type of memory based on the memory type
+>> found in the
+>>> queue?
+>>
+>> Yes. Once you request the first buffer you basically tell the driver
+>> whether it
+>> will operate in secure or non-secure mode, and that stays that way
+>> until all
+>> buffers are freed. I think that makes sense.
+>>
+> 
+> According to iommu's information, the dma operation for secure and non-
+> secure are the same, whether just need to add one memory type in v4l2
+> framework the same as V4L2_MEMORY_DMABUF? The dma operation in
+> videobuf2-dma-contig.c can use the same functions.
 
-Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
----
- arch/arm64/boot/dts/qcom/ipq5018.dtsi | 40 +++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+So if I pass a non-secure dma fd to the capture queue of the codec, who
+will check that it can't write the data to that fd? Since doing so would
+expose the video. Presumably at some point the tee code will prevent that?
+(I sincerely hope so!)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index 9f13d2dcdfd5..a04b2019c779 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2023 The Linux Foundation. All rights reserved.
-  */
- 
-+#include <dt-bindings/clock/qcom,apss-ipq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
- #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
-@@ -36,6 +37,8 @@ CPU0: cpu@0 {
- 			reg = <0x0>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-+			operating-points-v2 = <&cpu_opp_table>;
- 		};
- 
- 		CPU1: cpu@1 {
-@@ -44,6 +47,8 @@ CPU1: cpu@1 {
- 			reg = <0x1>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-+			operating-points-v2 = <&cpu_opp_table>;
- 		};
- 
- 		L2_0: l2-cache {
-@@ -54,6 +59,23 @@ L2_0: l2-cache {
- 		};
- 	};
- 
-+	cpu_opp_table: opp-table-cpu {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp-800000000 {
-+			opp-hz = /bits/ 64 <800000000>;
-+			opp-microvolt = <1100000>;
-+			clock-latency-ns = <200000>;
-+		};
-+
-+		opp-1008000000 {
-+			opp-hz = /bits/ 64 <1008000000>;
-+			opp-microvolt = <1100000>;
-+			clock-latency-ns = <200000>;
-+		};
-+	};
-+
- 	firmware {
- 		scm {
- 			compatible = "qcom,scm-ipq5018", "qcom,scm";
-@@ -181,6 +203,24 @@ v2m1: v2m@1000 {
- 			};
- 		};
- 
-+		a53pll: clock@b116000 {
-+			compatible = "qcom,ipq5018-a53pll";
-+			reg = <0x0b116000 0x40>;
-+			#clock-cells = <0>;
-+			clocks = <&xo_board_clk>;
-+			clock-names = "xo";
-+		};
-+
-+		apcs_glb: mailbox@b111000 {
-+			compatible = "qcom,ipq5018-apcs-apps-global",
-+				     "qcom,ipq6018-apcs-apps-global";
-+			reg = <0x0b111000 0x1000>;
-+			#clock-cells = <1>;
-+			clocks = <&a53pll>, <&xo_board_clk>, <&gcc GPLL0>;
-+			clock-names = "pll", "xo", "gpll0";
-+			#mbox-cells = <1>;
-+		};
-+
- 		timer@b120000 {
- 			compatible = "arm,armv7-timer-mem";
- 			reg = <0x0b120000 0x1000>;
--- 
-2.34.1
+Having a separate V4L2_MEMORY_DMABUF_SECURE type is to indicate to the
+driver that 1) it can expect secure dmabuf fds, 2) it can configure itself
+for that (that avoids using a control to toggle between normal and secure mode),
+and at VIDIOC_QBUF time it is easy for the V4L2 core to verify that the
+fd that is passed in is for secure memory. This means that mistakes by
+userspace are caught at QBUF time.
+
+Of course, this will not protect you (people can disable this check by
+recompiling the kernel), that still has to be done by the firmware, but
+it catches userspace errors early on.
+
+Also, while for this hardware the DMA operation is the same, that might
+not be the case for other hardware.
+
+Regards,
+
+	Hans
+
+> 
+> Best Regards,
+> Yunfei Dong
+> 
 
