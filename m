@@ -2,109 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DF57AB0DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA90F7AB0EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbjIVLcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        id S233655AbjIVLcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233712AbjIVLbv (ORCPT
+        with ESMTP id S233838AbjIVLcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:31:51 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF3AC;
-        Fri, 22 Sep 2023 04:31:41 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso3344572e87.1;
-        Fri, 22 Sep 2023 04:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695382300; x=1695987100; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FDWp5uiOwDwoGc4/Ybg3Oz+ADX7nwDhG7f/HnAB3i7M=;
-        b=OwaeSkJnWHuDQ/Ayxlc8hTQ+cUH2a0b9mxuKqskUTMuY3lXoYiOa6eqzU7JDrBlZtV
-         OI+mMUSQAmkqByZfzQMRnwZxIvl5hsRw5v2hlmc7GIEEOj4yhD1gFx3okv70+JQTbJte
-         uI9UBtbO6WfvTIoFbe+12A0i8ABsdCsl5FK+dq+YaUjeQBFN7kCHrRev1ETTjryINGpN
-         1+r5FqvWLQZMSGRmXRbUm0MFGRrasa0tYxk6DXXQgZUeWV2EQChvmu+d21UhcCTr6Md7
-         6LmBBBkc/VUYcd0+smZid+Ex0iayyRNs3ctXBSmhVVL8CcRBw9i5hU7SrSkH1jVa7qd1
-         HMLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695382300; x=1695987100;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FDWp5uiOwDwoGc4/Ybg3Oz+ADX7nwDhG7f/HnAB3i7M=;
-        b=UGjd2cah2F44GARSnlNoKGio58AWWYxEdiCzQEvUYqkmqsqQFNSXOMYYA04KodNCEl
-         duvnvYRUlDJhTe3XLLfuoOTxZKVpkh9SLW3blPDoKCxthAhMoiceBgNABcvRgAQddD5L
-         QYtxTNYunBoRt239yb8WhpXJmze5z3FiNJwT3aGVO3nWIoIgNlmoX/lOs9Km5t1p2/fd
-         IJsbgvmLFW7r+itr91TzJyQ/ILVbKLbvOFyEhswqDlytPCKo4hOtAC7hUc2MQSirF+H2
-         oJcz0O0V9ggHRYzppCl8wzspJVGb6WNC4BWyJQdRp3cz7JGR6o71SVN0bVMeV5uzj0Aj
-         Eu+A==
-X-Gm-Message-State: AOJu0YwBexk3NGI/I3h+UfZwzb8QMOTA2AtkKlyQSFAmmtunxU+0Vs+M
-        vo6Hj2sA+f+uyR6imTh3z90=
-X-Google-Smtp-Source: AGHT+IH+Po4obqpRXpBKtY/vOBw8JlAG0X1n45dmY7bPGn0wadoIcozZVmPT1J/z6KSYak5aQQ08IA==
-X-Received: by 2002:a05:6512:2013:b0:502:ffdf:b098 with SMTP id a19-20020a056512201300b00502ffdfb098mr6495626lfb.6.1695382299590;
-        Fri, 22 Sep 2023 04:31:39 -0700 (PDT)
-Received: from skbuf ([188.25.255.147])
-        by smtp.gmail.com with ESMTPSA id d13-20020a50fb0d000000b0052567e6586bsm2188130edq.38.2023.09.22.04.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:31:39 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 14:31:36 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 0/5] net: dsa: hsr: Enable HSR HW offloading
- for KSZ9477
-Message-ID: <20230922113136.jgfo2waalz2pya6b@skbuf>
-References: <20230920114343.1979843-1-lukma@denx.de>
- <20230921192308.kntudhbwc4j4skza@skbuf>
- <20230922131838.4bab19e7@wsk>
+        Fri, 22 Sep 2023 07:32:11 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D583E47
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:32:02 -0700 (PDT)
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230922113159epoutp03abf5190f0985cf410ad6a5f5a90dd247~HNTzKLZ9R0121401214epoutp03t
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:31:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230922113159epoutp03abf5190f0985cf410ad6a5f5a90dd247~HNTzKLZ9R0121401214epoutp03t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695382319;
+        bh=Hu4+fZLwVIErXQU0I4uMtRAMrlDbtthx0kVVPVEEg58=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=HaLTxn+IAfGjAx8T8MY4PuTR5VJwTQgTmuCAXora8eb8YKoQIV9w1HOke718kLkqL
+         UsO6snuoVS5wEntkBSyrkkT2jylFI7mYdeJYLocb6j729S6nfdB7ct1CrN/QYyrpNh
+         2ukvMLSGrZC7CCo/qxnEjY/8nFwSDQgAAHG6P6EQ=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20230922113158epcas2p28f910e0acc916732f4a10aef2bb1c65c~HNTyIp7ST0531405314epcas2p23;
+        Fri, 22 Sep 2023 11:31:58 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.36.68]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RsVV63tyhz4x9Pp; Fri, 22 Sep
+        2023 11:31:58 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        78.38.09693.E2B7D056; Fri, 22 Sep 2023 20:31:58 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230922113157epcas2p212c253d8fe4f6935ee5cbe284254cc68~HNTxLdqMK3124431244epcas2p2_;
+        Fri, 22 Sep 2023 11:31:57 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230922113157epsmtrp105b7265de0f6ff956809ea759a04ef3e~HNTxKmG9s1340313403epsmtrp1q;
+        Fri, 22 Sep 2023 11:31:57 +0000 (GMT)
+X-AuditID: b6c32a45-84fff700000025dd-e8-650d7b2e59f8
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9F.F7.18916.D2B7D056; Fri, 22 Sep 2023 20:31:57 +0900 (KST)
+Received: from jtpark-7920.dsn.sec.samsung.com (unknown [10.229.83.56]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230922113157epsmtip14b48036330f26ec10f7cb110efe2c874~HNTw7nBrb3062230622epsmtip1Z;
+        Fri, 22 Sep 2023 11:31:57 +0000 (GMT)
+From:   Jeongtae Park <jtp.park@samsung.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Fan Ni <fan.ni@samsung.com>, linux-cxl@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyungsan Kim <ks0204.kim@samsung.com>,
+        Wonjae Lee <wj28.lee@samsung.com>,
+        Hojin Nam <hj96.nam@samsung.com>,
+        Junhyeok Im <junhyeok.im@samsung.com>,
+        Jehoon Park <jehoon.park@samsung.com>,
+        Jeongtae Park <jeongtae.park@gmail.com>,
+        Jeongtae Park <jtp.park@samsung.com>
+Subject: [PATCH v2 0/7] cxl: Fix checkpatch issues
+Date:   Fri, 22 Sep 2023 20:34:43 +0900
+Message-Id: <20230922113443.3297726-1-jtp.park@samsung.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922131838.4bab19e7@wsk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjOd045PbJ1nlWYXxBHd+aWgAHbSunHBpMFJE28hLHMXZIFzugJ
+        dKWX9bQENZm1BYMykKvMQgFT3ULrJDJEIIzKTRkbCBuMwQDndCAVkcmW/RG20tbNf8/75nne
+        532+C4kLB4gwUqU1sgYtk0sTwby2vkhZdMxRASu2OMPR7J1RAlkrHQDVVI8CNDh1nECuqYsA
+        WVyzQcjqaCbQytI6D127b+aj74cXg5Dz3E8E6v9qAkOOgc9xNNBFopu2IR76sbOOQNNl1zF0
+        +dYykSRUdNhm+YqC/gdBCkfXIqZocZ4kFG77Rb6itNUJFNW1xxSrLS+mkR+oE3JYRskaRKw2
+        S6dUabMT6X1vZyRnyOLEkmhJPJLTIi2jYRPplP1p0amqXG8UWpTH5Jq8rTSG4+hdbyQYdCYj
+        K8rRccZEmtUrc/VyfQzHaDiTNjtGyxpfk4jFUpmXmKnOWSouAfp7ZH71hAuYQSH/FNhEQioW
+        WuyVQadAMCmk2gHsdM5h/uIRgBUz17ENlq847TjyRNEydpnwkzoAnO87EyA9BrC4kbeBCSoK
+        1pw1+8aGULcx2OEp9Y3Fqd8w+MegB99gbaGksGG9xqfmUa/AtnKrbykB9Tp0uwcxv10EdPcM
+        4/7+8/Dbs3d9Dri3b71Si28MhVQTCS3dq4FEKbCn3hHAW6DnRmsAh8HF0yf4foEVwPsL4zx/
+        UQDgpV/aA6zdcHlqwbs46bWIhM2duzYgpF6G/dMB4+dgUd8a398WwKITQr+QhvUX6nE/hvAH
+        e2sAK+C45xbwn9CH8MZnv4MyEGF7Ko7tqTi2/30bAe4EL7B6TpPNclK95L9rzdJpWoDvPUft
+        bQeVD1ZiegFGgl4ASZwOEWQ9CmaFAiVz+Ahr0GUYTLks1wtk3gMux8NCs3TeD6E1Zkhi48Wx
+        cXESuVQmltNbBXOFdqWQymaMrJpl9azhiQ4jN4WZsXA174Dyr2357rre785VXVO/g7Wt2N5U
+        t5eBzE6T+eS7d7pSe8bP6weH/j44uXMr2D5nvepZrB1J+bikq9ZTRH/BpOcJM1asI8rhoTgN
+        NVGePvvPsq4HjDx7r2hzaFPFPDd1iNS5D1cMLBW4Zg5aqrTJppu/Xrm0lrzj1eNjHV/LPo1s
+        vLuQs37GNS0Q8ySi+AtRwVWH2s7Hb4//Eu7GVIUl8vyXDkyq3Nl7UhtSJt//83bmcqP8m5nN
+        892l2+pCSlvTIpI+2af3FLfXopUdj38eDQ7/qClhXtrcsMcyh9SRq7ax9x7uN6+BhxFYsUu1
+        M+/Y0da3up+xh6ZrR6/SoZIkmsflMJIo3MAx/wLIXhV+WAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrILMWRmVeSWpSXmKPExsWy7bCSnK5uNW+qwYYZOhZ3H19gs2ievJjR
+        YvrUC4wWJ242slmsvrmG0aJp9V1Wi+bF69ksPrz5x2Jx4HUDu8WZsy9ZLVYtvMZmcWTtVSaL
+        xUdnMFsc3cNhcX7WKRaLy7vmsFncmnCMyWLj/XdsDkIeO2fdZfdoOfKW1WPxnpdMHptWdbJ5
+        7J+7ht2jb8sqRo+ps+s9Pm+SC+CI4rJJSc3JLEst0rdL4Mp4093LWPCCo2Lq1dWMDYyt7F2M
+        nBwSAiYSmy5uZOti5OIQEtjOKPF46XMmiISExPINL6BsYYn7LUdYIYp+MUqcXvuHGSTBJqAl
+        MX1mA1hCROA5k8TJN6cYQRxmgVdMEr3/r4NVCQsYScz/Nx1sFIuAqsS2ic1gu3kFrCX27z8B
+        tUJeYv/Bs8wQcUGJkzOfsIDYzEDx5q2zmScw8s1CkpqFJLWAkWkVo2hqQXFuem5ygaFecWJu
+        cWleul5yfu4mRnCsaAXtYFy2/q/eIUYmDsZDjBIczEoivMmfuFKFeFMSK6tSi/Lji0pzUosP
+        MUpzsCiJ8yrndKYICaQnlqRmp6YWpBbBZJk4OKUamBjEw3JOH3rMpuzbuFZ2ewdP1SVBz5bs
+        pb9kN0tHyJl2ycrncFX4lR6p3TcxYELuZ111UXPPjy/NTVfqNH+6xrvXo/T77KNuTdvOn+79
+        51hnpPx67pPX9553XuCb3eR/U2WTd/bah+HH9tm0PXF4PPH2bdNkz7YfCtsOJ/7gk3utsPfy
+        7ZbJrypkbV5HndjNvdCzatOvds7FyxMeKxkFnZoTflbHSnv14zr2GY/k3LYobntTsjt7c0cw
+        wxr3VX7NTddl51onxi5seJN2qaCq/gbXqdCdyg8D9tbu+lswwcG7zVjxcujnxqTapnq5zoee
+        vbWp3DNOSOj3ibqttr74eW7M9u3W3bOUfzGuML93SYmlOCPRUIu5qDgRAClB9wcEAwAA
+X-CMS-MailID: 20230922113157epcas2p212c253d8fe4f6935ee5cbe284254cc68
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230922113157epcas2p212c253d8fe4f6935ee5cbe284254cc68
+References: <CGME20230922113157epcas2p212c253d8fe4f6935ee5cbe284254cc68@epcas2p2.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 01:18:38PM +0200, Lukasz Majewski wrote:
-> By mistake my net-next repo was pointing to:
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
-> 
-> Please correct me if I'm wrong but it looks like the net repo for
-> current mainline fixes...
+Changes since v1: [1]
+- Seperate a fix for whitespace error/warnings in memdev (Dave)
+- Drop a fix for a traceevent macro (Dave)
+- Add reviewed-by tags
 
-Yes, net.git is for fixes to the current mainline branch, and net-next
-is for new features to be included in mainline during the next merge window.
-They are the same at the beginning of the development cycle and then
-they start to diverge.
+[1]: https://lore.kernel.org/lkml/20230921025110.3717583-1-jtp.park@samsung.com/
 
-> However, after fetching net-next - I can apply v5 without issues on top
-> of it.
-> 
-> SHA1: 5a1b322cb0b7d0d33a2d13462294dc0f46911172
-> "Merge branch 'mlxsw-multicast'"
-> 
-> https://source.denx.de/linux/linux-ksz9477/-/commits/net-next-ksz-HSR-devel-v5?ref_type=heads
-> Linux version from `uname -a`: 6.6.0-rc2+
-> 
-> However, it looks like I would need to prepare v6 anyway...
+---
+Cover letter same as v1
 
-I don't know. "git rebase" is a bit smarter than "git am" and can
-automatically resolve some conflicts, on which "git am" will simply bail
-out if even the context is not identical. Either way, both patchwork and
-me failed to apply your v5 series on net-next, and the patches won't be
-accepted without build testing.
+This series fixes various checkpatch errors and warnings.
+I've been looking at the CXL driver recently and noticed that there are
+trivial mistake codes, so I checked all files with the script and fixed
+some warnings/errors.
+
+Jeongtae Park (7):
+  cxl/trace: Fix improper SPDX comment style for header file
+  cxl/region: Fix a checkpatch warning
+  cxl/mem: Fix a checkpatch error
+  cxl: Fix a checkpatch error
+  cxl: Fix block comment style
+  cxl/memdev: Fix a whitespace error
+  cxl/memdev: Fix a whitespace warning
+
+ drivers/cxl/core/memdev.c | 12 ++++++------
+ drivers/cxl/core/region.c |  7 +++----
+ drivers/cxl/core/trace.h  |  2 +-
+ drivers/cxl/cxl.h         |  4 ++--
+ drivers/cxl/cxlmem.h      |  2 +-
+ 5 files changed, 13 insertions(+), 14 deletions(-)
+
+
+base-commit: fe77cc2e5a6a7c85f5c6ef8a39d7694ffc7f41c9
+-- 
+2.34.1
+
