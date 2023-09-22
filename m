@@ -2,182 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 042F57AB82E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8DB7AB810
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbjIVRv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        id S233137AbjIVRtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbjIVRvJ (ORCPT
+        with ESMTP id S233526AbjIVRtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:51:09 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C54C6;
-        Fri, 22 Sep 2023 10:50:48 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MHKlot017535;
-        Fri, 22 Sep 2023 17:49:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Tq6gJJYKIaOR288NhHGipRUExs1TJ3M3G1f6vr3gs7Q=;
- b=l0Y0qgLJaJOsjU3zSDtYSahlztNYDtgEoMnCKSDcRh3/0OXX2hDi429f0czi5vjWlfb+
- Hl65x3gq8GxRgmqeQhdBDsg3zj3jLVVR3mJNaaxUKesX6VM99QezrNpAGsfjmtd4g3V7
- 5OOJpW7aho/tL5OQyOZ+gkNcdRM1InLlWdpJ8DGTqAVSueK/7LKr2+utN4VXwueqjDWV
- 5THLkxGFY39R18qt7M8sLrXGJ0hrbyzbcrcO85msuIgSiEzEAEaVthQRcRkY6MOjLpze
- uPeOkt/PRCQvk7sxUjsdLlqrTMM5hotdv+nVtDxk6DKX6RqWbUP5E+vuw4UrMX76gotV dQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9f8b038p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 17:49:35 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MHnYM2010168
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 17:49:34 GMT
-Received: from [10.110.112.217] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
- 2023 10:49:33 -0700
-Message-ID: <752176d8-23f4-4689-8bf4-db27f153fd39@quicinc.com>
-Date:   Fri, 22 Sep 2023 10:49:23 -0700
+        Fri, 22 Sep 2023 13:49:42 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27861B1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:49:33 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68fb85afef4so2339482b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695404973; x=1696009773; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6o8rcy2kYsMziijJ+HwTfBhFIINOkXf/UXn4gSYDrRE=;
+        b=KaQNd8Agv/4jMQXtjZ4pQnH2MrXTVAzRfMQo10FGKVbfeLvr9AgriENYzM0PEuokhv
+         GlZzQFPtEs0VoKfAGzH493i/UjSzKFJFeZPYpOvhdf35Nn7bpAAkKwm++hpLIAEwfFQF
+         r5SyT/oJEOLPA3IRP38C40SsV8aJxZRXkZSMM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695404973; x=1696009773;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6o8rcy2kYsMziijJ+HwTfBhFIINOkXf/UXn4gSYDrRE=;
+        b=EYIA7/evHsWqc+KX+tLvP+2UyKklNPpf9fteN2fhz/EPDQRrq1XuxAhfoocyC9CKr+
+         RNq39CcKkYkGF8uuWPwj+KiOrBUdIzTOliyalliAKK4WgbSAzgMMAFfscmK9jfziB240
+         RcK2puw34rMKz4lWvCJG5rcQqk25G/lNtJHpXFGiM/WF6ostT5SEXkc7n8ablKYgDoYK
+         ROgmwnbH5qwW080v3sX5FdFiMpgLQc5m413aKCj/QpU4VNS46hTLp+jQI/SPP+mGPbTj
+         +R1lxCf0pFegsT5wdNFuFXvROYu7/MlhDMU+Eh7xAz8BAQTYO5IrIMoWzOXpwRRSkQFu
+         oLhA==
+X-Gm-Message-State: AOJu0YwODxEWjzs2pXr54UT9eLBigTB9J/M4vPQjuMPgoch+/fYrCm/2
+        Vx5o3uKsZtqw1d1InpIGuUjAKw==
+X-Google-Smtp-Source: AGHT+IGBbYRZZj6iJdxISWqR0rCjwyvcEffe3apxgZbJGOfRTRyOM9w1AParWKjksC8mYeC8yyxppQ==
+X-Received: by 2002:a05:6a20:12cf:b0:15d:c40e:5cb3 with SMTP id v15-20020a056a2012cf00b0015dc40e5cb3mr241613pzg.56.1695404973361;
+        Fri, 22 Sep 2023 10:49:33 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t24-20020a62ea18000000b0068a0922b1f0sm3451624pfh.137.2023.09.22.10.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 10:49:32 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Mark Fasheh <mark@fasheh.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, ocfs2-devel@lists.linux.dev,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] ocfs2: Annotate struct ocfs2_replay_map with __counted_by
+Date:   Fri, 22 Sep 2023 10:49:30 -0700
+Message-Id: <20230922174925.work.293-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Freedreno] [PATCH RFC v6 07/10] drm/atomic: Loosen FB atomic
- checks
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
-        <sebastian.wick@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Sean Paul" <sean@poorly.run>, <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        <quic_abhinavk@quicinc.com>, "Maxime Ripard" <mripard@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Rob Clark <robdclark@gmail.com>,
-        <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>, <contact@emersion.fr>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        <wayland-devel@lists.freedesktop.org>,
-        "David Airlie" <airlied@gmail.com>, <ville.syrjala@linux.intel.com>
-References: <20230828-solid-fill-v6-0-a820efcce852@quicinc.com>
- <20230828-solid-fill-v6-7-a820efcce852@quicinc.com>
- <20230829112230.7106a8bf@eldfell>
-Content-Language: en-US
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20230829112230.7106a8bf@eldfell>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uf7t3up0j0GwKZ7poXrDXC5KIWUYWgH1
-X-Proofpoint-ORIG-GUID: uf7t3up0j0GwKZ7poXrDXC5KIWUYWgH1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_15,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- spamscore=0 adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309220154
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1391; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=EI/V/Mukp/n4kMrskYWItkkDhXixF2aSgcv9kFKrUtA=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdOp4GqjAOXqDf2PKH6lUrCfLTSmb8x0bIiGt
+ qKfvxpE3mmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3TqQAKCRCJcvTf3G3A
+ Jsg0D/9sEXbcZd5+u7yKxlCfUg5etMGyF3yjv1d7pHxhN/kLC0sHVcgzTmfkviwXpI4gZPgOLLK
+ kh8dMVV6/OBBlVK2lBf9Z3nNlVj1chGDYuoREQRDbDJWyQjVbAhpOeVDZpB0M8JZHFmlkHxRlr3
+ GATMiBdaIp/xl7jC27Qug/Gy0fVqWf95G5/ZR9Xx9Hc5Sd/Q+E4tD6SKN7zGXx3GMuVflLhJ3ZA
+ CAIY1VDHpLcDWNwdTt4srhnMe5paJjbCgQVbhYlrF1ZL0QjdXvXRts537gqeBZzCxr1Rlrsnx5e
+ 3ZYNCsrZkaWEJxr3N+WoOsdtD7LFW8e/Htc6FXhCHKDwucfrgI8UJqTGe+LnpK5uOJpqkZWQapy
+ N8Is6s+kthMpzwHCUWDwvEwugrQhV1J4lKfQu2eEfSNh/WQZelpyZZZreyEw4Y7duL40VHw4jHk
+ u9vZ5VhGVi600kCOwoGgNC1pvLE4yj/o2Tfh89HkJtmfTFqApZEatrd0pjroRWFHXaiSWH1GKwk
+ IkD9aaI69iQeRx8t+fS/aCQ/hpnlCDSRVgrWsINZN2QGrVAkuyQZvYOAj9G2JEiZotO7g1R8BX+
+ zXAJmZK5/0wHIsrD1hOFOEROBmWxhasTkAPF8Qvb0WFRakdRTPWkUsNDgeCJiBOh75L4Xjlw3+Y
+ gHdgVH1 ISyxNZfA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
+As found with Coccinelle[1], add __counted_by for struct ocfs2_replay_map.
 
-On 8/29/2023 1:22 AM, Pekka Paalanen wrote:
-> On Mon, 28 Aug 2023 17:05:13 -0700
-> Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
-> 
->> Loosen the requirements for atomic and legacy commit so that, in cases
->> where pixel_source != FB, the commit can still go through.
->>
->> This includes adding framebuffer NULL checks in other areas to account for
->> FB being NULL when non-FB pixel sources are enabled.
->>
->> To disable a plane, the pixel_source must be NONE or the FB must be NULL
->> if pixel_source == FB.
->>
->> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->> ---
->>   drivers/gpu/drm/drm_atomic.c        | 20 +++++++++++---------
->>   drivers/gpu/drm/drm_atomic_helper.c | 36 ++++++++++++++++++++----------------
->>   include/drm/drm_atomic_helper.h     |  4 ++--
->>   include/drm/drm_plane.h             | 29 +++++++++++++++++++++++++++++
->>   4 files changed, 62 insertions(+), 27 deletions(-)
-> 
-> ...
-> 
->> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
->> index a58f84b6bd5e..4c5b7bcdb25c 100644
->> --- a/include/drm/drm_plane.h
->> +++ b/include/drm/drm_plane.h
->> @@ -992,6 +992,35 @@ static inline struct drm_plane *drm_plane_find(struct drm_device *dev,
->>   #define drm_for_each_plane(plane, dev) \
->>   	list_for_each_entry(plane, &(dev)->mode_config.plane_list, head)
->>   
->> +/**
->> + * drm_plane_solid_fill_enabled - Check if solid fill is enabled on plane
->> + * @state: plane state
->> + *
->> + * Returns:
->> + * Whether the plane has been assigned a solid_fill_blob
->> + */
->> +static inline bool drm_plane_solid_fill_enabled(struct drm_plane_state *state)
->> +{
->> +	if (!state)
->> +		return false;
->> +	return state->pixel_source == DRM_PLANE_PIXEL_SOURCE_SOLID_FILL && state->solid_fill_blob;
->> +}
->> +
->> +static inline bool drm_plane_has_visible_data(const struct drm_plane_state *state)
->> +{
->> +	switch (state->pixel_source) {
->> +	case DRM_PLANE_PIXEL_SOURCE_NONE:
->> +		return false;
->> +	case DRM_PLANE_PIXEL_SOURCE_SOLID_FILL:
->> +		return state->solid_fill_blob != NULL;
-> 
-> This reminds me, new UAPI docs did not say what the requirements are for
-> choosing solid fill pixel source. Is the atomic commit rejected if
-> pixel source is solid fill, but solid_fill property has no blob?
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Hi Pekka,
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Tom Rix <trix@redhat.com>
+Cc: ocfs2-devel@lists.linux.dev
+Cc: llvm@lists.linux.dev
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/ocfs2/journal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, if pixel_source is solid_fill and the solid_fill property blob 
-isn't set, the atomic commit should throw an error.
+diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+index ce215565d061..604fea3a26ff 100644
+--- a/fs/ocfs2/journal.c
++++ b/fs/ocfs2/journal.c
+@@ -90,7 +90,7 @@ enum ocfs2_replay_state {
+ struct ocfs2_replay_map {
+ 	unsigned int rm_slots;
+ 	enum ocfs2_replay_state rm_state;
+-	unsigned char rm_replay_slots[];
++	unsigned char rm_replay_slots[] __counted_by(rm_slots);
+ };
+ 
+ static void ocfs2_replay_map_set_state(struct ocfs2_super *osb, int state)
+-- 
+2.34.1
 
-Will document this in the UAPI.
-
-Thanks,
-
-Jessica Zhang
-
-> 
-> This should be doc'd.
-> 
-> 
-> Thanks,
-> pq
-> 
->> +	case DRM_PLANE_PIXEL_SOURCE_FB:
->> +	default:
->> +		WARN_ON(state->pixel_source != DRM_PLANE_PIXEL_SOURCE_FB);
->> +	}
->> +
->> +	return state->fb != NULL;
->> +}
->> +
->>   bool drm_any_plane_has_format(struct drm_device *dev,
->>   			      u32 format, u64 modifier);
->>   
->>
-> 
