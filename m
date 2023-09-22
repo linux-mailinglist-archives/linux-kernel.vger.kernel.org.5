@@ -2,48 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F49F7AB319
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B00D7AB30D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbjIVNwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
+        id S234198AbjIVNtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234097AbjIVNwf (ORCPT
+        with ESMTP id S234147AbjIVNtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 09:52:35 -0400
+        Fri, 22 Sep 2023 09:49:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE26392;
-        Fri, 22 Sep 2023 06:52:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF2F0C433C7;
-        Fri, 22 Sep 2023 13:52:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DA692;
+        Fri, 22 Sep 2023 06:48:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A4CC433C7;
+        Fri, 22 Sep 2023 13:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695390749;
-        bh=I3wxew2R83ErU8B71fa76/M6GNlN/bf+I15REwBNzGY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=I6vweqFa6teue4NRHYc36l0I1yh39CxkkIFYIpXt/mUXtsjSjKEnnnVV+mnXaiUKS
-         DdyfW8oYgdYXTKzXb9DgbdSHBPA+wr8WohBuKuXu6aimmSRoSqmNf2bXx+UrFn1VIX
-         5wxp26DUWvKj/hYMH78ZALmlleijovB+L37euuPpxZDOVXudbTz8DlWh+PqAXqZhVg
-         ZH34UcB2Ot1g7fotXNiAnbPfcxaVqspdWVGMm3cmZv3UY73SfwYbW+Y/q6wsyOORT8
-         GviNP5FwfuLLvBXYcIDTjl2U6MUumM7YCJnbOHYvk3HT8p6VQU65ARXncxWwZupRQ8
-         48Rb8Ty/LgH7A==
-Message-ID: <d188250d3feb3926843f76ef3ca49e9d5baa97a7.camel@kernel.org>
-Subject: Re: [PATCH] overlayfs: set ctime when setting mtime and atime
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Date:   Fri, 22 Sep 2023 09:52:27 -0400
-In-Reply-To: <20230914-hautarzt-bangen-f9ed9a2a3152@brauner>
-References: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
-         <20230914-hautarzt-bangen-f9ed9a2a3152@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        s=k20201202; t=1695390538;
+        bh=vRCbkEXIvOVzJ7swhkJO0btDmEHy+5q5YjVm6regUx0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Chs2Lf7os26nn4NItjpwhFYawkL+UhOpp2+HnwwXOYtEGMTyG8+By+eyiD8SUiVKK
+         nUqB6xZABCUqxtKLJvXSCJs4lfwAmPoRwlT806VKHu+wwp7UnPZfL2qyFAX5lWP4zS
+         unUmQtXqltjUjdFZTKmd6DQeIVEwmjhnmld7Fl3nDN/ueGnAx5EdejxSDCCVGg92cl
+         G08f0w6W2FRvGjGDZQ1DRXyaOnONfHVNmWEMxN9XHvh+yaLkH+TdtVgucaJ4/G4DTf
+         F4ZYyYGDUmWMqYFzc/0+4owxGRybwII5oKU75jL1kYacRWBA5LAGYFD/fMLoVobh/k
+         AGOUTnN0jGDqA==
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vignesh Raman <vignesh.raman@collabora.com>
+Cc:     guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        daniels@collabora.com, emma@anholt.net, robdclark@gmail.com,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        David Heidelberg <david.heidelberg@collabora.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: apq8016-sbc: Add overlay for usb host mode
+Date:   Fri, 22 Sep 2023 06:53:02 -0700
+Message-ID: <169539077994.4014786.12440074307606036817.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911161518.650726-1-vignesh.raman@collabora.com>
+References: <20230911161518.650726-1-vignesh.raman@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,43 +61,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-14 at 10:39 +0200, Christian Brauner wrote:
-> On Wed, 13 Sep 2023 09:33:12 -0400, Jeff Layton wrote:
-> > Nathan reported that he was seeing the new warning in
-> > setattr_copy_mgtime pop when starting podman containers. Overlayfs is
-> > trying to set the atime and mtime via notify_change without also
-> > setting the ctime.
-> >=20
-> > POSIX states that when the atime and mtime are updated via utimes() tha=
-t
-> > we must also update the ctime to the current time. The situation with
-> > overlayfs copy-up is analogies, so add ATTR_CTIME to the bitmask.
-> > notify_change will fill in the value.
-> >=20
-> > [...]
->=20
-> Applied to the vfs.ctime branch of the vfs/vfs.git tree.
-> Patches in the vfs.ctime branch should appear in linux-next soon.
->=20
-> Please report any outstanding bugs that were missed during review in a
-> new review to the original patch series allowing us to drop it.
->=20
-> It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> patch has now been applied. If possible patch trailers will be updated.
->=20
-> Note that commit hashes shown below are subject to change due to rebase,
-> trailer updates or similar. If in doubt, please check the listed branch.
->=20
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-> branch: vfs.ctime
->=20
-> [1/1] overlayfs: set ctime when setting mtime and atime
->       https://git.kernel.org/vfs/vfs/c/f8edd3368615
 
-Christian, are you still planning to pick up this patch? I saw that it
-was dropped from linux-next. Since the mgtime patches have been reverted
-for now, it may be best for this to go in via the overlayfs tree ?
+On Mon, 11 Sep 2023 21:45:18 +0530, Vignesh Raman wrote:
+> Due to the presence of the fastboot micro cable in the CI farm,
+> it causes the hardware to remain in gadget mode instead of host mode.
+> So it doesn't find the network, which results in failure to mount root
+> fs via NFS.
+> 
+> Add an overlay dtso file that sets the dr_mode to host, allowing the
+> USB controllers to work in host mode. With commit 15d16d6dadf6
+> ("kbuild: Add generic rule to apply fdtoverlay"), overlay target can
+> be used to simplify the build of DTB overlays. It uses fdtoverlay to
+> merge base device tree with the overlay dtso. apq8016-sbc-usb-host.dtb
+> file can be used by drm-ci, mesa-ci.
+> 
+> [...]
 
-Thanks,
---=20
-Jeff Layton <jlayton@kernel.org>
+Applied, thanks!
+
+[1/1] arm64: dts: qcom: apq8016-sbc: Add overlay for usb host mode
+      commit: bdc4d17e1627e3b44f25b8f87509023dc2b438a2
+
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
