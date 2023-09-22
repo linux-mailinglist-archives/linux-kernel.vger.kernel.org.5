@@ -2,105 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90DD7AB55B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3785F7AB572
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjIVQBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55304 "EHLO
+        id S232435AbjIVQDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjIVQA6 (ORCPT
+        with ESMTP id S232071AbjIVQDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:00:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A7E99
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:00:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C434C433CC;
-        Fri, 22 Sep 2023 16:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695398452;
-        bh=xhaA32OBzVOM6nAoPy+gaX1FXQZKalbztmjU2PzXFPQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ggzP0E0DGs0mibxseVl52HMOQX0aJ/KNk9DKc7+M5mWQt6G8GwUN+N8OLddQSnP00
-         mikR3nt6qzuamVj4tB1KHTzXqXbEsUT/Nz515Nxo3qSeT7fKjiTlGV+kk0HNmJFUtn
-         h+W4eEBKX5fqYVPKRizLnCPkmHHPyQtJQ6xKkd3wWuC0bCTDOy3b6JN+vOBXl9CaNg
-         2YV/3iwkjSnGvmL+BVVAwuWLJK5K/irp+IYCF9eS/5Y5q1UI8irQKKjxh5S5z6MQ0k
-         MYor0XI3CmqlTXmq/gGMHA+94sJ8DMPEG3JOhP7KuaKERhhij7Qm1mRu96NSNFR2EC
-         Q1uK6f7ijoBtw==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50307acd445so3792965e87.0;
-        Fri, 22 Sep 2023 09:00:52 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzd8T+BXNFU7FQRkwSSJl3XLaSo+3irguQppBcxi/Cz5Z8Jfpml
-        iEt23VPL9kN9jJ55LW0tV2J0OuK2GWmns5hmjQ==
-X-Google-Smtp-Source: AGHT+IEEE/JvcGeQD4KCzLIPPO9coF/0Kd1GNltvU5JvL5xNpex4YSVmnWqzCk9JmegTSZU7ZxtuJs2nrUqxTkVlYi8=
-X-Received: by 2002:ac2:5041:0:b0:503:2623:7cfc with SMTP id
- a1-20020ac25041000000b0050326237cfcmr6407321lfm.34.1695398450443; Fri, 22 Sep
- 2023 09:00:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-In-Reply-To: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 22 Sep 2023 11:00:38 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
-Message-ID: <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
+        Fri, 22 Sep 2023 12:03:19 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CACB83;
+        Fri, 22 Sep 2023 09:03:12 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M9vf5r030685;
+        Fri, 22 Sep 2023 18:02:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=YgwADyaAKP0p1utyzmW0h
+        AzmCYwU7A3xe+e+mBk+eQ0=; b=fO8br+JCSQ5ogq5agBmect4Rxnu8pYZhCAtlV
+        370cONvJUPRFJ9A5QbsYjhbJ7+EcL4Bke0DM/MBNlIcNe/r84eovPjiHwMNOKCvb
+        w8sRQQGJnJkxEyBBxwsOMAA43RLrKi3JAd76D2mgupogGqSOR2PmYdrQQrRXzmzH
+        cEhVI9pZ/NtdDB6pByJ/s1ngwGRZNMHC8lprNSv8RQrCIBnu9kP/3X3usj3s35UJ
+        augYvfkrjniu08V7qmJgY90hHJV3IkJkkNye2WbG3gwzXgSkqGLM67FgzvUYkpSl
+        0odtNLbBIpvCYqYC8kMl2GXiwZ7fGqHMEDh1MrugXv6ks2Rgw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt74730-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 18:02:38 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3125B100051;
+        Fri, 22 Sep 2023 18:02:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1A4A724C0FA;
+        Fri, 22 Sep 2023 18:02:37 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Sep
+ 2023 18:02:36 +0200
+Date:   Fri, 22 Sep 2023 18:02:27 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
+Message-ID: <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230901155732.252436-1-alain.volmat@foss.st.com>
+ <20230901155732.252436-5-alain.volmat@foss.st.com>
+ <20230905090258.GC31594@pendragon.ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230905090258.GC31594@pendragon.ideasonboard.com>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_14,2023-09-21_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 1:45=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
-e:
->
-> Binman[1] is a tool for creating firmware images. It allows you to
-> combine various binaries and place them in an output file.
->
-> Binman uses a DT schema to describe an image, in enough detail that
-> it can be automatically built from component parts, disassembled,
-> replaced, listed, etc.
->
-> Images are typically stored in flash, which is why this binding is
-> targeted at mtd. Previous discussion is at [2] [3].
->
-> [1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
-> [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.=
-org/
-> [3] https://www.spinics.net/lists/devicetree/msg626149.html
+Hi Laurent,
 
-You missed:
+On Tue, Sep 05, 2023 at 12:02:58PM +0300, Laurent Pinchart wrote:
+> Hi Alain,
+> 
+> Thank you for the patch.
+> 
+> On Fri, Sep 01, 2023 at 05:57:23PM +0200, Alain Volmat wrote:
+> > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > 
+> > Add dcmipp support to STM32MP135.
+> > 
+> > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > ---
+> >  arch/arm/boot/dts/st/stm32mp135.dtsi | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > index abf2acd37b4e..beee9ec7ed0d 100644
+> > --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > @@ -8,5 +8,13 @@
+> >  
+> >  / {
+> >  	soc {
+> > +		dcmipp: dcmipp@5a000000 {
+> > +			compatible = "st,stm32mp13-dcmipp";
+> > +			reg = <0x5a000000 0x400>;
+> > +			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+> > +			resets = <&rcc DCMIPP_R>;
+> > +			clocks = <&rcc DCMIPP_K>;
+> > +			status = "disabled";
+> 
+> This needs a port, as it's marked as required in the bindings. You can
+> leave the endpoint out.
 
-https://github.com/devicetree-org/dt-schema/pull/110
+I first agreed with your comment but, having done the check (make
+CHECK_DTBS=y  ...) this doesn't seem to be required because the dcmipp
+node is kept disabled within our dtsi.
+(it is later on only enabled in dts file which as well have the port
+property).
+Indeed, to check this I changed it to okay and DTC_CHK complained about
+missing port property.
 
-where I said: We certainly shouldn't duplicate the existing partitions
-bindings. What's missing from them (I assume we're mostly talking
-about "fixed-partitions" which has been around forever I think (before
-me))?
+Hence, I'd think that port doesn't have to be added in this dtsi file.
+Would you agree with that ?
 
-To repeat, unless there is some reason binman partitions conflict with
-fixed-partitions, you need to start there and extend it. From what's
-posted here, it neither conflicts nor needs extending.
+Regards,
+Alain
 
-I did a bit more research. "fixed-partitions" as a compatible has
-"only" been around since 2015. Prior to that, it was implicit with
-just partition nodes with addresses (i.e. reg) and that dates back to
-2007. Looks like u-boot only supports the newer form and since 2021.
-
-Rob
+> 
+> With this fixed,
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> > +		};
+> >  	};
+> >  };
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
