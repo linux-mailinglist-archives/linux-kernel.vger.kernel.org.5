@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144CA7AB28A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED757AB28D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbjIVNJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        id S233513AbjIVNLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjIVNJM (ORCPT
+        with ESMTP id S233133AbjIVNLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 09:09:12 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA35C6;
-        Fri, 22 Sep 2023 06:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=X/arGO0320WI56/NWzmZwBHeAxSFRsOgfojU/vo4uVM=; b=Z/PGexMNc+ltvpSub8seqze/eT
-        jmYU6PrUBtBeF3KABjNYyHMZhjufHwO8FE3z3JZbJ50OZKhv3cpVTbwHCjU0ooh9hLeSkSjtvdcka
-        gAyLkN19Vl6j62qos3uqeJj1YovdVPo0EhZbJp+Jbmk8Vl2i+vWxeRsuStoP0SDCPv3E=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:54448 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qjfu0-00086W-9S; Fri, 22 Sep 2023 09:09:00 -0400
-Date:   Fri, 22 Sep 2023 09:08:59 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hvilleneuve@dimonoff.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org
-Message-Id: <20230922090859.d451f6d8f8e3b4e7a2364695@hugovil.com>
-In-Reply-To: <20230922-awning-repayment-e9f4ec55787d@spud>
-References: <20230920152015.1376838-1-hugo@hugovil.com>
-        <20230920152015.1376838-5-hugo@hugovil.com>
-        <20230921-decorated-patronize-45285045adbf@spud>
-        <20230921113040.2dafb3d50cfdd8727de42356@hugovil.com>
-        <20230922-awning-repayment-e9f4ec55787d@spud>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Fri, 22 Sep 2023 09:11:06 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844F2CE
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:11:00 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2767378ae15so1425740a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695388259; x=1695993059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d2oPeZhckOvgIexU3V5j2cMrv17aN9eNzF5o8qmXjZ4=;
+        b=YTBmpigEMTjuQtFh9jo2FWlcyHdgdrnJ0yHlmXuMzxCtWwak16PIbNJDenVPEdLSuS
+         hDtjGIxskka9Lglbo2li4gZsUwAJ86+uwDPNTZFV2qLnFEe2fHoVj0pRvJTj69r3XtR5
+         XpRmPXh2klS4Bcs5OWMxd8fcpRWoEu4txHz34=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695388259; x=1695993059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d2oPeZhckOvgIexU3V5j2cMrv17aN9eNzF5o8qmXjZ4=;
+        b=v0DfFg0kEF90iKTyiYxlUOYOer2VV0kde0MndM3W25JoDCDFAYBESjUDhM7aASafXy
+         fLglzmZp21zCiamOj40tX/yRZ0qqpCpdyNXfr1c0BDqm8fwye3PH+yXq5JzelMokninm
+         74q0Pbn9HSVQYrAH+pRoYwThb3IWBj3AOolfhzmnEvxayJ0/RT5nfy0976Ibl+Al9bmA
+         pmfFbYX8UnJxwZKH8aZsRZa/34HgDSM43LHpc+2VfZlBy9TYJOC+Um1GMAKVqDEIWRyE
+         GHKVMYCKn4/AWJWCyA6RZG7lp5Ub8kSUZCVrF0yUoZUwRmbhFE5rMUCvnojEw8h5CCP+
+         IaCg==
+X-Gm-Message-State: AOJu0YwOY5WYzXFljlQ/0tFIaVEgoj6gRrfv0VfkCLVBj5DjPrniG86q
+        1UM0b6Lh8SI4Y7XTfq9G+kqa++wQr1KnnSvc1TQ1lQ==
+X-Google-Smtp-Source: AGHT+IFRIXNGRSiyeeGsj2os9DBwlJZoYk789nEzGMD9JjigPWdKYgad7HmRqJDcmKUsVwCJ+TDjHTw38JL3QO8ExJE=
+X-Received: by 2002:a17:90b:2396:b0:273:fa72:ba83 with SMTP id
+ mr22-20020a17090b239600b00273fa72ba83mr8151795pjb.47.1695388259003; Fri, 22
+ Sep 2023 06:10:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230828150858.393570-1-revest@chromium.org> <20230828150858.393570-5-revest@chromium.org>
+ <20230921182910.2fcce58b27b23f767050033c@linux-foundation.org>
+In-Reply-To: <20230921182910.2fcce58b27b23f767050033c@linux-foundation.org>
+From:   Florent Revest <revest@chromium.org>
+Date:   Fri, 22 Sep 2023 15:10:47 +0200
+Message-ID: <CABRcYmJzWLQ2jPH6WmugUrePX+=JMo5iqP0S=U4n191GCm9ChA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/6] mm: Make PR_MDWE_REFUSE_EXEC_GAIN an unsigned long
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        catalin.marinas@arm.com, anshuman.khandual@arm.com,
+        joey.gouly@arm.com, mhocko@suse.com, keescook@chromium.org,
+        david@redhat.com, peterx@redhat.com, izbyshev@ispras.ru,
+        broonie@kernel.org, szabolcs.nagy@arm.com, kpsingh@kernel.org,
+        gthelen@google.com, toiwoton@gmail.com, ayush.jain3@amd.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH 4/4] dt-bindings: sc16is7xx: convert to YAML
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 12:35:07 +0100
-Conor Dooley <conor@kernel.org> wrote:
+On Fri, Sep 22, 2023 at 3:29=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Mon, 28 Aug 2023 17:08:56 +0200 Florent Revest <revest@chromium.org> w=
+rote:
+>
+> > Defining a prctl flag as an int is a footgun because on a 64 bit machin=
+e
+> > and with a variadic implementation of prctl (like in musl and glibc),
+> > when used directly as a prctl argument, it can get casted to long with
+> > garbage upper bits which would result in unexpected behaviors.
+> >
+> > This patch changes the constant to an unsigned long to eliminate that
+> > possibilities. This does not break UAPI.
+> >
+> > Fixes: b507808ebce2 ("mm: implement memory-deny-write-execute as a prct=
+l")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > Suggested-by: Alexey Izbyshev <izbyshev@ispras.ru>
+> > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+>
+> Why is this being offered to -stable?  Does it fix any known problem?
 
-> On Thu, Sep 21, 2023 at 11:30:40AM -0400, Hugo Villeneuve wrote:
-> > On Thu, 21 Sep 2023 14:45:06 +0100
-> > Conor Dooley <conor@kernel.org> wrote:
-> > > On Wed, Sep 20, 2023 at 11:20:15AM -0400, Hugo Villeneuve wrote:
-> 
-> > > > +  clocks:
-> > > > +    maxItems: 1
-> > > > +    description: Reference to the IC source clock.
-> > > 
-> > > You could probably drop this, if it only has one clock it's a bit
-> > > redundant.
-> > 
-> > I don't understand, because there is already a 'clocks' property in
-> > the examples (and also in my real board DTS file) and if I remove it
-> > here it will cause a warning:
-> > 
-> > serial@51: Unevaluated properties are not allowed ('clocks' was
-> > unexpected)
-> 
-> Sorry, I was talking about the description.
+The background for this was discussed in these threads:
+v1: https://lore.kernel.org/all/66900d0ad42797a55259061f757beece@ispras.ru/
+v2: https://lore.kernel.org/all/d7e3749c-a718-df94-92af-1cb0fecab772@redhat=
+.com/
 
-OK, makes sense. I will remove it.
+Cc-ing stable was suggested by David and Alexey:
 
-Hugo.
+> On Mon, May 22, 2023 at 8:58=E2=80=AFPM Alexey Izbyshev <izbyshev@ispras.=
+ru> wrote:
+> > On 2023-05-22 19:22, David Hildenbrand wrote:
+> > > Which raises the question if we want to tag this here with a "Fixes"
+> > > and eventually cc stable (hmm ...)?
+> >
+> > Yes, IMO the faster we propagate this change, the better.
+>
+> Okay, will do
 
+I think that a stable backport would be "nice to have": to reduce the
+chances that users build binaries that could end up with garbage bits
+in their MDWE prctl arguments. We are not aware of anyone having yet
+encountered this corner case with MDWE prctls but a backport would
+reduce the likelihood it happens, since this sort of issues has
+happened with other prctls. But If this is perceived as a backporting
+burden, I suppose we could also live without a stable backport.
