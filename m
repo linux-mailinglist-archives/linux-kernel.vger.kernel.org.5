@@ -2,138 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F0C7AA89D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 07:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431637AA8A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 07:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjIVFxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 01:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        id S231124AbjIVFzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 01:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbjIVFxl (ORCPT
+        with ESMTP id S229541AbjIVFzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 01:53:41 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2084.outbound.protection.outlook.com [40.92.89.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DA5C2;
-        Thu, 21 Sep 2023 22:53:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=koVbMwDUETqOWE74+cCM7hhqdxska5+ReiOcmRSCItp4eapLS0H5ebro0XNq4fctIAScs/qmcGBf1P4TmX4kiY0Vl+XBUm/heYBy8FuYQQD3+N+AlLJ1kTvQpmxHa5CJnlZ0NerkrQ+5j7yV4J9BBoh0eEu6lyGTQFb0qIEfzPePr4YzM7ea5OFtQP09j6/+8ohyUjuFGn+WcacWzEdyilRAAfR59VIJdCXkfltlEEZKADNrM/lo/mPmJO3wYCzzLTVYiQKrPBxE4SOnAKtqpR08YnBBRpalbkaPsx19zlEJX94Nz1pPLwyUHcB2OH1jPkavo401SZQDRBf6ZbnTJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2Vq+iCL4fRwjPpgBYU+M+oSnf2X9iA6HGH+etITbNlw=;
- b=UVUZUTvv81rOQ5kH9JaDqpxbip5MorJhGN0mRpgB6mu+Z8TRQ1Y1k95tfn696KXEMB3WcOg1XyaJ6aKet4qcY5chnqRpctM4KubmVZthBtb98W7xYlelGstIC3jE2jjY/ppDWzx/iaDo4bZie2UaziFczrTA6+fTBvLOWFMomzCYq+aAQR8ZY+kqBG3o0rLsJcqLuLKapZiezNY/vcyE7Ay43N0g7n61dr+dRi2YOOleWxoEbov64L4dnBVmyxMKZeRebxBBtoTdusMRzeBsrojM/7NfRdTZEkARBAtMOWNHu544NpeC1L7C8osHUwFCKeILIXb0pF48hlWv0lhyOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
- by AM9PR02MB6897.eurprd02.prod.outlook.com (2603:10a6:20b:267::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Fri, 22 Sep
- 2023 05:53:33 +0000
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e%6]) with mapi id 15.20.6792.026; Fri, 22 Sep 2023
- 05:53:32 +0000
-Date:   Fri, 22 Sep 2023 06:53:30 +0100
-From:   Cameron Williams <cang1@live.co.uk>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        sudipm.mukherjee@gmail.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH 1/4] PCI: Add device IDs for Brainboxes/Intashield
- PX/UC/UP cards
-Message-ID: <DU0PR02MB78996ED81C85C7FE7E722128C4FFA@DU0PR02MB7899.eurprd02.prod.outlook.com>
-References: <DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com>
- <20230921215822.GA347672@bhelgaas>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921215822.GA347672@bhelgaas>
-X-TMN:  [Doo0mZk9ZsRK5GjYpaHwEEJxBjpQBcv+]
-X-ClientProxiedBy: DUZPR01CA0144.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4bd::26) To DU0PR02MB7899.eurprd02.prod.outlook.com
- (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <ZQ0r2qrPdc2iJAjI@CHIHIRO>
+        Fri, 22 Sep 2023 01:55:18 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8F6102
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 22:55:11 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230922055509euoutp0188df25af82e35ba51415ee1f0bcc6668~HItst2VsI1909819098euoutp01L
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:55:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230922055509euoutp0188df25af82e35ba51415ee1f0bcc6668~HItst2VsI1909819098euoutp01L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695362109;
+        bh=IEWQo9HWa/ekBjyP7YGkeNCCcesh2MxuPZybdnf8uE8=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=KBMyF5GYY8SqY8q62FVFhryH358rj2h4lSeK3+hrQ/mfeot8zdA50pJYTbZ3Vhi+Z
+         xDNtwHNxHGcoJAt9Ehc5vagPPJIrg145GxcxOxmq+kqk4X8WjbvhiV85SBGi2tBgoX
+         qb+bCpjd4AFRn6NdLLk4Tal24XDpe5Ot7b7cJYis=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230922055508eucas1p261c40237aa1f2a136ee468d168df9116~HItr8G0aW2758227582eucas1p2d;
+        Fri, 22 Sep 2023 05:55:08 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 3F.FF.42423.C3C2D056; Fri, 22
+        Sep 2023 06:55:08 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230922055508eucas1p1edfc2f4d05e0798befbea4e9e12a7420~HItrhpR_Y1907919079eucas1p1P;
+        Fri, 22 Sep 2023 05:55:08 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230922055508eusmtrp25106bea1cfa55a4813fbcf2160cdb15e~HItrhBSBo2098420984eusmtrp2S;
+        Fri, 22 Sep 2023 05:55:08 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-0d-650d2c3c20ab
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 60.7F.10549.C3C2D056; Fri, 22
+        Sep 2023 06:55:08 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230922055507eusmtip1d124390875027b2027ecab671aaea1e0~HItqop6Io1535115351eusmtip1w;
+        Fri, 22 Sep 2023 05:55:07 +0000 (GMT)
+Message-ID: <fb9cd62b-6637-7bcc-e23d-37f3806f8460@samsung.com>
+Date:   Fri, 22 Sep 2023 07:55:07 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|AM9PR02MB6897:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8bc889c5-ec2e-4cf3-6b6e-08dbbb3040e3
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YMdGxvAZFoHbke5oK253CTyb5tHwZouIuRFOpzBa9yXCXJ+J2YJrHCkLqjfybd+ROixyRguHBAxcr3noOBiNM0Tf6I1QCicWUyp8M2CpyuzpriQ9ey0K9s5mRx26Yu7DGLphhjcsQmaPQvFVJ6dto5iFL0S2Z6SlbZWZ0/GR/4610ZOGth0bxkwyDUiSyEtLSKlxRhkU5/xlkEKJw27rfMkjU73WOTGP+Ts7sSmqKwEa7dNP+TZWQy3swvAc3bjAbMVoPF+6eo/HC2VyA0XdfgTSw9MEt37+GGqkPSMU6DXblqfxYcoP9YttmHeKlLNg4zu9SMlEdwH1K8t1mgjaNnxEBk/l3uTLIQC8B4l7tTO+3pKRyb8DrCbjvZWGwD8lq9ehjN4lZMx4lYSG28OYVMDbdelk/e/gntwmIqMkQ1u2u/YnLJaKhHRUHXVnNiQfoMi27hiW40Lqv7mYJc3eZYMoG8elqO5tR1KuyZ4C1ZYZXgZurqo/ZGN98NdOWvOba+hbUMRoP+WSw5ZykOOhMd8TOQZlmN+HNMZwwQdv5RImF4JC7KDQieCrJTNnLdcB
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WJenwNAoYqfu8R7oZkvjsthzzahwiGGtyVYRQoY3zTbNlatk8TypAa1AMWt8?=
- =?us-ascii?Q?Oz1MOtumW7TN9/uqhh55OTkut1GqPuDwSXg/e0qlbXqxz3Ni5OauiV8g9aKX?=
- =?us-ascii?Q?U8n8oTLDC3UwRESdsLVKROx5VD2mGPzhf9yQ0KQ5MpSQnQE2bjJdqfm7+sNG?=
- =?us-ascii?Q?7pVHfrhkKiao0gNJtTiqiUZh03E/R/BeDDgsklETVtUCiQzkhdNkqo42yS4r?=
- =?us-ascii?Q?aXM52im8Z/Xsy+BsxuiP7QxboM1zKelpMJoEpQJiQmYddJZzILIse8d2FhFE?=
- =?us-ascii?Q?qXNKUqy8//NCjS7B+FCH1m9lEbFWKSQyLjNGPwzua2OnK8JDhp0H7n8SCPrQ?=
- =?us-ascii?Q?q0zT3/i6lCxN5YpxwMnNgaKiM6sIoW8zT6lgX5V7q5nn9SeHTIJfWzJpZasj?=
- =?us-ascii?Q?wFgR3y3cMhVPq0FsciWTAyr06Qg2J3Kc6geUv/GTt+7M9PedbDwjEMgDhPmk?=
- =?us-ascii?Q?jBjxxsC9JVggD/lo/Bh53fVv61IgS5lasyeLixrluHpZy/hS8PZ3m794u8Er?=
- =?us-ascii?Q?OIy7l4CrkcejAP/TvJJ/FU15MZdjFvXv8isz34jzi0eRQ3hj3qApZWurS7KN?=
- =?us-ascii?Q?P+ZbMglqt986NNhEFFrKn/McXH32YMas5R1sUclS7OOz8deG7K10ydLNLXtm?=
- =?us-ascii?Q?+8AfQwqNx8RqULr2kdIQbozefvAU2HeD1TQG3ejNaw7XD0/XozUEkI7qvXgI?=
- =?us-ascii?Q?XhGuOsXlFiMV129F1K5rkPNn36MhRNfNn+N08ncmUafVR3tvVcukP4lxkxUp?=
- =?us-ascii?Q?5F6l31XOxmhi0vkmaHaTPJ8fkuPmLJ/AX8ojBVZMsyMNBG/ik0OF0ugcbfbU?=
- =?us-ascii?Q?GOc1+2TEGo25/WBJh3y6ULIoRvGiBJdlxpzf11PdicU6sB9qRv4lnUQS9Bf4?=
- =?us-ascii?Q?4rS32HIZ/dQhwHhYS+ZrAsYO1ay3pIwD4XrOFSCWxDIus8J02THA/GCPQsiw?=
- =?us-ascii?Q?PsVGdr6Fh8Oc1D5G20WAGwVlEPM2kUxgvmeec44VbS8L0R9+ABBSWDXaQmex?=
- =?us-ascii?Q?T83CExt2yUDSRpmHSR3ar8pNyk/IcMXL/NdUvvP5h39Oxeo3orKlroK0Vvjt?=
- =?us-ascii?Q?y+0G9ywhKFiiwAGq0/tdbGks+2aBliwOBVO1/jj8paFVwo1+zpWvV9fD0zzX?=
- =?us-ascii?Q?BTo14MFXaoQMf101d2TO7zW9LESiXSHPowZzztoVOtSygT2NpAhIfL/U4D3M?=
- =?us-ascii?Q?cTYHns4eTkRo5z9wWGmniU+b2f7h/FbqjPxVBw=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bc889c5-ec2e-4cf3-6b6e-08dbbb3040e3
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 05:53:32.8978
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB6897
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0)
+        Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFT PATCH v2 09/12] drm/exynos: Call
+ drm_atomic_helper_shutdown() at shutdown/unbind time
+Content-Language: en-US
+To:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
+Cc:     airlied@gmail.com, alim.akhtar@samsung.com, daniel@ffwll.ch,
+        inki.dae@samsung.com, krzysztof.kozlowski@linaro.org,
+        kyungmin.park@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        sw0312.kim@samsung.com
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20230921122641.RFT.v2.9.Iea33274908b6b258955f45a8aaf6f5bba24ad6cd@changeid>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAKsWRmVeSWpSXmKPExsWy7djP87o2OrypBjefKlucuL6IyeLBvG1s
+        Fv+3TWS2OLvsIJvFla/v2Swm3Z/AYrH39VZ2i7NNb9gtNj2+xmpxedccNosZ5/cxWbR1LmO1
+        mDH5JZsDr8fshossHnu/LWDx2DnrLrvHplWdbB53ru1h87jffZzJY/OSeo++LasYPT5vkgvg
+        jOKySUnNySxLLdK3S+DKmHT5ClvBPcmKjoNrWRoYv4p0MXJwSAiYSDR0eXcxcnEICaxglPj0
+        dyorhPOFUWJpzxQWCOczo8TLdSvZuhg5wTo27/vHCJFYziix8NgKZgjnI6PEvOtNrCBVvAJ2
+        Es+e3gbrYBFQlTh/7AsbRFxQ4uTMJywgtqhAqkTzm/PsILawQKbE3xOXwXqZBcQlbj2ZzwRi
+        iwgUS3w8sQtsG7PAdCaJi19uMoIk2AQMJbredoEN5RSIlLgzbwkzRLO8xPa3c8AukhBYzimx
+        5cJkVoi7XSTetv5mhrCFJV4d38IOYctI/N8Jsg2koZ1RYsHv+1DOBEaJhue3GCGqrCXunPvF
+        BgozZgFNifW79CHCjhIzvnxnhwQln8SNt4IQR/BJTNo2nRkizCvR0SYEUa0mMev4Ori1By9c
+        Yp7AqDQLKVxmIfl/FpJ3ZiHsXcDIsopRPLW0ODc9tdgwL7Vcrzgxt7g0L10vOT93EyMw0Z3+
+        d/zTDsa5rz7qHWJk4mA8xCjBwawkwpv8iStViDclsbIqtSg/vqg0J7X4EKM0B4uSOK+27clk
+        IYH0xJLU7NTUgtQimCwTB6dUA9PE1xcP+T6dZDgnQ66N+9JaobVyf+9pxU1nj71c+I514TQp
+        h728jau/2d/rsilzPqev0fo8z+JRm90s3ylymnzK1fzZKlNjl73pn7xC/4xbn8fJgGMPucwC
+        Ux8HLHW3duw69eHWidsKv8W8FtgELmm+yOb8a8v+y8rbHE6v+351ecUu413KD6QyVvlKJi+a
+        49iv9fwN/8X/2r+inE7yuU5xZ/pzfdMbm/+6q05veXXr4KTbNaeD1qfv6+Jes2Dal7y/Sdx7
+        HSYqbFTUOXnLL/d1p8unQ+scilVXbsrSKn1ZYv1gdgD31K073sj+UfcXE1g7adqGnt2PXl+K
+        N1M4W37w1sqXneeurTD/ZnaqNqC9R4mlOCPRUIu5qDgRABMfL6/jAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsVy+t/xu7o2OrypBtP+MFucuL6IyeLBvG1s
+        Fv+3TWS2OLvsIJvFla/v2Swm3Z/AYrH39VZ2i7NNb9gtNj2+xmpxedccNosZ5/cxWbR1LmO1
+        mDH5JZsDr8fshossHnu/LWDx2DnrLrvHplWdbB53ru1h87jffZzJY/OSeo++LasYPT5vkgvg
+        jNKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLmHT5
+        ClvBPcmKjoNrWRoYv4p0MXJySAiYSGze94+xi5GLQ0hgKaPEvR83WCESMhInpzVA2cISf651
+        sUEUvWeU2N8M0sHJwStgJ/Hs6W02EJtFQFXi/LEvbBBxQYmTM5+wgNiiAqkSp6dtAqsXFsiU
+        +HviMthQZgFxiVtP5jOB2CICxRIfny5kBlnALDCdSeLF+1dgDUIC9xklpvWngthsAoYSXW+7
+        wBZwCkRK3Jm3hBlikJlE19YuRghbXmL72znMExiFZiG5YxaSfbOQtMxC0rKAkWUVo0hqaXFu
+        em6xoV5xYm5xaV66XnJ+7iZGYGRvO/Zz8w7Gea8+6h1iZOJgPMQowcGsJMKb/IkrVYg3JbGy
+        KrUoP76oNCe1+BCjKTAwJjJLiSbnA1NLXkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpiSWp2
+        ampBahFMHxMHp1QDU3Ovt6L1l96EHLXmns+WTk8Wte1R75V5b/+Yq7VKrfi846O5TB9tPtjJ
+        LNt1KHKuvujl6el+V4pL2TZvOS2/vFTE9OayC3YsileyNEouMoWVfc97kevKfflIqsoT3U1v
+        Ti8syeJXD3u//K2YWHrMjt49Sk0qTN1dK9eJLtixdv6D6n+Vxrbmdff/PfZbOaVmjkuOzeTa
+        ReW+mZe2id+K+Sb7+2GQSOTfdd2MV3k/nV6y8Hjk0ezD25RbPLtuf/wmVqd6UV3senDQ+TXB
+        e5+nLzvsusXz+MHAKZp7Yp5VzdBffFR9scVt1428y4L/z94f9kVnziZ95VvbvXUtJH/kHeTI
+        qdLWOVH1Y8rTd9pyi5RYijMSDbWYi4oTAaLVMYB1AwAA
+X-CMS-MailID: 20230922055508eucas1p1edfc2f4d05e0798befbea4e9e12a7420
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20230921194907eucas1p1027c5dfc5c5f77bca3c43673427c89cc
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230921194907eucas1p1027c5dfc5c5f77bca3c43673427c89cc
+References: <20230921192749.1542462-1-dianders@chromium.org>
+        <CGME20230921194907eucas1p1027c5dfc5c5f77bca3c43673427c89cc@eucas1p1.samsung.com>
+        <20230921122641.RFT.v2.9.Iea33274908b6b258955f45a8aaf6f5bba24ad6cd@changeid>
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 04:58:22PM -0500, Bjorn Helgaas wrote:
-> On Thu, Sep 21, 2023 at 10:09:16PM +0100, Cameron Williams wrote:
-> > Add device IDs for PCI/PCIe serial cards manufactured by
-> > Brainboxes (IS/IX/UC/UP/PX).
-> > Apologies if this file isn't strictly for your tree. All trees
-> > I am sending this patch series to use these PCI IDs, I was unsure
-> > if this was the correct way to go about it, and better safe than
-> > sorry. Thank you for understanding and please disregard if
-> > its not required.
-> 
-> From the top of the file:
-> 
->  *      Do not add new entries to this file unless the definitions
->  *      are shared between multiple drivers.
-> 
-> I can't tell whether that applies here since I haven't seen the other
-> patches.  If they're only used in one file, you can add the #define to
-> that file or use the bare hex values.  This reduces merge conflicts in
-> pci_ids.h when backporting things.
+
+On 21.09.2023 21:26, Douglas Anderson wrote:
+> Based on grepping through the source code this driver appears to be
+> missing a call to drm_atomic_helper_shutdown() at system shutdown time
+> and at driver unbind time. Among other things, this means that if a
+> panel is in use that it won't be cleanly powered off at system
+> shutdown time.
 >
-In that case, please disregard this patch series. The IDs are used in
-different drivers but exclusively, not shared. I will resubmit this patch
-with raw IDs.
-> Also it looks like there's a mix of tab vs space indentation below.
-> They should all be tabs before the device ID and it looks like a
-> single space before the comment.
-> 
-> > +#define PCI_DEVICE_ID_INTASHIELD_UC246	0x0aa1 /* Revision 2*/
-> > +#define PCI_DEVICE_ID_INTASHIELD_UC246R3	0x0aa2	/* Revision 3 */
-> 
-> Comment indentation error.
-> 
-> > +#define PCI_DEVICE_ID_INTASHIELD_PX803R3	0x401e /* Revision 3 */
-> > +#define PCI_DEVICE_ID_INTASHIELD_PX475LPT   0x401f /* LPT port */
-> 
-> Indentation error.
-> 
+> The fact that we should call drm_atomic_helper_shutdown() in the case
+> of OS shutdown/restart and at driver remove (or unbind) time comes
+> straight out of the kernel doc "driver instance overview" in
+> drm_drv.c.
+>
+> A few notes about this fix:
+> - When adding drm_atomic_helper_shutdown() to the unbind path, I added
+>    it after drm_kms_helper_poll_fini() since that's when other drivers
+>    seemed to have it.
+> - Technically with a previous patch, ("drm/atomic-helper:
+>    drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
+>    actually need to check to see if our "drm" pointer is NULL before
+>    calling drm_atomic_helper_shutdown(). We'll leave the "if" test in,
+>    though, so that this patch can land without any dependencies. It
+>    could potentially be removed later.
+> - This patch also makes sure to set the drvdata to NULL in the case of
+>    bind errors to make sure that shutdown can't access freed data.
+>
+> Suggested-by: Maxime Ripard <mripard@kernel.org>
+> Reviewed-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+
+Seems to be working fine on all my test Exynos-based boards with display.
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+> ---
+> This commit is only compile-time tested.
+>
+> (no changes since v1)
+>
+>   drivers/gpu/drm/exynos/exynos_drm_drv.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_drv.c b/drivers/gpu/drm/exynos/exynos_drm_drv.c
+> index 8399256cb5c9..5380fb6c55ae 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_drv.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_drv.c
+> @@ -300,6 +300,7 @@ static int exynos_drm_bind(struct device *dev)
+>   	drm_mode_config_cleanup(drm);
+>   	exynos_drm_cleanup_dma(drm);
+>   	kfree(private);
+> +	dev_set_drvdata(dev, NULL);
+>   err_free_drm:
+>   	drm_dev_put(drm);
+>   
+> @@ -313,6 +314,7 @@ static void exynos_drm_unbind(struct device *dev)
+>   	drm_dev_unregister(drm);
+>   
+>   	drm_kms_helper_poll_fini(drm);
+> +	drm_atomic_helper_shutdown(drm);
+>   
+>   	component_unbind_all(drm->dev, drm);
+>   	drm_mode_config_cleanup(drm);
+> @@ -350,9 +352,18 @@ static int exynos_drm_platform_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +static void exynos_drm_platform_shutdown(struct platform_device *pdev)
+> +{
+> +	struct drm_device *drm = platform_get_drvdata(pdev);
+> +
+> +	if (drm)
+> +		drm_atomic_helper_shutdown(drm);
+> +}
+> +
+>   static struct platform_driver exynos_drm_platform_driver = {
+>   	.probe	= exynos_drm_platform_probe,
+>   	.remove	= exynos_drm_platform_remove,
+> +	.shutdown = exynos_drm_platform_shutdown,
+>   	.driver	= {
+>   		.name	= "exynos-drm",
+>   		.pm	= &exynos_drm_pm_ops,
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
