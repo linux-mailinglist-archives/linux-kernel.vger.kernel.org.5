@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0377AB059
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE877AB060
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbjIVLQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
+        id S233586AbjIVLRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjIVLQZ (ORCPT
+        with ESMTP id S233378AbjIVLRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:16:25 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4A1AC;
-        Fri, 22 Sep 2023 04:16:19 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso3322084e87.1;
-        Fri, 22 Sep 2023 04:16:19 -0700 (PDT)
+        Fri, 22 Sep 2023 07:17:11 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D1EAF;
+        Fri, 22 Sep 2023 04:17:05 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso34320681fa.1;
+        Fri, 22 Sep 2023 04:17:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695381378; x=1695986178; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695381424; x=1695986224; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9THroEikiL60Yi8fcuQ2zOCWbKMjxLA15+wfPD4+rk8=;
-        b=XWcrk36LErSz9FQfU5G3Qc8MV4yZvGckoRZGh0S5w4xy76sNGCEz9OTMARfeVwu4+T
-         pbXCXTQobWxq6sJGFMgjE1wnGNNUpKrUhTB8CExDTBhz97vzFZTweAuMEYwJNgrx03HF
-         huW8XhcnCIGeZAf0X2LfD24C27B7F0GN65q1c2wVgJ/JhzE83yJTyLxYpdAjfO4Dyv1D
-         IEdJOCv07HOPs7ZvnV40+ZwUbVPkMdzNEkKPfZUOKUD8hu/3X6KHwvlVgITzrR3md8xa
-         FrA35w7+YLjMkTZpS/Fvh8Ubn4svsbFrOZYDq01IFiNo23VGZaikSTd0DVQUKxWizNom
-         RKJA==
+        bh=rOmXlRHFjQZVNGJzWqKnGXST1HA75pZmn0pDpkT8XEA=;
+        b=Yzr1QRREIqQMan7zQS/B26XmynwrCHWPLSUm/sfxHIuCvHdLYA1FTZC+ecubj10Wyz
+         AzQcqYJ56rZ5Lle8kSgaqU1Tvv94J3903y5+SqxhU9JzTCf6tmxDDuhegXtR498YLhS1
+         AqqP5VlW3BjSXDI5V4gKOePrHGnG5iWdNqd/JTH0gA1+SA2QpFjCGHY15eLCbUUzjPsM
+         suGTEvh4O14NGoucQlJmDglF5zksNxPFGF4fJ4SocTiKVT4P29vusqW4NUP7fYd53IYL
+         IYeEQZK5tr9Culqws8sK+9uv9esOF23STqa25ur/uYwEh1rf5XmC0z9OqfDCBvuvO3xw
+         lZZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695381378; x=1695986178;
+        d=1e100.net; s=20230601; t=1695381424; x=1695986224;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9THroEikiL60Yi8fcuQ2zOCWbKMjxLA15+wfPD4+rk8=;
-        b=VpZMGa06c5YjCpGs1pbpgYG5IjoKOY0dEINyAF1elZ612vDwLrQ7WYgNC3daQ4WVip
-         aZCcKIc/U7/HjEbnAFCoDigBAYL+v9+Ud9gcbt31RD5jxBADr3gvw6AmcOsOI0RNHyJm
-         Q2jstiYvlb8ypr2ouL9019gBXk56y1q/+sJW0HQTN6Q5LiZ/PDyLAFztUqycm//q7x/j
-         2PrxysASKIbWioO/97cdkmSYPGuBT8w+coDWx2frylb8aBpzoyZoSlOO753fgkp/JdD9
-         Eq3oJCiEWCj9QZK/4hxnw/4ZLszxSytujEDR6FrllFyPj7V/gBMPbOmqgx5ffqVGIMH7
-         6EtQ==
-X-Gm-Message-State: AOJu0Yz5GueauLAMVVwy+T6q23G6L3OlIaA/ZufqjWNCufgR/SfIPnIv
-        FZ9bjsocEW9+xhLwhZi266M=
-X-Google-Smtp-Source: AGHT+IGH0g7GdaLcu+vhdbeg1Ghm9EkTuNXO3uj3oWWqslzygJw2+deXocBIMhOo93Jihtiv6fpS/Q==
-X-Received: by 2002:a05:6512:2013:b0:502:ffdf:b098 with SMTP id a19-20020a056512201300b00502ffdfb098mr6463433lfb.6.1695381377612;
-        Fri, 22 Sep 2023 04:16:17 -0700 (PDT)
+        bh=rOmXlRHFjQZVNGJzWqKnGXST1HA75pZmn0pDpkT8XEA=;
+        b=Oct3SSLZLalsIvnfYd679iIKqos6WYltmVnBp0qbGaUHCtZqNC+QdkqnvnrOS42UXj
+         64Zn5dh5WoU0TJI7AI7Nm1gVP4WM0EC92rnejrzGJOJD5mDoYv5/XIbLEkXN87/SHD/N
+         WN7veHTM1j7GxlWauGJ9sDUEW5o8TcOTzDDlVOHCZTEEtFwXJ0qOi17hsaPFzBVIOx5C
+         1z3uajh2+cjiLA0+sS+KHrHFVDE/jNDVbNEFQRRj+sfjoSeyLDGa1gPTgZDflc8q7MIx
+         93tQJZlr30Np4MLEQg7s1sCDj0XoD796DNZWxD1DHuMfXFlJhVLQL6uqGGDGi9U+DyeE
+         xztQ==
+X-Gm-Message-State: AOJu0YwsiwJluaRQgE39+Iqyd+CBjYrdAxTPSf6APXe41tgIDV/Pu/kh
+        qQQgOdECP0Gddhe8kDnJ6dA=
+X-Google-Smtp-Source: AGHT+IFFvkG/+1UGhUahOmMwZV25EbvezT7Z/KylfHcN8ZTuSFXHjIkMR0NU40hvOIgkdAHKc5ky+w==
+X-Received: by 2002:a05:651c:1034:b0:2bc:d8cb:5a13 with SMTP id w20-20020a05651c103400b002bcd8cb5a13mr7176763ljm.42.1695381423636;
+        Fri, 22 Sep 2023 04:17:03 -0700 (PDT)
 Received: from dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id eq25-20020a056512489900b004fe1f1c0ee4sm696297lfb.82.2023.09.22.04.16.16
+        by smtp.gmail.com with ESMTPSA id v12-20020a2e960c000000b002b6ad323248sm868292ljh.10.2023.09.22.04.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:16:16 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 14:16:08 +0300
+        Fri, 22 Sep 2023 04:17:02 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 14:16:57 +0300
 From:   Matti Vaittinen <mazziesaccount@gmail.com>
 To:     Matti Vaittinen <mazziesaccount@gmail.com>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
@@ -65,12 +65,12 @@ Cc:     Jonathan Cameron <jic23@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Benjamin Bara <bbara93@gmail.com>, linux-iio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/6] tools: iio: iio_generic_buffer ensure alignment
-Message-ID: <029b4e3e18c76b330b606f5b14699e5ee4e5ed35.1695380366.git.mazziesaccount@gmail.com>
+Subject: [PATCH v3 2/6] iio: improve doc for available_scan_mask
+Message-ID: <74b66a5b9eee2fb7046f254928391e3da61aa3b2.1695380366.git.mazziesaccount@gmail.com>
 References: <cover.1695380366.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ubfT4fawWH07RnEo"
+        protocol="application/pgp-signature"; boundary="sYH9gocHgXuXB6Ok"
 Content-Disposition: inline
 In-Reply-To: <cover.1695380366.git.mazziesaccount@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,71 +84,59 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ubfT4fawWH07RnEo
+--sYH9gocHgXuXB6Ok
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-The iio_generic_buffer can return garbage values when the total size of
-scan data is not a multiple of largest element in the scan. This can be
-demonstrated by reading a scan consisting for example of one 4 byte and
-one 2 byte element, where the 4 byte elemnt is first in the buffer.
+The available_scan_mask is an array of bitmaps representing the channels
+which can be simultaneously enabled by the driver. In many cases the
+hardware can offer more channels than what the user is interested in
+obtaining. In such cases it may be preferred that only subset of
+channels are enabled, and driver reads only a subset of the channels from
+the hardware.
 
-The IIO generic buffert code does not take into accunt the last two
-padding bytes that are needed to ensure that the 4byte data for next
-scan is correctly aligned.
+Some devices can't support all channel combinations. For example the
+BM1390 pressure sensor must always read the pressure data in order to
+acknowledge the watermark IRQ, while reading temperature can be omitted.
+So, the available scan mask would be 'pressure and temperature' and
+'pressure only'.
 
-Add padding bytes required to align the next sample into the scan size.
+When IIO seatchs for the scan mask it asks the driver to use, it will
+pick the first suitable one from the 'available_scan_mask' array. Hence,
+ordering the masks in the array makes difference. We should 'prefer'
+reading just the pressure from the hardware (as it is cheaper operation
+than reading both pressure and temperature) over reading both pressure
+and temperature. Hence, we should set the 'only pressure' as first scan
+mask in available_scan_mask array. If we set the 'pressure and
+temperature' as first in array, then the 'only temperature' will never
+get used as 'pressure and temperature' can always serve the user's
+needs.
+
+Add (minimal) kerneldoc to the 'available_scan_mask' to hint the user
+that ordering of masks matters.
 
 Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
 ---
-Please note, This one could have RFC in subject.:
-I attempted to write the fix so that the alignment is done based on the
-biggest channel data. This may be wrong. Maybe a fixed 8 byte alignment
-should be used instead? This patch can be dropped from the series if the
-fix is not correct / agreed.
+ include/linux/iio/iio.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- tools/iio/iio_generic_buffer.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-index 44bbf80f0cfd..fc562799a109 100644
---- a/tools/iio/iio_generic_buffer.c
-+++ b/tools/iio/iio_generic_buffer.c
-@@ -54,9 +54,12 @@ enum autochan {
- static unsigned int size_from_channelarray(struct iio_channel_info *channe=
-ls, int num_channels)
- {
- 	unsigned int bytes =3D 0;
--	int i =3D 0;
-+	int i =3D 0, max =3D 0;
-+	unsigned int misalignment;
-=20
- 	while (i < num_channels) {
-+		if (channels[i].bytes > max)
-+			max =3D channels[i].bytes;
- 		if (bytes % channels[i].bytes =3D=3D 0)
- 			channels[i].location =3D bytes;
- 		else
-@@ -66,6 +69,16 @@ static unsigned int size_from_channelarray(struct iio_ch=
-annel_info *channels, in
- 		bytes =3D channels[i].location + channels[i].bytes;
- 		i++;
- 	}
-+	/*
-+	 * We wan't the data in next sample to also be properly aligned so
-+	 * we'll add padding at the end if needed. TODO: should we use fixed
-+	 * 8 byte alignment instead of the size of the biggest samnple?
-+	 */
-+	misalignment =3D bytes % max;
-+	if (misalignment) {
-+		printf("Misalignment %u. Adding Padding %u\n", misalignment,  max - misa=
-lignment);
-+		bytes +=3D max - misalignment;
-+	}
-=20
- 	return bytes;
- }
+diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+index 202e55b0a28b..7bfa1b9bc8a2 100644
+--- a/include/linux/iio/iio.h
++++ b/include/linux/iio/iio.h
+@@ -556,7 +556,9 @@ struct iio_buffer_setup_ops {
+  *			and owner
+  * @buffer:		[DRIVER] any buffer present
+  * @scan_bytes:		[INTERN] num bytes captured to be fed to buffer demux
+- * @available_scan_masks: [DRIVER] optional array of allowed bitmasks
++ * @available_scan_masks: [DRIVER] optional array of allowed bitmasks. Sor=
+t the
++ *			   array in order of preference, the most preferred
++ *			   masks first.
+  * @masklength:		[INTERN] the length of the mask established from
+  *			channels
+  * @active_scan_mask:	[INTERN] union of all scan masks requested by buffers
 --=20
 2.41.0
 
@@ -165,19 +153,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---ubfT4fawWH07RnEo
+--sYH9gocHgXuXB6Ok
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUNd3gACgkQeFA3/03a
-ocWxrAf+OjGyX8noJscOhtQe6df8AGR7ncgBjoEJfcbetKg7x8In5EzuCgdp7PBr
-lM7r/JvyzjTqbRGPSDaLfagdcxMBoBZGHYF9Kr0MeNwZjTwGOrp08XE8hfjgzzw6
-rqt7YLw3hM/YY17Iy/JVmLeP/DHcxElSQkgoh4LN6wmrJUUhgel9oxiyyd2IXZi1
-af1Svhcp4egFc8qd7LOn23YKWPZOdASQzY418oVJn0+MVkCQZ8j6Tg5VLtmrorsf
-TReq9MVPhFVAuJ3qtjSxZJ34bzMEaxgOS3OrIT47DQ0wbams6vYtcvcEMGrByvX+
-t8fK00BIB8eKUfgcSLcj7J50hKFHFA==
-=aouA
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUNd6kACgkQeFA3/03a
+ocXzTAgAruwUVjkJt11Vu6Zr076Hu1E5ugJlJ5Cyt98gsghv1FGk9nv+WLtL/cpx
+G/Mbto9I9RM6NDwtZw7I9+qlZhPQz5zWrjEpencZlKNkYs3pJqgi1FoS3zWzYU+Y
+bc3jeU6caHPjZtBmXvz37Eyo8CkU5LogjdqJPizsZYwThhysT70qe35GLz3L4Hc0
+qa52n0IZagq/PplIYnxn51UolJJNKaG9CNzVAVU8lsolMs3lD694jvD21AOwYS4G
+1YZ+DA4WNiXMTGDVR/LlUC5gq0uA0oZaDPBig+NUXdTCUKmMIuy4NUwAWltogTad
+aaQoa3ztEZPvfh5Xl800Ys+vDCeilA==
+=S0fv
 -----END PGP SIGNATURE-----
 
---ubfT4fawWH07RnEo--
+--sYH9gocHgXuXB6Ok--
