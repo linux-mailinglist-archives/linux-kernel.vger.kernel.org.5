@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAB97AB8D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B727AB8D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbjIVSGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
+        id S233496AbjIVSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233766AbjIVSFg (ORCPT
+        with ESMTP id S233750AbjIVSFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:05:36 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBEAE5C
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:54:19 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-690d8c05784so2028989b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:54:19 -0700 (PDT)
+        Fri, 22 Sep 2023 14:05:35 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A814935BD
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:54:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68fdd6011f2so2029146b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405259; x=1696010059; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695405262; x=1696010062; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YRKN2/xBrWvsqRPQDODOVPiV3fGRN8WGAkKDB21KTao=;
-        b=nX7UWr7FMEWywGKAmjsGAMAQH6cAAPkQZvU6BekvdN83y7G05XScdHR49JeajRAopQ
-         dKTO3LwdiyN97AwonrXZHUXjI4Hc5uOI+RudlBVsz9qQ1cRe4YOKiQZp0FMpcaZ9yfT4
-         25uEYudk2Ov842i2inmRxlXmUnXSe6HVssYSQ=
+        bh=1ISP2L+rvg6dxZG1wcmYnXloNsZywrTUtixv49IhJ0I=;
+        b=jIWF4/z4UcLuiRz0wCvniJrPmxP3Z9Xk2oBg1jRX5yU4wYwfGGP/1BJZg2TWhJikah
+         5clKmlgZHGFLNRHpFcSj682t3/0f1EFPjRE1yYxe3GMcAk0BgYOGVSupcP/q3lT7fST8
+         er+emuk5vVib37xngsMQ973oBiMxxSXfF65B0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405259; x=1696010059;
+        d=1e100.net; s=20230601; t=1695405262; x=1696010062;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YRKN2/xBrWvsqRPQDODOVPiV3fGRN8WGAkKDB21KTao=;
-        b=NVYMLEnSC1tztes+HkloSHrIkPNbFD/hegr5AAfzm6u1H89YfxVpV92LKS9FiiRqdC
-         j5t2tkGjZgA9MdTDO4XTMlPprrmeUsMNR39YPB5RPt6uJAKxvGLrrXc4SEQnSmOykTBL
-         7dApR4morZOP+PvFt2n0q313DT39PDUcDxcHGkPGbfrj+1GHKSS7fVoDNGfG00fd7VeO
-         W2AlT0uzytGGhlVLvqyJnNm3zBx8azNRv+Zu0B5Ovxnrez/spVcPra5cZLXSiDGfzK0m
-         sTbsBBGNs3PVibg3PMlvUFB7AF9Fmnhu8+nU9G1jEruyCzS7wNyY8xujVITbnT4Ytbfj
-         8UeA==
-X-Gm-Message-State: AOJu0Yw+YIQkLEBVkfVhyB0pxJOVLzlbsN7fQzBee13CVtKL8H5NXf3+
-        nM0LEyF2MvzeZYo+e7G+ZoqV2A==
-X-Google-Smtp-Source: AGHT+IHaCKf2H2xl/vEMZDs+B2JWCIWeEjv/kL2lXURkoNqtvf0o9Oh8l386aSVv3+k7z5cEewn2EQ==
-X-Received: by 2002:a05:6a20:7f91:b0:135:38b5:7e58 with SMTP id d17-20020a056a207f9100b0013538b57e58mr339189pzj.37.1695405258962;
-        Fri, 22 Sep 2023 10:54:18 -0700 (PDT)
+        bh=1ISP2L+rvg6dxZG1wcmYnXloNsZywrTUtixv49IhJ0I=;
+        b=w0JdVhTJDnGEzc8yRiKATbaqV0TCGIduenohVjZxz1EYrZhkAFn+ZMmUGvlnt+iX4B
+         cyodc8KFWBMmP03G4ZBRihx9xvPfrrxC06t5dz/6rvfy+4jtsgoeTwnOSoejg1WeOv7z
+         bhKOBZn+ipFPOs8wm93dAlBq482VwvNJHrTxCEm0tpBwWo7soGFfBwcndDhXc/YmUxyo
+         WPqdhiCWjNmj7kH/SSD/dDWEaIcpDjSkCvnfQPe0HBvGIHQhFfhDpORqEdufOUY9nG7a
+         yw3U1k8WsiExg4HP9JpyZ6CuzPc9j5lpvke+Gjit1q3/Wy3EDLUEpnh/Ycs46cUYI1dz
+         kSeA==
+X-Gm-Message-State: AOJu0YxCxd/kMcxpvQCcB5FGwhpYH0xi+opy1flzE2xod8OVRg+JM3bl
+        y3elYRAawyjHor7dif5KacV0T3Nv4lhShz6nDScMng==
+X-Google-Smtp-Source: AGHT+IGxW0pO6A2XYuuil33uTylCAIbRaQSzobX5s7nUCpWCckLaGOgJJl/22O16HRisYCP+P0WYhg==
+X-Received: by 2002:a05:6a20:9499:b0:13b:a2c9:922e with SMTP id hs25-20020a056a20949900b0013ba2c9922emr268710pzb.27.1695405262686;
+        Fri, 22 Sep 2023 10:54:22 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kb14-20020a170903338e00b001bb3beb2bc6sm3779500plb.65.2023.09.22.10.54.18
+        by smtp.gmail.com with ESMTPSA id c7-20020aa78c07000000b006878cc942f1sm3457800pfd.54.2023.09.22.10.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:54:18 -0700 (PDT)
+        Fri, 22 Sep 2023 10:54:22 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
+To:     Jorge Lopez <jorge.lopez2@hp.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, dri-devel@lists.freedesktop.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] accel/ivpu: Annotate struct ivpu_job with __counted_by
-Date:   Fri, 22 Sep 2023 10:54:17 -0700
-Message-Id: <20230922175416.work.272-kees@kernel.org>
+        Tom Rix <trix@redhat.com>, platform-driver-x86@vger.kernel.org,
+        llvm@lists.linux.dev,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] platform/x86: hp-bioscfg: Annotate struct bios_args with __counted_by
+Date:   Fri, 22 Sep 2023 10:54:21 -0700
+Message-Id: <20230922175420.work.701-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1422; i=keescook@chromium.org;
- h=from:subject:message-id; bh=m5lQ9Sc4/fHR/XZEOUiHgj1+UhlsVXVLOdUWy7uMxzY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdTJ38ytmDtxaYz7ESHW4iJMEWaDISXcxNUPY
- fkE4hcFocOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UyQAKCRCJcvTf3G3A
- JvleD/4vxM9D+I+pVT/pVESSzmlw2BdKA8ww1Ze0HR9ifWWboneaUfZDM7gMmUqspaDaCL7H+g1
- Rn59P2QOYB61Ua67yMFGDFiUuQBLWULgd1+hbwV4iCPXLeeDtKF6KS2H13CtmCKui3/sfLZm2bb
- AkHVoh2LqFCxR8NejyT0txBBbE98UFkfbNFQQNg7vzNgFDdDP1XOzXL/ujf5ZQ3FZoryHa4Py53
- Ys46mRjWXc4AuqPpqMfIYAZDVvki6i5Rbox2zSFtRUDpkPf8cI63lIvws23RphDJutzGtV32jma
- ZtVA96fnHaAjIGOyC8Z8x3p06lYhtpUKpIUGHdb35Tc9T6j2oGdfHyvgeUXdNV8FfBvOsUs6Zvs
- xAHKumyqUUKvgP+MrI7ENxu/s4pST3zlfSU82orWyLgvis4FaeD7IZ7h7iIr/7L1CtowukN62UL
- YKBMNCIKulmCuOS2YmNefWgVp3lrwxBZPdkwOrrVwMtfjnyqRB+9jqt3BgtIgxEMhtJAyyHcrzi
- Nh9MKqcBUV0Mkc39kL+ed9pk7kHv67HEmvOPUeUSPr5hnKPfXCyzgJ6Dm8lrt3w6X6yQfhj7Z7F
- FZgjOe1Xd6JGHlvkbLkNyp+RHwdyr4ovCQzLTrPvdrWX49N4f2ID9UdrVZnPwPFQlD6cFKQ9lqg
- CfmV4zY GUVf7B9A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1418; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=kt0VlUdlEwKUKwWP1rv6tofv8fjvexz2uhyfkXWj6p8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdTMfB+LYH5eKEwcBoqoFlTtLOyMMpn1kR2Sa
+ TizrkR/ooiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UzAAKCRCJcvTf3G3A
+ JsfnD/wN2QM835WwG5VD399xvmpEfqV/waSzTryLMYZxcqIlyuTG4pL75mWspCtqsPuHkcPq/5+
+ dS56aaMDY1kiOZILGtGY/o+GWgizQ0X87eI7vpaVFKNq5aVB81SWua/rKAzQ02ogL1ld6i21Bax
+ iKS3RQ4mhGVuAyMeSzgYg6LVxU7VHCAX1MzNuZBEbxxYYc9ePrN+y0Hkr39IRDtkwVWcx2PaZr+
+ ZPLbM7Gr1c73OWGB0bhxLfHaX1rgfqmB9gXC3lJW/WyMNt2wnbyTplB/202KUySHEVGpzzl7+TK
+ 1cMerBWqiNFK3BmK1tZOZh3L/GUu6t+hXEG1zkNP3sFOGOsRItI8w2yDQEocODb2NVCQZr5t3B+
+ HELziLz9sxbCa7uWd78WEaYlS+jm4KnMPuXwIOm49XG7eeyCEqDz1zHK07JijFrG3CMQkyWttQ/
+ J92lXH7PGL8Jnme0WvdP5OUM1swG3A1kKndnO4G2vXJ464QIOn+OsvQC02MTg4EG2OF2cvXaXuz
+ V7+ZvYpLopVQKGVbWWY5H2WfbsVTdPZQHrTdnHLHVkmL6vLAD8wnzqR4fR9rDCWgCGtAzfNnpDD
+ MMUbIToTezIl9ipPdd7j5G99rxqHhdMNHOS6KM1DGgOhQzpxGIl2uXlE55Wb3yx3OZcsI/MIXov
+ dMn7rbm UmQyK2GQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -93,36 +94,36 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct ivpu_job.
+As found with Coccinelle[1], add __counted_by for struct bios_args.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Cc: Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
-Cc: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Cc: Oded Gabbay <ogabbay@kernel.org>
+Cc: Jorge Lopez <jorge.lopez2@hp.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Mark Gross <markgross@kernel.org>
 Cc: Nathan Chancellor <nathan@kernel.org>
 Cc: Nick Desaulniers <ndesaulniers@google.com>
 Cc: Tom Rix <trix@redhat.com>
-Cc: dri-devel@lists.freedesktop.org
+Cc: platform-driver-x86@vger.kernel.org
 Cc: llvm@lists.linux.dev
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/accel/ivpu/ivpu_job.h | 2 +-
+ drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/accel/ivpu/ivpu_job.h b/drivers/accel/ivpu/ivpu_job.h
-index aa1f0b9479b0..5514c2d8a609 100644
---- a/drivers/accel/ivpu/ivpu_job.h
-+++ b/drivers/accel/ivpu/ivpu_job.h
-@@ -51,7 +51,7 @@ struct ivpu_job {
- 	u32 job_id;
- 	u32 engine_idx;
- 	size_t bo_count;
--	struct ivpu_bo *bos[];
-+	struct ivpu_bo *bos[] __counted_by(bo_count);
+diff --git a/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c b/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c
+index dea54f35b8b5..4da99cb7218d 100644
+--- a/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c
++++ b/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c
+@@ -19,7 +19,7 @@ struct bios_args {
+ 	u32 command;
+ 	u32 commandtype;
+ 	u32 datasize;
+-	u8 data[];
++	u8 data[] __counted_by(datasize);
  };
  
- int ivpu_submit_ioctl(struct drm_device *dev, void *data, struct drm_file *file);
+ /**
 -- 
 2.34.1
 
