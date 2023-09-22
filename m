@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D3E7ABA09
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A897ABA0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbjIVT1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 15:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S231283AbjIVT2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 15:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbjIVT1i (ORCPT
+        with ESMTP id S233461AbjIVT2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 15:27:38 -0400
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86317AC
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 12:27:30 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id jloFqD9PsGlzojloFq0RyT; Fri, 22 Sep 2023 21:27:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695410848;
-        bh=XEqKkQdd+1AGqY7DppYqYg8hkwbZVqfTt1fDBwsytHo=;
-        h=From:To:Cc:Subject:Date;
-        b=tzuTLQNT2FcvHWUhvK7u8I5xvd2KA5IRJCU1xjcCBN4l14vbvTpn2YO5G3N99N/iJ
-         hBcGEeW26CUo24OMz22rm7R7kHw6+L9UiNn9p1RihPMY9pIFn50z7GsjgWYTCKf8hq
-         Xk2ml88ep4HJsD9wm1TI+fpSCN3ITNY6nXlOcQvmGLuQBji6qGheyUzJs25Bc9c+rP
-         6a61QFX1qkWHe5OzhUMSVPdemOGVORUV8YmY6sHZrkLKy+lnBZ72S5fJe4/UxuG34e
-         p6B4dixT6ScxQcx+gFHVwUxGEovC9xubtfVh4LnikubTrm4NFY/d7Plxm0r5/+1EwQ
-         Jm27Pr7yM5EWQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 22 Sep 2023 21:27:28 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/amd: Fix the size of a buffer in amdgpu_vcn_idle_work_handler()
-Date:   Fri, 22 Sep 2023 21:27:25 +0200
-Message-Id: <d8a9cda0c4c391458ddd63d1be88f2a757f6a5d0.1695410820.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Fri, 22 Sep 2023 15:28:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34057A3;
+        Fri, 22 Sep 2023 12:28:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF9AC433CB;
+        Fri, 22 Sep 2023 19:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695410908;
+        bh=R3/iDz5aT9T7hlpiaTK760UMgyWpl0oOdgc9iiOBRew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uGThn8drLb5fMKoylPOVqi74FJ7D22bCwupRq/TFRPjYPTcblR8kVYm8fPhkWDl73
+         +AWaqXfnl5v7ob7ORs6vLWRitjm6bJ4XT+TOhue0wqcf6h14EKmv+z5X8D5YDCF6T2
+         +b02c4G13j9zXJPhTzFB04quX8PU7hLLqSuxlZGP4/GkBPFwSjGTcTRAznGIohmIEQ
+         Ai8HnPXfcCeeH7ngBkqZodllLrrvQEnPbeAu2ka01JVJn5lVFk642q/ruWoPRlZP6E
+         VhVde+a62lyty58dpHsEL0apwStnjtHFzWRDRx8kKIvUAO/4ag9ZSH0KGrMYEI8tlp
+         vbJ+SWc5K2hAQ==
+Date:   Fri, 22 Sep 2023 20:28:21 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>, linux-input@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        andriy.shevchenko@linux.intel.com, frowand.list@gmail.com,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org, tglx@linutronix.de
+Subject: Re: [RFC PATCH] of: device: Support 2nd sources of probeable but
+ undiscoverable devices
+Message-ID: <785c1e6e-8d6c-49fa-b9eb-a58e4e6cf435@sirena.org.uk>
+References: <20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid>
+ <CAL_Jsq+noP32-m5xdUCLFPFBXLxX9Ys1BNFM+9sga6KYTmDzqQ@mail.gmail.com>
+ <CAD=FV=WXxGhX0Fw2nSS7PxYb1O-LUewAhoUVPn=2EpbSD2OeHQ@mail.gmail.com>
+ <CAL_JsqKJyRJmwJzB1yew71Ld7BeMMat+rzhX9XtDtiFE8Dbvcw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lkdtl8PHTFTeNLKo"
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKJyRJmwJzB1yew71Ld7BeMMat+rzhX9XtDtiFE8Dbvcw@mail.gmail.com>
+X-Cookie: A day without sunshine is like night.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be sure that fw_name is not truncated, this buffer should be
-at least 41 bytes long.
 
-Let the compiler compute the correct length by itself.
+--lkdtl8PHTFTeNLKo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When building with W=1, this fixes the following warnings:
+On Fri, Sep 22, 2023 at 02:08:08PM -0500, Rob Herring wrote:
 
-  drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c: In function ‘amdgpu_vcn_early_init’:
-  drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c:95:58: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
-     95 |         snprintf(fw_name, sizeof(fw_name), "amdgpu/%s.bin", ucode_prefix);
-        |                                                          ^
-  drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c:95:9: note: ‘snprintf’ output between 12 and 41 bytes into a destination of size 40
-     95 |         snprintf(fw_name, sizeof(fw_name), "amdgpu/%s.bin", ucode_prefix);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> You could always make the driver probe smarter where if your supply
+> was already powered on, then don't delay. Then something else could
+> ensure that the supply is enabled. I'm not sure if regulators have the
+> same issue as clocks where the clock might be on from the bootloader,
+> then a failed probe which gets then puts the clock turns it off.
 
-Fixes: 69939009bde7 ("drm/amd: Load VCN microcode during early_init")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That'll happen.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
-index c93f3a4c0e31..f8cd55a0d1f0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
-@@ -88,7 +88,7 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work);
- int amdgpu_vcn_early_init(struct amdgpu_device *adev)
- {
- 	char ucode_prefix[30];
--	char fw_name[40];
-+	char fw_name[sizeof(ucode_prefix) + sizeof("amdgpu/.bin") - 1];
- 	int r;
- 
- 	amdgpu_ucode_ip_version_decode(adev, UVD_HWIP, ucode_prefix, sizeof(ucode_prefix));
--- 
-2.34.1
+--lkdtl8PHTFTeNLKo
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUN6tQACgkQJNaLcl1U
+h9DhuQf/S8t/ZgUl/pNQE3JrluRneGilBmp/iuF8gMkmI3+0gY2UO/t6A4A/2GcS
+9nZ9IcI1wx37gGjvNxESBCTl1b+2RI/mi9kBn/nbElSXmYerHHE/0HuENvwMspBD
+0msxDtUYRUPc4CoLBf1xElQeB0Tiry1QTXB6cG1xdyrjnqxAZ6ySL1cz8G3V1QMB
+aOwZPDuV2abhykK0hRVbWgy2lYt0pdNNUYVHDEHUn/imw7fTOd9qHQGqLCyaB+ob
+JSWTGggCnu28CemwoJ0I+neqRK8IOd+KTY5uOJ2L7cHCVg5Zz1ureTQCIhnA1mIO
+L6+2nIkz4SlUP7iQw+UiCUXLtXcY6A==
+=JjEE
+-----END PGP SIGNATURE-----
+
+--lkdtl8PHTFTeNLKo--
