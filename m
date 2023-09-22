@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C946F7AAE1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23987AAE20
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbjIVJdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+        id S233174AbjIVJdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjIVJdF (ORCPT
+        with ESMTP id S233183AbjIVJdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:33:05 -0400
+        Fri, 22 Sep 2023 05:33:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD648192;
-        Fri, 22 Sep 2023 02:32:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B0F7C433C9;
-        Fri, 22 Sep 2023 09:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695375155;
-        bh=vwZUAYeEfWwnaGPU+f55fpprOAGYNnTdXdHwaC6Ti5o=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A07CCF
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:32:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596E6C433BA;
+        Fri, 22 Sep 2023 09:32:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695375171;
+        bh=D/Wrlw0uoDCanV53dgevAcp88/yaVe0HHzbqKS1cIXs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9nXd2ERc/xNm7w0xvgZ+jg3uIJWBrEPTC/DuLDyeLQ2YVjNrOfjXaCb5QoLcXhOQ
-         s1yRC7V6cI8Gv0op5YlxFtha2SFI+Gs5PMt/+4yEo9dLmGjdlJbngdoYb/yDveICei
-         SL4Jf1YHttuw0WFbBVRKI1FjVXO1bHFaJ/dCTHA6NGz9mUe6PglwaVqVwjKWo97lEr
-         uGmtucbm6STBFJ37LXVZh9RAz7h3m0M6LsJ3X3hbbebUGAcM/q46hRo4yCB6F0Cml2
-         Q0jWXfW8jwWbgfYj8SCtNd5UhVXZL3ElDucO33i1B/6qbThCgKSjihp+5NfHv8K4Pl
-         ql2vtkPWxGuNg==
-Date:   Fri, 22 Sep 2023 10:32:27 +0100
-From:   Simon Horman <horms@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
+        b=mXAIAa9ngaWjDDR1RCknK9RUHo1zj3Q3ZIVN6ceveQ/WFDHlanc0BiNGRIA6h546r
+         Tf/emF535LFYunG3oq84JKwmDx9m0CVNTAHegogfNbZtnykEq33hMpckdFUA2O1miW
+         T9aXco7GhZ0E14wjHgXkZn3M2p3sceCfvYvqQos0=
+Date:   Fri, 22 Sep 2023 11:32:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     huangli05 <huangli05@inspur.com>
+Cc:     osmtendev@gmail.com, speakup@linux-speakup.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 05/11] iov_iter: Convert iterate*() to inline funcs
-Message-ID: <20230922093227.GV224399@kernel.org>
-References: <20230920222231.686275-1-dhowells@redhat.com>
- <20230920222231.686275-6-dhowells@redhat.com>
+Subject: Re: [PATCH] staging: speakup: Remove repeated word in comments
+Message-ID: <2023092224-shelve-diocese-3524@gregkh>
+References: <20230922074847.3483-1-huangli05@inspur.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230920222231.686275-6-dhowells@redhat.com>
+In-Reply-To: <20230922074847.3483-1-huangli05@inspur.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 11:22:25PM +0100, David Howells wrote:
-
-...
-
-> @@ -312,23 +192,29 @@ size_t _copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
+On Fri, Sep 22, 2023 at 03:48:47PM +0800, huangli05 wrote:
+> Remove the repeated word "the" in comments.
+> 
+> Signed-off-by: huangli05 <huangli05@inspur.com>
+> ---
+>  drivers/accessibility/speakup/speakup_soft.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/accessibility/speakup/speakup_soft.c b/drivers/accessibility/speakup/speakup_soft.c
+> index 6d446824677b..6549bfb96e7f 100644
+> --- a/drivers/accessibility/speakup/speakup_soft.c
+> +++ b/drivers/accessibility/speakup/speakup_soft.c
+> @@ -446,7 +446,7 @@ static int softsynth_adjust(struct spk_synth *synth, struct st_var_header *var)
+>  	if (var->var_id != PUNC_LEVEL)
 >  		return 0;
->  	if (user_backed_iter(i))
->  		might_fault();
-> -	iterate_and_advance(i, bytes, base, len, off,
-> -		copyout(base, addr + off, len),
-> -		memcpy(base, addr + off, len)
-> -	)
-> -
-> -	return bytes;
-> +	return iterate_and_advance(i, bytes, (void *)addr,
-> +				   copy_to_user_iter, memcpy_to_iter);
->  }
->  EXPORT_SYMBOL(_copy_to_iter);
 >  
->  #ifdef CONFIG_ARCH_HAS_COPY_MC
-> -static int copyout_mc(void __user *to, const void *from, size_t n)
-> -{
-> -	if (access_ok(to, n)) {
-> -		instrument_copy_to_user(to, from, n);
-> -		n = copy_mc_to_user((__force void *) to, from, n);
-> +static __always_inline
-> +size_t copy_to_user_iter_mc(void __user *iter_to, size_t progress,
-> +			    size_t len, void *from, void *priv2)
-> +{
-> +	if (access_ok(iter_to, len)) {
-> +		from += progress;
-> +		instrument_copy_to_user(iter_to, from, len);
-> +		len = copy_mc_to_user(iter_to, from, len);
+> -	/* We want to set the the speech synthesis punctuation level
+> +	/* We want to set the speech synthesis punctuation level
+>  	 * accordingly, so it properly tunes speaking A_PUNC characters */
+>  	var_data = var->data;
+>  	if (!var_data)
+> -- 
+> 2.31.1
+> 
 
-Hi David,
+Hi,
 
-Sparse complains a bit about the line above, perhaps the '(__force void *)'
-should be retained from the old code?
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
- lib/iov_iter.c:208:39: warning: incorrect type in argument 1 (different address spaces)
- lib/iov_iter.c:208:39:    expected void *to
- lib/iov_iter.c:208:39:    got void [noderef] __user *iter_to
+You are receiving this message because of the following common error(s)
+as indicated below:
 
->  	}
-> -	return n;
-> +	return len;
-> +}
-> +
-> +static __always_inline
-> +size_t memcpy_to_iter_mc(void *iter_to, size_t progress,
-> +			 size_t len, void *from, void *priv2)
-> +{
-> +	return copy_mc_to_kernel(iter_to, from + progress, len);
->  }
->  
->  /**
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what a proper
+  Subject: line should look like.
 
-...
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file,
+  Documentation/process/submitting-patches.rst for how to do this
+  correctly.
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
