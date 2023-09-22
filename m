@@ -2,281 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B37C37AAA93
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF567AAA95
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 09:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbjIVHn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 03:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        id S232079AbjIVHoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 03:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjIVHnC (ORCPT
+        with ESMTP id S232031AbjIVHnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 03:43:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291ACE4F;
-        Fri, 22 Sep 2023 00:42:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89EB6C43395;
-        Fri, 22 Sep 2023 07:42:16 +0000 (UTC)
-Message-ID: <86729293-ad37-4f2e-bff7-c49d166e02df@xs4all.nl>
-Date:   Fri, 22 Sep 2023 09:42:15 +0200
+        Fri, 22 Sep 2023 03:43:53 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C236B19A8;
+        Fri, 22 Sep 2023 00:42:51 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VsccBZP_1695368567;
+Received: from 30.221.128.225(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VsccBZP_1695368567)
+          by smtp.aliyun-inc.com;
+          Fri, 22 Sep 2023 15:42:48 +0800
+Message-ID: <d6facfd5-e083-ffc7-05e5-2e8f3ef17735@linux.alibaba.com>
+Date:   Fri, 22 Sep 2023 15:42:45 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 0/7] Support Nuvoton NPCM Video Capture/Encode Engine
-Content-Language: en-US, nl
-To:     Marvin Lin <milkfafa@gmail.com>, mchehab@kernel.org,
-        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        andrzej.p@collabora.com
-Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        kwliu@nuvoton.com, kflin@nuvoton.com
-References: <20230922062405.2571850-1-milkfafa@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230922062405.2571850-1-milkfafa@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH net-next v3 12/18] net/smc: implement DMB-related
+ operations of loopback
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1695302360-46691-1-git-send-email-guwen@linux.alibaba.com>
+ <1695302360-46691-13-git-send-email-guwen@linux.alibaba.com>
+ <881e43f8-54e0-4847-67c4-82b9c0b3e50c@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <881e43f8-54e0-4847-67c4-82b9c0b3e50c@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marvin,
 
-Thank you for all your work! I have pushed these patches to our staging branch
-and they should appear in kernel 6.8.
 
-Note that dts patches do not go through the media subsystem, so whoever is in
-charge of that will have to pick that one up.
+On 2023/9/22 07:31, Wenjia Zhang wrote:
+> 
+> 
 
-Regards,
+<...>
 
-	Hans
+>> +static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
+>> +                   void *client_priv)
+>> +{
+>> +    struct smc_lo_dmb_node *dmb_node, *tmp_node;
+>> +    struct smc_lo_dev *ldev = smcd->priv;
+>> +    int sba_idx, rc;
+>> +
+>> +    /* check space for new dmb */
+>> +    for_each_clear_bit(sba_idx, ldev->sba_idx_mask, SMC_LODEV_MAX_DMBS) {
+>> +        if (!test_and_set_bit(sba_idx, ldev->sba_idx_mask))
+>> +            break;
+>> +    }
+>> +    if (sba_idx == SMC_LODEV_MAX_DMBS)
+>> +        return -ENOSPC;
+>> +
+>> +    dmb_node = kzalloc(sizeof(*dmb_node), GFP_KERNEL);
+>> +    if (!dmb_node) {
+>> +        rc = -ENOMEM;
+>> +        goto err_bit;
+>> +    }
+>> +
+>> +    dmb_node->sba_idx = sba_idx;
+>> +    dmb_node->cpu_addr = kzalloc(dmb->dmb_len, GFP_KERNEL |
+>> +                     __GFP_NOWARN | __GFP_NORETRY |
+>> +                     __GFP_NOMEMALLOC);
+> kzalloc()/kmalloc() allocates physically contigueous memory. Are you sure it is suitable for allocating the dmb?
+> 
 
-On 22/09/2023 08:23, Marvin Lin wrote:
-> This patch series add DTS node, dt-bindings document and drivers for Video
-> Capture/Differentiation Engine (VCD) and Encoding Compression Engine (ECE)
-> present on Nuvoton NPCM SoCs.
-> 
-> As described in the datasheet NPCM750D_DS_Rev_1.0, the VCD can capture a
-> frame from digital video input and compare two frames in memory, and then
-> the ECE can compress the frame data into HEXTILE format which is defined
-> in Remote Framebuffer Protocol (RFC 6143, chapter 7.7.4. Hextile Encoding).
-> 
-> The output of v4l2-compliance:
-> v4l2-compliance 1.23.0-4996, 64 bits, 64-bit time_t
-> v4l2-compliance SHA: 9431e4b26b48 2023-02-13 14:51:47
-> 
-> Compliance test for npcm-video device /dev/video0:
-> 
-> Driver Info:
->         Driver name      : npcm-video
->         Card type        : NPCM Video Engine
->         Bus info         : platform:npcm-video
->         Driver version   : 6.1.12
->         Capabilities     : 0x84200001
->                 Video Capture
->                 Streaming
->                 Extended Pix Format
->                 Device Capabilities
->         Device Caps      : 0x04200001
->                 Video Capture
->                 Streaming
->                 Extended Pix Format
-> 
-> Required ioctls:
->         test VIDIOC_QUERYCAP: OK
->         test invalid ioctls: OK
-> 
-> Allow for multiple opens:
->         test second /dev/video0 open: OK
->         test VIDIOC_QUERYCAP: OK
->         test VIDIOC_G/S_PRIORITY: OK
->         test for unlimited opens: OK
-> 
-> Debug ioctls:
->         test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
->         test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
->         test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
->         test VIDIOC_ENUMAUDIO: OK (Not Supported)
->         test VIDIOC_G/S/ENUMINPUT: OK
->         test VIDIOC_G/S_AUDIO: OK (Not Supported)
->         Inputs: 1 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
->         test VIDIOC_G/S_MODULATOR: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_ENUMAUDOUT: OK (Not Supported)
->         test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
->         test VIDIOC_G/S_AUDOUT: OK (Not Supported)
->         Outputs: 0 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
->         test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
->         test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK
->         test VIDIOC_DV_TIMINGS_CAP: OK
->         test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls (Input 0):
->         test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
->         test VIDIOC_QUERYCTRL: OK
->         test VIDIOC_G/S_CTRL: OK
->         test VIDIOC_G/S/TRY_EXT_CTRLS: OK
->                 warn: v4l2-test-controls.cpp(1139): V4L2_CID_DV_RX_POWER_PRESENT not found for input 0
->         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
->         test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
->         Standard Controls: 1 Private Controls: 2
-> 
-> Format ioctls (Input 0):
->         test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
->         test VIDIOC_G/S_PARM: OK (Not Supported)
->         test VIDIOC_G_FBUF: OK (Not Supported)
->         test VIDIOC_G_FMT: OK
->         test VIDIOC_TRY_FMT: OK
->         test VIDIOC_S_FMT: OK
->         test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
->         test Cropping: OK (Not Supported)
->         test Composing: OK (Not Supported)
->         test Scaling: OK (Not Supported)
-> 
-> Codec ioctls (Input 0):
->         test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
->         test VIDIOC_G_ENC_INDEX: OK (Not Supported)
->         test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
-> 
-> Buffer ioctls (Input 0):
->         test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
->         test VIDIOC_EXPBUF: OK
->         test Requests: OK (Not Supported)
-> 
-> Total for npcm-video device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 1
-> 
-> Changes in v16:
->   - Fix sparse warnings.
->   - Shorten V4L2_CID_NPCM_RECT_COUNT control name.
-> 
-> Changes in v15:
->   - Drop VOLATILE flag from V4L2_CID_NPCM_RECT_COUNT control and update
->     value by v4l2_ctrl_s_ctrl.
->   - Add more explanations in comment/document for V4L2_CID_NPCM_RECT_COUNT.
-> 
-> Changes in v14:
->   - Modify the flow of setting resolution and queue setup
->   - Correct the control type (TYPE_MENU) of selecting between two modes.
->   - Let ECE could be optional (only supports PIX_FMT_RGB565 if ECE is not
->     enabled in DT).
-> 
-> Changes in v13:
->   - Modify the flow for capturing next frame
->   - Modify the behavior of resolution change interrupt
->   - Move GFXI dt-bindings document to
->     Documentation/devicetree/bindings/soc/nuvoton/nuvoton,gfxi.yaml
-> 
-> Changes in v12:
->   - Modify the flow for detecting resolution change and raise
->     V4L2_EVENT_SOURCE_CHANGE event.
->   - Add V4L2_PIX_FMT_RGB565 format support.
-> 
-> Changes in v11:
->   - Replace "u8/u16/u32" with "unsigned int" for generic local variables.
->   - Correct subsystem prefixes, drop redundant words in commit subject, and
->     add more information in commit message.
-> 
-> Changes in v10:
->   - drivers/media/platform/nuvoton/npcm-video.c
->     * Let short functions to be inline function.
->     * Correct return type of some functions, and properly handle return
->       value by callers.
->     * Correct the timing of removing rect_list and the flow of FIFO overrun
->       case in irq.
->     * Adjust line breaks, indentations, and style of variable declarations.
-> 
-> Changes in v9:
->   - Change ECE node name to "video-codec".
->   - Drop redundant "bindings for" in commit subject of patch 2/7.
->   - Refine the format of VCD/ECE dt-binding document.
-> 
-> Changes in v8:
->   - Let VCD/ECE to be 2 separate nodes and update dt-binding documents.
->   - Move register definitions out to a local header file.
->   - Driver refinements (add error handling for memory allocation, remove
->     unnecessary condition check and introduce "goto"s to handle similar
->     error recovery paths).
->   - Correct properties and typo in GFXI dt-binding document.
-> 
-> Changes in v7:
->   - Add uapi documents for driver-specific controls.
->   - Implement driver-specific controls for switching capture mode and
->     getting the count of compressed HEXTILE rectangles.
->   - Drop unnecessary "enum_framesizes" and "enum_frameintervals" functions.
->   - Include the output of v4l2-compliance in cover letter.
-> 
-> Changes in v6:
->   - Support NPCM845 and add compatible "nuvoton,npcm845-video".
->   - Correct pixel format to V4L2_PIX_FMT_HEXTILE which is newly added in
->     this patch series.
-> 
-> Changes in v5:
->   - Simplify function prefix "nuvoton_" to "npcm_".
->   - Increase VCD_BUSY_TIMEOUT_US and ECE_POLL_TIMEOUT_US to 300ms to
->     prevent polling timeout when ECC is enabled or system is busy.
-> 
-> Changes in v4:
->   - Fix compile warning reported by kernel test robot.
-> 
-> Changes in v3:
->   - Add video driver entry in MAINTAINERS.
->   - Change config name to CONFIG_VIDEO_NPCM_VCD_ECE.
->   - Reduce the waiting time after resetting the VCD/ECE module.
->   - Correct data types of some variables.
-> 
-> Changes in v2:
->   - Add Hextile document and locate with vendor formats.
-> 
-> Marvin Lin (7):
->   ARM: dts: nuvoton: Add node for NPCM VCD and ECE engine
->   media: dt-bindings: nuvoton: Add NPCM VCD and ECE engine
->   dt-bindings: soc: nuvoton: Add NPCM GFXI
->   media: v4l: Add HEXTILE compressed format
->   media: v4l2-ctrls: Add user control base for Nuvoton NPCM controls
->   media: uapi: Add controls for NPCM video driver
->   media: nuvoton: Add driver for NPCM video capture and encoding engine
-> 
->  .../bindings/media/nuvoton,npcm-ece.yaml      |   43 +
->  .../bindings/media/nuvoton,npcm-vcd.yaml      |   72 +
->  .../bindings/soc/nuvoton/nuvoton,gfxi.yaml    |   39 +
->  .../userspace-api/media/drivers/index.rst     |    1 +
->  .../media/drivers/npcm-video.rst              |   66 +
->  .../media/v4l/pixfmt-reserved.rst             |    7 +
->  MAINTAINERS                                   |   12 +
->  .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   |   23 +
->  drivers/media/platform/Kconfig                |    1 +
->  drivers/media/platform/Makefile               |    1 +
->  drivers/media/platform/nuvoton/Kconfig        |   15 +
->  drivers/media/platform/nuvoton/Makefile       |    2 +
->  drivers/media/platform/nuvoton/npcm-regs.h    |  152 ++
->  drivers/media/platform/nuvoton/npcm-video.c   | 1831 +++++++++++++++++
->  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
->  include/uapi/linux/npcm-video.h               |   41 +
->  include/uapi/linux/v4l2-controls.h            |    6 +
->  include/uapi/linux/videodev2.h                |    1 +
->  18 files changed, 2314 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nuvoton,npcm-ece.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/nuvoton,npcm-vcd.yaml
->  create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton,gfxi.yaml
->  create mode 100644 Documentation/userspace-api/media/drivers/npcm-video.rst
->  create mode 100644 drivers/media/platform/nuvoton/Kconfig
->  create mode 100644 drivers/media/platform/nuvoton/Makefile
->  create mode 100644 drivers/media/platform/nuvoton/npcm-regs.h
->  create mode 100644 drivers/media/platform/nuvoton/npcm-video.c
->  create mode 100644 include/uapi/linux/npcm-video.h
-> 
+Yes, physically contigueous memory is little expensive here. I initially wanted to see the best performance.
+
+I tried using vzalloc here, and the performance dropped a bit (2%~8%) compared to kzalloc. I think it is acceptable.
+
+- ipc-benchmark
+                        kzalloc                vzalloc
+Message
+rate (msg/s)            152076                 145753(-4.16%)
+
+- sockperf
+                        kzalloc                vzalloc
+Bandwidth(MBps)       8491.638               8002.380(-5.76%)
+Latency(us)              3.222                  3.508(+8.88%)
+
+- nginx/wrk
+                        kzalloc                vzalloc
+Requests/s           272519.36              256490.94(-5.88%)
+
+- redis-benchmark
+                        kzalloc                vzalloc
+GET(Requests/s)      123304.56              120084.05(-2.61%)
+SET(Requests/s)      122062.87              118800.12(-2.67%)
+
+
+>> +    if (!dmb_node->cpu_addr) {
+>> +        rc = -ENOMEM;
+>> +        goto err_node;
+>> +    }
+>> +    dmb_node->len = dmb->dmb_len;
+>> +    dmb_node->dma_addr = (dma_addr_t)dmb_node->cpu_addr;
+>> +
+>> +again:
+>> +    /* add new dmb into hash table */
+>> +    get_random_bytes(&dmb_node->token, sizeof(dmb_node->token));
+>> +    write_lock(&ldev->dmb_ht_lock);
+>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_node->token) {
+>> +        if (tmp_node->token == dmb_node->token) {
+>> +            write_unlock(&ldev->dmb_ht_lock);
+>> +            goto again;
+>> +        }
+>> +    }
+>> +    hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
+>> +    write_unlock(&ldev->dmb_ht_lock);
+>> +
+>> +    dmb->sba_idx = dmb_node->sba_idx;
+>> +    dmb->dmb_tok = dmb_node->token;
+>> +    dmb->cpu_addr = dmb_node->cpu_addr;
+>> +    dmb->dma_addr = dmb_node->dma_addr;
+>> +    dmb->dmb_len = dmb_node->len;
+>> +
+>> +    return 0;
+>> +
+>> +err_node:
+>> +    kfree(dmb_node);
+>> +err_bit:
+>> +    clear_bit(sba_idx, ldev->sba_idx_mask);
+>> +    return rc;
+>> +}
+>> +
+>> +static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
+>> +{
+>> +    struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
+>> +    struct smc_lo_dev *ldev = smcd->priv;
+>> +
+>> +    /* remove dmb from hash table */
+>> +    write_lock(&ldev->dmb_ht_lock);
+>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
+>> +        if (tmp_node->token == dmb->dmb_tok) {
+>> +            dmb_node = tmp_node;
+>> +            break;
+>> +        }
+>> +    }
+>> +    if (!dmb_node) {
+>> +        write_unlock(&ldev->dmb_ht_lock);
+>> +        return -EINVAL;
+>> +    }
+>> +    hash_del(&dmb_node->list);
+>> +    write_unlock(&ldev->dmb_ht_lock);
+>> +
+>> +    clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
+>> +    kfree(dmb_node->cpu_addr);
+>> +    kfree(dmb_node);
+>> +
+>> +    return 0;
+>> +}
+>> +
 
