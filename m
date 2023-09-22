@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B417AB925
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749617AB928
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjIVS0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S232902AbjIVS2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjIVS0O (ORCPT
+        with ESMTP id S229664AbjIVS2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:26:14 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271D5A9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:26:08 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c469ab6935so16555ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 11:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695407167; x=1696011967; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7gTBcxUPj0X2lw9PxD7x8qtI+1zxhKTtoMwvn6AN1X0=;
-        b=LhJ38cCtOgvHG6IH54ubxK1km6+Yn6O+A+aL1sKPhBC8S86PBBwAQ6aTBowa1/riX/
-         v5WFdxPINY6GrrFVCHf1jOpIcrBHjUJHUNjHoUfPqbl5C5WTcvAkZETJCfO8cDO17dHV
-         YJNleMhbwkWwmNGwGgbdbT7KlCOgErfYQd7WmZygeQTnPhtZ/CWKe0ACpiVoubkNxdCf
-         E0QbLY//jfsfJDB1a4OeiG99hQBXJvxfO7S8jlo4+xTk7/CXHnyJhDyDdjDnvMOWDyS9
-         YtpSfHJ91ptaYk8TcmTxNMMUi72XAA6j3j1CEln2TUoMigfuJJ95ZvZSvTicJg6J9zA0
-         O4NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695407167; x=1696011967;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7gTBcxUPj0X2lw9PxD7x8qtI+1zxhKTtoMwvn6AN1X0=;
-        b=mKIf7jZGXSAf9wXlcfRZB7BJOpfwUh9pQ1loKH5SM8oFmp/E8GZwR2tiViS1F09m+S
-         olcg/Acp0RBGu1g8ZVm25IYGjRXmiAk5l76cbhRwyuOFcJX5rp+v5im3ErJyp/aT6oP5
-         EOB4O6x7lPGQSj657Xzjmc//YHl/lBOGbEaQizVI01qY09UGztDdsK6Rjqo9xHAUbzH2
-         Cq+h1lHeg4WSugl6VeSXuam24zkohlArNLKhl3PWYFp6y2wsOBtbTKoL6xf4pfTmw/6p
-         asob4DRxmHlXoliSOxf7kT2L+jQB2P2guy7wkWAqsqdU4LR6xpDXbLohATRCSyr8YkXq
-         FPAA==
-X-Gm-Message-State: AOJu0YxkOzCGA8izNVu7QVRGTh14FOeQXUbTVA71hpBbGIFgQPqG+YsB
-        LxVpOpyNlmQ5ZFYCODN5pJaxrUPlTifu3LUJHK1a+w==
-X-Google-Smtp-Source: AGHT+IGCw9CUYrruZ8DWnXPsm6cBFUWlN4w3pKDLMImz87xku5Rhr1T3gOI8P3au2gBUTcXhqc2mXZkvm1C5hGrfVww=
-X-Received: by 2002:a17:902:d2d2:b0:1c4:514c:8717 with SMTP id
- n18-20020a170902d2d200b001c4514c8717mr25128plc.3.1695407167411; Fri, 22 Sep
- 2023 11:26:07 -0700 (PDT)
+        Fri, 22 Sep 2023 14:28:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C96AB;
+        Fri, 22 Sep 2023 11:27:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 601EAC433CB;
+        Fri, 22 Sep 2023 18:27:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695407275;
+        bh=1l9eqy3mjUGInVTS090SvBs8R894YrRmCPPDJ7eQCNI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bv6Idan+5YpoBHv+JQVQcl6McYhDUt2mTECNrlqn6RZLu36VYa6ZVaWNHQPR0iRIC
+         5MbC5y9hO35Ou6i8wYf/fPvkAnDMejiDyrzUkwh71o0VLtgProJgw6FoFYRQOgg54y
+         S1tnfMRG27gTiGl4RSb1iKZ1uxPBj29ZegW608GxPq+DXtq3bQpEzEiFNaQHD732pk
+         sJdgbXKkIzSmXHH9LLrGua39nUNWxQp9sL1XjrJq5j4xGit3GFgFQVuZXLXcbyj57m
+         lv4nV8Mig4aXGoQRhxIXGNIrVSraP3hoYY5lmrU/EY5M/Hhophvy2/e2hpms7IoPEW
+         gvunyGshCxcuQ==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5043120ffbcso3283835e87.2;
+        Fri, 22 Sep 2023 11:27:55 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw3LujExx95DvkVECDAPuSBSCem7/NTLRRdqxFjM4ct7lIPh47P
+        ov8kYI+hxKIN9PPyoSPwFHnDtrgCPaKHdrCTb6c=
+X-Google-Smtp-Source: AGHT+IFEfZUHvlNlrjwH17RMZtajgQofvr61fOulNn1kyAlv3ruQGtPtarya9xpa/UEmGCLI8RZv0BY5OqHdB5O3neo=
+X-Received: by 2002:ac2:430c:0:b0:502:d35b:5058 with SMTP id
+ l12-20020ac2430c000000b00502d35b5058mr261081lfh.4.1695407273593; Fri, 22 Sep
+ 2023 11:27:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230922175327.work.985-kees@kernel.org>
-In-Reply-To: <20230922175327.work.985-kees@kernel.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 22 Sep 2023 11:25:56 -0700
-Message-ID: <CALvZod5xVhR_Feq7Wp_P9BLjYHJCxqvA6BmHmzwGzw34niDQ2g@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcg: Annotate struct mem_cgroup_threshold_ary with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+References: <20230915200328.never.064-kees@kernel.org> <6d98461f-a794-a258-9640-78fa277b6e76@embeddedor.com>
+In-Reply-To: <6d98461f-a794-a258-9640-78fa277b6e76@embeddedor.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 22 Sep 2023 11:27:41 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7W8nCYsk_cA1ue=LYcdLhtBSoDnww5b+1RtteudNa0=A@mail.gmail.com>
+Message-ID: <CAPhsuW7W8nCYsk_cA1ue=LYcdLhtBSoDnww5b+1RtteudNa0=A@mail.gmail.com>
+Subject: Re: [PATCH] md/md-linear: Annotate struct linear_conf with __counted_by
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-raid@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Yosry Ahmed <yosryahmed@google.com>,
-        Yu Zhao <yuzhao@google.com>, Miaohe Lin <linmiaohe@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:53=E2=80=AFAM Kees Cook <keescook@chromium.org> =
-wrote:
+On Fri, Sep 15, 2023 at 1:27=E2=80=AFPM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
 >
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
+>
+>
+> On 9/15/23 14:03, Kees Cook wrote:
+> > Prepare for the coming implementation by GCC and Clang of the __counted=
+_by
+> > attribute. Flexible array members annotated with __counted_by can have
+> > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOU=
+NDS
+> > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-famil=
 y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
-S
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+> > functions).
+> >
+> > As found with Coccinelle[1], add __counted_by for struct linear_conf.
+> > Additionally, since the element count member must be set before accessi=
+ng
+> > the annotated flexible array member, move its initialization earlier.
+> >
+> > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples=
+/counted_by.cocci
+> >
+> > Cc: Song Liu <song@kernel.org>
+> > Cc: linux-raid@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 >
-> As found with Coccinelle[1], add __counted_by for struct mem_cgroup_thres=
-hold_ary.
->
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
-ounted_by.cocci
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  include/linux/memcontrol.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 45d0c10e86cc..e0cfab58ab71 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -143,7 +143,7 @@ struct mem_cgroup_threshold_ary {
->         /* Size of entries[] */
->         unsigned int size;
->         /* Array of thresholds */
-> -       struct mem_cgroup_threshold entries[];
-> +       struct mem_cgroup_threshold entries[] __counted_by(size);
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Does 'size' here have to be a member of the same struct as entries? We
-have nodeinfo[] in struct mem_cgroup whose size is nr_node_ids which
-is global. Will __counted_by() work for that?
+Applied to md-next. Thanks!
+Song
