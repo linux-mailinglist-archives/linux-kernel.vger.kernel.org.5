@@ -2,254 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 277B07AAD26
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039927AAD28
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbjIVIwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        id S232527AbjIVIw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbjIVIwN (ORCPT
+        with ESMTP id S232494AbjIVIwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:52:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4A9A9;
-        Fri, 22 Sep 2023 01:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695372727; x=1726908727;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=909qfSZJj9g30Z44iivYF+PQog17rbjHkc3mDJyIeVA=;
-  b=E5gr45hRlzMJEmrraVyRfT/yz9tH4lwuKirPsJ1qB30NsP3+E+0UNmlr
-   3A4lTKprTlDN1i8uUF8JWnzlnAPRzlDjtX9EuzoUMbD7mttr/2RakgYSa
-   Y2fBfJhLZsKA9VpMJETS8gPoKgD+itlejaGnS4koBLcnrr2uJnL2UH8fZ
-   Ouf1Mr2ylIzqQp3qcJphk5ZGXaMVG+4nW9BJSVO2sEVaRcZoQ2eAMtgo0
-   PHoIjU2pu5TV/aBMQq+M0ztBhXca0YzS0V1Jvpm1k0MLvxDqWYiRMbrWW
-   S5lYoUKvWHGwJVI/6Lc5IqPQK+qhuNaUgafnBxwiZOoYdmn3yJeXyAvAB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="447258904"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="447258904"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 01:52:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="837654871"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="837654871"
-Received: from rblanarx-mobl.ger.corp.intel.com ([10.252.52.48])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 01:52:00 -0700
-Date:   Fri, 22 Sep 2023 11:51:54 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Fernando Eckhardt Valle <fevalle@ipt.br>
-cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>, corbet@lwn.net,
-        hmh@hmh.eng.br, markgross@kernel.org, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v4] platform/x86: thinkpad_acpi: sysfs interface to
- auxmac
-In-Reply-To: <20230921143622.72387-1-fevalle@ipt.br>
-Message-ID: <946285e6-6064-4084-a1a7-f5ba7dea3e7d@linux.intel.com>
-References: <20230921143622.72387-1-fevalle@ipt.br>
+        Fri, 22 Sep 2023 04:52:24 -0400
+Received: from mx.tweek.dk (mx.tweek.dk [13.53.76.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D50EBB;
+        Fri, 22 Sep 2023 01:52:15 -0700 (PDT)
+Received: from tweek.dk ([192.168.170.2] helo=odin.tweek.dk)
+        by mx.tweek.dk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <tweek@tweek.dk>)
+        id 1qjbtK-000Axq-2f;
+        Fri, 22 Sep 2023 10:52:02 +0200
+Received: from tweek (helo=localhost)
+        by odin.tweek.dk with local-esmtp (Exim 4.97-RC0)
+        (envelope-from <tweek@tweek.dk>)
+        id 1qjbtK-00000002HH2-24HI;
+        Fri, 22 Sep 2023 10:52:02 +0200
+Date:   Fri, 22 Sep 2023 10:52:02 +0200 (CEST)
+From:   Martin Nybo Andersen <tweek@tweek.dk>
+To:     Tor Vic <torvic9@mailbox.org>
+cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Nick Terrell <terrelln@fb.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Use CRC32 and a 1MiB dictionary for XZ compressed
+ modules
+In-Reply-To: <c2b92ff2-d077-4588-9d5c-93dfec0037ee@mailbox.org>
+Message-ID: <b85bf040-f6be-ef12-5b33-6d41991e4d97@tweek.dk>
+References: <3d34a965-ab9c-d549-0c63-c717ab5d2edc@tweek.dk> <c2b92ff2-d077-4588-9d5c-93dfec0037ee@mailbox.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="-1463811414-1003633596-1695372722=:541272"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023, Fernando Eckhardt Valle wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Newer Thinkpads have a feature called MAC Address Pass-through.
-> This patch provides a sysfs interface that userspace can use
-> to get this auxiliary mac address.
-> 
-> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
-> ---
-> Changes in v4:
-> - strscpy() in all string copies.
-> Changes in v3:
-> - Added null terminator to auxmac string when copying auxiliary
-> mac address value.
-> Changes in v2:
-> - Added documentation.
-> - All handling of the auxmac value is done in the _init function.
-> ---
->  .../admin-guide/laptops/thinkpad-acpi.rst     | 20 +++++
->  drivers/platform/x86/thinkpad_acpi.c          | 79 +++++++++++++++++++
->  2 files changed, 99 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-> index e27a1c3f6..98d304010 100644
-> --- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-> +++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-> @@ -53,6 +53,7 @@ detailed description):
->  	- Lap mode sensor
->  	- Setting keyboard language
->  	- WWAN Antenna type
-> +	- Auxmac
->  
->  A compatibility table by model and feature is maintained on the web
->  site, http://ibm-acpi.sf.net/. I appreciate any success or failure
-> @@ -1511,6 +1512,25 @@ Currently 2 antenna types are supported as mentioned below:
->  The property is read-only. If the platform doesn't have support the sysfs
->  class is not created.
->  
-> +Auxmac
-> +------
-> +
-> +sysfs: auxmac
-> +
-> +Some newer Thinkpads have a feature called MAC Address Pass-through. This
-> +feature is implemented by the system firmware to provide a system unique MAC,
-> +that can override a dock or USB ethernet dongle MAC, when connected to a
-> +network. This property enables user-space to easily determine the MAC address
-> +if the feature is enabled.
-> +
-> +The values of this auxiliary MAC are:
-> +
-> +        cat /sys/devices/platform/thinkpad_acpi/auxmac
-> +
-> +If the feature is disabled, the value will be 'disabled'.
-> +
-> +This property is read-only.
-> +
->  Adaptive keyboard
->  -----------------
->  
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index d70c89d32..f430cc9ed 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -10785,6 +10785,80 @@ static struct ibm_struct dprc_driver_data = {
->  	.name = "dprc",
->  };
->  
-> +/*
-> + * Auxmac
-> + *
-> + * This auxiliary mac address is enabled in the bios through the
-> + * MAC Address Pass-through feature. In most cases, there are three
-> + * possibilities: Internal Mac, Second Mac, and disabled.
-> + *
-> + */
-> +
-> +#define AUXMAC_LEN 12
-> +#define AUXMAC_START 9
-> +#define AUXMAC_STRLEN 22
-> +#define AUXMAC_BEGIN_MARKER 8
-> +#define AUXMAC_END_MARKER 21
-> +
-> +static char auxmac[AUXMAC_LEN + 1];
-> +
-> +static int auxmac_init(struct ibm_init_struct *iibm)
-> +{
-> +	acpi_status status;
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	union acpi_object *obj;
-> +
-> +	status = acpi_evaluate_object(NULL, "\\MACA", NULL, &buffer);
-> +
-> +	if (ACPI_FAILURE(status))
-> +		return -ENODEV;
-> +
-> +	obj = buffer.pointer;
-> +
-> +	if (obj->type != ACPI_TYPE_STRING || obj->string.length != AUXMAC_STRLEN) {
-> +		pr_info("Invalid buffer for MAC address pass-through.\n");
-> +		strscpy(auxmac, "unavailable", AUXMAC_LEN);
-> +		goto auxmacinvalid;
-> +	}
-> +
-> +	if (obj->string.pointer[AUXMAC_BEGIN_MARKER] != '#' ||
-> +	    obj->string.pointer[AUXMAC_END_MARKER] != '#') {
-> +		pr_info("Invalid header for MAC address pass-through.\n");
-> +		strscpy(auxmac, "unavailable", AUXMAC_LEN);
-> +		goto auxmacinvalid;
-> +	}
-> +
-> +	if (strncmp(obj->string.pointer + AUXMAC_START, "XXXXXXXXXXXX", AUXMAC_LEN) != 0)
-> +		strscpy(auxmac, obj->string.pointer + AUXMAC_START, AUXMAC_LEN + 1);
+---1463811414-1003633596-1695372722=:541272
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-Okay, I wasn't expecting this change as this relies on the nul termination 
-by strscpy() since the original buffer does not have one but the # 
-character there. But I guess it isn't harmful either.
+On Fri, 22 Sep 2023, Tor Vic wrote:
 
-> +	else
-> +		strscpy(auxmac, "disabled", AUXMAC_START);
+>> 
+>> Hello?
+>
+> Hello,
 
-AUXMAC_START is an offset ??? It should be AUXMAC_LEN.
+:)
 
-> +
-> +auxmacinvalid:
-> +	kfree(obj);
-> +	return 0;
+>> Anyone?
+>> 
+>> Best regards,
+>> - Martin
+>> 
+>> On Fri, 15 Sep 2023, Martin Nybo Andersen wrote:
+>> 
+>>> Kmod is now using the kernel decompressor which doesn't handle CRC64
+>>> and dictionaries larger than 1MiB.
+>>> 
+>>> Fixes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050582
+>>> Signed-off-by: Martin Nybo Andersen <tweek@tweek.dk>
+>>> ---
+>>> scripts/Makefile.modinst | 2 +-
+>>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>> 
+>>> diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
+>>> index c59cc57286ba..ffbafbd3aeea 100644
+>>> --- a/scripts/Makefile.modinst
+>>> +++ b/scripts/Makefile.modinst
+>>> @@ -144,7 +144,7 @@ endif
+>>> quiet_cmd_gzip = GZIP    $@
+>>>       cmd_gzip = $(KGZIP) -n -f $<
+>>> quiet_cmd_xz = XZ      $@
+>>> -      cmd_xz = $(XZ) --lzma2=dict=2MiB -f $<
+>>> +      cmd_xz = $(XZ) --check=crc32 --lzma2=dict=1MiB -f $<
+>
+> I wonder whether it should be guarded with
+>    ifdef CONFIG_MODULE_DECOMPRESS
+>
+> But on the other hand, the difference between 1M and 2M is likely very small 
+> in terms of compression ratio.
 
-I only now realized there are two gotos to auxmacinvalid. Therefore, I'd 
-do this instead:
+That would work, since kmod decompress the modules in userspace if 
+CONFIG_MODULE_DECOMPRESS if off.
 
-free:
-	kfree(obj);
-	return 0;
-auxmacinvalid:
-	strscpy(auxmac, "unavailable", AUXMAC_LEN);
-	goto free;
+What I'm aiming for is just that the kernel should be able to decompress 
+its own modules, when it advertises it.
 
-I'm sorry about my incorrect suggestion the last time.
+Cheers,
+Martin
 
-> +}
-> +
-> +static struct ibm_struct auxmac_data = {
-> +	.name = "auxmac",
-> +};
-> +
-> +static ssize_t auxmac_show(struct device *dev,
-> +			   struct device_attribute *attr,
-> +			   char *buf)
-> +{
-> +	return sysfs_emit(buf, "%s\n", auxmac);
-> +}
-> +static DEVICE_ATTR_RO(auxmac);
-> +
-> +static struct attribute *auxmac_attributes[] = {
-> +	&dev_attr_auxmac.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group auxmac_attr_group = {
-> +	.attrs = auxmac_attributes,
-> +};
-> +
->  /* --------------------------------------------------------------------- */
->  
->  static struct attribute *tpacpi_driver_attributes[] = {
-> @@ -10843,6 +10917,7 @@ static const struct attribute_group *tpacpi_groups[] = {
->  	&proxsensor_attr_group,
->  	&kbdlang_attr_group,
->  	&dprc_attr_group,
-> +	&auxmac_attr_group,
->  	NULL,
->  };
->  
-> @@ -11414,6 +11489,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
->  		.init = tpacpi_dprc_init,
->  		.data = &dprc_driver_data,
->  	},
-> +	{
-> +		.init = auxmac_init,
-> +		.data = &auxmac_data,
-> +	},
->  };
->  
->  static int __init set_ibm_param(const char *val, const struct kernel_param *kp)
-> 
-
--- 
- i.
-
+> Cheers,
+> Tor Vic
+>
+>>> quiet_cmd_zstd = ZSTD    $@
+>>>       cmd_zstd = $(ZSTD) -T0 --rm -f -q $<
+>>> 
+>>> -- 
+>>> 2.40.1
+>>> 
+>>> 
+>> 
+>
+>
+---1463811414-1003633596-1695372722=:541272--
