@@ -2,127 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AC07AAFEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C9A7AAFF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbjIVKu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        id S233485AbjIVKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjIVKu0 (ORCPT
+        with ESMTP id S233435AbjIVKun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:50:26 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6726AC;
-        Fri, 22 Sep 2023 03:50:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695379816; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=PyfkQ2CJJo4r5UL55sqaXwzAE7PnEhZx9OfgNEyVfoLba9ol53fbpt5Y0NZr3MSNd3
-    PuB1nGROD800A9laJH7IYEf8D89DvkKE0tK6/VIPYMpK064XIyEFKHC0czw2xEfJYfkw
-    LwagCTlF27bQ6ziuwLonmWeWzI57La7GGk25Qhndvdlpjm2mfYy7gVFH3R87fNRqY3qE
-    QnA3/zI2wbGf0VoslwnMzDRxZctRb44Ik7VuT1gNSORZku88X1zoyBguoCUDhsjR4G7g
-    J0VA0iZ+mgRDaZphx5JIoxm6zCXNpTQKTXviKyztbnv3uc5h2eo7wR6M7NPgswH1ewA3
-    YQ/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695379816;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=MBmy+6PAEVsZIeJOyaTNzolxAAyu/OIriMDq4k6N6nA=;
-    b=O0gAbB+MZCmr4L72TPGUP6V5GTHMMRQwAJWmcJ+GO1Gy9qCWoIUReMDnMkKpA9VFWy
-    jkw/hqgeGWQd+KZtF0rYbi+pOLryw/VBZktvB/nxtHQObeVApAHi1YDjyFDMQcOPGeNr
-    bz5QHMxcbR/MVLES087wY2eTyjlGV9CO2tF0ZliR+3KzC0vW+ms4ADCcjN9GI01AOVAG
-    AwqbpL4rtrCElmmNGf4gqkGAHPe3cKrKPNsHrYgalmKJDlGxrMH/WSM39qM72TYz9Q5a
-    76Emq0uEcdbXtzLePvIadBWOrjIcerh8a1EnrLbZTkNcByDYXaAnErrdPuelb1joLxmE
-    SmIw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695379816;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=MBmy+6PAEVsZIeJOyaTNzolxAAyu/OIriMDq4k6N6nA=;
-    b=U5NLr5i1ELb9DsLIWmw4m/eTQppGkvaA1NPKvk0o53RiXHMKE0wMm2f7+tP9GU8hip
-    LEVO5dCsZYK2tZpOxhJ4kkU81dogIf+aXB4ZzKV8M9JcUMSw95AUrFfD86FyhzNa313g
-    k6BOZbysIbuJH2bODtZ+eLvDu5Eu86GMscsbc8fLo3IBXHvhH18I7P3muH87VCzRNLaQ
-    6HHtbOpBO48GSIyOQ1SDc31LQ5Dj0rrWAJLnEgKSCK2BcxV0uYBUyC7f0P2bO/k8rDRs
-    Bc2KOFy5YbYgjpJto6BzdjPLAWXl1OH+YNsI5pivi/cefY8lWbNIQj8tb8Jc5ytud7+y
-    Ul0g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695379816;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=MBmy+6PAEVsZIeJOyaTNzolxAAyu/OIriMDq4k6N6nA=;
-    b=7k6GyjYOOZIrcufc6fC5Wp5zXKzqY50GVi0rklMhsU42xg+4ihbmpznLs3zv4GI8Ab
-    Yu3VDymQiDqI7ziU2ABA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOL59w=="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z8MAoFTnM
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 22 Sep 2023 12:50:15 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Fri, 22 Sep 2023 12:49:55 +0200
-Subject: [PATCH] arm64: dts: qcom: apq8016-sbc: Add missing ADV7533
- regulators
+        Fri, 22 Sep 2023 06:50:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39042122
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:50:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C63DC433C7;
+        Fri, 22 Sep 2023 10:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695379835;
+        bh=II1IpALtM+CSWP4ja3PIzra3ILdt436ZbfinoMTMIBg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FLhUR8HytmqIL6L7V2IptxGBAHMpWlG/SdlcnIe5/tu0T2mNLPDil4HaXIjw6I1Mh
+         7+bGG0GYtCLTIvbCrbX1vdVztobulbCE9jWjMOXJRLAwVEpmvWWDefiRlLFkeh82Q0
+         JcXQIVQQk5orRD6ffbhKTlju5V9bhSfxN0+VA28OT5fiodI6Si/VoGNWsR8s7873Lt
+         v1vJZjwF3eueuk1YVMrJNHgIYD4CTYSL9lkG6v0odcVyblQySaIi5RpkMir4dQ8PoD
+         fCDhmbVI+J8znUxYa4dmomcPr6MUOL7UNLulbqja026MzcA/Q83KZfqx/570ZpIari
+         DsNwp+FOEh0Vg==
+Date:   Fri, 22 Sep 2023 11:50:29 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Chen Wang <unicornxw@gmail.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, devicetree@vger.kernel.org,
+        emil.renner.berthing@canonical.com, guoren@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH v2 00/11] Add Milk-V Pioneer RISC-V board support
+Message-ID: <20230922-salvation-splendor-61533091f87b@spud>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+ <20230920-muppet-wad-ee76f3112651@wendy>
+ <CAHAQgRA+uN2xG=imVe4fuSyGxjDQk-AOo4r5b4bvAcTuEewwiQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230922-db410c-adv7533-regulators-v1-1-68aba71e529b@gerhold.net>
-X-B4-Tracking: v=1; b=H4sIAFJxDWUC/x3MQQqDMBBA0avIrDswSdqm9iriIppRBySWiYog3
- t3Q5Vv8f0JmFc7wrU5Q3iXLkgrMo4J+CmlklFgMlqyj2lqM3dNQjyHu/uUcKo/bHNZFM37q8CZ
- vHA0mQul/yoMc/3fTXtcNHDbbaGsAAAA=
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DtwC+yOilvVlaIfy"
+Content-Disposition: inline
+In-Reply-To: <CAHAQgRA+uN2xG=imVe4fuSyGxjDQk-AOo4r5b4bvAcTuEewwiQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing regulator supplies to the ADV7533 HDMI bridge to fix
-the following dtbs_check warnings. They are all also supplied by
-pm8916_l6 so there is no functional difference.
 
-apq8016-sbc.dtb: bridge@39: 'dvdd-supply' is a required property
-apq8016-sbc.dtb: bridge@39: 'pvdd-supply' is a required property
-apq8016-sbc.dtb: bridge@39: 'a2vdd-supply' is a required property
-        from schema display/bridge/adi,adv7533.yaml
+--DtwC+yOilvVlaIfy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 28546b095511 ("arm64: dts: apq8016-sbc: Add HDMI display support")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- arch/arm64/boot/dts/qcom/apq8016-sbc.dts | 3 +++
- 1 file changed, 3 insertions(+)
+On Fri, Sep 22, 2023 at 06:24:25PM +0800, Chen Wang wrote:
+> Regards,
+>=20
+> unicornx
+>=20
+> Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=
+=8820=E6=97=A5=E5=91=A8=E4=B8=89 18:01=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Wed, Sep 20, 2023 at 02:33:48PM +0800, Chen Wang wrote:
+> > > Milk-V Pioneer [1] is a developer motherboard based on SOPHON SG2042 =
+[2]
+> > > in a standard mATX form factor. Add minimal device
+> > > tree files for the SG2042 SOC and the Milk-V Pioneer board.
+> >
+> > Please run dtbs_check with W=3D1 set & fix the below issues:
+> >
+> > sg2042-cpus.dtsi:1600.25-1607.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@0: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1609.25-1616.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@1: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1618.25-1625.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@2: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1627.25-1634.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@3: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1636.25-1643.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@4: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1645.25-1652.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@5: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1654.25-1661.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@6: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1663.25-1670.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@7: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1672.25-1679.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@8: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1681.25-1688.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@9: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1690.27-1697.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@10: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1699.27-1706.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@11: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1708.27-1715.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@12: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1717.27-1724.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@13: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1726.27-1733.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@14: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:1735.27-1742.5: Warning (unit_address_vs_reg): /cpus/l=
+2-cache@15: node has a unit name, but no reg or ranges property
+> > sg2042-cpus.dtsi:256.15-275.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@0: duplicate unit-address (also used in node /cpus/l2-cache@0)
+> > sg2042-cpus.dtsi:277.15-296.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@1: duplicate unit-address (also used in node /cpus/l2-cache@1)
+> > sg2042-cpus.dtsi:298.15-317.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@2: duplicate unit-address (also used in node /cpus/l2-cache@2)
+> > sg2042-cpus.dtsi:319.15-338.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@3: duplicate unit-address (also used in node /cpus/l2-cache@3)
+> > sg2042-cpus.dtsi:340.15-359.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@4: duplicate unit-address (also used in node /cpus/l2-cache@4)
+> > sg2042-cpus.dtsi:361.15-380.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@5: duplicate unit-address (also used in node /cpus/l2-cache@5)
+> > sg2042-cpus.dtsi:382.15-401.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@6: duplicate unit-address (also used in node /cpus/l2-cache@6)
+> > sg2042-cpus.dtsi:403.15-422.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@7: duplicate unit-address (also used in node /cpus/l2-cache@7)
+> > sg2042-cpus.dtsi:424.15-443.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@8: duplicate unit-address (also used in node /cpus/l2-cache@8)
+> > sg2042-cpus.dtsi:445.15-464.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@9: duplicate unit-address (also used in node /cpus/l2-cache@9)
+> > sg2042-cpus.dtsi:466.17-485.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@10: duplicate unit-address (also used in node /cpus/l2-cache@10)
+> > sg2042-cpus.dtsi:487.17-506.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@11: duplicate unit-address (also used in node /cpus/l2-cache@11)
+> > sg2042-cpus.dtsi:508.17-527.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@12: duplicate unit-address (also used in node /cpus/l2-cache@12)
+> > sg2042-cpus.dtsi:529.17-548.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@13: duplicate unit-address (also used in node /cpus/l2-cache@13)
+> > sg2042-cpus.dtsi:550.17-569.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@14: duplicate unit-address (also used in node /cpus/l2-cache@14)
+> > sg2042-cpus.dtsi:571.17-590.5: Warning (unique_unit_address_if_enabled)=
+: /cpus/cpu@15: duplicate unit-address (also used in node /cpus/l2-cache@15)
+> >
+> > Thanks,
+> > Conor.
+>=20
+> I find the rootcause is due to following code in DTS:
+> ```
+>                 l2_cache0: l2-cache@0 {
+>                         compatible =3D "cache";
+>                         cache-block-size =3D <64>;
+>                         cache-level =3D <2>;
+>                         cache-size =3D <1048576>;
+>                         cache-sets =3D <1024>;
+>                         cache-unified;
+>                 };
+> ```
+> To differ 16 l2-cache controller, we add <unit-address>, but due to
+> the l2-cache controller on sg2042 has no address, no reg property is
+> added here. That's why dtbs_check warns "node has a unit name, but no
+> reg or ranges property". I just double-confirmed with sophgo
+> engineers, they  told me there is really no address for the cache
+> controller for sg2042.
+>=20
+> One solution I use here is to provide unique name for the l2-cache
+> node. I learn this from  "arch/arm64/boot/dts/hisilicon/hi3660.dtsi"
+> and seems this work and pass dtbs_check with W=3D1. For example:
+> ```
+>                 l2_cache0: l2-cache0 {
+>                         compatible =3D "cache";
+>                         cache-block-size =3D <64>;
+>                         cache-level =3D <2>;
+>                         cache-size =3D <1048576>;
+>                         cache-sets =3D <1024>;
+>                         cache-unified;
+>                 };
+>=20
+>                 l2_cache1: l2-cache1 {
+>                         compatible =3D "cache";
+>                         cache-block-size =3D <64>;
+>                         cache-level =3D <2>;
+>                         cache-size =3D <1048576>;
+>                         cache-sets =3D <1024>;
+>                         cache-unified;
+>                 };
+>                 ......
+> ```
+> But I remember as mentioned in
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-device=
+tree-basics.html#generic-names-recommendation,
+> node names should be generic. So I have two questions here:
+> - Should I use "cache-controller" instead of "l2-cache", though I see
+> "l2-cache" is used in many places but not listed in
+> devicetree-specification.
+> - Even if I replace "l2-cache" with "cache-controller", I think
+> "cache-controller0", "cache-controller1" ... are not generic name, but
+> due to sg2042 does not have address for cache controller, how to
+> handle this problem?
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-index 3c51f891029e..9ffad7d1f2b6 100644
---- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-+++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-@@ -172,6 +172,9 @@ adv_bridge: bridge@39 {
- 		pd-gpios = <&tlmm 32 GPIO_ACTIVE_HIGH>;
- 
- 		avdd-supply = <&pm8916_l6>;
-+		a2vdd-supply = <&pm8916_l6>;
-+		dvdd-supply = <&pm8916_l6>;
-+		pvdd-supply = <&pm8916_l6>;
- 		v1p2-supply = <&pm8916_l6>;
- 		v3p3-supply = <&pm8916_l17>;
- 
+I would go for "cache-controller-0" "cache-controller-1". Close as
+possible to the generic node name while having the required differences
+between nodes. There's already some examples in-tree (eg renesas) that
+do this.
 
----
-base-commit: a35461d47fe3e555602912b905f1bae7045256eb
-change-id: 20230922-db410c-adv7533-regulators-89a607130f1d
+Thanks,
+Conor.
 
-Best regards,
--- 
-Stephan Gerhold <stephan@gerhold.net>
+--DtwC+yOilvVlaIfy
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ1xdQAKCRB4tDGHoIJi
+0rSqAQC2q8Eac9WHZ0kwmpDStSPneHIuoD6unVUY6au6JrndOQD/f9i5UVKVZog+
+HOK//YsxjVXAktCB3VITwmlLJ1eOPg4=
+=NU7b
+-----END PGP SIGNATURE-----
+
+--DtwC+yOilvVlaIfy--
