@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10917ABAD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799317ABAD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjIVVEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 17:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
+        id S229782AbjIVVEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 17:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjIVVEA (ORCPT
+        with ESMTP id S229591AbjIVVEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 17:04:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECDBAC;
-        Fri, 22 Sep 2023 14:03:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F126AC433C7;
-        Fri, 22 Sep 2023 21:03:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695416634;
-        bh=pSbLyjHY4h4629PeT8i8/aSNKm6+ImkuIyi0PSXCWZk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=hqBNsnybSkb+lmVmvue/8XaYYcGG4OiAOjNOVGvixdSKO3JlwXRytqMCvm8ecV+TF
-         bI/SF7aIjrrp9Gr4/Nemi+FkMSzoH0Np5HqgZr89OP0dm3dEoWVf8Z0TNu2RpnCA54
-         oOMjzVs4n8k5oFy7Y1udpHFn/pNY/XBHzx7WzUfnKOG+mKDQRTg+MbD3u3zfCBW49q
-         ACuOVMXmwX9p/j+ae1nvXBHM4d9JorOMqQrvdbkitjJDqWIYYlClf8MRyEJwcYStSE
-         Z1sppg8SKtzaS0gNVQia3U+ywVBsWS94cqbK8RijeC3x4A4JeWzG/yTuvrcbammnVr
-         HU2Di/YKz6Ngw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-spi@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-In-Reply-To: <20230922175322.work.170-kees@kernel.org>
-References: <20230922175322.work.170-kees@kernel.org>
-Subject: Re: [PATCH] spi: mchp-pci1xxxx: Annotate struct pci1xxxx_spi with
- __counted_by
-Message-Id: <169541663166.63661.5167874277861773035.b4-ty@kernel.org>
-Date:   Fri, 22 Sep 2023 22:03:51 +0100
+        Fri, 22 Sep 2023 17:04:52 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67349AC;
+        Fri, 22 Sep 2023 14:04:45 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9AAC4C0002;
+        Fri, 22 Sep 2023 21:04:40 +0000 (UTC)
+From:   Ilya Maximets <i.maximets@ovn.org>
+To:     netdev@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        David Ahern <dsahern@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Madhu Koriginja <madhu.koriginja@nxp.com>,
+        Frode Nordahl <frode.nordahl@canonical.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Ilya Maximets <i.maximets@ovn.org>
+Subject: [PATCH net] ipv6: tcp: add a missing nf_reset_ct() in 3WHS handling
+Date:   Fri, 22 Sep 2023 23:04:58 +0200
+Message-ID: <20230922210530.2045146-1-i.maximets@ovn.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Spam-Score: 300
+X-GND-Status: SPAM
+X-GND-Sasl: i.maximets@ovn.org
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 10:53:23 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct pci1xxxx_spi.
-> 
-> [...]
+Commit b0e214d21203 ("netfilter: keep conntrack reference until
+IPsecv6 policy checks are done") is a direct copy of the old
+commit b59c270104f0 ("[NETFILTER]: Keep conntrack reference until
+IPsec policy checks are done") but for IPv6.  However, it also
+copies a bug that this old commit had.  That is: when the third
+packet of 3WHS connection establishment contains payload, it is
+added into socket receive queue without the XFRM check and the
+drop of connection tracking context.
 
-Applied to
+That leads to nf_conntrack module being impossible to unload as
+it waits for all the conntrack references to be dropped while
+the packet release is deferred in per-cpu cache indefinitely, if
+not consumed by the application.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+The issue for IPv4 was fixed in commit 6f0012e35160 ("tcp: add a
+missing nf_reset_ct() in 3WHS handling") by adding a missing XFRM
+check and correctly dropping the conntrack context.  However, the
+issue was introduced to IPv6 code afterwards.  Fixing it the
+same way for IPv6 now.
 
-Thanks!
+Fixes: b0e214d21203 ("netfilter: keep conntrack reference until IPsecv6 policy checks are done")
+Link: https://lore.kernel.org/netdev/d589a999-d4dd-2768-b2d5-89dec64a4a42@ovn.org/
+Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+---
+ net/ipv6/tcp_ipv6.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-[1/1] spi: mchp-pci1xxxx: Annotate struct pci1xxxx_spi with __counted_by
-      commit: c40897f4730f4f9a37f3155e3e0452e1c8da37b4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 3a88545a265d..44b6949d72b2 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1640,9 +1640,12 @@ INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
+ 		struct sock *nsk;
+ 
+ 		sk = req->rsk_listener;
+-		drop_reason = tcp_inbound_md5_hash(sk, skb,
+-						   &hdr->saddr, &hdr->daddr,
+-						   AF_INET6, dif, sdif);
++		if (!xfrm6_policy_check(sk, XFRM_POLICY_IN, skb))
++			drop_reason = SKB_DROP_REASON_XFRM_POLICY;
++		else
++			drop_reason = tcp_inbound_md5_hash(sk, skb,
++							   &hdr->saddr, &hdr->daddr,
++							   AF_INET6, dif, sdif);
+ 		if (drop_reason) {
+ 			sk_drops_add(sk, skb);
+ 			reqsk_put(req);
+@@ -1689,6 +1692,7 @@ INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
+ 			}
+ 			goto discard_and_relse;
+ 		}
++		nf_reset_ct(skb);
+ 		if (nsk == sk) {
+ 			reqsk_put(req);
+ 			tcp_v6_restore_cb(skb);
+-- 
+2.41.0
 
