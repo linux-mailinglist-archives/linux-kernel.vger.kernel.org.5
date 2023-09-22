@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A711E7AB218
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD767AB224
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjIVM2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 08:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
+        id S231301AbjIVMaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 08:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjIVM2f (ORCPT
+        with ESMTP id S230315AbjIVMaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 08:28:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524B599;
-        Fri, 22 Sep 2023 05:28:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9B5EC433C7;
-        Fri, 22 Sep 2023 12:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695385708;
-        bh=KiaYuFGK03yGp8RIzWR+0QJ4yp3iBkhq46kGwBQ6cDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gz8gLvVX8Ot1xF3TjeyQFLtEcFE4/4YpZrexOIhPX3Pjted3U162J8TUvOIXBq4na
-         +cmTp3CFM8xMf/pxMThl5L70PaHRSrRett/O6sLkKaxKsP6XtKJDHQeafJOHa2voMm
-         orMza1QO1TYzDODT2dcdTDAl/KZswMOI1+nA71Bu4lwG4ZYR35ItjhTAM+Eidysoga
-         V/KeB2QtI8qaSrgwxorCE1ql66+jkO1eUz5nNiEzvPn0Tm2Dz1k6pPx9BAtIeQz9cc
-         IiUn+bTtCvis1twSlJpzVzWG0LUMl2pOSaI/2rdJhUrd+qr2szCZrz+GNRt4uG91tj
-         IBaD9KVo96H4g==
-Date:   Fri, 22 Sep 2023 14:28:24 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [GIT PULL v2] timestamp fixes
-Message-ID: <20230922-halunken-teilweise-b118ac91eeb1@brauner>
-References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
- <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
- <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
- <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
- <CAHk-=wjDAqOs5TFuxxEOSST-5-LJJkAS5cEMrDu-pgiYsrjyNw@mail.gmail.com>
- <bc96335d0427d0e7ded2ea7e1d0db55c7e484909.camel@kernel.org>
+        Fri, 22 Sep 2023 08:30:20 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331DE122
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 05:30:12 -0700 (PDT)
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 0E29D20371;
+        Fri, 22 Sep 2023 14:30:07 +0200 (CEST)
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] arm64: dts: ti: verdin-am62: disable MIPI DSI bridge
+Date:   Fri, 22 Sep 2023 14:30:03 +0200
+Message-Id: <20230922123003.25002-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <bc96335d0427d0e7ded2ea7e1d0db55c7e484909.camel@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'll have to think about it. The first step is to get all of the
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-I think it'd be best if we start off with converting the other times in
-struct inode to accessor and leave the questions whether timestamps-
-until-2292 are enough to solve for later. I don't think the torn
-timestamp reads is all that of a pressing issue and mixing both things
-up might just stall what is otherwise already a worthy cleanup.
+Keep the DPI to MIPI-DSI bridge disabled in the SoM dtsi file.
+
+The display chain is not wholly described in the device tree file, on
+Verdin product family the displays are additional accessories that are
+configured/enabled using DT overlays.
+
+With this enabled we have issues when a display is enabled on
+TIDSS port1 (LVDS) and port0 (DSI) is not used.
+
+Fixes: 9e77200356ba ("arm64: dts: ti: verdin-am62: Add DSI display support")
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+---
+ arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+index 40992e7e4c30..5db52f237253 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+@@ -1061,6 +1061,7 @@ dsi_bridge: dsi@e {
+ 		vddc-supply = <&reg_1v2_dsi>;
+ 		vddmipi-supply = <&reg_1v2_dsi>;
+ 		vddio-supply = <&reg_1v8_dsi>;
++		status = "disabled";
+ 
+ 		dsi_bridge_ports: ports {
+ 			#address-cells = <1>;
+-- 
+2.25.1
+
