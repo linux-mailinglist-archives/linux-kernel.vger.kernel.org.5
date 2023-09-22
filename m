@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222DF7AADBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70617AADBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbjIVJWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        id S231250AbjIVJXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjIVJWa (ORCPT
+        with ESMTP id S229476AbjIVJXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:22:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38C7CE;
-        Fri, 22 Sep 2023 02:22:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BA6C433C7;
-        Fri, 22 Sep 2023 09:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695374544;
-        bh=8S14wwxTEg2QgvNUOFowD4EjDPHWFixEfBczznYYXPc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XW6TFhEPXiHmvFQqo3vS7pKtw74KDLpUQb9ktR8RiTIqAAARktOzI8g6Gv9jRjvBh
-         WVWdlPoHs0YehBrNpNCVyqOPhU2XPBCDH6mGPmftbCgDaD+UfDnRuUYGbWFqmuWQlH
-         5g22/7EaNjy74I9eJx2h4dxH6e97k1Syfcc0rhC+RWsg1Bh6ljN+SJsAsqXvffvx94
-         Cs74g0kZBo2sr9GMyx0hVIRsMMfmGjApL7EG6bzg8dCbPc31rqoiqHlUhGH/ugYArH
-         iGzbjaXbIhKvYVn46qilNpmpm0qhvGyL4Jz/fu9TsFXBxWlCuuztlZaZ9aYBEu6j9Q
-         l/VEAq7XPtC3w==
-Date:   Fri, 22 Sep 2023 10:22:19 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
- device
-Message-ID: <20230922-unclothed-bottom-5531329f9724@spud>
-References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
- <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
- <20230919-70b2f1e368a8face73468dfa@fedora>
- <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
- <20230919-cc4646dbfb953bd34e05658c@fedora>
- <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
+        Fri, 22 Sep 2023 05:23:06 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361A4CE;
+        Fri, 22 Sep 2023 02:23:00 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40472c3faadso20622265e9.2;
+        Fri, 22 Sep 2023 02:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695374578; x=1695979378; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i6f7B4E5qYHw5TUtVNOvWgw6bCE36R0LeY8Qu2sLRI4=;
+        b=ROWLF2NYFg0ze4W84cVfMV+/vwMr0kXAY2LdBjoP+s3FalP5LzbEzD8Xg1hbhKN8Z/
+         kAIkmIDzVCQ8i0+BptAfM9hwQa66EYe5/xveyQDA1TP08J1Ele6GHtjIA3dbWc3aW8Az
+         PCzwTGZIFjh3XQajOdkPMUQSoEsVvom2MhZbx9wVrVBc/xINTHch20yUPReANt575iUL
+         OYGbBH2NIzb9z89zcEQ91Fmdk9vDz8MOsM2anEMbqs8bYj1D8WHm4jq1PKDwoU4pjZsH
+         EssKas6mePGjjP1t7gErDxx0N9Gc6Lx/UdViJUikmZc4Muv/rK3JJ/QMd5SYSNAMVjH/
+         U9iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695374578; x=1695979378;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i6f7B4E5qYHw5TUtVNOvWgw6bCE36R0LeY8Qu2sLRI4=;
+        b=VKJmu8vYbAG7n6gXMPA7p/czyqcwP1HJqpxo5e4NLMGoQsMkOmEEzR07XH+GNZUaPJ
+         b0ie584MBLLIeuYAOrLOZxosVCrkTdNxMk16r19SUllgkyNLAoXKPeY3PGsAgvwrjF8+
+         8MDITigXPvntR7CkZftdRGgCd8uy7SD10x/kYC6cdytA6lwnT+SV3MLqDhu6VZcdEMpe
+         f8gdTgpm0dFP2MnhF+1dUjBgMXVMOQpPhGXmk7/xgCTI0KASuQAaPNbT8xnX/5+DNbZk
+         WDsYe5vjuIWeSwxjIZSvjYs9Y7iF+mzcnu3LC6hVldqC4dDv9SP8W4RkN8aNN8Wub1i3
+         7wvQ==
+X-Gm-Message-State: AOJu0YzvXz5x+PB0yj5gG5/B5Y6xuqqBJtrLK8pqYWJIwCsxBUFxM/Ho
+        cg+7nd7uK1u8tfA0QKefee8=
+X-Google-Smtp-Source: AGHT+IE5poE8RItsxxgP9rt1Qzlf8O5KfT3kta3113FL6vXqhsH00jKlpVR0SdwUtBZemWKdtnU/Uw==
+X-Received: by 2002:a7b:cd9a:0:b0:402:feff:90d5 with SMTP id y26-20020a7bcd9a000000b00402feff90d5mr7270101wmj.5.1695374578399;
+        Fri, 22 Sep 2023 02:22:58 -0700 (PDT)
+Received: from [192.168.4.149] (54-240-197-234.amazon.com. [54.240.197.234])
+        by smtp.gmail.com with ESMTPSA id v4-20020a05600c214400b003fef19bb55csm4078475wml.34.2023.09.22.02.22.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 02:22:58 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <dff1ad07-8649-4916-bbc1-ab5cc403bb89@xen.org>
+Date:   Fri, 22 Sep 2023 10:22:56 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="v+aqA+5QpEvFBWgw"
-Content-Disposition: inline
-In-Reply-To: <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH] KVM: x86: Use fast path for Xen timer delivery
+To:     David Woodhouse <dwmw2@infradead.org>, kvm <kvm@vger.kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        "Griffoul, Fred" <fgriffo@amazon.com>
+References: <445abd6377cf1621a2d306226cab427820583967.camel@infradead.org>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <445abd6377cf1621a2d306226cab427820583967.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22/09/2023 10:20, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> 
+> Most of the time there's no need to kick the vCPU and deliver the timer
+> event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn_fast()
+> directly from the timer callback, and only fall back to the slow path
+> when it's necessary to do so.
+> 
+> This gives a significant improvement in timer latency testing (using
+> nanosleep() for various periods and then measuring the actual time
+> elapsed).
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+>   arch/x86/kvm/xen.c | 17 ++++++++++++++---
+>   1 file changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+> index 40edf4d1974c..66c4cf93a55c 100644
+> --- a/arch/x86/kvm/xen.c
+> +++ b/arch/x86/kvm/xen.c
+> @@ -134,12 +134,23 @@ static enum hrtimer_restart xen_timer_callback(struct hrtimer *timer)
+>   {
+>   	struct kvm_vcpu *vcpu = container_of(timer, struct kvm_vcpu,
+>   					     arch.xen.timer);
+> +	struct kvm_xen_evtchn e;
+> +	int rc;
+> +
+>   	if (atomic_read(&vcpu->arch.xen.timer_pending))
+>   		return HRTIMER_NORESTART;
+>   
+> -	atomic_inc(&vcpu->arch.xen.timer_pending);
+> -	kvm_make_request(KVM_REQ_UNBLOCK, vcpu);
+> -	kvm_vcpu_kick(vcpu);
+> +	e.vcpu_id = vcpu->vcpu_id;
+> +	e.vcpu_idx = vcpu->vcpu_idx;
+> +	e.port = vcpu->arch.xen.timer_virq;
 
---v+aqA+5QpEvFBWgw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Don't you need to check the port for validity? The VMM may not have set 
+it (and hence be delivering timer VIRQ events itself).
 
-On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
-> On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
+   Paul
 
-> > > The behavior of "himax,boot_time_fw_upgrade" seems not stable and
-> > > should be removed. "himax,fw_in_flash", I use the kernel config for
-> > > user to select.
-> >
-> > That seems like a bad idea, we want to be able to build one kernel that
-> > works for all hardware at the same time.
-> >
-> I see, so I should take that back?
-> I'll explain more about it.
+> +	e.priority = KVM_IRQ_ROUTING_XEN_EVTCHN_PRIO_2LEVEL;
+> +
+> +	rc = kvm_xen_set_evtchn_fast(&e, vcpu->kvm);
+> +	if (rc == -EWOULDBLOCK) {
+> +		atomic_inc(&vcpu->arch.xen.timer_pending);
+> +		kvm_make_request(KVM_REQ_UNBLOCK, vcpu);
+> +		kvm_vcpu_kick(vcpu);
+> +	}
+>   
+>   	return HRTIMER_NORESTART;
+>   }
 
-Are there particular ICs where the firmware would always be in flash and
-others where it would never be? Or is this a choice made by the board or
-system designer?
-
-Thanks,
-Conor.
-
---v+aqA+5QpEvFBWgw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ1cxwAKCRB4tDGHoIJi
-0gULAP9LWqFNeG5rHo+qgr/z06EqS5lS7F8Od2gCHSaTlCa5DAEAyyHbiPkKJrXq
-oII3i1N9zR8cMUB/j1LYhi1slzzKqg4=
-=tovU
------END PGP SIGNATURE-----
-
---v+aqA+5QpEvFBWgw--
