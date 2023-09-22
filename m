@@ -2,343 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 167477AA8E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5F07AA8EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjIVGTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        id S231336AbjIVGY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjIVGTr (ORCPT
+        with ESMTP id S230405AbjIVGYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:19:47 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5266A83;
-        Thu, 21 Sep 2023 23:19:40 -0700 (PDT)
-Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RsMTX5SvCzMljc;
-        Fri, 22 Sep 2023 14:16:00 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 22 Sep 2023 14:19:37 +0800
-Subject: Re: [PATCH v15 1/2] vfio/migration: Add debugfs to live migration
- driver
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <20230901023606.47587-1-liulongfang@huawei.com>
- <20230901023606.47587-2-liulongfang@huawei.com>
- <20230915150026.06bea533.alex.williamson@redhat.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <d541ba02-a8d1-dc8e-a725-4ee82b0c44bb@huawei.com>
-Date:   Fri, 22 Sep 2023 14:19:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 22 Sep 2023 02:24:24 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2117ECE;
+        Thu, 21 Sep 2023 23:24:18 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690bf8fdd1aso1597817b3a.2;
+        Thu, 21 Sep 2023 23:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695363857; x=1695968657; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zU4frYVSqm4sdSGtNSmaPLkCiz8+hV7p6VJcz+yg+EA=;
+        b=K1RU4uIKdPB40qbTMgYQkfqVxKu60/1HIDYMzVlB8ICg63bwqd9+TYX+83hzoSMSeS
+         bElDER+SxMQMwA37AeUN/VjTLZiX4+lCQEddgLyIAStzDtyC/r9yt/uGyWwh0kM2eyFu
+         eHtZIyGcCd2nkIb3cXyjrhwTskcFaMc59ZOcenjvclpCO+JmzXz4TgIGFJZOtpqZaALB
+         PyxAUW7QWyki0/Wf4dfQVUPO/0N6MTXyhlmTAvVl0QXMVwYSZyUtfmj746v2DHvg29+W
+         52o/BgCEszlebCsWy7fN8UwFjmLc5hwUcvSE2rmyVxyz+1o7l3lcnUFvUdaCFCLmamkZ
+         M1tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695363857; x=1695968657;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zU4frYVSqm4sdSGtNSmaPLkCiz8+hV7p6VJcz+yg+EA=;
+        b=Nms5HyvsLKVyQnqd3Ly3v9EZfbYurhdtAwUXMEU7U6CWAYWVONl2dNwD01f2PFgiNc
+         UuBJCFdsixZtYsKS9/2o9YQTRbEQTnOZBzi+RcHZZ07ps+rpzjyIDDDDi3AU3HBiviuB
+         62OOt747/P9pXIwqLOB0Qe1/yuausSEIaaxKZT3JvAcBkIaWNaGPD1HpLlqkIBWipLJ+
+         ErkiBvfmDTXI5+amhdA3oSkv/3FMs6QTrbmVTHC7+3Z6CBho1ISXi4uT5bOoGx66HbWr
+         Nkz0zPgV+DtmW/XdygTlAS8SFy3S5CgLExeXBZ77BtFr1KhprzkQ8utGwBiGeSFFcBH3
+         l+UA==
+X-Gm-Message-State: AOJu0Yx9bj9LjuA6/5U9DMTZ5AW7f5237XXEnGsWxTJzw8IQeiBlZIIL
+        Fhwz3kmKSI4pEdTEscB6ujc=
+X-Google-Smtp-Source: AGHT+IHbfzHgP6UV4AK86PBXi+UwLevxfszlQFw/d+62gZgWtPYCmXcYp3/G4r7XN9Gy8LrnOSR8IA==
+X-Received: by 2002:a05:6a20:7d8c:b0:15d:a66b:fe1f with SMTP id v12-20020a056a207d8c00b0015da66bfe1fmr1729378pzj.13.1695363857355;
+        Thu, 21 Sep 2023 23:24:17 -0700 (PDT)
+Received: from hcdev-d520mt2.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id m11-20020a17090ade0b00b00274de7c8aacsm4157417pjv.45.2023.09.21.23.24.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 23:24:17 -0700 (PDT)
+From:   Marvin Lin <milkfafa@gmail.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        andrzej.p@collabora.com
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kflin@nuvoton.com,
+        Marvin Lin <milkfafa@gmail.com>
+Subject: [PATCH v16 0/7] Support Nuvoton NPCM Video Capture/Encode Engine
+Date:   Fri, 22 Sep 2023 14:23:58 +0800
+Message-Id: <20230922062405.2571850-1-milkfafa@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20230915150026.06bea533.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.110]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm000005.china.huawei.com (7.193.23.27)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/16 5:00, Alex Williamson wrote:
-> On Fri, 1 Sep 2023 10:36:05 +0800
-> liulongfang <liulongfang@huawei.com> wrote:
-> 
->> From: Longfang Liu <liulongfang@huawei.com>
->>
->> There are multiple devices, software and operational steps involved
->> in the process of live migration. An error occurred on any node may
->> cause the live migration operation to fail.
->> This complex process makes it very difficult to locate and analyze
->> the cause when the function fails.
->>
->> In order to quickly locate the cause of the problem when the
->> live migration fails, I added a set of debugfs to the vfio
->> live migration driver.
->>
->>     +-------------------------------------------+
->>     |                                           |
->>     |                                           |
->>     |                  QEMU                     |
->>     |                                           |
->>     |                                           |
->>     +---+----------------------------+----------+
->>         |      ^                     |      ^
->>         |      |                     |      |
->>         |      |                     |      |
->>         v      |                     v      |
->>      +---------+--+               +---------+--+
->>      |src vfio_dev|               |dst vfio_dev|
->>      +--+---------+               +--+---------+
->>         |      ^                     |      ^
->>         |      |                     |      |
->>         v      |                     |      |
->>    +-----------+----+           +-----------+----+
->>    |src dev debugfs |           |dst dev debugfs |
->>    +----------------+           +----------------+
->>
->> The entire debugfs directory will be based on the definition of
->> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
->> interfaces in vfio.h will be empty definitions, and the creation
->> and initialization of the debugfs directory will not be executed.
->>
->>    vfio
->>     |
->>     +---<dev_name1>
->>     |    +---migration
->>     |        +--state
->>     |
->>     +---<dev_name2>
->>          +---migration
->>              +--state
->>
->> debugfs will create a public root directory "vfio" file.
->> then create a dev_name() file for each live migration device.
->> First, create a unified state acquisition file of "migration"
->> in this device directory.
->> Then, create a public live migration state lookup file "state"
->> Finally, create a directory file based on the device type,
->> and then create the device's own debugging files under
->> this directory file.
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->> ---
->>  drivers/vfio/Makefile       |  1 +
->>  drivers/vfio/vfio.h         | 14 +++++++
->>  drivers/vfio/vfio_debugfs.c | 80 +++++++++++++++++++++++++++++++++++++
->>  drivers/vfio/vfio_main.c    |  5 ++-
->>  include/linux/vfio.h        |  7 ++++
->>  5 files changed, 106 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/vfio/vfio_debugfs.c
->>
->> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
->> index c82ea032d352..7934ac829989 100644
->> --- a/drivers/vfio/Makefile
->> +++ b/drivers/vfio/Makefile
->> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
->>  vfio-$(CONFIG_IOMMUFD) += iommufd.o
->>  vfio-$(CONFIG_VFIO_CONTAINER) += container.o
->>  vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
->> +vfio-$(CONFIG_DEBUG_FS) += vfio_debugfs.o
->>  
->>  obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
->>  obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
->> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
->> index 307e3f29b527..09b00757d0bb 100644
->> --- a/drivers/vfio/vfio.h
->> +++ b/drivers/vfio/vfio.h
->> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
->>  }
->>  #endif
->>  
->> +#ifdef CONFIG_DEBUG_FS
->> +void vfio_debugfs_create_root(void);
->> +void vfio_debugfs_remove_root(void);
->> +
->> +void vfio_device_debugfs_init(struct vfio_device *vdev);
->> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
->> +#else
->> +static inline void vfio_debugfs_create_root(void) { }
->> +static inline void vfio_debugfs_remove_root(void) { }
->> +
->> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
->> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
->> +#endif /* CONFIG_DEBUG_FS */
->> +
->>  #endif
->> diff --git a/drivers/vfio/vfio_debugfs.c b/drivers/vfio/vfio_debugfs.c
->> new file mode 100644
->> index 000000000000..cd6c01437475
->> --- /dev/null
->> +++ b/drivers/vfio/vfio_debugfs.c
->> @@ -0,0 +1,80 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2023, HiSilicon Ltd.
->> + */
->> +
->> +#include <linux/device.h>
->> +#include <linux/debugfs.h>
->> +#include <linux/seq_file.h>
->> +#include <linux/vfio.h>
->> +#include "vfio.h"
->> +
->> +static struct dentry *vfio_debugfs_root;
->> +
->> +static int vfio_device_state_read(struct seq_file *seq, void *data)
->> +{
->> +	struct device *vf_dev = seq->private;
->> +	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
->> +	enum vfio_device_mig_state state;
->> +	int ret;
->> +
->> +	ret = vdev->mig_ops->migration_get_state(vdev, &state);
->> +	if (ret)
->> +		return -EINVAL;
->> +
->> +	switch (state) {
->> +	case VFIO_DEVICE_STATE_RUNNING:
->> +		seq_printf(seq, "%s\n", "RUNNING");
->> +		break;
->> +	case VFIO_DEVICE_STATE_STOP_COPY:
->> +		seq_printf(seq, "%s\n", "STOP_COPY");
->> +		break;
->> +	case VFIO_DEVICE_STATE_STOP:
->> +		seq_printf(seq, "%s\n", "STOP");
->> +		break;
->> +	case VFIO_DEVICE_STATE_RESUMING:
->> +		seq_printf(seq, "%s\n", "RESUMING");
->> +		break;
->> +	case VFIO_DEVICE_STATE_RUNNING_P2P:
->> +		seq_printf(seq, "%s\n", "RUNNING_P2P");
->> +		break;
->> +	case VFIO_DEVICE_STATE_ERROR:
->> +		seq_printf(seq, "%s\n", "ERROR");
-> 
-> Please order these the same as enum vfio_device_mig_state, we're also
-> missing a couple states, ie. PRE_COPY and PRE_COPY_P2P.  Can we use any
-OK, I'll add them to the next version.
+This patch series add DTS node, dt-bindings document and drivers for Video
+Capture/Differentiation Engine (VCD) and Encoding Compression Engine (ECE)
+present on Nuvoton NPCM SoCs.
 
-> compiler tricks to create a build error when these are out of sync?
->When these states are out of range, they should enter "default" processing.
+As described in the datasheet NPCM750D_DS_Rev_1.0, the VCD can capture a
+frame from digital video input and compare two frames in memory, and then
+the ECE can compress the frame data into HEXTILE format which is defined
+in Remote Framebuffer Protocol (RFC 6143, chapter 7.7.4. Hextile Encoding).
 
->> +		break;
->> +	default:
->> +		seq_printf(seq, "%s\n", "Invalid");
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +void vfio_device_debugfs_init(struct vfio_device *vdev)
->> +{
->> +	struct dentry *vfio_dev_migration = NULL;
->> +	struct device *dev = &vdev->device;
-> 
-> Nit, both of these could be defined within the scope of the mig_ops
-> test below.
->
+The output of v4l2-compliance:
+v4l2-compliance 1.23.0-4996, 64 bits, 64-bit time_t
+v4l2-compliance SHA: 9431e4b26b48 2023-02-13 14:51:47
 
-"vfio_dev_migration" can be placed under mig_ops, but "dev" is public.
-Also, there should be no problem declaring variables like this.
+Compliance test for npcm-video device /dev/video0:
 
->> +
->> +	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
->> +
->> +	if (vdev->mig_ops) {
->> +		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
->> +		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
->> +					  vfio_device_state_read);
->> +	}
->> +}
->> +
->> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
->> +{
->> +	debugfs_remove_recursive(vdev->debug_root);
->> +}
->> +
->> +void vfio_debugfs_create_root(void)
->> +{
->> +	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
->> +}
->> +
->> +void vfio_debugfs_remove_root(void)
->> +{
->> +	debugfs_remove_recursive(vfio_debugfs_root);
->> +	vfio_debugfs_root = NULL;
->> +}
->> +
->> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
->> index cfad824d9aa2..8a7456f89842 100644
->> --- a/drivers/vfio/vfio_main.c
->> +++ b/drivers/vfio/vfio_main.c
->> @@ -309,7 +309,7 @@ static int __vfio_register_dev(struct vfio_device *device,
->>  
->>  	/* Refcounting can't start until the driver calls register */
->>  	refcount_set(&device->refcount, 1);
->> -
->> +	vfio_device_debugfs_init(device);
->>  	vfio_device_group_register(device);
->>  
->>  	return 0;
->> @@ -378,6 +378,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
->>  		}
->>  	}
->>  
->> +	vfio_device_debugfs_exit(device);
->>  	/* Balances vfio_device_set_group in register path */
->>  	vfio_device_remove_group(device);
->>  }
-> 
-> init/exit calls should try to be symmetric, if we call init before
-> vfio_device_group_register() then we should call exit after
-> vfio_device_group_unregister().  In this case, why shouldn't init be
-> the last call in __vfio_register_dev() and exit the first call in
-> vfio_unregister_group_dev()?
-> 
+Driver Info:
+        Driver name      : npcm-video
+        Card type        : NPCM Video Engine
+        Bus info         : platform:npcm-video
+        Driver version   : 6.1.12
+        Capabilities     : 0x84200001
+                Video Capture
+                Streaming
+                Extended Pix Format
+                Device Capabilities
+        Device Caps      : 0x04200001
+                Video Capture
+                Streaming
+                Extended Pix Format
 
-OK, I would put vfio_device_debugfs_init() into vfio_device_group_register().
+Required ioctls:
+        test VIDIOC_QUERYCAP: OK
+        test invalid ioctls: OK
 
->> @@ -1662,6 +1663,7 @@ static int __init vfio_init(void)
->>  	if (ret)
->>  		goto err_alloc_dev_chrdev;
->>  
->> +	vfio_debugfs_create_root();
->>  	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
->>  	return 0;
->>  
->> @@ -1684,6 +1686,7 @@ static void __exit vfio_cleanup(void)
->>  	vfio_virqfd_exit();
->>  	vfio_group_cleanup();
->>  	xa_destroy(&vfio_device_set_xa);
->> +	vfio_debugfs_remove_root();
->>  }
-> 
-> Same, if we create it last, let's remove it first.  The above creates
-> it last and removes it last.  Thanks,
->
+Allow for multiple opens:
+        test second /dev/video0 open: OK
+        test VIDIOC_QUERYCAP: OK
+        test VIDIOC_G/S_PRIORITY: OK
+        test for unlimited opens: OK
 
-OK, I will adjust the order of vfio_debugfs_remove_root() in vfio_cleanup().
+Debug ioctls:
+        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+        test VIDIOC_LOG_STATUS: OK (Not Supported)
 
-Thanks,
-Longfang.
+Input ioctls:
+        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+        test VIDIOC_ENUMAUDIO: OK (Not Supported)
+        test VIDIOC_G/S/ENUMINPUT: OK
+        test VIDIOC_G/S_AUDIO: OK (Not Supported)
+        Inputs: 1 Audio Inputs: 0 Tuners: 0
 
-> Alex
-> 
->>  
->>  module_init(vfio_init);
->> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
->> index 454e9295970c..769d7af86225 100644
->> --- a/include/linux/vfio.h
->> +++ b/include/linux/vfio.h
->> @@ -69,6 +69,13 @@ struct vfio_device {
->>  	u8 iommufd_attached:1;
->>  #endif
->>  	u8 cdev_opened:1;
->> +#ifdef CONFIG_DEBUG_FS
->> +	/*
->> +	 * debug_root is a static property of the vfio_device
->> +	 * which must be set prior to registering the vfio_device.
->> +	 */
->> +	struct dentry *debug_root;
->> +#endif
->>  };
->>  
->>  /**
-> 
-> .
-> 
+Output ioctls:
+        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+        Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+        test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK
+        test VIDIOC_DV_TIMINGS_CAP: OK
+        test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls (Input 0):
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+        test VIDIOC_QUERYCTRL: OK
+        test VIDIOC_G/S_CTRL: OK
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+                warn: v4l2-test-controls.cpp(1139): V4L2_CID_DV_RX_POWER_PRESENT not found for input 0
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+        Standard Controls: 1 Private Controls: 2
+
+Format ioctls (Input 0):
+        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+        test VIDIOC_G/S_PARM: OK (Not Supported)
+        test VIDIOC_G_FBUF: OK (Not Supported)
+        test VIDIOC_G_FMT: OK
+        test VIDIOC_TRY_FMT: OK
+        test VIDIOC_S_FMT: OK
+        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+        test Cropping: OK (Not Supported)
+        test Composing: OK (Not Supported)
+        test Scaling: OK (Not Supported)
+
+Codec ioctls (Input 0):
+        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls (Input 0):
+        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+        test VIDIOC_EXPBUF: OK
+        test Requests: OK (Not Supported)
+
+Total for npcm-video device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 1
+
+Changes in v16:
+  - Fix sparse warnings.
+  - Shorten V4L2_CID_NPCM_RECT_COUNT control name.
+
+Changes in v15:
+  - Drop VOLATILE flag from V4L2_CID_NPCM_RECT_COUNT control and update
+    value by v4l2_ctrl_s_ctrl.
+  - Add more explanations in comment/document for V4L2_CID_NPCM_RECT_COUNT.
+
+Changes in v14:
+  - Modify the flow of setting resolution and queue setup
+  - Correct the control type (TYPE_MENU) of selecting between two modes.
+  - Let ECE could be optional (only supports PIX_FMT_RGB565 if ECE is not
+    enabled in DT).
+
+Changes in v13:
+  - Modify the flow for capturing next frame
+  - Modify the behavior of resolution change interrupt
+  - Move GFXI dt-bindings document to
+    Documentation/devicetree/bindings/soc/nuvoton/nuvoton,gfxi.yaml
+
+Changes in v12:
+  - Modify the flow for detecting resolution change and raise
+    V4L2_EVENT_SOURCE_CHANGE event.
+  - Add V4L2_PIX_FMT_RGB565 format support.
+
+Changes in v11:
+  - Replace "u8/u16/u32" with "unsigned int" for generic local variables.
+  - Correct subsystem prefixes, drop redundant words in commit subject, and
+    add more information in commit message.
+
+Changes in v10:
+  - drivers/media/platform/nuvoton/npcm-video.c
+    * Let short functions to be inline function.
+    * Correct return type of some functions, and properly handle return
+      value by callers.
+    * Correct the timing of removing rect_list and the flow of FIFO overrun
+      case in irq.
+    * Adjust line breaks, indentations, and style of variable declarations.
+
+Changes in v9:
+  - Change ECE node name to "video-codec".
+  - Drop redundant "bindings for" in commit subject of patch 2/7.
+  - Refine the format of VCD/ECE dt-binding document.
+
+Changes in v8:
+  - Let VCD/ECE to be 2 separate nodes and update dt-binding documents.
+  - Move register definitions out to a local header file.
+  - Driver refinements (add error handling for memory allocation, remove
+    unnecessary condition check and introduce "goto"s to handle similar
+    error recovery paths).
+  - Correct properties and typo in GFXI dt-binding document.
+
+Changes in v7:
+  - Add uapi documents for driver-specific controls.
+  - Implement driver-specific controls for switching capture mode and
+    getting the count of compressed HEXTILE rectangles.
+  - Drop unnecessary "enum_framesizes" and "enum_frameintervals" functions.
+  - Include the output of v4l2-compliance in cover letter.
+
+Changes in v6:
+  - Support NPCM845 and add compatible "nuvoton,npcm845-video".
+  - Correct pixel format to V4L2_PIX_FMT_HEXTILE which is newly added in
+    this patch series.
+
+Changes in v5:
+  - Simplify function prefix "nuvoton_" to "npcm_".
+  - Increase VCD_BUSY_TIMEOUT_US and ECE_POLL_TIMEOUT_US to 300ms to
+    prevent polling timeout when ECC is enabled or system is busy.
+
+Changes in v4:
+  - Fix compile warning reported by kernel test robot.
+
+Changes in v3:
+  - Add video driver entry in MAINTAINERS.
+  - Change config name to CONFIG_VIDEO_NPCM_VCD_ECE.
+  - Reduce the waiting time after resetting the VCD/ECE module.
+  - Correct data types of some variables.
+
+Changes in v2:
+  - Add Hextile document and locate with vendor formats.
+
+Marvin Lin (7):
+  ARM: dts: nuvoton: Add node for NPCM VCD and ECE engine
+  media: dt-bindings: nuvoton: Add NPCM VCD and ECE engine
+  dt-bindings: soc: nuvoton: Add NPCM GFXI
+  media: v4l: Add HEXTILE compressed format
+  media: v4l2-ctrls: Add user control base for Nuvoton NPCM controls
+  media: uapi: Add controls for NPCM video driver
+  media: nuvoton: Add driver for NPCM video capture and encoding engine
+
+ .../bindings/media/nuvoton,npcm-ece.yaml      |   43 +
+ .../bindings/media/nuvoton,npcm-vcd.yaml      |   72 +
+ .../bindings/soc/nuvoton/nuvoton,gfxi.yaml    |   39 +
+ .../userspace-api/media/drivers/index.rst     |    1 +
+ .../media/drivers/npcm-video.rst              |   66 +
+ .../media/v4l/pixfmt-reserved.rst             |    7 +
+ MAINTAINERS                                   |   12 +
+ .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   |   23 +
+ drivers/media/platform/Kconfig                |    1 +
+ drivers/media/platform/Makefile               |    1 +
+ drivers/media/platform/nuvoton/Kconfig        |   15 +
+ drivers/media/platform/nuvoton/Makefile       |    2 +
+ drivers/media/platform/nuvoton/npcm-regs.h    |  152 ++
+ drivers/media/platform/nuvoton/npcm-video.c   | 1831 +++++++++++++++++
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ include/uapi/linux/npcm-video.h               |   41 +
+ include/uapi/linux/v4l2-controls.h            |    6 +
+ include/uapi/linux/videodev2.h                |    1 +
+ 18 files changed, 2314 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/nuvoton,npcm-ece.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/nuvoton,npcm-vcd.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton,gfxi.yaml
+ create mode 100644 Documentation/userspace-api/media/drivers/npcm-video.rst
+ create mode 100644 drivers/media/platform/nuvoton/Kconfig
+ create mode 100644 drivers/media/platform/nuvoton/Makefile
+ create mode 100644 drivers/media/platform/nuvoton/npcm-regs.h
+ create mode 100644 drivers/media/platform/nuvoton/npcm-video.c
+ create mode 100644 include/uapi/linux/npcm-video.h
+
+-- 
+2.34.1
+
