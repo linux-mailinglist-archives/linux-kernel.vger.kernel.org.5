@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D4C7AB51B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FEF7AB51E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232334AbjIVPt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
+        id S232726AbjIVPuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjIVPt0 (ORCPT
+        with ESMTP id S232735AbjIVPuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:49:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0C7100;
-        Fri, 22 Sep 2023 08:49:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD083C433C8;
-        Fri, 22 Sep 2023 15:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695397760;
-        bh=jMjHcug31WE0Bf+Ku26R9S8JCXFscQZH4Akv3KWK0Zw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X/SOWMfNE20zbjcBK/8c3F6O6Fc1na8/hodzZZ6DGFRpmsfAkqnWg/2PfBkUGQDfN
-         t7R+uTAEmxHPA2Ja2+bmUkE0GCtFWPpzaUb/QFDmD2Hde2nKeh/m/QBgzg8B3iYy+Q
-         rYaChEdl1p3tKO3m/aLHWbQ3ifkqxXV2GTIaCy9R9okYWTGdqIsTS6VQYnNPe+fG7D
-         ja508rv2ZxCUTLw7YSs6jk5zGXCPfQxbpE0+CEhxu5i14SfbWDQ/R08ZlVn/MEVmzm
-         4hR1WIFYYlXXRO6OIMq2snh4Nwv9dmlipjE/Ef3qTFtjCkjidtgtihq8ytBApJvYuM
-         Tn1S6OnoXQAJA==
-Date:   Fri, 22 Sep 2023 16:49:14 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 12/16] dt-bindings: display: mediatek: color: add
- compatible for MT8195
-Message-ID: <20230922-zebra-modify-87ff23c70bb3@spud>
-References: <20230922072116.11009-1-moudy.ho@mediatek.com>
- <20230922072116.11009-13-moudy.ho@mediatek.com>
+        Fri, 22 Sep 2023 11:50:00 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB59199;
+        Fri, 22 Sep 2023 08:49:52 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-404314388ceso26035905e9.2;
+        Fri, 22 Sep 2023 08:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695397791; x=1696002591; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1pk390ChrTCsthcK4uf4cQzmUvgXyIclFIFBle0EOe4=;
+        b=TApFWPOz7fabs3bGMCfGU0A8oMvWDM+ofSqSUcOPdTYhdG/rtTm5dDaxY2GFr7yTNH
+         3VwvRS35hqSZjLHCzocjmYMllZsfTJZ02ts/DbuCfKoGrHzeW7jEGfMWFw/I45UnS96d
+         oVlmXdy+czyAQ8StdMXvXE0w7moTLjFl7W0NYHiB4n0gmzmHXtBAvtJo9aJXmzBNdXJa
+         cSLImh4iPRHANmrUne9ltq79yiqHWOTfsqFi6U9jKt8TRCynrGyVbp9Q8xrTFFdwpY6j
+         DLMXfhQmTLIV5fnBa5EVQyMD3KA/EmAMmLmR+MyNBZtG8HHyj7UQ9egEUij69m5P5AK0
+         QqwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695397791; x=1696002591;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1pk390ChrTCsthcK4uf4cQzmUvgXyIclFIFBle0EOe4=;
+        b=cjo6K24oY/VwK5HlrK+GjQfskx7U4pkICV2CjIsR/0w18EUqDd3rhqUwZ5bp6evetN
+         MEwyE/X7V6y5i7S+bqnKlfYqmK/HwozdqMIgOCw81yiESjM0pr2I7/ylU/JmYvv+K689
+         OTc1yIwbSCTrGOuAwn7FfLGHt9thazyO6+NENhNeK7qemuVjOPViN0BVEh3TTPocLMTg
+         V/dkVxbieGIlZi3LCgDUtbYPlvsOU3lK1P/XzewDVR0pMhMZAheBMr2QFCzIsIw2IR5y
+         qAav4oK0c5NQ+LELMUG13vuUjrAeDil59koI8blCZ5mOzaQ+sMqOPc4C8is35MFJkV71
+         u+Jg==
+X-Gm-Message-State: AOJu0YzXVHPduXmb9KYgk/l8wHYzosfl+fL/kZE9M5JFmBtFX4I6qgtd
+        +gcH2gCda8ipx0TYrarIp9k=
+X-Google-Smtp-Source: AGHT+IEuwq14+VyVLlOeMo0Q6AHsIoBfhMnHDINTyA9JEZwsgFtgEYSJPl/HnNPHn9wFfubJI/toBw==
+X-Received: by 2002:a05:6000:118a:b0:31f:eed7:2fd9 with SMTP id g10-20020a056000118a00b0031feed72fd9mr43577wrx.57.1695397790991;
+        Fri, 22 Sep 2023 08:49:50 -0700 (PDT)
+Received: from [192.168.4.149] (54-240-197-226.amazon.com. [54.240.197.226])
+        by smtp.gmail.com with ESMTPSA id p2-20020a5d68c2000000b0031431fb40fasm4755076wrw.89.2023.09.22.08.49.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 08:49:50 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <34457a97-516f-4122-a9d7-920eb3b3c2e0@xen.org>
+Date:   Fri, 22 Sep 2023 16:49:49 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4AbnyxYTFcvfDnp5"
-Content-Disposition: inline
-In-Reply-To: <20230922072116.11009-13-moudy.ho@mediatek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v5 07/10] KVM: xen: allow vcpu_info to be mapped by fixed
+ HVA
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+References: <20230922150009.3319-1-paul@xen.org>
+ <20230922150009.3319-8-paul@xen.org>
+ <8f61e1618f23e975f30e552c09787c5f82ee89f3.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <8f61e1618f23e975f30e552c09787c5f82ee89f3.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22/09/2023 16:44, David Woodhouse wrote:
+> On Fri, 2023-09-22 at 15:00 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> If the guest does not explicitly set the GPA of vcpu_info structure in
+>> memory then, for guests with 32 vCPUs or fewer, the vcpu_info embedded
+>> in the shared_info page may be used. As described in a previous commit,
+>> the shared_info page is an overlay at a fixed HVA within the VMM, so in
+>> this case it also more optimal to activate the vcpu_info cache with a
+>> fixed HVA to avoid unnecessary invalidation if the guest memory layout
+>> is modified.
+>>
+>> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> 
+> But it should *only* be defined as an HVA in the case where it's the
+> one in the shinfo. Otherwise, it's defined by its GPA.
+> 
+> Which almost makes me want to see a sanity check that it precisely
+> equals &shinfo->vcpu_info[vcpu->arch.xen.vcpu_id].
+> 
+> Which brings me back around the circle again to wonder why we don't
+> just *default* to it.... you hate me, don't you?
+> 
+> Your previous set of patches did that, and it did end requiring that
+> the VMM restore both VCPU_INFO and VCPU_ID for each vCPU *before*
+> restoring the SHARED_INFO_HVA on resume, but wasn't that OK?
+> 
 
---4AbnyxYTFcvfDnp5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No. It was painful and overly complex, with too many corner cases that 
+were making my brain hurt. Given the pain of the last week, leaving the 
+default handling in the VMM is preferable. It means I don't need to
+impose rules about attribute ordering and hence get caught by needing
+one thread to wait for another inside the VMM. It's better and more 
+robust this way.
 
-On Fri, Sep 22, 2023 at 03:21:12PM +0800, Moudy Ho wrote:
-> Add a compatible string for the COLOR block in MediaTek MT8195 that
-> is controlled by MDP3.
->=20
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
->  .../devicetree/bindings/display/mediatek/mediatek,color.yaml     | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-color.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,co=
-lor.yaml
-> index f21e44092043..b886ca0d89ea 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,color.y=
-aml
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,color.y=
-aml
-> @@ -26,6 +26,7 @@ properties:
->            - mediatek,mt2701-disp-color
->            - mediatek,mt8167-disp-color
->            - mediatek,mt8173-disp-color
-> +          - mediatek,mt8195-mdp3-color
+   Paul
 
-How come this one is a "mdp3" not a "disp"?
-
->        - items:
->            - enum:
->                - mediatek,mt7623-disp-color
-> --=20
-> 2.18.0
->=20
-
---4AbnyxYTFcvfDnp5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ23egAKCRB4tDGHoIJi
-0jeNAQDbS49YRGx3evrS4YI09M9KqM0J+UXzPHF9KB+js6e3qQD+Ivrgl0SwBLae
-2UKQyhQwRkwkANvuDlc0Y+I85WBfego=
-=zbsi
------END PGP SIGNATURE-----
-
---4AbnyxYTFcvfDnp5--
