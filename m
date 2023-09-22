@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D303E7AB5D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E057AB5D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbjIVQZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S232266AbjIVQZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231912AbjIVQYx (ORCPT
+        with ESMTP id S231285AbjIVQZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:24:53 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21484196;
-        Fri, 22 Sep 2023 09:24:45 -0700 (PDT)
-Received: from g550jk.localnet (k10064.upc-k.chello.nl [62.108.10.64])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 03FC9D0F4B;
-        Fri, 22 Sep 2023 16:24:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1695399884; bh=vz9aLGwD2omT0ckR2F/Kh+4o0j42RWhh8kqv+jYgp98=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=CWQ9NOtYU+KW5FdqRC+Rn3+KpfTfUDLrZ9kWZBjEN9Pzuid3bdJ37+4+Fqm2EB2JU
-         QvgITVOM8HmgEPI15JDPKXg83ZeBxmCxgj7Jja8s6T1WdMaZ7F/YjESuTTH9sTMSx2
-         Dy4bumrBIjRAFDdb8GsCW/NLgZkqiTxuOaIFu5+k=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     linux-arm-msm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>
-Subject: Re: [PATCH] ARM: dts: qcom: apq8026-samsung-matisse-wifi: Fix inverted hall
- sensor
-Date:   Fri, 22 Sep 2023 18:24:43 +0200
-Message-ID: <2696920.mvXUDI8C0e@z3ntu.xyz>
-In-Reply-To: <20230922011211.115234-1-matti.lehtimaki@gmail.com>
-References: <20230922011211.115234-1-matti.lehtimaki@gmail.com>
+        Fri, 22 Sep 2023 12:25:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24DAAC;
+        Fri, 22 Sep 2023 09:25:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E676AC433C7;
+        Fri, 22 Sep 2023 16:25:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695399948;
+        bh=39fcEyAU80NMK3JFrhp5NTPFsNbsMqBnqe8po4bZ35c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FSdVeyMFvFOC3TuWB094f5aQNEa2rtqGViQ+P+PeSxSdSrbhskF6G1lBxHSvZt9te
+         9tCCppCV8lI5BJ/w9nby4ezEhfe2xdqzBL33y2ITEqvpTlL2CL8eqrgL9/LvdKbqJU
+         2cQN9jePonm7C3aTwgXWJFwIlYJb1uhBc1yjsl8w=
+Date:   Fri, 22 Sep 2023 18:25:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rob Clark <robdclark@chromium.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jon Hunter <jonathanh@nvidia.com>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 6.1 000/139] 6.1.55-rc1 review
+Message-ID: <2023092209-qualified-consumer-84bb@gregkh>
+References: <20230920112835.549467415@linuxfoundation.org>
+ <79a96d41-1b79-51b4-fda0-743b853213b9@nvidia.com>
+ <7e0355bd-64cd-f6c2-b720-e4643579078c@nvidia.com>
+ <53c9f81e-55b9-b8bb-7821-cb124780d4c0@roeck-us.net>
+ <CAJs_Fx6-AWA1fxgV1u=ycn2YXm3D0GnGQeC1UR8QwVXFKDGJqw@mail.gmail.com>
+ <2023092216-poser-nickname-b882@gregkh>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2023092216-poser-nickname-b882@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,40 +59,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Freitag, 22. September 2023 03:12:11 CEST Matti Lehtim=E4ki wrote:
-> Fix hall sensor GPIO polarity and also allow disabling the sensor.
-> Remove unneeded interrupt.
->=20
-> Fixes: f15623bda1dc ("ARM: dts: qcom: Add support for Samsung Galaxy Tab 4
-> 10.1 (SM-T530)")
-> Signed-off-by: Matti Lehtim=E4ki <matti.lehtimaki@gmail.com>
+On Fri, Sep 22, 2023 at 06:17:25PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Sep 22, 2023 at 08:00:31AM -0700, Rob Clark wrote:
+> > On Fri, Sep 22, 2023 at 7:52 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> > >
+> > > On 9/22/23 05:31, Jon Hunter wrote:
+> > > >
+> > > > On 22/09/2023 10:45, Jon Hunter wrote:
+> > > >> Hi Greg,
+> > > >>
+> > > >> On 20/09/2023 12:28, Greg Kroah-Hartman wrote:
+> > > >>> This is the start of the stable review cycle for the 6.1.55 release.
+> > > >>> There are 139 patches in this series, all will be posted as a response
+> > > >>> to this one.  If anyone has any issues with these being applied, please
+> > > >>> let me know.
+> > > >>>
+> > > >>> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+> > > >>> Anything received after that time might be too late.
+> > > >>>
+> > > >>> The whole patch series can be found in one patch at:
+> > > >>>     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.55-rc1.gz
+> > > >>> or in the git tree and branch at:
+> > > >>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > > >>> and the diffstat can be found below.
+> > > >>>
+> > > >>> thanks,
+> > > >>>
+> > > >>> greg k-h
+> > > >>
+> > > >> I am seeing some suspend failures with this update ...
+> > > >>
+> > > >> Test results for stable-v6.1:
+> > > >>      11 builds:    11 pass, 0 fail
+> > > >>      28 boots:    28 pass, 0 fail
+> > > >>      130 tests:    124 pass, 6 fail
+> > > >>
+> > > >> Linux version:    6.1.55-rc1-gd5ace918366e
+> > > >> Boards tested:    tegra124-jetson-tk1, tegra186-p2771-0000,
+> > > >>                  tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+> > > >>                  tegra20-ventana, tegra210-p2371-2180,
+> > > >>                  tegra210-p3450-0000, tegra30-cardhu-a04
+> > > >>
+> > > >> Test failures:    tegra124-jetson-tk1: pm-system-suspend.sh
+> > > >>                  tegra186-p2771-0000: pm-system-suspend.sh
+> > > >>                  tegra20-ventana: pm-system-suspend.sh
+> > > >>                  tegra30-cardhu-a04: pm-system-suspend.sh
+> > > >>
+> > > >> Bisect is underway.
+> > > >
+> > > >
+> > > > Bisect for this issue is also pointing to ...
+> > > >
+> > > > Rob Clark <robdclark@chromium.org>
+> > > >       interconnect: Fix locking for runpm vs reclaim
+> > > >
+> > > > Looks like all the Tegra issues are related to this.
+> > > >
+> > >
+> > > This isn't surprising because upstream commit 136191703038 ("interconnect: Teach
+> > > lockdep about icc_bw_lock order") silently fixes it without Fixes: tag. If you
+> > > look into that patch you'll see that the the missing call to mutex_unlock() is
+> > > added to icc_sync_state().
+> > 
+> > Oh, indeed, it looks like that hunk ended up in the wrong commit, and
+> > I didn't notice because both were merged at the same time
+> 
+> Thanks, I've queued that fix up now as well.
 
-Reviewed-by: Luca Weiss <luca@z3ntu.xyz>
+And that breaks on older kernels, let me drop the interconnect patches
+completely and I'll wait for someone to submit a full, working, set for
+stable inclusion to add them back at a later time if wanted.
 
-> ---
->  arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
-> b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts index
-> 884d99297d4c..f516e0426bb9 100644
-> --- a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
-> +++ b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
-> @@ -45,11 +45,11 @@ gpio-hall-sensor {
->=20
->  		event-hall-sensor {
->  			label =3D "Hall Effect Sensor";
-> -			gpios =3D <&tlmm 110 GPIO_ACTIVE_HIGH>;
-> -			interrupts =3D <&tlmm 110 IRQ_TYPE_EDGE_FALLING>;
-> +			gpios =3D <&tlmm 110 GPIO_ACTIVE_LOW>;
->  			linux,input-type =3D <EV_SW>;
->  			linux,code =3D <SW_LID>;
->  			debounce-interval =3D <15>;
-> +			linux,can-disable;
->  			wakeup-source;
->  		};
->  	};
+thanks,
 
-
-
-
+greg k-h
