@@ -2,126 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78497AB61E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16A47AB620
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbjIVQgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
+        id S229564AbjIVQga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjIVQgR (ORCPT
+        with ESMTP id S232391AbjIVQg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:36:17 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E907197
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:36:10 -0700 (PDT)
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 22 Sep 2023 12:36:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDAB1A8;
+        Fri, 22 Sep 2023 09:36:20 -0700 (PDT)
+Received: from [192.168.68.123] (unknown [177.98.21.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 29D1B41DBF
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 16:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1695400569;
-        bh=RKbV4MhZk6b87JTksm1ZK/ObuKYUjj6Uoe+MaWe9BjM=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=axOpRfO6PfpGE2I6/iuXN+52W8z6r6OeH/Putaats6zPZaj53Dvhp17aXUAxdRWu5
-         ARyhyDJlAy011T75vqdIstcXohjwNuE9NJ9/BpiHYEW6ha3abGBvVcGCHJrWuavJEa
-         jVYe0AFjuoVvx7rU67/b4DN27aK83U1cNEBEeDRWRyuYHn+7gH2sRxc2z1I80LH+w4
-         viJhXqHe8vZHK1y2X6YfIaMHNjgvb5z4BKvbwJEUxts/BsRziTfGT+cOzHhaN6vJ6f
-         woJCMZ/C4mmJlSBFEpZYV+aM8kPzQg2knJFvvu+u4XUy5/WwCXGt8G6f369VYTh8dD
-         ri+78Vh6Q3YJQ==
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-412eee4b64cso24925961cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:36:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695400568; x=1696005368;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RKbV4MhZk6b87JTksm1ZK/ObuKYUjj6Uoe+MaWe9BjM=;
-        b=Zi6L0YC7JfmxMZbyrn8OsCgN1jNvuCdcAQCjr0Pgmz5dGbOOitpDeOcPl79XvY7YL9
-         3MXb5z3etYFm7IpFo0vJWBpsrVpKkuyi5PCKjHODzJXY9e1KLCG1RcpeuOA+Cmvh6H1v
-         5F3u0y8LIgSTqJui4PfAdpG5Kc/kXXW+OCN7rRLLxOLgV4C6rbTFJrzpRm+1unQ2CjUI
-         MbPipBb1+H/YzWmFaZ+Q/ZcpvPOzvuHMAdbMAQ5V0nKeouWh9CABqyi3wvVcrFfLnBt3
-         AmfuR0pWJJKnka3X8FpBBFbwmPZYourBJYs1j8EBo0eN+h24GZ1tqmNt46lFAxC7aZf1
-         dIQw==
-X-Gm-Message-State: AOJu0Yw4t+fO/A1ymArnxPZOcoh4iY+//Y+ZmAzAZ1mmEvMvReoX7HU9
-        enkGt/Hueb/mXw/ldXN4FB0/tTCPhMSAZ5G0FNcbnbNcriu4hHGA3UTfm48v7ENazf4zHGZu+Dy
-        nuZ7TmPpZxVVYELS5JY8imfh0DKM1ClRb+9nqke4YKCviGZ3XJCj5IFT7bg==
-X-Received: by 2002:a05:622a:1a9b:b0:400:9c4e:2abe with SMTP id s27-20020a05622a1a9b00b004009c4e2abemr9153636qtc.13.1695400568117;
-        Fri, 22 Sep 2023 09:36:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHtMOJCOBegPGfmaYPe4P541XIPb9WGKoNNQRopHdNvUyr6IlUhMeHDT069xvrKjurwJHkDV/lgU//1vjPUCGw=
-X-Received: by 2002:a05:622a:1a9b:b0:400:9c4e:2abe with SMTP id
- s27-20020a05622a1a9b00b004009c4e2abemr9153614qtc.13.1695400567857; Fri, 22
- Sep 2023 09:36:07 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 22 Sep 2023 11:36:07 -0500
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20230922062834.39212-4-william.qiu@starfivetech.com>
-References: <20230922062834.39212-1-william.qiu@starfivetech.com> <20230922062834.39212-4-william.qiu@starfivetech.com>
-Mime-Version: 1.0
-Date:   Fri, 22 Sep 2023 11:36:07 -0500
-Message-ID: <CAJM55Z-huG6KSLywzA0Zih=MtzqvL0w+CxrqN7CKUrzor_A65g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] riscv: dts: starfive: add assigned-clock* to limit frquency
-To:     William Qiu <william.qiu@starfivetech.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-mmc@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 07D7166072C1;
+        Fri, 22 Sep 2023 17:36:13 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695400578;
+        bh=StzjijuhgshkM93uzVvI9X0zOsS0vaEICTCqvv1AW6Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YLzGYijeq7dOen6ZKmdrS0orLODfS40iAVBGl01OQSxYXzqIDRsuYqk0KHP78on5o
+         lSyooWiwt0qEvw7BSCcEh7p0iOHjOr1RQjRsLVLkiwdzgF1mAzWiKRMILJYGKY4MNx
+         9aB2txvmW0d4RG5rVulZ2JtyALEGtab6m2xxMBcPWM5h3xJG2ho31YDxih4N2ICu14
+         wet2oDaJGcKRdGcNezBpflp7Hqz5RKhkWsYTtgeIUxo3+iJ2+V+pLRVGhpaz9PoDvj
+         +mqi49QuEWnBjcopvkJiFJg4GaXtiYs6cTbvBVXyK8oiV+R7vucn137CF0sh/Bk2JZ
+         7SaWsky7yFosg==
+Message-ID: <f8e0caab-32f4-bae4-ef0d-1511c48d67e2@collabora.com>
+Date:   Fri, 22 Sep 2023 13:36:08 -0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 5/7] drm: ci: Update xfails
+Content-Language: en-US
+To:     Vignesh Raman <vignesh.raman@collabora.com>, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     daniels@collabora.com, emma@anholt.net,
+        gustavo.padovan@collabora.com, linux-arm-msm@vger.kernel.org,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        david.heidelberg@collabora.com, linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+References: <20230914085426.883255-1-vignesh.raman@collabora.com>
+ <20230914085426.883255-6-vignesh.raman@collabora.com>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20230914085426.883255-6-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-William Qiu wrote:
-> In JH7110 SoC, we need to go by-pass mode, so we need add the
-> assigned-clock* properties to limit clock frquency.
->
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+Hi o/
 
-Thanks!
-
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-
+On 14/09/2023 05:54, Vignesh Raman wrote:
+> Update amdgpu-stoney-fails, mediatek-mt8173-flakes,
+> mediatek-mt8173-fails, rockchip-rk3399-fails, rockchip-rk3399-flakes,
+> rockchip-rk3288-flakes, i915-cml-fails, i915-cml-flakes,
+> msm-apq8016-flakes files.
+> 
+> Add tests that fail sometimes into the *-flakes file and tests
+> that are failing into the *-fails file.
+> 
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 > ---
->  .../riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index d79f94432b27..d1f2ec308bca 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -205,6 +205,8 @@ &i2c6 {
->
->  &mmc0 {
->  	max-frequency = <100000000>;
-> +	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO0_SDCARD>;
-> +	assigned-clock-rates = <50000000>;
->  	bus-width = <8>;
->  	cap-mmc-highspeed;
->  	mmc-ddr-1_8v;
-> @@ -221,6 +223,8 @@ &mmc0 {
->
->  &mmc1 {
->  	max-frequency = <100000000>;
-> +	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO1_SDCARD>;
-> +	assigned-clock-rates = <50000000>;
->  	bus-width = <4>;
->  	no-sdio;
->  	no-mmc;
-> --
-> 2.34.1
->
+> 
+> v2:
+>    - No changes
+> 
+> v3:
+>    - No changes
+> 
+> v4:
+>    - No changes
+> 
+> ---
+>   .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt    |  1 -
+>   drivers/gpu/drm/ci/xfails/i915-cml-fails.txt     |  1 -
+>   drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt    |  2 ++
+>   drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt    |  1 +
+>   .../gpu/drm/ci/xfails/mediatek-mt8173-fails.txt  |  2 --
+>   .../gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt | 16 ++++++++++++++++
+>   drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt |  2 ++
+>   .../gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt |  1 +
+>   .../gpu/drm/ci/xfails/rockchip-rk3399-fails.txt  |  4 ++--
+>   .../gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt |  3 +++
+>   10 files changed, 27 insertions(+), 6 deletions(-)
+
+I found an error in the script that updates the flakes from a pipeline, 
+it was adding errors in *-flakes.txt instead of *-fails.txt even when it 
+was consistently failing.
+
+I have a partial fix where it works if -flakes.txt is empty (otherwise 
+it duplicates flakes and fails) 
+https://gitlab.freedesktop.org/-/snippets/7655
+
+Could you please regenerate these files with this new version of the script?
+Btw, I'm improving the script and I'll submit a RFC proposing to include 
+it as a handy tool in ci folder.
+
+Thanks,
+Helen
+
+
+> 
+> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+> index bd9392536e7c..58bfded8a3fc 100644
+> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+> @@ -1,7 +1,6 @@
+>   kms_addfb_basic@bad-pitch-65536,Fail
+>   kms_addfb_basic@bo-too-small,Fail
+>   kms_async_flips@invalid-async-flip,Fail
+> -kms_atomic@plane-immutable-zpos,Fail
+>   kms_atomic_transition@plane-toggle-modeset-transition,Fail
+>   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-1-displays-3840x2160p,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+> index 6139b410e767..5f513c638beb 100644
+> --- a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+> @@ -1,4 +1,3 @@
+> -kms_color@ctm-0-25,Fail
+>   kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
+>   kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
+>   kms_flip_scaled_crc@flip-32bpp-xtile-to-64bpp-xtile-downscaling,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt b/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+> index 0514a7b3fdb0..f06f1a5b16f9 100644
+> --- a/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+> @@ -7,6 +7,8 @@ kms_bw@linear-tiling-3-displays-3840x2160p
+>   kms_bw@linear-tiling-4-displays-1920x1080p
+>   kms_bw@linear-tiling-4-displays-2560x1440p
+>   kms_bw@linear-tiling-4-displays-3840x2160p
+> +kms_color@ctm-0-25
+> +kms_cursor_legacy@torture-move
+>   kms_draw_crc@draw-method-xrgb8888-render-xtiled
+>   kms_flip@flip-vs-suspend
+>   kms_flip_scaled_crc@flip-32bpp-ytile-to-64bpp-ytile-downscaling
+> diff --git a/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt b/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+> index fc41d13a2d56..3aee1f11ee90 100644
+> --- a/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+> @@ -8,6 +8,7 @@ kms_bw@linear-tiling-3-displays-3840x2160p
+>   kms_bw@linear-tiling-4-displays-1920x1080p
+>   kms_bw@linear-tiling-4-displays-2560x1440p
+>   kms_bw@linear-tiling-4-displays-3840x2160p
+> +kms_cursor_legacy@torture-bo
+>   kms_flip@blocking-wf_vblank
+>   kms_flip@wf_vblank-ts-check
+>   kms_flip@wf_vblank-ts-check-interruptible
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> index 671916067dba..c8e64bbfd480 100644
+> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> @@ -1,5 +1,4 @@
+>   kms_3d,Fail
+> -kms_addfb_basic@addfb25-bad-modifier,Fail
+>   kms_bw@linear-tiling-1-displays-1920x1080p,Fail
+>   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-1-displays-3840x2160p,Fail
+> @@ -11,7 +10,6 @@ kms_bw@linear-tiling-3-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-3-displays-3840x2160p,Fail
+>   kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
+>   kms_color@pipe-B-invalid-gamma-lut-sizes,Fail
+> -kms_force_connector_basic@force-connector-state,Fail
+>   kms_force_connector_basic@force-edid,Fail
+>   kms_force_connector_basic@force-load-detect,Fail
+>   kms_force_connector_basic@prune-stale-modes,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> index e69de29bb2d1..9ed6722df2c2 100644
+> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> @@ -0,0 +1,16 @@
+> +core_setmaster_vs_auth
+> +kms_addfb_basic@addfb25-bad-modifier
+> +kms_color@invalid-gamma-lut-sizes
+> +kms_cursor_legacy@cursor-vs-flip-atomic
+> +kms_cursor_legacy@cursor-vs-flip-legacy
+> +kms_force_connector_basic@force-connector-state
+> +kms_hdmi_inject@inject-4k
+> +kms_plane_scaling@plane-scaler-with-pixel-format-unity-scaling
+> +kms_plane_scaling@plane-upscale-with-modifiers-20x20
+> +kms_plane_scaling@plane-upscale-with-pixel-format-20x20
+> +kms_plane_scaling@plane-upscale-with-rotation-20x20
+> +kms_plane_scaling@planes-downscale-factor-0-25-upscale-20x20
+> +kms_plane_scaling@planes-downscale-factor-0-5-upscale-20x20
+> +kms_plane_scaling@planes-downscale-factor-0-75-upscale-20x20
+> +kms_prop_blob@invalid-set-prop
+> +kms_prop_blob@invalid-set-prop-any
+> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt b/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> index 0e3b60d3fade..cd48a8c1d569 100644
+> --- a/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> @@ -1,3 +1,5 @@
+> +kms_cursor_legacy@forked-bo
+> +kms_cursor_legacy@forked-move
+>   kms_force_connector_basic@force-connector-state
+>   kms_force_connector_basic@force-edid
+>   kms_force_connector_basic@force-load-detect
+> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+> index 45c54c75c899..081fe6f8d488 100644
+> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+> @@ -1,6 +1,7 @@
+>   kms_addfb_basic@addfb25-bad-modifier
+>   kms_cursor_crc@.*
+>   kms_flip@basic-flip-vs-wf_vblank
+> +kms_flip@blocking-wf_vblank
+>   kms_invalid_mode@int-max-clock,Crash
+>   kms_pipe_crc_basic@.*
+>   kms_properties@connector-properties-atomic,Crash
+> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
+> index 6db08ba6b008..029a3be3164d 100644
+> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
+> @@ -2,14 +2,13 @@ kms_color@legacy-gamma,Fail
+>   kms_color@pipe-A-legacy-gamma,Fail
+>   kms_color@pipe-B-legacy-gamma,Fail
+>   kms_flip@basic-flip-vs-wf_vblank,Fail
+> -kms_flip@blocking-wf_vblank,Fail
+>   kms_flip@dpms-vs-vblank-race,Fail
+>   kms_flip@flip-vs-absolute-wf_vblank,Fail
+>   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
+>   kms_flip@flip-vs-blocking-wf-vblank,Fail
+>   kms_flip@flip-vs-panning,Fail
+>   kms_flip@flip-vs-panning-interruptible,Fail
+> -kms_flip@flip-vs-wf_vblank-interruptible,Fail
+> +kms_flip@modeset-vs-vblank-race,Fail
+>   kms_flip@plain-flip-fb-recreate,Fail
+>   kms_flip@plain-flip-fb-recreate-interruptible,Fail
+>   kms_flip@plain-flip-ts-check,Fail
+> @@ -35,3 +34,4 @@ kms_plane_multiple@atomic-pipe-B-tiling-none,Fail
+>   kms_plane_multiple@tiling-none,Fail
+>   kms_prime@basic-crc,Fail
+>   kms_rmfb@close-fd,Fail
+> +kms_universal_plane@universal-plane-pipe-B-functional,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
+> index 4c0539b4beaf..869426a02cbd 100644
+> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
+> @@ -1,7 +1,10 @@
+>   
+> +kms_color@gamma
+>   kms_cursor_crc@.*
+> +kms_flip@blocking-wf_vblank
+>   kms_flip@dpms-vs-vblank-race-interruptible
+>   kms_flip@flip-vs-expired-vblank
+> +kms_flip@flip-vs-wf_vblank-interruptible
+>   kms_flip@modeset-vs-vblank-race-interruptible
+>   kms_pipe_crc_basic@.*
+>   kms_pipe_crc_basic@compare-crc-sanitycheck-pipe-A
