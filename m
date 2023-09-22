@@ -2,106 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 922987AAEAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592957AAEB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjIVJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S231854AbjIVJtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjIVJsK (ORCPT
+        with ESMTP id S230064AbjIVJtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:48:10 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB7F78F;
-        Fri, 22 Sep 2023 02:48:03 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD60DDA7;
-        Fri, 22 Sep 2023 02:48:40 -0700 (PDT)
-Received: from [10.57.0.85] (unknown [10.57.0.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 905653F67D;
-        Fri, 22 Sep 2023 02:47:57 -0700 (PDT)
-Message-ID: <dcde6757-8d14-6460-c75e-c30d69219e4b@arm.com>
-Date:   Fri, 22 Sep 2023 10:47:32 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
- domain_alloc_user op
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, kevin.tian@intel.com,
-        cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-2-yi.l.liu@intel.com>
- <0d37a1b1-e7ef-fa73-d17c-629cd254ae75@linux.intel.com>
- <20230921164447.GQ13733@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230921164447.GQ13733@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 05:49:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26868F;
+        Fri, 22 Sep 2023 02:49:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A98801F45F;
+        Fri, 22 Sep 2023 09:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695376154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OHleDVW/EWfCO2jlxKvuMDthf5XAZe9Js7GLKX4BZ4Y=;
+        b=wrK7gqgEMqxN2EEFpr9tlrgPtg+tUnkqxFRaSet960sq0zCVbUDXWSE7DIjkrhPx8tnBGN
+        T6boY3LxmG6ap/7sIme7lEOmvGLBA4v3DmwtLP7PAinGgjsV3zpHoFs2PPDUWae199zZsQ
+        Tm122vpl05w/itw+yG6SCPjmkO5nZfs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695376154;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OHleDVW/EWfCO2jlxKvuMDthf5XAZe9Js7GLKX4BZ4Y=;
+        b=CuMxQSCTzo4WxY8Y/dt5PoO0reVuGU2jfqQ7MZG6S0eyNMRYvljNLbMkG5lKzqTpTb+rT3
+        cuxXxAxjcX+SeiDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6708913478;
+        Fri, 22 Sep 2023 09:49:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fUu6FxpjDWWHZwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 22 Sep 2023 09:49:14 +0000
+Date:   Fri, 22 Sep 2023 11:49:13 +0200
+Message-ID: <877coiedwm.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
+Subject: Re: [PATCH] sound: usb: increase snd_card alloc size
+In-Reply-To: <87h6nmegt9.wl-tiwai@suse.de>
+References: <20230922005152.163640-1-ricardo@marliere.net>
+        <87h6nmegt9.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-21 17:44, Jason Gunthorpe wrote:
-> On Thu, Sep 21, 2023 at 08:12:03PM +0800, Baolu Lu wrote:
->> On 2023/9/21 15:51, Yi Liu wrote:
->>> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
->>> index 4a7c5c8fdbb4..3c8660fe9bb1 100644
->>> --- a/include/uapi/linux/iommufd.h
->>> +++ b/include/uapi/linux/iommufd.h
->>> @@ -357,6 +357,14 @@ enum iommufd_hwpt_alloc_flags {
->>>    	IOMMU_HWPT_ALLOC_NEST_PARENT = 1 << 0,
->>>    };
->>> +/**
->>> + * enum iommu_hwpt_type - IOMMU HWPT Type
->>> + * @IOMMU_HWPT_TYPE_DEFAULT: default
->>
->> How about s/default/vendor agnostic/ ?
+On Fri, 22 Sep 2023 10:46:26 +0200,
+Takashi Iwai wrote:
 > 
-> Please don't use the word vendor :)
+> On Fri, 22 Sep 2023 02:51:53 +0200,
+> Ricardo B. Marliere wrote:
+> > 
+> > Syzbot reports a slab-out-of-bounds read of a snd_card object. When
+> > snd_usb_audio_create calls snd_card_new, it passes sizeof(*chip) as the
+> > extra_size argument, which is not enough in this case.
+> > 
+> > Relevant logs below:
+> > 
+> > BUG: KASAN: slab-out-of-bounds in imon_probe+0x2983/0x3910
+> > Read of size 1 at addr ffff8880436a2c71 by task kworker/1:2/777
+> > (...)
+> > The buggy address belongs to the object at ffff8880436a2000
+> >  which belongs to the cache kmalloc-4k of size 4096
+> > The buggy address is located 1 bytes to the right of
+> >  allocated 3184-byte region [ffff8880436a2000, ffff8880436a2c70)
+> > 
+> > Reported-by: syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/all/000000000000a838aa0603cc74d6@google.co/m
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > ---
+> >  sound/usb/card.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/usb/card.c b/sound/usb/card.c
+> > index 1b2edc0fd2e9..6578326d33e8 100644
+> > --- a/sound/usb/card.c
+> > +++ b/sound/usb/card.c
+> > @@ -619,7 +619,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
+> >  	}
+> >  
+> >  	err = snd_card_new(&intf->dev, index[idx], id[idx], THIS_MODULE,
+> > -			   sizeof(*chip), &card);
+> > +			   sizeof(*chip) + 2, &card);
 > 
-> IOMMU_HWPT_TYPE_GENERIC perhaps if we don't like default
+> Sorry, it's no-no.  We have to fix the cause of the OOB access instead
+> of papering over with a random number of increase.
+> 
+> Unfortunately, most important piece of information is trimmed in the
+> changelog, so I can't judge what's going on.  The only useful info
+> there is that it's something to do with imon driver, but it's
+> completely independent from USB-audio.  How does it access to the
+> external memory allocated by snd-usb-audio driver at all?
+> 
+> Before jumping to the solution, we must understand the problem.
 
-Ah yes, a default domain type, not to be confused with any default 
-domain type, including the default default domain type. Just in case 
-anyone had forgotten how gleefully fun this is :D
+Now I took a look at the syzbot URL and got more info.
 
-I particularly like the bit where we end up with this construct later:
+Through a quick glance, my wild guess is that two different drivers
+are bound to two interfaces of the device, the first one to usb-audio
+and the second one to imon.  And imon driver blindly assumes that the
+first interface is bound with imon, too, and that can be the cause.
+A patch like below (totally untested!) might fix the problem.
 
-	switch (hwpt_type) {
-	case IOMMU_HWPT_TYPE_DEFAULT:
-		/* allocate a domain */
-	default:
-		/* allocate a different domain */
-	}
+Can you reproduce the problem in your side?  Or did you pick this up
+randomly without testing?
 
-But of course neither case allocates a *default* domain, because it's 
-quite obviously the wrong place to be doing that.
+In anyway, let's put media people to Cc.
 
-I could go on enjoying myself, but basically yeah, "default" can't be a 
-type in itself (at best it would be a meta-type which could be 
-requested, such that it resolves to some real type to actually 
-allocate), so a good name should reflect what the type functionally 
-*means* to the user. IIUC the important distinction is that it's an 
-abstract kernel-owned pagetable for the user to indirectly control via 
-the API, rather than one it owns and writes directly (and thus has to be 
-in a specific agreed format).
 
-Thanks,
-Robin.
+thanks,
+
+Takashi
+
+--- a/drivers/media/rc/imon.c
++++ b/drivers/media/rc/imon.c
+@@ -2427,6 +2427,12 @@ static int imon_probe(struct usb_interface *interface,
+ 		goto fail;
+ 	}
+ 
++	if (first_if->dev.driver != interface->dev.driver) {
++		dev_err(&interface->dev, "inconsistent driver matching\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
+ 	if (ifnum == 0) {
+ 		ictx = imon_init_intf0(interface, id);
+ 		if (!ictx) {
