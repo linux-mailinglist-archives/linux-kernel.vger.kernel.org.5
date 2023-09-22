@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE6F7AA622
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 02:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FDF7AA623
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 02:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjIVAgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 20:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S230108AbjIVAgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 20:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjIVAgC (ORCPT
+        with ESMTP id S230032AbjIVAgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 20:36:02 -0400
+        Thu, 21 Sep 2023 20:36:04 -0400
 Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A702114;
-        Thu, 21 Sep 2023 17:35:57 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c131ddfc95so16593411fa.0;
-        Thu, 21 Sep 2023 17:35:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB19A192;
+        Thu, 21 Sep 2023 17:35:58 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c012232792so26786441fa.0;
+        Thu, 21 Sep 2023 17:35:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695342955; x=1695947755; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695342957; x=1695947757; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RcYQgV+bm9yWMYSe35j2ydaItwrEqBRiK5B5oR8hfBE=;
-        b=QtSxvoVsaLKYLRee0+ENBuej5rxa34WD6NuKS1dluYFoN/TkKntsAG3+2JOc+By+Oe
-         o9Y4DImpQatCRZx/89NhyPmQ9ukk+g7dcQoL4EMl4ZKdnw4HwjDz2xMTVcdqwnSJWNae
-         azdNLHS6OkTUgMoN++VoNgnghCVEHuk5d8vwTRtD9atij9PhI6EENrOtZKtWiKaYqY8A
-         h9EBJ2UM3bwKuvrTKk+8ptVu6kOOBhug0AenZTVihk84QTvugdSOzlJf7t9SpzMusfdB
-         k2dfbZU2roOwLNKkluXIb9j0pacVyrpETATjBAUVJCQ3UKe/KeajQalzn0hjtW3szP3j
-         Hy7w==
+        bh=AfoMHihfovaHfyKxqDS+0qJZLmze+vosMqpYMgWqQy4=;
+        b=D47y6dOwMus8BRmoCGQQtJnHTlBHZzFrfbS18Zl1mbGueDjMbarsWzWBUQfA5z3eqA
+         kXUgvi4RcNGED90d80mQS6+sFqen41mEA9a81x+LQoqrDv/nrIZzvw9qgWDEBSOhgvFP
+         U+mg6OXC6VfzMYuJpWf02TXHN3KKy4SdjymZIfRiB/gDicBdEmU0mFnwpHkW+PV5ENI3
+         te3LtE6v8ImaDHc9TR7WqjtRTMn4YVePfqB8QQUZWavn6EElYiMQ1agcqRSOsjbGqMve
+         XZmAlAXRsfGTAGAwhdu+RSiLAKYXc8/qyuVk4qBcG1M1L4N+q1Ajrk3LclXHSs13bbkH
+         e9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695342955; x=1695947755;
+        d=1e100.net; s=20230601; t=1695342957; x=1695947757;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RcYQgV+bm9yWMYSe35j2ydaItwrEqBRiK5B5oR8hfBE=;
-        b=DohMzkcdtdtyESZAu8vJtwlPRHg9GpSl0qV5egijcwGvlJXJekcUTrPtBMwL/5KpsO
-         285feX+3Xz09zWe6sQ3xG9uEzok5LgZoUQw1RXTsbRkJvda92OUWU9Cln+2WIjaMH6uP
-         +AhVJdnIO1am4E0LbhXXgOorjb8OtgWHBpxkzPk0sFTihVXcU7g3qJvayXqWlAanBo8p
-         eMOa8w69JF2HqMQ1xRrQzjDoQxVJPuKZGXmiVwV9WLlXKp+Z4sXxpRWAjP3EVlCsEyG6
-         8GNMxUFOacPfL3WBLb1TYKzVYASK5QT5X5vt+/jmylriZBbIIrBK/tIq7GjH/us4mQY8
-         mB1A==
-X-Gm-Message-State: AOJu0YzvPIWbb4b6sXmwfzFIGiiVFMOiP3z8f4f/SurOPSiiCMo3vSZC
-        VUQdn47VRB7Z67QBgP2/LdTUJUpTbYIVWA==
-X-Google-Smtp-Source: AGHT+IE/8QSjsrE4MHaaK0Tz5igeEvIr9GxYg9FlYy7Rpqibms6BqvDFnFN+MWhHAjWFF6caPp3jdQ==
-X-Received: by 2002:a2e:8747:0:b0:2bc:d582:e724 with SMTP id q7-20020a2e8747000000b002bcd582e724mr6045179ljj.31.1695342955274;
-        Thu, 21 Sep 2023 17:35:55 -0700 (PDT)
+        bh=AfoMHihfovaHfyKxqDS+0qJZLmze+vosMqpYMgWqQy4=;
+        b=NfaaCzcloLAdfF8ttkgq7w/sRQVeVt1KooVjU7jCXyJG/3CSlguAJ2iQUDyo2kgJ4S
+         VuUy4HsgZQVGOcQRzQOYxTJihcmUMhPBj5/SIk4lyOZ5yadgpJ6Z8CUo3BQ0++lCKm9Q
+         U2xwblHegnAkqR/xdiJ5tjr5Sz/HOwMQaCz2WrlgoBmcAEajam0oRsuzUSs3b9T5bG7S
+         qUzIUYs/j+lhE7vkyanN3LJmNawJnpTi3kmhKEg0yRyXdedKJoYn+K7o34EGUkzlsbYD
+         ClI1qshxWVwZVyHYtVj9bh6O6MsNLfC5YAABgOcXnLTzTJVI4sFy3Kw9IMn0QDoVQo++
+         V1RA==
+X-Gm-Message-State: AOJu0YzES0Jp/YqUPvddBeyWoLjeoNCRI87113IaMb7ewvmMvBQwMEsI
+        xn1KOpLQzBR88jiw8IbvoyxsaKC2kDQVGQ==
+X-Google-Smtp-Source: AGHT+IE8jLPzi93ThtNWNZKAEOE4YXeG4ZcjOzA8Mse4BqvWpUBAD/Q7FFbDe8eaPhRKlTj9J/xHLQ==
+X-Received: by 2002:a2e:b605:0:b0:2c0:33be:3530 with SMTP id r5-20020a2eb605000000b002c033be3530mr6370803ljn.45.1695342956926;
+        Thu, 21 Sep 2023 17:35:56 -0700 (PDT)
 Received: from i-vetokaappi.home.lan (dsl-hkibng42-56733b-36.dhcp.inet.fi. [86.115.59.36])
-        by smtp.gmail.com with ESMTPSA id j23-20020a2e3c17000000b002bff365c7bfsm615462lja.35.2023.09.21.17.35.54
+        by smtp.gmail.com with ESMTPSA id j23-20020a2e3c17000000b002bff365c7bfsm615462lja.35.2023.09.21.17.35.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 17:35:54 -0700 (PDT)
+        Thu, 21 Sep 2023 17:35:56 -0700 (PDT)
 From:   =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
@@ -61,9 +61,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ARM: qcom: msm8226: Add rpm-master-stats node
-Date:   Fri, 22 Sep 2023 03:35:32 +0300
-Message-Id: <20230922003533.107835-2-matti.lehtimaki@gmail.com>
+Subject: [PATCH 2/2] ARM: qcom: msm8974: Add rpm-master-stats node
+Date:   Fri, 22 Sep 2023 03:35:33 +0300
+Message-Id: <20230922003533.107835-3-matti.lehtimaki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230922003533.107835-1-matti.lehtimaki@gmail.com>
 References: <20230922003533.107835-1-matti.lehtimaki@gmail.com>
@@ -80,21 +80,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add rpm-master-stats node for MSM8226 and the required RPM MSG RAM
+Add rpm-master-stats node for MSM8974 and the required RPM MSG RAM
 slices for memory access.
 
 Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 ---
- arch/arm/boot/dts/qcom/qcom-msm8226.dtsi | 32 ++++++++++++++++++++++++
+ arch/arm/boot/dts/qcom/qcom-msm8974.dtsi | 32 ++++++++++++++++++++++++
  1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
-index 44f3f0127fd7..98cc5ea637e1 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
-@@ -56,6 +56,18 @@ pmu {
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
+index 706fef53767e..0bc2e66d15b1 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
+@@ -116,6 +116,18 @@ pmu {
  	rpm: remoteproc {
- 		compatible = "qcom,msm8226-rpm-proc", "qcom,rpm-proc";
+ 		compatible = "qcom,msm8974-rpm-proc", "qcom,rpm-proc";
  
 +		master-stats {
 +			compatible = "qcom,rpm-master-stats";
@@ -111,7 +111,7 @@ index 44f3f0127fd7..98cc5ea637e1 100644
  		smd-edge {
  			interrupts = <GIC_SPI 168 IRQ_TYPE_EDGE_RISING>;
  			qcom,ipc = <&apcs 8 0>;
-@@ -742,6 +754,26 @@ sram@fc190000 {
+@@ -1067,6 +1079,26 @@ gcc: clock-controller@fc400000 {
  		rpm_msg_ram: sram@fc428000 {
  			compatible = "qcom,rpm-msg-ram";
  			reg = <0xfc428000 0x4000>;
@@ -137,7 +137,7 @@ index 44f3f0127fd7..98cc5ea637e1 100644
 +			};
  		};
  
- 		tcsr_mutex: hwlock@fd484000 {
+ 		bimc: interconnect@fc380000 {
 -- 
 2.39.2
 
