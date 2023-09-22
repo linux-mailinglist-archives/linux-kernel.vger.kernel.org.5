@@ -2,37 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945557AAF23
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B540D7AAF27
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbjIVKIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S233201AbjIVKIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233185AbjIVKIJ (ORCPT
+        with ESMTP id S231180AbjIVKIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:08:09 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481D3CE
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:08:02 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vsd76ZS_1695377268;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vsd76ZS_1695377268)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Sep 2023 18:07:59 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] mm/list_lru: Remove unused function
-Date:   Fri, 22 Sep 2023 18:07:47 +0800
-Message-Id: <20230922100747.17045-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham
+        Fri, 22 Sep 2023 06:08:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9939A8F;
+        Fri, 22 Sep 2023 03:08:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3000CC433C7;
+        Fri, 22 Sep 2023 10:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695377320;
+        bh=+nkvC+9xvHlUAEcQG/DhSghnfCoIhmHjwaRNqhkvr90=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WkcLbHYK2YYPDXgLxBobTGGK6Ge/SzIV/+LnyJFCU4rKuq+iHSop5ULZ1QD6zSQqg
+         yElFmYJo0xfHcGYHzYgzvnPtyvQjOstO4OhyS6ef92yPvTCIxTJIYPRIZx4ZYuJShG
+         4sWEMM3/1DoDVTMVCSE4e5rXua/8HErG6SacmSaN0xkP9poiuxH7q7QNvpxs6vk1YS
+         px4fN8+w1AMS11V4f6v/1Y6H5peQSAIcGEc7I7ylxuOFb0pNZDXetN3nLVh2G17xVP
+         cAQlOleNe7sBz+oBvknyUA9hf2Bw6msBbGGnIcVWgSfBIxYmZPjfq4adN7nH5HTK1v
+         mil8QBAV3Dbug==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qjd5R-00FHZ0-AF;
+        Fri, 22 Sep 2023 11:08:37 +0100
+Date:   Fri, 22 Sep 2023 11:08:30 +0100
+Message-ID: <86y1gyo6zl.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Jitindar Singh, Suraj" <surajjs@amazon.com>
+Cc:     "vdonnefort@google.com" <vdonnefort@google.com>,
+        "philmd@linaro.org" <philmd@linaro.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "qperret@google.com" <qperret@google.com>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alexandru.elisei@arm.com" <alexandru.elisei@arm.com>
+Subject: Re: [PATCH stable 6.1.y 1/2] KVM: arm64: Prevent the donation of no-map pages
+In-Reply-To: <a64c30b027951c4c533dea858150e2e807a912b7.camel@amazon.com>
+References: <20230920192729.694309-1-surajjs@amazon.com>
+        <878r903snv.wl-maz@kernel.org>
+        <a64c30b027951c4c533dea858150e2e807a912b7.camel@amazon.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: surajjs@amazon.com, vdonnefort@google.com, philmd@linaro.org, james.morse@arm.com, suzuki.poulose@arm.com, oliver.upton@linux.dev, qperret@google.com, kvmarm@lists.linux.dev, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, stable@vger.kernel.org, will@kernel.org, linux-kernel@vger.kernel.org, alexandru.elisei@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,66 +77,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function are defined in the list_lru.c file, but not called
-elsewhere, so delete the unused function.
+On Thu, 21 Sep 2023 23:22:54 +0100,
+"Jitindar Singh, Suraj" <surajjs@amazon.com> wrote:
+>=20
+> On Thu, 2023-09-21 at 08:13 +0100, Marc Zyngier wrote:
+> > On Wed, 20 Sep 2023 20:27:28 +0100,
+> > Suraj Jitindar Singh <surajjs@amazon.com> wrote:
+> > >=20
+> > > From: Quentin Perret <qperret@google.com>
+> > >=20
+> > > commit 43c1ff8b75011bc3e3e923adf31ba815864a2494 upstream.
+> > >=20
+> > > Memory regions marked as "no-map" in the host device-tree routinely
+> > > include TrustZone carev-outs and DMA pools. Although donating such
+> > > pages
+> > > to the hypervisor may not breach confidentiality, it could be used
+> > > to
+> > > corrupt its state in uncontrollable ways. To prevent this, let's
+> > > block
+> > > host-initiated memory transitions targeting "no-map" pages
+> > > altogether in
+> > > nVHE protected mode as there should be no valid reason to do this
+> > > in
+> > > current operation.
+> > >=20
+> > > Thankfully, the pKVM EL2 hypervisor has a full copy of the host's
+> > > list
+> > > of memblock regions, so we can easily check for the presence of the
+> > > MEMBLOCK_NOMAP flag on a region containing pages being donated from
+> > > the
+> > > host.
+> > >=20
+> > > Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
+> > > Tested-by: Vincent Donnefort <vdonnefort@google.com>
+> > > Signed-off-by: Quentin Perret <qperret@google.com>
+> > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > Link:
+> > > https://lore.kernel.org/r/20221110190259.26861-8-will@kernel.org
+> > > [ bp: clean ]
+> >=20
+> > What is this?
+>=20
+> Noting any details about the backport. In this case it was a clean
+> backport.
 
-mm/list_lru.c:64:1: warning: unused function 'list_lru_from_kmem'.
+I don't think this has anything to do here. If you want to add a note
+indicating what was changed in the patch, make it *extremely* visible
+in the commit message, and not hidden as some obscure form of
+metadata.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6677
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- mm/list_lru.c | 30 ------------------------------
- 1 file changed, 30 deletions(-)
+>=20
+> >=20
+> > > Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+> >=20
+> > What is the rationale for backporting this? It wasn't tagged as Cc:
+> > to
+> > stable for a reason: pKVM isn't functional upstream, and won't be for
+> > the next couple of cycles *at least*.
+> >=20
+> > So at it stands, I'm against such a backport.
+> >=20
+>=20
+> The 2 patches were backported to address CVE-2023-21264.
+> This one provides context for the proceeding patch.
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 37c5c2ef6c0e..800f171d2c23 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -60,27 +60,6 @@ list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
- 	return &lru->node[nid].lru;
- }
- 
--static inline struct list_lru_one *
--list_lru_from_kmem(struct list_lru *lru, int nid, void *ptr,
--		   struct mem_cgroup **memcg_ptr)
--{
--	struct list_lru_node *nlru = &lru->node[nid];
--	struct list_lru_one *l = &nlru->lru;
--	struct mem_cgroup *memcg = NULL;
--
--	if (!list_lru_memcg_aware(lru))
--		goto out;
--
--	memcg = mem_cgroup_from_slab_obj(ptr);
--	if (!memcg)
--		goto out;
--
--	l = list_lru_from_memcg_idx(lru, nid, memcg_kmem_id(memcg));
--out:
--	if (memcg_ptr)
--		*memcg_ptr = memcg;
--	return l;
--}
- #else
- static void list_lru_register(struct list_lru *lru)
- {
-@@ -105,15 +84,6 @@ list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
- {
- 	return &lru->node[nid].lru;
- }
--
--static inline struct list_lru_one *
--list_lru_from_kmem(struct list_lru *lru, int nid, void *ptr,
--		   struct mem_cgroup **memcg_ptr)
--{
--	if (memcg_ptr)
--		*memcg_ptr = NULL;
--	return &lru->node[nid].lru;
--}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- bool list_lru_add(struct list_lru *lru, struct list_head *item)
--- 
-2.20.1.7.g153144c
+I care about CVEs as much as I care about holes in my socks (i.e. very
+little). If there is a concern, it should be brought up on the list as
+a discussion, and not as a consequence of some script kiddie
+automatically generating CVEs.
 
+> I wasn't aware that it's non functional. Does this mean that the code
+> won't be compiled or just that it can't actually be run currently from
+> the upstream codebase?
+
+This code is inactive unless you pass the correct option on the
+command line, and as it is brings zero benefit over standard KVM.  The
+only place this matters is in the Android kernel, as it has full
+support for pKVM, and has the fix already. We carry it upstream at a
+courtesy to the pKVM developers, but that's about it.
+
+> I guess I'm trying to understand if the conditions of the CVE are a
+> real concern even if it isn't technically functional.
+
+This CVE is a waste of precious bytes, and I have no interest in
+seeing this backported.
+
+Thanks,
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
