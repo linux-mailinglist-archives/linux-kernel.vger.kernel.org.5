@@ -2,138 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E53707AA717
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649267AA709
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 04:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjIVCsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 22:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
+        id S230137AbjIVClC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 22:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjIVCsG (ORCPT
+        with ESMTP id S229497AbjIVClA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 22:48:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11CB19E;
-        Thu, 21 Sep 2023 19:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695350879; x=1726886879;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WjtJKQb906FAD2/Ch7XLbjda8s1yVinX4tQX05erhW4=;
-  b=bNlOXjdRXt783nJXQb+YGuXZeDsxC900HQtzdeHtzEX4iNsXFtu0sZP/
-   vcsu7ps1XcyoQ7E3jl3I/wC+P6V2MkQGT9QeJs10jLimtQL86hzV6h92o
-   /I77QZvSTNnI/r/5tEwMz0LNlyYo49smcxxj8cfg5/PTcL+LvnJex+GBX
-   EwDBSswRkc1bdIninUBmatkELqdSKy+gooc/QRxSpbLcgmP/DXDMxOeiP
-   p7fSQx7yUw7/oyDifynbsS2mXWCPa7beRJFipKtK20npoVtHa7Tp1JfAL
-   RGre0C5ZHQQfhw0rhSHIl4reBnYcjF86I584mOrneSbbHSVqxkeTgPrKo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="360974368"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="360974368"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 19:47:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="920986298"
-X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
-   d="scan'208";a="920986298"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga005.jf.intel.com with ESMTP; 21 Sep 2023 19:47:55 -0700
-Message-ID: <e7c773f6-969c-0097-1bca-24d276e8a8f6@linux.intel.com>
-Date:   Fri, 22 Sep 2023 10:44:45 +0800
+        Thu, 21 Sep 2023 22:41:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A080196;
+        Thu, 21 Sep 2023 19:40:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A7CC433C8;
+        Fri, 22 Sep 2023 02:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695350453;
+        bh=8qIsVL6sv2Akw91FdfMBwVa1nZmidwwqy/fuoJa0HVo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pe++EJqt+ieoBhFxCYIpPJrcJiOj+irtamDCPdzxUeWuBGJIH+UXsLFGz2yg2Qh5c
+         1xM0gdD0UFUW4I2/w7H0QcWsKmRlaDENUsyuhFDcTGopr5MweMWAhoBF7MVKlZr/D8
+         iDrKwI6U7T628dsJkHEPL9WHGeuLOnBf0TRVN4p8G5kNr3bngpO01kCpKHdIn7A0Jp
+         otBlQW+2g64kqnnR8BPeDk0jQ4KpBUPNtziXsWkCJEWMk7wurZzRWij+LV+he3TJ0P
+         DAvGk3MZ8wh6bNYsH6L6YazWntB2PzCRyl5u+USSUW/qkH3kjLirF3FoNt7PrCmSIc
+         coLZ+QN11+9AA==
+Date:   Thu, 21 Sep 2023 19:44:58 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Subject: Re: [PATCH v3 3/3] soc: qcom: rtmfs: Handle reserved-memory
+ allocation issues
+Message-ID: <3jscpkqc4jpywcfpo3qxkgajtkjhzncw3kpi6cnmjesyrswpr2@ndwvowbq7vrq>
+References: <20230920-rmtfs-mem-guard-pages-v3-0-305b37219b78@quicinc.com>
+ <20230920-rmtfs-mem-guard-pages-v3-3-305b37219b78@quicinc.com>
+ <ZQyHS__ZPlnvMIFo@gerhold.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/12] iommu: Make iommu_queue_iopf() more generic
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Liu, Jingqi" <jingqi.liu@intel.com>
-References: <20230914085638.17307-1-baolu.lu@linux.intel.com>
- <20230914085638.17307-10-baolu.lu@linux.intel.com>
- <f20b9e78-3a63-ca3e-6c04-1d80ec857898@intel.com>
- <20230921233402.GC13795@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230921233402.GC13795@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQyHS__ZPlnvMIFo@gerhold.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/22/23 7:34 AM, Jason Gunthorpe wrote:
-> On Thu, Sep 21, 2023 at 11:25:56PM +0800, Liu, Jingqi wrote:
->>
->> On 9/14/2023 4:56 PM, Lu Baolu wrote:
->>> Make iommu_queue_iopf() more generic by making the iopf_group a minimal
->>> set of iopf's that an iopf handler of domain should handle and respond
->>> to. Add domain parameter to struct iopf_group so that the handler can
->>> retrieve and use it directly.
->>>
->>> Change iommu_queue_iopf() to forward groups of iopf's to the domain's
->>> iopf handler. This is also a necessary step to decouple the sva iopf
->>> handling code from this interface.
->>>
->>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>> ---
->>>    include/linux/iommu.h      |  4 ++--
->>>    drivers/iommu/iommu-sva.h  |  6 ++---
->>>    drivers/iommu/io-pgfault.c | 49 ++++++++++++++++++++++++++++----------
->>>    drivers/iommu/iommu-sva.c  |  3 +--
->>>    4 files changed, 42 insertions(+), 20 deletions(-)
->>>
->> ......
->>
->>> @@ -112,6 +110,7 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
->>>    {
->>>    	int ret;
->>>    	struct iopf_group *group;
->>> +	struct iommu_domain *domain;
->>>    	struct iopf_fault *iopf, *next;
->>>    	struct iommu_fault_param *iopf_param;
->>>    	struct dev_iommu *param = dev->iommu;
->>> @@ -143,6 +142,19 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
->>>    		return 0;
->>>    	}
->>> +	if (fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID)
->>> +		domain = iommu_get_domain_for_dev_pasid(dev, fault->prm.pasid, 0);
->>> +	else
->>> +		domain = iommu_get_domain_for_dev(dev);
->>> +
->>> +	if (!domain || !domain->iopf_handler) {
->>
->> Does it need to check if 'domain' is error ?  Like below:
->>
->>           if (!domain || IS_ERR(domain) || !domain->iopf_handler)
+On Thu, Sep 21, 2023 at 08:11:23PM +0200, Stephan Gerhold wrote:
+> On Wed, Sep 20, 2023 at 07:37:32PM -0700, Bjorn Andersson wrote:
+> > In the even that Linux failed to allocate the reserved memory range
+> > specified in the DeviceTree, the size of the reserved_mem will be 0,
+> > which results in a oops when memory remapping is attempted.
+> > 
+> > Detect this and report that the memory region was not found instead.
+> > 
+> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > 
-> Urk, yes, but not like that
+> I dropped these checks in my remoteproc patches because Caleb suggested
+> maybe putting this check directly in of_reserved_mem_lookup() (or
+> similar) given that almost none of the users verify this [1].
 > 
-> The IF needs to be moved into the else block as each individual
-> function has its own return convention.
+> Do you have any opinion on that? I asked back then too but you did not
+> reply yet [2]. :-)
+> 
 
-iommu_get_domain_for_dev_pasid() returns an ERR_PTR only if the matching
-domain type is specified (non-zero).
+I'm struggling to come up with a use case where one would like to get
+hold of the rmem when it wasn't properly initialized. So, let's make an
+attempt at returning NULL from of_reserved_mem_lookup() instead.
 
-Adding IS_ERR(domain) in the else block will make the code more
-readable. Alternatively we can put a comment around above code to
-explain that ERR_PTR is not a case here.
+Thanks,
+Bjorn
 
-Best regards,
-baolu
+> [1]: https://lore.kernel.org/linux-arm-msm/c3f59fb4-4dd8-f27a-d3f5-b1870006a75c@linaro.org/
+> [2]: https://lore.kernel.org/linux-arm-msm/ZIsld-MAdkKvdzTx@gerhold.net/
+> 
+> > ---
+> >  drivers/soc/qcom/rmtfs_mem.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/soc/qcom/rmtfs_mem.c b/drivers/soc/qcom/rmtfs_mem.c
+> > index 83bba9321e72..13823abd85c2 100644
+> > --- a/drivers/soc/qcom/rmtfs_mem.c
+> > +++ b/drivers/soc/qcom/rmtfs_mem.c
+> > @@ -180,7 +180,7 @@ static int qcom_rmtfs_mem_probe(struct platform_device *pdev)
+> >  	int ret, i;
+> >  
+> >  	rmem = of_reserved_mem_lookup(node);
+> > -	if (!rmem) {
+> > +	if (!rmem || !rmem->size) {
+> >  		dev_err(&pdev->dev, "failed to acquire memory region\n");
+> >  		return -EINVAL;
+> >  	}
+> > 
+> > -- 
+> > 2.25.1
+> > 
