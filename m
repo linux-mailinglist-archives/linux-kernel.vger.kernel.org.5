@@ -2,180 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A31237AB981
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844307AB984
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbjIVSox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S233570AbjIVSpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbjIVSoi (ORCPT
+        with ESMTP id S231789AbjIVSpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:44:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D46C2;
-        Fri, 22 Sep 2023 11:44:32 -0700 (PDT)
-Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C49C666072E9;
-        Fri, 22 Sep 2023 19:44:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695408270;
-        bh=3n4jZx8rWNTvoWzvdcn6UDWRLf/S8lzW7Qhfkk1sxfE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PyH3SZnJtonfpiSRdW2RdW/BcP92fbatG3x6sNpjEBhgYfn2hBrQRx+Q2wNrnvqHS
-         tqL4eJeD9Xum2D9a2cpeF03/nYHfcbPYn+gb4AldQbvNBU7hd9WpmQrAAuP3l89zoD
-         VKfP1vvDkxnH52yi+WJ5ailShIYDtQFocW2e8dhjIrvU/nlrHX1MK0UofN+QROGJw3
-         zeEQ2aRi9mbh5ckrvPVP4VhaUpfJXO2EWl1ETWheiS4h04G29E8fPTvNEHkWHF5nzo
-         eJqztx+H/oWOvzuQYiMn/JHPXX85AmkBhbAwUGQa260g48jvTlCSJRsC47ZF9ewm3Y
-         wk5+D1jGsGufQ==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, Amit Kucheria <amitk@kernel.org>,
-        Caesar Wang <wxt@rock-chips.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v2] thermal/core: Don't update trip points inside the hysteresis range
-Date:   Fri, 22 Sep 2023 14:44:03 -0400
-Message-ID: <20230922184425.290894-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Fri, 22 Sep 2023 14:45:14 -0400
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EF6AB;
+        Fri, 22 Sep 2023 11:45:09 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1bf5c314a57so21419115ad.1;
+        Fri, 22 Sep 2023 11:45:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695408308; x=1696013108;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=atbToeCfvaYcx4Wh/Dx61jMrCUFQT/qhHFCE0ode6Mo=;
+        b=APSFFRDv4VBfuWYT7rhjPgpigYu8GvZw0OInTiCO62ALGNjCKEqMVtERbEAK1MozTY
+         1kTcUaIpoijDwClUgbOytwcJBFY4bYWZLfBe9DKV0MGge25Vvo/N6aqJH+CQyuH4n8pT
+         hEdO+NlNsjg6Pn8pSgZUc+SfWyj97qTj4OES4OWychlgclOq9+P8n2R/O3Uezggkjwjr
+         0pKi3iHrvqNVglgQ0ByJcoqyALkd9WrI0roh3svEztftPGqu70ZGDaqnfsWJ0Nt+Yw7E
+         Ye6yfNO9P/Ob5HT6+4DWT60Q+iZlMovJYM4FpB2jD70NBODEalnNR9HN9dLOu0to0RcG
+         SGUw==
+X-Gm-Message-State: AOJu0YxgLh72yGDHAciBezE7gm18VfviYxZaIZ0QZEybfFuSthjWIggT
+        ZOAN4UOat0s31SYlHy/amFbxu+CDh9w=
+X-Google-Smtp-Source: AGHT+IFkYaOsWjga65j1gAjNxQBP0tx3a13MykhAGrHKOBrBgEgFJTEqJ93NywNywSfCEXn7VNmDLQ==
+X-Received: by 2002:a17:903:41c3:b0:1c5:70d3:f193 with SMTP id u3-20020a17090341c300b001c570d3f193mr350824ple.10.1695408308401;
+        Fri, 22 Sep 2023 11:45:08 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id iw11-20020a170903044b00b001c582de968dsm3832439plb.72.2023.09.22.11.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 11:45:07 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 18:44:25 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Olaf Hering <olaf@aepfle.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v1] hyperv: reduce size of ms_hyperv_info
+Message-ID: <ZQ3giXQbmloCSil8@liuwe-devbox-debian-v2>
+References: <20230918160141.23465-1-olaf@aepfle.de>
+ <SA1PR21MB133593AABC414CB427B84FABBFFAA@SA1PR21MB1335.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SA1PR21MB133593AABC414CB427B84FABBFFAA@SA1PR21MB1335.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When searching for the trip points that need to be set, the nearest
-higher trip point's temperature is used for the high trip, while the
-nearest lower trip point's temperature minus the hysteresis is used for
-the low trip. The issue with this logic is that when the current
-temperature is inside a trip point's hysteresis range, both high and low
-trips will come from the same trip point. As a consequence instability
-can still occur like this:
-* the temperature rises slightly and enters the hysteresis range of a
-  trip point
-* polling happens and updates the trip points to the hysteresis range
-* the temperature falls slightly, exiting the hysteresis range, crossing
-  the trip point and triggering an IRQ, the trip points are updated
-* repeat
+On Tue, Sep 19, 2023 at 06:18:53AM +0000, Dexuan Cui wrote:
+> > From: Olaf Hering <olaf@aepfle.de>
+> > Sent: Monday, September 18, 2023 9:02 AM
+> > [...]
+> > Use the hole prior shared_gpa_boundary to store the result of get_vtl.
+> > This reduces the size by 8 bytes.
+> >  [...]
+> > --- a/include/asm-generic/mshyperv.h
+> > +++ b/include/asm-generic/mshyperv.h
+> > @@ -53,8 +53,8 @@ struct ms_hyperv_info {
+> >  			u32 reserved_b2 : 20;
+> >  		};
+> >  	};
+> > -	u64 shared_gpa_boundary;
+> >  	u8 vtl;
+> > +	u64 shared_gpa_boundary;
+> >  };
+> >  extern struct ms_hyperv_info ms_hyperv;
+> >  extern bool hv_nested;
+> 
+> How about moving the 'vtl' field to an even earlier place:
+> 
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -36,6 +36,9 @@ struct ms_hyperv_info {
+>         u32 nested_features;
+>         u32 max_vp_index;
+>         u32 max_lp_index;
+> +
+> +       u8 vtl;
+> +
+>         union {
+>                 u32 isolation_config_a;
+>                 struct {
+> @@ -54,7 +57,6 @@ struct ms_hyperv_info {
+>                 };
+>         };
+>         u64 shared_gpa_boundary;
+> -       u8 vtl;
+>  };
+>  extern struct ms_hyperv_info ms_hyperv;
+>  extern bool hv_nested;
+> 
+> This also reduces the size by 8 bytes, and keeps
+> the isolation_config_a/ isolation_config_b/ shared_gpa_boundary
+> together, which are related.
 
-So even though the current hysteresis implementation prevents
-instability from happening due to IRQs triggering on the same
-temperature value, both ways, it doesn't prevent it from happening due
-to an IRQ on one way and polling on the other.
+Either method works for me.
 
-To properly implement a hysteresis behavior, when inside the hysteresis
-range, don't update the trip points. This way, the previously set trip
-points will stay in effect, which will in a way remember the previous
-state (if the temperature signal came from above or below the range) and
-therefore have the right trip point already set. The exception is if
-there was no previous trip point set, in which case a previous state
-doesn't exist, and so it's sensible to allow the hysteresis range as
-trip points.
+Will there be a v2 of this patch?
 
-The following logs show the current behavior when running on a real
-machine:
-
-[  202.524658] thermal thermal_zone0: new temperature boundaries: -2147483647 < x < 40000
-   203.562817: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=36986 temp=37979
-[  203.562845] thermal thermal_zone0: new temperature boundaries: 37000 < x < 40000
-   204.176059: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=37979 temp=40028
-[  204.176089] thermal thermal_zone0: new temperature boundaries: 37000 < x < 100000
-   205.226813: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=40028 temp=38652
-[  205.226842] thermal thermal_zone0: new temperature boundaries: 37000 < x < 40000
-
-And with this patch applied:
-
-[  184.933415] thermal thermal_zone0: new temperature boundaries: -2147483647 < x < 40000
-   185.981182: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=36986 temp=37872
-   186.744685: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=37872 temp=40058
-[  186.744716] thermal thermal_zone0: new temperature boundaries: 37000 < x < 100000
-   187.773284: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=40058 temp=38698
-
-Fixes: 060c034a9741 ("thermal: Add support for hardware-tracked trip points")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
----
-
-Changes in v2:
-- Changed logic as suggested by Rafael
-- Added log example to commit message
-- Added fixes tag
-
- drivers/thermal/thermal_trip.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/thermal/thermal_trip.c b/drivers/thermal/thermal_trip.c
-index 024e2e365a26..597ac4144e33 100644
---- a/drivers/thermal/thermal_trip.c
-+++ b/drivers/thermal/thermal_trip.c
-@@ -55,6 +55,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
- {
- 	struct thermal_trip trip;
- 	int low = -INT_MAX, high = INT_MAX;
-+	bool same_trip = false;
- 	int i, ret;
- 
- 	lockdep_assert_held(&tz->lock);
-@@ -63,6 +64,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
- 		return;
- 
- 	for (i = 0; i < tz->num_trips; i++) {
-+		bool low_set = false;
- 		int trip_low;
- 
- 		ret = __thermal_zone_get_trip(tz, i , &trip);
-@@ -71,18 +73,31 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
- 
- 		trip_low = trip.temperature - trip.hysteresis;
- 
--		if (trip_low < tz->temperature && trip_low > low)
-+		if (trip_low < tz->temperature && trip_low > low) {
- 			low = trip_low;
-+			low_set = true;
-+			same_trip = false;
-+		}
- 
- 		if (trip.temperature > tz->temperature &&
--		    trip.temperature < high)
-+		    trip.temperature < high) {
- 			high = trip.temperature;
-+			same_trip = low_set;
-+		}
- 	}
- 
- 	/* No need to change trip points */
- 	if (tz->prev_low_trip == low && tz->prev_high_trip == high)
- 		return;
- 
-+	/*
-+	 * If "high" and "low" are the same, skip the change unless this is the
-+	 * first time.
-+	 */
-+	if (same_trip && (tz->prev_low_trip != -INT_MAX ||
-+	    tz->prev_high_trip != INT_MAX))
-+		return;
-+
- 	tz->prev_low_trip = low;
- 	tz->prev_high_trip = high;
- 
--- 
-2.42.0
-
+Thanks,
+Wei.
