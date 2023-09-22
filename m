@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 375CF7ABBDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428BD7ABBE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 00:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjIVWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 18:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S230118AbjIVWkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 18:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjIVWhG (ORCPT
+        with ESMTP id S230004AbjIVWki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:37:06 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4CEE8;
-        Fri, 22 Sep 2023 15:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=tGH/XloYJC11wuhmF5vRkcx6gumwYqe/0/UcjSduujU=; b=g4u/ApLPI+/z9MH0S3EXMoixCg
-        CrXBgKenc/NufdtgW3o7VRcXMJWns2pNMze3gSU1de1SEaxzgBbXiX61jBSQsbLHZxnchNXV6AWCk
-        8i09tQAxU7LjTzEetDtI+La/Ct8KuewXWR+n4HD6hseIOHDDoOS/EHF2qSUfiG6TYico=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qjoko-007G6k-Ro; Sat, 23 Sep 2023 00:36:06 +0200
-Date:   Sat, 23 Sep 2023 00:36:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Marek Vasut <marex@denx.de>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Crispin <john@phrozen.org>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH net-next v2 00/10] define and enforce phylink bindings
-Message-ID: <4856b212-5bc5-4783-a184-b34a4a915878@lunn.ch>
-References: <20230916110902.234273-1-arinc.unal@arinc9.com>
- <ZQ2LMe9aa1ViBcSH@shell.armlinux.org.uk>
- <6c1bb7df-34cd-4db9-95b6-959c87b68588@arinc9.com>
+        Fri, 22 Sep 2023 18:40:38 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786CBAB;
+        Fri, 22 Sep 2023 15:40:32 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bff936e10fso53204691fa.1;
+        Fri, 22 Sep 2023 15:40:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695422430; x=1696027230; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=le0OuGLsU3JORmn3p7Lmf2Z/hHnqT/ugH7hRtzH6LxQ=;
+        b=VQ2CbanKv/y+S3qFay2hLPOMz7NDjTPdjQL2TGbONQMDddvp74AE8ReCGtGNKF+QZu
+         n0dG4tpmTNL+TsRyiKkl3l1ba/aOG8u137/AcfpTBoZRXT53n34TW8Dq9SThetRqtGkg
+         nqt7zEXRbX95JXuhMZYZP3IZmz3cpn01ddQyznTPpd7vpjU2BUnPtbLsVKQvHyOKwAnc
+         Ga+o0gVELjR+cGltoAHeJHFU9vmHaUDPZ9hgedRT7lB2CID+/PcF6CSKw0dk5hPto4d6
+         na1OlC+yuPvL0Nl5m0D3jNgvSPO7WjVQpFL/6K0EUrnKJUiBMS3jDe+6GrSi/6kOKzlU
+         OvEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695422430; x=1696027230;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=le0OuGLsU3JORmn3p7Lmf2Z/hHnqT/ugH7hRtzH6LxQ=;
+        b=AUnsamZ2qZb/i7R9BwieDzCD9V061j/Slelq4FEhiGDBpODMcGav+VqjOOY23FHJlr
+         kK/uofZ+zcA2/1GMuizPK+omjp+KHjLpdSQSnUJwagmOENQIX5ZcCfyPLQx6zw4p7jN1
+         1jnHEudxkVovv3VMHB4UeFKceR4BQ0IEqXdWhLE1HcUo2ZLr215hAo4XuMVj2biqbwr8
+         tgH+UF1ucFLn0bQ2yGrlIn7hvaqeF1Oqr1zqlN1TGu6faNeYuQ7pt8+tHbx44bBX24I7
+         7+I534/btZswDSQl4AcPt8ryez4poQfxIT/HWFn0d3wOi2Js8clfS4bQZgjVo73LjIqb
+         nNDQ==
+X-Gm-Message-State: AOJu0YzNtpL0nlXe6SYuMHdbk02rZ90y4/dieDXVh4ZruNj9l+PvwyUo
+        Zbe3LLr626msvrmpqBiWnxkAXflzmCcPdQ==
+X-Google-Smtp-Source: AGHT+IGfox4cCDsOyrpaBMMVcmAZCPptsa9iQRPcQ8PPTjFnO/9MEZSoy4+ERHQKvwSXIJfy4VUtkQ==
+X-Received: by 2002:a2e:3513:0:b0:2bc:dd8f:ccd7 with SMTP id z19-20020a2e3513000000b002bcdd8fccd7mr340846ljz.16.1695422430436;
+        Fri, 22 Sep 2023 15:40:30 -0700 (PDT)
+Received: from i-vetokaappi.home.lan (dsl-hkibng42-56733b-36.dhcp.inet.fi. [86.115.59.36])
+        by smtp.gmail.com with ESMTPSA id j2-20020a2e8502000000b002bfec05a693sm1090423lji.22.2023.09.22.15.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 15:40:29 -0700 (PDT)
+From:   =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] MPM pin mappings for MSM8226 and MSM8974
+Date:   Sat, 23 Sep 2023 01:40:25 +0300
+Message-Id: <20230922224027.85291-1-matti.lehtimaki@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c1bb7df-34cd-4db9-95b6-959c87b68588@arinc9.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I agree. My patch description here failed to explain the actual issue,
-> which is missing hardware descriptions. Here's what I understand. An
-> ethernet-controller is a MAC. For the MAC to work properly with its link
-> partner, at least one of these must be described:
-> - pointer to a PHY to retrieve link information from the PHY
-> - pointer to a PCS to retrieve link information from the PCS
-> - pointer to an SFP to retrieve link information from the SFP
-> - static link information
+This series adds the MPM wakeirq mappings for MSM8226 and MSM8974.
 
-You are missing:
+Matti Lehtimäki (2):
+  pinctrl: qcom: msm8226: Add MPM pin mappings
+  pinctrl: qcom: msm8974: Add MPM pin mappings
 
-- The MAC has firmware driving the PHY, nothing for linux to do.
+ drivers/pinctrl/qcom/pinctrl-msm8226.c | 12 ++++++++++++
+ drivers/pinctrl/qcom/pinctrl-msm8x74.c | 12 ++++++++++++
+ 2 files changed, 24 insertions(+)
 
-There are properties in ethernet-controller.yaml the MAC driver would
-however like to use such as local-mac-address, max-frame-size,
-nvmem-cell-names etc.
+-- 
+2.39.2
 
-	Andrew
