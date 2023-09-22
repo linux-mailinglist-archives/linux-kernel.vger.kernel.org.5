@@ -2,170 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C347AAFEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AC07AAFEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjIVKtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
+        id S233456AbjIVKu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjIVKta (ORCPT
+        with ESMTP id S229810AbjIVKu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:49:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F25C99;
-        Fri, 22 Sep 2023 03:49:24 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M79Du1020281;
-        Fri, 22 Sep 2023 10:49:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=hpO/ZP6cwcezFYAfpFZFentrmwNE3+cuCJGJa6/4z90=;
- b=NOEqFXk4ttcd+iqZgyufhpRAyp2pzHxx3cztxChA44mzuyLsDXRj1xgq6F2oSNawmU7g
- JiMqXY0Vds2RpghxVSITtPohKqE6sy/jlyjkKlkxOayXK4npWLzW9Unx5ZT11C6bxu74
- rDknlUyVlyBO5R6sKzAM9NiijuTEcxGDnzAV+bE5fQH7sK5jKUfHnsuwzn48X9QHrb75
- LWmk1z2ew42WUxGcwpoUdeP36uzTEXxNHpLrzmYdASZlBwD6SByY5sRNw++ETKu+qy8p
- l2UOefhpJLDlm76TGlxONxB7p2kLW8DNnZopmUj2XGfQDrXmdXw23r1XS6M2VTDF+Z6E ag== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8u6rsm7n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 10:49:12 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MAnBSi012721
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 10:49:11 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 22 Sep 2023 03:49:07 -0700
-From:   Prashanth K <quic_prashk@quicinc.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hongyu Xie <xy521521@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>, <stable@kernel.org>,
-        Hongyu Xie <xiehongyu1@kylinos.cn>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        "# 5 . 15" <stable@vger.kernel.org>,
-        Prashanth K <quic_prashk@quicinc.com>
-Subject: [PATCH RESEND] xhci: Keep interrupt disabled in initialization until host is running.
-Date:   Fri, 22 Sep 2023 16:18:44 +0530
-Message-ID: <1695379724-28628-1-git-send-email-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 22 Sep 2023 06:50:26 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6726AC;
+        Fri, 22 Sep 2023 03:50:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695379816; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=PyfkQ2CJJo4r5UL55sqaXwzAE7PnEhZx9OfgNEyVfoLba9ol53fbpt5Y0NZr3MSNd3
+    PuB1nGROD800A9laJH7IYEf8D89DvkKE0tK6/VIPYMpK064XIyEFKHC0czw2xEfJYfkw
+    LwagCTlF27bQ6ziuwLonmWeWzI57La7GGk25Qhndvdlpjm2mfYy7gVFH3R87fNRqY3qE
+    QnA3/zI2wbGf0VoslwnMzDRxZctRb44Ik7VuT1gNSORZku88X1zoyBguoCUDhsjR4G7g
+    J0VA0iZ+mgRDaZphx5JIoxm6zCXNpTQKTXviKyztbnv3uc5h2eo7wR6M7NPgswH1ewA3
+    YQ/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695379816;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
+    bh=MBmy+6PAEVsZIeJOyaTNzolxAAyu/OIriMDq4k6N6nA=;
+    b=O0gAbB+MZCmr4L72TPGUP6V5GTHMMRQwAJWmcJ+GO1Gy9qCWoIUReMDnMkKpA9VFWy
+    jkw/hqgeGWQd+KZtF0rYbi+pOLryw/VBZktvB/nxtHQObeVApAHi1YDjyFDMQcOPGeNr
+    bz5QHMxcbR/MVLES087wY2eTyjlGV9CO2tF0ZliR+3KzC0vW+ms4ADCcjN9GI01AOVAG
+    AwqbpL4rtrCElmmNGf4gqkGAHPe3cKrKPNsHrYgalmKJDlGxrMH/WSM39qM72TYz9Q5a
+    76Emq0uEcdbXtzLePvIadBWOrjIcerh8a1EnrLbZTkNcByDYXaAnErrdPuelb1joLxmE
+    SmIw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695379816;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
+    bh=MBmy+6PAEVsZIeJOyaTNzolxAAyu/OIriMDq4k6N6nA=;
+    b=U5NLr5i1ELb9DsLIWmw4m/eTQppGkvaA1NPKvk0o53RiXHMKE0wMm2f7+tP9GU8hip
+    LEVO5dCsZYK2tZpOxhJ4kkU81dogIf+aXB4ZzKV8M9JcUMSw95AUrFfD86FyhzNa313g
+    k6BOZbysIbuJH2bODtZ+eLvDu5Eu86GMscsbc8fLo3IBXHvhH18I7P3muH87VCzRNLaQ
+    6HHtbOpBO48GSIyOQ1SDc31LQ5Dj0rrWAJLnEgKSCK2BcxV0uYBUyC7f0P2bO/k8rDRs
+    Bc2KOFy5YbYgjpJto6BzdjPLAWXl1OH+YNsI5pivi/cefY8lWbNIQj8tb8Jc5ytud7+y
+    Ul0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695379816;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
+    bh=MBmy+6PAEVsZIeJOyaTNzolxAAyu/OIriMDq4k6N6nA=;
+    b=7k6GyjYOOZIrcufc6fC5Wp5zXKzqY50GVi0rklMhsU42xg+4ihbmpznLs3zv4GI8Ab
+    Yu3VDymQiDqI7ziU2ABA==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOL59w=="
+Received: from [192.168.244.3]
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id R04c57z8MAoFTnM
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 22 Sep 2023 12:50:15 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+Date:   Fri, 22 Sep 2023 12:49:55 +0200
+Subject: [PATCH] arm64: dts: qcom: apq8016-sbc: Add missing ADV7533
+ regulators
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Ph53r2qVzdc-EYX6FSdrGQHCYTJrw-cC
-X-Proofpoint-ORIG-GUID: Ph53r2qVzdc-EYX6FSdrGQHCYTJrw-cC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_08,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 mlxlogscore=686 impostorscore=0
- malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0 phishscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2309220091
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230922-db410c-adv7533-regulators-v1-1-68aba71e529b@gerhold.net>
+X-B4-Tracking: v=1; b=H4sIAFJxDWUC/x3MQQqDMBBA0avIrDswSdqm9iriIppRBySWiYog3
+ t3Q5Vv8f0JmFc7wrU5Q3iXLkgrMo4J+CmlklFgMlqyj2lqM3dNQjyHu/uUcKo/bHNZFM37q8CZ
+ vHA0mQul/yoMc/3fTXtcNHDbbaGsAAAA=
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongyu Xie <xy521521@gmail.com>
+Add the missing regulator supplies to the ADV7533 HDMI bridge to fix
+the following dtbs_check warnings. They are all also supplied by
+pm8916_l6 so there is no functional difference.
 
-[ Upstream commit 808925075fb750804a60ff0710614466c396db4 ]
+apq8016-sbc.dtb: bridge@39: 'dvdd-supply' is a required property
+apq8016-sbc.dtb: bridge@39: 'pvdd-supply' is a required property
+apq8016-sbc.dtb: bridge@39: 'a2vdd-supply' is a required property
+        from schema display/bridge/adi,adv7533.yaml
 
-irq is disabled in xhci_quiesce(called by xhci_halt, with bit:2 cleared
-in USBCMD register), but xhci_run(called by usb_add_hcd) re-enable it.
-It's possible that you will receive thousands of interrupt requests
-after initialization for 2.0 roothub. And you will get a lot of
-warning like, "xHCI dying, ignoring interrupt. Shouldn't IRQs be
-disabled?". This amount of interrupt requests will cause the entire
-system to freeze.
-This problem was first found on a device with ASM2142 host controller
-on it.
-
-[tidy up old code while moving it, reword header -Mathias]
-
-Cc: stable@kernel.org
-Signed-off-by: Hongyu Xie <xiehongyu1@kylinos.cn>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20220623111945.1557702-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: <stable@vger.kernel.org> # 5.15
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+Fixes: 28546b095511 ("arm64: dts: apq8016-sbc: Add HDMI display support")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- drivers/usb/host/xhci.c | 34 +++++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ arch/arm64/boot/dts/qcom/apq8016-sbc.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 541fe4d..7ee747e 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -607,8 +607,27 @@ static int xhci_init(struct usb_hcd *hcd)
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+index 3c51f891029e..9ffad7d1f2b6 100644
+--- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+@@ -172,6 +172,9 @@ adv_bridge: bridge@39 {
+ 		pd-gpios = <&tlmm 32 GPIO_ACTIVE_HIGH>;
  
- static int xhci_run_finished(struct xhci_hcd *xhci)
- {
-+	unsigned long	flags;
-+	u32		temp;
-+
-+	/*
-+	 * Enable interrupts before starting the host (xhci 4.2 and 5.5.2).
-+	 * Protect the short window before host is running with a lock
-+	 */
-+	spin_lock_irqsave(&xhci->lock, flags);
-+
-+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Enable interrupts");
-+	temp = readl(&xhci->op_regs->command);
-+	temp |= (CMD_EIE);
-+	writel(temp, &xhci->op_regs->command);
-+
-+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Enable primary interrupter");
-+	temp = readl(&xhci->ir_set->irq_pending);
-+	writel(ER_IRQ_ENABLE(temp), &xhci->ir_set->irq_pending);
-+
- 	if (xhci_start(xhci)) {
- 		xhci_halt(xhci);
-+		spin_unlock_irqrestore(&xhci->lock, flags);
- 		return -ENODEV;
- 	}
- 	xhci->shared_hcd->state = HC_STATE_RUNNING;
-@@ -619,6 +638,8 @@ static int xhci_run_finished(struct xhci_hcd *xhci)
+ 		avdd-supply = <&pm8916_l6>;
++		a2vdd-supply = <&pm8916_l6>;
++		dvdd-supply = <&pm8916_l6>;
++		pvdd-supply = <&pm8916_l6>;
+ 		v1p2-supply = <&pm8916_l6>;
+ 		v3p3-supply = <&pm8916_l17>;
  
- 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
- 			"Finished xhci_run for USB3 roothub");
-+
-+	spin_unlock_irqrestore(&xhci->lock, flags);
- 	return 0;
- }
- 
-@@ -667,19 +688,6 @@ int xhci_run(struct usb_hcd *hcd)
- 	temp |= (xhci->imod_interval / 250) & ER_IRQ_INTERVAL_MASK;
- 	writel(temp, &xhci->ir_set->irq_control);
- 
--	/* Set the HCD state before we enable the irqs */
--	temp = readl(&xhci->op_regs->command);
--	temp |= (CMD_EIE);
--	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
--			"// Enable interrupts, cmd = 0x%x.", temp);
--	writel(temp, &xhci->op_regs->command);
--
--	temp = readl(&xhci->ir_set->irq_pending);
--	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
--			"// Enabling event ring interrupter %p by writing 0x%x to irq_pending",
--			xhci->ir_set, (unsigned int) ER_IRQ_ENABLE(temp));
--	writel(ER_IRQ_ENABLE(temp), &xhci->ir_set->irq_pending);
--
- 	if (xhci->quirks & XHCI_NEC_HOST) {
- 		struct xhci_command *command;
- 
+
+---
+base-commit: a35461d47fe3e555602912b905f1bae7045256eb
+change-id: 20230922-db410c-adv7533-regulators-89a607130f1d
+
+Best regards,
 -- 
-2.7.4
+Stephan Gerhold <stephan@gerhold.net>
 
