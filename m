@@ -2,222 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFE37ABA64
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9867ABA69
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbjIVUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 16:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
+        id S232503AbjIVUM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 16:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbjIVUJ1 (ORCPT
+        with ESMTP id S231535AbjIVUMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 16:09:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B22A9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 13:09:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D96FC433C7;
-        Fri, 22 Sep 2023 20:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695413361;
-        bh=AHLsm+//Drjgdq1RMAfycEOsiVnacXmgu1AI48p1mr4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=epPR8EA/dExFShKHOUKdpcaThakwLUQN1Z1CVvXQa/Fj5oIIM1qVjZbdGcHb7oiLm
-         eInHFIwBWogZccskWgUoHzKp9dMzFDe0P6hlUFuWFQGjyGosG5NZPBiriu5hqWA0Pv
-         1G+5jsv1pUKZuFrb5A5Mq6CXCjiUD1tZXmehAqMiV/V09ZioBJvtPSXyOuClyCEeO/
-         fjYAkK09uZLDdtg1XinrtKjmgmqltErGVZM7WIf9eD/1+yABzMJhDECj+BCQRBGsdr
-         lnCh66W7X7r5yLv4V6J8dTgoTfclaBObC1cSoU9LYifoPrnxAb1RKZ0gZ0tSrV6lRh
-         bZoM6gVyiUzKQ==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5031ccf004cso4431996e87.2;
-        Fri, 22 Sep 2023 13:09:21 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwsCnGUqvWoe4BGghTiKNmr/kmNIdus+bk4tIJlB+VXZz/bhGTy
-        gmhI0iaSEItmMu2fsk/ghhMTdKuAv6UiKGiEeA==
-X-Google-Smtp-Source: AGHT+IGFqC9FB0x299iVTOZ8zvTG+lxLZa9XS3sg2oFHCL70TvCL5i7aOA4f+aMgtOsKkLHBK5NYuqYovIM5DdYW+Go=
-X-Received: by 2002:a19:8c16:0:b0:503:3446:8ef5 with SMTP id
- o22-20020a198c16000000b0050334468ef5mr451086lfd.10.1695413359094; Fri, 22 Sep
- 2023 13:09:19 -0700 (PDT)
+        Fri, 22 Sep 2023 16:12:55 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADB0A9;
+        Fri, 22 Sep 2023 13:12:49 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b11cc499c2so75849566b.2;
+        Fri, 22 Sep 2023 13:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695413568; x=1696018368; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLN4bH4coEcvi6teZvOLHVyuO9WrCZeFHK+MQxHhiSE=;
+        b=Q+MDi79B34rn0IDIq1eh/yY2iHVurOgFyUiqsg/xPtxsnFofbZbLvqldyT2ctgUX1y
+         W7caN0KeXe2/qDZWnveUDcyXS/ngusLxMrXj4aJwJewp4XS+AtXQKy4NoND3RmQu4VPG
+         kyX34p+7LHpG/P5GqTuSzZX3H+uCP9Nfdj64tPNT5wB9750761OkCH9XGtt1oZee1Ylh
+         s3tCL/71yYNu4T8j/mtDT8W0U0TveMZpO8fLyIMUpx70n/hAz/MGofFLQitdhP6wzshg
+         3C0Zm8FEDihdWoGXl4L8IaSAUTbJbrvSR2DiAUvhx5v6BIhMdIGdTS52HcPATmCbKN1t
+         Oj2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695413568; x=1696018368;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oLN4bH4coEcvi6teZvOLHVyuO9WrCZeFHK+MQxHhiSE=;
+        b=twT8Bv4NFQ1BqicyOBp6QMNPc7Lh2bJGws5JnsaFdxHjrBHqfpeV/whrWcb7eGkxAm
+         DvSeTbIikr8I3eBu1ujw5B4+Ewx4TCzXndIXzPk0btSIYGBGDmmON5q03xhMN1vGIUJ1
+         oPw+O8GfHsR+qH/KVH673AJwCnSbyMd4rSss0uLNg97Z70CiZe8+PMr43NlUBUX1HuAW
+         GWnvxwvyfL1bRDEy3jsHhRkQLgs8mIwGHDJ453CNmbzIKatSLTD0wl9rQGRR/ne+pJFk
+         k4GXuLAisr8DKVsS5XS5b8PT/Q9NNspc95t6YVsH2XpO+xuEu7L7lnkya89j2FSlT9Tt
+         jtJw==
+X-Gm-Message-State: AOJu0YzVBbUuEO4yDgQUpfgb0Q1UfhFYJjjolNn+75d3g71x4bZ6wSqU
+        QZXvEpImIuz8y/VA7hVKBy8=
+X-Google-Smtp-Source: AGHT+IF7G+E5H3ZPGE5wynI5t2ubz7n8rEDRMyWSsuis7DkkkZP6qj1ZyGy+rEZaWqQCRHQKvfooLQ==
+X-Received: by 2002:a17:906:5a5d:b0:9ae:699d:8a29 with SMTP id my29-20020a1709065a5d00b009ae699d8a29mr299359ejc.6.1695413567731;
+        Fri, 22 Sep 2023 13:12:47 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5af6b6.dynamic.kabel-deutschland.de. [95.90.246.182])
+        by smtp.gmail.com with ESMTPSA id k3-20020a17090646c300b009ae57888718sm3101778ejs.207.2023.09.22.13.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 13:12:47 -0700 (PDT)
+From:   Nikita Bune <w1s2d5@gmail.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Nikita Bune <w1s2d5@gmail.com>, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/watchdog: fix checkpatch error
+Date:   Fri, 22 Sep 2023 22:10:25 +0200
+Message-Id: <20230922201025.64164-1-w1s2d5@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230920133450.54226-1-rogerq@kernel.org> <20230920133450.54226-3-rogerq@kernel.org>
- <20230920135802.3ej2wcuaruqjidel@uncouth> <e8f26137-1284-4f45-a74d-a0a5f2aa2f93@kernel.org>
- <20230920164424.rrjvm6nvtv4ysyrw@unreal> <c7ec6ccd-37de-244d-0b3b-cb5d13bae539@ti.com>
- <6f2b38f8-1962-46f2-a095-b1eaf99ed407@kernel.org> <f79f521b-bfaf-27d2-f152-2f2f21d6f2b7@ti.com>
- <3eef2d49-d13e-40cf-a633-94b52948b065@kernel.org>
-In-Reply-To: <3eef2d49-d13e-40cf-a633-94b52948b065@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 22 Sep 2023 15:09:06 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLmv904+_2EOmsQ__y1yLDvsT+_02i85phuh0cpe7X8NQ@mail.gmail.com>
-Message-ID: <CAL_JsqLmv904+_2EOmsQ__y1yLDvsT+_02i85phuh0cpe7X8NQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: ti: am642-evm: Add overlay for NAND
- expansion card
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tony Lindgren <tony@atomide.com>, david@gibson.dropbear.id.au,
-        vigneshr@ti.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srk@ti.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Siddharth Vadapalli <s-vadapalli@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 4:03=E2=80=AFAM Roger Quadros <rogerq@kernel.org> w=
-rote:
->
->
->
-> On 21/09/2023 20:23, Andrew Davis wrote:
-> > On 9/21/23 6:37 AM, Roger Quadros wrote:
-> >> On 20/09/2023 20:06, Andrew Davis wrote:
-> >>> On 9/20/23 11:44 AM, Nishanth Menon wrote:
-> >>>> On 18:18-20230920, Roger Quadros wrote:
-> >>>>>
-> >>>>>
-> >>>>> On 20/09/2023 16:58, Nishanth Menon wrote:
-> >>>>>> On 16:34-20230920, Roger Quadros wrote:
-> >>>>>>> The NAND expansion card plugs in over the HSE (High Speed Expansi=
-on)
-> >>>>>>> connector. Add support for it.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> >>>>>>> ---
-> >>>>>>>    arch/arm64/boot/dts/ti/Makefile               |   1 +
-> >>>>>>>    arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++=
-++++++++
-> >>>>>>>    2 files changed, 141 insertions(+)
-> >>>>>>>    create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dt=
-so
-> >>>>>>>
-> >>>>>>> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dt=
-s/ti/Makefile
-> >>>>>>> index 06d6f264f292..ece74085a6be 100644
-> >>>>>>> --- a/arch/arm64/boot/dts/ti/Makefile
-> >>>>>>> +++ b/arch/arm64/boot/dts/ti/Makefile
-> >>>>>>> @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_K3) +=3D k3-am62p5-sk.dtb
-> >>>>>>>      # Boards with AM64x SoC
-> >>>>>>>    dtb-$(CONFIG_ARCH_K3) +=3D k3-am642-evm.dtb
-> >>>>>>> +dtb-$(CONFIG_ARCH_K3) +=3D k3-am642-evm-nand.dtbo
-> >>>>>>>    dtb-$(CONFIG_ARCH_K3) +=3D k3-am642-phyboard-electra-rdk.dtb
-> >>>>>>>    dtb-$(CONFIG_ARCH_K3) +=3D k3-am642-sk.dtb
-> >>>>>>>    dtb-$(CONFIG_ARCH_K3) +=3D k3-am642-tqma64xxl-mbax4xxl.dtb
-> >>>>>>
-> >>>>>> Also see https://lore.kernel.org/all/20230911165610.GA1362932-robh=
-@kernel.org/
-> >>>>>>
-> >>>>>> you may not get the dtbo installed when doing make dtbs_install
-> >>>>>>
-> >>>>>> [...]
-> >>>>>>
-> >>>>>
-> >>>>> $ v8make dtbs_install INSTALL_DTBS_PATH=3D/tmp
-> >>>>>     INSTALL /tmp/ti/k3-am625-beagleplay.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-phyboard-lyra-rdk.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-sk.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dahlia.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dev.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-verdin-nonwifi-yavia.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-dahlia.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-dev.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am625-verdin-wifi-yavia.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am62-lp-sk.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am62x-sk-hdmi-audio.dtbo
-> >>>>>     INSTALL /tmp/ti/k3-am62a7-sk.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am62p5-sk.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am642-evm.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am642-evm-nand.dtbo
-> >>>>> ^^^^
-> >>>>>     INSTALL /tmp/ti/k3-am642-phyboard-electra-rdk.dtb
-> >>>>>     INSTALL /tmp/ti/k3-am642-sk.dtb
-> >>>>>
-> >>>>>
-> >>>>> What did I miss?
-> >>>>
-> >>>> I missed it, actually. See Rob's comment:
-> >>>> https://lore.kernel.org/all/CAL_Jsq+GR3hP6hFvFn2z5aXvSXnh9butD3aKZ-y=
-_XJgx0_YPTw@mail.gmail.com/
-> >>>>
-> >>>> Having orphan dtbo is apparently frowned upon
-> >>>>
-> >>>
-> >>> And if you apply these overlays to the base DTB then it gets
-> >>> symbols added automatically, no need for your patch [1/2] here.
-> >>>
-> >>
-> >> Is this OK?
-> >>
-> >>     k3-am642-evm-nand-dtbs :=3D k3-am642-evm.dtb k3-am642-evm-nand.dtb=
-o
-> >>     dtb-$(CONFIG_ARCH_K3) +=3D k3-am642-evm-nand.dtb
-> >>
-> >> So patch 1 is not required in this case but we have an
-> >> extra dtb file which is not really required.
-> >>
-> >
-> > While I agree we will end up with several pre-overlayed DTB files
-> > that are arguably not required as they could be later built/applied,
-> > until we find a better way to check at build time these overlays
-> > need applied to something as a test.
-> >
-> >> I have 2 more issues to point out
-> >>
-> >> 1)
-> >> With existing examples e.g. J7200 EVM
-> >> wouldn't  k3-j7200-evm.dtb include the k3-j7200-evm-quad-port-eth-exp.=
-dtbo?
-> >> Is this what we really want?
-> >>
-> >> likewise for k3-j721e-evm.dtb and k3-am654-gp-evm.dtb
-> >>
-> >
-> > Yes, that is the idea, the base-board.dtb is just the raw main board, b=
-ut
-> > the "EVM" when you buy it comes with the quad-port daughtercard attache=
-d.
-> > That is what we consider the "EVM" and the DTB names match that.
-> >
-> >> 2)
-> >> Another issue (unrelated to this change) is the below warning:
-> >>
-> >>     arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning =
-(avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #add=
-ress-cells value
-> >>     arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning =
-(avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #siz=
-e-cells value
-> >>
-> >> This is because we use the 'ranges' property in the gpmc0 node
-> >> and the compiler doesn't know the #address/size-cells of the
-> >> parent node.
-> >>
-> >> Is there a trick to specify it in the dtso file?
-> >>
-> >
-> > Hmm, seems like a tricky one. Do you really need to do the ranges here?
-> > Could you use the default `ranges;` for gpmc0? Then do the range transl=
-ation
-> > down inside the nand node to keep the partition addresses sane.
->
-> GPMC has separate address spaces per chip select.
->
-> From Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->   ranges:
->     minItems: 1
->     description: |
->       Must be set up to reflect the memory layout with four
->       integer values for each chip-select line in use,
->       <cs-number> 0 <physical address of mapping> <size>
->
-> The ranges location in the device tree overlay is correct. The overlay is
-> meaningless without the base tree.
->
-> The correct solution would be to fix dtc so it doesn't print this warning
-> for DT overlays.
+Fix checkpatch ERROR: do not initialise statics to 0
 
-https://www.spinics.net/lists/devicetree-compiler/msg04036.html
+Signed-off-by: Nikita Bune <w1s2d5@gmail.com>
+---
+ drivers/watchdog/uniphier_wdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/uniphier_wdt.c b/drivers/watchdog/uniphier_wdt.c
+index 8e9242c23022..7a080600d865 100644
+--- a/drivers/watchdog/uniphier_wdt.c
++++ b/drivers/watchdog/uniphier_wdt.c
+@@ -41,7 +41,7 @@
+ #define WDT_PERIOD_MIN			1
+ #define WDT_PERIOD_MAX			128
+ 
+-static unsigned int timeout = 0;
++static unsigned int timeout;
+ static bool nowayout = WATCHDOG_NOWAYOUT;
+ 
+ struct uniphier_wdt_dev {
+-- 
+2.34.1
+
