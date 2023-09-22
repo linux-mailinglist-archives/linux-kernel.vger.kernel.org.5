@@ -2,76 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABE07AADC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351A37AADB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjIVJXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
+        id S230519AbjIVJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjIVJXU (ORCPT
+        with ESMTP id S229539AbjIVJVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:23:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C96192;
-        Fri, 22 Sep 2023 02:23:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32460C433C7;
-        Fri, 22 Sep 2023 09:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695374593;
-        bh=dXskQX5Hl5xkPtfaxV8tcYegxNU8vst41m8wxd6lccM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HC7A5qwRYefrtsRKDVgbV8LB3GlGNnwCiuzuBjBf//079Vr5pHlHx7w33piVwkMSg
-         KdakR66MrSNSkYJO3jbZwCr/w2VTw33wUH/TvBJA0dAAYl+WQ5Z5GVudGyrcU4/vOf
-         0KADD+v5vZCFHY1cz6sqX/igDr/hO6uHWrXxgxmY=
-Date:   Fri, 22 Sep 2023 11:23:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v1 0/8] Fix set_huge_pte_at() panic on arm64
-Message-ID: <2023092208-sitcom-playpen-b62d@gregkh>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
- <20230921093026.230b2991be551093e397f462@linux-foundation.org>
- <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com>
+        Fri, 22 Sep 2023 05:21:08 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF8CE
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:21:01 -0700 (PDT)
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230922092058epoutp038a2c1059d84c92c544fb1d60fd9582a8~HLhZsWO2V1805118051epoutp03d
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:20:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230922092058epoutp038a2c1059d84c92c544fb1d60fd9582a8~HLhZsWO2V1805118051epoutp03d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695374458;
+        bh=N/E4GBX7zzKYIkwuYXxBrL6bJRdbM6IOCXZ3cSRf6b8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bODdv0rcS+i9gni4GKBPV7tYsgcuRl+MpIF5z6zsN8HKEgYeVpN+bK9Gk19QnJ60C
+         VIKonP++rrn1lnQLQqflAneiNNyPQHAKnrq8ZVMfkKoPPleLgTv9CgjGLEZ8wUHMkD
+         i62KLNrDS4rWuU07qwtw2+J4JNXDKh+RfXmvyQY0=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20230922092057epcas2p14cda4f44a306b9d779191c5a5f685319~HLhZI9u6t2197421974epcas2p1m;
+        Fri, 22 Sep 2023 09:20:57 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.68]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4RsRZx4pLLz4x9Q0; Fri, 22 Sep
+        2023 09:20:57 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7C.A4.09765.97C5D056; Fri, 22 Sep 2023 18:20:57 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230922092057epcas2p15dbc602adc71a42f6faa99677a0168dd~HLhYUP0Up2197421974epcas2p1k;
+        Fri, 22 Sep 2023 09:20:57 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230922092057epsmtrp12631636f96405bbb4bb2857a0cea8f02~HLhYQaQlx0296102961epsmtrp1I;
+        Fri, 22 Sep 2023 09:20:57 +0000 (GMT)
+X-AuditID: b6c32a48-66ffa70000002625-61-650d5c798dbf
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        61.C0.08742.87C5D056; Fri, 22 Sep 2023 18:20:56 +0900 (KST)
+Received: from jtpark-7920 (unknown [10.229.83.56]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230922092056epsmtip12633e7e24efd4a73e2795f0b0f0b65c0~HLhYE8hec3171831718epsmtip1s;
+        Fri, 22 Sep 2023 09:20:56 +0000 (GMT)
+Date:   Fri, 22 Sep 2023 18:23:46 +0900
+From:   Jeongtae Park <jtp.park@samsung.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Fan Ni <fan.ni@samsung.com>, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyungsan Kim <ks0204.kim@samsung.com>,
+        Wonjae Lee <wj28.lee@samsung.com>,
+        Hojin Nam <hj96.nam@samsung.com>,
+        Junhyeok Im <junhyeok.im@samsung.com>,
+        Jehoon Park <jehoon.park@samsung.com>,
+        Jeongtae Park <jeongtae.park@gmail.com>
+Subject: Re: [PATCH 6/7] cxl/memdev: Fix whitespace error/warnings
+Message-ID: <ZQ1dIr//9aYNktzI@jtpark-7920>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c5c2c00-d657-44fd-b478-743b43c57e8a@arm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <e14ac1d0-ef8e-74ab-0616-f3203580b371@intel.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA01TfUxbVRz19pXXB7PkUb5uWMbIm9NARmkZpZePLmYSbTY1JHNhcSg+2xeK
+        lLbpazdYFBlUmCUoji1A+ciWbqCMwahgug4U2VC7gJCxsIAi4UOgsgHBBYkIWPrQ7L9zz++c
+        e+7v/u4lMJEbjyBydCbGqKO1FB7A/+ZuNIotyBQyEufGfjQxM4yjkio7QNWXhwH6aew8jm6M
+        tQJUfGPCD5XY23G08niLj3oXiwRoYNDjh1qujuLI3l+Dof5uAg3Z7vPRiKseR+OVP/BQx+QS
+        /nKQ8rZtQqC03Hvip7R3e3hKR8unuPK7hlaB8rPOFqC8XPex8k9HZDrxdm6qhqHVjDGK0an0
+        6hxdtoI6fiLrlSxZokQaK01CcipKR+cxCirt9fTYV3O03i6oqDO01uyl0mmWpeKOpBr1ZhMT
+        pdGzJgXFGNRag9wgZuk81qzLFusYU7JUIomXeYXv5WqWp6t4ht8D80fLmCLweI8V+BOQTID/
+        eIoEVhBAiEgngPV/b+M7BRG5CmB/81musAbgpcl5nhUQnGM8hON7ACxu/nXXsADgl+6XdjCf
+        PAiHyh/5eJyMgdW1RX47OMTLT7bP4DtmjFznw+rRdf5OIZg8Ctvav/aJhF5Dcfkgj8NB0F07
+        69P4kwq42bzsM0NymID3i0cE3InS4HaXmmsnGP7xY6eAwxHQ83mpgNOXALg4/5DPLSwAtv3i
+        3FUdhktj875kjNTAnvIqjNv0ALw3zufoQHjh7uZulhBeKBVxTgo2Xm/EOAzhg4bOXayE/X8t
+        Y9wNPQXw6qU5XiWItD3Tj+2ZNA4fglfurOI2bwRG7oXNWwQHo2G7K+4K8GsBYYyBzctm2HhD
+        wv/zVenzHMD3pmOUTlD3ZEXcB3gE6AOQwKgQoWo1gBEJ1XTBOcaozzKatQzbB2Te6XyBRYSq
+        9N5PoTNlSROSJAmJiVJ5vEwip8KFv33SoBaR2bSJyWUYA2P8z8cj/COKeMnPG19YCFa8O1E7
+        uBzTX2G5eVJWdi5wxNpkv7YHFOa6wmYvfqC9XuuSB3WkpjheFB+pCk95VHi6PjJ29WlLaMmb
+        000oX+BxrS05ajfN646UwqX3bR2ixjtl+Q+3bh3r+uqjM5Xkyj42+uxUjdN666YjVCac7pPe
+        Dktq6untGhvaaBtwFzyYa+jLPKkqWM0UWQz8wNj4U+K4jKM/q1Iz3tmbpWsgOwHxBtIdqKfP
+        V/SG7Auvs86Wbr2lOFxwujv0UHyrZSOxe1y2PSbdb6k/TqyFnHiuzd/OSN1kxdzKxcy11+Tf
+        T0U60oILJxc+HKjJXxQPn3J86wFTvZrkmQw7SfFZDS2NwYws/S8VFMFjXAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIIsWRmVeSWpSXmKPExsWy7bCSnG5FDG+qwdP7VhZ3H19gs2ievJjR
+        YvrUC4wWJ242slmsvrmG0aJp9V1Wi+bF69ksPrz5x2Jx4HUDu8WZsy9ZLVYtvMZmsfjoDGaL
+        o3s4LM7POsVicXnXHDaLWxOOMVlsvP+OzUHQY+esu+weLUfesnos3vOSyWPTqk42j/1z17B7
+        9G1ZxegxdXa9x+dNcgEcUVw2Kak5mWWpRfp2CVwZb46sYylYylPxdN0D5gbGo5xdjBwcEgIm
+        En9uiXQxcnEICexmlNiyZQlzFyMnUFxCYvmGF0wQtrDE/ZYjrBBFzxgllr9byAKSYBFQlTjf
+        fZ0NxGYT0JKYPrOBFcQWAYrfX/+YDaSBWeAfi8TEiyvAJgkLOEmsW78ZrIgXqKGp+ywTxNQv
+        jBJnW76xQSQEJU7OfAK2gRmo6Ma/l0wgpzILSEss/8cBEuYUsJX4u/w92wRGgVlIOmYh6ZiF
+        0LGAkXkVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZwrGlp7mDcvuqD3iFGJg7GQ4wS
+        HMxKIrzJn7hShXhTEiurUovy44tKc1KLDzFKc7AoifOKv+hNERJITyxJzU5NLUgtgskycXBK
+        NTAdKhYuYVfkep3GfnzDs++fXz8xiFv4lzd5W6js9hKD5js2l7Tn3pXSPLTUo3xh3bW6qPsP
+        4mZr/Oh9uzJD1+XJJT1Ljhvza68+K2gQKd7runb6yYwzGbHH+O1OTJJI0FS0LFkRUvpwfcea
+        tPlPQ9dc1ni3I6rI2+HBqTUWF61bpn3j8EufVPPZ9UZtItuJFAWRia6b7nPvWDB5ar/NvfUB
+        1+epJjV/31BtdlY/kj03YcdEW4n29dPcFlzbaXhJfP9dT8uyow/Xbt0X7zVJwMM7f1bjnEM3
+        evsMmda7uZ65/a6ny+3Pg0zJFfVCYd90Ra4tEHvzqdnx5+57wktEd3yZMSv4zQS3GvbfZg+N
+        Il6FKbEUZyQaajEXFScCAMAkbp8kAwAA
+X-CMS-MailID: 20230922092057epcas2p15dbc602adc71a42f6faa99677a0168dd
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----UO.gBI9h3KzXx7fAUzAwhoREi3kPxaIpZHHzoQQrAoo4vDHp=_2351a_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230921024832epcas2p24325cdfdb6fbbcf489ea3d442258e86b
+References: <20230921025110.3717583-1-jtp.park@samsung.com>
+        <CGME20230921024832epcas2p24325cdfdb6fbbcf489ea3d442258e86b@epcas2p2.samsung.com>
+        <20230921025110.3717583-7-jtp.park@samsung.com>
+        <e14ac1d0-ef8e-74ab-0616-f3203580b371@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,79 +132,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 05:35:54PM +0100, Ryan Roberts wrote:
-> On 21/09/2023 17:30, Andrew Morton wrote:
-> > On Thu, 21 Sep 2023 17:19:59 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
-> > 
-> >> Hi All,
-> >>
-> >> This series fixes a bug in arm64's implementation of set_huge_pte_at(), which
-> >> can result in an unprivileged user causing a kernel panic. The problem was
-> >> triggered when running the new uffd poison mm selftest for HUGETLB memory. This
-> >> test (and the uffd poison feature) was merged for v6.6-rc1. However, upon
-> >> inspection there are multiple other pre-existing paths that can trigger this
-> >> bug.
-> >>
-> >> Ideally, I'd like to get this fix in for v6.6 if possible? And I guess it should
-> >> be backported too, given there are call sites where this can theoretically
-> >> happen that pre-date v6.6-rc1 (I've cc'ed stable@vger.kernel.org).
-> > 
-> > This gets you a naggygram from Greg.  The way to request a backport is
-> > to add cc:stable to all the changelogs.  I'll make that change to my copy.
+------UO.gBI9h3KzXx7fAUzAwhoREi3kPxaIpZHHzoQQrAoo4vDHp=_2351a_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+
+On Thu, Sep 21, 2023 at 03:57:25PM -0700, Dave Jiang wrote:
 > 
-> Ahh, sorry about that... I just got the same moan from the kernel test robot too.
 > 
+> On 9/20/23 19:51, Jeongtae Park wrote:
+> > ERROR: code indent should use tabs where possible
+> > WARNING: please, no spaces at the start of a line
 > > 
-> > 
-> >> Ryan Roberts (8):
-> >>   parisc: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   powerpc: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   riscv: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   s390: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   sparc: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   mm: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   arm64: hugetlb: Convert set_huge_pte_at() to take vma
-> >>   arm64: hugetlb: Fix set_huge_pte_at() to work with all swap entries
-> >>
-> >>  arch/arm64/include/asm/hugetlb.h              |  2 +-
-> >>  arch/arm64/mm/hugetlbpage.c                   | 22 ++++----------
-> >>  arch/parisc/include/asm/hugetlb.h             |  2 +-
-> >>  arch/parisc/mm/hugetlbpage.c                  |  4 +--
-> >>  .../include/asm/nohash/32/hugetlb-8xx.h       |  3 +-
-> >>  arch/powerpc/mm/book3s64/hugetlbpage.c        |  2 +-
-> >>  arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  2 +-
-> >>  arch/powerpc/mm/nohash/8xx.c                  |  2 +-
-> >>  arch/powerpc/mm/pgtable.c                     |  7 ++++-
-> >>  arch/riscv/include/asm/hugetlb.h              |  2 +-
-> >>  arch/riscv/mm/hugetlbpage.c                   |  3 +-
-> >>  arch/s390/include/asm/hugetlb.h               |  8 +++--
-> >>  arch/s390/mm/hugetlbpage.c                    |  8 ++++-
-> >>  arch/sparc/include/asm/hugetlb.h              |  8 +++--
-> >>  arch/sparc/mm/hugetlbpage.c                   |  8 ++++-
-> >>  include/asm-generic/hugetlb.h                 |  6 ++--
-> >>  include/linux/hugetlb.h                       |  6 ++--
-> >>  mm/damon/vaddr.c                              |  2 +-
-> >>  mm/hugetlb.c                                  | 30 +++++++++----------
-> >>  mm/migrate.c                                  |  2 +-
-> >>  mm/rmap.c                                     | 10 +++----
-> >>  mm/vmalloc.c                                  |  5 +++-
-> >>  22 files changed, 80 insertions(+), 64 deletions(-)
-> > 
-> > Looks scary but it's actually a fairly modest patchset.  It could
-> > easily be all rolled into a single patch for ease of backporting. 
-> > Maybe Greg has an opinion?
+> > Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
 > 
-> Yes, I thought about doing that; or perhaps 2 patches - one for the interface
-> change across all arches and core code, and one for the actual bug fix?
+> two different issues?
+> 
 
-I have no issues with taking patch series, or one big patch, into stable
-trees, they just have to match up with what is in Linus's tree.
+Yes, they are. I will seperate and resend them.
 
-so if it makes more sense to have this as a series (like you did here),
-wonderful, make it a patch series.  Do not go out of your way to do
-things differently just for stable kernels, that is not necessary or
-needed at all.
+> > ---
+> >  drivers/cxl/core/memdev.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+> > index f99e7ec3cc40..ce67df163452 100644
+> > --- a/drivers/cxl/core/memdev.c
+> > +++ b/drivers/cxl/core/memdev.c
+> > @@ -935,11 +935,11 @@ static void cxl_fw_cancel(struct fw_upload *fwl)
+> >  }
+> >  
+> >  static const struct fw_upload_ops cxl_memdev_fw_ops = {
+> > -        .prepare = cxl_fw_prepare,
+> > -        .write = cxl_fw_write,
+> > -        .poll_complete = cxl_fw_poll_complete,
+> > -        .cancel = cxl_fw_cancel,
+> > -        .cleanup = cxl_fw_cleanup,
+> > +	.prepare = cxl_fw_prepare,
+> > +	.write = cxl_fw_write,
+> > +	.poll_complete = cxl_fw_poll_complete,
+> > +	.cancel = cxl_fw_cancel,
+> > +	.cleanup = cxl_fw_cleanup,
+> >  };
+> >  
+> >  static void devm_cxl_remove_fw_upload(void *fwl)
+> > @@ -1010,7 +1010,7 @@ static int cxl_memdev_security_init(struct cxl_memdev *cxlmd)
+> >  	}
+> >  
+> >  	return devm_add_action_or_reset(cxlds->dev, put_sanitize, mds);
+> > - }
+> > +}
+> >  
+> >  struct cxl_memdev *devm_cxl_add_memdev(struct cxl_dev_state *cxlds)
+> >  {
 
-thanks,
+------UO.gBI9h3KzXx7fAUzAwhoREi3kPxaIpZHHzoQQrAoo4vDHp=_2351a_
+Content-Type: text/plain; charset="utf-8"
 
-greg k-h
+
+------UO.gBI9h3KzXx7fAUzAwhoREi3kPxaIpZHHzoQQrAoo4vDHp=_2351a_--
