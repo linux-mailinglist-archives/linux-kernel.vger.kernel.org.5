@@ -2,102 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186827ABC2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DAC7ABC25
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjIVXIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 19:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        id S230243AbjIVXDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 19:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjIVXIi (ORCPT
+        with ESMTP id S229576AbjIVXDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 19:08:38 -0400
-X-Greylist: delayed 473 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Sep 2023 16:08:32 PDT
-Received: from out-206.mta1.migadu.com (out-206.mta1.migadu.com [IPv6:2001:41d0:203:375::ce])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF0719A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 16:08:32 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 16:00:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695423637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xnLthAI2KKZwUYazrEPUSMFwID0MKjI3FCNZtFBM4m4=;
-        b=E35HnXox4DMrYu3DkYtdgmp0uOW7ubbbmSyrum1CRnX+YpPXnGRoXIqr21W5ok6+a5jcR5
-        KJdYqD8of5GS6tMtn3L1CKtyBVVxIrjiG8nUcORjD1mPjNYsdtJSFSZOomwvYiNfPOr+XR
-        Rqo+dUaRoJrsrQX0lusdx455KWZkuxg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        mathieu.tortuyaux@gmail.com
-Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
- kmem.limit_in_bytes
-Message-ID: <ZQ4cjqQLhgX1pOVX@P9FQF9L96D.corp.robot.car>
-References: <20230917191040.964416434@linuxfoundation.org>
- <20230917191042.204185566@linuxfoundation.org>
- <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
- <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
- <ZQrSXh+riB7NnZuE@dhcp22.suse.cz>
- <4eb47d6a-b127-4aad-af30-896c3b9505b4@linux.microsoft.com>
- <ZQr3+YfcBM2Er6F7@dhcp22.suse.cz>
+        Fri, 22 Sep 2023 19:03:40 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B821AF;
+        Fri, 22 Sep 2023 16:03:34 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MMOiM1009053;
+        Fri, 22 Sep 2023 23:03:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=4FWnjfTUwLDhTdM8E7W9GOoGO7Th99GujB8c2w0lai4=;
+ b=IYcQ/rfrbWiUBQMtwif+AcTEz99gK3Rj339YLSRt/bL2dfJqfK/5Kc067sod4sYhexPk
+ MHw7HkZODMtnK92KgqK9sqaBdyi1P/i3j7ZmXCLwrLeMWtKckF1QGkMOuV1nOrLKvZQQ
+ Jspuitx94QDyznoEHB17WT+xEAYyBEjnPu7XiYtuQmLaXgUHu3T6TYgTcvrOAlo7k39s
+ Fn9AGIhbVX2SYuDppMWh7y91S4H9tFcuermq13PBxPS3P66OUCvvDrVO1MaCutTVfjYW
+ FhOmr6R19ITyTBU0LMc+epW/hr9TLsCx7qBJMBHiz2e5Ge37rzzCm7iUcl3+0KUI8iVC 5g== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9cq3s85u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 23:03:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MN36Cm007060
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 23:03:06 GMT
+Received: from [10.110.46.220] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 16:03:04 -0700
+Message-ID: <1c82a0a6-d85f-9800-bdc4-2a4892b4239b@quicinc.com>
+Date:   Fri, 22 Sep 2023 16:02:53 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQr3+YfcBM2Er6F7@dhcp22.suse.cz>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/7] drm/msm/dp: tie dp_display_irq_handler() with dp
+ driver
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-2-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJprRFYMF-6yxcL75rftfii0kt7hmg_+TeOMJw+BRyDYdeg@mail.gmail.com>
+Content-Language: en-US
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <CAA8EJprRFYMF-6yxcL75rftfii0kt7hmg_+TeOMJw+BRyDYdeg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: fgRZ9UUsYCfUmguX4vV3LDvHAahEoaSI
+X-Proofpoint-ORIG-GUID: fgRZ9UUsYCfUmguX4vV3LDvHAahEoaSI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_19,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 impostorscore=0
+ mlxlogscore=999 bulkscore=0 spamscore=0 phishscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309220197
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 03:47:37PM +0200, Michal Hocko wrote:
-> On Wed 20-09-23 15:25:23, Jeremi Piotrowski wrote:
-> > On 9/20/2023 1:07 PM, Michal Hocko wrote:
-> [...]
-> > > I mean, normally I would be just fine reverting this API change because
-> > > it is disruptive but the only way to have the file available and not
-> > > break somebody is to revert 58056f77502f ("memcg, kmem: further
-> > > deprecate kmem.limit_in_bytes") as well. Or to ignore any value written
-> > > there but that sounds rather dubious. Although one could argue this
-> > > would mimic nokmem kernel option.
-> > > 
-> > 
-> > I just want to make sure we don't introduce yet another new behavior in this legacy
-> > system. I have not seen breakage due to 58056f77502f. Mimicing nokmem sounds good but
-> > does this mean "don't enforce limits" (that should be fine) or "ignore writes to the limit"
-> > (=don't event store the written limit). The latter might have unintended consequences.
-> 
-> Yes it would mean that the limit is never enforced. Bad as it is the
-> thing is that the hard limit on kernel memory is broken by design and
-> unfixable.  This causes all sorts of unexpected kernel allocation
-> failures that this is simply unsafe to use.
-> 
-> All that being said I can see the following options
-> 1) keep the current upstream status and not export the file
-> 2) revert both 58056f77502f and 86327e8eb94 and make it clear
->    that kmem.limit_in_bytes is unsupported so failures or misbehavior
->    as a result of the limit being hit are likely not going to be
->    investigated or fixed.
-> 3) reverting like in 2) but never inforce the limit (so basically nokmem
->    semantic)
 
-Since it's a part of cgroup v1 interface, which is in a frozen state as a whole,
-and there is no significant (performance, code complexity) benefit of
-additionally deprecating kmem.limit_in_bytes, I vote for 2).
-1) is also an option.
+On 9/15/2023 5:29 PM, Dmitry Baryshkov wrote:
+> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>> Currently the dp_display_irq_handler() is executed at msm_dp_modeset_init()
+>> which ties irq registration to the DPU device's life cycle, while depending on
+>> resources that are released as the DP device is torn down. Move register DP
+>> driver irq handler at dp_display_probe() to have dp_display_irq_handler()
+>> is tied with DP device.
+>>
+>> Changes in v3:
+>> -- move calling dp_display_irq_handler() to probe
+> Was there a changelog for the previous reivions? What is the
+> difference between v1 and v2?
+>
+>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/dp/dp_display.c | 35 +++++++++++++----------------------
+>>   drivers/gpu/drm/msm/dp/dp_display.h |  1 -
+>>   2 files changed, 13 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index 76f1395..c217430 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -1193,30 +1193,23 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
+>>          return ret;
+>>   }
+>>
+>> -int dp_display_request_irq(struct msm_dp *dp_display)
+>> +static int dp_display_request_irq(struct dp_display_private *dp)
+>>   {
+>>          int rc = 0;
+>> -       struct dp_display_private *dp;
+>> -
+>> -       if (!dp_display) {
+>> -               DRM_ERROR("invalid input\n");
+>> -               return -EINVAL;
+>> -       }
+>> -
+>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+>> +       struct device *dev = &dp->pdev->dev;
+>>
+>> -       dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
+>>          if (!dp->irq) {
+> What is the point in this check?
+>
+>> -               DRM_ERROR("failed to get irq\n");
+>> -               return -EINVAL;
+>> +               dp->irq = platform_get_irq(dp->pdev, 0);
+>> +               if (!dp->irq) {
+>> +                       DRM_ERROR("failed to get irq\n");
+>> +                       return -EINVAL;
+>> +               }
+>>          }
+>>
+>> -       rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
+>> -                       dp_display_irq_handler,
+>> +       rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
+>>                          IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
+>>          if (rc < 0) {
+>> -               DRM_ERROR("failed to request IRQ%u: %d\n",
+>> -                               dp->irq, rc);
+>> +               DRM_ERROR("failed to request IRQ%u: %d\n", dp->irq, rc);
+>>                  return rc;
+>>          }
+>>
+>> @@ -1287,6 +1280,10 @@ static int dp_display_probe(struct platform_device *pdev)
+>>
+>>          platform_set_drvdata(pdev, &dp->dp_display);
+>>
+>> +       rc = dp_display_request_irq(dp);
+>> +       if (rc)
+>> +               return rc;
+> This way the IRQ ends up being enabled in _probe. Are we ready to
+> handle it here? Is the DP device fully setup at this moment?
 
-Thanks!
+The irq is enabled here.
+
+but DP driver hpd hardware block has not yet be enabled. this means no 
+irq will be delivered.
+
+  .hpd_enable() will call pm_runtime_resume_and_get() and 
+dp_catalog_ctrl_hpd_enable().
+
+after .hpd_enable() irq will be delivered and handled properly.
+
+
+
+>> +
+>>          rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>>          if (rc) {
+>>                  DRM_ERROR("component add failed, rc=%d\n", rc);
+>> @@ -1549,12 +1546,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+>>
+>>          dp_priv = container_of(dp_display, struct dp_display_private, dp_display);
+>>
+>> -       ret = dp_display_request_irq(dp_display);
+>> -       if (ret) {
+>> -               DRM_ERROR("request_irq failed, ret=%d\n", ret);
+>> -               return ret;
+>> -       }
+>> -
+>>          ret = dp_display_get_next_bridge(dp_display);
+>>          if (ret)
+>>                  return ret;
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+>> index 1e9415a..b3c08de 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+>> @@ -35,7 +35,6 @@ struct msm_dp {
+>>   int dp_display_set_plugged_cb(struct msm_dp *dp_display,
+>>                  hdmi_codec_plugged_cb fn, struct device *codec_dev);
+>>   int dp_display_get_modes(struct msm_dp *dp_display);
+>> -int dp_display_request_irq(struct msm_dp *dp_display);
+>>   bool dp_display_check_video_test(struct msm_dp *dp_display);
+>>   int dp_display_get_test_bpp(struct msm_dp *dp_display);
+>>   void dp_display_signal_audio_start(struct msm_dp *dp_display);
+>> --
+>> 2.7.4
+>>
+>
