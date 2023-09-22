@@ -2,144 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 857E07AB3F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F837AB3F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjIVOme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
+        id S231332AbjIVOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjIVOma (ORCPT
+        with ESMTP id S231549AbjIVOmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:42:30 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A3DC6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:42:24 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d776e1f181bso2615294276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:42:24 -0700 (PDT)
+        Fri, 22 Sep 2023 10:42:51 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395B61AD;
+        Fri, 22 Sep 2023 07:42:45 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57359e85e9bso1098881eaf.2;
+        Fri, 22 Sep 2023 07:42:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695393743; x=1695998543; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JlcUHfBjvDv/+8kmxymQCbCEugELBDLa0lrBy4oxtDc=;
-        b=Pid8+zudDNngq0U2uLvUJm9netGsnWSnl0ai0iUgUe5IMQY3lDwDrKOMKO+cu5nJT4
-         v4jQYTvnmb86+WRJGykA0eS2l2X7pIFjDkuHPHt2gE/2nWCTNMdV5ETcJjIW/IKwnk5A
-         VMy+kmIXkDQcEZ1N3DXrQdTeLXIU8au6NxbsyGV9upPIei3DXmZ8hmZ1m31mZUZqXcZ2
-         iPydaHiZPVcR78W+vfmWD8ocdj4IopkRile62wJvKzQaKxYM20mt9fPLfmKNwD3DLs2y
-         VOZ5Ik0o0HWg2yfuBMMFXd6tpYl50y1YtKp/YIHWbGsnIbeoqyRfNzgYBxZr+hqq94n0
-         TKFQ==
+        d=gmail.com; s=20230601; t=1695393764; x=1695998564; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6nqMzhPbNr8RLZEXVHoQWk3F1U8K2ekWVPTnLuWZ6u0=;
+        b=GXxiQ8tD86aENwV4iVOaGzeMO5LpjcJJginTUnH3gGJKd+bKMFuszBHwgflpzEQomW
+         +mJn5a8t6IZb0uNXowf6lPh6R+t5cYv9gVu6j7dEKd1s7iTL3QLcllTwxJxMvN7EueFa
+         BH1NqbBb1O0ghFWPjQaNa1HNxT5tr2lWr0ri/eX4c6ah2c35ayUmf2EbGZO5fE9uyWQK
+         FJZw5/3ia4ttkOUrpYBpYWAewQoCFWTH+zwSdzlVjfqe8D7yz8I8+AZ7W/xLb5V3i4oA
+         0kGUmFj/bnxXSS9oEpfwI1PahVPG6RzowhE/NqBsAr9igYNWQtc6icUNB/BqfowD+wKY
+         c7uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695393743; x=1695998543;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JlcUHfBjvDv/+8kmxymQCbCEugELBDLa0lrBy4oxtDc=;
-        b=HyGWts8joNOWsqLFTZg0zIac85vZejg4gnZUs2gTUI8gzQ89WPiRLVNEeD++WYR2nc
-         JttkN9/Ck3a1kMrlqn5Ildi0iWxq+Ki9eiMuK68pVkqDHgyA6jJf6lCNfVuOj88YdMnf
-         AIIAR0DRePGYwfeATa2sfeP03rQTcHSfXryEdNpX/Tv6UXouE1WApICbmjsHywVpkMGB
-         NLJHFm297MW8ZlB+JAmY+3kU5fY8v6WEvRpJt/fbETDcYF3SvgvOASrpa1flWzcWjLty
-         MxDWecyhlyypw3pP7rAdLsRTbEyWi5M+q2ubmO4//1RxtiEL5N0Rp6t6Vv6PL/+jjLFn
-         3NvQ==
-X-Gm-Message-State: AOJu0YxfUurb9QfB/kdvTqi6AlVJs2oQFFoDdstZ5E4tXMGFAzUueqHN
-        qsJGSVpZ2xdqf6Wq9Wtf5vIZfw==
-X-Google-Smtp-Source: AGHT+IEIruOEpifrm1oS0n3df3jP1SIS1yx5cEIbpMqLOWOUy3gIHUmXlub4hrYEyo8SfNoLg5tF8w==
-X-Received: by 2002:a25:5c9:0:b0:d7b:8d9a:4ec5 with SMTP id 192-20020a2505c9000000b00d7b8d9a4ec5mr8517791ybf.41.1695393743267;
-        Fri, 22 Sep 2023 07:42:23 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id a11-20020a0cca8b000000b0063f88855ef2sm1462282qvk.101.2023.09.22.07.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 07:42:22 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qjhMM-000Ybv-7d;
-        Fri, 22 Sep 2023 11:42:22 -0300
-Date:   Fri, 22 Sep 2023 11:42:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Hector Martin <marcan@marcan.st>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>, Neal Gompa <neal@gompa.dev>,
-        "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, stable@vger.kernel.org,
-        regressions@lists.linux.dev
-Subject: Re: [PATCH REGRESSION] iommu: Only allocate FQ domains for IOMMUs
- that support them
-Message-ID: <20230922144222.GF13795@ziepe.ca>
-References: <20230922-iommu-type-regression-v1-1-1ed3825b2c38@marcan.st>
- <2ea199a1-d20d-2fde-d1bd-76ecad14a68d@arm.com>
+        d=1e100.net; s=20230601; t=1695393764; x=1695998564;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6nqMzhPbNr8RLZEXVHoQWk3F1U8K2ekWVPTnLuWZ6u0=;
+        b=oBgyJqxRNVlRdC3l2sHZFd06kLGICTgf0FTSKLLECLFCpBfMyfks6YVCDbMOMT3bvX
+         m7cwa7yIR/njZ3jXLdl0ZDda5zb2P4DZuaEpMNNkhRgwNCdoXZoxqd7gJ87wg7g6KOXc
+         qjMZ3XUha8EUCr2n8UcBYstAciWw+A/gMyZqn9h0T5r8feBA7DaDjae0pkpxU/SCLo26
+         FqMMo+amSPWNqpRy+EYaoZyOP9ZCvZy86W5+nMIuxHjRXoKEbsvWMZZllaWjmtnfGDvS
+         nToqSMaxOMbWpSmzJAmEYkp7c5aG9NJ843VyoGHqvAZqNW8mqUBPVorJgfZTTP0xdllG
+         2hMQ==
+X-Gm-Message-State: AOJu0YwOB9KC2ot19p8ySEUUqCBqFfiwf7e/JgdZrIbkRD34K/GyqY38
+        CG7Jkm/QTRbWxJFSrNh6AlI=
+X-Google-Smtp-Source: AGHT+IErb4fP6iB04EKS9z5eo37yfXxKUQp6mTQIYz2oHpTlfaLWzbmrcgutHVeqXMhtd7KrJvHIwA==
+X-Received: by 2002:a05:6870:4395:b0:1d1:425b:8026 with SMTP id r21-20020a056870439500b001d1425b8026mr9267161oah.26.1695393764236;
+        Fri, 22 Sep 2023 07:42:44 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b28-20020a63715c000000b00578b40a4903sm573936pgn.22.2023.09.22.07.42.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 07:42:43 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <ceea0b12-9165-a9f6-cbd1-b25c07c75efb@roeck-us.net>
+Date:   Fri, 22 Sep 2023 07:42:42 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ea199a1-d20d-2fde-d1bd-76ecad14a68d@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230915062926.2460502-1-Delphine_CC_Chiu@wiwynn.com>
+ <20230915062926.2460502-3-Delphine_CC_Chiu@wiwynn.com>
+ <20230915-quench-left-8fbc1ca3b1da@spud>
+ <CAL_JsqKWRfT71k56uMUJtU_abzFuicW01OBo-iScYash4Jrd2w@mail.gmail.com>
+ <TYZPR04MB58530C4CB0386DF02D29E216D6FFA@TYZPR04MB5853.apcprd04.prod.outlook.com>
+ <20230922-washday-primer-af8dcf1cde7d@spud>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: add MAX31790
+In-Reply-To: <20230922-washday-primer-af8dcf1cde7d@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 03:21:17PM +0100, Robin Murphy wrote:
-> On 22/09/2023 2:40 pm, Hector Martin wrote:
-> > Commit a4fdd9762272 ("iommu: Use flush queue capability") hid the
-> > IOMMU_DOMAIN_DMA_FQ domain type from domain allocation. A check was
-> > introduced in iommu_dma_init_domain() to fall back if not supported, but
-> > this check runs too late: by that point, devices have been attached to
-> > the IOMMU, and the IOMMU driver might not expect FQ domains at
-> > ops->attach_dev() time.
-> > 
-> > Ensure that we immediately clamp FQ domains to plain DMA if not
-> > supported by the driver at device attach time, not later.
-> > 
-> > This regressed apple-dart in v6.5.
+On 9/22/23 02:53, Conor Dooley wrote:
+> On Fri, Sep 22, 2023 at 02:33:06AM +0000, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
+>>>> On Fri, Sep 15, 2023 at 02:29:24PM +0800, Delphine CC Chiu wrote:
 > 
-> Apologies, I missed that apple-dart was doing something unusual here.
-> However, could we just fix that directly instead?
+>>>>> +  pwm-as-tach:
+>>>>
+>>>> I don't see any other users of this in-tree, so you'd need a vendor
+>>>> prefix. That said, I'm once bitten, twice shy about fan related
+>>>> properties in hwmon, so I would definitely like Rob to comment on this
+>>>> whole binding.
+>>>
+>>> Please see this[1] and comment on it to ensure it meets your needs.
+>>> Otherwise, omit any fan related properties for now.
+>>>
+>> This property could only be used in max31790 driver. Would it be ok if we add
+>> vendor prefix like "maxim, pwm-as-tach"?
 > 
-> diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-> index 2082081402d3..0b8927508427 100644
-> --- a/drivers/iommu/apple-dart.c
-> +++ b/drivers/iommu/apple-dart.c
-> @@ -671,8 +671,7 @@ static int apple_dart_attach_dev(struct iommu_domain
-> *domain,
->  		return ret;
+> I think the answer to this is a pretty straightforward no. The goal is
+> to create a set of common fan properties that works for multiple
+> usecases, not create one specifically for each user...
 > 
->  	switch (domain->type) {
-> -	case IOMMU_DOMAIN_DMA:
-> -	case IOMMU_DOMAIN_UNMANAGED:
-> +	default:
->  		ret = apple_dart_domain_add_streams(dart_domain, cfg);
->  		if (ret)
->  			return ret;
 
-Yes, I much prefer this to the original patch please. Drivers should
-not be testing DMA_FQ at all.
+Another chip with configurable channel configuration is nct7802, where
+individual channels can be configured as temperature or voltage sensor.
+We are using sensor-type to select the mode in that driver. Maybe something
+similar would make sense / be acceptable here.
 
-I already wrote a series to convert DART to domain_alloc_paging() that
-fixes this inadvertantly.
+>>>> +examples:
+>>>> +  - |
+>>>> +    i2c {
+>>>> +      #address-cells = <1>;
+>>>> +      #size-cells = <0>;
+>>>> +
+>>>> +      pwm@20 {
+>>>> +        compatible = "maxim,max31790";
+>>>> +        reg = <0x20>;
+>>>> +        pwm-as-tach = <2 5>;
+>>>
+>>> This would be <2>, <5>; no?
+>>>
+>> I refer to the other binding documents in hwmon and most of them were using
+>> the format like <2 5> as an array.
+> 
+> Which also makes this moot, since it'll be going away.
+> 
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS index
+>>>> c8fdd0d03907..97e13b6bf51d 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -1371,6 +1371,12 @@ F:
+>>>        Documentation/devicetree/bindings/hwmon/adi,max31760.yaml
+>>>>   F: Documentation/hwmon/max31760.rst
+>>>>   F: drivers/hwmon/max31760.c
+>>>>
+>>>> +ANALOG DEVICES INC MAX31790 DRIVER
+>>>> +M: Delphine CC Chiu  <Delphine_CC_Chiu@wiwynn.com>
+>>>> +S: Odd Fixes
+>>>
+>>> This is a pretty odd status for something you're newly adding.
+>>> How come it's not going to be maintained?
+>>>
+>> We are not the authors of this driver but we want to add a feature to
+>> config PWM as TACH that was descripted in the datasheet of MAX31790.
+>> Should we set the status to maintained?
+> 
+> It's really up to you. I just found it curious & wanted to ask why it
+> was that way.
+> 
 
-Robin's suggestion is good for a temporary -rc fix.
+It is misleading because it downgrades the driver from "supported"
+(like all other hwmon drivers) to "odd fixes".
 
-Removing the switch is slightly more robust:
+Guenter
 
-if (domain->type & domain->type & __IOMMU_DOMAIN_PAGING) {
-  [..]
-  return 0
-}
-
-if (domain->type == IOMMU_DOMAIN_BLOCKED) {
-  ..
-}
-
-return -EOPNOTSUPP;
-
-But not so worthwhile since I deleted all this anyhow...
-
-I'll send out the dart series, it can't go to -rc, so a patch is still needed.
-
-Thanks,
-Jason
