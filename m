@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 498DE7AAD57
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61C67AAD5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbjIVJDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        id S232819AbjIVJFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbjIVJDp (ORCPT
+        with ESMTP id S232791AbjIVJFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:03:45 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC6EFB
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:03:39 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32001d16a14so1785727f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1695373417; x=1695978217; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JwCuwBRzQRtzIIEcUqVCtqKyAERbE1Vs3ON90clTwDo=;
-        b=RHLtSQ/dcfFp/hTxnjPBGQj74xTbBt7b4lGy81ESxwdy37hrR09Em98GhyGJDhTwiQ
-         WtvfCQx3Vmq48trhhrz4YQ7E1RnTu8fm07ef1/DpD6INrVqVZi2ZxFIVCrtild+EHdPW
-         VUfdG+i//mewoeGxwN0qahTbL91gArR+GTpTp8zD+L/5J0uurY23MnaR7c638eEEEN9a
-         r7F0V/MNqgdRjh+px7thyS/pOaH0KsNu/No9deG04BGQveDUufQjk4Zg/OZqQqrDMad/
-         57qfoo/jSqdqgy7kLB9Fd7nSFQb3kMRNzRRDfiK9Q5m45VReUYgxTSlhFO6wOE9DrPu0
-         1b5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695373417; x=1695978217;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JwCuwBRzQRtzIIEcUqVCtqKyAERbE1Vs3ON90clTwDo=;
-        b=Qvipt/vZawiFL0om7ijuvZbQ6zDu3aw5QUk4VI+xPEufLQAHiTSM+0I/7p6uwMW7MG
-         koXCuoHBKhkDdkmHjJmxVBFMa677KjW4Phq8gGDFh/vW4GBofGUl9Oc335ODy6rthTz0
-         vCNvS6ZvjrJoxWRNmHg3uVS6dfSshZOQnahJf3eklKcP3Z0QiwzDmDUdCrCSzFZOOtai
-         xymTj8qZK3E4GiaDphU+DT0tF7K6ljF1VMj1q6tifHRVgsg5FLkBWxdQa1RNLFZK/f5W
-         i4MDlt+ViZhuRL97p88Gv7Nz51Pv9pXpyjuTK3APDxPEoyLWlObK7tlLO+YmKH3p3Sp1
-         QQ0Q==
-X-Gm-Message-State: AOJu0YyVr3EW1XzatWNQvVQ/E1oyvfciv3RArQd6eOU7pD5csPrFE9dd
-        4gFA1bynl0WW4IVV1VDFgI3injpArgmWEK07Yc23lA==
-X-Google-Smtp-Source: AGHT+IFeB10/VQrvywgM5PXIIic/lGYOF01ufz889h5rxkcb+djbm+QO4vNfMX9sYbEOBbVgKOQ24g==
-X-Received: by 2002:adf:e7c9:0:b0:317:3f70:9dc4 with SMTP id e9-20020adfe7c9000000b003173f709dc4mr6353076wrn.31.1695373417393;
-        Fri, 22 Sep 2023 02:03:37 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id x17-20020a5d6511000000b0031fd849e797sm3917553wru.105.2023.09.22.02.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 02:03:36 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-To:     broonie@kernel.org, zev@bewilderbeest.net,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies from DT
-Date:   Fri, 22 Sep 2023 11:03:29 +0200
-Message-ID: <20230922090330.1570350-1-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 22 Sep 2023 05:05:09 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6CC9E;
+        Fri, 22 Sep 2023 02:05:00 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38M3PwDO014839;
+        Fri, 22 Sep 2023 11:04:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=p/ppS1A47bgbinuMN7wBwplhXT0cIutRq8BH5r+Gkz0=; b=Hw
+        zS/sl94VjbEwacCdv46JTIMckCgdiY9cYtBiwCbuGfAc0ifCOI3R8MiF0oaxeONb
+        xfcW9k2Vm6jpbhhVHJpatDeTi1X++if+lxEVTBLP7ZhQBcuKZt8H6nrIcOl2ZDu0
+        /Gbq5XNZcSj3H04aoyO5Z2ZHVYUcEI9cEh77C/oxPrMCVxppRct/vqSRv4erQHF7
+        FZvwNW4tm+IA16zletZfLgvoiXXd+C8gliNDCD1XiKiL3hA81+4MkPTdsqiYSI9j
+        upbUgzABzUUSXwxCb886EDntAETMp0voKTNUkiQhV0rcengNg13wTfsqDnypot7m
+        f+1RcSjMWNIGQbNoUW5g==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t8tt02jmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 11:04:38 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 99AE3100051;
+        Fri, 22 Sep 2023 11:04:24 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92490215154;
+        Fri, 22 Sep 2023 11:04:24 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Sep
+ 2023 11:04:23 +0200
+Message-ID: <e69618dd-e3b4-f987-15c7-1363881930b7@foss.st.com>
+Date:   Fri, 22 Sep 2023 11:04:23 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] ARM: dts: stm32: add HASH on stm32mp131
+To:     Thomas BOURGOIN <thomas.bourgoin@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Lionel Debieve <lionel.debieve@foss.st.com>
+References: <20230816142617.2625802-1-thomas.bourgoin@foss.st.com>
+Content-Language: en-US
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230816142617.2625802-1-thomas.bourgoin@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_07,2023-09-21_01,2023-05-22_02
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+Hi
 
-Instead of hardcoding a single supply, retrieve supplies from DT.
+On 8/16/23 16:26, Thomas BOURGOIN wrote:
+> From: Lionel Debieve <lionel.debieve@foss.st.com>
+> 
+> Add the HASH support on stm32mp131.
+> 
+> Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+> Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+> ---
+>   arch/arm/boot/dts/st/stm32mp131.dtsi | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+> index 672f3b7735a2..4e4f64cfb75b 100644
+> --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
+> +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+> @@ -1210,6 +1210,17 @@ timer {
+>   			};
+>   		};
+>   
+> +		hash: hash@54003000 {
+> +			compatible = "st,stm32mp13-hash";
+> +			reg = <0x54003000 0x400>;
+> +			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&rcc HASH1>;
+> +			resets = <&rcc HASH1_R>;
+> +			dmas = <&mdma 30 0x2 0x1000a02 0x0 0x0>;
+> +			dma-names = "in";
+> +			status = "disabled";
+> +		};
+> +
+>   		mdma: dma-controller@58000000 {
+>   			compatible = "st,stm32h7-mdma";
+>   			reg = <0x58000000 0x1000>;
 
-Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
----
- drivers/regulator/userspace-consumer.c | 43 ++++++++++++++++++++++++--
- 1 file changed, 40 insertions(+), 3 deletions(-)
+Applied on stm32-next.
 
-diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
-index 97f075ed68c9..a3d3e1e6ca74 100644
---- a/drivers/regulator/userspace-consumer.c
-+++ b/drivers/regulator/userspace-consumer.c
-@@ -115,11 +115,32 @@ static const struct attribute_group attr_group = {
- 	.is_visible =  attr_visible,
- };
- 
-+#define SUPPLY_SUFFIX "-supply"
-+#define SUPPLY_SUFFIX_LEN 7
-+
-+static int get_num_supplies(struct platform_device *pdev)
-+{
-+	struct  property *prop;
-+	int num_supplies = 0;
-+
-+	for_each_property_of_node(pdev->dev.of_node, prop) {
-+		const char *prop_name = prop->name;
-+		int len = strlen(prop_name);
-+
-+		if (len > SUPPLY_SUFFIX_LEN &&
-+		    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
-+			num_supplies++;
-+		}
-+	}
-+	return num_supplies;
-+}
-+
- static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- {
- 	struct regulator_userspace_consumer_data tmpdata;
- 	struct regulator_userspace_consumer_data *pdata;
- 	struct userspace_consumer_data *drvdata;
-+	struct  property *prop;
- 	int ret;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
-@@ -131,11 +152,27 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- 		memset(pdata, 0, sizeof(*pdata));
- 
- 		pdata->no_autoswitch = true;
--		pdata->num_supplies = 1;
--		pdata->supplies = devm_kzalloc(&pdev->dev, sizeof(*pdata->supplies), GFP_KERNEL);
-+		pdata->num_supplies = get_num_supplies(pdev);
-+
-+		pdata->supplies = devm_kzalloc(&pdev->dev, pdata->num_supplies *
-+					       sizeof(*pdata->supplies), GFP_KERNEL);
- 		if (!pdata->supplies)
- 			return -ENOMEM;
--		pdata->supplies[0].supply = "vout";
-+
-+		for_each_property_of_node(pdev->dev.of_node, prop) {
-+			const char *prop_name = prop->name;
-+			int len = strlen(prop_name);
-+
-+			if (len > SUPPLY_SUFFIX_LEN &&
-+			    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
-+				char *supply_name = devm_kzalloc(&pdev->dev,
-+								 len - SUPPLY_SUFFIX_LEN + 1,
-+								 GFP_KERNEL);
-+				strscpy(supply_name, prop_name, len - SUPPLY_SUFFIX_LEN);
-+				supply_name[len - SUPPLY_SUFFIX_LEN] = '\0';
-+				pdata->supplies[0].supply = supply_name;
-+			}
-+		}
- 	}
- 
- 	if (pdata->num_supplies < 1) {
-
-base-commit: 451e85e29c9d6f20639d4cfcff4b9dea280178cc
--- 
-2.41.0
-
+Thanks.
+Alex
