@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 939527AAE3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505737AAE4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbjIVJgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        id S233136AbjIVJhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjIVJgi (ORCPT
+        with ESMTP id S231503AbjIVJhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:36:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322EACE;
-        Fri, 22 Sep 2023 02:36:32 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 09:36:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695375390;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=677/MbUSA6vCYD0fUVtSForcHcp5I5+1QRye0EZZ3Gg=;
-        b=b13Yz4vadWLPOgeIw0hY8ArL4B9roL5H6IDVglX17JsONYNwS3p1X3QJdWnaR2YjxGTFos
-        msB0jO6Cy0S61ipxT/DGxjqd4QaZDIWL0Dk7lnA1uAE6RE5Su84sDb9k+G8C4V90F34Wjm
-        KoYomWntJmCxnftAeIW/7CKwn/fw6iNS5j5ztAHkWasEea6O7AknhAd/Taauk6FZe5vhTM
-        Ud9+qzMNpqxw2+jMqBlRo08tkH6iCiFh2qWPFMfLOYYi2mC2oDBqMhDgHPjQje5K3xjAgI
-        EnUwyZWtjp6j1RXLH2l8X+Jq1sSoEhf+U010KdmLauSHuKtcguf9BjQF8svRGQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695375390;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=677/MbUSA6vCYD0fUVtSForcHcp5I5+1QRye0EZZ3Gg=;
-        b=atnUJ0o5liXp3EQu3OE2EFz2YGCLGJc3ma/2zQL0Qa1yn1DSVN+tQIIDA+zlNVzhU9LJzo
-        fpgtRFuL/X3S2kCw==
-From:   "tip-bot2 for Jianlin Li" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/sev/docs: Update document URL in amd-memory-encryption.rst
-Cc:     Jianlin Li <ljianlin99@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230922082547.522689-1-ljianlin99@gmail.com>
-References: <20230922082547.522689-1-ljianlin99@gmail.com>
+        Fri, 22 Sep 2023 05:37:05 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CF4199;
+        Fri, 22 Sep 2023 02:36:59 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RsRtx0WslzrRtM;
+        Fri, 22 Sep 2023 17:34:49 +0800 (CST)
+Received: from build.huawei.com (10.175.101.6) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 22 Sep 2023 17:36:57 +0800
+From:   Wenchao Hao <haowenchao2@huawei.com>
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <open-iscsi@googlegroups.com>, <linux-scsi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>,
+        Wenchao Hao <haowenchao2@huawei.com>
+Subject: [PATCH 0/2] Fix two issue between removing device and error handle
+Date:   Fri, 22 Sep 2023 17:36:34 +0800
+Message-ID: <20230922093636.2645961-1-haowenchao2@huawei.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Message-ID: <169537538957.27769.16136549034466194421.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+I am testing SCSI error handle with my previous scsi_debug error
+injection patches, and found two issue when removing device and
+error handler happened together.
 
-Commit-ID:     bad0524e242012ec626c766f4ea2d8e4d67347be
-Gitweb:        https://git.kernel.org/tip/bad0524e242012ec626c766f4ea2d8e4d67347be
-Author:        Jianlin Li <ljianlin99@gmail.com>
-AuthorDate:    Fri, 22 Sep 2023 16:25:47 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 22 Sep 2023 11:29:23 +02:00
+The first patch fix IO hang because scsi_eh_flush_done_q() would
+retry command if the device is in SDEV_CANCEL state;
 
-x86/sev/docs: Update document URL in amd-memory-encryption.rst
+The second patch fix the issue which device's eh_device_reset_handler
+not called in recovery when device is in removing progress.
 
-The previous link to AMD programmer's manual is no longer available,
-replace it with the new one.
+Wenchao Hao (2):
+  scsi: core: scsi_device_online() return false if state is SDEV_CANCEL
+  scsi: scsi_error: Fix device reset is not triggered
 
-Signed-off-by: Jianlin Li <ljianlin99@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230922082547.522689-1-ljianlin99@gmail.com
----
- Documentation/arch/x86/amd-memory-encryption.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/srp/ib_srp.c         |  2 +-
+ drivers/message/fusion/mptctl.c             |  6 ++--
+ drivers/message/fusion/mptsas.c             |  8 ++---
+ drivers/message/fusion/mptspi.c             |  6 ++--
+ drivers/s390/scsi/zfcp_fsf.c                |  4 +--
+ drivers/s390/scsi/zfcp_scsi.c               |  2 +-
+ drivers/scsi/arm/acornscsi.c                |  2 +-
+ drivers/scsi/arm/fas216.c                   |  4 +--
+ drivers/scsi/bfa/bfad_im.c                  |  4 +--
+ drivers/scsi/ibmvscsi/ibmvfc.c              |  2 +-
+ drivers/scsi/lpfc/lpfc_scsi.c               |  4 +--
+ drivers/scsi/megaraid/megaraid_sas_base.c   |  2 +-
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |  2 +-
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c          |  4 +--
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c        | 16 ++++-----
+ drivers/scsi/myrb.c                         |  2 +-
+ drivers/scsi/myrs.c                         |  2 +-
+ drivers/scsi/scsi.c                         | 37 ++++++++++++---------
+ drivers/scsi/scsi_debug.c                   |  2 +-
+ drivers/scsi/scsi_error.c                   | 12 +++----
+ drivers/scsi/scsi_lib.c                     |  6 ++--
+ drivers/scsi/scsi_scan.c                    |  2 +-
+ drivers/scsi/scsi_transport_srp.c           |  2 +-
+ drivers/scsi/ses.c                          |  2 +-
+ drivers/scsi/storvsc_drv.c                  |  2 +-
+ drivers/scsi/virtio_scsi.c                  |  2 +-
+ drivers/ufs/core/ufshcd.c                   |  4 +--
+ include/scsi/scsi_device.h                  | 15 ++++++---
+ 28 files changed, 85 insertions(+), 73 deletions(-)
 
-diff --git a/Documentation/arch/x86/amd-memory-encryption.rst b/Documentation/arch/x86/amd-memory-encryption.rst
-index 934310c..07caa8f 100644
---- a/Documentation/arch/x86/amd-memory-encryption.rst
-+++ b/Documentation/arch/x86/amd-memory-encryption.rst
-@@ -130,4 +130,4 @@ SNP feature support.
- 
- More details in AMD64 APM[1] Vol 2: 15.34.10 SEV_STATUS MSR
- 
--[1] https://www.amd.com/system/files/TechDocs/40332.pdf
-+[1] https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/24593.pdf
+-- 
+2.32.0
+
