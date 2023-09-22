@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607A97AB887
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA687AB893
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbjIVRye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S233182AbjIVRyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233727AbjIVRyD (ORCPT
+        with ESMTP id S233811AbjIVRyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:54:03 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0590710F8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:52:36 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68c576d35feso2262676b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:52:36 -0700 (PDT)
+        Fri, 22 Sep 2023 13:54:08 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FAC1996
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:52:41 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so22063365ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405156; x=1696009956; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695405161; x=1696009961; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJdLYVSWRxq3AIlS4Kyz9YBlE5nYYkWXarwNDO1ghNY=;
-        b=mF6qe9PA5R5otO9zQnKcKj5oC+4+CP4hBXkWIjBl2HDYJBPTRln4UaDH48DkP5TPat
-         Ol/LoLZhF1VQRtz6drK/5zIwBNaCeeynVqn0LBW67vUzK3bL6d2b0KFoHFVGyHbMI0I7
-         mKBZDl8igK8nLzRodV/DhXyPirWDfOYHCVzHE=
+        bh=gSy8puFeXhx0444elPiTeRpnKr0zw+uEmx7ZUgtG/Dk=;
+        b=E8a+jlVLU42KDRxaSTV8s1DjumLBBmWzfzkfLJuYRzh4vzBWX36oz13mVR0tbDOXaW
+         nRW6afSYZebWtzmCLlgiiV5imwTYpibFaX5vwIbh/y4BrVV3wlBob3WubKZJKEv8bWXd
+         xeAZguQdA7d9Aj50sv3B9pBe3C3L0eR0EWPjs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405156; x=1696009956;
+        d=1e100.net; s=20230601; t=1695405161; x=1696009961;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZJdLYVSWRxq3AIlS4Kyz9YBlE5nYYkWXarwNDO1ghNY=;
-        b=qLhIeR4cqDjtU3S/zdBynFNBuaDgHrNf42FvHbHupGkVIM85Dy/tUXxPJdQa4cQ5Uu
-         0YMtV4bkWQTOz/wwQfeOECICTbjk+k3pYC9BZcEkBqSj4cQ7NiD1m9aZGlgR/I38CulP
-         8lTazbF/6AyIUZ3YAG5IKBDmVNht9OeBJ9LDSf+uZAihXBxSrsDZxn/eIiO48UNId8Kb
-         n2B1SpYILAF4+RKGaPF6zcHzls1wsxCSXk48w7ouWVPaPVeQrWlIZC/euBf57H/yOT76
-         awp15hK5TOQpU211VNDc9U9EPF/d0HvbzPhZ/RUfJofdVklIQ6TvuWon0Sm+Y1ZH+vd8
-         5O8A==
-X-Gm-Message-State: AOJu0Yy781/Z41uWjZj8Ks147k7CfxtMgi+IcVGi12dBylhROrcLLexE
-        uFJrPYN4+M65+wfPV35XV982ZA==
-X-Google-Smtp-Source: AGHT+IFoQrSp0SiFF6qLCBvHgOfTOrpApeeY7D6DEhe0wY4aS5rS++y/hvFvRE1hRHq+xbkNHBtrKg==
-X-Received: by 2002:a05:6a21:3392:b0:15d:6ea0:82da with SMTP id yy18-20020a056a21339200b0015d6ea082damr339756pzb.33.1695405156459;
-        Fri, 22 Sep 2023 10:52:36 -0700 (PDT)
+        bh=gSy8puFeXhx0444elPiTeRpnKr0zw+uEmx7ZUgtG/Dk=;
+        b=XujZ9XDrbstvp1hczT4Q17EF5T1i2BUNMHTo0A3ZuNo7KBxZV8+dSuYud8eUU9TZ/A
+         fWNVUgABvzf40D1w9ps9mlQDnHE9MPuoo8iGsvUguKG+5B3M6AV1Aoh5zpEQjzvm2Xdw
+         O9WYsN3arb0hscIVPEBnxAmFPFPSU9vWbCL+Gta4C6hp+6tZ+8atl0lZTbQ1zunNRv/d
+         P7w46mzumZZDl5IO2x5AX6MkauJvVROOIC8ztJpgOFkqsem1ZXgQ7SxmqJaGk6Q5nVve
+         86OsdSA28LcUo4aGBmvJ3rfmNU5xrpuX9BMG8jGTN+n6OBzfoIZQ9yTjXPBGUX2Sa7kh
+         SzIQ==
+X-Gm-Message-State: AOJu0YyVMgHLG0a9xi/F1J22y6b9VeOCCCRNs8fEEDtBSxlNl03VSph0
+        OFIJBP7MiVe2Ldozro+pz9h0bw==
+X-Google-Smtp-Source: AGHT+IGs9vWhlgTxV1Aqo0Ts/QnHggFMLwWvRbuUtTLBD1j/rEhcKu6yPTyXKYPaOAab6dPPu3rpqg==
+X-Received: by 2002:a17:90b:686:b0:268:13c4:b800 with SMTP id m6-20020a17090b068600b0026813c4b800mr417595pjz.21.1695405160722;
+        Fri, 22 Sep 2023 10:52:40 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s24-20020aa78298000000b00687a4b70d1esm3453975pfm.218.2023.09.22.10.52.36
+        by smtp.gmail.com with ESMTPSA id v8-20020a17090a4ec800b0026094c23d0asm3524738pjl.17.2023.09.22.10.52.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:52:36 -0700 (PDT)
+        Fri, 22 Sep 2023 10:52:40 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Liviu Dudau <liviu.dudau@arm.com>
+To:     Dan Williams <dan.j.williams@intel.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Rob Herring <robh@kernel.org>, Yangtao Li <frank.li@vivo.com>,
-        linux-arm-kernel@lists.infradead.org,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] bus: vexpress-config: Annotate struct vexpress_syscfg_func with __counted_by
-Date:   Fri, 22 Sep 2023 10:52:35 -0700
-Message-Id: <20230922175234.work.134-kees@kernel.org>
+Subject: [PATCH] libnvdimm: Annotate struct nd_region with __counted_by
+Date:   Fri, 22 Sep 2023 10:52:39 -0700
+Message-Id: <20230922175238.work.116-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1359; i=keescook@chromium.org;
- h=from:subject:message-id; bh=3PVI9STddT1UYeIAqa7UhvgteCrsOUq0jUn/ld5S1vw=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdRiLsX/0CwUbyt/VlYPcyGDAI+9ukcXqigL5
- VN0fQ0VpkqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UYgAKCRCJcvTf3G3A
- JkGEEACWR8ueSvd6K6fybEhvi0LAyEorYYtD45WON1Xxm4nFzcoie++vcc65U3s2vBo2Q+Ca6Hv
- 3ZlC4gOLONusN/ab1KT6HRYpnvJ3kav1cG92LF06cpQ1sJM6wmecTH9Z/tS/SycFLTUsIiR+fRx
- VYnTm5uuM8vTCvMMXoiJkxhwIWd5huI93hNq/4b/1hrZiKkAFxT9fQV1bTpNpzze1+0V6hrdHbX
- pZHHEP4xCGvwBY1r50vXi5jevgIbjCNQ9ZDO3HM2o4FOVVmsudLOzt0DO4EQZYPBeGfKzRA1dDm
- 46X09cXsawNxRUH9HeOn8+g+A1+QGMy4embVLeal2qjyAve/vCfwlr9PUlRYdcgVDsuPD1SLK8O
- YNO4CerpAmMXWOQqCxOnk98lIz6diCC7o25PAmFbqg9O/7GMYymae6IbxT92aTG9xxtmFs+NL0P
- 67f6B8yIoj4ViQNWe4c6XqTiMxlAsWuELYoSodTUiuA7yqXjwvFOtw1iOpyPogRQ7mAxjVMxYlN
- Wkmhjs3gY00bdzo7/b6dZ9vCmHH8xxnvDWNqtcr8TOt0bJUNv0ZtzRK2F0DrgUrtcfY1cv92fAe
- j28xJqCPhn9eeB0YArMpn7Z8rk6viQHx2tOeW59Cc8rUZc5r+NplUk4pxad20p/nYkd8v4n93u7
- rwdVR3q sgzoqcAQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2382; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=F761VQHXmd2u4Wh2IEMoSgcuswWDj9IUbpQjwrV+U7U=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdRn7mm/yqnmTumY4FRBROvnp/IvAD87OmcL1
+ yK+d5kEY2GJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UZwAKCRCJcvTf3G3A
+ JhAZEACeucv92nBVoYitGAfmlofYg5eafD6vhQlME6vo7ELBJbtrs5nr/6inRq0/eA0kAT7moqL
+ KQNjP6gMWKDuvItgrJBObPbsP1TX8Gf5Q4h7aGpP6aoBVEMGlUstcXMFNo/Y0dAjMchHw/UEf3h
+ O+fzNwcrJMiRRqZHP/axClfYmDNc8Os3sZ8c+6h1PofZK+HM7c+qpeHena/yZ/Ii3ZOnJR2Cd0p
+ fSDNE4t4g6onf4oN7KjzkOSCQoQ3ouDpsoBPCMByzL13NB7URsh0NTZ1I+ufBZYHGsIbswWi0p2
+ COaH0/j8klNyrzEHGbX9oNOiNjoggxZyefLa3/4Ep5yK/y8Ujsp/WSvzVAtBx7vyuVTd5vcsUPc
+ 6GerUe+AOVWiQtjG5Zx2qplTjE1qN/38QFxI52lCjl6QdnZkfARiKyDu1Fby2oLvw2gc6ywBImU
+ EXszuxp09F7eDU5USjQQlkNRSMI7i3NBbBSOV0VGH/2jbDpXv6fage8NNNNY95kPBx+j0yUDllz
+ f9dBtF5+cyeapGtokkSwa+v9mwfoggMism33zlyua73+Q6FdqegMBQz0yCC3R7hAziUujAeGcCm
+ zTHG2oNr0j2/n1xnSV5DewoHZaDuQVpxkLlge7kd+1NKZ+pzIzbgOaq2ol75jtMnlrXQokeCGqY
+ n6M6Oyu v8uheuFA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,34 +93,56 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct vexpress_syscfg_func.
+As found with Coccinelle[1], add __counted_by for struct nd_region.
+Additionally, since the element count member must be set before accessing
+the annotated flexible array member, move its initialization earlier.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Cc: Liviu Dudau <liviu.dudau@arm.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Yangtao Li <frank.li@vivo.com>
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: nvdimm@lists.linux.dev
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/bus/vexpress-config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvdimm/nd.h          | 2 +-
+ drivers/nvdimm/region_devs.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/vexpress-config.c b/drivers/bus/vexpress-config.c
-index c4e1becbb2d2..d2c7ada90186 100644
---- a/drivers/bus/vexpress-config.c
-+++ b/drivers/bus/vexpress-config.c
-@@ -54,7 +54,7 @@ struct vexpress_syscfg_func {
- 	struct vexpress_syscfg *syscfg;
- 	struct regmap *regmap;
- 	int num_templates;
--	u32 template[]; /* Keep it last! */
-+	u32 template[] __counted_by(num_templates); /* Keep it last! */
+diff --git a/drivers/nvdimm/nd.h b/drivers/nvdimm/nd.h
+index e8b9d27dbb3c..ae2078eb6a62 100644
+--- a/drivers/nvdimm/nd.h
++++ b/drivers/nvdimm/nd.h
+@@ -422,7 +422,7 @@ struct nd_region {
+ 	struct nd_interleave_set *nd_set;
+ 	struct nd_percpu_lane __percpu *lane;
+ 	int (*flush)(struct nd_region *nd_region, struct bio *bio);
+-	struct nd_mapping mapping[];
++	struct nd_mapping mapping[] __counted_by(ndr_mappings);
  };
  
- struct vexpress_config_bridge_ops {
+ static inline bool nsl_validate_nlabel(struct nd_region *nd_region,
+diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+index 0a81f87f6f6c..5be65fce85cf 100644
+--- a/drivers/nvdimm/region_devs.c
++++ b/drivers/nvdimm/region_devs.c
+@@ -1028,6 +1028,7 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
+ 
+ 	if (!nd_region)
+ 		return NULL;
++	nd_region->ndr_mappings = ndr_desc->num_mappings;
+ 	/* CXL pre-assigns memregion ids before creating nvdimm regions */
+ 	if (test_bit(ND_REGION_CXL, &ndr_desc->flags)) {
+ 		nd_region->id = ndr_desc->memregion;
+@@ -1062,7 +1063,6 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
+ 
+ 		get_device(&nvdimm->dev);
+ 	}
+-	nd_region->ndr_mappings = ndr_desc->num_mappings;
+ 	nd_region->provider_data = ndr_desc->provider_data;
+ 	nd_region->nd_set = ndr_desc->nd_set;
+ 	nd_region->num_lanes = ndr_desc->num_lanes;
 -- 
 2.34.1
 
