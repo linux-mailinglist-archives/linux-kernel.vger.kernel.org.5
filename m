@@ -2,291 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC6A7AA7F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884BB7AA7F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjIVEwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
+        id S230416AbjIVEwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjIVEvx (ORCPT
+        with ESMTP id S229737AbjIVEwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:51:53 -0400
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB332192
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:51:45 -0700 (PDT)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1b0812d43a0so2932927fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:51:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695358305; x=1695963105;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8qn/FrH1988scFKcjduSlmqXu2bsNtqi414x0P0dQ8I=;
-        b=ZGdwuaWIzouzamCNlFe8Vw/hFiteH9Oyi4iIEzrgSJDN/DOU3nEGyBwLGx95QaVOeb
-         eSaoMWqYWuv37pk2Vb8zC3mQTjcrSeP7IiHWAYye7p9VYwid3sKdG9LCQawlZFBPd3mJ
-         DA4JlJZBHxeAFERHC6YdzNoQIY/wIL8/4b40TTBKPTTHlauvLkKwruIZopYzGLQmSaFT
-         LqW2nHDqKCCfZfs7ktRKN6ItZ9mA5LIQxF9Zm9VVSGHaiUdOT9nhPhKErNwzGLLaCJ8Z
-         Q+CIQM3f4/4GqVa7gTS8G61ZttqQQwLXxwYTqSPkpaVsZs/SG+qCvkmBMkuDjWYdfFXY
-         Ufnw==
-X-Gm-Message-State: AOJu0YyKRphcAPj/aXcVzmG9ndRuGCbyOiSz2BOoYcwn3OUe8u2aFT/3
-        n/fFSC2eVprOmsIbDdNO7Uia8BwUd05T3sPw44C/NeALWGvw
-X-Google-Smtp-Source: AGHT+IF1lSM14uPdDSV4IGWUdgZdpHokDRGfRP8LnwwkAzngXlRvnTOjtPwMtDdNbhGGG/qt+yimh6c5iwpUHRA4oWDukobCmZrG
+        Fri, 22 Sep 2023 00:52:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3001AA;
+        Thu, 21 Sep 2023 21:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=jPkRHugyLd5JNXnKoygyDO0rjavXl5/MuIrj9Kx/yBo=; b=AV5rmBImlt7B6b7fh3c9eoqq0W
+        xnzaV+n1bQ0ZF9qlLfIQHmBJOn7SbOtod6+UWwxd+4AazbgE0i7easbQVx1JzqPPfyRpcb0bHhHiv
+        sPDVOZHH0TfWfhQETrXVdEAFtb2ABQSIVRTQqvn/nF2hFfZqwPpb9Ef2f+mWWJ2OY1/ngrAEk1ZYQ
+        7RYJOdGTpL3EgwmgajeENIbvxIsixvVzqb0CgSzDHEuveheGLrHpxC+Ck3agpH30IXWNoOiXoRzkj
+        7ud6JfOkgRToRnd1KyLLOpdDVnIPSWNAifI2vmacg88HuIGixEfI7YA+Y5phTnkTiFpwxdprmN4tu
+        K71S+hrQ==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qjY8s-007qqE-07;
+        Fri, 22 Sep 2023 04:51:50 +0000
+Message-ID: <47afe095-0dd9-47bc-a4d1-dcd66f87ac7c@infradead.org>
+Date:   Thu, 21 Sep 2023 21:51:47 -0700
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:3e0d:b0:1dc:7909:91fa with SMTP id
- lk13-20020a0568703e0d00b001dc790991famr724923oab.2.1695358305264; Thu, 21 Sep
- 2023 21:51:45 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 21:51:45 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008d6a8b0605eb5dfd@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in ext4_xattr_set_handle (4)
-From:   syzbot <syzbot+ea0ba556b26f54698271@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Sep 20 (ppc32: ADB_CUDA Kconfig warning)
+Content-Language: en-US
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        tanyuan@tinylab.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+References: <20230920133714.351f83f9@canb.auug.org.au>
+ <fe130d55-7b5e-4444-85ea-c3fbf4eb238d@infradead.org>
+ <87il83m5k0.fsf@mail.lhotse>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <87il83m5k0.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    e789286468a9 Merge tag 'x86-urgent-2023-09-17' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f3cef8680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dea9a2f141d69d34
-dashboard link: https://syzkaller.appspot.com/bug?extid=ea0ba556b26f54698271
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e7892864.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1429a45d2526/vmlinux-e7892864.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7b5ffe979a44/bzImage-e7892864.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ea0ba556b26f54698271@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc1-syzkaller-00269-ge789286468a9 #0 Not tainted
-------------------------------------------------------
-syz-executor.2/16393 is trying to acquire lock:
-ffff88801c2532c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
-ffff88801c2532c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x159/0x1420 fs/ext4/xattr.c:2371
-
-but task is already holding lock:
-ffff8880444e0988 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x10d6/0x15e0 fs/jbd2/transaction.c:463
-
-which lock already depends on the new lock.
 
 
-the existing dependency chain (in reverse order) is:
+On 9/21/23 17:10, Michael Ellerman wrote:
+> Randy Dunlap <rdunlap@infradead.org> writes:
+>> On 9/19/23 20:37, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20230919:
+>>>
+>>> The mm tree lost its boot warning.
+>>>
+>>> The drm-misc tree gained a conflict against Linus' tree.
+>>>
+>>> Non-merge commits (relative to Linus' tree): 6006
+>>>  3996 files changed, 459968 insertions(+), 111742 deletions(-)
+>>>
+>>> ----------------------------------------------------------------------------
+>>
+>> 4 out of 10 randconfigs have this warning:
+>>
+>> WARNING: unmet direct dependencies detected for ADB_CUDA
+>>   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
+>>   Selected by [y]:
+>>   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+>>
+>> WARNING: unmet direct dependencies detected for ADB_CUDA
+>>   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
+>>   Selected by [y]:
+>>   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+>>
+>> WARNING: unmet direct dependencies detected for ADB_CUDA
+>>   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
+>>   Selected by [y]:
+>>   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+> 
+> Crud. Caused by:
+> 
+> a3ef2fef198c ("powerpc/32: Add dependencies of POWER_RESET for pmac32")
+> 
+> I was suspicious of that select, I should have been *more* suspicious :)
+> 
+> I think this is a fix. The PPC32 isn't needed because ADB depends on (PPC_PMAC && PPC32).
 
--> #2 (jbd2_handle){++++}-{0:0}:
-       start_this_handle+0x10fc/0x15e0 fs/jbd2/transaction.c:463
-       jbd2__journal_start+0x391/0x690 fs/jbd2/transaction.c:520
-       __ext4_journal_start_sb+0x40f/0x5c0 fs/ext4/ext4_jbd2.c:112
-       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
-       ext4_dirty_inode+0xa1/0x130 fs/ext4/inode.c:5953
-       __mark_inode_dirty+0x1e0/0xd50 fs/fs-writeback.c:2430
-       mark_inode_dirty_sync include/linux/fs.h:2271 [inline]
-       iput.part.0+0x5b/0x7a0 fs/inode.c:1798
-       iput+0x5c/0x80 fs/inode.c:1791
-       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
-       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
-       shrink_dentry_list+0x22b/0x7d0 fs/dcache.c:1201
-       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
-       super_cache_scan+0x31f/0x540 fs/super.c:228
-       do_shrink_slab+0x422/0xaa0 mm/vmscan.c:900
-       shrink_slab+0x17f/0x6e0 mm/vmscan.c:1060
-       shrink_one+0x4f7/0x700 mm/vmscan.c:5417
-       shrink_many mm/vmscan.c:5469 [inline]
-       lru_gen_shrink_node mm/vmscan.c:5586 [inline]
-       shrink_node+0x20d4/0x37a0 mm/vmscan.c:6526
-       kswapd_shrink_node mm/vmscan.c:7331 [inline]
-       balance_pgdat+0xa32/0x1b80 mm/vmscan.c:7521
-       kswapd+0x5be/0xbf0 mm/vmscan.c:7781
-       kthread+0x33c/0x440 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+Yes, that fixes the problem. Thanks.
 
--> #1 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:3551 [inline]
-       fs_reclaim_acquire+0x100/0x150 mm/page_alloc.c:3565
-       might_alloc include/linux/sched/mm.h:303 [inline]
-       slab_pre_alloc_hook mm/slab.h:709 [inline]
-       slab_alloc_node mm/slub.c:3460 [inline]
-       __kmem_cache_alloc_node+0x51/0x340 mm/slub.c:3517
-       __do_kmalloc_node mm/slab_common.c:1022 [inline]
-       __kmalloc_node+0x52/0x110 mm/slab_common.c:1030
-       kmalloc_node include/linux/slab.h:619 [inline]
-       kvmalloc_node+0x99/0x1a0 mm/util.c:607
-       kvmalloc include/linux/slab.h:737 [inline]
-       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1535 [inline]
-       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
-       ext4_xattr_set_entry+0x1c3d/0x3ca0 fs/ext4/xattr.c:1719
-       ext4_xattr_block_set+0x678/0x30e0 fs/ext4/xattr.c:1970
-       ext4_xattr_move_to_block fs/ext4/xattr.c:2667 [inline]
-       ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
-       ext4_expand_extra_isize_ea+0x1306/0x1b20 fs/ext4/xattr.c:2834
-       __ext4_expand_extra_isize+0x342/0x470 fs/ext4/inode.c:5803
-       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5846 [inline]
-       __ext4_mark_inode_dirty+0x52b/0x800 fs/ext4/inode.c:5924
-       __ext4_unlink+0x630/0xc60 fs/ext4/namei.c:3296
-       ext4_unlink+0x40d/0x580 fs/ext4/namei.c:3325
-       vfs_unlink+0x2f1/0x900 fs/namei.c:4332
-       do_unlinkat+0x3da/0x6d0 fs/namei.c:4398
-       __do_sys_unlinkat fs/namei.c:4441 [inline]
-       __se_sys_unlinkat fs/namei.c:4434 [inline]
-       __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4434
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
--> #0 (&ei->xattr_sem){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
-       lock_acquire kernel/locking/lockdep.c:5753 [inline]
-       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
-       down_write+0x93/0x200 kernel/locking/rwsem.c:1573
-       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
-       ext4_xattr_set_handle+0x159/0x1420 fs/ext4/xattr.c:2371
-       ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
-       __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
-       __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
-       __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
-       vfs_setxattr+0x146/0x350 fs/xattr.c:322
-       do_setxattr+0x142/0x170 fs/xattr.c:630
-       setxattr+0x159/0x170 fs/xattr.c:653
-       __do_sys_fsetxattr fs/xattr.c:709 [inline]
-       __se_sys_fsetxattr fs/xattr.c:698 [inline]
-       __ia32_sys_fsetxattr+0x25e/0x310 fs/xattr.c:698
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+> 
+> diff --git a/arch/powerpc/platforms/powermac/Kconfig b/arch/powerpc/platforms/powermac/Kconfig
+> index 8bdae0caf21e..84f101ec53a9 100644
+> --- a/arch/powerpc/platforms/powermac/Kconfig
+> +++ b/arch/powerpc/platforms/powermac/Kconfig
+> @@ -2,7 +2,7 @@
+>  config PPC_PMAC
+>         bool "Apple PowerMac based machines"
+>         depends on PPC_BOOK3S && CPU_BIG_ENDIAN
+> -       select ADB_CUDA if POWER_RESET && PPC32
+> +       select ADB_CUDA if POWER_RESET && ADB
+>         select MPIC
+>         select FORCE_PCI
+>         select PPC_INDIRECT_PCI if PPC32
+> 
+> cheers
 
-other info that might help us debug this:
-
-Chain exists of:
-  &ei->xattr_sem --> fs_reclaim --> jbd2_handle
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(jbd2_handle);
-                               lock(fs_reclaim);
-                               lock(jbd2_handle);
-  lock(&ei->xattr_sem);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.2/16393:
- #0: ffff88801a440410 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_fsetxattr fs/xattr.c:707 [inline]
- #0: ffff88801a440410 (sb_writers#4){.+.+}-{0:0}, at: __se_sys_fsetxattr fs/xattr.c:698 [inline]
- #0: ffff88801a440410 (sb_writers#4){.+.+}-{0:0}, at: __ia32_sys_fsetxattr+0x17a/0x310 fs/xattr.c:698
- #1: ffff88801c253600 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
- #1: ffff88801c253600 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0x123/0x350 fs/xattr.c:321
- #2: ffff8880444e0988 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x10d6/0x15e0 fs/jbd2/transaction.c:463
-
-stack backtrace:
-CPU: 0 PID: 16393 Comm: syz-executor.2 Not tainted 6.6.0-rc1-syzkaller-00269-ge789286468a9 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
- down_write+0x93/0x200 kernel/locking/rwsem.c:1573
- ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
- ext4_xattr_set_handle+0x159/0x1420 fs/ext4/xattr.c:2371
- ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
- __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
- __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
- vfs_setxattr+0x146/0x350 fs/xattr.c:322
- do_setxattr+0x142/0x170 fs/xattr.c:630
- setxattr+0x159/0x170 fs/xattr.c:653
- __do_sys_fsetxattr fs/xattr.c:709 [inline]
- __se_sys_fsetxattr fs/xattr.c:698 [inline]
- __ia32_sys_fsetxattr+0x25e/0x310 fs/xattr.c:698
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-RIP: 0023:0xf7fbe579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f7fb95ac EFLAGS: 00000292 ORIG_RAX: 00000000000000e4
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000140
-RDX: 0000000020000180 RSI: 0000000000000015 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+~Randy
