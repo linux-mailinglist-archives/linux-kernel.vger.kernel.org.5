@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1DA7AB08A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120D47AB08F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbjIVLYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
+        id S233686AbjIVL0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjIVLYr (ORCPT
+        with ESMTP id S233542AbjIVL0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:24:47 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C75CA;
-        Fri, 22 Sep 2023 04:24:42 -0700 (PDT)
-Received: from localhost (unknown [195.89.33.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 7E8F9735;
-        Fri, 22 Sep 2023 11:24:41 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7E8F9735
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1695381881; bh=hcCB/lmrbPTtKJaqCR5NdN2vcB6LwDLfbG8Q8BQm73o=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MxWuvJxaR6CN8VcsRnnRtgelNjriuPG0UnfQbdoeEg+KMZjNnSOxY67433sObqTZp
-         PU9Z3GX0NREnN2sIqw5M2GFG+uzypRdQlfNuAbrsxiPb0Qk0kbbpiYd+z0tztU687i
-         92bYBr4Za3ti49A4v6hFhOrwA/SzJJLe8KNXHE0afQI1x4JyOJ4a5E27wQdju7PXK9
-         kC/44PjcpSvDeHOOrf3q02M8oifGNLBuvMKg9YER8y09Y5JhsE0OtnQArYWOATCA0l
-         FlOS4VPoahE3SDi20UlOFflYc5BPRkweFRHYwS03pZVvSB3z+kW49xfIQ5p3x3DOQ2
-         hxm+UUgRCpwBA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Costa Shulyupin <costa.shul@redhat.com>, linux-doc@vger.kernel.org,
+        Fri, 22 Sep 2023 07:26:09 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C03C5FB
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:26:02 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A15D8DA7;
+        Fri, 22 Sep 2023 04:26:39 -0700 (PDT)
+Received: from e126864.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A5D903F5A1;
+        Fri, 22 Sep 2023 04:25:59 -0700 (PDT)
+From:   Kristina Martsenko <kristina.martsenko@arm.com>
+To:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
         linux-kernel@vger.kernel.org
-Cc:     Costa Shulyupin <costa.shul@redhat.com>
-Subject: Re: [PATCH] docs: move leds under section Human interfaces
-In-Reply-To: <20230913105519.675183-1-costa.shul@redhat.com>
-References: <20230913105519.675183-1-costa.shul@redhat.com>
-Date:   Fri, 22 Sep 2023 05:24:39 -0600
-Message-ID: <87h6nm78nc.fsf@meer.lwn.net>
+Subject: [PATCH v2 0/2] KVM: arm64: Support for Arm v8.8 memcpy instructions in KVM guests
+Date:   Fri, 22 Sep 2023 12:25:06 +0100
+Message-Id: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Costa Shulyupin <costa.shul@redhat.com> writes:
+Hi,
 
-> from uncategorized list
->
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
-> ---
->  Documentation/subsystem-apis.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+This is v2 of the series to allow using the new Arm memory copy instructions
+in KVM guests. See v1 for more information [1].
 
-Applied, thanks.
+Changes in v2:
+ - Dropped HCRX_EL2 vcpu field
+ - Rebased onto v6.6-rc2
 
-jon
+Thanks,
+Kristina
+
+[1] https://lore.kernel.org/kvmarm/20230915124840.474888-1-kristina.martsenko@arm.com/
+
+Kristina Martsenko (2):
+  KVM: arm64: Add handler for MOPS exceptions
+  KVM: arm64: Expose MOPS instructions to guests
+
+ arch/arm64/include/asm/kvm_arm.h              |  4 +-
+ arch/arm64/include/asm/traps.h                | 54 ++++++++++++++++++-
+ arch/arm64/kernel/traps.c                     | 48 +----------------
+ arch/arm64/kvm/hyp/include/hyp/switch.h       | 17 ++++++
+ .../arm64/kvm/hyp/include/nvhe/fixed_config.h |  3 +-
+ arch/arm64/kvm/hyp/nvhe/switch.c              |  2 +
+ arch/arm64/kvm/hyp/vhe/switch.c               |  1 +
+ arch/arm64/kvm/sys_regs.c                     |  1 -
+ 8 files changed, 78 insertions(+), 52 deletions(-)
+
+
+base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+-- 
+2.25.1
+
