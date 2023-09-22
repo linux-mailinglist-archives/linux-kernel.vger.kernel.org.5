@@ -2,130 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1F37AB585
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523C97AB591
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjIVQHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        id S231346AbjIVQIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjIVQHR (ORCPT
+        with ESMTP id S229534AbjIVQIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:07:17 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC6D139
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:07:11 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d85fc108f0eso2160275276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695398831; x=1696003631; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xr7kuFN6juosnD7pV2K+XCmCrqnUJ7hjGVPi9yEcRC4=;
-        b=4zT5NTfDBouBX/t+CFOSZPiMnOD/u1FPJVea6Mg6nM3pG7fV/mQ8Poen7Y8/7RZrEk
-         qXHDVrWD4jplS5j4LUHHJj4EsHh3RAs67IyPjyvZZcS4e1+W/KwGzVHxQAg9K5TYjJF/
-         jVN41v4E3V9Ckjsa5s0IQQawu7D4BOog7mjb8nKOX8uRaG87hro1bPKi+DZ+GXDY1GBB
-         zdKJ5uNReM8nf/eA6Pwgume4gse8DSI4HknXVSKB2ISNraUR7WBVBzt4pZkcabfFLjjW
-         x2nmv/X6O5Dd7JWa+KgFfZMRZxXmWyN/hu7dMTh0MSY/M/V/4/qrxvOH6pYbcUVnDzvc
-         tjfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695398831; x=1696003631;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xr7kuFN6juosnD7pV2K+XCmCrqnUJ7hjGVPi9yEcRC4=;
-        b=AB81SFUrR+N/rqOSiaT+CFz18JBS2lRWpvaqYVKsjFkbRZ4XfeOiLQZ2wZA0xgspHP
-         45UHyiFc8cSjS5YfQHgStBeKuq0hd1LTp5cvBie6zm1FDf4qtL7QDPs18dtm6tjmDn5Z
-         0orALdNUjPspi3uA79PFM4HrFFPpUtJfoHqxt4Vrq2P5rZofh+8tJ4l8ySD/OLjQAPN9
-         XY2w+9wFfgNfv1NrPXA3WlFCmpmQ49BiWNqNYdPKq3gsCWD2bMBL6PgxQbxF7t4pkFun
-         FwiYm8MCZ7qgFreGSygltTA9eNPlzbj5guECXRfxcNS5jBqYCvxkombhAV57YL7bdH20
-         ylbA==
-X-Gm-Message-State: AOJu0YxjEzouUb8T3tZRYIQHrwIwMSNJad6aXJzaUMkhEViMIwpFeyrh
-        ZovOkYWOTmpPp8qmBXx/AnGBKvS/B8Or
-X-Google-Smtp-Source: AGHT+IGVb7ofk/0yHXHjCjAofJnuira/SMpyG+N49vFZHQCOf548qiOomD5P0oFa9Ales9KeVgwVz+cdM4tX
-X-Received: from bjg.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:415])
- (user=bgeffon job=sendgmr) by 2002:a25:5090:0:b0:d7e:752f:baee with SMTP id
- e138-20020a255090000000b00d7e752fbaeemr120348ybb.10.1695398830992; Fri, 22
- Sep 2023 09:07:10 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 12:07:04 -0400
-In-Reply-To: <20230922155336.507220-1-bgeffon@google.com>
-Mime-Version: 1.0
-References: <20230922155336.507220-1-bgeffon@google.com>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922160704.511283-1-bgeffon@google.com>
-Subject: [PATCH] PM: hibernate: clean up sync_read handling in snapshot_write_next
-From:   Brian Geffon <bgeffon@google.com>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Brian Geffon <bgeffon@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 12:08:13 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD3899;
+        Fri, 22 Sep 2023 09:08:07 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7715EB53;
+        Fri, 22 Sep 2023 18:06:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695398787;
+        bh=Xs3HJJWVKmjQFBtIkxcpfdhvwl2YfTPFfT5f3BfS2P4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t73D12u6qC9MwrL4EN+MJkqQgp8Rs+xx1TrYWHeuwHkDYx6/IRBk+tcFmwEQp2yDF
+         xUu+ANq5DNzWHpse7/U/0k6LIx7krIxAb3UQ9SblPw+J9fqW5N8uET3qKi1EKGQDcG
+         hGHEk39Slm/akpi8hzrc/Gc9BJSt4dU8Yipks9ns=
+Date:   Fri, 22 Sep 2023 19:08:18 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
+Message-ID: <20230922160818.GJ19112@pendragon.ideasonboard.com>
+References: <20230901155732.252436-1-alain.volmat@foss.st.com>
+ <20230901155732.252436-5-alain.volmat@foss.st.com>
+ <20230905090258.GC31594@pendragon.ideasonboard.com>
+ <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In snapshot_write_next sync_read is set and unset in three different
-spots unnecessiarly. As a result there is a subtle bug where the first
-page after the meta data has been loaded unconditionally sets sync_read
-to 0. If this first pfn was actually a highmem page then the returned
-buffer will be the global "buffer," and the page needs to be loaded
-synchronously.
+On Fri, Sep 22, 2023 at 06:02:27PM +0200, Alain Volmat wrote:
+> On Tue, Sep 05, 2023 at 12:02:58PM +0300, Laurent Pinchart wrote:
+> > On Fri, Sep 01, 2023 at 05:57:23PM +0200, Alain Volmat wrote:
+> > > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > > 
+> > > Add dcmipp support to STM32MP135.
+> > > 
+> > > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > > ---
+> > >  arch/arm/boot/dts/st/stm32mp135.dtsi | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > index abf2acd37b4e..beee9ec7ed0d 100644
+> > > --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > @@ -8,5 +8,13 @@
+> > >  
+> > >  / {
+> > >  	soc {
+> > > +		dcmipp: dcmipp@5a000000 {
+> > > +			compatible = "st,stm32mp13-dcmipp";
+> > > +			reg = <0x5a000000 0x400>;
+> > > +			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+> > > +			resets = <&rcc DCMIPP_R>;
+> > > +			clocks = <&rcc DCMIPP_K>;
+> > > +			status = "disabled";
+> > 
+> > This needs a port, as it's marked as required in the bindings. You can
+> > leave the endpoint out.
+> 
+> I first agreed with your comment but, having done the check (make
+> CHECK_DTBS=y  ...) this doesn't seem to be required because the dcmipp
+> node is kept disabled within our dtsi.
 
-That is, I'm not sure we can always assume the following to be safe:
-		handle->buffer = get_buffer(&orig_bm, &ca);
-		handle->sync_read = 0;
+Interesting.
 
-Because get_buffer can call get_highmem_page_buffer which can
-return 'buffer'
+> (it is later on only enabled in dts file which as well have the port
+> property).
+> Indeed, to check this I changed it to okay and DTC_CHK complained about
+> missing port property.
+> 
+> Hence, I'd think that port doesn't have to be added in this dtsi file.
+> Would you agree with that ?
 
-The easiest way to address this is just set sync_read before
-snapshot_write_next returns if handle->buffer == buffer.
+I still think the port belongs here, as it's an intrinsic property of
+the dcmipp, not a property of the board. Does it cause any issue to add
+a port in the .dtsi ?
 
-Signed-off-by: Brian Geffon <bgeffon@google.com>
-Fixes: 8357376d3df2 ("[PATCH] swsusp: Improve handling of highmem")
-Cc: stable@vger.kernel.org
----
- kernel/power/snapshot.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+> > With this fixed,
+> > 
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > 
+> > > +		};
+> > >  	};
+> > >  };
 
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index 190ed707ddcc..362e6bae5891 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -2780,8 +2780,6 @@ int snapshot_write_next(struct snapshot_handle *handle)
- 	if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages)
- 		return 0;
- 
--	handle->sync_read = 1;
--
- 	if (!handle->cur) {
- 		if (!buffer)
- 			/* This makes the buffer be freed by swsusp_free() */
-@@ -2824,7 +2822,6 @@ int snapshot_write_next(struct snapshot_handle *handle)
- 			memory_bm_position_reset(&zero_bm);
- 			restore_pblist = NULL;
- 			handle->buffer = get_buffer(&orig_bm, &ca);
--			handle->sync_read = 0;
- 			if (IS_ERR(handle->buffer))
- 				return PTR_ERR(handle->buffer);
- 		}
-@@ -2834,9 +2831,8 @@ int snapshot_write_next(struct snapshot_handle *handle)
- 		handle->buffer = get_buffer(&orig_bm, &ca);
- 		if (IS_ERR(handle->buffer))
- 			return PTR_ERR(handle->buffer);
--		if (handle->buffer != buffer)
--			handle->sync_read = 0;
- 	}
-+	handle->sync_read = (handle->buffer == buffer);
- 	handle->cur++;
- 
- 	/* Zero pages were not included in the image, memset it and move on. */
 -- 
-2.42.0.515.g380fc7ccd1-goog
+Regards,
 
+Laurent Pinchart
