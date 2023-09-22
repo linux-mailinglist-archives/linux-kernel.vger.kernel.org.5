@@ -2,142 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1EC7ABABA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 22:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E383D7ABAD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 23:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjIVU6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 16:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S229803AbjIVVFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 17:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjIVU6r (ORCPT
+        with ESMTP id S229799AbjIVVFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 16:58:47 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA0CCA;
-        Fri, 22 Sep 2023 13:58:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695416319; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=DM/h0Ssk0CSA9pBKpoZS8kdda7elTUspMXJEKVezdP4+6VL2SQyG/MWM6ynsZWhRn4
-    4XPLQwCXCZ75FwZ1OkdjZnAGPokgALuigmtutunaUUi1PGXkqhKVyT9kzjpz1iOEoy7G
-    oRtCuUb+joCKolPmNK6stMCosYadegI3vZgthJMZsoMB5dyLLQ8oq0fe7c9AIAENnBjP
-    P/XRpWItZsjuBGdz19CfVFApMrAtmVSl4RylrX1h/TkwEeignyNZpZ2YkK2ad/TjSdb0
-    x2TJapPf0uUWWVd18jJl8PtYwe8zz1GFQUkR9fXAxBbhzdkiRP9kBZnJdFlcpTmUZSDo
-    ep2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695416319;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=8tC0I6qpuuVb1JXq7RbaHdrmQDpUMmS81IG277Uq2N0=;
-    b=jvnqkqGH2Fs3yEBV4q27JdZ+3s2khgVp8QxjWfXsyqVH02bJvXxjklLRCOU91pgO4a
-    xmI1cGT4flHzQvN6Dg1yLkk8zz+uqcVmP8MGFx19CDkPBUGkvb3HB8HYTu1jYgBxMtfx
-    HrXHczkB7Xme2ffyqPesXeGiT48gqraO3Rk9fgPWCUpCQBRs5HYJk4AtS2pJOrtLdrPT
-    A91POIsH3CFHXSQ1uCQXmQifrLTTYIYUKcOyL3yONEW7L1g3qjgtAV7XLcHeXRbp2VKG
-    k4nXzMas0Pjxrlh6U313R6xGVz2Uec7qDZQ5k9xSo85Sd13LwCzozoMVSm8v4CpRgAdK
-    a30A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695416319;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=8tC0I6qpuuVb1JXq7RbaHdrmQDpUMmS81IG277Uq2N0=;
-    b=DYf1JNT65qQUFMsZ3QOoEtAk7L2p9XblVEHUl8wb6Cbjx7WcIs+AVCgDLD5CL56naA
-    TOjnpHHM42Y3fXgne9CjZL6nKE0xrmfbandZjAmd5tUBRqjlWASACKMXOR/9RZ4R0PQy
-    9Twece7okBc/HoTQ1fN3Lb5pn+peTuX3zBhVjr80HLUhCkpBt+MEWGk8J500+9H9x/uv
-    SbwlS36J95ZOxNaYAsQ4XVWWIA4zdoxDF+FoVpruqTjPGNZSSdcugScYmW6QWvy2eFgV
-    CF+diwNzXAgB76iZ1HSx6UmPZEF2dPLzzDOhzwxEpXfBIJ5FRg5crbiiRvWx/LsGG2lC
-    BhJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695416319;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=8tC0I6qpuuVb1JXq7RbaHdrmQDpUMmS81IG277Uq2N0=;
-    b=fYiHF2mPW1t2pD2tOWsZDlhu76pYSkEdvl1g26zOO2D3X1uK81wZQzvl+Rf+m/9kGe
-    xqQP/W8Zelefhj9MTpAQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8Z/h"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z8MKwcV4V
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 22 Sep 2023 22:58:38 +0200 (CEST)
-Date:   Fri, 22 Sep 2023 22:58:26 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: dts: qcom: apq8016-sbc-d3-camera: Convert to
- DT overlay
-Message-ID: <ZQ3_8njijHqat5eV@gerhold.net>
-References: <20230922-apq8016-sbc-camera-dtso-v1-0-ce9451895ca1@gerhold.net>
- <c835c404-33f3-4f5b-8a8a-819d4019e74b@linaro.org>
+        Fri, 22 Sep 2023 17:05:22 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2CDCA
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 14:05:15 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38ML0S4f002584;
+        Fri, 22 Sep 2023 21:02:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=XoVnJqCiDXfCyFa6A71l7okrjgKMv7RaEftKZwNmqh0=;
+ b=RM81g76U0z0lc3r5nJItUI3S0itGBuAn10nbCoj16AHPxZf44nTl4qbREalJsYQko47i
+ FwGQ1SSnSiC8msq/0kEDC9wBvk5OtkRhL9NOnoY8F5hfzRiGc6BH1g+OHOAm/neWtmMt
+ YOcqnMGcdSXSGX02U6bG39GmdCMTxW3NQuM8gC4ICp30fQQylXqrDneLcEhy3fuA0VS/
+ KRzW93F7pMG9x8IP+cWB5eSPsDOyIAz8Ei0jqKp+hNzZ2CB9wSu8iwGnCku2enjWR0cd
+ cy9E9FQ5bd7302GZPNPsyXUMP48Dj/FIEfkniLS6rAeS5q7/0Ohf3JicTncXAPez0Loe Vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t9jf102ea-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 21:02:40 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38ML0RER002571;
+        Fri, 22 Sep 2023 21:02:39 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t9jf102d6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 21:02:39 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38MKDB3M018819;
+        Fri, 22 Sep 2023 21:02:38 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t8tsp87b9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 21:02:38 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38ML2bTo1114704
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 21:02:37 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A812D58051;
+        Fri, 22 Sep 2023 21:02:37 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 46DEC5805A;
+        Fri, 22 Sep 2023 21:02:29 +0000 (GMT)
+Received: from [9.179.11.13] (unknown [9.179.11.13])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 22 Sep 2023 21:02:28 +0000 (GMT)
+Message-ID: <7d78be0c-0e1e-c81e-37b6-727e4f7fe2fc@linux.vnet.ibm.com>
+Date:   Sat, 23 Sep 2023 02:32:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+Content-Language: en-US
+To:     Pierre Gondois <pierre.gondois@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, quentin.perret@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
+ <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
+ <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
+ <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+ <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
+ <xhsmha5tjvfgm.mognet@vschneid.remote.csb>
+ <63713cac-605a-c647-baf7-b172c02f8336@arm.com>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <63713cac-605a-c647-baf7-b172c02f8336@arm.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ocs7rAxWQA9VQhm8-uJEbx-Ls4XnKjwF
+X-Proofpoint-GUID: QpPiR_sYdkCi8C6Ts-NIta0sqRaCkMe5
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c835c404-33f3-4f5b-8a8a-819d4019e74b@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_19,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 adultscore=0 suspectscore=0 impostorscore=0
+ spamscore=0 phishscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309220180
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 09:47:07PM +0100, Bryan O'Donoghue wrote:
-> On 22/09/2023 16:11, Stephan Gerhold wrote:
-> > Follow the example of the recently added apq8016-sbc-usb-host.dtso and
-> > convert apq8016-sbc-d3-camera-mezzanine.dts to a DT overlay that can be
-> > applied on top of the apq8016-sbc.dtb. This makes it more clear that
-> > this is not a special type of DB410c but just an addon board that can
-> > be added on top.
-> > 
-> > I also prepended a patch that cleans up the node names a bit.
-> > 
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> > Stephan Gerhold (2):
-> >        arm64: dts: qcom: apq8016-sbc-d3-camera: Use more generic node names
-> >        arm64: dts: qcom: apq8016-sbc-d3-camera: Convert to DT overlay
-> > 
-> >   arch/arm64/boot/dts/qcom/Makefile                    |  5 +++--
-> >   ...nine.dts => apq8016-sbc-d3-camera-mezzanine.dtso} | 20 ++++++++++++++------
-> >   2 files changed, 17 insertions(+), 8 deletions(-)
-> > ---
-> > base-commit: 7236e86ce5c8198b01c30933c2334d07d877cf48
-> > change-id: 20230922-apq8016-sbc-camera-dtso-f247bea40f99
-> > 
-> > Best regards,
+
+
+On 9/22/23 8:14 PM, Pierre Gondois wrote:
 > 
-> db410c doesn't ship with a bootloader that is capable of applying a dtbo
-> though, so this conversion mandates an updated or chainloaded bootloader or
-> out-of-tree kernel patch to support.
 > 
-> __adding__ is fine but, converting implies imposes a new requirement on the
-> bootchain.
+> On 9/18/23 14:22, Valentin Schneider wrote:
+>> On 15/09/23 23:40, Shrikanth Hegde wrote:
+>>> On 9/15/23 5:30 PM, Valentin Schneider wrote:
+>>>> On 14/09/23 23:26, Shrikanth Hegde wrote:
+>>>>> On 9/14/23 9:51 PM, Valentin Schneider wrote:
+>>>>>> On 13/09/23 17:18, Shrikanth Hegde wrote:
+>>>>>>> sysctl_sched_energy_aware is available for the admin to
+>>>>>>> disable/enable
+>>>>>>> energy aware scheduling(EAS). EAS is enabled only if few
+>>>>>>> conditions are
+>>>>>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
+>>>>>>> valid cpufreq policy, frequency invariant load tracking. It is
+>>>>>>> possible
+>>>>>>> platform when booting may not have EAS capability, but can do
+>>>>>>> that after.
+>>>>>>> For example, changing/registering the cpufreq policy.
+>>>>>>>
+>>>>>>> At present, though platform doesn't support EAS, this sysctl is
+>>>>>>> still
+>>>>>>> present and it ends up calling rebuild of sched domain on write
+>>>>>>> to 1 and
+>>>>>>> NOP when writing to 0. That is confusing and un-necessary.
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>> Hi Valentin, Thanks for taking a look at this patch.
+>>>>>
+>>>>>> But why would you write to it in the first place? Or do you mean
+>>>>>> to use
+>>>>>> this as an indicator for userspace that EAS is supported?
+>>>>>>
+>>>>>
+>>>>> Since this sysctl is present and its value being 1, it gives the
+>>>>> impression to the user that EAS is supported when it is not.
+>>>>> So its an attempt to correct that part.
+>>>>>
+>>>>
+>>>> Ah, I see. Then how about just making the sysctl return 0 when EAS
+>>>> isn't
+>>>> supported? And on top of it, prevent all writes when EAS isn't
+>>>> supported
+>>>> (perf domains cannot be built, so there would be no point in forcing a
+>>>> rebuild that will do nothing).
+>>>
+>>> Yes. That's another way. Thats what I had as possible approach in
+>>> https://lore.kernel.org/lkml/d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com/
+>>>
+>>
+>> Thanks for the link; and apologies for bringing up topics that have been
+>> discussed already.
+>>
+>>>
+>>>
+>>>>
+>>>> I can never remember how to properly use the sysctl API, so that's a
+>>>> very
+>>>> crude implementation, but something like so?
+>>>>
+>>>> ---
+>>>>
+>>>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>>>> index 05a5bc678c089..dadfc5afc4121 100644
+>>>> --- a/kernel/sched/topology.c
+>>>> +++ b/kernel/sched/topology.c
+>>>> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct
+>>>> ctl_table *table, int write,
+>>>>       if (write && !capable(CAP_SYS_ADMIN))
+>>>>           return -EPERM;
+>>>>
+>>>> +    if (!sched_energy_enabled()) {
+>>>
+>>> Use of sched_energy_enabled won't work as Pierre has indicated.
+>>>
+>>> Instead this can be done by adding those checks in a helper function to
+>>> do similar checks as done build_perf_domains.
+>>>
+>>> I can send v4 with this approach if it makes more sense. Please let
+>>> me know.
+>>>
+>>
+>> So what I'm thinking is the standard approach seems to be to keep the
+>> knobs
+>> visible, but change how reads/writes to them are handled.
+>>
+>> For instance, SMT support has
+>>
+>>    /sys/devices/system/cpu/smt
+>>      /control
+>>      /active
+>>
+>> And a system with CONFIG_HOTPLUG_SMT=y but no actual hardware SMT will
+>> have:
+>>
+>>      /control = notsupported
+>>      /active  = 0
 > 
-> Perhaps a middle road solution is to
 > 
-> - Add, not convert a standalone dtbo or
-> - Add a dtbo that includes the mezzanine dts but amends it
+> Having such interface for EAS would be ideal no > /active:
+> would be the equivalent of the current sysctl_sched_energy_aware
 > 
-> Option 2 for preference but, I'm not sure the dts syntax can be meaningfully
-> made to do that.
+> /control:
+> would show whether CONFIG_SCHED_DEBUG was set and all the conditions
+> to have EAS enabled are satisfied.
+> 
+> Possible states for SMT:
+> ---
+> static const char *smt_states[] = {
+>     [CPU_SMT_ENABLED]        = "on",             // EAS possible and
+> running
+>     [CPU_SMT_DISABLED]        = "off",            // EAS possible and
+> not running
+>     [CPU_SMT_FORCE_DISABLED]    = "forceoff",       // not applicable
+> for EAS
+>     [CPU_SMT_NOT_SUPPORTED]        = "notsupported",   // system with
+> smt or not asymmetric or no freq invariance
+>     [CPU_SMT_NOT_IMPLEMENTED]    = "notimplemented", //
+> CONFIG_SCHED_DEBUG=n
+> };
+> ---
 > 
 
-With these patches the apq8016-sbc-d3-camera-mezzanine.dtb is still
-magically built, by running fdtoverlay on apq8016-sbc.dtb and applying
-the dtbo. It's applied during the build process so you don't need a
-bootloader that supports DTBOs.
+Likely the current simpler approach more or less achieves the same i think.
 
-There is literally *no change* for you in terms of usage. :-)
+With V4 (not yet sent).  Didnt send it out yet, as i am not
+sure of proc handler's internal way of handling buffers and corner cases. I am
+thinking to make *lenp=0 unconditionally and return if EAS is not possible. With 
+that I have these possibilities.
 
-Thanks,
-Stephan
+If sysctl is not there at all, that mean CONFIG_ENERGY_MODEL was not selected 
+If sysctl return empty string, that mean EAS is not possible at the moment. 
+One can figure out whats the reason from dmesg. 
+If sysctl return 1 or 0 - EAS is possible and its either enabled or disabled.
+
+> 
+>>
+>> So IMO it would make sense to keep sched_energy_aware around, but make it
+>> read 0 and prevent writes for systems that have the software support
+>> compiled but don't have the actual hardware support.
+>>
+>> In a pinch it also helps to know if CONFIG_ENERGY_MODEL was selected,
+>> though that's obvious enough with CONFIG_SCHED_DEBUG=y.
+>>
