@@ -2,188 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1F17AAD7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978B87AADA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbjIVJIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        id S232901AbjIVJPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbjIVJIb (ORCPT
+        with ESMTP id S232827AbjIVJPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:08:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AECCCF;
-        Fri, 22 Sep 2023 02:08:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20F77C433C7;
-        Fri, 22 Sep 2023 09:08:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695373702;
-        bh=DneDTrMzqOYk2VqM6PWF9OdSV3o85kLkm4Bf5AanMMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K/bKC4EQSxuAx5IqqW3uzO9p47l/92Lgt/76oGEITKDOwIy5m6rDvIEpm5wRAoHBV
-         ADtzZ5HdLw5GOA4YP27WQWQ4jRfP+3Qe6qEVIvirI/pZqbyowlNIyL4DZt+Xl0ekb0
-         ihdZNVN54M/iXbAJK1OObmJEzGB1tT9UTuiELQu/jaCPt5l3wNt4MVrd8Q7qEJC1Nr
-         nLNVk7YCoRA+fHaitIqWnnNNji+HjpANpwoPpJhQ8NNbkiVIrGK7vjMDMaJUgHNOCf
-         gdxBizBLz+l90ePmO7+sO2WFa77ugxGdDVQz6h/LDlaNv9pSsjLCqT+OpdGUhJETvY
-         joieJNy8SjwsA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qjc9T-00054G-2n;
-        Fri, 22 Sep 2023 11:08:43 +0200
-Date:   Fri, 22 Sep 2023 11:08:43 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        LinusW <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH] HID: i2c-hid: fix handling of unpopulated devices
-Message-ID: <ZQ1Zm6ec9NuBvqpl@hovoldconsulting.com>
-References: <20230918125851.310-1-johan+linaro@kernel.org>
- <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
- <ZQlIveJVdvyV2Ygy@hovoldconsulting.com>
- <CAD=FV=XBG7auVVyHn5uvahSZZxp5qBfp4+A9NwFqahdN6XrbZA@mail.gmail.com>
- <ZQqemN8P2VKgxhsV@hovoldconsulting.com>
- <CAD=FV=XK87TZuPy+d2r2g5QhowmghE-m9pGHe9-X7jnXAw9z1g@mail.gmail.com>
+        Fri, 22 Sep 2023 05:15:07 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CEF194;
+        Fri, 22 Sep 2023 02:15:00 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RsRPZ1yGYz15NQ1;
+        Fri, 22 Sep 2023 17:12:50 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 22 Sep 2023 17:14:58 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v10 0/6] introduce page_pool_alloc() related API
+Date:   Fri, 22 Sep 2023 17:11:32 +0800
+Message-ID: <20230922091138.18014-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=XK87TZuPy+d2r2g5QhowmghE-m9pGHe9-X7jnXAw9z1g@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 08:41:12AM -0700, Doug Anderson wrote:
-> On Wed, Sep 20, 2023 at 12:26 AM Johan Hovold <johan@kernel.org> wrote:
-> > On Tue, Sep 19, 2023 at 11:15:46AM -0700, Doug Anderson wrote:
-> > > On Tue, Sep 19, 2023 at 12:07 AM Johan Hovold <johan@kernel.org> wrote:
+In [1] & [2] & [3], there are usecases for veth and virtio_net
+to use frag support in page pool to reduce memory usage, and it
+may request different frag size depending on the head/tail
+room space for xdp_frame/shinfo and mtu/packet size. When the
+requested frag size is large enough that a single page can not
+be split into more than one frag, using frag support only have
+performance penalty because of the extra frag count handling
+for frag support.
 
-> > As I alluded to in the commit message, you probably want to be able to
-> > support second-source touchscreen panel followers as well at some point
-> > and then deferring checking whether device is populated until the panel
-> > is powered on is not going to work.
-> 
-> Yeah, I've been pondering this too. I _think_ it would work OK-ish if
-> both devices probed and then only one of the two would actually make
-> the sub-HID devices. So you'd actually see both devices succeed at
-> probing but only one of them would actually be functional. It's a bit
-> ugly, though. :(  Maybe marginally better would be if we could figure
-> out how to have the device which fails to get its interrupt later
-> unbind itself, if that's possible...
-> 
-> The only other thought I had would be to have the parent i2c bus
-> understand that it had children that were panel followers, which it
-> should be able to do by seeing the "panel" attribute in their device
-> tree. Then the i2c bus could itself register as a panel follower and
-> could wait to probe its children until they were powered on. This
-> could happen in the i2c core so we didn't have to add code like this
-> to all i2c bus drivers. ...and, if necessary, we could add this to
-> other busses like SPI. It feels a little awkward but could work.
+So this patchset provides a page pool API for the driver to
+allocate memory with least memory utilization and performance
+penalty when it doesn't know the size of memory it need
+beforehand.
 
-There may be other device on the bus that have nothing to do with
-panels, but I guess you mean that this would only apply to a subset of
-the children. In any case, this feels like a hack and layering
-violation.
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
+3. https://github.com/alobakin/linux/tree/iavf-pp-frag
 
-> > I skimmed the thread were you added this, but I'm not sure I saw any
-> > reason for why powering on the panel follower temporarily during probe
-> > would not work?
-> 
-> My first instinct says we can't do this, but let's think about it...
-> 
-> In general the "panel follower" API is designed to give all the
-> decision making about when to power things on and off to the panel
-> driver, which is controlled by DRM.
-> 
-> The reason for this is from experience I had when dealing with the
-> Samsung ATNA33XC20 panel that's on "sc7180-trogdor-homestar". The TCON
-> on that panel tended to die if you didn't sequence it just right.
-> Specifically, if you were sending pixels to the panel and then stopped
-> then you absolutely needed to power the panel off and on again. Folks
-> I talked to even claimed that the panel was working "to spec" since,
-> in the "Power Sequencing" section of the eDP spec it clearly shows
-> that you _must_ turn the panel off and on again after you stop giving
-> it bits. ...this is despite the fact that no other panel I've worked
-> with cares. ;-)
-> 
-> On homestar, since we didn't have the "panel follower" API, we ended
-> up adding cost to the hardware and putting the panel and touchscreens
-> on different power rails. However, I wanted to make sure that if we
-> ran into a similar situation in the future (or maybe if we were trying
-> to make hardware work that we didn't have control over) that we could
-> solve it.
-> 
-> The other reason for giving full control to the panel driver is just
-> how userspace usually works. Right now userspace tends to power off
-> panels if they're not used (like if a lid is closed on a laptop) but
-> doesn't necessarily power off the touchscreen. Thus if the touchscreen
-> has the ability to keep things powered on then we'd never get to a low
-> power state.
+V10: Use fragment instead of frag in English docs.
+     Remove PP_FLAG_PAGE_FRAG usage in idpf driver.
 
-Don't you need to keep the touchscreen powered to support wakeup events
-(e.g. when not closing the lid)?
+V9: Update some performance info in patch 2.
 
-And if you close the lid with wakeup disabled, you should still be able
-to power down the touchscreen as part of suspend, right?
+V8: Store the dma addr on a shifted u32 instead of using
+    dma_addr_t explicitly for 32-bit arch with 64-bit DMA.
+    Update document according to discussion in v7.
 
-> The above all explains why panel followers like the touchscreen
-> shouldn't be able to keep power on. However, you are specifically
-> suggesting that we just turn the power on temporarily during probe. As
-> I think about that, it might be possible? I guess you'd have to
-> temporarily block DRM from changing the state of the panel while the
-> touchscreen is probing. Then if the panel was off then you'd turn it
-> on briefly, do your probe, and then turn it off again. If the panel
-> was on then by blocking DRM you'd ensure that it stayed on. I'm not
-> sure how palatable that would be or if there are any other tricky
-> parts I'm not thinking about.
+V7: Fix a compile error, a few typo and use kernel-doc syntax.
 
-As this would allow actually probing the touchscreen during probe(), as
-the driver model expects, this seems like a better approach then
-deferring probe and registration if it's at all doable.
+V6: Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag to fail the page_pool
+    creation for 32-bit arch with 64-bit DMA when driver tries to
+    do the page splitting itself, adjust the requested size to
+    include head/tail room in veth, and rebased on the latest
+    next-net.
 
-> > > Thinking that way, is there any reason you can't just move the
-> > > i2c_hid_init_irq() into __do_i2c_hid_core_initial_power_up()? You
-> > > could replace the call to enable_irq() with it and then remove the
-> > > `IRQF_NO_AUTOEN` flag? I think that would also solve the issue if you
-> > > wanted to use a 2nd source + the panel follower concept? Both devices
-> > > would probe, but only one of them would actually grab the interrupt
-> > > and only one of them would actually create real HID devices. We might
-> > > need to do some work to keep from trying again at every poweron of the
-> > > panel, but it would probably be workable? I think this would also be a
-> > > smaller change...
-> >
-> > That was my first idea as well, but conceptually it is more correct to
-> > request resources at probe time and not at some later point when you can
-> > no longer fail probe.
-> >
-> > You'd also need to handle the fact that the interrupt may never have
-> > been requested when remove() is called, which adds unnecessary
-> > complexity.
-> 
-> I don't think it's a lot of complexity, is it? Just an extra "if" statement...
+v5 RFC: Add a new page_pool_cache_alloc() API, and other minor
+        change as discussed in v4. As there seems to be three
+        comsumers that might be made use of the new API, so
+        repost it as RFC and CC the relevant authors to see
+        if the new API fits their need.
 
-Well you'd need keep track of whether the interrupt has been requested
-or not (and manage serialisation) yourself for a start.
+V4. Fix a typo and add a patch to update document about frag
+    API, PAGE_POOL_DMA_USE_PP_FRAG_COUNT is not renamed yet
+    as we may need a different thread to discuss that.
 
-But the main reason is still that requesting resources belongs in
-probe() and should not be deferred to some later random time where you
-cannot inform driver core of failures (e.g. for probe deferral if the
-interrupt controller is not yet available).
+V3: Incorporate changes from the disscusion with Alexander,
+    mostly the inline wraper, PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+    change split to separate patch and comment change.
+V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
+    virtio_net usecase in the cover letter.
+V1: Drop RFC tag and page_pool_frag patch.
 
-Johan
+Yunsheng Lin (6):
+  page_pool: fragment API support for 32-bit arch with 64-bit DMA
+  page_pool: unify frag_count handling in page_pool_is_last_frag()
+  page_pool: remove PP_FLAG_PAGE_FRAG
+  page_pool: introduce page_pool[_cache]_alloc() API
+  page_pool: update document about fragment API
+  net: veth: use newly added page pool API for veth with xdp
+
+ Documentation/networking/page_pool.rst        |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 -
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |   3 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   3 -
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   2 +-
+ drivers/net/veth.c                            |  25 +-
+ drivers/net/wireless/mediatek/mt76/mac80211.c |   2 +-
+ include/linux/mm_types.h                      |  13 +-
+ include/net/page_pool/helpers.h               | 227 +++++++++++++++---
+ include/net/page_pool/types.h                 |   6 +-
+ net/core/page_pool.c                          |  31 ++-
+ net/core/skbuff.c                             |   2 +-
+ 13 files changed, 241 insertions(+), 81 deletions(-)
+
+-- 
+2.33.0
+
