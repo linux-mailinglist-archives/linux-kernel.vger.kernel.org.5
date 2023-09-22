@@ -2,166 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF10D7AAE38
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35CF7AAE2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 11:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjIVJdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 05:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
+        id S232966AbjIVJeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 05:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232993AbjIVJdd (ORCPT
+        with ESMTP id S233169AbjIVJdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 05:33:33 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F8FCF7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 02:33:26 -0700 (PDT)
-Received: from dggpemm500016.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RsRpr3l9bz15NR5;
-        Fri, 22 Sep 2023 17:31:16 +0800 (CST)
-Received: from [10.67.108.26] (10.67.108.26) by dggpemm500016.china.huawei.com
- (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 22 Sep
- 2023 17:33:24 +0800
-Message-ID: <c590ac5d-91b9-ec3b-6899-a18c16c9f980@huawei.com>
-Date:   Fri, 22 Sep 2023 17:33:24 +0800
+        Fri, 22 Sep 2023 05:33:55 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B651B2;
+        Fri, 22 Sep 2023 02:33:48 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id B35AD5C02AA;
+        Fri, 22 Sep 2023 05:33:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 22 Sep 2023 05:33:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1695375225; x=1695461625; bh=fv6T8BTqNkPx4jUIYjRek+Zs0clEKtCxgTn
+        B6FxWGCw=; b=i3nM40jij4I984LClHOriPJA56klkl5FY5AepJOld99IVG8cegQ
+        yOOPzMWOk9Jag8wzIt5CZsGQDo/AIvCSWOkRFt1aaP4SOkSgGM58T0LHob+TxenB
+        +GWdkPPRjPm4BylfdUo/fzBcesRvTYobCWNcOBBL+NPZDEDNshKSAzbO51syPwVv
+        krNG+I3zfsIqZ4ar7QrFWBS3r1oMFaY015PAGVaAgE3xks5Z24R39sEpe4b1chdJ
+        aUHGatl7UFb44qicf7spJOFdTFAXy2+jPZUnU2GdW+hwwuIk21Fw2Su9Qi1W0Kqu
+        SLKX1HvGSDT3zAf5BJJDUv4t3J7b0veDkYg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1695375225; x=1695461625; bh=fv6T8BTqNkPx4jUIYjRek+Zs0clEKtCxgTn
+        B6FxWGCw=; b=Z2DTRPg9rRaozL3uj6C/42iWObK4gSFHvZGeGVnrpdm1Lh2IHUe
+        TtUt+HC1knZGkuT+Ew8lEuNA+cTwHaqRgLde3G5H1IWL3W5bkomPipCZ7h2mgAsW
+        WdSYnaCCOUr50VocRVsjr3/X4wQq230fyk7DX/D5ljRdBv+jpxKvvWOTafbFuR3+
+        cmb7fDSekl9MrIfM+MUvOyJkpnKo0jKpEdo6nLjaQ3FkM6RzldRk4jGpOnXBI5qY
+        d9gkZxNGsanGRd7d6rzC1S/j0JEULFF5DZkxp5FIhdhe72AIN1OvS5/IToO/M51r
+        CWjnxRl7oCY+p+7UVxz+Z9yQNMeF6sOpF2g==
+X-ME-Sender: <xms:eV8NZQby7R2BwIUqGHPH45qKs_YIkBBw1akWBd7iauu26Iqp9HJARg>
+    <xme:eV8NZbaMPx_5J_jJxI67clMH7HGihzYWm4_saPgnjGfUMOC115tptu9IQrEmb64oB
+    4GgqtekEbZT>
+X-ME-Received: <xmr:eV8NZa_FounO79UsHqV87UFfrOQVlH0rHAiW3-2-Fhcj7H0r0gOpSTrDK6v_i29YppjjYnbv1ra7dLWQVJiH8lAa3rFH1ejjM8UOtkcSIeAaIIpEj84G>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekkedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epuefhueeiieejueevkefgiedtteehgfdutdelfffhleeflefhudeuvdefhfeghfehnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:eV8NZarRIPwyd51X041aYpvBBDOvpPZkgqY12ft0UiR1eAO_wlhaug>
+    <xmx:eV8NZbrFU8cfdOUFX1oER6l-FLGrxyWZKxJ4s1-bcRDEkXvsOcoc1w>
+    <xmx:eV8NZYTorjbQ4hrQaZ03OvFCi1tU1nsF5ERfOgIWrVihW4kp9JchWQ>
+    <xmx:eV8NZcCyafNeQxPZWbQQV6QF9WL5vE4I604DQFKwZ7pq5qB5ep7Qaw>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Sep 2023 05:33:41 -0400 (EDT)
+Message-ID: <d3b89797-8065-4b75-69dd-1d602e9f7c09@themaw.net>
+Date:   Fri, 22 Sep 2023 17:33:37 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH -next] riscv: kdump: fix crashkernel reserving problem on
- RISC-V
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 7/8] autofs: convert autofs to use the new mount api
 Content-Language: en-US
-To:     Baoquan He <bhe@redhat.com>
-CC:     <thunder.leizhen@huawei.com>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-        <conor.dooley@microchip.com>, <alexghiti@rivosinc.com>,
-        <ajones@ventanamicro.com>, <jszhang@kernel.org>,
-        <sunilvl@ventanamicro.com>, <robh@kernel.org>,
-        <bjorn@rivosinc.com>, <zephray@outlook.com>,
-        <akpm@linux-foundation.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230922030722.708267-1-chenjiahao16@huawei.com>
- <ZQ0/aK6cg8oNloA4@MiWiFi-R3L-srv>
-From:   "chenjiahao (C)" <chenjiahao16@huawei.com>
-In-Reply-To: <ZQ0/aK6cg8oNloA4@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bill O'Donnell <billodo@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>
+References: <20230922041215.13675-1-raven@themaw.net>
+ <20230922041215.13675-8-raven@themaw.net>
+ <20230922-appell-vordach-1608445c5251@brauner>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <20230922-appell-vordach-1608445c5251@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.108.26]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500016.china.huawei.com (7.185.36.25)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2023/9/22 15:16, Baoquan He wrote:
-> Hi Jiahao,
->
-> On 09/22/23 at 11:07am, Chen Jiahao wrote:
->> When testing on risc-v QEMU environment with "crashkernel="
->> parameter enabled, a problem occurred with the following
->> message:
+On 22/9/23 16:31, Christian Brauner wrote:
+> On Fri, Sep 22, 2023 at 12:12:14PM +0800, Ian Kent wrote:
+>> Convert the autofs filesystem to use the mount API.
 >>
->> [    0.000000] crashkernel low memory reserved: 0xf8000000 - 0x100000000 (128 MB)
->> [    0.000000] crashkernel reserved: 0x0000000177e00000 - 0x0000000277e00000 (4096 MB)
->> [    0.000000] ------------[ cut here ]------------
->> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/resource.c:779 __insert_resource+0x8e/0xd0
->> [    0.000000] Modules linked in:
->> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc2-next-20230920 #1
->> [    0.000000] Hardware name: riscv-virtio,qemu (DT)
->> [    0.000000] epc : __insert_resource+0x8e/0xd0
->> [    0.000000]  ra : insert_resource+0x28/0x4e
->> [    0.000000] epc : ffffffff80017344 ra : ffffffff8001742e sp : ffffffff81203db0
->> [    0.000000]  gp : ffffffff812ece98 tp : ffffffff8120dac0 t0 : ff600001f7ff2b00
->> [    0.000000]  t1 : 0000000000000000 t2 : 3428203030303030 s0 : ffffffff81203dc0
->> [    0.000000]  s1 : ffffffff81211e18 a0 : ffffffff81211e18 a1 : ffffffff81289380
->> [    0.000000]  a2 : 0000000277dfffff a3 : 0000000177e00000 a4 : 0000000177e00000
->> [    0.000000]  a5 : ffffffff81289380 a6 : 0000000277dfffff a7 : 0000000000000078
->> [    0.000000]  s2 : ffffffff81289380 s3 : ffffffff80a0bac8 s4 : ff600001f7ff2880
->> [    0.000000]  s5 : 0000000000000280 s6 : 8000000a00006800 s7 : 000000000000007f
->> [    0.000000]  s8 : 0000000080017038 s9 : 0000000080038ea0 s10: 0000000000000000
->> [    0.000000]  s11: 0000000000000000 t3 : ffffffff80a0bc00 t4 : ffffffff80a0bc00
->> [    0.000000]  t5 : ffffffff80a0bbd0 t6 : ffffffff80a0bc00
->> [    0.000000] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
->> [    0.000000] [<ffffffff80017344>] __insert_resource+0x8e/0xd0
->> [    0.000000] ---[ end trace 0000000000000000 ]---
->> [    0.000000] Failed to add a Crash kernel resource at 177e00000
+>> The conversion patch was originally written by David Howells.
+>> I have taken that patch and broken it into several patches in an effort
+>> to make the change easier to review.
 >>
->> The crashkernel memory has been allocated successfully, whereas
->> it failed to insert into iomem_resource. This is due to the
-> This is a warning, not a failure, right? Inserting crashk_*res into
-> iomem_resource has been successful, just the repeated inserting cause
-> the warning. Maybe, we should tell this in log clearly? Other than minor
-> concern, this looks good to me, thanks for the testing and this fix:
-
-Thanks for reviewing. Actually this is not only a warning message.
-Since when failure occurs in riscv's init_resources(),
-
-error:
-	release_child_resources(&iomem_resource);
-
-will get called, already added crashkernel memory will hence
-get removed. To verify this, I have checked but cannot find
-crashkernel memory in /proc/iomem when this problem occurs.
-
-But you are right, it is necessary to make it clear what will
-eventually happen in commit message. I will update a v2 patch later
-to add these info.
-
-Thanks,
-Jiahao
-
-
->
-> Acked-by: Baoquan He <bhe@redhat.com>
->
-> Thanks
-> Baoquan
->
->> unique reserving logic in risc-v arch specific code, i.e.
->> crashk_res/crashk_low_res will be added into iomem_resource
->> later in init_resources(), which is not aligned with current
->> unified reserving logic in reserve_crashkernel_generic()/
->> reserve_crashkernel_low().
->>
->> Removing the arch specific code within #ifdef CONFIG_KEXEC_CORE
->> in init_resources() to fix above problem.
->>
->> Fixes: 31549153088e ("riscv: kdump: use generic interface to simplify crashkernel reservation")
->> Signed-off-by: Chen Jiahao <chenjiahao16@huawei.com>
+>> Signed-off-by: Ian Kent <raven@themaw.net>
 >> ---
->>   arch/riscv/kernel/setup.c | 13 -------------
->>   1 file changed, 13 deletions(-)
+>>   fs/autofs/autofs_i.h |   5 +-
+>>   fs/autofs/init.c     |   9 +-
+>>   fs/autofs/inode.c    | 247 ++++++++++++++++++++++++-------------------
+>>   3 files changed, 142 insertions(+), 119 deletions(-)
 >>
->> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->> index e600aab116a4..aac853ae4eb7 100644
->> --- a/arch/riscv/kernel/setup.c
->> +++ b/arch/riscv/kernel/setup.c
->> @@ -173,19 +173,6 @@ static void __init init_resources(void)
->>   	if (ret < 0)
->>   		goto error;
+>> diff --git a/fs/autofs/autofs_i.h b/fs/autofs/autofs_i.h
+>> index c24d32be7937..244f18cdf23c 100644
+>> --- a/fs/autofs/autofs_i.h
+>> +++ b/fs/autofs/autofs_i.h
+>> @@ -25,6 +25,8 @@
+>>   #include <linux/completion.h>
+>>   #include <linux/file.h>
+>>   #include <linux/magic.h>
+>> +#include <linux/fs_context.h>
+>> +#include <linux/fs_parser.h>
 >>   
->> -#ifdef CONFIG_KEXEC_CORE
->> -	if (crashk_res.start != crashk_res.end) {
->> -		ret = add_resource(&iomem_resource, &crashk_res);
->> -		if (ret < 0)
->> -			goto error;
->> -	}
->> -	if (crashk_low_res.start != crashk_low_res.end) {
->> -		ret = add_resource(&iomem_resource, &crashk_low_res);
->> -		if (ret < 0)
->> -			goto error;
->> -	}
->> -#endif
+>>   /* This is the range of ioctl() numbers we claim as ours */
+>>   #define AUTOFS_IOC_FIRST     AUTOFS_IOC_READY
+>> @@ -205,7 +207,8 @@ static inline void managed_dentry_clear_managed(struct dentry *dentry)
+>>   
+>>   /* Initializing function */
+>>   
+>> -int autofs_fill_super(struct super_block *, void *, int);
+>> +extern const struct fs_parameter_spec autofs_param_specs[];
+>> +int autofs_init_fs_context(struct fs_context *fc);
+>>   struct autofs_info *autofs_new_ino(struct autofs_sb_info *);
+>>   void autofs_clean_ino(struct autofs_info *);
+>>   
+>> diff --git a/fs/autofs/init.c b/fs/autofs/init.c
+>> index d3f55e874338..b5e4dfa04ed0 100644
+>> --- a/fs/autofs/init.c
+>> +++ b/fs/autofs/init.c
+>> @@ -7,16 +7,11 @@
+>>   #include <linux/init.h>
+>>   #include "autofs_i.h"
+>>   
+>> -static struct dentry *autofs_mount(struct file_system_type *fs_type,
+>> -	int flags, const char *dev_name, void *data)
+>> -{
+>> -	return mount_nodev(fs_type, flags, data, autofs_fill_super);
+>> -}
 >> -
->>   #ifdef CONFIG_CRASH_DUMP
->>   	if (elfcorehdr_size > 0) {
->>   		elfcorehdr_res.start = elfcorehdr_addr;
->> -- 
->> 2.34.1
->>
+>>   struct file_system_type autofs_fs_type = {
+>>   	.owner		= THIS_MODULE,
+>>   	.name		= "autofs",
+>> -	.mount		= autofs_mount,
+>> +	.init_fs_context = autofs_init_fs_context,
+>> +	.parameters	= autofs_param_specs,
+>>   	.kill_sb	= autofs_kill_sb,
+>>   };
+>>   MODULE_ALIAS_FS("autofs");
+>> diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+>> index e2026e063d8c..3f2dfed428f9 100644
+>> --- a/fs/autofs/inode.c
+>> +++ b/fs/autofs/inode.c
+>> @@ -6,7 +6,6 @@
+>>   
+>>   #include <linux/seq_file.h>
+>>   #include <linux/pagemap.h>
+>> -#include <linux/parser.h>
+>>   
+>>   #include "autofs_i.h"
+>>   
+>> @@ -111,7 +110,6 @@ static const struct super_operations autofs_sops = {
+>>   };
+>>   
+>>   enum {
+>> -	Opt_err,
+>>   	Opt_direct,
+>>   	Opt_fd,
+>>   	Opt_gid,
+>> @@ -125,35 +123,48 @@ enum {
+>>   	Opt_uid,
+>>   };
+>>   
+>> -static const match_table_t tokens = {
+>> -	{Opt_fd, "fd=%u"},
+>> -	{Opt_uid, "uid=%u"},
+>> -	{Opt_gid, "gid=%u"},
+>> -	{Opt_pgrp, "pgrp=%u"},
+>> -	{Opt_minproto, "minproto=%u"},
+>> -	{Opt_maxproto, "maxproto=%u"},
+>> -	{Opt_indirect, "indirect"},
+>> -	{Opt_direct, "direct"},
+>> -	{Opt_offset, "offset"},
+>> -	{Opt_strictexpire, "strictexpire"},
+>> -	{Opt_ignore, "ignore"},
+>> -	{Opt_err, NULL}
+>> +const struct fs_parameter_spec autofs_param_specs[] = {
+>> +	fsparam_flag	("direct",		Opt_direct),
+>> +	fsparam_fd	("fd",			Opt_fd),
+>> +	fsparam_u32	("gid",			Opt_gid),
+>> +	fsparam_flag	("ignore",		Opt_ignore),
+>> +	fsparam_flag	("indirect",		Opt_indirect),
+>> +	fsparam_u32	("maxproto",		Opt_maxproto),
+>> +	fsparam_u32	("minproto",		Opt_minproto),
+>> +	fsparam_flag	("offset",		Opt_offset),
+>> +	fsparam_u32	("pgrp",		Opt_pgrp),
+>> +	fsparam_flag	("strictexpire",	Opt_strictexpire),
+>> +	fsparam_u32	("uid",			Opt_uid),
+>> +	{}
+>>   };
+>>   
+>> -static int autofs_parse_fd(struct autofs_sb_info *sbi, int fd)
+>> +struct autofs_fs_context {
+>> +	kuid_t	uid;
+>> +	kgid_t	gid;
+>> +	int	pgrp;
+>> +	bool	pgrp_set;
+>> +};
+>> +
+>> +/*
+>> + * Open the fd.  We do it here rather than in get_tree so that it's done in the
+>> + * context of the system call that passed the data and not the one that
+>> + * triggered the superblock creation, lest the fd gets reassigned.
+>> + */
+>> +static int autofs_parse_fd(struct fs_context *fc, int fd)
+>>   {
+>> +	struct autofs_sb_info *sbi = fc->s_fs_info;
+>>   	struct file *pipe;
+>>   	int ret;
+>>   
+>>   	pipe = fget(fd);
+>>   	if (!pipe) {
+>> -		pr_err("could not open pipe file descriptor\n");
+>> +		errorf(fc, "could not open pipe file descriptor");
+>>   		return -EBADF;
+>>   	}
+>>   
+>>   	ret = autofs_check_pipe(pipe);
+>>   	if (ret < 0) {
+>> -		pr_err("Invalid/unusable pipe\n");
+>> +		errorf(fc, "Invalid/unusable pipe");
+>>   		fput(pipe);
+>>   		return -EBADF;
+>>   	}
+>> @@ -167,58 +178,43 @@ static int autofs_parse_fd(struct autofs_sb_info *sbi, int fd)
+>>   	return 0;
+>>   }
+>>   
+>> -static int autofs_parse_param(char *optstr, struct inode *root,
+>> -			      int *pgrp, bool *pgrp_set,
+>> -			      struct autofs_sb_info *sbi)
+>> +static int autofs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>>   {
+>> -	substring_t args[MAX_OPT_ARGS];
+>> -	int option;
+>> -	int pipefd = -1;
+>> +	struct autofs_fs_context *ctx = fc->fs_private;
+>> +	struct autofs_sb_info *sbi = fc->s_fs_info;
+>> +	struct fs_parse_result result;
+>>   	kuid_t uid;
+>>   	kgid_t gid;
+>> -	int token;
+>> -	int ret;
+>> +	int opt;
+>>   
+>> -	token = match_token(optstr, tokens, args);
+>> -	switch (token) {
+>> +	opt = fs_parse(fc, autofs_param_specs, param, &result);
+>> +	if (opt < 0)
+>> +		return opt;
+>> +
+>> +	switch (opt) {
+>>   	case Opt_fd:
+>> -		if (match_int(args, &pipefd))
+>> -			return 1;
+>> -		ret = autofs_parse_fd(sbi, pipefd);
+>> -		if (ret)
+>> -			return 1;
+>> -		break;
+>> +		return autofs_parse_fd(fc, result.int_32);
+>>   	case Opt_uid:
+>> -		if (match_int(args, &option))
+>> -			return 1;
+>> -		uid = make_kuid(current_user_ns(), option);
+>> +		uid = make_kuid(current_user_ns(), result.uint_32);
+>>   		if (!uid_valid(uid))
+>>   			return 1;
+> This and the make_kgid() instance below need to return -EINVAL or use
+> invalfc() to return an error message. I can fix this up though so no
+> need to resend for this.
+
+
+Right you are, sorry about that and thanks very much for fixing it for
+
+me.
+
+
+Ian
+
+Ian
+
