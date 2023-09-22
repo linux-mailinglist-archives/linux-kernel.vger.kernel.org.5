@@ -2,151 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6F87AB244
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675BE7AB24C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 14:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbjIVMj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 08:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        id S233016AbjIVMlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 08:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjIVMjZ (ORCPT
+        with ESMTP id S229541AbjIVMlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 08:39:25 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C8F8F;
-        Fri, 22 Sep 2023 05:39:19 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3226b8de467so1264057f8f.3;
-        Fri, 22 Sep 2023 05:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695386357; x=1695991157; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=b6BtxNQ135MklppADA7lSErOJTbc2ar7TfLev75acd8=;
-        b=RDpAAcJDOARkDKCz68b0oGFUrqvJsU4T1VzWkKMHzPtFFDaoDM+L8vz9XoVshw3jT+
-         4gzqnhp1enl1U/Q3h6b7MEX0bJXhquMCWGGVu3I9+uZKyjeFMu2p2gma0VzMG0OA7Vay
-         sbP1c9XS9NytO0GbUjqg2bpJwyEsx4qzcYJz4PBI+ARD4pnNtkRJoNmWlYqI+EK5iQE/
-         RcHFabCdIwIpIcHGuP6hPxXZXfAzK3WdzjxYv5988W5COkp9XwtUUHFZN5rmxw0+WcCe
-         OsADi4mtOFSWiUheca7v73E7I1uYCOwJ48kUdHaeHp1YVQGPoe0VqvaEUxg6JMcc71E1
-         3flA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695386357; x=1695991157;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b6BtxNQ135MklppADA7lSErOJTbc2ar7TfLev75acd8=;
-        b=iUcmj4x8C+bS1ufiAN4hGC/xVPQdbFqllKJh5U7NM/1TnjxaGox+uZA9ksBMuOJ5ed
-         pH+qEWX3RBYGQKhjcZhBTgBHR+z2L5Xf5by+VGSaN/bKkuh+085FWKPisjKxUha6GEyi
-         L034hMeg3Yfu5PWiJecpuDofyq4fjW8NNIktJ2A5uzcmQUXo4MoxMNJsz1TtD2aDbjXk
-         uuGootzeBe83aUIB7RKBZnxPdH9OSyZ3b0GLcyBI0mkg3XdjPubB2EVnqiauBio7LF7D
-         nu/GZhcqwjKfWcJlGumQZzb8KFSx88QDLX5g3Zt7aDNtlqDhFC2DPXa1qAlxCu+murpk
-         CczQ==
-X-Gm-Message-State: AOJu0Yz98Dk4j+9xPGaejb5bB22zbDJOSAaEskFIN233/SnaAJUGV7QK
-        sL2FiOR30IHGrYHUMrP1zQM=
-X-Google-Smtp-Source: AGHT+IGjgWaSR9uKGwFDbdBclTHJnKhiju4EMdgbX0VLMi2rEzBZwykMPgJj/mMOcTKBM7OAMgcEmg==
-X-Received: by 2002:a05:6000:148:b0:31f:e1b4:5846 with SMTP id r8-20020a056000014800b0031fe1b45846mr8123988wrx.53.1695386357117;
-        Fri, 22 Sep 2023 05:39:17 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id b12-20020a5d634c000000b0031773a8e5c4sm4375252wrw.37.2023.09.22.05.39.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 05:39:16 -0700 (PDT)
-Message-ID: <650d8af4.5d0a0220.5ce38.2c5e@mx.google.com>
-X-Google-Original-Message-ID: <ZQ2K8ZRF+Kyq7pmD@Ansuel-xps.>
-Date:   Fri, 22 Sep 2023 14:39:13 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Fri, 22 Sep 2023 08:41:19 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9488F;
+        Fri, 22 Sep 2023 05:41:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yvGliCzM7qR9cjwG6OFrxm7XoeY8chqa33iD7TfYF9g=; b=lZm9bmh9bX4vJV7N6gXQkI3orG
+        zGDpsAFxG6Z8J3pwy7jZY5q9zdQBewF7xPzkwVqKcnIXeOpSMLDiT9vx91NXTJL4TKTDfqMxl8VmF
+        00A8OH6092aKIauO2XgRfqHFoT6s/Q949MDmsDVAKpowyBYFcwu71cpJcLQSreWpKQ3NtsiVHMwoh
+        +Bt9QjogKZdkYYbb09Sm03zcoKIdFB2rRi1f2Z7BqckuRb1t0OcnP7aOwqqncjkWwJgBFYQO2zT90
+        bPYGmJc+fnBXeqB5Kc7zpYjRzqfIhLdY4TdjI3sN0w2JfpuF/l64bNxiSsOPpJ4SScHNBucvTZL1F
+        Y9zblyZg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55764)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qjfSL-0006d7-0y;
+        Fri, 22 Sep 2023 13:40:25 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qjfSD-0004Zz-QK; Fri, 22 Sep 2023 13:40:17 +0100
+Date:   Fri, 22 Sep 2023 13:40:17 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [net-next PATCH 3/3] net: stmmac: increase TX coalesce timer to
- 5ms
-References: <20230922111247.497-1-ansuelsmth@gmail.com>
- <20230922111247.497-3-ansuelsmth@gmail.com>
- <13bc074d-30c2-4bbf-8b4c-82f561c844b0@lunn.ch>
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH net-next v2 00/10] define and enforce phylink bindings
+Message-ID: <ZQ2LMe9aa1ViBcSH@shell.armlinux.org.uk>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <13bc074d-30c2-4bbf-8b4c-82f561c844b0@lunn.ch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230916110902.234273-1-arinc.unal@arinc9.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 02:28:06PM +0200, Andrew Lunn wrote:
-> On Fri, Sep 22, 2023 at 01:12:47PM +0200, Christian Marangi wrote:
-> > Commit 8fce33317023 ("net: stmmac: Rework coalesce timer and fix
-> > multi-queue races") decreased the TX coalesce timer from 40ms to 1ms.
-> > 
-> > This caused some performance regression on some target (regression was
-> > reported at least on ipq806x) in the order of 600mbps dropping from
-> > gigabit handling to only 200mbps.
-> > 
-> > The problem was identified in the TX timer getting armed too much time.
-> > While this was fixed and improved in another commit, performance can be
-> > improved even further by increasing the timer delay a bit moving from
-> > 1ms to 5ms.
-> > 
-> > The value is a good balance between battery saving by prevending too
-> > much interrupt to be generated and permitting good performance for
-> > internet oriented devices.
+On Sat, Sep 16, 2023 at 02:08:52PM +0300, Arınç ÜNAL wrote:
+> Hello there.
 > 
-> ethtool has a settings you can use for this:
+> This patch series defines phylink bindings and enforces them for the
+> ethernet controllers that need them.
 > 
->       ethtool -C|--coalesce devname [adaptive-rx on|off] [adaptive-tx on|off]
->               [rx-usecs N] [rx-frames N] [rx-usecs-irq N] [rx-frames-irq N]
->               [tx-usecs N] [tx-frames N] [tx-usecs-irq N] [tx-frames-irq N]
->               [stats-block-usecs N] [pkt-rate-low N] [rx-usecs-low N]
->               [rx-frames-low N] [tx-usecs-low N] [tx-frames-low N]
->               [pkt-rate-high N] [rx-usecs-high N] [rx-frames-high N]
->               [tx-usecs-high N] [tx-frames-high N] [sample-interval N]
->               [cqe-mode-rx on|off] [cqe-mode-tx on|off] [tx-aggr-max-bytes N]
->               [tx-aggr-max-frames N] [tx-aggr-time-usecs N]
+> Some schemas had to be changed to properly enforce phylink bindings for all
+> of the affected ethernet controllers. Some of the documents of these
+> ethernet controllers were non json-schema, which had to be converted.
 > 
-> If this is not implemented, i suggest you add support for it.
-> 
-> Changing the default might cause regressions. Say there is a VoIP
-> application which wants this low latency? It would be safer to allow
-> user space to configure it as wanted.
->
+> I will convert the remaining documents to json-schema while this patch
+> series receives reviews.
 
-Yep stmmac already support it. Idea here was to not fallback to use
-ethtool and find a good value.
+I can't say that I'm comfortable with this. We appear to be defining
+bindings based on software implementation, and a desire for the DT
+tooling to enforce what the software implementation wants. Isn't this
+against the aims of device tree and device tree binding documentation?
+Seems to me like feature-creep.
 
-Just for reference before one commit, the value was set to 40ms and
-nobody ever pointed out regression about VoIP application. Wtih some
-testing I found 5ms a small increase that restore original perf and
-should not cause any regression.
+The bindings that phylink parses are already documented in the
+ethernet controller yaml document. Specifically:
 
-(for reference keeping this to 1ms cause a lost of about 100-200mbps)
-(also the tx timer implementation was created before any napi poll logic
-and before dma interrupt handling was a thing, with the later change I
-expect this timer to be very little used in VoIP scenario or similar
-with continuous traffic as napi will take care of handling packet)
+- phylink does not parse the phy-mode property, that is left to the
+  implementation to pass to phylink, which can implement it any
+  which way they choose (and even default to something.)
 
-Aside from these reason I totally get the concern and totally ok with
-this not getting applied, was just an idea to push for a common value.
+- phylink does not require a phy property - phylink does expect a PHY
+  to be attached, but how that PHY is attached is up to the ethernet
+  controller driver. It may call one of the phylink functions that
+  parses the phy property, or it may manually supply the phy device to
+  phylink. Either way, phylink does not itself require a PHY property.
 
-Just preferred to handle this here instead of script+userspace :(
-(the important part is the previous patch)
+- phylink does not require a sfp property - this obviously is optional.
+
+So, all in all, ethernet-controller already describes it, and to create
+a DT binding document that pretends that phylink requires any of this
+stuff is, in my mind, wrong.
+
+DSA requires certain properties by dint of the parsing and setup of
+phylink being in generic code - this is not because phylink requires
+certain properties, but phylink does require certain information in
+order to function correctly.
+
+The issue here is _how_ phylink gets that information, and as I state
+above, it _can_ come from DT, but it can also be given that information
+manually.
+
+As an example, there are plenty of drivers in the tree which try to
+parse a phy node, and if that's not present, they try to see if a PHY
+exists at a default# bus address.
+
+We seem to be digging outselves a hole here, where "phylink must have
+these properties". No, that is wrong.
 
 -- 
-	Ansuel
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
