@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9255B7AB835
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD437AB838
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbjIVRvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
+        id S233709AbjIVRwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbjIVRvZ (ORCPT
+        with ESMTP id S233642AbjIVRva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 13:51:25 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B321716
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:00 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c44c0f9138so20941425ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:00 -0700 (PDT)
+        Fri, 22 Sep 2023 13:51:30 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064761732
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:04 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690d9cda925so2253156b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:51:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405059; x=1696009859; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695405064; x=1696009864; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gFyJJYhu61gLnPgJC1ya/mEghfp9ocdZMiaUuBpRzCI=;
-        b=VQAkobzXY82wBd3qU3adEkwwv4GuskkyqfniSPuYFTJ9M0BHx4+T2Ob7pX7AVfxQEA
-         winKjJ+/n2jaku1+DcrvJH5E0rpeTlfIRfjixE+HJjsrn1sIbvsiA1p1/xgRB8+oXGsT
-         L3ut/GVCey534e4FGMfy9L9gjCHBfIUOEhlIo=
+        bh=AS3G4n4TBFZWhDodrFk3+wfFKjlDza+m4CiwBMh4z08=;
+        b=d+2RKER55W5nufMg71buhJolDsS2gCKDAcGqF4zJ3Pe0Z2jqLG7gZ5IlGJbK9ppX/D
+         1x8IBxHP3w+hJ+Y7MfRERAxWTzfOe/kTFHa76d/4rbZgQ8vI+FGn0CVtbrFUm8AGcaCO
+         EDHBzGuU9UekK3CSKXQMjA+VzElujTGJ+Y9G0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405059; x=1696009859;
+        d=1e100.net; s=20230601; t=1695405064; x=1696009864;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gFyJJYhu61gLnPgJC1ya/mEghfp9ocdZMiaUuBpRzCI=;
-        b=H+ZOi8rFPv5LA5qEFcFyoIMZn5oiGdjI78Vd+i+jcbCFPLk1SHslrKAW8g3YiimeH7
-         ScN1xljMKgKa/3JweRbXjxcYQS+sS9wKpFoM+Ah/Qotr6wJNhSQ38PP88SDCjmdf4gQr
-         wmyxOGhn/tdU71HkhumPvg2AVJAobw/RcBY/n8q98nKKGJPJzZ+sQ6thePbPkFCP11zV
-         Nr3EoF+mIS+rYBR1VccIy7Jw+6SKcLPUuoYWSUDK6jCqV3C9KNnmZ3VlfPGrqAjgfnt9
-         CbmoZOLMDNgxOa6GRiQpvHss+2+0qE+inGnkax7DDWsitQ1m0J483qLRYbgI7MwZr1Tm
-         AP6w==
-X-Gm-Message-State: AOJu0YwXUgMXrIKSrIp4cHWpn3fPIHb+RyywV4t4AI93+QtL7KZXvm2U
-        B0JmxiylZ8tz2jzjgnk8x/numA==
-X-Google-Smtp-Source: AGHT+IG1adrBAZ2+GtFScfWMTn8dsWjCCh+RfOJyr3A6ecvwwm0uIC035vv1JafJavULfeMVJ0iE6g==
-X-Received: by 2002:a17:902:e844:b0:1c3:f4fa:b1a2 with SMTP id t4-20020a170902e84400b001c3f4fab1a2mr222048plg.8.1695405059632;
-        Fri, 22 Sep 2023 10:50:59 -0700 (PDT)
+        bh=AS3G4n4TBFZWhDodrFk3+wfFKjlDza+m4CiwBMh4z08=;
+        b=T/inegf28wVTQwwnpUW+G3Pal4YLoZcx4zTOsdbYna/5dLlIOCmcBCNF+fLvXeGhNK
+         rxe7WQxjltccV3bNrgR2sTlEVijFdIFNFQ3R/OjiILVk1my3yO1cPvgTAIAMwRFUy18P
+         SdJAkdYCgZbT0eYA9gQkoF90MKNb66uhJ7KHWYV5D04u1PGeTAnRP9fED90K6oOw7tfo
+         5s/tUdcp66N0qXsjBJVbtCYNR7AN23puC1TqEU2Ail4XYqd2jzbKHFT0GPzmdTv9e4cQ
+         UKqgmrVXarjZyE76buYXzr1j+oETQFOtcGmj8jQKUomPzwRHntuxcCZeycvnue56uDyv
+         WlgA==
+X-Gm-Message-State: AOJu0Yy09PWtYdKSH5uKsvEZrYP0tFd0YBx9xcBCg+5XrgaKwKi32CQ9
+        NjKsEDbv3UZVwIvJiuNOAlQKSl9xoGlYxzUV7OY=
+X-Google-Smtp-Source: AGHT+IGLDAq3MUcFFuNLeebQrEVNYfC4hyT+uym98wqR6tkiiL0SzvbhaluyWujG5by309PhCugq0g==
+X-Received: by 2002:a05:6a00:b8a:b0:68f:c1e0:a2a2 with SMTP id g10-20020a056a000b8a00b0068fc1e0a2a2mr140611pfj.2.1695405064282;
+        Fri, 22 Sep 2023 10:51:04 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y18-20020a1709027c9200b001c5de42c185sm2833729pll.253.2023.09.22.10.50.59
+        by smtp.gmail.com with ESMTPSA id c5-20020aa781c5000000b0068883728c16sm3578344pfn.144.2023.09.22.10.51.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:50:59 -0700 (PDT)
+        Fri, 22 Sep 2023 10:51:03 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Scott Branden <scott.branden@broadcom.com>
+To:     Fei Li <fei1.li@intel.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] misc: bcm-vk: Annotate struct bcm_vk_wkent with __counted_by
-Date:   Fri, 22 Sep 2023 10:50:58 -0700
-Message-Id: <20230922175057.work.558-kees@kernel.org>
+Subject: [PATCH] virt: acrn: Annotate struct vm_memory_region_batch with __counted_by
+Date:   Fri, 22 Sep 2023 10:51:02 -0700
+Message-Id: <20230922175102.work.020-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2215; i=keescook@chromium.org;
- h=from:subject:message-id; bh=GdZsD7KH5MvR1EoC8TSF7iyP/6ZcwlPVOaPWgy/qG/U=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdQC249SPfiphqcsPLrCDIDyXGQ5SRF673Br0
- hQuer+DlnaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UAgAKCRCJcvTf3G3A
- JrF+D/0Y6GwQ6UQX5zVVwMmJRnNwyqK4+dCUgc8y1tQGnK+kPTUOZBmyS+1SoMAx5k/0bYPJakH
- 5qqklha3HDxhEORrhcj4OH7BsqtkbT/KKDbCg3rTiLmq3cBgVnA+270iTiPLJB2AvsFAxBN6CrR
- AEoNs+Ijz9ShuaXP33ZqMdypuIFYnQZ25ltNHfdmj4WSj9o3UfO6S9ldRt/f0XYni1+Sqywb5M7
- 1oWcVWrFiW3heKM91hca6ad5zoU9+4RbrCxIBZ0qCbgvRNvk7Mc3NWWJ21sYsniyZ0grpKRQa/r
- /5eaiwomFzIUwebpM4QlMnHm1MT8ir+fLumHPOmcZl4180wQbLTXvjAmOlRdcnMlTPVHPFDU38g
- Ez6UoDvUI3Mhep1HRy3TAJwtKgpW0ZIi5Rb3XviAV+/3Y1zivKH+WJfS0+Nwom9WX23MKCN8UnY
- lFO3dSjJ59VvKdhfEQ5OLRiOvhjiwxbj+xlBeguiL63r7KE9WgxB/Pqsx/G97UIghEsgYBWgLbT
- uIVM4vqXFolYKK5jSDyG4HS4lgD0PxpSurGZkC+PE9RqYgOKsEDrvnOlmvJSGXbag85Wx58N+XA
- YWhZgVlWuubc88sBm8HoRH8JVs+iQ+gbRCGBtZCBmERMvujOh7zX5SCEAnOLj3TqagG9GgMZZ13
- +ayp/8S h4UOHkGw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1918; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=WaY2kTn1yazHmHr2C26ITAqyjQkyOX3EcAXSRAFMvEA=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdQGkCer3a+lUOaX41nf4FcmcDwvJGoS1PC2Z
+ Iea3hnu5/OJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UBgAKCRCJcvTf3G3A
+ JmrtD/9ts1iJRTn7bBnCOgTmeuo7qoznjoC5NTZ4ik9kMqawaTuBpBZ1WS8SBzYaVsI8OhxmZZc
+ xtx8FWQrwBaVz/uohBSxVolrfYlB3eF7ma2LKObYd83wqZL+ZThz6qTZCl+sqMOAKge7u/sF+3p
+ EoGtoBiTriiCo0zWetez0Y6CcfC17sACn59R8WwX3XMqF9Hx7/zU2nPtRnRPH1B001HUKJnRyQP
+ fNjZ6HITNFGyWZNMZeybw5era6sVgjqAwpvJbRMhO6R87FF4lZ2DdWlgx5bhZppw5goxZ+wctbO
+ 5fAg7ymNors8GOvDWnQwKhUlXn4LUQAeqMf6+kRZz9mY4Y7XsP0QAq6V4DDdpgRa8FEL3HPW4Rq
+ SAeVc4p5ZFsdUH+HeNbYcQVETfjeXCbUPrNdv7gE/uzPmROo6wBUTB+CG7YFUDudDyLm86Hus7n
+ 3fAgTATbG/IiEgghWm2cZ5TI4mqw0jD3x+f9KnSR1/EClerCP31Mo5zp6XhCyf+9Xr4oJ3Th4dn
+ uPSG0PiTPvnM//nEhcYelWoyHfOieXsssjSmglLpV74yncScIy2fWA7UqXuxTJuqgbwS+/XKQZ2
+ IklKbqDIGO2aoyPmqUhGyrUI2MtNGJshZ71rWLeQMXHQ0rwRe3D2MFerE7eOYH+eHbd2dNILfjP
+ mxMYluz dDRVsfCg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,53 +90,49 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct bcm_vk_wkent.
+As found with Coccinelle[1], add __counted_by for struct vm_memory_region_batch.
 Additionally, since the element count member must be set before accessing
 the annotated flexible array member, move its initialization earlier.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Cc: Scott Branden <scott.branden@broadcom.com>
-Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Fei Li <fei1.li@intel.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/misc/bcm-vk/bcm_vk_msg.c | 2 +-
- drivers/misc/bcm-vk/bcm_vk_msg.h | 2 +-
+ drivers/virt/acrn/acrn_drv.h | 2 +-
+ drivers/virt/acrn/mm.c       | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
-index e17d81231ea6..1f42d1d5a630 100644
---- a/drivers/misc/bcm-vk/bcm_vk_msg.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
-@@ -703,12 +703,12 @@ int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, u32 shut_type,
- 	entry = kzalloc(struct_size(entry, to_v_msg, 1), GFP_KERNEL);
- 	if (!entry)
- 		return -ENOMEM;
-+	entry->to_v_blks = 1;	/* always 1 block */
- 
- 	/* fill up necessary data */
- 	entry->to_v_msg[0].function_id = VK_FID_SHUTDOWN;
- 	set_q_num(&entry->to_v_msg[0], q_num);
- 	set_msg_id(&entry->to_v_msg[0], VK_SIMPLEX_MSG_ID);
--	entry->to_v_blks = 1; /* always 1 block */
- 
- 	entry->to_v_msg[0].cmd = shut_type;
- 	entry->to_v_msg[0].arg = pid;
-diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.h b/drivers/misc/bcm-vk/bcm_vk_msg.h
-index 56784c8896d8..157495e48f15 100644
---- a/drivers/misc/bcm-vk/bcm_vk_msg.h
-+++ b/drivers/misc/bcm-vk/bcm_vk_msg.h
-@@ -116,7 +116,7 @@ struct bcm_vk_wkent {
- 	u32 usr_msg_id;
- 	u32 to_v_blks;
- 	u32 seq_num;
--	struct vk_msg_blk to_v_msg[];
-+	struct vk_msg_blk to_v_msg[] __counted_by(to_v_blks);
+diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+index 5663c17ad37c..fb8438094f6f 100644
+--- a/drivers/virt/acrn/acrn_drv.h
++++ b/drivers/virt/acrn/acrn_drv.h
+@@ -60,7 +60,7 @@ struct vm_memory_region_batch {
+ 	u16			   reserved[3];
+ 	u32			   regions_num;
+ 	u64			   regions_gpa;
+-	struct vm_memory_region_op regions_op[];
++	struct vm_memory_region_op regions_op[] __counted_by(regions_num);
  };
  
- /* queue stats counters */
+ /**
+diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
+index b4ad8d452e9a..fa5d9ca6be57 100644
+--- a/drivers/virt/acrn/mm.c
++++ b/drivers/virt/acrn/mm.c
+@@ -250,11 +250,11 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
+ 		ret = -ENOMEM;
+ 		goto unmap_kernel_map;
+ 	}
++	regions_info->regions_num = nr_regions;
+ 
+ 	/* Fill each vm_memory_region_op */
+ 	vm_region = regions_info->regions_op;
+ 	regions_info->vmid = vm->vmid;
+-	regions_info->regions_num = nr_regions;
+ 	regions_info->regions_gpa = virt_to_phys(vm_region);
+ 	user_vm_pa = memmap->user_vm_pa;
+ 	i = 0;
 -- 
 2.34.1
 
