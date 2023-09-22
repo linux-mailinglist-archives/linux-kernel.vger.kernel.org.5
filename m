@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 120077AB8CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B357AB8D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjIVSFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
+        id S233145AbjIVSGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233435AbjIVSFM (ORCPT
+        with ESMTP id S233813AbjIVSFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:05:12 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E7FE6A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:52:07 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6c0b8f42409so1466773a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:52:07 -0700 (PDT)
+        Fri, 22 Sep 2023 14:05:38 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C390D1F2B
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:53:17 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68c576d35feso2263950b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405125; x=1696009925; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695405197; x=1696009997; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rPeCsCM6RKnj7SP/7NeGfgjvWPniZKOlNUjLQPJjRrk=;
-        b=nsPPhAujoYnHbEV9rcA9vzDu5Mmxuzc8U6VYq6OZCF8Gl7xyc7Yv+LuH65H9mK4nxK
-         wbuXffyFykkwlAS9ru69GTCfZJOwp8SLOwZ4TenRdULgEjZokHTt0lvMJyW9yCNitAaw
-         VjaJZx/yUhwXilPpwB8s00m74tzHLXvEKR9hk=
+        bh=VcpELJ6V4gzjq4olnmy80BvH10zkQAPgPKh3TzKHvh0=;
+        b=LbbO0vAmasDHpCq/Xn4bin2MV97b+TsooKMyPxpB4qaWuEhipj8jE8kZ7cUvnKD+gW
+         I2Fp30nUBbTSCpG9gGiBNsLpHlP05LXOSSZUGpSVLBYBcJCZTi14tVw3YcJbwFQWBump
+         jgnE3fp4wfXuyB7i6dtstsnKOXqgdX5pwHIAA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405125; x=1696009925;
+        d=1e100.net; s=20230601; t=1695405197; x=1696009997;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rPeCsCM6RKnj7SP/7NeGfgjvWPniZKOlNUjLQPJjRrk=;
-        b=xKmfs9dQZuPXs5k+sjiE9T3xXUiOJsoiIQbi0EsPVf2IdLpGm0vM1IMzClbPbj2lEp
-         We7CXnjlrxlLWIslYwjMdk+qlfs7iX/ZSIl7Ej2QzpFZ2ESJnpi8bNB5tuikCrMRI6oY
-         iqL4t3PBM+lOBS+ZkCF9/+hg05LlSD0ZZmw+zPPHaM0MGGrLWyXoTQ/FCpw6t0gaHHIX
-         M6+xq9Vz56FLNjoJfspEVgr/yJskKUpASZP88MastmHw4uHrnG3MgX8QdMT8ZzlmpYKo
-         zXhYyP6MDQaCugasaUWy34k6/RBGuC91KpkupKgXy42uim9u/18ctNl8ESKDsBwsxqCQ
-         typg==
-X-Gm-Message-State: AOJu0YwMI3H505a49NTNv9Qz43APGpmEO7H7yatgCM8QsaR61BfYx+QE
-        aS4HUd7aa/IDluuZ6SMk745y8A==
-X-Google-Smtp-Source: AGHT+IFEPZY2FWuoLuj/J8x0P9zfOloxPTwOyuvqJHiLkoPALd4nAHq6UVOZicjn7oGHx7saYqsMnA==
-X-Received: by 2002:a05:6358:278a:b0:143:3179:1a67 with SMTP id l10-20020a056358278a00b0014331791a67mr301716rwb.29.1695405125439;
-        Fri, 22 Sep 2023 10:52:05 -0700 (PDT)
+        bh=VcpELJ6V4gzjq4olnmy80BvH10zkQAPgPKh3TzKHvh0=;
+        b=VdKMgTXeF+OnhllfRg8Z4YU+ApkiM7/Ytt6Og9iiwO60p3rCN6NoXMliwfzhKUErs0
+         5cwIFoOxLcwmyWCWJtH//Z7MwueO+XA35mG7yO+fFTLIe3/1jiYVSDiZqoJ2PydYN8Kv
+         KnjrfWW11DNLQtPRslRBUxLsZ3CpN6/BFkz0xvOcXdhjGNPy/HEdegqwoSr/XUlNRQaL
+         9Pa1pQ3Ri04rDDaKhIPBTexrxfGnM0Fo1DIkJrHZvHgBYI9XwkWdiuLmkE760orKCzx+
+         1VbDzz8bwhkTu7hm2dzys5GFYbO6aecZtrfOdxjzi1rtADtsfP3Q+P5fsrDwVovwGcRN
+         EIiw==
+X-Gm-Message-State: AOJu0YwpsFHxz4FxfV23aJjgHS7u0BbOP1j4RDsR8AtNTeV+wDX9zz2q
+        KvKAIwZosIoW1zJfRK3NYG/MIw==
+X-Google-Smtp-Source: AGHT+IFVTmxlRYKWN+wwokRfxFr+8HhULrMeZ9/GnCZdsqlYKzOrL05eKg41orjRO2IX+YFvbyW4rA==
+X-Received: by 2002:a05:6a00:1a91:b0:68f:c078:b0b6 with SMTP id e17-20020a056a001a9100b0068fc078b0b6mr145564pfv.10.1695405197151;
+        Fri, 22 Sep 2023 10:53:17 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r9-20020a63a009000000b0057e13ed796esm728612pge.60.2023.09.22.10.52.04
+        by smtp.gmail.com with ESMTPSA id x22-20020aa79196000000b0068842ebfd10sm3464677pfa.160.2023.09.22.10.53.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:52:05 -0700 (PDT)
+        Fri, 22 Sep 2023 10:53:16 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] gpiolib: cdev: Annotate struct linereq with __counted_by
-Date:   Fri, 22 Sep 2023 10:52:03 -0700
-Message-Id: <20230922175203.work.760-kees@kernel.org>
+Subject: [PATCH] ACPI: PRM: Annotate struct prm_module_info with __counted_by
+Date:   Fri, 22 Sep 2023 10:53:15 -0700
+Message-Id: <20230922175315.work.877-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1931; i=keescook@chromium.org;
- h=from:subject:message-id; bh=8zr3EscqNMKGB+p2GQ+eNq4lFJNw863hYtHYoUZ6QT8=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdRDnHWem4qivuYvpUIrmnI1crVLCjWEs1Bl3
- gzzs3k1FJGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UQwAKCRCJcvTf3G3A
- JseKD/4quBw/IubJ6kx2xMKEYBqn7EU8HCBh9hqvf/DZpDUBw12gRWSQNalISRWuYF67cas5Tkr
- EUj3MbyNdPUEx/IJrlL3WHXZfRNgY4r3M1SR9aDCVsSEylC1PQdUNdRTvU+rPLRjOr6JHlZDQqU
- ayR0dlH/PQnDDG2kVOZM5XHvZXu5mJUy8OvlhRV8vEMwvcodYJXl8SJreBqqCVIZqqwYhjP4B95
- OPINC+bpMgbcQ1hX/+IWYq1mh2HyM0AZw18fRaJevYcMTVvLd27oad+aja6ikDJpZnaiR4StABS
- JmE4ha3T05WdaaYiCf1MqC6qJRd/225OoZemjlFHuaqze/naFKA/dvHT18VPo69ezq0KkjQ2U7/
- 3TyK3eGInrlMpG4ABDIsl2HD8hDsc7Vl46x8b9DxIQmBF1Jls2LAm+7S3bLyc8zrT0fPP1I9oUd
- RAFcig+QfsIHBcf2MZIy/kj0y90XDIFLq4yXccv4vlI7+rJQOeoTeby164bXqumt9WVcYSdeyNK
- CRz0HHgMSkH60UvlLF05qx9N3E6PLjJ6k2x6KUC9SJbc92HLO1s63wzDJDfTgiy4SEiObVoyF76
- W9x+284Vs0VzKisQmXg6gBgf8fFLYi/xcW+8j+cNIQ4+uYqzT/L6JUY0SkB69rh+9U21waaUzft
- V7vH5yP GuFFYMXg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1141; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=4xy8hh2710nXi/x0gtI622DpqaNgXiLZ0l6ncbr16B8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdSLMgKD0QiDVZgL6y9jKTQlJU/qmTzhAycS2
+ CXqRf8eZcmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UiwAKCRCJcvTf3G3A
+ Jv0yD/wMjoy6/sOr84h0xOw027syYiDYBNxQYJXRgeNq6pyUAb+CGO4TxgUm+9Dv9d9mCnhnKUC
+ DpykKBQVPOPdvKCSfPDozBfQ+blTyrqhnHvpasy/qgBC1fLy+141QegfPqrxT+lXJiKMHrWDCEQ
+ 5v7B0cmKNFaCTcughRb2/odgzuA8p5b6cdZIInVetgDvroCqyOIw1qqGOJn/lQnmt+NapjFzzBw
+ zWLUiUSZOMuMwa46HNlhXJmtg0N/zn9wUSm5U4O6WhitjGPMiJJ+0XKk+RHP4hGFFvs81iGkATN
+ cc4iHAJwf3hfhD5FjxvMRRr4VFQIZ2nd2pBhp4icvLDzdtX3ckojAohlPKZRWLlgxZ5eAxvM6Yc
+ OlqBwoWG9WtFP6gcvpd/v9jBdX59+KIPbRTIfIJC1A7mgwJGQyu+/w1Ropu8rKBmPVK/Mhp1XOR
+ mY57DmUYN0tbmxiex9xY2IZN4wlgBV8MZ+sAB+gXU4l88bO6EusW5f3/hiiyDSQbO3n+FKUC2pE
+ T4zKnz4ixMzPIOvkZ8w78JZfp4py1F6WM4EcmZ0wjopqxsl05/Wo/EJWs0eaQrz9tkefilKp40u
+ ag8fUhMO4G2mHw6XsNzjs3t76z/LKhHrL6L4o7KBOT3pc1WMpEdxoRxJyFyFahBFmkB4gwPj8lm
+ wK+Uws8 mmOV0DRg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -92,50 +90,31 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct linereq.
-Additionally, since the element count member must be set before accessing
-the annotated flexible array member, move its initialization earlier.
+As found with Coccinelle[1], add __counted_by for struct prm_module_info.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Andy Shevchenko <andy@kernel.org>
-Cc: linux-gpio@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/gpio/gpiolib-cdev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/acpi/prmt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index e39d344feb28..31fc71a612c2 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -572,7 +572,7 @@ struct linereq {
- 	DECLARE_KFIFO_PTR(events, struct gpio_v2_line_event);
- 	atomic_t seqno;
- 	struct mutex config_mutex;
--	struct line lines[];
-+	struct line lines[] __counted_by(num_lines);
+diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
+index 7020584096bf..c78453c74ef5 100644
+--- a/drivers/acpi/prmt.c
++++ b/drivers/acpi/prmt.c
+@@ -69,7 +69,7 @@ struct prm_module_info {
+ 	bool updatable;
+ 
+ 	struct list_head module_list;
+-	struct prm_handler_info handlers[];
++	struct prm_handler_info handlers[] __counted_by(handler_count);
  };
  
- #define GPIO_V2_LINE_BIAS_FLAGS \
-@@ -1656,6 +1656,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
- 	lr = kzalloc(struct_size(lr, lines, ulr.num_lines), GFP_KERNEL);
- 	if (!lr)
- 		return -ENOMEM;
-+	lr->num_lines = ulr.num_lines;
- 
- 	lr->gdev = gpio_device_get(gdev);
- 
-@@ -1684,7 +1685,6 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
- 		lr->event_buffer_size = GPIO_V2_LINES_MAX * 16;
- 
- 	atomic_set(&lr->seqno, 0);
--	lr->num_lines = ulr.num_lines;
- 
- 	/* Request each GPIO */
- 	for (i = 0; i < ulr.num_lines; i++) {
+ static u64 efi_pa_va_lookup(u64 pa)
 -- 
 2.34.1
 
