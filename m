@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 715957AB32A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62697AB32C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjIVN4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S233372AbjIVN5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjIVN4j (ORCPT
+        with ESMTP id S230163AbjIVN5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 09:56:39 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448BD18F
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:56:31 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-79f96830e4dso15726239f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:56:31 -0700 (PDT)
+        Fri, 22 Sep 2023 09:57:06 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EC0E8;
+        Fri, 22 Sep 2023 06:57:00 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40537481094so17402745e9.0;
+        Fri, 22 Sep 2023 06:57:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695390990; x=1695995790; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695391019; x=1695995819; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=l4ucugCATkzwXuMI23OkOn2TmVsi6Gz/cX1EPcaz7Pc=;
-        b=OXfNquCIOcbqGFkW8h4CwCOrqp13I/OO5Ey9q0Ta9VHoviE5FI1wY5XxB0J3PW+sHg
-         0ltGtSn3TC7n4L1Neos1SZdAPGDeEE9q1binQlp4zP3fZTzyO2Z8btQ0Mdh+Kz5gTuRV
-         6HB1b2DI88yO9o8DRswBiRulqaqsYRk4sOEzRb0kDoOBJyefZSqYjocWUbdz9dXPOGYn
-         WNJJUfOV3uYi8Xt5jBqr+cJjshrbnCa+TZAkDfGiSmSSQgrxYG8hxe9Ygjs5xs0y+hKF
-         VRub7/r03NVK5HT2ojyWTwPCMq7sjh4UjxDmYNWQePXMOPvXefCapWgoMPHa+m/KkmiX
-         fT3g==
+        bh=uYmcQp7vI7x84q3XTY7R5Vsp8JpMVN4Mce8y4Mffa3s=;
+        b=Q9hdSOsHsqjqAEKmXHujqTx3TGxNo8mrXztWOXrRIAVdmRMALv2q3VIppe2I9i/EoD
+         lCMTzFkfgT6FSH7Qed12Y3cyovLxlVsUk9tc/jitWTwPuAuorgwvzUs1Wh8O3Fz8V8jc
+         NVXlSDOje31/NyiO4UDBAqJK+4nqzGyMizYS2peKz9SvDBHMw3UCC7DgaLRTBIX/hATJ
+         oIfiIjRZigrX7Q80D+W9vKMQMyQqL5lxDUVh2SejsK9yH5fSF1nhyVoMm9eBdoEvZZvw
+         3kZD9FwLEi2dz4yGEdWNa6B+HqEPIiNMKL9T/lCWdn7BFnkNXOP7meseQto954ZSJ1cO
+         4CLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695390990; x=1695995790;
+        d=1e100.net; s=20230601; t=1695391019; x=1695995819;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l4ucugCATkzwXuMI23OkOn2TmVsi6Gz/cX1EPcaz7Pc=;
-        b=ag9Rd/k+UtqqwGHl7e68DImlCR9wucVtFZCKExrqMudDgX2WtFKHQcLp8mljJdm1XY
-         ZY5+uP21t11wsFty4uwERdxPYE2Ek6d44SLc2harllho0tsbT/BOOq2vxif9Vg5w7M4W
-         um4KMtTBW7AEbT/1zjQGCHxZ4v4aEc3hDdRshwN+Necu695vBRpkqI4yPtxftqv5bmFB
-         kmgAkrXosG+be618YH/kJOC4UICAz4tNb6vV+5J4eDIAd+mcBJWqJRc2rj3TvuHHVVfl
-         KlQRiGnAsNm1xnXK1qfvqC21IIONUNTAG1YOlR6TWD+LvY8wUQGGROL/XPXcRCGKu5vJ
-         C4nw==
-X-Gm-Message-State: AOJu0YyOuERGiJ1zjimEHFMA8GmWT5brnolzAav0F/pjQ9DRkpy9NGpQ
-        Vh/57Oyw4cj9QAXbEc529SCUxUsfd9FEc+OtHXP4YQ==
-X-Google-Smtp-Source: AGHT+IGjSQ4+X2lvYsCJzmEr2bY8Ksct5WoXMUIbuCCLm87x5DFFi7/n497IxFMbPn45HSyCkxKdYQ==
-X-Received: by 2002:a05:6602:13c2:b0:79d:1c65:9bde with SMTP id o2-20020a05660213c200b0079d1c659bdemr11422024iov.1.1695390990588;
-        Fri, 22 Sep 2023 06:56:30 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id l13-20020a02cd8d000000b0042b05586c52sm1028681jap.25.2023.09.22.06.56.29
+        bh=uYmcQp7vI7x84q3XTY7R5Vsp8JpMVN4Mce8y4Mffa3s=;
+        b=K8dbvjy59LnKPMhma5NnIcdtYlgYelWm+w+vjhcROJtG91tLgSH+L/20KDmk9VNJag
+         mJesPGInOzoi1ovZgk+Izu4PKlLX5myMrJ7wgmyEYAvn76mcf8XfP8gEukW3htlBoVuY
+         Ni94f9rTO5h8ePx198PwvFOsaViPrVfWN03emIWhSH6f4aKw/iLA4YMaSL+be2Pbf9zp
+         cfrf8FORPAgAxEsnRaG7IpqMzEInvtgessxF8lIDIDChMPDDyiKeTpoZmVkzVZCqWcjq
+         d1M1E6QhUZv/u4kXTcexsLivB0sg5PfCAAj9rTmfXVqXLrpG7EvdV1NQJqqsFx6yE9EQ
+         +Iqw==
+X-Gm-Message-State: AOJu0YxzWv1Wd2N+MzBrynP73OvYUlqgx0c244pzEHh8MMhjKSBKvanV
+        ZgYMGR3vQTAvBtZSmY0p82Y=
+X-Google-Smtp-Source: AGHT+IHETahtZVL/bYzSY6bMwgQV/TMYomewYLE+hdM2b2wIWq+JY9YvTsNAagOx7mEnUcaGH/8z7w==
+X-Received: by 2002:a05:600c:2304:b0:402:8896:bb7b with SMTP id 4-20020a05600c230400b004028896bb7bmr7939578wmo.6.1695391018517;
+        Fri, 22 Sep 2023 06:56:58 -0700 (PDT)
+Received: from [192.168.0.84] ([178.233.24.52])
+        by smtp.gmail.com with ESMTPSA id b12-20020adff90c000000b0031fb91f23e9sm4498772wrr.43.2023.09.22.06.56.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 06:56:29 -0700 (PDT)
-Message-ID: <ec7cf6ad-3081-47a8-be83-af6eb7befa35@kernel.dk>
-Date:   Fri, 22 Sep 2023 07:56:28 -0600
+        Fri, 22 Sep 2023 06:56:57 -0700 (PDT)
+Message-ID: <e045afaa-bc38-4fed-966e-a034e106c86c@gmail.com>
+Date:   Fri, 22 Sep 2023 16:56:55 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/15] futex: Add sys_futex_requeue()
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de, Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20230921104505.717750284@noisy.programming.kicks-ass.net>
- <20230921105248.511860556@noisy.programming.kicks-ass.net>
- <ZQ1fx29+b8PmLVk6@gmail.com>
- <20230922110335.GC7080@noisy.programming.kicks-ass.net>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230922110335.GC7080@noisy.programming.kicks-ass.net>
+Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
+Content-Language: en-US, tr, en-GB
+To:     Simon Glass <sjg@chromium.org>
+Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
+        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+        Rob Herring <robh@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dhruva Gole <d-gole@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
+In-Reply-To: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/23 5:03 AM, Peter Zijlstra wrote:
-> On Fri, Sep 22, 2023 at 11:35:03AM +0200, Ingo Molnar wrote:
->>
->> * peterz@infradead.org <peterz@infradead.org> wrote:
->>
->>> --- linux-2.6.orig/kernel/futex/syscalls.c
->>> +++ linux-2.6/kernel/futex/syscalls.c
->>> @@ -396,6 +396,44 @@ SYSCALL_DEFINE6(futex_wait,
->>>  	return ret;
->>>  }
->>>  
->>> +/*
->>> + * sys_futex_requeue - Requeue a waiter from one futex to another
->>> + * @waiters:	array describing the source and destination futex
->>> + * @flags:	unused
->>> + * @nr_wake:	number of futexes to wake
->>> + * @nr_requeue:	number of futexes to requeue
->>> + *
->>> + * Identical to the traditional FUTEX_CMP_REQUEUE op, except it is part of the
->>> + * futex2 family of calls.
->>> + */
->>> +
->>> +SYSCALL_DEFINE4(futex_requeue,
->>> +		struct futex_waitv __user *, waiters,
->>> +		unsigned int, flags,
->>> +		int, nr_wake,
->>> +		int, nr_requeue)
->>> +{
->>> +	struct futex_vector futexes[2];
->>> +	u32 cmpval;
->>> +	int ret;
->>> +
->>> +	if (flags)
->>> +		return -EINVAL;
->>
->> Small detail, but isn't -ENOSYS the canonical error code for functionality 
->> not yet implemented - which the unused 'flags' ABI is arguably?
->>
->> -EINVAL is for recognized but incorrect parameters, such as:
+On 2023-09-21 21:45 +03:00, Simon Glass wrote:
+> Binman[1] is a tool for creating firmware images. It allows you to
+> combine various binaries and place them in an output file.
 > 
-> IIUC 'unknown flag' falls into the -EINVAL return category. Here we
-> happen to have no known flags, but that should not matter.
+> Binman uses a DT schema to describe an image, in enough detail that
+> it can be automatically built from component parts, disassembled,
+> replaced, listed, etc.
+> 
+> Images are typically stored in flash, which is why this binding is
+> targeted at mtd. Previous discussion is at [2] [3].
+> 
+> [1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
+> [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
+> [3] https://www.spinics.net/lists/devicetree/msg626149.html
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+> 
+>  .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
+>  .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
+>  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+>  MAINTAINERS                                   |  5 ++
+>  4 files changed, 117 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
 
-Yep, -ENOSYS is for not having the syscall at all, -EINVAL for unknown
-flags set.
-
--- 
-Jens Axboe
-
+This doesn't match the schema in [2], but seems more like v1 of that. Is
+that intentional?
