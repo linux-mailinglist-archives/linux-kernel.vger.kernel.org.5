@@ -2,49 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1027AB28F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7198F7AB298
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 15:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbjIVNNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 09:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S233424AbjIVNVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 09:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233551AbjIVNNa (ORCPT
+        with ESMTP id S229634AbjIVNVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 09:13:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7BE62196
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 06:13:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BF12DA7;
-        Fri, 22 Sep 2023 06:14:01 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDA5F3F5A1;
-        Fri, 22 Sep 2023 06:13:22 -0700 (PDT)
-Message-ID: <900b644e-6e21-1038-2252-3dc86cbf0a32@arm.com>
-Date:   Fri, 22 Sep 2023 14:13:18 +0100
+        Fri, 22 Sep 2023 09:21:31 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A72CE;
+        Fri, 22 Sep 2023 06:21:25 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MD8ErB019058;
+        Fri, 22 Sep 2023 13:21:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=041NcSK2xg9vELUbnnz/VC6KKr0Lk8fdF4ubzdiGFFM=;
+ b=digRi2aGOht/6sTZvhvY6fQ4TSvd+tu7V7AemBoP3DQJyIwuzWxcTF9RK5fQaJ+JxyPh
+ imem18SfVJKZqtq/LVAQi7B+BvSWKkWjX5EchiqSfyOiP4/9Vpm6Jix8xjPJcfQ1GEc+
+ tP6QxzKVOMK4xRszxRVi0NAygQSc7PeB/6e37Y8ITZljpiN/Pd3kPt7YkMwm+cWth8FW
+ c/uNaY7vLVKnVbzIQ4DhFdmgl9KjhzYhNstd4oF26eBLQu6jTRmAgUfiEVIOLvvxF/58
+ VB8Wsk2KnFFZLh9t64HVnI+KN7JTXP2uLY4YQI/sA6bt8mOp+9jz88GMztbN9X1lEHAf +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t9bap0v1e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 13:21:24 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38MDAmK8028390;
+        Fri, 22 Sep 2023 13:21:23 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t9bap0v0f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 13:21:23 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38MDIx10026005;
+        Fri, 22 Sep 2023 13:21:21 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t8tsq2ghx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 13:21:21 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38MDKcFk9044266
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 13:20:39 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5484D20071;
+        Fri, 22 Sep 2023 13:20:38 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8CF662006A;
+        Fri, 22 Sep 2023 13:20:37 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.56.45])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Fri, 22 Sep 2023 13:20:37 +0000 (GMT)
+Date:   Fri, 22 Sep 2023 15:20:35 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH] s390/cio: Fix a memleak in css_alloc_subchannel
+Message-ID: <20230922152035.3ef1cb7e.pasic@linux.ibm.com>
+In-Reply-To: <87sf76z961.fsf@redhat.com>
+References: <20230921071412.13806-1-dinghao.liu@zju.edu.cn>
+        <20230922141700.10895474.pasic@linux.ibm.com>
+        <87sf76z961.fsf@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 1/2] iommu/virtio: Make use of ops->iotlb_sync_map
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230918-viommu-sync-map-v2-0-f33767f6cf7a@linux.ibm.com>
- <20230918-viommu-sync-map-v2-1-f33767f6cf7a@linux.ibm.com>
- <ae7e513b-eb86-97e2-bed0-3cca91b8c959@arm.com>
- <20230919081519.GA3860249@myrica> <20230919144649.GT13795@ziepe.ca>
- <20230922075719.GB1361815@myrica> <20230922124130.GD13795@ziepe.ca>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230922124130.GD13795@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zApFOfvF3wOAuMO5TvD1YZs04XXQLaB5
+X-Proofpoint-ORIG-GUID: 2aKb4tSnqQWCEUmT5N7wkdDRawNhfUI2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_11,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=727 malwarescore=0 phishscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309220111
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,35 +104,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2023 1:41 pm, Jason Gunthorpe wrote:
-> On Fri, Sep 22, 2023 at 08:57:19AM +0100, Jean-Philippe Brucker wrote:
->>>> They're not strictly equivalent: this check works around a temporary issue
->>>> with the IOMMU core, which calls map/unmap before the domain is
->>>> finalized.
->>>
->>> Where? The above points to iommu_create_device_direct_mappings() but
->>> it doesn't because the pgsize_bitmap == 0:
->>
->> __iommu_domain_alloc() sets pgsize_bitmap in this case:
->>
->>          /*
->>           * If not already set, assume all sizes by default; the driver
->>           * may override this later
->>           */
->>          if (!domain->pgsize_bitmap)
->>                  domain->pgsize_bitmap = bus->iommu_ops->pgsize_bitmap;
-> 
-> Dirver's shouldn't do that.
-> 
-> The core code was fixed to try again with mapping reserved regions to
-> support these kinds of drivers.
+On Fri, 22 Sep 2023 14:25:58 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-This is still the "normal" code path, really; I think it's only AMD that 
-started initialising the domain bitmap "early" and warranted making it 
-conditional. However we *do* ultimately want all the drivers to do the 
-same, so we can get rid of ops->pgsize_bitmap, because it's already 
-pretty redundant and meaningless in the face of per-domain pagetable 
-formats.
+> > -       spin_lock_init(&sch->lock);
+> > +       sch->schid = schid;
+> > +       if (cio_is_console(schid)) {
+> > +               sch->lock = cio_get_console_lock();
+> > +       } else {
+> > +               err = cio_create_sch_lock(sch);
+> > +               if (err)
+> > +                       goto out;
+> > +       }
+> >
+> > I did not spend a huge amount of time looking at this but this
+> > is the only reason I found for sch->lock being made a pointer. There may
+> > be others, I'm just saying that is all I've found.  
+> 
+> Author of 2ec2298412e1 here. If I don't completely misremember things,
+> this was for the orphanage stuff (i.e. ccw devices that were still kept
+> as disconnected, like dasd still in use, that had to be moved from their
+> old subchannel object because a different device appeared on that
+> subchannel.) That orphanage used a single dummy subchannel for all ccw
+> devices moved there.
+> 
+> I have no idea how the current common I/O layer works, but that might
+> give you a hint about what to look for :)
 
-Thanks,
-Robin.
+Yes, that is what the commit states and what the series is about. I hope
+Vineeth can give us some answers :) maybe even out of the top of his
+head... If not, I would trust his judgment on whether figuring things
+out is worthwhile or not.
+
+
+Regards,
+Halil
