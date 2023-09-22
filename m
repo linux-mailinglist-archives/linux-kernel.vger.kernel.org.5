@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA547AB3CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103AE7AB3CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbjIVOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        id S231223AbjIVOim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjIVOi2 (ORCPT
+        with ESMTP id S230451AbjIVOij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:38:28 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908CCC6;
-        Fri, 22 Sep 2023 07:38:21 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38MEcFVt008143;
-        Fri, 22 Sep 2023 09:38:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695393495;
-        bh=Eee8a+E2/jFWUh8wC5+yOkHEwssjC3CMYXAC/DK7r4E=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=mGDfkeOeGpehapirML7OM4iwVrmzav33rGsiadIVmXRXxsjSyQnvTD9vFKfaK31L0
-         PLYiIBqGXZV0UuJ0AGMgaCznjUsYDj2Az9IvGMxZLxy6w14dXy1nZVWDIgq3DBfMNO
-         7OfMMLGDTmpxPyom6KfIQNRpAefMw/Dm6Tg3NfEA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38MEcFCa088172
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 Sep 2023 09:38:15 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 22
- Sep 2023 09:38:14 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 22 Sep 2023 09:38:14 -0500
-Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38MEcEZj062901;
-        Fri, 22 Sep 2023 09:38:14 -0500
-Message-ID: <28c862d9-ca39-2dda-86dd-9ccc206c3a1d@ti.com>
-Date:   Fri, 22 Sep 2023 09:38:14 -0500
+        Fri, 22 Sep 2023 10:38:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C91196
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:38:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79ACEC433C9;
+        Fri, 22 Sep 2023 14:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695393513;
+        bh=nu2Nh17EGEHtjLlysjdCrl2hh2gT/i57l3ZdUM7YoCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dywcCfo2kUQ6KP/vdMFgOUlIqpACI1QlIkNzRLoVK8Wr0mUzcoqSuTX6mYbinFPxK
+         QUKdhdp4WAY0+aE0jX6CmPf9WVDDBE9bEsa8LUiShvx2POARoKKRGY8KFG9aNM8sUF
+         fcH4DbG7cY9IX3pFmUqk9l5oJRjpEijpBKXgEHUo3CUe4Jp+dDfZe8ffgvmjX/IvxH
+         n3yUskuqfAZ6y0qsVuur3a8eXr8VYjZnKugUBYIOCBgN92XrgT8Rda4nhF9GrdTKgZ
+         +U0YBVcsW/731OH7ZdvVTUHPySBF/FzPjLkTtrT8aV3GBGUX82LBl8ZEOTYkS+KoG2
+         u8MFGhRmcROnA==
+Date:   Fri, 22 Sep 2023 15:38:28 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Stefan Binding <sbinding@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v1 0/2] ALSA: cs35l41: prevent old firmwares using
+ unsupported commands
+Message-ID: <8b5a22bf-73e3-45ca-b61b-38482c9caa39@sirena.org.uk>
+References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
+ <87a5tecm2m.wl-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] arm: dts: omap: Apply am57xx-idk overlays to base dtbs
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh@kernel.org>
-CC:     =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911214609.2201040-1-robh@kernel.org>
- <20230912065946.GC5285@atomide.com>
-Content-Language: en-US
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230912065946.GC5285@atomide.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RfXcTh4xSBI3kSn3"
+Content-Disposition: inline
+In-Reply-To: <87a5tecm2m.wl-tiwai@suse.de>
+X-Cookie: A day without sunshine is like night.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/23 1:59 AM, Tony Lindgren wrote:
-> * Rob Herring <robh@kernel.org> [230911 21:46]:
->> DT overlays in tree need to be applied to a base DTB to validate they
->> apply, to run schema checks on them, and to catch any errors at compile
->> time.
->>
->> Signed-off-by: Rob Herring <robh@kernel.org>
->> ---
->> Note that I have no idea if this combination of overlays makes sense.
-> 
 
-It does make sense, but it is only one of many valid combinations. I'm
-guessing the goal here is just to make sure they all get applied in
-at least one way so the scheme check runs. In that case this is fine
-other than it might give the impression this is the only valid combinations.
+--RfXcTh4xSBI3kSn3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also now we end up with these odd `am57{1,2}x-idk-overlays.dtb` files
-which also might confuse folks, I wonder if there is some way to
-apply and check, but not ship/install these..
+On Fri, Sep 22, 2023 at 04:35:45PM +0200, Takashi Iwai wrote:
+> Stefan Binding wrote:
 
-Andrew
+> > This chain is based on Mark's branch, since the api change was made to
 
-> Adding Andrew to review this.
-> 
-> Regards,
-> 
-> Tony
-> 
-> ---
->>   arch/arm/boot/dts/ti/omap/Makefile | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/ti/omap/Makefile b/arch/arm/boot/dts/ti/omap/Makefile
->> index d2b590004fed..d0c76d09fe70 100644
->> --- a/arch/arm/boot/dts/ti/omap/Makefile
->> +++ b/arch/arm/boot/dts/ti/omap/Makefile
->> @@ -129,6 +129,11 @@ dtb-$(CONFIG_SOC_AM43XX) += \
->>   am57xx-evm-dtbs := am57xx-beagle-x15.dtb am57xx-evm.dtbo
->>   am57xx-evm-reva3-dtbs := am57xx-beagle-x15-revc.dtb am57xx-evm.dtbo
->>   
->> +am571x-idk-overlays-dtbs := am571x-idk.dtb \
->> +	am571x-idk-touchscreen.dtbo am57xx-idk-lcd-osd101t2587.dtbo
->> +am572x-idk-overlays-dtbs := am572x-idk.dtb \
->> +	am572x-idk-touchscreen.dtbo am57xx-idk-lcd-osd101t2045.dtbo
->> +
->>   dtb-$(CONFIG_SOC_DRA7XX) += \
->>   	am57xx-beagle-x15.dtb \
->>   	am57xx-beagle-x15-revb1.dtb \
->> @@ -145,6 +150,8 @@ dtb-$(CONFIG_SOC_DRA7XX) += \
->>   	am574x-idk.dtb \
->>   	am57xx-idk-lcd-osd101t2045.dtbo \
->>   	am57xx-idk-lcd-osd101t2587.dtbo \
->> +	am571x-idk-overlays.dtb \
->> +	am572x-idk-overlays.dtb \
->>   	dra7-evm.dtb \
->>   	dra72-evm.dtb \
->>   	dra72-evm-revc.dtb \
->> -- 
->> 2.40.1
->>
+The term is patch series.
+
+> > the function in sound/soc/codecs/cs35l41-lib.c.
+
+> I'd need a PR from Mark before applying those, then.
+
+Or if they're 6.7 stuff I guess I could just carry them.
+
+--RfXcTh4xSBI3kSn3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUNpuMACgkQJNaLcl1U
+h9D7Twf/ZXKN0Y1+6CsKbyzCCUflbuc4f0xqnwrdlm5+qVb6CCFBFQfc82pLbjdw
+1qzTJX7B7pUsFnsh/2YkED/3vvjN7ztFpi9gL4CZlVJcktHB1/ta3l29q5+4MiqW
+VcHkIrq7O9dg8UF4+6nzyoUfn+zXg9i8fVziNF9rayHvuAgja9lUxWqXQhBucEkF
+y16T9wUDf9UvpeJ7QyPIP8OY97n5kQ3+vfQxjGzk5PZjBmKTgPKvSrPU6seyc5Zw
+j2A9vQMproks4qlvOcMuE5pdIM+Y2GhENZL0/++NuQDQ9jfSgyE9iwQ3Qm4aW9ST
+ZD2u2VVxcWXww3XdjdwMBhJNA2O/bw==
+=EMl+
+-----END PGP SIGNATURE-----
+
+--RfXcTh4xSBI3kSn3--
