@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A660D7AAD41
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C297AAD32
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjIVIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S232664AbjIVIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbjIVIzx (ORCPT
+        with ESMTP id S232134AbjIVIzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:55:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2501CA
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695372903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPTCtaqbKGccEC5PGZGu8j88Z3LYbxZf/KUwfbQeLNQ=;
-        b=SSuZITQSZUPmG3VhYHhl8YmB8HzHnq/Fn1eiB9YcrUPJfXLAv1N5V6xQrPYrOJvVYdmkf1
-        Uc+8WW2jBYg946BrYjbgygB7+sY5mG/p9O4BbOJl16vn6mGFTzXhKqDWqCU5CVBaMZrPak
-        53Fk3+dBcyxphQUy3y0lXRKtjj3S7NY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-298-2yX3J01LMWyZbpO3NlUveA-1; Fri, 22 Sep 2023 04:54:58 -0400
-X-MC-Unique: 2yX3J01LMWyZbpO3NlUveA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 09411185A797;
-        Fri, 22 Sep 2023 08:54:58 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9391140C6EBF;
-        Fri, 22 Sep 2023 08:54:52 +0000 (UTC)
-Date:   Fri, 22 Sep 2023 16:54:47 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     chengming.zhou@linux.dev
-Cc:     axboe@kernel.dk, hch@lst.de, bvanassche@acm.org, kbusch@kernel.org,
-        mst@redhat.com, damien.lemoal@opensource.wdc.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH v2 5/5] block/null_blk: add queue_rqs() support
-Message-ID: <ZQ1WV6PGAxaUVVjV@fedora>
-References: <20230913151616.3164338-1-chengming.zhou@linux.dev>
- <20230913151616.3164338-6-chengming.zhou@linux.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913151616.3164338-6-chengming.zhou@linux.dev>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 22 Sep 2023 04:55:11 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD85EE8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:05 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27666e94ad7so1533634a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=areca-com-tw.20230601.gappssmtp.com; s=20230601; t=1695372905; x=1695977705; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:to:from:subject
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=c0lvfh2z34kklQghRPHMgySN4X7ueSLfP71qd/q8Psw=;
+        b=w+C+kntTlRV4SjhIRAiDw/IFA8Ua/rLpwYwF2wXCbpK9yY2IF6cAUffnZBOAazDAAy
+         SJ/whFZEfZa0v46N9AmStPx8E70H0QADo99QjEryzBdykEkrW9WJ7GklOaB+gTUluihf
+         VJatWxfO9d0PXtZF6zHwxV7mFpdr5EbLUG+LOb2evKaleIPxlwGpQkyRyDubO5qvHg95
+         PHkZAoqTqeoKyo81Unn8yh/2N0sBfONP7F0LieXvSCWxM47jqdD6PwQ/jPxdVA26EEMy
+         L+P8PaPM4JRulEIEw95z/WoTVho9KgxmAuYa2bTj6Caho05oSkLj/OAT5ey2AO/PJIre
+         zr0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695372905; x=1695977705;
+        h=content-transfer-encoding:mime-version:date:to:from:subject
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c0lvfh2z34kklQghRPHMgySN4X7ueSLfP71qd/q8Psw=;
+        b=Rm4v6GGCYzJsN2PHzHWOK3U/OEx7ewXheKKKsog+0CcxY5zJVqRcbKY5le7CZg+7+I
+         7peCcuGNY7l82K1W2dSDZsXeHu+UZN5hdP7BSGGAiXfhbsc5lobVoDsy0uQmKHtfZQQT
+         ZYJ8Crn/pK7E4da0/8Duljdh5w9EC3Zolz5/N0DX29sA9CKEGTd20RC4IPdb5Y+R8JE6
+         8pdjI+N+8GwhaOFlseL9cv6oD9WfKElNKSMvSfhbcllyBXKCMmMshWjC2L1j7VzeVZLE
+         55/Nf5TperLk6oIYtkXrsc+SciXOjTryAYcW7uOqjSjrN7M1ODruE+3injResb+C8cqn
+         EQSw==
+X-Gm-Message-State: AOJu0Yz2CSqHR4b3K1WnewM4/WgSXD33UdUkZHLk6Gk+ygIu3MDy08zq
+        s94D36DhQbexje3wEBI/PrPn6A==
+X-Google-Smtp-Source: AGHT+IGVuCEWfM4GWuwLP0lEt6K5tzvKJGmMMe92XWJ9s/Bt6uPaeyTVva1kQ3Pbo+bF0/nDxRn+Pg==
+X-Received: by 2002:a17:90a:db82:b0:26b:513a:30b0 with SMTP id h2-20020a17090adb8200b0026b513a30b0mr3137713pjv.10.1695372905217;
+        Fri, 22 Sep 2023 01:55:05 -0700 (PDT)
+Received: from centos78 (60-248-88-209.hinet-ip.hinet.net. [60.248.88.209])
+        by smtp.googlemail.com with ESMTPSA id l6-20020a170902f68600b001c41e1e9ca7sm2911372plg.215.2023.09.22.01.55.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Sep 2023 01:55:04 -0700 (PDT)
+Message-ID: <4d58c52bffc20b0668b17977c8e813abbd219bf0.camel@areca.com.tw>
+Subject: [PATCH V2 2/3] scsi: arcmsr: support new PCI device ID 1883 and
+ 1886 Raid controllers
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 22 Sep 2023 16:55:05 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 03:16:16PM +0000, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> Add batched mq_ops.queue_rqs() support in null_blk for testing. The
-> implementation is much easy since null_blk doesn't have commit_rqs().
-> 
-> We simply handle each request one by one, if errors are encountered,
-> leave them in the passed in list and return back.
-> 
-> There is about 3.6% improvement in IOPS of fio/t/io_uring on null_blk
-> with hw_queue_depth=256 on my test VM, from 1.09M to 1.13M.
+From: ching Huang <ching2048@areca.com.tw>
 
-I guess you pass 'shared_tags' to null_blk for the verification?
+This patch supports Areca new PCI device ID 1883 and 1886 Raid controllers
 
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  drivers/block/null_blk/main.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-> index 968090935eb2..79d6cd3c3d41 100644
-> --- a/drivers/block/null_blk/main.c
-> +++ b/drivers/block/null_blk/main.c
-> @@ -1750,6 +1750,25 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
->  	return null_handle_cmd(cmd, sector, nr_sectors, req_op(rq));
->  }
->  
-> +static void null_queue_rqs(struct request **rqlist)
-> +{
-> +	struct request *requeue_list = NULL;
-> +	struct request **requeue_lastp = &requeue_list;
-> +	struct blk_mq_queue_data bd = { };
-> +	blk_status_t ret;
-> +
-> +	do {
-> +		struct request *rq = rq_list_pop(rqlist);
-> +
-> +		bd.rq = rq;
-> +		ret = null_queue_rq(rq->mq_hctx, &bd);
-> +		if (ret != BLK_STS_OK)
-> +			rq_list_add_tail(&requeue_lastp, rq);
-> +	} while (!rq_list_empty(*rqlist));
-> +
-> +	*rqlist = requeue_list;
-> +}
-> +
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+---
 
-null_blk may not be one perfect example for showing queue_rqs()
-which is usually for handling request in batch, but for test or
-demo purpose, it is fine:
-
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-
-
-Thanks
-Ming
+diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
+index 8f20d9c..2f80a6a 100644
+--- a/drivers/scsi/arcmsr/arcmsr.h
++++ b/drivers/scsi/arcmsr/arcmsr.h
+@@ -78,9 +78,13 @@ struct device_attribute;
+ #ifndef PCI_DEVICE_ID_ARECA_1203
+ #define PCI_DEVICE_ID_ARECA_1203	0x1203
+ #endif
++#ifndef PCI_DEVICE_ID_ARECA_1883
++#define PCI_DEVICE_ID_ARECA_1883	0x1883
++#endif
+ #ifndef PCI_DEVICE_ID_ARECA_1884
+ #define PCI_DEVICE_ID_ARECA_1884	0x1884
+ #endif
++#define PCI_DEVICE_ID_ARECA_1886_0	0x1886
+ #define PCI_DEVICE_ID_ARECA_1886	0x188A
+ #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
+ #define	ARCMSR_MINUTES			(1000 * 60 * 60)
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index e2c71ab..22a204e 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -214,8 +214,12 @@ static struct pci_device_id arcmsr_device_id_table[] = {
+ 		.driver_data = ACB_ADAPTER_TYPE_A},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1880),
+ 		.driver_data = ACB_ADAPTER_TYPE_C},
++	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1883),
++		.driver_data = ACB_ADAPTER_TYPE_C},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1884),
+ 		.driver_data = ACB_ADAPTER_TYPE_E},
++	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886_0),
++		.driver_data = ACB_ADAPTER_TYPE_F},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886),
+ 		.driver_data = ACB_ADAPTER_TYPE_F},
+ 	{0, 0}, /* Terminating entry */
+@@ -4794,9 +4798,11 @@ static const char *arcmsr_info(struct Scsi_Host *host)
+ 	case PCI_DEVICE_ID_ARECA_1680:
+ 	case PCI_DEVICE_ID_ARECA_1681:
+ 	case PCI_DEVICE_ID_ARECA_1880:
++	case PCI_DEVICE_ID_ARECA_1883:
+ 	case PCI_DEVICE_ID_ARECA_1884:
+ 		type = "SAS/SATA";
+ 		break;
++	case PCI_DEVICE_ID_ARECA_1886_0:
+ 	case PCI_DEVICE_ID_ARECA_1886:
+ 		type = "NVMe/SAS/SATA";
+ 		break;
 
