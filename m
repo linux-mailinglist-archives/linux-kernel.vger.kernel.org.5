@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAFC7AB77C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F89E7AB77D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbjIVRcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 13:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
+        id S233400AbjIVRcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbjIVRcC (ORCPT
+        with ESMTP id S233083AbjIVRcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Sep 2023 13:32:02 -0400
 Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AC7FB
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:31:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F360394
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:31:23 -0700 (PDT)
 Received: from pop-os.home ([86.243.2.178])
         by smtp.orange.fr with ESMTPA
-        id jjzlq1mvsWkeLjjztquw11; Fri, 22 Sep 2023 19:31:21 +0200
+        id jjzlq1mvsWkeLjjzuquw1D; Fri, 22 Sep 2023 19:31:22 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695403881;
-        bh=6Mdh92zSNjb03Q7lpVvrUXLMKkbkfsGWVKmrcZV58LM=;
+        s=t20230301; t=1695403882;
+        bh=V2TWwOebnSbbI2cNxOy+6tSiLTe5TgHaacu+uy4XtWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=AZd/C7jzdQa8ngS7YatO0pIUnC9sf4kMD7wM3+F9BD1uFMFkcWVNsYh0f1LIt9D4Z
-         joUYrPlswQyOQV56ZVyVwIERfHNwU4fUfhCWHUl1I4/edi36ISh9wFUgkJ0GtrLyBp
-         3FDS/eM5ItGXeXr8HMPwL62+CNLbog2c6azapzDX0SmDSl8PX+M7BGGN65X+IKEP5o
-         gVQXSRuscfpeSnZBt0m7/rXpUGJpnqcwNF/bmlY0sbfTPWvOWj7+UFT5J57uyOUUcP
-         I29cFGtpQWeE+fED1ZTviktVnCGi/ibU1bM3OU9NSl7dzla5FS0LcPWLh7ntXpA+4t
-         hzxGrCDr3kPzw==
+        b=TX6zHgc928K0ZEdheeOI3LHvylT2Zk+3802M3kwf7zwKf6/tNyJV2hrS0t2QDL6zm
+         y17PxnNEsUNJtz3rB4eIs7+J97GsfmCA5+4lBwF2d1XL7JZbnoVE985mg3NYAV3t+/
+         9fGYZmwB3YwvOiUCg5Kb92t+mxWukCCCsdjVOYTFaGW2kf1SREFy6d3ijUqqWHXqrO
+         fkdgUd3NCgOn25vktljueaiheiiN3VPmdctVP4ZnkyEo1uD/d3ouUbWfKkKBEoi/iK
+         7V/JJcmQnD/sTem8fmoMZoRPACWoB/qCD1N2bdsXQ3rj76jI5VJh3Hczk85olXLvOa
+         1mAMhDtGfhbdg==
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 22 Sep 2023 19:31:21 +0200
+X-ME-Date: Fri, 22 Sep 2023 19:31:22 +0200
 X-ME-IP: 86.243.2.178
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To:     Christine Caulfield <ccaulfie@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Alexander Aring <aahringo@redhat.com>
+        David Teigland <teigland@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         gfs2@lists.linux.dev
-Subject: [PATCH 2/3] fs: dlm: Fix the size of a buffer in dlm_create_debug_file()
-Date:   Fri, 22 Sep 2023 19:31:09 +0200
-Message-Id: <6083c5d6e7e4eb567bf6f5cbb5bdf6b0286cee45.1695403360.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/3] fs: dlm: Remove some useless memset()
+Date:   Fri, 22 Sep 2023 19:31:10 +0200
+Message-Id: <e2ce90b1297db6c336b7234e744759510c6ed96e.1695403360.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695403360.git.christophe.jaillet@wanadoo.fr>
 References: <cover.1695403360.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-8 is not the maximum size of the suffix used when creating debugfs files.
+There is no need to clear the buffer used to build the file name.
 
-Let the compiler compute the correct size, and only give a hint about the
-longest possible string that is used.
+snprintf() already guarantees that it is NULL terminated and such a
+(useless) precaution was not done for the first string (i.e
+ls_debug_rsb_dentry)
 
-When building with W=1, this fixes the following warnings:
+So, save a few LoC.
 
-  fs/dlm/debug_fs.c: In function ‘dlm_create_debug_file’:
-  fs/dlm/debug_fs.c:1020:58: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
-   1020 |         snprintf(name, DLM_LOCKSPACE_LEN + 8, "%s_waiters", ls->ls_name);
-        |                                                          ^
-  fs/dlm/debug_fs.c:1020:9: note: ‘snprintf’ output between 9 and 73 bytes into a destination of size 72
-   1020 |         snprintf(name, DLM_LOCKSPACE_LEN + 8, "%s_waiters", ls->ls_name);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  fs/dlm/debug_fs.c:1031:50: error: ‘_queued_asts’ directive output may be truncated writing 12 bytes into a region of size between 8 and 72 [-Werror=format-truncation=]
-   1031 |         snprintf(name, DLM_LOCKSPACE_LEN + 8, "%s_queued_asts", ls->ls_name);
-        |                                                  ^~~~~~~~~~~~
-  fs/dlm/debug_fs.c:1031:9: note: ‘snprintf’ output between 13 and 77 bytes into a destination of size 72
-   1031 |         snprintf(name, DLM_LOCKSPACE_LEN + 8, "%s_queued_asts", ls->ls_name);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Fixes: 541adb0d4d10b ("fs: dlm: debugfs for queued callbacks")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- fs/dlm/debug_fs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/dlm/debug_fs.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
-index e9726c6cbdf2..c93359ceaae6 100644
+index c93359ceaae6..42f332f46359 100644
 --- a/fs/dlm/debug_fs.c
 +++ b/fs/dlm/debug_fs.c
-@@ -973,7 +973,8 @@ void dlm_delete_debug_comms_file(void *ctx)
+@@ -986,7 +986,6 @@ void dlm_create_debug_file(struct dlm_ls *ls)
  
- void dlm_create_debug_file(struct dlm_ls *ls)
- {
--	char name[DLM_LOCKSPACE_LEN + 8];
-+	/* Reserve enough space for the longest file name */
-+	char name[DLM_LOCKSPACE_LEN + sizeof("_queued_asts")];
+ 	/* format 2 */
  
- 	/* format 1 */
+-	memset(name, 0, sizeof(name));
+ 	snprintf(name, sizeof(name), "%s_locks", ls->ls_name);
  
+ 	ls->ls_debug_locks_dentry = debugfs_create_file(name,
+@@ -997,7 +996,6 @@ void dlm_create_debug_file(struct dlm_ls *ls)
+ 
+ 	/* format 3 */
+ 
+-	memset(name, 0, sizeof(name));
+ 	snprintf(name, sizeof(name), "%s_all", ls->ls_name);
+ 
+ 	ls->ls_debug_all_dentry = debugfs_create_file(name,
+@@ -1008,7 +1006,6 @@ void dlm_create_debug_file(struct dlm_ls *ls)
+ 
+ 	/* format 4 */
+ 
+-	memset(name, 0, sizeof(name));
+ 	snprintf(name, sizeof(name), "%s_toss", ls->ls_name);
+ 
+ 	ls->ls_debug_toss_dentry = debugfs_create_file(name,
+@@ -1017,7 +1014,6 @@ void dlm_create_debug_file(struct dlm_ls *ls)
+ 						       ls,
+ 						       &format4_fops);
+ 
+-	memset(name, 0, sizeof(name));
+ 	snprintf(name, sizeof(name), "%s_waiters", ls->ls_name);
+ 
+ 	ls->ls_debug_waiters_dentry = debugfs_create_file(name,
+@@ -1028,7 +1024,6 @@ void dlm_create_debug_file(struct dlm_ls *ls)
+ 
+ 	/* format 5 */
+ 
+-	memset(name, 0, sizeof(name));
+ 	snprintf(name, sizeof(name), "%s_queued_asts", ls->ls_name);
+ 
+ 	ls->ls_debug_queued_asts_dentry = debugfs_create_file(name,
 -- 
 2.34.1
 
