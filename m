@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDE97AB473
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0AF7AB475
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 17:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbjIVPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 11:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S232193AbjIVPKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 11:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjIVPJM (ORCPT
+        with ESMTP id S232123AbjIVPKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 11:09:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A1CC6;
-        Fri, 22 Sep 2023 08:09:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36140C433C8;
-        Fri, 22 Sep 2023 15:09:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695395346;
-        bh=XsXHh90rL5Oxz0o4/7pmVqXNIDZlKcy9P9sRX+xLwE8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tYrrz2Jtz5yuQkLWbKIj5PUSQ5gakrnfGiL/P2cbSrXvmawjo7OmJBMcZQK+xcjtu
-         vyD4uuAuZygWuXsQPfJAYe/rsgKiZ8v07oU11krDKlbJSBgHOmGm97KbtmilSQT+Lp
-         574G9bAn3TEnJZmg3V+0tw69bXAkak3zKv5hveTo1kGfh4t4biM250lC6p+iDo7PUF
-         /POOC6MsthXVhyaKl2OU1mXbd1KIVD15wMq67m54udKHe2VWgM/8TqOHIJgvnmOo00
-         RRhuQ1y5lZWAZaeH+NORmVwlxBw6lybEF/6yso6/8mfb3/VRliMY8SuKsgbElFJioa
-         Vw+dxVzbTsI1A==
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59c268676a9so26705717b3.0;
-        Fri, 22 Sep 2023 08:09:06 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwlDTiNg7BiAwHenkacGSl+FDR1F8Lo2KT+SVw0KbiB0N6tnSjS
-        ZyS9pRx71a0lfBKsXUlCZ81IQk3VAvJk5nqbxsg=
-X-Google-Smtp-Source: AGHT+IFqK+0lT+ocRoW+vU5iVCzFG0N9dYlQxc7x8/IbpeAnpbmLGw7poT/AXnftVvW5/P9E2yGZMkozvJDDdkeMLQs=
-X-Received: by 2002:a0d:c8c1:0:b0:59b:c6a4:15c7 with SMTP id
- k184-20020a0dc8c1000000b0059bc6a415c7mr9129453ywd.46.1695395345308; Fri, 22
- Sep 2023 08:09:05 -0700 (PDT)
+        Fri, 22 Sep 2023 11:10:10 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D658A3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:10:03 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-503397ee920so3680783e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 08:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695395401; x=1696000201; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eBbLfmPpKzgVoeBpgucGlr3BpZFPgPf0mz1waJgwt2Q=;
+        b=nIP3ta1uztlrBe6zLQIA6D1mjtCNalCJs/yfLbJ/46/n/UYEkRy8wMHYVpA0o5LDax
+         VPPnYFh6V1RyDCWsH0JUJsDiFkXFg1emgmbGC5XTQdWJDVeNsnQhEgCm/2Y6FtM5uyLJ
+         hgVqaam0FuyLGwSPZvHAEOk+PsDmQxzuA8YnU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695395401; x=1696000201;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eBbLfmPpKzgVoeBpgucGlr3BpZFPgPf0mz1waJgwt2Q=;
+        b=MVGFzbzHk9RT5b5qE9EYVrrzDtlczvsPzXOIwj+L1rRh28x9HP9fiWMgCyRq1eNzJR
+         iZZc5OtmWiUPfDgCe//2reaFB3F4dnSLDQgGaWom2BumAguxRrjn5N4v46E1sDOaWQgz
+         lDmiK0sLbSVqcNd1VPlAW+Yd57AFKMyEfwqaq4I32Sw4jJYyIJCfw0+9cDgEF/TP1zJL
+         Zvh3cyOeZDfeiTbynN5Hu6baK6fpVi2JaLC+8qENEyzvnKqwryKm/4ZW5hfNByC3R/+W
+         fOQV0G58oQ++OrPtpo32wzqB+Xb/7L81o1Qs83OUV2SYmtJshzZINabX3mgTo0YfUKRc
+         W8pA==
+X-Gm-Message-State: AOJu0Yyq/S/FeKK8ohRa1zE0A5i3lPD/14zNnvgE4TtCtsYui7TvJwCy
+        MWnB2AbXPvn6kAocXy4+QnuFXYywzjhHdvndiyknSQ==
+X-Google-Smtp-Source: AGHT+IG0+FTwy7leUuJNc07mqM4ZpBxga4kMOkpvPH1KKuybgHujWbeNV789s9axdxdQeWXDb18UprYq/1LXcelxM4U=
+X-Received: by 2002:a05:6512:449:b0:4f8:77db:1d9e with SMTP id
+ y9-20020a056512044900b004f877db1d9emr7510046lfk.12.1695395401203; Fri, 22 Sep
+ 2023 08:10:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <SEYPR03MB704641091854162959578D7E9AFFA@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CA+VMnFyhp9D8cjtvLVzdKGETouOuH=MKgjOu1pn00WDRB=5oUg@mail.gmail.com>
-In-Reply-To: <CA+VMnFyhp9D8cjtvLVzdKGETouOuH=MKgjOu1pn00WDRB=5oUg@mail.gmail.com>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Fri, 22 Sep 2023 18:08:38 +0300
-X-Gmail-Original-Message-ID: <CAFCwf12sUL5bcXhYKwRkMxLtSDtLfTK003oxkRDVmThx1ARV-A@mail.gmail.com>
-Message-ID: <CAFCwf12sUL5bcXhYKwRkMxLtSDtLfTK003oxkRDVmThx1ARV-A@mail.gmail.com>
-Subject: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
-To:     Jagan Teki <jagan@edgeble.ai>
-Cc:     Cancan Chang <Cancan.Chang@amlogic.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+ <e045afaa-bc38-4fed-966e-a034e106c86c@gmail.com>
+In-Reply-To: <e045afaa-bc38-4fed-966e-a034e106c86c@gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Fri, 22 Sep 2023 09:09:50 -0600
+Message-ID: <CAPnjgZ2sN1bRKOFpDXXc0QfYsiHMxEFR8K+p=swLWs8ZCQBusw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
+To:     Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
+        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+        Rob Herring <robh@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dhruva Gole <d-gole@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 12:38=E2=80=AFPM Jagan Teki <jagan@edgeble.ai> wrot=
-e:
+Hi Alper,
+
+On Fri, 22 Sept 2023 at 07:57, Alper Nebi Yasak
+<alpernebiyasak@gmail.com> wrote:
 >
-> On Fri, 22 Sept 2023 at 15:04, Cancan Chang <Cancan.Chang@amlogic.com> wr=
-ote:
+> On 2023-09-21 21:45 +03:00, Simon Glass wrote:
+> > Binman[1] is a tool for creating firmware images. It allows you to
+> > combine various binaries and place them in an output file.
 > >
-> > Dear Media Maintainers:
-> >      Thanks for your attention. Before describing my problem=EF=BC=8Cle=
-t me introduce to you what I  mean by NPU.
-> >      NPU is Neural Processing Unit, It is designed for deep learning ac=
-celeration, It is also called TPU, APU ..
+> > Binman uses a DT schema to describe an image, in enough detail that
+> > it can be automatically built from component parts, disassembled,
+> > replaced, listed, etc.
 > >
-> >      The real problems:
-> >       When I was about to upstream my NPU driver codes to linux mainlin=
-e, i meet two problems:
-> >         1.  According to my research, There is no NPU module path in th=
-e linux (base on linux 6.5.4) , I have searched all linux projects and foun=
-d no organization or comany that has submitted NPU code. Is there a path pr=
-epared for NPU driver currently?
-> >         2.   If there is no NPU driver path currently, I am going to pu=
-t my NPU driver code in the drivers/media/platform/amlogic/ =EF=BB=BF, beca=
-use my NPU driver belongs to amlogic. and amlogic NPU is mainly used for AI=
- vision applications. Is this plan suitabe for you?
+> > Images are typically stored in flash, which is why this binding is
+> > targeted at mtd. Previous discussion is at [2] [3].
+> >
+> > [1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
+> > [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
+> > [3] https://www.spinics.net/lists/devicetree/msg626149.html
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > ---
+> >
+> >  .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
+> >  .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
+> >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+> >  MAINTAINERS                                   |  5 ++
+> >  4 files changed, 117 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
 >
-> If I'm correct about the discussion with Oded Gabby before. I think
-> the drivers/accel/ is proper for AI Accelerators including NPU.
->
-> + Oded in case he can comment.
->
-> Thanks,
-> Jagan.
-Thanks Jagan for adding me to this thread. Adding Dave & Daniel as well.
+> This doesn't match the schema in [2], but seems more like v1 of that. Is
+> that intentional?
 
-Indeed, the drivers/accel is the place for Accelerators, mainly for
-AI/Deep-Learning accelerators.
-We currently have 3 drivers there already.
+Yes. Based on discussions with Rob, the idea of setting a general
+format seems to be too ambitious, at least for now.
 
-The accel subsystem is part of the larger drm subsystem. Basically, to
-get into accel, you need to integrate your driver with the drm at the
-basic level (registering a device, hooking up with the proper
-callbacks). ofc the more you use code from drm, the better.
-You can take a look at the drivers under accel for some examples on
-how to do that.
-
-Could you please describe in a couple of sentences what your
-accelerator does, which engines it contains, how you program it. i.e.
-Is it a fixed-function device where you write to a couple of registers
-to execute workloads, or is it a fully programmable device where you
-load compiled code into it (GPU style) ?
-
-For better background on the accel subsystem, please read the following:
-https://docs.kernel.org/accel/introduction.html
-This introduction also contains links to other important email threads
-and to Dave Airlie's BOF summary in LPC2022.
-
-Thanks,
-Oded
+Regards,
+Simon
