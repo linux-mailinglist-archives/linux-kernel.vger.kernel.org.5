@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AD27AAF95
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02287AAF9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbjIVKeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S233316AbjIVKhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjIVKeA (ORCPT
+        with ESMTP id S229664AbjIVKhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:34:00 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70E899
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:33:54 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M8Q3bO025536;
-        Fri, 22 Sep 2023 10:33:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UQ9Kuh5z400Zh5gwFTlF3Opqc6mYNjyeBhpwWAY1FcE=;
- b=jwGIry+sax3rEg/uZQ2F7rYWIJOPvfBGKkPIojFlYuFHbL9qC/K4NKfDC9U6/V8szvuK
- 5UY5LqUvyjNAky0YaLpZiSH19KIFKG/3BTcM4jpIMxZbE4DrVL6LR8Xo0Ne+sFKUtv3H
- bm5hab4W8/iaYGYnfEeHeKfubKGnPiKtkg+tWD/wamcMWJ9yIIEVWwD6ouSHFZOIH+u9
- rC2mbzK2qdEZvhqhGCsq5OEu5cCeURd92KB1xwA3Ky7dRKc6wHdII1REVgnEnUzjmHO+
- kmi9i8P4HrQerQwFsjumAz0pzYFfALSPKKWTti9Im9Od+iW+0NzL8ZCtIf+sKtNgilmt aA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8txphk3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 10:33:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38MAXWlp007257
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Sep 2023 10:33:32 GMT
-Received: from [10.217.219.52] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
- 2023 03:33:30 -0700
-Message-ID: <56e210a4-8106-db7a-f44d-e40421e5abf7@quicinc.com>
-Date:   Fri, 22 Sep 2023 16:03:26 +0530
+        Fri, 22 Sep 2023 06:37:23 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF7F99;
+        Fri, 22 Sep 2023 03:37:16 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7A48C40E01A1;
+        Fri, 22 Sep 2023 10:37:12 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hhcnoopnkRlS; Fri, 22 Sep 2023 10:37:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695379029; bh=WpeoT8PnLL6SFV8kCiTwvistzGDQLcoEMqAKzHK7MK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZNms5fH/n47cbkjX3Yfe/XS6JV3yljLikSpZ4rtlK8A455lhRYblRAdTkcsv4lUAi
+         Sqk4i6AtD8tsdSunDUkMH7/UuToLcNADjc2RU6rolSRli9SiILcdFAbH05nKJEYZ01
+         kVIFE1GHJy8IjePM0jhJi5EWK/APbJd4kTdqwJ7XEb4iDLLbF2tSRT+uzf+aiISwsn
+         zM9KVtFpQwPVWEhhluA4ZC1BwU2C8V2+hlCeIhwnM11V+1ljQKlBat+j0BZfx1UsCJ
+         NAUn71A+ggJtWpRLOHMtePeHC9MH6q88bDr2tS05XUQwuer+KGdziqK3qfYuYU52dk
+         xGr4HFFwJW4gm6nfg6zTHcUAyT9H/jD1useDSyXlneSDA/GFnXSmZRRxIA0wFOyX/c
+         QATWPRlr4/nnhle61/o96X2/znL174SLX+33zP1Y7YKM09h8g/LykCgv9RQZTIR9ED
+         2aK+DjUh/LJr7S+8AaOABnEz4KM5AWI/3QJRAEqrrukwIIdLp7b84JwmAVHCZbr/hH
+         4gTq1zeOemaTKcAY284W/lUmXgYWQVoXoGROaylsKwTnzLKpVm00+ExUdby25xoI8w
+         pY+b2iPn99wyrb9szXGE1tDl/kouC6wufaOtRFw057CQCbDVhDVJAusiYUgo4vHGHb
+         4IZMh8MCtoTXqOCSdNZLwM+0=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4B5B940E014B;
+        Fri, 22 Sep 2023 10:37:04 +0000 (UTC)
+Date:   Fri, 22 Sep 2023 12:36:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org
+Subject: Re: [tip: x86/cpu] x86/cpu: Clear SVM feature if disabled by BIOS
+Message-ID: <20230922103659.GCZQ1uS2VOlG82DVAs@fat_crate.local>
+References: <20230921114940.957141-1-pbonzini@redhat.com>
+ <169537583818.27769.18320521458994415527.tip-bot2@tip-bot2>
+ <ZQ1rwSJsO7A4HR8O@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] xhci: Keep interrupt disabled in initialization until
- host is running.
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, Hongyu Xie <xy521521@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>, <stable@kernel.org>,
-        Hongyu Xie <xiehongyu1@kylinos.cn>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-References: <1695374501-22649-1-git-send-email-quic_prashk@quicinc.com>
- <2023092256-smudge-disallow-48d3@gregkh>
-From:   Prashanth K <quic_prashk@quicinc.com>
-In-Reply-To: <2023092256-smudge-disallow-48d3@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 56VhROARQ1JS8PXRTMLcbGvSe_v-z6k6
-X-Proofpoint-GUID: 56VhROARQ1JS8PXRTMLcbGvSe_v-z6k6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_08,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- phishscore=0 impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0
- clxscore=1015 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=387 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220088
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZQ1rwSJsO7A4HR8O@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22-09-23 04:00 pm, Greg Kroah-Hartman wrote:
-> On Fri, Sep 22, 2023 at 02:51:41PM +0530, Prashanth K wrote:
->> From: Hongyu Xie <xy521521@gmail.com>
->>
->> [ Upstream commit 808925075fb750804a60ff0710614466c396db4 ]
->>
->> irq is disabled in xhci_quiesce(called by xhci_halt, with bit:2 cleared
->> in USBCMD register), but xhci_run(called by usb_add_hcd) re-enable it.
->> It's possible that you will receive thousands of interrupt requests
->> after initialization for 2.0 roothub. And you will get a lot of
->> warning like, "xHCI dying, ignoring interrupt. Shouldn't IRQs be
->> disabled?". This amount of interrupt requests will cause the entire
->> system to freeze.
->> This problem was first found on a device with ASM2142 host controller
->> on it.
->>
->> [tidy up old code while moving it, reword header -Mathias]
->>
->> Cc: stable@kernel.org
->> Signed-off-by: Hongyu Xie <xiehongyu1@kylinos.cn>
->> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
->> Link: https://lore.kernel.org/r/20220623111945.1557702-2-mathias.nyman@linux.intel.com
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>   drivers/usb/host/xhci.c | 34 +++++++++++++++++++++-------------
->>   1 file changed, 21 insertions(+), 13 deletions(-)
+On Fri, Sep 22, 2023 at 12:26:09PM +0200, Ingo Molnar wrote:
+> It's a bit sad that we are duplicating identical code.
 > 
-> What stable kernel(s) are you asking this to be applied to?
+> 2)
 > 
-> greg k-h
-Need this patch on v5.15, I had cc'ed "stable@kernel.org # 5.15", but 
-looks like it didn't work. Should I resend this with SOB and CC tags?
+> We are doing it in other cases as well: for example nearby_node() is 
+> duplicated between arch/x86/kernel/cpu/amd.c and 
+> arch/x86/kernel/cpu/hygon.c too.
 
-Thanks,
-Prashanth K
+We could do a unification pass at some point. At the moment is not worth
+the effort, IMO, for only a handful of small functions.
+
+> BTW., while look at this code I noticed that the 'Author' copyright
+> tag in arch/x86/kernel/cpu/hygon.c seems to be inaccurate:
+> 
+>  // SPDX-License-Identifier: GPL-2.0+
+>  /*
+>   * Hygon Processor Support for Linux
+>   *
+>   * Copyright (C) 2018 Chengdu Haiguang IC Design Co., Ltd.
+>   *
+>   * Author: Pu Wen <puwen@hygon.cn>
+>   */     
+> 
+> ... as for example the nearby_node() was clearly copied & derived from 
+> arch/x86/kernel/cpu/amd.c, which does not appear to be accurately reflected 
+> in this copyright notice?
+
+Perhaps it should say "copied from amd.c and adjusted" or so. That whole
+file has pretty-much copied parts of amd.c AFAICT.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
