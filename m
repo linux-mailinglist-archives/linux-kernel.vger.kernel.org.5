@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953CC7AB9AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FBE7AB996
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbjIVS40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S233632AbjIVStI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 14:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjIVS4Z (ORCPT
+        with ESMTP id S233543AbjIVStF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:56:25 -0400
-X-Greylist: delayed 472 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Sep 2023 11:56:18 PDT
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99BAAB;
-        Fri, 22 Sep 2023 11:56:18 -0700 (PDT)
-Received: from [IPv6:2a00:79e1:abc:12d:b80:57e1:5d19:4ce4] (unknown [104.133.8.100])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id A2DC120173;
-        Sat, 23 Sep 2023 02:48:13 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codeconstruct.com.au; s=2022a; t=1695408500;
-        bh=FSxf4hp6EbxHRe+fjQ74d1A0sweRTynwo9c3KieA1cU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=YxMJ33g177H3ap8AxEHP+V5EeklnANu+CHfgwzfJFuixJZUoQCGU0fRS0VKta3uL7
-         D25TEv8wO3w50EeMpDzQy4V0EpCJpiHdyfSICwx+RkUoA+EHxiEwEpGCnfTcL44n34
-         PtuhmL+nxByJlHgdu34EMtlbLmWMRM9fjnxQ77Ct5sE09LN/WsvZrSx7bx+/fOu3js
-         8k3lDbWBsZITbCScaI3iqr3o4NKIpmrzSbnM8hAbkTm2im0JU2EyHwKt9aES8bG1dX
-         mZVvR8VVWIR/NWDEraYrOryhrn7So8w4yx7I5Ob/IdeuZNftw7lDqwIbOEBahKvjcs
-         cNzBTfnhrltWw==
-Message-ID: <66b317e630f6904cbddbb8affcf06b59b4c0ead8.camel@codeconstruct.com.au>
-Subject: Re: [PATCH] i3c: dw: Annotate struct dw_i3c_xfer with __counted_by
-From:   Jeremy Kerr <jk@codeconstruct.com.au>
-To:     Kees Cook <keescook@chromium.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Joel Stanley <joel@jms.id.au>, linux-i3c@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Matt Johnston <matt@codeconstruct.com.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Jack Chen <zenghuchen@google.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Date:   Fri, 22 Sep 2023 11:48:11 -0700
-In-Reply-To: <20230922175011.work.800-kees@kernel.org>
-References: <20230922175011.work.800-kees@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        Fri, 22 Sep 2023 14:49:05 -0400
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C52FB7;
+        Fri, 22 Sep 2023 11:48:58 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-68cbbff84f6so2925173b3a.1;
+        Fri, 22 Sep 2023 11:48:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695408538; x=1696013338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hL5bEyIdwLqLeBmJpTNF22yRvuv3aGh3Q9CwJkae028=;
+        b=cfqbslfLC7cRfJNvdd5xYsFSc9LDayjcTlHdDlhKRwFL2fE8LUJL7lSVxag19jYlJ4
+         SdnFMtMUAKtuEc/drAqxk9ZCq7PGe5u41QMKweifiJTxJlAgYvMC2tZzgCRMsdKPHPJs
+         6nqxiR0e3g2J0ofr6x7flTB8pynBUXondIuoZtHlbedMvjXxq69dzS7wCbW4Jg6LNaAZ
+         eDKmespwnnYYKPPzit/scIx8fR6y25XUxsiQAWL20c0m1HNfD0BcQFBvuR0kHUr9MW/e
+         gDvrfY8PTOkMsFNK/h9UoEIp7KDRKv3bREh964xhE7oTfciqTiEauYpV55XKCqSrAsoY
+         YENg==
+X-Gm-Message-State: AOJu0YxZh2uLBddPRq2hGZoveI/eJ81APf0wXTGXJEOgDj5MYqd5CE5n
+        L+qjScmc17R89AC81GV0Bpg=
+X-Google-Smtp-Source: AGHT+IHH3V+wn81SPydKnVucq6fioEnuRLf9tOh/vQim6/QBf0odXijPI8phhlNSwrYfPzOStF+8kA==
+X-Received: by 2002:a05:6a21:7891:b0:152:4615:cb9e with SMTP id bf17-20020a056a21789100b001524615cb9emr696294pzc.13.1695408537936;
+        Fri, 22 Sep 2023 11:48:57 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id q17-20020a637511000000b00570574feda0sm3473414pgc.19.2023.09.22.11.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 11:48:57 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 18:48:14 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v3 12/15] Documentation: Reserve ioctl number for mshv
+ driver
+Message-ID: <ZQ3hbhOJdjbveIUH@liuwe-devbox-debian-v2>
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-13-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1695407915-12216-13-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On Fri, Sep 22, 2023 at 11:38:32AM -0700, Nuno Das Neves wrote:
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+> Acked-by: Jonathan Corbet <corbet@lwn.net>
 
-> Prepare for the coming implementation by GCC and Clang of the
-> __counted_by attribute. Flexible array members annotated with
-> __counted_by can have their accesses bounds-checked at run-time
-> checking via CONFIG_UBSAN_BOUNDS (for array indexing) and
-> CONFIG_FORTIFY_SOURCE (for strcpy/memcpy- family functions).
-
-Nice!
-
-Reviewed-by: Jeremy Kerr <jk@codeconstruct.com.au>
-
-Cheers,
-
-
-Jeremy
+Acked-by: Wei Liu <wei.liu@kernel.org>
