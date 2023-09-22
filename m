@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94F27AAF04
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88147AAF05
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbjIVKAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
+        id S233095AbjIVKAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjIVKAD (ORCPT
+        with ESMTP id S232775AbjIVKAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:00:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E59391;
-        Fri, 22 Sep 2023 02:59:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A961DC433C8;
-        Fri, 22 Sep 2023 09:59:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695376797;
-        bh=Rmbwnfy/2jfDt6etmwMj6pRES6Qp/FcaWgWrT8xRulQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mw1vZL+iRdVdZLIzYj9igp3k9yg7oXHD4JzzSXuD4hY3XJRDU6thvQcwYcW2hoEme
-         Ol1W9cMUVlfw7qW8LMI83PivEgj+cOpdSv0DTkoKAN9lDYgY/AtQRGy0cm/he3eyB2
-         2Mcu5jtXms7IBzBE9oPKkmlKDTvcknmyu/efrFcWtFMMFx5FH1MLY9TzLVy2Aujnsk
-         7TcTkEjdS1JF71KqHiCIwlDhSCw7+Cvty2sGgYx9+hMcVaCZcJvbhS34J1zF8VhSqK
-         C9pqpiDIhkC3bxWxjL6kjIxrP3mlHgqPckTIpT3CsWUj0rx38f9Co7f2URmDB3Tlwu
-         xnljFyl4KAc6w==
-Date:   Fri, 22 Sep 2023 10:59:52 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     shravan chippa <shravan.chippa@microchip.com>
-Cc:     green.wan@sifive.com, vkoul@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, conor+dt@kernel.org, palmer@sifive.com,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v1 2/3] dt-bindings: dma: sf-pdma: add new compatible name
-Message-ID: <20230922-gray-zebra-a0ea451cc5cc@spud>
-References: <20230922095039.74878-1-shravan.chippa@microchip.com>
- <20230922095039.74878-3-shravan.chippa@microchip.com>
+        Fri, 22 Sep 2023 06:00:23 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8BD192
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 03:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=K1aO
+        Wab9I+DUxFLoqZNWzCk1GjcZH7mf1jIQVv0mxgg=; b=hOv83P/ROgDu3Yp2qM26
+        qYqzOCWcE5gafIs/Co/vVAhE4gQ6Sueifnt78+Lr9MZEffZzbmPAILXr6vQZyXqU
+        SeU1JFF8joU3p+6oFv4p6xXj81SytyKfwXejtFplSJ0R4Gvai1uKMgPXymNFhWDm
+        LLGZFtNe2wyK3GELxYHVHaDVFnjcy8Qv+wZIsSS10nVjiq93E3j1ffUyPkK7Tte0
+        OUaaNjQDMvk/baHEultQp9w9TyPMgFBV7lurfB7DY/QIwhzq3CDWExRjXxg/bxDt
+        8TwnKfLD04486SiXog7NXfuSz3HO14oYsoevd7ZjG1dwrIGFhDGb1ZAqmjkcz7YI
+        1w==
+Received: (qmail 1349780 invoked from network); 22 Sep 2023 12:00:14 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 12:00:14 +0200
+X-UD-Smtp-Session: l3s3148p1@KazJrO8FtoIujntX
+Date:   Fri, 22 Sep 2023 12:00:14 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: mux: gpio: adhere to coding style
+Message-ID: <ZQ1lrvJG3TK+ypCV@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230921085752.8686-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aMX1ax+XegASzcpP"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xaTqkrHEkG4mncZK"
 Content-Disposition: inline
-In-Reply-To: <20230922095039.74878-3-shravan.chippa@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230921085752.8686-1-wsa+renesas@sang-engineering.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -57,72 +58,37 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---aMX1ax+XegASzcpP
+--xaTqkrHEkG4mncZK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hey Shravan,
-
-On Fri, Sep 22, 2023 at 03:20:38PM +0530, shravan chippa wrote:
-> From: Shravan Chippa <shravan.chippa@microchip.com>
+On Thu, Sep 21, 2023 at 10:57:51AM +0200, Wolfram Sang wrote:
+> Advertise our coding style by following it :)
 >=20
-> add new compatible name microchip,mpfs-pdma to support out of order dma
-> transfers this will improve the dma throughput for mem-to-mem transfer
->=20
-> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-I would appreciate if you would drop any vendor tree related tags when
-submitting patches upstream, especially for dt-bindings where it
-actually means something to have my R-b on them.
+Applied to for-next, thanks!
 
-Cheers,
-Conor.
 
-> ---
->  .../bindings/dma/sifive,fu540-c000-pdma.yaml         | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma=
-=2Eyaml b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> index a1af0b906365..974467c4bacb 100644
-> --- a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> @@ -27,10 +27,14 @@ allOf:
-> =20
->  properties:
->    compatible:
-> -    items:
-> -      - enum:
-> -          - sifive,fu540-c000-pdma
-> -      - const: sifive,pdma0
-> +    oneOf:
-> +      - items:
-> +          - const: microchip,mpfs-pdma # Microchip out of order DMA tran=
-sfer
-> +          - const: sifive,fu540-c000-pdma # Sifive in-order DMA transfer
-> +      - items:
-> +          - enum:
-> +              - sifive,fu540-c000-pdma
-> +          - const: sifive,pdma0
->      description:
->        Should be "sifive,<chip>-pdma" and "sifive,pdma<version>".
->        Supported compatible strings are -
-> --=20
-> 2.34.1
->=20
-
---aMX1ax+XegASzcpP
+--xaTqkrHEkG4mncZK
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ1lmAAKCRB4tDGHoIJi
-0pXbAP0UtoRGkkj5hBqOaT63U8Em3NH+kiUFeZ/HgkF8mLKhdQEA48b4gMC9cPIS
-e5Clll7FoZlKKL8d+LNM/uuMmpUvvQ0=
-=6kQe
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUNZa4ACgkQFA3kzBSg
+KbblMg/+JTR0td37WXdqZXNMxeCaYpXT1wFEmMgAsHo1Oaom0ExJD0iwu53J9ie8
+YZt9+wcLjqtepX/YMbRAIG101EngEgD35vdtZUsUfLGyhBOorxRD4I4qw3dgyioi
+qYmdYf/361rTZ69ZphMmch6p8j/klq3uim/1xaFpjBb7nopFYneaChdA0juVmwGs
+wZzwJuD3v22/DpMSJ0SZK3f960kd+WA9E4LeNad5xH9wRx49vdZLUaiwQ4+PpgV+
+mjjz85SMr/xtu3caQ3hXQm7gNMCnKqfEVkvvCvxRsBcTlSLTkXN2OD25OVMk1kbv
+t8FZMTwUfOBMqBnDuY29FVLgVRjoct+8c6yJVnSWPT2vXHAlEAlVQr/e0WVDpo+A
++U/BAsm6ioA+cQypfZKrZDZ3N1ZslLoqoMAL+J6O3C8KNkqjhPDIH7JXAl6oDATu
+d0EldDL3TcCbl/wEZK62/7Hy7LG8r2k0wmVsJVxJ6sNA8GAzGqWNFXec7yrh8BtP
+AthE8lslCNVW7wIOdQEUjLv+InaOU8ke0D0omnd0ZhGNIAivKY4aqsuHk05onTa3
+ajVaXP/7/QVzgbBV5XAy0Q0JWzpS3iWH8AusD5HLRjQ3UAsFjsnlgRQzMcwUn+Xr
+VaypRmAwOhdF/PPkfgK/vUv0xqTPHrN6zC+DMQxZ5P0Il4Qqcv0=
+=A8EE
 -----END PGP SIGNATURE-----
 
---aMX1ax+XegASzcpP--
+--xaTqkrHEkG4mncZK--
