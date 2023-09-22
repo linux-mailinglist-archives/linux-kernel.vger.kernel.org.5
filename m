@@ -2,164 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FC57AA6CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3D87AA6D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbjIVBy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 21:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
+        id S230308AbjIVB4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjIVByZ (ORCPT
+        with ESMTP id S230286AbjIVB4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 21:54:25 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C359F1;
-        Thu, 21 Sep 2023 18:54:19 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LIsleC031530;
-        Fri, 22 Sep 2023 01:54:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=zagvB+Petw4mAdXFpJ0jSy3bnvE613fSue8jL4GlUus=;
- b=GiTBvcte9q8Nnbmxu0YMRrvofEs2x3XuJZRb38cSN0yWhWecoBmRHeasrNn25O3miD4+
- /DJpykcmsRHlWdLtqmAaj6R9WEuuQDd1A6EmvyciAyRiOxfynRgw0raScceWVd/hCqVW
- 67GHVqNn2yUPrQ/cxp77U3nZViq5T62ZAJqxeYajt+eNXg6m40hmUWebcRj8IK/OiReZ
- gurOTxrAzVEp3zE/pA7dS2fAB7OdDyeu17RKFR/7WkN6lqT+cPzGc34oo+zuye6bupR3
- fGA5CPyK3Z6tpw7ciK/08nj6fvfQEDQjrfOq208/vr6B88CDOmE3VRHFbqFTrso7JieQ rQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t8tt08krs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Sep 2023 01:54:12 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38M1XCUZ033863;
-        Fri, 22 Sep 2023 01:54:11 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2045.outbound.protection.outlook.com [104.47.56.45])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t8tt7d5eg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Sep 2023 01:54:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m5aJapef1XBaMTIVhaDd3oHz15hmNbtHtZMqB6wODS205MtepAj6k4i+Mh3k/7v2u91uMWHU5js+BnedaC7Ty07RxMVn4KpUInNPaIDf8IGGAjagAjw05RcTMbCbi+B4aOJOnWpAfa/Zxxkp9lqlCTf6NX0fakD/lHpPQhQX+iUFfLnsU0GXEUYXr3M19k5aJBP9DGWxrY/xZSAUJb1IQUi7vDph/fgc0hUJlXmzIm21EV4WyrbsyEN8vDRjTKf9XAciibJP3bmieGUQnK5GX2GY0u7L4KeB1/KyU8xErYY5fYa6U2BSi/3NneJI34H2+hxlEc8tB3wFre329SdBRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zagvB+Petw4mAdXFpJ0jSy3bnvE613fSue8jL4GlUus=;
- b=iEUv6/RY1el+oQTPrs/n55huQAKcTEI/sGz9hsRbaz6nX7ALXh/Db4RoAVK1+23CfC1wVc+6dwX/Szu7tnzB9Uno3QwtVNaRLoLzXIwiX1NEqi4cz5ksMhiK3ZuEcHWPF2WuQCfkXMCPB+p1a9uxENEyMILf/YfNtMV+shc8PACzk65pOApRgImg1cplOAkFAV32KyAEEtpIxl3YtSDJG8OoNepUplFp1Rtk0jQ4npbGerQ0bDS/ew5RRGZ/w0C2ZFFM8uZKmplVXt+iiNbCRHQkuWA9XegqvSzap4I4QDFDZGsCa2Kjff6L0V0fbCPuVBJr0gPyRicetFaBMcEcHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zagvB+Petw4mAdXFpJ0jSy3bnvE613fSue8jL4GlUus=;
- b=ouGYczeL/SYQT+T3lFhre7c4RwwlUWCOn5JwCOju9bY682uX55gRxPdIumE7RE4NXt/QoUX7FJp0Dv6z0Q+IFFMvGYT6j/+MK1/GqH8DDBjRZ8Cy+gmSVWSuh33378w65RPVbS8s4VtI+a1pPShB0GXAyISbV77P4Jq/OoNWgiA=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by DM4PR10MB5965.namprd10.prod.outlook.com (2603:10b6:8:a1::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Fri, 22 Sep
- 2023 01:54:09 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::59f3:b30d:a592:36be]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::59f3:b30d:a592:36be%7]) with mapi id 15.20.6813.017; Fri, 22 Sep 2023
- 01:54:08 +0000
-To:     ching Huang <ching2048@areca.com.tw>
-Cc:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] scsi: arcmsr: support Areca ARC-1688 Raid controller
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1lecz3reu.fsf@ca-mkp.ca.oracle.com>
-References: <0608654a043206078d3a27d23cd5e3c2851ee415.camel@areca.com.tw>
-Date:   Thu, 21 Sep 2023 21:54:05 -0400
-In-Reply-To: <0608654a043206078d3a27d23cd5e3c2851ee415.camel@areca.com.tw>
-        (ching Huang's message of "Mon, 18 Sep 2023 18:25:21 +0800")
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR05CA0104.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::45) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Thu, 21 Sep 2023 21:56:00 -0400
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0057118F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 18:55:52 -0700 (PDT)
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3ab3059eb0cso2104641b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 18:55:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695347752; x=1695952552;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UMGcT7azSmaIpI7Mr5U/Wl+GeL1wdTGUzossfsv3VgA=;
+        b=n7riwTNS7Y/FeiOhxpVcXAsOZiSJ71eV22NWXaQwHnNqsMjTWje9JENN5gw83jH3qw
+         B6Agms54qUCHef3oZ4awXcSTydQWi15OgW6TCWlT+ztJscJDu4taO20LH/fGUdVBeZw0
+         Mb1PGFGfO4T+K7fP/9Ga2Ljk/T9pfDjHwJm393zb30B0HIAZxdT+tgQ9eDFvSB8SFrY2
+         SfyApEM3hnTSjVsmYSdai44PmhGuepHmrS6HOjn3wxJneKUQC3BoOqsAHVho6MglQKYZ
+         zT+mvFSLFUBX/U9h2PpPHKqVdKCpcDomzfKuxVhCkk2yU7WqSK3rnL6PpKrTHmvOa+V+
+         LFLQ==
+X-Gm-Message-State: AOJu0YyNsFisWd8R2H/Qe4PMhJ2JYfGUOVpPUtVBI9WSCvOf7W75PfNc
+        sU/IK0TbxKyurXX/K4c33i6J10arUZRF1DKSHDVNh+pdpSIa
+X-Google-Smtp-Source: AGHT+IG7C+7JIRSlG/ocN4yRtFdfHebIRpyMNTtFV9qU88kUAUQkPjJe3iVwBDRaTkLiGd18g1q711Iton0ri/WRyLjPVIwKI5xa
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|DM4PR10MB5965:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4a2ffec-076a-4aaa-0ff9-08dbbb0ecf29
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tgEMZlQadUE3HT3y3pZtGgAn2bXelldEQtyC9YPD5xe6ssUh/MZNbHzvogoNqEXKjjbj87IWXgRaHm28gipWFEqGdyIJq2bFeZ3xiOEOKhetB9g/QIVUKUMS7Pmtt76juHSDiFGLL3Dmh06dubpO/mxxc8uwkTjZE51FJ5mXCtZP7peprX4aWVt/hogvnwaV12tVXe3OrZzv/khxx7apOtwhe43bPrUNpNIqXGw2eZm5zkBRemOqdF2unQZ2zzE+xFG6uk/QTw/ptFKKoWpvDlpKHXUx1DrPcbvx4Zx3Up+uSFlwCK+ZZWUBnHnpIWnuzsxQUBEbBS3AWiU1FhSTHiQwKkluQA7M9UMrKNZhe6T0MaV0GEoErqXD4GypqRDG/mzz+30+j8C5HMq8vRgAvbSjgMVbsNz5VR+bCfpwsHyqv3OLiTVdlDgpG4f9vfmP1UPzOuWU2eUzoEz+l7JrCXmp7xLSEh1SvpXGFZVkYemrcWunNy3jBPyuWknawUgVTBVJ05RrvaMNzKUvYqmPoopNLE3ZZ7vnGKnay/nD/TvYBaZbwLr5j2PbMcZLDRLn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(366004)(346002)(186009)(451199024)(1800799009)(4326008)(83380400001)(86362001)(66946007)(66476007)(316002)(66556008)(2906002)(478600001)(6916009)(38100700002)(36916002)(4744005)(5660300002)(8936002)(41300700001)(8676002)(6506007)(6666004)(6486002)(26005)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6abi9ckFKyzhZdFzfvtSxxSyyTxzLihT5aevLO+zwMfRoNhi6huDoUK11CxD?=
- =?us-ascii?Q?0x7KsFit7Y5luCuk5QMp1MGrycg9GOUtO5tOfrwFV8vhP2+dXUMjf8HCg8ns?=
- =?us-ascii?Q?dwPg0J3nGE96S/E88ILqnOkygNGt/iRuLnzp5invvvAcsAF6w7WaLVsxrd5W?=
- =?us-ascii?Q?JHblt6UGi3DCBToXbCvU3mjY2nyxPOiAlQjrIhVRqAucxpBYdWiZbumgIvh8?=
- =?us-ascii?Q?gULExHfPa+s6Ey2otHnujrgsJ0dvX6GNq8S1l/fXnrqFugzPYBYPxP7b5Hu8?=
- =?us-ascii?Q?q+wvQl4sidYzuaGOHVvw6J+HaUse0/NencOmziUP9E1FmM2wqqMl49oWKkhq?=
- =?us-ascii?Q?tyrsA9gBCHQ1jSScJfhD+n/kifiu3Oi2gC9QbhwwDYQ7dxesZUMKWz95SpEI?=
- =?us-ascii?Q?53oVJTj7VVZ4REdkIyG+eUuymu8Y31ZF+pMBLNTIeYFz+uDzjdempWcY741d?=
- =?us-ascii?Q?q6orPr3A6N0TtKOM8Hw/plSsJqS2mkF2X60ut/rCJVOAi0cxvXPYlLFDerZE?=
- =?us-ascii?Q?bNu2sWATkdyFSinAVDk+prbG1uG/0w+LMoqtKDxaf0zk2m6gJolZySFUoTsr?=
- =?us-ascii?Q?RrxB+8xaOJGkchKQsquXq2IWJoFIecg6EirbWH4k9+EFKk9HVFQKxuy9PZ8J?=
- =?us-ascii?Q?1eY6IhrAK6q0QCi2zXArj++eha5slFpecVeym2+PWhbULFjnh96RcYF9euDz?=
- =?us-ascii?Q?0HaJQCOgejXVq8E/iRcTZNF7Esc75VEoKXcDIrY1xysy/YN55pj5f4bBYGZq?=
- =?us-ascii?Q?czDn9J7r0Wu7uJnxqnWrK0evoIyJ9wJqcdrPribJG6w4CPHOyZ+7PoHHWqXS?=
- =?us-ascii?Q?IBiDhGcXoozx+k5SE/PsoYV0DNUm8mAzrqcad4lbljbEukqI9CZxl8OzGxKH?=
- =?us-ascii?Q?OQ8z8fcuOZ7P4Wb4AOuRfNpKZJVgyQ2lRJ4MKALST/3kcB6Ko+ojIFMiVK86?=
- =?us-ascii?Q?b12kHj1TdqqrDpbwLdmAIyvuX+tF7MwJa3nXcTV9ybRpytqvGdrosSZC3rz4?=
- =?us-ascii?Q?a6Eo1XFgo+lgFcS36SfH/7X/m2pPIi2ljg2EPU1yoz2lJvUyhMICDGoe1mtQ?=
- =?us-ascii?Q?Tr7TK3NN4NEugJPXyP6CYR+lSRXSP9q6p8rHicoPFHL+0B8S0GBbOMVS/n0f?=
- =?us-ascii?Q?/y9X6tpNrxNEeHgDLaESU6QH1/2U96TlyUt3PKyczCWpdyA+5i4VzH/NKrD1?=
- =?us-ascii?Q?y+2NKL0+/GDGZH4MjY5uHwXx4bdft1ImBzv62CI45Ewt8BDqCbN523Fwc0pc?=
- =?us-ascii?Q?HNgYNMxPMgCKOqVZgJe5dVn2/K0i1tbGw41bCnv21UdBRM3h/oag2qrVMXsW?=
- =?us-ascii?Q?SGSWZTTQIb3dBASLip0r5ObQFFh+eqvpqvUejX3FK6mBmuJIhbNxR9QvY40e?=
- =?us-ascii?Q?a6flzwR5Jo2WwjoKBOv5GtJS23Siswl3B2mdh8MW4YBPcXOwp9iw6au3nlIP?=
- =?us-ascii?Q?kT4qAqk03H6RAgnBFs/xtFZAeh4PJyAH/GfyBf0t3QCSkSMruZBByDmTslQx?=
- =?us-ascii?Q?AOR7w1WKs69e+smjJp2WOI0/B2DIiDBvfzyqcTmd+DHGe70csyC0bLFUFtzI?=
- =?us-ascii?Q?JjsFVJ4yY1R77B2cdowSrrDR7CXwmDtDrRbivKwcS06tXvw2x8FEnIs7nDRs?=
- =?us-ascii?Q?Aw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: +Bo2qrHfs6nryqucW08rVdUH7xU5rnm6ph4oQBuB+qm2ScqlF3PytUSMTKpkX1s/QS4TBDJ5+apOMI+sP30nokaQ9Lb/vmRJGnV8nVi4WFBms0Jwt8KyHcZ0yAPW2rCxeEfvvfoXtNMXqZiZnz3XE/5iiO07VWLw7l6+zLkAq/QEPdtlpznHQRX4JXPlsiUi3Xxkdt5dwyAUbBDmGcnQ+oEE5Q8Y6cirSFKShWIDMPD85+tJWxuMMX15+nqOR9x5kYwxy9RmHd0l0fPloyutm5S9eUECosCwiPO9S/M4av+2e1UvqVIYYq2nHUuPOcbw0JU4hmf9Hv8tQdbt7lwbCm3qFDsJCYOXLT2rQYPQ+cq9mT2B4NknWmQDE0dQfrtyWT7AipQbY2auHTd5tGVWRRRzpu72jF2C9/ZHMcaZvQQCXPncS8KGK6A8cmWrxAdONDEEH5Gui+OOyTxx5797XfF3LLI1n/HwuA+FQWDWlUvCW3BsjkvBVSlleKZ8LZE3VHDAg60qx/8380s3lD8E6tPJA2Z/QMeZ5BlGHLbz0yTE+PuyYzEBpd64rK86gouhnoXcG2qIE2S5mZmeSnIxXiOZ0bVRdIsg4HKUK8wh07sPfd5l07InkCYlL1nuFUPJeHPJVz2dptpHprOcqetHhgnVkolVRp5UGLXUYSieHoaZY5yo1kI9r/kJaEGB7D0jGZoGzr+MUXnYC6OeaINGtpHgpv7fFlG/nTrbX5WQ2+7HWT462FYq9+h0jk0FrQ3tIxWfoxqBmEtywkDuKiHFlMMhXXQik/hZBBrAmS7sSCSjK/RUD6/5ZGSz44XbQLQxGhv8LdC8LJdgjfLhJhL+Pj4/36NLjGzqKX9irhV4nnQ=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4a2ffec-076a-4aaa-0ff9-08dbbb0ecf29
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 01:54:08.7360
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TKVCTYPQ9XPJfGXKwrvOLLX7BH9tdH2AaLczKWIN3vaEAICFgN5NQSpVBQKqC0wk0wlpaprLgc+Rhln7Njnpf9yQPduWS1lYYMiibw8bfIA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB5965
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_01,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=763
- adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309220015
-X-Proofpoint-GUID: F7bJ4jfHLaZYwxzdIILDDwr9524qKr7Y
-X-Proofpoint-ORIG-GUID: F7bJ4jfHLaZYwxzdIILDDwr9524qKr7Y
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:308e:b0:3ae:16a8:f441 with SMTP id
+ bl14-20020a056808308e00b003ae16a8f441mr489962oib.11.1695347752268; Thu, 21
+ Sep 2023 18:55:52 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 18:55:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008b78c00605e8e8aa@google.com>
+Subject: [syzbot] [wpan?] [input?] [usb?] memory leak in hwsim_add_one (2)
+From:   syzbot <syzbot+d2aa0f55c4ae66a9b75d@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wpan@vger.kernel.org, miquel.raynal@bootlin.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-Hi Ching!
+syzbot found the following issue on:
 
-> The following patches are made over mkp's 6.7/scsi-staging
->
-> This series add supporting new Raid and new PCI device ID controllers
-> - support new Raid controller ARC-1688
-> - support new PCI device ID 1883 and 1886
-> - updated driver's version to v1.51.00.14-20230915
+HEAD commit:    e789286468a9 Merge tag 'x86-urgent-2023-09-17' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16db487fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=943a94479fa8e863
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2aa0f55c4ae66a9b75d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cc8372680000
 
-Your patches appear to have mangled whitespace and wrapped lines. Please
-repost. Thanks!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/60bec5b60566/disk-e7892864.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/509a449f2ff0/vmlinux-e7892864.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/36581da19789/bzImage-e7892864.xz
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d2aa0f55c4ae66a9b75d@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff8881042a8940 (size 64):
+  comm "swapper/0", pid 1, jiffies 4294937901 (age 1085.750s)
+  hex dump (first 32 bytes):
+    00 0d 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81573dc5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff831b5a6a>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff831b5a6a>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff831b5a6a>] hwsim_add_one+0x14a/0x650 drivers/net/ieee802154/mac802154_hwsim.c:949
+    [<ffffffff831b5f93>] hwsim_probe+0x23/0xe0 drivers/net/ieee802154/mac802154_hwsim.c:1022
+    [<ffffffff82c14f93>] platform_probe+0x83/0x110 drivers/base/platform.c:1404
+    [<ffffffff82c10fc6>] call_driver_probe drivers/base/dd.c:579 [inline]
+    [<ffffffff82c10fc6>] really_probe+0x126/0x440 drivers/base/dd.c:658
+    [<ffffffff82c113a3>] __driver_probe_device+0xc3/0x190 drivers/base/dd.c:800
+    [<ffffffff82c1149a>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:830
+    [<ffffffff82c117f7>] __driver_attach drivers/base/dd.c:1216 [inline]
+    [<ffffffff82c117f7>] __driver_attach+0x107/0x1f0 drivers/base/dd.c:1156
+    [<ffffffff82c0e2f3>] bus_for_each_dev+0xb3/0x110 drivers/base/bus.c:368
+    [<ffffffff82c0fdf6>] bus_add_driver+0x126/0x2a0 drivers/base/bus.c:673
+    [<ffffffff82c12ee5>] driver_register+0x85/0x180 drivers/base/driver.c:246
+    [<ffffffff8756e3a6>] hwsim_init_module+0xc6/0x110 drivers/net/ieee802154/mac802154_hwsim.c:1073
+    [<ffffffff81001cb6>] do_one_initcall+0x76/0x430 init/main.c:1232
+    [<ffffffff874d76ea>] do_initcall_level init/main.c:1294 [inline]
+    [<ffffffff874d76ea>] do_initcalls init/main.c:1310 [inline]
+    [<ffffffff874d76ea>] do_basic_setup init/main.c:1329 [inline]
+    [<ffffffff874d76ea>] kernel_init_freeable+0x25a/0x460 init/main.c:1547
+    [<ffffffff84b3628b>] kernel_init+0x1b/0x290 init/main.c:1437
+    [<ffffffff81149e35>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
+
+BUG: memory leak
+unreferenced object 0xffff8881042a8780 (size 64):
+  comm "swapper/0", pid 1, jiffies 4294937902 (age 1085.740s)
+  hex dump (first 32 bytes):
+    00 0d 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81573dc5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff831b5a6a>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff831b5a6a>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff831b5a6a>] hwsim_add_one+0x14a/0x650 drivers/net/ieee802154/mac802154_hwsim.c:949
+    [<ffffffff831b5fb6>] hwsim_probe+0x46/0xe0 drivers/net/ieee802154/mac802154_hwsim.c:1022
+    [<ffffffff82c14f93>] platform_probe+0x83/0x110 drivers/base/platform.c:1404
+    [<ffffffff82c10fc6>] call_driver_probe drivers/base/dd.c:579 [inline]
+    [<ffffffff82c10fc6>] really_probe+0x126/0x440 drivers/base/dd.c:658
+    [<ffffffff82c113a3>] __driver_probe_device+0xc3/0x190 drivers/base/dd.c:800
+    [<ffffffff82c1149a>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:830
+    [<ffffffff82c117f7>] __driver_attach drivers/base/dd.c:1216 [inline]
+    [<ffffffff82c117f7>] __driver_attach+0x107/0x1f0 drivers/base/dd.c:1156
+    [<ffffffff82c0e2f3>] bus_for_each_dev+0xb3/0x110 drivers/base/bus.c:368
+    [<ffffffff82c0fdf6>] bus_add_driver+0x126/0x2a0 drivers/base/bus.c:673
+    [<ffffffff82c12ee5>] driver_register+0x85/0x180 drivers/base/driver.c:246
+    [<ffffffff8756e3a6>] hwsim_init_module+0xc6/0x110 drivers/net/ieee802154/mac802154_hwsim.c:1073
+    [<ffffffff81001cb6>] do_one_initcall+0x76/0x430 init/main.c:1232
+    [<ffffffff874d76ea>] do_initcall_level init/main.c:1294 [inline]
+    [<ffffffff874d76ea>] do_initcalls init/main.c:1310 [inline]
+    [<ffffffff874d76ea>] do_basic_setup init/main.c:1329 [inline]
+    [<ffffffff874d76ea>] kernel_init_freeable+0x25a/0x460 init/main.c:1547
+    [<ffffffff84b3628b>] kernel_init+0x1b/0x290 init/main.c:1437
+    [<ffffffff81149e35>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
+
+BUG: memory leak
+unreferenced object 0xffff8881007cc000 (size 768):
+  comm "udevd", pid 4480, jiffies 4295045154 (age 13.270s)
+  hex dump (first 32 bytes):
+    01 00 00 00 03 00 00 00 08 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff83e8ff95>] alloc_inode_sb include/linux/fs.h:2909 [inline]
+    [<ffffffff83e8ff95>] sock_alloc_inode+0x25/0x90 net/socket.c:308
+    [<ffffffff816c39d3>] alloc_inode+0x23/0x100 fs/inode.c:259
+    [<ffffffff816c4bf6>] new_inode_pseudo+0x16/0x50 fs/inode.c:1004
+    [<ffffffff83e8f2ab>] sock_alloc+0x1b/0x90 net/socket.c:634
+    [<ffffffff83e8f8cd>] __sock_create+0xbd/0x2e0 net/socket.c:1516
+    [<ffffffff83e92d58>] sock_create net/socket.c:1603 [inline]
+    [<ffffffff83e92d58>] __sys_socket_create net/socket.c:1640 [inline]
+    [<ffffffff83e92d58>] __sys_socket+0xb8/0x1a0 net/socket.c:1691
+    [<ffffffff83e92e5b>] __do_sys_socket net/socket.c:1705 [inline]
+    [<ffffffff83e92e5b>] __se_sys_socket net/socket.c:1703 [inline]
+    [<ffffffff83e92e5b>] __x64_sys_socket+0x1b/0x20 net/socket.c:1703
+    [<ffffffff84b30fc8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84b30fc8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+BUG: memory leak
+unreferenced object 0xffff88810c7019a0 (size 32):
+  comm "udevd", pid 4480, jiffies 4295045154 (age 13.270s)
+  hex dump (first 32 bytes):
+    b8 c1 7c 00 81 88 ff ff 70 3d 34 82 ff ff ff ff  ..|.....p=4.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff823457a2>] kmem_cache_zalloc include/linux/slab.h:710 [inline]
+    [<ffffffff823457a2>] lsm_inode_alloc security/security.c:633 [inline]
+    [<ffffffff823457a2>] security_inode_alloc+0x32/0xd0 security/security.c:1494
+    [<ffffffff816c01ad>] inode_init_always+0x1ed/0x230 fs/inode.c:230
+    [<ffffffff816c39f0>] alloc_inode+0x40/0x100 fs/inode.c:266
+    [<ffffffff816c4bf6>] new_inode_pseudo+0x16/0x50 fs/inode.c:1004
+    [<ffffffff83e8f2ab>] sock_alloc+0x1b/0x90 net/socket.c:634
+    [<ffffffff83e8f8cd>] __sock_create+0xbd/0x2e0 net/socket.c:1516
+    [<ffffffff83e92d58>] sock_create net/socket.c:1603 [inline]
+    [<ffffffff83e92d58>] __sys_socket_create net/socket.c:1640 [inline]
+    [<ffffffff83e92d58>] __sys_socket+0xb8/0x1a0 net/socket.c:1691
+    [<ffffffff83e92e5b>] __do_sys_socket net/socket.c:1705 [inline]
+    [<ffffffff83e92e5b>] __se_sys_socket net/socket.c:1703 [inline]
+    [<ffffffff83e92e5b>] __x64_sys_socket+0x1b/0x20 net/socket.c:1703
+    [<ffffffff84b30fc8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84b30fc8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+[ 
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
