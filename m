@@ -2,108 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2C17AA666
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6377AA66C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjIVBMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 21:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S229603AbjIVBRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjIVBMY (ORCPT
+        with ESMTP id S229497AbjIVBRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 21:12:24 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9DFCC;
-        Thu, 21 Sep 2023 18:12:18 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c00b37ad84so28144111fa.0;
-        Thu, 21 Sep 2023 18:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695345137; x=1695949937; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Rq82wx/J2BnMt9Mh1FLCBxp+NcwkPBk3LgXjrklglE=;
-        b=fNBqvxnKsSSWVewrSz8ANnaRPSA+vYHsGWDqzpjqBx1U34KhT38p8vgh+qVUyDfR3b
-         j0W8Vf8EbBssackNH64pV7Hjl0d+iU8aMe6p1ran1AjApv0Su09SAYLDtF9BJWCdWIpZ
-         6xgoFLPvqaRci4mdEOwWHsqFsKuXNcn9VdcLvOpAsu+GvuC47ty9rblxhtpGPtiRxjU3
-         ZqihiLJ1LjeKIlvC4RNoDbYixAwWVs2a/G85ZGVC8wDapvrsJMK3bIwuqDKoHNpNMChc
-         MLYXi7XJgdnXoQp8c0g90GijfPAqP12MD1/yHnW8qZ2JV9IP3i17TAtsoElm96MRgOf7
-         rR+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695345137; x=1695949937;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+Rq82wx/J2BnMt9Mh1FLCBxp+NcwkPBk3LgXjrklglE=;
-        b=FcdFch78L+OB8wbo39o6hCQ2nru/Ep08DlUAoO7lVcCPRuO3Vob70hlM0432Nsq+wA
-         LqdUEhL9pVuahPZv87r6ttWqfK5AhWrMeFMedU7nh9jIHWaE5GHdEB7p/4feek3vteBB
-         dm9WYP10zoTIAGwhLoZgdCm+52jlsgbXa7vJuwAFByS9T3RELfkj93eUNq2Qc9h+HsdA
-         np+pQWlVVKr4gE+zaztiWDLuOEE7pWma8u18d+xVz7eryquCcYcyd3ZkuO3+FsfOulru
-         s9zL8n2UgtHZBH0KdipYI+1fMI0M02jt3wLCZrIMkM+aOMkgxMH1590RO1Q1d/JJ9hLL
-         +SWg==
-X-Gm-Message-State: AOJu0YylfA5FLnxVRhksmSj5JW+uDTan/Y/9EMMZxflgP0SFdBfGGLKc
-        A8fDjR1SPh9LhOYsdv/RYbTFL9mvQVe8Dw==
-X-Google-Smtp-Source: AGHT+IHcUyeJmxxV2sQ3q19siVjabbSs1LW6kJYyDzbwc1nSxLC9hL0WXQXDMCU3cO/jSZxEAf4CWw==
-X-Received: by 2002:a2e:98cb:0:b0:2c0:2124:7a06 with SMTP id s11-20020a2e98cb000000b002c021247a06mr6138901ljj.45.1695345136772;
-        Thu, 21 Sep 2023 18:12:16 -0700 (PDT)
-Received: from i-vetokaappi.home.lan (dsl-hkibng42-56733b-36.dhcp.inet.fi. [86.115.59.36])
-        by smtp.gmail.com with ESMTPSA id l6-20020a2e7006000000b002b6e77e87fcsm609446ljc.68.2023.09.21.18.12.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 18:12:16 -0700 (PDT)
-From:   =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: qcom: apq8026-samsung-matisse-wifi: Fix inverted hall sensor
-Date:   Fri, 22 Sep 2023 04:12:11 +0300
-Message-Id: <20230922011211.115234-1-matti.lehtimaki@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 21 Sep 2023 21:17:02 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7C6CC;
+        Thu, 21 Sep 2023 18:16:56 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M1EWNL007144;
+        Fri, 22 Sep 2023 01:16:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=9w/IvZDIHWszFH1Ek0ypivr8vKkPAhorWbAZ9pveNCw=;
+ b=Zl+gPP1bJrmAyIy4/jZ/Jw4HYqHOylLpyDbdOObaRRInCisgH40Jhp+R62JtW7Vwj23n
+ Ww0K2m/iXCHiaVzfHeNSK15IiMOBQWzh2IUElkjVp5xqu1wTsu7sVaiXsk6/YnBibziZ
+ Y/SKwVarI991Jvo1iqiaCVq3qPzv82ILTWlJ7I6M9wFHsYHNy1TiaEvtesW364JXLAnM
+ TC8PVU3LOGiHnOxfRHV46Axx1nWuKoiWqolFLbvMvxj+iuVygd9FEvhmKis6odMrHBFu
+ lLWlSsHmiqfaeKAWtC1T50lvbMJlRwuj5kRxkI6quyFlVtx44z5EpY9crErEiAynglnx NQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8txpgnk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 01:16:17 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38M1GFiF013645
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 01:16:16 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 21 Sep
+ 2023 18:16:07 -0700
+Message-ID: <e3391f32-0684-473e-8602-13293bd0f36d@quicinc.com>
+Date:   Fri, 22 Sep 2023 09:16:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/8] arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db
+ node
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <catalin.marinas@arm.com>,
+        <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
+ <20230915021509.25773-7-quic_tengfan@quicinc.com>
+ <kk3xwrq6d7jpkoti2b4lg4hwqfoyqilvf7cp3tuccfmhdj57rf@hicfde4whvzm>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <kk3xwrq6d7jpkoti2b4lg4hwqfoyqilvf7cp3tuccfmhdj57rf@hicfde4whvzm>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pkGtoYlBqaxvEB2KOcQGLRxJAq0e2MYx
+X-Proofpoint-GUID: pkGtoYlBqaxvEB2KOcQGLRxJAq0e2MYx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_01,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ phishscore=0 impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220010
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix hall sensor GPIO polarity and also allow disabling the sensor.
-Remove unneeded interrupt.
 
-Fixes: f15623bda1dc ("ARM: dts: qcom: Add support for Samsung Galaxy Tab 4 10.1 (SM-T530)")
-Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
----
- arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
-index 884d99297d4c..f516e0426bb9 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-matisse-wifi.dts
-@@ -45,11 +45,11 @@ gpio-hall-sensor {
- 
- 		event-hall-sensor {
- 			label = "Hall Effect Sensor";
--			gpios = <&tlmm 110 GPIO_ACTIVE_HIGH>;
--			interrupts = <&tlmm 110 IRQ_TYPE_EDGE_FALLING>;
-+			gpios = <&tlmm 110 GPIO_ACTIVE_LOW>;
- 			linux,input-type = <EV_SW>;
- 			linux,code = <SW_LID>;
- 			debounce-interval = <15>;
-+			linux,can-disable;
- 			wakeup-source;
- 		};
- 	};
+在 9/20/2023 11:49 AM, Bjorn Andersson 写道:
+> On Fri, Sep 15, 2023 at 10:15:06AM +0800, Tengfei Fan wrote:
+>> From: Ajit Pandey <quic_ajipan@quicinc.com>
+>>
+>> Add apps_rsc node and cmd_db memory region for sm4450.
+>>
+>> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sm4450.dtsi | 34 ++++++++++++++++++++++++++++
+>>   1 file changed, 34 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi b/arch/arm64/boot/dts/qcom/sm4450.dtsi
+>> index c4e5b33f5169..0d1d39197d77 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
+>> @@ -5,6 +5,7 @@
+>>   
+>>   #include <dt-bindings/gpio/gpio.h>
+>>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +#include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>>   
+>>   / {
+>>   	interrupt-parent = <&intc>;
+>> @@ -328,6 +329,18 @@
+>>   		};
+>>   	};
+>>   
+>> +	reserved_memory: reserved-memory {
+>> +		#address-cells = <2>;
+>> +		#size-cells = <2>;
+>> +		ranges;
+>> +
+>> +		aop_cmd_db_mem: cmd-db@80860000 {
+>> +			compatible = "qcom,cmd-db";
+>> +			reg = <0x0 0x80860000 0x0 0x20000>;
+>> +			no-map;
+>> +		};
+>> +	};
+>> +
+>>   	soc: soc@0 {
+>>   		#address-cells = <2>;
+>>   		#size-cells = <2>;
+>> @@ -335,6 +348,27 @@
+>>   		dma-ranges = <0 0 0 0 0x10 0>;
+>>   		compatible = "simple-bus";
+>>   
+>> +		apps_rsc: rsc@17a00000 {
+>> +			compatible = "qcom,rpmh-rsc";
+>> +			reg = <0 0x17a00000 0 0x10000>,
+> 
+> As your later patch shows, and Krzysztof pointed out, the sort order is
+> wrong here (sort nodes under /soc by address).
+I will ajdust this sort order.
+> 
+>> +			      <0 0x17a10000 0 0x10000>,
+>> +			      <0 0x17a20000 0 0x10000>;
+>> +			reg-names = "drv-0", "drv-1", "drv-2";
+>> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+>> +			label = "apps_rsc";
+>> +			qcom,tcs-offset = <0xd00>;
+>> +			qcom,drv-id = <2>;
+>> +			qcom,tcs-config = <ACTIVE_TCS    2>, <SLEEP_TCS     3>,
+>> +					  <WAKE_TCS      3>, <CONTROL_TCS   0>;
+> 
+> Please confirm that you indeed want 0 CONTROL_TCSs.
+> 
+> Thanks,
+> Bjorn
+Hi Bjorn,
+yes, I confirmed this from internal power team, CONTROL_TCS with 0 is ok.
+> 
+>> +			power-domains = <&CLUSTER_PD>;
+>> +
+>> +			apps_bcm_voter: bcm-voter {
+>> +				compatible = "qcom,bcm-voter";
+>> +			};
+>> +		};
+>> +
+>>   		tcsr_mutex: hwlock@1f40000 {
+>>   			compatible = "qcom,tcsr-mutex";
+>>   			reg = <0x0 0x01f40000 0x0 0x40000>;
+>> -- 
+>> 2.17.1
+>>
+
 -- 
-2.39.2
-
+Thx and BRs,
+Tengfei Fan
