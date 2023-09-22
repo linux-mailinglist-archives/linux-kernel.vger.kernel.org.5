@@ -2,164 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F837AB3F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B74B7AB3FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 16:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjIVOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 10:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S231566AbjIVOna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 10:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjIVOmv (ORCPT
+        with ESMTP id S231547AbjIVOn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 10:42:51 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395B61AD;
-        Fri, 22 Sep 2023 07:42:45 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57359e85e9bso1098881eaf.2;
-        Fri, 22 Sep 2023 07:42:45 -0700 (PDT)
+        Fri, 22 Sep 2023 10:43:27 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E2B19C
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:43:21 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-4142ca41b89so14308641cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 07:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695393764; x=1695998564; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6nqMzhPbNr8RLZEXVHoQWk3F1U8K2ekWVPTnLuWZ6u0=;
-        b=GXxiQ8tD86aENwV4iVOaGzeMO5LpjcJJginTUnH3gGJKd+bKMFuszBHwgflpzEQomW
-         +mJn5a8t6IZb0uNXowf6lPh6R+t5cYv9gVu6j7dEKd1s7iTL3QLcllTwxJxMvN7EueFa
-         BH1NqbBb1O0ghFWPjQaNa1HNxT5tr2lWr0ri/eX4c6ah2c35ayUmf2EbGZO5fE9uyWQK
-         FJZw5/3ia4ttkOUrpYBpYWAewQoCFWTH+zwSdzlVjfqe8D7yz8I8+AZ7W/xLb5V3i4oA
-         0kGUmFj/bnxXSS9oEpfwI1PahVPG6RzowhE/NqBsAr9igYNWQtc6icUNB/BqfowD+wKY
-         c7uA==
+        d=soleen.com; s=google; t=1695393800; x=1695998600; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q9o0eyPrPED08Whg4Z5ZxhQWffqyfOzmMnSHg2K2zdA=;
+        b=UpAwaXJT3I6vbqIg2skPxeCDHNTg0PmzslN/9+KecqqnVGXaWVja/gGBo3WYPuufp6
+         Q8ov6v/MgRAFoaH+6VwQtbT06snzR2mOfWiCFNyE/qfoUXxOg84CCJc+HSgA3h69RtIr
+         AvuGgvSGCaQXvhf6qLt+WsoeA7we2plSkAJrXY6XPs8KCrn+iFpkkv0P7MhoPLYO8XaB
+         c2cv6SZvphukvL4Bh+jX0AdQl9HAT7dO+/oPSsRewZMIHK+vIbluVMVEDgnbjSi5DW2Q
+         Gv79cAZO91p9hQHOzDqRTeWXSqrZy7VPQpAv8XqThmtjTCxe7Bl1G/zqZYt1d6lEUV3T
+         iJzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695393764; x=1695998564;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6nqMzhPbNr8RLZEXVHoQWk3F1U8K2ekWVPTnLuWZ6u0=;
-        b=oBgyJqxRNVlRdC3l2sHZFd06kLGICTgf0FTSKLLECLFCpBfMyfks6YVCDbMOMT3bvX
-         m7cwa7yIR/njZ3jXLdl0ZDda5zb2P4DZuaEpMNNkhRgwNCdoXZoxqd7gJ87wg7g6KOXc
-         qjMZ3XUha8EUCr2n8UcBYstAciWw+A/gMyZqn9h0T5r8feBA7DaDjae0pkpxU/SCLo26
-         FqMMo+amSPWNqpRy+EYaoZyOP9ZCvZy86W5+nMIuxHjRXoKEbsvWMZZllaWjmtnfGDvS
-         nToqSMaxOMbWpSmzJAmEYkp7c5aG9NJ843VyoGHqvAZqNW8mqUBPVorJgfZTTP0xdllG
-         2hMQ==
-X-Gm-Message-State: AOJu0YwOB9KC2ot19p8ySEUUqCBqFfiwf7e/JgdZrIbkRD34K/GyqY38
-        CG7Jkm/QTRbWxJFSrNh6AlI=
-X-Google-Smtp-Source: AGHT+IErb4fP6iB04EKS9z5eo37yfXxKUQp6mTQIYz2oHpTlfaLWzbmrcgutHVeqXMhtd7KrJvHIwA==
-X-Received: by 2002:a05:6870:4395:b0:1d1:425b:8026 with SMTP id r21-20020a056870439500b001d1425b8026mr9267161oah.26.1695393764236;
-        Fri, 22 Sep 2023 07:42:44 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b28-20020a63715c000000b00578b40a4903sm573936pgn.22.2023.09.22.07.42.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Sep 2023 07:42:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <ceea0b12-9165-a9f6-cbd1-b25c07c75efb@roeck-us.net>
-Date:   Fri, 22 Sep 2023 07:42:42 -0700
+        d=1e100.net; s=20230601; t=1695393800; x=1695998600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q9o0eyPrPED08Whg4Z5ZxhQWffqyfOzmMnSHg2K2zdA=;
+        b=hL5dJluSK/1izOB0s978HMAGrna9qtZJE0n0oQBFFInhQMHCXgyL7GRWiVvILzhqoI
+         IA7Q8xUd5PjQJJNhNIpZaYWnUVkflv0anrWfJOY5AwUIKDzEmn8o1z8Z6fIn0Ue4zD0c
+         xFpdw5123vj1zJL4GMVRZB2x+wURZKel4FBgvCx79Fjp38HXtEkE4gJ6LNc/ePvbqyie
+         bfnSgASkI95ZfRexWulNkKV7CZjWKwLe7a6Qkh4cBDArEQO25nsQtA2MulSZEPPFjFEw
+         qR3GLVHTdX1gN0Z8rpxIyWOFuZho7jSUJQRL5r5ZzOUWpfkMz4vodwaMrEpLXgxfKKsw
+         5prw==
+X-Gm-Message-State: AOJu0YyphLPjG+5aWKLOCGusnB5Ru25f35W9jPkr5ZwPwnWiWEymwC/p
+        H1D2YJGntftWk5dWTDGsgyPTU+jFadkUXQ7iUd4hpg==
+X-Google-Smtp-Source: AGHT+IEj51Pc90r3QxMhk9K9tsL2rFrHblPnj7OXP5XQsNQ+DtOoZ8Qs/4DE3nnUfLiohjWib5sRDYhb1JtZkQYm084=
+X-Received: by 2002:ac8:5a16:0:b0:40f:ef6d:1a31 with SMTP id
+ n22-20020ac85a16000000b0040fef6d1a31mr10433299qta.13.1695393800409; Fri, 22
+ Sep 2023 07:43:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>,
-        Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230915062926.2460502-1-Delphine_CC_Chiu@wiwynn.com>
- <20230915062926.2460502-3-Delphine_CC_Chiu@wiwynn.com>
- <20230915-quench-left-8fbc1ca3b1da@spud>
- <CAL_JsqKWRfT71k56uMUJtU_abzFuicW01OBo-iScYash4Jrd2w@mail.gmail.com>
- <TYZPR04MB58530C4CB0386DF02D29E216D6FFA@TYZPR04MB5853.apcprd04.prod.outlook.com>
- <20230922-washday-primer-af8dcf1cde7d@spud>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: add MAX31790
-In-Reply-To: <20230922-washday-primer-af8dcf1cde7d@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230906112605.2286994-1-usama.arif@bytedance.com>
+In-Reply-To: <20230906112605.2286994-1-usama.arif@bytedance.com>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 22 Sep 2023 10:42:44 -0400
+Message-ID: <CA+CK2bAfV=tpv_DK1621pU26Gy09zR+4E=AzR76Y9=zNYUc8SA@mail.gmail.com>
+Subject: Re: [v4 0/4] mm: hugetlb: Skip initialization of gigantic tail struct
+ pages if freed by HVO
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        rppt@kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com, fam.zheng@bytedance.com,
+        liangma@liangbit.com, punit.agrawal@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/23 02:53, Conor Dooley wrote:
-> On Fri, Sep 22, 2023 at 02:33:06AM +0000, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
->>>> On Fri, Sep 15, 2023 at 02:29:24PM +0800, Delphine CC Chiu wrote:
-> 
->>>>> +  pwm-as-tach:
->>>>
->>>> I don't see any other users of this in-tree, so you'd need a vendor
->>>> prefix. That said, I'm once bitten, twice shy about fan related
->>>> properties in hwmon, so I would definitely like Rob to comment on this
->>>> whole binding.
->>>
->>> Please see this[1] and comment on it to ensure it meets your needs.
->>> Otherwise, omit any fan related properties for now.
->>>
->> This property could only be used in max31790 driver. Would it be ok if we add
->> vendor prefix like "maxim, pwm-as-tach"?
-> 
-> I think the answer to this is a pretty straightforward no. The goal is
-> to create a set of common fan properties that works for multiple
-> usecases, not create one specifically for each user...
-> 
+On Wed, Sep 6, 2023 at 7:26=E2=80=AFAM Usama Arif <usama.arif@bytedance.com=
+> wrote:
+>
+> This series moves the boot time initialization of tail struct pages of a
+> gigantic page to later on in the boot. Only the
+> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct pages
+> are initialized at the start. If HVO is successful, then no more tail str=
+uct
+> pages need to be initialized. For a 1G hugepage, this series avoid
+> initialization of 262144 - 63 =3D 262081 struct pages per hugepage.
+>
+> When tested on a 512G system (which can allocate max 500 1G hugepages), t=
+he
+> kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without th=
+is
+> patchseries to running init is 3.9 seconds. With this patch it is 1.2 sec=
+onds.
+> This represents an approximately 70% reduction in boot time and will
+> significantly reduce server downtime when using a large number of
+> gigantic pages.
 
-Another chip with configurable channel configuration is nct7802, where
-individual channels can be configured as temperature or voltage sensor.
-We are using sensor-type to select the mode in that driver. Maybe something
-similar would make sense / be acceptable here.
+My use case is different, but this patch series benefits it. I have a
+virtual machines with a large number of hugetlb pages. The RSS size of
+the VM after boot is much smaller with this series:
 
->>>> +examples:
->>>> +  - |
->>>> +    i2c {
->>>> +      #address-cells = <1>;
->>>> +      #size-cells = <0>;
->>>> +
->>>> +      pwm@20 {
->>>> +        compatible = "maxim,max31790";
->>>> +        reg = <0x20>;
->>>> +        pwm-as-tach = <2 5>;
->>>
->>> This would be <2>, <5>; no?
->>>
->> I refer to the other binding documents in hwmon and most of them were using
->> the format like <2 5> as an array.
-> 
-> Which also makes this moot, since it'll be going away.
-> 
->>>> diff --git a/MAINTAINERS b/MAINTAINERS index
->>>> c8fdd0d03907..97e13b6bf51d 100644
->>>> --- a/MAINTAINERS
->>>> +++ b/MAINTAINERS
->>>> @@ -1371,6 +1371,12 @@ F:
->>>        Documentation/devicetree/bindings/hwmon/adi,max31760.yaml
->>>>   F: Documentation/hwmon/max31760.rst
->>>>   F: drivers/hwmon/max31760.c
->>>>
->>>> +ANALOG DEVICES INC MAX31790 DRIVER
->>>> +M: Delphine CC Chiu  <Delphine_CC_Chiu@wiwynn.com>
->>>> +S: Odd Fixes
->>>
->>> This is a pretty odd status for something you're newly adding.
->>> How come it's not going to be maintained?
->>>
->> We are not the authors of this driver but we want to add a feature to
->> config PWM as TACH that was descripted in the datasheet of MAX31790.
->> Should we set the status to maintained?
-> 
-> It's really up to you. I just found it curious & wanted to ask why it
-> was that way.
-> 
+Before: 9G
+After: 600M
 
-It is misleading because it downgrades the driver from "supported"
-(like all other hwmon drivers) to "odd fixes".
+The VM has 500 1G pages, and 512G total RAM. I would add this to the
+description, that this series can help reduce the VM overhead and boot
+performance for those who are using hugetlb pages in the VMs.
 
-Guenter
+Also, DEFERRED_STRUCT_PAGE_INIT is a requirement for this series to
+work, and should be added into documentation.
 
+Pasha
+
+> Thanks,
+> Usama
+>
+> [v3->v4]:
+> - rebase ontop of patch "hugetlb: set hugetlb page flag before optimizing=
+ vmemmap".
+> - freeze head struct page ref count.
+> - Change order of operations to initialize head struct page -> initialize
+> the necessary tail struct pages -> attempt HVO -> initialize the rest of =
+the
+> tail struct pages if HVO fails.
+> - (Mike Rapoport and Muchun Song) remove "_vmemmap" suffix from memblock =
+reserve
+> noinit flags anf functions.
+>
+> [v2->v3]:
+> - (Muchun Song) skip prep of struct pages backing gigantic hugepages
+> at boot time only.
+> - (Muchun Song) move initialization of tail struct pages to after
+> HVO is attempted.
+>
+> [v1->v2]:
+> - (Mike Rapoport) Code quality improvements (function names, arguments,
+> comments).
+>
+> [RFC->v1]:
+> - (Mike Rapoport) Change from passing hugepage_size in
+> memblock_alloc_try_nid_raw for skipping struct page initialization to
+> using MEMBLOCK_RSRV_NOINIT flag
+>
+> Usama Arif (4):
+>   mm: hugetlb_vmemmap: Use nid of the head page to reallocate it
+>   memblock: pass memblock_type to memblock_setclr_flag
+>   memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+>   mm: hugetlb: Skip initialization of gigantic tail struct pages if
+>     freed by HVO
+>
+>  include/linux/memblock.h |  9 ++++++
+>  mm/hugetlb.c             | 61 ++++++++++++++++++++++++++++++++++------
+>  mm/hugetlb_vmemmap.c     |  4 +--
+>  mm/hugetlb_vmemmap.h     |  9 +++---
+>  mm/internal.h            |  3 ++
+>  mm/memblock.c            | 48 ++++++++++++++++++++++---------
+>  mm/mm_init.c             |  2 +-
+>  7 files changed, 107 insertions(+), 29 deletions(-)
+>
+> --
+> 2.25.1
+>
+>
