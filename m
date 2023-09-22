@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 277FC7AA7EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA307AA7F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 06:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbjIVEmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 00:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S229924AbjIVEv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 00:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbjIVEmw (ORCPT
+        with ESMTP id S229590AbjIVEvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 00:42:52 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179D0CA
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:42:46 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59e78032ef9so24902407b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695357765; x=1695962565; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOSxLadMmyxPzCAuHUscDwKckaObJr5AodXorCq6Mh8=;
-        b=fTNUn8rto1MZyCpzbK1R5MD6M4l7IOz2ZCvBccHLtaN4tULJ/SAnPNpnEYMEhWgsvR
-         zlB7DtYhn0ZlCX+FTMWImCzlzFM/t5zyABbR7636Cihv7+KMWrTwiBCAdw7gPkvN+KMp
-         WcC+/bFwGi79VNZ9MQPyF+wtaIdLQ8JWqzt47GQH1EM3HOtCfLT+sAJxf2geflXVa3bg
-         4msDCVKTG2ZMsh7fPU/gbDVkTxTA6e0EXGklaFl07caIyVrSjjtAZ49ml1idWTSNWXiP
-         7eJ0HhBx+MvLgI56naWuVwI04dPzZhtbgGyTpj9x7DZ+wwzuDJwltKim6E/mjOGlxTV1
-         WlKA==
+        Fri, 22 Sep 2023 00:51:53 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115EC194
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:51:46 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3ade9e00118so2478727b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 21:51:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695357765; x=1695962565;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOSxLadMmyxPzCAuHUscDwKckaObJr5AodXorCq6Mh8=;
-        b=jgzGu6UGAuzbTKDSBjhjNi95uXu4gYpZwvfGNR4RNVHYSbuwWkiwtw7xOM6cL45haU
-         ZXnrX3f1q2MRgQ3kE4JZWAtXc6CqkZ3qtTDea6JzUBv0/IkvJEE5F6u2qqjkoM2qmYKE
-         +QuDROfWfWidjJO92bBoRs7S2ilywrxo9oPklCLGsKMqL5Dgx8xpo1mlpAfdulpbrl+L
-         EbIZd2858Yl4t/x406hGk0RG2OibHZu17te3lT+qJZYN0KOgACHO4ksKgib9MVVpBMxb
-         shPJkX2CWn4ViDsklNB7Md7zG1fjt1bfPlkNpsdLw4dS/UfqYjQLzgwQ1ARp0DmLNZK+
-         GRBQ==
-X-Gm-Message-State: AOJu0YzUywkWrEIOZUYOKzS/leJ0iGAeZa6cMVkErxstQgMQ5nzd5T63
-        PGoYL30BHTRM8n7gop/HBTdSU5M7BeK+9Q==
-X-Google-Smtp-Source: AGHT+IGFkPNBuQkD4DINS/cFH5kDu7DzVRnFZDZ/Xi6NfhQQYigH8yAxegiiIIH5LJR6g8b6w63HsC3BlUywOg==
-X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a81:d203:0:b0:59b:d33b:5ddc with SMTP id
- x3-20020a81d203000000b0059bd33b5ddcmr112799ywi.4.1695357765078; Thu, 21 Sep
- 2023 21:42:45 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 04:42:40 +0000
-In-Reply-To: <000000000000aa181605ededf1fa@google.com>
-Mime-Version: 1.0
-References: <000000000000aa181605ededf1fa@google.com>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922044241.322832-1-cmllamas@google.com>
-Subject: [PATCH] binder: fix memory leak of spamming work
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hang Lu <hangl@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org,
-        syzbot+7f10c1653e35933c0f1e@syzkaller.appspotmail.com,
-        Todd Kjos <tkjos@google.com>
+        d=1e100.net; s=20230601; t=1695358305; x=1695963105;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=soFbprgcrBvp6iSkOZ0K+CA6AdLh6QbW+/lp9BNjVAo=;
+        b=Jh3PMtxkvRTYYtBOLfzNLrAIZvesWqT/gLevWN6MVBV+9nRi+2drbAojm8LQzgD42j
+         4h3Ny97cEg0eRVk5WD/7FRhcZIoseX4CElWzy6PwtHyYqIzeirbx0jZAZogIvo0PFCvA
+         AP7SfMnh6Fetdb+daWo0TNk5+ruz7qAOHrHHbLq2P8WjmRnKCs8FoB3ob0/UL97womBs
+         +Nu2LnEZguGm8u3EDgJ5hg8BFNC+p1lTlDcitNreXxy7iOaFlaC/4mNa9apfZSlPN6+6
+         leUqv7Ve67F16jZnJXKAKqcF3jvZqMe9t9LB7UIDP+H4vjMfe2NnFjO+sqHxWg5gCc8L
+         WNIw==
+X-Gm-Message-State: AOJu0Yz55HTa657Vwce43aS9dxoQ451hDsd+yg67OXe+mx5te+wiw4xX
+        iBLJ6s0EnO5kStIGhtOtDu3mG2H9ySJdCF+IX5OmGZjmv+QH
+X-Google-Smtp-Source: AGHT+IEKseYWmn4Z0Npyyco87WBo3cXXZuePCIN+JQtv+9i91m1I3biA30GH/2jRUH1Pay2PYrsZP1dBywrvsEw2QzvHOb5fAZbF
+MIME-Version: 1.0
+X-Received: by 2002:a05:6808:1a20:b0:3ad:adea:3f11 with SMTP id
+ bk32-20020a0568081a2000b003adadea3f11mr4055679oib.11.1695358305488; Thu, 21
+ Sep 2023 21:51:45 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 21:51:45 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000090d6a00605eb5de9@google.com>
+Subject: [syzbot] [mm?] linux-next test error: WARNING in page_add_anon_rmap
+From:   syzbot <syzbot+6ccbcd15a17f3e1cde38@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A transaction complete work is allocated and queued for each
-transaction. Under certain conditions the work->type might be marked as
-BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT to notify userspace about
-potential spamming threads.
+Hello,
 
-However, this work->type is not being handled in binder_release_work()
-so it will leak during a clean up. This was reported by syzkaller with
-the following kmemleak dump:
+syzbot found the following issue on:
 
-BUG: memory leak
-unreferenced object 0xffff88810e2d6de0 (size 32):
-  comm "syz-executor338", pid 5046, jiffies 4294968230 (age 13.590s)
-  hex dump (first 32 bytes):
-    e0 6d 2d 0e 81 88 ff ff e0 6d 2d 0e 81 88 ff ff  .m-......m-.....
-    04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81573b75>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
-    [<ffffffff83d41873>] kmalloc include/linux/slab.h:599 [inline]
-    [<ffffffff83d41873>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83d41873>] binder_transaction+0x573/0x4050 drivers/android/binder.c:3152
-    [<ffffffff83d45a05>] binder_thread_write+0x6b5/0x1860 drivers/android/binder.c:4010
-    [<ffffffff83d486dc>] binder_ioctl_write_read drivers/android/binder.c:5066 [inline]
-    [<ffffffff83d486dc>] binder_ioctl+0x1b2c/0x3cf0 drivers/android/binder.c:5352
-    [<ffffffff816b25f2>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff816b25f2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
-    [<ffffffff816b25f2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b25f2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+HEAD commit:    7fc7222d9680 Add linux-next specific files for 20230918
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13acae54680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79253779bcbe3130
+dashboard link: https://syzkaller.appspot.com/bug?extid=6ccbcd15a17f3e1cde38
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-Fix the leak by kfreeing this work in binder_release_work().
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/82da18e596ba/disk-7fc7222d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4e71084ae5e0/vmlinux-7fc7222d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f412e76b12e4/bzImage-7fc7222d.xz
 
-Cc: stable@vger.kernel.org
-Fixes: a7dc1e6f99df ("binder: tell userspace to dump current backtrace when detected oneway spamming")
-Reported-by: syzbot+7f10c1653e35933c0f1e@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=7f10c1653e35933c0f1e
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6ccbcd15a17f3e1cde38@syzkaller.appspotmail.com
+
+ destroy_args+0x768/0x990 mm/debug_vm_pgtable.c:1028
+ debug_vm_pgtable+0x1d79/0x3df0 mm/debug_vm_pgtable.c:1408
+ do_one_initcall+0x11c/0x640 init/main.c:1232
+ do_initcall_level init/main.c:1294 [inline]
+ do_initcalls init/main.c:1310 [inline]
+ do_basic_setup init/main.c:1329 [inline]
+ kernel_init_freeable+0x5c2/0x8f0 init/main.c:1547
+ kernel_init+0x1c/0x2a0 init/main.c:1437
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5053 at mm/rmap.c:1252 page_add_anon_rmap+0xc33/0x1a70 mm/rmap.c:1252
+Modules linked in:
+CPU: 0 PID: 5053 Comm: syz-fuzzer Not tainted 6.6.0-rc2-next-20230918-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:page_add_anon_rmap+0xc33/0x1a70 mm/rmap.c:1252
+Code: 48 c1 eb 11 83 e3 01 89 de e8 99 aa b8 ff 84 db 0f 84 36 fb ff ff e8 5c af b8 ff 48 c7 c6 40 89 99 8a 4c 89 e7 e8 dd 02 f7 ff <0f> 0b e9 1b fb ff ff e8 41 af b8 ff 49 89 dd 31 ff 41 81 e5 ff 0f
+RSP: 0018:ffffc900039af6b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801aad3b80 RSI: ffffffff81cf4673 RDI: ffffffff8ae94460
+RBP: ffff88801d45a400 R08: 0000000000000000 R09: fffffbfff1d9d0aa
+R10: ffffffff8ece8557 R11: 0000000000000001 R12: ffffea00019e0000
+R13: 00fff800000a0078 R14: 0000000000000000 R15: ffffea0001a9b988
+FS:  000000c000bec490(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c00148d000 CR3: 00000000744da000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __split_huge_pmd_locked mm/huge_memory.c:2276 [inline]
+ __split_huge_pmd+0x17d5/0x31e0 mm/huge_memory.c:2320
+ zap_pmd_range mm/memory.c:1550 [inline]
+ zap_pud_range mm/memory.c:1600 [inline]
+ zap_p4d_range mm/memory.c:1621 [inline]
+ unmap_page_range+0xf13/0x2c00 mm/memory.c:1642
+ unmap_single_vma+0x194/0x2b0 mm/memory.c:1688
+ zap_page_range_single+0x324/0x4e0 mm/memory.c:1764
+ madvise_dontneed_single_vma mm/madvise.c:822 [inline]
+ madvise_dontneed_free mm/madvise.c:903 [inline]
+ madvise_vma_behavior+0xbb0/0x1d00 mm/madvise.c:1042
+ madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1267
+ do_madvise+0x333/0x660 mm/madvise.c:1447
+ __do_sys_madvise mm/madvise.c:1460 [inline]
+ __se_sys_madvise mm/madvise.c:1458 [inline]
+ __x64_sys_madvise+0xaa/0x110 mm/madvise.c:1458
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x46b677
+Code: 8b 24 24 48 8b 6c 24 10 48 83 c4 18 c3 cc cc cc cc cc cc 48 8b 7c 24 08 48 8b 74 24 10 8b 54 24 18 48 c7 c0 1c 00 00 00 0f 05 <89> 44 24 20 c3 cc cc cc cc 48 8b 7c 24 08 8b 74 24 10 8b 54 24 14
+RSP: 002b:000000c000065d70 EFLAGS: 00000202 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 000000000016e000 RCX: 000000000046b677
+RDX: 0000000000000004 RSI: 000000000016e000 RDI: 000000c001692000
+RBP: 000000c000065db0 R08: 0000000000200000 R09: 000080c0017fffff
+R10: 0000000001134fa0 R11: 0000000000000202 R12: 0000000001134f20
+R13: 0000000000000003 R14: 000000c000007ba0 R15: 0000000001134f60
+ </TASK>
+
+
 ---
- drivers/android/binder.c | 3 +++
- 1 file changed, 3 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 367afac5f1bf..d7aa561f4ef2 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -4831,6 +4831,9 @@ static void binder_release_work(struct binder_proc *proc,
- 		} break;
- 		case BINDER_WORK_NODE:
- 			break;
-+		case BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT:
-+			kfree(w);
-+			break;
- 		default:
- 			pr_err("unexpected work type, %d, not freed\n",
- 			       wtype);
--- 
-2.42.0.515.g380fc7ccd1-goog
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
