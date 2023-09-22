@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7BC7AACEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E347AACF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbjIVImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        id S232733AbjIVInp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232624AbjIVImS (ORCPT
+        with ESMTP id S231814AbjIVInn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:42:18 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55225FB;
-        Fri, 22 Sep 2023 01:42:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vscql3G_1695372126;
-Received: from 30.221.128.225(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vscql3G_1695372126)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Sep 2023 16:42:07 +0800
-Message-ID: <b7684046-39eb-f0a1-a1ff-12580d8db42e@linux.alibaba.com>
-Date:   Fri, 22 Sep 2023 16:42:05 +0800
+        Fri, 22 Sep 2023 04:43:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5826D99;
+        Fri, 22 Sep 2023 01:43:37 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38M3qLeJ030587;
+        Fri, 22 Sep 2023 08:43:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=LoC6PTKmgMdLULhc3/Q520gaCqFqCt7TKdwZ++zzZgA=;
+ b=btHO8ZgtJVtwfpb6fF8qcUN1EbzRK9CoqaT9zIhnn/QqpemTZFwfd9aYx9SLJhlNzzTa
+ drsIy4ekcs1Dr4wgRXtWQYvGuxt7+6ewKpBJqzDx1djualZ0uo6b/kKwqNKEGLz6D2Vi
+ Rf8Q/W4CpPgAJwu0AJieslf5XQQpZopNjMYDaW2OtoezmpqPomgaF14dScyrARw87JW0
+ hltuTQAedwm5rN+FUunJ1cqyfAQqGqAEqXOMzc8Xp4+X3CLYYBazrkWZhqdstNHUXImZ
+ 52g8Dh3sXsW+1sbRhHdbUYOxeR351unUu8FJLL9Ji+Eo1lOkSmKdpjVMsoYCRU/R2EyO 2Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t8txg9dkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 08:43:23 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38M8hNnA007601
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Sep 2023 08:43:23 GMT
+Received: from hu-gokulsri-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 22 Sep 2023 01:43:18 -0700
+From:   Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
+        <quic_gokulsri@quicinc.com>
+Subject: [PATCH v2 0/3] Add APSS clock driver support for IPQ5018
+Date:   Fri, 22 Sep 2023 14:13:00 +0530
+Message-ID: <20230922084303.4164046-1-quic_gokulsri@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH net-next v3 05/18] net/smc: reserve CHID range for SMC-D
- virtual device
-To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1695302360-46691-1-git-send-email-guwen@linux.alibaba.com>
- <1695302360-46691-6-git-send-email-guwen@linux.alibaba.com>
- <0a150c58-5fdc-5e8d-1ea6-861406f2c70a@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <0a150c58-5fdc-5e8d-1ea6-861406f2c70a@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pdN9XAlvq1GDkQaOYeaeNhdRGeEraifJ
+X-Proofpoint-GUID: pdN9XAlvq1GDkQaOYeaeNhdRGeEraifJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_06,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=647 mlxscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309220071
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for the APSS clock to bump the CPU frequency
+above 800MHz. APSS PLL found in the IPQ5018 is of type Stromer. 
 
+- The first patch in the series adds the required a53pll compatible.
 
-On 2023/9/22 07:32, Wenjia Zhang wrote:
-> 
-> 
-> On 21.09.23 15:19, Wen Gu wrote:
->> This patch reserve CHID range from 0xFF00 to 0xFFFF for SMC-D virtual
->> device and introduces helpers to identify them.
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
->>   net/smc/smc_ism.h | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
->> diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
->> index 14d2e77..2ecc8de 100644
->> --- a/net/smc/smc_ism.h
->> +++ b/net/smc/smc_ism.h
->> @@ -15,6 +15,9 @@
->>   #include "smc.h"
->> +#define SMC_VIRT_ISM_CHID_MAX        0xFFFF
->> +#define SMC_VIRT_ISM_CHID_MIN        0xFF00
->> +
->>   struct smcd_dev_list {    /* List of SMCD devices */
->>       struct list_head list;
->>       struct mutex mutex;    /* Protects list of devices */
->> @@ -57,4 +60,16 @@ static inline int smc_ism_write(struct smcd_dev *smcd, u64 dmb_tok,
->>       return rc < 0 ? rc : 0;
->>   }
->> +static inline bool __smc_ism_is_virtdev(u16 chid)
->> +{
->> +    return (chid >= SMC_VIRT_ISM_CHID_MIN && chid <= SMC_VIRT_ISM_CHID_MAX);
->> +}
->> +
->> +static inline bool smc_ism_is_virtdev(struct smcd_dev *smcd)
->> +{
->> +    u16 chid = smcd->ops->get_chid(smcd);
->> +
->> +    return __smc_ism_is_virtdev(chid);
->> +}
->> +
-> I'm wondering if barrier is needed here.
+- The second patch reuses Stormer Plus PLL offsets, adds configuration values
+  for Stromer.
 
-I think this helper doesn't involve memory race or multi-threaded/multi-processor
-cases that needs enforcing ordering and synchronization of memory operations.
+- The third patch adds dts nodes to enable the pll along with the cpu
+  operating frequency table.
 
-So IMHO barrier is no very necessary here.
+This series depends on below series
+https://patchwork.kernel.org/project/linux-arm-msm/cover/20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com/
 
-Thank you.
+Changes in v2:
+- Addressed review comments
+- Adds dependency on above mentioned patch series for dropping
+  CLK_SET_RATE_PARENT flag from GPLL clocks, GPLL0 clock provider for
+  mailbox
+- Add CPU operating point at 800MHz based on the review comments.
 
->>   #endif
+Gokul Sriram Palanisamy (3):
+  dt-bindings: clock: qcom,a53pll: add IPQ5018 compatible
+  clk: qcom: apss-ipq-pll: add support for IPQ5018
+  arm64: dts: qcom: ipq5018: enable the CPUFreq support
+
+ .../bindings/clock/qcom,a53pll.yaml           |  1 +
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi         | 40 +++++++++++++++++++
+ drivers/clk/qcom/apss-ipq-pll.c               | 21 ++++++++++
+ 3 files changed, 62 insertions(+)
+
+-- 
+2.34.1
+
