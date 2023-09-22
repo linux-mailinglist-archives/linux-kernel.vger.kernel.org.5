@@ -2,212 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081C97AA8E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167477AA8E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 08:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbjIVGQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 02:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S231280AbjIVGTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 02:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjIVGQE (ORCPT
+        with ESMTP id S231159AbjIVGTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 02:16:04 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37829194
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 23:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=k1; bh=PBIK72HHguYgSAXkX++54+0ynqVyWWRjkT4uhKM7s/E=; b=VDcXh6
-        W7SwgMZtqAVpDOSRcAXl98l56PCM1Q0vXofo9juxeqleGK/Otw6KD7GwJP66WsAb
-        qghVDa1QbHqVmWA5fYBmY1G818UYQLnkk3eNqJcHmZIdHhQjtBadadZjObz2+UtN
-        Qv0PbMBkB8i/j2fJS0BeohX3E79Gm516/yEt/WZ9p5Mb1MBzWpLWh0RLf6L0DILQ
-        +WrrrmfSvMFqp3hgtT++Xc4HYkOC5/SJStwr4JGOD9v9E7G0/mqyZN+qiFPNhvDW
-        p6b9ki/QqfSpaNK6Fq3uxiwcBpr7vfYzQq4xp/LMw6GBPQKVPO9iOtfiFVkINqZ4
-        nmT8eA1gzOcM/dEA==
-Received: (qmail 1269224 invoked from network); 22 Sep 2023 08:15:45 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 08:15:45 +0200
-X-UD-Smtp-Session: l3s3148p1@U0v5iewFHoYujntX
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] MIPS: AR7: remove platform
-Date:   Fri, 22 Sep 2023 08:15:27 +0200
-Message-Id: <20230922061530.3121-7-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
-References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+        Fri, 22 Sep 2023 02:19:47 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5266A83;
+        Thu, 21 Sep 2023 23:19:40 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RsMTX5SvCzMljc;
+        Fri, 22 Sep 2023 14:16:00 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 22 Sep 2023 14:19:37 +0800
+Subject: Re: [PATCH v15 1/2] vfio/migration: Add debugfs to live migration
+ driver
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <20230901023606.47587-1-liulongfang@huawei.com>
+ <20230901023606.47587-2-liulongfang@huawei.com>
+ <20230915150026.06bea533.alex.williamson@redhat.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <d541ba02-a8d1-dc8e-a725-4ee82b0c44bb@huawei.com>
+Date:   Fri, 22 Sep 2023 14:19:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230915150026.06bea533.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.110]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After a discussion about removing VLYNQ support from the Kernel, it was
-concluded that its only user, the AR7 platform can go [1]. Even OpenWRT
-has removed support because these devices are "stuck with 3.18" [2].
+On 2023/9/16 5:00, Alex Williamson wrote:
+> On Fri, 1 Sep 2023 10:36:05 +0800
+> liulongfang <liulongfang@huawei.com> wrote:
+> 
+>> From: Longfang Liu <liulongfang@huawei.com>
+>>
+>> There are multiple devices, software and operational steps involved
+>> in the process of live migration. An error occurred on any node may
+>> cause the live migration operation to fail.
+>> This complex process makes it very difficult to locate and analyze
+>> the cause when the function fails.
+>>
+>> In order to quickly locate the cause of the problem when the
+>> live migration fails, I added a set of debugfs to the vfio
+>> live migration driver.
+>>
+>>     +-------------------------------------------+
+>>     |                                           |
+>>     |                                           |
+>>     |                  QEMU                     |
+>>     |                                           |
+>>     |                                           |
+>>     +---+----------------------------+----------+
+>>         |      ^                     |      ^
+>>         |      |                     |      |
+>>         |      |                     |      |
+>>         v      |                     v      |
+>>      +---------+--+               +---------+--+
+>>      |src vfio_dev|               |dst vfio_dev|
+>>      +--+---------+               +--+---------+
+>>         |      ^                     |      ^
+>>         |      |                     |      |
+>>         v      |                     |      |
+>>    +-----------+----+           +-----------+----+
+>>    |src dev debugfs |           |dst dev debugfs |
+>>    +----------------+           +----------------+
+>>
+>> The entire debugfs directory will be based on the definition of
+>> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
+>> interfaces in vfio.h will be empty definitions, and the creation
+>> and initialization of the debugfs directory will not be executed.
+>>
+>>    vfio
+>>     |
+>>     +---<dev_name1>
+>>     |    +---migration
+>>     |        +--state
+>>     |
+>>     +---<dev_name2>
+>>          +---migration
+>>              +--state
+>>
+>> debugfs will create a public root directory "vfio" file.
+>> then create a dev_name() file for each live migration device.
+>> First, create a unified state acquisition file of "migration"
+>> in this device directory.
+>> Then, create a public live migration state lookup file "state"
+>> Finally, create a directory file based on the device type,
+>> and then create the device's own debugging files under
+>> this directory file.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  drivers/vfio/Makefile       |  1 +
+>>  drivers/vfio/vfio.h         | 14 +++++++
+>>  drivers/vfio/vfio_debugfs.c | 80 +++++++++++++++++++++++++++++++++++++
+>>  drivers/vfio/vfio_main.c    |  5 ++-
+>>  include/linux/vfio.h        |  7 ++++
+>>  5 files changed, 106 insertions(+), 1 deletion(-)
+>>  create mode 100644 drivers/vfio/vfio_debugfs.c
+>>
+>> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
+>> index c82ea032d352..7934ac829989 100644
+>> --- a/drivers/vfio/Makefile
+>> +++ b/drivers/vfio/Makefile
+>> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
+>>  vfio-$(CONFIG_IOMMUFD) += iommufd.o
+>>  vfio-$(CONFIG_VFIO_CONTAINER) += container.o
+>>  vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
+>> +vfio-$(CONFIG_DEBUG_FS) += vfio_debugfs.o
+>>  
+>>  obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
+>>  obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
+>> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
+>> index 307e3f29b527..09b00757d0bb 100644
+>> --- a/drivers/vfio/vfio.h
+>> +++ b/drivers/vfio/vfio.h
+>> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
+>>  }
+>>  #endif
+>>  
+>> +#ifdef CONFIG_DEBUG_FS
+>> +void vfio_debugfs_create_root(void);
+>> +void vfio_debugfs_remove_root(void);
+>> +
+>> +void vfio_device_debugfs_init(struct vfio_device *vdev);
+>> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
+>> +#else
+>> +static inline void vfio_debugfs_create_root(void) { }
+>> +static inline void vfio_debugfs_remove_root(void) { }
+>> +
+>> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
+>> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
+>> +#endif /* CONFIG_DEBUG_FS */
+>> +
+>>  #endif
+>> diff --git a/drivers/vfio/vfio_debugfs.c b/drivers/vfio/vfio_debugfs.c
+>> new file mode 100644
+>> index 000000000000..cd6c01437475
+>> --- /dev/null
+>> +++ b/drivers/vfio/vfio_debugfs.c
+>> @@ -0,0 +1,80 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2023, HiSilicon Ltd.
+>> + */
+>> +
+>> +#include <linux/device.h>
+>> +#include <linux/debugfs.h>
+>> +#include <linux/seq_file.h>
+>> +#include <linux/vfio.h>
+>> +#include "vfio.h"
+>> +
+>> +static struct dentry *vfio_debugfs_root;
+>> +
+>> +static int vfio_device_state_read(struct seq_file *seq, void *data)
+>> +{
+>> +	struct device *vf_dev = seq->private;
+>> +	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
+>> +	enum vfio_device_mig_state state;
+>> +	int ret;
+>> +
+>> +	ret = vdev->mig_ops->migration_get_state(vdev, &state);
+>> +	if (ret)
+>> +		return -EINVAL;
+>> +
+>> +	switch (state) {
+>> +	case VFIO_DEVICE_STATE_RUNNING:
+>> +		seq_printf(seq, "%s\n", "RUNNING");
+>> +		break;
+>> +	case VFIO_DEVICE_STATE_STOP_COPY:
+>> +		seq_printf(seq, "%s\n", "STOP_COPY");
+>> +		break;
+>> +	case VFIO_DEVICE_STATE_STOP:
+>> +		seq_printf(seq, "%s\n", "STOP");
+>> +		break;
+>> +	case VFIO_DEVICE_STATE_RESUMING:
+>> +		seq_printf(seq, "%s\n", "RESUMING");
+>> +		break;
+>> +	case VFIO_DEVICE_STATE_RUNNING_P2P:
+>> +		seq_printf(seq, "%s\n", "RUNNING_P2P");
+>> +		break;
+>> +	case VFIO_DEVICE_STATE_ERROR:
+>> +		seq_printf(seq, "%s\n", "ERROR");
+> 
+> Please order these the same as enum vfio_device_mig_state, we're also
+> missing a couple states, ie. PRE_COPY and PRE_COPY_P2P.  Can we use any
+OK, I'll add them to the next version.
 
-[1] https://lore.kernel.org/r/3395161f-2543-46f0-83d9-b918800305e1@gmail.com
-[2] https://openwrt.org/docs/techref/targets/ar7
+> compiler tricks to create a build error when these are out of sync?
+>When these states are out of range, they should enter "default" processing.
 
-Suggested-by: Jonas Gorski <jonas.gorski@gmail.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes since v1:
-* added ack
+>> +		break;
+>> +	default:
+>> +		seq_printf(seq, "%s\n", "Invalid");
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +void vfio_device_debugfs_init(struct vfio_device *vdev)
+>> +{
+>> +	struct dentry *vfio_dev_migration = NULL;
+>> +	struct device *dev = &vdev->device;
+> 
+> Nit, both of these could be defined within the scope of the mig_ops
+> test below.
+>
 
- arch/mips/Kbuild.platforms              |   1 -
- arch/mips/Kconfig                       |  22 -
- arch/mips/ar7/Makefile                  |  11 -
- arch/mips/ar7/Platform                  |   5 -
- arch/mips/ar7/clock.c                   | 439 --------------
- arch/mips/ar7/gpio.c                    | 332 -----------
- arch/mips/ar7/irq.c                     | 165 ------
- arch/mips/ar7/memory.c                  |  51 --
- arch/mips/ar7/platform.c                | 722 ------------------------
- arch/mips/ar7/prom.c                    | 256 ---------
- arch/mips/ar7/setup.c                   |  93 ---
- arch/mips/ar7/time.c                    |  31 -
- arch/mips/boot/compressed/uart-16550.c  |   5 -
- arch/mips/configs/ar7_defconfig         | 119 ----
- arch/mips/include/asm/mach-ar7/ar7.h    | 191 -------
- arch/mips/include/asm/mach-ar7/irq.h    |  16 -
- arch/mips/include/asm/mach-ar7/prom.h   |  12 -
- arch/mips/include/asm/mach-ar7/spaces.h |  22 -
- 18 files changed, 2493 deletions(-)
- delete mode 100644 arch/mips/ar7/Makefile
- delete mode 100644 arch/mips/ar7/Platform
- delete mode 100644 arch/mips/ar7/clock.c
- delete mode 100644 arch/mips/ar7/gpio.c
- delete mode 100644 arch/mips/ar7/irq.c
- delete mode 100644 arch/mips/ar7/memory.c
- delete mode 100644 arch/mips/ar7/platform.c
- delete mode 100644 arch/mips/ar7/prom.c
- delete mode 100644 arch/mips/ar7/setup.c
- delete mode 100644 arch/mips/ar7/time.c
- delete mode 100644 arch/mips/configs/ar7_defconfig
- delete mode 100644 arch/mips/include/asm/mach-ar7/ar7.h
- delete mode 100644 arch/mips/include/asm/mach-ar7/irq.h
- delete mode 100644 arch/mips/include/asm/mach-ar7/prom.h
- delete mode 100644 arch/mips/include/asm/mach-ar7/spaces.h
+"vfio_dev_migration" can be placed under mig_ops, but "dev" is public.
+Also, there should be no problem declaring variables like this.
 
-diff --git a/arch/mips/Kbuild.platforms b/arch/mips/Kbuild.platforms
-index caad195ba5c1..a2311c4bce6a 100644
---- a/arch/mips/Kbuild.platforms
-+++ b/arch/mips/Kbuild.platforms
-@@ -2,7 +2,6 @@
- # All platforms listed in alphabetic order
- 
- platform-$(CONFIG_MIPS_ALCHEMY)		+= alchemy/
--platform-$(CONFIG_AR7)			+= ar7/
- platform-$(CONFIG_ATH25)		+= ath25/
- platform-$(CONFIG_ATH79)		+= ath79/
- platform-$(CONFIG_BCM47XX)		+= bcm47xx/
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index bc8421859006..76db82542519 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -202,28 +202,6 @@ config MIPS_ALCHEMY
- 	select SYS_SUPPORTS_ZBOOT
- 	select COMMON_CLK
- 
--config AR7
--	bool "Texas Instruments AR7"
--	select BOOT_ELF32
--	select COMMON_CLK
--	select DMA_NONCOHERENT
--	select CEVT_R4K
--	select CSRC_R4K
--	select IRQ_MIPS_CPU
--	select NO_EXCEPT_FILL
--	select SWAP_IO_SPACE
--	select SYS_HAS_CPU_MIPS32_R1
--	select SYS_HAS_EARLY_PRINTK
--	select SYS_SUPPORTS_32BIT_KERNEL
--	select SYS_SUPPORTS_LITTLE_ENDIAN
--	select SYS_SUPPORTS_MIPS16
--	select SYS_SUPPORTS_ZBOOT_UART16550
--	select GPIOLIB
--	select VLYNQ
--	help
--	  Support for the Texas Instruments AR7 System-on-a-Chip
--	  family: TNETD7100, 7200 and 7300.
--
- config ATH25
- 	bool "Atheros AR231x/AR531x SoC support"
- 	select CEVT_R4K
-diff --git a/arch/mips/ar7/Makefile b/arch/mips/ar7/Makefile
-deleted file mode 100644
-index cd51c6c6e686..000000000000
-diff --git a/arch/mips/ar7/Platform b/arch/mips/ar7/Platform
-deleted file mode 100644
-index a9257cc01c3c..000000000000
-diff --git a/arch/mips/ar7/clock.c b/arch/mips/ar7/clock.c
-deleted file mode 100644
-index c717acbc5506..000000000000
-diff --git a/arch/mips/ar7/gpio.c b/arch/mips/ar7/gpio.c
-deleted file mode 100644
-index 4ed833b9cc2f..000000000000
-diff --git a/arch/mips/ar7/irq.c b/arch/mips/ar7/irq.c
-deleted file mode 100644
-index f0a7942d393e..000000000000
-diff --git a/arch/mips/ar7/memory.c b/arch/mips/ar7/memory.c
-deleted file mode 100644
-index ce8024c1a54e..000000000000
-diff --git a/arch/mips/ar7/platform.c b/arch/mips/ar7/platform.c
-deleted file mode 100644
-index 215149a85d83..000000000000
-diff --git a/arch/mips/ar7/prom.c b/arch/mips/ar7/prom.c
-deleted file mode 100644
-index 5810d3993fc6..000000000000
-diff --git a/arch/mips/ar7/setup.c b/arch/mips/ar7/setup.c
-deleted file mode 100644
-index 352d5dbc777c..000000000000
-diff --git a/arch/mips/ar7/time.c b/arch/mips/ar7/time.c
-deleted file mode 100644
-index 72aa77d7087b..000000000000
-diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
-index 96d28f211121..09dcd2c561d9 100644
---- a/arch/mips/boot/compressed/uart-16550.c
-+++ b/arch/mips/boot/compressed/uart-16550.c
-@@ -13,11 +13,6 @@
- #define PORT(offset) (CKSEG1ADDR(UART_BASE) + (offset))
- #endif
- 
--#ifdef CONFIG_AR7
--#include <ar7.h>
--#define PORT(offset) (CKSEG1ADDR(AR7_REGS_UART0) + (4 * offset))
--#endif
--
- #ifdef CONFIG_MACH_INGENIC
- #define INGENIC_UART_BASE_ADDR	(0x10030000 + 0x1000 * CONFIG_ZBOOT_INGENIC_UART)
- #define PORT(offset) (CKSEG1ADDR(INGENIC_UART_BASE_ADDR) + (4 * offset))
-diff --git a/arch/mips/configs/ar7_defconfig b/arch/mips/configs/ar7_defconfig
-deleted file mode 100644
-index 329c60aa570a..000000000000
-diff --git a/arch/mips/include/asm/mach-ar7/ar7.h b/arch/mips/include/asm/mach-ar7/ar7.h
-deleted file mode 100644
-index 1e8621a6afa3..000000000000
-diff --git a/arch/mips/include/asm/mach-ar7/irq.h b/arch/mips/include/asm/mach-ar7/irq.h
-deleted file mode 100644
-index 46bb730ea970..000000000000
-diff --git a/arch/mips/include/asm/mach-ar7/prom.h b/arch/mips/include/asm/mach-ar7/prom.h
-deleted file mode 100644
-index 9e1d20b06f57..000000000000
-diff --git a/arch/mips/include/asm/mach-ar7/spaces.h b/arch/mips/include/asm/mach-ar7/spaces.h
-deleted file mode 100644
-index a004d94dfbdd..000000000000
--- 
-2.35.1
+>> +
+>> +	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
+>> +
+>> +	if (vdev->mig_ops) {
+>> +		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
+>> +		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
+>> +					  vfio_device_state_read);
+>> +	}
+>> +}
+>> +
+>> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
+>> +{
+>> +	debugfs_remove_recursive(vdev->debug_root);
+>> +}
+>> +
+>> +void vfio_debugfs_create_root(void)
+>> +{
+>> +	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
+>> +}
+>> +
+>> +void vfio_debugfs_remove_root(void)
+>> +{
+>> +	debugfs_remove_recursive(vfio_debugfs_root);
+>> +	vfio_debugfs_root = NULL;
+>> +}
+>> +
+>> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+>> index cfad824d9aa2..8a7456f89842 100644
+>> --- a/drivers/vfio/vfio_main.c
+>> +++ b/drivers/vfio/vfio_main.c
+>> @@ -309,7 +309,7 @@ static int __vfio_register_dev(struct vfio_device *device,
+>>  
+>>  	/* Refcounting can't start until the driver calls register */
+>>  	refcount_set(&device->refcount, 1);
+>> -
+>> +	vfio_device_debugfs_init(device);
+>>  	vfio_device_group_register(device);
+>>  
+>>  	return 0;
+>> @@ -378,6 +378,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
+>>  		}
+>>  	}
+>>  
+>> +	vfio_device_debugfs_exit(device);
+>>  	/* Balances vfio_device_set_group in register path */
+>>  	vfio_device_remove_group(device);
+>>  }
+> 
+> init/exit calls should try to be symmetric, if we call init before
+> vfio_device_group_register() then we should call exit after
+> vfio_device_group_unregister().  In this case, why shouldn't init be
+> the last call in __vfio_register_dev() and exit the first call in
+> vfio_unregister_group_dev()?
+> 
 
+OK, I would put vfio_device_debugfs_init() into vfio_device_group_register().
+
+>> @@ -1662,6 +1663,7 @@ static int __init vfio_init(void)
+>>  	if (ret)
+>>  		goto err_alloc_dev_chrdev;
+>>  
+>> +	vfio_debugfs_create_root();
+>>  	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+>>  	return 0;
+>>  
+>> @@ -1684,6 +1686,7 @@ static void __exit vfio_cleanup(void)
+>>  	vfio_virqfd_exit();
+>>  	vfio_group_cleanup();
+>>  	xa_destroy(&vfio_device_set_xa);
+>> +	vfio_debugfs_remove_root();
+>>  }
+> 
+> Same, if we create it last, let's remove it first.  The above creates
+> it last and removes it last.  Thanks,
+>
+
+OK, I will adjust the order of vfio_debugfs_remove_root() in vfio_cleanup().
+
+Thanks,
+Longfang.
+
+> Alex
+> 
+>>  
+>>  module_init(vfio_init);
+>> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+>> index 454e9295970c..769d7af86225 100644
+>> --- a/include/linux/vfio.h
+>> +++ b/include/linux/vfio.h
+>> @@ -69,6 +69,13 @@ struct vfio_device {
+>>  	u8 iommufd_attached:1;
+>>  #endif
+>>  	u8 cdev_opened:1;
+>> +#ifdef CONFIG_DEBUG_FS
+>> +	/*
+>> +	 * debug_root is a static property of the vfio_device
+>> +	 * which must be set prior to registering the vfio_device.
+>> +	 */
+>> +	struct dentry *debug_root;
+>> +#endif
+>>  };
+>>  
+>>  /**
+> 
+> .
+> 
