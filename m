@@ -2,128 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B727AB8D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 20:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAC27ABA22
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 21:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbjIVSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 14:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
+        id S232091AbjIVTgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 15:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233750AbjIVSFf (ORCPT
+        with ESMTP id S233426AbjIVR7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 14:05:35 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A814935BD
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:54:23 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68fdd6011f2so2029146b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:54:23 -0700 (PDT)
+        Fri, 22 Sep 2023 13:59:34 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326C04211
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:57:46 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81a76a11eeso3071368276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:57:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405262; x=1696010062; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ISP2L+rvg6dxZG1wcmYnXloNsZywrTUtixv49IhJ0I=;
-        b=jIWF4/z4UcLuiRz0wCvniJrPmxP3Z9Xk2oBg1jRX5yU4wYwfGGP/1BJZg2TWhJikah
-         5clKmlgZHGFLNRHpFcSj682t3/0f1EFPjRE1yYxe3GMcAk0BgYOGVSupcP/q3lT7fST8
-         er+emuk5vVib37xngsMQ973oBiMxxSXfF65B0=
+        d=google.com; s=20230601; t=1695405465; x=1696010265; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CIUVdWYJzS23SUkOVUGYlHJuolUCd+SBS6YJzjY/W/M=;
+        b=j6jMO0KPP+GHBicZNd3LVMZSQuXiS/dwN9sDBeANBHBoOrl6GWQqcBMeYr+OhfGW41
+         j9DARkjCnZgGSkLQcbz2WN6qW1frdj3oCH4ytTmmXC3yQ8QLuYd6ANgEmbPFi+ZMhO/2
+         QojDnZ+NojRvcRFAVk5DLP+aIbCt2o5iCNj+r2udzeGho/0Wr1Bf7yD1ZIAh9zeJ/5+Y
+         bnXcN+PNpLvDvIiP7kQBWTmMys97Lr5W7o9XlZIm4rjFchkQTs6S3Qeg9Cx8z0DR7W+c
+         rx1b+qrC/O01Wcwk4hBmmEuUoSD+GtApnNOU1FGwwpi99VqjIcj+/LOmi44D5yZJultX
+         NfOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405262; x=1696010062;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1ISP2L+rvg6dxZG1wcmYnXloNsZywrTUtixv49IhJ0I=;
-        b=w0JdVhTJDnGEzc8yRiKATbaqV0TCGIduenohVjZxz1EYrZhkAFn+ZMmUGvlnt+iX4B
-         cyodc8KFWBMmP03G4ZBRihx9xvPfrrxC06t5dz/6rvfy+4jtsgoeTwnOSoejg1WeOv7z
-         bhKOBZn+ipFPOs8wm93dAlBq482VwvNJHrTxCEm0tpBwWo7soGFfBwcndDhXc/YmUxyo
-         WPqdhiCWjNmj7kH/SSD/dDWEaIcpDjSkCvnfQPe0HBvGIHQhFfhDpORqEdufOUY9nG7a
-         yw3U1k8WsiExg4HP9JpyZ6CuzPc9j5lpvke+Gjit1q3/Wy3EDLUEpnh/Ycs46cUYI1dz
-         kSeA==
-X-Gm-Message-State: AOJu0YxCxd/kMcxpvQCcB5FGwhpYH0xi+opy1flzE2xod8OVRg+JM3bl
-        y3elYRAawyjHor7dif5KacV0T3Nv4lhShz6nDScMng==
-X-Google-Smtp-Source: AGHT+IGxW0pO6A2XYuuil33uTylCAIbRaQSzobX5s7nUCpWCckLaGOgJJl/22O16HRisYCP+P0WYhg==
-X-Received: by 2002:a05:6a20:9499:b0:13b:a2c9:922e with SMTP id hs25-20020a056a20949900b0013ba2c9922emr268710pzb.27.1695405262686;
-        Fri, 22 Sep 2023 10:54:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c7-20020aa78c07000000b006878cc942f1sm3457800pfd.54.2023.09.22.10.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:54:22 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jorge Lopez <jorge.lopez2@hp.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, platform-driver-x86@vger.kernel.org,
-        llvm@lists.linux.dev,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] platform/x86: hp-bioscfg: Annotate struct bios_args with __counted_by
-Date:   Fri, 22 Sep 2023 10:54:21 -0700
-Message-Id: <20230922175420.work.701-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1418; i=keescook@chromium.org;
- h=from:subject:message-id; bh=kt0VlUdlEwKUKwWP1rv6tofv8fjvexz2uhyfkXWj6p8=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdTMfB+LYH5eKEwcBoqoFlTtLOyMMpn1kR2Sa
- TizrkR/ooiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3UzAAKCRCJcvTf3G3A
- JsfnD/wN2QM835WwG5VD399xvmpEfqV/waSzTryLMYZxcqIlyuTG4pL75mWspCtqsPuHkcPq/5+
- dS56aaMDY1kiOZILGtGY/o+GWgizQ0X87eI7vpaVFKNq5aVB81SWua/rKAzQ02ogL1ld6i21Bax
- iKS3RQ4mhGVuAyMeSzgYg6LVxU7VHCAX1MzNuZBEbxxYYc9ePrN+y0Hkr39IRDtkwVWcx2PaZr+
- ZPLbM7Gr1c73OWGB0bhxLfHaX1rgfqmB9gXC3lJW/WyMNt2wnbyTplB/202KUySHEVGpzzl7+TK
- 1cMerBWqiNFK3BmK1tZOZh3L/GUu6t+hXEG1zkNP3sFOGOsRItI8w2yDQEocODb2NVCQZr5t3B+
- HELziLz9sxbCa7uWd78WEaYlS+jm4KnMPuXwIOm49XG7eeyCEqDz1zHK07JijFrG3CMQkyWttQ/
- J92lXH7PGL8Jnme0WvdP5OUM1swG3A1kKndnO4G2vXJ464QIOn+OsvQC02MTg4EG2OF2cvXaXuz
- V7+ZvYpLopVQKGVbWWY5H2WfbsVTdPZQHrTdnHLHVkmL6vLAD8wnzqR4fR9rDCWgCGtAzfNnpDD
- MMUbIToTezIl9ipPdd7j5G99rxqHhdMNHOS6KM1DGgOhQzpxGIl2uXlE55Wb3yx3OZcsI/MIXov
- dMn7rbm UmQyK2GQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695405465; x=1696010265;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CIUVdWYJzS23SUkOVUGYlHJuolUCd+SBS6YJzjY/W/M=;
+        b=iKDFFQsOPKlg6WnUBMf94UsKFs/BkVdwDojLnr2CJSxFp0HUsOgF2+H0K26+La8R44
+         D+59NRt99cRZNn1ptePJ2AB5vrCfjaCEOt0Nid7McoSQjWKuCiVA5nIsAnnqHhp30jct
+         i8yLfMwRp+jMeI6FssEw8v77ItN9ls8YALe0oUWnDEXwRg1OEx8D/YLlwOcqe5Ofn1bg
+         qRkBX75N9+Sngi3DRswItZVgCOhpYVR2Q1ku/TZ3p1X/8pCml2sV7V787uiFHi2Qpa0V
+         JZYWZDmWmtbbdtGTXYioT9qn8l+jdZp14naNQCNEsE02tGtg8L2q/d7Q0WyJuSWNLa4G
+         3fww==
+X-Gm-Message-State: AOJu0YyOeVueKE26nYYJqgB4Ci0+1uql1mNtxyg2tdOwwVR0B4eklVZQ
+        wEBTvcV5aXkvTjNQ40pr6/uCPp2qtBxafoyg
+X-Google-Smtp-Source: AGHT+IGRY7CHNarSt8hxzLUxdPvhzPSOwb+6g2+4WOANIpjP9cYGG1L1f1r5GlTbEtZccPZQJPzwzGGJFWlsxbc8
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a25:6942:0:b0:d80:cf4:7e80 with SMTP id
+ e63-20020a256942000000b00d800cf47e80mr453ybc.7.1695405465321; Fri, 22 Sep
+ 2023 10:57:45 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 17:57:39 +0000
+In-Reply-To: <20230922175741.635002-1-yosryahmed@google.com>
+Mime-Version: 1.0
+References: <20230922175741.635002-1-yosryahmed@google.com>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Message-ID: <20230922175741.635002-2-yosryahmed@google.com>
+Subject: [PATCH v2 1/2] mm: memcg: refactor page state unit helpers
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+memcg_page_state_unit() is currently used to identify the unit of a
+memcg state item so that all stats in memory.stat are in bytes. However,
+it lies about the units of WORKINGSET_* stats. These stats actually
+represent pages, but we present them to userspace as a scalar number of
+events. In retrospect, maybe those stats should have been memcg "events"
+rather than memcg "state".
 
-As found with Coccinelle[1], add __counted_by for struct bios_args.
+In preparation for using memcg_page_state_unit() for other purposes that
+need to know the truthful units of different stat items, break it down
+into two helpers:
+- memcg_page_state_unit() retuns the actual unit of the item.
+- memcg_page_state_output_unit() returns the unit used for output.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+Use the latter instead of the former in memcg_page_state_output() and
+lruvec_page_state_output(). While we are at it, let's show cgroup v1
+some love and add memcg_page_state_local_output() for consistency.
 
-Cc: Jorge Lopez <jorge.lopez2@hp.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Mark Gross <markgross@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Tom Rix <trix@redhat.com>
-Cc: platform-driver-x86@vger.kernel.org
-Cc: llvm@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
+No functional change intended.
+
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/memcontrol.c | 44 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c b/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c
-index dea54f35b8b5..4da99cb7218d 100644
---- a/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c
-+++ b/drivers/platform/x86/hp/hp-bioscfg/biosattr-interface.c
-@@ -19,7 +19,7 @@ struct bios_args {
- 	u32 command;
- 	u32 commandtype;
- 	u32 datasize;
--	u8 data[];
-+	u8 data[] __counted_by(datasize);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 927c64d3cbcb..308cc7353ef0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1535,7 +1535,7 @@ static const struct memory_stat memory_stats[] = {
+ 	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
  };
  
- /**
+-/* Translate stat items to the correct unit for memory.stat output */
++/* The actual unit of the state item, not the same as the output unit */
+ static int memcg_page_state_unit(int item)
+ {
+ 	switch (item) {
+@@ -1543,6 +1543,22 @@ static int memcg_page_state_unit(int item)
+ 	case MEMCG_ZSWAP_B:
+ 	case NR_SLAB_RECLAIMABLE_B:
+ 	case NR_SLAB_UNRECLAIMABLE_B:
++		return 1;
++	case NR_KERNEL_STACK_KB:
++		return SZ_1K;
++	default:
++		return PAGE_SIZE;
++	}
++}
++
++/* Translate stat items to the correct unit for memory.stat output */
++static int memcg_page_state_output_unit(int item)
++{
++	/*
++	 * Workingset state is actually in pages, but we export it to userspace
++	 * as a scalar count of events, so special case it here.
++	 */
++	switch (item) {
+ 	case WORKINGSET_REFAULT_ANON:
+ 	case WORKINGSET_REFAULT_FILE:
+ 	case WORKINGSET_ACTIVATE_ANON:
+@@ -1551,17 +1567,23 @@ static int memcg_page_state_unit(int item)
+ 	case WORKINGSET_RESTORE_FILE:
+ 	case WORKINGSET_NODERECLAIM:
+ 		return 1;
+-	case NR_KERNEL_STACK_KB:
+-		return SZ_1K;
+ 	default:
+-		return PAGE_SIZE;
++		return memcg_page_state_unit(item);
+ 	}
+ }
+ 
+ static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
+ 						    int item)
+ {
+-	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
++	return memcg_page_state(memcg, item) *
++		memcg_page_state_output_unit(item);
++}
++
++static inline unsigned long memcg_page_state_local_output(
++		struct mem_cgroup *memcg, int item)
++{
++	return memcg_page_state_local(memcg, item) *
++		memcg_page_state_output_unit(item);
+ }
+ 
+ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+@@ -4106,9 +4128,8 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+ 
+-		nr = memcg_page_state_local(memcg, memcg1_stats[i]);
+-		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i],
+-			   nr * memcg_page_state_unit(memcg1_stats[i]));
++		nr = memcg_page_state_local_output(memcg, memcg1_stats[i]);
++		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i], nr);
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
+@@ -4134,9 +4155,9 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+ 
+-		nr = memcg_page_state(memcg, memcg1_stats[i]);
++		nr = memcg_page_state_output(memcg, memcg1_stats[i]);
+ 		seq_buf_printf(s, "total_%s %llu\n", memcg1_stat_names[i],
+-			   (u64)nr * memcg_page_state_unit(memcg1_stats[i]));
++			       (u64)nr);
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
+@@ -6614,7 +6635,8 @@ static int memory_stat_show(struct seq_file *m, void *v)
+ static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
+ 						     int item)
+ {
+-	return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
++	return lruvec_page_state(lruvec, item) *
++		memcg_page_state_output_unit(item);
+ }
+ 
+ static int memory_numa_stat_show(struct seq_file *m, void *v)
 -- 
-2.34.1
+2.42.0.515.g380fc7ccd1-goog
 
