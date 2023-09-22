@@ -2,67 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495F7AA68E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B80D7AA691
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbjIVBde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 21:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
+        id S230122AbjIVBeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbjIVBdb (ORCPT
+        with ESMTP id S230010AbjIVBeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 21:33:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CDF19B
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 18:33:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE732C433C8;
-        Fri, 22 Sep 2023 01:33:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1695346404;
-        bh=hgf+/wwL2bSZ5fupqOPqm+9H6IdZ7z7D6atBwYgaMpU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GvBwpIxI2GcAwSDRhWd3jisdO/CqiYQhel75el489tnVKctdp65xy4MD6nAy1/Vbd
-         bQKzllRA0LKzLMLJawr/PKHxmvgomXPQ5d2DG0vqWu2ufwKQAdyAOXUNIxMHz2kvKz
-         DcMomXaoY40mfH6QVM0j6yo5CpgZY/YG/Ud9SGtk=
-Date:   Thu, 21 Sep 2023 18:33:23 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        catalin.marinas@arm.com, anshuman.khandual@arm.com,
-        joey.gouly@arm.com, mhocko@suse.com, keescook@chromium.org,
-        david@redhat.com, peterx@redhat.com, izbyshev@ispras.ru,
-        broonie@kernel.org, szabolcs.nagy@arm.com, kpsingh@kernel.org,
-        gthelen@google.com, toiwoton@gmail.com, ayush.jain3@amd.com
-Subject: Re: [PATCH v4 5/6] mm: Add a NO_INHERIT flag to the PR_SET_MDWE
- prctl
-Message-Id: <20230921183323.c990c57d0b43832b39d3e363@linux-foundation.org>
-In-Reply-To: <20230828150858.393570-6-revest@chromium.org>
-References: <20230828150858.393570-1-revest@chromium.org>
-        <20230828150858.393570-6-revest@chromium.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 21:34:09 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id AD96DCF;
+        Thu, 21 Sep 2023 18:34:02 -0700 (PDT)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id AEF146031B0B7;
+        Fri, 22 Sep 2023 09:33:53 +0800 (CST)
+Message-ID: <902e29df-785c-b194-44a9-72d1691813dd@nfschina.com>
+Date:   Fri, 22 Sep 2023 09:33:52 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary (void*)
+ conversions
+Content-Language: en-US
+To:     Christian Lamparter <chunkeey@gmail.com>, kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+X-MD-Sfrom: yunchuan@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   yunchuan <yunchuan@nfschina.com>
+In-Reply-To: <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 17:08:57 +0200 Florent Revest <revest@chromium.org> wrote:
+Hi, Christian
 
-> This extends the current PR_SET_MDWE prctl arg with a bit to indicate
-> that the process doesn't want MDWE protection to propagate to children.
-> 
-> To implement this no-inherit mode, the tag in current->mm->flags must be
-> absent from MMF_INIT_MASK. This means that the encoding for "MDWE but
-> without inherit" is different in the prctl than in the mm flags. This
-> leads to a bit of bit-mangling in the prctl implementation.
+On 2023/9/21 03:00, Christian Lamparter wrote:
 
-Is a manpage update planned?
+> On 9/19/23 06:49, Wu Yunchuan wrote:
+>> No need cast (void *) to (struct ar9170 *), (u8 *) or (void*).
+>
+> hmm, your mail went into the spam folder. Good thing I checked.
+>
+Sometimes mail didn't work :(.
+> From what I remember: The reason why these casts were added in
+> carl9170 was because of compiler warnings/complaints.
+> Current gcc compilers should be OK (given that the kernel-bot
+> didn't react, or went your Mail to their spam-folder as well?)
+> but have you checked these older versions?
+>
+My gcc version is 10.2.1. And this seems work when gcc version is 
+5.4(ubuntu 16.04) or 4.84(Ubuntu 14.04）.
+I can't  compile Linux under Ubuntu 16.04 because of some compatibility 
+problems.
 
-And did we update the manpage for PR_SET_MDWE?
+So I test a simple demo like this:
+
+
+void *p_void = NULL;
+long var_long = 5;
+long *p_long = &var_long;
+p_void = p_long;
+
+This works fine.
+
+> (In 6.5.0 Documentation/admin-guide/README.rst states that one
+> should have at least gcc 5.1 - could you run with those and
+> see if C=2 W=1 passes?)
+Oh, I want to do this, but I can't compile or install gcc 5.1 in my 
+computer.
+There are some compatibility problems. I hope I can deal this problem 
+next week.
+
+Wu Yunchan
+
+>
+> Regards,
+> Christian
+>
+>> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+>> ---
+>>   drivers/net/wireless/ath/carl9170/usb.c | 10 +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/carl9170/usb.c 
+>> b/drivers/net/wireless/ath/carl9170/usb.c
+>> index e4eb666c6eea..c4edf8355941 100644
+>> --- a/drivers/net/wireless/ath/carl9170/usb.c
+>> +++ b/drivers/net/wireless/ath/carl9170/usb.c
+>> @@ -178,7 +178,7 @@ static void carl9170_usb_tx_data_complete(struct 
+>> urb *urb)
+>>       switch (urb->status) {
+>>       /* everything is fine */
+>>       case 0:
+>> -        carl9170_tx_callback(ar, (void *)urb->context);
+>> +        carl9170_tx_callback(ar, urb->context);
+>>           break;
+>>         /* disconnect */
+>> @@ -369,7 +369,7 @@ void carl9170_usb_handle_tx_err(struct ar9170 *ar)
+>>       struct urb *urb;
+>>         while ((urb = usb_get_from_anchor(&ar->tx_err))) {
+>> -        struct sk_buff *skb = (void *)urb->context;
+>> +        struct sk_buff *skb = urb->context;
+>>             carl9170_tx_drop(ar, skb);
+>>           carl9170_tx_callback(ar, skb);
+>> @@ -397,7 +397,7 @@ static void carl9170_usb_tasklet(struct 
+>> tasklet_struct *t)
+>>     static void carl9170_usb_rx_complete(struct urb *urb)
+>>   {
+>> -    struct ar9170 *ar = (struct ar9170 *)urb->context;
+>> +    struct ar9170 *ar = urb->context;
+>>       int err;
+>>         if (WARN_ON_ONCE(!ar))
+>> @@ -559,7 +559,7 @@ static int carl9170_usb_flush(struct ar9170 *ar)
+>>       int ret, err = 0;
+>>         while ((urb = usb_get_from_anchor(&ar->tx_wait))) {
+>> -        struct sk_buff *skb = (void *)urb->context;
+>> +        struct sk_buff *skb = urb->context;
+>>           carl9170_tx_drop(ar, skb);
+>>           carl9170_tx_callback(ar, skb);
+>>           usb_free_urb(urb);
+>> @@ -668,7 +668,7 @@ int carl9170_exec_cmd(struct ar9170 *ar, const 
+>> enum carl9170_cmd_oids cmd,
+>>           memcpy(ar->cmd.data, payload, plen);
+>>         spin_lock_bh(&ar->cmd_lock);
+>> -    ar->readbuf = (u8 *)out;
+>> +    ar->readbuf = out;
+>>       ar->readlen = outlen;
+>>       spin_unlock_bh(&ar->cmd_lock);
+>
