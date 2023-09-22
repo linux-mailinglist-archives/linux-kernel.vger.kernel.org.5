@@ -2,78 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8F97AABDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F342D7AABEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 10:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbjIVIKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 04:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
+        id S232290AbjIVIKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 04:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232471AbjIVIJV (ORCPT
+        with ESMTP id S232956AbjIVIKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 04:09:21 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3DC10F1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:09:11 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690f7d73a3aso1740881b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 01:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20230601.gappssmtp.com; s=20230601; t=1695370150; x=1695974950; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:to:from:subject
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=2R1uFPZQh5rHaFChaIdksfqptVdy9O1APe6DAZC5D0I=;
-        b=FMIJaogkkZtO2QxFoznDTYrHqdpcF/zgrndaId/L96DRM7Z79v+iQBbXbCw0NVoEyr
-         IWpij/rBZqhImADfeQdS7YX9n1TlHo72R7fn4IdgHoUz5uKkiJGrqvDG2d2glpZLf65w
-         +eR9NgKhM82VaAmx8s1KOB1PdAM+0V8tqghKsgKqL+K60ODb2txOwWobfznyQTkeipLw
-         gKKr4ns39v55htCgtEUPP5JL0QyvOuwmxsuJw2PdcXEJN+bCkpQTtaGseLIwL2c7hUwo
-         k+WPGO0XMGV2ADDLL49FU9xw3TbKrc3r4GviZwlZIjJXOTMo+TlRvanlebyF1vrSmJm6
-         vIrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695370150; x=1695974950;
-        h=content-transfer-encoding:mime-version:date:to:from:subject
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2R1uFPZQh5rHaFChaIdksfqptVdy9O1APe6DAZC5D0I=;
-        b=pqbiWbZT39iW6Or/Vj4SGKkXaptGTyVrGsSA9HD0xc4Xwd4mgPWkvwc1gVInr1tuJ4
-         jVEOsRrNPEbMk8n/Xdkye1Js+ZJlRmDgxIvQcJpF7T5OjwnbVdddXbHrTuTh0CbEzi74
-         +eW2ZZj/vh1AAiXQlZ2quJgGzqiLbwb030Ge/3T6iJlyB+efDZsWRFXy67cqVxepsvif
-         UOWdWFrslb1uA1KlTZJaA6vA7b0i5dkznTO72NPc09pcSYH/tbmQE5iyevGG4exoP0j2
-         QOSADOQTtZ/RPCTmTVPHzCASmX4KpMhorCguWXYHGX18FG7L4a93dReprMLETE1ec+Oi
-         29pA==
-X-Gm-Message-State: AOJu0YwUnN/JuEdx2ci6MplEe3KxM1WJp/QAx1SY/r0wvxa7eVEBd21o
-        EaXf9i5Crz+f5sTnLLv/WRSbKw==
-X-Google-Smtp-Source: AGHT+IGog4fauLibzha4KpXKqEK5AYSa6a1Ny+SSsUJzl0+tJeVaaAPf3XdtD7Qo1Ghy/9d6mvjLDA==
-X-Received: by 2002:a05:6a20:8410:b0:12e:5f07:7ede with SMTP id c16-20020a056a20841000b0012e5f077edemr10419235pzd.41.1695370150487;
-        Fri, 22 Sep 2023 01:09:10 -0700 (PDT)
-Received: from centos78 (60-248-88-209.hinet-ip.hinet.net. [60.248.88.209])
-        by smtp.googlemail.com with ESMTPSA id c24-20020a170902d91800b001bf846dd2d0sm2852442plz.13.2023.09.22.01.09.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Sep 2023 01:09:09 -0700 (PDT)
-Message-ID: <5445094045757819ea650b138a8e03d833e2cbfc.camel@areca.com.tw>
-Subject: [PATCH V2 0/3] scsi: arcmsr: support Areca ARC-1688 Raid controller
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 22 Sep 2023 16:09:09 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 04:10:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C25A9;
+        Fri, 22 Sep 2023 01:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695370203; x=1726906203;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=15lmJ/+YhtIrXX8BY7eWBkaUaOZiS9o2XSYGf6Nf8CE=;
+  b=dQ6Gt3Nqnt7qZnMdfEv6PIldnZtDSzOjdx/1wVP03X03meIOrHtwgKzy
+   3+cPIATHHwd/UZPHiWW3yrzOIG3OhShz9c4nyHj3MzBYyvMGLycQ8V+TG
+   P8QKKdbqtW9D9aehmLYXGEFVvnOIQH7CyULGaEyTPtGeEXWm/DXRlgCoT
+   J/Fzr4GGK3qlb8j/b5U7YrhYbG9ehQ2cCoRk1nYR8U7GQzbB9U4etM+IQ
+   smRo0xOMjoPVd/mCAIQuvTkdGbr8rIXMcmkNzsBchauTkZBkOzJg19+Lk
+   b+om/WF2agED3OAcrkboCZ8yqg3Pj9hCZB5o84ueBWTGaPvr38Vowti9r
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="444873882"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="444873882"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 01:10:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10840"; a="921079097"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="921079097"
+Received: from bmatwiej-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.8.2])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 01:10:00 -0700
+From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 0/2] selftests/resctrl: Bug fix and optimization
+Date:   Fri, 22 Sep 2023 10:09:33 +0200
+Message-ID: <cover.1695369120.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patches are made over mkp's 6.7/scsi-staging
+Write_schemata() uses fprintf() to write a bitmask into a schemata file
+inside resctrl FS. It checks fprintf() return value but it doesn't check
+fclose() return value. Error codes from fprintf() such as write errors,
+are buffered and flushed back to the user only after fclose() is executed
+which means any invalid bitmask can be written into the schemata file.
 
-This series add supporting new Raid and new PCI device ID controllers
-- support new Raid controller ARC-1688
-- support new PCI device ID 1883 and 1886
-- updated driver's version to v1.51.00.14-20230915
----
+Rewrite write_schemata() to use syscalls instead of stdio file
+operations to avoid the buffering.
+
+The resctrlfs.c file defines functions that interact with the resctrl FS
+while resctrl_val.c file defines functions that perform measurements on
+the cache. Run_benchmark() fits logically into the second file before
+resctrl_val() function that uses it.
+
+Move run_benchmark() from resctrlfs.c to resctrl_val.c and remove
+redundant part of the kernel-doc comment. Make run_benchmark() static
+and remove it from the header file.
+
+Patch series is based on [1] which is based on [2] which are based on
+ksefltest next branch.
+
+Changelog v4:
+- Change git signature from Wieczor-Retman Maciej to Maciej
+  Wieczor-Retman.
+- Rebase onto [1] which is based on [2]. (Reinette)
+- Add fcntl.h explicitly to provide glibc backward compatibility.
+  (Reinette)
+
+Changelog v3:
+- Use snprintf() return value instead of strlen() in write_schemata().
+  (Ilpo)
+- Make run_benchmark() static and remove it from the header file.
+  (Reinette)
+- Added Ilpo's reviewed-by tag to Patch 2/2.
+- Patch messages and cover letter rewording.
+
+Changelog v2:
+- Change sprintf() to snprintf() in write_schemata().
+- Redo write_schemata() with syscalls instead of stdio functions.
+- Fix typos and missing dots in patch messages.
+- Branch printf attribute patch to a separate series.
+
+[v1] https://lore.kernel.org/all/cover.1692880423.git.maciej.wieczor-retman@intel.com/
+[v2] https://lore.kernel.org/all/cover.1693213468.git.maciej.wieczor-retman@intel.com/
+[v3] https://lore.kernel.org/all/cover.1693575451.git.maciej.wieczor-retman@intel.com/
+
+[1] https://lore.kernel.org/all/20230915154438.82931-1-ilpo.jarvinen@linux.intel.com/
+[2] https://lore.kernel.org/all/20230904095339.11321-1-ilpo.jarvinen@linux.intel.com/
+
+Maciej Wieczor-Retman (2):
+  selftests/resctrl: Fix schemata write error check
+  selftests/resctrl: Move run_benchmark() to a more fitting file
+
+ tools/testing/selftests/resctrl/resctrl.h     |  1 -
+ tools/testing/selftests/resctrl/resctrl_val.c | 50 +++++++++++
+ tools/testing/selftests/resctrl/resctrlfs.c   | 82 ++++---------------
+ 3 files changed, 67 insertions(+), 66 deletions(-)
+
+
+base-commit: 3b3e8a34b1d50c2c5c6b030dab7682b123162cb4
+-- 
+2.42.0
 
