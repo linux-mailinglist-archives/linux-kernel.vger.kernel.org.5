@@ -2,85 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA9A7AB048
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE047AB04D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbjIVLNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        id S233554AbjIVLN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbjIVLNR (ORCPT
+        with ESMTP id S233537AbjIVLNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:13:17 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A6D114;
-        Fri, 22 Sep 2023 04:13:10 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4053db20d03so6060525e9.2;
-        Fri, 22 Sep 2023 04:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695381189; x=1695985989; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ijlwZ6JRdK1U0SnHerxGcEJGjK9VRf4PRp/VeOrzMQ=;
-        b=Ui54MJAW4B/VxxzITX2OiWb98Jy5pJ7NHhxjB+lfMtvygA44FuyaWuBSmeiVF77qR+
-         P8GX72ChlT8RsA454fmSjj9RH6PMLFVmRyYhWt3xKCpAFP/hrK06HigE1MnOQSyfaU9t
-         ws9sQKJuegRYhQacMuFu9YMCfGtJGeQR68VO5X3tpiJmXljCJjxjftbhSmQ0/l5TDLeU
-         yA5S54fyVyDpFWi7nveLTxOo0GrJ+l/dcuWBKHx+2D42Rp+5sibILDLV9Kcz1UoU2CPN
-         DkCtMUhx9p1x11JFcx22kUOY1f8oUXTceZINFfn+sujZ5CtJU05vUIP4gZuSWVUfxDRC
-         syqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695381189; x=1695985989;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ijlwZ6JRdK1U0SnHerxGcEJGjK9VRf4PRp/VeOrzMQ=;
-        b=ITlib30bkGKJfD9QCXCBPzA5k1zJpX0bBIgokw/NyT9DL6aeaY6Usoxr2uRfIoS2nC
-         Bq26EMby0mlVHIJtzw6SbUF3LqdIdbvInJ0QbqPxqWxvlM/5yOZA5ydNpcy8F9LABOId
-         +AkfmGwdjs/k9TCRPPxlqHrHs7fCr77PHfUqRAQeCS8p4chPahhWxl/n98cXFy+mkxA/
-         astVIYobGCISOjkpekowgftVMD03EWPyh7gUWOaOEd4NOS4fQDAyd9fglUcsgwOVFz5T
-         8nJTTye30tphF8VrqIIJgXf05ojh2551iO4I3urZhw5SUsX6Iz4ED8uQWVhWqgZAwANU
-         JCkQ==
-X-Gm-Message-State: AOJu0YymSZd3YVRkHwbCOraqFR4unpzJwNpp24GjwRTPMxMAzIf3ZuUJ
-        +MgINd11X7CtYrlKnT5RKAw=
-X-Google-Smtp-Source: AGHT+IHTzusDD1Vj12nFTAofcTh5ujgUoGMSUjxYvnBVt5FrCDDmYAOQS2TIjfWAp8W6AwxsKaiBCA==
-X-Received: by 2002:a05:600c:152:b0:403:cc64:2dbf with SMTP id w18-20020a05600c015200b00403cc642dbfmr7548257wmm.27.1695381188563;
-        Fri, 22 Sep 2023 04:13:08 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id g10-20020adffc8a000000b003176c6e87b1sm4191765wrr.81.2023.09.22.04.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:13:07 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 3/3] net: stmmac: increase TX coalesce timer to 5ms
-Date:   Fri, 22 Sep 2023 13:12:47 +0200
-Message-Id: <20230922111247.497-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230922111247.497-1-ansuelsmth@gmail.com>
-References: <20230922111247.497-1-ansuelsmth@gmail.com>
+        Fri, 22 Sep 2023 07:13:54 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9906AF
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 04:13:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D5A6DA7;
+        Fri, 22 Sep 2023 04:14:25 -0700 (PDT)
+Received: from [192.168.178.106] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 43AC23F5A1;
+        Fri, 22 Sep 2023 04:13:45 -0700 (PDT)
+Message-ID: <2247ced8-c4f9-80a7-a0a2-0953abed135f@arm.com>
+Date:   Fri, 22 Sep 2023 13:13:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arch_topology: Support SMT control on arm64
+Content-Language: en-US
+To:     Yicong Yang <yangyicong@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org, sudeep.holla@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     yangyicong@hisilicon.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, jonathan.cameron@huawei.com,
+        prime.zeng@hisilicon.com, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+References: <20230919123319.23785-1-yangyicong@huawei.com>
+ <130ce530-a3c1-0918-e04f-cb7d94aef57b@arm.com>
+ <80b2556c-b56c-ca23-22c7-70a0a3995701@huawei.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <80b2556c-b56c-ca23-22c7-70a0a3995701@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,40 +51,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8fce33317023 ("net: stmmac: Rework coalesce timer and fix
-multi-queue races") decreased the TX coalesce timer from 40ms to 1ms.
+On 21/09/2023 10:56, Yicong Yang wrote:
+> On 2023/9/21 1:08, Dietmar Eggemann wrote:
+>> On 19/09/2023 14:33, Yicong Yang wrote:
+>>> From: Yicong Yang <yangyicong@hisilicon.com>
 
-This caused some performance regression on some target (regression was
-reported at least on ipq806x) in the order of 600mbps dropping from
-gigabit handling to only 200mbps.
+[...]
 
-The problem was identified in the TX timer getting armed too much time.
-While this was fixed and improved in another commit, performance can be
-improved even further by increasing the timer delay a bit moving from
-1ms to 5ms.
+> If you manually disable SMT by offline each CPUs the cpu_smt_control will
+> not be updated. It'll updated when using the interface like
+> `/sys/devices/system/cpu/smt/control` or cmdline. By these means,
+> the framework will use topology_is_primary_thread() to decide which CPU
+> in the SMT will keep online:
+> 
+> // e.g. echo off > /sys/devices/system/cpu/smt/control
+> [ kernel/cpu.c ]
+> control_store()
+>   __store_smt_control()
+>     cpuhp_smt_disable()
+>       for_each_online_cpu(cpu)
+>         if (topology_is_primary_thread(cpu))
+>           continue;            <---------- will skip the primary thread
+>       [...]
+>       cpu_smt_control = CPU_SMT_DISABLED;
+> 
+> topology_is_primary_thread() checking only applies to the SMT control but
+> not to the CPU offline.
 
-The value is a good balance between battery saving by prevending too
-much interrupt to be generated and permitting good performance for
-internet oriented devices.
-
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/ethernet/stmicro/stmmac/common.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 403cb397d4d3..2d9f895c2193 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -290,7 +290,7 @@ struct stmmac_safety_stats {
- #define MIN_DMA_RIWT		0x10
- #define DEF_DMA_RIWT		0xa0
- /* Tx coalesce parameters */
--#define STMMAC_COAL_TX_TIMER	1000
-+#define STMMAC_COAL_TX_TIMER	5000
- #define STMMAC_MAX_COAL_TX_TICK	100000
- #define STMMAC_TX_MAX_FRAMES	256
- #define STMMAC_TX_FRAMES	25
--- 
-2.40.1
-
+I see, make sense. Retested on my SMT4 Arm64 server with 256 CPUs.
