@@ -2,221 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFC47AB666
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924887AB66B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbjIVQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S230029AbjIVQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 12:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbjIVQov (ORCPT
+        with ESMTP id S229541AbjIVQqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:44:51 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69875A1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:44:45 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MGNjh0002161;
-        Fri, 22 Sep 2023 16:44:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-03-30;
- bh=mhzUT0KN9fF+kbbaEmyTFHf+NNCmOk0tVA/71QgXRYA=;
- b=AI96eiHwGx5Eiw/lqJJ8rzvt1gHhtiQdX3lxVwkv0gV00LDbe+aqqwDmgaA0H40wuVs1
- BA+Qpt1lcQ719qlsr6h1OTWxQciSznCRLCFKIQOo8j2fY1xJLqj1dkhKdj5LFmOWSpPZ
- d3ln57QPiVmt8NvhwzRRkvCI7IiHZnVK3LcMKQOOd+D0e3OD03PJsmIpfgGeebTES1cd
- Mk8jCGlyhQs7HvYBo0dhEEgxwgQ4/D+0zg7oLjPQamVjJtn6yrX4esY5HEdM0ci8E0Od
- Y1+LaURMaGkJh4Wf5sIsDOY44514XviyxXvoIRSLk0H8hQZtnQqM4ej/XNCNU5wBqFMC bA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t8tt029ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Sep 2023 16:44:15 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38MFScNg010751;
-        Fri, 22 Sep 2023 16:44:14 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t8u1a9ywc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Sep 2023 16:44:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eAAE8BWBJmmTllCsIrMB27ErkQKErdGsm7dM6CNKZHGLHYxsX6sUOcCe3mgpIQWpOAngKhcDbziuuK1Ye5lhmPICcxjzwBSQlKn7FTrH/jBQe48babYWmtw15zFZ9hlI4GNnztWoiU7CgvYMd5CrLIGZ8UKpiWpaw/erInbJode9ejLsR11l9BDuO6lnII+V6ggeoMpic0eW4BZQNWvqGN3+a1QNm/VioyXnnVcR1PTyLmjiIfk2ExY9wtOKH3iCh1EX6h7Vdo1C4BYRHs4wEQgE2dLRbzUeRy/Coau3+0XfkyU8mCAZpjKTzWmeBm9cLk9OgGqvRRekCSm7oqyPmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pUmlZ4kYRTuC5N+B2zpkmWthT78PfDhO6uPpu/aVWBc=;
- b=E4mlgxpOMEIwNrPKhkxiUZfSxRenXiyviIw4vYud5QnYWz/MrRLK/FQjNVDGFZh9DbCXMEbXp3SKr4jNXiZryDOUXcTxQPqGaJORRKrL3X6ZuP6k764MrQrwa8ezID1e0uO7XaVFGDaGnZhWVxzyQNPrAaHM7+6L+E4HW+VAWpLgXg5Oph6S+vWDsH1GDvGHOjoUg5cVE4VE7GLOhDtLULqHfJNYxeYpV1KcqbGMpkqJh1lWifHcfLP5x63GT8WicjSgoKIpVTrVYiRTW9cXMjw9eQyO+VoxFMCNVhAd0k49LwpKDqrQilzTs9a5NC5cVU4FF5DGrth5menShZDI4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 22 Sep 2023 12:46:50 -0400
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2626EF1;
+        Fri, 22 Sep 2023 09:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pUmlZ4kYRTuC5N+B2zpkmWthT78PfDhO6uPpu/aVWBc=;
- b=rOSrvKw3h+Up1z22XwxMNUHHvx0lYbIwMIh6OhdBhzeQDMvfoPhw7UdxspMN+bL5hFCkpvg7NX2mHbJ4plgmUgeszHtXxfD3Itr4EZVFCZA5BeV5CdKd2Er4eP4aPwvpN6o+ElmQTPweOFjvuQLsrkIAjRG/KqAiOu9iMtodE0Y=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by MW5PR10MB5876.namprd10.prod.outlook.com (2603:10b6:303:190::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Fri, 22 Sep
- 2023 16:44:11 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::c621:12ca:ba40:9054]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::c621:12ca:ba40:9054%5]) with mapi id 15.20.6813.017; Fri, 22 Sep 2023
- 16:44:11 +0000
-Date:   Fri, 22 Sep 2023 09:44:08 -0700
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, leit@meta.com
-Subject: Re: [PATCH 1/2] hugetlbfs: extend hugetlb_vma_lock to private VMAs
-Message-ID: <20230922164408.GA224968@monkey>
-References: <20230920021811.3095089-1-riel@surriel.com>
- <20230920021811.3095089-2-riel@surriel.com>
- <20230921224201.GB21193@monkey>
- <c3309a3486df6ad2901d4d5c23e7bc6f4b8a9a24.camel@surriel.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3309a3486df6ad2901d4d5c23e7bc6f4b8a9a24.camel@surriel.com>
-X-ClientProxiedBy: MW4PR04CA0290.namprd04.prod.outlook.com
- (2603:10b6:303:89::25) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695401204; x=1726937204;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=rT1d4LkDFWmE0sBuTMdCMOZNisLqYmvSr9uOgV4mpuY=;
+  b=P97uIQNbw5dk7JMmkCxzAzJ2jk9fOPJfqOmcOEsyVisQCQkKkJp851a3
+   lRXWqy/ulM7N/2YHjBPk5ttKRnVUDF84Jdv4VUkBTvkUW/v/VaYOha6rM
+   R39qIPE8QXOp/6qcLC6E+vsscoDWkyHgsM26DEpEoe08o+CrLx6QJZGoK
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.03,167,1694736000"; 
+   d="scan'208";a="360139984"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 16:46:40 +0000
+Received: from EX19MTAUWA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com (Postfix) with ESMTPS id E40DF103FA7;
+        Fri, 22 Sep 2023 16:46:37 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 22 Sep 2023 16:46:37 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.88.169.132) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 22 Sep 2023 16:46:34 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <edumazet@google.com>
+CC:     <bpf@vger.kernel.org>, <catalin.marinas@arm.com>,
+        <davem@davemloft.net>, <dima@arista.com>, <dsahern@kernel.org>,
+        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+        <syzbot+68662811b3d5f6695bcb@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>, <kuniyu@amazon.com>
+Subject: Re: [syzbot] [net?] memory leak in tcp_md5_do_add
+Date:   Fri, 22 Sep 2023 09:46:26 -0700
+Message-ID: <20230922164626.34472-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CANn89i+EUqRK9RsXn7Gu4iFiBcEZUzkMLmZ9vogFYxBbmaBHkQ@mail.gmail.com>
+References: <CANn89i+EUqRK9RsXn7Gu4iFiBcEZUzkMLmZ9vogFYxBbmaBHkQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|MW5PR10MB5876:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb064df0-8cc2-42f4-74d4-08dbbb8b25f6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: czGavDO9y8VqAy13i0yj0fy2Qe1OtxQj4JZ2bQdpdOeOlVlFraPO5Wh6JPkfsQysLUo3Wq4tS6c0OKiwu/qF3otBUG7G4BAZ7TpK6OvIA4VUMKNUAht7IQfIrMXCrxskO5Jls9DqmwOjiGuxYrrocxmcWeNIERwV4+40MviB4Or31piVHndI9ZUKxAg+LqJxNTjgs2WOUbTwkUgSypNphI+RckZl18xpYUGx6bYnan9Si9dO8mIwgBpgwjU844FNVzAuH4uVV9trQV0V6Tm0hMlsbbr7Rr/wQu+YYr4Fdn93X5uNrYb5/rtf4WHzGPh34f5SXrcpY5mFwNFeQgYeOAoeReeK9dtCBt43NBgxe93MEp6EVRXmtZ8sbLtRGEDCnrJM1/mvagjEcfeAw018emZNlxgik7BVmTwYJCL6G/oewul3kN2D1oKHxF307s68nijYZOtCu0n+hvdBMsqqiiW0eWDta/yIozs1g2p2dkv1n1yWZWJSvR5OfF/Xwf/z4WXQMoPYiSRxP1V5LrurIh1P4W07f2X2l1RwUQG7FMU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(396003)(346002)(39860400002)(136003)(451199024)(1800799009)(186009)(38100700002)(316002)(44832011)(83380400001)(33656002)(41300700001)(4326008)(8676002)(966005)(6486002)(5660300002)(478600001)(66556008)(66476007)(8936002)(2906002)(66946007)(6916009)(86362001)(6666004)(6506007)(53546011)(1076003)(26005)(33716001)(9686003)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?xhwv6TFCZPvKmT/IQsGesMHdUkYQsIVCPQze221DfWIOhIOjZh5U4bEB9S?=
- =?iso-8859-1?Q?fNRbVX/dkg9ilbUatKYN8+MLQWs8/grsl4o+dTrOiYj056TMod5CGpWVT4?=
- =?iso-8859-1?Q?VcVMWuGovJgKccbFpokRM6vQ4cg7a/ZU7ECT9sd1GE0DOSI93Vd21c1RcF?=
- =?iso-8859-1?Q?MdvkA/KN5F8wsY/vAGqe/hWPYulAF5dlFNa9ZBEXFACZXYmUI+EY+vKTMT?=
- =?iso-8859-1?Q?Q+LwmwKbmRzLLCRKhmgv1zGm5c//zeTL2u+j1m4oAmOLxJY8AJhVq7Cqi4?=
- =?iso-8859-1?Q?HepVw0UZJ1YDCv7M38fTtpzE4SuyANwk0v4gLQ+NDCwM1XoHr6GsEQzS/k?=
- =?iso-8859-1?Q?hd57nyDjLd1b0E+PwbHOey2DBGW344m7qFCr0NmwM852iv9KQ5sypAW7Zc?=
- =?iso-8859-1?Q?Mf2tvOZlqHZipXHLmyT09fw2qYTNOK4/Y11cme7ppAJacBzQsEI0VHIdSB?=
- =?iso-8859-1?Q?L5Vdx+7RASVTTaITqACrj5PjphWZEpCBvwSzsf1mnSrUwo2my+WecFrEqm?=
- =?iso-8859-1?Q?9DLPE6Oh420SsxV5/B6CoksdwAt1di7MPbmjxehZQjMKtY6bBLHbZxIIq/?=
- =?iso-8859-1?Q?Qb5ZqrrUAkmQ+RBj+T5rc0QA3M4Z2sAWHwwOx3SqR84tGIb7+qHLLYcQRc?=
- =?iso-8859-1?Q?ypeokIbbvBr56h4l7LbaPMV6V6Uebq/1QEpq2QodG927YvzrWyqwhupVG/?=
- =?iso-8859-1?Q?MPkf/gUboOS8KCuPGSyjN1ucyJnNgYAFKhoSB0FlBTWn1ndV2Jy+YoPShh?=
- =?iso-8859-1?Q?1JlNV2pEbOrSRSSYZ59+V2sG7H+xCFG8b4H4Y/Oyhk/K24sSzBIULVUH12?=
- =?iso-8859-1?Q?dmLGE/ayafagHLYuSYf9TPaWN/veyQWPe3WK2GNe0ZMwMdgj3WfBqCsaNv?=
- =?iso-8859-1?Q?BpUZLr+uAYPpohferjnfgCbn/TvjJl3N11bSS5x9+jWdQWjKjdgEZkmtci?=
- =?iso-8859-1?Q?fiIf4XfRWWyrHdAUd2znIo9Ksxw/KArcU5nBezge+6srOUYYXoPBL96tOG?=
- =?iso-8859-1?Q?9PPWFF9zwcsQh47iQmGkeZF7tMIyxGLWAtgGa67C/FRvHmqbdv/DsgQinp?=
- =?iso-8859-1?Q?H57HCW6LprNXHmtFaxINPoJxqsxGk2TUKP9HbC2EDXfprohmLZ+t3BYW1g?=
- =?iso-8859-1?Q?bPvgpYt5HTKNbrbhpOjlFUyQ/LrXj9BEKOyfLBqbqcM/PZJvpEuuEVble9?=
- =?iso-8859-1?Q?Raxf6txXmX80j7JahbcRtu0onRuxZ7k1mfHrme69TManRs4v2qDM4RYxq6?=
- =?iso-8859-1?Q?LI7zdiH2INwv4a9GiKTUIBn6hOjI+WOVqkpz7BVI710uwiQbycEZpp9O1Q?=
- =?iso-8859-1?Q?QBCwqnoV0jiIai622ed71xF29/AKQ8ArlLHeJLy6tTE20xjW0/fSxZFk6R?=
- =?iso-8859-1?Q?Sfiu4g+Ti06YVB1CnAAqLYk6f7k5nxoGQ0XYXsAAFEMUqfRF3PtVOY/tJq?=
- =?iso-8859-1?Q?qRSLDxUQG6IfmXOzWmualrjWbZGSUa7BChRobmv0FeGODSuDDMGnJp8ayS?=
- =?iso-8859-1?Q?bfZby2qbb9wrvPPW/CyxO59O7w6Bqzsw6tSXVYyEH4E0kVQvDkDLY98F0I?=
- =?iso-8859-1?Q?gnkleIpd7fw2+YpMk+itl4OM/OghMpnKNUYBIlprd8c6kOBF+D/Uw6vvtY?=
- =?iso-8859-1?Q?Uk0RNGS8IqbkuYOyG40leCknx4efNK1y2+?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: MoZXDiUzMDGTwI2Qta82GGcCGkyrNvSp6EGnl3tbNH0klcRC9e0+DVa4b31Ve9bkRSBr9ODRY/x0dZgGVhUwfLtnzJhpEydwBzsjdNf1IWuvGo/AA7Q1Iro2Y9+l1PTSkULnave9LKUUnGduYWWgx0bwimi6JadBVrVuIwg3npNJZyNORCd7bD9ZrCc+r54+JzMh/sxrUoyMd9COJtLDlZrI2zl/a06vXijd9+EBk3WIFrFh/hyZ7tccUTUbtj4DXwQPfiMDsPIUpTFZUyQBFpeKx2SIxsyKo/q5ZzWrAHKfLLRScZ7VhgsUPzJWpPcRf6GbL4ioNiHM2VvYqM42D96BOCPalEAxE9bK2WTAYaTa2QpqAajtl8FiXx2pbDIgkhwQDGQG+/waq0dydralI0iTI5UPbkjtMZTFe2cscn4osOBFvzpaNStf1hYu6JzMhLCez/bKkO5MujUIfUXD4LGJBqNlHPiFUrUp6IonJl7pM6iFgqpPi1wJMDd/5RpSUS08v0GbxA6xw4IGb1C3v/SnAM80i5F0JBjFFX9EnUwU/b6KUxogYq7rmA9FifWFZrsvgbSwB1pGTRejG++DwhCrRFoHNzeuS56pN2MuNybBtc/jYt7F60yMmjwgmFBjnxDZNRmxgUoEJpYfbcllhc5owWN31+Ok+e3pAaQ6R/iaqT6hzh06xABFJJRvcfq//iRM3uTdqhJp5DuZglKBuQDI+e+TTQMB+JDJpdfURwVKYkrrolVIcFj0ds2x4Hox+9OfJ1YhPCSezOG8FoIGf12k76SAFxmZoBJl+j5+IZz4GOg1Wj1X8lbxoXRNNK7vhhOdq4VeurfNVswCfSGlVWm7fTkFD2KezKjyvKG8pbMH0v/mHftUwcUu7l/Ko+Vh+Vqd9m9eddreKt19ar70WfOYrmFe0Xwe63i1tBVBr84=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb064df0-8cc2-42f4-74d4-08dbbb8b25f6
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 16:44:11.6767
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZqBnY9R4kibX7Q3AeQh4+Wyy4RXdMIzWtsd7CBlJgWUUO/J9x934igRsJLpoKMYdQGUY2QwBLOQ+6lrzBtcj7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR10MB5876
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-22_15,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309220144
-X-Proofpoint-GUID: hdug_rOdSBwTvQU1HXu-EvV-n5TLPY7c
-X-Proofpoint-ORIG-GUID: hdug_rOdSBwTvQU1HXu-EvV-n5TLPY7c
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.88.169.132]
+X-ClientProxiedBy: EX19D039UWB002.ant.amazon.com (10.13.138.79) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/22/23 10:37, Rik van Riel wrote:
-> On Thu, 2023-09-21 at 15:42 -0700, Mike Kravetz wrote:
-> > On 09/19/23 22:16, riel@surriel.com wrote:
-> > > From: Rik van Riel <riel@surriel.com>
-> > > 
-> > > Extend the locking scheme used to protect shared hugetlb mappings
-> > > from truncate vs page fault races, in order to protect private
-> > > hugetlb mappings (with resv_map) against MADV_DONTNEED.
-> > > 
-> > > Add a read-write semaphore to the resv_map data structure, and
-> > > use that from the hugetlb_vma_(un)lock_* functions, in preparation
-> > > for closing the race between MADV_DONTNEED and page faults.
-> > > 
-> > > Signed-off-by: Rik van Riel <riel@surriel.com>
-> > > ---
-> > >  include/linux/hugetlb.h |  6 ++++++
-> > >  mm/hugetlb.c            | 36 ++++++++++++++++++++++++++++++++----
-> > >  2 files changed, 38 insertions(+), 4 deletions(-)
-> > 
-> > This looks straight forward.
-> > 
-> > However, I ran just this patch through libhugetlbfs test suite and it
-> > hung on
-> > misaligned_offset (2M: 32).
-> > https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/misaligned_offset.c
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 22 Sep 2023 05:20:34 +0200
+> On Fri, Sep 22, 2023 at 1:15â€¯AM Dmitry Safonov <dima@arista.com> wrote:
+> >
+> > Hi Eric,
+> >
+> > On 9/21/23 18:01, Dmitry Safonov wrote:
+> > > On 9/21/23 17:59, Eric Dumazet wrote:
+> > >> On Thu, Sep 21, 2023 at 6:56â€¯PM syzbot
+> > >> <syzbot+68662811b3d5f6695bcb@syzkaller.appspotmail.com> wrote:
+> > >>>
+> > >>> Hello,
+> > >>>
+> > >>> syzbot found the following issue on:
+> > >>>
+> > >>> HEAD commit:    ee3f96b16468 Merge tag 'nfsd-6.3-1' of git://git.kernel.or..
+> > >>> git tree:       upstream
+> > >>> console output: https://syzkaller.appspot.com/x/log.txt?x=1312bba8c80000
+> > >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=f5733ca1757172ad
+> > >>> dashboard link: https://syzkaller.appspot.com/bug?extid=68662811b3d5f6695bcb
+> > >>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > >>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105393a8c80000
+> > >>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1113917f480000
+> > >>>
+> > >>> Downloadable assets:
+> > >>> disk image: https://storage.googleapis.com/syzbot-assets/29e7966ab711/disk-ee3f96b1.raw.xz
+> > >>> vmlinux: https://storage.googleapis.com/syzbot-assets/ae21b8e855de/vmlinux-ee3f96b1.xz
+> > >>> kernel image: https://storage.googleapis.com/syzbot-assets/803ee0425ad6/bzImage-ee3f96b1.xz
+> > >>>
+> > >>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > >>> Reported-by: syzbot+68662811b3d5f6695bcb@syzkaller.appspotmail.com
+> > >>>
+> > >>> executing program
+> > >>> BUG: memory leak
+> > >>> unreferenced object 0xffff88810a86f7a0 (size 32):
+> > >>>   comm "syz-executor325", pid 5099, jiffies 4294978342 (age 119.240s)
+> > >>>   hex dump (first 32 bytes):
+> > >>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> > >>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> > >>>   backtrace:
+> > >>>     [<ffffffff81533d64>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1061
+> > >>>     [<ffffffff840edaa0>] kmalloc include/linux/slab.h:580 [inline]
+> > >>>     [<ffffffff840edaa0>] tcp_md5sig_info_add net/ipv4/tcp_ipv4.c:1169 [inline]
+> > >>>     [<ffffffff840edaa0>] tcp_md5_do_add+0xa0/0x150 net/ipv4/tcp_ipv4.c:1240
+> > >>>     [<ffffffff84262c73>] tcp_v6_parse_md5_keys+0x253/0x4a0 net/ipv6/tcp_ipv6.c:671
+> > >>>     [<ffffffff840c720e>] do_tcp_setsockopt+0x40e/0x1360 net/ipv4/tcp.c:3720
+> > >>>     [<ffffffff840c81fb>] tcp_setsockopt+0x9b/0xa0 net/ipv4/tcp.c:3806
+> > >>>     [<ffffffff83d72a8b>] __sys_setsockopt+0x1ab/0x330 net/socket.c:2274
+> > >>>     [<ffffffff83d72c36>] __do_sys_setsockopt net/socket.c:2285 [inline]
+> > >>>     [<ffffffff83d72c36>] __se_sys_setsockopt net/socket.c:2282 [inline]
+> > >>>     [<ffffffff83d72c36>] __x64_sys_setsockopt+0x26/0x30 net/socket.c:2282
+> > >>>     [<ffffffff849ad699>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >>>     [<ffffffff849ad699>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> > >>>     [<ffffffff84a0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >>>
+> > >>> BUG: memory leak
+> > >>> unreferenced object 0xffff88811225ccc0 (size 192):
+> > >>>   comm "syz-executor325", pid 5099, jiffies 4294978342 (age 119.240s)
+> > >>>   hex dump (first 32 bytes):
+> > >>>     00 00 00 00 00 00 00 00 22 01 00 00 00 00 ad de  ........".......
+> > >>>     22 0a 80 00 fe 80 00 00 00 00 00 00 00 00 00 00  "...............
+> > >>>   backtrace:
+> > >>>     [<ffffffff8153444a>] __do_kmalloc_node mm/slab_common.c:966 [inline]
+> > >>>     [<ffffffff8153444a>] __kmalloc+0x4a/0x120 mm/slab_common.c:980
+> > >>>     [<ffffffff83d75c15>] kmalloc include/linux/slab.h:584 [inline]
+> > >>>     [<ffffffff83d75c15>] sock_kmalloc net/core/sock.c:2635 [inline]
+> > >>>     [<ffffffff83d75c15>] sock_kmalloc+0x65/0xa0 net/core/sock.c:2624
+> > >>>     [<ffffffff840eb9bb>] __tcp_md5_do_add+0xcb/0x300 net/ipv4/tcp_ipv4.c:1212
+> > >>>     [<ffffffff840eda67>] tcp_md5_do_add+0x67/0x150 net/ipv4/tcp_ipv4.c:1253
+> > >>>     [<ffffffff84262c73>] tcp_v6_parse_md5_keys+0x253/0x4a0 net/ipv6/tcp_ipv6.c:671
+> > >>>     [<ffffffff840c720e>] do_tcp_setsockopt+0x40e/0x1360 net/ipv4/tcp.c:3720
+> > >>>     [<ffffffff840c81fb>] tcp_setsockopt+0x9b/0xa0 net/ipv4/tcp.c:3806
+> > >>>     [<ffffffff83d72a8b>] __sys_setsockopt+0x1ab/0x330 net/socket.c:2274
+> > >>>     [<ffffffff83d72c36>] __do_sys_setsockopt net/socket.c:2285 [inline]
+> > >>>     [<ffffffff83d72c36>] __se_sys_setsockopt net/socket.c:2282 [inline]
+> > >>>     [<ffffffff83d72c36>] __x64_sys_setsockopt+0x26/0x30 net/socket.c:2282
+> > >>>     [<ffffffff849ad699>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >>>     [<ffffffff849ad699>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> > >>>     [<ffffffff84a0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >>>
+> > >>>
+> > >>>
+> > >>> ---
+> > >>> This report is generated by a bot. It may contain errors.
+> > >>> See https://goo.gl/tpsmEJ for more information about syzbot.
+> > >>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >>>
+> > >>> syzbot will keep track of this issue. See:
+> > >>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > >>>
+> > >>> If the bug is already fixed, let syzbot know by replying with:
+> > >>> #syz fix: exact-commit-title
+> > >>>
+> > >>> If you want syzbot to run the reproducer, reply with:
+> > >>> #syz test: git://repo/address.git branch-or-commit-hash
+> > >>> If you attach or paste a git patch, syzbot will apply it before testing.
+> > >>>
+> > >>> If you want to overwrite bug's subsystems, reply with:
+> > >>> #syz set subsystems: new-subsystem
+> > >>> (See the list of subsystem names on the web dashboard)
+> > >>>
+> > >>> If the bug is a duplicate of another bug, reply with:
+> > >>> #syz dup: exact-subject-of-another-report
+> > >>>
+> > >>> If you want to undo deduplication, reply with:
+> > >>> #syz undup
+> > >>
+> > >> Dmitry, please take a look at this bug, we need to fix it before your
+> > >> patch series.
+> > >
+> > > Sure, seems reasonable to me to fix before merging something on top.
+> >
+> > It seems to me that it's related to a race between RCU grace period and
+> > kmemleak scan period. There seems to be a patch [1] that likely fixes
+> > that, albeit I couldn't verify it as all my attempts to reproduce syzbot
+> > issue produced only unrelated to TCP-MD5 log:
+> >
 > 
+> I doubt this, looking at the repro, which seems to abuse a not often
+> used feature of TCP (self connect)
 > 
-> Speaking of "looks straightforward", how do I compile the
-> libhugetlbfs code?
+> # https://syzkaller.appspot.com/bug?id=323165b5fe193114de7a3a6a8bd16cf3a3c36ecf
+> # See https://goo.gl/kgGztJ for information about syzkaller reproducers.
+> #{"repeat":true,"procs":1,"slowdown":1,"sandbox":"none","sandbox_arg":0,"leak":true,"netdev":true,"close_fds":true,"usb":true}
+> r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
+> setsockopt$inet6_tcp_TCP_MD5SIG(r0, 0x6, 0xe,
+> &(0x7f0000000040)={@in6={{0xa, 0x0, 0x0, @local}}, 0x0, 0x0, 0x22,
+> 0x0, "b05423587c18814d6b1a5f25671d09815a4687d637ffc958defc671aad3d4de8ac7d88560c759d600ab650c07ef0ef162b199da0d017fe6f0ae40cfb4e241cf9a990f20f6b8c2c070a61cfad8a2d2600"},
+> 0xd8)
+> connect$inet6(r0, &(0x7f0000000180)={0xa, 0x4001, 0x0, @ipv4={'\x00',
+> '\xff\xff', @remote}}, 0x1c)
+> dup(0xffffffffffffffff)
+> setsockopt$SO_BINDTODEVICE(r0, 0x1, 0x19,
+> &(0x7f00000001c0)='ip6_vti0\x00', 0xff4a)
+
+FWIW, I had the same report and another report for twsk and MD5.
+syzkaller did not find repro though.
+
+---8<---
+BUG: memory leak
+unreferenced object 0xffff888038513480 (size 192):
+  comm "syz-executor.0", pid 36537, jiffies 4295853096 (age 63.376s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 3e fc 43 80 88 ff ff  .........>.C....
+    06 02 20 00 ac 14 14 aa 00 00 00 00 00 00 00 00  .. .............
+  backtrace:
+    [<0000000003e890c3>] __do_kmalloc_node mm/slab_common.c:984 [inline]
+    [<0000000003e890c3>] __kmalloc_node_track_caller+0x4b/0x130 mm/slab_common.c:1005
+    [<0000000026777435>] kmemdup+0x2c/0x60 mm/util.c:131
+    [<000000000318308e>] kmemdup include/linux/fortify-string.h:765 [inline]
+    [<000000000318308e>] tcp_time_wait_init net/ipv4/tcp_minisocks.c:261 [inline]
+    [<000000000318308e>] tcp_time_wait+0x25c/0x3b0 net/ipv4/tcp_minisocks.c:318
+    [<00000000bb86ba54>] tcp_rcv_state_process+0xb36/0x1990 net/ipv4/tcp_input.c:6668
+    [<00000000a26563d5>] tcp_v4_do_rcv+0x18b/0x4a0 net/ipv4/tcp_ipv4.c:1751
+    [<00000000b158e1f0>] sk_backlog_rcv include/net/sock.h:1115 [inline]
+    [<00000000b158e1f0>] __release_sock+0x177/0x1a0 net/core/sock.c:2982
+    [<000000000e8687d8>] __tcp_close+0x252/0x630 net/ipv4/tcp.c:2846
+    [<000000006b8a2f7d>] tcp_close+0x2d/0xc0 net/ipv4/tcp.c:2922
+    [<00000000d4c1915c>] inet_release+0x82/0xf0 net/ipv4/af_inet.c:433
+    [<00000000590c8ed6>] __sock_release+0x4b/0xf0 net/socket.c:657
+    [<00000000d49971a8>] sock_close+0x19/0x30 net/socket.c:1399
+    [<0000000097cacf4d>] __fput+0x1d0/0x4b0 fs/file_table.c:384
+    [<000000006a98802f>] __fput_sync+0x37/0x40 fs/file_table.c:465
+    [<00000000a6ebd3a7>] __do_sys_close fs/open.c:1572 [inline]
+    [<00000000a6ebd3a7>] __se_sys_close fs/open.c:1557 [inline]
+    [<00000000a6ebd3a7>] __x64_sys_close+0x4a/0xc0 fs/open.c:1557
+    [<000000004060032b>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<000000004060032b>] do_syscall_64+0x3c/0x90 arch/x86/entry/common.c:80
+    [<00000000e8d61c9b>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+---8<---
+
+In my syzkaller log, only this program had the MD5 operation.
+I ran this overnight but had no luck for now.
+
+---8<---
+23:51:30 executing program 0:
+r0 = socket$inet(0x2, 0x4000000000000001, 0x0)
+setsockopt$inet_tcp_TCP_MD5SIG(r0, 0x6, 0xe, &(0x7f0000000780)={@in={{0x2, 0x0, @local}}, 0x0, 0x9, 0x6, 0x0, "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030cf00"}, 0xd8) (async)
+bind$inet(r0, &(0x7f0000deb000)={0x2, 0x4e23, @multicast1}, 0x10) (async, rerun: 64)
+sendto$inet(r0, 0x0, 0x0, 0x200007b9, &(0x7f0000000040)={0x2, 0x4e23, @local}, 0x10) (async, rerun: 64)
+socket$inet6(0xa, 0x0, 0x0) (async)
+getsockopt$EBT_SO_GET_INIT_ENTRIES(0xffffffffffffffff, 0x0, 0x83, &(0x7f0000000080)={'filter\x00', 0x0, 0x4, 0x1000, [0x0, 0x8, 0x1, 0x1, 0x0, 0x7fffffff], 0x4, &(0x7f0000000000)=[{}, {}, {}, {}], &(0x7f0000000880)=""/4096}, 0x0) (async, rerun: 32)
+socket(0x0, 0x0, 0x0) (async, rerun: 32)
+r1 = openat2(0xffffffffffffffff, &(0x7f0000000100)='./file0\x00', &(0x7f0000000140)={0x20000, 0x8, 0x14}, 0x18)
+bind$inet(r1, &(0x7f0000000180)={0x2, 0x4e22, @remote}, 0x10) (async)
+sendmsg$nl_route(0xffffffffffffffff, 0x0, 0x0)
+---8<---
+
+
 > 
-> The __morecore variable, which is pointed at either the
-> THP or hugetlbfs morecore function, does not seem to be
-> defined anywhere in the sources.
+> You could not have KMEMLEAK in the kernel, and run the repro a thousand times.
 > 
-> Do I need to run some magic script (didn't find it) to
-> get a special header file set up before I can build
-> libhugetlbfs?
-
-libhugetlbfs is a mess!  Distros have dropped it.  However, I still find
-the test cases useful.  I have a special VM with an old glibc just for
-running the tests.
-
-Sorry, can't give instructions for using tests on a recent glibc.
-
-But, back to this patch ...
-With the hints from the locking debug code, it came to me on my walk this
-morning.  We need to also have __hugetlb_vma_unlock_write_free() work
-for private vmas as called from __unmap_hugepage_range_final.  This
-additional change (or something like it) is required in this patch.
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index f906c5fa4d09..8f3d5895fffc 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -372,6 +372,11 @@ static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		__hugetlb_vma_unlock_write_put(vma_lock);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		/* no free for anon vmas, but still need to unlock */
-+		up_write(&resv_map->rw_sema);
- 	}
- }
- 
-
--- 
-Mike Kravetz
+> Then compare /proc/slabinfo before/after.
