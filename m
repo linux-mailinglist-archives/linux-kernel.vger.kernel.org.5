@@ -2,200 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4853B7AB082
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AAB7AB084
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 13:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjIVLWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 07:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S233640AbjIVLWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 07:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbjIVLWN (ORCPT
+        with ESMTP id S233551AbjIVLWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:22:13 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E24AC;
-        Fri, 22 Sep 2023 04:22:03 -0700 (PDT)
-Received: from [192.168.1.215] (unknown [122.172.83.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 15E33161CB4;
-        Fri, 22 Sep 2023 13:21:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1695381720; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ojj9etzDaC5EV1Z4YZ0pUkwqSiZRleEiS16sMRmYFpM=;
-        b=e94AlDA0DDtl9tfN8qv7+o85cWHA9Y3eJwGIxAvh47xgSV11AZPJxLCnc2ZET77BZm6qYv
-        xlrhZt6E5c2yqednC60JhaKBtBWmJijyOkojhzhJlRr+/Z9OqZuyNnQOdrNPeMBBEqphZw
-        7CaDNGZDYXHO2/58vV++WvscGPpg4M4=
-Message-ID: <2467f0fa-94ec-4449-8d7d-765e996dece7@ixit.cz>
-Date:   Fri, 22 Sep 2023 16:51:52 +0530
+        Fri, 22 Sep 2023 07:22:43 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCC28F;
+        Fri, 22 Sep 2023 04:22:36 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qjeF0-0001kI-Kc; Fri, 22 Sep 2023 13:22:34 +0200
+Message-ID: <b5e822ff-4b7c-4617-96c8-5b132df814ab@leemhuis.info>
+Date:   Fri, 22 Sep 2023 13:22:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To:     paulmck@kernel.org
-Cc:     ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        dan.carpenter@linaro.org, gregkh@linuxfoundation.org,
-        jbaron@akamai.com, jpoimboe@kernel.org, jstancek@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lkft-triage@lists.linaro.org, ltp@lists.linux.it,
-        mark.rutland@arm.com, peterz@infradead.org, rcu@vger.kernel.org,
-        robin.murphy@arm.com, rostedt@goodmis.org, will@kernel.org
-References: <6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop>
-Subject: Re: [LTP] arm64: Unable to handle kernel execute from non-executable
- memory at virtual address ffff8000834c13a0
-Content-Language: en-US
-Reply-To: 6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop
-From:   David <david@ixit.cz>
-In-Reply-To: <6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH 1/3] wifi: mt76: mt7915: remove VHT160 capability on
+ MT7915
+Content-Language: en-US, de-DE
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-wireless@vger.kernel.org
+Cc:     Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230726091704.25795-1-nbd@nbd.name>
+ <12289744.O9o76ZdvQC@natalenko.name>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <12289744.O9o76ZdvQC@natalenko.name>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695381756;a2ff28c2;
+X-HE-SMSGID: 1qjeF0-0001kI-Kc
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-On sdm845 cheza board, with 6.5.4 (before running 6.4.x), I saw this 
-issue too. Happened only once, but I can try stress-test it how often it 
-pops up.
-Whole log is here [1]. Used kernel is referenced from full log, kernel 
-extra patches [2].
+On 21.09.23 07:02, Oleksandr Natalenko wrote:
+> 
+> On středa 26. července 2023 11:17:02 CEST Felix Fietkau wrote:
+>> The IEEE80211_VHT_CAP_EXT_NSS_BW value already indicates support for half-NSS
+>> 160 MHz support, so it is wrong to also advertise full 160 MHz support.
+>>
+>> Fixes: c2f73eacee3b ("wifi: mt76: mt7915: add back 160MHz channel width support for MT7915")
+>> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+>> ---
+>>  drivers/net/wireless/mediatek/mt76/mt7915/init.c | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+>> index ee976657bfc3..78552f10b377 100644
+>> --- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+>> +++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+>> @@ -414,7 +414,6 @@ mt7915_init_wiphy(struct mt7915_phy *phy)
+>>  			if (!dev->dbdc_support)
+>>  				vht_cap->cap |=
+>>  					IEEE80211_VHT_CAP_SHORT_GI_160 |
+>> -					IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ |
+>>  					FIELD_PREP(IEEE80211_VHT_CAP_EXT_NSS_BW_MASK, 1);
+>>  		} else {
+>>  			vht_cap->cap |=
+>>
+> 
+> For some reason this got backported into the stable kernel:
+> 
+> ```
+> $ git log --oneline v6.5.2..v6.5.4 -- drivers/net/wireless/mediatek/mt76/mt7915/
+> c43017fbebcc3 wifi: mt76: mt7915: fix power-limits while chan_switch
+> edb1afe042c74 wifi: mt76: mt7915: fix tlv length of mt7915_mcu_get_chan_mib_info
+> 9ec0dec0baea3 wifi: mt76: mt7915: remove VHT160 capability on MT7915
+> 0e61f73e6ebc0 wifi: mt76: mt7915: fix capabilities in non-AP mode
+> 6bce28ce28390 wifi: mt76: mt7915: fix command timeout in AP stop period
+> 7af917d4864c6 wifi: mt76: mt7915: rework tx bytes counting when WED is active
+> feae00c6468ce wifi: mt76: mt7915: rework tx packets counting when WED is active
+> 70bbcc4ad6544 wifi: mt76: mt7915: fix background radar event being blocked
+> ```
+> 
+> and this broke my mt7915-based AP.
+> 
+> However, if I remove `[VT160]` capability from the hostapd config, things go back to normal. It does seem that 160 MHz still works even.
+> 
+> Is this expected?
 
-...
-23-09-22 10:48:53 R SERIAL-CPU> deviceName: Turnip Adreno (TM) 630
-23-09-22 10:48:55 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:48:57 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:49:00 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:49:03 R SERIAL-CPU> Running dEQP on 8 threads in 188-test groups
-23-09-22 10:49:05 R SERIAL-CPU> Running dEQP on 8 threads in 10-test groups
-23-09-22 10:49:08 R SERIAL-CPU> Running dEQP on 8 threads in 378-test groups
-23-09-22 10:49:10 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:49:10 R SERIAL-CPU> Pass: 0, Duration: 0
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     In file 
-../src/compiler/spirv/spirv_to_nir.c:1492
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     Image Type 
-operand of OpTypeSampledImage should not have a Dim of Buffer.
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     456 bytes into 
-the SPIR-V binary
-23-09-22 10:49:28 R SERIAL-CPU> Pass: 222, Skip: 278, Duration: 17, 
-Remaining: 46:28
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     In file 
-../src/compiler/spirv/spirv_to_nir.c:4772
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: Unsupported SPIR-V 
-capability: SpvCapabilityUniformAndStorageBuffer16BitAccess (4434)
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     36 bytes into 
-the SPIR-V binary
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     In file 
-../src/compiler/spirv/spirv_to_nir.c:4772
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: Unsupported SPIR-V 
-capability: SpvCapabilityUniformAndStorageBuffer16BitAccess (4434)
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     36 bytes into 
-the SPIR-V binary
-23-09-22 10:49:43 R SERIAL-CPU> Pass: 1949, Skip: 2551, Duration: 32, 
-Remaining: 9:15
-23-09-22 10:49:44 R SERIAL-CPU> [   73.300176] Unable to handle kernel 
-execute from non-executable memory at virtual address ffffaa213674cd88
-23-09-22 10:49:44 R SERIAL-CPU> [   73.310124] Mem abort info:
-23-09-22 10:49:44 R SERIAL-CPU> [   73.313003]   ESR = 0x000000008600000f
-23-09-22 10:49:44 R SERIAL-CPU> [   73.316859]   EC = 0x21: IABT 
-(current EL), IL = 32 bits
-23-09-22 10:49:44 R SERIAL-CPU> [   73.322318]   SET = 0, FnV = 0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.325464]   EA = 0, S1PTW = 0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.328703]   FSC = 0x0f: level 3 
-permission fault
-23-09-22 10:49:44 R SERIAL-CPU> [   73.333628] swapper pgtable: 4k 
-pages, 48-bit VAs, pgdp=0000000081b1c000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.340513] [ffffaa213674cd88] 
-pgd=100000027ffff003, p4d=100000027ffff003, pud=100000027fffe003, 
-pmd=100000027fff9003, pte=007800008274cf03
-23-09-22 10:49:44 R SERIAL-CPU> [   73.353372] Internal error: Oops: 
-000000008600000f [#1] PREEMPT SMP
-23-09-22 10:49:44 R SERIAL-CPU> [   73.359808] Modules linked in:
-23-09-22 10:49:44 R SERIAL-CPU> [   73.362954] CPU: 1 PID: 0 Comm: 
-swapper/1 Tainted: G        W          6.5.4-g8a16969a8434 #1
-23-09-22 10:49:44 R SERIAL-CPU> [   73.371705] Hardware name: Google 
-Cheza (rev3+) (DT)
-23-09-22 10:49:44 R SERIAL-CPU> [   73.376801] pstate: 20400009 (nzCv 
-daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-23-09-22 10:49:44 R SERIAL-CPU> [   73.383944] pc : 
-in_lookup_hashtable+0x538/0x2000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.388787] lr : rcu_core+0x250/0x640
-23-09-22 10:49:44 R SERIAL-CPU> [   73.392559] sp : ffff80008000bec0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.395962] x29: ffff80008000bec0 
-x28: ffffaa2134116b28 x27: ffffaa2136381840
-23-09-22 10:49:44 R SERIAL-CPU> [   73.403289] x26: 000000000000000a 
-x25: ffff266077371b38 x24: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.410614] x23: 0000000000000003 
-x22: ffff80008000bf30 x21: ffff266077371ac0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.417940] x20: ffff265f00190000 
-x19: 0000000000000004 x18: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.425266] x17: ffff7c3f416ea000 
-x16: ffff800080008000 x15: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.432593] x14: 0000000000000000 
-x13: 0000000000000078 x12: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.439920] x11: 0000000000000000 
-x10: 0000000000000001 x9 : 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.447245] x8 : ffff80008000be50 x7 
-: 0000000000000000 x6 : ffff266077371b48
-23-09-22 10:49:44 R SERIAL-CPU> [   73.454571] x5 : ffffaa2134216444 x4 
-: fffffc99800bcb20 x3 : ffffaa2135c8be78
-23-09-22 10:49:45 R SERIAL-CPU> [   73.461902] x2 : ffff265f5d7ca700 x1 
-: ffffaa213674cd88 x0 : ffff265f0773e3b0
-23-09-22 10:49:45 R SERIAL-CPU> [   73.469231] Call trace:
-23-09-22 10:49:45 R SERIAL-CPU> [   73.471751] 
-in_lookup_hashtable+0x538/0x2000
-23-09-22 10:49:45 R SERIAL-CPU> [   73.476235] rcu_core_si+0x10/0x1c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.479739] __do_softirq+0x10c/0x284
-23-09-22 10:49:45 R SERIAL-CPU> [   73.483508] ____do_softirq+0x10/0x1c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.487276] call_on_irq_stack+0x24/0x4c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.491310] 
-do_softirq_own_stack+0x1c/0x28
-23-09-22 10:49:45 R SERIAL-CPU> [   73.495609] irq_exit_rcu+0xd8/0xf4
-23-09-22 10:49:45 R SERIAL-CPU> [   73.499197] el1_interrupt+0x38/0x68
-23-09-22 10:49:45 R SERIAL-CPU> [   73.502871] el1h_64_irq_handler+0x18/0x24
-23-09-22 10:49:45 R SERIAL-CPU> [   73.507086] el1h_64_irq+0x64/0x68
-23-09-22 10:49:45 R SERIAL-CPU> [   73.510587] 
-cpuidle_enter_state+0x134/0x2e0
-23-09-22 10:49:45 R SERIAL-CPU> [   73.514973] cpuidle_enter+0x38/0x50
-23-09-22 10:49:45 R SERIAL-CPU> [   73.518648] do_idle+0x1f4/0x264
-23-09-22 10:49:45 R SERIAL-CPU> [   73.521970] cpu_startup_entry+0x28/0x2c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.526005] 
-secondary_start_kernel+0x130/0x150
-23-09-22 10:49:45 R SERIAL-CPU> [   73.530660] 
-__secondary_switched+0xb8/0xbc
-23-09-22 10:49:45 R SERIAL-CPU> [   73.534965] Code: 00000000 00000000 
-00000000 00000000 (0773e3b0)
-23-09-22 10:49:45 R SERIAL-CPU> [   73.541226] ---[ end trace 
-0000000000000000 ]---
-23-09-22 10:49:45 R SERIAL-CPU> [   73.545975] Kernel panic - not 
-syncing: Oops: Fatal exception in interrupt
-23-09-22 10:49:45 R SERIAL-CPU> [   73.553032] SMP: stopping secondary CPUs
-23-09-22 10:49:45 R SERIAL-CPU> [   73.557142] Kernel Offset: 
-0x2a20b4000000 from 0xffff800080000000
-23-09-22 10:49:45 R SERIAL-CPU> [   73.563396] PHYS_OFFSET: 
-0xffffd9a200000000
-23-09-22 10:49:45 R SERIAL-CPU> [   73.567687] CPU features: 
-0x00000000,800140a1,8800721b
-23-09-22 10:49:45 R SERIAL-CPU> [   73.572962] Memory Limit: none
-23-09-22 10:49:45 R SERIAL-CPU> [   73.576106] ---[ end Kernel panic - 
-not syncing: Oops: Fatal exception in interrupt ]---
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-David
+#regzbot ^introduced 3ec5ac12ac8a4e..fe0ea395f0a351
+#regzbot title wifi: mt76: mt7915: removal of VHT160 capability broke hostap
+#regzbot ignore-activity
 
-[1] https://gitlab.freedesktop.org/mesa/mesa/-/jobs/49333832
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
 
-[2] https://gitlab.freedesktop.org/gfx-ci/linux/-/commits/v6.5-for-mesa-ci/
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
