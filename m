@@ -2,79 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8147AAF0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DD07AAF12
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 12:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjIVKDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 06:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
+        id S229460AbjIVKEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 06:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjIVKDp (ORCPT
+        with ESMTP id S229762AbjIVKEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:03:45 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53288F;
-        Fri, 22 Sep 2023 03:03:38 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-321530de76eso1719744f8f.0;
-        Fri, 22 Sep 2023 03:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695377017; x=1695981817; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KBcsfPRS8DaMT9oS6VIAEGSvywjj27gVzR+KeQ+aIHQ=;
-        b=Wx8KCIzGjxkVaSbAoPKUhs4C7lez8kc5/HRVazgKt8c05a9YvsK/Hk1vCTChCJTnkk
-         m6nil4RFbPOuv9usuw/M+5+oibCooXi5XgbNeKk243IvKPSjBxR0RzZILzyrhjtUGRrF
-         AXBMEYGUD25eQ480Pxm5iJTWC2KPXI3Qd0qgh8PM8jCXOZWLivrtbBv6azN4WS4x8+IW
-         NMVFgtB6DT5PlE5yZen7PfTzYu0DH0vXvAa8c31AhbXQ2KButpKmelVd88Z3QCzTSUJx
-         1iVHI7AdmammtvvsIQlgDg7LT+1p1yLMR+SXmwwZsckrTbo3qwE7FNgX7IPpBgiNOxle
-         4qng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695377017; x=1695981817;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KBcsfPRS8DaMT9oS6VIAEGSvywjj27gVzR+KeQ+aIHQ=;
-        b=uB9DEeVuWUVNgdsjfT1YEm55Leh0HjylLhf9Wq1DM+YOjpV/5oVJv4qpGrVcMmS1CD
-         nmK40knZ1A2C0Gs4evTJ6tM42taU1btU9ZTLOvI+t9qpS7bWRkE3KOzDdWmG1cwkJ9NK
-         9UI/UAW6ghJFXogqhVHy73J0UnthDOTlL2+3S7Nxz8xjIv1IjpoNh+KEWCJi9AtWv5Jm
-         BVbuz/vYUYW/07HSIfL92ry5SAROrD8WR5P5bK7m5d8BnW+7SPDJWxFJf8AotdfY/HN9
-         9W/ZiYmTauWpp0+7p27sjPu7JL2UumRfIcsgiM1VXsmEtnwweXWnJpGcbve9tM7/xMtm
-         jyqA==
-X-Gm-Message-State: AOJu0YyObUfLs5f+Vy14XDy85luhv6uQK5Dtq7ZxKR3j3lvDE0Ji1DJy
-        lPE93DDylapshNONHrf5VAHe4baBTws=
-X-Google-Smtp-Source: AGHT+IHXNhCOVDN22ezuRhafl1JdUeYEasSvslBktkV+8XLJPt5Xn0a/NOQMNgS1lkaRklCIO6julg==
-X-Received: by 2002:a5d:59c3:0:b0:322:dbc6:8cf7 with SMTP id v3-20020a5d59c3000000b00322dbc68cf7mr2196407wry.16.1695377017142;
-        Fri, 22 Sep 2023 03:03:37 -0700 (PDT)
-Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
-        by smtp.gmail.com with ESMTPSA id x14-20020a05600c21ce00b003fefcbe7fa8sm4217852wmj.28.2023.09.22.03.03.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 03:03:36 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 22 Sep 2023 12:03:34 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Sandipan Das <sandipan.das@amd.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        x86@kernel.org, peterz@infradead.org, leitao@debian.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, leit@fb.com, dcostantino@meta.com,
-        jhladky@redhat.com, eranian@google.com, ananth.narayan@amd.com,
-        ravi.bangoria@amd.com, santosh.shukla@amd.com
-Subject: Re: rom 3540f985652f41041e54ee82aa53e7dbd55739ae Mon Sep 17 00:00:00
- 2001
-Message-ID: <ZQ1mdoMBJd4PCvZa@gmail.com>
-References: <20230914140604.267672-1-sandipan.das@amd.com>
+        Fri, 22 Sep 2023 06:04:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82508CE;
+        Fri, 22 Sep 2023 03:04:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10B70C433C8;
+        Fri, 22 Sep 2023 10:04:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695377044;
+        bh=00l4c9MLUEW+59kbg7YWsJXOKjOKnRp0XSr7Fn0HoCw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lA/pYDrRDHZSfmNX4Ei7dU7ZtbAmkYCwTJa2VK7mI5YtE+ojVthciYIvrkXN0N/2m
+         /nnDuuGVMaofuKrunhKg4XU6hN84+nWXYDUHiUQByppufv0VoNTmkq0BNMxl0k/Ss2
+         exoENwUQtXdwkx/aHqJ+tB5tlFnumLXp+PNrSdVd79x07JZq62iMu2YUJO/2kG7T2N
+         TSBVt/DESKrfrKj+ojtkwmvyxx4thBcEvG0dZHMJNiSiFmdpZhMR0+9ve6beB7nt9d
+         rWTL2JgHvklRIwhtmRu1PeH3ke9j5pFtbxCsconN/Ynv8B/jhWqqsUDxPpi2/ddtVG
+         XYz4UZeDwxBog==
+Date:   Fri, 22 Sep 2023 11:03:58 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     shravan chippa <shravan.chippa@microchip.com>
+Cc:     green.wan@sifive.com, vkoul@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, conor+dt@kernel.org, palmer@sifive.com,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v1 3/3] dmaengine: sf-pdma: add mpfs-pdma compatible name
+Message-ID: <20230922-sappy-huddle-1484d64b27f3@spud>
+References: <20230922095039.74878-1-shravan.chippa@microchip.com>
+ <20230922095039.74878-4-shravan.chippa@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="afMx8rXFETmT0Tex"
 Content-Disposition: inline
-In-Reply-To: <20230914140604.267672-1-sandipan.das@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230922095039.74878-4-shravan.chippa@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,69 +57,150 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Sandipan Das <sandipan.das@amd.com> wrote:
+--afMx8rXFETmT0Tex
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Zen 4 systems running buggy microcode can hit a WARN_ON() in the PMI
-> handler, as shown below, several times while perf runs. A simple
-> `perf top` run is enough to render the system unusable.
-> 
-> WARNING: CPU: 18 PID: 20608 at arch/x86/events/amd/core.c:944 amd_pmu_v2_handle_irq+0x1be/0x2b0
-> 
-> This happens because the Performance Counter Global Status Register
-> (PerfCntGlobalStatus) has one or more bits set which are considered
-> reserved according to the "AMD64 Architecture Programmer???s Manual,
-> Volume 2: System Programming, 24593". The document can be found at
-> https://www.amd.com/system/files/TechDocs/24593.pdf
-> 
-> To make this less intrusive, warn just once if any reserved bit is set
-> and prompt the user to update the microcode. Also sanitize the value to
-> what the code is handling, so that the overflow events continue to be
-> handled for the number of counters that are known to be sane.
-> 
-> Going forward, the following microcode patch levels are recommended
-> for Zen 4 processors in order to avoid such issues with reserved bits.
-> 
->   Family=0x19 Model=0x11 Stepping=0x01: Patch=0x0a10113e
->   Family=0x19 Model=0x11 Stepping=0x02: Patch=0x0a10123e
->   Family=0x19 Model=0xa0 Stepping=0x01: Patch=0x0aa00116
->   Family=0x19 Model=0xa0 Stepping=0x02: Patch=0x0aa00212
-> 
-> Commit f2eb058afc57 ("linux-firmware: Update AMD cpu microcode") from
-> the linux-firmware tree has binaries that meet the minimum required
-> patch levels.
-> 
-> Fixes: 7685665c390d ("perf/x86/amd/core: Add PerfMonV2 overflow handling")
-> Reported-by: Jirka Hladky <jhladky@redhat.com>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> [sandipan: add message to prompt users to update microcode]
-> [sandipan: rework commit message and call out required microcode levels]
-> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+Hey Shravan,
 
-> v2:
->  - Use pr_warn_once() instead of WARN_ON_ONCE() to prompt users to
->    update microcode
->  - Rework commit message and add details of minimum required microcode
->    patch levels.
+On Fri, Sep 22, 2023 at 03:20:39PM +0530, shravan chippa wrote:
+> From: Shravan Chippa <shravan.chippa@microchip.com>
+>=20
+> Sifive platform dma does not allow out-of-order transfers,
 
-1)
+Can you remind me why we determined that this was the case?
+IOW, why could we not enable the out-of-order transfers and get a
+performance benefit for everyone? It's been a year or so (I think) and I
+have forgotten.
 
-I don't think you ever re-sent this patch with the correct subject line.
-( Or at least it's not in my mbox. )
+Cheers,
+Conor.
 
-2)
+> buf out-of-order dma has a significant performance advantage.
+> Add a PolarFire SoC specific compatible and code to support
+> for out-of-order dma transfers
+>=20
+> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  drivers/dma/sf-pdma/sf-pdma.c | 27 ++++++++++++++++++++++++---
+>  drivers/dma/sf-pdma/sf-pdma.h |  6 ++++++
+>  2 files changed, 30 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
+> index c7558c9f9ac3..992a804166d5 100644
+> --- a/drivers/dma/sf-pdma/sf-pdma.c
+> +++ b/drivers/dma/sf-pdma/sf-pdma.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/of.h>
+>  #include <linux/of_dma.h>
+> +#include <linux/of_device.h>
+>  #include <linux/slab.h>
+> =20
+>  #include "sf-pdma.h"
+> @@ -66,7 +67,7 @@ static struct sf_pdma_desc *sf_pdma_alloc_desc(struct s=
+f_pdma_chan *chan)
+>  static void sf_pdma_fill_desc(struct sf_pdma_desc *desc,
+>  			      u64 dst, u64 src, u64 size)
+>  {
+> -	desc->xfer_type =3D PDMA_FULL_SPEED;
+> +	desc->xfer_type =3D  desc->chan->pdma->transfer_type;
+>  	desc->xfer_size =3D size;
+>  	desc->dst_addr =3D dst;
+>  	desc->src_addr =3D src;
+> @@ -520,6 +521,7 @@ static struct dma_chan *sf_pdma_of_xlate(struct of_ph=
+andle_args *dma_spec,
+> =20
+>  static int sf_pdma_probe(struct platform_device *pdev)
+>  {
+> +	const struct sf_pdma_driver_platdata *ddata;
+>  	struct sf_pdma *pdma;
+>  	int ret, n_chans;
+>  	const enum dma_slave_buswidth widths =3D
+> @@ -545,6 +547,14 @@ static int sf_pdma_probe(struct platform_device *pde=
+v)
+> =20
+>  	pdma->n_chans =3D n_chans;
+> =20
+> +	pdma->transfer_type =3D PDMA_FULL_SPEED;
+> +
+> +	ddata  =3D of_device_get_match_data(&pdev->dev);
+> +	if (ddata) {
+> +		if (ddata->quirks & NO_STRICT_ORDERING)
+> +			pdma->transfer_type &=3D ~(NO_STRICT_ORDERING);
+> +	}
+> +
+>  	pdma->membase =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(pdma->membase))
+>  		return PTR_ERR(pdma->membase);
+> @@ -629,11 +639,22 @@ static int sf_pdma_remove(struct platform_device *p=
+dev)
+>  	return 0;
+>  }
+> =20
+> +static const struct sf_pdma_driver_platdata mpfs_pdma =3D {
+> +	.quirks =3D NO_STRICT_ORDERING,
+> +};
+> +
+>  static const struct of_device_id sf_pdma_dt_ids[] =3D {
+> -	{ .compatible =3D "sifive,fu540-c000-pdma" },
+> -	{ .compatible =3D "sifive,pdma0" },
+> +	{
+> +		.compatible =3D "sifive,fu540-c000-pdma",
+> +	}, {
+> +		.compatible =3D "sifive,pdma0",
+> +	}, {
+> +		.compatible =3D "microchip,mpfs-pdma",
+> +		.data	    =3D &mpfs_pdma,
+> +	},
+>  	{},
+>  };
+> +
+>  MODULE_DEVICE_TABLE(of, sf_pdma_dt_ids);
+> =20
+>  static struct platform_driver sf_pdma_driver =3D {
+> diff --git a/drivers/dma/sf-pdma/sf-pdma.h b/drivers/dma/sf-pdma/sf-pdma.h
+> index 5c398a83b491..3b16db4daa0b 100644
+> --- a/drivers/dma/sf-pdma/sf-pdma.h
+> +++ b/drivers/dma/sf-pdma/sf-pdma.h
+> @@ -49,6 +49,7 @@
+> =20
+>  /* Transfer Type */
+>  #define PDMA_FULL_SPEED					0xFF000008
+> +#define NO_STRICT_ORDERING				BIT(3)
+> =20
+>  /* Error Recovery */
+>  #define MAX_RETRY					1
+> @@ -112,8 +113,13 @@ struct sf_pdma {
+>  	struct dma_device       dma_dev;
+>  	void __iomem            *membase;
+>  	void __iomem            *mappedbase;
+> +	u32			transfer_type;
+>  	u32			n_chans;
+>  	struct sf_pdma_chan	chans[];
+>  };
+> =20
+> +struct sf_pdma_driver_platdata {
+> +	u32 quirks;
+> +};
+> +
+>  #endif /* _SF_PDMA_H */
+> --=20
+> 2.34.1
+>=20
 
-So if the fix is from Breno Leitao originally, then there should be a:
+--afMx8rXFETmT0Tex
+Content-Type: application/pgp-signature; name="signature.asc"
 
-   From: Breno Leitao <leitao@debian.org>
+-----BEGIN PGP SIGNATURE-----
 
-at the beginning of the patch to make authorship clear.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ1mjgAKCRB4tDGHoIJi
+0v6AAQCQTGk6YdjvTBFnqNLC+TAUoVw03aK0hhSVZVJEqKEw3AD/ad9DjcZmYXma
+irUTJYGdDxiZ+ExA2hDsSKe1j8MOtws=
+=1YnB
+-----END PGP SIGNATURE-----
 
-You might also want to add:
-
-  Co-developed-by: Sandipan Das <sandipan.das@amd.com>
-
-to make your contributions clear.
-
-Thanks,
-
-	Ingo
+--afMx8rXFETmT0Tex--
