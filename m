@@ -2,116 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E707AC312
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 17:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854517AC314
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 17:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjIWPMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 11:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S231887AbjIWPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 11:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbjIWPMf (ORCPT
+        with ESMTP id S231795AbjIWPNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 11:12:35 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE364127
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 08:12:28 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4053c6f0e50so27959515e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 08:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695481947; x=1696086747; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KzhaS1WbLmeo0WlVMusFMrENnn61L9WwiZn5UG2VbMU=;
-        b=qC128o+v/ju01ljSY+/fyCDiU7wx5ps+MOZYOat15EBZnjfbrhm3V+tHpxKymkPhCJ
-         GBtASlqJ45Jj6yKZ5JCjPrs96HUH4A5+XSUbWHNmWuo+cDiH5pE1ematOWwtfhwymNzO
-         33q/Jmr0S8F/iJmiv4u6erdEPTTxpwxY+7rhmuZ8BVSp6CDJUwbTNqhZ8JZB/znT82nc
-         Bxz2sfrMr7dmvpIxztA30c4g6KyGP01wZzBaaDbCGLKSr8wHmTUiYfEaVbdtqaLCG43p
-         qSMTK/H+qKJUyByLFWCFVSemw5iUylYzLxRjS0lZT9za+0nHwxYPKaeb91lZF62XOVkL
-         OdqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695481947; x=1696086747;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzhaS1WbLmeo0WlVMusFMrENnn61L9WwiZn5UG2VbMU=;
-        b=gXiU9Uc6tD2Nex+pP1SavaS2ryzfQg++t8YAgIdzr7UrmEjdjeBoOJ6bQRAsfp+Q3g
-         TwZXpepywT4OgpLJV25IhsYLxlc6flxSpEMqPH2jDmAhfirK3EC0uEK4bxvm6LQVzlaP
-         jNNoc5mLgk2g/9fBMk6ZQLxSuZsHIHScw29JrrlvNqFtpNuBaVVj0UtqdiSkAUYRdRzn
-         rnW6Ga2ZynRS2AOeBEXJHYJTnFrfLiihRqKoSyaXEpTG4TXv8buuok89E1jFOmJSq9OA
-         6aQRiGMEI51bQyrgzy0JfqWzMaIV+9oAmbtzI2mh9yZgnSXamGlj+CXw2iYZikNOJ0sA
-         KuOQ==
-X-Gm-Message-State: AOJu0Yw2sTrgaw+ouaYofLjBEi6dj0NsMD5TfEHuLNE3k9sWF+SEpng/
-        rUI/34vb96qnbd570dBkWNPnWQ==
-X-Google-Smtp-Source: AGHT+IHYlGZInh8v6ky+Qg++LmI+9p5cONWHNxCEslCg/4K6Nu6ZVkuTUWU+dVjmJS4uAKh+v1A2mw==
-X-Received: by 2002:a5d:4fc9:0:b0:321:69ba:d851 with SMTP id h9-20020a5d4fc9000000b0032169bad851mr2594590wrw.5.1695481947060;
-        Sat, 23 Sep 2023 08:12:27 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id g18-20020a5d5552000000b003196b1bb528sm7195560wrw.64.2023.09.23.08.12.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Sep 2023 08:12:26 -0700 (PDT)
-Message-ID: <bda0d75e-1af3-4247-a363-48998c21c8a3@linaro.org>
-Date:   Sat, 23 Sep 2023 16:12:25 +0100
+        Sat, 23 Sep 2023 11:13:23 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB37127;
+        Sat, 23 Sep 2023 08:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=x+v4G3owsgLlnaFabAgkzTD/cnGgye/y5YG9o41uwwY=; b=y8
+        CvZ+LIGCwILDn9cRO00YPVFCl5CzbIZ9GLDlTC5/NaqED+W4+CLyA87G3nq5rg8kTgmxGVa305DI5
+        KTy0yckb7PcOOYP3Htwq5jkiyeMwjrpu+JMOZU9ssSC4v6rY8moM8jQh1gCuoKSlVAH/ig2TNufsH
+        BsTylHYH91DJSPE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qk4JE-007IUJ-S0; Sat, 23 Sep 2023 17:12:40 +0200
+Date:   Sat, 23 Sep 2023 17:12:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH net-next v2 00/10] define and enforce phylink bindings
+Message-ID: <410dfe3c-6f99-4054-88f8-0acbd134cfce@lunn.ch>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <ZQ2LMe9aa1ViBcSH@shell.armlinux.org.uk>
+ <6c1bb7df-34cd-4db9-95b6-959c87b68588@arinc9.com>
+ <4856b212-5bc5-4783-a184-b34a4a915878@lunn.ch>
+ <5650a2a3-a36f-441e-b4c2-aa7c751b5af5@arinc9.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] arm64: dts: qcom: msm8916/39: Fix-ups for dynamic
- reserved mem patches
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230921-msm8916-rmem-fixups-v1-0-34d2b6e721cf@gerhold.net>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230921-msm8916-rmem-fixups-v1-0-34d2b6e721cf@gerhold.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5650a2a3-a36f-441e-b4c2-aa7c751b5af5@arinc9.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 19:56, Stephan Gerhold wrote:
-> Enable GPU/WCNSS properly in some MSM8916/MSM8939 boards that were
-> changed after I sent the patches for the dynamic reserved memory
-> allocation.
+On Sat, Sep 23, 2023 at 09:28:41AM +0300, Arınç ÜNAL wrote:
+> On 23.09.2023 01:36, Andrew Lunn wrote:
+> > > I agree. My patch description here failed to explain the actual issue,
+> > > which is missing hardware descriptions. Here's what I understand. An
+> > > ethernet-controller is a MAC. For the MAC to work properly with its link
+> > > partner, at least one of these must be described:
+> > > - pointer to a PHY to retrieve link information from the PHY
+> > > - pointer to a PCS to retrieve link information from the PCS
+> > > - pointer to an SFP to retrieve link information from the SFP
+> > > - static link information
+> > 
+> > You are missing:
+> > 
+> > - The MAC has firmware driving the PHY, nothing for linux to do.
+> > 
+> > There are properties in ethernet-controller.yaml the MAC driver would
+> > however like to use such as local-mac-address, max-frame-size,
+> > nvmem-cell-names etc.
 > 
-> I have magic scripts that make the necessary changes automatically so
-> I'm quite sure that I caught all new instances that need adjustment. :-)
+> This is interesting. This is clearly a hardware difference of the ethernet
+> controller.
 > 
-> Since my scripts only work properly on board DTs with sorted nodes
-> I also included a bonus patch to fix that in some of the MSM8916 DTs.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
-> Stephan Gerhold (3):
->        arm64: dts: qcom: msm8916-samsung-gt5: Enable GPU
->        arm64: dts: qcom: msm8939-longcheer-l9100: Enable wcnss_mem
->        arm64: dts: qcom: msm8916-*: Fix alphabetic node order
-> 
->   .../boot/dts/qcom/msm8916-alcatel-idol347.dts      |  8 ++---
->   .../boot/dts/qcom/msm8916-samsung-a3u-eur.dts      | 10 +++---
->   .../boot/dts/qcom/msm8916-samsung-gt5-common.dtsi  | 38 +++++++++++-----------
->   arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts |  4 +++
->   arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts  |  4 +++
->   arch/arm64/boot/dts/qcom/msm8916-thwc-uf896.dts    |  8 ++---
->   arch/arm64/boot/dts/qcom/msm8916-thwc-ufi001c.dts  |  8 ++---
->   .../arm64/boot/dts/qcom/msm8916-yiming-uz801v3.dts |  8 ++---
->   .../boot/dts/qcom/msm8939-longcheer-l9100.dts      |  4 +++
->   9 files changed, 52 insertions(+), 40 deletions(-)
-> ---
-> base-commit: a35461d47fe3e555602912b905f1bae7045256eb
-> change-id: 20230921-msm8916-rmem-fixups-46ec18b9ba5d
-> 
-> Best regards,
+> I believe this fits case 1. There's still an MDIO bus the ethernet
+> controller uses, there's still a PHY on the MDIO bus which the ethernet
+> controller uses.
 
-Do these Fixes shas exist ? I can't seem to find them.
+Why must there be an MDIO bus? All the bus provides is a communication
+channel to the PHY. There are PHYs which are memory mapped, or use
+I2C. SFP are a good example of I2C, which Linux maps to MDIO just to
+make things simple, but the hardware is I2C. Why must there be a PHY?
+Maybe it is a Base-K link, i.e. a baseboard link to a switch, or a BMC
+or something.
 
----
-bod
+> The only difference is the firmware of the ethernet
+> controller controls... What exactly does the firmware control that a Linux
+> driver would have controlled instead? Just configuring the link settings of
+> the MAC?
+
+A MAC driver implements struct ethtool_ops:::get_link_settings and
+set_link_settings. For a MAC driver using phylib or phylink they
+typically then call into phylib or phylink to do the actual work,
+maybe with a bit of pre-processing in the MAC driver.
+
+A MAC driver using firmware would typically make an RPC into the
+firmware to implement these calls.
+
+There is a MAC driver currently under review which does not have a PHY
+at all. The MAC is directly connected to a switch, all within one
+IC. The link is always running at 5Gbps, the link is always up. It is
+physically impossible to connect a PHY, so get_link_settings just
+returns hard coded values.
+
+	Andrew
