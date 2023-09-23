@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F457ABF57
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 11:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31087ABF58
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 11:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbjIWJc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 05:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
+        id S231336AbjIWJcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 05:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbjIWJcR (ORCPT
+        with ESMTP id S231271AbjIWJcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 05:32:17 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81F219E;
-        Sat, 23 Sep 2023 02:32:10 -0700 (PDT)
-Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rt3kt6Xkfz15NKS;
-        Sat, 23 Sep 2023 17:29:58 +0800 (CST)
+        Sat, 23 Sep 2023 05:32:19 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EFA136;
+        Sat, 23 Sep 2023 02:32:12 -0700 (PDT)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rt3jB6BFHzMljc;
+        Sat, 23 Sep 2023 17:28:30 +0800 (CST)
 Received: from ubuntu2204.huawei.com (10.67.174.22) by
  kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <adrian.hunter@intel.com>, <linux-perf-users@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <yangjihong1@huawei.com>
-Subject: [PATCH 3/4] perf bench messaging: Store chlid process pid when creating worker for process mode
-Date:   Sat, 23 Sep 2023 09:30:36 +0000
-Message-ID: <20230923093037.961232-4-yangjihong1@huawei.com>
+Subject: [PATCH 4/4] perf bench messaging: Kill child processes when exit abnormally in process mode
+Date:   Sat, 23 Sep 2023 09:30:37 +0000
+Message-ID: <20230923093037.961232-5-yangjihong1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230923093037.961232-1-yangjihong1@huawei.com>
 References: <20230923093037.961232-1-yangjihong1@huawei.com>
@@ -43,189 +43,114 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm000003.china.huawei.com (7.193.23.66)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To save pid of child processes when creating worker:
-1. The messaging worker is changed to `union` type to store thread id and
-   process pid.
-2. Save child process pid in create_process_worker().
-3. Rename `pth_tab` as `work_tab`.
+When exit abnormally in process mode, customize SIGINT and SIGTERM signal
+handler to kill the forked child processes.
 
-Test result:
+Before:
 
-  # perf bench sched messaging
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver processes per group
-  # 10 groups == 400 processes run
+  # perf bench sched messaging -l 1000000 -g 1 &
+  [1] 8519
+  # # Running 'sched/messaging' benchmark:
 
-       Total time: 6.744 [sec]
-  # perf bench sched messaging -t
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver threads per group
-  # 10 groups == 400 threads run
+  # pgrep sched-messaging | wc -l
+  41
+  # kill -15 8519
+  [1]+  Terminated              perf bench sched messaging -l 1000000 -g 1
+  # pgrep sched-messaging | wc -l
+  40
 
-       Total time: 5.788 [sec]
+After:
+
+  # perf bench sched messaging -l 1000000 -g 1 &
+  [1] 8472
+  # # Running 'sched/messaging' benchmark:
+
+  # pgrep sched-messaging | wc -l
+  41
+  # kill -15 8472
+  [1]+  Exit 1                  perf bench sched messaging -l 1000000 -g 1
+  # pgrep sched-messaging | wc -l
+  0
 
 Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- tools/perf/bench/sched-messaging.c | 47 +++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+ tools/perf/bench/sched-messaging.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
-index ad8596bed77a..04ffaabdd45b 100644
+index 04ffaabdd45b..e2b8938b7dc3 100644
 --- a/tools/perf/bench/sched-messaging.c
 +++ b/tools/perf/bench/sched-messaging.c
-@@ -55,6 +55,11 @@ struct receiver_context {
- 	int wakefd;
+@@ -36,6 +36,7 @@ static bool use_pipes = false;
+ static unsigned int nr_loops = 100;
+ static bool thread_mode = false;
+ static unsigned int num_groups = 10;
++static unsigned int total_children = 0;
+ static struct list_head sender_contexts = LIST_HEAD_INIT(sender_contexts);
+ static struct list_head receiver_contexts = LIST_HEAD_INIT(receiver_contexts);
+ 
+@@ -60,6 +61,8 @@ union messaging_worker {
+ 	pid_t pid;
  };
  
-+union messaging_worker {
-+	pthread_t thread;
-+	pid_t pid;
-+};
++static union messaging_worker *worker_tab;
 +
  static void fdpair(int fds[2])
  {
  	if (use_pipes) {
-@@ -139,7 +144,7 @@ static void *receiver(struct receiver_context* ctx)
- 	return NULL;
+@@ -260,6 +263,17 @@ static unsigned int group(union messaging_worker *worker,
+ 	return num_fds * 2;
  }
  
--static void create_thread_worker(pthread_t *thread,
-+static void create_thread_worker(union messaging_worker *worker,
- 				 void *ctx, void *(*func)(void *))
++static void sig_handler(int sig __maybe_unused)
++{
++	unsigned int i;
++
++	/*
++	 * When exit abnormally, kill all forked child processes.
++	 */
++	for (i = 0; i  < total_children; i++)
++		kill(worker_tab[i].pid, SIGKILL);
++}
++
+ static const struct option options[] = {
+ 	OPT_BOOLEAN('p', "pipe", &use_pipes,
+ 		    "Use pipe() instead of socketpair()"),
+@@ -277,12 +291,11 @@ static const char * const bench_sched_message_usage[] = {
+ 
+ int bench_sched_messaging(int argc, const char **argv)
  {
- 	pthread_attr_t attr;
-@@ -153,35 +158,37 @@ static void create_thread_worker(pthread_t *thread,
- 		err(EXIT_FAILURE, "pthread_attr_setstacksize");
- #endif
- 
--	ret = pthread_create(thread, &attr, func, ctx);
-+	ret = pthread_create(&worker->thread, &attr, func, ctx);
- 	if (ret != 0)
- 		err(EXIT_FAILURE, "pthread_create failed");
- 
- 	pthread_attr_destroy(&attr);
- }
- 
--static void create_process_worker(void *ctx, void *(*func)(void *))
-+static void create_process_worker(union messaging_worker *worker,
-+				  void *ctx, void *(*func)(void *))
- {
- 	/* Fork the receiver. */
--	pid_t pid = fork();
-+	worker->pid = fork();
- 
--	if (pid == -1) {
-+	if (worker->pid == -1) {
- 		err(EXIT_FAILURE, "fork()");
--	} else if (pid == 0) {
-+	} else if (worker->pid == 0) {
- 		(*func) (ctx);
- 		exit(0);
- 	}
- }
- 
--static void create_worker(pthread_t *thread, void *ctx, void *(*func)(void *))
-+static void create_worker(union messaging_worker *worker,
-+			  void *ctx, void *(*func)(void *))
- {
- 	if (!thread_mode)
--		return create_process_worker(ctx, func);
-+		return create_process_worker(worker, ctx, func);
- 	else
--		return create_thread_worker(thread, ctx, func);
-+		return create_thread_worker(worker, ctx, func);
- }
- 
--static void reap_worker(pthread_t id)
-+static void reap_worker(union messaging_worker *worker)
- {
- 	int proc_status;
- 	void *thread_status;
-@@ -192,12 +199,12 @@ static void reap_worker(pthread_t id)
- 		if (!WIFEXITED(proc_status))
- 			exit(1);
- 	} else {
--		pthread_join(id, &thread_status);
-+		pthread_join(worker->thread, &thread_status);
- 	}
- }
- 
- /* One group of senders and receivers */
--static unsigned int group(pthread_t *pth,
-+static unsigned int group(union messaging_worker *worker,
- 		unsigned int num_fds,
- 		int ready_out,
- 		int wakefd)
-@@ -228,7 +235,7 @@ static unsigned int group(pthread_t *pth,
- 		ctx->ready_out = ready_out;
- 		ctx->wakefd = wakefd;
- 
--		create_worker(pth + i, ctx, (void *)receiver);
-+		create_worker(worker + i, ctx, (void *)receiver);
- 
- 		snd_ctx->out_fds[i] = fds[1];
- 		if (!thread_mode)
-@@ -241,7 +248,7 @@ static unsigned int group(pthread_t *pth,
- 		snd_ctx->wakefd = wakefd;
- 		snd_ctx->num_fds = num_fds;
- 
--		create_worker(pth + num_fds + i, snd_ctx, (void *)sender);
-+		create_worker(worker + num_fds + i, snd_ctx, (void *)sender);
- 	}
- 
- 	/* Close the fds we have left */
-@@ -275,14 +282,14 @@ int bench_sched_messaging(int argc, const char **argv)
+-	unsigned int i, total_children;
++	unsigned int i;
+ 	struct timeval start, stop, diff;
  	unsigned int num_fds = 20;
  	int readyfds[2], wakefds[2];
  	char dummy;
--	pthread_t *pth_tab;
-+	union messaging_worker *worker_tab;
+-	union messaging_worker *worker_tab;
  	struct sender_context *pos, *n;
  
  	argc = parse_options(argc, argv, options,
- 			     bench_sched_message_usage, 0);
- 
--	pth_tab = malloc(num_fds * 2 * num_groups * sizeof(pthread_t));
--	if (!pth_tab)
-+	worker_tab = malloc(num_fds * 2 * num_groups * sizeof(union messaging_worker));
-+	if (!worker_tab)
- 		err(EXIT_FAILURE, "main:malloc()");
- 
+@@ -295,7 +308,11 @@ int bench_sched_messaging(int argc, const char **argv)
  	fdpair(readyfds);
-@@ -290,7 +297,7 @@ int bench_sched_messaging(int argc, const char **argv)
+ 	fdpair(wakefds);
  
- 	total_children = 0;
+-	total_children = 0;
++	if (!thread_mode) {
++		signal(SIGINT, sig_handler);
++		signal(SIGTERM, sig_handler);
++	}
++
  	for (i = 0; i < num_groups; i++)
--		total_children += group(pth_tab + total_children, num_fds,
-+		total_children += group(worker_tab + total_children, num_fds,
+ 		total_children += group(worker_tab + total_children, num_fds,
  					readyfds[1], wakefds[0]);
- 
- 	/* Wait for everyone to be ready */
-@@ -306,7 +313,7 @@ int bench_sched_messaging(int argc, const char **argv)
- 
- 	/* Reap them all */
- 	for (i = 0; i < total_children; i++)
--		reap_worker(pth_tab[i]);
-+		reap_worker(worker_tab + i);
- 
- 	gettimeofday(&stop, NULL);
- 
-@@ -334,7 +341,7 @@ int bench_sched_messaging(int argc, const char **argv)
- 		break;
- 	}
- 
--	free(pth_tab);
-+	free(worker_tab);
- 	list_for_each_entry_safe(pos, n, &sender_contexts, list) {
- 		list_del_init(&pos->list);
- 		free(pos);
 -- 
 2.34.1
 
