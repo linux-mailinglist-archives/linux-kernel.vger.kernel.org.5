@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06287ABDFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 07:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9349F7ABDFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 07:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbjIWFhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 01:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        id S230322AbjIWFhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 01:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjIWFgl (ORCPT
+        with ESMTP id S230371AbjIWFg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 01:36:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957841987
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:36:12 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81c39acfd9so4415583276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:36:12 -0700 (PDT)
+        Sat, 23 Sep 2023 01:36:58 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579CA1999
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:36:14 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c081a44afso54153727b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695447371; x=1696052171; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695447373; x=1696052173; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=No/3+lDiHVKRYv0Xt55G/Z9T7NmlV4cHNPo/aHaSm7Q=;
-        b=HI+b8NbgJPYE4NlauO7YWMKfK8pTBRkcjiQG+bHJZJPDGQol0H1Rq1H1qAHxi+L28b
-         Zuytsh1Nw/nT14G2fIbmJUI8hVGrKhQZME/CVW4fYI4++Qn5QEJQ4YzWJQT8NEyOCBG+
-         iwfcKNnLTKm8cVKY2yiYEjbqVyjaKjQzZJl3EoepWiSBS7p1TuZL5L25fXsy0QT8L7Pz
-         q3kr3zQoWjN8rmIMK+uTGwC5EI1fdzY0+30Gfwl0sk92XYesG1k1zUhPPzxm49ysSg14
-         uHpiiPOrkn1UbB8QrHWxNwLGpSS65zSlVe9abOKGFmL9dXP0NfbWt4zQ9WKFXugQ2Mgh
-         KmeQ==
+        bh=yUz0aBRZdXV/HoyCWN8uhHLmcq/r3toZQGl1fsyAqS4=;
+        b=OkXbC3XLL2fncEKVJfpjTFy736KtharUkMy6ukL593J21+rL5OaMLbdMbdnnKTnyDn
+         ogUHpB+aqf+M6lcW7BtzlFyyjLWUxHlOOHuc2s5ZGH+v+SYF/hqraalOEx40Ur8g0XTM
+         XCsW2qdqSRQH7IUbQp+L3oz7vtlgtxPx5HNWLR8dotRkwVrT+++AR/JC/JDB854fR6uC
+         yw3/OustjyAh3SJeGo/+8KR7i6o5YFmRllDrN8tQOQGROryy7nfEQ9k8V18JRHZe+99M
+         qhGS9s6onDyFnq0shMQINInk2p2WN4V/2Lu0Unei2OJGkfeGMfz2TBBB8LTAPeyge9sr
+         Da5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695447371; x=1696052171;
+        d=1e100.net; s=20230601; t=1695447373; x=1696052173;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=No/3+lDiHVKRYv0Xt55G/Z9T7NmlV4cHNPo/aHaSm7Q=;
-        b=Wh9KHBNKKENu5PdUAWIJpvY4FXQghljFJj3GH/aiHDepO7OFo1adIehSEZyaSzS4+C
-         ynZe4samPNeWxsY4Eur6NjAz+Wk+uhLMw5SNJ4b7Wlotd2L17JiTJN+VzndRDNgnxz09
-         ECGNBEOpaxLeW6YcUY59dSWAVWsT4adPKNUSzO4yZ29gnG18KyWFjXnZwCwWEmvad+8G
-         hB3gx8J3IpOyuLsIa8mN8QXm9NPbJvcraQGXdFRSSQw8s7+LcCRxos1Q/iMMrSBsNo1e
-         ncy5uve4eQGnos2cvZ1AtabovVGyyTyvj3eXXrW/UYuoopVPynSjpFm5AwiBBc3ka/ZI
-         rqNA==
-X-Gm-Message-State: AOJu0YwiwhcyTmV2/olW7RvkERLRq6dvlvBeJcYBeqMXK+VqBRYriW31
-        Rd+AjrceU64pgUAt93VioiTEo1czlcvY
-X-Google-Smtp-Source: AGHT+IGTM7Q8b3Ag4UtuwSpXj45aoEr35j9RQvQn4a5/8c4Gp7fonCA3U33uv8sbDogl59ChOBz4GGje4Wqw
+        bh=yUz0aBRZdXV/HoyCWN8uhHLmcq/r3toZQGl1fsyAqS4=;
+        b=e22lf4Q6srpX3Oy5K7qlIlXNDHa23EzfQlX8fmPZJlswzfW4H90RIHBuSMdYZm86SF
+         FMxAjV3CH1YE+5U5985WCGj1v8CCbMD6pvP19P2BJY2H3DZbqg0GjQ7OlvtY/CPKKtsS
+         824VOXb1eQZvVN32sIOBZ7C4P7QSP7S69oHQ/jGTq9LzMQMlto2wU56tYb6Yg+5Zl1Yz
+         JjzGvr79+fhjBNzWxyQ4IXQgxAL5r4Nf/GURojbsebeDCSDhkJ0N7aD8m5B87jJXMxOY
+         sTofx4ONEGIptRlLIqFubLnF+yNDL0/UgvN1s82O+GE/UYa+5DT1F/TvFozlp8R8sBHL
+         BvYA==
+X-Gm-Message-State: AOJu0YzriH7Eew0pmMdXjC8S0ULqE/otPB52E8RUP9FRsl7SatRAxtt3
+        T44sxFdEirKUEepmn41dYe9Cglz2/7H4
+X-Google-Smtp-Source: AGHT+IGBnACIcG/dQO74ULFKTr6l4nsrfL6I5S655YMfy6NLsr0dzVgpJAVXl+mmfzsp/SPWCJX2H8Efcow9
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a376:2908:1c75:ff78])
- (user=irogers job=sendgmr) by 2002:a25:8d12:0:b0:d85:3ef:a9d3 with SMTP id
- n18-20020a258d12000000b00d8503efa9d3mr13253ybl.0.1695447370739; Fri, 22 Sep
- 2023 22:36:10 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 22:35:12 -0700
+ (user=irogers job=sendgmr) by 2002:a81:451d:0:b0:592:7a39:e4b4 with SMTP id
+ s29-20020a81451d000000b005927a39e4b4mr18996ywa.6.1695447372993; Fri, 22 Sep
+ 2023 22:36:12 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 22:35:13 -0700
 In-Reply-To: <20230923053515.535607-1-irogers@google.com>
-Message-Id: <20230923053515.535607-16-irogers@google.com>
+Message-Id: <20230923053515.535607-17-irogers@google.com>
 Mime-Version: 1.0
 References: <20230923053515.535607-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Subject: [PATCH v1 15/18] tools api: Avoid potential double free
+Subject: [PATCH v1 16/18] perf trace-event-info: Avoid passing NULL value to closedir
 From:   Ian Rogers <irogers@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -92,27 +92,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-io__getline will free the line on error but it doesn't clear the out
-argument. This may lead to the line being freed twice, like in
-tools/perf/util/srcline.c as detected by clang-tidy.
+If opendir failed then closedir was passed NULL which is
+erroneous. Caught by clang-tidy.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/api/io.h | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/trace-event-info.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
-index 9fc429d2852d..a77b74c5fb65 100644
---- a/tools/lib/api/io.h
-+++ b/tools/lib/api/io.h
-@@ -180,6 +180,7 @@ static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_l
- 	return line_len;
- err_out:
- 	free(line);
-+	*line_out = NULL;
- 	return -ENOMEM;
- }
+diff --git a/tools/perf/util/trace-event-info.c b/tools/perf/util/trace-event-info.c
+index 319ccf09a435..c8755679281e 100644
+--- a/tools/perf/util/trace-event-info.c
++++ b/tools/perf/util/trace-event-info.c
+@@ -313,7 +313,8 @@ static int record_event_files(struct tracepoint_path *tps)
+ 	}
+ 	err = 0;
+ out:
+-	closedir(dir);
++	if (dir)
++		closedir(dir);
+ 	put_tracing_file(path);
  
+ 	return err;
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
