@@ -2,220 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A829B7AC163
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ED97AC164
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjIWLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 07:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
+        id S231415AbjIWLtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 07:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbjIWLt0 (ORCPT
+        with ESMTP id S230426AbjIWLtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 07:49:26 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC649F;
-        Sat, 23 Sep 2023 04:49:20 -0700 (PDT)
-Received: from g550jk.localnet (k10064.upc-k.chello.nl [62.108.10.64])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id CC44BD0F49;
-        Sat, 23 Sep 2023 11:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1695469759; bh=kBe11jmRLaOVJhGVOL0BQH3axSYxyviTE0+dWdDMB9o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=m6ONAgACgDg9nRxAFYlumXEaFnN7FSjLIuGbfeBQCTIbabGyec+zsn79N4v/C40Qv
-         QLJuP5wYu4Yo8q2mwpSs/uPS1Zjnr4+AGu3AR1MBenW3+C21m0WKAcJCYBKXDkvxDy
-         dU3DYUWWv34N783Gvg0vg2dl4cubFqAYoq0Qgxz0=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     linux-arm-msm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] pinctrl: qcom: msm8226: Add MPM pin mappings
-Date:   Sat, 23 Sep 2023 13:49:17 +0200
-Message-ID: <3182524.5fSG56mABF@z3ntu.xyz>
-In-Reply-To: <ZQ7NcuLOAwAJgQNr@gerhold.net>
-References: <20230922224027.85291-1-matti.lehtimaki@gmail.com>
- <7570584.EvYhyI6sBW@z3ntu.xyz> <ZQ7NcuLOAwAJgQNr@gerhold.net>
+        Sat, 23 Sep 2023 07:49:32 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501C19F
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:49:26 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso470191366b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695469764; x=1696074564; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GbjDHTHeQvNKBZv/8lID9zOviuVPTSuhipCFv7HoZZw=;
+        b=qAhF5x/wQUOWeeVuUuWKV5kng5p4jRhZ5JBk69gA4vHOhkmbL0M5qaP8E03I9F3veJ
+         Pi5w3n0qjVuR/pOKilLQs1iPpF69WFfnBni43JPB2bZfPuGfkaJGoUyUf5xT2W3s6pCq
+         YPpHXhKJwA9YZ1VjPWwy8uCk21krdYPEKZ80SuXgXa6PCpzM4t03oZud2n+kuIl+D346
+         kfVWe6/CPcyxnRTzbkf/Bnxl4Fyqq+FU097Fb2VzYTxLcvypqegQYAalvkvBLf5+NyJk
+         VaJGAx10ZMva99boHMP9kAbSj5IAutvVPHBR6yGsHlTs2OFxZDYfWxE6uyqCnCaPTNfl
+         I9eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695469764; x=1696074564;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GbjDHTHeQvNKBZv/8lID9zOviuVPTSuhipCFv7HoZZw=;
+        b=ej6yl5GpwLZKb8s8zF4SXoH5YaGn9DXvHEK6fvOSgGHXPsQYrIn4AG0V8yI+JzsnKh
+         1zjOrLsp7cbFBMFpt/2TLK55mo24Wo6tQ2awrKj+Wi17C1KiNt4mt+j9NzBIy4/73OdJ
+         vEua89/ZD7hqfARJc3i1SPv0KgpzJ1NOMqy+FJ+gb7OJx2XcVlpoGX9bUc5BTJUrba3c
+         crr1Z3vSry4Jof8cg6fk3PjT0rLfdrp4LvVCc7YoKbwRIfxZCxuQH5mbnHRXO6XMd8rf
+         PTxYcfLN0F8ivtv2ypkzrJ5qZ1wDW1ynsQ5wDtOVJUUIL2ghHZFo9U3KZk5QXjoQPhsC
+         9uWw==
+X-Gm-Message-State: AOJu0YxN8AKj2a5EY8ODNOrHp5Oag23xxytNCRgInH8T7b6GqeyKNfb6
+        NH6Vj231jKlizarS46BeAKSzXg==
+X-Google-Smtp-Source: AGHT+IFYzeDASr/AjsnCqe+x2OPCcr54QmgexSCbdQD5IIx5jqCWPJuXfCY1280EbooxNihVP9Y1Xw==
+X-Received: by 2002:a17:906:ae81:b0:9ae:961a:de7f with SMTP id md1-20020a170906ae8100b009ae961ade7fmr1781632ejb.30.1695469764578;
+        Sat, 23 Sep 2023 04:49:24 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id gu20-20020a170906f29400b009ad8796a6aesm3872479ejb.56.2023.09.23.04.49.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Sep 2023 04:49:24 -0700 (PDT)
+Message-ID: <0fe357a3-c2c7-f642-30ba-a068a9c04e66@linaro.org>
+Date:   Sat, 23 Sep 2023 13:49:22 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 01/14] dt-bindings: usb: tps6598x: Add tps25750
+Content-Language: en-US
+To:     Abdel Alkuor <alkuor@gmail.com>, heikki.krogerus@linux.intel.com,
+        krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+        ryan.eleceng@gmail.com, Abdel Alkuor <abdelalkuor@geotab.com>
+References: <20230923073959.86660-1-alkuor@gmail.com>
+ <20230923073959.86660-2-alkuor@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230923073959.86660-2-alkuor@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Samstag, 23. September 2023 13:35:25 CEST Stephan Gerhold wrote:
-> On Sat, Sep 23, 2023 at 01:19:46PM +0200, Luca Weiss wrote:
-> > On Samstag, 23. September 2023 12:00:52 CEST Stephan Gerhold wrote:
-> > > On Sat, Sep 23, 2023 at 11:32:47AM +0200, Luca Weiss wrote:
-> > > > Hi Matti,
-> > > >=20
-> > > > On Samstag, 23. September 2023 00:40:26 CEST Matti Lehtim=E4ki wrot=
-e:
-> > > > > Add pin <-> wakeirq mappings to allow for waking up the AP from
-> > > > > sleep
-> > > > > through MPM-connected pins.
-> > > > >=20
-> > > > > Signed-off-by: Matti Lehtim=E4ki <matti.lehtimaki@gmail.com>
-> > > > > ---
-> > > > >=20
-> > > > >  drivers/pinctrl/qcom/pinctrl-msm8226.c | 12 ++++++++++++
-> > > > >  1 file changed, 12 insertions(+)
-> > > > >=20
-> > > > > diff --git a/drivers/pinctrl/qcom/pinctrl-msm8226.c
-> > > > > b/drivers/pinctrl/qcom/pinctrl-msm8226.c index
-> > > > > 994619840a70..1e46a9ab382f
-> > > > > 100644
-> > > > > --- a/drivers/pinctrl/qcom/pinctrl-msm8226.c
-> > > > > +++ b/drivers/pinctrl/qcom/pinctrl-msm8226.c
-> > > > > @@ -612,6 +612,16 @@ static const struct msm_pingroup
-> > > > > msm8226_groups[] =3D
-> > > > > {
-> > > > >=20
-> > > > >  #define NUM_GPIO_PINGROUPS 117
-> > > > >=20
-> > > > > +static const struct msm_gpio_wakeirq_map msm8226_mpm_map[] =3D {
-> > > > > +	{ 1, 3 }, { 4, 4 }, { 5, 5 }, { 9, 6 }, { 13, 7 }, { 17, 8=20
-},
-> > > >=20
-> > > > I'm not really convinced this is the correct order of values...
-> > > >=20
-> > > > Let's look at downstream:
-> > > >   qcom,gpio-map =3D <3  1>,
-> > > >  =20
-> > > >                   <4  4 >,
-> > > >                   <5  5 >,
-> > > >                   <6  9 >,
-> > > >                   [...]
-> > > >=20
-> > > > From Documentation/devicetree/bindings/arm/msm/mpm.txt downstream:
-> > > >   Each tuple represents a MPM pin and which GIC interrupt is routed=
- to
-> > > >   it.
-> > > >=20
-> > > > So first is pin number, second is interrupt number.
-> > > >=20
-> > > > And check mainline:
-> > > >   /**
-> > > >  =20
-> > > >    * struct msm_gpio_wakeirq_map - Map of GPIOs and their wakeup pi=
-ns
-> > > >    * @gpio:          The GPIOs that are wakeup capable
-> > > >    * @wakeirq:       The interrupt at the always-on interrupt
-> > > >    controller
-> > > >    */
-> > > >  =20
-> > > >   struct msm_gpio_wakeirq_map {
-> > > >  =20
-> > > >   	unsigned int gpio;
-> > > >   	unsigned int wakeirq;
-> > > >  =20
-> > > >   };
-> > > >=20
-> > > > So here we also have the order pin-interrupt, not the reverse order.
-> > > >=20
-> > > > Therefore I believe the order in this patch is incorrect, and it
-> > > > should
-> > > > rather>
-> > > >=20
-> > > > be:
-> > > >   { 3, 1 }, { 4, 4 }, { 5, 5 }, { 6, 9 }, { 7, 13 }, { 8, 17 },
-> > > >   [...]
-> > > >=20
-> > > > Or do you think I'm missing something?
-> > >=20
-> > > Yes :)
-> > >=20
-> > > Let's look at the later entries:
-> > > > > +	{ 21, 9 }, { 27, 10 }, { 29, 11 }, { 31, 12 }, { 33, 13 },=20
-{ 35,
-> > > > > 14
-> > > >=20
-> > > > },
-> > > >=20
-> > > > > +	{ 37, 15 }, { 38, 16 }, { 39, 17 }, { 41, 18 }, { 46, 19=20
-}, { 48,
-> > > > > 20
-> > > >=20
-> > > > },
-> > > >=20
-> > > > > +	{ 49, 21 }, { 50, 22 }, { 51, 23 }, { 52, 24 }, { 54, 25=20
-}, { 62,
-> > > > > 26
-> > > >=20
-> > > > },
-> > > >=20
-> > > > > +	{ 63, 27 }, { 64, 28 }, { 65, 29 }, { 66, 30 }, { 67, 31=20
-}, { 68,
-> > > > > 32
-> > > >=20
-> > > > },
-> > > >=20
-> > > > > +	{ 69, 33 }, { 71, 34 }, { 72, 35 }, { 106, 36 }, { 107, 37=20
-},
-> > > > > +	{ 108, 38 }, { 109, 39 }, { 110, 40 }, { 111, 54 }, { 113,=20
-55 },
-> > > > > +};
-> > > > > +
-> > >=20
-> > > For example: { 113, 55 }, i.e. { .gpio =3D 113, .wakeirq =3D 55 }.
-> > >=20
-> > > MSM8226 has GPIOs 0-116 and 64 MPM pins/interrupts. The order in this
-> > > patch is the only one that can be correct because the definition would
-> > > be invalid the other way around. 113 must be the GPIO number because =
-it
-> > > is larger than the 64 available MPM interrupt pins. :)
-> >=20
-> > So basically you're saying downstream is wrong / buggy?
->=20
-> "Misleading" or "confusing" would be the words I would use. :-)
+On 23/09/2023 09:39, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
+> 
+> TPS25750 is USB TypeC PD controller which is a subset of TPS6598x.
+> 
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> ---
+> Changes in v6:
+>   - Use reg property for patch address
+> Changes in v5:
+>   - Add tps25750 bindings
+> 
+>  .../devicetree/bindings/usb/ti,tps6598x.yaml  | 80 ++++++++++++++++++-
+>  1 file changed, 78 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> index 5497a60cddbc..da299a2bb19e 100644
+> --- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> @@ -20,8 +20,7 @@ properties:
+>      enum:
+>        - ti,tps6598x
+>        - apple,cd321x
+> -  reg:
+> -    maxItems: 1
 
-;)
+reg must be defined in top-level.
 
->=20
-> > From qcom,gpio-map =3D [...], <55 113>; it's taking the properties like=
- this
-> >=20
-> > (drivers/soc/qcom/mpm-of.c):
-> >   unsigned long pin =3D be32_to_cpup(list++);
-> >   irq_hw_number_t hwirq =3D be32_to_cpup(list++);
-> >=20
-> > Your explanation does make sense I guess but somewhere the link downstr=
-eam
-> > -> mainline must be broken, no?
->=20
-> After staring at mpm-of.c for a while I would say that there:
->  - downstream "pin" =3D MPM pin =3D mainline "wakeirq"
->    - because this is used as index to msm_mpm_irqs_m2a, which has a size
->      of MSM_MPM_NR_MPM_IRQS (64)
->  - downstream "hwirq" =3D GPIO / GIC IRQ =3D mainline "gpio"
->=20
-> This means for <55 113>: pin =3D wakeirq =3D 55 and hwirq =3D gpio =3D 11=
-3.
-> Which matches the definition in this patch:
->   { .gpio =3D 113, .wakeirq =3D 55 } =3D { 113, 55 }
+https://elixir.bootlin.com/linux/v5.19-rc6/source/Documentation/devicetree/bindings/clock/samsung,exynos7-clock.yaml#L57
 
-=46un, thanks for digging into it!
+> +      - ti,tps25750
+>  
+>    wakeup-source: true
+>  
+> @@ -32,10 +31,55 @@ properties:
+>      items:
+>        - const: irq
+>  
+> +  firmware-name:
+> +    description: |
+> +      Should contain the name of the default patch binary
+> +      file located on the firmware search path which is
+> +      used to switch the controller into APP mode.
+> +      This is used when tps25750 doesn't have an EEPROM
+> +      connected to it.
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: ti,tps25750
+> +    then:
+> +      properties:
+> +        reg:
+> +          maxItems: 2
+> +
+> +        reg-names:
+> +          description: |
+> +            The first reg is PD device address and the second
+> +            reg is I2C slave address field in PBMs input data
+> +            which is used as the device address when writing the
+> +            patch for TPS25750.
+> +            The patch address can be any value except 0x00, 0x20,
+> +            0x21, 0x22, and 0x23
 
-@Matti: I think I see one missing entry here "<41  115>," on downstream, so
-{ 115, 41 } appears to be missing in this patch? Or is there a reason you=20
-omitted that one? The rest looks correct :)
+Entire description is not suitable here, but should be used as
+description of items in reg: (instead of maxItems).
 
-Regards
-Luca
+> +          items:
+> +            - const: main
+> +            - const: patch-address
+> +
+> +        connector:
+> +          required:
+> +            - data-role
+> +
+> +      required:
+> +        - connector
+> +        - reg-names
+> +    else:
+> +      properties:
+> +        reg:
+> +          maxItems: 1
+> +
+> +
 
+Only one blank line.
 
->=20
-> Stephan
-
-
-
+Best regards,
+Krzysztof
 
