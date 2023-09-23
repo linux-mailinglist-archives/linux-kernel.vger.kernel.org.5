@@ -2,840 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E48667ABCEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 03:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9877ABCED
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 03:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjIWBLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 21:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        id S230322AbjIWBOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 21:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjIWBLS (ORCPT
+        with ESMTP id S230383AbjIWBOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 21:11:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AB1B9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 18:11:10 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695431466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8kX/29Gr1VHcEXvaz8Yd0WeqLU/GJJ38ED6UWQCcyg=;
-        b=OKLrbDtPYB2MUX2U7blAgwxKgtzEP1rxl6eAi8IXrOYY9mqBN9qdTLS60RY7pWXo1wMOOi
-        gRGhG/qQuzoHLO8QpYc9HFoOVyg4iabzuEf49JKNNpwRWE+rYg6FO0RcGKwVT9GsVrN9Aq
-        5nr0qyADFBslcPMzyL4lg2zK/didoD+YCHw71arNwJk+JB3LfkGiI7VjesrMEdRJawTQaN
-        TVH5XigaaH2DhQhEeA3WqZUX1+XSrlD8CzSjU0Oop9vLDDIM0lzphl97YrhUAHmuFbZaiG
-        3Ilsbf8SUS6Ar4hBi68osVmrhsOsSk/xIpsNbsN7IzcQ5ZyA2y0OOXI754y0Og==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695431466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8kX/29Gr1VHcEXvaz8Yd0WeqLU/GJJ38ED6UWQCcyg=;
-        b=KNSxY3Wc6eOldT6QhpA4Txu6VZpeuGwEacF7wkFe08yDQPoeRnbZDQwTt0peX0ZkeA4sxP
-        uW7HgYBSbvR4MqAA==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-In-Reply-To: <87ttrngmq0.ffs@tglx>
-References: <87ttrngmq0.ffs@tglx>
-Date:   Sat, 23 Sep 2023 03:11:05 +0200
-Message-ID: <87jzshhexi.ffs@tglx>
+        Fri, 22 Sep 2023 21:14:21 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AA2CE
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 18:14:15 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34f6ce577a4so9508375ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 18:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1695431654; x=1696036454; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3p2Xpy6OB/r139HgDed1FfmEjYksRL9s1sjY3anozVM=;
+        b=Zx9vHbvf85ZewJI63aHShFKxCduNHcBkaJOTiTDvUVrKbXoG4a7FzYS14YXt08iGhH
+         jriK2XJhlQ/DvcHETiTHNYPc2uuQ7dvyrdf3dpIERCBCcQxomMYDxGtb1mOBdiN4TCM1
+         bkqedjmWj5YejyMQK5QULykOjkdSvvlR+66Dg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695431654; x=1696036454;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3p2Xpy6OB/r139HgDed1FfmEjYksRL9s1sjY3anozVM=;
+        b=KcCoNJtlm/Fe6dSs4GnrT1wMDI02ee+Sa4I7Sfge6Xbv9pcHg/A2qzWHvbbQQY8OOU
+         f4+rBJXYIY4uL3fPtizoV9Ugfd6GkmlvBH6z/ywmH7PHrBaIJ45f2qBFW6wz4sI9lxZz
+         dgcordaxRZ28BhpIomuzXKvuH/iTogXx+T3FaRT7FxL5y0hmRUNkcXYGPagOidkIszQl
+         mFEmxdqRqvqSyXVvoCYmFNhdRa7VhClA7yU3d20D+LWNsbTWuv6ZbdJAxvPYHtvUuQdr
+         oDVgnlx4mCWBv6ZnBRucDNLVtdB6z8bSpubOQHLvKyjHyNeA3WKm040KDMz9cbsit60u
+         YSww==
+X-Gm-Message-State: AOJu0YwZ/iEND0VwKnRUje2/Z3pVu5j2Ume1vkXabrBbt8ZxmPbU/oNk
+        Yb4sSiPok09N6POlfJPcAcCmhZSLp8vz2VuDXds=
+X-Google-Smtp-Source: AGHT+IGtZ1mnco63mTfTx8AkpKukDkGuoE1ogUJ28T7vde7TtYncQr/SW/Ad3AcaWIF2YbV09QHyyw==
+X-Received: by 2002:a05:6e02:2189:b0:34f:1e9c:45df with SMTP id j9-20020a056e02218900b0034f1e9c45dfmr1454696ila.4.1695431654589;
+        Fri, 22 Sep 2023 18:14:14 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id cg11-20020a0566381bcb00b0042b3dcb1106sm1330089jab.47.2023.09.22.18.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 18:14:13 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] sched/rt: Fix live lock between select_fallback_rq() and RT push
+Date:   Sat, 23 Sep 2023 01:14:08 +0000
+Message-ID: <20230923011409.3522762-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22 2023 at 00:55, Thomas Gleixner wrote:
-> On Thu, Sep 21 2023 at 09:00, Linus Torvalds wrote:
->> That said - I think as a proof of concept and "look, with this we get
->> the expected scheduling event counts", that patch is perfect. I think
->> you more than proved the concept.
->
-> There is certainly quite some analyis work to do to make this a one to
-> one replacement.
->
-> With a handful of benchmarks the PoC (tweaked with some obvious fixes)
-> is pretty much on par with the current mainline variants (NONE/FULL),
-> but the memtier benchmark makes a massive dent.
->
-> It sports a whopping 10% regression with the LAZY mode versus the mainline
-> NONE model. Non-LAZY and FULL behave unsurprisingly in the same way.
->
-> That benchmark is really sensitive to the preemption model. With current
-> mainline (DYNAMIC_PREEMPT enabled) the preempt=FULL model has ~20%
-> performance drop versus preempt=NONE.
+During RCU-boost testing with the TREE03 rcutorture config, I found that
+after a few hours, the machine locks up.
 
-That 20% was a tired pilot error. The real number is in the 5% ballpark.
+On tracing, I found that there is a live lock happening between 2 CPUs.
+One CPU has an RT task running, while another CPU is being offlined
+which also has an RT task running.  During this offlining, all threads
+are migrated. The migration thread is repeatedly scheduled to migrate
+actively running tasks on the CPU being offlined. This results in a live
+lock because select_fallback_rq() keeps picking the CPU that an RT task
+is already running on only to get pushed back to the CPU being offlined.
 
-> I have no clue what's going on there yet, but that shows that there is
-> obviously quite some work ahead to get this sorted.
+It is anyway pointless to pick CPUs for pushing tasks to if they are
+being offlined only to get migrated away to somewhere else. This could
+also add unwanted latency to this task.
 
-It took some head scratching to figure that out. The initial fix broke
-the handling of the hog issue, i.e. the problem that Ankur tried to
-solve, but I hacked up a "solution" for that too.
+Fix these issues by not selecting CPUs in RT if they are not 'active'
+for scheduling, using the cpu_active_mask. Other parts in core.c already
+use cpu_active_mask to prevent tasks from being put on CPUs going
+offline.
 
-With that the memtier benchmark is roughly back to the mainline numbers,
-but my throughput benchmark know how is pretty close to zero, so that
-should be looked at by people who actually understand these things.
-
-Likewise the hog prevention is just at the PoC level and clearly beyond
-my knowledge of scheduler details: It unconditionally forces a
-reschedule when the looping task is not responding to a lazy reschedule
-request before the next tick. IOW it forces a reschedule on the second
-tick, which is obviously different from the cond_resched()/might_sleep()
-behaviour.
-
-The changes vs. the original PoC aside of the bug and thinko fixes:
-
-    1) A hack to utilize the TRACE_FLAG_IRQS_NOSUPPORT flag to trace the
-       lazy preempt bit as the trace_entry::flags field is full already.
-
-       That obviously breaks the tracer ABI, but if we go there then
-       this needs to be fixed. Steven?
-
-    2) debugfs file to validate that loops can be force preempted w/o
-       cond_resched()
-
-       The usage is:
-
-       # taskset -c 1 bash
-       # echo 1 > /sys/kernel/debug/sched/hog &
-       # echo 1 > /sys/kernel/debug/sched/hog &
-       # echo 1 > /sys/kernel/debug/sched/hog &
-
-       top shows ~33% CPU for each of the hogs and tracing confirms that
-       the crude hack in the scheduler tick works:
-
-            bash-4559    [001] dlh2.  2253.331202: resched_curr <-__update_curr
-            bash-4560    [001] dlh2.  2253.340199: resched_curr <-__update_curr
-            bash-4561    [001] dlh2.  2253.346199: resched_curr <-__update_curr
-            bash-4559    [001] dlh2.  2253.353199: resched_curr <-__update_curr
-            bash-4561    [001] dlh2.  2253.358199: resched_curr <-__update_curr
-            bash-4560    [001] dlh2.  2253.370202: resched_curr <-__update_curr
-            bash-4559    [001] dlh2.  2253.378198: resched_curr <-__update_curr
-            bash-4561    [001] dlh2.  2253.389199: resched_curr <-__update_curr
-
-       The 'l' instead of the usual 'N' reflects that the lazy resched
-       bit is set. That makes __update_curr() invoke resched_curr()
-       instead of the lazy variant. resched_curr() sets TIF_NEED_RESCHED
-       and folds it into preempt_count so that preemption happens at the
-       next possible point, i.e. either in return from interrupt or at
-       the next preempt_enable().
-
-That's as much as I wanted to demonstrate and I'm not going to spend
-more cycles on it as I have already too many other things on flight and
-the resulting scheduler woes are clearly outside of my expertice.
-
-Though definitely I'm putting a permanent NAK in place for any attempts
-to duct tape the preempt=NONE model any further by sprinkling more
-cond*() and whatever warts around.
-
-Thanks,
-
-        tglx
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- arch/x86/Kconfig                   |    1 
- arch/x86/include/asm/thread_info.h |    6 ++--
- drivers/acpi/processor_idle.c      |    2 -
- include/linux/entry-common.h       |    2 -
- include/linux/entry-kvm.h          |    2 -
- include/linux/sched.h              |   12 +++++---
- include/linux/sched/idle.h         |    8 ++---
- include/linux/thread_info.h        |   24 +++++++++++++++++
- include/linux/trace_events.h       |    8 ++---
- kernel/Kconfig.preempt             |   17 +++++++++++-
- kernel/entry/common.c              |    4 +-
- kernel/entry/kvm.c                 |    2 -
- kernel/sched/core.c                |   51 +++++++++++++++++++++++++------------
- kernel/sched/debug.c               |   19 +++++++++++++
- kernel/sched/fair.c                |   46 ++++++++++++++++++++++-----------
- kernel/sched/features.h            |    2 +
- kernel/sched/idle.c                |    3 --
- kernel/sched/sched.h               |    1 
- kernel/trace/trace.c               |    2 +
- kernel/trace/trace_output.c        |   16 ++++++++++-
- 20 files changed, 171 insertions(+), 57 deletions(-)
+ kernel/sched/cpupri.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -898,14 +898,15 @@ static inline void hrtick_rq_init(struct
- 
- #if defined(CONFIG_SMP) && defined(TIF_POLLING_NRFLAG)
- /*
-- * Atomically set TIF_NEED_RESCHED and test for TIF_POLLING_NRFLAG,
-+ * Atomically set TIF_NEED_RESCHED[_LAZY] and test for TIF_POLLING_NRFLAG,
-  * this avoids any races wrt polling state changes and thereby avoids
-  * spurious IPIs.
-  */
--static inline bool set_nr_and_not_polling(struct task_struct *p)
-+static inline bool set_nr_and_not_polling(struct task_struct *p, int tif_bit)
- {
- 	struct thread_info *ti = task_thread_info(p);
--	return !(fetch_or(&ti->flags, _TIF_NEED_RESCHED) & _TIF_POLLING_NRFLAG);
-+
-+	return !(fetch_or(&ti->flags, 1 << tif_bit) & _TIF_POLLING_NRFLAG);
- }
- 
- /*
-@@ -922,7 +923,7 @@ static bool set_nr_if_polling(struct tas
- 	for (;;) {
- 		if (!(val & _TIF_POLLING_NRFLAG))
- 			return false;
--		if (val & _TIF_NEED_RESCHED)
-+		if (val & (_TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY))
- 			return true;
- 		if (try_cmpxchg(&ti->flags, &val, val | _TIF_NEED_RESCHED))
- 			break;
-@@ -931,9 +932,9 @@ static bool set_nr_if_polling(struct tas
- }
- 
- #else
--static inline bool set_nr_and_not_polling(struct task_struct *p)
-+static inline bool set_nr_and_not_polling(struct task_struct *p, int tif_bit)
- {
--	set_tsk_need_resched(p);
-+	set_tsk_thread_flag(p, tif_bit);
- 	return true;
- }
- 
-@@ -1038,28 +1039,47 @@ void wake_up_q(struct wake_q_head *head)
-  * might also involve a cross-CPU call to trigger the scheduler on
-  * the target CPU.
-  */
--void resched_curr(struct rq *rq)
-+static void __resched_curr(struct rq *rq, int lazy)
- {
-+	int cpu, tif_bit = TIF_NEED_RESCHED + lazy;
- 	struct task_struct *curr = rq->curr;
--	int cpu;
- 
- 	lockdep_assert_rq_held(rq);
- 
--	if (test_tsk_need_resched(curr))
-+	if (unlikely(test_tsk_thread_flag(curr, tif_bit)))
- 		return;
- 
- 	cpu = cpu_of(rq);
- 
- 	if (cpu == smp_processor_id()) {
--		set_tsk_need_resched(curr);
--		set_preempt_need_resched();
-+		set_tsk_thread_flag(curr, tif_bit);
-+		if (!lazy)
-+			set_preempt_need_resched();
- 		return;
- 	}
- 
--	if (set_nr_and_not_polling(curr))
--		smp_send_reschedule(cpu);
--	else
-+	if (set_nr_and_not_polling(curr, tif_bit)) {
-+		if (!lazy)
-+			smp_send_reschedule(cpu);
-+	} else {
- 		trace_sched_wake_idle_without_ipi(cpu);
-+	}
-+}
-+
-+void resched_curr(struct rq *rq)
-+{
-+	__resched_curr(rq, 0);
-+}
-+
-+void resched_curr_lazy(struct rq *rq)
-+{
-+	int lazy = IS_ENABLED(CONFIG_PREEMPT_AUTO) && !sched_feat(FORCE_NEED_RESCHED) ?
-+		TIF_NEED_RESCHED_LAZY_OFFSET : 0;
-+
-+	if (lazy && unlikely(test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED)))
-+		return;
-+
-+	__resched_curr(rq, lazy);
- }
- 
- void resched_cpu(int cpu)
-@@ -1132,7 +1152,7 @@ static void wake_up_idle_cpu(int cpu)
- 	if (cpu == smp_processor_id())
- 		return;
- 
--	if (set_nr_and_not_polling(rq->idle))
-+	if (set_nr_and_not_polling(rq->idle, TIF_NEED_RESCHED))
- 		smp_send_reschedule(cpu);
- 	else
- 		trace_sched_wake_idle_without_ipi(cpu);
-@@ -8872,7 +8892,6 @@ static void __init preempt_dynamic_init(
- 		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
- 		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
- 	}									 \
--	EXPORT_SYMBOL_GPL(preempt_model_##mode)
- 
- PREEMPT_MODEL_ACCESSOR(none);
- PREEMPT_MODEL_ACCESSOR(voluntary);
---- a/include/linux/thread_info.h
-+++ b/include/linux/thread_info.h
-@@ -59,6 +59,16 @@ enum syscall_work_bit {
- 
- #include <asm/thread_info.h>
- 
-+#ifdef CONFIG_PREEMPT_AUTO
-+# define TIF_NEED_RESCHED_LAZY		TIF_ARCH_RESCHED_LAZY
-+# define _TIF_NEED_RESCHED_LAZY		_TIF_ARCH_RESCHED_LAZY
-+# define TIF_NEED_RESCHED_LAZY_OFFSET	(TIF_NEED_RESCHED_LAZY - TIF_NEED_RESCHED)
-+#else
-+# define TIF_NEED_RESCHED_LAZY		TIF_NEED_RESCHED
-+# define _TIF_NEED_RESCHED_LAZY		_TIF_NEED_RESCHED
-+# define TIF_NEED_RESCHED_LAZY_OFFSET	0
-+#endif
-+
- #ifdef __KERNEL__
- 
- #ifndef arch_set_restart_data
-@@ -185,6 +195,13 @@ static __always_inline bool tif_need_res
- 			     (unsigned long *)(&current_thread_info()->flags));
- }
- 
-+static __always_inline bool tif_need_resched_lazy(void)
-+{
-+	return IS_ENABLED(CONFIG_PREEMPT_AUTO) &&
-+		arch_test_bit(TIF_NEED_RESCHED_LAZY,
-+			      (unsigned long *)(&current_thread_info()->flags));
-+}
-+
- #else
- 
- static __always_inline bool tif_need_resched(void)
-@@ -193,6 +210,13 @@ static __always_inline bool tif_need_res
- 			(unsigned long *)(&current_thread_info()->flags));
- }
- 
-+static __always_inline bool tif_need_resched_lazy(void)
-+{
-+	return IS_ENABLED(CONFIG_PREEMPT_AUTO) &&
-+		test_bit(TIF_NEED_RESCHED_LAZY,
-+			 (unsigned long *)(&current_thread_info()->flags));
-+}
-+
- #endif /* _ASM_GENERIC_BITOPS_INSTRUMENTED_NON_ATOMIC_H */
- 
- #ifndef CONFIG_HAVE_ARCH_WITHIN_STACK_FRAMES
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -11,6 +11,13 @@ config PREEMPT_BUILD
- 	select PREEMPTION
- 	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
- 
-+config PREEMPT_BUILD_AUTO
-+	bool
-+	select PREEMPT_BUILD
-+
-+config HAVE_PREEMPT_AUTO
-+	bool
-+
- choice
- 	prompt "Preemption Model"
- 	default PREEMPT_NONE
-@@ -67,9 +74,17 @@ config PREEMPT
- 	  embedded system with latency requirements in the milliseconds
- 	  range.
- 
-+config PREEMPT_AUTO
-+	bool "Automagic preemption mode with runtime tweaking support"
-+	depends on HAVE_PREEMPT_AUTO
-+	select PREEMPT_BUILD_AUTO
-+	help
-+	  Add some sensible blurb here
-+
- config PREEMPT_RT
- 	bool "Fully Preemptible Kernel (Real-Time)"
- 	depends on EXPERT && ARCH_SUPPORTS_RT
-+	select PREEMPT_BUILD_AUTO if HAVE_PREEMPT_AUTO
- 	select PREEMPTION
- 	help
- 	  This option turns the kernel into a real-time kernel by replacing
-@@ -95,7 +110,7 @@ config PREEMPTION
- 
- config PREEMPT_DYNAMIC
- 	bool "Preemption behaviour defined on boot"
--	depends on HAVE_PREEMPT_DYNAMIC && !PREEMPT_RT
-+	depends on HAVE_PREEMPT_DYNAMIC && !PREEMPT_RT && !PREEMPT_AUTO
- 	select JUMP_LABEL if HAVE_PREEMPT_DYNAMIC_KEY
- 	select PREEMPT_BUILD
- 	default y if HAVE_PREEMPT_DYNAMIC_CALL
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -60,7 +60,7 @@
- #define EXIT_TO_USER_MODE_WORK						\
- 	(_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_UPROBE |		\
- 	 _TIF_NEED_RESCHED | _TIF_PATCH_PENDING | _TIF_NOTIFY_SIGNAL |	\
--	 ARCH_EXIT_TO_USER_MODE_WORK)
-+	 _TIF_NEED_RESCHED_LAZY | ARCH_EXIT_TO_USER_MODE_WORK)
- 
- /**
-  * arch_enter_from_user_mode - Architecture specific sanity check for user mode regs
---- a/include/linux/entry-kvm.h
-+++ b/include/linux/entry-kvm.h
-@@ -18,7 +18,7 @@
- 
- #define XFER_TO_GUEST_MODE_WORK						\
- 	(_TIF_NEED_RESCHED | _TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL |	\
--	 _TIF_NOTIFY_RESUME | ARCH_XFER_TO_GUEST_MODE_WORK)
-+	 _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED_LAZY | ARCH_XFER_TO_GUEST_MODE_WORK)
- 
- struct kvm_vcpu;
- 
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -155,7 +155,7 @@ static unsigned long exit_to_user_mode_l
- 
- 		local_irq_enable_exit_to_user(ti_work);
- 
--		if (ti_work & _TIF_NEED_RESCHED)
-+		if (ti_work & (_TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY))
- 			schedule();
- 
- 		if (ti_work & _TIF_UPROBE)
-@@ -385,7 +385,7 @@ void raw_irqentry_exit_cond_resched(void
- 		rcu_irq_exit_check_preempt();
- 		if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
- 			WARN_ON_ONCE(!on_thread_stack());
--		if (need_resched())
-+		if (test_tsk_need_resched(current))
- 			preempt_schedule_irq();
- 	}
- }
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -89,3 +89,5 @@ SCHED_FEAT(UTIL_EST_FASTUP, true)
- SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(HZ_BW, true)
-+
-+SCHED_FEAT(FORCE_NEED_RESCHED, false)
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2435,6 +2435,7 @@ extern void init_sched_fair_class(void);
- extern void reweight_task(struct task_struct *p, int prio);
- 
- extern void resched_curr(struct rq *rq);
-+extern void resched_curr_lazy(struct rq *rq);
- extern void resched_cpu(int cpu);
- 
- extern struct rt_bandwidth def_rt_bandwidth;
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2046,17 +2046,17 @@ static inline void update_tsk_thread_fla
- 	update_ti_thread_flag(task_thread_info(tsk), flag, value);
- }
- 
--static inline int test_and_set_tsk_thread_flag(struct task_struct *tsk, int flag)
-+static inline bool test_and_set_tsk_thread_flag(struct task_struct *tsk, int flag)
- {
- 	return test_and_set_ti_thread_flag(task_thread_info(tsk), flag);
- }
- 
--static inline int test_and_clear_tsk_thread_flag(struct task_struct *tsk, int flag)
-+static inline bool test_and_clear_tsk_thread_flag(struct task_struct *tsk, int flag)
- {
- 	return test_and_clear_ti_thread_flag(task_thread_info(tsk), flag);
- }
- 
--static inline int test_tsk_thread_flag(struct task_struct *tsk, int flag)
-+static inline bool test_tsk_thread_flag(struct task_struct *tsk, int flag)
- {
- 	return test_ti_thread_flag(task_thread_info(tsk), flag);
- }
-@@ -2069,9 +2069,11 @@ static inline void set_tsk_need_resched(
- static inline void clear_tsk_need_resched(struct task_struct *tsk)
- {
- 	clear_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
-+	if (IS_ENABLED(CONFIG_PREEMPT_AUTO))
-+		clear_tsk_thread_flag(tsk, TIF_NEED_RESCHED_LAZY);
- }
- 
--static inline int test_tsk_need_resched(struct task_struct *tsk)
-+static inline bool test_tsk_need_resched(struct task_struct *tsk)
- {
- 	return unlikely(test_tsk_thread_flag(tsk,TIF_NEED_RESCHED));
- }
-@@ -2252,7 +2254,7 @@ static inline int rwlock_needbreak(rwloc
- 
- static __always_inline bool need_resched(void)
- {
--	return unlikely(tif_need_resched());
-+	return unlikely(tif_need_resched_lazy() || tif_need_resched());
- }
- 
- /*
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -964,8 +964,10 @@ static void clear_buddies(struct cfs_rq
-  * XXX: strictly: vd_i += N*r_i/w_i such that: vd_i > ve_i
-  * this is probably good enough.
-  */
--static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se)
-+static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se, bool tick)
- {
-+	struct rq *rq = rq_of(cfs_rq);
-+
- 	if ((s64)(se->vruntime - se->deadline) < 0)
- 		return;
- 
-@@ -984,10 +986,19 @@ static void update_deadline(struct cfs_r
- 	/*
- 	 * The task has consumed its request, reschedule.
- 	 */
--	if (cfs_rq->nr_running > 1) {
--		resched_curr(rq_of(cfs_rq));
--		clear_buddies(cfs_rq, se);
-+	if (cfs_rq->nr_running < 2)
-+		return;
-+
-+	if (!IS_ENABLED(CONFIG_PREEMPT_AUTO) || sched_feat(FORCE_NEED_RESCHED)) {
-+		resched_curr(rq);
-+	} else {
-+		/* Did the task ignore the lazy reschedule request? */
-+		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY))
-+			resched_curr(rq);
-+		else
-+			resched_curr_lazy(rq);
- 	}
-+	clear_buddies(cfs_rq, se);
- }
- 
- #include "pelt.h"
-@@ -1095,7 +1106,7 @@ static void update_tg_load_avg(struct cf
- /*
-  * Update the current task's runtime statistics.
-  */
--static void update_curr(struct cfs_rq *cfs_rq)
-+static void __update_curr(struct cfs_rq *cfs_rq, bool tick)
- {
- 	struct sched_entity *curr = cfs_rq->curr;
- 	u64 now = rq_clock_task(rq_of(cfs_rq));
-@@ -1122,7 +1133,7 @@ static void update_curr(struct cfs_rq *c
- 	schedstat_add(cfs_rq->exec_clock, delta_exec);
- 
- 	curr->vruntime += calc_delta_fair(delta_exec, curr);
--	update_deadline(cfs_rq, curr);
-+	update_deadline(cfs_rq, curr, tick);
- 	update_min_vruntime(cfs_rq);
- 
- 	if (entity_is_task(curr)) {
-@@ -1136,6 +1147,11 @@ static void update_curr(struct cfs_rq *c
- 	account_cfs_rq_runtime(cfs_rq, delta_exec);
- }
- 
-+static inline void update_curr(struct cfs_rq *cfs_rq)
-+{
-+	__update_curr(cfs_rq, false);
-+}
-+
- static void update_curr_fair(struct rq *rq)
- {
- 	update_curr(cfs_rq_of(&rq->curr->se));
-@@ -5253,7 +5269,7 @@ entity_tick(struct cfs_rq *cfs_rq, struc
- 	/*
- 	 * Update run-time statistics of the 'current'.
- 	 */
--	update_curr(cfs_rq);
-+	__update_curr(cfs_rq, true);
- 
- 	/*
- 	 * Ensure that runnable average is periodically updated.
-@@ -5267,7 +5283,7 @@ entity_tick(struct cfs_rq *cfs_rq, struc
- 	 * validating it and just reschedule.
- 	 */
- 	if (queued) {
--		resched_curr(rq_of(cfs_rq));
-+		resched_curr_lazy(rq_of(cfs_rq));
- 		return;
- 	}
- 	/*
-@@ -5413,7 +5429,7 @@ static void __account_cfs_rq_runtime(str
- 	 * hierarchy can be throttled
- 	 */
- 	if (!assign_cfs_rq_runtime(cfs_rq) && likely(cfs_rq->curr))
--		resched_curr(rq_of(cfs_rq));
-+		resched_curr_lazy(rq_of(cfs_rq));
- }
- 
- static __always_inline
-@@ -5673,7 +5689,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cf
- 
- 	/* Determine whether we need to wake up potentially idle CPU: */
- 	if (rq->curr == rq->idle && rq->cfs.nr_running)
--		resched_curr(rq);
-+		resched_curr_lazy(rq);
- }
- 
- #ifdef CONFIG_SMP
-@@ -6378,7 +6394,7 @@ static void hrtick_start_fair(struct rq
- 
- 		if (delta < 0) {
- 			if (task_current(rq, p))
--				resched_curr(rq);
-+				resched_curr_lazy(rq);
- 			return;
- 		}
- 		hrtick_start(rq, delta);
-@@ -8031,7 +8047,7 @@ static void check_preempt_wakeup(struct
- 	 * prevents us from potentially nominating it as a false LAST_BUDDY
- 	 * below.
- 	 */
--	if (test_tsk_need_resched(curr))
-+	if (need_resched())
- 		return;
- 
- 	/* Idle tasks are by definition preempted by non-idle tasks. */
-@@ -8073,7 +8089,7 @@ static void check_preempt_wakeup(struct
- 	return;
- 
- preempt:
--	resched_curr(rq);
-+	resched_curr_lazy(rq);
- }
- 
- #ifdef CONFIG_SMP
-@@ -12224,7 +12240,7 @@ static inline void task_tick_core(struct
- 	 */
- 	if (rq->core->core_forceidle_count && rq->cfs.nr_running == 1 &&
- 	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
--		resched_curr(rq);
-+		resched_curr_lazy(rq);
- }
- 
- /*
-@@ -12389,7 +12405,7 @@ prio_changed_fair(struct rq *rq, struct
- 	 */
- 	if (task_current(rq, p)) {
- 		if (p->prio > oldprio)
--			resched_curr(rq);
-+			resched_curr_lazy(rq);
- 	} else
- 		check_preempt_curr(rq, p, 0);
- }
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -108,7 +108,7 @@ static const struct dmi_system_id proces
-  */
- static void __cpuidle acpi_safe_halt(void)
- {
--	if (!tif_need_resched()) {
-+	if (!need_resched()) {
- 		raw_safe_halt();
- 		raw_local_irq_disable();
- 	}
---- a/include/linux/sched/idle.h
-+++ b/include/linux/sched/idle.h
-@@ -63,7 +63,7 @@ static __always_inline bool __must_check
- 	 */
- 	smp_mb__after_atomic();
- 
--	return unlikely(tif_need_resched());
-+	return unlikely(need_resched());
- }
- 
- static __always_inline bool __must_check current_clr_polling_and_test(void)
-@@ -76,7 +76,7 @@ static __always_inline bool __must_check
- 	 */
- 	smp_mb__after_atomic();
- 
--	return unlikely(tif_need_resched());
-+	return unlikely(need_resched());
- }
- 
- #else
-@@ -85,11 +85,11 @@ static inline void __current_clr_polling
- 
- static inline bool __must_check current_set_polling_and_test(void)
- {
--	return unlikely(tif_need_resched());
-+	return unlikely(need_resched());
- }
- static inline bool __must_check current_clr_polling_and_test(void)
- {
--	return unlikely(tif_need_resched());
-+	return unlikely(need_resched());
- }
- #endif
- 
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -57,8 +57,7 @@ static noinline int __cpuidle cpu_idle_p
- 	ct_cpuidle_enter();
- 
- 	raw_local_irq_enable();
--	while (!tif_need_resched() &&
--	       (cpu_idle_force_poll || tick_check_broadcast_expired()))
-+	while (!need_resched() && (cpu_idle_force_poll || tick_check_broadcast_expired()))
- 		cpu_relax();
- 	raw_local_irq_disable();
- 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2722,6 +2722,8 @@ unsigned int tracing_gen_ctx_irq_test(un
- 
- 	if (tif_need_resched())
- 		trace_flags |= TRACE_FLAG_NEED_RESCHED;
-+	if (tif_need_resched_lazy())
-+		trace_flags |= TRACE_FLAG_NEED_RESCHED_LAZY;
- 	if (test_preempt_need_resched())
- 		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
- 	return (trace_flags << 16) | (min_t(unsigned int, pc & 0xff, 0xf)) |
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -271,6 +271,7 @@ config X86
- 	select HAVE_STATIC_CALL
- 	select HAVE_STATIC_CALL_INLINE		if HAVE_OBJTOOL
- 	select HAVE_PREEMPT_DYNAMIC_CALL
-+	select HAVE_PREEMPT_AUTO
- 	select HAVE_RSEQ
- 	select HAVE_RUST			if X86_64
- 	select HAVE_SYSCALL_TRACEPOINTS
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -81,8 +81,9 @@ struct thread_info {
- #define TIF_NOTIFY_RESUME	1	/* callback before returning to user */
- #define TIF_SIGPENDING		2	/* signal pending */
- #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
--#define TIF_SINGLESTEP		4	/* reenable singlestep on user return*/
--#define TIF_SSBD		5	/* Speculative store bypass disable */
-+#define TIF_ARCH_RESCHED_LAZY	4	/* Lazy rescheduling */
-+#define TIF_SINGLESTEP		5	/* reenable singlestep on user return*/
-+#define TIF_SSBD		6	/* Speculative store bypass disable */
- #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
- #define TIF_SPEC_L1D_FLUSH	10	/* Flush L1D on mm switches (processes) */
- #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
-@@ -104,6 +105,7 @@ struct thread_info {
- #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
- #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
- #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
-+#define _TIF_ARCH_RESCHED_LAZY	(1 << TIF_ARCH_RESCHED_LAZY)
- #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
- #define _TIF_SSBD		(1 << TIF_SSBD)
- #define _TIF_SPEC_IB		(1 << TIF_SPEC_IB)
---- a/kernel/entry/kvm.c
-+++ b/kernel/entry/kvm.c
-@@ -13,7 +13,7 @@ static int xfer_to_guest_mode_work(struc
- 			return -EINTR;
- 		}
- 
--		if (ti_work & _TIF_NEED_RESCHED)
-+		if (ti_work & (_TIF_NEED_RESCHED | TIF_NEED_RESCHED_LAZY))
- 			schedule();
- 
- 		if (ti_work & _TIF_NOTIFY_RESUME)
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -178,8 +178,8 @@ unsigned int tracing_gen_ctx_irq_test(un
- 
- enum trace_flag_type {
- 	TRACE_FLAG_IRQS_OFF		= 0x01,
--	TRACE_FLAG_IRQS_NOSUPPORT	= 0x02,
--	TRACE_FLAG_NEED_RESCHED		= 0x04,
-+	TRACE_FLAG_NEED_RESCHED		= 0x02,
-+	TRACE_FLAG_NEED_RESCHED_LAZY	= 0x04,
- 	TRACE_FLAG_HARDIRQ		= 0x08,
- 	TRACE_FLAG_SOFTIRQ		= 0x10,
- 	TRACE_FLAG_PREEMPT_RESCHED	= 0x20,
-@@ -205,11 +205,11 @@ static inline unsigned int tracing_gen_c
- 
- static inline unsigned int tracing_gen_ctx_flags(unsigned long irqflags)
- {
--	return tracing_gen_ctx_irq_test(TRACE_FLAG_IRQS_NOSUPPORT);
-+	return tracing_gen_ctx_irq_test(0);
- }
- static inline unsigned int tracing_gen_ctx(void)
- {
--	return tracing_gen_ctx_irq_test(TRACE_FLAG_IRQS_NOSUPPORT);
-+	return tracing_gen_ctx_irq_test(0);
- }
- #endif
- 
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -460,17 +460,29 @@ int trace_print_lat_fmt(struct trace_seq
- 		(entry->flags & TRACE_FLAG_IRQS_OFF && bh_off) ? 'D' :
- 		(entry->flags & TRACE_FLAG_IRQS_OFF) ? 'd' :
- 		bh_off ? 'b' :
--		(entry->flags & TRACE_FLAG_IRQS_NOSUPPORT) ? 'X' :
-+		!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_SUPPORT) ? 'X' :
- 		'.';
- 
--	switch (entry->flags & (TRACE_FLAG_NEED_RESCHED |
-+	switch (entry->flags & (TRACE_FLAG_NEED_RESCHED | TRACE_FLAG_NEED_RESCHED_LAZY |
- 				TRACE_FLAG_PREEMPT_RESCHED)) {
-+	case TRACE_FLAG_NEED_RESCHED | TRACE_FLAG_NEED_RESCHED_LAZY | TRACE_FLAG_PREEMPT_RESCHED:
-+		need_resched = 'B';
-+		break;
- 	case TRACE_FLAG_NEED_RESCHED | TRACE_FLAG_PREEMPT_RESCHED:
- 		need_resched = 'N';
- 		break;
-+	case TRACE_FLAG_NEED_RESCHED_LAZY | TRACE_FLAG_PREEMPT_RESCHED:
-+		need_resched = 'L';
-+		break;
-+	case TRACE_FLAG_NEED_RESCHED | TRACE_FLAG_NEED_RESCHED_LAZY:
-+		need_resched = 'b';
-+		break;
- 	case TRACE_FLAG_NEED_RESCHED:
- 		need_resched = 'n';
- 		break;
-+	case TRACE_FLAG_NEED_RESCHED_LAZY:
-+		need_resched = 'l';
-+		break;
- 	case TRACE_FLAG_PREEMPT_RESCHED:
- 		need_resched = 'p';
- 		break;
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -333,6 +333,23 @@ static const struct file_operations sche
- 	.release	= seq_release,
- };
- 
-+static ssize_t sched_hog_write(struct file *filp, const char __user *ubuf,
-+			       size_t cnt, loff_t *ppos)
-+{
-+	unsigned long end = jiffies + 60 * HZ;
-+
-+	for (; time_before(jiffies, end) && !signal_pending(current);)
-+		cpu_relax();
-+
-+	return cnt;
-+}
-+
-+static const struct file_operations sched_hog_fops = {
-+	.write		= sched_hog_write,
-+	.open		= simple_open,
-+	.llseek		= default_llseek,
-+};
-+
- static struct dentry *debugfs_sched;
- 
- static __init int sched_init_debug(void)
-@@ -374,6 +391,8 @@ static __init int sched_init_debug(void)
- 
- 	debugfs_create_file("debug", 0444, debugfs_sched, NULL, &sched_debug_fops);
- 
-+	debugfs_create_file("hog", 0200, debugfs_sched, NULL, &sched_hog_fops);
-+
- 	return 0;
- }
- late_initcall(sched_init_debug);
+diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
+index a286e726eb4b..42c40cfdf836 100644
+--- a/kernel/sched/cpupri.c
++++ b/kernel/sched/cpupri.c
+@@ -101,6 +101,7 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
+ 
+ 	if (lowest_mask) {
+ 		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
++		cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
+ 
+ 		/*
+ 		 * We have to ensure that we have at least one bit
+-- 
+2.42.0.515.g380fc7ccd1-goog
+
