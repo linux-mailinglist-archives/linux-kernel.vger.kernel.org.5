@@ -2,197 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B24F57AC5BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 00:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FEB7AC5BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 00:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjIWWuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 18:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
+        id S229687AbjIWW7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 18:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIWWux (ORCPT
+        with ESMTP id S229456AbjIWW7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 18:50:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91915192
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 15:50:46 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695509444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9TrV3gfVcpFGzPDaVs5xEnHkuQwVZuJwyc2p1iOFNA=;
-        b=j2EDbywGj7bPbhUe/eruZZniZhSxdy+ciYib1r+ScnZMyz4zVL78xV02SbNwM76HVn5YpD
-        yRTCBp4rGTwoilpUfsUAPFZB4z0Kzb7BLRkO3F9TJ7vXgpYzlkcCpOXi+MTaywLcA4QBAE
-        QLr/MF6wh29U1LkSRyfuEjI0cQhCEioPCFN8Q4+81vT/dlAf8ERuMNWHzVnatN/ic9E1QS
-        qrtGDxQdaYm+QVizu7P585pagp+5EsntH3N0kv1Mpl1u3luvlBCYKUS2lqDIpxk0cvNrFn
-        N1b0CGAze1SsBbS03fDTkBNlEBcZPOuvPjrCiaWNBXyA2lkIe05pn84UZdbmWQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695509444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9TrV3gfVcpFGzPDaVs5xEnHkuQwVZuJwyc2p1iOFNA=;
-        b=BPAMe5KD46XluUB/F6Hhx0U4e0qiaPPPWhS4XrTV+oQo65Rxc5UsYBHiVDEONI8Nkbfk0j
-        6WXFIMOiywA/+PCw==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-In-Reply-To: <87led2wdj0.ffs@tglx>
-References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
- <20230908070258.GA19320@noisy.programming.kicks-ass.net>
- <87zg1v3xxh.fsf@oracle.com>
- <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com>
- <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx>
-Date:   Sun, 24 Sep 2023 00:50:43 +0200
-Message-ID: <87h6nkh5bw.ffs@tglx>
+        Sat, 23 Sep 2023 18:59:11 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C00127;
+        Sat, 23 Sep 2023 15:59:05 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32167a4adaaso4003994f8f.1;
+        Sat, 23 Sep 2023 15:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695509943; x=1696114743; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UpqwuhVkG5QUle4XgWvbsNizB7y0ELvTMh0she2TEXo=;
+        b=Ckxl1e60Mke9kh2HnTZO+lJBBIq+dQp6tlGyh7FQeZEHVOmKXlCUUvRYdAUEYvkMEM
+         upHHRLQ7NoHspp7ljzJ1t5BszefLolMVZSF2ezL0HTFuVT6z3s63DYjoPJ/PdkKjKdYA
+         o1EGPw3K8ilVTEezpfAZEoK2B2HesY7vLKkilDocmWb121BehaFLD0wzgIykr8WXbEmH
+         rHQ7Vj0oCRYJQmAUZQsPK0PVHAyuImGEpp6mt1Dr8XqLE5OoeaJ+SK8kyidbonaMc+C6
+         Rg4s3ionZEPN2705EIiq+7Xkys/bfw4V8Bm4+8446yP3zINQfpt0A59gG/fgX5mchRCJ
+         7/5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695509943; x=1696114743;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UpqwuhVkG5QUle4XgWvbsNizB7y0ELvTMh0she2TEXo=;
+        b=u/jcjVMeMjjI2+HNRe9jDi0E/SsoGS+dM42aeAR9MkqaNs9TlRs5yXEkLB03tBPdjd
+         LZ4tsXx5zD0BAuUiKfw45zNiKzzirl0qxV3kW6YTsD93DCJqk5xX+xh+MjuPkljMyMoT
+         JkAiQ/1L2BZfckx6+Hk6rlZxlSWEc+JxOkNwOYLXVn2hRJew6lW5Zo+T7R+B9EENBzGG
+         dJM1tLCBzoWHrXAPNXvt6pFA/Cseczh/JLmUb+CzPlbIK/5g3zh25LIMuvockp2+5VEX
+         CR3ZSuVdM8A7cVWl435V5IpivsKWNBfhm4htBSNbdSJVfsU7sC4aRT1nXqGL9EdLDntF
+         XLGQ==
+X-Gm-Message-State: AOJu0Yy18ub0qIIUGA3925nHHbxvwekBvEtzVJKx/+rqXurK5DQg78GM
+        FqsaGXeYgCDHnx4h+nEXPM4=
+X-Google-Smtp-Source: AGHT+IGyVqTZlygqTRJi0Ur5gP8cGL0gDYBXyC/UAjK4uMnYEFlEhX1ctgjOwCpr/W/NNs3W2O+6Rg==
+X-Received: by 2002:a05:6000:10d:b0:31f:b804:8e44 with SMTP id o13-20020a056000010d00b0031fb8048e44mr2487372wrx.61.1695509943330;
+        Sat, 23 Sep 2023 15:59:03 -0700 (PDT)
+Received: from spiri.. ([2a02:2f08:a301:7000:650d:ac3c:7afc:f897])
+        by smtp.gmail.com with ESMTPSA id w10-20020adfde8a000000b0031fba0a746bsm7939772wrl.9.2023.09.23.15.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 15:59:02 -0700 (PDT)
+From:   alisadariana@gmail.com
+Cc:     Alisa-Dariana Roman <alisadariana@gmail.com>,
+        Alisa-Dariana Roman <alisa.roman@analog.com>,
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: ad7192: Correct reference voltage
+Date:   Sun, 24 Sep 2023 01:58:27 +0300
+Message-Id: <20230923225827.75681-1-alisadariana@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19 2023 at 14:30, Thomas Gleixner wrote:
-> On Mon, Sep 18 2023 at 18:57, Linus Torvalds wrote:
->> Then the question becomes whether we'd want to introduce a *new*
->> concept, which is a "if you are going to schedule, do it now rather
->> than later, because I'm taking a lock, and while it's a preemptible
->> lock, I'd rather not sleep while holding this resource".
->>
->> I suspect we want to avoid that for now, on the assumption that it's
->> hopefully not a problem in practice (the recently addressed problem
->> with might_sleep() was that it actively *moved* the scheduling point
->> to a bad place, not that scheduling could happen there, so instead of
->> optimizing scheduling, it actively pessimized it). But I thought I'd
->> mention it.
->
-> I think we want to avoid that completely and if this becomes an issue,
-> we rather be smart about it at the core level.
->
-> It's trivial enough to have a per task counter which tells whether a
-> preemtible lock is held (or about to be acquired) or not. Then the
-> scheduler can take that hint into account and decide to grant a
-> timeslice extension once in the expectation that the task leaves the
-> lock held section soonish and either returns to user space or schedules
-> out. It still can enforce it later on.
->
-> We really want to let the scheduler decide and rather give it proper
-> hints at the conceptual level instead of letting developers make random
-> decisions which might work well for a particular use case and completely
-> suck for the rest. I think we wasted enough time already on those.
+From: Alisa-Dariana Roman <alisadariana@gmail.com>
 
-Finally I realized why cond_resched() & et al. are so disgusting. They
-are scope-less and just a random spot which someone decided to be a good
-place to reschedule.
+The avdd and the reference voltage are two different sources but the
+reference voltage was assigned according to the avdd supply.
 
-But in fact the really relevant measure is scope. Full preemption is
-scope based:
+Add vref regulator structure and set the reference voltage according to
+the vref supply from the devicetree.
 
-      preempt_disable();
-      do_stuff();
-      preempt_enable();
+In case vref supply is missing, reference voltage is set according to
+the avdd supply for compatibility with old devicetrees.
 
-which also nests properly:
+Fixes: b581f748cce0 ("staging: iio: adc: ad7192: move out of staging")
+Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/iio/adc/ad7192.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-      preempt_disable();
-      do_stuff()
-        preempt_disable();
-        do_other_stuff();
-        preempt_enable();
-      preempt_enable();
+diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+index 69d1103b9508..c414fed60dd3 100644
+--- a/drivers/iio/adc/ad7192.c
++++ b/drivers/iio/adc/ad7192.c
+@@ -177,6 +177,7 @@ struct ad7192_chip_info {
+ struct ad7192_state {
+ 	const struct ad7192_chip_info	*chip_info;
+ 	struct regulator		*avdd;
++	struct regulator		*vref;
+ 	struct clk			*mclk;
+ 	u16				int_vref_mv;
+ 	u32				fclk;
+@@ -1008,10 +1009,32 @@ static int ad7192_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return dev_err_probe(&spi->dev, ret, "Failed to enable specified DVdd supply\n");
+ 
+-	ret = regulator_get_voltage(st->avdd);
+-	if (ret < 0) {
+-		dev_err(&spi->dev, "Device tree error, reference voltage undefined\n");
+-		return ret;
++	st->vref = devm_regulator_get_optional(&spi->dev, "vref");
++	if (IS_ERR(st->vref)) {
++		if (PTR_ERR(st->vref) != -ENODEV)
++			return PTR_ERR(st->vref);
++
++		ret = regulator_get_voltage(st->avdd);
++		if (ret < 0) {
++			dev_err(&spi->dev, "Device tree error, AVdd voltage undefined\n");
++			return ret;
++		}
++	} else {
++		ret = regulator_enable(st->vref);
++		if (ret) {
++			dev_err(&spi->dev, "Failed to enable specified Vref supply\n");
++			return ret;
++		}
++
++		ret = devm_add_action_or_reset(&spi->dev, ad7192_reg_disable, st->vref);
++		if (ret)
++			return ret;
++
++		ret = regulator_get_voltage(st->vref);
++		if (ret < 0) {
++			dev_err(&spi->dev, "Device tree error, Vref voltage undefined\n");
++			return ret;
++		}
+ 	}
+ 	st->int_vref_mv = ret / 1000;
+ 
+-- 
+2.34.1
 
-cond_resched() cannot nest and is obviously scope-less.
-
-The TIF_ALLOW_RESCHED mechanism, which sparked this discussion only
-pretends to be scoped.
-
-As Peter pointed out it does not properly nest with other mechanisms and
-it cannot even nest in itself because it is boolean.
-
-The worst thing about it is that it is semantically reverse to the
-established model of preempt_disable()/enable(),
-i.e. allow_resched()/disallow_resched().
-
-So instead of giving the scheduler a hint about 'this might be a good
-place to preempt', providing proper scope would make way more sense:
-
-      preempt_lazy_disable();
-      do_stuff();
-      preempt_lazy_enable();
-
-That would be the obvious and semantically consistent counterpart to the
-existing preemption control primitives with proper nesting support.
-
-might_sleep(), which is in all the lock acquire functions or your
-variant of hint (resched better now before I take the lock) are the
-wrong place.
-
-     hint();
-     lock();
-     do_stuff();
-     unlock();
-
-hint() might schedule and when the task comes back schedule immediately
-again because the lock is contended. hint() does again not have scope
-and might be meaningless or even counterproductive if called in a deeper
-callchain.
-
-Proper scope based hints avoid that.
-
-      preempt_lazy_disable();
-      lock();
-      do_stuff();
-      unlock();
-      preempt_lazy_enable();
-      
-That's way better because it describes the scope and the task will
-either schedule out in lock() on contention or provide a sensible lazy
-preemption point in preempt_lazy_enable(). It also nests properly:
-
-      preempt_lazy_disable();
-      lock(A);
-      do_stuff()
-        preempt_lazy_disable();
-        lock(B);
-        do_other_stuff();
-        unlock(B);
-        preempt_lazy_enable();
-      unlock(A);
-      preempt_lazy_enable();
-
-So in this case it does not matter wheter do_stuff() is invoked from a
-lock held section or not. The scope which defines the throughput
-relevant hint to the scheduler is correct in any case.
-
-Contrary to preempt_disable() the lazy variant does neither prevent
-scheduling nor preemption, but its a understandable properly nestable
-mechanism.
-
-I seriously hope to avoid it alltogether :)
-
-Thanks,
-
-        tglx
