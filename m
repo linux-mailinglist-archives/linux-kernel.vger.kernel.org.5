@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 403CD7AC515
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 22:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A4E7AC51A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 22:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjIWUmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 16:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
+        id S229668AbjIWUn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 16:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIWUmW (ORCPT
+        with ESMTP id S229456AbjIWUnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 16:42:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCF3139;
-        Sat, 23 Sep 2023 13:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1695501717; x=1696106517; i=w_armin@gmx.de;
- bh=v8QTdDa9zizuofuXHY/8uWirblQY/wodxLqL6Wr/bh4=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=nSY+xcav6HcNXj0H+FD9aQOyGVkoM3Y/zPvsuVu/Evk6KcpBNY047gfHG1/6+BjkwD/Sbn/BIFW
- 1WQFcTz77bkcQAtoMWG+9s4hE5Cv2jQTIVOss6lOCMqAXO35hP0WtzEs/XYRMMMRpXBFkI6wdRdbN
- 0GUNCXY1nZ6qtlH2oCKF6E2CAARNOVysttimWQF5lrJk7Yk9zzokeHZhPtwCHsHM3ZIPKCXRsOCSB
- LDBtFvPJOx3CfUONodNc4YKQM7PgxUI7kmMlYk1E68TTYF6qO+uFefeOvbouGySCNawRkNRWYIJeQ
- TMZjwtfqokrJgGs6LOERyD695Ayrk5rxUUWg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1N1OXZ-1rgoms0Q27-012rgk; Sat, 23 Sep 2023 22:41:57 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     markpearson@lenovo.com
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: think-lmi: Fix reference leak
-Date:   Sat, 23 Sep 2023 22:41:54 +0200
-Message-Id: <20230923204154.86815-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+        Sat, 23 Sep 2023 16:43:24 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F23B11B;
+        Sat, 23 Sep 2023 13:43:18 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3ae31be5ee9so703560b6e.2;
+        Sat, 23 Sep 2023 13:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695501797; x=1696106597; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N5fh3KTYudy9uf30WQHLYoA6WKrTKy0P0fUHqm5/Lms=;
+        b=ltFotPsVYDAf/sIAjYkeCoMf1OKvvdQ5atbusBNuJqlFU9iHbT3sbo5Zs+ynd9kGmI
+         OHScMeCB16Mb+U7hk3/Cd5q7uZhz1eiXdL4iPztN7ADQCGACrhZp2/OFzTdBEIOTd/sm
+         jN7A/B1k3eV92DtqsIFLy68d/9NPo1DUYqfRKWFlJN05cY3W8otlKdDtHWXdFlJIT5ZG
+         eY3ls7tM4YQOtx6chVwZp7qhsXABm0Hoc345j+OIAAwGc3Paa3q2vdU6GMfaSt2MQbih
+         eVKsBm0h1Z63LxsTBgGlefx/e0uUGQf1utprMvCzUZq4Ag4u2OksPWmufm1RU5EVbySK
+         NUhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695501797; x=1696106597;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N5fh3KTYudy9uf30WQHLYoA6WKrTKy0P0fUHqm5/Lms=;
+        b=kqiznan2vdFG67xb3scscUWj7rphEGR+FieUpiBRbHIvYPjPDqfcq1CTupWO2s1H/S
+         ffMJy1pt68vcm2LWVBxS4xV1b3pnMlYGGteoEe58vsTDd93+VXoLsaI9A1fOiu36LQ+V
+         X5bmGq4pEIiWF+r1aLwpVDxKpz1WLEzFQTuNeVpl+haQl7hoMcHWSwXscaRNMbrwz+nW
+         FCDtcadjFZ4VyV0PIuKic4yTMN9wHPQnR1jYtcL2KcFHn3r7GHO6Q6GfY3O7ds98JYYE
+         +4TOi1WQ+o2TqngImd0gXXA4ZeZlF3p9AQKOVp/VyZopT4LDLQFfsWfQeTAtX0JyfkvN
+         kjmw==
+X-Gm-Message-State: AOJu0Yxhn4sWcmoZdI16Bcu91tsN/4bNY84k80L2uusUp2Cmn/H8N+1t
+        7kWj4RM54W4ylefX9zPiAvZeH0Q/+SUgTX5wAmk=
+X-Google-Smtp-Source: AGHT+IGN/Glws95UsE4NgepBit03p5QHyayACy2aU/ZsaLEGKSY9pUo9lFqpFX/kbc8EpF+yjvBA4bQYzs1Xby88p10=
+X-Received: by 2002:a05:6808:199f:b0:3a8:4d1f:9dd0 with SMTP id
+ bj31-20020a056808199f00b003a84d1f9dd0mr4316251oib.30.1695501797512; Sat, 23
+ Sep 2023 13:43:17 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org> <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
+ <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
+In-Reply-To: <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 23 Sep 2023 23:43:06 +0300
+Message-ID: <CAOQ4uxjGofKT2LcM_YmoMYsH42ETpB5kxQkh+21nCbYc=w1nEg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:A8Y1TadaPlcC7con133CLsGUu8oyqTJZHMLWI4w835xYwWYF1T+
- VW8PsSkZFtnYgxPQBcjURCv+8unV+t/nr0gyJiMdsyT0KHIcLZf2+CvhAGi1wrd2yJK1spv
- VhPxoiGFwWN8DU/WmyTvhCjd6/1nB5Brs3vJj502KcsKpw3GLr0EigrQCq6unUH6FePmF9W
- jSenDXrcaGmyXtWAMVvDA==
-UI-OutboundReport: notjunk:1;M01:P0:QgkEX0nLQlY=;Z0REzsNaj1uN8TD51J9SUaNiQ0e
- PPB7g+n2S0xea9o+ceBERExF07/vyzaLnoYphOFmAzV7P7ZlolDuYfw0X+NMAlYBWTHAptuHh
- i6uOGTYrVuCNHZKdB20gOWr9oL2mBsWSsyIk/NkskPg2vpyZDwU5+eVIgNmg+wk0xZkQf5LNb
- tSdhKBE6MxlgQ4Zk/I8Xa1qimrQSb9r3MwF0PnFJmKCgTw1EPfhY4mrow6ZjDi20lDLAACqXu
- Uc2NwxceNZdWtYKWU3P9LkA5BGhGvGpU16/OEA35CCQM1B1bkJBL3+3Rfdq1oLXTljzaq4lCF
- 5eS3PsyC9yT944JzJr+NoI3fHvmjuG/t4jroNhA28SGrK92ouVkJ6WNss1nHq4ee9TFxrYjgZ
- kiyvwtMa1pH0pMCphncL4xf8IxwG/GdtbaXSCnTadcoe5dxAaOU+nRSkZmLwnVcrmjRhhgM1a
- JeH7dNkxAPefwuZV2FBrcVAU/ibtqzVRHnu3ktxARHOuhgwqFQHmRotspEBALooZ369fseY80
- fLzCwvHg1FFfoUVPziY3SP5ND1/S34yyC8UFqP97iuSasxoCAsDIAotWC55seTVF79HObCHCV
- PHMXMTI76ig+Ge0xVWIuG+OFg/A2BCmOvSr2fCJUQ3UQcaaA9B88taxkI2hkGkc2nPkwG4W45
- n/9lcZyNq2zypB3Jxbykz56/j7FHiAKiiXcpLA78/Z4Ji3LMTZy5lVwfpc+lohsvmG3qalOrC
- mH+3KV0iZuqfW6cM2ZKxiu7bQisD1sDnHrpgJoPwIhfY5XYCXdnUTGnQPAgAE35l6LuwkQTW2
- rBEAgWaLT4RiHaI667hjNEPQvbOtYVvMIzRddbkDbv3+3tskBe31h3RKMvfDnCABkHXXnCfwl
- Yqp2r0VFMKv0VlbSz6ATmj9ByY4iKrp1FYcStmtzRYz5CIBaOlT7FliWakyN6gKoIh20kJUPJ
- HXAO00QB9M6VMTENqtzv0FCre2o=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a duplicate attribute is found using kset_find_obj(), a reference
-to that attribute is returned which needs to be disposed accordingly
-using kobject_put(). Move the setting name validation into a separate
-function to allow for this change without having to duplicate the
-cleanup code for this setting.
-As a side note, a very similar bug was fixed in
-commit 7295a996fdab ("platform/x86: dell-sysman: Fix reference leak"),
-so it seems that the bug was copied from that driver.
+On Sat, Sep 23, 2023 at 1:46=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
+> > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel.org=
+> wrote:
+> > >
+> > > My initial goal was to implement multigrain timestamps on most major
+> > > filesystems, so we could present them to userland, and use them for
+> > > NFSv3, etc.
+> > >
+> > > With the current implementation however, we can't guarantee that a fi=
+le
+> > > with a coarse grained timestamp modified after one with a fine graine=
+d
+> > > timestamp will always appear to have a later value. This could confus=
+e
+> > > some programs like make, rsync, find, etc. that depend on strict
+> > > ordering requirements for timestamps.
+> > >
+> > > The goal of this version is more modest: fix XFS' change attribute.
+> > > XFS's change attribute is bumped on atime updates in addition to othe=
+r
+> > > deliberate changes. This makes it unsuitable for export via nfsd.
+> > >
+> > > Jan Kara suggested keeping this functionality internal-only for now a=
+nd
+> > > plumbing the fine grained timestamps through getattr [1]. This set ta=
+kes
+> > > a slightly different approach and has XFS use the fine-grained attr t=
+o
+> > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+> > >
+> > > While we keep fine-grained timestamps in struct inode, when presentin=
+g
+> > > the timestamps via getattr, we truncate them at a granularity of numb=
+er
+> > > of ns per jiffy,
+> >
+> > That's not good, because user explicitly set granular mtime would be
+> > truncated too and booting with different kernels (HZ) would change
+> > the observed timestamps of files.
+> >
+>
+> Thinking about this some more, I think the first problem is easily
+> addressable:
+>
+> The ctime isn't explicitly settable and with this set, we're already not
+> truncating the atime. We haven't used any of the extra bits in the mtime
+> yet, so we could just carve out a flag in there that says "this mtime
+> was explicitly set and shouldn't be truncated before presentation".
+>
+> The second problem (booting to older kernel) is a bit tougher to deal
+> with however. I'll have to think about that one a bit more.
 
-Compile-tested only.
+There is a straightforward solution to both these problems -
+opt in with a mount option to truncate user visible timestamps to 100ns
+(and not jiffy) resolution as Linus is trying to promote.
 
-Fixes: 1bcad8e510b2 ("platform/x86: think-lmi: Fix issues with duplicate a=
-ttributes")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/think-lmi.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think=
--lmi.c
-index 4be6f28d4600..3a396b763c49 100644
-=2D-- a/drivers/platform/x86/think-lmi.c
-+++ b/drivers/platform/x86/think-lmi.c
-@@ -1344,6 +1344,24 @@ static void tlmi_release_attr(void)
- 	kset_unregister(tlmi_priv.authentication_kset);
- }
-
-+static int tlmi_validate_setting_name(struct kset *attribute_kset, char *=
-name)
-+{
-+	struct kobject *duplicate;
-+
-+	if (!strcmp(name, "Reserved"))
-+		return -EINVAL;
-+
-+	duplicate =3D kset_find_obj(attribute_kset, name);
-+	if (duplicate) {
-+		pr_debug("Duplicate attribute name found - %s\n", name);
-+		/* kset_find_obj() returns a reference */
-+		kobject_put(duplicate);
-+		return -EBUSY;
-+	}
-+
-+	return 0;
-+}
-+
- static int tlmi_sysfs_init(void)
- {
- 	int i, ret;
-@@ -1372,10 +1390,8 @@ static int tlmi_sysfs_init(void)
- 			continue;
-
- 		/* check for duplicate or reserved values */
--		if (kset_find_obj(tlmi_priv.attribute_kset, tlmi_priv.setting[i]->displ=
-ay_name) ||
--		    !strcmp(tlmi_priv.setting[i]->display_name, "Reserved")) {
--			pr_debug("duplicate or reserved attribute name found - %s\n",
--				tlmi_priv.setting[i]->display_name);
-+		if (tlmi_validate_setting_name(tlmi_priv.attribute_kset,
-+					       tlmi_priv.setting[i]->display_name) < 0) {
- 			kfree(tlmi_priv.setting[i]->possible_values);
- 			kfree(tlmi_priv.setting[i]);
- 			tlmi_priv.setting[i] =3D NULL;
-=2D-
-2.39.2
-
+Thanks,
+Amir.
