@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 444837AC404
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220DF7AC408
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbjIWRhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 13:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
+        id S232101AbjIWRhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 13:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbjIWRhB (ORCPT
+        with ESMTP id S231831AbjIWRhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 13:37:01 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDD4193
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:36:54 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40572aeb673so3724065e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:36:54 -0700 (PDT)
+        Sat, 23 Sep 2023 13:37:04 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8431519C;
+        Sat, 23 Sep 2023 10:36:58 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c39f2b4f5aso29766245ad.0;
+        Sat, 23 Sep 2023 10:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695490613; x=1696095413; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dn6phUldCWNuUnLwZIK8/YMmtjChSj8cWy1kooP65ek=;
-        b=yI8ytZhcK16sAq00377W7OqEgIssUAOpDJkXXPe3l1XfZ4Bls077Ka4EoPSocXXXQm
-         aGHLLNUuzSi5PDA7nLMi54ALm5h86LEO2UwYGECEHkVfyo2x6uxAu82z4xD8Cs2schYo
-         Cr6ybE72CyE8vuOWT5mqMDj9GPtAqLEYvJgnyde+G73JcUXFdwdeXj1Ilfonz1z6niKZ
-         pB8DdslSVjAuglUy352jG0fhOmWPeVgi7eZm64fsVocjyK6KTyF1g436hPGKWRmwP6CI
-         vjhT/Xw37t9Ds1jA+99jCmRhIkCCpic7/02rjEZnvdFZsS8wk/uR5Q0556rKpO+jAIev
-         AY5g==
+        d=gmail.com; s=20230601; t=1695490618; x=1696095418; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jlE6JLRfL48qtVwq8jA/2h0BZ48NcfrSjI1lDQ5avkE=;
+        b=UUDKUWN6eT64lnmOU3admofshJbH0x33cyjAFmu3qr4uF528zwtB7P2xPv+L5jqa2S
+         SKiBgdIAmZWaHRbJbAzMDI/f+hC10EdF2q1wqM1OZ20OVJuy3AnFuYxwa16Dt5EiEps5
+         EoNpOmgTQW+g3DmAGo9domgb1o+dPiJvKpV4HwWb6gZp3x/grizgbLLaCWjlcpQVGag/
+         06jfntnoHsJPjZjXKflw/8Y22YEbJJfOd9TT7N3JiLFgvyCZg9YH5NzBlneO2us9aPEk
+         6RpzU+UvOqBqpR0ESO8dtZ9hzPMUdxMYSAjRNQxbtiD6ffjXA7TuvqvQDVFuKiaqnmf5
+         Iszg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695490613; x=1696095413;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dn6phUldCWNuUnLwZIK8/YMmtjChSj8cWy1kooP65ek=;
-        b=r5gDR43+k2DvS/iTtnrpv+Jx4OLxLNxIPaGphpSBdQfBd7/4Uy9zSf78Ly0N/bQ4ES
-         U8PsAcfVyvdTfr+E97SGoOp49es2+vYnKPZad8iXF1rB3GL+W40B5EmxGpUk/RP/BteC
-         tgT9HkU5w+Pp22gcKtxf090q+pOfvU3RpFATxGJ/g6/+Ki1E77UxVZtgN0RPDMvcpmfU
-         mN6EQ4k0rlnBWZ2rXa82Hz9iF/GP4EL6peXggcXDXOT5V5nkooE3feNhMGYh+oxTn2to
-         MTLQQV9Nd9wDLApnLcGysCkutG6z9y+lJrGGYZBnJlz/df2an7bEpwEVa1OnIkIXhHe8
-         tfmw==
-X-Gm-Message-State: AOJu0Yyf9MAThTZl3G5z5QoT9J95LwbYpYYBOTAbBDgydonJTC4ptZwi
-        7795W3LN/LnK7HHVyPmefDOPdg==
-X-Google-Smtp-Source: AGHT+IEvo9mHZh26ly7OkIqoP9oOmRajb274z0zwHS+GCNlpI9LxxNC0Imkzhh9QWjYIELh+B5vy3A==
-X-Received: by 2002:a05:600c:2101:b0:401:2ee0:754a with SMTP id u1-20020a05600c210100b004012ee0754amr2397634wml.13.1695490612950;
-        Sat, 23 Sep 2023 10:36:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id k12-20020a7bc40c000000b003fc04d13242sm10682300wmi.0.2023.09.23.10.36.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Sep 2023 10:36:52 -0700 (PDT)
-Message-ID: <4f15a450-4344-ed5a-0504-9a2f0a9daa0d@linaro.org>
-Date:   Sat, 23 Sep 2023 19:36:50 +0200
+        d=1e100.net; s=20230601; t=1695490618; x=1696095418;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jlE6JLRfL48qtVwq8jA/2h0BZ48NcfrSjI1lDQ5avkE=;
+        b=C6FX4aDJ0uFzgA0DklRZZdIgongw8Hsl7mo/v1GY1xjh4rw2OMlosK2GcZCkL1XtQj
+         rNkMdP6D25vFggQOAewrrutORjSMgeS0clhroFNxpfsp1vKknhzZMN7hFCbgKiYJndDn
+         GPq2+fFOYMxOm3LvX6SrM0YFIb565DMe366NPofyhcDpMr7Ck6fkohphhHKFwQEOPhku
+         ny5MfkiW1XYQmrDP/ebiHeZ0R/FAxit5mrxGkmO+VB3U+QratOys4KjOVeQNCMJhvtAR
+         cfelCZwqme/2AQcmtCVH1oKR+eNySwgiIDTNEv6Yg4ZGL+lBLYNYseVyegUD6o97nulu
+         mhlA==
+X-Gm-Message-State: AOJu0YwmRirPCIDPgoDRr7iHVSVmUOnlaeIGoNMS0KY+WMtx+ij+UBeO
+        gfCBhbNJg7KqFwub+H26WxIL/fAYa2U=
+X-Google-Smtp-Source: AGHT+IFSlAyqGeRovEjDNA4A/S+3zh83GX0PrVo3gnROIu0Q0EjRgGRrlmfg0p7A9iVAdg6YXQtFCQ==
+X-Received: by 2002:a17:902:e84d:b0:1c4:50fd:7cd1 with SMTP id t13-20020a170902e84d00b001c450fd7cd1mr2130303plg.11.1695490617930;
+        Sat, 23 Sep 2023 10:36:57 -0700 (PDT)
+Received: from atom0118 ([2405:201:c009:52e1:3075:4405:fdad:b3f9])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b8b2b95068sm5585448plf.204.2023.09.23.10.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 10:36:57 -0700 (PDT)
+Date:   Sat, 23 Sep 2023 23:06:52 +0530
+From:   Atul Kumar Pant <atulpant.linux@gmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     shuah@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] selftests: rtc: Fixes rtctest error handling.
+Message-ID: <20230923173652.GC159038@atom0118>
+References: <20230817091401.72674-1-atulpant.linux@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 00/16] introduce more MDP3 components in MT8195
-Content-Language: en-US
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230922072116.11009-1-moudy.ho@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230922072116.11009-1-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817091401.72674-1-atulpant.linux@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2023 09:21, Moudy Ho wrote:
-> Changes since v5:
-> - Rebase on v6.6-rc2.
-> - Dependent dtsi files:
->   https://patchwork.kernel.org/project/linux-mediatek/list/?series=786511
-> - Depends on:
->   Message ID = 20230911074233.31556-5-shawn.sung@mediatek.com
-> - Split out common propertis for RDMA.
-> - Split each component into independent patches.
+On Thu, Aug 17, 2023 at 02:44:01PM +0530, Atul Kumar Pant wrote:
+> Adds a check to verify if the rtc device file is valid or not
+> and prints a useful error message if the file is not accessible.
+> 
+> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> ---
+> 
+> changes since v5:
+>     Updated error message to use strerror().
+> 	If the rtc file is invalid, the skip the test.
+> 
+> changes since v4:
+>     Updated the commit message.
+> 
+> changes since v3:
+>     Added Linux-kselftest and Linux-kernel mailing lists.
+> 
+> changes since v2:
+>     Changed error message when rtc file does not exist.
+> 
+> changes since v1:
+>     Removed check for uid=0
+>     If rtc file is invalid, then exit the test.
+> 
+>  tools/testing/selftests/rtc/rtctest.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/rtc/rtctest.c b/tools/testing/selftests/rtc/rtctest.c
+> index 630fef735c7e..27b466111885 100644
+> --- a/tools/testing/selftests/rtc/rtctest.c
+> +++ b/tools/testing/selftests/rtc/rtctest.c
+> @@ -15,6 +15,7 @@
+>  #include <sys/types.h>
+>  #include <time.h>
+>  #include <unistd.h>
+> +#include <error.h>
+>  
+>  #include "../kselftest_harness.h"
+>  #include "../kselftest.h"
+> @@ -437,7 +438,7 @@ int main(int argc, char **argv)
+>  	if (access(rtc_file, F_OK) == 0)
+>  		ret = test_harness_run(argc, argv);
+>  	else
+> -		ksft_exit_fail_msg("[ERROR]: Cannot access rtc file %s - Exiting\n", rtc_file);
+> +		ksft_exit_skip("%s: %s\n", rtc_file, strerror(errno));
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.25.1
+> 
 
-And ignored previously given feedback. That's not the way you should
-work with upstream community. It feels like a waste of my time and it is
-not fair that Mediatek is doing it :(
-
-Best regards,
-Krzysztof
-
+	Hi Shuah, I have made the changes as per your comments. Can you please
+	review the changes ?
