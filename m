@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A4E7AC51A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 22:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355337AC525
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 22:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjIWUn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 16:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
+        id S229674AbjIWU6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 16:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIWUnY (ORCPT
+        with ESMTP id S229606AbjIWU6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 16:43:24 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F23B11B;
-        Sat, 23 Sep 2023 13:43:18 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3ae31be5ee9so703560b6e.2;
-        Sat, 23 Sep 2023 13:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695501797; x=1696106597; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N5fh3KTYudy9uf30WQHLYoA6WKrTKy0P0fUHqm5/Lms=;
-        b=ltFotPsVYDAf/sIAjYkeCoMf1OKvvdQ5atbusBNuJqlFU9iHbT3sbo5Zs+ynd9kGmI
-         OHScMeCB16Mb+U7hk3/Cd5q7uZhz1eiXdL4iPztN7ADQCGACrhZp2/OFzTdBEIOTd/sm
-         jN7A/B1k3eV92DtqsIFLy68d/9NPo1DUYqfRKWFlJN05cY3W8otlKdDtHWXdFlJIT5ZG
-         eY3ls7tM4YQOtx6chVwZp7qhsXABm0Hoc345j+OIAAwGc3Paa3q2vdU6GMfaSt2MQbih
-         eVKsBm0h1Z63LxsTBgGlefx/e0uUGQf1utprMvCzUZq4Ag4u2OksPWmufm1RU5EVbySK
-         NUhw==
+        Sat, 23 Sep 2023 16:58:51 -0400
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF7F11B;
+        Sat, 23 Sep 2023 13:58:45 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso3210625b3a.0;
+        Sat, 23 Sep 2023 13:58:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695501797; x=1696106597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N5fh3KTYudy9uf30WQHLYoA6WKrTKy0P0fUHqm5/Lms=;
-        b=kqiznan2vdFG67xb3scscUWj7rphEGR+FieUpiBRbHIvYPjPDqfcq1CTupWO2s1H/S
-         ffMJy1pt68vcm2LWVBxS4xV1b3pnMlYGGteoEe58vsTDd93+VXoLsaI9A1fOiu36LQ+V
-         X5bmGq4pEIiWF+r1aLwpVDxKpz1WLEzFQTuNeVpl+haQl7hoMcHWSwXscaRNMbrwz+nW
-         FCDtcadjFZ4VyV0PIuKic4yTMN9wHPQnR1jYtcL2KcFHn3r7GHO6Q6GfY3O7ds98JYYE
-         +4TOi1WQ+o2TqngImd0gXXA4ZeZlF3p9AQKOVp/VyZopT4LDLQFfsWfQeTAtX0JyfkvN
-         kjmw==
-X-Gm-Message-State: AOJu0Yxhn4sWcmoZdI16Bcu91tsN/4bNY84k80L2uusUp2Cmn/H8N+1t
-        7kWj4RM54W4ylefX9zPiAvZeH0Q/+SUgTX5wAmk=
-X-Google-Smtp-Source: AGHT+IGN/Glws95UsE4NgepBit03p5QHyayACy2aU/ZsaLEGKSY9pUo9lFqpFX/kbc8EpF+yjvBA4bQYzs1Xby88p10=
-X-Received: by 2002:a05:6808:199f:b0:3a8:4d1f:9dd0 with SMTP id
- bj31-20020a056808199f00b003a84d1f9dd0mr4316251oib.30.1695501797512; Sat, 23
- Sep 2023 13:43:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695502725; x=1696107525;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+JQqm/IVrcsmgTAsdrlxoxSmuKKq2qQmGkyMVhE/DVg=;
+        b=UGIg9F5slJfMRHCYX1pX5KQXdFa7no/Q9AyUjB1ERYfdPPPrUsMqaZqqySv19y474U
+         SDvpvFI1LzMnrai+cbvuhFx0dcFK54Djgn2BRQ+rN9qqBYQk6wr7hzpWXOQ3syue9+Bs
+         c45BpRjDaUshOOxtTpuuMO38jVqMd2VVIF/Rl5CnxHnZrwxTIvNWrLdod4mjWpT2S6/U
+         tnI1sk5fSOodft/sPcQdvm9ImqIFzSI9kva0OWTR4V++7S9R9iaPzOYjTy7KjIEBwMv1
+         vlAbnfpMMXOMSl9Xp0n2x2NcIwoi66fCwv+7foAWoKv3F0VhNDPAXN8ZkYlbO62Ek1Ii
+         W85w==
+X-Gm-Message-State: AOJu0YxsaDqXcNcFYlFEf1D59FHzCYQaWsWI4YqXrkDUXZBrkseajc80
+        r1M6FKvJL7tOIFredXBSQkU=
+X-Google-Smtp-Source: AGHT+IGLsgmqCfwszNPSgEZ54z3W+6vxUJ/kWD5yJUxDrK/C3A/n6GNmdW50LzQ5Yrx+aO9ZIIeQaQ==
+X-Received: by 2002:a05:6a00:32cc:b0:68f:c8b4:1a2b with SMTP id cl12-20020a056a0032cc00b0068fc8b41a2bmr9179930pfb.17.1695502724656;
+        Sat, 23 Sep 2023 13:58:44 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id z22-20020aa791d6000000b0068a0c403636sm5309505pfa.192.2023.09.23.13.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 13:58:43 -0700 (PDT)
+Date:   Sat, 23 Sep 2023 20:58:00 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Message-ID: <ZQ9RWMPDh3RBZJZI@liuwe-devbox-debian-v2>
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023092318-starter-pointing-9388@gregkh>
 MIME-Version: 1.0
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org> <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
- <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
-In-Reply-To: <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 23 Sep 2023 23:43:06 +0300
-Message-ID: <CAOQ4uxjGofKT2LcM_YmoMYsH42ETpB5kxQkh+21nCbYc=w1nEg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023092318-starter-pointing-9388@gregkh>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 1:46=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
-> > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel.org=
-> wrote:
-> > >
-> > > My initial goal was to implement multigrain timestamps on most major
-> > > filesystems, so we could present them to userland, and use them for
-> > > NFSv3, etc.
-> > >
-> > > With the current implementation however, we can't guarantee that a fi=
-le
-> > > with a coarse grained timestamp modified after one with a fine graine=
-d
-> > > timestamp will always appear to have a later value. This could confus=
-e
-> > > some programs like make, rsync, find, etc. that depend on strict
-> > > ordering requirements for timestamps.
-> > >
-> > > The goal of this version is more modest: fix XFS' change attribute.
-> > > XFS's change attribute is bumped on atime updates in addition to othe=
-r
-> > > deliberate changes. This makes it unsuitable for export via nfsd.
-> > >
-> > > Jan Kara suggested keeping this functionality internal-only for now a=
-nd
-> > > plumbing the fine grained timestamps through getattr [1]. This set ta=
-kes
-> > > a slightly different approach and has XFS use the fine-grained attr t=
-o
-> > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
-> > >
-> > > While we keep fine-grained timestamps in struct inode, when presentin=
-g
-> > > the timestamps via getattr, we truncate them at a granularity of numb=
-er
-> > > of ns per jiffy,
-> >
-> > That's not good, because user explicitly set granular mtime would be
-> > truncated too and booting with different kernels (HZ) would change
-> > the observed timestamps of files.
-> >
->
-> Thinking about this some more, I think the first problem is easily
-> addressable:
->
-> The ctime isn't explicitly settable and with this set, we're already not
-> truncating the atime. We haven't used any of the extra bits in the mtime
-> yet, so we could just carve out a flag in there that says "this mtime
-> was explicitly set and shouldn't be truncated before presentation".
->
-> The second problem (booting to older kernel) is a bit tougher to deal
-> with however. I'll have to think about that one a bit more.
+Greg, thank you for looking at the code.
 
-There is a straightforward solution to both these problems -
-opt in with a mount option to truncate user visible timestamps to 100ns
-(and not jiffy) resolution as Linus is trying to promote.
+On Sat, Sep 23, 2023 at 09:56:13AM +0200, Greg KH wrote:
+> On Fri, Sep 22, 2023 at 11:38:35AM -0700, Nuno Das Neves wrote:
+> > +static int __init mshv_vtl_init(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	tasklet_init(&msg_dpc, mshv_vtl_sint_on_msg_dpc, 0);
+> > +	init_waitqueue_head(&fd_wait_queue);
+> > +
+> > +	if (mshv_vtl_get_vsm_regs()) {
+> > +		pr_emerg("%s: Unable to get VSM capabilities !!\n", __func__);
+> > +		BUG();
+> > +	}
+> 
+> 
+> So you crash the whole kernel if someone loads this module on a non-mshv
+> system?
+> 
+> That seems quite excessive and hostile :(
+> 
+
+I agree this can be more lenient. It should be safe to just return an
+error code (ENODEV) and let user space decide the next action.
+
+Saurabh, let me know what you think.
 
 Thanks,
-Amir.
+Wei.
+
+> Or am I somehow reading this incorrectly?
+> 
+> thanks,
+> 
+> greg k-h
+> 
