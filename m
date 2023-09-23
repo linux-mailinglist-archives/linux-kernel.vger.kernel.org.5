@@ -2,72 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDBD7AC4D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 21:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1998C7AC4DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 21:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjIWT0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 15:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        id S229623AbjIWTbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 15:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjIWT0P (ORCPT
+        with ESMTP id S229540AbjIWTbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 15:26:15 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920FA83
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:26:09 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59e77e4f707so48840317b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695497169; x=1696101969; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tZizts65y01ok+ES2EUhAYAn9GXHIb4VmooXZajucCU=;
-        b=uNeVk+4wrEtA25qCf/0cc+V/J0m5Bv+FMDG8kGqEEoFlimXmspGlZ471bmLaWTR6Td
-         svLBkwjoQ5RijQ121IJl/hmiuNKyS+WT/T2Gwm2T/sOGLUGvnXRo3v/tlVCdffyi+8zs
-         QB+TT+5b2sh6nB+K0vELCI7ByecLH9qX4fncnhD3sxMhUxl2+l1WN9A95ggUhWwsLGKu
-         biMyYisQOb3tnAnGiB+x2aW3r+EqpPceYseOmI29PjY1CaPZ3O8/+HKoqB8vx17UM/uy
-         lUTNlH5O3A8vua5hzsHsd0MNdDlyUan+qr+hUm6Ar+JALhPs1eztA5WOu7f8XfcLK8mD
-         NqHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695497169; x=1696101969;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tZizts65y01ok+ES2EUhAYAn9GXHIb4VmooXZajucCU=;
-        b=Q26L+/9GK99e1PSxBYcfVEMrNdBJrZlAQf/NqjwvboFMqoGBe/lq4bBSGWQzzOSjwf
-         RnX6athUOM3UeUGOPsr8Dpa3Coq/uYUrD+kZbyaxJEOirhkbm8QDsYXJYMLxsdIT7j9j
-         Tma6bDCpzbJd+zAQNqstrt0nwdFiu7fWRGzHeKYFCuDWI8SU2qgCqNBJEnjUSj/5Altz
-         +XDBYSnc4MyInwW9VyU78laX0InyvkwRI1ct/EfSECffs+c/jmO2IMnjKB74SkF3MHai
-         x6EExmCUwHFrRMj7A6TuEv6fa8D4Kv08cqp9b9e2mrDx/4HauZPx0mQ03XI8+z1WZdhh
-         6Tyg==
-X-Gm-Message-State: AOJu0YyyIm9sd27VdhkIb93hpmJOYyWz3jue3alksONTEC82DToKkc8s
-        a87+v1O2Dg42wnahpdis1DP8PWpM95wEeIP6ntkvcQ==
-X-Google-Smtp-Source: AGHT+IH8xd9FGQCscz8xMLf0DoFylip6IAWZhY41aoUSaGynGex3s2gK+VocIMx3e8QuWNuPxfssl9IzVZ3Wrlq/3w8=
-X-Received: by 2002:a81:6089:0:b0:59b:4f5e:12d8 with SMTP id
- u131-20020a816089000000b0059b4f5e12d8mr2866968ywb.47.1695497168744; Sat, 23
- Sep 2023 12:26:08 -0700 (PDT)
+        Sat, 23 Sep 2023 15:31:09 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FCB83
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:31:02 -0700 (PDT)
+Received: from letrec.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38NJUgVM032361
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Sep 2023 15:30:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1695497445; bh=KDFc9Ol/EE4RqD0zI5Zpzlegr8hS7WyFmPJjMKXneoc=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=AX+5gB1KNdF6ofn0VcwbFPgwhMQ4RCjr/KzTwhuKLSy8sCDHKxVLa+3UnZ5Kz37+k
+         NnE4UYGFuE/l+yuJ5JT1/9Bz11ogR51H+20nq1CUn7liPK1qOwFDfgzaDV4UXNCKsK
+         NDq9U3kD3BzssvQPk5QRyp5w+gQfH+YGML2M8jT5qTNc4vRq5ZNbAiIzceV2v2gmzE
+         ZkoLWA2cAhgE3kmcHSbv0gW61r8XOGsVWIRHged9k+qIRm0M5ZfAU9+NNPnspi3V5J
+         GQ5ucDzKY8cYLG1aOLqPvUpXQmL5CSCBzw6JFR6fG/lwyZV02rP7w9SnsU2Eo744GR
+         lEC3ogs/nYBgw==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id 1BC5E8C036B; Sat, 23 Sep 2023 15:30:42 -0400 (EDT)
+Date:   Sat, 23 Sep 2023 15:30:42 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [GIT PULL v2] timestamp fixes
+Message-ID: <ZQ884uCkKGu6xsDi@mit.edu>
+References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
+ <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
+ <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+ <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+ <CAOQ4uxjcyfhfRhgR97wqsJHwzyOYqOYaaZWMWWCGXu5MWtKXfQ@mail.gmail.com>
+ <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230922-msm8226-i2c6-v2-0-3fb55c47a084@z3ntu.xyz> <20230922-msm8226-i2c6-v2-3-3fb55c47a084@z3ntu.xyz>
-In-Reply-To: <20230922-msm8226-i2c6-v2-3-3fb55c47a084@z3ntu.xyz>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 23 Sep 2023 22:25:57 +0300
-Message-ID: <CAA8EJprhhUN6Txbiyvb1Jk8mEnX1bxhf-WWcDU2J2WH0uVF9kQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ARM: dts: qcom: msm8226: Add blsp1_i2c6 and blsp1_uart2
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,18 +62,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sept 2023 at 19:56, Luca Weiss <luca@z3ntu.xyz> wrote:
->
-> Add more busses found on msm8226 SoC.
->
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
->  arch/arm/boot/dts/qcom/qcom-msm8226.dtsi | 33 ++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
->
+On Sat, Sep 23, 2023 at 10:48:51AM -0700, Linus Torvalds wrote:
+> 
+> I feel like 100ns is a much more reasonable resolution, and is quite
+> close to a single system call (think "one thousand cycles at 10GHz").
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+FWIW, UUID's (which originally came from Apollo Domain/OS in the
+1980's, before getting adopted by OSF/DCE, and then by Linux and
+Microsoft) use a 100ns granularity.  And the smart folks at Apollo
+figured this out some 4 decades ago, and *no* they didn't use units of
+a single nanosecond.  :-)
 
--- 
-With best wishes
-Dmitry
+100ns granularity is also what what ext4 uses for our on-disk format
+--- 2**30 just enough to cover 100ns granularity (with only 7% of
+wasted number space), and those two bits are enough for us to encode
+timestamps into 2446 using a 64-bit timestamp (and what we do past
+2446 is pretty much something I'm happy to let someone else deal with,
+as I expect I'll be long dead by then.)
+
+(And if someone does happen to event some kind of life-extension
+technology, I'm happy to fix it up... later.  :-)
+
+> That said, we don't have to do powers-of-ten. In fact, in many ways,
+> it would probably be a good idea to think of the fractional seconds in
+> powers of two. That tends to make it cheaper to do conversions,
+> without having to do a full 64-bit divide (a constant divide turns
+> into a fancy multiply, but it's still painful on 32-bit
+> architectures).
+
+It depends on what conversion we need to do.  If we're converting to
+userspace's timespec64 data structure, which is denominated in
+nanosecods, it's actually much easier to use decimal 100ns units:
+
+#define EXT4_EPOCH_BITS 2
+#define EXT4_EPOCH_MASK ((1 << EXT4_EPOCH_BITS) - 1)
+#define EXT4_NSEC_MASK  (~0UL << EXT4_EPOCH_BITS)
+
+static inline __le32 ext4_encode_extra_time(struct timespec64 *time)
+{
+	u32 extra =((time->tv_sec - (s32)time->tv_sec) >> 32) & EXT4_EPOCH_MASK;
+	return cpu_to_le32(extra | (time->tv_nsec << EXT4_EPOCH_BITS));
+}
+
+static inline void ext4_decode_extra_time(struct timespec64 *time,
+					  __le32 extra)
+{
+	if (unlikely(extra & cpu_to_le32(EXT4_EPOCH_MASK)))
+		time->tv_sec += (u64)(le32_to_cpu(extra) & EXT4_EPOCH_MASK) << 32;
+	time->tv_nsec = (le32_to_cpu(extra) & EXT4_NSEC_MASK) >> EXT4_EPOCH_BITS;
+}
+
+> Of course, I might have screwed up the above conversion functions,
+> they are untested garbage, but they look close enough to being in the
+> right ballpark.
+
+We actually have kunit tests for ext4_encode_extra_time() and
+ext4_decode_extra_time(), mainly because people *have* screwed it up
+when making architecture-specific optimizations or when making global
+sweeps of VFS code.  :-)
+
+     	    		     	    	      	  - Ted
