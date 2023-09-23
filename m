@@ -2,142 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0CC7ABC7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 02:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977497ABC83
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 02:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbjIWAGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 20:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37378 "EHLO
+        id S230410AbjIWAHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 20:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjIWAGu (ORCPT
+        with ESMTP id S229628AbjIWAHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 20:06:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F991A8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 17:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695427604; x=1726963604;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9pZkepKP2RW6FPHyL255GvZV7UBZds/BAyBAw4eBSUE=;
-  b=B22J7KABaj7ImSYIkFGMum3GmYmHsGgLafIbD1H7hzjljIeCdsvgcIgW
-   sMQXn0Cl4bAVNRkdgnwc3MCpgc3exTF4FxMW3vbibGwSzStspVsQZIXI+
-   yUPu3UO2VsRqnO3bcOQIUsrLtC+5v9bbkkDIcUk1wDeTRRrzsWwsFjeSh
-   wKatvavt15n5iIo4IbC9BsRjj2wnAzM+LvOxua68ie+ksrRpBTEtf/nI+
-   GrM8IMyT/T4lJ3Jvt9rkGfljlBBkNIXnm/BbF2XIk1ialkIMBgidOr54w
-   w1IZ8n0JqaPuVTmXDxESJdbXJZLYhAVAGfEuRNsOISOP1GO1klDZxGPY6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="383728557"
-X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="383728557"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 17:06:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="921355837"
-X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="921355837"
-Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 22 Sep 2023 17:06:42 -0700
-Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjqAS-0001VJ-1K;
-        Sat, 23 Sep 2023 00:06:40 +0000
-Date:   Sat, 23 Sep 2023 08:06:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: sound/soc/codecs/ak4642.c:646:24: sparse: sparse: Using plain
- integer as NULL pointer
-Message-ID: <202309230808.muWc0Phh-lkp@intel.com>
+        Fri, 22 Sep 2023 20:07:23 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (mail-lo2gbr01on2121.outbound.protection.outlook.com [40.107.10.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF601A5;
+        Fri, 22 Sep 2023 17:07:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bOAeO7tUFFpHYXeiv67W1A+uKuHL7rUKyM4dEXCnZbOT9NnP8P3O5EYmy1ml4VylmM8YWRYMJ+9e4Kotq4Mk2ZNvCBrF4c2CWablvGxq6xvt6voHoPSDQnACEH9DB3lnmNiqQUQZXR4/TAuIN8qFdFZgX6i0mqn2/kIKZvse1WIloweja8QRvdtkHpZODNg32XrJOEwjkRM1P7PKIsUg2lcpJOtu9hi+q968nkbZR0FcEJhfm/HAPbI4eBPKT+UhlYsKpn9xa3I7R/tuxjbcsz/Tk7OA+fV6BhuYZLoXKSoGW4Yvt50Wf/Xl5b3sC8fCqdCrfd5gvi0GMKDA+MNRqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oMxMPilv7+ukwN2t3e8yJv/XHcUE7uS3SBvBuEVAu38=;
+ b=KdA59zUX0EJFQIjZDvGwde516xQxo9rSnuaStgAlR8KOzSYTDmSYbq3n6MTXtpNk8ci1F5+lnMugXZ6oJqZ6nVYohPNOTUNQx1toDKWH1SJ+1qn7cGjRJCEMMdyRuHCdXiZW6wEQ4QY/mKJBdmwb2sHuuZ1TORpoOOOJMl63Vbwe/azaXK8YFtu4FHCLCBr907tY8MPMSRO+Kue0O3574arD2ynlYphpMxA9BdYzWDweessDXCCy4j4uNxXTsiwfiu9MZu83wL3PBzUzLu/ovl+EcCn5A6tDm+8twGmlnsFvXWjSslTsvPMAXxmc7puBEBP11JCYvKP3BkSQlVaXUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oMxMPilv7+ukwN2t3e8yJv/XHcUE7uS3SBvBuEVAu38=;
+ b=hCFKCDKMiKzoh6KGGdA5IOxyUVcmHF+YovypyKUcIMWz8JQkyun2fZ3X5PgWUzrolC563hjvykFirI0BI8s4L54ZaWoqQELZ5OLdE2HbcXPMmqQts5wG2Ze+mzXuQjrWBOA2kXWKbSh6RA0CMhWEcW413MPP4yJJbUVSVXX38iM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by CWLP265MB7358.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1ff::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.25; Sat, 23 Sep
+ 2023 00:07:14 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::7965:8756:9ad5:df1d]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::7965:8756:9ad5:df1d%6]) with mapi id 15.20.6813.017; Sat, 23 Sep 2023
+ 00:07:14 +0000
+Date:   Sat, 23 Sep 2023 08:06:57 +0800
+From:   Gary Guo <gary@garyguo.net>
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 1/2] rust: arc: rename `ArcInner` to `WithRef`
+Message-ID: <20230923080657.277819c2@gary-lowrisc-laptop>
+In-Reply-To: <20230921213440.202017-2-wedsonaf@gmail.com>
+References: <20230921213440.202017-1-wedsonaf@gmail.com>
+        <20230921213440.202017-2-wedsonaf@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: TYWPR01CA0035.jpnprd01.prod.outlook.com
+ (2603:1096:400:aa::22) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|CWLP265MB7358:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0840a382-d7b9-4dc1-958a-08dbbbc90ab8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0RyXMsPrNff/kA035pwpxjZnSmawKs1wXe5LjnZJ5J6j/HYRHZMs89CqXN9C3RciX/QYPnmS7PVH98vewQ0eL9A1UtpIDhgLG2qX9sOo2OwZGGrGt2RKG1vo4MnFNCysd/zXhVdtmngj/PvjvgdUUHOZFlzH6dSTvsabH5p2r9Z2M+0vuCOrBluaOZWAAzVssh0yI8/8RmvyAU+eIe3XPTtxRhcNH7uNUu+b2pvXsy4vvbfiPbTbsUNaXFky9ZjX2MsYUpX1FzygjKXkiFBfDc8zCfop5V096NoP41f9tAgjkXlQYVqwf9nfJkDhLqqseezPMLvK7yKYcBcIbj0gn7/ATGQy10gvr900W8pvAi8qsAb2yHOhBul5UAcx7LK3JDwkkOm0MJ04F5H+oC18HxTpvWKxbu7jvTntFpsAAJhah3YGjfbIoSN/wEwAKyeYICBU/MLp6SuVYmHPHkGXhEX21KUynPIDL5tZWdoh56obXIXM+hbjaWImVeEZrqkzx3XfbvjxUJVfZwTiHFB8F/O0fzJl3QT8ocY8ChkNA4fnVRTG+J7fdNVNYUS52Lc3EziIyDHnoBVkv1TlRK02sJpxhw4i3wOCjtOh1SPDnic=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39830400003)(396003)(376002)(346002)(136003)(366004)(186009)(1800799009)(451199024)(1076003)(6486002)(45080400002)(6506007)(6666004)(478600001)(9686003)(26005)(83380400001)(41300700001)(6512007)(4744005)(2906002)(7416002)(33716001)(5660300002)(316002)(6916009)(54906003)(66476007)(66556008)(4326008)(66946007)(8676002)(8936002)(86362001)(66574015)(38100700002)(81973001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a1RxR2p6WlIvczZNUE1jRDJtWGF0MUpvMHQxUWhYNmRSTEhhdDJUcG9aV2k2?=
+ =?utf-8?B?Sy9Ra2VIWTFhNndOenNIMVdQVGZYSTF2akJpRXpMK0ZRa0FBbm1RNVExLzdE?=
+ =?utf-8?B?U05sR2p6Q3Bscm5PaFpUendkSk1UMmgzVmtGNnZKYlpsdG5xNENiSmJSS21r?=
+ =?utf-8?B?RzZocVZPTVd4ZUwralczelZDLzlNU3k4QVY4ZkJoTHpCeGtBeVlzcWM4UnRP?=
+ =?utf-8?B?SnprT2Y1MVdCOTk0SC9yWFhTaHNwVVE1VTFyOVlwMDU1UVpqRkJkVjU0QzJq?=
+ =?utf-8?B?WmEyem4zRWpJRVVORFRidUUwSmszS09vVmptWlJHYkJoeThPVG1ZNUlaSllj?=
+ =?utf-8?B?WkMzWElHcHJlY3pFQXJMa3JXenJDQ3IzYjZ5UWp6S1hPVHNXUkUzd2NqSmxM?=
+ =?utf-8?B?QWZUWlhTNkNVTWtIcUxINmpPYWNUbUVuTTNaNW5zUEJnTHpPTEY1M2wzdlB5?=
+ =?utf-8?B?T2NZNTk3bTQ4ekZ0d295VW1UNDBEWHlSODg0Q0ZwOUFsWXhrMU45SWN2WTV2?=
+ =?utf-8?B?V0JQZGpJektmcTFhVldENHJINUg1R3NVVjcydVp5N2Q5TGFmTE9ENm5mbFNj?=
+ =?utf-8?B?SWJxcUZ3Q1I4MFhJdVU5c2VnZHJxbTBVS096N28wTmg5NzVrb1hRd1QvUVJq?=
+ =?utf-8?B?TlR3emZ3R1JDd0YrSW5iQ2orekhHYVVvcnk2b2RiVVpHZWY4R05vQWFoTC9G?=
+ =?utf-8?B?ZzRocmpmOEJiblNzK1BwQ1VRdk45YlhiMEdVWENnS1ZjZUNncG90ZDlqa2JG?=
+ =?utf-8?B?VHFnUVRacVFFcDRIWWdkQWJSMzMyeVF0ajZlSTBKenFxSjBQUDYwWFUvK21T?=
+ =?utf-8?B?ODg3cjIwcVl5b2RETXRMT3N2a3pLck9hRGY4YjVZVEVBekpjWXo0Y2s1MHBN?=
+ =?utf-8?B?SFZBQ2tIMTBZWHgwNmphYXhzUktKclVqK1ErWHpSZVdDUXVpSy9SSWxza2FE?=
+ =?utf-8?B?SkVZQnpZMjdqWFk4UjRENXZGUm14NWVzUXQ2aU0rRjk5R1AxT2NUUUoyd1hV?=
+ =?utf-8?B?UWl3L1J5eXBBenFKcDg5V2FYZjlkNy9CNEFJTzJVTUtCeTlOSGY4bGNLLzc4?=
+ =?utf-8?B?OFhvSW9GMTBpb252c29Rb2RlaWh0bWRGRWtPdWFrU3hpb1JFWXFsM1lCM1N3?=
+ =?utf-8?B?RW1RZ0RHdnpmWHhZZngzV1JhL1JocTl6a1NzeDdyU05OVjdSMEQyMGNrK3lz?=
+ =?utf-8?B?OHJxdEIvanRoWkJmVzl5aURRZ0ZpZjhwYjlETlNzT1V5ZXdUeWdUd2c3MVdh?=
+ =?utf-8?B?MTFtNm40eCtvVmZQbXFYQitHZUVEREFod2M1MmU1L3RqY1lCeUVKazIwd0tZ?=
+ =?utf-8?B?RURYVmI1c2xtL0VIRy85Y0VJVVl3ZnlUa3BGd2RuZVJFeUpYYm43N0Y4WmxK?=
+ =?utf-8?B?TDZSeTlVWkxsZ1VJSW9LOUI4WWJPZmJHSHFjVmcvSG9jb0taRit3djRjUkht?=
+ =?utf-8?B?Wi9RdzVMTWZIdyt0VU1HSk5mLzBaZGlzUUZleUpuMzJZNTBCZ1Rwdi9mejFm?=
+ =?utf-8?B?QmZhTWtGTzl3TTJueXhNTHM2VjB6bThBYkdWMlE2UGN3a1ZxaXJzU3FWcTFv?=
+ =?utf-8?B?SExBS1hVWGhqb2F6M0UzS2hIUlRHbVZ3WDg5bHpPMHVFN2tHbjIycnRVWmEx?=
+ =?utf-8?B?ZXVCbFZheDJTWTZJZ3VGdS9yd09ldng1UnQvKzhTc24zSnpvc0dCUGlJNGk4?=
+ =?utf-8?B?VGxYUys1TnVVQ1hMcEllbzBTTkhsbElXalVXTVhqMFpBM0Z5eHhlYkdVQmFu?=
+ =?utf-8?B?Z2lEVTYwUjB1YWJjTmIvMU9OOTEyaGp5YmdBZVNKOWN1aDF0ZnVuelNKb1Ux?=
+ =?utf-8?B?dFZqaFA1Z25WQ3p0V05OYldYSS9VSDluNWJDSm5QcEJvdzAxSW0zeEZSd1Ra?=
+ =?utf-8?B?bXdhSlNPYklzcStjVDdsYUM3b1NtRnZBd0FBQUdTemgwOE9rbHVhVVB5cjlY?=
+ =?utf-8?B?UnZQZGtxWGYvRXpaWGVMZWVobHZFYndFdGxPSndkM01wWi9QWldDN1ozZVpE?=
+ =?utf-8?B?bU94K1NNRjhhVEoxWE5ZMTFoV1g2R0E1UldYQm5GRnlldEVTbS8zLzJSZFJn?=
+ =?utf-8?B?enhKSjFjNU5RQVg1MDJMU2VqcnVaMlJJVE1HOUtSTmxMcDJ2V0hnYng3SlZs?=
+ =?utf-8?Q?alyldsv23iPVSkVmY9DXngBIz?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0840a382-d7b9-4dc1-958a-08dbbbc90ab8
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 00:07:14.6704
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eT2Kl90p1RH2ZNRuFawxJeKp5y/DwGNblXHuX1PAKTlKPOGXeztIHW7wL1neulTfty6wWHeGidSboK4TaCIcyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB7358
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8018e02a87031a5e8afcbd9d35133edd520076bb
-commit: 3cd8cc98d63492f6f69edd4486c9bd1fe29f91c3 platform/x86: Drop the PMC_ATOM Kconfig option
-date:   1 year, 3 months ago
-config: i386-randconfig-061-20230923 (https://download.01.org/0day-ci/archive/20230923/202309230808.muWc0Phh-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230923/202309230808.muWc0Phh-lkp@intel.com/reproduce)
+On Thu, 21 Sep 2023 18:34:39 -0300
+Wedson Almeida Filho <wedsonaf@gmail.com> wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309230808.muWc0Phh-lkp@intel.com/
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>=20
+> This is in preparation for removing `ArcBorrow` and making `WithRef`
+> public.
+>=20
+> This is a pure name change with no functional changes intended.
+>=20
+> Suggested-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 
-sparse warnings: (new ones prefixed by >>)
->> sound/soc/codecs/ak4642.c:646:24: sparse: sparse: Using plain integer as NULL pointer
+Reviewed-by: Gary Guo <gary@garyguo.net>
 
-vim +646 sound/soc/codecs/ak4642.c
-
-171a0138ab75fc Kuninori Morimoto 2015-09-10  631  
-27204ca8b98116 Kiran Padwal      2014-07-28  632  static const struct of_device_id ak4642_of_match[];
-e654a1331f6855 Stephen Kitt      2022-04-15  633  static const struct i2c_device_id ak4642_i2c_id[];
-e654a1331f6855 Stephen Kitt      2022-04-15  634  static int ak4642_i2c_probe(struct i2c_client *i2c)
-a3a83d9a7cb0ce Kuninori Morimoto 2009-08-21  635  {
-2719a752b6e96b Kuninori Morimoto 2015-09-10  636  	struct device *dev = &i2c->dev;
-2719a752b6e96b Kuninori Morimoto 2015-09-10  637  	struct device_node *np = dev->of_node;
-d815c703cedbc7 Sascha Hauer      2014-05-14  638  	const struct ak4642_drvdata *drvdata = NULL;
-4574cd94a717ef Mark Brown        2013-11-28  639  	struct regmap *regmap;
-d815c703cedbc7 Sascha Hauer      2014-05-14  640  	struct ak4642_priv *priv;
-171a0138ab75fc Kuninori Morimoto 2015-09-10  641  	struct clk *mcko = NULL;
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  642  
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  643  	if (np) {
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  644  		const struct of_device_id *of_id;
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  645  
-171a0138ab75fc Kuninori Morimoto 2015-09-10 @646  		mcko = ak4642_of_parse_mcko(dev);
-171a0138ab75fc Kuninori Morimoto 2015-09-10  647  		if (IS_ERR(mcko))
-171a0138ab75fc Kuninori Morimoto 2015-09-10  648  			mcko = NULL;
-171a0138ab75fc Kuninori Morimoto 2015-09-10  649  
-2719a752b6e96b Kuninori Morimoto 2015-09-10  650  		of_id = of_match_device(ak4642_of_match, dev);
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  651  		if (of_id)
-d815c703cedbc7 Sascha Hauer      2014-05-14  652  			drvdata = of_id->data;
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  653  	} else {
-e654a1331f6855 Stephen Kitt      2022-04-15  654  		const struct i2c_device_id *id =
-e654a1331f6855 Stephen Kitt      2022-04-15  655  			i2c_match_id(ak4642_i2c_id, i2c);
-d815c703cedbc7 Sascha Hauer      2014-05-14  656  		drvdata = (const struct ak4642_drvdata *)id->driver_data;
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  657  	}
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  658  
-d815c703cedbc7 Sascha Hauer      2014-05-14  659  	if (!drvdata) {
-2719a752b6e96b Kuninori Morimoto 2015-09-10  660  		dev_err(dev, "Unknown device type\n");
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  661  		return -EINVAL;
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  662  	}
-bbf1453e28e4e3 Kuninori Morimoto 2013-01-10  663  
-2719a752b6e96b Kuninori Morimoto 2015-09-10  664  	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-d815c703cedbc7 Sascha Hauer      2014-05-14  665  	if (!priv)
-d815c703cedbc7 Sascha Hauer      2014-05-14  666  		return -ENOMEM;
-d815c703cedbc7 Sascha Hauer      2014-05-14  667  
-d815c703cedbc7 Sascha Hauer      2014-05-14  668  	priv->drvdata = drvdata;
-171a0138ab75fc Kuninori Morimoto 2015-09-10  669  	priv->mcko = mcko;
-d815c703cedbc7 Sascha Hauer      2014-05-14  670  
-d815c703cedbc7 Sascha Hauer      2014-05-14  671  	i2c_set_clientdata(i2c, priv);
-d815c703cedbc7 Sascha Hauer      2014-05-14  672  
-d815c703cedbc7 Sascha Hauer      2014-05-14  673  	regmap = devm_regmap_init_i2c(i2c, drvdata->regmap_config);
-4574cd94a717ef Mark Brown        2013-11-28  674  	if (IS_ERR(regmap))
-4574cd94a717ef Mark Brown        2013-11-28  675  		return PTR_ERR(regmap);
-4574cd94a717ef Mark Brown        2013-11-28  676  
-43c5d0f05ec55a Kuninori Morimoto 2018-01-29  677  	return devm_snd_soc_register_component(dev,
-43c5d0f05ec55a Kuninori Morimoto 2018-01-29  678  				&soc_component_dev_ak4642, &ak4642_dai, 1);
-a3a83d9a7cb0ce Kuninori Morimoto 2009-08-21  679  }
-a3a83d9a7cb0ce Kuninori Morimoto 2009-08-21  680  
-
-:::::: The code at line 646 was first introduced by commit
-:::::: 171a0138ab75fcbe1228c4af0442221efccfb197 ASoC: ak4642: enable to use MCKO as fixed rate output pin on DT
-
-:::::: TO: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  rust/kernel/sync/arc.rs            | 20 ++++++++++----------
+>  rust/kernel/sync/arc/std_vendor.rs |  4 ++--
+>  2 files changed, 12 insertions(+), 12 deletions(-)
