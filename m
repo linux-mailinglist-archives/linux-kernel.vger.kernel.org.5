@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60667AC374
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 18:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646187AC37F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 18:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbjIWQEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 12:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S231853AbjIWQOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 12:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbjIWQEj (ORCPT
+        with ESMTP id S229868AbjIWQOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 12:04:39 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D840139
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 09:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=hrRrRt8WsW3sIAoTAf
-        qtyDId6QcDAcmE+7CIhdxf4T8=; b=PKHal8FOw1c6LoA0bk2DG7cA6aIrbS+vM+
-        qy2kGVfUnRc7Z3s9aWGeFFHgEfyBr3fEKWDDF2xrcW6JMZYamThhwwPMnRw8XsIW
-        7jdesJaZm/00ALD1cxgVzO0bxBVa2iie7XNgQP3gtyCgwV0XYG2s5fM/tQaJdoCX
-        A6MLJA+zI=
-Received: from localhost.localdomain (unknown [223.104.131.178])
-        by zwqz-smtp-mta-g2-3 (Coremail) with SMTP id _____wAXpmp1DA9lhkCkCw--.52707S2;
-        Sun, 24 Sep 2023 00:04:07 +0800 (CST)
-From:   liuhaoran <liuhaoran14@163.com>
-To:     linux@armlinux.org.uk
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        liuhaoran <liuhaoran14@163.com>
-Subject: [PATCH] arm: match-footbridge: Add error handling in dc21285_setup()
-Date:   Sun, 24 Sep 2023 00:03:53 +0800
-Message-Id: <20230923160353.42915-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wAXpmp1DA9lhkCkCw--.52707S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJr1UGrykAF13Jr17uryUZFb_yoW8XrWkpr
-        1xCws0krsYgr1UCrsxJr1UZFWfZ3Z2yFW3CrWxt3sFv3WkJFWqgFs0y3s09w45tr1DAw1f
-        tF1kAF40qF1DGaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UrPEgUUUUU=
-X-Originating-IP: [223.104.131.178]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbibBjzgmNfuLQqtQAAsq
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 23 Sep 2023 12:14:01 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2331A5
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 09:13:54 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40528376459so38610815e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 09:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695485633; x=1696090433; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e3GPALuMdv79HvlC+hoZ6VG1EHRQP+s5tmU7+XY0FYc=;
+        b=ClG2By/cMyY0KjAglM5SgraguMJ4fjqI4WpIKLFw/m70ESSjoCHed024p1Y7RQn8LK
+         ZSy1ogPk2mbjvgo7tXgEC/IbCqpDH+N1tttfuEeSQguGZODhuE1ZMR7UTCpN59/3nkEd
+         zEjLNHoVY4TyeC75ERVOVvKl10rGMZwjX25MITZMy1+UIQGYoToIPupnEk68Pf1SdnRs
+         t7f0Fod2koMOZAHGA7XBgmLUZXNrXPQMVWA4ZMMZ3+buzgVLsWA3JDCy4bmPW56Lg2qm
+         W1Id5258UDm0zmRbGowzNZuvn1tWbtAbfb0HcJ/Arln5ueFbbJLh97OriVJe6kn7Bc83
+         eVuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695485633; x=1696090433;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3GPALuMdv79HvlC+hoZ6VG1EHRQP+s5tmU7+XY0FYc=;
+        b=Qp7ByvCD7nufPO/gykULOVH5TcXPPoNdtMqXwedhTXUrPTe5CiR0QiQc03F9rhBOjA
+         VRFIoarOizDbRi21B3bCx1Ah4GGEVGDHQfzSm2nYW0Q71LBVeG9Zj7vwaxC8j3ibqg92
+         mcXeRQVMaYVi1NcY7qxF6a13Rj6hltfvplgIDQipuMVj/iPpywcnzLiR3qCHHYOsKhpV
+         MMBMykdNqZSvKlLvSjsrPs2Pz8qWSEgovxXM6dX0FUkZESEkPZT8wcdxKm6cs+Q7fpFI
+         a8LTxBIgCiQ8FEuWXNHce+vS2nsjxj6r4knEkJOrjYdT7nQnIWSHVLsDhzZpgpwln8dW
+         /Rbg==
+X-Gm-Message-State: AOJu0YxXXqSNO3I499Yr+mt6mw+W1iN/mg8fJgiOnxOor1L1vPodZHNh
+        l0VZuWAdAFFVBdysgwZJO0U0lQ==
+X-Google-Smtp-Source: AGHT+IHHe4O8Gl1Pz9vuF+FUyauFGLf3UWI1UeRDSJWmeFc3tra/aeE7n0vnMDUSKJbPcq+/bdiBxQ==
+X-Received: by 2002:a05:600c:230e:b0:401:be77:9a50 with SMTP id 14-20020a05600c230e00b00401be779a50mr2123760wmo.8.1695485632696;
+        Sat, 23 Sep 2023 09:13:52 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id f18-20020a7bc8d2000000b00401d8181f8bsm10399974wml.25.2023.09.23.09.13.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Sep 2023 09:13:52 -0700 (PDT)
+Message-ID: <2565aa33-619c-6c90-de96-29dc5ac5d961@linaro.org>
+Date:   Sat, 23 Sep 2023 18:13:49 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/4] dt-bindings: clock: qcom,camcc.yaml: Convert
+ qcom,camcc to a single yaml file
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230923150045.1068556-1-bryan.odonoghue@linaro.org>
+ <20230923150045.1068556-2-bryan.odonoghue@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230923150045.1068556-2-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds error-handling for the allocate_resource()
-inside the dc21285_setup().
+On 23/09/2023 17:00, Bryan O'Donoghue wrote:
+> Move the various camcc yaml files into one. The Camera Clock Controller
+> is pretty similar from SoC to SoC.
+> 
+> Mostly we have some SoCs which require fewer clocks than others. In some
+> cases we have SoCs which have required-opps and required-power-domains.
+> 
+> It is likely we could and should extend the thin CAMCC descriptions such
+> as sdm845 an sm6350 to the more robust descriptions such as sm8250 and
+> sm8450.
+> 
+> As a result of listing sm8250 and sm8450 together required-opps and
+> power-domains become required for sm8250, which is a NOP for the dtsi
+> since both declarations already exist for sm8250.
+> 
+> sm8250 is also chosen as the example for the new combined camcc.yaml.
+> 
+> A minor tweak to fix Bjorn's email address in the Maintainer list is
+> included.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-Signed-off-by: liuhaoran <liuhaoran14@163.com>
----
- arch/arm/mach-footbridge/dc21285.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+No, that's not the right approach. For GCC and CamCC and all other
+Qualcomm clock controllers, we split into device schemas, not merge into
+one. The one schema is just becoming unreviewable over time with
+multiple if:then clauses.
 
-diff --git a/arch/arm/mach-footbridge/dc21285.c b/arch/arm/mach-footbridge/dc21285.c
-index f8920d0010de..1970c66eb964 100644
---- a/arch/arm/mach-footbridge/dc21285.c
-+++ b/arch/arm/mach-footbridge/dc21285.c
-@@ -261,6 +261,7 @@ static struct notifier_block dc21285_pci_bus_nb = {
- int __init dc21285_setup(int nr, struct pci_sys_data *sys)
- {
- 	struct resource *res;
-+	int error;
- 
- 	res = kcalloc(2, sizeof(struct resource), GFP_KERNEL);
- 	if (!res) {
-@@ -273,10 +274,21 @@ int __init dc21285_setup(int nr, struct pci_sys_data *sys)
- 	res[1].flags = IORESOURCE_MEM | IORESOURCE_PREFETCH;
- 	res[1].name  = "Footbridge prefetch";
- 
--	allocate_resource(&iomem_resource, &res[1], 0x20000000,
-+	error = allocate_resource(&iomem_resource, &res[1], 0x20000000,
- 			  0xa0000000, 0xffffffff, 0x20000000, NULL, NULL);
-+	if (error < 0) {
-+		printk(KERN_ERR "%s: allocate_resource failed %d!"
-+		       , __func__, error);
-+		return 0;
-+	}
-+
- 	allocate_resource(&iomem_resource, &res[0], 0x40000000,
- 			  0x80000000, 0xffffffff, 0x40000000, NULL, NULL);
-+	if (error < 0) {
-+		printk(KERN_ERR "%s: allocate_resource failed %d!"
-+		       , __func__, error);
-+		return 0;
-+	}
- 
- 	sys->mem_offset  = DC21285_PCI_MEM;
- 
--- 
-2.17.1
+Please use approach like we have for GCC, RPMh interconnects or remote
+proc loaders - common file. What's more, here you probably don't even
+need common file because it is already there - qcom,gcc.yaml
+
+Best regards,
+Krzysztof
 
