@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF927AC5B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 00:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5107AC5AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 00:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbjIWWdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 18:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        id S229728AbjIWWdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 18:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjIWWdO (ORCPT
+        with ESMTP id S229514AbjIWWdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 23 Sep 2023 18:33:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09D0192;
-        Sat, 23 Sep 2023 15:33:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B7FC433C9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14B2193
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 15:33:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78FF3C433CB;
         Sat, 23 Sep 2023 22:33:07 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qkBCA-003tuD-32;
-        Sat, 23 Sep 2023 18:33:50 -0400
-Message-ID: <20230923223350.752964923@goodmis.org>
+        id 1qkBCB-003tul-0T;
+        Sat, 23 Sep 2023 18:33:51 -0400
+Message-ID: <20230923223350.959882978@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 23 Sep 2023 18:33:32 -0400
+Date:   Sat, 23 Sep 2023 18:33:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [for-linus][PATCH 1/2] ring-buffer: Fix bytes info in per_cpu buffer stats
+        Ajay Kaher <akaher@vmware.com>
+Subject: [for-linus][PATCH 2/2] eventfs: Remember what dentries were created on dir open
 References: <20230923223331.720351929@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,143 +43,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yejian <zhengyejian1@huawei.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The 'bytes' info in file 'per_cpu/cpu<X>/stats' means the number of
-bytes in cpu buffer that have not been consumed. However, currently
-after consuming data by reading file 'trace_pipe', the 'bytes' info
-was not changed as expected.
+Using the following code with libtracefs:
 
-  # cat per_cpu/cpu0/stats
-  entries: 0
-  overrun: 0
-  commit overrun: 0
-  bytes: 568             <--- 'bytes' is problematical !!!
-  oldest event ts:  8651.371479
-  now ts:  8653.912224
-  dropped events: 0
-  read events: 8
+	int dfd;
 
-The root cause is incorrect stat on cpu_buffer->read_bytes. To fix it:
-  1. When stat 'read_bytes', account consumed event in rb_advance_reader();
-  2. When stat 'entries_bytes', exclude the discarded padding event which
-     is smaller than minimum size because it is invisible to reader. Then
-     use rb_page_commit() instead of BUF_PAGE_SIZE at where accounting for
-     page-based read/remove/overrun.
+	// create the directory events/kprobes/kp1
+	tracefs_kprobe_raw(NULL, "kp1", "schedule_timeout", "time=$arg1");
 
-Also correct the comments of ring_buffer_bytes_cpu() in this patch.
+	// Open the kprobes directory
+	dfd = tracefs_instance_file_open(NULL, "events/kprobes", O_RDONLY);
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230921125425.1708423-1-zhengyejian1@huawei.com
+	// Do a lookup of the kprobes/kp1 directory (by looking at enable)
+	tracefs_file_exists(NULL, "events/kprobes/kp1/enable");
 
-Cc: stable@vger.kernel.org
-Fixes: c64e148a3be3 ("trace: Add ring buffer stats to measure rate of events")
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+	// Now create a new entry in the kprobes directory
+	tracefs_kprobe_raw(NULL, "kp2", "schedule_hrtimeout", "expires=$arg1");
+
+	// Do another lookup to create the dentries
+	tracefs_file_exists(NULL, "events/kprobes/kp2/enable"))
+
+	// Close the directory
+	close(dfd);
+
+What happened above, the first open (dfd) will call
+dcache_dir_open_wrapper() that will create the dentries and up their ref
+counts.
+
+Now the creation of "kp2" will add another dentry within the kprobes
+directory.
+
+Upon the close of dfd, eventfs_release() will now do a dput for all the
+entries in kprobes. But this is where the problem lies. The open only
+upped the dentry of kp1 and not kp2. Now the close is decrementing both
+kp1 and kp2, which causes kp2 to get a negative count.
+
+Doing a "trace-cmd reset" which deletes all the kprobes cause the kernel
+to crash! (due to the messed up accounting of the ref counts).
+
+To solve this, save all the dentries that are opened in the
+dcache_dir_open_wrapper() into an array, and use this array to know what
+dentries to do a dput on in eventfs_release().
+
+Since the dcache_dir_open_wrapper() calls dcache_dir_open() which uses the
+file->private_data, we need to also add a wrapper around dcache_readdir()
+that uses the cursor assigned to the file->private_data. This is because
+the dentries need to also be saved in the file->private_data. To do this
+create the structure:
+
+  struct dentry_list {
+	void		*cursor;
+	struct dentry	**dentries;
+  };
+
+Which will hold both the cursor and the dentries. Some shuffling around is
+needed to make sure that dcache_dir_open() and dcache_readdir() only see
+the cursor.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20230919211804.230edf1e@gandalf.local.home/
+Link: https://lore.kernel.org/linux-trace-kernel/20230922163446.1431d4fa@gandalf.local.home
+
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Ajay Kaher <akaher@vmware.com>
+Fixes: 63940449555e7 ("eventfs: Implement eventfs lookup, read, open functions")
+Reported-by: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ fs/tracefs/event_inode.c | 87 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 70 insertions(+), 17 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index a1651edc48d5..28daf0ce95c5 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -354,6 +354,11 @@ static void rb_init_page(struct buffer_data_page *bpage)
- 	local_set(&bpage->commit, 0);
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 9f64e7332796..5f1714089884 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -70,6 +70,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 					  struct dentry *dentry,
+ 					  unsigned int flags);
+ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file);
++static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx);
+ static int eventfs_release(struct inode *inode, struct file *file);
+ 
+ static const struct inode_operations eventfs_root_dir_inode_operations = {
+@@ -79,7 +80,7 @@ static const struct inode_operations eventfs_root_dir_inode_operations = {
+ static const struct file_operations eventfs_file_operations = {
+ 	.open		= dcache_dir_open_wrapper,
+ 	.read		= generic_read_dir,
+-	.iterate_shared	= dcache_readdir,
++	.iterate_shared	= dcache_readdir_wrapper,
+ 	.llseek		= generic_file_llseek,
+ 	.release	= eventfs_release,
+ };
+@@ -396,6 +397,11 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 	return ret;
  }
  
-+static __always_inline unsigned int rb_page_commit(struct buffer_page *bpage)
-+{
-+	return local_read(&bpage->page->commit);
++struct dentry_list {
++	void			*cursor;
++	struct dentry		**dentries;
++};
++
+ /**
+  * eventfs_release - called to release eventfs file/dir
+  * @inode: inode to be released
+@@ -404,26 +410,25 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ static int eventfs_release(struct inode *inode, struct file *file)
+ {
+ 	struct tracefs_inode *ti;
+-	struct eventfs_inode *ei;
+-	struct eventfs_file *ef;
+-	struct dentry *dentry;
+-	int idx;
++	struct dentry_list *dlist = file->private_data;
++	void *cursor;
++	int i;
+ 
+ 	ti = get_tracefs(inode);
+ 	if (!(ti->flags & TRACEFS_EVENT_INODE))
+ 		return -EINVAL;
+ 
+-	ei = ti->private;
+-	idx = srcu_read_lock(&eventfs_srcu);
+-	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
+-				 srcu_read_lock_held(&eventfs_srcu)) {
+-		mutex_lock(&eventfs_mutex);
+-		dentry = ef->dentry;
+-		mutex_unlock(&eventfs_mutex);
+-		if (dentry)
+-			dput(dentry);
++	if (WARN_ON_ONCE(!dlist))
++		return -EINVAL;
++
++	for (i = 0; dlist->dentries[i]; i++) {
++		dput(dlist->dentries[i]);
+ 	}
+-	srcu_read_unlock(&eventfs_srcu, idx);
++
++	cursor = dlist->cursor;
++	kfree(dlist->dentries);
++	kfree(dlist);
++	file->private_data = cursor;
+ 	return dcache_dir_close(inode, file);
+ }
+ 
+@@ -442,22 +447,70 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+ 	struct tracefs_inode *ti;
+ 	struct eventfs_inode *ei;
+ 	struct eventfs_file *ef;
++	struct dentry_list *dlist;
++	struct dentry **dentries = NULL;
+ 	struct dentry *dentry = file_dentry(file);
++	struct dentry *d;
+ 	struct inode *f_inode = file_inode(file);
++	int cnt = 0;
+ 	int idx;
++	int ret;
+ 
+ 	ti = get_tracefs(f_inode);
+ 	if (!(ti->flags & TRACEFS_EVENT_INODE))
+ 		return -EINVAL;
+ 
++	if (WARN_ON_ONCE(file->private_data))
++		return -EINVAL;
++
++	dlist = kmalloc(sizeof(*dlist), GFP_KERNEL);
++	if (!dlist)
++		return -ENOMEM;
++
+ 	ei = ti->private;
+ 	idx = srcu_read_lock(&eventfs_srcu);
+ 	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
+ 				 srcu_read_lock_held(&eventfs_srcu)) {
+-		create_dentry(ef, dentry, false);
++		d = create_dentry(ef, dentry, false);
++		if (d) {
++			struct dentry **tmp;
++
++			tmp = krealloc(dentries, sizeof(d) * (cnt + 2), GFP_KERNEL);
++			if (!tmp)
++				break;
++			tmp[cnt] = d;
++			tmp[cnt + 1] = NULL;
++			cnt++;
++			dentries = tmp;
++		}
+ 	}
+ 	srcu_read_unlock(&eventfs_srcu, idx);
+-	return dcache_dir_open(inode, file);
++	ret = dcache_dir_open(inode, file);
++
++	/*
++	 * dcache_dir_open() sets file->private_data to a dentry cursor.
++	 * Need to save that but also save all the dentries that were
++	 * opened by this function.
++	 */
++	dlist->cursor = file->private_data;
++	dlist->dentries = dentries;
++	file->private_data = dlist;
++	return ret;
 +}
 +
- static void free_buffer_page(struct buffer_page *bpage)
- {
- 	free_page((unsigned long)bpage->page);
-@@ -2003,7 +2008,7 @@ rb_remove_pages(struct ring_buffer_per_cpu *cpu_buffer, unsigned long nr_pages)
- 			 * Increment overrun to account for the lost events.
- 			 */
- 			local_add(page_entries, &cpu_buffer->overrun);
--			local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
-+			local_sub(rb_page_commit(to_remove_page), &cpu_buffer->entries_bytes);
- 			local_inc(&cpu_buffer->pages_lost);
- 		}
- 
-@@ -2367,11 +2372,6 @@ rb_reader_event(struct ring_buffer_per_cpu *cpu_buffer)
- 			       cpu_buffer->reader_page->read);
- }
- 
--static __always_inline unsigned rb_page_commit(struct buffer_page *bpage)
--{
--	return local_read(&bpage->page->commit);
--}
--
- static struct ring_buffer_event *
- rb_iter_head_event(struct ring_buffer_iter *iter)
- {
-@@ -2517,7 +2517,7 @@ rb_handle_head_page(struct ring_buffer_per_cpu *cpu_buffer,
- 		 * the counters.
- 		 */
- 		local_add(entries, &cpu_buffer->overrun);
--		local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
-+		local_sub(rb_page_commit(next_page), &cpu_buffer->entries_bytes);
- 		local_inc(&cpu_buffer->pages_lost);
- 
- 		/*
-@@ -2660,9 +2660,6 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	event = __rb_page_index(tail_page, tail);
- 
--	/* account for padding bytes */
--	local_add(BUF_PAGE_SIZE - tail, &cpu_buffer->entries_bytes);
--
- 	/*
- 	 * Save the original length to the meta data.
- 	 * This will be used by the reader to add lost event
-@@ -2676,7 +2673,8 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	 * write counter enough to allow another writer to slip
- 	 * in on this page.
- 	 * We put in a discarded commit instead, to make sure
--	 * that this space is not used again.
-+	 * that this space is not used again, and this space will
-+	 * not be accounted into 'entries_bytes'.
- 	 *
- 	 * If we are less than the minimum size, we don't need to
- 	 * worry about it.
-@@ -2701,6 +2699,9 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	/* time delta must be non zero */
- 	event->time_delta = 1;
- 
-+	/* account for padding bytes */
-+	local_add(BUF_PAGE_SIZE - tail, &cpu_buffer->entries_bytes);
++/*
++ * This just sets the file->private_data back to the cursor and back.
++ */
++static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
++{
++	struct dentry_list *dlist = file->private_data;
++	int ret;
 +
- 	/* Make sure the padding is visible before the tail_page->write update */
- 	smp_wmb();
- 
-@@ -4215,7 +4216,7 @@ u64 ring_buffer_oldest_event_ts(struct trace_buffer *buffer, int cpu)
- EXPORT_SYMBOL_GPL(ring_buffer_oldest_event_ts);
++	file->private_data = dlist->cursor;
++	ret = dcache_readdir(file, ctx);
++	dlist->cursor = file->private_data;
++	file->private_data = dlist;
++	return ret;
+ }
  
  /**
-- * ring_buffer_bytes_cpu - get the number of bytes consumed in a cpu buffer
-+ * ring_buffer_bytes_cpu - get the number of bytes unconsumed in a cpu buffer
-  * @buffer: The ring buffer
-  * @cpu: The per CPU buffer to read from.
-  */
-@@ -4723,6 +4724,7 @@ static void rb_advance_reader(struct ring_buffer_per_cpu *cpu_buffer)
- 
- 	length = rb_event_length(event);
- 	cpu_buffer->reader_page->read += length;
-+	cpu_buffer->read_bytes += length;
- }
- 
- static void rb_advance_iter(struct ring_buffer_iter *iter)
-@@ -5816,7 +5818,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 	} else {
- 		/* update the entry counter */
- 		cpu_buffer->read += rb_page_entries(reader);
--		cpu_buffer->read_bytes += BUF_PAGE_SIZE;
-+		cpu_buffer->read_bytes += rb_page_commit(reader);
- 
- 		/* swap the pages */
- 		rb_init_page(bpage);
 -- 
 2.40.1
