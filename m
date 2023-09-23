@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F112B7ABDE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 07:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3330D7ABDE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 07:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjIWFgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 01:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59602 "EHLO
+        id S230081AbjIWFgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 01:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjIWFfw (ORCPT
+        with ESMTP id S229973AbjIWFf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 01:35:52 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACEA19E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:35:46 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f4f2a9ef0so16370497b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:35:46 -0700 (PDT)
+        Sat, 23 Sep 2023 01:35:56 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1711A5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:35:49 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5924b2aac52so52331107b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 22:35:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695447346; x=1696052146; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695447348; x=1696052148; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tl2sn727KJMlO6SMtr3A6ZiYWuqB+jcCP05IXOF0Rso=;
-        b=GKI5bBV5k41N7T/FQYnY25TahvoCxGzsXWLLCHfTta2GFLpJ3m4p1eE3Ab+tVWTMzF
-         wgXl7ejPqCU0VyCj6s2Qbp5rOEhoQt8ABLbId2iQ2GFxJlmRTIKXcnIcvJGSWTzPLXfX
-         fiirNkqYaP++i5y44pokYxBKNb3VgK7qKuW+C1o0oZeq9/v1+pBwfs46uuwAvHbHvrL4
-         WjHppmzHzbBQ4GkB8rMzHO3kDoH10befQTAMV4daUUXSrtFvpvGAvOce+iPJvcqpQwOf
-         FXik0EEi0zkuaAIMSMXpLtMB2v79BcdGCffEEcVvTQ4PQTHAKD4Lw9aoCs7YpNhiOn0I
-         /a/Q==
+        bh=2TUsgHG34tvRYixG1937P5Fi9+1duOaYRJoYEfUpa7o=;
+        b=ac7U+/zovsVy7j2SNYIovLA3UTVgWwKkggpmvZy5N/ZOenXtldGk0iq5BsUEhfUvJh
+         +QrxL21ZnLKxKmFLPi8WbF0mNVlKeOAVdbTybYw9jWt8IEakEV8CbXhtzt88E3WmZexb
+         Z1L5hY210/5+lW2ZJHO9/Rd97HqpGf4XdAaXVrXMJU1HAxjwI6rwjh0pB49Y2APrsbjE
+         DdNpJ95UeYLHgQEnTpK8frdOaIMZ8BqNfjq69W7adGekJUzDIJiZOFwF20gp5OyovTxU
+         3YiItascMr1zE6XJqAdItnyiSJKWtZdM/ngBLPQZXKvLEahBcZH7FlEAH/2jgH50LK+j
+         DmJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695447346; x=1696052146;
+        d=1e100.net; s=20230601; t=1695447348; x=1696052148;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tl2sn727KJMlO6SMtr3A6ZiYWuqB+jcCP05IXOF0Rso=;
-        b=hRi6pQgqYHuqweE8cgK96L7yN1QlMBFCoYX5WQrxhgppli0ujjBhU8QcnCjPCs7wBU
-         VUyJGNAyuVjo7QvUGPZQB5xmmkY3+syM4O5/EAu1gVGmQXnRfisYiPQ6J/DjzoRNKjJz
-         d7Ourz48lBZ0ip30gdTuCFx31q9AEQ1dgIVG9z3AeSCRag0ZFh8KYSeHbj7+/I5aQvHi
-         DcgLE3oXMSWW1mtACvo19qszJFiz+jzQxGmTaNJBmuAI8pmqyb16cYEPQg8hcVPY5RaA
-         HheGJw7+ftEuVqsoqzyg7a8hf06AM0qBiNHxp5ePtxHlNEL74KgRFbTnRU5CZDqQrBF1
-         RmtA==
-X-Gm-Message-State: AOJu0Yy7v17mGP5g4bJ6FC13nPVOW2Xgd5rEGZf+CAFpTu55eXEv8Ry2
-        O8A70dtweUun4lkUKsWq8rjnNsk4VkBJ
-X-Google-Smtp-Source: AGHT+IEpB4ceFB8hMqXpgUfgfqjdrpt7iWJfuJvUFtKD0Y9n2ndn3h9cRzzXJUloa5oQOGJF/fsXJ+a1H0ub
+        bh=2TUsgHG34tvRYixG1937P5Fi9+1duOaYRJoYEfUpa7o=;
+        b=CF6deMNg6CmjTCGlGxPuNUsY+H+WZaDkNHk/8w7jL0WQahmIQ5OB3PI5G2Cu9YmhWv
+         efyvhwTeNkoHxftQcfq3ainIG6L4jxIRCRdxGuRNYrDDYIbAm0UYtYDtP6HGJKwMx2Gy
+         sLs96D4Xi/ouREKyjKYH8uos46afLFQxuLDrgMjnjroBFlQToasuTuxeGFSCrCVMEq7A
+         FAUaHbBlGC5mPa02tUdvcXvOQE5Jnoy64iA9F1kDTpCrDURb6OPYi/wFuFZiNMfBwzzQ
+         l+KrJR2dEwLW7Yxg8gg+646T3IZunHDm87kkXXKPiZRQHomtUdHUY1rRQX3wANlIL1rJ
+         X+7g==
+X-Gm-Message-State: AOJu0YzOmXDYcXGf4qnnDs6IOlZ73TZyjfyJb2qq6CbeVu+VgQXZwXhW
+        KhI89GOzNO09IE910Zzi0fzUoFdPImSM
+X-Google-Smtp-Source: AGHT+IEp4kbeLYXnxxqvZKp5O2vhys9x017pPzfHBmcwh+n5Yk8hZwya6+TOe1kFu1OjvjZAFx6MM0x3TpT1
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a376:2908:1c75:ff78])
- (user=irogers job=sendgmr) by 2002:a0d:ec52:0:b0:576:af04:3495 with SMTP id
- r18-20020a0dec52000000b00576af043495mr19364ywn.9.1695447345828; Fri, 22 Sep
- 2023 22:35:45 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 22:35:01 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:a8c:b0:d80:6110:835e with SMTP id
+ cd12-20020a0569020a8c00b00d806110835emr12073ybb.3.1695447348106; Fri, 22 Sep
+ 2023 22:35:48 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 22:35:02 -0700
 In-Reply-To: <20230923053515.535607-1-irogers@google.com>
-Message-Id: <20230923053515.535607-5-irogers@google.com>
+Message-Id: <20230923053515.535607-6-irogers@google.com>
 Mime-Version: 1.0
 References: <20230923053515.535607-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Subject: [PATCH v1 04/18] perf hisi-ptt: Fix potential memory leak
+Subject: [PATCH v1 05/18] perf bench uprobe: Fix potential use of memory after free
 From:   Ian Rogers <irogers@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -92,80 +92,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix clang-tidy found potential memory leak and unread value:
+Found by clang-tidy:
 ```
-tools/perf/util/hisi-ptt.c:108:3: warning: Value stored to 'data_offset' is never read [clang-analyzer-deadcode.DeadStores]
-                data_offset = 0;
-                ^             ~
-tools/perf/util/hisi-ptt.c:108:3: note: Value stored to 'data_offset' is never read
-                data_offset = 0;
-                ^             ~
-tools/perf/util/hisi-ptt.c:112:12: warning: Potential leak of memory pointed to by 'data' [clang-analyzer-unix.Malloc]
-                        return -errno;
-                                ^
-/usr/include/errno.h:38:18: note: expanded from macro 'errno'
-                 ^
-tools/perf/util/hisi-ptt.c:100:15: note: Memory is allocated
-        void *data = malloc(size);
-                     ^~~~~~~~~~~~
-tools/perf/util/hisi-ptt.c:104:6: note: Assuming 'data' is non-null
-        if (!data)
-            ^~~~~
-tools/perf/util/hisi-ptt.c:104:2: note: Taking false branch
-        if (!data)
-        ^
-tools/perf/util/hisi-ptt.c:107:6: note: Assuming the condition is false
-        if (perf_data__is_pipe(session->data)) {
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tools/perf/util/hisi-ptt.c:107:2: note: Taking false branch
-        if (perf_data__is_pipe(session->data)) {
-        ^
-tools/perf/util/hisi-ptt.c:111:7: note: Assuming the condition is true
-                if (data_offset == -1)
-                    ^~~~~~~~~~~~~~~~~
-tools/perf/util/hisi-ptt.c:111:3: note: Taking true branch
-                if (data_offset == -1)
-                ^
-tools/perf/util/hisi-ptt.c:112:12: note: Potential leak of memory pointed to by 'data'
-                        return -errno;
-                                ^
-/usr/include/errno.h:38:18: note: expanded from macro 'errno'
+bench/uprobe.c:98:3: warning: Use of memory after it is freed [clang-analyzer-unix.Malloc]
+                bench_uprobe_bpf__destroy(skel);
 ```
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/hisi-ptt.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ tools/perf/bench/uprobe.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/hisi-ptt.c b/tools/perf/util/hisi-ptt.c
-index 45b614bb73bf..ea297329c526 100644
---- a/tools/perf/util/hisi-ptt.c
-+++ b/tools/perf/util/hisi-ptt.c
-@@ -98,18 +98,18 @@ static int hisi_ptt_process_auxtrace_event(struct perf_session *session,
- 	int fd = perf_data__fd(session->data);
- 	int size = event->auxtrace.size;
- 	void *data = malloc(size);
--	off_t data_offset;
- 	int err;
+diff --git a/tools/perf/bench/uprobe.c b/tools/perf/bench/uprobe.c
+index 914c0817fe8a..5c71fdc419dd 100644
+--- a/tools/perf/bench/uprobe.c
++++ b/tools/perf/bench/uprobe.c
+@@ -89,6 +89,7 @@ static int bench_uprobe__setup_bpf_skel(enum bench_uprobe bench)
+ 	return err;
+ cleanup:
+ 	bench_uprobe_bpf__destroy(skel);
++	skel = NULL;
+ 	return err;
+ }
  
- 	if (!data)
- 		return -errno;
- 
--	if (perf_data__is_pipe(session->data)) {
--		data_offset = 0;
--	} else {
--		data_offset = lseek(fd, 0, SEEK_CUR);
--		if (data_offset == -1)
-+	if (!perf_data__is_pipe(session->data)) {
-+		off_t data_offset = lseek(fd, 0, SEEK_CUR);
-+
-+		if (data_offset == -1) {
-+			free(data);
- 			return -errno;
-+		}
- 	}
- 
- 	err = readn(fd, data, size);
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
