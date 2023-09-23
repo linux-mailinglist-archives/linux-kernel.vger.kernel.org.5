@@ -2,188 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E456B7AC305
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 17:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CAB7AC290
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjIWPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 11:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        id S231143AbjIWOFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 10:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231883AbjIWPB4 (ORCPT
+        with ESMTP id S229616AbjIWOFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 11:01:56 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2121A6;
-        Sat, 23 Sep 2023 08:01:47 -0700 (PDT)
-Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
-        by cmsmtp with ESMTP
-        id jx8iqaxc5DKaKk48fqJ3vE; Sat, 23 Sep 2023 15:01:46 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id k48fqaK9HjsHGk48fq8Iae; Sat, 23 Sep 2023 15:01:45 +0000
-X-Authority-Analysis: v=2.4 cv=FtoWQknq c=1 sm=1 tr=0 ts=650efdd9
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=eh1Yez-EAAAA:8 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8 a=cm27Pg_UAAAA:8
- a=VwQbUJbxAAAA:8 a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10
- a=Vxmtnl_E_bksehYqCbjh:22 a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=o8E/r0wuMmRjHcbDYiPdXr88j22h/Q9UdmpVBTr3fBw=; b=BLe+r9AA41QKGz9wo55FNBte6i
-        H72+radBOWNzTAB6YiP7NELCaOSUh0zphAmfZIqfiso9KD0nTzsR68abI0R7dpkp8YLmdo9rH9W1M
-        y/x7o2CfwQI49wqo9+6Arj3JEoAcl6KpVfpycFLpDKudkIwexQ30QLJmtHnMVeeApcR7HtyzJSLzd
-        N1Qw5maGcqTTQvoP1cKBzAaqU0SwOha6paZj9rt4HM+HiWmFfsl7/PgdBWS5Y1NWyXIc29RHLGBel
-        ssGmkoESQQLyM5+lfD8ksLaw8QMPB6hySoTXQwz5w943dZ/ZjstewVsj/SjhEK2Lq1iGO6RoxYqaB
-        oZTNnKkQ==;
-Received: from [94.239.20.48] (port=59176 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qjl0l-000khc-1m;
-        Fri, 22 Sep 2023 13:36:19 -0500
-Message-ID: <9aa42b20-4388-4954-012f-65e3bc99b7f0@embeddedor.com>
-Date:   Fri, 22 Sep 2023 20:37:09 -0600
+        Sat, 23 Sep 2023 10:05:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7461A19E
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 07:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695477911; x=1727013911;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8OTmG9ZWIXQK0USIXRh00OJCENJCRHifURIhh2wi8gQ=;
+  b=gakogLQynYcgIJbvRs2gdA7aVi28HO4AUWT7MVV/3qjco8/G8GEYlpXW
+   C7Ro4VqYh9hF1/J/y1wAScIoaSyzJrI8+Dt1hVdy52kycOh1khyOg883Z
+   YO/FdehdEDNB1w87Y/z3tUjlakYbq0yJQdRBcQb7uYt6WFNakucnFTZfk
+   DKnJxegD1kXsg0//xOBx/XuJkzOqhWTPo3/gCzpaLxHzu6lnL3Z+zVEry
+   G31GbfJl609HQTYvCBHUturqQTIGr1jMeE4rUj1QITM5rAuNhfv8uog0e
+   HhpIdUjtNOUO6fy89Oc0UXdoNzKM45dqbgiJKYAfMWCzpR97v9tA+koAp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="366078714"
+X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
+   d="scan'208";a="366078714"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 07:04:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="863302477"
+X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
+   d="scan'208";a="863302477"
+Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Sep 2023 07:04:49 -0700
+Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qk3FX-0002SD-1e;
+        Sat, 23 Sep 2023 14:04:47 +0000
+Date:   Sat, 23 Sep 2023 22:04:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sandor Yu <Sandor.yu@nxp.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:332
+ dw_hdmi_cec_suspend() warn: inconsistent indenting
+Message-ID: <202309232133.OnycNeQQ-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 8/9] drm/vmwgfx: Annotate struct vmw_surface_dirty with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, David Airlie <airlied@gmail.com>
-Cc:     Zack Rusin <zackr@vmware.com>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Emma Anholt <emma@anholt.net>,
-        Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        John Harrison <john.c.harrison@Intel.com>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Melissa Wen <mwen@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Le Ma <le.ma@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Yifan Zhang <yifan1.zhang@amd.com>,
-        Prike Liang <Prike.Liang@amd.com>, Lang Yu <Lang.Yu@amd.com>,
-        Tejas Upadhyay <tejas.upadhyay@intel.com>,
-        Nirmoy Das <nirmoy.das@intel.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-References: <20230922173110.work.084-kees@kernel.org>
- <20230922173216.3823169-8-keescook@chromium.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922173216.3823169-8-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qjl0l-000khc-1m
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:59176
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfGn6qotgw9zuL/RvACs7oEvaFbM+uAb77jEQu5pwWoBzM9TrzWtMh3BjRLsZPs9yM0OvG14QTiWwkxeBYFaSwMpuBYYyC/3Oc84bxWN6S4Qbk0ALKKas
- dMsbsGEORdWtMz3WJ30HTuabzmLW2WqyGsjOhzF+vgFLybFhjG4P9MKmCfMX+oPBM8clAHRWdIflDsVWlgs3dPfPgzRDCWGjtXYctNmF2pgfcx15ELDR4rQA
- Wb6WymaBbtoSynVtMevtw1az1i4zLLuVEU9ZWlbF3hFBx3gVQKu7j2IpPpIn5spSFCk4dxEZiRSHeBDif3PSdg==
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d90b0276af8f25a0b8ae081a30d1b2a61263393b
+commit: db1184e410744a680f92ca21e5acd5ae54510db8 drm: bridge: dw_hdmi: Add cec suspend/resume functions
+date:   7 weeks ago
+config: csky-randconfig-r071-20230917 (https://download.01.org/0day-ci/archive/20230923/202309232133.OnycNeQQ-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230923/202309232133.OnycNeQQ-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309232133.OnycNeQQ-lkp@intel.com/
 
-On 9/22/23 11:32, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct vmw_surface_dirty.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Zack Rusin <zackr@vmware.com>
-> Cc: VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+smatch warnings:
+drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:332 dw_hdmi_cec_suspend() warn: inconsistent indenting
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+vim +332 drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
 
-Thanks
+   326	
+   327	static int __maybe_unused dw_hdmi_cec_suspend(struct device *dev)
+   328	{
+   329		struct dw_hdmi_cec *cec = dev_get_drvdata(dev);
+   330	
+   331		/* store interrupt status/mask registers */
+ > 332		 cec->regs_polarity = dw_hdmi_read(cec, HDMI_CEC_POLARITY);
+   333		 cec->regs_mask = dw_hdmi_read(cec, HDMI_CEC_MASK);
+   334		 cec->regs_mute_stat0 = dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT0);
+   335	
+   336		return 0;
+   337	}
+   338	
+
 -- 
-Gustavo
-
-
-> ---
->   drivers/gpu/drm/vmwgfx/vmwgfx_surface.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-> index 5db403ee8261..2d1d857f99ae 100644
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-> @@ -77,7 +77,7 @@ struct vmw_surface_offset {
->   struct vmw_surface_dirty {
->   	struct vmw_surface_cache cache;
->   	u32 num_subres;
-> -	SVGA3dBox boxes[];
-> +	SVGA3dBox boxes[] __counted_by(num_subres);
->   };
->   
->   static void vmw_user_surface_free(struct vmw_resource *res);
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
