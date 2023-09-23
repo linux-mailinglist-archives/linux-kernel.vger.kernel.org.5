@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8717AC27B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 15:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFCD7AC27A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 15:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjIWNuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 09:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
+        id S231771AbjIWNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 09:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbjIWNtp (ORCPT
+        with ESMTP id S230476AbjIWNtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 23 Sep 2023 09:49:45 -0400
 Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2063.outbound.protection.outlook.com [40.107.21.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A3B1B1;
-        Sat, 23 Sep 2023 06:49:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313AB1B4;
+        Sat, 23 Sep 2023 06:49:36 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hPcg5s3pWll7T0xmKYK7A1driEbtAJwf9kGBSbueWXW5yx7eZQkQsWR6fPwgLNOWBju9/mwpyZI2KxUFFW4yef4ROQ90S0YsvkWvTMmXXkLbJ+m5uRacUbd306a9O3tXHU2jmy4J9N1yiLs4oPD5ZZzc+SU0PG0TkI7D0lf+3FuDSphN0pL3VeY6AbfTWmbzV1WcJ0AXHL4MrKf9CfOaPb38KPh+rXuSQhN3g3XDeYAKQHTn7SNkcxoJNxCjFEBUHNj7z4ilYffjA828rJjgAA4c6xrUilkfE+1sJN81WLrA5tivvnlXKYOTGkB0clmiUsHyEh3lU9Y+UWchADJr0w==
+ b=cOzXetMLqFyYwTtjCg9f4H+o3B33cBunQY3bich9+FHDpUuw/pFx1uCLbTF4qFMgZlmZX5OJA81X+iK0dRBTkEzMrDec12/6XYtdm+k3hQY+3+1vkWpFtxyt5sUnApJQoUYnfuknH3at+B5NZpk8EKCRxuTGv85Ph8CZtbm4jWamIXacurmfsr5tYMUguLb8421LEHhrsH6czn+5SpBkBMb0PLSf2jT6Y74NzR2If5XnM3RXKbndYGQauuwwkH9NDrCRiLcNHq8+l7QQwgMC+tTUtYzydO03GEAZkE/P/voyohkVOlF5KX/zAHWGjsbTx4Kp97Z/Bk8DwjSMxlKPDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PLdZ3Q+/1tKzmXbcdN+NWqFouUwTh+6/uQGHuEziuRQ=;
- b=GwoTDfzNFhRxm14pnMCJQRQ6eaOfZoxKkfGWxtBB+0yTjDX+qJEmjfFLchAynU/9RN8jZgNBixHWblnKf2kEJjBEU/O+qsaVY2rfJvZqQpHu6LP8ZdE4jB71clXiIkVQoUbviUvOTxkpF5zYxiT5iaXi82LEruNEnx4vm3gENn1aYA9/s+wbJgpBmO04aZB/2na8IUGG6K9QpctloiEtZvsuy+PMvRANbcK2QdeFLCQJ7C7os2xCvsqY7uGvjw7bGkW1o2UKQQn9psdEmVgwR2CGm3v4HbLQY9QzHdYgb22G8XLuB+x2QgA6V2cSNth/YGitBun+wTwe1Fasozgukw==
+ bh=PwfNxp6iQHMtoGWJzG46LEBYlY49OXWm672bXR/o/pQ=;
+ b=RfMGyV5/b7VtQJuy2iho6ixAdZT/zltd2x3DMYXZRZIqE8zgykCUehG3Hf9JzghY2CKarlLt1JBRBAJaKfd1RcdnbCJIHmF6nx8pWxp2PsiK9VvnVJB7qFEx52SsEmhWc8xhATzlrme21Y7jSRp5DoQIlYK2BYF7eI78wULeVdXbMFk1m4degexj/tU8ZBpQ/nu7AKvPM5O3c+pPsLRbnWeqOWrClWlGjQAI+P39MVNSGbKNZd/aPu2S6Y1QF26wnh2ee/PdJXmdyJUn/npm/n6+LPr0YssTUe02qcLdZ0MLtc3tY8blVdempOgsXHrcwPYjJ1U9Kt/OGut6NlaH4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PLdZ3Q+/1tKzmXbcdN+NWqFouUwTh+6/uQGHuEziuRQ=;
- b=Bq40txfnjAsdZ8yJdVh/rcomyIt4S+Y/AgvbHcXVhTbwU+ZaB5cOA6RiY8dD7ImJFW2UCjxnyU76XHuditMphGCvbRb894dqHH5b+tBaTYEV1pOG6KTsRkxDhNCUwOiSlTfUhT0XOPGDL2PBV5qTTXiSub8D5IXKK1SJAEYMe/g=
+ bh=PwfNxp6iQHMtoGWJzG46LEBYlY49OXWm672bXR/o/pQ=;
+ b=D2d5DhHcmgir2Hf+3Ii2DKiRta3E/zqbJ6xACOgXq/bvU/o3nOFyvmPFW5ywKdbfU9TLwstr3gMwTGBnHqm9HbYE2ZWcsVH2ELk+E/1XyvekolulHJ9TCYSGvq5irPcpwHBysuSGa2Rn0UJrVRYDyEZw+3c+WBKUBcfMo0FIMN4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by AS1PR04MB9454.eurprd04.prod.outlook.com (2603:10a6:20b:4d9::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Sat, 23 Sep
- 2023 13:49:30 +0000
+ 2023 13:49:32 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6813.024; Sat, 23 Sep 2023
- 13:49:30 +0000
+ 13:49:31 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
@@ -57,9 +57,9 @@ Cc:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Maxime Chevallier <maxime.chevallier@bootlin.com>,
         Vinod Koul <vkoul@kernel.org>,
         Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: [RFC PATCH v2 net-next 07/15] net: phylink: centralize phy_interface_mode_is_8023z() && phylink_autoneg_inband() checks
-Date:   Sat, 23 Sep 2023 16:48:56 +0300
-Message-Id: <20230923134904.3627402-8-vladimir.oltean@nxp.com>
+Subject: [RFC PATCH v2 net-next 08/15] net: phylink: allow PCS to handle C73 autoneg for phy-mode = "internal"
+Date:   Sat, 23 Sep 2023 16:48:57 +0300
+Message-Id: <20230923134904.3627402-9-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
 References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
@@ -71,52 +71,52 @@ X-ClientProxiedBy: FR3P281CA0165.DEUP281.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AS1PR04MB9454:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8db5e03c-3d2c-4f06-4c3e-08dbbc3be93f
+X-MS-Office365-Filtering-Correlation-Id: 640f6bb4-59fb-418e-defa-08dbbc3be9f6
 X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2xibz12cGhe/hmq/lCbsgqclsp6+eFD+RXPJmdUJq1PLjg8iTm3d79qVSYKj18+1lE926br/b0omeABRl/O+AkqiMHgfbt65n5qcsfT84reRpJfHIUXi26hZkj/peTe+sl5E3u17QDD1AnqzMobvIu36/6MJcEgxB+Zlku9hEhMrzX9dAn136LgumM37PHt72V9DTUzAS42rfuzuK+RuK32yXb5drxIff6iK6iUWM8l7bdNJPLXcEWgUWUX6l8XD/1rbxRvCBwSflVRyLEw4MkBcxWe7Xsu0JqdD014XiT9NY9ZAdohXzbatceUHagyzlOb6cmyCYuSEUn1yplvCIouBLU0bps2lPnnY7gUldVi7F+d7V1TUp+vbFANWELjUF37PAWPUXhOxLeqMQ6B2xPtfm211gbeTMYUTrqA2n2S42xFachNkJx9DfC7hR3j4T1AChEXd0WI3zKg5dVXsrARWCtBslDywDpBVD+k3ULq+iJ6MzjkxRc9GKYlCaj3uKiii0BkykW/8oax6z0UUIZ0ZH6Ym0Q4hST2+8aWJ5KWtEO1cPoWP/ysYEe0lB9yu8rlhUUqLR5oSKDl71nAFkzr8uU8WsBETmij4hN8W6Gs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(1800799009)(451199024)(186009)(66556008)(52116002)(2616005)(6506007)(6512007)(316002)(5660300002)(66946007)(38350700002)(6666004)(478600001)(1076003)(66476007)(26005)(44832011)(2906002)(4326008)(36756003)(41300700001)(7416002)(54906003)(38100700002)(6486002)(8936002)(86362001)(8676002)(83380400001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Y2objuQAL6ahXAgjAbo5CP9+QfPO3EtaB4Et5hSiI44g/KBHE4AXas5QtNWi4Ve2WQJv6NMHwrIY6yAdckn43zqOTP/vAchYy+wrxoBFoaU8c7EVE+f4i/XhEkr/inXIH3sduvXQSSvYh+UjWXufxXsuji11Iqjr9KA1UG33sIL+xH10R3UmTRjBsHOf//AbJSQNGw1zwBLzP42VsFDZtvdJTnbCkOB/3eDcMSJPRUWCFdeS/U0C1SZJjaMGAku1aQEPh3fERL6scnRfWCeBXxxrhqCVfScHcV7fcmjaFdmBnC0gQLV3yn6rIKdsucCEhefQAtFB41Yu4nxTrAZVOjRHGSTldjx9UpRv4z2PMWN905QvCJLA27/76RC5s+O/A/G/q9xnybRMX/B3ftZF1b2zxjdxOhMH+YTEld5RWWlQsRF7a5ivL0ZkXJPWjU0LzsSNFvuJyvRG0gKmDxeQ7cQNoPD6K4F3URQpGCXKNk0jqGQLopbkysOhq6VhUTk9y18efVro9wtgiYtCWc+zDJkrFWdHsAfa7PSepawdzsC8x1U87hE8JdCXMtEl75TEYX4zHhpxboaAPt2BKEmmGmhDqRyBW9m8IArXgoEYKpI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(1800799009)(451199024)(186009)(66556008)(52116002)(2616005)(6506007)(6512007)(316002)(5660300002)(19627235002)(66946007)(38350700002)(6666004)(478600001)(1076003)(66476007)(26005)(44832011)(2906002)(4326008)(36756003)(41300700001)(7416002)(54906003)(38100700002)(6486002)(8936002)(86362001)(8676002)(966005)(83380400001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DeqYSwm6zItu4Aa84ZABUciLVTEqlXyNqFDSd4F2gijpfhhFAy7FoQuM8kt7?=
- =?us-ascii?Q?nNAKXum5gS0Atciy3a4QqLc1XXboNO2ddI/OUae4vq0rCrOKD3uhZP0+9uS1?=
- =?us-ascii?Q?xK+dK1tlD6zYEBJQ97RnhnmeOrMf+b3o6vOcTp8w+s3LhBuzUH5Cfh04gIkd?=
- =?us-ascii?Q?9TSEa39mL6QpjiE6OIy8450HsE5WBHkRvUAmbeOFYzQiyPWk5QeGKh5Hn9gf?=
- =?us-ascii?Q?kBmkbJyajQ2q7biTdzAq0FdpMWEtL+etW+rXyzKxbef8LJfsJ7sSlzOQaYs0?=
- =?us-ascii?Q?cpJM9UkjDBi/yohm7yVOCHDjjnQ4bjC+lN8ma2JU3mpp6gck7WT60ZtykI5Z?=
- =?us-ascii?Q?JWroe+9pXAu0Xf+IrDvRBjk5alTW+vHlRFbAmJ1ncjzakSeMa3T/Dn2o0NeL?=
- =?us-ascii?Q?lkvxTBibYxrP6IvNQMKdNwH1wrfZfnw74UXnrKYSI2887lLDWe1gzCk/YJSD?=
- =?us-ascii?Q?CK/uFISl6TZsCZjuArELV1XYVh90KwA1XvY3y3QC+Yx/0lrnDhrSpqs3QjBI?=
- =?us-ascii?Q?/Lvv0EUE6rNKdcBX16n6X8vZQWmgEUrYWTBr4Hl9ukY7bjjzXY6F1KAabOt7?=
- =?us-ascii?Q?+ZUXh5yS9ecsqu6SS3nc5eP3S9DMXYg9dC33+URv4WXgJlDzVjEnlgYZhY/O?=
- =?us-ascii?Q?SZ9UCJElWYrbJs0TvvjDiOBAaSAnlnWqlqWTGGcfwFgkEPdqJll5wP7L7Mki?=
- =?us-ascii?Q?JE3hUFV43gfsdReXlw3b30kefQmsdCJ1Vkz2k2Cfy6l20dQgJ0du+HlzbpPu?=
- =?us-ascii?Q?rvh6k2oQWis5ozgTyLGaPK74n8k5g2xUdT6GN+X5lMt6FcnAiO6+cpJ+vtU1?=
- =?us-ascii?Q?B2/uTh67VRKLm4Fe/wvx5WD0uNuHaO6Lh2aCnotN4IBwglqkHy+S5Xzj+N8H?=
- =?us-ascii?Q?vLdOjUhlUL2neAwflDnGyJdAZ+22UzI0q8ZVwhPwO1G5K0VkxegMytRtgkvq?=
- =?us-ascii?Q?s5h6MIAM5PlKL2NP1VHyKvfAQceDDTz/RfTpG53kAoGa8ptVnyhds158P93z?=
- =?us-ascii?Q?Fl24IVkDe+cEa2+GPkc6PoJsD0PvZJ27pZLQ49Kf3mwysYh0SiEIDXnGgWYB?=
- =?us-ascii?Q?MYfWTWoNylaNi7eHOkJZ+64b2e8iZld/iT1j+LbTHnCLquTVMkBR78K7SnPS?=
- =?us-ascii?Q?kqrDSfJ9GwqIDEj9VPCWKo3bfGsBwIe6/9o9xsIJX3ymMiS1m0oRwLBfrhKl?=
- =?us-ascii?Q?mE0s9xfOXzQiob3dC9hgAFOBnsq0SdhC1jV7doG7WjyPqO2sMCLn5bf40RsZ?=
- =?us-ascii?Q?Kd+N7/25vPSwyrtfoFwr7A6dRqyc+p29ZFrEE9BGhok+gSAHpm2g8EcAhbvx?=
- =?us-ascii?Q?29b5gSiNW+E48MdYd3B2hSOZB543noc3alLS2Jjw+86WKLRWrDS5llAjvdqC?=
- =?us-ascii?Q?NWiXpffV41KAk4EBu3TNeypOzNqL5lt5GN4P8RfV6g26lJZQTN3nkjxRFxsd?=
- =?us-ascii?Q?mGfhU+zEV6tN0H0kY8O5pgCT5RUHMnNChhSTIujBr41sc4UjpV5kLMVWlZl4?=
- =?us-ascii?Q?Wik1+lEH5pHsq25vtf1ucP2ONK1x1HagELq5lLS3tm+w7WC+m7XfcPlkge/5?=
- =?us-ascii?Q?qvheJgb0LuFGKwvW2HimDcKby0VINjf78FKB5+ZmOyNIi0MyscE8gtTq5rrJ?=
- =?us-ascii?Q?Tg=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zs3oW2vLbYvWbdsAN1X2GXLHC3lc4MKfxWjwd+SIE7pXpprfeGCszgrf7lzx?=
+ =?us-ascii?Q?wQlbJfBGze3EbKaZfdrLHTvjceNFWEDLcvONsn8zYDIsvoaYhppETPtFkqoz?=
+ =?us-ascii?Q?8gepixM6U3J0YCb51P5MnQevmxOySdYvNBkcFVQI/oY+doSfoHPVM+p0g+kg?=
+ =?us-ascii?Q?GLjLysS3P8O1mH+KpPA82Jhbj9LeDNNGbmkCsLh+oUw5X/h4x6mY3mDMBB3Q?=
+ =?us-ascii?Q?kso87OGmv8OKMacu5hxj6QosZmlO+4nXORqc6sZKKyaSCOpyaOoGbgF2Y1RG?=
+ =?us-ascii?Q?qlyfMFVJrMSllraqBzJFWzNX6dJiilj7Js5u+lQLVzDJewNdA1oiubFAz6gy?=
+ =?us-ascii?Q?g8ywpoKG2l+cVgmO/3JXYdbIWLgVs36uMgbINV2keaBYuY+YkGo7fnGaq8hq?=
+ =?us-ascii?Q?gn52jpsvLYkJX6wiV/7I2uj/wevT2IXcSDAyC2RgXQh8z1rDgQOuNNMVk/uY?=
+ =?us-ascii?Q?Dv/C3xHm8ajYh2o0d+i9aZAGBftk85XV02k4joGql7neuUHa+Y1cqC7PNe6/?=
+ =?us-ascii?Q?Itr59EhJYdiE2wniqh5U6FT1zNJX7gCpexIxgmevIROXQlpMnCU2hNLDVNKx?=
+ =?us-ascii?Q?liEdhzeNJzBteNEXQOXWQnzCcIHMEXzH0uoKAc53YnrmCPbGiQ0TDynJ7D7V?=
+ =?us-ascii?Q?I/AgJQxFYEDlFVFp0c6fqQFIwHSQqjP2etgcZyc1pVQo0Hw62j+WyrDOMbFr?=
+ =?us-ascii?Q?a5/53nJf3d9vYjUMvaR2zN9cnCNq2DJyv05jKXnPS7tWJAJ93Pzl1GJH+8/H?=
+ =?us-ascii?Q?6Mqcq8N0PlleAbQmql2U8VCGSHff2lCE4cTVoGN39VZMWW5cuF/wwicLUjkj?=
+ =?us-ascii?Q?fMWdSAK+4+K7ERfLTfTMZSBU7FoY2BnZPkSaiRNzGby+f8IZvNVrgjDjON1k?=
+ =?us-ascii?Q?BJ6+6NnE2+/WRFeXYt8bv8aXrM2/UA2u/Xc8G+ihXT0QgKS1XkhGZCRSsI2J?=
+ =?us-ascii?Q?qLktT9xLZ9Q4IZjTS3gWBBn6vobSpNDDAbrv//Q6q9EDZDZbuM+hL6dYP+ry?=
+ =?us-ascii?Q?BX6CZJ9oVyHrjxnQB2Q98YCaWeMF7Ca41/R232/0+KJx6P4QzrVRLAQn47g/?=
+ =?us-ascii?Q?nf3qu9pTZjsvXTNvjgZ893m1GEQheFvJw5+DCi7Th/XAnwzJcWldsCDd70OH?=
+ =?us-ascii?Q?RP2TkeXyQOqmUaTWgPlb2KouA6OVm+NvjHAfzoLoifjf4QwBqbPXdWxs7PDC?=
+ =?us-ascii?Q?fN7lG0dEQwlmSzNEFFTeHbfoRtrqu/fv7uXJ2K3eW7/ZC8QwKzh03OUtqbQF?=
+ =?us-ascii?Q?+ADnenyJ4QMK3sy4xMKHS8zt9Vte2ZhnBNG8zrmGleOwSN6ed/h4zmIa8Pw7?=
+ =?us-ascii?Q?Rao/gSNB1sHH0JQpUEnZ8sC2Wm9PoTQwq8BLHloOVctJNNWrXLgSW2LDO6RO?=
+ =?us-ascii?Q?QqXptE+j6s+pQHZXWKfhjosrEBOKsafSO2ZtGEjHbFWyFmEwQwgToN+n5o5m?=
+ =?us-ascii?Q?fvfDvklyAuWYplBlWkHq20r1gUUSZVFLmU0YYjw6NiFExxWzalm6g/l8hpql?=
+ =?us-ascii?Q?SYx1lZR2pL5B708S7cwDNV2J/1dK4MzdSWUcEWCyhm894PkZQGyM2z6pFQKE?=
+ =?us-ascii?Q?Z0Xx7y3qcfW1ExtFXVmEao0Kh9VH6vScBqY5S7O0lERtOew20qAmlp900tB2?=
+ =?us-ascii?Q?Vw=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8db5e03c-3d2c-4f06-4c3e-08dbbc3be93f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 640f6bb4-59fb-418e-defa-08dbbc3be9f6
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 13:49:30.6609
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 13:49:31.8896
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DJ4yQptNNwTefbm/F1mO6Ha2GaVXDwRFzxHo2vVqko7Vw7vVEndbs2LxwC8HZOVvQ/IbAA0+LnjWYnKlhY9s3g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: UI/QFharUd/6sjfsNL3geIeLSKebTTCpy2pXpWC/fS6s8FGJuTvozPFjZoVA1/LyTBPnCrvROnAcxbuJZrGhGw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9454
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -128,78 +128,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a future change, we will extend the PHY interface modes for which
-phylink allows the PCS to handle autoneg. Group the existing occurences
-into a common phylink_pcs_handles_an().
+Some phylink and phylib based systems might want to operate on backplane
+media types ("K" in the name), and thus, picking a phy_interface_t for
+them becomes a challenge.
 
+phy_interface_t is a description of the connection between the MAC and
+the PHY, or if a MAC-side PCS is present, the connection between that
+and the next link segment (which can be remote).
+
+A MAC-side PCS is so far considered to be a PCS handling link modes with
+optional C37 autoneg. But C73 autoneg (for backplanes and SFP28 modules)
+is not at the same level in the OSI layering, so that existing model may
+or may not apply.
+
+(a) If we say that the PCS is MAC-side for C73 modes as well, the
+    implication seems to be that the phy-mode should be one of
+    PHY_INTERFACE_MODE_10GBASEKR, PHY_INTERFACE_MODE_1000BASEKX, etc.
+    Similar to PHY_INTERFACE_MODE_1000BASEX which imitates the link mode
+    ETHTOOL_LINK_MODE_1000baseX_Full_BIT.
+
+(b) If we say that the PCS is not MAC-side, but rather that the
+    phylink_pcs represents an entire non-phylib backplane PHY which may
+    negotiate one of many link modes (like a copper phylib PHY), then
+    the phy-mode should probably be one of PHY_INTERFACE_MODE_XGMII,
+    XLGMII etc. Or rather, because there is no MII pinout per se and the
+    backplane PHY / phylink_pcs is internal, we can also use
+    PHY_INTERFACE_MODE_INTERNAL.
+
+The trouble with (a), in my opinion, is that if we let the phy_interface_t
+follow the link mode like in the case of Base-X fiber modes, we have to
+consider the fact that C73 PHYs can advertise multiple link modes, so
+the phy_interface_t selection will be arbitrary, and any phy_interface_t
+selection will have to leave in the "supported" and "advertised" masks
+of link modes all the other backplane modes. This may be hard to justify.
+
+That is the reasoning based on which I selected this phy-mode to
+describe the setup in Layerscape SoCs which have integrated backplane
+autoneg support. The changes in phylink permit the managed =
+"in-band-status" fwnode property to be extended for C73 autoneg, which
+is then controllable through ethtool. With phy-mode = "internal" in an
+in-band autoneg mode, we advertise all backplane link modes. The list is
+not exhaustive and may be extended in the future.
+
+Link: https://lore.kernel.org/netdev/ZOXlpkbcAZ4okric@shell.armlinux.org.uk/
+Link: https://lore.kernel.org/netdev/ZGIkGmyL8yL1q1zp@shell.armlinux.org.uk/
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
 v1->v2: patch is new
 
- drivers/net/phy/phylink.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ drivers/net/phy/phylink.c | 19 ++++++++++++++++++-
+ include/linux/phylink.h   |  1 +
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 0d7354955d62..548130d77302 100644
+index 548130d77302..88ace7e203c3 100644
 --- a/drivers/net/phy/phylink.c
 +++ b/drivers/net/phy/phylink.c
-@@ -1107,12 +1107,17 @@ static void phylink_mac_config(struct phylink *pl,
- 	pl->mac_ops->mac_config(pl->config, pl->cur_link_an_mode, &st);
- }
+@@ -972,6 +972,21 @@ static int phylink_parse_mode(struct phylink *pl,
+ 			phylink_set(pl->supported, 100000baseDR2_Full);
+ 			break;
  
-+static bool phylink_pcs_handles_an(phy_interface_t iface, unsigned int mode)
-+{
-+	return phy_interface_mode_is_8023z(iface) && phylink_autoneg_inband(mode);
-+}
++		case PHY_INTERFACE_MODE_INTERNAL:
++			phylink_set(pl->supported, 1000baseKX_Full);
++			phylink_set(pl->supported, 10000baseKX4_Full);
++			phylink_set(pl->supported, 10000baseKR_Full);
++			phylink_set(pl->supported, 25000baseCR_Full);
++			phylink_set(pl->supported, 25000baseKR_Full);
++			phylink_set(pl->supported, 25000baseCR_S_Full);
++			phylink_set(pl->supported, 25000baseKR_S_Full);
++			phylink_set(pl->supported, 40000baseKR4_Full);
++			phylink_set(pl->supported, 50000baseKR2_Full);
++			phylink_set(pl->supported, 50000baseKR_Full);
++			phylink_set(pl->supported, 100000baseKR4_Full);
++			phylink_set(pl->supported, 100000baseKR2_Full);
++			break;
 +
+ 		default:
+ 			phylink_err(pl,
+ 				    "incorrect link mode %s for in-band status\n",
+@@ -1109,7 +1124,9 @@ static void phylink_mac_config(struct phylink *pl,
+ 
+ static bool phylink_pcs_handles_an(phy_interface_t iface, unsigned int mode)
+ {
+-	return phy_interface_mode_is_8023z(iface) && phylink_autoneg_inband(mode);
++	return (phy_interface_mode_is_8023z(iface) ||
++		iface == PHY_INTERFACE_MODE_INTERNAL) &&
++	       phylink_autoneg_inband(mode);
+ }
+ 
  static void phylink_pcs_an_restart(struct phylink *pl)
- {
- 	if (pl->pcs && linkmode_test_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
- 					 pl->link_config.advertising) &&
--	    phy_interface_mode_is_8023z(pl->link_config.interface) &&
--	    phylink_autoneg_inband(pl->cur_link_an_mode))
-+	    phylink_pcs_handles_an(pl->link_config.interface,
-+				   pl->cur_link_an_mode))
- 		pl->pcs->ops->pcs_an_restart(pl->pcs);
- }
+diff --git a/include/linux/phylink.h b/include/linux/phylink.h
+index 2b886ea654bb..7e8e26001587 100644
+--- a/include/linux/phylink.h
++++ b/include/linux/phylink.h
+@@ -141,6 +141,7 @@ static inline unsigned int phylink_pcs_neg_mode(unsigned int mode,
  
-@@ -1716,8 +1721,8 @@ EXPORT_SYMBOL_GPL(phylink_destroy);
- bool phylink_expects_phy(struct phylink *pl)
- {
- 	if (pl->cfg_link_an_mode == MLO_AN_FIXED ||
--	    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
--	     phy_interface_mode_is_8023z(pl->link_config.interface)))
-+	    phylink_pcs_handles_an(pl->link_config.interface,
-+				   pl->cfg_link_an_mode))
- 		return false;
- 	return true;
- }
-@@ -1852,8 +1857,8 @@ static int phylink_attach_phy(struct phylink *pl, struct phy_device *phy,
- 			      phy_interface_t interface)
- {
- 	if (WARN_ON(pl->cfg_link_an_mode == MLO_AN_FIXED ||
--		    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
--		     phy_interface_mode_is_8023z(interface) && !pl->sfp_bus)))
-+		    (phylink_pcs_handles_an(interface, pl->cfg_link_an_mode) &&
-+		     !pl->sfp_bus)))
- 		return -EINVAL;
- 
- 	if (pl->phydev)
-@@ -1937,10 +1942,11 @@ int phylink_fwnode_phy_connect(struct phylink *pl,
- 	struct phy_device *phy_dev;
- 	int ret;
- 
--	/* Fixed links and 802.3z are handled without needing a PHY */
-+	/* Fixed links and the modes where the PCS can handle autoneg with the
-+	 * far end do not need a PHY.
-+	 */
- 	if (pl->cfg_link_an_mode == MLO_AN_FIXED ||
--	    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
--	     phy_interface_mode_is_8023z(pl->link_interface)))
-+	    phylink_pcs_handles_an(pl->link_interface, pl->cfg_link_an_mode))
- 		return 0;
- 
- 	phy_fwnode = fwnode_get_phy_node(fwnode);
+ 	case PHY_INTERFACE_MODE_1000BASEX:
+ 	case PHY_INTERFACE_MODE_2500BASEX:
++	case PHY_INTERFACE_MODE_INTERNAL:
+ 		/* 1000base-X is designed for use media-side for Fibre
+ 		 * connections, and thus the Autoneg bit needs to be
+ 		 * taken into account. We also do this for 2500base-X
 -- 
 2.34.1
 
