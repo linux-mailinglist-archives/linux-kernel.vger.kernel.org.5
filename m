@@ -2,176 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6B67ABDB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 06:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B8A7ABDBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 06:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjIWEV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 00:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S230118AbjIWE1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 00:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjIWEVt (ORCPT
+        with ESMTP id S229978AbjIWE1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 00:21:49 -0400
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71AB1A5;
-        Fri, 22 Sep 2023 21:21:42 -0700 (PDT)
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-        by cmsmtp with ESMTP
-        id jkvmqHpT9QFHRju9GqtY7n; Sat, 23 Sep 2023 04:21:42 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id ju9EqJd4RuMYjju9FqyKqP; Sat, 23 Sep 2023 04:21:41 +0000
-X-Authority-Analysis: v=2.4 cv=RtrWkQqK c=1 sm=1 tr=0 ts=650e67d5
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=A7XncKjpAAAA:8 a=pGLkceISAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8
- a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9
- a=QEXdDO2ut3YA:10 a=R9rPLQDAdC6-Ub70kJmZ:22 a=y1Q9-5lHfBjTkpIzbSAN:22
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MKm/OOPOcf22wZ8nz9NY4DXdP3SNVO9DxaL+RB5zb6I=; b=Cf8NaSfqBtYUiIQRH8jG9IQ3QY
-        wmY7AUXwtVE9+MR/9t1DBZD0QphKKnaCF8zmDKrmIQVBSO3wOao3nXwtCoq/a3NccU4tE1QvlV+97
-        UZA14F+9HXSXDm+McS141IYXyTOvk+9/UHMRp8IDKu7OnkqOvLxK3eRvvOYyvDPJF/v6pBR3idhkG
-        tUg4V12pJvhVuwPlDTgWtKExcFDc/5pJKfu7QFpdvKbpyjHZKJbjkF3LexkXVfBThEgUD7KYNkw87
-        LPRzrpnlGETvo/rRSSHwdTmmxjlviPpB7OOnLSVyINN/BKstrAboAzzFIrH1Z5+4Yr4ie38fMRzbd
-        CTy+EYnw==;
-Received: from [94.239.20.48] (port=46510 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qjkXC-000FdJ-39;
-        Fri, 22 Sep 2023 13:05:47 -0500
-Message-ID: <9b175866-63a5-e057-32df-f008cfe449d7@embeddedor.com>
-Date:   Fri, 22 Sep 2023 20:06:44 -0600
+        Sat, 23 Sep 2023 00:27:01 -0400
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B908819E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 21:26:27 -0700 (PDT)
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-57b637d9e4dso3615373eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 21:26:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695443187; x=1696047987;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M+urzTS0c8qoXYHkWWE5inZQMq8BUkH3T5tVlj4SJuw=;
+        b=bwL1F0I8vV2Q1LDFPxABdR6XS8nr2v9x7dX7xUOeZ1q4Ym15JksBj7fFeomJKU/n52
+         d5/fV7gd3CcHixw5x7xzj2pq8QjCOJ+vEPHUYXrxeDdub/+VezQvGcyGj5h4OtvJ8NK2
+         X86w0UENZQdVjCeTBxEBkuxJKCfALaVGn63YKN+Jo51MFHiSgRv14arB5NrYyjEVDG8U
+         rP+ZvLS02Xu4yoI2YtoZYn/i2fjLq9nJmNf9uGP8ztcQXAPQBiivNl1Bz9//dphT/8LB
+         X8p2fL8jvfrXCYzqR/w0RcF0uxg56E1JNZObieG5Uw6wSKd8q+v/JGAQ6InmC/Pd2XH3
+         Fi3Q==
+X-Gm-Message-State: AOJu0YxfABhaI5uXLJtW+BYNRjZ3UUc6WLIG0GoBaJyErYLLZyxTGWU7
+        QdDBkXbcpDEBN1QfZYPULOF9KB60fVch9Dn456rOUzrxftgq
+X-Google-Smtp-Source: AGHT+IG9A9wXCa7gBMcTNsA0cX94sAKGnP7/9l0kt/HvDjq41JnyaWoMbXQBCwU9/UVq4eEvgF/5kk14OxoP2EyXuwCNPm8clScY
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 14/14] net: sched: Annotate struct tc_pedit with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dev@openvswitch.org,
-        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-References: <20230922172449.work.906-kees@kernel.org>
- <20230922172858.3822653-14-keescook@chromium.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922172858.3822653-14-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qjkXC-000FdJ-39
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:46510
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNclrJb83lDO6QqwF85gc6R9U1rCIfIw1mNTqVAYSkrzneJHh4l4m24PrWpbT4a9HIr1ee5BXzn9ENLdNPBfAkdd1RGNpnMkFg0D8lxc8KFhpEhwRSag
- KqlwbDLzI7tc08J7VgJbpx6uTQJdDPskbeMtw2+JNX+iwq0BxRNMfa+IussYJTD6COhm6vz64dOYFYdQCe8lcV/cIAvTapxytsA3iWaNc7dSNcYOGSiDCy/D
- nQjwKGfyZyz9H62EuMI1kxcmGES0Y5OZGIYMwvMHXRTqnW2eiIqs7tKAhlGNIrTftoTDvANmXqSVA9S+sd7+aaZrr3TONRvEdd8gVbRKJ5POKIbPRairB73q
- K4zy9IKnHDj6k+q6MNNJQnXAfDlLMGxz3UhconM14Y4Zxk91EpTItR5usOOtiNEBJ8B/ug1s
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:5b2d:b0:1d6:899d:6eed with SMTP id
+ ds45-20020a0568705b2d00b001d6899d6eedmr564132oab.7.1695443187031; Fri, 22 Sep
+ 2023 21:26:27 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 21:26:27 -0700
+In-Reply-To: <20230923040320.1384-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e6665c0605ff20f6@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
+From:   syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 9/22/23 11:28, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct tc_pedit.
+Reported-and-tested-by: syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com
 
-I think the annotation for struct tc_pedit_sel is missing.
+Tested on:
 
-Thanks
---
-Gustavo
+commit:         2cf0f715 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=15916ee4680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=710dc49bece494df
+dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16a02f0e680000
 
-> Additionally, since the element count member must be set before accessing
-> the annotated flexible array member, move its initialization earlier.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-> Cc: Cong Wang <xiyou.wangcong@gmail.com>
-> Cc: Jiri Pirko <jiri@resnulli.us>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   net/sched/act_pedit.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
-> index 1ef8fcfa9997..77c407eff3b0 100644
-> --- a/net/sched/act_pedit.c
-> +++ b/net/sched/act_pedit.c
-> @@ -515,11 +515,11 @@ static int tcf_pedit_dump(struct sk_buff *skb, struct tc_action *a,
->   		spin_unlock_bh(&p->tcf_lock);
->   		return -ENOBUFS;
->   	}
-> +	opt->nkeys = parms->tcfp_nkeys;
->   
->   	memcpy(opt->keys, parms->tcfp_keys,
->   	       flex_array_size(opt, keys, parms->tcfp_nkeys));
->   	opt->index = p->tcf_index;
-> -	opt->nkeys = parms->tcfp_nkeys;
->   	opt->flags = parms->tcfp_flags;
->   	opt->action = p->tcf_action;
->   	opt->refcnt = refcount_read(&p->tcf_refcnt) - ref;
+Note: testing is done by a robot and is best-effort only.
