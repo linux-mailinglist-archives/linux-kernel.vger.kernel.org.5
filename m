@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AAF7AC4CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 21:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDBD7AC4D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 21:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjIWTZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 15:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        id S229460AbjIWT0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 15:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjIWTZd (ORCPT
+        with ESMTP id S229487AbjIWT0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 15:25:33 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808CF196
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:25:26 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59c07cf02ebso48322847b3.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:25:26 -0700 (PDT)
+        Sat, 23 Sep 2023 15:26:15 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920FA83
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:26:09 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59e77e4f707so48840317b3.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 12:26:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695497125; x=1696101925; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695497169; x=1696101969; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bxesPwbKK+IbMVfBmjWGgUeL1XEUWzxsSpby7O2MdPw=;
-        b=DlfYuI5aGglWeu/+eBC0xwDAVUpKuie/z9nXzJ/nnqYKlx14qw0kjlf06AKAdQp/Ny
-         rxkioxZ4J6Jmka5r/+889fxTKMai5aI21JP0MZfv1Vm+221dMOM6tylkpuP6tdyosFhh
-         OM4CSpVx4V9PqDMw/bBUP+ZgTmlXdqN7kVQUw5e0diqhppLoaU1S/F0AVJBdbjKX8CfY
-         1v4AhEu7imk722Zoz2aXGQqLR4pUMfhq6RJf1+A6U43/zzJQnBdetwhE53VYURh7ntx5
-         ufq8Cle/r+s45ozuR+uQASts9gSZn3/zKyb6fecutdorudCcT6VsCU/h+00qFBjQh6/z
-         LyPg==
+        bh=tZizts65y01ok+ES2EUhAYAn9GXHIb4VmooXZajucCU=;
+        b=uNeVk+4wrEtA25qCf/0cc+V/J0m5Bv+FMDG8kGqEEoFlimXmspGlZ471bmLaWTR6Td
+         svLBkwjoQ5RijQ121IJl/hmiuNKyS+WT/T2Gwm2T/sOGLUGvnXRo3v/tlVCdffyi+8zs
+         QB+TT+5b2sh6nB+K0vELCI7ByecLH9qX4fncnhD3sxMhUxl2+l1WN9A95ggUhWwsLGKu
+         biMyYisQOb3tnAnGiB+x2aW3r+EqpPceYseOmI29PjY1CaPZ3O8/+HKoqB8vx17UM/uy
+         lUTNlH5O3A8vua5hzsHsd0MNdDlyUan+qr+hUm6Ar+JALhPs1eztA5WOu7f8XfcLK8mD
+         NqHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695497125; x=1696101925;
+        d=1e100.net; s=20230601; t=1695497169; x=1696101969;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bxesPwbKK+IbMVfBmjWGgUeL1XEUWzxsSpby7O2MdPw=;
-        b=OiFXldQL5kVbjmNUJ0xOUCtkKZ+eW6hGpSzsNieCgtyC/YcxjdkT2q5RyVxNpKkc5c
-         R8YZmHV6uFg5+ohDn2HY1zMZnMEp8e/OSuGrxFIigBx6PaPmQueLifkYA2w0GgaBWvgx
-         LkeQuBZxcYnYg3OFqy1KLhoKi5y4egrfe+VIcfGEYBVGTTQbcY1wjRxH7YG2PJDTXf+Z
-         SIZR1fXnAidfvdRSQbowDKX7LYz+v842RZL/QLeA9iwNmE4jbUtJ/j20gQSIrZ/V4hm2
-         uZZJiJeSMPoHJ/5t3nVFyxIO1hvBFw4ulhsw5k02v04O2mU1mr+Ul53fx7ldRRMgJkgd
-         lMiQ==
-X-Gm-Message-State: AOJu0Yy0sJW/13otOxaY33a5xZ8WCxXAOcGX/zf1KmP1hO+oWeI84wZO
-        lYsyAYYuFNaWxEmHE9qxKtLbib1bXLW5zDebF0FXsw==
-X-Google-Smtp-Source: AGHT+IG3UL8gjMqkSV9UZreXyPAOKYXw7SQBs9BVE5PjxhebQt4h+VQhMShs+JNFq9ZQ13DzznAVw/do8m3GfWdF7oA=
-X-Received: by 2002:a81:6907:0:b0:59b:be67:84cb with SMTP id
- e7-20020a816907000000b0059bbe6784cbmr2608480ywc.26.1695497125756; Sat, 23 Sep
- 2023 12:25:25 -0700 (PDT)
+        bh=tZizts65y01ok+ES2EUhAYAn9GXHIb4VmooXZajucCU=;
+        b=Q26L+/9GK99e1PSxBYcfVEMrNdBJrZlAQf/NqjwvboFMqoGBe/lq4bBSGWQzzOSjwf
+         RnX6athUOM3UeUGOPsr8Dpa3Coq/uYUrD+kZbyaxJEOirhkbm8QDsYXJYMLxsdIT7j9j
+         Tma6bDCpzbJd+zAQNqstrt0nwdFiu7fWRGzHeKYFCuDWI8SU2qgCqNBJEnjUSj/5Altz
+         +XDBYSnc4MyInwW9VyU78laX0InyvkwRI1ct/EfSECffs+c/jmO2IMnjKB74SkF3MHai
+         x6EExmCUwHFrRMj7A6TuEv6fa8D4Kv08cqp9b9e2mrDx/4HauZPx0mQ03XI8+z1WZdhh
+         6Tyg==
+X-Gm-Message-State: AOJu0YyyIm9sd27VdhkIb93hpmJOYyWz3jue3alksONTEC82DToKkc8s
+        a87+v1O2Dg42wnahpdis1DP8PWpM95wEeIP6ntkvcQ==
+X-Google-Smtp-Source: AGHT+IH8xd9FGQCscz8xMLf0DoFylip6IAWZhY41aoUSaGynGex3s2gK+VocIMx3e8QuWNuPxfssl9IzVZ3Wrlq/3w8=
+X-Received: by 2002:a81:6089:0:b0:59b:4f5e:12d8 with SMTP id
+ u131-20020a816089000000b0059b4f5e12d8mr2866968ywb.47.1695497168744; Sat, 23
+ Sep 2023 12:26:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230922-msm8226-i2c6-v2-0-3fb55c47a084@z3ntu.xyz> <20230922-msm8226-i2c6-v2-2-3fb55c47a084@z3ntu.xyz>
-In-Reply-To: <20230922-msm8226-i2c6-v2-2-3fb55c47a084@z3ntu.xyz>
+References: <20230922-msm8226-i2c6-v2-0-3fb55c47a084@z3ntu.xyz> <20230922-msm8226-i2c6-v2-3-3fb55c47a084@z3ntu.xyz>
+In-Reply-To: <20230922-msm8226-i2c6-v2-3-3fb55c47a084@z3ntu.xyz>
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 23 Sep 2023 22:25:14 +0300
-Message-ID: <CAA8EJppafz38Wp7CUQGyxLoacO0kXexgyJyA27M38gS104Z_Dw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] pinctrl: qcom: msm8226: Add blsp_i2c6 function
+Date:   Sat, 23 Sep 2023 22:25:57 +0300
+Message-ID: <CAA8EJprhhUN6Txbiyvb1Jk8mEnX1bxhf-WWcDU2J2WH0uVF9kQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ARM: dts: qcom: msm8226: Add blsp1_i2c6 and blsp1_uart2
 To:     Luca Weiss <luca@z3ntu.xyz>
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Andy Gross <agross@kernel.org>,
@@ -77,12 +77,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 22 Sept 2023 at 19:56, Luca Weiss <luca@z3ntu.xyz> wrote:
 >
-> On GPIO22 and GPIO23 there is another I2C bus. Add the function for it.
+> Add more busses found on msm8226 SoC.
 >
 > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 > ---
->  drivers/pinctrl/qcom/pinctrl-msm8226.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+>  arch/arm/boot/dts/qcom/qcom-msm8226.dtsi | 33 ++++++++++++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
 >
 
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
