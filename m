@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABF77ABE60
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935B27ABE66
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbjIWHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 03:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        id S230193AbjIWHkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 03:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjIWHhW (ORCPT
+        with ESMTP id S229586AbjIWHkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 03:37:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2653F136
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 00:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695454637; x=1726990637;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=HhJBIwRXbOoE18BqxGLyqwuz9V2+4nTHNRB8OPnCtSo=;
-  b=LooNUmrb204WY7P3C4W6AWpayUAx10WcPo80+EMucpTV7Wl3HKz929fk
-   qoPoQLFo+PX8JnrQl/BgL5yCrnOcLnTAE5F/2PXyFrIOXbED47+9UK+/d
-   KBd5SYlcRaV4teReS94AE95xQa+I6IvS2pSF5X1AegMDoCNTZ8jdddXLH
-   duSW5WwgVKGeZJt60uSSh/YvMsYKnaXrWhrhsDFgMZbD0ggA4JTTvr8Fx
-   YrZMDtS3XG7Rwmi1uz9/U6HkjR8fzHCBYPfPdH0IZgXD5hD0ijER2pjak
-   hhvqJb0MJOAMHy2wyrFm+OgOgehsx6b7WuUtkQ4VwgQIbbnjEnfXVQFcd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="445102503"
-X-IronPort-AV: E=Sophos;i="6.03,170,1694761200"; 
-   d="scan'208";a="445102503"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 00:37:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="818059718"
-X-IronPort-AV: E=Sophos;i="6.03,170,1694761200"; 
-   d="scan'208";a="818059718"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Sep 2023 00:37:16 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sat, 23 Sep 2023 00:37:15 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sat, 23 Sep 2023 00:37:15 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sat, 23 Sep 2023 00:37:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DKNoac02Y94+D4Ui7HgQzTTQ39znL5H5GkaCVBiX9FERDfZ0Oa7aEb6Jn88tbbnNXzry+K1lHZEkoE5YtFK2OLL8w/aGaZR1AACjSOLwltnXdMmZbUQwV1XcD5b97oPVi6orWiQtSid3J4UCsWB71llwGQDvJpxdoyjHGQQR8jNYlbQEMyoKMbZH0D9ZXdzJnDshCCDdmdLmVEG3CZv0bQ5XTxVsluQWYc1oxJR/tKwC/MnGmhJWchv4ZVhihG83ii28hGFPsbsC4FzwwhXQvrAZryPqUResfnwMakfGzb9uD5hHY0lM/06g6k2DGpBZMmPq8Qx4GvMSihEEwASKFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7Uw7XhM0HFn/BUXImll/0VLQSiqE8frptRCDuosRIOI=;
- b=HbzibyOJAwkMj1aJwOFILUoDi1ewmMzWhGuu5+XU0zbsu0wClllXkQN2asFZbfJvTsjVVicA8bEgTUQHUL9f383C2D6d7yFTYqgRtQtRzJQcwoB+thASZj+oUC+W5PQFkYVr1dbKkNOj0KdcZPvlE4I+DEGcqWRrnfRGHyaOerFlxZ5mmozKBtrqtwYSXMUfPcKo0uBcs5YN0bXo9zK1xa869TwiF/228G4GHV0Onwz7LU7ah2y6uNqAvfZ6kRjGos8zp/9mnR08EajSiy4ix/wLqmsPHb97S9V2yk50DSgDfOnfbna22SSrmyF6BERm43Cd4chofOA/sRukq0mH/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
- by IA0PR11MB7212.namprd11.prod.outlook.com (2603:10b6:208:43e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Sat, 23 Sep
- 2023 07:37:13 +0000
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::922f:ec7c:601b:7f61]) by SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::922f:ec7c:601b:7f61%6]) with mapi id 15.20.6813.017; Sat, 23 Sep 2023
- 07:37:12 +0000
-From:   "Li, Xin3" <xin3.li@intel.com>
-To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [PATCH] x86/cpu/intel: Fix MTRR verification for TME enabled
- platforms
-Thread-Topic: [PATCH] x86/cpu/intel: Fix MTRR verification for TME enabled
- platforms
-Thread-Index: AQHZ7aKWFJxmwKqXn0q3WtdFNO2ey7AoAFcQ
-Date:   Sat, 23 Sep 2023 07:37:12 +0000
-Message-ID: <SA1PR11MB67344EB62BF798C9FA991552A8FEA@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <87v8c1ua39.fsf@jcompost-mobl.amr.corp.intel.com>
-In-Reply-To: <87v8c1ua39.fsf@jcompost-mobl.amr.corp.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|IA0PR11MB7212:EE_
-x-ms-office365-filtering-correlation-id: 172daa18-da8c-42c7-73e3-08dbbc07e6b8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DJX503c6IaE92c7YzdEZ54SqirsHuuGhFXEz4zHH4+44HSuA/8CQmaY6H9EZfkLaQ0BPw8E11mnqFwAGaiEPa6zJWMDHwEk1jleh/Ij22LFUZmOMVpRX6OtTMjqxRGGevTH1r+ZaAnXc60rM7svxtZlJdVSNUnYG6o8LNEKY5xE3l57ChMRqpaKU4MnsXJLgI9Qe2ItxgjrWyKdLNq8KZIE19GlgUWUKfLInY85p3JGhPke3veEHxSy2cgIKuj8DUYFLSIAnHgjhQQWzsnh5oAp58LhTopW+fg7zqeqrfcbQITn/v0lMgjEo5oKVX4E7zLbyBThQz+YpNmEj/y+eGH+DXITgBcmErtSSjXK/ZTip2U8B++Nrl5TDTuU7Wxf243PXufazOhX0y1K/7gNhbqddswKGO/o4oX1PUNmpp2HJKl3VjFQ2AyGC0ZrkYgTdkUmfrHszzLb7dndb+V8zNLM9Cp8YbApMMqv4Iumqeb3ka9qxFu7QGo+jWc6VnlQjaVtjselJadFvkUU7RgSQIKQysJg0WOyVfCwXpPy8e1kLobed8TteWMv30r5iX2Nfvq8HVe0gbY7wQkswEx8CsqKDN4DA/WiW3UeyYp6hIe/Y4hfhrBSbVjtmZg5DbZLA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(376002)(39860400002)(366004)(230922051799003)(186009)(1800799009)(451199024)(55016003)(71200400001)(6506007)(7696005)(9686003)(26005)(41300700001)(82960400001)(76116006)(66946007)(66446008)(110136005)(38070700005)(66556008)(66476007)(38100700002)(122000001)(316002)(64756008)(478600001)(2906002)(83380400001)(5660300002)(52536014)(8676002)(86362001)(8936002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?X8gc0rFOuIaAMXj9NP1ag2eIw4CycYIXR8ixCWEz0i0q8RWfVukvxxUsrFzy?=
- =?us-ascii?Q?AMJNYmXXVx/yE3GasJh2Zrj7MQeai9+vq9LymykuvLM5VL6enUbfywdNxE8W?=
- =?us-ascii?Q?If+twojDl08Jh7nu4Lzyyjcd7Z1SbKTzGYRLLP+EnKPs5hnLXMNSg0gMXf7R?=
- =?us-ascii?Q?KBbZaGrlCpNSESFGkVao6MBRmJxO0YdXLOA2apnXKG4TC9t1uMPe8C1+W9QB?=
- =?us-ascii?Q?wJ4wtoujhvIlisMBhDv2HA9UR/J9sf/8uq8LHBN+ny15Uflq4Oz5A8w7gp6R?=
- =?us-ascii?Q?Gbd6UklEQpA4KbHpJCFjyD9fggS9X5XBT8gOMaiTiim4KC2cIhGm0KaszKAJ?=
- =?us-ascii?Q?4byil3Cwl5X5HZYZgB/wOMOYtxSdENFWJoc8ptAi/d+B/ovzlrUYGTB4/2GE?=
- =?us-ascii?Q?0T52A9c9CkTU0ol4sEhu9JHSXExYLIxup9mUCFNFA2+NA0YBMs1T5gw8CDZt?=
- =?us-ascii?Q?rdA7kLUhiOTII3nUaIdWuZ7LAhf28o36OXgUCE2+cY1DRZXHXOPBDU+8maj6?=
- =?us-ascii?Q?1Xjaq4Zew3mtoIOkPuSLtUFLJO3kUICr16Ea4OK+rU/3MxlYu6yERsswgGqz?=
- =?us-ascii?Q?mDrQ9lL5mUiy6xmcHllUz9YgbaYaNJuSCL1ercJYJx4QtIbJ8XTnEpcrJieT?=
- =?us-ascii?Q?hn0tBJEoJRXcVA+h2Lh67zUnP4/a7oSj9SYOaNJ+UrQTZ5tEVaJlQJpgnoTy?=
- =?us-ascii?Q?Iu098lLoHucu13QTEo5/K6J5bVliqO8RWft3oGweeWyQ32AzWUfYcRr7fWv9?=
- =?us-ascii?Q?tisoGQjEKtvOMCMTuC732m7/SS3KVPyLSVsJJiIn53YSEBVxRKq2AFaGTm7K?=
- =?us-ascii?Q?7TNwPFHtwEwHlX4vMARHnXwUBxazmSWnxrMw3beyj3jmw7DdcoUGj+Yf1DlZ?=
- =?us-ascii?Q?ZFO9vA7qdpyLs5biRoYJs1v8lwGk/zWMPOfQHa0N4GZzOByRxvgAynh45UAH?=
- =?us-ascii?Q?UHloZBPQGZvTDH8U3Ug0V68yRZ0ZipO4f9FTERDmQfRqR2YvG4F9Hcz+VRjP?=
- =?us-ascii?Q?OHrP4tt+wfCWNdriI9I30hD6l9d27e/HZzpRnZXnKh0k5TwWyid57bSz+8kP?=
- =?us-ascii?Q?xj8RY/2OK7xXNyrnu1CkbY9ODw2ZRs68ULEpmaKUSYgQ0g3gKdqavYXAdcSq?=
- =?us-ascii?Q?3t2WROj6VlUS7TMqRKZnY2xAg0Dqc31cd2hVemOJ7cdm0UCPEod4YBG3XsEz?=
- =?us-ascii?Q?cO5y/BrnGGrv8xqXo4ZW1W+ydTaiG2idLj72mYWUMk0TL0kv9FdUt8H3dtax?=
- =?us-ascii?Q?LTEPM9mqYptlkPMQKha2jqyZTN8BXw7Gc1ZzAjy8cTxf2BVeBC008nEOCCd6?=
- =?us-ascii?Q?ZToDQXcFRgJcBD7wP7TtwpyKMN3B/o8iF9hEGGl03LeChiEG99XOS3L3JFvd?=
- =?us-ascii?Q?Gr7VqaGXZ2KgHH/rkIx3f52AhOboS7fZjIgPW5BbrYz1saITSxYajEpwiHhI?=
- =?us-ascii?Q?fFT0VVtTKI6yaA//RZoFNHMOUOMCQ4dDh14KeohJlD2Z5YTAvWxromdlDpAj?=
- =?us-ascii?Q?UqdWT5Iv37V9sKY7v1HX07N2P7yid6wzjvtWn/czjUFzbtO+nW0B74bScu8f?=
- =?us-ascii?Q?5GFrot3pUsibWpBL4k4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 23 Sep 2023 03:40:45 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE78196;
+        Sat, 23 Sep 2023 00:40:35 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-323168869daso727046f8f.2;
+        Sat, 23 Sep 2023 00:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695454834; x=1696059634; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3HDLNMMaSBTWyhWgiy3Qz21HVTULiC/0+MSuHMERno=;
+        b=R72yJ4s431/dAhU1AGL/JRBSb3oSKlBPrPqCmYzJ3ZTrmfZRFBDV7kgScyNzlKvMwX
+         VAIcuG7N4nMDodk/PrNprrthBLaM1r45IHI3GmmCBUfqaMEMrOfvceSGJ7pZ0ctRqOKg
+         ytgla5aZ7HORiXmYhneCyKw/987+ENHcbOSudkpgDCNNKEGOdinjDmOm5IHsLSw4osDs
+         vy/zM5BF2BfYIIq6CwixtlmwBU9fqPq94dk50ctgHt25DZjch/+LfJHKaUWDWq5dFi5C
+         7N0TRK5Qx81t7+QUdDV7ZglFeHCBJ//LkZd2+8gLcJM1pN2I8mO5o5DuRK+54QSC/mZJ
+         U8zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695454834; x=1696059634;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s3HDLNMMaSBTWyhWgiy3Qz21HVTULiC/0+MSuHMERno=;
+        b=wxUa48WnbcPhhnZX88PjnO2mi5cPFxgtTvjWRNxKRX47Y6XZmSbyQeyy/RTd2FCjVx
+         OmKW7eVaQQrNd49cyc0fQ6NGvY/E63PsRNGDTXMtp95/8SO490cVYoQAwzXQ/oIAyE69
+         T90mECE/R0wqEAvsgGG8PinxKhbxR4N05003ruxVPu5XOZirCf3CMC3ysaHbTuQsEtSb
+         dqsy6JUAypbOMJxasJParxq/8rXBHZJHcDpWQvNx7bWFJa15sRQX7513pUQCOyKc2eja
+         t8PjZUjLJdaer1XBRe5WjDGiPGz2yOynS1sAMS3rj0W3RANGNTIFUg0jW0P9LYKmdELq
+         PCmA==
+X-Gm-Message-State: AOJu0Yy8wGQmAI0IN1EdRSYy0h0srJqynsaP8/nOW6Tbptx/U1NCwCHp
+        ugQTMglmwKbsMdI/DOQa32g=
+X-Google-Smtp-Source: AGHT+IHZFWaILx1L6dEysgc0psPA33NSZgI387Ij2Uk+VX/AMVr5OqhY7Yqh3fNMQVh5Nyas00Posw==
+X-Received: by 2002:adf:f488:0:b0:317:5168:c21f with SMTP id l8-20020adff488000000b003175168c21fmr1364865wro.31.1695454833508;
+        Sat, 23 Sep 2023 00:40:33 -0700 (PDT)
+Received: from primary.. ([213.139.62.222])
+        by smtp.gmail.com with ESMTPSA id k6-20020adfe3c6000000b003196e992567sm6236955wrm.115.2023.09.23.00.40.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 00:40:33 -0700 (PDT)
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
+        bryan.odonoghue@linaro.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+        ryan.eleceng@gmail.com, Abdel Alkuor <abdelalkuor@geotab.com>
+Subject: [PATCH v6 00/14] Add TPS25750 USB type-C PD controller support
+Date:   Sat, 23 Sep 2023 03:39:45 -0400
+Message-Id: <20230923073959.86660-1-alkuor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 172daa18-da8c-42c7-73e3-08dbbc07e6b8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2023 07:37:12.4461
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cg/Zrwkn8ZQY4TWvAv7xsSpuRj8TCmbArmdBPUqr3TCCH67vSEUU0PcaamGyOzg9wCA4dQdl/kwCGPmJ1inHLg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7212
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -149,64 +72,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeremy,
+From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-> index be4045628fd3..34c54432bf00 100644
-> --- a/arch/x86/kernel/cpu/intel.c
-> +++ b/arch/x86/kernel/cpu/intel.c
-> @@ -184,6 +184,90 @@ static bool bad_spectre_microcode(struct cpuinfo_x86=
- *c)
->  	return false;
->  }
->=20
-> +#define MSR_IA32_TME_ACTIVATE		0x982
+TPS25750 USB type-C PD controller has the same register offsets as
+tps6598x. The following is a summary of incorporating TPS25750 into
+TPS6598x driver:
 
-I know you're just moving the definitions, however we usually define MSRs
-and their bits in arch/x86/include/asm/msr-index.h.
+- Only Check VID register (0x00) for TPS6598x and cd321x, as TPS25750 doesn't
+  have VID register.
 
-> +
-> +/* Helpers to access TME_ACTIVATE MSR */
-> +#define TME_ACTIVATE_LOCKED(x)		(x & 0x1)
-> +#define TME_ACTIVATE_ENABLED(x)		(x & 0x2)
+- TypeC port registration will be registered differently for each PD
+  controller. TPS6598x uses system configuration register (0x28) to get
+  pr/dr capabilities. On the other hand, TPS25750 will use data role property
+  and PD status register (0x40) to get pr/dr capabilities as TPS25750 doesn't
+  have register 0x28 supported.
 
-What about:
+- TPS25750 requires writing a binary configuration to switch PD
+  controller from PTCH mode to APP mode which needs the following changes:
+  - Add PTCH mode to the modes list.
+  - Add an argument to tps6598x_check_mode to return the current mode.
+  - Currently, tps6598x_exec_cmd has cmd timeout hardcoded to 1 second,
+    and doesn't wait before checking DATA_OUT response. In TPS25750, patch 4CCs
+    take longer than 1 second to execute and some requires a delay before
+    checking DATA_OUT. To accommodate that, cmd_timeout and response_delay will
+    be added as arguments to tps6598x_exec_cmd.
+  - Implement applying patch sequence for TPS25750.
 
-#define TME_ACTIVATE_LOCKED(x)		(x & BIT(0))
-#define TME_ACTIVATE_ENABLED(x)		(x & BIT(1))
+- In pm suspend callback, patch mode needs to be checked and the binary
+  configuration should be applied if needed.
 
-> +
-> +#define TME_ACTIVATE_POLICY(x)		((x >> 4) & 0xf)	/* Bits 7:4 */
+- For interrupt, TPS25750 has only one event register (0x14) and one mask
+  register (0x16) of 11 bytes each, where TPS6598x has two event
+  and two mask registers of 8 bytes each. Both TPS25750 and TPS65986x
+  shares the same bit field offsets for events/masks/clear but many of
+  there fields are reserved in TPS25750, the following needs to be done in
+  tps6598x_interrupt:
+  - Read EVENT1 register as a block of 11 bytes when tps25750 is present
+  - Write CLEAR1 register as a block of 11 bytes when tps25750 is present
+  - Add trace_tps25750_irq
+  - During testing, I noticed that when a cable is plugged into the PD
+    controller and before PD controller switches to APP mode, there is a
+    lag between dr/pr updates and PlugInsertOrRemoval Event, so a check
+    for dr/pr change needs to be added along TPS_REG_INT_PLUG_EVENT check
 
-And:
+- Add TPS25750 traces for status and power status registers. Trace for
+  data register won't be added as it doesn't exist in the device.
 
-/* Bits 7:4 are TME activate policy bits */
-#define TME_ACTIVATE_POLICY_OFFSET		4
-#define TME_ACTIVATE_POLICY_MASK		0xf
-#define TME_ACTIVATE_POLICY(x)						\
-	((x >> TME_ACTIVATE_POLICY_OFFSET) & TME_ACTIVATE_POLICY_MASK)
+- Configure sleep mode for TPS25750.
 
-> +#define TME_ACTIVATE_KEYID_BITS(x)	((x >> 32) & 0xf)	/* Bits 35:32 */
-> +
-> +#define TME_ACTIVATE_CRYPTO_ALGS(x)	((x >> 48) & 0xffff)	/* Bits
-> 63:48 */
+v6:
+ - PATCH 1: Use reg property for patch address
+ - PATCH 2: Use tps6598x_exec_cmd as a wrapper
+ - PATCH 3: Return current mode and check it directly
+ - PATCH 4:
+    - Don't check VID for tps25750 as the VID register doesn't exist
+    - Remove is_tps25750 flag from tps6598x struct
+    - Get patch address from reg property
+ - PATCH 5: Update eeprom macro to use TPS instead
+ - PATCH 6: No changes
+ - PATCH 7: Check tps25750 using is_compatiable device node
+ - PATCH 8: Create tipd callbacks factory 
+ - PATCH 9: No changes
+ - PATCH 10: Add port registration to tipd data factory
+ - PATCH 11: Use tps25750_init instead of tps25750_apply_patch in resume
+    	     as it initializes sleep mode
+ - PATCH 12: Add trace irq to tipd callbacks factory
+ - PATCH 13: Add trace power status to tipd data factory
+ - PATCH 14: Add trace status to tipd data factory
+v5:
+ - PATCH 1: Add tps25750 bindings to tps6598x
+ - PATCH 2: Remove tps25750 driver and incorperate tps25750
+ 	    into tps6598x driver
+ - PATCH [3..15]: Incorporating tps25750 into tps6598x driver
+v4:
+ - PATCH 1: No change
+ - PATCH 2: Fix comments style and drop of_match_ptr
+v3:
+ - PATCH 1: Fix node name
+ - PATCH 2: Upload tps25750 driver patch
+v2:
+ - PATCH 1: General properties clean up
 
-ditto
+Abdel Alkuor (14):
+  dt-bindings: usb: tps6598x: Add tps25750
+  USB: typec: Add cmd timeout and response delay
+  USB: typec: Add patch mode to tps6598x
+  USB: typec: Load TPS25750 patch bundle
+  USB: typec: Check for EEPROM present
+  USB: typec: Clear dead battery flag
+  USB: typec: Apply patch again after power resume
+  USB: typec: Add interrupt support for TPS25750
+  USB: typec: Refactor tps6598x port registration
+  USB: typec: Add port registration for tps25750
+  USB: typec: Enable sleep mode for tps25750
+  USB: typec: Add trace for tps25750 irq
+  USB: typec: Add power status trace for tps25750
+  USB: typec: Add status trace for tps25750
 
-> @@ -335,6 +419,9 @@ static void early_init_intel(struct cpuinfo_x86 *c)
->  	 */
->  	if (detect_extended_topology_early(c) < 0)
->  		detect_ht_early(c);
-> +
+ .../devicetree/bindings/usb/ti,tps6598x.yaml  |  70 ++
+ drivers/usb/typec/tipd/core.c                 | 632 +++++++++++++++---
+ drivers/usb/typec/tipd/tps6598x.h             |  36 +
+ drivers/usb/typec/tipd/trace.h                |  92 +++
+ 4 files changed, 749 insertions(+), 81 deletions(-)
 
-Please add a comment here explaining why detect_tme() needs to be called
-in early_init_intel().
+-- 
+2.34.1
 
-> +	if (cpu_has(c, X86_FEATURE_TME))
-> +		detect_tme(c);
->  }
->=20
->  static void bsp_init_intel(struct cpuinfo_x86 *c)
-
-Thanks!
-    Xin
