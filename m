@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 790F97AC17A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121D77AC17B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjIWLuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 07:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S231585AbjIWLum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 07:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbjIWLua (ORCPT
+        with ESMTP id S231474AbjIWLug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 07:50:30 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EE219F
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:50:23 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c135cf2459so45752051fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:50:23 -0700 (PDT)
+        Sat, 23 Sep 2023 07:50:36 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B911B0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:50:25 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-405361bb9cdso32254015e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695469822; x=1696074622; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695469823; x=1696074623; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aqRk4B6eKO4+DTlXGIdciaqzHBfx/5bfeFOsXKr6qVY=;
-        b=Fr6ZRbzh+THiQKj7BOaugKhRzBi2YbMJJm38PigppjbdrqbfrPTfVQtWOD9lujcY4Z
-         heEoN6qQxLXrC9glhbQ0n5Fl3Xl79uZAWAVLuP32c4IKzaqF/Uk869eGmv+zLFhH4i7F
-         gFu5oHZNnv4ZYsHqyoez5SQFDmBPv6JO8qtUo7m6Rg2ALzRWY/xAb+1hvgh74jOLr0Pt
-         Q8TTtz+wt1m1xY8B1Hwmbu96CvPCitAUpRZ2f2lh9NvZOZo0VtB4QeyHXVcjER7BXe8G
-         YnCewKFlsTa9/Nfe7nLykRkqLnRSvBS2MXLoDBCJY7aSTQ4j5d/nVBYBdBbgoHSN95rV
-         HJ8w==
+        bh=MeiFNC+rrHZ3HIl5q4lUJWW0SsohudondY4l8XE9nCs=;
+        b=yBU/VdbM0W/CaM8Z5WFXHZ0Wl4WjxJBowwQ0yRGe9OLqZbPTJzTtAowfrGqiwkhGrd
+         Qtd4kl+3B+g7Sy23u/BTS5KXE5w8wY0Gpx89Lb6EnSh9CpIPGiGedSkHeiObhn6EhbrL
+         hIepGbzgADtHDe1Rs42OXhIWepg9/vc2bWGo2IWIKQhO0Es+Qv/jsRcO15/vxvXoW76R
+         NhJqDKXFnyeyvLjwrwJq7DFheBo4S1QG7SFnoNsWQTQTIILMMBHVNuUDfUDkDzL/S9Cd
+         ivSHxUXfS+CYlLE77wWhKQeOgsL6XRKQPy/TUCR/RNf88zrOQWxf2fSWUzFGx/xoOes4
+         ErqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695469822; x=1696074622;
+        d=1e100.net; s=20230601; t=1695469823; x=1696074623;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aqRk4B6eKO4+DTlXGIdciaqzHBfx/5bfeFOsXKr6qVY=;
-        b=v1x6kEdBNZLF/SY8VDSI2dnjRE4kgr66yYk+Z9ZuyCrFsh2MvIOrwEMODHujB+V/rj
-         JQr+Z19DllyJKBosgfeBywWnF+e/VUYIJvbq6TuHYeKMhq7o3ZcY1nQQH6u+qSCpKcZf
-         J9tBzjxvEP1D/gYpVTwMu14H1Zh2GsEAX97va3dRF3ur/GQfdf4T9pr9vOn78FffZm10
-         OFSmDG124w+fEUVrCLwdxLOsUd9VEYMTPtnPcCXvmccind0MUi78to1fJLONEOrQYEUU
-         TxvF6CFU1Wntit2+TOPubgHyhmxM39LO9YUGPe2TYvZD5rC2TP0RlzRW7N72Wq2Ip/Iu
-         pONw==
-X-Gm-Message-State: AOJu0Ywi2exSGuvSfJyBalWbu5xR4HeiSCcD8v4OpZiX9zeVsRa2IqdH
-        0xobsEUbhqJ81/fJsfUBRYhuJH7HcFakrwnsmr4HkQ==
-X-Google-Smtp-Source: AGHT+IFxM+9cjbaXbKMNtUEnghkJ1IXBuKOuFIJbf3xP74ETPHauPvQYJHUr6atrpZt19SZahTQthw==
-X-Received: by 2002:a2e:7a16:0:b0:2c0:192a:c567 with SMTP id v22-20020a2e7a16000000b002c0192ac567mr1567691ljc.20.1695469821952;
-        Sat, 23 Sep 2023 04:50:21 -0700 (PDT)
+        bh=MeiFNC+rrHZ3HIl5q4lUJWW0SsohudondY4l8XE9nCs=;
+        b=lI4hxvIflexxmlUCal9lLDjHwdO3F9UFkPfrTJv7OEQFOJCL44Ib5kx02b4EBvkoj9
+         XVUCIo6ZXjhInotbJV8+xaomIB13/wP8TWWTuWyYQ2ovDSqYver/KlRqo/qVBm+GQd2V
+         OfAAVjgtC7mIWOn/A2ynVEnNG5s8Vr22B7gRhPeigfqXTu1xiLu7qDHGI1uNNUHTV52X
+         1qemqGWrw1lWyGvPSkNgNELMLxDR+sqrHBwp0vA2hMBNnMySoEu3527/y/qHl5cMCnK8
+         tw3m1saXnIt0UMaIzmF9FKW/3wxYMThSF2PIuqF7clpeDgKxs6SAqXYyoylZb9Ryg9eO
+         i45w==
+X-Gm-Message-State: AOJu0YxpJVHxRxLH5SAkrO8hu/9RDcdG1OUJAuK0Z2G15dXjUXw6/q87
+        6G0Vtv+ltMLjNXOSVDUp979UWw==
+X-Google-Smtp-Source: AGHT+IEEs3tycQ2S46mMPFPwhhvWTqLgXkB29lSmnmQuc0JgQ24wOK/BSGujJGfGOX6+kWrnT+6XHA==
+X-Received: by 2002:a5d:4e83:0:b0:319:785a:fce5 with SMTP id e3-20020a5d4e83000000b00319785afce5mr1816609wru.38.1695469823486;
+        Sat, 23 Sep 2023 04:50:23 -0700 (PDT)
 Received: from hackbox.lan ([86.120.16.169])
-        by smtp.gmail.com with ESMTPSA id k15-20020a1709062a4f00b009ad8084e08asm3853310eje.0.2023.09.23.04.50.20
+        by smtp.gmail.com with ESMTPSA id k15-20020a1709062a4f00b009ad8084e08asm3853310eje.0.2023.09.23.04.50.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 04:50:21 -0700 (PDT)
+        Sat, 23 Sep 2023 04:50:23 -0700 (PDT)
 From:   Abel Vesa <abel.vesa@linaro.org>
 To:     "Rafael J . Wysocki" <rafael@kernel.org>,
         Kevin Hilman <khilman@kernel.org>,
@@ -66,9 +66,9 @@ Cc:     linux-pm@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-arm-msm@vger.kernel.org,
         Jagadeesh Kona <quic_jkona@quicinc.com>
-Subject: [RESEND v3 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
-Date:   Sat, 23 Sep 2023 14:50:07 +0300
-Message-Id: <20230923115008.1698384-5-abel.vesa@linaro.org>
+Subject: [RESEND v3 5/5] venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode
+Date:   Sat, 23 Sep 2023 14:50:08 +0300
+Message-Id: <20230923115008.1698384-6-abel.vesa@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230923115008.1698384-1-abel.vesa@linaro.org>
 References: <20230923115008.1698384-1-abel.vesa@linaro.org>
@@ -85,116 +85,141 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jagadeesh Kona <quic_jkona@quicinc.com>
 
-The current HW_CTRL flag switches the video GDSC to HW control mode as
-part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
-give consumer drivers more control and switch the GDSC mode as and when
-required.
+This change demonstrates the use of dev_pm_genpd_set_hwmode API from
+video driver to switch the video mvs0 gdsc to SW/HW modes at runtime
+based on requirement.
 
-HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
-HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+This change adds a new boolean array member vcodec_pmdomains_hwctrl in
+venus_resources structure to indicate if GDSC's have HW control support
+or not. This data is used in vcodec_control_v4() to check if GDSC has
+support to switch to HW control mode and then call dev_pm_genpd_set_hwmode
+to switch the GDSC mode.
+
+Before the GDSC HWCTL was available to the consumer, the venus driver
+needed to somehow keep the power from collapsing while under the driver
+control. The only way to do that was to clear the CORE_PWR_DISABLE bit
+(in wrapper POWER_CONTROL register) and, respectively, set it back after
+the driver control was completed.
+
+Now, that there is a way to switch the GDSC HW/SW control back and
+forth, the CORE_PWR_DISABLE toggling can be dropped.
 
 Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
- drivers/clk/qcom/videocc-sc7180.c | 2 +-
- drivers/clk/qcom/videocc-sc7280.c | 2 +-
- drivers/clk/qcom/videocc-sdm845.c | 4 ++--
- drivers/clk/qcom/videocc-sm8250.c | 4 ++--
- drivers/clk/qcom/videocc-sm8550.c | 4 ++--
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/media/platform/qcom/venus/core.c      |  4 ++
+ drivers/media/platform/qcom/venus/core.h      |  1 +
+ .../media/platform/qcom/venus/pm_helpers.c    | 47 ++++++++-----------
+ 3 files changed, 25 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/clk/qcom/videocc-sc7180.c b/drivers/clk/qcom/videocc-sc7180.c
-index 5b9b54f616b8..51439f7ba70c 100644
---- a/drivers/clk/qcom/videocc-sc7180.c
-+++ b/drivers/clk/qcom/videocc-sc7180.c
-@@ -166,7 +166,7 @@ static struct gdsc vcodec0_gdsc = {
- 	.pd = {
- 		.name = "vcodec0_gdsc",
- 	},
--	.flags = HW_CTRL,
-+	.flags = HW_CTRL_TRIGGER,
- 	.pwrsts = PWRSTS_OFF_ON,
- };
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 054b8e74ba4f..8145062ab6f7 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -706,6 +706,7 @@ static const struct venus_resources sdm845_res_v2 = {
+ 	.vcodec1_clks = { "vcodec1_core", "vcodec1_bus" },
+ 	.vcodec_clks_num = 2,
+ 	.vcodec_pmdomains = { "venus", "vcodec0", "vcodec1" },
++	.vcodec_pmdomains_hwctrl = { false, true, true },
+ 	.vcodec_pmdomains_num = 3,
+ 	.opp_pmdomain = (const char *[]) { "cx", NULL },
+ 	.vcodec_num = 2,
+@@ -755,6 +756,7 @@ static const struct venus_resources sc7180_res = {
+ 	.vcodec0_clks = { "vcodec0_core", "vcodec0_bus" },
+ 	.vcodec_clks_num = 2,
+ 	.vcodec_pmdomains = { "venus", "vcodec0" },
++	.vcodec_pmdomains_hwctrl = { false, true },
+ 	.vcodec_pmdomains_num = 2,
+ 	.opp_pmdomain = (const char *[]) { "cx", NULL },
+ 	.vcodec_num = 1,
+@@ -812,6 +814,7 @@ static const struct venus_resources sm8250_res = {
+ 	.vcodec0_clks = { "vcodec0_core" },
+ 	.vcodec_clks_num = 1,
+ 	.vcodec_pmdomains = { "venus", "vcodec0" },
++	.vcodec_pmdomains_hwctrl = { false, true },
+ 	.vcodec_pmdomains_num = 2,
+ 	.opp_pmdomain = (const char *[]) { "mx", NULL },
+ 	.vcodec_num = 1,
+@@ -871,6 +874,7 @@ static const struct venus_resources sc7280_res = {
+ 	.vcodec0_clks = {"vcodec_core", "vcodec_bus"},
+ 	.vcodec_clks_num = 2,
+ 	.vcodec_pmdomains = { "venus", "vcodec0" },
++	.vcodec_pmdomains_hwctrl = { false, true },
+ 	.vcodec_pmdomains_num = 2,
+ 	.opp_pmdomain = (const char *[]) { "cx", NULL },
+ 	.vcodec_num = 1,
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 4a633261ece4..6d591ecad482 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -73,6 +73,7 @@ struct venus_resources {
+ 	const char * const vcodec1_clks[VIDC_VCODEC_CLKS_NUM_MAX];
+ 	unsigned int vcodec_clks_num;
+ 	const char * const vcodec_pmdomains[VIDC_PMDOMAINS_NUM_MAX];
++	bool vcodec_pmdomains_hwctrl[VIDC_PMDOMAINS_NUM_MAX];
+ 	unsigned int vcodec_pmdomains_num;
+ 	const char **opp_pmdomain;
+ 	unsigned int vcodec_num;
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+index 48c9084bb4db..c53eef23c793 100644
+--- a/drivers/media/platform/qcom/venus/pm_helpers.c
++++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+@@ -408,35 +408,28 @@ static const struct venus_pm_ops pm_ops_v3 = {
  
-diff --git a/drivers/clk/qcom/videocc-sc7280.c b/drivers/clk/qcom/videocc-sc7280.c
-index 615695d82319..3d07b1e95986 100644
---- a/drivers/clk/qcom/videocc-sc7280.c
-+++ b/drivers/clk/qcom/videocc-sc7280.c
-@@ -236,7 +236,7 @@ static struct gdsc mvs0_gdsc = {
- 		.name = "mvs0_gdsc",
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
--	.flags = HW_CTRL | RETAIN_FF_ENABLE,
-+	.flags = HW_CTRL_TRIGGER | RETAIN_FF_ENABLE,
- };
+ static int vcodec_control_v4(struct venus_core *core, u32 coreid, bool enable)
+ {
+-	void __iomem *ctrl, *stat;
+-	u32 val;
+-	int ret;
+-
+-	if (IS_V6(core)) {
+-		ctrl = core->wrapper_base + WRAPPER_CORE_POWER_CONTROL_V6;
+-		stat = core->wrapper_base + WRAPPER_CORE_POWER_STATUS_V6;
+-	} else if (coreid == VIDC_CORE_ID_1) {
+-		ctrl = core->wrapper_base + WRAPPER_VCODEC0_MMCC_POWER_CONTROL;
+-		stat = core->wrapper_base + WRAPPER_VCODEC0_MMCC_POWER_STATUS;
+-	} else {
+-		ctrl = core->wrapper_base + WRAPPER_VCODEC1_MMCC_POWER_CONTROL;
+-		stat = core->wrapper_base + WRAPPER_VCODEC1_MMCC_POWER_STATUS;
+-	}
+-
+-	if (enable) {
+-		writel(0, ctrl);
+-
+-		ret = readl_poll_timeout(stat, val, val & BIT(1), 1, 100);
+-		if (ret)
+-			return ret;
+-	} else {
+-		writel(1, ctrl);
++	int i, ret = 0;
++	struct device *dev = core->dev;
++	const struct venus_resources *res = core->res;
  
- static struct gdsc mvsc_gdsc = {
-diff --git a/drivers/clk/qcom/videocc-sdm845.c b/drivers/clk/qcom/videocc-sdm845.c
-index c77a4dd5d39c..dad011c48973 100644
---- a/drivers/clk/qcom/videocc-sdm845.c
-+++ b/drivers/clk/qcom/videocc-sdm845.c
-@@ -260,7 +260,7 @@ static struct gdsc vcodec0_gdsc = {
- 	},
- 	.cxcs = (unsigned int []){ 0x890, 0x930 },
- 	.cxc_count = 2,
--	.flags = HW_CTRL | POLL_CFG_GDSCR,
-+	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
- 	.pwrsts = PWRSTS_OFF_ON,
- };
+-		ret = readl_poll_timeout(stat, val, !(val & BIT(1)), 1, 100);
+-		if (ret)
+-			return ret;
++	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
++		if (res->vcodec_pmdomains_hwctrl[i]) {
++
++			if (!core->pmdomains[i])
++				return -ENODEV;
++
++			/*
++			 * enable( true ), switch the gdsc to SW mode
++			 * enable( false), switch the gdsc to HW mode
++			 */
++			ret = dev_pm_genpd_set_hwmode(core->pmdomains[i], !enable);
++			if (ret) {
++				dev_err(dev, "Failed to switch power-domain:%d to %s mode\n",
++					i, enable ? "SW" : "HW");
++				return ret;
++			}
++		}
+ 	}
+-
+ 	return 0;
+ }
  
-@@ -271,7 +271,7 @@ static struct gdsc vcodec1_gdsc = {
- 	},
- 	.cxcs = (unsigned int []){ 0x8d0, 0x950 },
- 	.cxc_count = 2,
--	.flags = HW_CTRL | POLL_CFG_GDSCR,
-+	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
- 	.pwrsts = PWRSTS_OFF_ON,
- };
- 
-diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-index ad46c4014a40..c1b73d852f1c 100644
---- a/drivers/clk/qcom/videocc-sm8250.c
-+++ b/drivers/clk/qcom/videocc-sm8250.c
-@@ -293,7 +293,7 @@ static struct gdsc mvs0_gdsc = {
- 	.pd = {
- 		.name = "mvs0_gdsc",
- 	},
--	.flags = HW_CTRL,
-+	.flags = HW_CTRL_TRIGGER,
- 	.pwrsts = PWRSTS_OFF_ON,
- };
- 
-@@ -302,7 +302,7 @@ static struct gdsc mvs1_gdsc = {
- 	.pd = {
- 		.name = "mvs1_gdsc",
- 	},
--	.flags = HW_CTRL,
-+	.flags = HW_CTRL_TRIGGER,
- 	.pwrsts = PWRSTS_OFF_ON,
- };
- 
-diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
-index 3bb136ec31b1..504b2ef264eb 100644
---- a/drivers/clk/qcom/videocc-sm8550.c
-+++ b/drivers/clk/qcom/videocc-sm8550.c
-@@ -324,7 +324,7 @@ static struct gdsc video_cc_mvs0_gdsc = {
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
- 	.parent = &video_cc_mvs0c_gdsc.pd,
--	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
-+	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
- };
- 
- static struct gdsc video_cc_mvs1c_gdsc = {
-@@ -349,7 +349,7 @@ static struct gdsc video_cc_mvs1_gdsc = {
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
- 	.parent = &video_cc_mvs1c_gdsc.pd,
--	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
-+	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
- };
- 
- static struct clk_regmap *video_cc_sm8550_clocks[] = {
 -- 
 2.34.1
 
