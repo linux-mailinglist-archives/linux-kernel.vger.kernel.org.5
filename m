@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A827AC456
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 20:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674847AC463
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 20:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232229AbjIWSJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 14:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
+        id S232200AbjIWSTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 14:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjIWSJx (ORCPT
+        with ESMTP id S232116AbjIWSTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 14:09:53 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89628FE
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:09:47 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405361bb949so39221975e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:09:47 -0700 (PDT)
+        Sat, 23 Sep 2023 14:19:37 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631D8127
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:19:30 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c008042211so66376211fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:19:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695492586; x=1696097386; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l0OmVT82kVRhT6V7fBBibLFNJi2iRMus/lOyy9oKOW0=;
-        b=qyMuo0b+3E5jVquxzTAT7sF9OFfnEMGyIOlFXcQcOv7KOVbCAYayLUjR/sybctRrnO
-         ztS+CV1RRThVdMhFlqTkAV7lG74jzco8n1OeC5elmoZI2rMDR0oIR6dpHdZI76hlKIK9
-         GnHVjdJP5Ujd5sE7WtGHWSZX9J0TljGYb7jYNRIHprbCYkDn1AprzhTc4giF+96MhZbE
-         8peNjBYuBATUQGLQiJNbNpXiKragPNFRwXJtXLwRDhrGrHsanSwGbtfiSW9SCoI5lqHt
-         e8jhVpZhwqKOx9iAv9kP2UyFxk+xWEpn8AHzdqgQkJsdBP0Q1GuBut+a73eUvW7nnLE0
-         8ilw==
+        d=linux-foundation.org; s=google; t=1695493167; x=1696097967; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHvsp74Err2zYK1OLHJlR5XcxNgb3U+TwUDTFKciRR0=;
+        b=YAT6xNkP0H+18h/ccuHN2td1sNiTRZzgvkQzWIBFvCaYS4X5q4M3wW93oFpy0bUgkn
+         68DoHXaI6UcA1WPEm1yfVZolCnfEPIXeeOkwrDk0KWmhe4vqOb6goe0FyyqA9RiapERO
+         PMmZH3RiPHysy35buUN0wdxrKrtyYjO/PlKes=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695492586; x=1696097386;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0OmVT82kVRhT6V7fBBibLFNJi2iRMus/lOyy9oKOW0=;
-        b=Zws7VzdDB8dB40uuv1lOPwalrQKteD8+Nsa3PvWp3Y0FuY5IanDU4Wg43AYIYUvy7z
-         c2ePtxpWHW/RzjrOtq2IFpxCqHtyzQWXNYQBuU7gB7VhfkQ5e3VEu1nRBd+67w8edyxK
-         xaNl2wI8qjIprkMKgOcms7D0e5grrN8JLtKNj5SwupVrdqn9k0cd0RQXcKDXvb5e9Q80
-         RcvHuKQDCzeHOGkXwuykuL+IgdVgJEuR22Ywi8cFz1oYjYp2hv+c+V+gXONMktY8RZUC
-         Ef8yhixFX/8VIlv9CjBgByUvVc8wm3WJrZ/ZVkN3/byxIVfbJHqQH+cJ8vnJaQR234JL
-         5ZEA==
-X-Gm-Message-State: AOJu0YzSJzC1t+hiTOFa5RC8qjnfvb5/sJw7j3nXw3itFBfDh1TvaZPT
-        VtJ+pnvbfrpIsPTWlv6VbQ6Okw==
-X-Google-Smtp-Source: AGHT+IGbEDdCor3uAVvI6RHkOnvfxXv6QO0vC7iRLExeI+9NeOdG9D895dHQs60CsZTG3e2Zoj0+KA==
-X-Received: by 2002:a5d:4c85:0:b0:321:5d87:5f7c with SMTP id z5-20020a5d4c85000000b003215d875f7cmr2665873wrs.30.1695492586036;
-        Sat, 23 Sep 2023 11:09:46 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id z12-20020a5d654c000000b0032148618cc4sm7447722wrv.29.2023.09.23.11.09.43
+        d=1e100.net; s=20230601; t=1695493167; x=1696097967;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZHvsp74Err2zYK1OLHJlR5XcxNgb3U+TwUDTFKciRR0=;
+        b=iE2fptiuKeaOCHrTX6oJX5wGKY0UhORd92eYtsN3R39WQqK6uDj6Apm5U3sQOnsTHH
+         Hk4nVlz+8pk1Bvq+SRWC3ndAhJCwPJ3dzF6lNqV4OzOQTKp05N8FWs7djfyW3E/udiy3
+         wHm/7JhxKhPgAvV4gGbIMAmFLvq/RQNKLO6MT/8wzQP99Y1QaRjj1b2+sNbmmEH8rHit
+         5oD8TANDstAfeiECR1aK8KzBgHfE20NmW5KHwrJHIyqHWFC1o3gsNS4Z5eQb3MKj39g2
+         TnPM3FjX/SkPTpuRIi058ZK8i7b+jnfMX3X/psoytcp6AWIg71ItW5Xp1njpCpKsTmoU
+         TXgQ==
+X-Gm-Message-State: AOJu0YyIVH/5mTz58ciUW+VPxZlvwb+MTUh8gJFLmhXZ3S8ZUNLyiaDp
+        zeEhX5RZyRQ3B9C0/j5bBCc48mvD3o6Ju6s2vYvewQ==
+X-Google-Smtp-Source: AGHT+IGgmmuDKKHznKDawFNPGDPO/VB47iUOsqTDj99n+4FWsFT5jH02Egmfz7dhfpMCn8NTblcJsA==
+X-Received: by 2002:a2e:7e04:0:b0:2b6:e105:6174 with SMTP id z4-20020a2e7e04000000b002b6e1056174mr1949371ljc.47.1695493167118;
+        Sat, 23 Sep 2023 11:19:27 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id va1-20020a17090711c100b00992ea405a79sm4160545ejb.166.2023.09.23.11.19.25
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Sep 2023 11:09:45 -0700 (PDT)
-Message-ID: <87ae80c0-a09b-3642-e3e9-c753cd330bca@linaro.org>
-Date:   Sat, 23 Sep 2023 20:09:43 +0200
+        Sat, 23 Sep 2023 11:19:26 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so4584118a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:19:25 -0700 (PDT)
+X-Received: by 2002:aa7:c98b:0:b0:522:38cb:d8cb with SMTP id
+ c11-20020aa7c98b000000b0052238cbd8cbmr2023816edt.20.1695493165617; Sat, 23
+ Sep 2023 11:19:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 13/15] mailbox: mediatek: Add mt8188 support for CMDQ
- secure driver
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Elvis Wang <Elvis.Wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230918192204.32263-1-jason-jh.lin@mediatek.com>
- <20230918192204.32263-14-jason-jh.lin@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230918192204.32263-14-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918145533.14642-1-brgl@bgdev.pl> <ZQhtWNaCiHVu5yzL@smile.fi.intel.com>
+ <CAMRc=MfkzdFgwEuNGJYgxyCA_b__Ds-jA4S+jVT1ULJ9DTRhOw@mail.gmail.com> <ZQl8tkWnQcjtFBbQ@smile.fi.intel.com>
+In-Reply-To: <ZQl8tkWnQcjtFBbQ@smile.fi.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 23 Sep 2023 11:19:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgK+PimVukScvVjoqOdOWWG_e+xCurhP_9SvA_+7scYWw@mail.gmail.com>
+Message-ID: <CAHk-=wgK+PimVukScvVjoqOdOWWG_e+xCurhP_9SvA_+7scYWw@mail.gmail.com>
+Subject: Re: [PATCH v4] gpio: sim: fix an invalid __free() usage
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     brgl@bgdev.pl, Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 21:22, Jason-JH.Lin wrote:
-> Add mt8188 support for CMDQ secure driver.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-> index 3940b9f8e774..4e047dc916b9 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -750,6 +750,7 @@ static const struct gce_plat gce_plat_v8 = {
->  	.thread_nr = 32,
->  	.shift = 3,
->  	.control_by_sw = true,
-> +	.has_sec = true,
+On Tue, 19 Sept 2023 at 03:49, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Nope, k*alloc*() returns ZERO or NULL on failure. That's what most developers
+> are missing :-)
 
-No, you just added it patch ago. Do not add broken code and fix it. Are
-there some KPIs in Mediatek to have patch count?
+Absolutely not.
 
-Best regards,
-Krzysztof
+k*alloc() returns NULL on failure. Absolutely nothing else.
 
+On *success*, it can return the special ZERO_SIZE_PTR. But that is
+*not* a failure at all. It's very much a successful pointer.
+
+Now, it's a pointer that you can't actually dereference, but that's
+very much intentional. You can't dereference it, because you asked for
+a zero-sized allocation. You got a zero-sized allocation.
+
+But please never *ever* think it's a failure. It's very much not a
+failure case, and it is very much intentional.
+
+It's different from NULL exactly *because* it's successful, and
+exactly so that you can write
+
+     ptr = kmalloc(size);
+     if (!ptr)
+          return -ENOMEM;
+
+without having to worry about the "size is zero" case.
+
+The standard user-space "malloc()" library is misdesigned. Surprise
+surprise. The kernel isn't.
+
+                Linus
