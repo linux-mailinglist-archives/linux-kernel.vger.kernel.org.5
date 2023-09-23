@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5861C7ABC1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18ED7ABC20
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 01:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjIVXBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 19:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S230261AbjIVXB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 19:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjIVXBu (ORCPT
+        with ESMTP id S230248AbjIVXBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 19:01:50 -0400
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A98AF;
-        Fri, 22 Sep 2023 16:01:43 -0700 (PDT)
-Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+        Fri, 22 Sep 2023 19:01:54 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834FBE8;
+        Fri, 22 Sep 2023 16:01:47 -0700 (PDT)
+Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
         by cmsmtp with ESMTP
-        id jjHCqDsdyez0Cjp9Dq8wGM; Fri, 22 Sep 2023 23:01:19 +0000
+        id jocIq8x3zyYOwjp9eqxwHW; Fri, 22 Sep 2023 23:01:46 +0000
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with ESMTPS
-        id jp9aqUSxwjI4jjp9aqtYmu; Fri, 22 Sep 2023 23:01:43 +0000
-X-Authority-Analysis: v=2.4 cv=Uoxwis8B c=1 sm=1 tr=0 ts=650e1cd7
+        id jp9eqQgzv22LNjp9eqaZyd; Fri, 22 Sep 2023 23:01:46 +0000
+X-Authority-Analysis: v=2.4 cv=c7O4/Dxl c=1 sm=1 tr=0 ts=650e1cda
  a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
  a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
  a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=i0EeH86SAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
- a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10
- a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+ a=zd2uoN0lAAAA:8 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8 a=cm27Pg_UAAAA:8
+ a=VwQbUJbxAAAA:8 a=2wB7VPZBpCe0CuILneIA:9 a=QEXdDO2ut3YA:10
+ a=Vxmtnl_E_bksehYqCbjh:22 a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DBDGjSTctz03T3kxqYSvA7eXNQPoYq5wl9a6ycqf3dE=; b=rrlfox9rEpjoN0z0e6OcGu6l3z
-        z45KfH2Ubc2bt/MsuiE8FU1H7AlwXb2f157S4keahk67tqZS3qa1f26ffZ8ybjjXKrCaURX9dS4x7
-        YoxoheMj0rQJrdBXap8rTF3OZUWJv/P+G1qvqIuddqH4Q8bivOAoQ0d4dIvuN7odfkSWn9us2cEB7
-        ELoJwvhGeEwxUWQh+3LlN8+Sg3gSuzmA4B5ss+sWIZ8j3M/15IPv1fgGyc/y4c389vM/CH3710OFZ
-        GqBZd5fQzOCeLMSt2qujFy03jFQ9vsYFBRiyq/JdNSOF/Znuw4BfAIPN/v5i5/GyikiGrd8Yc6pCL
-        ClLpWPug==;
-Received: from [94.239.20.48] (port=51456 helo=[192.168.1.98])
+        bh=uilWM61trubKM2ejy0VnaxrpRmVV7jUvqNgJorf6Qao=; b=iNhF5ZGKjJCvmxMwvJhJsVex5N
+        +kDQxgkwTRsW2hflZt3y1HL+m5qOESNqeZ7r9l0JUKw0+k7tF+DQJ7B4JY+FR1k3JAu1uVBTCJniM
+        clR2EmCJnOIxb2shrvyyzwNYFVGhaHJdXEXOAqmy9mgi1M3S+Psg1dAbnP3QwQap5mXn8i7p0hmlA
+        470q9M9RNJboyPgGKhTcngTDuhLhIwycFUy1wGOz3GIp5zfeWiGf9TOG/ubAU70XbaYyKO1mQqKMo
+        ZAPERXNKSQfiwYWiOdMgVWDzrdJmYEguKAjVL22EKimaO8bjHwiwQUoz0Uf+MjORxXnl+iyAKqQqn
+        JLfivoIg==;
+Received: from [94.239.20.48] (port=33658 helo=[192.168.1.98])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.96)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1qjkJt-0001Kq-2J;
-        Fri, 22 Sep 2023 12:52:02 -0500
-Message-ID: <aad8eaeb-2d60-adaa-ee84-7f8b1e7c217c@embeddedor.com>
-Date:   Fri, 22 Sep 2023 19:52:41 -0600
+        id 1qjkeQ-000MuO-28;
+        Fri, 22 Sep 2023 13:13:14 -0500
+Message-ID: <4b64e969-633a-c59a-90e4-5f6368ad76b6@embeddedor.com>
+Date:   Fri, 22 Sep 2023 20:14:06 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 06/14] net: hisilicon: Annotate struct rcb_common_cb with
- __counted_by
+Subject: Re: [PATCH 2/9] drm/amdgpu/discovery: Annotate struct ip_hw_instance
+ with __counted_by
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        David Ahern <dsahern@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
+To:     Kees Cook <keescook@chromium.org>, David Airlie <airlied@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Emma Anholt <emma@anholt.net>, Evan Quan <evan.quan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        John Harrison <john.c.harrison@Intel.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Melissa Wen <mwen@igalia.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dev@openvswitch.org,
-        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
+        Tom Rix <trix@redhat.com>, Le Ma <le.ma@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        Yifan Zhang <yifan1.zhang@amd.com>,
+        Prike Liang <Prike.Liang@amd.com>, Lang Yu <Lang.Yu@amd.com>,
+        Tejas Upadhyay <tejas.upadhyay@intel.com>,
+        Nirmoy Das <nirmoy.das@intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, llvm@lists.linux.dev,
         linux-hardening@vger.kernel.org
-References: <20230922172449.work.906-kees@kernel.org>
- <20230922172858.3822653-6-keescook@chromium.org>
+References: <20230922173110.work.084-kees@kernel.org>
+ <20230922173216.3823169-2-keescook@chromium.org>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922172858.3822653-6-keescook@chromium.org>
+In-Reply-To: <20230922173216.3823169-2-keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
 X-AntiAbuse: Original Domain - vger.kernel.org
@@ -98,24 +120,23 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 94.239.20.48
 X-Source-L: No
-X-Exim-ID: 1qjkJt-0001Kq-2J
+X-Exim-ID: 1qjkeQ-000MuO-28
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:51456
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:33658
 X-Source-Auth: gustavo@embeddedor.com
 X-Email-Count: 0
 X-Org:  HG=hgshared;ORG=hostgator;
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKexkz8Jfpu3MlXBpAYmOs70tcVTcPzT4z1Qvmz8Rv4p9VyRm+EFiODf1grqzcSx4WK5ju7qmWbmXdlOuuSMG8pffTi8pmWLx99hiNptpC3hTtZgOcr5
- pvfiEdLjsAkU6xwXiK0S5g0nLd96Cb8tHuYQCixHJWx+Ns4O3VWRaxR3eKrAb02PKgMdvUj9aAsFgoL021r97/q3Cug7XgkwKCHS8Qqj8Z0elcwb6i8Iv3Yg
- W6HRC0QEMy4n2DJfhKD4MWU0BA7Lxyz6zykk++5LzPtYX6feaLZmAnvSqBY0FQ78tvOoHKoM42eET6Nlm1pn2CwrPusfwP1qMLwE2ZclTJdOUpkVp18FMm/9
- yaVyuT+y7+VJgkD9yW0orOEXcYECgssUZufmckjwG5rJ6m+YiORn6x9QLZ4h1epmy0E/MMo8
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-CMAE-Envelope: MS4xfIBGQw4XIjIx9vvcrljZNHwNFG1ZN+XjrHndzyGDXzmXnHq3Gz3srKnObjmuBsGlI4v8usugJywpRAl2C5advtm5qtVOW80pdt4FXUrsMP0lc0BoHzsE
+ UW5cf9nVe2Gl3fnVb+AMFbP9LNbcktmlzeo8GnYvUrPhY1EzmhM58rV6R3Ze6n4BUtyxj9vN2+Q2YbSRjqEHkt7ye6yBE02m+NpTb41ZypQ5Ex5+EpUTGmjb
+ 7GJJfCLPwu92ICgglwbLxnYmCG+6NSyy7Wvx84Kl8HQqqWr7LNEeCWSd8llYh0ZTLbU+2ID44p5fgsBaZ40VLQ==
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -124,24 +145,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/22/23 11:28, Kees Cook wrote:
+On 9/22/23 11:32, Kees Cook wrote:
 > Prepare for the coming implementation by GCC and Clang of the __counted_by
 > attribute. Flexible array members annotated with __counted_by can have
 > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 > functions).
 > 
-> As found with Coccinelle[1], add __counted_by for struct rcb_common_cb.
+> As found with Coccinelle[1], add __counted_by for struct ip_hw_instance.
 > 
 > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
-> Cc: Yisen Zhuang <yisen.zhuang@huawei.com>
-> Cc: Salil Mehta <salil.mehta@huawei.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Kees Cook <keescook@chromium.org>
 
 Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
@@ -151,19 +173,19 @@ Thanks
 Gustavo
 
 > ---
->   drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h | 2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h
-> index a9f805925699..c1e9b6997853 100644
-> --- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h
-> +++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h
-> @@ -108,7 +108,7 @@ struct rcb_common_cb {
->   	u32 ring_num;
->   	u32 desc_num; /*  desc num per queue*/
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+> index d1bc7b212520..be4c97a3d7bf 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+> @@ -662,7 +662,7 @@ struct ip_hw_instance {
+>   	u8  harvest;
 >   
-> -	struct ring_pair_cb ring_pair_cb[];
-> +	struct ring_pair_cb ring_pair_cb[] __counted_by(ring_num);
+>   	int num_base_addresses;
+> -	u32 base_addr[];
+> +	u32 base_addr[] __counted_by(num_base_addresses);
 >   };
 >   
->   int hns_rcb_buf_size2type(u32 buf_size);
+>   struct ip_hw_id {
