@@ -2,128 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 977497ABC83
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 02:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169557ABC8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 02:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjIWAHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 20:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S230418AbjIWALy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 20:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjIWAHX (ORCPT
+        with ESMTP id S229628AbjIWALw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 20:07:23 -0400
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com (mail-lo2gbr01on2121.outbound.protection.outlook.com [40.107.10.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF601A5;
-        Fri, 22 Sep 2023 17:07:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bOAeO7tUFFpHYXeiv67W1A+uKuHL7rUKyM4dEXCnZbOT9NnP8P3O5EYmy1ml4VylmM8YWRYMJ+9e4Kotq4Mk2ZNvCBrF4c2CWablvGxq6xvt6voHoPSDQnACEH9DB3lnmNiqQUQZXR4/TAuIN8qFdFZgX6i0mqn2/kIKZvse1WIloweja8QRvdtkHpZODNg32XrJOEwjkRM1P7PKIsUg2lcpJOtu9hi+q968nkbZR0FcEJhfm/HAPbI4eBPKT+UhlYsKpn9xa3I7R/tuxjbcsz/Tk7OA+fV6BhuYZLoXKSoGW4Yvt50Wf/Xl5b3sC8fCqdCrfd5gvi0GMKDA+MNRqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oMxMPilv7+ukwN2t3e8yJv/XHcUE7uS3SBvBuEVAu38=;
- b=KdA59zUX0EJFQIjZDvGwde516xQxo9rSnuaStgAlR8KOzSYTDmSYbq3n6MTXtpNk8ci1F5+lnMugXZ6oJqZ6nVYohPNOTUNQx1toDKWH1SJ+1qn7cGjRJCEMMdyRuHCdXiZW6wEQ4QY/mKJBdmwb2sHuuZ1TORpoOOOJMl63Vbwe/azaXK8YFtu4FHCLCBr907tY8MPMSRO+Kue0O3574arD2ynlYphpMxA9BdYzWDweessDXCCy4j4uNxXTsiwfiu9MZu83wL3PBzUzLu/ovl+EcCn5A6tDm+8twGmlnsFvXWjSslTsvPMAXxmc7puBEBP11JCYvKP3BkSQlVaXUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oMxMPilv7+ukwN2t3e8yJv/XHcUE7uS3SBvBuEVAu38=;
- b=hCFKCDKMiKzoh6KGGdA5IOxyUVcmHF+YovypyKUcIMWz8JQkyun2fZ3X5PgWUzrolC563hjvykFirI0BI8s4L54ZaWoqQELZ5OLdE2HbcXPMmqQts5wG2Ze+mzXuQjrWBOA2kXWKbSh6RA0CMhWEcW413MPP4yJJbUVSVXX38iM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
- by CWLP265MB7358.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1ff::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.25; Sat, 23 Sep
- 2023 00:07:14 +0000
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::7965:8756:9ad5:df1d]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::7965:8756:9ad5:df1d%6]) with mapi id 15.20.6813.017; Sat, 23 Sep 2023
- 00:07:14 +0000
-Date:   Sat, 23 Sep 2023 08:06:57 +0800
-From:   Gary Guo <gary@garyguo.net>
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH 1/2] rust: arc: rename `ArcInner` to `WithRef`
-Message-ID: <20230923080657.277819c2@gary-lowrisc-laptop>
-In-Reply-To: <20230921213440.202017-2-wedsonaf@gmail.com>
-References: <20230921213440.202017-1-wedsonaf@gmail.com>
-        <20230921213440.202017-2-wedsonaf@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: TYWPR01CA0035.jpnprd01.prod.outlook.com
- (2603:1096:400:aa::22) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:253::10)
+        Fri, 22 Sep 2023 20:11:52 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1D3AB
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 17:11:46 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-79f9bad1a44so56275439f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 17:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695427905; x=1696032705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2HRUyGvs1uStGXLaQ8+ngHPFdyOarHkGjvDN3ml5t7g=;
+        b=MNSJ5HgOPt5/3ph3ej+7L37STQMtYks4Cw6iS0l5z0m036guaZXryr0FWUiPGjMlFS
+         g+9oaudyNbTbArmB1wnDd0NoP0WZ7pQb9Rr1eENEysC0eghEvu1erYvnfEMpm2Pr4Z2+
+         EQGn7IVDKHyfOlaRxnwmXZ+ZhI3HrHjR+RMx4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695427905; x=1696032705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2HRUyGvs1uStGXLaQ8+ngHPFdyOarHkGjvDN3ml5t7g=;
+        b=mKzDzF3eeJqkc80Osy2DrvauhTbPYd3pj+oIlqyJQ6oaw387173z03OvI4Pv04Wn/r
+         zGi+wv6XsFA0n59ZeaR8ZXsuQdQ7xC46Cfp8GSOJrRBWL59nNKlbWA2cocqCsAfsdzuD
+         JAgcDDiirKbAwfIg6kXxdevJgDD6z1zmMt6ZhKcZeRAosWbAoGO0RQd1WuL9pe7/WVIT
+         EP8hwDpC9vkYj7rKcqJjKs9lmqhOwahLW+lBeJVcu9D0cINYJ9XM05syOzJggTuq+kGB
+         ryA6M4o9oa9EJNj3wzZv/TIyEpvzO1wVQt2iap+dhRNGq5WpXk81kQST6bYgB6hxGiEE
+         8egg==
+X-Gm-Message-State: AOJu0YyHDCDkPBv4vY+Kw5f3ru4qU+hBB0e8ry6n0uYGmpkG7zs9TYr2
+        LBfjPGgWr/4P34YEO7aDMUxvjlMDH2e/ZtO12a9GQ7yg
+X-Google-Smtp-Source: AGHT+IEoqDb3076HdL4Z8OJZ2l6txo8nAJU5GgDh/m7CNITnGU0CtiH8o9Lm9icPe+wKiDjiPHs6vQ==
+X-Received: by 2002:a05:6e02:1a61:b0:34f:7779:df7f with SMTP id w1-20020a056e021a6100b0034f7779df7fmr1422752ilv.0.1695427904926;
+        Fri, 22 Sep 2023 17:11:44 -0700 (PDT)
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com. [209.85.166.171])
+        by smtp.gmail.com with ESMTPSA id y9-20020a92d809000000b00348730b48a1sm1388947ilm.43.2023.09.22.17.11.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 17:11:44 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-34f1ffda46fso52205ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 17:11:44 -0700 (PDT)
+X-Received: by 2002:a05:622a:1aa6:b0:403:affb:3c03 with SMTP id
+ s38-20020a05622a1aa600b00403affb3c03mr97108qtc.10.1695427883461; Fri, 22 Sep
+ 2023 17:11:23 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|CWLP265MB7358:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0840a382-d7b9-4dc1-958a-08dbbbc90ab8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0RyXMsPrNff/kA035pwpxjZnSmawKs1wXe5LjnZJ5J6j/HYRHZMs89CqXN9C3RciX/QYPnmS7PVH98vewQ0eL9A1UtpIDhgLG2qX9sOo2OwZGGrGt2RKG1vo4MnFNCysd/zXhVdtmngj/PvjvgdUUHOZFlzH6dSTvsabH5p2r9Z2M+0vuCOrBluaOZWAAzVssh0yI8/8RmvyAU+eIe3XPTtxRhcNH7uNUu+b2pvXsy4vvbfiPbTbsUNaXFky9ZjX2MsYUpX1FzygjKXkiFBfDc8zCfop5V096NoP41f9tAgjkXlQYVqwf9nfJkDhLqqseezPMLvK7yKYcBcIbj0gn7/ATGQy10gvr900W8pvAi8qsAb2yHOhBul5UAcx7LK3JDwkkOm0MJ04F5H+oC18HxTpvWKxbu7jvTntFpsAAJhah3YGjfbIoSN/wEwAKyeYICBU/MLp6SuVYmHPHkGXhEX21KUynPIDL5tZWdoh56obXIXM+hbjaWImVeEZrqkzx3XfbvjxUJVfZwTiHFB8F/O0fzJl3QT8ocY8ChkNA4fnVRTG+J7fdNVNYUS52Lc3EziIyDHnoBVkv1TlRK02sJpxhw4i3wOCjtOh1SPDnic=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39830400003)(396003)(376002)(346002)(136003)(366004)(186009)(1800799009)(451199024)(1076003)(6486002)(45080400002)(6506007)(6666004)(478600001)(9686003)(26005)(83380400001)(41300700001)(6512007)(4744005)(2906002)(7416002)(33716001)(5660300002)(316002)(6916009)(54906003)(66476007)(66556008)(4326008)(66946007)(8676002)(8936002)(86362001)(66574015)(38100700002)(81973001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a1RxR2p6WlIvczZNUE1jRDJtWGF0MUpvMHQxUWhYNmRSTEhhdDJUcG9aV2k2?=
- =?utf-8?B?Sy9Ra2VIWTFhNndOenNIMVdQVGZYSTF2akJpRXpMK0ZRa0FBbm1RNVExLzdE?=
- =?utf-8?B?U05sR2p6Q3Bscm5PaFpUendkSk1UMmgzVmtGNnZKYlpsdG5xNENiSmJSS21r?=
- =?utf-8?B?RzZocVZPTVd4ZUwralczelZDLzlNU3k4QVY4ZkJoTHpCeGtBeVlzcWM4UnRP?=
- =?utf-8?B?SnprT2Y1MVdCOTk0SC9yWFhTaHNwVVE1VTFyOVlwMDU1UVpqRkJkVjU0QzJq?=
- =?utf-8?B?WmEyem4zRWpJRVVORFRidUUwSmszS09vVmptWlJHYkJoeThPVG1ZNUlaSllj?=
- =?utf-8?B?WkMzWElHcHJlY3pFQXJMa3JXenJDQ3IzYjZ5UWp6S1hPVHNXUkUzd2NqSmxM?=
- =?utf-8?B?QWZUWlhTNkNVTWtIcUxINmpPYWNUbUVuTTNaNW5zUEJnTHpPTEY1M2wzdlB5?=
- =?utf-8?B?T2NZNTk3bTQ4ekZ0d295VW1UNDBEWHlSODg0Q0ZwOUFsWXhrMU45SWN2WTV2?=
- =?utf-8?B?V0JQZGpJektmcTFhVldENHJINUg1R3NVVjcydVp5N2Q5TGFmTE9ENm5mbFNj?=
- =?utf-8?B?SWJxcUZ3Q1I4MFhJdVU5c2VnZHJxbTBVS096N28wTmg5NzVrb1hRd1QvUVJq?=
- =?utf-8?B?TlR3emZ3R1JDd0YrSW5iQ2orekhHYVVvcnk2b2RiVVpHZWY4R05vQWFoTC9G?=
- =?utf-8?B?ZzRocmpmOEJiblNzK1BwQ1VRdk45YlhiMEdVWENnS1ZjZUNncG90ZDlqa2JG?=
- =?utf-8?B?VHFnUVRacVFFcDRIWWdkQWJSMzMyeVF0ajZlSTBKenFxSjBQUDYwWFUvK21T?=
- =?utf-8?B?ODg3cjIwcVl5b2RETXRMT3N2a3pLck9hRGY4YjVZVEVBekpjWXo0Y2s1MHBN?=
- =?utf-8?B?SFZBQ2tIMTBZWHgwNmphYXhzUktKclVqK1ErWHpSZVdDUXVpSy9SSWxza2FE?=
- =?utf-8?B?SkVZQnpZMjdqWFk4UjRENXZGUm14NWVzUXQ2aU0rRjk5R1AxT2NUUUoyd1hV?=
- =?utf-8?B?UWl3L1J5eXBBenFKcDg5V2FYZjlkNy9CNEFJTzJVTUtCeTlOSGY4bGNLLzc4?=
- =?utf-8?B?OFhvSW9GMTBpb252c29Rb2RlaWh0bWRGRWtPdWFrU3hpb1JFWXFsM1lCM1N3?=
- =?utf-8?B?RW1RZ0RHdnpmWHhZZngzV1JhL1JocTl6a1NzeDdyU05OVjdSMEQyMGNrK3lz?=
- =?utf-8?B?OHJxdEIvanRoWkJmVzl5aURRZ0ZpZjhwYjlETlNzT1V5ZXdUeWdUd2c3MVdh?=
- =?utf-8?B?MTFtNm40eCtvVmZQbXFYQitHZUVEREFod2M1MmU1L3RqY1lCeUVKazIwd0tZ?=
- =?utf-8?B?RURYVmI1c2xtL0VIRy85Y0VJVVl3ZnlUa3BGd2RuZVJFeUpYYm43N0Y4WmxK?=
- =?utf-8?B?TDZSeTlVWkxsZ1VJSW9LOUI4WWJPZmJHSHFjVmcvSG9jb0taRit3djRjUkht?=
- =?utf-8?B?Wi9RdzVMTWZIdyt0VU1HSk5mLzBaZGlzUUZleUpuMzJZNTBCZ1Rwdi9mejFm?=
- =?utf-8?B?QmZhTWtGTzl3TTJueXhNTHM2VjB6bThBYkdWMlE2UGN3a1ZxaXJzU3FWcTFv?=
- =?utf-8?B?SExBS1hVWGhqb2F6M0UzS2hIUlRHbVZ3WDg5bHpPMHVFN2tHbjIycnRVWmEx?=
- =?utf-8?B?ZXVCbFZheDJTWTZJZ3VGdS9yd09ldng1UnQvKzhTc24zSnpvc0dCUGlJNGk4?=
- =?utf-8?B?VGxYUys1TnVVQ1hMcEllbzBTTkhsbElXalVXTVhqMFpBM0Z5eHhlYkdVQmFu?=
- =?utf-8?B?Z2lEVTYwUjB1YWJjTmIvMU9OOTEyaGp5YmdBZVNKOWN1aDF0ZnVuelNKb1Ux?=
- =?utf-8?B?dFZqaFA1Z25WQ3p0V05OYldYSS9VSDluNWJDSm5QcEJvdzAxSW0zeEZSd1Ra?=
- =?utf-8?B?bXdhSlNPYklzcStjVDdsYUM3b1NtRnZBd0FBQUdTemgwOE9rbHVhVVB5cjlY?=
- =?utf-8?B?UnZQZGtxWGYvRXpaWGVMZWVobHZFYndFdGxPSndkM01wWi9QWldDN1ozZVpE?=
- =?utf-8?B?bU94K1NNRjhhVEoxWE5ZMTFoV1g2R0E1UldYQm5GRnlldEVTbS8zLzJSZFJn?=
- =?utf-8?B?enhKSjFjNU5RQVg1MDJMU2VqcnVaMlJJVE1HOUtSTmxMcDJ2V0hnYng3SlZs?=
- =?utf-8?Q?alyldsv23iPVSkVmY9DXngBIz?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0840a382-d7b9-4dc1-958a-08dbbbc90ab8
-X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 00:07:14.6704
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eT2Kl90p1RH2ZNRuFawxJeKp5y/DwGNblXHuX1PAKTlKPOGXeztIHW7wL1neulTfty6wWHeGidSboK4TaCIcyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB7358
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid>
+ <CAL_Jsq+noP32-m5xdUCLFPFBXLxX9Ys1BNFM+9sga6KYTmDzqQ@mail.gmail.com>
+ <CAD=FV=WXxGhX0Fw2nSS7PxYb1O-LUewAhoUVPn=2EpbSD2OeHQ@mail.gmail.com> <CAL_JsqKJyRJmwJzB1yew71Ld7BeMMat+rzhX9XtDtiFE8Dbvcw@mail.gmail.com>
+In-Reply-To: <CAL_JsqKJyRJmwJzB1yew71Ld7BeMMat+rzhX9XtDtiFE8Dbvcw@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 22 Sep 2023 17:11:10 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UgFzT0TW2WEV0Wmk05EXUad2EYhN2DcckAxE_Lw5gV1Q@mail.gmail.com>
+Message-ID: <CAD=FV=UgFzT0TW2WEV0Wmk05EXUad2EYhN2DcckAxE_Lw5gV1Q@mail.gmail.com>
+Subject: Re: [RFC PATCH] of: device: Support 2nd sources of probeable but
+ undiscoverable devices
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>, linux-input@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        andriy.shevchenko@linux.intel.com, broonie@kernel.org,
+        frowand.list@gmail.com, gregkh@linuxfoundation.org,
+        hdegoede@redhat.com, james.clark@arm.com, james@equiv.tech,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,22 +91,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 18:34:39 -0300
-Wedson Almeida Filho <wedsonaf@gmail.com> wrote:
+Hi,
 
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
->=20
-> This is in preparation for removing `ArcBorrow` and making `WithRef`
-> public.
->=20
-> This is a pure name change with no functional changes intended.
->=20
-> Suggested-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+On Fri, Sep 22, 2023 at 12:08=E2=80=AFPM Rob Herring <robh+dt@kernel.org> w=
+rote:
+>
+> > > This seems like overkill to me. Do we really need groups and a mutex
+> > > for each group? Worst case is what? 2-3 groups of 2-3 devices?
+> > > Instead, what about extending "status" with another value
+> > > ("fail-needs-probe"? (fail-xxx is a documented value)). Currently, th=
+e
+> > > kernel would just ignore nodes with that status. Then we can process
+> > > those nodes separately 1-by-1.
+> >
+> > My worry here is that this has the potential to impact boot speed in a
+> > non-trivial way. While trackpads and touchscreens _are_ probable,
+> > their probe routines are often quite slow. This is even mentioned in
+> > Dmitry's initial patches adding async probe to the kernel. See commit
+> > 765230b5f084 ("driver-core: add asynchronous probing support for
+> > drivers") where he specifically brings up input devices as examples.
+>
+> Perhaps then this should be solved in userspace where it can learn
+> which device is actually present and save that information for
+> subsequent boots.
 
-Reviewed-by: Gary Guo <gary@garyguo.net>
+Yeah, the thought occurred to me as well. I think there are a few
+problems, though:
 
-> ---
->  rust/kernel/sync/arc.rs            | 20 ++++++++++----------
->  rust/kernel/sync/arc/std_vendor.rs |  4 ++--
->  2 files changed, 12 insertions(+), 12 deletions(-)
+a) Userspace can't itself probe these devices effectively. While
+userspace could turn on GPIOs manually and query the i2c bus manually,
+it can't (I believe) turn on regulators nor can it turn on clocks, if
+they are needed. About the best userspace could do would be to blindly
+try binding an existing kernel driver, and in that case why did we
+need userspace involved anyway?
+
+b) While deferring to userspace can work for solutions like ChromeOS
+or Android where it's easy to ensure the userspace bits are there,
+it's less appealing as a general solution. I think in Johan's case
+he's taking a laptop that initially ran Windows and then is trying to
+run a generic Linux distro on it. For anyone in a similar situation,
+they'd either need to pick a Linux distro that has the magic userspace
+bits that are needed or they need to know that, on their laptop, they
+need to manually install some software. While requiring special
+userspace might make sense if you've got a special peripheral, like an
+LTE modem, it makes less sense to need special userspace just to get
+the right devices bound...
+
+
+> > It wouldn't be absurd to have a system that has multiple sources for
+> > both the trackpad and the touchscreen. If we have to probe each of
+> > these one at a time then it could be slow. It would be quicker to be
+> > able to probe the trackpads (one at a time) at the same time we're
+> > probing the touchscreens (one at a time). Using the "fail-needs-probe"
+> > doesn't provide information needed to know which devices conflict with
+> > each other.
+>
+> I would guess most of the time that's pretty evident. They are going
+> to be on the same bus/link. If unrelated devices are on the same bus,
+> then that's going to get serialized anyways (if bus accesses are what
+> make things slow).
+>
+> We could add information on the class of device. touchscreen and
+> touchpad aliases or something.
+
+Ah, I see. So something like "fail-needs-probe-<class>". The
+touchscreens could have "fail-needs-probe-touchscreen" and the
+trackpads could have "fail-needs-probe-trackpad" ? That could work. In
+theory that could fall back to the same solution of grabbing a mutex
+based on the group ID...
+
+Also: if having the mutex in the "struct device" is seen as a bad
+idea, it would also be easy to remove. __driver_probe_device() could
+just make a call like "of_device_probe_start()" at the beginning that
+locks the mutex and then "of_device_probe_end()" that unlocks it. Both
+of those calls could easily lookup the mutex in a list, which would
+get rid of the need to store it in the "struct device".
+
+
+> > That would lead me to suggest this:
+> >
+> >   &i2c_bus {
+> >     trackpad-prober {
+> >       compatible =3D "mt8173-elm-hana-trackpad-prober";
+> >
+> >       tp1: trackpad@10 {
+> >         compatible =3D "hid-over-i2c";
+> >         reg =3D <0x10>;
+> >         ...
+> >         post-power-on-delay-ms =3D <200>;
+> >       };
+> >       tp2: trackpad@20 {
+> >         compatible =3D "hid-over-i2c";
+> >         reg =3D <0x20>;
+> >         ...
+> >         post-power-on-delay-ms =3D <200>;
+> >       };
+> >     };
+> >   };
+> >
+> > ...but I suspect that would be insta-NAKed because it's creating a
+> > completely virtual device ("mt8173-elm-hana-trackpad-prober") in the
+> > device tree. I don't know if there's something that's functionally
+> > similar that would be OK?
+>
+> Why do you need the intermediate node other than a convenient way to
+> instantiate a driver? You just need a flag in each node which needs
+> this special handling. Again, "status" could work well here since it
+> keeps the normal probe from happening. But I'm not saying you can't
+> have some board specific code. Sometimes you just need code to deal
+> with this stuff. Don't try to parameterize everything to DT
+> properties.
+
+I think I'd have an easier time understanding if I knew where you
+envisioned the board-specific code living. Do you have an example of
+board specific code running at boot time in the kernel on DT systems?
+
+
+> Note that the above only works with "generic" compatibles with
+> "generic" power sequencing properties (I won't repeat my dislike
+> again).
+
+I don't think so? I was imagining that we'd have some board specific
+code that ran that knew all the possible combinations of devices,
+could probe them, and then could instantiate the correct driver.
+
+Imagine that instead of the hated "hid-over-i2c" compatible we were
+using two other devices. Imagine that a given board could have a
+"elan,ekth6915" and a "goodix,gt7375p". Both of these devices have
+specific timing requirements on how to sequence their supplies and
+reset GPIOs. For Elan we power on the supplies, wait at least 1 ms,
+deassert reset, wait at least 300 ms, and then can talk i2c. For
+Goodix we power on the supply, wait at least 10 ms, deassert reset,
+wait at least 180 ms, and then can talk i2c. If we had a
+board-specific probing driver then it would power on the supplies,
+wait at least 10 ms (the max of the two), deassert reset, wait at
+least 300 ms (the max of the two), and then see which device talked.
+Then it would instantiate whichever of the two drivers. This could be
+done for any two devices that EEs have determined have "compatible"
+probing sequences.
+
+Ideally in the above situation we'd be able to avoid turning the
+device off and on again between the board-specific probe code and the
+normal driver. That optimization might need special code per-driver
+but it feels doable by passing some sort of hint to the child driver
+when it's instantiated.
+
+
+> If only the driver knows how to handle the device, then you
+> still just have to have the driver probe. If you *only* wanted to
+> solve the above case, I'd just make "hid-over-i2c" take a 2nd (and
+> 3rd) I2C address in reg and have those as fallbacks.
+
+Yeah, it did occur to me that having "hid-over-i2c" take more than one
+register (and I guess more than one "hid-descr-addr") would work in my
+earlier example and this might actually be a good solution for Johan.
+I'm hoping for a better generic solution, though.
+
+
+> You could always make the driver probe smarter where if your supply
+> was already powered on, then don't delay. Then something else could
+> ensure that the supply is enabled. I'm not sure if regulators have the
+> same issue as clocks where the clock might be on from the bootloader,
+> then a failed probe which gets then puts the clock turns it off.
+
+I'm not sure it's that simple. Even if the supply didn't turn off by
+itself in some cases, we wouldn't know how long the supply was on.
+
+-Doug
