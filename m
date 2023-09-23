@@ -2,118 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3BA7ABD59
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 05:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30147ABD5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 05:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjIWDC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 23:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S229688AbjIWDHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 23:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjIWDC0 (ORCPT
+        with ESMTP id S229490AbjIWDHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 23:02:26 -0400
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E8AAF
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 20:02:20 -0700 (PDT)
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1d5f4d5d848so5475719fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 20:02:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695438139; x=1696042939;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uu32FH5I0aOOlscucTgtn1W8kPW6Yu+PCrBGTKgAmec=;
-        b=aYNvNJcqVIinJ1FAy9JwXf6vursHRGG2BoIAJ62BViAurpeGbZRTjzPa9oLIbk/n/8
-         QcND3YDX/4BmFzXP4I7va8Khc/svCRjHlsb1HubXgPTHyENehbSon2PPwbGXxaMUkcW2
-         2qTNMBTDOClQjCc4UTqidRKjlREUbwmCsK+MPPFA6VdYXWOwPGvoTtEUBWsbEJMTmWd8
-         HFaEGnRL3NVt5gm8kGnwK6iaBQoOZwOqz5QzoegqOs/z/1cBDptJGC21X/mHiHY+Aqfq
-         tnG7igjCfeaX9RiR1oSM4WuWxIPO3jfboiC3IL2fwegC1Aq2/N2MtNV6Vs0VGX5eqyaF
-         YfKw==
-X-Gm-Message-State: AOJu0YxXL2S3r74il5djDSzBcLKewga7E1+BBFMpE6gI485cl7sDbsJ7
-        AfGSfxxGrxfEOZyqcKfly0IN3SJ8ayuCiDOhfLY4NCleRmV6
-X-Google-Smtp-Source: AGHT+IGWiALkUFQq8JtvACP5ysE7sqt0G9y7yszInXqu6JETAgZ7QLXpc5GHOYiA9PsNtXf19ufkwa8Mefg9682vGDjZV6oQ+wEy
+        Fri, 22 Sep 2023 23:07:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA173180;
+        Fri, 22 Sep 2023 20:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695438419; x=1726974419;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nZVXCwOuydbndY5vcLfGn2MhNmudGolXVrDAy3MEbrI=;
+  b=fXjc2t+7wccNeI76msfPspV3zcXszNHdq5BnDhXZEP/Umb4pl1e4ODP5
+   YnP20rvMADJSLFBpj9tbJSXTBxa1ooxDVs9UL7T/vzBmP+aSxQCdAbyHP
+   iuAp/00GkXdy2AC7xdcApilsgRXQiOtbvPPiWA0PDs0le5zLcutk2vutR
+   kbpae6PA5hIeqLb7DUgR7t+JKiW2qR1AXXWXmjy54B1W4ERhxEfW7y+13
+   q3HKQWQJXERfJQUj2JpwlH8qEOiI+T60FWnwefqhK5a4UU1XaQRrJcFMg
+   rDUXGc8+sfeoC6wFxLLrcvOu5Fw8reebDBsyXepES8Fp1RxjeD5yOF9i/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="447466717"
+X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
+   d="scan'208";a="447466717"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 20:06:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="891048514"
+X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
+   d="scan'208";a="891048514"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Sep 2023 20:06:02 -0700
+From:   Haitao Huang <haitao.huang@linux.intel.com>
+To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        sohil.mehta@intel.com
+Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+        zhanb@microsoft.com, anakrish@microsoft.com,
+        mikko.ylinen@linux.intel.com, yangjie@microsoft.com
+Subject: [PATCH v5 00/18] Add Cgroup support for SGX EPC memory
+Date:   Fri, 22 Sep 2023 20:06:39 -0700
+Message-Id: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:706:b0:1d6:c007:ff90 with SMTP id
- ea6-20020a056870070600b001d6c007ff90mr524165oab.6.1695438139447; Fri, 22 Sep
- 2023 20:02:19 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 20:02:19 -0700
-In-Reply-To: <20230923024635.1249-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a63170605fdf4cc@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
-From:   syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+SGX EPC memory allocations are separate from normal RAM allocations, and
+are managed solely by the SGX subsystem. The existing cgroup memory
+controller cannot be used to limit or account for SGX EPC memory, which is
+a desirable feature in some environments, e.g., support for pod level
+control in a Kubernates cluster on a VM or baremetal host [1,2].
+ 
+This patchset implements the support for sgx_epc memory within the misc
+cgroup controller. The user can use the misc cgroup controller to set and
+enforce a max limit on total EPC usage per cgroup. The implementation
+reports current usage and events of reaching the limit per cgroup as well
+as the total system capacity.
+ 
+This work was originally authored by Sean Christopherson a few years ago,
+and previously modified by Kristen C. Accardi to work with more recent
+kernels, and to utilize the misc cgroup controller rather than a custom
+controller. Now I have been updating the patches based on review comments
+since V2 [3, 4], simplified a few aspects of the implementation/design and
+fixed some stability issues found from testing, while keeping the same user
+space facing interfaces.
+ 
+The patchset adds support for multiple LRU lists to track both reclaimable
+EPC pages (i.e., pages the reclaimer knows about), as well as unreclaimable
+EPC pages (i.e., pages which the reclaimer isn't aware of, such as VA
+pages).  These pages are assigned to an LRU list, as well as an enclave, so
+that an enclave's full EPC usage can be tracked, and subject to the
+per-cgroup limit. During OOM events, an enclave can have its memory zapped,
+and all the EPC pages tracked by the LRU lists can be freed.
+ 
+The EPC pages allocated for KVM guests by the virtual EPC driver are not
+reclaimable by the host kernel [5]. Therefore they are not tracked by any
+LRU lists for reclaiming purposes in this implementation, but they are
+charged toward the cgroup of the user processs (e.g., QEMU) launching the
+guest.  And when the cgroup  EPC usage reaches its limit, the virtual EPC
+driver will stop allocating more EPC for the VM, and return SIGBUS to the
+user process which would abort the VM launch.
+ 
+To make it easier to follow, I reordered the patches in v4 into following
+clusters:
+- Patches 1&2 are prerequisite  misc cgroup changes
+- Patches 3-8 deal with the 'reclaimable' pages
+- Patches 9-12 deal with the 'unreclaimable' pages, which are freed only
+  for OOM scenarios.
+- Patches 13-15 re-organize EPC reclaiming code to be reusable by EPC
+  cgroup.
+- Patch 16 implements EPC cgroup as a misc cgroup.
+- Patch 17 adds documentation for the EPC cgroup.
+- Patch 18 adds test scripts.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in dquot_disable
+I appreciate your review and providing tags if appropriate.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5401 at fs/quota/dquot.c:2217 dquot_disable+0xff1/0x1710 fs/quota/dquot.c:2217
-Modules linked in:
-CPU: 0 PID: 5401 Comm: syz-executor.0 Not tainted 6.6.0-rc2-syzkaller-00018-g2cf0f7156238-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:dquot_disable+0xff1/0x1710 fs/quota/dquot.c:2217
-Code: d2 0f 85 fd 04 00 00 8b 15 48 34 c1 0c 48 c7 c6 ff ff ff ff 48 c7 c7 a0 f4 34 92 e8 19 41 46 02 e9 6f f7 ff ff e8 4f 43 7a ff <0f> 0b 48 89 ef e8 25 95 59 ff e9 a6 f0 ff ff e8 3b 43 7a ff 4c 8d
-RSP: 0018:ffffc9000382fb60 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff8880287c0140 RSI: ffffffff820c8201 RDI: 0000000000000005
-RBP: ffff888077efc070 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888077efc000 R14: ffffffff8aa27800 R15: 1ffff92000705f79
-FS:  0000555555e27480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb752142378 CR3: 00000000212c7000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- reiserfs_quota_off+0x11f/0x160 fs/reiserfs/super.c:2480
- reiserfs_quota_off_umount fs/reiserfs/super.c:581 [inline]
- reiserfs_put_super+0x8f/0x5c0 fs/reiserfs/super.c:594
- generic_shutdown_super+0x2ab/0x400 fs/super.c:727
- kill_block_super+0x3b/0x70 fs/super.c:1650
- deactivate_locked_super+0x9a/0x170 fs/super.c:481
- deactivate_super+0xde/0x100 fs/super.c:514
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7effb087de17
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffc59c8ec28 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007effb087de17
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffc59c8ece0
-RBP: 00007ffc59c8ece0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffc59c8fda0
-R13: 00007effb08c73b9 R14: 000000000001d8a7 R15: 0000000000000005
- </TASK>
+---
+v5:
+- Replace the manual test script with a selftest script.
+- Restore the "From" tag for some patches to Sean [Kai]
+- Style fixes (Jarkko)
 
+v4:
+* Collected "Tested-by" from Mikko. I kept it for now as no functional changes in v4.
+* Rebased on to v6.6_rc1 and reordered patches as described above.
+* Separated out the bug fixes [7,8,9]. This series depend on those patches. (Dave, Jarkko)
+* Added comments in commit message to give more preview what's to come next. (Jarkko)
+* Fixed some documentation error, gap, style (Mikko, Randy)
+* Fixed some comments, typo, style in code (Mikko, Kai)
+* Patch format and background for reclaimable vs unreclaimable (Kai, Jarkko)
+* Fixed typo (Pavel)
+* Exclude the previous fixes/enhancements for self-tests. Patch 18 now depends on series [6]
+* Use the same to list for cover and all patches. (Sohil)
+ 
+v3:
+ 
+* Added EPC states to replace flags in sgx_epc_page struct. (Jarkko)
+* Unrolled wrappers for cond_resched, list (Dave)
+* Separate patches for adding reclaimable and unreclaimable lists. (Dave)
+* Other improvments on patch flow, commit messages, styles. (Dave, Jarkko)
+* Simplified the cgroup tree walking with plain
+  css_for_each_descendant_pre.
+* Fixed race conditions and crashes.
+* OOM killer to wait for the victim enclave pages being reclaimed.
+* Unblock the user by handling misc_max_write callback asynchronously.
+* Rebased onto 6.4 and no longer base this series on the MCA patchset.
+* Fix an overflow in misc_try_charge.
+* Fix a NULL pointer in SGX PF handler.
+* Updated and included the SGX selftest patches previously reviewed. Those
+  patches fix issues triggered in high EPC pressure required for cgroup
+  testing.
+* Added test scripts to help setup and test SGX EPC cgroups.
+ 
+[1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6PR21MB1177.namprd21.prod.outlook.com/
+[2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
+[3]https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.intel.com/
+[4]https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@linux.intel.com/
+[5]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
+[6]https://lore.kernel.org/linux-sgx/20220905020411.17290-1-jarkko@kernel.org/
+[7]https://lore.kernel.org/linux-sgx/ZLcXmvDKheCRYOjG@slm.duckdns.org/
+[8]https://lore.kernel.org/linux-sgx/20230721120231.13916-1-haitao.huang@linux.intel.com/
+[9]https://lore.kernel.org/linux-sgx/20230728051024.33063-1-haitao.huang@linux.intel.com/
 
-Tested on:
+Haitao Huang (2):
+  x86/sgx: Introduce EPC page states
+  selftests/sgx: Add scripts for EPC cgroup testing
 
-commit:         2cf0f715 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=17d0480a680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=710dc49bece494df
-dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11959f5c680000
+Kristen Carlson Accardi (3):
+  cgroup/misc: Add per resource callbacks for CSS events
+  cgroup/misc: Add SGX EPC resource type and export APIs for SGX driver
+  x86/sgx: Limit process EPC usage with misc cgroup controller
+
+Sean Christopherson (13):
+  x86/sgx: Add sgx_epc_lru_lists to encapsulate LRU lists
+  x86/sgx: Use sgx_epc_lru_lists for existing active page list
+  x86/sgx: Store reclaimable EPC pages in sgx_epc_lru_lists
+  x86/sgx: Introduce RECLAIM_IN_PROGRESS state
+  x86/sgx: Use a list to track to-be-reclaimed pages
+  x86/sgx: Store struct sgx_encl when allocating new VA pages
+  x86/sgx: Add EPC page flags to identify owner types
+  x86/sgx: store unreclaimable pages in LRU lists
+  x86/sgx: Add EPC OOM path to forcefully reclaim EPC
+  x86/sgx: Expose sgx_reclaim_pages() for use by EPC cgroup
+  x86/sgx: Add helper to grab pages from an arbitrary EPC LRU
+  x86/sgx: Prepare for multiple LRUs
+  Docs/x86/sgx: Add description for cgroup support
+
+ Documentation/arch/x86/sgx.rst                |  82 ++++
+ arch/x86/Kconfig                              |  13 +
+ arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+ arch/x86/kernel/cpu/sgx/driver.c              |  27 +-
+ arch/x86/kernel/cpu/sgx/encl.c                |  72 ++-
+ arch/x86/kernel/cpu/sgx/encl.h                |   4 +-
+ arch/x86/kernel/cpu/sgx/epc_cgroup.c          | 415 ++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/epc_cgroup.h          |  59 +++
+ arch/x86/kernel/cpu/sgx/ioctl.c               |  25 +-
+ arch/x86/kernel/cpu/sgx/main.c                | 399 +++++++++++++----
+ arch/x86/kernel/cpu/sgx/sgx.h                 | 117 ++++-
+ include/linux/misc_cgroup.h                   |  34 ++
+ kernel/cgroup/misc.c                          |  57 ++-
+ .../selftests/sgx/run_epc_cg_selftests.sh     | 147 +++++++
+ .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
+ 15 files changed, 1314 insertions(+), 151 deletions(-)
+ create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+ create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+ create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
+
+-- 
+2.25.1
 
