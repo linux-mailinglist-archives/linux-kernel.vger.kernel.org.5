@@ -2,93 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67ED37AC20E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1097AC212
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjIWM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 08:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        id S231598AbjIWMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 08:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbjIWM3B (ORCPT
+        with ESMTP id S231382AbjIWMhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 08:29:01 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E677A3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 05:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
- t=1695472121; x=1696076921; i=j.neuschaefer@gmx.net;
- bh=5PbtnxHt4pzwD8Q2b/5utg2+U5eL23wgfkdvavzRTeM=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=o5A1d7wGiMAYUAcAekHw+yVsJDV1l7XbJ7hoBYr577AlA2DrQrq8Qc2qmEFwncVRx0BHr2EbYtm
- e7+7W9mJTFkScaMhUkjJOBQ5aMG4RMyg4dIJgEFIQMgAZOwm2n4Oi4kbj74o9b5EtlhgcHbVMv/0f
- KQIcPR4vD5R8lxsOWX3VXmC6RvsAO95a2EzKJ55HZKYG2cxW/sxCYcaDX+9Le5QMWh6/wmb0omQGq
- q0PJjJ3Jr1l4r2VDv8NbBQLJr5WZ4fKowUhzZfh7GDBwUAsLOqCm7acDnyzjwyneFM6NzL35vJYO5
- vL8aiVv6Z6LwGgHwrodr1oiXu0iAPBLzvwgA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8ob6-1rmBoN1xP4-015qKl; Sat, 23
- Sep 2023 14:28:41 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Russell King <linux@armlinux.org.uk>, openbmc@lists.ozlabs.org,
+        Sat, 23 Sep 2023 08:37:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5C6127
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 05:37:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E446C433C7;
+        Sat, 23 Sep 2023 12:37:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695472630;
+        bh=bcygefpblKdJikSyubX+CQYuxg19JdqQRln729Toe5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AutvtvyfZ1hOD4BHgapyqGZBR7L427cq4Lk7TaAT4DRVF8Wb/W73D2GTFS1VyFj1w
+         tl8F115j1muRg6JAQ+RFIFxghLqtK5dqVK50uHB74ERzYr5FXfcTigtU8nvt3jrfUD
+         RsfsisKq0SHXbmtd37tGrD0n2OZoRTvuSFMYcZRLTWtwGPTJg27JC4yDYV0Ss5/PJv
+         BsHm2AmsFZrs6JZsS5bMoqflPvLKkxpGj/E3KaGbmBlUGbvfK/kyooAOce5zpk4Yc0
+         vl2a+s89HJcetbfuEXmT8qd89SZ++PVnPjOCCUGj4EUcXQa0P3aX6i5u5albS+nPcZ
+         qyInkmmL2LdIQ==
+Date:   Sat, 23 Sep 2023 14:37:05 +0200
+From:   Alexey Gladkov <legion@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: wpcm450_defconfig: Fix formatting of 32-bit number
-Date:   Sat, 23 Sep 2023 14:28:32 +0200
-Message-Id: <20230923122833.1734268-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.40.1
+Subject: Re: [PATCH 5/5] time,signal: turn signal_struct.stats_lock into
+ seqcount_rwlock_t
+Message-ID: <ZQ7b8T9aA3UUHdOT@example.org>
+References: <20230913154907.GA26210@redhat.com>
+ <20230913155009.GA26255@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pn8f3Er7D00eg+JBPEfT1LBHFNbmo1D6zRqUPQqSN8TNw37DOtM
- 6yuFL8Fw7QNZad/4aSq/+sUfFT1vGyJYmCJJeY1/YUvgiytcF5yd2mzGupkYDgiIySZO8Hl
- Vplq2nkjwP9iEL/NR2ARTZhcp5+KZVdU23M8gAEzxuEdK4PVaC6N71yc7PtaJt9IOt4BXFV
- tcihTtr/8qyQBgRXwQCxg==
-UI-OutboundReport: notjunk:1;M01:P0:PCHRbzln+TM=;pObnbTvGRUjCreVVnsegac+vUiF
- +kT0jLsW6Gavv1xvlxZW+6FQKxzzfazO0iS3Ot6KsysYaaa0AZYDU8xxDe9ZRP/dpUpKxSnHg
- tNGpUCRYnL9ofp1qxFinoAhDPRorVm8qfU0r/+AqgcEb2OZEHdqXmjffieSaGfwvbm3yEdDn9
- rwvUWOl5ZkxdvKRHcDT8BBMHlp/SoGAuGU+W+iHRCjYOWrxNVhZMNtqYJ5zKl7w0E14IWqW2W
- /f/Kruq9j/1PZm4VSa+WbVnDEz/sxO0flYLjmnrDsv/boNXkFnFAMYue/IXu8vV7QKK0ZbZjg
- X38EEmJd5jo07q8kVs5bsw9l2S3t2+vNHkKzbszedAj+TMZtBjt9K63NYv0kyjQSmx9sHLKhX
- Z8LFxTj243DzwZuqXdllbkZoqDfKvdSiwfpo/HoszsndLbafLCLHwRiuDrReNt/kLSLAUwxe6
- DDtzAcgMwJi2dLjdsG2JUQ1YXMFJQ9xSBxVH1HqP704ZkLYtMvk347wx79dAKBS4e7he/bUEK
- OU74kOCiH3DJXPas1Nq55RplrsLjZwgSpCQm5aomwyq2u7p5rWbjkvP6+H0beaAGjlUpb/G5t
- /RE1TL/RZzkdvptJ+0sP+yHwHH1AwFFd0FZljg3u+zoAf6zs9yOYhoNQukcsUxxt3HTPIhlHr
- 5y5dKtuDBNcVhVb602bPqWKCeIObqaQljJP8fub8qmVWrtrYLsZnBqmAFJITGgXus/kEYUfOj
- UoUbLdt6+iHxMIWNYIpKPiBUbatnA9N9fMOS325nSfRCmZ35OzGd4SoxsClZADGlvvfiaIsK1
- 0gyJvkG0UzjwyEJDbYN4Hs+DVa5DtOsofEPDeMij33SAxzKHQq+daqX63mgAF4g1nBMJWwbIl
- dKt4LnFpWce7h5/ZNnQ/+QYJlTDen4/3TySwXo/Fp7zmq3AT6ka26eaSI5XFcFvdIy9pGaOJm
- cekimA==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230913155009.GA26255@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nine digits are one too many.
+On Wed, Sep 13, 2023 at 05:50:09PM +0200, Oleg Nesterov wrote:
+> This way thread_group_cputime() doesn't exclude other readers on the
+> 2nd pass.
+> 
+> thread_group_cputime() still needs to disable irqs because stats_lock
+> nests inside siglock. But once we change the getrusage()-like users to
+> rely on stats_lock we can remove this dependency, and after that there
+> will be no need for _irqsave.
+> 
+> And IIUC, this is the bugfix for CONFIG_PREEMPT_RT? Before this patch
+> read_seqbegin_or_lock() can spin in __read_seqcount_begin() while the
+> write_seqlock(stats_lock) section was preempted.
+> 
+> While at it, change the main loop to use __for_each_thread(sig, t).
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  include/linux/sched/signal.h |  4 +++-
+>  kernel/exit.c                | 12 ++++++++----
+>  kernel/fork.c                |  3 ++-
+>  kernel/sched/cputime.c       | 10 ++++++----
+>  4 files changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index d7fa3ca2fa53..c7c0928b877d 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -182,7 +182,9 @@ struct signal_struct {
+>  	 * Live threads maintain their own counters and add to these
+>  	 * in __exit_signal, except for the group leader.
+>  	 */
+> -	seqlock_t stats_lock;
+> +	rwlock_t stats_lock;
+> +	seqcount_rwlock_t stats_seqc;
+> +
+>  	u64 utime, stime, cutime, cstime;
+>  	u64 gtime;
+>  	u64 cgtime;
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index f3ba4b97a7d9..8dedb7138f9c 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -182,7 +182,8 @@ static void __exit_signal(struct task_struct *tsk)
+>  	 * see the empty ->thread_head list.
+>  	 */
+>  	task_cputime(tsk, &utime, &stime);
+> -	write_seqlock(&sig->stats_lock);
+> +	write_lock(&sig->stats_lock);
+> +	write_seqcount_begin(&sig->stats_seqc);
+>  	sig->utime += utime;
+>  	sig->stime += stime;
+>  	sig->gtime += task_gtime(tsk);
+> @@ -196,7 +197,8 @@ static void __exit_signal(struct task_struct *tsk)
+>  	sig->sum_sched_runtime += tsk->se.sum_exec_runtime;
+>  	sig->nr_threads--;
+>  	__unhash_process(tsk, group_dead);
+> -	write_sequnlock(&sig->stats_lock);
+> +	write_seqcount_end(&sig->stats_seqc);
+> +	write_unlock(&sig->stats_lock);
+>  
+>  	/*
+>  	 * Do this under ->siglock, we can race with another thread
+> @@ -1160,7 +1162,8 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+>  		 */
+>  		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+>  		spin_lock_irq(&current->sighand->siglock);
+> -		write_seqlock(&psig->stats_lock);
+> +		write_lock(&psig->stats_lock);
+> +		write_seqcount_begin(&psig->stats_seqc);
+>  		psig->cutime += tgutime + sig->cutime;
+>  		psig->cstime += tgstime + sig->cstime;
+>  		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
+> @@ -1183,7 +1186,8 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+>  			psig->cmaxrss = maxrss;
+>  		task_io_accounting_add(&psig->ioac, &p->ioac);
+>  		task_io_accounting_add(&psig->ioac, &sig->ioac);
+> -		write_sequnlock(&psig->stats_lock);
+> +		write_seqcount_end(&psig->stats_seqc);
+> +		write_unlock(&psig->stats_lock);
+>  		spin_unlock_irq(&current->sighand->siglock);
+>  	}
+>  
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index b9d3aa493bbd..bbd5604053f8 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1870,7 +1870,8 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
+>  	sig->curr_target = tsk;
+>  	init_sigpending(&sig->shared_pending);
+>  	INIT_HLIST_HEAD(&sig->multiprocess);
+> -	seqlock_init(&sig->stats_lock);
+> +	rwlock_init(&sig->stats_lock);
+> +	seqcount_rwlock_init(&sig->stats_seqc, &sig->stats_lock);
+>  	prev_cputime_init(&sig->prev_cputime);
+>  
+>  #ifdef CONFIG_POSIX_TIMERS
+> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+> index af7952f12e6c..bd6a85bd2a49 100644
+> --- a/kernel/sched/cputime.c
+> +++ b/kernel/sched/cputime.c
+> @@ -333,12 +333,13 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+>  	nextseq = 0;
+>  	do {
+>  		seq = nextseq;
+> -		flags = read_seqbegin_or_lock_irqsave(&sig->stats_lock, &seq);
+> +		flags = read_seqcount_begin_or_lock_irqsave(&sig->stats_seqc,
+> +						     &sig->stats_lock, &seq);
+>  		times->utime = sig->utime;
+>  		times->stime = sig->stime;
+>  		times->sum_exec_runtime = sig->sum_sched_runtime;
+>  
+> -		for_each_thread(tsk, t) {
+> +		__for_each_thread(sig, t) {
+>  			task_cputime(t, &utime, &stime);
+>  			times->utime += utime;
+>  			times->stime += stime;
+> @@ -346,8 +347,9 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+>  		}
+>  		/* If lockless access failed, take the lock. */
+>  		nextseq = 1;
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- arch/arm/configs/wpcm450_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think you're right, and indeed there is a possible situation here
+where write_seqlock will force all readers to take locks one after
+another.
 
-diff --git a/arch/arm/configs/wpcm450_defconfig b/arch/arm/configs/wpcm450=
-_defconfig
-index 45483deab034f..78b6c671eade5 100644
-=2D-- a/arch/arm/configs/wpcm450_defconfig
-+++ b/arch/arm/configs/wpcm450_defconfig
-@@ -206,6 +206,6 @@ CONFIG_DEBUG_USER=3Dy
- CONFIG_DEBUG_LL=3Dy
- CONFIG_DEBUG_LL_UART_8250=3Dy
- CONFIG_DEBUG_UART_PHYS=3D0xb8000000
--CONFIG_DEBUG_UART_VIRT=3D0x0ff000000
-+CONFIG_DEBUG_UART_VIRT=3D0xff000000
- CONFIG_DEBUG_UART_8250_WORD=3Dy
- CONFIG_EARLY_PRINTK=3Dy
-=2D-
-2.40.1
+I really don’t know how critical it is in this place.
+
+> -	} while (need_seqretry(&sig->stats_lock, seq));
+> -	done_seqretry_irqrestore(&sig->stats_lock, seq, flags);
+> +	} while (need_seqcount_retry(&sig->stats_seqc, seq));
+> +	done_seqcount_retry_irqrestore(&sig->stats_seqc, &sig->stats_lock,
+> +					seq, flags);
+>  	rcu_read_unlock();
+>  }
+>  
+> -- 
+> 2.25.1.362.g51ebf55
+> 
+
+-- 
+Rgrds, legion
 
