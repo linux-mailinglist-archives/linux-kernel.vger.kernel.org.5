@@ -2,122 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3FD7ABF06
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 10:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8057ABF0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 10:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjIWI47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 04:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        id S231156AbjIWI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 04:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjIWI4y (ORCPT
+        with ESMTP id S230497AbjIWI57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 04:56:54 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4857194;
-        Sat, 23 Sep 2023 01:56:48 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38N8rbdD004418;
-        Sat, 23 Sep 2023 08:56:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=lhJM4nHcNVKXoWsAi7uyveJv5UuaJLckzF29N/p01KM=;
- b=kIbC17fSMWhk7C2C6j1nD748svOZsUJRxx8uyvBMWt0UGdgIaPLcfqROhmoy5fUQOISJ
- eFkbB10U726QLAK4aubUuHgQOKz+iZLR1Epb0k0IT2p1GUODf3GDWA8Xdy8SNhdSuM+3
- lQcVr0I0N6nl2UZvkgOyFToIhoP/GIWwDIgZeuDL3MT8ngA+OAq/GEhtH67a2uJ1WKTc
- M0OHpPhwOHE0P9OsWEnWkyqO/hvyEpZHFdl/fD9tvWp/s4knF1x1M0nVFbiQpyYcEKJW
- 3+gXYx77w0gL18aMjuEeAVYbi+mD4J7PnXszCAoG/3lHcpP4VsuXS+mrGtjXlT4ujfkl jA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t9vwfr172-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 23 Sep 2023 08:56:46 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38N8cF9e002541;
-        Sat, 23 Sep 2023 08:56:46 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t8tspcqrx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 23 Sep 2023 08:56:46 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38N8uhbd44761648
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 23 Sep 2023 08:56:43 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ECF2C2004E;
-        Sat, 23 Sep 2023 08:56:42 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E99920043;
-        Sat, 23 Sep 2023 08:56:42 +0000 (GMT)
-Received: from localhost (unknown [9.171.34.117])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Sat, 23 Sep 2023 08:56:42 +0000 (GMT)
-Date:   Sat, 23 Sep 2023 10:56:41 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 6.6-rc3
-Message-ID: <your-ad-here.call-01695459401-ext-1349@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Htcmc5tdjTL7mBbnoJ6rxRS5wht_Cye9
-X-Proofpoint-ORIG-GUID: Htcmc5tdjTL7mBbnoJ6rxRS5wht_Cye9
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-23_06,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=0 phishscore=0
- adultscore=0 mlxlogscore=514 mlxscore=0 clxscore=1011 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309230073
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 23 Sep 2023 04:57:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC34196
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 01:57:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87DC8C433C8;
+        Sat, 23 Sep 2023 08:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695459472;
+        bh=B5iJK8d6K4hWUoky1Er/Avif20xo+seTHte0YQPQhEM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XujPLn2psJEGWQtIsNS1J7Oi5htuRC+mCdPf43HFye5Mg1FjNoldDrRh0VFSy0ERe
+         iXvHRC8XzLjNi5iRfuocQwqCzymOSiuTN+8A44axl1JeFn5/2HeVhAuu/Pc7G143ZJ
+         nk6EKBFyE25snL1OEDEYgWbxVmxGgc5oOo6hUYFxrcWtzhMrKSmpoXZoLy5w/biopx
+         FfnUMAwsUIsRlzQGM0rbYHLR3u6UpigGWPe6/omjlYP69OAzSo4qjqirSgbI9WvRm0
+         8CzqPBBRt7kFgmceWQxTqsWSzwmoe9DQm6nHwDhXNc6Q+a/t1gCsBjZPj7oCSh6fxD
+         CIxDlQ+x6uIKQ==
+Date:   Sat, 23 Sep 2023 17:57:46 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+Subject: Re: [PATCH v9 0/5] lib,kprobes: kretprobe scalability improvement
+Message-Id: <20230923175746.da3ab516a5c17c5d1897d6d6@kernel.org>
+In-Reply-To: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
+References: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Hi Wuqiang,
 
-please pull s390 changes for 6.6-rc3.
+I dug my mail box and found this. Sorry for replying late.
 
-Thank you,
-Vasily
+On Tue,  5 Sep 2023 09:52:50 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
+> This patch series introduces a scalable and lockless ring-array based
+> object pool and replaces the original freelist (a LIFO queue based on
+> singly linked list) to improve scalability of kretprobed routines.
+> 
+> v9:
+>   1) objpool: raw_local_irq_save/restore added to prevent interruption
+> 
+>      To avoid possible ABA issues, we must ensure objpool_try_add_slot
+>      and objpool_try_add_slot are uninterruptible. If these operations
+>      are blocked or interrupted in the middle, other cores could overrun
+>      the same slot's ages[] of uint32, then after resuming back, the
+>      interrupted pop() or push() could see same value of ages[], which
+>      is a typical ABA problem though the possibility is small.
+> 
+>      The pair of pop()/push() costs about 8.53 cpu cycles, measured
+>      by IACA (Intel Architecture Code Analyzer). That is, on a 4Ghz
+>      core dedicated for pop() & push(), theoretically it would only
+>      need 8.53 seconds to overflow a 32bit value. Testings upon Intel
+>      i7-10700 (2.90GHz) cost 71.88 seconds to overrun a 32bit integer.
 
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+What does this mean? This sounds like "There is a timing issue if it's enough fast".
 
-are available in the Git repository at:
+Let me reivew the patch itself.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.6-3
+Thanks,
 
-for you to fetch changes up to 5c95bf274665cc9f5126e4a48a9da51114f7afd2:
+> 
+>   2) codes improvements: thanks to Masami for the thorough inspection
+> 
+> v8:
+>   1) objpool: refcount added for objpool lifecycle management
+> 
+> wuqiang.matt (5):
+>   lib: objpool added: ring-array based lockless MPMC
+>   lib: objpool test module added
+>   kprobes: kretprobe scalability improvement with objpool
+>   kprobes: freelist.h removed
+>   MAINTAINERS: objpool added
+> 
+>  MAINTAINERS              |   7 +
+>  include/linux/freelist.h | 129 --------
+>  include/linux/kprobes.h  |  11 +-
+>  include/linux/objpool.h  | 174 ++++++++++
+>  include/linux/rethook.h  |  16 +-
+>  kernel/kprobes.c         |  93 +++---
+>  kernel/trace/fprobe.c    |  32 +-
+>  kernel/trace/rethook.c   |  90 +++--
+>  lib/Kconfig.debug        |  11 +
+>  lib/Makefile             |   4 +-
+>  lib/objpool.c            | 338 +++++++++++++++++++
+>  lib/test_objpool.c       | 689 +++++++++++++++++++++++++++++++++++++++
+>  12 files changed, 1320 insertions(+), 274 deletions(-)
+>  delete mode 100644 include/linux/freelist.h
+>  create mode 100644 include/linux/objpool.h
+>  create mode 100644 lib/objpool.c
+>  create mode 100644 lib/test_objpool.c
+> 
+> -- 
+> 2.40.1
+> 
 
-  s390/cert_store: fix string length handling (2023-09-19 13:25:44 +0200)
 
-----------------------------------------------------------------
-s390 updates for 6.6-rc3
-
-- Fix potential string buffer overflow in hypervisor user-defined
-  certificates handling.
-
-- Update defconfigs.
-
-----------------------------------------------------------------
-Heiko Carstens (1):
-      s390: update defconfigs
-
-Peter Oberparleiter (1):
-      s390/cert_store: fix string length handling
-
- arch/s390/configs/debug_defconfig    | 14 ++++++++++----
- arch/s390/configs/defconfig          | 13 +++++++++----
- arch/s390/configs/zfcpdump_defconfig |  4 ++--
- arch/s390/kernel/cert_store.c        |  7 ++++---
- 4 files changed, 25 insertions(+), 13 deletions(-)
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
