@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 982C57ABE4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B21C7ABE4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjIWHOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 03:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
+        id S230198AbjIWHPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 03:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbjIWHOI (ORCPT
+        with ESMTP id S229980AbjIWHPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 03:14:08 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6103519C;
-        Sat, 23 Sep 2023 00:14:01 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 46e09a7af769-6bd04558784so2106654a34.3;
-        Sat, 23 Sep 2023 00:14:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695453240; x=1696058040; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5wNl5BJ8gcnnggkuY+vRKw97Vo+2bqxg83VB63bOWl8=;
-        b=bk6ppflbWAjsklN79HxmVFxASbupL4zewXKKvuwneg8voKj5aXjJ+hdMc2oHq4S9vj
-         6Z07oiE41zsbM8wY87N6YKR+3NZYAa7p6IZDliJAUholML2psP2B/HwndKNEjwo2pyJO
-         sopNySXj6AtNGLTq5KTewWlczjyl0VGZvFC8dISt/9TzOzUrls0TnKclgIjJHatlCZXJ
-         rpyrZ2R2oCRNwFZatM2Fr3bg3ghr2lYcJGGt5i7ieuHaeHsHTozND3JMGhELg+ArxlXO
-         ugoTFRxNdkmb6oB7PoiBbHh+iZiPTh9JvPuR88NQ0tQU+PzKtASeH0bt2jOPW2CeaXPK
-         yU9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695453240; x=1696058040;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5wNl5BJ8gcnnggkuY+vRKw97Vo+2bqxg83VB63bOWl8=;
-        b=rzn6Mn4H/7Tg8j2JyX5KbFNDvQUnH8ubZ34ei+PqBRWUFPrxHwbj5j03/piSCYbekN
-         0WACIbtIRnmAjhFpBIwge0VFw2uj+cx14CQDC5cZYDgrsanuWrOLgC2VDC6esUV57vol
-         95jH9j6H4O4vaxoLvqkzz7agGsNZhgruc5ytjiBn0yZ/akTU2crnK1O6EpojowR9GpOK
-         KVl8qRF5xzerHs16xmvRNVgzBWn9sPphouylVDculYln1ByAEIX+yLO5HBh+5GOM8rVU
-         V8mhLmEq1WVN0QwxVIS0onAQGmpkZH7OjL0Z1rvouUgra/lP02Zj44u/WsK7Giesuxgm
-         ETIg==
-X-Gm-Message-State: AOJu0YyTrd8gPuBTLYLDlVVkDQTs8nw8PVCUbZI0cQ+jhZyAi/jLTWwp
-        oVD0gCpAQforktn1HVHSizU=
-X-Google-Smtp-Source: AGHT+IHUfdoy7CjQbWdS9m+R0sBXBZv8WhO5L/m/psbBj4/P+EpfeZ4GF/16P6C2uWOtFeX24PF/ng==
-X-Received: by 2002:a05:6358:9222:b0:135:85ec:a080 with SMTP id d34-20020a056358922200b0013585eca080mr1678964rwb.32.1695453240497;
-        Sat, 23 Sep 2023 00:14:00 -0700 (PDT)
-Received: from localhost.localdomain ([140.112.90.93])
-        by smtp.gmail.com with ESMTPSA id x41-20020a056a000be900b006877ec47f82sm4315136pfu.66.2023.09.23.00.13.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 00:14:00 -0700 (PDT)
-From:   Jianlin Li <ljianlin99@gmail.com>
-To:     corbet@lwn.net
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jianlin Li <ljianlin99@gmail.com>
-Subject: [PATCH] docs: x86: Update spec URL in x86/iommu document
-Date:   Sat, 23 Sep 2023 15:13:45 +0800
-Message-Id: <20230923071344.540894-1-ljianlin99@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 23 Sep 2023 03:15:52 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE30A7
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 00:15:42 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id jwrbqrekTcLIgjwrbqAzVs; Sat, 23 Sep 2023 09:15:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695453340;
+        bh=Pwbdp/ALGy4X1W3d5bb3j8VmlzglmaHLWQ82s+zIwjM=;
+        h=From:To:Cc:Subject:Date;
+        b=bsXnvC+OsPEQQYIP6GC2EcGJcwME9UMZuNil/vQx6pXE8Vz3SIcCBxlJuXLeu8Uqj
+         uw+ErlMH6E+a7lSNvdRjPzzE8qGDtwKYul1uni7zIapmNguUaCcOnjAoM5+IY9xYgk
+         pwJujQ1DJpxrWbwmvXnz170LInVGPwBPVs2YfLvrHLnfgD+EFf2Flv33TkyBxC6yUl
+         2DnTgiOfGDV3j/I0pT0DjAWDYibH/W0bTkzpCCm9TDUOx0v14Vz6hybqdK+f3Se6E1
+         Dd+foaEyIbawZ71lt4+4d+Rwn6QLFbLV7ZLAanJWFfSSoFz1oXb7xYNqkYv4dlay80
+         FyTjIFWMxs7aA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 23 Sep 2023 09:15:40 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Bryan Wu <bryan.wu@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jamie Iles <jamie@jamieiles.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-leds@vger.kernel.org
+Subject: [PATCH] leds: trigger: ledtrig-cpu:: Fix a warning when compiling with W=1
+Date:   Sat, 23 Sep 2023 09:15:38 +0200
+Message-Id: <3f4be7a99933cf8566e630da54f6ab913caac432.1695453322.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,27 +57,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous link to AMD IOMMU spec is no longer available,
-replace it with the new one.
+In order to teach the compiler that 'trig->name' will never be truncated,
+we need to tell it that 'cpu' is not negative.
 
-Signed-off-by: Jianlin Li <ljianlin99@gmail.com>
+When building with W=1, this fixes the following warnings:
+
+  drivers/leds/trigger/ledtrig-cpu.c: In function ‘ledtrig_cpu_init’:
+  drivers/leds/trigger/ledtrig-cpu.c:155:56: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 5 [-Werror=format-truncation=]
+    155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
+        |                                                        ^~
+  drivers/leds/trigger/ledtrig-cpu.c:155:52: note: directive argument in the range [-2147483648, 7]
+    155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
+        |                                                    ^~~~~~~
+  drivers/leds/trigger/ledtrig-cpu.c:155:17: note: ‘snprintf’ output between 5 and 15 bytes into a destination of size 8
+    155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
+        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Fixes: 8f88731d052d ("led-triggers: create a trigger for CPU activity")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- Documentation/arch/x86/iommu.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/trigger/ledtrig-cpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/arch/x86/iommu.rst b/Documentation/arch/x86/iommu.rst
-index 42c7a6faa39a..41fbadfe2221 100644
---- a/Documentation/arch/x86/iommu.rst
-+++ b/Documentation/arch/x86/iommu.rst
-@@ -5,7 +5,7 @@ x86 IOMMU Support
- The architecture specs can be obtained from the below locations.
+diff --git a/drivers/leds/trigger/ledtrig-cpu.c b/drivers/leds/trigger/ledtrig-cpu.c
+index 8af4f9bb9cde..05848a2fecff 100644
+--- a/drivers/leds/trigger/ledtrig-cpu.c
++++ b/drivers/leds/trigger/ledtrig-cpu.c
+@@ -130,7 +130,7 @@ static int ledtrig_prepare_down_cpu(unsigned int cpu)
  
- - Intel: http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf
--- AMD: https://www.amd.com/system/files/TechDocs/48882_IOMMU.pdf
-+- AMD: https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/specifications/48882_3_07_PUB.pdf
+ static int __init ledtrig_cpu_init(void)
+ {
+-	int cpu;
++	unsigned int cpu;
+ 	int ret;
  
- This guide gives a quick cheat sheet for some basic understanding.
+ 	/* Supports up to 9999 cpu cores */
+@@ -152,7 +152,7 @@ static int __init ledtrig_cpu_init(void)
+ 		if (cpu >= 8)
+ 			continue;
  
+-		snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
++		snprintf(trig->name, MAX_NAME_LEN, "cpu%u", cpu);
+ 
+ 		led_trigger_register_simple(trig->name, &trig->_trig);
+ 	}
 -- 
-2.25.1
+2.34.1
 
