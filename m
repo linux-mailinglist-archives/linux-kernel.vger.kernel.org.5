@@ -2,271 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8370E7ABD33
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 03:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A757ABD2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 03:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjIWBrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 21:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S230397AbjIWBl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 21:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbjIWBrK (ORCPT
+        with ESMTP id S230378AbjIWBlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 21:47:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EE71A8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 18:47:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695433621; x=1726969621;
-  h=date:from:to:cc:subject:message-id;
-  bh=pIEJWHbpAHxiEope4909u29r3FbgIXenZIEycbtdShk=;
-  b=fAYAESzOCGm4uC+7ZAeKDPhk1/F0fLpNHQPFKHgySELX2obQxGj7TOws
-   G1Jpg0k3RcHWfZXJToF9jaeSWeSSkflkWeQeVPlL2XdW+tBgv1uCiNJe/
-   294MdpZD61wmqgo+WmjF2rv9z54F2fg3Y8HZNhgutIwWMQKzb7uKF46kf
-   9PTrU2l7wkQ6bZR+vw4T2G5j/61OAofKkBkB/ZvRrEh8MUSGlOAObW3lV
-   wzcCF+Ck7h2lgxxj76TE5ROsOE9AZaaca4CtRh79sXYcTk04eEmoc14vP
-   Gj9slXXBjBoQaESWXATYsP7BSmb1UNvpktQpvUejNggJ1pqBveoDp6dVy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="366036463"
-X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="366036463"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 18:47:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="921378749"
-X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="921378749"
-Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 22 Sep 2023 18:47:00 -0700
-Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjrjW-0001Zm-14;
-        Sat, 23 Sep 2023 01:46:58 +0000
-Date:   Sat, 23 Sep 2023 09:46:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- dc461c48deda8a2d243fbaf49e276d555eb833d8
-Message-ID: <202309230912.P0uERml8-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 21:41:51 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FC71AB;
+        Fri, 22 Sep 2023 18:41:45 -0700 (PDT)
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+        by cmsmtp with ESMTP
+        id jjHbq7WX7yYOwjreSqyWYO; Sat, 23 Sep 2023 01:41:44 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id jreRqje4O43lpjreRq8PIr; Sat, 23 Sep 2023 01:41:43 +0000
+X-Authority-Analysis: v=2.4 cv=d+nmdDvE c=1 sm=1 tr=0 ts=650e4257
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=8AirrxEcAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
+ a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=wH_VP6JpHQxiM5NuicYA:9 a=QEXdDO2ut3YA:10
+ a=ST-jHhOKWsTCqRlWije3:22 a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MzVmwOfKB5MwMYw1j9M03a/MmO+PWTyuUR8xCl+K+/s=; b=qbuwD3+uHDTnn4bXL6W2KVl9Wl
+        Qi8GHz6cRRQEgeJLXFmpKyQGtH9xrNDv6IdLN4A8lUROSx63oc+UgIPXNn7ODLavpTylUm5oytsVz
+        7qiHE6UkkxYR7riDWB3I1a7blFwCqxfKKHJZ4U8ijgholpaPULo9sRcRYm9rNXAywPwMB/6dkn58k
+        8+VxF5Pa0AaqRHyRYBrW7iAqMXhrVs8I/q0+biL/Qlvca1+Gt4LOToNHChe1gICvXtcbMrEF3g/KQ
+        ea+hEpkSFGm5fq8pX4mehXnHKd89T/UgHuvU+ay4zZRaGIx8/WqRfAjom93zcvgtGLGLofqZyiHcN
+        jIQE407Q==;
+Received: from [94.239.20.48] (port=58636 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qjkNc-0005fN-11;
+        Fri, 22 Sep 2023 12:55:52 -0500
+Message-ID: <9bc8cfed-4577-f303-5186-0369f96cf8a7@embeddedor.com>
+Date:   Fri, 22 Sep 2023 19:56:49 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 11/14] net: enetc: Annotate struct enetc_psfp_gate with
+ __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        David Ahern <dsahern@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Alex Elder <elder@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dev@openvswitch.org,
+        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+References: <20230922172449.work.906-kees@kernel.org>
+ <20230922172858.3822653-11-keescook@chromium.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230922172858.3822653-11-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qjkNc-0005fN-11
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:58636
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHc2+7/44s/62cxPYuyA5fcVNRoiyG2bKVsWz3fds8iD+EMQw/1fy+5UnlwnseotB+VsnBeYZA0Q9+21dB/N8MwlZIRpEDc5tlYlPZBNgEa9HkipO6C8
+ XDokKC0wErsB/pzLIZr3nEgFYkOE4loFnzMX66f3mVR8mUPa+Ttk4gDzV7AjVu8D/tk8NPY/STm24KHPsVVeuvd1NWXj66HLiNUNAng7PtOWdJK7uahfgXzq
+ ZzvJRm93TOIMTyLpdnqdW7vewxKqGFYjj4TjWqJ11orlfjmms6zLxLsMxnLf43JBplwOoPXBcIafFsnUh37swKyXrSss1SbP6n7k4P0fNxAMKnbQntoy/Bwo
+ 4LH8MYDuE8VVKW5t9A/K1UPX2cSC+uK2Zvk/nfCLrNILqnX0VM430vQ5XsLkOadJQxanRk4a
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: dc461c48deda8a2d243fbaf49e276d555eb833d8  sched/debug: Avoid checking in_atomic_preempt_off() twice in schedule_debug()
 
-elapsed time: 938m
 
-configs tested: 193
-configs skipped: 2
+On 9/22/23 11:28, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct enetc_psfp_gate.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                   randconfig-001-20230922   gcc  
-arc                   randconfig-001-20230923   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230922   gcc  
-arm                   randconfig-001-20230923   gcc  
-arm                        shmobile_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230922   gcc  
-i386         buildonly-randconfig-001-20230923   gcc  
-i386         buildonly-randconfig-002-20230922   gcc  
-i386         buildonly-randconfig-002-20230923   gcc  
-i386         buildonly-randconfig-003-20230922   gcc  
-i386         buildonly-randconfig-003-20230923   gcc  
-i386         buildonly-randconfig-004-20230922   gcc  
-i386         buildonly-randconfig-004-20230923   gcc  
-i386         buildonly-randconfig-005-20230922   gcc  
-i386         buildonly-randconfig-005-20230923   gcc  
-i386         buildonly-randconfig-006-20230922   gcc  
-i386         buildonly-randconfig-006-20230923   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230922   gcc  
-i386                  randconfig-001-20230923   gcc  
-i386                  randconfig-002-20230922   gcc  
-i386                  randconfig-002-20230923   gcc  
-i386                  randconfig-003-20230922   gcc  
-i386                  randconfig-003-20230923   gcc  
-i386                  randconfig-004-20230922   gcc  
-i386                  randconfig-004-20230923   gcc  
-i386                  randconfig-005-20230922   gcc  
-i386                  randconfig-005-20230923   gcc  
-i386                  randconfig-006-20230922   gcc  
-i386                  randconfig-006-20230923   gcc  
-i386                  randconfig-011-20230922   gcc  
-i386                  randconfig-011-20230923   gcc  
-i386                  randconfig-012-20230922   gcc  
-i386                  randconfig-012-20230923   gcc  
-i386                  randconfig-013-20230922   gcc  
-i386                  randconfig-013-20230923   gcc  
-i386                  randconfig-014-20230922   gcc  
-i386                  randconfig-014-20230923   gcc  
-i386                  randconfig-015-20230922   gcc  
-i386                  randconfig-015-20230923   gcc  
-i386                  randconfig-016-20230922   gcc  
-i386                  randconfig-016-20230923   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230922   gcc  
-loongarch             randconfig-001-20230923   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                            ar7_defconfig   gcc  
-mips                  cavium_octeon_defconfig   clang
-mips                     cu1000-neo_defconfig   clang
-mips                           ip27_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                     asp8347_defconfig   gcc  
-powerpc                        cell_defconfig   gcc  
-powerpc                       maple_defconfig   gcc  
-powerpc64                           defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230922   gcc  
-riscv                 randconfig-001-20230923   gcc  
-riscv                          rv32_defconfig   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230922   gcc  
-s390                  randconfig-001-20230923   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                           se7724_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230923   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230922   gcc  
-x86_64       buildonly-randconfig-001-20230923   gcc  
-x86_64       buildonly-randconfig-002-20230922   gcc  
-x86_64       buildonly-randconfig-002-20230923   gcc  
-x86_64       buildonly-randconfig-003-20230922   gcc  
-x86_64       buildonly-randconfig-003-20230923   gcc  
-x86_64       buildonly-randconfig-004-20230922   gcc  
-x86_64       buildonly-randconfig-004-20230923   gcc  
-x86_64       buildonly-randconfig-005-20230922   gcc  
-x86_64       buildonly-randconfig-005-20230923   gcc  
-x86_64       buildonly-randconfig-006-20230922   gcc  
-x86_64       buildonly-randconfig-006-20230923   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230922   gcc  
-x86_64                randconfig-001-20230923   gcc  
-x86_64                randconfig-002-20230922   gcc  
-x86_64                randconfig-002-20230923   gcc  
-x86_64                randconfig-003-20230922   gcc  
-x86_64                randconfig-003-20230923   gcc  
-x86_64                randconfig-004-20230922   gcc  
-x86_64                randconfig-004-20230923   gcc  
-x86_64                randconfig-005-20230922   gcc  
-x86_64                randconfig-005-20230923   gcc  
-x86_64                randconfig-006-20230922   gcc  
-x86_64                randconfig-006-20230923   gcc  
-x86_64                randconfig-011-20230923   gcc  
-x86_64                randconfig-012-20230923   gcc  
-x86_64                randconfig-013-20230923   gcc  
-x86_64                randconfig-014-20230923   gcc  
-x86_64                randconfig-015-20230923   gcc  
-x86_64                randconfig-016-20230923   gcc  
-x86_64                randconfig-071-20230922   gcc  
-x86_64                randconfig-071-20230923   gcc  
-x86_64                randconfig-072-20230922   gcc  
-x86_64                randconfig-072-20230923   gcc  
-x86_64                randconfig-073-20230922   gcc  
-x86_64                randconfig-073-20230923   gcc  
-x86_64                randconfig-074-20230922   gcc  
-x86_64                randconfig-074-20230923   gcc  
-x86_64                randconfig-075-20230922   gcc  
-x86_64                randconfig-075-20230923   gcc  
-x86_64                randconfig-076-20230922   gcc  
-x86_64                randconfig-076-20230923   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-
+Thanks
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Gustavo
+
+> ---
+>   drivers/net/ethernet/freescale/enetc/enetc_qos.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_qos.c b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
+> index 2513b44056c1..b65da49dd926 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_qos.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
+> @@ -443,7 +443,7 @@ struct enetc_psfp_gate {
+>   	u32 num_entries;
+>   	refcount_t refcount;
+>   	struct hlist_node node;
+> -	struct action_gate_entry entries[];
+> +	struct action_gate_entry entries[] __counted_by(num_entries);
+>   };
+>   
+>   /* Only enable the green color frame now
