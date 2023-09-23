@@ -2,156 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089A87ABE2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9D57ABE39
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjIWHAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 03:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S230146AbjIWHCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 03:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjIWHAL (ORCPT
+        with ESMTP id S230128AbjIWHCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 03:00:11 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FDD199;
-        Sat, 23 Sep 2023 00:00:03 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-774105e8c81so176108885a.3;
-        Sat, 23 Sep 2023 00:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695452402; x=1696057202; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FcnYbvS5MK6GuTtXypuDsEXHQd3nYjUtnq+MVVoDLKA=;
-        b=GJNAHCnb6x2Um5FVft6CRxSZusS0gEHiA1ktiho+VkWGLMVXPNA3PhDDLoUAH9nSnz
-         DUR5xj9vLRPIGVji/grhQycf8HjdpShDrag28c5BaZkGQX8Cd3tUG8V7p2BgYPdE50ty
-         zMNa/nRdoNr1uq5dxQ60jxWMBxkAWbCwhzo0PW1weYqGz5G1QXvqx5oKW7rV8lbPivds
-         Ka6+VY1gCX6tsXZfOECpOy/vKTAWhJi2YCNYUXfPXvE06JTgQcgFKdm/oquBZt3qPzYq
-         VnWKQpe31lDoltTwfUe2zvYWMjNf8fUGU63PO8e1ArPzSTJMjoMyYF7Jv5lAsbWDm40o
-         55Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695452402; x=1696057202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FcnYbvS5MK6GuTtXypuDsEXHQd3nYjUtnq+MVVoDLKA=;
-        b=nN2oAeVTULLabF1e8628FJU/1pH6s7qSAE1nkvCAwmykwj05Z5bCWRECuGHQZMVd7n
-         ri0vzpJ5eLdnWjG3+DD4z3dDxc5UJp4Vf+HudLa9mob+GpX/gSRth9qV9v6IKlY2vv4R
-         Kiz/67mgRhbljQdWrV3tqSOvHTwlCH95xyKNC2PFxNgW1uvilYsGBTlnIIq2SZT0ee5J
-         BYS/FZXhi12BY7HQPhVzyQZn25vgTffSbWGZKl9Zj+fmYf/yGkXgqmSFj0oLzFtiOvak
-         50yV9w0jPuJGCPGPdbauxLvWd83wpF3RmAY9ulGyMFAOfVKj1wsO1UM/MIhmLt/LA0tE
-         k0Jg==
-X-Gm-Message-State: AOJu0Yw82/3LTVXinVlOrfJ0bFW+/3th6SgVwJsnQ1Ok4x0aAxTb+aym
-        fGtg9LfaBhM3uTBqQ/UJ8hhNPsYp3DtZ7n32rLw=
-X-Google-Smtp-Source: AGHT+IFMxTVXVKT+nznCbj1bmQxWY2DbB+LZ7TuCR7qcNktIseQwd/89E9HbXm65hYtHy2dHcCCUdURKinwtHDaGpS8=
-X-Received: by 2002:a05:620a:4487:b0:774:165a:6990 with SMTP id
- x7-20020a05620a448700b00774165a6990mr1758934qkp.20.1695452402627; Sat, 23 Sep
- 2023 00:00:02 -0700 (PDT)
+        Sat, 23 Sep 2023 03:02:15 -0400
+Received: from out-209.mta1.migadu.com (out-209.mta1.migadu.com [IPv6:2001:41d0:203:375::d1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118691AD
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 00:02:04 -0700 (PDT)
+Message-ID: <a357f46d-b314-48ed-8031-5fa08abcba64@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695452521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6TcV6V9rHGnBlnLH/KVXbh8Q0+IoUhYQsffa9u3Igw=;
+        b=GzQSE2Xqb/97PEYDsWGWgL/gXqo0bl57SrwGbm0fSI0v+PX3WoEjRs2oks76MmsIYitT+t
+        HfQ+eU5Dvv674d+KSpwDq9khkCRReS/bFDGrsc68LCtAaoQoYGSSiNWN07xrw99KbM/eWR
+        S3KMKJP7ds0l03B6q5SuchfzD7bcfYY=
+Date:   Sat, 23 Sep 2023 15:01:30 +0800
 MIME-Version: 1.0
-References: <20230920222231.686275-1-dhowells@redhat.com> <591a70bf016b4317add2d936696abc0f@AcuMS.aculab.com>
- <1173637.1695384067@warthog.procyon.org.uk>
-In-Reply-To: <1173637.1695384067@warthog.procyon.org.uk>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sat, 23 Sep 2023 08:59:25 +0200
-Message-ID: <CAF=yD-L3aXM17=hsJBoauWJ6Dqq16ykcnv8sg-Fn_Td_FsOafA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/11] iov_iter: Convert the iterator macros into
- inline funcs
-To:     David Howells <dhowells@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 5/5] block/null_blk: add queue_rqs() support
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     axboe@kernel.dk, hch@lst.de, bvanassche@acm.org, kbusch@kernel.org,
+        mst@redhat.com, damien.lemoal@opensource.wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20230913151616.3164338-1-chengming.zhou@linux.dev>
+ <20230913151616.3164338-6-chengming.zhou@linux.dev> <ZQ1WV6PGAxaUVVjV@fedora>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <ZQ1WV6PGAxaUVVjV@fedora>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 2:01=E2=80=AFPM David Howells <dhowells@redhat.com>=
- wrote:
->
-> David Laight <David.Laight@ACULAB.COM> wrote:
->
-> > >  (8) Move the copy-and-csum code to net/ where it can be in proximity=
- with
-> > >      the code that uses it.  This eliminates the code if CONFIG_NET=
-=3Dn and
-> > >      allows for the slim possibility of it being inlined.
-> > >
-> > >  (9) Fold memcpy_and_csum() in to its two users.
-> > >
-> > > (10) Move csum_and_copy_from_iter_full() out of line and merge in
-> > >      csum_and_copy_from_iter() since the former is the only caller of=
- the
-> > >      latter.
-> >
-> > I thought that the real idea behind these was to do the checksum
-> > at the same time as the copy to avoid loading the data into the L1
-> > data-cache twice - especially for long buffers.
-> > I wonder how often there are multiple iov[] that actually make
-> > it better than just check summing the linear buffer?
->
-> It also reduces the overhead for finding the data to checksum in the case=
- the
-> packet gets split since we're doing the checksumming as we copy - but wit=
-h a
-> linear buffer, that's negligible.
->
-> > I had a feeling that check summing of udp data was done during
-> > copy_to/from_user, but the code can't be the copy-and-csum here
-> > for that because it is missing support form odd-length buffers.
->
-> Is there a bug there?
->
-> > Intel x86 desktop chips can easily checksum at 8 bytes/clock
-> > (But probably not with the current code!).
-> > (I've got ~12 bytes/clock using adox and adcx but that loop
-> > is entirely horrid and it would need run-time patching.
-> > Especially since I think some AMD cpu execute them very slowly.)
-> >
-> > OTOH 'rep movs[bq]' copy will copy 16 bytes/clock (32 if the
-> > destination is 32 byte aligned - it pretty much won't be).
-> >
-> > So you'd need a csum-and-copy loop that did 16 bytes every
-> > three clocks to get the same throughput for long buffers.
-> > In principle splitting the 'adc memory' into two instructions
-> > is the same number of u-ops - but I'm sure I've tried to do
-> > that and failed and the extra memory write can happen in
-> > parallel with everything else.
-> > So I don't think you'll get 16 bytes in two clocks - but you
-> > might get it is three.
-> >
-> > OTOH for a cpu where memcpy is code loop summing the data in
-> > the copy loop is likely to be a gain.
-> >
-> > But I suspect doing the checksum and copy at the same time
-> > got 'all to complicated' to actually implement fully.
-> > With most modern ethernet chips checksumming receive pacakets
-> > does it really get used enough for the additional complexity?
->
-> You may be right.  That's more a question for the networking folks than f=
-or
-> me.  It's entirely possible that the checksumming code is just not used o=
-n
-> modern systems these days.
->
-> Maybe Willem can comment since he's the UDP maintainer?
+On 2023/9/22 16:54, Ming Lei wrote:
+> On Wed, Sep 13, 2023 at 03:16:16PM +0000, chengming.zhou@linux.dev wrote:
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> Add batched mq_ops.queue_rqs() support in null_blk for testing. The
+>> implementation is much easy since null_blk doesn't have commit_rqs().
+>>
+>> We simply handle each request one by one, if errors are encountered,
+>> leave them in the passed in list and return back.
+>>
+>> There is about 3.6% improvement in IOPS of fio/t/io_uring on null_blk
+>> with hw_queue_depth=256 on my test VM, from 1.09M to 1.13M.
+> 
+> I guess you pass 'shared_tags' to null_blk for the verification?
+IIRC it should be "modprobe null_blk hw_queue_depth=256 nr_devices=2 shared_tags=1".
 
-Perhaps these days it is more relevant to embedded systems than high
-end servers.
+> 
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> ---
+>>  drivers/block/null_blk/main.c | 20 ++++++++++++++++++++
+>>  1 file changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+>> index 968090935eb2..79d6cd3c3d41 100644
+>> --- a/drivers/block/null_blk/main.c
+>> +++ b/drivers/block/null_blk/main.c
+>> @@ -1750,6 +1750,25 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
+>>  	return null_handle_cmd(cmd, sector, nr_sectors, req_op(rq));
+>>  }
+>>  
+>> +static void null_queue_rqs(struct request **rqlist)
+>> +{
+>> +	struct request *requeue_list = NULL;
+>> +	struct request **requeue_lastp = &requeue_list;
+>> +	struct blk_mq_queue_data bd = { };
+>> +	blk_status_t ret;
+>> +
+>> +	do {
+>> +		struct request *rq = rq_list_pop(rqlist);
+>> +
+>> +		bd.rq = rq;
+>> +		ret = null_queue_rq(rq->mq_hctx, &bd);
+>> +		if (ret != BLK_STS_OK)
+>> +			rq_list_add_tail(&requeue_lastp, rq);
+>> +	} while (!rq_list_empty(*rqlist));
+>> +
+>> +	*rqlist = requeue_list;
+>> +}
+>> +
+> 
+> null_blk may not be one perfect example for showing queue_rqs()
+> which is usually for handling request in batch, but for test or
+> demo purpose, it is fine:
+> 
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> 
+
+Yes, some other "real" drivers should be better choice that we can
+handle more things in batch to improve performance. Maybe ublk driver
+can benefit from this too.
+
+Thanks!
+
