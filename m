@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FCF7AB699
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 18:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CAC7AB7FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 19:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbjIVQ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 12:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
+        id S232542AbjIVRnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 13:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjIVQ6a (ORCPT
+        with ESMTP id S232770AbjIVRnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 12:58:30 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4CB194
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 09:58:23 -0700 (PDT)
-Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
+        Fri, 22 Sep 2023 13:43:15 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2EAA9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 10:43:08 -0700 (PDT)
+Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
         by cmsmtp with ESMTP
-        id jjIGqYCrEDKaKjjTzqD3JM; Fri, 22 Sep 2023 16:58:23 +0000
+        id jjruqE4I7ez0CjkAtq6le4; Fri, 22 Sep 2023 17:42:43 +0000
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with ESMTPS
-        id jjTyq4hsVySCujjTyqOZyt; Fri, 22 Sep 2023 16:58:22 +0000
-X-Authority-Analysis: v=2.4 cv=ea8uwpIH c=1 sm=1 tr=0 ts=650dc7ae
+        id jkBGqOdbouHtrjkBGqMCfz; Fri, 22 Sep 2023 17:43:07 +0000
+X-Authority-Analysis: v=2.4 cv=B8eqbchM c=1 sm=1 tr=0 ts=650dd22b
  a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
  a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=82YB-BmEshB4s5qE:21 a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10
- a=M5GUcnROAAAA:8 a=jZVsG21pAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8
- a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8 a=QyXUC8HyAAAA:8 a=cm27Pg_UAAAA:8
- a=JPoDtM7TZ6yJWmQF7qYA:9 a=QEXdDO2ut3YA:10 a=OBjm3rFKGHvpk9ecZwUJ:22
- a=3Sh2lD0sZASs_lUdrUhf:22 a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22
- a=xmb-EsYY8bH0VWELuYED:22 a=QbVwxleSvN6QbbUpbDEe:22
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=J1Y8HTJGAAAA:8 a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8 a=20KFwNOVAAAA:8
+ a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10
+ a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OFRJLSn67ylmUTDesqnwR89r8xipKnIGHe/ry8CSlXk=; b=HbLP1eegN06YX5GDIsBoF0TU0H
-        cl2eMr0D7OYH+lFQXEZQMW7UVNXdh6ShvGci2bt6xeHph6Wuo05Kv1L3HcBkbZ1VeLc/4nBVy/WIS
-        uAgWkfv4PYAMMsGnJuGjmTZAFgBU3R16zl9uD/WsSaATzgrtXX6wCqUkdJTHUiky9/NP9dGWrf/GA
-        5OdEfFsceqPWo2jxX5P0zVxExXiYVBbJtBRxjEaoREJ1LbLasVmvBgTmVXqlVivoDt2YKKWb8f/QH
-        LaHq95/KscNTOVelKeG/st5RCugAQ6rOknbXzdGwqEpNkbZDbFpQKf7rM6AM/6OuzxEBcE5hUP0N9
-        69IAWJWw==;
-Received: from [94.239.20.48] (port=48068 helo=[192.168.1.98])
+        bh=uqrrds5r8x3t4h70fPgAZPNbhElh0SPzheRmzA+S1Gc=; b=rrY9boyYQLlrCMg3B82ApBf77m
+        4u20ugIPr446534HlrJ3UKFEfNBD7TOBQIMBghM5UDfXJ6GTIBbCP2sZtHx+VPRLQD7tYoeml5mch
+        BzHR443B/l88uxreKTxIwKaUexpLyYV6xbeKqWPJr5aL7mNIpZ9ekcmFbsFK5f3s8AxIM7eZjbYhx
+        PUJoDtK5dU90jKugA0AmC4Mw0uOFNaFZjZCVnWAo0XITWDHuTN7VSQKfSetb/sUBtMjRilt9ywz1p
+        jk+IocehBFp69RhQ6/FtP4pFUmd5Gwq9TfRBRDCYNrhXSvON22FmDfiRTRCNjDfrryhr4zu5EhU5y
+        KCUuAEPQ==;
+Received: from [94.239.20.48] (port=44586 helo=[192.168.1.98])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.96)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1qjjTw-003SsD-0v;
-        Fri, 22 Sep 2023 11:58:20 -0500
-Message-ID: <1c639919-342a-cccc-1cad-772455b72656@embeddedor.com>
-Date:   Fri, 22 Sep 2023 18:59:23 -0600
+        id 1qjkBA-004H78-2r;
+        Fri, 22 Sep 2023 12:43:01 -0500
+Message-ID: <9fd84065-4191-c8c6-43fa-01eda9865dd2@embeddedor.com>
+Date:   Fri, 22 Sep 2023 19:43:57 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v2] sky2: Make sure there is at least one frag_addr
- available
+Subject: Re: [PATCH 01/14] ipv4: Annotate struct fib_info with __counted_by
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Mirko Lindner <mlindner@marvell.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        "David S. Miller" <davem@davemloft.net>,
+To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20230922165036.gonna.464-kees@kernel.org>
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Alex Elder <elder@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dev@openvswitch.org,
+        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+References: <20230922172449.work.906-kees@kernel.org>
+ <20230922172858.3822653-1-keescook@chromium.org>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922165036.gonna.464-kees@kernel.org>
+In-Reply-To: <20230922172858.3822653-1-keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -79,22 +97,22 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 94.239.20.48
 X-Source-L: No
-X-Exim-ID: 1qjjTw-003SsD-0v
+X-Exim-ID: 1qjkBA-004H78-2r
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:48068
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:44586
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
+X-Email-Count: 7
 X-Org:  HG=hgshared;ORG=hostgator;
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDIxqmK3lWK8wL1rRRtBLpGbi9Q58Y/HFNyAnwCMv1GFB0u5OIfxHbgFBaEkaYJwwM5Ls6SwRbe7OFHzjietRnF4r0W2alaG4GfvAnegQ27fGEBgxezW
- IQLOPKD2d6bJwJHBBHTbxgm9ZheV1wAePnxJnDqqa2uA1hhAJsHyWMgfeZvSFQBOU4IrNGXfbDm9uI0VeIv/+70+dCu8bQvnVLZzvIGmCYa4cLyAvfB42AgV
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+X-CMAE-Envelope: MS4xfJZSafnqgGlcSdezmGZPKhImb3oU0cdhtE43cdw3nutaTBRibC5tEstrqZL0q1ajgho9jVb6uYqLbJ1upY5bsyjaABpiTcqufx+VPg+njais+A9JHhZs
+ npP4YjcS+mVYfKHCXmoCPId4XpaOKqUDtr3qR2C4aLtj3xEU6bAZpQNt5CqwNMvky7WyFKF5VRMlcrZcIscHEX1+kRUTKQFv26OQd83/Zu0QX28Wp1RFCQd/
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -103,72 +121,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/22/23 10:50, Kees Cook wrote:
-> In the pathological case of building sky2 with 16k PAGE_SIZE, the
-> frag_addr[] array would never be used, so the original code was correct
-> that size should be 0. But the compiler now gets upset with 0 size arrays
-> in places where it hasn't eliminated the code that might access such an
-> array (it can't figure out that in this case an rx skb with fragments
-> would never be created). To keep the compiler happy, make sure there is
-> at least 1 frag_addr in struct rx_ring_info:
+On 9/22/23 11:28, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
->     In file included from include/linux/skbuff.h:28,
->                      from include/net/net_namespace.h:43,
->                      from include/linux/netdevice.h:38,
->                      from drivers/net/ethernet/marvell/sky2.c:18:
->     drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_unmap_skb':
->     include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
->       416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
->           |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->     drivers/net/ethernet/marvell/sky2.c:1257:17: note: in expansion of macro 'dma_unmap_page'
->      1257 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
->           |                 ^~~~~~~~~~~~~~
->     In file included from drivers/net/ethernet/marvell/sky2.c:41:
->     drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
->      2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
->           |                         ^~~~~~~~~
+> As found with Coccinelle[1], add __counted_by for struct fib_info.
 > 
-> With CONFIG_PAGE_SIZE_16KB=y, PAGE_SHIFT == 14, so:
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
->    #define ETH_JUMBO_MTU   9000
-> 
-> causes "ETH_JUMBO_MTU >> PAGE_SHIFT" to be 0. Use "?: 1" to solve this build warning.
-> 
-> Cc: Mirko Lindner <mlindner@marvell.com>
-> Cc: Stephen Hemminger <stephen@networkplumber.org>
 > Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: David Ahern <dsahern@kernel.org>
 > Cc: Eric Dumazet <edumazet@google.com>
 > Cc: Jakub Kicinski <kuba@kernel.org>
 > Cc: Paolo Abeni <pabeni@redhat.com>
 > Cc: netdev@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309191958.UBw1cjXk-lkp@intel.com/
-> Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 > Signed-off-by: Kees Cook <keescook@chromium.org>
 
 Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
 Thanks
---
+-- 
 Gustavo
 
 > ---
-> v2 - improve commit message, add Ack
-> v1 - https://lore.kernel.org/netdev/20230920202509.never.299-kees@kernel.org/
-> ---
->   drivers/net/ethernet/marvell/sky2.h | 2 +-
+>   include/net/ip_fib.h | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/marvell/sky2.h b/drivers/net/ethernet/marvell/sky2.h
-> index ddec1627f1a7..8d0bacf4e49c 100644
-> --- a/drivers/net/ethernet/marvell/sky2.h
-> +++ b/drivers/net/ethernet/marvell/sky2.h
-> @@ -2195,7 +2195,7 @@ struct rx_ring_info {
->   	struct sk_buff	*skb;
->   	dma_addr_t	data_addr;
->   	DEFINE_DMA_UNMAP_LEN(data_size);
-> -	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-> +	dma_addr_t	frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT ?: 1];
+> diff --git a/include/net/ip_fib.h b/include/net/ip_fib.h
+> index f0c13864180e..84b0a82c9df4 100644
+> --- a/include/net/ip_fib.h
+> +++ b/include/net/ip_fib.h
+> @@ -156,7 +156,7 @@ struct fib_info {
+>   	bool			nh_updated;
+>   	struct nexthop		*nh;
+>   	struct rcu_head		rcu;
+> -	struct fib_nh		fib_nh[];
+> +	struct fib_nh		fib_nh[] __counted_by(fib_nhs);
 >   };
 >   
->   enum flow_control {
+>   
