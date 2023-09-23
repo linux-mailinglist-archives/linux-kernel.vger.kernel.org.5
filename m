@@ -2,75 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6747AC06E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E8A7AC089
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbjIWKZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 06:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S230208AbjIWKcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 06:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjIWKZp (ORCPT
+        with ESMTP id S229848AbjIWKb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 06:25:45 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F22F9E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:25:39 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id 4fb4d7f45d1cf-533c92e65c9so558134a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:25:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695464737; x=1696069537; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7ilKweYsUtdx0uQMw5Lw8exOXx9PByS/ip7ajJiMO4g=;
-        b=PvSm8o9yI5uJswJ2TAYIR+Nmoc2O5+LwCkT1VaFNsA7PFoKajKQmaLf6TUO663UHCs
-         OV8pcuiQ1ZqlJP8tqCmAl8HQw4ViivC0lO/37AejBn/sktTG4pZGbfzqbYAio24JD/xc
-         VCDlxjBt3oeQ/y14Tv+qfAFZYxuRgZHdsSTeVdognQ/kP/itezuLLjcrlb9qgM8Bb1Kc
-         M6x8avW66jyS1POQ59RrKBOiUx1xuQC9BwAAwzAu4FNa+3z0H3U03gIr+/6NtQ5BwfND
-         lgOyOxVFTOjzcuLayvLh48PBtyWM1+b7BmAAFP4PQ1ga9gv5HbmbR/6FuJ+sQiREnYb5
-         toeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695464737; x=1696069537;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ilKweYsUtdx0uQMw5Lw8exOXx9PByS/ip7ajJiMO4g=;
-        b=sFl1GeHEZlHtMc3d7zM/r/dxFCm8erdoBkHRKwepBbIBCCOOfAG3Zmt6Gyf4mVGG8F
-         OkUDaB6mJY34JLVL7COnK/N0z1LHW/GfxmxP3nQEdPhSMIIftt7MIhmVFqIIVBbnV/M4
-         /XbyulFQYw59oM/eT0Ar0XL/3VS5MZ0rrq6iHOAa623I2xYLO99C1C0ZHYGQsceyhmXX
-         omrsElGDLGgDp9WKL0Qa0/JdP1ccisBdwPW7yEgIDRGTqYaaSBYZ4aByRDEDxSawszs2
-         UVjNMTPv9953L+iQrzLU1zx2UcDzUjaqOLhEyaCxfT92+p09NF1UYSvd879LqduGOJu/
-         o0wg==
-X-Gm-Message-State: AOJu0YwKcgsuTtcONyVVQr0YbawP8k2AyULUEIpcZhDBJpJfTa9D94ke
-        B31+V//7OwcK/1msx9nCR/1qoCFGznVrSNceyCo=
-X-Google-Smtp-Source: AGHT+IH0Ho+smv3MOQ71AV46qG7Mb2/jOsXwrnFBwtBMvApYYHQdN9E1ugYfqKP6+gCIQrBCKty3YCUxuZNNhwOo2jQ=
-X-Received: by 2002:a50:ee89:0:b0:533:6ffd:a1a with SMTP id
- f9-20020a50ee89000000b005336ffd0a1amr1452952edr.33.1695464737357; Sat, 23 Sep
- 2023 03:25:37 -0700 (PDT)
+        Sat, 23 Sep 2023 06:31:56 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE0219E
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:31:49 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-275-mAZ3OHZQNnS1PlaWjhD8UA-1; Sat, 23 Sep 2023 11:31:40 +0100
+X-MC-Unique: mAZ3OHZQNnS1PlaWjhD8UA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 23 Sep
+ 2023 11:31:39 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 23 Sep 2023 11:31:39 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 00/11] iov_iter: Convert the iterator macros into
+ inline funcs
+Thread-Topic: [PATCH v5 00/11] iov_iter: Convert the iterator macros into
+ inline funcs
+Thread-Index: AQHZ7BD/kh4zTlIOdEezFNQQd09cYrAlRT1QgAK52CSAADgPAA==
+Date:   Sat, 23 Sep 2023 10:31:38 +0000
+Message-ID: <7e7f2599b5544d838696ebc2cba16e47@AcuMS.aculab.com>
+References: <20230920222231.686275-1-dhowells@redhat.com>
+ <591a70bf016b4317add2d936696abc0f@AcuMS.aculab.com>
+ <1173637.1695384067@warthog.procyon.org.uk>
+ <CAF=yD-L3aXM17=hsJBoauWJ6Dqq16ykcnv8sg-Fn_Td_FsOafA@mail.gmail.com>
+In-Reply-To: <CAF=yD-L3aXM17=hsJBoauWJ6Dqq16ykcnv8sg-Fn_Td_FsOafA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Received: by 2002:a05:6f02:8394:b0:5a:5192:a6b5 with HTTP; Sat, 23 Sep 2023
- 03:25:36 -0700 (PDT)
-Reply-To: sshahar536@gmail.com
-From:   Shalom Sharhar <shalomsharhar@gmail.com>
-Date:   Sat, 23 Sep 2023 11:25:36 +0100
-Message-ID: <CABy7qF7Jsqy0acid_Pc_iBUfV2mSHJR_ovMsp1BrStyy0iL9kw@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-A mail was sent to you sometime last week with the expectation of
-having a return mail from you but to my surprise you never bothered to
-replied.
-Kindly reply for further explanations.
+RnJvbTogV2lsbGVtIGRlIEJydWlqbg0KPiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMyAwNzo1OQ0K
+PiANCj4gT24gRnJpLCBTZXAgMjIsIDIwMjMgYXQgMjowMeKAr1BNIERhdmlkIEhvd2VsbHMgPGRo
+b3dlbGxzQHJlZGhhdC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gRGF2aWQgTGFpZ2h0IDxEYXZpZC5M
+YWlnaHRAQUNVTEFCLkNPTT4gd3JvdGU6DQo+ID4NCj4gPiA+ID4gICg4KSBNb3ZlIHRoZSBjb3B5
+LWFuZC1jc3VtIGNvZGUgdG8gbmV0LyB3aGVyZSBpdCBjYW4gYmUgaW4gcHJveGltaXR5IHdpdGgN
+Cj4gPiA+ID4gICAgICB0aGUgY29kZSB0aGF0IHVzZXMgaXQuICBUaGlzIGVsaW1pbmF0ZXMgdGhl
+IGNvZGUgaWYgQ09ORklHX05FVD1uIGFuZA0KPiA+ID4gPiAgICAgIGFsbG93cyBmb3IgdGhlIHNs
+aW0gcG9zc2liaWxpdHkgb2YgaXQgYmVpbmcgaW5saW5lZC4NCj4gPiA+ID4NCj4gPiA+ID4gICg5
+KSBGb2xkIG1lbWNweV9hbmRfY3N1bSgpIGluIHRvIGl0cyB0d28gdXNlcnMuDQo+ID4gPiA+DQo+
+ID4gPiA+ICgxMCkgTW92ZSBjc3VtX2FuZF9jb3B5X2Zyb21faXRlcl9mdWxsKCkgb3V0IG9mIGxp
+bmUgYW5kIG1lcmdlIGluDQo+ID4gPiA+ICAgICAgY3N1bV9hbmRfY29weV9mcm9tX2l0ZXIoKSBz
+aW5jZSB0aGUgZm9ybWVyIGlzIHRoZSBvbmx5IGNhbGxlciBvZiB0aGUNCj4gPiA+ID4gICAgICBs
+YXR0ZXIuDQo+ID4gPg0KPiA+ID4gSSB0aG91Z2h0IHRoYXQgdGhlIHJlYWwgaWRlYSBiZWhpbmQg
+dGhlc2Ugd2FzIHRvIGRvIHRoZSBjaGVja3N1bQ0KPiA+ID4gYXQgdGhlIHNhbWUgdGltZSBhcyB0
+aGUgY29weSB0byBhdm9pZCBsb2FkaW5nIHRoZSBkYXRhIGludG8gdGhlIEwxDQo+ID4gPiBkYXRh
+LWNhY2hlIHR3aWNlIC0gZXNwZWNpYWxseSBmb3IgbG9uZyBidWZmZXJzLg0KPiA+ID4gSSB3b25k
+ZXIgaG93IG9mdGVuIHRoZXJlIGFyZSBtdWx0aXBsZSBpb3ZbXSB0aGF0IGFjdHVhbGx5IG1ha2UN
+Cj4gPiA+IGl0IGJldHRlciB0aGFuIGp1c3QgY2hlY2sgc3VtbWluZyB0aGUgbGluZWFyIGJ1ZmZl
+cj8NCj4gPg0KPiA+IEl0IGFsc28gcmVkdWNlcyB0aGUgb3ZlcmhlYWQgZm9yIGZpbmRpbmcgdGhl
+IGRhdGEgdG8gY2hlY2tzdW0gaW4gdGhlIGNhc2UgdGhlDQo+ID4gcGFja2V0IGdldHMgc3BsaXQg
+c2luY2Ugd2UncmUgZG9pbmcgdGhlIGNoZWNrc3VtbWluZyBhcyB3ZSBjb3B5IC0gYnV0IHdpdGgg
+YQ0KPiA+IGxpbmVhciBidWZmZXIsIHRoYXQncyBuZWdsaWdpYmxlLg0KPiA+DQo+ID4gPiBJIGhh
+ZCBhIGZlZWxpbmcgdGhhdCBjaGVjayBzdW1taW5nIG9mIHVkcCBkYXRhIHdhcyBkb25lIGR1cmlu
+Zw0KPiA+ID4gY29weV90by9mcm9tX3VzZXIsIGJ1dCB0aGUgY29kZSBjYW4ndCBiZSB0aGUgY29w
+eS1hbmQtY3N1bSBoZXJlDQo+ID4gPiBmb3IgdGhhdCBiZWNhdXNlIGl0IGlzIG1pc3Npbmcgc3Vw
+cG9ydCBmb3JtIG9kZC1sZW5ndGggYnVmZmVycy4NCj4gPg0KPiA+IElzIHRoZXJlIGEgYnVnIHRo
+ZXJlPw0KDQpObywgSSBtaXNyZWFkIHRoZSBjb2RlIC0gaSBzaG91bGRuJ3Qgc2NhbiBwYXRjaGVz
+IHdoZW4gSSdkDQpnb3QgYSB2aXJhbCBoZWFkIGNvZGUuLi4NCg0KLi4uDQo+ID4gWW91IG1heSBi
+ZSByaWdodC4gIFRoYXQncyBtb3JlIGEgcXVlc3Rpb24gZm9yIHRoZSBuZXR3b3JraW5nIGZvbGtz
+IHRoYW4gZm9yDQo+ID4gbWUuICBJdCdzIGVudGlyZWx5IHBvc3NpYmxlIHRoYXQgdGhlIGNoZWNr
+c3VtbWluZyBjb2RlIGlzIGp1c3Qgbm90IHVzZWQgb24NCj4gPiBtb2Rlcm4gc3lzdGVtcyB0aGVz
+ZSBkYXlzLg0KPiA+DQo+ID4gTWF5YmUgV2lsbGVtIGNhbiBjb21tZW50IHNpbmNlIGhlJ3MgdGhl
+IFVEUCBtYWludGFpbmVyPw0KPiANCj4gUGVyaGFwcyB0aGVzZSBkYXlzIGl0IGlzIG1vcmUgcmVs
+ZXZhbnQgdG8gZW1iZWRkZWQgc3lzdGVtcyB0aGFuIGhpZ2gNCj4gZW5kIHNlcnZlcnMuDQoNClRo
+ZSBjaGVja3N1bSBhbmQgY29weSBhcmUgZG9uZSB0b2dldGhlci4NCkkgcHJvYmFibHkgbWlzc2Vk
+IGl0IGJlY2F1c2UgdGhlIGZ1bmN0aW9uIGlzbid0IHBhc3NlZCB0aGUNCm9sZCBjaGVja3N1bSAo
+d2hpY2ggaXQgY2FuIHByZXR0eSBtdWNoIHByb2Nlc3MgZm9yIGZyZWUpLg0KSW5zdGVhZCB0aGUg
+Y2FsbGVyIGlzIGFkZGluZyBpdCBhZnRlcndhcmRzIC0gd2hpY2ggaW52b2x2ZXMNCmFuZCBleHRy
+YSBleHBsaWNpdCBjc3VtX2FkZCgpLg0KDQpUaGUgeDg2LXg4NCBpcCBjaGVja3N1bSBsb29wcyBh
+cmUgYWxsIGhvcnJpZCB0aG91Z2guDQpUaGUgdW5yb2xsaW5nIGluIHRoZW0gaXMgc28gMTk5MCdz
+Lg0KV2l0aCB0aGUgb3V0LW9mLW9yZGVyIHBpcGVsaW5lIHRoZSBtZW1vcnkgYWNjZXNzZXMgdGVu
+ZA0KdG8gdGFrZSBjYXJlIG9mIHRoZW1zZWx2ZXMuDQpOb3QgdG8gbWVudGlvbiB0aGF0IGEgd2hv
+bGUgcmFmdCBvZiAobm93IG9sZGlzaCkgY3B1IHRha2UgdHdvDQpjbG9ja3MgdG8gZXhlY3V0ZSAn
+YWRjJy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
+eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
+aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Respectfully yours,
-Shalom Sharhar.
