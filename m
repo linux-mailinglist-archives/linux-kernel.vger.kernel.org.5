@@ -2,209 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A41F37AC2E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9E97AC2E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjIWO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 10:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38820 "EHLO
+        id S231860AbjIWO7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 10:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjIWO6F (ORCPT
+        with ESMTP id S231603AbjIWO7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 10:58:05 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2081.outbound.protection.outlook.com [40.92.75.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFEB180
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 07:57:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dMuciOf56/gw1tEnCtyUJw3ubc0bfYDh861Ujz19X1jsefRINOexsHbT5yvIHrqOeg8ZnAZRm3dUA1yHr2nt+6meA0BM7gIJlNsbi4f817CiebHpXUTqsiI98D2uP6TgxjV4QckzjuT81FUI9fJxxpwVmZw3oWovjmiFBq8toFc2qibaIKtT6peOZnAsl5Bt1CzscvaMfzGDKXzU5o0CE5NZm8H7uL2mWLJxzRzEzQ8syj9r0sCjVSwFPaKWWxYF3iJsw7qLbAfzCOiJ9k55I84nzeB20BvLVcA9fF+EGXqeuWluu64oELUU3SuEPzI88lcY18S0P/Mw4Pwl4sGv4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3Xzg2qlYRX48ZIXFZoFf3yVEOI78awMUJg0ddSCu2MA=;
- b=JL09TMMVRfxVRQfWrq1dFf5UZXVVkIETPxMzozYmutPBeAMfxt3pQOSadbDeQiGyIxsPyKWM3FSdB+XB/Ac5opX5+SBR0XkXSy3GQgDDcZSMqrZArrMLezVJshuKOQch94uaveevaJMHv7IJmdag+Mf3Dn+aojVTcEhokdxtT7LnwiY6bZVjSPykIQ5vLaoimrqC2F0AkbvBBAgtsDg1YemlmrcDU/2Afb7rWTqBqRYAM/3rW9KUSnNkVzKQvuRut05Iv3dPUewnr+ycHX03VHDcT4UlZR+XJ+7H7soeJqGVoQsJv8lnVZjtRk5zII/tmgVzBhLWeeNe6LcblPLkVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
- by DU0PR02MB9821.eurprd02.prod.outlook.com (2603:10a6:10:44e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Sat, 23 Sep
- 2023 14:57:57 +0000
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e%6]) with mapi id 15.20.6792.026; Sat, 23 Sep 2023
- 14:57:57 +0000
-Date:   Sat, 23 Sep 2023 15:57:54 +0100
-From:   Cameron Williams <cang1@live.co.uk>
-To:     sudipm.mukherjee@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] parport: parport_serial: Add more support for
- Brainboxes cards
-Message-ID: <DU0PR02MB78991280469B2EA237903D24C4FEA@DU0PR02MB7899.eurprd02.prod.outlook.com>
-References: <DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com>
-X-TMN:  [SN2pOL8+pGp1/bOzRx87AZMQ56rBU7nj]
-X-ClientProxiedBy: DU2PR04CA0025.eurprd04.prod.outlook.com
- (2603:10a6:10:3b::30) To DU0PR02MB7899.eurprd02.prod.outlook.com
- (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <ZQ788nH1VaAA8M9A@CHIHIRO>
+        Sat, 23 Sep 2023 10:59:04 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238ABD3;
+        Sat, 23 Sep 2023 07:58:58 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-76d846a4b85so1301915241.1;
+        Sat, 23 Sep 2023 07:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695481137; x=1696085937; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r98I0fZ1wJbdSD3JMwSiiPBmbA+sefSlclinhcfpiEo=;
+        b=acGnbekDRyUQrnuqGWpQR6OcY5ZJRFeBy1DTH/DMYRFFzD6ZJW8WktXsm2sWqh2/Po
+         5QDgkc9lEJ7bpjjlaZmb01PpuHvyo8EGiGmbp11rTZ+JPbA996/j135H9ela+Qmlvcfw
+         lypBv8wbIvUUqWgvfZc87lOwSHi3UbzXI8lpvNqALDHoHxc5A/WRVaG66+zmwcfHWPqv
+         mbw+yceDtgMkKw5toPDq1DWJVYbidv9xw2ktm+d/WuSTDtve0mompHYrQZBpHJdAEle/
+         LWnDsQHe1K3QO7XYUo5G7wM6/2M0LlIXh4odSN07Q32W76+UnQu/T6+L7uscy0+qupEN
+         iylQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695481137; x=1696085937;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r98I0fZ1wJbdSD3JMwSiiPBmbA+sefSlclinhcfpiEo=;
+        b=L+mUleMJc3WXamUgMtYdh6RJ0V0bLLzp5nPMZiIgGEMhzzk6yYEclzCeFyefHycHnV
+         /SGnOr32VRa0jtmtnJOtBlsEkN1po6Duzz6VjZ8qtvNOqnqbThR/1gRCpS6NrHsJiyCT
+         o4Pu6YVhBYDtgr77RdxW+GSrcauiAeDDuOS+kbndjGbaU469EiFjG1j5oKNB5ohpo0U4
+         tuQ4xyFZJs7lPsd4VHueRpUC+BglZShWh1TF6H9h9D9QJcjOd3uAvftB4LXutxYN8P8m
+         Ct1mEV08V8fDt33ovtXEeDqLM8XYfcZQ0JFarJUa9hw1Ez/OEkODv6o6ME7U7J/X+HJA
+         yd5Q==
+X-Gm-Message-State: AOJu0YxRLtkCe4L13LrMl682Z9MfcA5R6DT0Vwzjdc0/zxK1Z+vPwCkw
+        RJ5VWtPQmss2FU3fFGr6PMAt4+yMOUg0V2BEW8Q=
+X-Google-Smtp-Source: AGHT+IG5ZvcNAkNBWJkc33wC7vFLVTly0S1g7Q8j7KrbOK4fdGdSfTWVOk1jqhV7Tm+3T7uLwadkGnYhL1ncI1eoS6g=
+X-Received: by 2002:a67:f842:0:b0:452:5c6d:78c9 with SMTP id
+ b2-20020a67f842000000b004525c6d78c9mr1535362vsp.12.1695481137204; Sat, 23 Sep
+ 2023 07:58:57 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|DU0PR02MB9821:EE_
-X-MS-Office365-Filtering-Correlation-Id: a45ec8cd-20d2-4aa8-bb58-08dbbc4578bb
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3RCtQb7x1cmpW5c9FSAnUJUfrcM+LTv9KlW/LEcsN7We6NMN/r+rNrEK+9QkASEky6XY/wOAFGmhbQdlXHhsXE8iPfRHqpPHvW7+UMQvxyra1qfcj7yGSnD7F8gKlukwpDziuGAp7Ro3YetGUIMQfCUdfuJ6f3xEmn9brzNNJikA0AZT2ELxaCpUQ5tRK7d0cQcRUlEcd7jhyYIo9dbr7qVSwOi0YUMsPs/ZrZAeDmqV8lLx7D6qT1wiUWEYAAdHIStplWIlSXNrXGvh64qDqbRnrH3T/KsFSJ30lJsShNbIcyf8DZ/h8/zeaBoFmE72ZDrdpuFNPdL/JOIUU5aaR/QMyOHL7H8Nz+F1yv1+BQw8P0wPBLHOlc4VAFoLw4kyfQ8BI56eqkVKb1BGGzkt1kakvTwzfBnbc9ox0jmtBgwyV9eMCwosqCgl7ClG2zur+ceY95aS06DYBKR2a+MUrdy2MeqK6KNfZPysfFmvy9qvPim7fypnrZxGLmCDhRMuadCqFBUksf5grTUzM/6SuBCoBiqIEBqgMurgNHW+KDlSVUo9irnmPzChWTuWzyXJ
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5+cKp9G96x/3a6UGukLdh40QKwWwLSVJ5WQCEOnElg7vSR4w1JYmtZaQoneN?=
- =?us-ascii?Q?cqLeLT4R0X2Ir/DqNqkP16wc1cb3sWkwhE8elyymj/T6WIlw7nsk2N/xZWGz?=
- =?us-ascii?Q?taGf4jMmw1ZdZJf3eQjz7//8F0hxSNHMu2h4+CcUoLXo+gqu/k6nviaTZa81?=
- =?us-ascii?Q?HibZHWt++IpHgbgaGw450D/59oHDYPKaqIKo6ysV9xcCx9W0pUqQe9O6RqCi?=
- =?us-ascii?Q?6L+1smlzTtGF2Tia42f5/yCMB1XKQtgO7zwOCEVhysk5ZZ7x0X8zN6PQdlQF?=
- =?us-ascii?Q?7iszyS0gAS7olDsqwKLVADREVyM+17J9jNos2ea6cngOfq4/KUwlmqymQEPm?=
- =?us-ascii?Q?PVMRI27POfJcAVslGEHfrMBA86dQmntnRQPjeLfXcPSL6A4UE7DEqbtovXWo?=
- =?us-ascii?Q?OpXHuePhSks2HR5kVu9UGtOdzLCsaJJXsobyvJQe62yhjAhXCY06sgJ09YVj?=
- =?us-ascii?Q?y3g45S93t0rZYJSWYaQ2Imgd39L9AYdbPnNhYfplHeneMY+KmFh2p2hvv4N8?=
- =?us-ascii?Q?78IY8dGe592w9wJZoiOFPc9XbVHZ70p6sNwYN7/P7WVKzq6LHqoPeH9vjzgR?=
- =?us-ascii?Q?efVE9gf8DT8cW05D95bvsw3DObxu0WbfnVxmEvFVZbBe3484lLFZfCnHKAgp?=
- =?us-ascii?Q?lJeccx0SjFOIJoIIGXyHSnvereyyFx71K+v+g1tplPUL1njIY16wEdshNYYS?=
- =?us-ascii?Q?/bPN7aUQwJqlYDL9KdrdK9apEXPNIWmuBSRYbux2uc8QFPc1IWq49ZZu5O/F?=
- =?us-ascii?Q?71lcjNdkAPBTJXbIp2gMuBg6NbscQzD00gUixb+9m0gKaTeRxkt4pxeyzP+M?=
- =?us-ascii?Q?NOLsVgfFKlNAXsA0PawSSUMExIl9f8TfTRZ8OyQcGnic2TM9rjBklFOFMlmH?=
- =?us-ascii?Q?k/4WA0+x2JPYwC0oan3Pv7lTj+PVhBB0Yqqn++gA3IfSawKRr/W3LRzYRMq+?=
- =?us-ascii?Q?PDv7WqF9NKAwAwPCpkrA6mOMFdY/Gf9zBMhyE4gXScsL/GTTxI1BBt9fAwPK?=
- =?us-ascii?Q?dEzZd4IhxmElSBBmcu/Q7fysEBfAcLgR1Rty3jXlR5GBKb8DiIDu7+xtwfmf?=
- =?us-ascii?Q?nSCNPQBz8f246GuUQH3P6f70L8xkVRemRjXwmpfYYXrAhREN/uXLXlrinNtX?=
- =?us-ascii?Q?pKbx44hS3/zhqM3t349p8YNHLcPNP0VvtGIsCcVMh8E9HmaedShiAwEq/TsX?=
- =?us-ascii?Q?iy8dc8OSYyZJeKPqrThPBT/NbK3x+ICBnEihAw=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: a45ec8cd-20d2-4aa8-bb58-08dbbc4578bb
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 14:57:56.9935
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB9821
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org> <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
+ <4b106847d5202aec0e14fdbbe93b070b7ea97477.camel@kernel.org>
+In-Reply-To: <4b106847d5202aec0e14fdbbe93b070b7ea97477.camel@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 23 Sep 2023 17:58:46 +0300
+Message-ID: <CAOQ4uxjfbq=u3PYi_+ZiiAjub92o0-KeNT__ZRKSmRogLtF75Q@mail.gmail.com>
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please disregard this patch. It will be re-sent using raw hexadecimal IDs
-for the device IDs.
+On Sat, Sep 23, 2023 at 1:22=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
+> > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel.org=
+> wrote:
+> > >
+> > > My initial goal was to implement multigrain timestamps on most major
+> > > filesystems, so we could present them to userland, and use them for
+> > > NFSv3, etc.
+> > >
+> > > With the current implementation however, we can't guarantee that a fi=
+le
+> > > with a coarse grained timestamp modified after one with a fine graine=
+d
+> > > timestamp will always appear to have a later value. This could confus=
+e
+> > > some programs like make, rsync, find, etc. that depend on strict
+> > > ordering requirements for timestamps.
+> > >
+> > > The goal of this version is more modest: fix XFS' change attribute.
+> > > XFS's change attribute is bumped on atime updates in addition to othe=
+r
+> > > deliberate changes. This makes it unsuitable for export via nfsd.
+> > >
+> > > Jan Kara suggested keeping this functionality internal-only for now a=
+nd
+> > > plumbing the fine grained timestamps through getattr [1]. This set ta=
+kes
+> > > a slightly different approach and has XFS use the fine-grained attr t=
+o
+> > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+> > >
+> > > While we keep fine-grained timestamps in struct inode, when presentin=
+g
+> > > the timestamps via getattr, we truncate them at a granularity of numb=
+er
+> > > of ns per jiffy,
+> >
+> > That's not good, because user explicitly set granular mtime would be
+> > truncated too and booting with different kernels (HZ) would change
+> > the observed timestamps of files.
+> >
+>
+> That's a very good point.
+>
+> > > which allows us to smooth over the fuzz that causes
+> > > ordering problems.
+> > >
+> >
+> > The reported ordering problems (i.e. cp -u) is not even limited to the
+> > scope of a single fs, right?
+> >
+>
+> It isn't. Most of the tools we're concerned with don't generally care
+> about filesystem boundaries.
+>
+> > Thinking out loud - if the QERIED bit was not per inode timestamp
+> > but instead in a global fs_multigrain_ts variable, then all the inodes
+> > of all the mgtime fs would be using globally ordered timestamps
+> >
+> > That should eliminate the reported issues with time reorder for
+> > fine vs coarse grained timestamps.
+> >
+> > The risk of extra unneeded "change cookie" updates compared to
+> > per inode QUERIED bit may exist, but I think it is a rather small overh=
+ead
+> > and maybe worth the tradeoff of having to maintain a real per inode
+> > "change cookie" in addition to a "globally ordered mgtime"?
+> >
+> > If this idea is acceptable, you may still be able to salvage the revert=
+ed
+> > ctime series for 6.7, because the change to use global mgtime should
+> > be quite trivial?
+> >
+>
+> This is basically the idea I was going to look at next once I got some
+> other stuff settled here: Basically, when we apply a fine-grained
+> timestamp to an inode, we'd advance the coarse-grained clock that
+> filesystems use to that value.
+>
+> It could cause some write amplification: if you are streaming writes to
+> a bunch of files at the same time and someone stats one of them, then
+> they'd all end up getting an extra inode transaction. That doesn't sound
+> _too_ bad on its face, but I probably need to implement it and then run
+> some numbers to see.
+>
 
-On Thu, Sep 21, 2023 at 10:11:29PM +0100, Cameron Williams wrote:
-> Add support for the Intashield IS-300/IS-500, Brainboxes UC-203, UC-257,
-> UC-414, UC-475 and PX-263/295 parallel/serial cards.
-> 
-> Signed-off-by: Cameron Williams <cang1@live.co.uk>
-> ---
->  drivers/parport/parport_serial.c | 64 ++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/drivers/parport/parport_serial.c b/drivers/parport/parport_serial.c
-> index 9f5d784cd95d..c6fbee528493 100644
-> --- a/drivers/parport/parport_serial.c
-> +++ b/drivers/parport/parport_serial.c
-> @@ -65,6 +65,10 @@ enum parport_pc_pci_cards {
->  	sunix_5069a,
->  	sunix_5079a,
->  	sunix_5099a,
-> +	brainboxes_uc257,
-> +	brainboxes_is300,
-> +	brainboxes_uc414,
-> +	brainboxes_px263,
->  };
->  
->  /* each element directly indexed from enum list, above */
-> @@ -158,6 +162,10 @@ static struct parport_pc_pci cards[] = {
->  	/* sunix_5069a */		{ 1, { { 1, 2 }, } },
->  	/* sunix_5079a */		{ 1, { { 1, 2 }, } },
->  	/* sunix_5099a */		{ 1, { { 1, 2 }, } },
-> +	/* brainboxes_uc257 */	{ 1, { { 3, -1 }, } },
-> +	/* brainboxes_is300 */	{ 1, { { 3, -1 }, } },
-> +	/* brainboxes_uc414 */  { 1, { { 3, -1 }, } },
-> +	/* brainboxes_px263 */	{ 1, { { 3, -1 }, } },
->  };
->  
->  static struct pci_device_id parport_serial_pci_tbl[] = {
-> @@ -276,6 +284,38 @@ static struct pci_device_id parport_serial_pci_tbl[] = {
->  	  0x0102, 0, 0, sunix_5079a },
->  	{ PCI_VENDOR_ID_SUNIX, PCI_DEVICE_ID_SUNIX_1999, PCI_VENDOR_ID_SUNIX,
->  	  0x0104, 0, 0, sunix_5099a },
-> +
-> +	/* Brainboxes UC-203 */
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC203,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC203R3,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +
-> +	/* Brainboxes UC-257 */
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC257,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC257R3,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC257R4,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +
-> +	/* Brainboxes UC-414 */
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC414,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc414 },
-> +
-> +	/* Brainboxes UC-475 */
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC475,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_UC475R3,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc257 },
-> +
-> +	/* Brainboxes IS-300/IS-500 */
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_IS300,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_is300 },
-> +
-> +	/* Brainboxes PX-263/PX-295 */
-> +	{ PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_PX263,
-> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_px263 },
->  
->  	{ 0, } /* terminate list */
->  };
-> @@ -542,6 +582,30 @@ static struct pciserial_board pci_parport_serial_boards[] = {
->  		.base_baud      = 921600,
->  		.uart_offset	= 0x8,
->  	},
-> +	[brainboxes_uc257] = {
-> +		.flags		= FL_BASE2,
-> +		.num_ports	= 2,
-> +		.base_baud	= 115200,
-> +		.uart_offset	=	8,
-> +	},
-> +	[brainboxes_is300] = {
-> +		.flags		= FL_BASE2,
-> +		.num_ports	= 1,
-> +		.base_baud	= 115200,
-> +		.uart_offset	= 8,
-> +	},
-> +	[brainboxes_uc414] = {
-> +		.flags		= FL_BASE2,
-> +		.num_ports	= 4,
-> +		.base_baud	= 115200,
-> +		.uart_offset	= 8,
-> +	},
-> +	[brainboxes_px263] = {
-> +		.flags		= FL_BASE2,
-> +		.num_ports	= 4,
-> +		.base_baud	= 921600,
-> +		.uart_offset	= 8,
-> +	},
->  };
->  
->  struct parport_serial_private {
-> -- 
-> 2.42.0
-> 
+Several journal transactions within a single jiffie tick?
+If ctime/change_cookie of an inode is updated once within the scope
+of a single running transaction, I don't think it matters how many
+times it would be updated, but maybe I am missing something.
+
+The problem is probably going to be that the seqlock of the coarse
+grained clock is going to be invalidated way too frequently to be
+"read mostly" in the presence of ls -lR workload, but again, I did
+not study the implementation, so I may be way off.
+
+Thanks,
+Amir.
