@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E62207ABEB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 10:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1777ABEB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 10:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjIWIAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 04:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        id S230406AbjIWIBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 04:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjIWIAh (ORCPT
+        with ESMTP id S230193AbjIWIBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 04:00:37 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D60C180;
-        Sat, 23 Sep 2023 01:00:31 -0700 (PDT)
-Received: from localhost (unknown [217.144.90.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BE2A6735;
-        Sat, 23 Sep 2023 08:00:30 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BE2A6735
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1695456031; bh=5CjtbACEHioF3rW7Wtbr9kbr8IpW0MXFY8yUPwlRWs4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NF2WeiM7zoXvMQdc1yqNeBIadZ+PB7IHE7R5ZEKP3iau9iYgJv3yiBADXAgut0Vq5
-         KVCDksozO/TiTXcflQ0RKVGzNEyeC2P3BL/9K1ufV5Y/PirtGeZWb1SFcT8CXQGLZ3
-         uHw/8kvMfpeCRWeqUf6YVWrdQELEMdpZ6xQZRpeTM+ryiGFBbE/2xQdoEJmO8y5OlQ
-         vYw3y3QgesRhVWuTS8WOoBBe1WQ8jOQMKO6GPNlEbgrHEYN/Aor69hUtBk2flpElMj
-         nCdegnVew9xjVrDNZM0BXFWIB8PEKIyzj6ymt73lOKrTCFF+002bU6NvPYxoxr0hsB
-         UlNvhzt+Pzn1A==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Hu Haowen <src.res.211@gmail.com>
-Cc:     Hu Haowen <src.res.211@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs/zh_TW: update contents for zh_TW
-In-Reply-To: <20230917084646.92319-1-src.res.211@gmail.com>
-References: <20230917084646.92319-1-src.res.211@gmail.com>
-Date:   Sat, 23 Sep 2023 02:00:28 -0600
-Message-ID: <87r0mp5nfn.fsf@meer.lwn.net>
+        Sat, 23 Sep 2023 04:01:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB8D197
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 01:01:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 417E1C433C7;
+        Sat, 23 Sep 2023 08:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695456092;
+        bh=aQTqfUoklRvlIZivFdZ0RDTbrwwguhjM51XFd8Rs0BI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YTaICS8z2lUR/w/MEmEVa21G/eA59iPqJFs5890r8aZNxgJa8VaajAINpAhgRc0iy
+         vywvNJ7lU6OdptUbpoa97h4AcRWjuiJ70lE9IpnIsxs7cOQnbgYyfj7NdLDxcVH9En
+         wJyLUqGuKNHF6FXIHCiR9Gu4b48WnboOF5S/NpiW4j2oq9W5aDwT1j+9CykLixBXah
+         XA+voE8Ogp7fRF3n0MxmUyD+InanUBlYu6S+0tjzfS83rMYoUGUGEzsbe+/tYo65k/
+         bNMdNgSUlOq+AUrdyPpkTwgWjowrIoPmSgOUyzoHiR0fKq7UYoni7uOnXDODukv6Hj
+         Joi5cEVbH6alw==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     nm@ti.com, afd@ti.com, robh+dt@kernel.org
+Cc:     vigneshr@ti.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srk@ti.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v2 0/2] arm64: dts: ti: Add overlay for AM642-EVM NAND expansion card
+Date:   Sat, 23 Sep 2023 11:00:44 +0300
+Message-Id: <20230923080046.5373-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hu Haowen <src.res.211@gmail.com> writes:
+Hi,
 
-> The content of zh_TW was too outdated comparing to the original files.
-> Consequently carry out improvements in order to both keep track of sources
-> and fix several grammatical mistakes in traditional Chinese.
->
-> This is a thorough rewrite of the previous patch:
->     https://lore.kernel.org/linux-doc/20230807120006.6361-1-src.res.211@g=
-mail.com/
-> in order to get rid of text damage and merging errors, created based on
-> linux-next (date: Sept. 15, 2023).
->
-> Signed-off-by: Hu Haowen <src.res.211@gmail.com>
+This series adds device tree overlay for NAND expansion card for AM642-EVM.
 
-So I get the usual sort of problem here:
+cheers,
+-roger
 
-> WARNING: Message contains suspicious unicode control characters!
->          Subject: [PATCH] docs/zh_TW: update contents for zh_TW
->             Line:  =EF=BB=BF.. _tw_process_statement_kernel:
->             -------^
->             Char: ZERO WIDTH NO-BREAK SPACE (0xfeff)
->          If you are sure about this, rerun with the right flag to allow.
-> AM FAILED
+Changelog:
+---------
+v2:
+- Drop patch "arm64: dts: ti: Enable support for overlays for relevant boards"
+- Don't leave k3-am642-evm-nand.dtbo as an orphan. Make k3-am642-evm-nand.dtb
+  with the overlay applied on the base board.
+- Add patch "arm64: dts: ti: k3-am64: Add GPIO expander on I2C0"
 
-*Please* try applying your patches before sending them so we can avoid
-this sort of difficulty.
+Roger Quadros (2):
+  arm64: dts: ti: am642-evm: Add overlay for NAND expansion card
+  arm64: dts: ti: k3-am64: Add GPIO expander on I2C0
 
-jon
+ arch/arm64/boot/dts/ti/Makefile               |   3 +-
+ arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       |   9 ++
+ 3 files changed, 151 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
+
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+-- 
+2.34.1
+
