@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 478BE7AC44C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 20:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EF97AC451
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 20:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjIWSHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 14:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
+        id S232210AbjIWSIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 14:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbjIWSHQ (ORCPT
+        with ESMTP id S229795AbjIWSI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 14:07:16 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5624EFE
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:07:10 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-313e742a787so2791973f8f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:07:10 -0700 (PDT)
+        Sat, 23 Sep 2023 14:08:28 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9000A10C
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:08:22 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso3809425e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 11:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695492429; x=1696097229; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695492501; x=1696097301; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=H149ZKwWnYhZ1xunGnnrQ+QQwSAWk1F1dR91/0OJmNc=;
-        b=wIemnXWxQOpuB7ACQ/JqQL2PBdbGZHEX3Dvroir4APx3dmR/Hez34Selg94bt9ZZos
-         yJua1MSyP8hE9bVkLUEK911CRSNZRisM7CP5jXJhDhSKoEd2DWi9n1c0Ntz+CiLKupzR
-         bTcGROgy9sAfbAq4zwhqNCnwlxldT1KTC2mDvx7JB9klVlmLPXIteE3Th+IX2kTnmj7k
-         F2BLjdhm66idVpjzADeaTHFHNV4lwRMDV330tApPfgj5eHnM7pBjtnBhu+YzbIBAIkjn
-         p3vom+VmBWP/rtthk0Pt1fAz1BBbakPQG33S4BhfZrCMiWraZ2Ud5pG0il5xVkgYBUrd
-         3KvA==
+        bh=8RYcBLgXi2Usyjv8O8F7jTAVsfiwldX4rLiaCjIZSoY=;
+        b=Ya8cEGNPvaBmDAun+1OhPyszgJVF6nAGJB0sRv8QEJg8kTpzgw6AP16J+HdM0I6lqT
+         7qhNvDLyf+dYcSQIkctbUYhZtWaeVzhqG2fvhpnP4mNgVetcVgrhKial22hJb2WE1ogA
+         HOaud75AC7sg6CGmNybM8+Zp12UFhUjQso6dKX+UDo6TYQlJRUgefVgy9lcH0eL3a/bw
+         51l9CktWt+0qF7RBOypU2maxHrCqLgJIkcrjJqO9vaf5upO1LXBS5qWebc9KOZ4UMUO9
+         PDH/4jPtz56jUkkB7na7/+p8HZUn8oD/bxvv+/kgPdW2t+nYEUSnRjju7Qoq9ZdPMf+z
+         PHHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695492429; x=1696097229;
+        d=1e100.net; s=20230601; t=1695492501; x=1696097301;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H149ZKwWnYhZ1xunGnnrQ+QQwSAWk1F1dR91/0OJmNc=;
-        b=bMBzOkm70JvdzltHaF8WK+lP4tz5peNDczivnELI8D40N+g4mWg5uEtA/cGRyrOFxf
-         g2naSE7WHJhfsYaEhyoiIpRt8QXAvv9KzLFPfcvJKZiw1leLK+nt+4XebCaokG9uAGHY
-         pavCE3qGPrZDJ7i5aW9r1Fq2QZ21+UVYAKmnjGNDRH3rp/Fn6IyDIiHO1CPVdSGOOuku
-         wFKGsHeQwqh9XiRsrzIDLOetG2i2WxqO7bIwO6zegLFTkQ1pp4SRdVqAiDz7t4m5MmSE
-         3tZloN6iNl1dksaekM9ZKwFQ0b0N3FbG8u+BBBXpYAp839+xJaT/yDM2VaCF5nnJ5Ere
-         puAQ==
-X-Gm-Message-State: AOJu0Ywoh0nQfwbt7WxlWFvxiOWa6w+u24AOGTTlHlGPeHLLqrhSQptE
-        zD0fueOObP9QTh40XVfuNZFv54EFW3Uh93DyD74=
-X-Google-Smtp-Source: AGHT+IGGssrmYKQo06++hnwES4sRRwvQ+H+tZUVgGod48UpHafZ5lCkIM3LAng25TajcdA+SQMzndg==
-X-Received: by 2002:a5d:4682:0:b0:319:5234:5c92 with SMTP id u2-20020a5d4682000000b0031952345c92mr1812474wrq.35.1695492428791;
-        Sat, 23 Sep 2023 11:07:08 -0700 (PDT)
+        bh=8RYcBLgXi2Usyjv8O8F7jTAVsfiwldX4rLiaCjIZSoY=;
+        b=jgrFzD7lDcE7jCSz8SvPugIEy6rqNNPqj1Nlb1nmXKOGxkmi7dH/Qrmiyd8Q/Jv1ME
+         //VAgkUdk7ruL+7bfHhgSY56c1tCt6fCIDKZMHy+PzGLuqnqp3sjpG6djYyodC1K5xYC
+         5vvNZ6KHS4YhYDaAukr2XaN3LPvH2pZ02vqcqm/YSvkL0nfgAFjT8mPH1ulUZ9MLFgYO
+         LEQuvdmvsQnfMHMlYyvp4yWCrxdJOnsp6IiADDl47kECT4MvgGEiElX6+KIfOLK7H/TO
+         GhCO60u6kWVR0esPwKXmndwqfnpEAJ2ksafVl/XMCbvCCiMXdCJbyTdXpTBm12FDPsmS
+         T5nA==
+X-Gm-Message-State: AOJu0YwanuOylb4W4pWOGP3C1jAkXL2NSAKKhVgskpKhLVqEtfrQcAax
+        DYBTE/X4pYTH/ik1Nn+nZ79zRA==
+X-Google-Smtp-Source: AGHT+IHgTWwCB7z8DnJNi+Zreo84MahTyxYFZoaRGkQRiDLl6+zBS9mKeFPkwSsb23KkMMbqczLODw==
+X-Received: by 2002:a5d:6b51:0:b0:31f:d95d:20a6 with SMTP id x17-20020a5d6b51000000b0031fd95d20a6mr2321405wrw.12.1695492500957;
+        Sat, 23 Sep 2023 11:08:20 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id p5-20020a056000018500b0031c855d52efsm7427661wrx.87.2023.09.23.11.07.06
+        by smtp.gmail.com with ESMTPSA id m12-20020a056000008c00b0031f3b04e7cdsm7440226wrx.109.2023.09.23.11.08.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Sep 2023 11:07:08 -0700 (PDT)
-Message-ID: <84655695-52bf-a67f-e0f1-7ad46fe44e6e@linaro.org>
-Date:   Sat, 23 Sep 2023 20:07:05 +0200
+        Sat, 23 Sep 2023 11:08:20 -0700 (PDT)
+Message-ID: <ecda52ed-1d17-45e8-ab90-a9070ceb2d1c@linaro.org>
+Date:   Sat, 23 Sep 2023 20:08:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 06/15] mailbox: mediatek: Add cmdq_mbox_stop to disable
- GCE thread
+Subject: Re: [PATCH 08/15] soc: mediatek: Add cmdq_pkt_finalize_loop to CMDQ
+ driver
 Content-Language: en-US
 To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
         Jassi Brar <jassisinghbrar@gmail.com>,
@@ -79,15 +79,14 @@ Cc:     Conor Dooley <conor+dt@kernel.org>,
         dri-devel@lists.freedesktop.org,
         Project_Global_Chrome_Upstream_Group@mediatek.com
 References: <20230918192204.32263-1-jason-jh.lin@mediatek.com>
- <20230918192204.32263-7-jason-jh.lin@mediatek.com>
+ <20230918192204.32263-9-jason-jh.lin@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230918192204.32263-7-jason-jh.lin@mediatek.com>
+In-Reply-To: <20230918192204.32263-9-jason-jh.lin@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -95,35 +94,51 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 18/09/2023 21:21, Jason-JH.Lin wrote:
-> Add cmdq_mbox_stop to disable GCE thread.
+> Add cmdq_pkt_finalize_loop to CMDQ driver.
 > 
-> To support the error handling or the stop flow of the GCE loopping
-> thread, lopping thread user can call cmdq_mbox_stop to disable the
-> GCE HW thread.
+> cmdq_pkt_finalize_loop appends end of command(EOC) instruction and
+> jump to start of command buffer instruction to make the command
+> buffer loopable.
 > 
 > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 > ---
->  drivers/mailbox/mtk-cmdq-mailbox.c       | 6 ++++++
->  include/linux/mailbox/mtk-cmdq-mailbox.h | 1 +
->  2 files changed, 7 insertions(+)
+>  drivers/soc/mediatek/mtk-cmdq-helper.c | 23 +++++++++++++++++++++++
+>  include/linux/soc/mediatek/mtk-cmdq.h  |  8 ++++++++
+>  2 files changed, 31 insertions(+)
 > 
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-> index 4d62b07c1411..8bd39fecbf00 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -469,6 +469,12 @@ static void cmdq_mbox_shutdown(struct mbox_chan *chan)
->  	spin_unlock_irqrestore(&thread->chan->lock, flags);
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> index 4be2a18a4a02..bbb127620bb3 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -475,6 +475,29 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
 >  }
+>  EXPORT_SYMBOL(cmdq_pkt_finalize);
 >  
-> +void cmdq_mbox_stop(struct mbox_chan *chan)
+> +int cmdq_pkt_finalize_loop(struct cmdq_pkt *pkt)
 > +{
-> +	cmdq_mbox_shutdown(chan);
+> +	struct cmdq_instruction inst = { {0} };
+> +	int err;
+> +
+> +	/* insert EOC and generate IRQ for each command iteration */
+> +	inst.op = CMDQ_CODE_EOC;
+> +	inst.value = CMDQ_EOC_IRQ_EN;
+> +	err = cmdq_pkt_append_command(pkt, inst);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	/* JUMP to start of pkt */
+> +	err = cmdq_pkt_jump(pkt, pkt->pa_base);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	pkt->loop = true;
+> +
+> +	return err;
 > +}
-> +EXPORT_SYMBOL(cmdq_mbox_stop);
+> +EXPORT_SYMBOL(cmdq_pkt_finalize_loop);
 
-Plus there are no users.
-
-NAK. This is not code which should be posted upstream.
+NAK. No users (and please carefully think before you answer that your
+other patch uses it).
 
 Best regards,
 Krzysztof
