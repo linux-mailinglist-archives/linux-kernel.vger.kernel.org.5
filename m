@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9307AC096
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0FC7AC097
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjIWKhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 06:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
+        id S230389AbjIWKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 06:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjIWKhj (ORCPT
+        with ESMTP id S229902AbjIWKhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 06:37:39 -0400
+        Sat, 23 Sep 2023 06:37:48 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B89A9;
-        Sat, 23 Sep 2023 03:37:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AD719E;
+        Sat, 23 Sep 2023 03:37:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C4D8321B1D;
-        Sat, 23 Sep 2023 10:37:27 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A71621EAB;
+        Sat, 23 Sep 2023 10:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695465447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1695465460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2W9BF97SqiNwR44UTKyJIL2C/qyxi5M9MCWRyPEaLmw=;
-        b=JuvpEpMqV9y6fLJbjdzMQwg0h+Lsx2O4wFgIem1jQy2SwHoPlS56wrP58UaOLsuEIbr795
-        ark93U4IZpw51JiDfUhS9fhTaT9MBKVM5fZNKyW2WfYZU9i86j6IXimOPF2Gd1acl8mZzy
-        AYBzIS199Kx/yveg+WnzkfkTguGYa4M=
+        bh=AbimSB8hk16DzrgoId36w3oQpvvCBjP8s4L3OrChrwk=;
+        b=FSgtHip3luYCViGZovKVWsHSPN0VX2a2blYy/xC+gqljYG62O/00ZSVnxCb0Tnizaowt6M
+        LezeQ3fcFIUZiyit2CGchiEsyPdYXt4NBvB1/tjN8Ag+NTcFlEhNOHT9r/Vz5K6R2sUBQI
+        w4bZ+ENmioLZxoKlrjXoqImMMoQiIWs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695465447;
+        s=susede2_ed25519; t=1695465460;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2W9BF97SqiNwR44UTKyJIL2C/qyxi5M9MCWRyPEaLmw=;
-        b=NSa4rUvK8i4/moouamWix2DGnqjmSWbUDYD33kKY4vanvTr5WtgjXl93Mu5I8XwlVh4iGh
-        EUYD6YXmGg66HXCQ==
+        bh=AbimSB8hk16DzrgoId36w3oQpvvCBjP8s4L3OrChrwk=;
+        b=xhxIYPE9h96CaZ6x5yIY2m892UkJzxh08cQvg40aBnPpu+kMrOkQaDFSZlyQ08OXb7Xq0W
+        J61W5S3knZddCaBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 84B781390B;
-        Sat, 23 Sep 2023 10:37:27 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDAB31390B;
+        Sat, 23 Sep 2023 10:37:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id i9IlH+e/DmUQZwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Sat, 23 Sep 2023 10:37:27 +0000
-Date:   Sat, 23 Sep 2023 12:37:26 +0200
-Message-ID: <87h6nlb2ft.wl-tiwai@suse.de>
+        id IS5ROfO/DmUmZwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sat, 23 Sep 2023 10:37:39 +0000
+Date:   Sat, 23 Sep 2023 12:37:39 +0200
+Message-ID: <87fs35b2fg.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
         alsa-devel@alsa-project.org, Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jason Montleon <jmontleo@redhat.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda: Annotate struct hda_conn_list with __counted_by
-In-Reply-To: <20230922175042.work.547-kees@kernel.org>
-References: <20230922175042.work.547-kees@kernel.org>
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usx2y: Annotate struct snd_usx2y_urb_seq with __counted_by
+In-Reply-To: <20230922175046.work.766-kees@kernel.org>
+References: <20230922175046.work.766-kees@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -75,7 +71,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 19:50:42 +0200,
+On Fri, 22 Sep 2023 19:50:47 +0200,
 Kees Cook wrote:
 > 
 > Prepare for the coming implementation by GCC and Clang of the __counted_by
@@ -84,13 +80,14 @@ Kees Cook wrote:
 > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 > functions).
 > 
-> As found with Coccinelle[1], add __counted_by for struct hda_conn_list.
+> As found with Coccinelle[1], add __counted_by for struct snd_usx2y_urb_seq.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
 > 
 > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
 > Cc: Jaroslav Kysela <perex@perex.cz>
 > Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Cezary Rojewski <cezary.rojewski@intel.com>
 > Cc: alsa-devel@alsa-project.org
 > Signed-off-by: Kees Cook <keescook@chromium.org>
 
