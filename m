@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B21C7ABE4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B497ABE51
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 09:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbjIWHPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 03:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S229808AbjIWHQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 03:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjIWHPw (ORCPT
+        with ESMTP id S230210AbjIWHQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 03:15:52 -0400
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE30A7
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 00:15:42 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id jwrbqrekTcLIgjwrbqAzVs; Sat, 23 Sep 2023 09:15:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695453340;
-        bh=Pwbdp/ALGy4X1W3d5bb3j8VmlzglmaHLWQ82s+zIwjM=;
-        h=From:To:Cc:Subject:Date;
-        b=bsXnvC+OsPEQQYIP6GC2EcGJcwME9UMZuNil/vQx6pXE8Vz3SIcCBxlJuXLeu8Uqj
-         uw+ErlMH6E+a7lSNvdRjPzzE8qGDtwKYul1uni7zIapmNguUaCcOnjAoM5+IY9xYgk
-         pwJujQ1DJpxrWbwmvXnz170LInVGPwBPVs2YfLvrHLnfgD+EFf2Flv33TkyBxC6yUl
-         2DnTgiOfGDV3j/I0pT0DjAWDYibH/W0bTkzpCCm9TDUOx0v14Vz6hybqdK+f3Se6E1
-         Dd+foaEyIbawZ71lt4+4d+Rwn6QLFbLV7ZLAanJWFfSSoFz1oXb7xYNqkYv4dlay80
-         FyTjIFWMxs7aA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 23 Sep 2023 09:15:40 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Bryan Wu <bryan.wu@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jamie Iles <jamie@jamieiles.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-leds@vger.kernel.org
-Subject: [PATCH] leds: trigger: ledtrig-cpu:: Fix a warning when compiling with W=1
-Date:   Sat, 23 Sep 2023 09:15:38 +0200
-Message-Id: <3f4be7a99933cf8566e630da54f6ab913caac432.1695453322.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 23 Sep 2023 03:16:03 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC571BF;
+        Sat, 23 Sep 2023 00:15:57 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-7740cedd4baso186909085a.2;
+        Sat, 23 Sep 2023 00:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695453356; x=1696058156; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Aq/skgo905Vb9/3MwnhaYiR/WZVaQLzfkn7Q0xwOaVM=;
+        b=TybaS8F/nbhHBtI+uG5Bhk1kdqVaWqa7WIkgRkuK4edSkkMkwSxMP9tAsYzrXkvrhg
+         FtxhknsRBlzS5rWOPzHs6vP+V8LbkbffQEhcxX4RdwNHq3lPjwb+Hub/V5xi9i4vL4Me
+         x4Ombg1eP1HMxEDz/PnBL3Tp9r1G0SB62N90TsgJ3ybgmyrPH/4u/Sei0Y6RKFIXXNSi
+         bS9dssGXW44B74GjZy5YGAJ72dqGa9h5H2rpRwtyJ5HozxygmJrOqQrcz1IWMSf5l2OA
+         UFwvTnzQwWgcTny3u8wYJEqq3EcxIJchSIALKC8ZsIFMUyP3//gvtro1134NE6dSvwqA
+         stDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695453356; x=1696058156;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Aq/skgo905Vb9/3MwnhaYiR/WZVaQLzfkn7Q0xwOaVM=;
+        b=Q+piDx/afMUA+o12Blf9FrVK94vHuV2LUhmmk4kLmQoa3Tr0Z2i/o3+qCKP+Mes/qK
+         XacMTOHQ1DMDALgtxGMs8vDOlugY7uq66k2T/JIyiQK83STQPf835HVXBOreHEYtWzLx
+         TP9/mkGCOafKlzQRcY7jQo3ulggejl0vbylMUgeMu7gNMkNXeWhAqQKpNTcPszhCibOa
+         8MQvh429iWPKvwgAzOJuBmBywIdv1iR2yahBk3av93EPBfFwS5WbmVZ7HSSpYQLnRtTS
+         bO0aO4yIJ9iQ8TUoNi6xe0q0aatPog2h4Q+4vcmBPnSV1U6JXBv9Ty6vW8K43ZK4RPCc
+         sdcw==
+X-Gm-Message-State: AOJu0YyReCQyB8GAEPTENANPNVRd3Voy1cwczv4CNggOjJpTZeLw/zXy
+        kfoKkFczxfxi2o+I0GIHv+XwaMNBf4rp3+FGuPs=
+X-Google-Smtp-Source: AGHT+IEjj93Q9CjBjKmJa89VT07cL5uAnx8qE9Hd9D6Ihv0LNya0uNzBjdJvjMascKhjH86Cw0EG1gCRnPVnGI9pBR0=
+X-Received: by 2002:a05:620a:2698:b0:774:111b:7fb8 with SMTP id
+ c24-20020a05620a269800b00774111b7fb8mr1563265qkp.73.1695453356092; Sat, 23
+ Sep 2023 00:15:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+In-Reply-To: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 23 Sep 2023 10:15:44 +0300
+Message-ID: <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to teach the compiler that 'trig->name' will never be truncated,
-we need to tell it that 'cpu' is not negative.
+On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> My initial goal was to implement multigrain timestamps on most major
+> filesystems, so we could present them to userland, and use them for
+> NFSv3, etc.
+>
+> With the current implementation however, we can't guarantee that a file
+> with a coarse grained timestamp modified after one with a fine grained
+> timestamp will always appear to have a later value. This could confuse
+> some programs like make, rsync, find, etc. that depend on strict
+> ordering requirements for timestamps.
+>
+> The goal of this version is more modest: fix XFS' change attribute.
+> XFS's change attribute is bumped on atime updates in addition to other
+> deliberate changes. This makes it unsuitable for export via nfsd.
+>
+> Jan Kara suggested keeping this functionality internal-only for now and
+> plumbing the fine grained timestamps through getattr [1]. This set takes
+> a slightly different approach and has XFS use the fine-grained attr to
+> fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+>
+> While we keep fine-grained timestamps in struct inode, when presenting
+> the timestamps via getattr, we truncate them at a granularity of number
+> of ns per jiffy,
 
-When building with W=1, this fixes the following warnings:
+That's not good, because user explicitly set granular mtime would be
+truncated too and booting with different kernels (HZ) would change
+the observed timestamps of files.
 
-  drivers/leds/trigger/ledtrig-cpu.c: In function ‘ledtrig_cpu_init’:
-  drivers/leds/trigger/ledtrig-cpu.c:155:56: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 5 [-Werror=format-truncation=]
-    155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
-        |                                                        ^~
-  drivers/leds/trigger/ledtrig-cpu.c:155:52: note: directive argument in the range [-2147483648, 7]
-    155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
-        |                                                    ^~~~~~~
-  drivers/leds/trigger/ledtrig-cpu.c:155:17: note: ‘snprintf’ output between 5 and 15 bytes into a destination of size 8
-    155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
-        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> which allows us to smooth over the fuzz that causes
+> ordering problems.
+>
 
-Fixes: 8f88731d052d ("led-triggers: create a trigger for CPU activity")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/leds/trigger/ledtrig-cpu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The reported ordering problems (i.e. cp -u) is not even limited to the
+scope of a single fs, right?
 
-diff --git a/drivers/leds/trigger/ledtrig-cpu.c b/drivers/leds/trigger/ledtrig-cpu.c
-index 8af4f9bb9cde..05848a2fecff 100644
---- a/drivers/leds/trigger/ledtrig-cpu.c
-+++ b/drivers/leds/trigger/ledtrig-cpu.c
-@@ -130,7 +130,7 @@ static int ledtrig_prepare_down_cpu(unsigned int cpu)
- 
- static int __init ledtrig_cpu_init(void)
- {
--	int cpu;
-+	unsigned int cpu;
- 	int ret;
- 
- 	/* Supports up to 9999 cpu cores */
-@@ -152,7 +152,7 @@ static int __init ledtrig_cpu_init(void)
- 		if (cpu >= 8)
- 			continue;
- 
--		snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
-+		snprintf(trig->name, MAX_NAME_LEN, "cpu%u", cpu);
- 
- 		led_trigger_register_simple(trig->name, &trig->_trig);
- 	}
--- 
-2.34.1
+Thinking out loud - if the QERIED bit was not per inode timestamp
+but instead in a global fs_multigrain_ts variable, then all the inodes
+of all the mgtime fs would be using globally ordered timestamps
 
+That should eliminate the reported issues with time reorder for
+fine vs coarse grained timestamps.
+
+The risk of extra unneeded "change cookie" updates compared to
+per inode QUERIED bit may exist, but I think it is a rather small overhead
+and maybe worth the tradeoff of having to maintain a real per inode
+"change cookie" in addition to a "globally ordered mgtime"?
+
+If this idea is acceptable, you may still be able to salvage the reverted
+ctime series for 6.7, because the change to use global mgtime should
+be quite trivial?
+
+Thanks,
+Amir.
