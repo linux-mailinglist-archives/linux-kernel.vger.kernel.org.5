@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6637AC29F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83057AC2A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjIWOUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 10:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
+        id S231596AbjIWOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 10:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjIWOUe (ORCPT
+        with ESMTP id S229962AbjIWOYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 10:20:34 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5371A5;
-        Sat, 23 Sep 2023 07:20:27 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d867acf14aeso588218276.1;
-        Sat, 23 Sep 2023 07:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695478826; x=1696083626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jBl/h0an7nIUaCEYje4Eux0NrQkvTENlUgF4eKZqlAU=;
-        b=HppP1XmlAcMPDGUfYm/vNV8fQx5Um/6QMgS6FyqihDvYbTLRwTNUNOJ/tYCNQ1d0Iu
-         jFstWs6OAWiXP8srG5QMfSe1fbBP+dbduf2U9bx4MJgbpEqV29f4fhBi6TD8Xi0BLNDf
-         s1Kyd05RfAtfdlnd/Rb22jIBMdyMLL+eePRPBy5hdesjlP64ewHYSWLLKNvwBeRdaCyg
-         Rt40UDiBtMifb2Q3lUU4qjTNX+XpBpktzaiCHpUTEG4sa5ZZrlVM6FP6jE80iVHwETgP
-         EOO0o1yYZbckio8Gdain7ZaCdwP9NCxAJ4z8wnXB2ZIBu7YfyEJvYKaWhFr5FouYiRY9
-         wrbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695478826; x=1696083626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jBl/h0an7nIUaCEYje4Eux0NrQkvTENlUgF4eKZqlAU=;
-        b=gja/nSJ1BfwNK63mCP/MWF6L1uvQBSgGKoYb60A8ia/iCBF+dv7OKTPRK0+7vh72BL
-         nKziRhjV1RE1QSVd8iZlcZXqN5tu00PjGQ11aGyClSlMrCmMWXo5sa56KFyrUVVsNTVU
-         dr5cpOjVj0CevV0/hRg8EAyHYRzyCNGbKvEMz7arpNQHFRe5PRbTTEKaW7A9IvET6I8h
-         sUesTlOR5TFESXT+VuLqys53OREknUe7qiuyBz2rBuvtItDhB6Ts7Fen2UnPDr9sJS81
-         qKy9VOKGdzyoCEE/QfgbbvCqkWRexjIgJtkQHzbt1+dTIIWWcqEKYOFoFeFn87Xu2xNf
-         EJJA==
-X-Gm-Message-State: AOJu0Yy4UyX0DlGzDikrKOi9Uo93jFxhdHFpFBTOb27rvh1BFYg8puDl
-        n2I4qDdSDXMU2/QbxTk32GAnzhehXI8ZlvAWbAyYPrAFab0=
-X-Google-Smtp-Source: AGHT+IFdZncERuv+UUHOGlhJYbZWMio+nUpWKT14eoSAU8+1jMT8oSVMo3nFrYnxdnOKtNVU19RJU+xJd95ehpnrckg=
-X-Received: by 2002:a25:44a:0:b0:d78:6ef:9178 with SMTP id 71-20020a25044a000000b00d7806ef9178mr1535680ybe.17.1695478826643;
- Sat, 23 Sep 2023 07:20:26 -0700 (PDT)
+        Sat, 23 Sep 2023 10:24:20 -0400
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D3919A;
+        Sat, 23 Sep 2023 07:24:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695478990; cv=none; 
+        d=zohomail.in; s=zohoarc; 
+        b=T2KBF4yIjalK1ZzDEEM0bNBS6lrf1rzPibf611WAnNH6Vj0xTunIPujntuCeRexyyq9CDzFEumukC8m7vfaN02SKx+VLV/ovHo0wG1yHKmHvFTEI1FxRCePdQ4U5jyMA8Gk0wCA7ekmYJ4QcWIpoIWY7uuE+IqAO09QNiWlZErg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+        t=1695478990; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=WZ/aGCA500ed2bcHIimQvNXpZhLASpaAWul68HLtyGw=; 
+        b=M77DzljXk6xpQujq654Kk9vs7HCjjuRSTg72l3/lw769poX2mZ9yZpNHro87Gr8TqivW9BHA3j1Kh8o33dWvSKmJg1kIzLn7pEHu5ufAnND563x63wSV8sPVHd+GYE7NP00a75Ng6t+45L+SevUlScckPUU8accni0XFdPUva4s=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+        dkim=pass  header.i=siddh.me;
+        spf=pass  smtp.mailfrom=code@siddh.me;
+        dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695478990;
+        s=zmail; d=siddh.me; i=code@siddh.me;
+        h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=WZ/aGCA500ed2bcHIimQvNXpZhLASpaAWul68HLtyGw=;
+        b=HIB8IY0kzqs3Ddq+mTUKr+78Mu8wosEADsTE/bbq6WTrTaXfoYwTkmn1GkjZYGNG
+        uDSd7yQti2nKuCxcr4sz7/knfUb7kCndcoph2Wci1IZzz/cksZxUo5ziHtgHoKQGuEF
+        MD7LhbGa+mGgOA9MFQI3O5JTZZpivQ5xB/zmussQ=
+Received: from mail.zoho.in by mx.zoho.in
+        with SMTP id 1695478959143581.0852754386215; Sat, 23 Sep 2023 19:52:39 +0530 (IST)
+Date:   Sat, 23 Sep 2023 19:52:39 +0530
+From:   Siddh Raman Pant <code@siddh.me>
+To:     "Kees Cook" <keescook@chromium.org>
+Cc:     "David Howells" <dhowells@redhat.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Qian Cai" <cai@redhat.com>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Tom Rix" <trix@redhat.com>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "llvm" <llvm@lists.linux.dev>,
+        "linux-hardening" <linux-hardening@vger.kernel.org>
+Message-ID: <18ac26bcc00.365acdab160974.4357076391181710171@siddh.me>
+In-Reply-To: <20230922175407.work.754-kees@kernel.org>
+References: <20230922175407.work.754-kees@kernel.org>
+Subject: Re: [PATCH] watch_queue: Annotate struct watch_filter with
+ __counted_by
 MIME-Version: 1.0
-References: <20230921213440.202017-1-wedsonaf@gmail.com> <20230921213440.202017-3-wedsonaf@gmail.com>
- <20230923081251.2f702cc7@gary-lowrisc-laptop> <CANeycqoYtbE1eMOoX_ZBp_Ti-jg9eJ+JBmHjiV=nno+ocvvOqA@mail.gmail.com>
- <CAH5fLggKf1sXdpnihcm-qOMDk9ewkDB9ZyW3wVdhmuhtn9sPFA@mail.gmail.com>
-In-Reply-To: <CAH5fLggKf1sXdpnihcm-qOMDk9ewkDB9ZyW3wVdhmuhtn9sPFA@mail.gmail.com>
-From:   Wedson Almeida Filho <wedsonaf@gmail.com>
-Date:   Sat, 23 Sep 2023 11:20:15 -0300
-Message-ID: <CANeycqqZeZtVNdZyfbtE0HJKrBf7+=2rDgn0NwGb2_895bq3zQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: arc: remove `ArcBorrow` in favour of `WithRef`
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Gary Guo <gary@garyguo.net>, rust-for-linux@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Sept 2023 at 11:15, Alice Ryhl <aliceryhl@google.com> wrote:
->
-> On Sat, Sep 23, 2023 at 4:11=E2=80=AFPM Wedson Almeida Filho <wedsonaf@gm=
-ail.com> wrote:
-> >
-> > On Fri, 22 Sept 2023 at 21:13, Gary Guo <gary@garyguo.net> wrote:
-> > >
-> > > On Thu, 21 Sep 2023 18:34:40 -0300
-> > > Wedson Almeida Filho <wedsonaf@gmail.com> wrote:
-> > >
-> > > > From: Wedson Almeida Filho <walmeida@microsoft.com>
-> > > >
-> > > > With GATs, we don't need a separate type to represent a borrowed ob=
-ject
-> > > > with a refcount, we can just use Rust's regular shared borrowing. I=
-n
-> > > > this case, we use `&WithRef<T>` instead of `ArcBorrow<'_, T>`.
-> > > >
-> > > > Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
-> > > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > > > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-> > >
-> > > Reviewed-by: Gary Guo <gary@garyguo.net>
-> > >
-> > > The implementation looks good to me, thanks Wedson.
-> > >
-> > > A minor thing that worth considering is to implement `AlwaysRefCounte=
-d`
-> > > to `WithRef` and reimplement `Arc` with `ARef<TaskRef<T>>` or add
-> > > conversion functions between them.
-> > >
-> > > It feels natural to have this this impl (because `WithRef` is indeed
-> > > always ref counted), but on the other hand I don't currently foresee
-> > > anyone to currently want to use this API :(
-> >
-> > Yes, I like the idea of defining `Arc<T>` as `ARef<WithRef<T>>`. My
-> > concern had to do with error messages for type aliases but you or
-> > Benno (or Bjorn?) had a link to plans from the compiler team to
-> > improve this. And we're using type aliases for our locks anyway.
-> >
-> > So this change is in my queue. (As well as the changes to the guard we
-> > discussed a couple of months ago.)
->
-> Will this not cause issues with DispatchFromDyn and the Receiver
-> trait? Maybe it's best to have Arc be a real type and just provide a
-> conversion?
+On Fri, 22 Sep 2023 23:24:08 +0530, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct watch_filter.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Siddh Raman Pant <code@siddh.me>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Qian Cai <cai@redhat.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-I don't think it will but I haven't really tried it yet so can't say for su=
-re.
+Tested with keyutils testsuite.
 
-One thing I learned (obvious in hindsight) when doing the locks is
-that we can have impl blocks for specialisations of a type, so
-`DispatchFromDyn<Arc<T>>` will expand to
-`DispatchFromDyn<ARef<WithRef<T>>>` and it should be ok.
+Tested-by: Siddh Raman Pant <code@siddh.me>
 
-Or are you worried about something else?
+Thanks,
+Siddh
+
+> ---
+>  include/linux/watch_queue.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/watch_queue.h b/include/linux/watch_queue.h
+> index 45cd42f55d49..429c7b6afead 100644
+> --- a/include/linux/watch_queue.h
+> +++ b/include/linux/watch_queue.h
+> @@ -32,7 +32,7 @@ struct watch_filter {
+>  		DECLARE_BITMAP(type_filter, WATCH_TYPE__NR);
+>  	};
+>  	u32			nr_filters;	/* Number of filters */
+> -	struct watch_type_filter filters[];
+> +	struct watch_type_filter filters[] __counted_by(nr_filters);
+>  };
+>  
+>  struct watch_queue {
+> -- 
+> 2.34.1
