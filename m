@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D25897AC1E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEF87AC1EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjIWMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 08:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S231736AbjIWMUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 08:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjIWMUS (ORCPT
+        with ESMTP id S231665AbjIWMUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 08:20:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F3719F;
-        Sat, 23 Sep 2023 05:20:11 -0700 (PDT)
+        Sat, 23 Sep 2023 08:20:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC5D1AB;
+        Sat, 23 Sep 2023 05:20:12 -0700 (PDT)
 Date:   Sat, 23 Sep 2023 12:20:09 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695471609;
+        s=2020; t=1695471610;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ixaPWLbBb/Ht01BTFWXyWT9jP7AiCF6GndUZ/uEuauM=;
-        b=kkvkF90vSQN0/sFSrwtjfWy4W/t0XYBwVGJf+cBGhMRDL3vQJGpK6ReRvSXfEDetJIWK6I
-        xJKp/e7+adZyin+tilHrJ+FTmFmCT1jm0rUqPoFDqObd8j9orNtyxd1E7dxPmefNH7yj3/
-        PPFkb9nbUNeqsqbcZ1xICIxt04dkhCUiyROyJ5340oaX590MjU3YH44NtdfRE06GMLWUWY
-        eipQnsEFivoJCFmqSydsKkAqNj6GWnl3ttmfLNpdJr6q2F7moqDFChz87K7mk5seU2ZRVr
-        d60YOwDTzgkCJkHNnAuz8hAtnPUgWkDWEH+YeoNsLafme+wR0ZEI/2MNPshtDg==
+        bh=Gf8n8UKovPTgE4ScfY67jkYVoHD50ZARwyIjgGjhiFU=;
+        b=X8a5X3qunecEZkb2RjM4jaJR829t05eerzB7tNqSCsmu4xohT8x+jA3Ijr9RPTnlSDhebr
+        0hZS99NQLJsQyE1bt4ioGf5soOEIBwmq1VTFrUMXTQifardgctwRAm67rOHVkGEpD8+bR4
+        S2ga39s6Mu2r+2LL0/dU2l+j4Z1X/8g3grfm/m1Efy+79/uijX4BNh8+1bbfKSwsflTo4e
+        7goOjPVGFwoMKvo5kQhDrgsgAi+I1Dwaa81aNvl8XOQLtVl55RosBNZ4LwusY89ePCVAYO
+        u6eLTeWhkmbMAFHspZ24V11xDq+SeaNBpar1OfAanC+JLZY0ZdUGSW4P6i59Fg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695471609;
+        s=2020e; t=1695471610;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ixaPWLbBb/Ht01BTFWXyWT9jP7AiCF6GndUZ/uEuauM=;
-        b=upTsvdy+Rn9U04WD7x4T2RyfK97pYGrAEzETbbAGIdE7Y+zuqp3mtXCOPdGbSexF8dLMl6
-        Djq4qsiI8/npwrCw==
+        bh=Gf8n8UKovPTgE4ScfY67jkYVoHD50ZARwyIjgGjhiFU=;
+        b=/XfoqgAw30OERnwu6Uvp8cLNj2Lx/ZI4TZC4G/oi4cmkZRiyT7OEmTlqc69eTMWcUwwpcK
+        6F2h8CuxUNSZqyBg==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/srso: Remove 'pred_cmd' label
+Subject: [tip: x86/bugs] x86/srso: Unexport untraining functions
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org>
-References: <bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org>
+In-Reply-To: <1ae080f95ce7266c82cba6d2adde82349b832654.1693889988.git.jpoimboe@kernel.org>
+References: <1ae080f95ce7266c82cba6d2adde82349b832654.1693889988.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169547160930.27769.12655009892934110336.tip-bot2@tip-bot2>
+Message-ID: <169547160980.27769.14687356116320625469.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,81 +67,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     e2ea4bea46ad9b71ab0c9617d8f4e09310973344
-Gitweb:        https://git.kernel.org/tip/e2ea4bea46ad9b71ab0c9617d8f4e09310973344
+Commit-ID:     ee35f33f13f094151794a02fdb0204ce8ca89af9
+Gitweb:        https://git.kernel.org/tip/ee35f33f13f094151794a02fdb0204ce8ca89af9
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:04:57 -07:00
+AuthorDate:    Mon, 04 Sep 2023 22:04:56 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 23 Sep 2023 14:13:03 +02:00
 
-x86/srso: Remove 'pred_cmd' label
+x86/srso: Unexport untraining functions
 
-SBPB is only enabled in two distinct cases:
-
-1) when SRSO has been disabled with srso=off
-
-2) when SRSO has been fixed (in future HW)
-
-Simplify the control flow by getting rid of the 'pred_cmd' label and
-moving the SBPB enablement check to the two corresponding code sites.
-This makes it more clear when exactly SBPB gets enabled.
+These functions aren't called outside of retpoline.S.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org
+Link: https://lore.kernel.org/r/1ae080f95ce7266c82cba6d2adde82349b832654.1693889988.git.jpoimboe@kernel.org
 ---
- arch/x86/kernel/cpu/bugs.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 4 ----
+ arch/x86/lib/retpoline.S             | 7 ++-----
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index e45dd69..4f1ad23 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2410,13 +2410,21 @@ static void __init srso_select_mitigation(void)
- {
- 	bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 197ff4f..6c14fd1 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -352,10 +352,6 @@ extern void retbleed_return_thunk(void);
+ extern void srso_return_thunk(void);
+ extern void srso_alias_return_thunk(void);
  
--	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
--		goto pred_cmd;
-+	if (cpu_mitigations_off())
-+		return;
-+
-+	if (!boot_cpu_has_bug(X86_BUG_SRSO)) {
-+		if (boot_cpu_has(X86_FEATURE_SBPB))
-+			x86_pred_cmd = PRED_CMD_SBPB;
-+		return;
-+	}
- 
- 	if (has_microcode) {
- 		/*
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
-+		 *
-+		 * Zen1/2 don't have SBPB, no need to try to enable it here.
- 		 */
- 		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
- 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
-@@ -2439,7 +2447,9 @@ static void __init srso_select_mitigation(void)
- 
- 	switch (srso_cmd) {
- 	case SRSO_CMD_OFF:
--		goto pred_cmd;
-+		if (boot_cpu_has(X86_FEATURE_SBPB))
-+			x86_pred_cmd = PRED_CMD_SBPB;
-+		return;
- 
- 	case SRSO_CMD_MICROCODE:
- 		if (has_microcode) {
-@@ -2501,11 +2511,6 @@ static void __init srso_select_mitigation(void)
- 
- out:
- 	pr_info("%s\n", srso_strings[srso_mitigation]);
+-extern void retbleed_untrain_ret(void);
+-extern void srso_untrain_ret(void);
+-extern void srso_alias_untrain_ret(void);
 -
--pred_cmd:
--	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
--	     boot_cpu_has(X86_FEATURE_SBPB))
--		x86_pred_cmd = PRED_CMD_SBPB;
- }
+ extern void entry_untrain_ret(void);
+ extern void entry_ibpb(void);
  
- #undef pr_fmt
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 9ab634f..a40ba18 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -157,7 +157,6 @@ SYM_START(srso_alias_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
+ 	lfence
+ 	jmp srso_alias_return_thunk
+ SYM_FUNC_END(srso_alias_untrain_ret)
+-__EXPORT_THUNK(srso_alias_untrain_ret)
+ 
+ 	.section .text..__x86.rethunk_safe
+ #else
+@@ -215,7 +214,7 @@ SYM_CODE_END(srso_alias_return_thunk)
+  */
+ 	.align 64
+ 	.skip 64 - (retbleed_return_thunk - retbleed_untrain_ret), 0xcc
+-SYM_START(retbleed_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
++SYM_START(retbleed_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
+ 	ANNOTATE_NOENDBR
+ 	/*
+ 	 * As executed from retbleed_untrain_ret, this is:
+@@ -263,7 +262,6 @@ SYM_CODE_END(retbleed_return_thunk)
+ 	jmp retbleed_return_thunk
+ 	int3
+ SYM_FUNC_END(retbleed_untrain_ret)
+-__EXPORT_THUNK(retbleed_untrain_ret)
+ 
+ /*
+  * SRSO untraining sequence for Zen1/2, similar to retbleed_untrain_ret()
+@@ -277,7 +275,7 @@ __EXPORT_THUNK(retbleed_untrain_ret)
+  */
+ 	.align 64
+ 	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
+-SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
++SYM_START(srso_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
+ 	ANNOTATE_NOENDBR
+ 	.byte 0x48, 0xb8
+ 
+@@ -298,7 +296,6 @@ SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
+ 	ud2
+ SYM_CODE_END(srso_safe_ret)
+ SYM_FUNC_END(srso_untrain_ret)
+-__EXPORT_THUNK(srso_untrain_ret)
+ 
+ SYM_CODE_START(srso_return_thunk)
+ 	UNWIND_HINT_FUNC
