@@ -2,52 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EBF7AC3B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 18:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31837AC417
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjIWQca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 12:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
+        id S232077AbjIWRlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 13:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjIWQc3 (ORCPT
+        with ESMTP id S231593AbjIWRlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 12:32:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACF9D3;
-        Sat, 23 Sep 2023 09:32:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2E9C433C7;
-        Sat, 23 Sep 2023 16:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695486742;
-        bh=wGrh5m2KFThfYRApjwd8cwMRsCaSFWP9x70dbr76E/4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=blGyQtb1u7hciF01UIGBmDL/ZcWAVc5wzrzSWsShSB2dSVYmECgdrot5Q5Zn9d3cK
-         qrxsrnNvU6bxdy8nXzXlWEftjQ9ZB+gMRL9tRh/yJ75uERRQOL7BRP1mjg1+W6HIPf
-         MC9KDHv8aKMPiJEhtYt70CdiUPOexr12hngonQAY/I5GTRW2WMcJBMd7CdUsEoQjsN
-         tzTUDhdWRjjQbKm5J1Cw7pzlYM7s56QhfYgZN3AuHmaatAmk7kq90Gilfq/5+Oed4w
-         BokKX6Hnc7fd5fBzmzpHQ8OY9jWbcFK9AaNtWkZkDq95OVv7r9ducX1ggM4xtLiQZO
-         WVXRsGvJJJFLA==
-Date:   Sat, 23 Sep 2023 18:32:17 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: [PULL REQUEST] i2c-for-6.6-rc3
-Message-ID: <ZQ8TEfqhMnEqv6rA@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>
+        Sat, 23 Sep 2023 13:41:45 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D3A100;
+        Sat, 23 Sep 2023 10:41:38 -0700 (PDT)
+Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
+        by cmsmtp with ESMTP
+        id jnFHqEypSez0Ck6czqCyML; Sat, 23 Sep 2023 17:41:13 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id k6dMqYsHUsKmik6dMqOQ7D; Sat, 23 Sep 2023 17:41:37 +0000
+X-Authority-Analysis: v=2.4 cv=JOMoDuGb c=1 sm=1 tr=0 ts=650f2351
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=ag1SF4gXAAAA:8 a=Z4Rwk6OoAAAA:8 a=cm27Pg_UAAAA:8
+ a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=Yupwre4RP9_Eg_Bd0iYG:22 a=HkZW87K1Qel5hWWM3VKY:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=++nWpQa97CCPvpYPRMBMXBNuReyoQn5UM5gamZgvfKA=; b=hiUjETCWBnOvOBAmo4j3aqv+Az
+        ZC2FHST4P/vjIZumiA51c46rgJUfR+nRKsNwKFeI/lwVUQ5WqVx8lexT8dkGMekA5zYY/9tbtElmu
+        hnzc+lmCnVnUJjsNSjXCf1WwxI0UvKM0BzB5J/rXMngV8aJ0nY9afKCx+hwpQyHJjvTE32FzqRzAU
+        Lz4MwLXUiCdMbv4JH5fr77qx2KoND8icMOPR4RIyarRB+tCqhmDRB39Dq/V0wG3pYh/G6jLVwDzq1
+        u/+9Ks0lDFOI/2NtflfA99I7gIlUDAyjOUdtlMzASf8DpOf9OBtI0vXgHlzujEkQESaIzyKUY5H7o
+        TRUwiQnQ==;
+Received: from [94.239.20.48] (port=38088 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qjy2r-003aT7-0v;
+        Sat, 23 Sep 2023 03:31:21 -0500
+Message-ID: <e76a0e1a-3afd-d77c-c716-edd285506fe5@embeddedor.com>
+Date:   Sat, 23 Sep 2023 10:32:26 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="g9vcFmfON0snxgas"
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] virtio_console: Annotate struct port_buffer with
+ __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Amit Shah <amit@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        virtualization@lists.linux-foundation.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230922175115.work.059-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230922175115.work.059-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qjy2r-003aT7-0v
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:38088
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfP2RDT/c5D9xhi3ND6CvD4Dn1Zq0Kxcz2CwhTiQqXpFyGFmo/l09Ywa6c76eIclKws3Jh1SvAXVv2v2ee04J8BLk3Y0lJU20jH6nr7ErjPUxgOBYccbu
+ w7f+SeY8uZvbsMoFs091A5EQduU0xxevs09R/k2/2c27ftS6y+5pjvPOBhqywTJMBL/WPc5QHY4KYulrS8ZNhIFsYIGuS3bvyEF5l2DShcnpKZWFhYKSne6S
+ HfJRmihBkAvHI3rIeOvJ9OYLykIo4HLL0MXAAucDeR8=
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,80 +99,44 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---g9vcFmfON0snxgas
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
+On 9/22/23 11:51, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct port_buffer.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Amit Shah <amit@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: virtualization@lists.linux-foundation.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-are available in the Git repository at:
+Thanks
+-- 
+Gustavo
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.6-rc3
-
-for you to fetch changes up to 59851fb05d759f13662be143eff0aae605815b0e:
-
-  i2c: xiic: Correct return value check for xiic_reinit() (2023-09-22 12:04:39 +0200)
-
-----------------------------------------------------------------
-A set of I2C driver fixes. Mostly fixing resource leaks or sanity
-checks.
-
-----------------------------------------------------------------
-Daniel Scally (1):
-      i2c: xiic: Correct return value check for xiic_reinit()
-
-Heiner Kallweit (1):
-      i2c: i801: unregister tco_pdev in i801_probe() error path
-
-Liang He (1):
-      i2c: mux: gpio: Add missing fwnode_handle_put()
-
-Xiaoke Wang (1):
-      i2c: mux: demux-pinctrl: check the return value of devm_kstrdup()
-
-Yann Sionneau (1):
-      i2c: designware: fix __i2c_dw_disable() in case master is holding SCL low
-
-
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Andi Shyti (1):
-      (Rev.) i2c: xiic: Correct return value check for xiic_reinit()
-
-Jean Delvare (1):
-      (Rev.) i2c: i801: unregister tco_pdev in i801_probe() error path
-
-Mika Westerberg (1):
-      (Rev.) i2c: i801: unregister tco_pdev in i801_probe() error path
-
- drivers/i2c/busses/i2c-designware-common.c | 17 +++++++++++++++++
- drivers/i2c/busses/i2c-designware-core.h   |  3 +++
- drivers/i2c/busses/i2c-i801.c              |  1 +
- drivers/i2c/busses/i2c-xiic.c              |  2 +-
- drivers/i2c/muxes/i2c-demux-pinctrl.c      |  4 ++++
- drivers/i2c/muxes/i2c-mux-gpio.c           |  4 +++-
- 6 files changed, 29 insertions(+), 2 deletions(-)
-
---g9vcFmfON0snxgas
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUPExEACgkQFA3kzBSg
-KbZQHxAAkNvlEP2k0DHDVvU2TBN9L/Zh6ONlNpeyY/m/zYQJCsUQwa5pEl7EGNCp
-TNIOsDlp0jK/zoH0fm5+UG/QRX+vwSdOtE0pLr+hmct//URUOrX0jgB+eB1D5YUE
-WPyuhQaGAJiHZU3vvPKVVxiDGmkJacgz7/9yyoHjCS+/H108jp24XqAB63f42WDW
-DYeZYzkO8CiAioG46A7lFBxOQum4ubucmfWWpnfx+TOTK4Sk+AtWtW0Wr75qiGkY
-PDA3uZWNn9bcD7k1uIoku1BwSa54R0DileF1lOsv4fz/4oHBcjrtJSaWjhl6dp+N
-VmbwxRfHMUUXPvdOAP0hCimougHxWqeQ8vmsv527Kscg0nsd9necHwilAmutiXja
-aF7nTrva/N8O7+ymElF4o5FHPAEplvbiJzCPWRjCqSCVByr82N0w/MoN5jfoNo87
-6sP3o8tpAf+1j6Vo8FnUmLEFxWM8QlNEj3n+DGfjLr2pRhsQbdUAbxP7fjthvmnG
-BJctAdf77DSJbl3v22h7M1WGrFK8N5DjUBkCmSiEIAa6YhAHp9k+woS9csp+nqDf
-buxVTEtJwfZI65Ahhp9m3RBTPqniFTgXK0056ke9mEuUuBL4ujHWJVIine4oasxS
-rD3oS3NSEtOJe0cgBXmnMfGxxuE5eMvHT4YBmmV1z7FlzVXBN3k=
-=fXGG
------END PGP SIGNATURE-----
-
---g9vcFmfON0snxgas--
+> ---
+>   drivers/char/virtio_console.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+> index 680d1ef2a217..431e9e5bf9c1 100644
+> --- a/drivers/char/virtio_console.c
+> +++ b/drivers/char/virtio_console.c
+> @@ -106,7 +106,7 @@ struct port_buffer {
+>   	unsigned int sgpages;
+>   
+>   	/* sg is used if spages > 0. sg must be the last in is struct */
+> -	struct scatterlist sg[];
+> +	struct scatterlist sg[] __counted_by(sgpages);
+>   };
+>   
+>   /*
