@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BBF7AC2DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CE47AC2DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 16:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbjIWOw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 10:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
+        id S231805AbjIWOzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 10:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjIWOw6 (ORCPT
+        with ESMTP id S231603AbjIWOzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 10:52:58 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DBD192;
-        Sat, 23 Sep 2023 07:52:48 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4510182fe69so1494103137.3;
-        Sat, 23 Sep 2023 07:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695480767; x=1696085567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BwlxSAqIW9q+AC9IMz1LIgEWEyN6+XuZTJL4sShtOgw=;
-        b=RmH/i9fNvq3gNhHATL92N0cr6qT2DbCgUVvls9j/Zr5rJkRWUchZzh5huiqnnOvnU2
-         2fTtKFJv3WQv/Yhy2RP7/SFPUB/B5ZbmZxnThJAi8R88Q8zseVRs5+KOPt0s3o1C4dPi
-         OPr0SfAPsOt5xVGCmb9AD3lVlPA33Er10VIWgc5L8f9miYW+JubHztSsPHBnE8S6dYSi
-         MroUgPLktxqUDSmA0o7xWJNaF1gzpzupKKU1Bhe2FYk1cyemSDgdb9ur+CWTcOlc30Fv
-         1cBdE4851sbUtVO/462yjOjqDr3Lu6sANHIV9ULn28nOsocPUresZt6akdAnD50GDmhO
-         qpdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695480767; x=1696085567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BwlxSAqIW9q+AC9IMz1LIgEWEyN6+XuZTJL4sShtOgw=;
-        b=v4tMo+mwO28qP9Nq09gJ5uvlePuzFz0lScZd5pw419DQZkmcGXA6NuVtEQB4HQSgx5
-         uoa+lZqPByD4E+VhEzpaLqEWTl9mYV5iT5x0NvGwI1+NfO0YKLYivDRGuwCXjqIJEeor
-         8WLHD7hIYUiocCYkrMGBRxpQLfc8dtZrz3sviy0q43Ta8Syrw6r103k27HI8lNb1cL+L
-         WoGsRNtI7rBfYlVPb1oOi47h4/ucRMsjUnHR+Icm0yjJIig3lWZol9V3IFyR9xlffxeW
-         +BoxOEJuYUwCbmAL8NKOyeEpYVl7yrdfoYTAPdoDppijvJ7eeu37qlieFbr4O2I18HXO
-         Ye7Q==
-X-Gm-Message-State: AOJu0YwVAH/R6rGN7/+jF+rjCBKQg86nFSVQFzLBuxVQ/iXva5/A5onM
-        9cGyT7swb2vqjHTeaydrbsrgmvsMJsb/PhveV08=
-X-Google-Smtp-Source: AGHT+IGUg5QHMM5ChrwrWZ3F7+uucRObwqHw+6AhB1bwVlqghcvjyTAKN2mYEMzlwAczwHJH69goDizuNgaQ2xnNGlM=
-X-Received: by 2002:a67:cd05:0:b0:452:6fc1:a3e5 with SMTP id
- u5-20020a67cd05000000b004526fc1a3e5mr950135vsl.1.1695480767607; Sat, 23 Sep
- 2023 07:52:47 -0700 (PDT)
+        Sat, 23 Sep 2023 10:55:16 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE47D3;
+        Sat, 23 Sep 2023 07:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6SKox0c6G4xgW3Mj8AqJyJbgfI5M1BKoQYQM71CgVN0=; b=kZQaY593rSQ1gVZfpbR1Y6X+c3
+        +eVPVxehkCSlk6ly/tDUGPRLxwgp+yGBLbfYr/c0VbFaYzft4ioDkixUZe2byFbSw8LbV7vO1QI/0
+        jEGecobWOqC8tN0CNKfkt7G+c4s8HrZktrNQg/II2rg5XNOz2Hm4BTvoQFMGE+a11nOU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qk41P-007IOa-FC; Sat, 23 Sep 2023 16:54:15 +0200
+Date:   Sat, 23 Sep 2023 16:54:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH net-next v2 00/10] define and enforce phylink bindings
+Message-ID: <f7a24532-1211-461f-945b-bdf7a847ed65@lunn.ch>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <ZQ2LMe9aa1ViBcSH@shell.armlinux.org.uk>
+ <6c1bb7df-34cd-4db9-95b6-959c87b68588@arinc9.com>
+ <ZQ4VPEuXB3+e48Qs@shell.armlinux.org.uk>
+ <63649fb5-6dc7-4e63-906d-c3e04aafcc4e@arinc9.com>
 MIME-Version: 1.0
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org> <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
- <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
-In-Reply-To: <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 23 Sep 2023 17:52:36 +0300
-Message-ID: <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63649fb5-6dc7-4e63-906d-c3e04aafcc4e@arinc9.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 1:46=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
-> > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel.org=
-> wrote:
-> > >
-> > > My initial goal was to implement multigrain timestamps on most major
-> > > filesystems, so we could present them to userland, and use them for
-> > > NFSv3, etc.
-> > >
-> > > With the current implementation however, we can't guarantee that a fi=
-le
-> > > with a coarse grained timestamp modified after one with a fine graine=
-d
-> > > timestamp will always appear to have a later value. This could confus=
-e
-> > > some programs like make, rsync, find, etc. that depend on strict
-> > > ordering requirements for timestamps.
-> > >
-> > > The goal of this version is more modest: fix XFS' change attribute.
-> > > XFS's change attribute is bumped on atime updates in addition to othe=
-r
-> > > deliberate changes. This makes it unsuitable for export via nfsd.
-> > >
-> > > Jan Kara suggested keeping this functionality internal-only for now a=
-nd
-> > > plumbing the fine grained timestamps through getattr [1]. This set ta=
-kes
-> > > a slightly different approach and has XFS use the fine-grained attr t=
-o
-> > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
-> > >
-> > > While we keep fine-grained timestamps in struct inode, when presentin=
-g
-> > > the timestamps via getattr, we truncate them at a granularity of numb=
-er
-> > > of ns per jiffy,
-> >
-> > That's not good, because user explicitly set granular mtime would be
-> > truncated too and booting with different kernels (HZ) would change
-> > the observed timestamps of files.
-> >
->
-> Thinking about this some more, I think the first problem is easily
-> addressable:
->
-> The ctime isn't explicitly settable and with this set, we're already not
-> truncating the atime. We haven't used any of the extra bits in the mtime
-> yet, so we could just carve out a flag in there that says "this mtime
-> was explicitly set and shouldn't be truncated before presentation".
->
+> As you have pointed out with certain examples, once the driver starts
+> operating out of what the devicetree says, in other words, once the driver
+> starts guessing the hardware, there's no guarantee it will always guess it
+> correctly.
 
-I thought about this option too.
-But note that the "mtime was explicitly set" flag needs
-to be persisted to disk so you cannot store it in the high nsec bits.
-At least XFS won't store those bits if you use them - they have to
-be translated to an XFS inode flag and I don't know if changing
-XFS on-disk format was on your wish list.
+This is partially a result of history. Some of these drivers are older
+than DT. This guessing was sufficient to make them work in the systems
+of that time. Some drivers are used when DT is not available, e.g. USB
+or PCI devices, or even ACPI.
 
-Thanks,
-Amir.
+> There is also a case for DSA. If there's an implication that the DSA
+> controlled switch has an MDIO bus (phy_read() and phy_write()), the DSA
+> driver will connect the switch MACs to the PHYs on the MDIO bus of the
+> switch, even if there's no description of that MDIO bus on the devicetree.
+> As unlikely as it is on a real life scenario, there may be a device that
+> has its switch MACs wired to the PHYs on another MDIO bus.
+
+> This is why I've proposed to make the drivers strictly follow what the
+> devicetree says.
+
+There are mv88e6xxx systems which don't have a DT description, just
+platform data. So if you need to make code changes, keep that in mind.
+
+	 Andrew
