@@ -2,171 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B96237AC54B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 23:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BDC7AC5CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 01:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjIWVvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 17:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
+        id S229762AbjIWXB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 19:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIWVvF (ORCPT
+        with ESMTP id S229777AbjIWXB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 17:51:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD47B180;
-        Sat, 23 Sep 2023 14:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695505858; x=1727041858;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=D/iIizdfDFqyGQBK6NO/5w2ohVbFHZVTRk1XNz9Uitc=;
-  b=EhtYqDA2wviJnt6evN+By7DUORy5cyC0khhowRdSgbu+UkGJBZkOOPmN
-   AI5FtgVSTuzj64ScsVyE/vO106UhOH3KvMEWuKQ4MMnrOiAwZ1Ymv86Ee
-   ko6sfoxq0JhRWVI8pUb5mEoBYVf7YJ5imz5n+38vOqEQK74dxOndv1zAJ
-   yfhpTxgmrzozo7GgxR169N2CItsn6VJfEc1FyelK6d49llynWP1GQ65v/
-   F/lWsnKDeUtE8Ls4NCPL9uKZk+sR/xVlV9R3NtURHlSCmWifkVrSYDUI4
-   TO2esSNEaSxKaMouwZVeiZPvkB1CZ3JmjF4iRo0GhTcNOrbUMlkD0fTCE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="384891856"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="384891856"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 14:50:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="921559556"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="921559556"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Sep 2023 14:50:58 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sat, 23 Sep 2023 14:50:58 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sat, 23 Sep 2023 14:50:58 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sat, 23 Sep 2023 14:50:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hLWyEbgTnialkiP+jurt8mHlPDmGC1yaEMa5s4m3KC+smvcxnLMcx9VzN02L6ZHfzxklm5PsC5SXAI9CwJDcpY9Av/p5feYnCO3qZYL807d+R5sx4vlDksC6jp7aL92P+m+L0TBG8R6S9LtieZz9qF02cNOk8fDgK/5L74XGQYYQ+qckL1Tj5mERmE2WsbCsEEQpoZN+moy19TB3sq53LujAbob96chJ6FNWmzw/sL2h3IYMZmSBxQc/fSZdObnd8zWFoIzGzcEZMdCjQ3iocR5HlycIflGYnzSopC8drfCUL18wwFpQfJFpho7g4IseNleopj/dfqPa9aPPLgaZ9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a0Pe7gjb6Kqv5fLvm5qYdq6NhUQKwDhAX+lgcRVIqO8=;
- b=Y9p+ZLofXyfjZaV07ZcraB2P7YHdM1VlYv2Rbm7MAulKseEfFGopEp+9e/lcP9PPcW0LMfX2BnOiUD84fvg0B2wc9a1c4JCIPEhnhAb7/LpgM4RbxnrxlNy27JaWe1VPbu7a17C2dwO+yy7/zYHRUPfl0Z66hpb6QX8gly8oSAGO3W1RsZx8N6Xm7T2PPEXrCTeyn5HWNCviRnWW3QhF7X8V/C5UCrBwS/DkxZfQuku+EN/YzhexqjTlvLtDcoWl31+H6hkBdcK4lESQKyksqvyvaGMuoMvYOmNSHb9Y01bDprtvV8yBISN93v2sW4Q723yG3JCCeFW234BThjZNIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by LV2PR11MB6070.namprd11.prod.outlook.com (2603:10b6:408:179::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.24; Sat, 23 Sep
- 2023 21:50:55 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992%5]) with mapi id 15.20.6792.026; Sat, 23 Sep 2023
- 21:50:55 +0000
-Date:   Sat, 23 Sep 2023 14:50:52 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>,
-        <alison.schofield@intel.com>
-Subject: Re: linux-next: Fixes tag needs some work in the cxl-fixes tree
-Message-ID: <650f5dbc37797_1236929474@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20230918074537.51fe95ed@canb.auug.org.au>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230918074537.51fe95ed@canb.auug.org.au>
-X-ClientProxiedBy: MW2PR2101CA0005.namprd21.prod.outlook.com
- (2603:10b6:302:1::18) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+        Sat, 23 Sep 2023 19:01:56 -0400
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB382192;
+        Sat, 23 Sep 2023 16:01:48 -0700 (PDT)
+Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
+        by cmsmtp with ESMTP
+        id k7QxqcaDWDKaKkBdDqKesA; Sat, 23 Sep 2023 23:01:48 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id kBdCqrjjUsoPakBdDqmbEY; Sat, 23 Sep 2023 23:01:47 +0000
+X-Authority-Analysis: v=2.4 cv=GMUbr8BK c=1 sm=1 tr=0 ts=650f6e5b
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=P8mRVJMrAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
+ a=20KFwNOVAAAA:8 a=SGADynmgAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9
+ a=QEXdDO2ut3YA:10 a=Vc1QvrjMcIoGonisw6Ob:22 a=y1Q9-5lHfBjTkpIzbSAN:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=zIHXHKGEX091kyoLcxqF:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BKbJw5ix0Sd8jKf/rA+CiCbPW6tBlkUEHkAMX6hqfoE=; b=kdB7JLpqwORfgexfcQRjpWx8c4
+        Iaul9ZcC03lbwwIiwwVPUl33XpPelZvW4tj83w2vSDwMYooFeLVkVTo+kXBiYOQJHfYWZa9Gsdain
+        RpJp7wSeaoKUvGnxINGzuHGysosMtzkgLJwuo6xy1+KYeSQJMYtG/dqrWaT4ka06WcHQKI1f67cMN
+        iW1rHVPSNKupyHpM2hCamtVpkUShs0mLG79wiYr+JP4K0TDdREbAxPB8SjRDHocEWwzTQ7JD8J/0U
+        Docwzhz9nqEXNBeZNpqsewANpdewq8BdUivOexcAxNEEDY/3ngskiG2YcskePSiYpjJb2iO19ZxqE
+        R1LKIgbg==;
+Received: from [94.239.20.48] (port=46004 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qjkNF-0005FL-2v;
+        Fri, 22 Sep 2023 12:55:30 -0500
+Message-ID: <b729889b-2988-5b94-de11-d393da39187e@embeddedor.com>
+Date:   Fri, 22 Sep 2023 19:56:27 -0600
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|LV2PR11MB6070:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed17238b-f474-422c-7f3a-08dbbc7f295d
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K0WugrCq8PU4nVWnFz2XQuwgG2sHpqh4pm59JOKwrFE5iMQTmqVY2YlSPllXSN9WUf5gchNLsQk8uXzlzxnNQVlKXhnfW7p2OksEw5M7hrynoPgCMiRykx7/TeLcqfSucK+ZZDNs2zR5F7RAEpM/YAdGcR/+oF1UtdPlvsLyS0nOOY2/LEzcPPRGqhAhj+lZ1d99ExKDUOFo3jLjXMMmeNlSgIYoEnPB4XS2Iy941x2myqNQnpNA8hc/zRzQoTxH/retXfg6AiFviznvCl70i6nTbcUzGqUsf0Gsx06pqsOAZE+lPOSamILGaiXTiKAyMzDO5TVnnzs0dFcI+gc4ixD7OZPePNUk0a/g2qPBR5Tm/jDdm0V6HfYUFFVyTGXikSld938+FqYm7qPNeeQx/wbf216ccEaThJHm66AnyXsSpErBsAF+7MGGMhgTPrEjKICaYcpavzsy2eakNYnAFvb+HmRMjS+jX7GIx2Hr5+lQDTmD5qgTN01X540MdW2FgZWv9f27C5jMYE2HUhgZDJ7pZAkf3cBg9jpteuruVHFjkrB3jK22aaLPVdOm/dxg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(366004)(376002)(346002)(230922051799003)(1800799009)(186009)(451199024)(316002)(107886003)(26005)(6506007)(6486002)(9686003)(6512007)(82960400001)(38100700002)(86362001)(54906003)(41300700001)(66476007)(66556008)(4326008)(5660300002)(8676002)(8936002)(110136005)(66946007)(4744005)(2906002)(478600001)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qUL5Q7dpxnWl5LYBR3Pw3iprrT04U63/eLP2BONO7oqOrOjXYM90NPwAeyK+?=
- =?us-ascii?Q?/GzKos9nZ/mYEBJV9gdXNGyMff1u+3ROp/1rfeLz5BB9A00IHsqT9V/JEQc4?=
- =?us-ascii?Q?AswCAJCTNaceoOhFScmmT5pfIG+dxAJi9DIQSUVAyhCMr07Nq2bYBoaKnVYo?=
- =?us-ascii?Q?neApf0I5ZR6uY8lasBoxS40pkjzSEOQ6AMaXEM4wSILdX0GipRbeM8IoEOtt?=
- =?us-ascii?Q?x3uo7rta7PMC7IGIJXFurwU5DtKGMoYQ7zcunzC3g4jOSbTMDyl6hr5M/9KZ?=
- =?us-ascii?Q?E/bzEMcTRVTYWFGGb8IZM09pHXcGgf7JjcY/+mbQi5SIN3EqFQZaN4jMJ/E/?=
- =?us-ascii?Q?RpPFic58oMgscgGx+Xj5bs8+G2omXzlgrl0LdDalKG4uAQ1o5lx1hIWwHy2K?=
- =?us-ascii?Q?9tmPBRzCSF9tGWjvdKPL4XzuyN6/nSmkn2YISZzudAlwrTsozeF6s2v82rEr?=
- =?us-ascii?Q?zhZoo3SnF5ZvB5TzaF2bUvBKXq9SxSQCQvRCyBzB0lJIO4nAuycVtjziJPeZ?=
- =?us-ascii?Q?uDJMSpoalMm5pwNFhoZNug25+53hIZN08ZuSpvwd90Fnp3/Cxi7bMEgF461V?=
- =?us-ascii?Q?KkokkYoTOz7onpu3Q0llDn6fIXZ60/cHG6UDXtCfkm6Rhb5uAUrHK8Dk3dPj?=
- =?us-ascii?Q?ZVF+hMNu8/H13LaxpIGw7XbPzunLtqhoBoPRZUbx3Pymk1PXFQZaJZsTWQr2?=
- =?us-ascii?Q?2JDsWsUhKfh0Ka+Yp/eI3ks3fok71XSaHEl3W5mCQgCyF8Yk9juGVoNClKPH?=
- =?us-ascii?Q?KBKlkVBtuwpZyUeRvA721dIIOOkJkplR57CKgTiSpk82zpvYw85r8xdOdqZ4?=
- =?us-ascii?Q?XnLzfUI3YR1f7S9OiqFadJ+0AeMEOVh9A97/Z1dpJb793/k/lxaaOKmQS2qY?=
- =?us-ascii?Q?PtgVUY92jgaYAW/X9kXRLo6dOWCNmDzUWm6AWAA+2+RGJTt/dyt4Qe3KTixb?=
- =?us-ascii?Q?2Bq/N2SpcWP+JNQW13rhBHGynt28BdKk3otUhYGFdl/O/phSwYcUorkFTfZz?=
- =?us-ascii?Q?mIhOmeHT6XQDgF1kMxd7Ws3jPNV9VzjY2Jq+VuFSQMvEBCNGQLX/DH3ernsG?=
- =?us-ascii?Q?5h/dAZeFlUuaUypNs07sZvmEZ+Dfb6vq7SYt7E1lofshDC1JuoS6NpeWfCB3?=
- =?us-ascii?Q?nLr246RWAq3p/2J5aUJU4Ovi+4rDsvudZnOLLQf7txO/X11SNRWTQ8SxauYr?=
- =?us-ascii?Q?+au0d5TpXQagEWy/mtgxigWopNJvUW8wpk4uk2B/7Nx/AzSWduUQWArjhkGq?=
- =?us-ascii?Q?NsCFrojXFtIlLJzE7Xi54wPIH4etA4Zwkp+WO3rFctqa8dK8YDyO9d6z53hv?=
- =?us-ascii?Q?Zrk7WjqttJWXAeWPagaHeGa9O5DWdULh9MFwv/QOCWUd08qwoqbc4LzM1D02?=
- =?us-ascii?Q?q8W2l5/SsSqXjOneI7LpO3b7ELqehWqSEMwuLAJ+ZMBmpMUBQUJKypa/BBPr?=
- =?us-ascii?Q?r3rEH5ATO5/wuaxZpsjwqnqOLmLVUKx+BdtpvC39ETXBq/PzgeCvLiZqjYCa?=
- =?us-ascii?Q?irqwTM4yexcRyTH8SF51BAhD/JKnP9R8AXbU9bOXo5YcU0m+nm7kcxZJANjB?=
- =?us-ascii?Q?JzbyKoeMnHz5Vrn5D6FVHgFsfZp9U+oQPkG7fEfezxbmSzCzg+aAkadt+xbs?=
- =?us-ascii?Q?9g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed17238b-f474-422c-7f3a-08dbbc7f295d
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 21:50:54.7878
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bODtZDLKqO5hcD6N36jUJD6xEvYMv8EXliKp0ouF3Qd70/+isNAMkFBDmjMKmDZN/xbmzOsjsClk76MdOCXGveazv36KQ/d5Jpe2BAlQ8dU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB6070
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 10/14] net: openvswitch: Annotate struct dp_meter_instance
+ with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        dev@openvswitch.org, Jamal Hadi Salim <jhs@mojatatu.com>,
+        David Ahern <dsahern@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Alex Elder <elder@kernel.org>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-parisc@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230922172449.work.906-kees@kernel.org>
+ <20230922172858.3822653-10-keescook@chromium.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230922172858.3822653-10-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qjkNF-0005FL-2v
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:46004
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfM02kK5hGIctSX9GE1sv4+/d21yFEXEWmXUMVnxI8XXoGN7eBPSVasj9mrBveoR8apaQaS333181gvXTT0/8KW2ic6594du2i7URfRyLXMQER3e13KvZ
+ Jr3b+4X2O7eC/nFb46Olxmjmou9/UtMETmy9HisTiz42mYxEv58vC+EUlt5IDPLSoIWf13NIMKuM0H7bePdGdOjMWvgmzkT/9EvWWkPIsg9iDlhUgfL9PpSc
+ YE9Vl6FZblGaXuk1KMg8g224DexgDFUOuNHnxEmJhxXMldPhq+zT4MuVEadQUazPs7n0RAnDTfii8V4wfBJ4hU+dggLKAZN+YNdkpKeLGIA/vHFRXaIR/DrT
+ bZCBsQ5m0j7VJQAMUOGRUapJwO8b86N/CBVrHh3UTYOwl7Thiw1LoqeOnrbt1unLUcXeyOC7
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ add Alison for her fyi ]
 
-Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   18f35dc9314d ("cxl/region: Refactor granularity select in cxl_port_setup_targets()")
-> 
-> Fixes tag
-> 
->   Fixes: ("27b3f8d13830 cxl/region: Program target lists")
-> 
-> has these problem(s):
-> 
->   - No SHA1 recognised
-> 
-> It should be
-> 
-> Fixes: 27b3f8d13830 ("cxl/region: Program target lists")
 
-Noted, and I missed this before letting the branch soak. Will highlight that I
-did not rebase the branch to address this in the pull to Linus.
+On 9/22/23 11:28, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct dp_meter_instance.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Pravin B Shelar <pshelar@ovn.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
+> Cc: dev@openvswitch.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
+
+> ---
+>   net/openvswitch/meter.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/openvswitch/meter.h b/net/openvswitch/meter.h
+> index 0c33889a8515..013de694221f 100644
+> --- a/net/openvswitch/meter.h
+> +++ b/net/openvswitch/meter.h
+> @@ -45,7 +45,7 @@ struct dp_meter {
+>   struct dp_meter_instance {
+>   	struct rcu_head rcu;
+>   	u32 n_meters;
+> -	struct dp_meter __rcu *dp_meters[];
+> +	struct dp_meter __rcu *dp_meters[] __counted_by(n_meters);
+>   };
+>   
+>   struct dp_meter_table {
