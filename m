@@ -2,141 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 905267AC051
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0467AC076
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbjIWKP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 06:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
+        id S231317AbjIWK1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 06:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbjIWKPb (ORCPT
+        with ESMTP id S231448AbjIWK1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 06:15:31 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A05649D2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:13:49 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-34fe2814b0dso11731765ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1695464022; x=1696068822; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUlZCtFTFaUMAp/xTpZ5qPDOY8dQPvRsRwT1ilDrXWM=;
-        b=edvEjotEzz3hfnXLblP6hHgKW2AYJyuUapHd4KJ5vGWVKZjeAG8AHcBrBouiwxgLJk
-         csoL2KwTpaHYraJHzBt3juYIUSodbrfwwDxG4ObQOV+p1gdaDnbfz8fYdNohDbSbeDlu
-         X/tlt132EJjlBOSYYNiNg1RBlqdo8kPW1deBA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695464022; x=1696068822;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RUlZCtFTFaUMAp/xTpZ5qPDOY8dQPvRsRwT1ilDrXWM=;
-        b=MdGSOzs+Ds7O/AhXiqjq1xmy3NCuQHeAXWP9R0yJFdzPzLw449nWULHzUKuUb0REBE
-         o5aOYxG9Dzr0OEoQcHMou5QyxY254yqd8mPegLjHcwicJ1G5dN7H/p8oVPRLO4kgSidA
-         NblpThasaqBkFifI8t6ePLWXD+Mx8pkzoMLRhg2PwY9Eq3s0ZiYNIAaY0dP5fFaDPUpG
-         dGhclE1p3ht0OtvqHH6bq2wz53XJYoZkDp3WUQZ4raK5krnUnVMpMCxBET2YVFuV3b0A
-         VQm/yZulmH/b38hVdZI+opWBIDxqulwFk4aBN3QqhjRIpkpJh+kTVRvsaRN++ajquyjh
-         lcVA==
-X-Gm-Message-State: AOJu0Yw0EQVdqJEliOmrbo3Hm2goxxO/UD+2+1rJH4qtcuOOmwlC6fwL
-        HW+NVLmzpUQbAD0V6VmcXdgzjw==
-X-Google-Smtp-Source: AGHT+IHHCP+E9+z/kkdmvhDa5gOPd1Cuk+81kxCb0+cTNJHDEBGx8NLQ+ABB0VpkMmUcFKJtZBAxTg==
-X-Received: by 2002:a05:6e02:1b0d:b0:34f:d665:4c2e with SMTP id i13-20020a056e021b0d00b0034fd6654c2emr2252379ilv.30.1695464021895;
-        Sat, 23 Sep 2023 03:13:41 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id j15-20020a02cc6f000000b0043167542398sm1538551jaq.141.2023.09.23.03.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 03:13:41 -0700 (PDT)
-Date:   Sat, 23 Sep 2023 10:13:40 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] sched/rt: Fix live lock between select_fallback_rq() and
- RT push
-Message-ID: <20230923101340.GA3521658@google.com>
-References: <20230923011409.3522762-1-joel@joelfernandes.org>
- <20230922214539.4e282609@gandalf.local.home>
+        Sat, 23 Sep 2023 06:27:12 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A15CD9;
+        Sat, 23 Sep 2023 03:20:04 -0700 (PDT)
+Received: from [192.168.1.129] ([37.4.248.43]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MysFQ-1reYJ00JV4-00vvV2; Sat, 23 Sep 2023 12:19:44 +0200
+Message-ID: <21893e62-2a93-af84-a004-5bebc9916627@i2se.com>
+Date:   Sat, 23 Sep 2023 12:19:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922214539.4e282609@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 0/4] staging: vc04: Drop custom logging
+To:     Umang Jain <umang.jain@ideasonboard.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrien Thierry <athierry@redhat.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Phil Elwell <phil@raspberrypi.com>
+References: <20230913185528.770634-1-umang.jain@ideasonboard.com>
+ <1d54715d-25f9-4937-bdff-de0136c95fe8@kadam.mountain>
+ <d8395455-44eb-6762-d978-e912bf2cfe73@i2se.com>
+ <3f040e44-3bdc-b09c-58b3-ea3b0ac6d5dd@ideasonboard.com>
+Content-Language: en-US
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <3f040e44-3bdc-b09c-58b3-ea3b0ac6d5dd@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:OFXh+SWAalxlA/BKarJEaKNh9elJf6QmZksB0h43QjpisjqGtPb
+ P4dwfYkn0nxOJNRDcn+08zW0B50MOIcgT10MmI3ri06XRKELcujsGfJiJmNklFw7aTIEiqR
+ O54kv1Rip8jhf20KE+df8IvZMrl8YiIldtOaqiK72Q5CQ2E6+gQeeRof4+poGtxuLrsEGhy
+ fDjnHo+JYxMGWfb006x0w==
+UI-OutboundReport: notjunk:1;M01:P0:wxOQh8MJRw8=;/OXycivT0mp7vH58Q7/B3taAhpO
+ IvofYFeT2GzPwAz9phoOngRC+wamU1M/I3UF07JboQKWm9BQ/3WNxvzuZFB8dmHLbe2eDFo4G
+ q1QF10VsWolLf6mkBp4qsOVhauvoIDnuO9sOuQl8ZRi4Ni4LDYaP3MQKrdB0vYdv9tuNNStu8
+ BMZbTP4MmSSAa7VT09inq0ClzyuZzfc/iewKgSGEtGwXigIJW6B/7Rzl5TYe9kSdVv+c4QK3e
+ f1yUsZH7aIbRuG6IxA+T7WQlf7YzlsIAdTf8Fqq/yP/n8jHZDAA38JCI4fXkwIvTDvePpevRr
+ WLoAyKcDXeIWPOZlBnz3uU1hoVI0JDILSZSGTrFU8Aw5zuTktH/9BdkpWmEiIsYbvsMzZEP49
+ fJoc4hPHEr45QkXIE/o23DT+o38TW+4U9UVD5IjOMcuFRFIkEnstm6Ho//c2Pgt4PGdlfEPp9
+ /0fg66PflRf3letiUQjXgdbO6kz5x/mR88Ewnv9nl1ZyrwkgHCjQVPvMAHaRDOSQPAafwKPlJ
+ 6TA3cHAt1jdfvr2NoSg8zm8y6HiCr1Fm3WXzA9l3mffBaTKpoySahH1dORtxHTvTk9KsvvCiy
+ ssAaRGK8xke5HW//eQrxqQrojOeiyTQINsZSLirmbWlEuu+mh3n+oIGyaa1slvFlD0X5UFspb
+ w/5lb3XUkcN/PcPx6lFgNZsuafUzlxM2EjY0AKiNpKkINP3QOMG+RMUYPti4p9oJqm56pqdBH
+ +SG31DqhXPwthfyd/FCuYn01OmCwqMgRnSztVMw4E7VaigRKwQSb6hFrIB9fCCZ6y6vgX076X
+ DkgKgjXMuBp2puTQBd+4ifvBEnmLGPdEqVXUfhLy7mmC4kv/Y21EjYwLTosvpuV9kErT+HT/W
+ hJDzImYbNHdCbIQ==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+Hi Umang,
 
-On Fri, Sep 22, 2023 at 09:45:39PM -0400, Steven Rostedt wrote:
-> On Sat, 23 Sep 2023 01:14:08 +0000
-> "Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
+Am 23.09.23 um 11:39 schrieb Umang Jain:
+> Hi Stefan,
 > 
-> > During RCU-boost testing with the TREE03 rcutorture config, I found that
-> > after a few hours, the machine locks up.
-> > 
-> > On tracing, I found that there is a live lock happening between 2 CPUs.
-> > One CPU has an RT task running, while another CPU is being offlined
-> > which also has an RT task running.  During this offlining, all threads
-> > are migrated. The migration thread is repeatedly scheduled to migrate
-> > actively running tasks on the CPU being offlined. This results in a live
-> > lock because select_fallback_rq() keeps picking the CPU that an RT task
-> > is already running on only to get pushed back to the CPU being offlined.
-> > 
-> > It is anyway pointless to pick CPUs for pushing tasks to if they are
-> > being offlined only to get migrated away to somewhere else. This could
-> > also add unwanted latency to this task.
-> > 
-> > Fix these issues by not selecting CPUs in RT if they are not 'active'
-> > for scheduling, using the cpu_active_mask. Other parts in core.c already
-> > use cpu_active_mask to prevent tasks from being put on CPUs going
-> > offline.
-> > 
-> > Tested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  kernel/sched/cpupri.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-> > index a286e726eb4b..42c40cfdf836 100644
-> > --- a/kernel/sched/cpupri.c
-> > +++ b/kernel/sched/cpupri.c
-> > @@ -101,6 +101,7 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
-> >  
-> >  	if (lowest_mask) {
-> >  		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
-> > +		cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
+> On 9/17/23 9:06 PM, Stefan Wahren wrote:
+>> Hi,
+>>
+>> Am 14.09.23 um 08:35 schrieb Dan Carpenter:
+>>> On Thu, Sep 14, 2023 at 12:25:24AM +0530, Umang Jain wrote:
+>>>> Hello,
+>>>>
+>>>> This series attempts to restart the discussion on custom logging used
+>>>> in VC04. In the last feedback gathered in [1] it seems that the logging
+>>>> would rather be moved to use dynamic debug. The series tries to move
+>>>> in that direction.
+>>>>
+>>>> The elephant in the room is the ability of turning on/off log levels,
+>>>> which this series just drops. Compensated by a crude strings
+>>>> ("error", "warning", "info"... etc) for easier grepping.
+>>>>
+>>>> The log category are also just strings (which probably can be 
+>>>> transformed
+>>>> to dynamic debug class names moving forwards?).
+>>>>
+>>>> To move forwards, I would like feedback on the broader direction.
+>>>> There are couple of TODOs in each of the patch (summarised in commit
+>>>> messages) which require case-by-case discussion.
+>>>>
+>>>> Additional high-level questions to move forwards:
+>>>> 1. Is loss of log levels by moving to dynamic debug, is actually a
+>>>>     concern? Is dynamic debug a valid replacement?
+>>>
+>>> Dynamic debug is honestly going to be an improvement.  I guess, Greg and
+>>> I said this back in Jan.
 > 
-> What happens if the cpu_active_mask changes right here?
+> +1
+>>>
+>>>> 2. Whether debugfs should be dropped as well, found vestigial in [2]
+>>>
+>>> Yes. The "vchiq/log" should be removed.  Ideally as part of this
+>>> patchset so it's easier to understand.
+>>
+>> Yes, but please do not remote vchiq_debugfs entirely. I'm working on a 
+>> patch to move the state dump (debug feature) from the character device 
+>> /dev/vchiq to debugfs /sys/kernel/debug/vchiq/dump_state.
 > 
-> Is this just making the race window smaller?
+> Can't the state dump be printed to dev_dbg() ? Will it pollute the 
+> kernel log?  Having debugfs for a single dump doesn't seem worthwhile if 
+> the state dump can be incorporated to dev_dbg() too.
 
-It should not be an issue for fixing the live lock because at most that would
-cause a few more bounces between the 2 CPUs but eventually once
-cpu_active_mask is stable, the CPU being offlined will not be selected for
-the push. That's nothing compared to the multi-second live lock that happens
-right now.
+debugfs was created for a good reason. dev_dbg() is a nice tool, but it 
+isn't useful in every situation. In case of communication the usage of 
+counter is quite popular and removing this ability would make debugging 
+not easier.
 
-Also, with this patch I ran the tests for days and could not reproduce the
-issue. Without the patch, I hit it in a few hours.
+Try to make "cat /dev/vchiq" you will see you don't want pollute the 
+kernel log with this kind of information.
 
-> Something tells me the fix is going to be something a bit more involved.
-> But as I'm getting ready for Paris, I can't look at it at the moment.
+Actually i don't see a problem with have a single dump in debugfs.
 
-Thanks for taking a look and safe travels!
+Let me send a draft of my changes for a better discussion ...
 
- - Joel
+Regards
+Stefan
 
+>>
+>>>
+>>>> 3. whether vchiq_log_trace() should actually be tracing support for 
+>>>> VC04
+>>>
+>>> That can be done later if people want.  No need to discuss it now.
+> 
+> Thanks Dan.
+>>>
+>>> regards,
+>>> dan carpenter
+>>>
+> 
