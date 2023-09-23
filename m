@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 227407AC15A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3907AC15E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbjIWLqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 07:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
+        id S231381AbjIWLsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 07:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjIWLqW (ORCPT
+        with ESMTP id S230426AbjIWLsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 07:46:22 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01562199
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:46:16 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-986d8332f50so449492466b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695469574; x=1696074374; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=38HTal4f4sXppv8oLqqAylKmEA9yjUTc4W6rtp1s3qw=;
-        b=bR4F/CJXaDrRO73kPTdk75S6knjhpkVarRbKE6QbyAmkyfN2wrWcbKenECJD5hBmlY
-         CZI4vmn/wBFZYxT/Rbqp44WWrrhVDGJXdRi7toH1qeizPx3IyOrbvZD4KCseblgkSTMt
-         CH2PxqZA839uY1Kq65Ci69EFBRq94HiJ0QmbEJSgOhFpQuxquPFueLKf4uu23i8Pe99f
-         YzzxaABn/TniOtfZKsYiVCQDnouH86oMcHkJaaQuQ+z11MkVt/Idxx+qJBHd8l+ZJ6vu
-         Gzc42qKVkmt3MgmEgCnw00G1l28IZsk6TErSK3E8vuhTMQDOcldjjlpPpSAgZy/RSIlu
-         AWPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695469574; x=1696074374;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=38HTal4f4sXppv8oLqqAylKmEA9yjUTc4W6rtp1s3qw=;
-        b=va1HgpfwWxHDfTpyEOiUcJU8n2gZ91GRfzWYAPEnzHvj4JsjyEFk73Rs15jse1TyD/
-         KZU4jHeMCf7G8FNAmaCcFP1KnKhUgTdCf80wb0VKtWqjdhKhiCVR2Bw9a418JkxIr8iB
-         825IWr3lgVAghEAsjZyv8YgyYWaYJn9HzReWPp/5p/q/7mHM7oUN56Jt8JR4pqyRHgoh
-         u915MUvIBdeCWfWKNM2Tfh5WPaF/hPycPpybb60tNf+XNjKIanoq57P27jzZcJKLirJf
-         Tyz1ciCyS9RaTayAXa467VeSo5QFprfpPIMbuK55wah8+OeFtxOneqVP6LZjKUC0/NMT
-         uFug==
-X-Gm-Message-State: AOJu0YxSR8ktfEkfIoDZnbzgb/o/OzG2Agl8ZLDiPwBtYFlQJV58rGhC
-        4xCcBODQBc9BDfb+fikUzuFWQJ7nKab9M29UPLsluw==
-X-Google-Smtp-Source: AGHT+IFDTTWMl5LfD8ts0lIxg/ZnEsVdvLyl7AspAxapn77Cf42Oh5qIo0YQDFfD8whAi2yr/C3HJQ==
-X-Received: by 2002:a17:906:9c2:b0:9ae:5492:640 with SMTP id r2-20020a17090609c200b009ae54920640mr1472224eje.32.1695469574497;
-        Sat, 23 Sep 2023 04:46:14 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id j19-20020a170906051300b009937e7c4e54sm3879169eja.39.2023.09.23.04.46.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Sep 2023 04:46:13 -0700 (PDT)
-Message-ID: <fea4b205-a0d8-9c40-4fa8-29340c41aed1@linaro.org>
-Date:   Sat, 23 Sep 2023 13:46:11 +0200
+        Sat, 23 Sep 2023 07:48:30 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F499F;
+        Sat, 23 Sep 2023 04:48:23 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38NBlxAS028604;
+        Sat, 23 Sep 2023 11:48:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=MbbdfnIprRaXRgZX4bukDl9QS5PDJbFVxm3H6/bcw+8=;
+ b=N89AaHg/TdfpR/vPiFjH5I5JjBk2L+lVaI8b8DxPe8eQRm/1ReV+lzAsKEMK5ys+HzLk
+ 6LKkMHb4AvSEhTFW70z+o/b5gJJ39pVYWCah+sSYEymv0k8Equ0qegn4Qmz8ZgphaHlX
+ ax5/jB1VbxeG7JLKD6If2G9r2bIimwwzZw7eu+fAhgkLJLnlPd3VGBhIWtseTTBKEMha
+ HDDnk+zlLOJG9HjoVMQf0MrzXFSChLIQmdmA8MePiArjCLjzj0hIsbSAi0QAHGGnwmsv
+ P9lub+Og3taeU3rNW/BA7P5PzP/NBsUbBsyBx5cf8LMjpFi6JMEalLd0hU4A06mZbl3J 0A== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9qwb8yn5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Sep 2023 11:48:12 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38NBLoUr017972;
+        Sat, 23 Sep 2023 11:48:11 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf8n6wd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Sep 2023 11:48:11 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38NBmAY5021486;
+        Sat, 23 Sep 2023 11:48:10 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3t9pf8n6w1-1;
+        Sat, 23 Sep 2023 11:48:10 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Konrad Dybcio <konradybcio@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH next] power: supply: mm8013: Fix error code in mm8013_probe()
+Date:   Sat, 23 Sep 2023 04:48:06 -0700
+Message-ID: <20230923114807.2829188-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 1/2] dt-binding: usb: ci-hdrc-usb2: document Nuvoton
- NPCM supprt
-Content-Language: en-US
-To:     Tomer Maimon <tmaimon77@gmail.com>, Rob Herring <robh@kernel.org>
-Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
-        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
-        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230918165958.2659-1-tmaimon77@gmail.com>
- <20230918165958.2659-2-tmaimon77@gmail.com>
- <b7a337f2-a810-d14c-e7cd-15e33a9ecb5d@linaro.org>
- <CAP6Zq1gSJYsNUuD-bexFW_1VpAUuF_WZkicNzZms6hVdo9LnMQ@mail.gmail.com>
- <e0d42d13-b307-9915-97c8-948261b39ce1@linaro.org>
- <CAP6Zq1g0=-h0PFg2a8bqao+XjdNHoxGMdYSRRPAnfY_6WdemAw@mail.gmail.com>
- <20230919162837.GA4051010-robh@kernel.org>
- <CAP6Zq1hJPPAtKw8auC22wViHGQHTi0SufPJoBiqYtGWomnNUYQ@mail.gmail.com>
- <CAP6Zq1iUj8UfLZutyOVxbKgF42rMoF9ig3dViy7ApTHcqVoP7g@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAP6Zq1iUj8UfLZutyOVxbKgF42rMoF9ig3dViy7ApTHcqVoP7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-23_09,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309230097
+X-Proofpoint-GUID: Ys6HgNCpVyI69ggK3IvPX8U7Wih9dzuo
+X-Proofpoint-ORIG-GUID: Ys6HgNCpVyI69ggK3IvPX8U7Wih9dzuo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 15:17, Tomer Maimon wrote:
-> Hi Rob,
-> 
-> Again thanks for your suggestion I took a look at the
-> drivers/usb/roles and I am not sure it answers NPCM ChipIdae case.
-> For example, in the NPCM845 we have ten UDC ChipIdea modules (UDC0-9).
-> Only UDC8 and UDC9 are muxed with USB host0 and USB host1.
-> NPCM UDC and NPCM USB host are different HW modules therefore different drivers.
-> 
-> The ChipIdea driver uses its own internal USB role function to switch
-> between ChipIdea UDC and ChipIdea USB host and we can't replace it
-> with a unique NPCM USB role function also we need to set the mux only
-> at the probe stage.
-> 
-> This is why I have added nuvoton,sysgcr property to the NPCM ChipIdea driver.
-> 
-> With the above do you think I should do it differently?
+The value of ret is zero when passed to dev_error_probe(), we are passing
+zero to dev_err_probe() is a success which is incorrect.
 
-Your entire rationale above explains drivers, so it is not proper
-justification for bindings. How your probe stage has anything to do with
-bindings? If drivers do not work or miss something, change them.
+Fix this by getting the error code using PTR_ERR().
 
-Best regards,
-Krzysztof
+Fixes: c75f4bf6800b ("power: supply: Introduce MM8013 fuel gauge driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202309190838.eu8WS6sz-lkp@intel.com/
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on static analysis with smatch, only compile tested.
+---
+ drivers/power/supply/mm8013.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/mm8013.c b/drivers/power/supply/mm8013.c
+index ddac40ef9ae5..29fd65fe6545 100644
+--- a/drivers/power/supply/mm8013.c
++++ b/drivers/power/supply/mm8013.c
+@@ -273,8 +273,10 @@ static int mm8013_probe(struct i2c_client *client)
+ 	chip->client = client;
+ 
+ 	chip->regmap = devm_regmap_init_i2c(client, &mm8013_regmap_config);
+-	if (IS_ERR(chip->regmap))
++	if (IS_ERR(chip->regmap)) {
++		ret = PTR_ERR(chip->regmap);
+ 		return dev_err_probe(dev, ret, "Couldn't initialize regmap\n");
++	}
+ 
+ 	ret = mm8013_checkdevice(chip);
+ 	if (ret)
+-- 
+2.39.3
 
