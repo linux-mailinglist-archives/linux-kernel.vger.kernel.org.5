@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996CA7AC5A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 00:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654067AC5AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 00:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjIWWIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 18:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
+        id S229723AbjIWWSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 18:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjIWWIV (ORCPT
+        with ESMTP id S229464AbjIWWST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 18:08:21 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDEC193
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 15:08:15 -0700 (PDT)
-Received: from letrec.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38NM7v7G019349
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 23 Sep 2023 18:07:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1695506880; bh=WPgIP1OKYXQhlTobK38qEKfYwfANAfvfSRRokPueeS0=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=hzZYHkdvm1g6SCrimbPLQhA0UE+ZuN05WGB3bG69RPPvHd0Z2JUUAlztL3I2wJI3v
-         q30dmen2hOaqJ/zxtNpLWLiI33zRxh7yysAb2lXPMmNuKHsLNMbEoWxnFJg8f7MJfD
-         QBSiiOQoeAY/+4oKarvEXeXwlhs5KAwgIiXlur4rMWAef3Qx39BKX9uq/fBA/bbjF/
-         Sl5gQgKAK8i+6dAvmeVFQsmqQYiRSuTRgm1QJMG0oLP6WdXO1izwpHPApjM234O3n7
-         c3KLUfRsmIEqmCCzXInYF1HPQ2WoMhB+Zdz2LAGkGsA4yJSuPoh6gLnnCBeiilV9+K
-         qphnN8CulWdug==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 18C0A8C036B; Sat, 23 Sep 2023 18:07:57 -0400 (EDT)
-Date:   Sat, 23 Sep 2023 18:07:57 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [GIT PULL v2] timestamp fixes
-Message-ID: <ZQ9hvS4m775EosEm@mit.edu>
-References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
- <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
- <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
- <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
- <CAOQ4uxjcyfhfRhgR97wqsJHwzyOYqOYaaZWMWWCGXu5MWtKXfQ@mail.gmail.com>
- <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
- <ZQ884uCkKGu6xsDi@mit.edu>
- <CAHk-=wg8zxC9h5a0qimfGJVvkN0H5fNgg03+TNn9GE=g_G30vw@mail.gmail.com>
+        Sat, 23 Sep 2023 18:18:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2B3180;
+        Sat, 23 Sep 2023 15:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695507494; x=1727043494;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UuDxwhfPF7O8T115b2FKrlhmBbJyLggQ2u1hq9AMO8g=;
+  b=FFQDRbcEVOZJuH4jlmWiDyPBQ+WJ30ps2hEg52UEo8g3x+7hzH3nuYZF
+   xAllISmALlw31uJX7mSZeY+sRkpLzUapwmcZR9ql+XtqgNzdmZb/5oaCV
+   ylSTDoAc5WomZV7T2mkC1RETQb5XnPm7VYYGzXlRYbY+MjF62QTqrFzOi
+   KrpUQcO/NfIoDVqnlC5+xWm5SzWsGG/6v/ckipd9sbLI+oMHyFKzJjXOL
+   QOXSPMhSyYR2GXV9sO6Wo9DAVcXZNvKmuCC22lZxF/2qtjXoe6PrsX+ym
+   NPoAlLdqmaTrXSk41rA3k2L70wGEd4/I2eroBT11UkfkqBFgpGCRh7nMq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="366122667"
+X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
+   d="scan'208";a="366122667"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 15:18:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="871643176"
+X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
+   d="scan'208";a="871643176"
+Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 23 Sep 2023 15:18:07 -0700
+Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qkAwu-0002uy-2f;
+        Sat, 23 Sep 2023 22:18:04 +0000
+Date:   Sun, 24 Sep 2023 06:17:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        linux-clk@vger.kernel.org, openbmc@lists.ozlabs.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
+        Jacky Huang <ychuang3@nuvoton.com>
+Subject: Re: [PATCH v9 3/3] clk: wpcm450: Add Nuvoton WPCM450 clock/reset
+ controller driver
+Message-ID: <202309240553.3BXO3Rd6-lkp@intel.com>
+References: <20230923143438.1895461-4-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wg8zxC9h5a0qimfGJVvkN0H5fNgg03+TNn9GE=g_G30vw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230923143438.1895461-4-j.neuschaefer@gmx.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 01:03:56PM -0700, Linus Torvalds wrote:
-> 
-> Except it looks like ext4 actually does full nanosecond resolution (30
-> bits for nanoseconds, 34 bits for seconds). Thus the "only a couple of
-> hundred years of range".
+Hi Jonathan,
 
-Hmm, yeah, sorry, I misremembered.  We did talk about possibly going
-with 100ns, but if I recall correctly, I think there was a desire that
-an arbitrary timespec64 should be encodable into an on-disk timestamp,
-and then back again, and hundreds of years of range was considered
-Good Enough (tm).
+kernel test robot noticed the following build errors:
 
-> Except we'd do it without the EXT4_EPOCH_MASK conditionals, and I
-> think it would be better to have a bigger range for seconds. If you
-> give the seconds field three extra bits, you're comfortable in the
-> "thousands of years", and you still have 27 bits that can encode a
-> decimal "100ns".
+[auto build test ERROR on clk/clk-next]
+[also build test ERROR on robh/for-next pza/reset/next linus/master v6.6-rc2 next-20230921]
+[cannot apply to pza/imx-drm/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I might be screweing my math, but I believe 24 bits should be enough
-to code 10,000,000 units of 100ns (it's enough for 16,777,216), which
-should be sufficient.  What am I missing?
+url:    https://github.com/intel-lab-lkp/linux/commits/Jonathan-Neusch-fer/dt-bindings-clock-Add-Nuvoton-WPCM450-clock-reset-controller/20230923-223751
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
+patch link:    https://lore.kernel.org/r/20230923143438.1895461-4-j.neuschaefer%40gmx.net
+patch subject: [PATCH v9 3/3] clk: wpcm450: Add Nuvoton WPCM450 clock/reset controller driver
+config: loongarch-randconfig-002-20230924 (https://download.01.org/0day-ci/archive/20230924/202309240553.3BXO3Rd6-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230924/202309240553.3BXO3Rd6-lkp@intel.com/reproduce)
 
-As far as how many seconds are needed, that's an area where people of
-good will can disagree.  Given that I don't really believe a machine
-is going to be up for decades before we will need to reboot and update
-the kernel to address zero days, and LTS kernels are going to be
-supported for two years going forward, if what we're talking about is
-the in-memory time type, my personal opinion is that hundreds of years
-is plenty, since it's not hard to change the encoding later.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309240553.3BXO3Rd6-lkp@intel.com/
 
-Cheers,
+All errors (new ones prefixed by >>):
 
-						- Ted
+   loongarch64-linux-ld: drivers/clk/nuvoton/clk-wpcm450.o: in function `.L40':
+>> clk-wpcm450.c:(.init.text+0x508): undefined reference to `reset_simple_ops'
+>> loongarch64-linux-ld: clk-wpcm450.c:(.init.text+0x50c): undefined reference to `reset_simple_ops'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
