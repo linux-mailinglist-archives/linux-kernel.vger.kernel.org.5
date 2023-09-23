@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06587AC21D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D947AC229
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 15:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbjIWMwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 08:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S231742AbjIWNKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 09:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjIWMwt (ORCPT
+        with ESMTP id S231410AbjIWNKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 08:52:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DE719C
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 05:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
- t=1695473553; x=1696078353; i=j.neuschaefer@gmx.net;
- bh=I7aIv/vlyeo+vl/9kemBxv5Kp8uK897scWG8qKqLOLw=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=l/YZ0AtI9q4HikU2nhGwSRPmgsrsgRRQpvVJYVKyEr/glxZBtDstmfQaSiiJMmjOs/RxNLid+4R
- VKtJyn36u1vM5v6bIBxQugIKpMf8rD76+eIcRvjmOT9TvheqiTPOXZnwCfGjK/3yjlM7zw/Vr9HmC
- 8Ugu8NaCTJA+eT98w6JWWcHn1shTuzCu+a8l1d6eshXwXgbVpy2vNE6hSvdiZf/QIdkBG8MXjwwmM
- iW/KKr2zcay7HjhhcgRpWDaqDUBmikAgUIEI9/yRno98S3Pexw05Gx95F7ws7xEU4Tf+14/hLcjro
- 2/Wo6mv2v6go96E1cWliK+W7VokBw2jtLb1Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysRu-1reSBv1hbu-00vxeN; Sat, 23
- Sep 2023 14:52:33 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     openbmc@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v5 2/2] soc: nuvoton: Add "select REGMAP" to WPCM450 SoC driver
-Date:   Sat, 23 Sep 2023 14:52:27 +0200
-Message-Id: <20230923125228.1770991-2-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230923125228.1770991-1-j.neuschaefer@gmx.net>
-References: <20230923125228.1770991-1-j.neuschaefer@gmx.net>
+        Sat, 23 Sep 2023 09:10:00 -0400
+Received: from smtprelay03.ispgateway.de (smtprelay03.ispgateway.de [80.67.18.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B24199;
+        Sat, 23 Sep 2023 06:09:50 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay03.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qk2OD-00056I-S5; Sat, 23 Sep 2023 15:09:41 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Subject: [PATCH v4 0/2] leds: Add a driver for KTD202x
+Date:   Sat, 23 Sep 2023 15:09:00 +0200
+Message-Id: <20230923-ktd202x-v4-0-14f724f6d43b@apitzsch.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:k21NPkH4GANoX6/PdO1KSlxDu/mRSbml4Y4eFZwDlynA73UEvlL
- smPNP1PsOhXy9JDEw+TAKHCvltOHJZwz2AD+EwIUwOHvyC6YPHcDpvlneFDJadW8vL7El3q
- 9zOc7Hlv8+LgGLBJF8BZBjt84G/abTL+j7QMchcoejbD+5zHG+ws0rN3i49tFFrvvhni7RK
- rhh5pOQpq0aLipbz10wMA==
-UI-OutboundReport: notjunk:1;M01:P0:/KmbPWIkQ9s=;lnD8gZztCTxRiPb+VBt0bAXlU8E
- p+i3NoKQj3TDRb5CCibeHiCCLZuzo7buNINP4XtgDUo+V8Q9qa+k0SSKZyp2l1rXm3jHq7rTC
- o71MLIFLnCEMTzQhCNqRP4wViiVNNMwGOgK6uIGstlQmJUS8lUTwSyt7g2JcBJHioX/Ssp2+Z
- M9HhgK5Rwr8xnUhThlhqulh/3TXYn1O2lDOYpI5xoxLEYF71Ok/h5PaCja3WQb/l0lvvB94JH
- VwNbB28zk3gPxi0Ft9scX69kRZzKUZlSrMAsFnnJUBLsQ6TBm7BYrW0YHST2NKOb+ge/eWvu7
- 6qSIdOTb7nkBbLlHhWdXYd2bOpmZdTUTN+d3Ezwlb8jDoKQNV2NVkCDlyszMUeyzMkTn0EKwB
- wuh68QqISbDQ0gUUiYt+ycBeQxj959kTISLM8jVO+W5tzucOnxJCoHq9eeYaugqmi2gclc9OJ
- IFP3xgDT7wReznl8EnPlPcFQVzUc+ykx+l1YdFJRxgDLGHS8kg2HESx+jgwG4F9cAkUXLDpu5
- 7RR/vF5mWdmyMFyN1YBT6XDjEsDE5YL2XltYk7iesJHeZlKQURaI07ivkaUk5ykV/y5B78051
- vU6AV7XNtbfzrSPX07C6NBi6dHWTnEGRyySGueV6IsX/X+Gtj0jLhREDHe9WUuleMmlMfpSdz
- eoCUE+wu1xIyo8x9oZK1xAjVObwZNdzwDrKSQ5coXR4PSu5+/Y8GPzo7BJzFwEFdNj8wQTSmc
- X6JvIn2tlcQO+b82unwNGQLOUQQ2zuy74rC+mtsG9e+BweM7JhI8yKbAsklMrR+tPcWLZJ0gv
- WMme3qf1g7uNXdFo3JjOhDsRw6xuVmaGmH7AbGTYVKu0eqD/qXA9845drRIJDNTqg4PEXGpAo
- gn+G2aH5MkVlKt3VIx+b1LigZzrd175TXAXeDEjspUd9mv3GLxUcQKQP/gQ044HabgD6vhJcW
- Ovo7TQ==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAGzjDmUC/2XNyQ7CIBQF0F8xrMUwdHTlfxhjHvAQorYVauOQ/
+ rvUTTXdcck9775JxOAxku3qTQIOPvq2SSFbr4h20JyQepMyEUxIVvCKnnuT3g+aZ4USUBqRMUV
+ SW0FEqgI02k19dbvmR3uB6I4BIUyNLqD1j+/W/pCy87Fvw/M7PfDpd7kycMqo1bwSFi0YU+6g8
+ /0rarfBO5muDGKWNeOzFElKrSrFNDCBZinlryxmKZMsrVY110VuJPzLcRw/gsxM4zYBAAA=
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select CONFIG_REGMAP from CONFIG_WPCM450_SOC, because the driver relies
-on regmap to work.
+Add the binding description and the corresponding driver for
+the Kinetic KTD2026 and KTD2027.
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/lkml/CAMuHMdWo5vHCeE6BeSHrUy12uT7_wFhW-VbQ=
-mQ5u+4Q8c7-wYQ@mail.gmail.com/
-Fixes: 7dbb4a38bff3 ("soc: nuvoton: Add SoC info driver for WPCM450")
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-=2D--
-v5:
-- Rebase on v6.6-rc2
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
+---
+Changes in v4:
+- Annotate struct ktd202x with __counted_by
+- Link to v3: https://lore.kernel.org/r/20230906-ktd202x-v3-0-7fcb91c65d3a@apitzsch.eu
 
-v4:
-- Add Geert's R-b tag
-- Fix commit reference
-- Change Link tag to Closes
+Changes in v3:
+- Add r-b to bindings patch
+- Replace .probe_new by .probe
+- Link to v2: https://lore.kernel.org/r/20230901-ktd202x-v2-0-3cb8b0ca02ed@apitzsch.eu
 
-v3:
-- Split the commit into two
-- Reword the commit messages a bit
+Changes in v2:
+- Make binding description filename match compatible
+- Address comments by Lee Jones
+  - Extend driver description in Kconfig
+  - Add copyright + link to datasheet
+  - Add unit to definition/variable names, where needed
+  - Define magic numbers
+  - Remove forward declaration of 'struct ktd202x'
+  - Remove superfluous comments
+  - Get rid of struct ktd202x_info
+  - Join ktd202x_chip_init() with ktd202x_chip_enable()
+  - Return the error on ktd202x_chip_disable()
+  - Remove unreachable case from chip_in_use()
+  - Rename ktd202x_brightness_set() argument from num_colors to num_channels
+  - Forward errors received in ktd202x_brightness_set()
+  - Remove variable for 'num_channels = 1'
+  - Add some explanations to blink time calculation
+  - Remove unneeded lcdev from ktd202x_blink_*_set()
+  - Add define for max brightness and replace deprecated LED_FULL by it
+  - Move setting led_classdev.brightness to ktd202x_brightness_*_set()
+  - Move mutex_lock inside ktd202x_blink_set()
+  - Add comment that 'color' property is optional (allow EINVAL)
+  - Replace escaped double quotes by single quotes
+  - Avoid overloading variable 'color'
+  - Do not lock during probe
+  - Remove usage of 'of_match_ptr'
+- Document interrupt and pull-up supply, like done for aw2013[1]
+- Fix error in num_steps calculation
+- Link to v1: https://lore.kernel.org/r/20230618-ktd202x-v1-0-fc182fefadd7@apitzsch.eu
 
-v2:
-- https://lore.kernel.org/lkml/20230212215234.2608565-1-j.neuschaefer@gmx.=
-net/
-- Commit message improvements, as suggested by Geert Uytterhoeven.
-- Add Link after Reviewed-by, as checkpatch.pl now suggests
-=2D--
- drivers/soc/nuvoton/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+[1] https://lore.kernel.org/linux-leds/20230815-aw2013-vio-v3-0-2505296b0856@gerhold.net/
 
-diff --git a/drivers/soc/nuvoton/Kconfig b/drivers/soc/nuvoton/Kconfig
-index 853392c8a9151..2167d3d739d84 100644
-=2D-- a/drivers/soc/nuvoton/Kconfig
-+++ b/drivers/soc/nuvoton/Kconfig
-@@ -6,6 +6,7 @@ config WPCM450_SOC
- 	tristate "Nuvoton WPCM450 SoC driver"
- 	default y if ARCH_WPCM450
- 	select SOC_BUS
-+	select REGMAP
- 	help
- 	  Say Y here to compile the SoC information driver for Nuvoton
- 	  WPCM450 SoCs.
-=2D-
-2.40.1
+---
+André Apitzsch (2):
+      dt-bindings: leds: Add Kinetic KTD2026/2027 LED
+      leds: add ktd202x driver
+
+ .../devicetree/bindings/leds/kinetic,ktd202x.yaml  | 171 ++++++
+ drivers/leds/rgb/Kconfig                           |  13 +
+ drivers/leds/rgb/Makefile                          |   1 +
+ drivers/leds/rgb/leds-ktd202x.c                    | 625 +++++++++++++++++++++
+ 4 files changed, 810 insertions(+)
+---
+base-commit: 9641a13970d832d821ad304e187b80dbe70bae30
+change-id: 20230618-ktd202x-546b2a7d240b
+
+Best regards,
+-- 
+André Apitzsch <git@apitzsch.eu>
 
