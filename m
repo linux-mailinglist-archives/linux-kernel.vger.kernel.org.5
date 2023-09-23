@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E277AC0C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784527AC0D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjIWKqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 06:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        id S230414AbjIWKu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 06:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjIWKqs (ORCPT
+        with ESMTP id S229848AbjIWKu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 06:46:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078A6194;
-        Sat, 23 Sep 2023 03:46:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12512C433C7;
-        Sat, 23 Sep 2023 10:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695466002;
-        bh=Fgx42TGJn4SqLTc7ScZeuLRx1lxOlKBCJxp1VQ2ncDI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=n8wR7GtcQlt+Y6uw/B6vII1a/XDIbqd0UdQTMcjBUz2g0/VsKjSwI8inZLq+sX8Js
-         ULXksUYHaRuq9sM6QZPqSeyfnv0+rUOLLpb3XQKnjBMkWnvk4waz4wbOzT3zAXsVM6
-         EpduFXU6dZSt62GUp0tVVT0Q6bNAwKte47YP3GE+uRNnbkovxlOv4VhAPaUGLhlguS
-         EZRee95FVgikS3rPUEhLMdHe8BOnKlzpRssERL4H9tWHU26Xr4cvy0hjbGQx1rmsFJ
-         K6rLlE4tGLEMaoshPe4L/ksS9Qpa6YtO2ji7zAGAC7LoVMMHIHcPyb+gMN/+Qn87oS
-         HVwwCUdISOQAw==
-Message-ID: <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Sat, 23 Sep 2023 06:46:39 -0400
-In-Reply-To: <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
-         <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Sat, 23 Sep 2023 06:50:56 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FF9C2;
+        Sat, 23 Sep 2023 03:50:50 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id E49AA3200954;
+        Sat, 23 Sep 2023 06:50:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 23 Sep 2023 06:50:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=beims.me; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1695466246; x=1695552646; bh=TICNtpwKGUgxCQ7iTQfQcaR5vXfpPMYDb7J
+        f6JgV14A=; b=XWlnhkmgQHgmKgpsisrhutdq6dIgyc/1V3kWIT5UIXThPNoigIP
+        3QQvMSWPOOv4WB5iph682eHpBd9dI8hs0Be3AuuMAz1zwv7qoQU5wi5aZehGGoVd
+        kUnKvZNB5QMOVKSj2mRt0m6z5jpj8ZP0Z439DV7BHOfaIJfXf5UTqCXcm15rqCsC
+        a6OElVgbI8rHhk/gdbdh1/G2MnddK376HiAdO17EC1rvT4SvPBZ4dlEBD3Cnbs+D
+        r3MTbRuXX+XIm7VAI7FpmQnWsWGOd5/F1lphsPRJJ4K9+qKcw/e4ugzha6bifqOE
+        ic2RabdXcVfHJewKEybTwbcjYn+KDImwZTw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1695466246; x=1695552646; bh=TICNtpwKGUgxCQ7iTQfQcaR5vXfpPMYDb7J
+        f6JgV14A=; b=Hrl75Tbi4sE232GuHp+S0m01NJYPQTR3+zCnPys0DpjEurQ3Jgt
+        V8UCky0tryJZG4whaKA9Scn8LMSSQsHRyC+4EGRcLqWxCho6m7+ZLixr/OMoz4qz
+        t7eoSggD6cul4ppNdf08ntaNHNSZe+WiZ5X98aCPIn/Yll6bME6VwqRTXvbJRPNy
+        blR0cfS1qS1q+86ezJGNFdO2ZBCCYJwLYZZhinR/Q8dUWNrA4wr3SWp3A47/Qj/o
+        LMSHfONN0dPZxgrctvlDXzNq12XaqRCAamr8Y6+8mksewhtyhUoG4i8vlSjfJOnv
+        W7Y1iIWCP5iXZLdRKqI6kVcwB/oAHQrGOrg==
+X-ME-Sender: <xms:BcMOZQ_21gbJieAZ1dxlkXBhCP43aVbXknzoR4bKNvF9xFcPcBK74A>
+    <xme:BcMOZYtaYipIPauuau8HDGV9Jr4U7vtS-hCq4-qsxQ21cvIL6WQ2HIZaPURWOhV1n
+    6DSK_nCshUF2-rn-r0>
+X-ME-Received: <xmr:BcMOZWDHvWKPhkLq1dkyYFm02swUAjzQsAmo4coiJ3EH4qbwRQCv_4tnxYtZheUZWw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeltddgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeftrghf
+    rggvlhcuuegvihhmshcuoehrrghfrggvlhessggvihhmshdrmhgvqeenucggtffrrghtth
+    gvrhhnpeejieejvdelgeduveejgeeltdevieefteejleeiieejgeeihfelleehtdegudei
+    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrg
+    hfrggvlhessggvihhmshdrmhgv
+X-ME-Proxy: <xmx:BcMOZQeQUd0sMqzWxgHplh28NXZOnWwGK2vSAeFcGae0LOrdSBwmVQ>
+    <xmx:BcMOZVNh2JdJg-zrcRkiIHFZp6zbU377_n0cxfb7Xj2Sn7REayz0Ow>
+    <xmx:BcMOZame_EHsKC-m8YMBTTKMDMg_QqnyYTgbPah4D8BWBGJRT-q4aw>
+    <xmx:BsMOZYrAFtW1XMYK3ZkleZQX7ZQDDXKqW_RUjQmTTrd4gHSdtbvumQ>
+Feedback-ID: idc214666:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 23 Sep 2023 06:50:43 -0400 (EDT)
+Message-ID: <95066dfb-67dc-4d32-85fe-de2c429d8546@beims.me>
+Date:   Sat, 23 Sep 2023 07:50:40 -0300
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron
+ eMMC Q2J54A
+Content-Language: pt-BR
+To:     Greg KH <gregkh@linuxfoundation.org>, Bean Huo <beanhuo@iokpp.de>
+Cc:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        beanhuo@micron.com, jakub.kwapisz@toradex.com,
+        rafael.beims@toradex.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rafael@beims.me
+References: <20230921203426.638262-1-beanhuo@iokpp.de>
+ <2023092253-suffice-mulled-b8fa@gregkh>
+From:   Rafael Beims <rafael@beims.me>
+In-Reply-To: <2023092253-suffice-mulled-b8fa@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
-> On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel.org> =
-wrote:
-> >=20
-> > My initial goal was to implement multigrain timestamps on most major
-> > filesystems, so we could present them to userland, and use them for
-> > NFSv3, etc.
-> >=20
-> > With the current implementation however, we can't guarantee that a file
-> > with a coarse grained timestamp modified after one with a fine grained
-> > timestamp will always appear to have a later value. This could confuse
-> > some programs like make, rsync, find, etc. that depend on strict
-> > ordering requirements for timestamps.
-> >=20
-> > The goal of this version is more modest: fix XFS' change attribute.
-> > XFS's change attribute is bumped on atime updates in addition to other
-> > deliberate changes. This makes it unsuitable for export via nfsd.
-> >=20
-> > Jan Kara suggested keeping this functionality internal-only for now and
-> > plumbing the fine grained timestamps through getattr [1]. This set take=
-s
-> > a slightly different approach and has XFS use the fine-grained attr to
-> > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
-> >=20
-> > While we keep fine-grained timestamps in struct inode, when presenting
-> > the timestamps via getattr, we truncate them at a granularity of number
-> > of ns per jiffy,
->=20
-> That's not good, because user explicitly set granular mtime would be
-> truncated too and booting with different kernels (HZ) would change
-> the observed timestamps of files.
->=20
+On 22/09/2023 06:29, Greg KH wrote:
+> On Thu, Sep 21, 2023 at 10:34:26PM +0200, Bean Huo wrote:
+>> From: Bean Huo <beanhuo@micron.com>
+>>
+>> Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
+>> operation be allowed only after a write has occurred. Otherwise, the
+>> cache flush command or subsequent commands will time out.
+>>
+>> Signed-off-by: Bean Huo <beanhuo@micron.com>
+>> Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
+> Then Rafael also has to sign off on this, right?
+>
+Correct,
 
-Thinking about this some more, I think the first problem is easily
-addressable:
 
-The ctime isn't explicitly settable and with this set, we're already not
-truncating the atime. We haven't used any of the extra bits in the mtime
-yet, so we could just carve out a flag in there that says "this mtime
-was explicitly set and shouldn't be truncated before presentation".
+Signed-off-by: Rafael Beims <rafael.beims@toradex.com>
 
-The second problem (booting to older kernel) is a bit tougher to deal
-with however. I'll have to think about that one a bit more.
---=20
-Jeff Layton <jlayton@kernel.org>
+Thanks,
+Rafael
