@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2357ABECF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 10:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4363C7ABED3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 10:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjIWITQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 04:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
+        id S230284AbjIWIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 04:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbjIWITN (ORCPT
+        with ESMTP id S230164AbjIWIWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 04:19:13 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEA0180
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 01:19:07 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3512614822bso2996555ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 01:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1695457147; x=1696061947; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=53y+MSASX7iIoRiw0N0MaPINtyDxfHQ2/xhc/ZQOZdc=;
-        b=BAGk2HHKrLK2UGICWdY8buG7pDqs5uR9HbtIFuj4ToKGt9FTCzsPi4r3WdpoyH3EPE
-         xbpIBLRg3df4Ah9DMtpiRHE5kPyT/4jzpl+hwyum31gNAWGC9aU1LNDMOPFsHpd/ez2f
-         0Cqf1x+3+m3VJykXt/ed30ZmVzJD+ta8+CTSSaaFwx+O1qpBwmcJEc2jDErvGq9VN6XT
-         HQ5+ppYZGAI5M9SrPnjdhEinMC3S19d5bbrD/eF2e4ZAV35tgAXA9WUa4kZ6mnIB/19o
-         SQXDn6PI7qxJPNXXhuloHwV7J2CmlH2zPdzv6m2VQOOmqJRYTetQOc5WuuACkzXx9EA5
-         M9QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695457147; x=1696061947;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=53y+MSASX7iIoRiw0N0MaPINtyDxfHQ2/xhc/ZQOZdc=;
-        b=Rl6z1qhjLCs8GXxD63YCk8Zagfo1JJ2WTBxEWdShVr8p2VrTUoHmm4g55eYulglQHz
-         lslrwmI7mZfK4TXIwGIqlCUX6HIXJBcgDnpEWHDZjxuRTSNhijlZs3Vx4JdbEPsWhMrv
-         SlngOy3fIWZvCAJ6y15gfOxQe7IdMEx2oDlIocFuSFC8ifoXbchnvYorw0p6+uc3ui9/
-         A2+Obgjdf+isqCqNM6qg19Hrhr/3DOPRqfm60lTqMthlPtPg7RrLBnxr+bMpBglZfsc9
-         OOzczcZ+k6CB3ISX1MReQK5H1+YuYSED5qeG/hn7sUwTeySjglf8C3UHgqcj99VVnyHo
-         3aeA==
-X-Gm-Message-State: AOJu0YwSVIJi8RA6/N6a1MSnq7m37n84zf4JXEiVdHp2DE2wz2WUGyHx
-        8k24R4xVNdXg2KcWa+6XuQLTrQ==
-X-Google-Smtp-Source: AGHT+IHBNbl6IYAGI8nr8YQtW/FP5fMEN/o90a3CpDDMTaYSF6PS3d98V+TNXLqc0Tu5l1jKXPiM4w==
-X-Received: by 2002:a05:6e02:1c82:b0:34f:7e36:5f8b with SMTP id w2-20020a056e021c8200b0034f7e365f8bmr2693146ill.25.1695457147258;
-        Sat, 23 Sep 2023 01:19:07 -0700 (PDT)
-Received: from ubuntu-hf2.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id u74-20020a63794d000000b00565e2ad12e5sm4219928pgc.91.2023.09.23.01.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 01:19:06 -0700 (PDT)
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-To:     roman.gushchin@linux.dev
-Cc:     mhocko@kernel.org, hannes@cmpxchg.org, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH RESEND] memcg, oom: unmark under_oom after the oom killer is done
-Date:   Sat, 23 Sep 2023 08:17:39 +0000
-Message-Id: <20230923081739.398912-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 23 Sep 2023 04:22:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38DA180;
+        Sat, 23 Sep 2023 01:21:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18E5AC433C8;
+        Sat, 23 Sep 2023 08:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695457317;
+        bh=cgt8U+WuuxOkmJa3l0IV5IeSzT0CfYQS+6r9yIt3bBo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yfOegEcpcTy5DHqp01qhSo77COjWJ3g2/zHIxlfCtbXUuMy4ms/kZo6fA7oUvniIX
+         1199CzYW5/E80ozvNxhTqctlYB6WiAMLOodHDWtQJKs/P2N3bt4IFK4/XXq80jUC97
+         iLmSgk2Tbx6FNZYftZZYRwNvJ2i2NRBAzoTLZRM8=
+Date:   Sat, 23 Sep 2023 10:21:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.15 000/110] 5.15.133-rc1 review
+Message-ID: <2023092349-hamstring-galvanize-2318@gregkh>
+References: <20230920112830.377666128@linuxfoundation.org>
+ <6a577578-8adb-aa70-1bf8-b1a4573152cf@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a577578-8adb-aa70-1bf8-b1a4573152cf@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When application in userland receives oom notification from kernel
-and reads the oom_control file, it's confusing that under_oom is 0
-though the omm killer hasn't finished. The reason is that under_oom
-is cleared before invoking mem_cgroup_out_of_memory(), so move the
-action that unmark under_oom after completing oom handler. Therefore
-the value of under_oom won't mislead users.
+On Wed, Sep 20, 2023 at 11:47:17AM -0700, Florian Fainelli wrote:
+> On 9/20/23 04:30, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.15.133 release.
+> > There are 110 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.133-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Same thing as with 5.10 on ARM, ARM64 and MIPS:
+> 
+>   CC /local/users/fainelli/buildroot/output/bmips/build/linux-custom/tools/perf/pmu-events/pmu-events.o
+> fixdep: error opening depfile: /local/users/fainelli/buildroot/output/bmips/build/linux-custom/tools/perf/pmu-events/.pmu-events.o.d:
+> No such file or directory
+> make[5]: *** [pmu-events/Build:33: /local/users/fainelli/buildroot/output/bmips/build/linux-custom/tools/perf/pmu-events/pmu-events.o]
+> Error 2
+> make[4]: *** [Makefile.perf:668: /local/users/fainelli/buildroot/output/bmips/build/linux-custom/tools/perf/pmu-events/pmu-events-in.o]
+> Error 2
+> make[3]: *** [Makefile.perf:238: sub-make] Error 2
+> make[2]: *** [Makefile:70: all] Error 2
+> make[1]: *** [package/pkg-generic.mk:294:
+> /local/users/fainelli/buildroot/output/bmips/build/linux-tools/.stamp_built]
+> Error 2
+> make: *** [Makefile:27: _all] Error 2
+> 
+> reverting 95466975f143df7423bbf4905348c7b6260f4d29 ("perf build: Update
+> build rule for generated files") and
+> 12ff96780ebd93d1aacb396994e3a32b50dccecf ("perf jevents: Switch build to use
+> jevents.py") gets us going again.
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Now dropped from all queues, thanks!
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..0b6ed63504ca 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1970,8 +1970,8 @@ static bool mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int order)
- 	if (locked)
- 		mem_cgroup_oom_notify(memcg);
- 
--	mem_cgroup_unmark_under_oom(memcg);
- 	ret = mem_cgroup_out_of_memory(memcg, mask, order);
-+	mem_cgroup_unmark_under_oom(memcg);
- 
- 	if (locked)
- 		mem_cgroup_oom_unlock(memcg);
--- 
-2.25.1
-
+greg k-h
