@@ -2,189 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B981F7AC044
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905267AC051
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbjIWKOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 06:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        id S231476AbjIWKP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 06:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbjIWKOQ (ORCPT
+        with ESMTP id S231518AbjIWKPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 06:14:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2451733;
-        Sat, 23 Sep 2023 03:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695463929; x=1726999929;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dp4g3U5j1+mHLqLShoixZI9RDsoukyKAu6bCdytj8jk=;
-  b=bLQY4bdOT3wjV8b2BfFCfeFJAJYzr06hcUl+W+MNXreUSv7xKotPnT3V
-   oGFvx0CUpZk5ZnwPwKmhYImXjRQ8oSrMyUEp8bYo8Z2KZf3R99aS4uNeI
-   I6zuyIPKZNH9H1rlZTbAwFuAm2PinZfoxtDtGPgjgs5EgEfV6MtOK8jXm
-   K1DYJO/AuuCSNQSvb8BX3RqwhqyKMJBnLnhaivhr6Oe11IpUnI2RcdUma
-   YNhTADBguUMwKW3uHGo8PaddYILIkQFk+woxHOAImGIfuaBCu1N6j0nOn
-   9XdM4GE1AkKSCqRUkvPKQ0wQhZy5GrUQGAltI3Bcz25g2re3VZ+ss0sNz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="447492537"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="447492537"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 03:11:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="813388252"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="813388252"
-Received: from unknown (HELO fred..) ([172.25.112.68])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Sep 2023 03:11:54 -0700
-From:   Xin Li <xin3.li@intel.com>
-To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com, nik.borisov@suse.com
-Subject: [PATCH v11 37/37] x86/fred: Invoke FRED initialization code to enable FRED
-Date:   Sat, 23 Sep 2023 02:42:12 -0700
-Message-Id: <20230923094212.26520-38-xin3.li@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230923094212.26520-1-xin3.li@intel.com>
-References: <20230923094212.26520-1-xin3.li@intel.com>
+        Sat, 23 Sep 2023 06:15:31 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A05649D2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:13:49 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-34fe2814b0dso11731765ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1695464022; x=1696068822; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RUlZCtFTFaUMAp/xTpZ5qPDOY8dQPvRsRwT1ilDrXWM=;
+        b=edvEjotEzz3hfnXLblP6hHgKW2AYJyuUapHd4KJ5vGWVKZjeAG8AHcBrBouiwxgLJk
+         csoL2KwTpaHYraJHzBt3juYIUSodbrfwwDxG4ObQOV+p1gdaDnbfz8fYdNohDbSbeDlu
+         X/tlt132EJjlBOSYYNiNg1RBlqdo8kPW1deBA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695464022; x=1696068822;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RUlZCtFTFaUMAp/xTpZ5qPDOY8dQPvRsRwT1ilDrXWM=;
+        b=MdGSOzs+Ds7O/AhXiqjq1xmy3NCuQHeAXWP9R0yJFdzPzLw449nWULHzUKuUb0REBE
+         o5aOYxG9Dzr0OEoQcHMou5QyxY254yqd8mPegLjHcwicJ1G5dN7H/p8oVPRLO4kgSidA
+         NblpThasaqBkFifI8t6ePLWXD+Mx8pkzoMLRhg2PwY9Eq3s0ZiYNIAaY0dP5fFaDPUpG
+         dGhclE1p3ht0OtvqHH6bq2wz53XJYoZkDp3WUQZ4raK5krnUnVMpMCxBET2YVFuV3b0A
+         VQm/yZulmH/b38hVdZI+opWBIDxqulwFk4aBN3QqhjRIpkpJh+kTVRvsaRN++ajquyjh
+         lcVA==
+X-Gm-Message-State: AOJu0Yw0EQVdqJEliOmrbo3Hm2goxxO/UD+2+1rJH4qtcuOOmwlC6fwL
+        HW+NVLmzpUQbAD0V6VmcXdgzjw==
+X-Google-Smtp-Source: AGHT+IHHCP+E9+z/kkdmvhDa5gOPd1Cuk+81kxCb0+cTNJHDEBGx8NLQ+ABB0VpkMmUcFKJtZBAxTg==
+X-Received: by 2002:a05:6e02:1b0d:b0:34f:d665:4c2e with SMTP id i13-20020a056e021b0d00b0034fd6654c2emr2252379ilv.30.1695464021895;
+        Sat, 23 Sep 2023 03:13:41 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id j15-20020a02cc6f000000b0043167542398sm1538551jaq.141.2023.09.23.03.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 03:13:41 -0700 (PDT)
+Date:   Sat, 23 Sep 2023 10:13:40 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH] sched/rt: Fix live lock between select_fallback_rq() and
+ RT push
+Message-ID: <20230923101340.GA3521658@google.com>
+References: <20230923011409.3522762-1-joel@joelfernandes.org>
+ <20230922214539.4e282609@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922214539.4e282609@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
+Hi Steve,
 
-Let cpu_init_exception_handling() call cpu_init_fred_exceptions() to
-initialize FRED. However if FRED is unavailable or disabled, it falls
-back to set up TSS IST and initialize IDT.
+On Fri, Sep 22, 2023 at 09:45:39PM -0400, Steven Rostedt wrote:
+> On Sat, 23 Sep 2023 01:14:08 +0000
+> "Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
+> 
+> > During RCU-boost testing with the TREE03 rcutorture config, I found that
+> > after a few hours, the machine locks up.
+> > 
+> > On tracing, I found that there is a live lock happening between 2 CPUs.
+> > One CPU has an RT task running, while another CPU is being offlined
+> > which also has an RT task running.  During this offlining, all threads
+> > are migrated. The migration thread is repeatedly scheduled to migrate
+> > actively running tasks on the CPU being offlined. This results in a live
+> > lock because select_fallback_rq() keeps picking the CPU that an RT task
+> > is already running on only to get pushed back to the CPU being offlined.
+> > 
+> > It is anyway pointless to pick CPUs for pushing tasks to if they are
+> > being offlined only to get migrated away to somewhere else. This could
+> > also add unwanted latency to this task.
+> > 
+> > Fix these issues by not selecting CPUs in RT if they are not 'active'
+> > for scheduling, using the cpu_active_mask. Other parts in core.c already
+> > use cpu_active_mask to prevent tasks from being put on CPUs going
+> > offline.
+> > 
+> > Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/sched/cpupri.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
+> > index a286e726eb4b..42c40cfdf836 100644
+> > --- a/kernel/sched/cpupri.c
+> > +++ b/kernel/sched/cpupri.c
+> > @@ -101,6 +101,7 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
+> >  
+> >  	if (lowest_mask) {
+> >  		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
+> > +		cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
+> 
+> What happens if the cpu_active_mask changes right here?
+> 
+> Is this just making the race window smaller?
 
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Co-developed-by: Xin Li <xin3.li@intel.com>
-Tested-by: Shan Kang <shan.kang@intel.com>
-Signed-off-by: Xin Li <xin3.li@intel.com>
----
+It should not be an issue for fixing the live lock because at most that would
+cause a few more bounces between the 2 CPUs but eventually once
+cpu_active_mask is stable, the CPU being offlined will not be selected for
+the push. That's nothing compared to the multi-second live lock that happens
+right now.
 
-Changes since v10:
-* No need to invalidate SYSCALL and SYSENTER MSRs (Thomas Gleixner).
+Also, with this patch I ran the tests for days and could not reproduce the
+issue. Without the patch, I hit it in a few hours.
 
-Changes since v8:
-* Move this patch after all required changes are in place (Thomas
-  Gleixner).
----
- arch/x86/kernel/cpu/common.c | 22 +++++++++++++++++-----
- arch/x86/kernel/irqinit.c    |  7 ++++++-
- arch/x86/kernel/traps.c      |  5 ++++-
- 3 files changed, 27 insertions(+), 7 deletions(-)
+> Something tells me the fix is going to be something a bit more involved.
+> But as I'm getting ready for Paris, I can't look at it at the moment.
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 2ee4e7b597a3..e7a5b9831252 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -61,6 +61,7 @@
- #include <asm/microcode.h>
- #include <asm/intel-family.h>
- #include <asm/cpu_device_id.h>
-+#include <asm/fred.h>
- #include <asm/uv/uv.h>
- #include <asm/ia32.h>
- #include <asm/set_memory.h>
-@@ -2112,7 +2113,15 @@ void syscall_init(void)
- 	/* The default user and kernel segments */
- 	wrmsr(MSR_STAR, 0, (__USER32_CS << 16) | __KERNEL_CS);
- 
--	idt_syscall_init();
-+	/*
-+	 * Except the IA32_STAR MSR, there is NO need to setup SYSCALL and
-+	 * SYSENTER MSRs for FRED, because FRED uses the ring 3 FRED
-+	 * entrypoint for SYSCALL and SYSENTER, and ERETU is the only legit
-+	 * instruction to return to ring 3 (both sysexit and sysret cause
-+	 * #UD when FRED is enabled).
-+	 */
-+	if (!cpu_feature_enabled(X86_FEATURE_FRED))
-+		idt_syscall_init();
- }
- 
- #else	/* CONFIG_X86_64 */
-@@ -2228,8 +2237,9 @@ void cpu_init_exception_handling(void)
- 	/* paranoid_entry() gets the CPU number from the GDT */
- 	setup_getcpu(cpu);
- 
--	/* IST vectors need TSS to be set up. */
--	tss_setup_ist(tss);
-+	/* For IDT mode, IST vectors need to be set in TSS. */
-+	if (!cpu_feature_enabled(X86_FEATURE_FRED))
-+		tss_setup_ist(tss);
- 	tss_setup_io_bitmap(tss);
- 	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
- 
-@@ -2238,8 +2248,10 @@ void cpu_init_exception_handling(void)
- 	/* GHCB needs to be setup to handle #VC. */
- 	setup_ghcb();
- 
--	/* Finally load the IDT */
--	load_current_idt();
-+	if (cpu_feature_enabled(X86_FEATURE_FRED))
-+		cpu_init_fred_exceptions();
-+	else
-+		load_current_idt();
- }
- 
- /*
-diff --git a/arch/x86/kernel/irqinit.c b/arch/x86/kernel/irqinit.c
-index c683666876f1..f79c5edc0b89 100644
---- a/arch/x86/kernel/irqinit.c
-+++ b/arch/x86/kernel/irqinit.c
-@@ -28,6 +28,7 @@
- #include <asm/setup.h>
- #include <asm/i8259.h>
- #include <asm/traps.h>
-+#include <asm/fred.h>
- #include <asm/prom.h>
- 
- /*
-@@ -96,7 +97,11 @@ void __init native_init_IRQ(void)
- 	/* Execute any quirks before the call gates are initialised: */
- 	x86_init.irqs.pre_vector_init();
- 
--	idt_setup_apic_and_irq_gates();
-+	if (cpu_feature_enabled(X86_FEATURE_FRED))
-+		fred_complete_exception_setup();
-+	else
-+		idt_setup_apic_and_irq_gates();
-+
- 	lapic_assign_system_vectors();
- 
- 	if (!acpi_ioapic && !of_ioapic && nr_legacy_irqs()) {
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 848c85208a57..0ee78a30e14a 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1411,7 +1411,10 @@ void __init trap_init(void)
- 
- 	/* Initialize TSS before setting up traps so ISTs work */
- 	cpu_init_exception_handling();
-+
- 	/* Setup traps as cpu_init() might #GP */
--	idt_setup_traps();
-+	if (!cpu_feature_enabled(X86_FEATURE_FRED))
-+		idt_setup_traps();
-+
- 	cpu_init();
- }
--- 
-2.34.1
+Thanks for taking a look and safe travels!
+
+ - Joel
 
