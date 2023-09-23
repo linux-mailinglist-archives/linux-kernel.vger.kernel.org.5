@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6957AC3CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 18:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9DD7AC3C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 18:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbjIWQoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 12:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        id S232026AbjIWQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 12:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjIWQo3 (ORCPT
+        with ESMTP id S229965AbjIWQoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 12:44:29 -0400
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15668139;
-        Sat, 23 Sep 2023 09:44:17 -0700 (PDT)
+        Sat, 23 Sep 2023 12:44:10 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A44D3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 09:44:04 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso7521465e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 09:44:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1695487458; x=1727023458;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2xx3LLBKBr2Twnx9PDcMEphhMOW9wkJNY6OBiL1LK0c=;
-  b=eovHWO/qP3zZBHv7nsDMk9sNiZdHRp7KsQ10W2JEoFS+Kllo9p6HC7FI
-   dSADKeXtrOuhZ51ElOELu2ctFLfdSK8P//rAWX0XVCl+HpSM2Cwzym2MC
-   eT1HV32fdPDniZpaiNwe1IQrY8+Oe2n1T1H7e3URDn2f2wMLQB4nvoHwF
-   A=;
-X-IronPort-AV: E=Sophos;i="6.03,171,1694736000"; 
-   d="scan'208";a="305729342"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 16:44:12 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 36B84805FB;
-        Sat, 23 Sep 2023 16:43:36 +0000 (UTC)
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Sat, 23 Sep 2023 16:43:34 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Sat, 23 Sep
- 2023 16:43:31 +0000
-Message-ID: <d3e0c3e9-4994-4808-a8df-3d23487ff9c4@amazon.de>
-Date:   Sat, 23 Sep 2023 18:43:29 +0200
+        d=linaro.org; s=google; t=1695487442; x=1696092242; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rwXDdCQptEP/nw6d5R5qSVoajNpgD48V9SGyZsJIHbo=;
+        b=VgAtCuhG9WB82v3Ua+ACr0m2DmqeDJ9kvZXXqQ5yV+NiZn6vuh2jLZmMERfJqtoeMh
+         4BKqC9PsNaz7mmh82rnZagu4AkOsxXFMvT4sD7HHjReeVIDZgZ2eeFZlVVkxA89FbLVv
+         HIy55OYhYpyKY7UMOS3CKu63piMW/U7KPDVxXQRglbdNgbtADaA8PMuyxJ5nDlIgk362
+         TTZipco/PhPqcdew8f9PgIDAjZqn4sZkDrBpXd82aP3CX29S0SV+tjmv5bjLQazDH6Nn
+         Ocu90pWGVGQn4rzD1h8DOaLXrOIkPOvgzy9Hx/kIiXjSxVJCczajW80SjwkNpxPvmeFC
+         YLTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695487442; x=1696092242;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rwXDdCQptEP/nw6d5R5qSVoajNpgD48V9SGyZsJIHbo=;
+        b=fBCJouD9PsXUTqyD07KuvmeOiluCt++f+qCX8Mq3fCD6/owcQizPfT+7FsdMo/iCHW
+         QJ8k5YvTc9xy34xk2PDRAPfAMk0BydEHYx8Vmr76v9tsQxWnxvSh0+KdGbcoTdCNMo+U
+         mZ9n3og6BaLrJgHZvTm+3py2V1H0/2Fa+jC7Fcx6JrcAPT7F50vXuUq+aL9/xy30SUSm
+         39LylP5lyuJ+tmhovZhlrDEywwD+sxovIwWKQFIBd36qvSIH5xMSyDXvW9b6be4SZmpw
+         gJzFJu7b7rQSV+79TXwPN4Q87BD1OapLctW2v4dc5HwFOGN6K2fOCmuWMer2G/ND+2iQ
+         NNow==
+X-Gm-Message-State: AOJu0YyxKtitE5l80uts6DbBc/6ob5xm2lRttf/iAR4cKrbtzxAXVTng
+        gfdKAEiw6hQPXjKCQFQ0c/+v1g==
+X-Google-Smtp-Source: AGHT+IGUp9vWURoqWCtTYN6CKaYvUBZmRKeL0YoxcxOlYDVcQJOgyOxbi3Pq3R8mE4CSABKxCOgFMg==
+X-Received: by 2002:adf:fcc5:0:b0:320:b2a:4ea6 with SMTP id f5-20020adffcc5000000b003200b2a4ea6mr2618848wrs.9.1695487442674;
+        Sat, 23 Sep 2023 09:44:02 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id s7-20020adfea87000000b0030ada01ca78sm7299990wrm.10.2023.09.23.09.44.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Sep 2023 09:44:02 -0700 (PDT)
+Message-ID: <4e21d965-b7b6-8b2a-5e78-37b9da69b2f1@linaro.org>
+Date:   Sat, 23 Sep 2023 18:43:59 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] KVM: x86: Allow userspace exit on HLT and MWAIT, else yield
- on MWAIT
-Content-Language: en-GB
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>
-CC:     <kvm@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        "Sean Christopherson" <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, <linux-kernel@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@amazon.es>,
-        "Griffoul, Fred" <fgriffo@amazon.com>
-References: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
- <CABgObfZgYXaXqP=6s53=+mYWvOnbgYJiCRct-0ob444sK9SvGw@mail.gmail.com>
- <faec494b6df5ebee5644017c9415e747bd34952b.camel@infradead.org>
- <3dc66987-49c7-abda-eb70-1898181ef3fe@redhat.com>
-From:   Alexander Graf <graf@amazon.de>
-In-Reply-To: <3dc66987-49c7-abda-eb70-1898181ef3fe@redhat.com>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D037UWC001.ant.amazon.com (10.13.139.197) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 03/16] dt-bindings: media: mediatek: mdp3: include
+ common properties
+Content-Language: en-US
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230922072116.11009-1-moudy.ho@mediatek.com>
+ <20230922072116.11009-4-moudy.ho@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230922072116.11009-4-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9uIDIzLjA5LjIzIDExOjI0LCBQYW9sbyBCb256aW5pIHdyb3RlOgo+Cj4gT24gOS8yMy8yMyAw
-OToyMiwgRGF2aWQgV29vZGhvdXNlIHdyb3RlOgo+PiBPbiBGcmksIDIwMjMtMDktMjIgYXQgMTQ6
-MDAgKzAyMDAsIFBhb2xvIEJvbnppbmkgd3JvdGU6Cj4+PiBUbyBhdm9pZCByYWNlcyB5b3UgbmVl
-ZCB0d28gZmxhZ3MgdGhvdWdoOyB0aGVyZSBuZWVkcyB0byBiZSBhbHNvIGEKPj4+IGtlcm5lbC0+
-dXNlcnNwYWNlIGNvbW11bmljYXRpb24gb2Ygd2hldGhlciB0aGUgdkNQVSBpcyBjdXJyZW50bHkg
-aW4KPj4+IEhMVCBvciBNV0FJVCwgdXNpbmcgdGhlICJmbGFncyIgZmllbGQgZm9yIGV4YW1wbGUu
-IElmIGl0IHdhcyBITFQgb25seSwKPj4+IG1vdmluZyB0aGUgbXBfc3RhdGUgaW4ga3ZtX3J1biB3
-b3VsZCBzZWVtIGxpa2UgYSBnb29kIGlkZWE7IGJ1dCBub3QgaWYKPj4+IE1XQUlUIG9yIFBBVVNF
-IGFyZSBhbHNvIGluY2x1ZGVkLgo+Pgo+PiBSaWdodC4gV2hlbiB3b3JrIGlzIGFkZGVkIHRvIGFu
-IGVtcHR5IHdvcmtxdWV1ZSwgdGhlIFZNTSB3aWxsIHdhbnQgdG8KPj4gaHVudCBmb3IgYSB2Q1BV
-IHdoaWNoIGlzIGN1cnJlbnRseSBpZGxlIGFuZCB0aGVuIHNpZ25hbCBpdCB0byBleGl0Lgo+Pgo+
-PiBBcyB5b3Ugc2F5LCBmb3IgSExUIGl0J3Mgc2ltcGxlIGVub3VnaCB0byBsb29rIGF0IHRoZSBt
-cF9zdGF0ZSwgYW5kIHdlCj4+IGNhbiBtb3ZlIHRoYXQgaW50byBrdm1fcnVuIHNvIGl0IGRvZXNu
-J3QgbmVlZCBhbiBpb2N0bC4uLgo+Cj4gTG9va2luZyBhdCBpdCBhZ2Fpbjogbm90IHNvIGVhc3kg
-YmVjYXVzZSB0aGUgbXBzdGF0ZSBpcyBjaGFuZ2VkIGluIHRoZQo+IHZDUFUgdGhyZWFkIGJ5IHZj
-cHVfYmxvY2soKSBpdHNlbGYuCj4KPj4gYWx0aG91Z2ggaXQKPj4gd291bGQgYWxzbyBiZSBuaWNl
-IHRvIGdldCBhbiAqZXZlbnQqIG9uIGFuIGV2ZW50ZmQgd2hlbiB0aGUgdkNQVQo+PiBiZWNvbWVz
-IHJ1bm5hYmxlIChhcyBub3RlZCwgd2Ugd2FudCB0aGF0IGZvciBWU00gYW55d2F5KS4gT3IgcGVy
-aGFwcwo+PiBldmVuIHRvIGJlIGFibGUgdG8gcG9sbCgpIG9uIHRoZSB2Q1BVIGZkLgo+Cj4gV2h5
-IGRvIHlvdSBuZWVkIGl0P8KgIFlvdSBjYW4ganVzdCB1c2UgS1ZNX1JVTiB0byBnbyB0byBzbGVl
-cCwgYW5kIGlmIHlvdQo+IGdldCBhbm90aGVyIGpvYiB5b3Uga2ljayBvdXQgdGhlIHZDUFUgd2l0
-aCBwdGhyZWFkX2tpbGwuwqAgKEkgYWxzbyBkaWRuJ3QKPiBnZXQgdGhlIFZTTSByZWZlcmVuY2Up
-LgoKCldpdGggdGhlIG9yaWdpbmFsIFZTTSBwYXRjaGVzLCB3ZSB1c2VkIHRvIG1ha2UgYSB2Q1BV
-IGF3YXJlIG9mIHRoZSBmYWN0IAp0aGF0IGl0IGNhbiBtb3JwaCBpbnRvIG9uZSBvZiBtYW55IFZU
-THMuIFRoYXQgYXBwcm9hY2ggdHVybmVkIG91dCB0byBiZSAKaW5zYW5lbHkgaW50cnVzaXZlIGFu
-ZCBmcmFnaWxlIGFuZCBzbyB3ZSdyZSBjdXJyZW50bHkgcmVpbXBsZW1lbnRpbmcgCmV2ZXJ5dGhp
-bmcgYXMgVlRMcyBhcyB2Q1BVcy4gVGhhdCBhbGxvd3MgdXMgdG8gbW92ZSB0aGUgbWFqb3JpdHkg
-b2YgVlNNIApmdW5jdGlvbmFsaXR5IHRvIHVzZXIgc3BhY2UuIEV2ZXJ5dGhpbmcgd2UndmUgc2Vl
-biBzbyBmYXIgbG9va3MgYXMgaWYgCnRoZXJlIGlzIG5vIHJlYWwgcGVyZm9ybWFuY2UgbG9zcyB3
-aXRoIHRoYXQgYXBwcm9hY2guCgpPbmUgc21hbGwgcHJvYmxlbSB3aXRoIHRoYXQgaXMgdGhhdCBu
-b3cgdXNlciBzcGFjZSBpcyByZXNwb25zaWJsZSBmb3IgCnN3aXRjaGluZyBiZXR3ZWVuIFZUTHM6
-IEl0IGRldGVybWluZXMgd2hpY2ggVlRMIGlzIGN1cnJlbnRseSBydW5uaW5nIGFuZCAKbGVhdmVz
-IGFsbCBvdGhlcnMgKHJlYWQ6IGFsbCBvdGhlciB2Q1BVcykgYXMgc3RvcHBlZC4gVGhhdCBtZWFu
-cyBpZiB5b3UgCmFyZSBydW5uaW5nIGhhcHBpbHkgaW4gS1ZNX1JVTiBpbiBWVEwwIGFuZCBWVEwx
-IGdldHMgYW4gaW50ZXJydXB0LCB1c2VyIApzcGFjZSBuZWVkcyB0byBzdG9wIFZUTDAgYW5kIHVu
-cGF1c2UgVlRMMSB1bnRpbCBpdCB0cmlnZ2VycyBWVExfUkVUVVJOIAphdCB3aGljaCBwb2ludCBW
-VEwxIHN0b3BzIGV4ZWN1dGlvbiBhbmQgVlRMMCBydW5zIGFnYWluLgoKTmljb2xhcyBidWlsdCBh
-IHBhdGNoIHRoYXQgZXhwb3NlcyAiaW50ZXJydXB0IG9uIHZDUFUgaXMgcGVuZGluZyIgYXMgYW4g
-CmlvZXZlbnRmZCB1c2VyIHNwYWNlIGNhbiByZXF1ZXN0LiBUaGF0IHdheSwgdXNlciBzcGFjZSBj
-YW4ga25vdyB3aGVuZXZlciAKYSBjdXJyZW50bHkgcGF1c2VkIHZDUFUgaGFzIGEgcGVuZGluZyBp
-bnRlcnJ1cHQgYW5kIGNhbiBhY3QgYWNjb3JkaW5nbHkuIApZb3UgY291bGQgdXNlIHRoZSBzYW1l
-IG1lY2hhbmlzbSBpZiB5b3Ugd2FudGVkIHRvIGltcGxlbWVudCBITFQgaW4gdXNlciAKc3BhY2Us
-IGJ1dCBzdGlsbCB1c2UgYW4gaW4ta2VybmVsIExBUElDLgoKCkFsZXgKCgoKCkFtYXpvbiBEZXZl
-bG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpH
-ZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVp
-bmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMg
-QgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
+On 22/09/2023 09:21, Moudy Ho wrote:
+> To minimize duplication and standardize the document style,
+> include the common properties for MT8183 RDMA.
+> 
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> ---
+>  .../bindings/media/mediatek,mdp3-rdma.yaml    | 43 ++-----------------
+>  1 file changed, 4 insertions(+), 39 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> index 3e128733ef53..0539badc9821 100644
+> --- a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/media/mediatek,mdp3-rdma.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: MediaTek Read Direct Memory Access
+> +title: MediaTek MT8183 Read Direct Memory Access
+
+How is this related to patch? Why rename is separate? This is poor way
+to split your work.
+
+Best regards,
+Krzysztof
 
