@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B8A7ABDBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 06:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0731B7ABDC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 06:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjIWE1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 00:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        id S229927AbjIWErZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 00:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjIWE1B (ORCPT
+        with ESMTP id S229652AbjIWErX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 00:27:01 -0400
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B908819E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 21:26:27 -0700 (PDT)
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-57b637d9e4dso3615373eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 21:26:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695443187; x=1696047987;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M+urzTS0c8qoXYHkWWE5inZQMq8BUkH3T5tVlj4SJuw=;
-        b=bwL1F0I8vV2Q1LDFPxABdR6XS8nr2v9x7dX7xUOeZ1q4Ym15JksBj7fFeomJKU/n52
-         d5/fV7gd3CcHixw5x7xzj2pq8QjCOJ+vEPHUYXrxeDdub/+VezQvGcyGj5h4OtvJ8NK2
-         X86w0UENZQdVjCeTBxEBkuxJKCfALaVGn63YKN+Jo51MFHiSgRv14arB5NrYyjEVDG8U
-         rP+ZvLS02Xu4yoI2YtoZYn/i2fjLq9nJmNf9uGP8ztcQXAPQBiivNl1Bz9//dphT/8LB
-         X8p2fL8jvfrXCYzqR/w0RcF0uxg56E1JNZObieG5Uw6wSKd8q+v/JGAQ6InmC/Pd2XH3
-         Fi3Q==
-X-Gm-Message-State: AOJu0YxfABhaI5uXLJtW+BYNRjZ3UUc6WLIG0GoBaJyErYLLZyxTGWU7
-        QdDBkXbcpDEBN1QfZYPULOF9KB60fVch9Dn456rOUzrxftgq
-X-Google-Smtp-Source: AGHT+IG9A9wXCa7gBMcTNsA0cX94sAKGnP7/9l0kt/HvDjq41JnyaWoMbXQBCwU9/UVq4eEvgF/5kk14OxoP2EyXuwCNPm8clScY
+        Sat, 23 Sep 2023 00:47:23 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9396719E;
+        Fri, 22 Sep 2023 21:47:17 -0700 (PDT)
+Received: from fsav412.sakura.ne.jp (fsav412.sakura.ne.jp [133.242.250.111])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38N4kYnm032599;
+        Sat, 23 Sep 2023 13:46:34 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav412.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp);
+ Sat, 23 Sep 2023 13:46:34 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38N4kYZc032591
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 23 Sep 2023 13:46:34 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <af696700-ae4b-346e-4c52-3a7a21b0f46c@I-love.SAKURA.ne.jp>
+Date:   Sat, 23 Sep 2023 13:46:35 +0900
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:5b2d:b0:1d6:899d:6eed with SMTP id
- ds45-20020a0568705b2d00b001d6899d6eedmr564132oab.7.1695443187031; Fri, 22 Sep
- 2023 21:26:27 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 21:26:27 -0700
-In-Reply-To: <20230923040320.1384-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e6665c0605ff20f6@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
-From:   syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, john.johansen@canonical.com,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net,
+        Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20230912205658.3432-1-casey@schaufler-ca.com>
+ <20230912205658.3432-2-casey@schaufler-ca.com>
+ <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
+ <568c0730-b458-04b4-dbfa-77da1758aa05@schaufler-ca.com>
+ <94743c22-bc76-e741-e577-3e0845423f69@I-love.SAKURA.ne.jp>
+ <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
+ <ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp>
+ <202309200803.1911A584@keescook>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <202309200803.1911A584@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023/09/21 0:08, Kees Cook wrote:
+> I feel like you are willfully not listening to us when we say that this
+> doesn't block out of tree LSMs. Again, there is nothing here that stops
+> it. To prove this point, here is an out of tree LSM that works with this
+> series. So let's move from theoretical to practical: given this example,
+> why do you think out of tree LSMs are blocked?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Because an LSM ID value
 
-Reported-and-tested-by: syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com
+> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
+> index eeda59a77c02..23b7a8f79cef 100644
+> --- a/include/uapi/linux/lsm.h
+> +++ b/include/uapi/linux/lsm.h
+> @@ -63,6 +63,8 @@ struct lsm_ctx {
+>  #define LSM_ID_BPF		110
+>  #define LSM_ID_LANDLOCK		111
+>  
+> +#define LSM_ID_GOAT		1138
+> +
+>  /*
+>   * LSM_ATTR_XXX definitions identify different LSM attributes
+>   * which are used in the kernel's LSM userspace API. Support
 
-Tested on:
+is assigned to LSM only when that LSM became no longer out of tree.
 
-commit:         2cf0f715 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15916ee4680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=710dc49bece494df
-dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16a02f0e680000
+I'm against the policy that only LSM modules that succeeded to become
+in-tree are assigned LSM ID. That's not a good usage of identifier.
 
-Note: testing is done by a robot and is best-effort only.
+Quoting from https://lkml.kernel.org/r/4a6b6e2c-9872-4d4c-e42e-4ff0fb79f3ae@I-love.SAKURA.ne.jp :
+
+  The sane and the better usage of LSM ID is to register any publicly available
+  LSMs. If LSM ID serves as an index for what LSMs are available in the world,
+  by maintaining "the LSM module name, the LSM ID value, short description about
+  that LSM module, the public git repository or web site for more information
+  about that LSM module" pairs, people can easily find what LSMs could be used
+  for their purpose, and developers can avoid re-inventing similar LSM modules
+  which are already available somewhere in the world (and optionally helps
+  avoiding module name collisions with any publicly available LSMs).
+
+You must not say "We don't care about out of tree LSMs." when talking about this patch.
+
