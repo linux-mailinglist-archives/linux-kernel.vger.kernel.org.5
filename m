@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51B27ABD4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 04:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C617ABD57
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 04:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbjIWCre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 22:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        id S229708AbjIWC45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 22:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjIWCrd (ORCPT
+        with ESMTP id S229490AbjIWC44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 22:47:33 -0400
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com (mail-lo2gbr01on2124.outbound.protection.outlook.com [40.107.10.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1768DC6;
-        Fri, 22 Sep 2023 19:47:24 -0700 (PDT)
+        Fri, 22 Sep 2023 22:56:56 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (mail-lo2gbr01on2096.outbound.protection.outlook.com [40.107.10.96])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA4911D;
+        Fri, 22 Sep 2023 19:56:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PFxT332vNt7QOftbOfhKHtsWak1dx0idfIBdG+ZW2CTVaTdWhRjNE638VoIB+cAIsv8Klfam2xKH+1CfcMoZXyrjem5K1315/1fKUrv6yGgu9lZhcRDZo5wgXAbN2zkJZRJBS1v5idRXe1lW9CJQEGhTjxpHJy4KbI5WpupOkqriZHCyziaNr8ilKkPWDkZmN1vWhHBJouNncXcaIGyViiEmfovpVCoglyJIv+4sbag2vM/Db6k2dxNJO31plcvr+CwhR9Z2yDV7h45f6TiFw/YDTu6P2x5JR3CvcyOTdzHs2u8nDx0kAC7FJi9kPmLBPZpADJrH5ua3IakAR+Ij+w==
+ b=kBmRLnMDmKXnkrWie6/ke1O8WZn6XVRpKeI3sLCFKIsbqQyx4iwnL+VIZ0dnr3+Q+OaKpImDP2kJXRbuBjN8YJI4rflQo9Oc0NKYlhKtag5IOjJXSHdy+Fl5ULpscupUHR2cfv6iGGxBjxzRDZ9dYCB6B1mPZ8lGvirwNghzQwvjJbs+CWt87JyRwS/CHkx1kjzNxKW6f4o+xAxokqcmz9G7B8AeQsp+dWhxkiGjr/usGbqXOQ8AePKdrhZYxqh3x4Wzw0vuOKbSU0tbS4LuElmiyoxT5Vh8SEW0y79Tlw1n4PpzuZZ04rVr4kzaNnhqQ77u2gJLqfP5yR795dej2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DQhPvmjeqcV7ZRA5qxxeY7lCVc7tueWDOmoSoyUtvoc=;
- b=C8JL54ccatC3kU2IoMe0vw+lAGUYiIxILLX8rBmqfcRaSDRA4PFzltvuQUOTdmKia/XaXyANnD3P1R1x092/vjSGWKDyv25YPbPJUmGnF1bvf01lYgS9jgWkWZ0++WLVrzqRfRcR9xpcr4zul9N9ydLUZp0DdTWCN1JFDiB+aGuMhU81UcD8syKx/JwgPzr+KGTMqiuiyM3ak0xUac6qCwwrHM4M8puLGeMV6KJ1rFkyPuAA1rmqnw1S7v3WBs0Fi6KqFV/TDSwiuvwmllf4aEuIdClk9mUofq6ZZ+iipVBX54yh6qigJVhSjyuN3A2sd0inKYzP6Hzik3Jk+ZdJ0g==
+ bh=APyEcq9LpkSGYo+YisShjZD4+JncFyKE0WdbTkhGyG0=;
+ b=SxXvCyIbBlnqJD67y2wBd1oitwJYm0bCWaME9rpKuhbotTQKnHzc7DBuyo0UgQyPmhN03UykW0oBI77haIp61zwtwS3B5dNlOCi/azL8ckN+PX+Ic9y4F9/vVrjJIhODPKA+xprytlNz4UA+3fPrVrz6CKV+COhrb/RhqogtF9c1kKpL/HeInMIX/fxqqAyAEDAlEaz+04qGziJJAVHBlj3/KPxHzK+a1Vpt2Vf2TapyFt3swL0QK9nfasD8kwWx7wUGQCi6hLOXM/qlW6dG7mi/UxhX+MxjusxpskZbTzlSHp4FP5lwhNG/6cD1ZUEIfg2s7zgbrAnNqwQUDZEwYA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
  dkim=pass header.d=garyguo.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DQhPvmjeqcV7ZRA5qxxeY7lCVc7tueWDOmoSoyUtvoc=;
- b=iV7jA1kPg6sMKd2zhtKMtMvHX9Fw2CWmCUl0hb9vRitWjXCQGJlFQurMUqfQ0+7FOwR3XAJpQphgvFw8R3u275MSYfY4VUoBUYIwOrP7KHZSR6JxEGhXFO/ijNlYLDd/O49e4oSLRb0628rp1O1l2oesqp8m7Svt60Vhm+npHI0=
+ bh=APyEcq9LpkSGYo+YisShjZD4+JncFyKE0WdbTkhGyG0=;
+ b=t/vfHZ82PnM6LjB5hHrbxtsVJHV6Kd/+HyRhm2nMNLzc9ItmvZeIgREWjk9F47LDM4x/5vRtJJyPWzNJiFLvknsJDoQDwq5yYBu6e2F6ftzJQD3uz8fePrfDlJoi538AZwWtChG+1PZcdZz9Ori06BQOM6/OXcPP2mVcbcHlTAc=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=garyguo.net;
 Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
- by LO0P265MB6632.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:30a::5) with
+ by CWXP265MB2183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:80::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Sat, 23 Sep
- 2023 02:47:21 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.25; Sat, 23 Sep
+ 2023 02:56:46 +0000
 Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
  ([fe80::7965:8756:9ad5:df1d]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
  ([fe80::7965:8756:9ad5:df1d%6]) with mapi id 15.20.6813.017; Sat, 23 Sep 2023
- 02:47:21 +0000
+ 02:56:46 +0000
+Date:   Sat, 23 Sep 2023 10:56:24 +0800
 From:   Gary Guo <gary@garyguo.net>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     rust-for-linux@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "=?UTF-8?B?QmrDtnJu?= Roy Baron" <bjorn3_gh@protonmail.com>,
         Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Ben Gooding <ben.gooding.dev@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rust: remove ignores for `clippy::new_ret_no_self`
-Date:   Sat, 23 Sep 2023 10:46:50 +0800
-Message-Id: <20230923024707.47610-1-gary@garyguo.net>
-X-Mailer: git-send-email 2.40.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0218.apcprd06.prod.outlook.com
- (2603:1096:4:68::26) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH v4 4/7] rust: workqueue: add helper for defining
+ work_struct fields
+Message-ID: <20230923105624.31215a69@gary-lowrisc-laptop>
+In-Reply-To: <20230828104807.1581592-5-aliceryhl@google.com>
+References: <20230828104807.1581592-1-aliceryhl@google.com>
+        <20230828104807.1581592-5-aliceryhl@google.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR02CA0003.apcprd02.prod.outlook.com
+ (2603:1096:404:56::15) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
  (2603:10a6:600:253::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO0P265MB6632:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0af1d5a-ac0a-47df-7b06-08dbbbdf68b1
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|CWXP265MB2183:EE_
+X-MS-Office365-Filtering-Correlation-Id: 231107df-1e5b-471a-de8d-08dbbbe0b9aa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9IAayHz2K8ZkaqwRY+D5/V9l9OE/8Aj1mQ1GFpj/Usnwo37XW6nYIQUbIFGFDnxzUDY5MIS3a+wcp9HkH5DZB6N2PwCeNUL6xm8kQQNSVUfIHGZVffU7M/qWB38S1Cc+lutEp5Vy2XeW39KHb0TQ0ExLhaIO+A5QoenXEyJUFtxaEt9CD4Ds+OmQbymbgvAK052hAB5iHqjzkB4IHW6mjpP8RbD1tBrMYXtSRAK4tApWmxLchbrIeqznggR6EEi170KLvRX9v52Lw9vD+ko36J0oAPpu835C3FksbGFPO5ojmOBn+prY4RmJyzRq1Pnq6KM81Qvn6UKhrS7UvtGx1DZDBSQ4zuOMqQuvQFK8QZ4jMCOTxJcv6m+1C6CQnlOe7w7D8EKZFZ8re45SNI8Cu5bxSU6YxsJSFhA03XO/mxBOdnTgGqB5YXZe0p8K0c44PsjWDJCfaXNQjSFcv6SVpjjuKOENskoV8Pw6g5KHndQoW6mdw8ezAlGDbJ4Erze4TWFgH73zbNpM+bWDJv46INydXumKh0aXh9Xgl7o9lupynFEKQw2oSxo9q/9zLm+0T9nn/ngGy6WWk8qaUmiQ8/AjXFD0mb0cnDrMFqXk1CXQWvgoxF1eTpVeyKdqcBgG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39830400003)(346002)(376002)(396003)(230922051799003)(451199024)(186009)(1800799009)(7416002)(5660300002)(8676002)(8936002)(4326008)(41300700001)(316002)(2906002)(66556008)(66946007)(110136005)(66476007)(478600001)(6666004)(6486002)(6506007)(6512007)(2616005)(26005)(1076003)(83380400001)(86362001)(38100700002)(36756003)(921005)(81973001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 8T3+Cq1xQafcuexku3HIK3dQWCbogFlkUgkFRdY/trOtk4yzzGsdZ4D3AhU1mgfd4PuDCJrtl/5hbcrQuXDJiLri16xpTzfRwNMQuccmwz9KEuengg5j8wri4yIFh7VxTtilFugSVVEYIwwJNt8/KPqN9Zq0wKmj7yQ403yKTDxPSaUzSNJjV2EgBaxDOFQarSk5iW0jrtW+3re6D4RvK0fa1dE/Uo3yeNK7frEsKDZ7S+XhpCaqkTSbjivMDqNuTD57YLXDjU43iznJxOB29wpJs2gyvTZK/U4lXuskIrGbGCEMHPcI7nlQ1f/eHAsTjshx+uuHFTIR/IkouNJ3KSTVFaNT0ay5LdbLtFc8ecxIXxSTmPVYTpAN5QWngr8QxdPVSr5PaCaW9AO/1HK7TBJf0JMS3MCBNU3HCJrvtgoPVM0IM5/b5b4CQzfqiSUhyy4j7iC2rYNd3VABqHhJrMfQ8OSADp+yoiLfX7NsxjEFYVha8qRA+eQ14qinpEziCFTPhdGUcurIJ0/U2VlJcwtcwyzDjE+ywMfFkNIbOwQbE7XKx76ySgOdWPgKWl91
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(346002)(39830400003)(376002)(366004)(136003)(230922051799003)(1800799009)(451199024)(186009)(6506007)(6486002)(86362001)(1076003)(2906002)(83380400001)(30864003)(26005)(478600001)(9686003)(6512007)(6666004)(7416002)(8676002)(8936002)(5660300002)(4326008)(54906003)(41300700001)(6916009)(38100700002)(66946007)(316002)(66476007)(66556008)(33716001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9DcBqdBCT9piBijnAocXXG6oxavrpPkkMnLIjOzJfzP3S1CcyGR9DCgSHyVu?=
- =?us-ascii?Q?1eaxG0s3q3UPrYb68V7TEJt0+ppa7nzUuhgkQfnhwHtcxbm+Vk5E9GuLNsQG?=
- =?us-ascii?Q?5zoIF/GD0YIJPBs1OdRuVyXlNNSUAkUiKP43H3r6+u4P6txttSGjYUYD/uVP?=
- =?us-ascii?Q?hTpaCyXu5pDXer2RsBnH2VSIaxGIc69U8QYUkCyku9ro8/XVSC9u/+U1KOc6?=
- =?us-ascii?Q?BGxzzXPHMLlGh6DmsU8ADrFCigvFZc5Ie5QerQUIQl0FCeBf7anry8rSI4UW?=
- =?us-ascii?Q?vUgPXkmTsMepEd0aeVgEqmtifnoc2RgrBU1js6261ZJUKXl/2vvcGY90bLkq?=
- =?us-ascii?Q?ZjpFnoB8PEiPNPiCR0HD2CWoXt6lhL/z3L6erMtW+AANbCnB3f5OinCFmc9w?=
- =?us-ascii?Q?L+gP7jBWiwIFa3kgm8BMRHX2v0s0ubOWElZAuC4EmOuOVxsYpiwww1VCUtT9?=
- =?us-ascii?Q?lQm0NSsZQHXDp1p3oHdx0QwaxZp2qJFiGLQMpxs9/rRFIAwqIUqaUjKHQHOI?=
- =?us-ascii?Q?hEKngh7qZt4unfQ6mxYr2pCOvuUskSsXepfCRAFBAnGp4Oa4nOC8J0dT/xk+?=
- =?us-ascii?Q?HOzygA8pYIVAP48p6hd4xBUpLs7JmQh0uFqrQqyfnMeTI0pZeS8E+gTdFocN?=
- =?us-ascii?Q?i92/JDSleZLSxGlM6PTXNOmnhKVDByfLPFLW6YDAdlpF4LvVHQow9dOyR8nQ?=
- =?us-ascii?Q?SZTtWTxOh9IfezyJ0vLR5eZ42JoX5EZNZ7L/1dyJ4qLnaVtwV4FMrHcRfL6l?=
- =?us-ascii?Q?JKKWQNppUqycxIBHqyNSav0KKgfTvofiov8mWS5FPFT2DE82QAuBPepSl9+i?=
- =?us-ascii?Q?Rn3z45I65u2qSFT1VT1TTssLbWgrvV5MgMJe8kMmGc45vzP8nrQDwXikVzs7?=
- =?us-ascii?Q?L7jrncgvmqw7QefbAVzK98s7es4B5enowP53+U7HPDYVlSFtTH/gFrR0qVdo?=
- =?us-ascii?Q?NhpAOTR8KLp6STieGYebO01q1awvlNK+oS/hnOpcew2X0YgXEAiA4ct2cV06?=
- =?us-ascii?Q?v9Jg5/exW4hjU6vwlBVyfF0lutFylZqdXIfx8AnV/rDtA+bjjbC+1A1nSbYV?=
- =?us-ascii?Q?DOZn7ApW5NNCi6NCoSY2tqnmyT7jX5x26+ljOoaHdZ+0RS9jsEu6a1wwhIqz?=
- =?us-ascii?Q?FYUFcj9+knPv8SDlBFCpsKLyLAKnsEPNWqi6pM1HrFV7mED7EiblOH/4Exam?=
- =?us-ascii?Q?+2RRY8NqZd9Qxrhq3flGe7P5pa5R4QN3XXSf1tiTixaXHmtbXnDWkLEYDd8v?=
- =?us-ascii?Q?yXHDwMV73kriU6CVEM22kXHhWg9rZGNAS5gLd4WEESM8yQdjZyEZvbLqHq4+?=
- =?us-ascii?Q?shzOHlHBHWmY8jt6FpAHFsZxTCqVXStl6ghkIqZ0tig620NoBZ0OvSpnWMK8?=
- =?us-ascii?Q?PpgpRJ99Iwjt7JvKYGNzT2Ae8NBmkfBwAVSjKHRDtRBE94PXn1/UoakHbW13?=
- =?us-ascii?Q?/uYQHQ9Nso1PiGfd/hLx09yHOi5NFLZ5f6FdtBOtxZFhTLu6PxySYugjKc0h?=
- =?us-ascii?Q?Z32RF/qf54XOQ3F7DI5LzuuUk/F3+Wde/ImkoagSNsSt9ny+mIXvM0Ps8bcg?=
- =?us-ascii?Q?/NseXP05OTpLAXs09jNT2wnfr76gWnP3Tg/9A6tR?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+KcdKwi81q1EoWIkaBo1zlMjN0VjOuLILxrMLz9kza3qdtlBYUiLMF3ivHzK?=
+ =?us-ascii?Q?0+FQ/Hw7u9FXi+X0ykk6TM0lGNkPij9fk4ictbOvYsrkWRzJAo9JM05TeM2M?=
+ =?us-ascii?Q?3jsY/Wfk0BfSwiIoC/dF19/CSFzFxDlKu3wM8qnX/l5PiHu+Ux9DG0+2gXZo?=
+ =?us-ascii?Q?+dyH9B9VySAa7L2mZkH3cWfJURQofXoiQI+d6gymlTkXoDv3/BvQsa/6M7DA?=
+ =?us-ascii?Q?QloeAQxnplIgUhkrkoFaUB531zyX9Lonqsgg3NFPgG1QX1kOoCsKIbtVq31J?=
+ =?us-ascii?Q?J9+5TpLeLU8a8peOoeM/b19tM67VyYbi9bkEMVc5lKPHDaDtcbBi8qRGafrS?=
+ =?us-ascii?Q?tip2OfL0RokeBOIrE8wgGRA0/reUUXqbo5TXP1MLodzGM7DpzS3L5BbjBc1G?=
+ =?us-ascii?Q?YVUdW24FWSo2i25L9z3qunRphwce9zjQb+aFXernE3b5IP22Xk56jYmUNqGX?=
+ =?us-ascii?Q?A8FnmsSDMfE8bugbd3TWVp0iXNQhV60H251Vz4JqZlbb65VRVuzGhjTcI76R?=
+ =?us-ascii?Q?ju6Kbm3UAs4ISHWG0G7MhxchNNZ8bbaRh4oi3c3qachuCDQgPWhLYad+Qz7x?=
+ =?us-ascii?Q?mbxWpXMF4sIyX8UnaHtQe3eAavJygyTBeLcgoOg1l3wi6U6TBB2TL5dqfOIs?=
+ =?us-ascii?Q?JB6HI0gT8hqQLd3Wp3693KoAM9MP+1Ii7lsDxMjejqQb5y7R5gsYkO0AOSWj?=
+ =?us-ascii?Q?s+sNO1sAFL+YOaeTFfnj7fS+vV6iGU7kBBMOk5rJU1s8N+HhIcbXKrRzFQKh?=
+ =?us-ascii?Q?OGV2qi5OS2cpqjQwONUycx1sWQ+hcodvXgKPGyxoq8/QE5prrZ5x4dljae3N?=
+ =?us-ascii?Q?k9Czzy3oFPw6G60yHZWDwxTOUfKYxl36yh37UvXx8w1VqzLUxt5TaYY4BxNd?=
+ =?us-ascii?Q?uKvCh579amCg4P4ayhlvzp8/l3pYTy5X/gUaf4vzencf14lPnnNLwjyYXROn?=
+ =?us-ascii?Q?WFtSQ0BXP8Tiw3/8wNhOixSl/idoYImHH+EsKJCLb9bggpX9bszhIT4tbYLF?=
+ =?us-ascii?Q?BuL9wYuA2Ykkkhl63/eX8fGrmtizDOcrSGrs+bZkT5CmgMofwsNtQkmwHhuQ?=
+ =?us-ascii?Q?+hIofbEMLaQA56He/FKsik2iSG2zAn6Bd4OgUfARvh73S5CpKHEBgAJFYr89?=
+ =?us-ascii?Q?T3u+W2QYDc+fDCE7IU5mLW8IOTb3h1JWF68Yb0iQisGZ/G3qcJtcanhivu3w?=
+ =?us-ascii?Q?nfGSdco1ocMZ2O4GgwsfQPKnnn0QX1skvwOnZfeCy6A4gNhHdLyfvTdkEV+B?=
+ =?us-ascii?Q?PsG94oLO4ypP4yQ02/oCSJ5n1li/ppqHrRjkqiGrecB5rnWOBxFq93tBkOap?=
+ =?us-ascii?Q?4wkYLh0fyUPrzn7sN/OqztjVu88BKBnjFlj0FIYtBS7PI3kRUb9l6oCi1+Ke?=
+ =?us-ascii?Q?PVmFmu/CTPrh3q0wIMxNZx8ANzWTUIF1bWdP+2m05U0/9NP8uGle2NyH9ELQ?=
+ =?us-ascii?Q?RW1qoNGOALfXVAlGwkfV4wT0ZDshPCz+6kU4di04nPBghIXzOUgP4e+sYI9b?=
+ =?us-ascii?Q?VWpcOrAk4tVpvHw8GiQBln+16tyym7kTWyplDxXq0mZTVfU+VRbMYDOYGoeb?=
+ =?us-ascii?Q?AgaqvlXcGDzsf55QwE+UgnF9MiBOo6lsqr705Jor?=
 X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0af1d5a-ac0a-47df-7b06-08dbbbdf68b1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 231107df-1e5b-471a-de8d-08dbbbe0b9aa
 X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 02:47:21.3610
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 02:56:46.6872
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dOjvGaLIt/eQ0dwjWBiRjWbQEv1O1CTvSMvZ3MIdyd/f1SystLBJPbwNwYAA+aTKGJdcp4L18lpRp5u/411fNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO0P265MB6632
+X-MS-Exchange-CrossTenant-UserPrincipalName: ggR0NLSHaWmIqLPSVjY86ReZHpA9N+DpxJ7JDTjnnykaOhJuEQw7FQAHHFWYEXHdxXtvVhMi1EtXfJtck5lhDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2183
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -120,135 +123,411 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clippy false positive triggering `new_ret_no_self` lint when using
-`pin_init!` macro is fixed in 1.67, so remove all `#[allow]`s ignoring
-the lint.
+On Mon, 28 Aug 2023 10:48:04 +0000
+Alice Ryhl <aliceryhl@google.com> wrote:
 
-Signed-off-by: Gary Guo <gary@garyguo.net>
----
- rust/kernel/init.rs         | 20 ++++++++++----------
- rust/kernel/sync/condvar.rs |  1 -
- rust/kernel/sync/lock.rs    |  1 -
- 3 files changed, 10 insertions(+), 12 deletions(-)
+> The main challenge with defining `work_struct` fields is making sure
+> that the function pointer stored in the `work_struct` is appropriate for
+> the work item type it is embedded in. It needs to know the offset of the
+> `work_struct` field being used (even if there are several!) so that it
+> can do a `container_of`, and it needs to know the type of the work item
+> so that it can call into the right user-provided code. All of this needs
+> to happen in a way that provides a safe API to the user, so that users
+> of the workqueue cannot mix up the function pointers.
+> 
+> There are three important pieces that are relevant when doing this:
+> 
+>  * The pointer type.
+>  * The work item struct. This is what the pointer points at.
+>  * The `work_struct` field. This is a field of the work item struct.
+> 
+> This patch introduces a separate trait for each piece. The pointer type
+> is given a `WorkItemPointer` trait, which pointer types need to
+> implement to be usable with the workqueue. This trait will be
+> implemented for `Arc` and `Box` in a later patch in this patchset.
+> Implementing this trait is unsafe because this is where the
+> `container_of` operation happens, but user-code will not need to
+> implement it themselves.
+> 
+> The work item struct should then implement the `WorkItem` trait. This
+> trait is where user-code specifies what they want to happen when a work
+> item is executed. It also specifies what the correct pointer type is.
+> 
+> Finally, to make the work item struct know the offset of its
+> `work_struct` field, we use a trait called `HasWork<T, ID>`. If a type
+> implements this trait, then the type declares that, at the given offset,
+> there is a field of type `Work<T, ID>`. The trait is marked unsafe
+> because the OFFSET constant must be correct, but we provide an
+> `impl_has_work!` macro that can safely implement `HasWork<T>` on a type.
+> The macro expands to something that only compiles if the specified field
+> really has the type `Work<T>`. It is used like this:
+> 
+> ```
+> struct MyWorkItem {
+>     work_field: Work<MyWorkItem, 1>,
+> }
+> 
+> impl_has_work! {
+>     impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
+> }
+> ```
+> 
+> Note that since the `Work` type is annotated with an id, you can have
+> several `work_struct` fields by using a different id for each one.
+> 
+> Co-developed-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
+> v3 -> v4:
+>  * The helper was changed to take a name argument, and is implemented
+>    directly.
+>  * `Work::new` now takes a name argument, and a `new_work!` macro was
+>    introduced to help call it.
+>  * Use `core::mem::offset_of` rather than a custom implementation.
+>  * Fix imports in examples.
+>  * Dropped Reviewed-bys due to changes.
+> 
+>  rust/helpers.c           |  13 ++
+>  rust/kernel/lib.rs       |   1 +
+>  rust/kernel/workqueue.rs | 257 ++++++++++++++++++++++++++++++++++++++-
+>  scripts/Makefile.build   |   2 +-
+>  4 files changed, 271 insertions(+), 2 deletions(-)
+> 
+> diff --git a/rust/helpers.c b/rust/helpers.c
+> index ebd69490127b..45cf9702d4e4 100644
+> --- a/rust/helpers.c
+> +++ b/rust/helpers.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/sched/signal.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/wait.h>
+> +#include <linux/workqueue.h>
+>  
+>  __noreturn void rust_helper_BUG(void)
+>  {
+> @@ -137,6 +138,18 @@ void rust_helper_put_task_struct(struct task_struct *t)
+>  }
+>  EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
+>  
+> +void rust_helper_init_work_with_key(struct work_struct *work, work_func_t func,
+> +				    bool onstack, const char *name,
+> +				    struct lock_class_key *key)
+> +{
+> +	__init_work(work, onstack);
+> +	work->data = (atomic_long_t)WORK_DATA_INIT();
+> +	lockdep_init_map(&work->lockdep_map, name, key, 0);
+> +	INIT_LIST_HEAD(&work->entry);
+> +	work->func = func;
+> +}
+> +EXPORT_SYMBOL_GPL(rust_helper_init_work_with_key);
+> +
+>  /*
+>   * `bindgen` binds the C `size_t` type as the Rust `usize` type, so we can
+>   * use it in contexts where Rust expects a `usize` like slice (array) indices.
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index b56aaea3de7a..c537d2edb4c8 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -16,6 +16,7 @@
+>  #![feature(coerce_unsized)]
+>  #![feature(dispatch_from_dyn)]
+>  #![feature(new_uninit)]
+> +#![feature(offset_of)]
+>  #![feature(ptr_metadata)]
+>  #![feature(receiver_trait)]
+>  #![feature(unsize)]
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 82e3fb19fdaf..da37bfa97211 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -262,7 +262,7 @@ $(obj)/%.lst: $(src)/%.c FORCE
+>  # Compile Rust sources (.rs)
+>  # ---------------------------------------------------------------------------
+>  
+> -rust_allowed_features := new_uninit
+> +rust_allowed_features := new_uninit,offset_of
+>  
+>  # `--out-dir` is required to avoid temporaries being created by `rustc` in the
+>  # current working directory, which may be not accessible in the out-of-tree
+> diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+> index 6dbc5b9b3da9..251541f1cd68 100644
+> --- a/rust/kernel/workqueue.rs
+> +++ b/rust/kernel/workqueue.rs
+> @@ -2,9 +2,42 @@
+>  
+>  //! Work queues.
+>  //!
+> +//! This file has two components: The raw work item API, and the safe work item API.
+> +//!
+> +//! One pattern that is used in both APIs is the `ID` const generic, which exists to allow a single
+> +//! type to define multiple `work_struct` fields. This is done by choosing an id for each field,
+> +//! and using that id to specify which field you wish to use. (The actual value doesn't matter, as
+> +//! long as you use different values for different fields of the same struct.) Since these IDs are
+> +//! generic, they are used only at compile-time, so they shouldn't exist in the final binary.
+> +//!
+> +//! # The raw API
+> +//!
+> +//! The raw API consists of the `RawWorkItem` trait, where the work item needs to provide an
+> +//! arbitrary function that knows how to enqueue the work item. It should usually not be used
+> +//! directly, but if you want to, you can use it without using the pieces from the safe API.
+> +//!
+> +//! # The safe API
+> +//!
+> +//! The safe API is used via the `Work` struct and `WorkItem` traits. Furthermore, it also includes
+> +//! a trait called `WorkItemPointer`, which is usually not used directly by the user.
+> +//!
+> +//!  * The `Work` struct is the Rust wrapper for the C `work_struct` type.
+> +//!  * The `WorkItem` trait is implemented for structs that can be enqueued to a workqueue.
+> +//!  * The `WorkItemPointer` trait is implemented for the pointer type that points at a something
+> +//!    that implements `WorkItem`.
+> +//!
+>  //! C header: [`include/linux/workqueue.h`](../../../../include/linux/workqueue.h)
+>  
+> -use crate::{bindings, types::Opaque};
+> +use crate::{bindings, prelude::*, sync::LockClassKey, types::Opaque};
+> +use core::marker::PhantomData;
+> +
+> +/// Creates a [`Work`] initialiser with the given name and a newly-created lock class.
+> +#[macro_export]
+> +macro_rules! new_work {
+> +    ($($name:literal)?) => {
+> +        $crate::workqueue::Work::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
+> +    };
+> +}
+>  
+>  /// A kernel work queue.
+>  ///
+> @@ -108,6 +141,228 @@ unsafe fn __enqueue<F>(self, queue_work_on: F) -> Self::EnqueueOutput
+>          F: FnOnce(*mut bindings::work_struct) -> bool;
+>  }
+>  
+> +/// Defines the method that should be called directly when a work item is executed.
+> +///
+> +/// This trait is implemented by `Pin<Box<T>>` and `Arc<T>`, and is mainly intended to be
+> +/// implemented for smart pointer types. For your own structs, you would implement [`WorkItem`]
+> +/// instead. The `run` method on this trait will usually just perform the appropriate
+> +/// `container_of` translation and then call into the `run` method from the [`WorkItem`] trait.
+> +///
+> +/// This trait is used when the `work_struct` field is defined using the [`Work`] helper.
+> +///
+> +/// # Safety
+> +///
+> +/// Implementers must ensure that [`__enqueue`] uses a `work_struct` initialized with the [`run`]
+> +/// method of this trait as the function pointer.
+> +///
+> +/// [`__enqueue`]: RawWorkItem::__enqueue
+> +/// [`run`]: WorkItemPointer::run
+> +pub unsafe trait WorkItemPointer<const ID: u64>: RawWorkItem<ID> {
+> +    /// Run this work item.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The provided `work_struct` pointer must originate from a previous call to `__enqueue` where
+> +    /// the `queue_work_on` closure returned true, and the pointer must still be valid.
+> +    unsafe extern "C" fn run(ptr: *mut bindings::work_struct);
+> +}
+> +
+> +/// Defines the method that should be called when this work item is executed.
+> +///
+> +/// This trait is used when the `work_struct` field is defined using the [`Work`] helper.
+> +pub trait WorkItem<const ID: u64 = 0> {
+> +    /// The pointer type that this struct is wrapped in. This will typically be `Arc<Self>` or
+> +    /// `Pin<Box<Self>>`.
+> +    type Pointer: WorkItemPointer<ID>;
+> +
+> +    /// The method that should be called when this work item is executed.
+> +    fn run(this: Self::Pointer);
+> +}
+> +
+> +/// Links for a work item.
+> +///
+> +/// This struct contains a function pointer to the `run` function from the [`WorkItemPointer`]
+> +/// trait, and defines the linked list pointers necessary to enqueue a work item in a workqueue.
+> +///
+> +/// Wraps the kernel's C `struct work_struct`.
+> +///
+> +/// This is a helper type used to associate a `work_struct` with the [`WorkItem`] that uses it.
+> +#[repr(transparent)]
+> +pub struct Work<T: ?Sized, const ID: u64 = 0> {
+> +    work: Opaque<bindings::work_struct>,
+> +    _inner: PhantomData<T>,
+> +}
+> +
+> +// SAFETY: Kernel work items are usable from any thread.
+> +//
+> +// We do not need to constrain `T` since the work item does not actually contain a `T`.
+> +unsafe impl<T: ?Sized, const ID: u64> Send for Work<T, ID> {}
+> +// SAFETY: Kernel work items are usable from any thread.
+> +//
+> +// We do not need to constrain `T` since the work item does not actually contain a `T`.
+> +unsafe impl<T: ?Sized, const ID: u64> Sync for Work<T, ID> {}
+> +
+> +impl<T: ?Sized, const ID: u64> Work<T, ID> {
+> +    /// Creates a new instance of [`Work`].
+> +    #[inline]
+> +    #[allow(clippy::new_ret_no_self)]
 
-diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-index 4ebb6f23fc2e..65be9ae57b80 100644
---- a/rust/kernel/init.rs
-+++ b/rust/kernel/init.rs
-@@ -35,7 +35,7 @@
- //! that you need to write `<-` instead of `:` for fields that you want to initialize in-place.
- //!
- //! ```rust
--//! # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+//! # #![allow(clippy::disallowed_names)]
- //! use kernel::{prelude::*, sync::Mutex, new_mutex};
- //! # use core::pin::Pin;
- //! #[pin_data]
-@@ -55,7 +55,7 @@
- //! (or just the stack) to actually initialize a `Foo`:
- //!
- //! ```rust
--//! # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+//! # #![allow(clippy::disallowed_names)]
- //! # use kernel::{prelude::*, sync::Mutex, new_mutex};
- //! # use core::pin::Pin;
- //! # #[pin_data]
-@@ -86,7 +86,7 @@
- //! To declare an init macro/function you just return an [`impl PinInit<T, E>`]:
- //!
- //! ```rust
--//! # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+//! # #![allow(clippy::disallowed_names)]
- //! # use kernel::{sync::Mutex, prelude::*, new_mutex, init::PinInit, try_pin_init};
- //! #[pin_data]
- //! struct DriverData {
-@@ -236,7 +236,7 @@
- /// # Examples
- ///
- /// ```rust
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, macros::pin_data, pin_init, stack_pin_init, init::*, sync::Mutex, new_mutex};
- /// # use core::pin::Pin;
- /// #[pin_data]
-@@ -288,7 +288,7 @@ macro_rules! stack_pin_init {
- /// # Examples
- ///
- /// ```rust,ignore
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, pin_init, stack_try_pin_init, init::*, sync::Mutex, new_mutex};
- /// # use macros::pin_data;
- /// # use core::{alloc::AllocError, pin::Pin};
-@@ -314,7 +314,7 @@ macro_rules! stack_pin_init {
- /// ```
- ///
- /// ```rust,ignore
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, pin_init, stack_try_pin_init, init::*, sync::Mutex, new_mutex};
- /// # use macros::pin_data;
- /// # use core::{alloc::AllocError, pin::Pin};
-@@ -366,7 +366,7 @@ macro_rules! stack_try_pin_init {
- /// The syntax is almost identical to that of a normal `struct` initializer:
- ///
- /// ```rust
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, pin_init, macros::pin_data, init::*};
- /// # use core::pin::Pin;
- /// #[pin_data]
-@@ -411,7 +411,7 @@ macro_rules! stack_try_pin_init {
- /// To create an initializer function, simply declare it like this:
- ///
- /// ```rust
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, pin_init, prelude::*, init::*};
- /// # use core::pin::Pin;
- /// # #[pin_data]
-@@ -438,7 +438,7 @@ macro_rules! stack_try_pin_init {
- /// Users of `Foo` can now create it like this:
- ///
- /// ```rust
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, pin_init, macros::pin_data, init::*};
- /// # use core::pin::Pin;
- /// # #[pin_data]
-@@ -466,7 +466,7 @@ macro_rules! stack_try_pin_init {
- /// They can also easily embed it into their own `struct`s:
- ///
- /// ```rust
--/// # #![allow(clippy::disallowed_names, clippy::new_ret_no_self)]
-+/// # #![allow(clippy::disallowed_names)]
- /// # use kernel::{init, pin_init, macros::pin_data, init::*};
- /// # use core::pin::Pin;
- /// # #[pin_data]
-diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-index ed353399c4e5..b679b6f6dbeb 100644
---- a/rust/kernel/sync/condvar.rs
-+++ b/rust/kernel/sync/condvar.rs
-@@ -91,7 +91,6 @@ unsafe impl Sync for CondVar {}
- 
- impl CondVar {
-     /// Constructs a new condvar initialiser.
--    #[allow(clippy::new_ret_no_self)]
-     pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self> {
-         pin_init!(Self {
-             _pin: PhantomPinned,
-diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-index 70a785f04754..f12a684bc957 100644
---- a/rust/kernel/sync/lock.rs
-+++ b/rust/kernel/sync/lock.rs
-@@ -99,7 +99,6 @@ unsafe impl<T: ?Sized + Send, B: Backend> Sync for Lock<T, B> {}
- 
- impl<T, B: Backend> Lock<T, B> {
-     /// Constructs a new lock initialiser.
--    #[allow(clippy::new_ret_no_self)]
-     pub fn new(t: T, name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self> {
-         pin_init!(Self {
-             data: UnsafeCell::new(t),
--- 
-2.40.1
+nit: this line can now be removed.
+
+> +    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self>
+> +    where
+> +        T: WorkItem<ID>,
+> +    {
+> +        // SAFETY: The `WorkItemPointer` implementation promises that `run` can be used as the work
+> +        // item function.
+> +        unsafe {
+> +            kernel::init::pin_init_from_closure(move |slot| {
+> +                let slot = Self::raw_get(slot);
+> +                bindings::init_work_with_key(
+> +                    slot,
+> +                    Some(T::Pointer::run),
+> +                    false,
+> +                    name.as_char_ptr(),
+> +                    key.as_ptr(),
+> +                );
+> +                Ok(())
+> +            })
+> +        }
+> +    }
+> +
+> +    /// Get a pointer to the inner `work_struct`.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The provided pointer must not be dangling and must be properly aligned. (But the memory
+> +    /// need not be initialized.)
+> +    #[inline]
+> +    pub unsafe fn raw_get(ptr: *const Self) -> *mut bindings::work_struct {
+> +        // SAFETY: The caller promises that the pointer is aligned and not dangling.
+> +        //
+> +        // A pointer cast would also be ok due to `#[repr(transparent)]`. We use `addr_of!` so that
+> +        // the compiler does not complain that the `work` field is unused.
+> +        unsafe { Opaque::raw_get(core::ptr::addr_of!((*ptr).work)) }
+> +    }
+> +}
+> +
+> +/// Declares that a type has a [`Work<T, ID>`] field.
+> +///
+> +/// The intended way of using this trait is via the [`impl_has_work!`] macro. You can use the macro
+> +/// like this:
+> +///
+> +/// ```no_run
+> +/// use kernel::impl_has_work;
+> +/// use kernel::prelude::*;
+> +/// use kernel::workqueue::Work;
+> +///
+> +/// struct MyWorkItem {
+> +///     work_field: Work<MyWorkItem, 1>,
+> +/// }
+> +///
+> +/// impl_has_work! {
+> +///     impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
+> +/// }
+> +/// ```
+> +///
+> +/// Note that since the `Work` type is annotated with an id, you can have several `work_struct`
+> +/// fields by using a different id for each one.
+> +///
+> +/// # Safety
+> +///
+> +/// The [`OFFSET`] constant must be the offset of a field in Self of type [`Work<T, ID>`]. The methods on
+> +/// this trait must have exactly the behavior that the definitions given below have.
+> +///
+> +/// [`Work<T, ID>`]: Work
+> +/// [`impl_has_work!`]: crate::impl_has_work
+> +/// [`OFFSET`]: HasWork::OFFSET
+> +pub unsafe trait HasWork<T, const ID: u64 = 0> {
+> +    /// The offset of the [`Work<T, ID>`] field.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    const OFFSET: usize;
+> +
+> +    /// Returns the offset of the [`Work<T, ID>`] field.
+> +    ///
+> +    /// This method exists because the [`OFFSET`] constant cannot be accessed if the type is not Sized.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    /// [`OFFSET`]: HasWork::OFFSET
+> +    #[inline]
+> +    fn get_work_offset(&self) -> usize {
+> +        Self::OFFSET
+> +    }
+> +
+> +    /// Returns a pointer to the [`Work<T, ID>`] field.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The provided pointer must point at a valid struct of type `Self`.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    #[inline]
+> +    unsafe fn raw_get_work(ptr: *mut Self) -> *mut Work<T, ID> {
+> +        // SAFETY: The caller promises that the pointer is valid.
+> +        unsafe { (ptr as *mut u8).add(Self::OFFSET) as *mut Work<T, ID> }
+> +    }
+> +
+> +    /// Returns a pointer to the struct containing the [`Work<T, ID>`] field.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The pointer must point at a [`Work<T, ID>`] field in a struct of type `Self`.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    #[inline]
+> +    unsafe fn work_container_of(ptr: *mut Work<T, ID>) -> *mut Self
+> +    where
+> +        Self: Sized,
+> +    {
+> +        // SAFETY: The caller promises that the pointer points at a field of the right type in the
+> +        // right kind of struct.
+> +        unsafe { (ptr as *mut u8).sub(Self::OFFSET) as *mut Self }
+> +    }
+> +}
+> +
+> +/// Used to safely implement the [`HasWork<T, ID>`] trait.
+> +///
+> +/// # Examples
+> +///
+> +/// ```
+> +/// use kernel::impl_has_work;
+> +/// use kernel::sync::Arc;
+> +/// use kernel::workqueue::{self, Work};
+> +///
+> +/// struct MyStruct {
+> +///     work_field: Work<MyStruct, 17>,
+> +/// }
+> +///
+> +/// impl_has_work! {
+> +///     impl HasWork<MyStruct, 17> for MyStruct { self.work_field }
+> +/// }
+> +/// ```
+> +///
+> +/// [`HasWork<T, ID>`]: HasWork
+> +#[macro_export]
+> +macro_rules! impl_has_work {
+> +    ($(impl$(<$($implarg:ident),*>)?
+> +       HasWork<$work_type:ty $(, $id:tt)?>
+> +       for $self:ident $(<$($selfarg:ident),*>)?
+> +       { self.$field:ident }
+> +    )*) => {$(
+> +        // SAFETY: The implementation of `raw_get_work` only compiles if the field has the right
+> +        // type.
+> +        unsafe impl$(<$($implarg),*>)? $crate::workqueue::HasWork<$work_type $(, $id)?> for $self $(<$($selfarg),*>)? {
+> +            const OFFSET: usize = ::core::mem::offset_of!(Self, $field) as usize;
+> +
+> +            #[inline]
+> +            unsafe fn raw_get_work(ptr: *mut Self) -> *mut $crate::workqueue::Work<$work_type $(, $id)?> {
+> +                // SAFETY: The caller promises that the pointer is not dangling.
+> +                unsafe {
+> +                    ::core::ptr::addr_of_mut!((*ptr).$field)
+> +                }
+> +            }
+> +        }
+> +    )*};
+> +}
+> +
+>  /// Returns the system work queue (`system_wq`).
+>  ///
+>  /// It is the one used by `schedule[_delayed]_work[_on]()`. Multi-CPU multi-threaded. There are
 
