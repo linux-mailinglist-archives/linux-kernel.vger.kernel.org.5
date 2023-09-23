@@ -2,195 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8050A7AC3AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 18:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835FD7AC41A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjIWQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 12:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        id S232119AbjIWRlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 13:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjIWQ2p (ORCPT
+        with ESMTP id S231593AbjIWRls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 12:28:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5048192;
-        Sat, 23 Sep 2023 09:28:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98403C433C7;
-        Sat, 23 Sep 2023 16:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695486519;
-        bh=RqAizeoAgpyrjTuWTc3EPt+00fz0GKOYt3wgiu3ilxI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kdX7uAUn5A/nOh6b98KyxWdk9fFgHiJgriB/fwuK77YQxwt85ckYKTY9t3fBf62wY
-         OdfH5+weEeIpqZEmVKOTk/M6qPAq6DbFmu80HRazp/dQJOGu5Fdotg7Z2IUrfIcHFK
-         CzwEzww+QWurkfb1eX0LPowGymg+QANEOY5nujQK9DRlmOgfq/CMbzYwknq+dY7tnp
-         PeA7IOMb8Twk1q2cqZZhCdVsAByDQXH6HWv6/P0+r3F48yu28WNKT0AH75egCCxIj0
-         rSO4bYh3+oBADB8dkFnn9uQPpZxQXif883hCwsCk2af3dw5oO2O8+odTCE6fZmVuyX
-         JCGFYC8Rtz+ZQ==
-Date:   Sat, 23 Sep 2023 19:27:42 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Song Liu <song@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v3 09/13] powerpc: extend execmem_params for kprobes
- allocations
-Message-ID: <20230923162742.GO3303@kernel.org>
-References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-10-rppt@kernel.org>
- <1cb41761-29d0-5d33-b7c1-0ca3acaa810d@csgroup.eu>
+        Sat, 23 Sep 2023 13:41:48 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A355136;
+        Sat, 23 Sep 2023 10:41:42 -0700 (PDT)
+Received: from eig-obgw-5006a.ext.cloudfilter.net ([10.0.29.179])
+        by cmsmtp with ESMTP
+        id jx8ZqvAY6EoVsk6dRqJ0e8; Sat, 23 Sep 2023 17:41:41 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id k6dQq4GXIHmohk6dRqMgX5; Sat, 23 Sep 2023 17:41:41 +0000
+X-Authority-Analysis: v=2.4 cv=Avz9YcxP c=1 sm=1 tr=0 ts=650f2355
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=iox4zFpeAAAA:8 a=foHCeV_ZAAAA:8 a=cm27Pg_UAAAA:8 a=VwQbUJbxAAAA:8
+ a=qjWHau5h7Oqj65Zv8QkA:9 a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22
+ a=h8a9FgHX5U4dIE3jaWyr:22 a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=93ZnapHLAzhfjp9su+EviZJ/5xXSQ8EviN5S7/1wWMQ=; b=mSOS2op9ZyaNpjPP1tXCBZePjp
+        1quPoFjTeldDvJvK7unBQqp9pqubI2qRl+FZTR5U5ictKyLN7xckfnyZRLkAbdKQoYlgs8bzeghy2
+        iL6OdUSW4F+uqSC7P5jDsiphQrtXxD2ZQZsF1cdfGUELJT5myIK03/P3/ILrQuIA71JKtkh79vV2L
+        o3ru78NibuG85lVIj2FHVukbs88u9w8Uv4R7IUvmXUIfLTJvOJ1aQOKCVbicxWE5GTubbozvXtTVL
+        qYUNoe8tIIXMHeAek8/6eeRnugQqSV6LWPsUiKr67VILxlBLnNsuBkRk22zYJUqYBJ2DDXSQO3Trx
+        ohHDolRA==;
+Received: from [94.239.20.48] (port=44874 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qjy1H-003Yer-1S;
+        Sat, 23 Sep 2023 03:29:43 -0500
+Message-ID: <672fa6b5-d311-40cc-65b0-b042ccae69b5@embeddedor.com>
+Date:   Sat, 23 Sep 2023 10:30:48 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1cb41761-29d0-5d33-b7c1-0ca3acaa810d@csgroup.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ALSA: usx2y: Annotate struct snd_usx2y_urb_seq with
+ __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Jaroslav Kysela <perex@perex.cz>
+Cc:     Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230922175046.work.766-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230922175046.work.766-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qjy1H-003Yer-1S
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:44874
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPuhRgahiVklsdVff3Kdq4nP9ouj6jajC5qZZdJjC9S9tX3beh8WFywkBYxqv3Umj6gpHnv9OmiHerUIwPGySG2xRFrwadvZQkTWSov1F8N5juH437SG
+ R1U4KYHvbIW6smpPYvvf+4iCv05W8HADNtzS6EwEA9w/kDPR3ikfs6Ywidu5yzxpFqvIm8qsgxghlG9ExdZUapuYSNLWxREh1F//7amnerL6PtrbOMdzh2sL
+ jAkIJysU2kgOADLzH568LpJU3Q1xemij6C5/kQKBERk=
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-On Fri, Sep 22, 2023 at 10:32:46AM +0000, Christophe Leroy wrote:
-> Hi Mike,
-> 
-> Le 18/09/2023 à 09:29, Mike Rapoport a écrit :
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > powerpc overrides kprobes::alloc_insn_page() to remove writable
-> > permissions when STRICT_MODULE_RWX is on.
-> > 
-> > Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
-> > generic kprobes::alloc_insn_page() with the desired permissions.
-> > 
-> > As powerpc uses breakpoint instructions to inject kprobes, it does not
-> > need to constrain kprobe allocations to the modules area and can use the
-> > entire vmalloc address space.
-> 
-> I don't understand what you mean here. Does it mean kprobe allocation 
-> doesn't need to be executable ? I don't think so based on the pgprot you 
-> set.
-> 
-> On powerpc book3s/32, vmalloc space is not executable. Only modules 
-> space is executable. X/NX cannot be set on a per page basis, it can only 
-> be set on a 256 Mbytes segment basis.
-> 
-> See commit c49643319715 ("powerpc/32s: Only leave NX unset on segments 
-> used for modules") and 6ca055322da8 ("powerpc/32s: Use dedicated segment 
-> for modules with STRICT_KERNEL_RWX") and 7bee31ad8e2f ("powerpc/32s: Fix 
-> is_module_segment() when MODULES_VADDR is defined").
-> 
-> So if your intention is still to have an executable kprobes, then you 
-> can't use vmalloc address space.
 
-Right, and I've fixed the KPROBES range to uses the same range as MODULES.
-The commit message is stale and I need to update it.
- 
-> Christophe
+On 9/22/23 11:50, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> > 
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> >   arch/powerpc/kernel/kprobes.c | 14 --------------
-> >   arch/powerpc/kernel/module.c  | 11 +++++++++++
-> >   2 files changed, 11 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-> > index 62228c7072a2..14c5ddec3056 100644
-> > --- a/arch/powerpc/kernel/kprobes.c
-> > +++ b/arch/powerpc/kernel/kprobes.c
-> > @@ -126,20 +126,6 @@ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offse
-> >   	return (kprobe_opcode_t *)(addr + offset);
-> >   }
-> >   
-> > -void *alloc_insn_page(void)
-> > -{
-> > -	void *page;
-> > -
-> > -	page = execmem_text_alloc(EXECMEM_KPROBES, PAGE_SIZE);
-> > -	if (!page)
-> > -		return NULL;
-> > -
-> > -	if (strict_module_rwx_enabled())
-> > -		set_memory_rox((unsigned long)page, 1);
-> > -
-> > -	return page;
-> > -}
-> > -
-> >   int arch_prepare_kprobe(struct kprobe *p)
-> >   {
-> >   	int ret = 0;
-> > diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
-> > index 824d9541a310..bf2c62aef628 100644
-> > --- a/arch/powerpc/kernel/module.c
-> > +++ b/arch/powerpc/kernel/module.c
-> > @@ -95,6 +95,9 @@ static struct execmem_params execmem_params __ro_after_init = {
-> >   		[EXECMEM_DEFAULT] = {
-> >   			.alignment = 1,
-> >   		},
-> > +		[EXECMEM_KPROBES] = {
-> > +			.alignment = 1,
-> > +		},
-> >   		[EXECMEM_MODULE_DATA] = {
-> >   			.alignment = 1,
-> >   		},
-> > @@ -135,5 +138,13 @@ struct execmem_params __init *execmem_arch_params(void)
-> >   
-> >   	range->pgprot = prot;
-> >   
-> > +	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_START;
-> > +	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_END;
-> > +
-> > +	if (strict_module_rwx_enabled())
-> > +		execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_ROX;
-> > +	else
-> > +		execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_EXEC;
-> > +
-> >   	return &execmem_params;
-> >   }
+> As found with Coccinelle[1], add __counted_by for struct snd_usx2y_urb_seq.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
 -- 
-Sincerely yours,
-Mike.
+Gustavo
+
+> ---
+>   sound/usb/usx2y/usbusx2y.h      | 2 +-
+>   sound/usb/usx2y/usbusx2yaudio.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
+> index 8d82f5cc2fe1..391fd7b4ed5e 100644
+> --- a/sound/usb/usx2y/usbusx2y.h
+> +++ b/sound/usb/usx2y/usbusx2y.h
+> @@ -18,7 +18,7 @@ struct snd_usx2y_async_seq {
+>   struct snd_usx2y_urb_seq {
+>   	int	submitted;
+>   	int	len;
+> -	struct urb	*urb[];
+> +	struct urb	*urb[] __counted_by(len);
+>   };
+>   
+>   #include "usx2yhwdeppcm.h"
+> diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+> index 5197599e7aa6..ca7888495a9f 100644
+> --- a/sound/usb/usx2y/usbusx2yaudio.c
+> +++ b/sound/usb/usx2y/usbusx2yaudio.c
+> @@ -681,6 +681,7 @@ static int usx2y_rate_set(struct usx2ydev *usx2y, int rate)
+>   			err = -ENOMEM;
+>   			goto cleanup;
+>   		}
+> +		us->len = NOOF_SETRATE_URBS;
+>   		usbdata = kmalloc_array(NOOF_SETRATE_URBS, sizeof(int),
+>   					GFP_KERNEL);
+>   		if (!usbdata) {
+> @@ -702,7 +703,6 @@ static int usx2y_rate_set(struct usx2ydev *usx2y, int rate)
+>   		if (err < 0)
+>   			goto cleanup;
+>   		us->submitted =	0;
+> -		us->len =	NOOF_SETRATE_URBS;
+>   		usx2y->us04 =	us;
+>   		wait_event_timeout(usx2y->in04_wait_queue, !us->len, HZ);
+>   		usx2y->us04 =	NULL;
