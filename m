@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D497AC470
+	by mail.lfdr.de (Postfix) with ESMTP id E00A27AC471
 	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 20:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjIWSZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 14:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
+        id S232255AbjIWSZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 14:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbjIWSZX (ORCPT
+        with ESMTP id S232246AbjIWSZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 23 Sep 2023 14:25:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C915127;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A876113;
         Sat, 23 Sep 2023 11:25:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ECAC8C433C8;
-        Sat, 23 Sep 2023 18:25:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 17D00C433C7;
+        Sat, 23 Sep 2023 18:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1695493517;
-        bh=jR1PYwfjtifeo+aidOdDqlmhMBznbf6iGJEwLA+1+D0=;
+        bh=CWScgxauEeU1V9K8in0JUbKpAezkwPw3KQV5e5EnTGg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=AuVrabsmqx4VgV4p0SlBr8QozZK8rSFdoeEUzemqY0c3oprwSn4Fjli4Oj+KaBCo8
-         6L9SXPiOVULkQ2Jr4AVatQNEleG/jzopiUxYpqcviTVGcRJ647OBsWizZp88Lmoy+9
-         O2VnY2UvhjJtVHjMIt4cr0pxpMOoC/46x5LFnzlZ78v713aFRoCZGs68S+TU5UGVXB
-         pYOZnxVX5VxQvdUUJ5nofgcSLBxYx0Z5/qZfbKK5u66Wj34xLj8/6Gd27Eceif+JHm
-         RucD1WPq3HuZFjtso97oa5O+CellkD7zuY9LafjWG3QeSUznzd+Uhak2wR8nhTyTKP
-         W9B6FGVXPe+CQ==
+        b=nLaLICsnY4ns8jmm2auxROXtEpsyXkK9ReVPm6ha46bnQnoxcKmahjvUnuRM/7O/1
+         ocus4+qYpv5IZ3Wjn4zVEioQKoCEgvrTLMQ0xkQ/arHloAcY5LlGIoWO2U08A7S7Ut
+         AdHZlfgQib/X/PJasHh71im6DI175c6EIarLFhMWN92eEkYP6QNI26aaz81ukvuYRY
+         bl8WoAagOfRfPSLrOEHbv0RpThlf3XsKuwF/2L2ZDM6NGXgIMHOX37xnmZNMcrl6bl
+         cSDIXh/LOFxYFSJzW3cGiXShcQ05/ZV5DPrgOh0iXIHbc3oyXr5BrWX9ZJWPyWo0Kq
+         1JR4q0+IxayRw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DAD0FC561EE;
-        Sat, 23 Sep 2023 18:25:16 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 updates for 6.6-rc3
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 01FE5C40C5E;
+        Sat, 23 Sep 2023 18:25:17 +0000 (UTC)
+Subject: Re: [GIT PULL] LoongArch fixes for v6.6-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01695459401-ext-1349@work.hours>
-References: <your-ad-here.call-01695459401-ext-1349@work.hours>
+In-Reply-To: <20230923091031.1075337-1-chenhuacai@loongson.cn>
+References: <20230923091031.1075337-1-chenhuacai@loongson.cn>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01695459401-ext-1349@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.6-3
-X-PR-Tracked-Commit-Id: 5c95bf274665cc9f5126e4a48a9da51114f7afd2
+X-PR-Tracked-Message-Id: <20230923091031.1075337-1-chenhuacai@loongson.cn>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.6-1
+X-PR-Tracked-Commit-Id: e74a6b7f3744d122ff4544f19393dfab167166ec
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2e3d39118460730ec007cc8a492e5add1c2a3cb9
-Message-Id: <169549351689.14827.10011904236553550024.pr-tracker-bot@kernel.org>
-Date:   Sat, 23 Sep 2023 18:25:16 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
+X-PR-Merge-Commit-Id: 93397d3a2f1bc67eeff6a6ca0c59e628d2169f41
+Message-Id: <169549351700.14827.15256542913924124578.pr-tracker-bot@kernel.org>
+Date:   Sat, 23 Sep 2023 18:25:17 +0000
+To:     Huacai Chen <chenhuacai@loongson.cn>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,12 +61,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 23 Sep 2023 10:56:41 +0200:
+The pull request you sent on Sat, 23 Sep 2023 17:10:31 +0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.6-3
+> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.6-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2e3d39118460730ec007cc8a492e5add1c2a3cb9
+https://git.kernel.org/torvalds/c/93397d3a2f1bc67eeff6a6ca0c59e628d2169f41
 
 Thank you!
 
