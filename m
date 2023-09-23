@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9095A7AC0DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 12:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1737AC114
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjIWKyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 06:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        id S230426AbjIWLU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 07:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjIWKyh (ORCPT
+        with ESMTP id S229655AbjIWLU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 06:54:37 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBDE19C
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 03:54:28 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id k0HKqXroxN7Qtk0HKqgwxU; Sat, 23 Sep 2023 12:54:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695466467;
-        bh=o6dXl6wZ2p8h+DtX0RSVtic+N8fFWJdpYZ/8V5pO/+o=;
-        h=From:To:Cc:Subject:Date;
-        b=mcQykgLvv5hKI2mZozZzRXVLylMgYxnioHBSXfRif9ZDjE83Z/OAuwY+RqsnqOzpM
-         Q68eBhNpcMD3XG+M/8YAjS9naOqitumOm5q4mvb78YMGynFQTHdaaExjWFnVBxO9Gj
-         SQr626Hk9TehEbEinQ7CSVJbmBhL6sV93okVDGlKXVcsLRW52qDyde59c5zzkBf79l
-         pXA+8Np6xLdKu+z9sgMh91E25QQ3z0U1PZicqI15p26rDfiqUhPUWBG7HYO3WMj8zw
-         qSF5HPBSe1BCEX3yMey2QOBg8RkJzalbPZvVlI4vWGORh2jOhE/qGwzIFyAH5su7S7
-         ybkC0BMuGIQJA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 23 Sep 2023 12:54:27 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ben Dooks <ben@simtec.co.uk>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Greg Kroah-Hartman <gregkh@suse.de>, linux-usb@vger.kernel.org
-Subject: [PATCH] usb: dwc2: gadget: Fix a warning when compiling with W=1
-Date:   Sat, 23 Sep 2023 12:54:24 +0200
-Message-Id: <5cf603809388aa04c9a02bbfe3cf531c20bb043e.1695466447.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 23 Sep 2023 07:20:26 -0400
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433C5199;
+        Sat, 23 Sep 2023 04:20:19 -0700 (PDT)
+Received: from g550jk.localnet (k10064.upc-k.chello.nl [62.108.10.64])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 54D47D0F49;
+        Sat, 23 Sep 2023 11:19:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1695467987; bh=wsBaglYAmYjbumCRjQtjc66/0govKpHw/ihiiK++rxc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ICTc9yyrhI4NAI0u465gK2WfY9QJLR9RBD4xvgyu+SniW9/J40Am1be2nEZ7bnNq6
+         ZA8mZAhV9Z4dVi4mdnFXYG7nfMoQC1KdTs0o4k2WrAb31Q9QCXAz/dHgHKEnrVusN1
+         KqR7GW1GFaflJys0xniuAzz0EG9tT2FixKqbJxD4=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     linux-arm-msm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] pinctrl: qcom: msm8226: Add MPM pin mappings
+Date:   Sat, 23 Sep 2023 13:19:46 +0200
+Message-ID: <7570584.EvYhyI6sBW@z3ntu.xyz>
+In-Reply-To: <ZQ63VCVfR51Ueunv@gerhold.net>
+References: <20230922224027.85291-1-matti.lehtimaki@gmail.com>
+ <10339711.nUPlyArG6x@z3ntu.xyz> <ZQ63VCVfR51Ueunv@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,72 +52,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to teach the compiler that 'hs_ep->name' will never be truncated,
-we need to tell it that 'epnum' is not negative.
+On Samstag, 23. September 2023 12:00:52 CEST Stephan Gerhold wrote:
+> On Sat, Sep 23, 2023 at 11:32:47AM +0200, Luca Weiss wrote:
+> > Hi Matti,
+> >=20
+> > On Samstag, 23. September 2023 00:40:26 CEST Matti Lehtim=E4ki wrote:
+> > > Add pin <-> wakeirq mappings to allow for waking up the AP from sleep
+> > > through MPM-connected pins.
+> > >=20
+> > > Signed-off-by: Matti Lehtim=E4ki <matti.lehtimaki@gmail.com>
+> > > ---
+> > >=20
+> > >  drivers/pinctrl/qcom/pinctrl-msm8226.c | 12 ++++++++++++
+> > >  1 file changed, 12 insertions(+)
+> > >=20
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-msm8226.c
+> > > b/drivers/pinctrl/qcom/pinctrl-msm8226.c index
+> > > 994619840a70..1e46a9ab382f
+> > > 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-msm8226.c
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-msm8226.c
+> > > @@ -612,6 +612,16 @@ static const struct msm_pingroup msm8226_groups[=
+] =3D
+> > > {
+> > >=20
+> > >  #define NUM_GPIO_PINGROUPS 117
+> > >=20
+> > > +static const struct msm_gpio_wakeirq_map msm8226_mpm_map[] =3D {
+> > > +	{ 1, 3 }, { 4, 4 }, { 5, 5 }, { 9, 6 }, { 13, 7 }, { 17, 8 },
+> >=20
+> > I'm not really convinced this is the correct order of values...
+> >=20
+> > Let's look at downstream:
+> >   qcom,gpio-map =3D <3  1>,
+> >  =20
+> >                   <4  4 >,
+> >                   <5  5 >,
+> >                   <6  9 >,
+> >                   [...]
+> >=20
+> > From Documentation/devicetree/bindings/arm/msm/mpm.txt downstream:
+> >   Each tuple represents a MPM pin and which GIC interrupt is routed to =
+it.
+> >=20
+> > So first is pin number, second is interrupt number.
+> >=20
+> > And check mainline:
+> >   /**
+> >  =20
+> >    * struct msm_gpio_wakeirq_map - Map of GPIOs and their wakeup pins
+> >    * @gpio:          The GPIOs that are wakeup capable
+> >    * @wakeirq:       The interrupt at the always-on interrupt controller
+> >    */
+> >  =20
+> >   struct msm_gpio_wakeirq_map {
+> >  =20
+> >   	unsigned int gpio;
+> >   	unsigned int wakeirq;
+> >  =20
+> >   };
+> >=20
+> > So here we also have the order pin-interrupt, not the reverse order.
+> >=20
+> > Therefore I believe the order in this patch is incorrect, and it should
+> > rather>=20
+> > be:
+> >   { 3, 1 }, { 4, 4 }, { 5, 5 }, { 6, 9 }, { 7, 13 }, { 8, 17 },
+> >   [...]
+> >=20
+> > Or do you think I'm missing something?
+>=20
+> Yes :)
+>=20
+> Let's look at the later entries:
+> > > +	{ 21, 9 }, { 27, 10 }, { 29, 11 }, { 31, 12 }, { 33, 13 }, { 35, 14
+> >=20
+> > },
+> >=20
+> > > +	{ 37, 15 }, { 38, 16 }, { 39, 17 }, { 41, 18 }, { 46, 19 }, { 48, 20
+> >=20
+> > },
+> >=20
+> > > +	{ 49, 21 }, { 50, 22 }, { 51, 23 }, { 52, 24 }, { 54, 25 }, { 62, 26
+> >=20
+> > },
+> >=20
+> > > +	{ 63, 27 }, { 64, 28 }, { 65, 29 }, { 66, 30 }, { 67, 31 }, { 68, 32
+> >=20
+> > },
+> >=20
+> > > +	{ 69, 33 }, { 71, 34 }, { 72, 35 }, { 106, 36 }, { 107, 37 },
+> > > +	{ 108, 38 }, { 109, 39 }, { 110, 40 }, { 111, 54 }, { 113, 55 },
+> > > +};
+> > > +
+>=20
+> For example: { 113, 55 }, i.e. { .gpio =3D 113, .wakeirq =3D 55 }.
+>=20
+> MSM8226 has GPIOs 0-116 and 64 MPM pins/interrupts. The order in this
+> patch is the only one that can be correct because the definition would
+> be invalid the other way around. 113 must be the GPIO number because it
+> is larger than the 64 available MPM interrupt pins. :)
 
-'epnum' comes from in a 'for' loop in dwc2_gadget_init(), starting at 0
-and ending at 255. (hsotg->num_of_eps is a char)
+So basically you're saying downstream is wrong / buggy?
 
-When building with W=1, this fixes the following warnings:
+=46rom qcom,gpio-map =3D [...], <55 113>; it's taking the properties like t=
+his
+(drivers/soc/qcom/mpm-of.c):
 
-  drivers/usb/dwc2/gadget.c: In function ‘dwc2_hsotg_initep’:
-  drivers/usb/dwc2/gadget.c:4804:55: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 8 [-Werror=format-truncation=]
-   4804 |         snprintf(hs_ep->name, sizeof(hs_ep->name), "ep%d%s", epnum, dir);
-        |                                                       ^~
-  drivers/usb/dwc2/gadget.c:4804:52: note: directive argument in the range [-2147483645, 255]
-   4804 |         snprintf(hs_ep->name, sizeof(hs_ep->name), "ep%d%s", epnum, dir);
-        |                                                    ^~~~~~~~
-  drivers/usb/dwc2/gadget.c:4804:9: note: ‘snprintf’ output between 6 and 17 bytes into a destination of size 10
-   4804 |         snprintf(hs_ep->name, sizeof(hs_ep->name), "ep%d%s", epnum, dir);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  unsigned long pin =3D be32_to_cpup(list++);
+  irq_hw_number_t hwirq =3D be32_to_cpup(list++);
 
-Fixes: 5b7d70c6dbf2 ("USB: Gadget driver for Samsung HS/OtG block")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Only changing:
-  -	int epnum;
-  +	unsigned int epnum;
-is enought to fix the build warning.
+Your explanation does make sense I guess but somewhere the link downstream =
+=2D>=20
+mainline must be broken, no?
 
-But changing the prototype of dwc2_hsotg_initep() and the printf() format
-as well, to make obvious that epnum is >= 0, looks more logical to me.
----
- drivers/usb/dwc2/gadget.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Regards
+Luca
 
-diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-index b517a7216de2..102b2dd8113e 100644
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -4786,8 +4786,8 @@ static const struct usb_gadget_ops dwc2_hsotg_gadget_ops = {
-  */
- static void dwc2_hsotg_initep(struct dwc2_hsotg *hsotg,
- 			      struct dwc2_hsotg_ep *hs_ep,
--				       int epnum,
--				       bool dir_in)
-+			      unsigned int epnum,
-+			      bool dir_in)
- {
- 	char *dir;
- 
-@@ -4801,7 +4801,7 @@ static void dwc2_hsotg_initep(struct dwc2_hsotg *hsotg,
- 	hs_ep->dir_in = dir_in;
- 	hs_ep->index = epnum;
- 
--	snprintf(hs_ep->name, sizeof(hs_ep->name), "ep%d%s", epnum, dir);
-+	snprintf(hs_ep->name, sizeof(hs_ep->name), "ep%u%s", epnum, dir);
- 
- 	INIT_LIST_HEAD(&hs_ep->queue);
- 	INIT_LIST_HEAD(&hs_ep->ep.ep_list);
-@@ -4965,7 +4965,7 @@ static void dwc2_hsotg_dump(struct dwc2_hsotg *hsotg)
- int dwc2_gadget_init(struct dwc2_hsotg *hsotg)
- {
- 	struct device *dev = hsotg->dev;
--	int epnum;
-+	unsigned int epnum;
- 	int ret;
- 
- 	/* Dump fifo information */
--- 
-2.34.1
+
+>=20
+> Thanks,
+> Stephan
+
+
+
 
