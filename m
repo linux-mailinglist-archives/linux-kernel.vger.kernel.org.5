@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEB67AC52F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 23:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA817AC535
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 23:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjIWVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 17:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
+        id S229606AbjIWV34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 17:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIWVNg (ORCPT
+        with ESMTP id S229456AbjIWV34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 17:13:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5A6180
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 14:13:29 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-138-x1T-MNuFPFKmQvfVANy0Sg-1; Sat, 23 Sep 2023 22:13:21 +0100
-X-MC-Unique: x1T-MNuFPFKmQvfVANy0Sg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 23 Sep
- 2023 22:13:20 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 23 Sep 2023 22:13:20 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Noah Goldstein' <goldstein.w.n@gmail.com>,
-        kernel test robot <lkp@intel.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>
-Subject: RE: x86/csum: Remove unnecessary odd handling
-Thread-Topic: x86/csum: Remove unnecessary odd handling
-Thread-Index: AQHZ7ib2fs4a8+P0bkWBCjHsrqR0abAo6HRA
-Date:   Sat, 23 Sep 2023 21:13:19 +0000
-Message-ID: <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com>
-References: <20230920192300.3772199-1-goldstein.w.n@gmail.com>
- <202309231130.ZI5MdlDc-lkp@intel.com>
- <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
-In-Reply-To: <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 23 Sep 2023 17:29:56 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A172124;
+        Sat, 23 Sep 2023 14:29:50 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-7740cedd4baso246394685a.2;
+        Sat, 23 Sep 2023 14:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695504589; x=1696109389; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g3Je4TNRe1YIR75V+qdWRX7Igoi+hFtPHeeYUIcHIZM=;
+        b=UwzTCGcWTw0vFwp+U6gnv7Sn+Lg+uMSQ642cOFmEEONVUgek3dm/RfNafQOrvN5/rz
+         t/4vaMf9iLp7PvifBV7qp6v+yMPMAuH7qLj0fJ3dI9QXfHSpwloD7ECXAMrNFG7hMqd0
+         ErsEzZ9qWXDbyiRoWFIFJiTy0He5ER7eYSkfkhefwKBRW28rZDQ+nFy1XweW+zEeflv6
+         FfAWD9nW9Ja9i2auZMx6LERUvkoR9G6MF8xD5D0yoYp7Sr9dpbX4UFlQ70RjzqXhWrs0
+         51+SuOHizKr3I3tKDp/W1dHwr5DGCz3kbYYwi9sjFSji3Q0CiBMsSv4XUCUu2AEDWIn6
+         F9Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695504589; x=1696109389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g3Je4TNRe1YIR75V+qdWRX7Igoi+hFtPHeeYUIcHIZM=;
+        b=KPT5WjGkqJU0t3Kdz6d3O78KDnYfhgnPgj55gaamk5nhHeBJc4he9X9WEvNEvlNxUD
+         EEXDDKhLr+N4Guwq+xjiK6X7syJ+IjrPUCFizumNR9hEl5pElyu9vrzBRN0Q83ch+lmp
+         7itqgBuQixdYiNuFUFygTGo0yY9DCMAcgicp6Aj+FoBubwB2uCc+eq3QGPM799ysujC4
+         Tsy8+vSptgSW6yPAeZPKEh9PJvtitRaon1DJTsrDtXl4y9jZdXY3aj8L/XWKuJxfGRh7
+         kfpcSeLQ0SoCpAaeMDrMD+zafI1uZoh5sFgSmU+7LnpW2UNRzERt1KpjA0fqz5TwoqI5
+         ZDYg==
+X-Gm-Message-State: AOJu0YzkV2ka1QOTFF1ElINp5PpHczx60nZzXWldj1C2aUBM7i1Q/ZSk
+        Ha07ZcrvwP5TMUBfH8MamMj2zrS3PXkuthYrg6FHeBnR59Q=
+X-Google-Smtp-Source: AGHT+IFSq/g4z041jXnwLJZcO1nkYQbUpzv8j2HBv047RiM61pkxOkJp3eSFa1qXWndcnwu/eGNWOFPuAofiMa6MXjo=
+X-Received: by 2002:a05:620a:40c5:b0:76e:fea0:3f3e with SMTP id
+ g5-20020a05620a40c500b0076efea03f3emr3400849qko.48.1695504589098; Sat, 23 Sep
+ 2023 14:29:49 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
+ <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
+ <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+ <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com>
+ <CAOQ4uxjcyfhfRhgR97wqsJHwzyOYqOYaaZWMWWCGXu5MWtKXfQ@mail.gmail.com> <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sun, 24 Sep 2023 00:29:37 +0300
+Message-ID: <CAOQ4uxgFb250Na9cJz0Jo-ioPynWCk0vxTDU-6hAKoEVQhgvRg@mail.gmail.com>
+Subject: Re: [GIT PULL v2] timestamp fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTm9haCBHb2xkc3RlaW4NCj4gU2VudDogMjMgU2VwdGVtYmVyIDIwMjMgMTU6MDUNCj4g
-DQo+IE9uIEZyaSwgU2VwIDIyLCAyMDIzIGF0IDEwOjI14oCvUE0ga2VybmVsIHRlc3Qgcm9ib3Qg
-PGxrcEBpbnRlbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gSGkgTm9haCwNCj4gPg0KPiA+IGtlcm5l
-bCB0ZXN0IHJvYm90IG5vdGljZWQgdGhlIGZvbGxvd2luZyBidWlsZCB3YXJuaW5nczoNCj4gPg0K
-PiA+IFthdXRvIGJ1aWxkIHRlc3QgV0FSTklORyBvbiB0aXAveDg2L2NvcmVdDQo+ID4gW2Fsc28g
-YnVpbGQgdGVzdCBXQVJOSU5HIG9uIHRpcC9tYXN0ZXIgdGlwL2F1dG8tbGF0ZXN0IGxpbnVzL21h
-c3RlciB2Ni42LXJjMiBuZXh0LTIwMjMwOTIxXQ0KPiA+IFtJZiB5b3VyIHBhdGNoIGlzIGFwcGxp
-ZWQgdG8gdGhlIHdyb25nIGdpdCB0cmVlLCBraW5kbHkgZHJvcCB1cyBhIG5vdGUuDQo+ID4gQW5k
-IHdoZW4gc3VibWl0dGluZyBwYXRjaCwgd2Ugc3VnZ2VzdCB0byB1c2UgJy0tYmFzZScgYXMgZG9j
-dW1lbnRlZCBpbg0KPiA+IGh0dHBzOi8vZ2l0LXNjbS5jb20vZG9jcy9naXQtZm9ybWF0LXBhdGNo
-I19iYXNlX3RyZWVfaW5mb3JtYXRpb25dDQo+ID4NCj4gPiB1cmw6ICAgIGh0dHBzOi8vZ2l0aHVi
-LmNvbS9pbnRlbC1sYWItbGtwL2xpbnV4L2NvbW1pdHMvTm9haC1Hb2xkc3RlaW4veDg2LWNzdW0t
-UmVtb3ZlLXVubmVjZXNzYXJ5LQ0KPiBvZGQtaGFuZGxpbmcvMjAyMzA5MjEtMDMyNDUwDQo+ID4g
-YmFzZTogICB0aXAveDg2L2NvcmUNCj4gPiBwYXRjaCBsaW5rOiAgICBodHRwczovL2xvcmUua2Vy
-bmVsLm9yZy9yLzIwMjMwOTIwMTkyMzAwLjM3NzIxOTktMS1nb2xkc3RlaW4udy5uJTQwZ21haWwu
-Y29tDQo+ID4gcGF0Y2ggc3ViamVjdDogeDg2L2NzdW06IFJlbW92ZSB1bm5lY2Vzc2FyeSBvZGQg
-aGFuZGxpbmcNCj4gPiBjb25maWc6IHg4Nl82NC1yYW5kY29uZmlnLTEyMS0yMDIzMDkyMSAoaHR0
-cHM6Ly9kb3dubG9hZC4wMS5vcmcvMGRheS0NCj4gY2kvYXJjaGl2ZS8yMDIzMDkyMy8yMDIzMDky
-MzExMzAuWkk1TWRsRGMtbGtwQGludGVsLmNvbS9jb25maWcpDQo+ID4gY29tcGlsZXI6IGdjYy0x
-MiAoRGViaWFuIDEyLjIuMC0xNCkgMTIuMi4wDQo+ID4gcmVwcm9kdWNlICh0aGlzIGlzIGEgVz0x
-IGJ1aWxkKTogKGh0dHBzOi8vZG93bmxvYWQuMDEub3JnLzBkYXktDQo+IGNpL2FyY2hpdmUvMjAy
-MzA5MjMvMjAyMzA5MjMxMTMwLlpJNU1kbERjLWxrcEBpbnRlbC5jb20vcmVwcm9kdWNlKQ0KPiA+
-DQo+ID4gSWYgeW91IGZpeCB0aGUgaXNzdWUgaW4gYSBzZXBhcmF0ZSBwYXRjaC9jb21taXQgKGku
-ZS4gbm90IGp1c3QgYSBuZXcgdmVyc2lvbiBvZg0KPiA+IHRoZSBzYW1lIHBhdGNoL2NvbW1pdCks
-IGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZ3MNCj4gPiB8IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVz
-dCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gPiB8IENsb3NlczogaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcvb2Uta2J1aWxkLWFsbC8yMDIzMDkyMzExMzAuWkk1TWRsRGMtbGtwQGludGVsLmNvbS8N
-Cj4gPg0KPiA+IHNwYXJzZSB3YXJuaW5nczogKG5ldyBvbmVzIHByZWZpeGVkIGJ5ID4+KQ0KPiA+
-ID4+IGFyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQuYzoxNjo0NTogc3BhcnNlOiBzcGFyc2U6
-IGluY29ycmVjdCB0eXBlIGluIHJldHVybiBleHByZXNzaW9uDQo+IChkaWZmZXJlbnQgYmFzZSB0
-eXBlcykgQEAgICAgIGV4cGVjdGVkIHJlc3RyaWN0ZWQgX193c3VtIEBAICAgICBnb3QgdW5zaWdu
-ZWQgbG9uZyBsb25nIEBADQo+ID4gICAgYXJjaC94ODYvbGliL2NzdW0tcGFydGlhbF82NC5jOjE2
-OjQ1OiBzcGFyc2U6ICAgICBleHBlY3RlZCByZXN0cmljdGVkIF9fd3N1bQ0KPiA+ICAgIGFyY2gv
-eDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQuYzoxNjo0NTogc3BhcnNlOiAgICAgZ290IHVuc2lnbmVk
-IGxvbmcgbG9uZw0KPiA+ID4+IGFyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQuYzoxNjo0NTog
-c3BhcnNlOiBzcGFyc2U6IGluY29ycmVjdCB0eXBlIGluIHJldHVybiBleHByZXNzaW9uDQo+IChk
-aWZmZXJlbnQgYmFzZSB0eXBlcykgQEAgICAgIGV4cGVjdGVkIHJlc3RyaWN0ZWQgX193c3VtIEBA
-ICAgICBnb3QgdW5zaWduZWQgbG9uZyBsb25nIEBADQo+ID4gICAgYXJjaC94ODYvbGliL2NzdW0t
-cGFydGlhbF82NC5jOjE2OjQ1OiBzcGFyc2U6ICAgICBleHBlY3RlZCByZXN0cmljdGVkIF9fd3N1
-bQ0KPiA+ICAgIGFyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQuYzoxNjo0NTogc3BhcnNlOiAg
-ICAgZ290IHVuc2lnbmVkIGxvbmcgbG9uZw0KPiA+DQo+ID4gdmltICsxNiBhcmNoL3g4Ni9saWIv
-Y3N1bS1wYXJ0aWFsXzY0LmMNCj4gPg0KPiA+ICAgICAxMw0KPiA+ICAgICAxNCAgc3RhdGljIGlu
-bGluZSBfX3dzdW0gY3N1bV9maW5hbGl6ZV9zdW0odTY0IHRlbXA2NCkNCj4gPiAgICAgMTUgIHsN
-Cj4gPiAgID4gMTYgICAgICAgICAgcmV0dXJuICh0ZW1wNjQgKyByb3I2NCh0ZW1wNjQsIDMyKSkg
-Pj4gMzI7DQo+ID4gICAgIDE3ICB9DQo+ID4gICAgIDE4DQo+IA0KPiBKdXN0IG5lZWRzIGEgYChf
-X3dzdW0pYCBjYXN0LiBTaG91bGQgSSBwb3N0IGEgbmV3IHBhdGNoPw0KDQpJdCdsbCBuZWVkIHRv
-IGJlIGEgKF9fZm9yY2UgX193c3VtKSBjYXN0Lg0KDQpJIHRoaW5rIG5ldyBwYXRjaGVzIGFyZSBl
-eHBlY3RlZC4uLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBC
-cmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdp
-c3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Sat, Sep 23, 2023 at 8:49=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, 22 Sept 2023 at 23:36, Amir Goldstein <amir73il@gmail.com> wrote:
+> >
+> > Apparently, they are willing to handle the "year 2486" issue ;)
+>
+> Well, we could certainly do the same at the VFS layer.
+>
+> But I suspect 10ns resolution is entirely overkill, since on a lot of
+> platforms you don't even have timers with that resolution.
+>
+> I feel like 100ns is a much more reasonable resolution, and is quite
+> close to a single system call (think "one thousand cycles at 10GHz").
+>
 
+You are right. 100ns is enough resolution for fs timestamps, but:
+
+   1. We cannot truncate existing timestamps on existing files
+that are stored in 1ns format even if the 100ns remainder is garbage,
+applications depend on tv_nsec not changing, so if vfs truncates to
+100ns, filesystems will need to carry the remainder anyway.
+
+   2. The whole idea behind multigrain time is that the 100ns remainder
+space is available in on-disk timestamps formats and is not going away,
+so better not let it go to waste on garbage and use is for "change cookie".
+
+> > But the resolution change is counter to the purpose of multigrain
+> > timestamps - if two syscalls updated the same or two different inodes
+> > within a 100ns tick, apparently, there are some workloads that
+> > care to know about it and fs needs to store this information persistent=
+ly.
+>
+> Those workloads are broken garbage, and we should *not* use that kind
+> of sh*t to decide on VFS internals.
+>
+
+Sorry, I phrased it completely wrong.
+The workloads don't expect 1ns resolution.
+The workloads just compare timestamps of objects and expect some sane
+not-before ordering rules.
+If user visible timestamps are truncated to 100ns all is good.
+
+> End result: we should ABSOLUTELY NOT have as a target to support some
+> insane resolution.
+
+This is not the target.
+
+I think the target is explained well in this new v8 revision [1]
+of the patch set which does exactly what you promote -
+it hides the insane resolution in fs timestamps from users.
+
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/linux-fsdevel/CAOQ4uxjGofKT2LcM_YmoMYsH42ETpB5k=
+xQkh+21nCbYc=3Dw1nEg@mail.gmail.com/T/#mbc87e67faf71cc58c6424335333935bf774=
+0d49e
