@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E6C7ABCD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 02:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F147F7ABCDA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 02:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjIWAbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 20:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
+        id S230471AbjIWAn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 20:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbjIWAaQ (ORCPT
+        with ESMTP id S230432AbjIWAnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 20:30:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07971136
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 17:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695428964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ylxfdIFHKtXWaD8iCatK3DCzd559D5PBdYjOV69DHc8=;
-        b=LXXg52ZXr/6UhC7FhfSnaveYyPgeCdNiXCm21HeUYFn1wflP0yumA2GoSxTtfFB3KvpF0W
-        /dbC19NztIfZmtNDyDogSxrN27YQODrMlXtROk3BXPs8X+Sv2Y0ObqxAQt4dOlaAS/T94o
-        JLOepg8/RiGZzGQzPAjv2TIB4mndVa8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-193-d9V6XYJsODS_aOOQm3b_qA-1; Fri, 22 Sep 2023 20:29:19 -0400
-X-MC-Unique: d9V6XYJsODS_aOOQm3b_qA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F2FBE85A5A8;
-        Sat, 23 Sep 2023 00:29:18 +0000 (UTC)
-Received: from [10.22.18.172] (unknown [10.22.18.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A14A5492C37;
-        Sat, 23 Sep 2023 00:29:18 +0000 (UTC)
-Message-ID: <79793717-95f8-2bd7-407a-ae547131809d@redhat.com>
-Date:   Fri, 22 Sep 2023 20:29:18 -0400
+        Fri, 22 Sep 2023 20:43:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A1EB9;
+        Fri, 22 Sep 2023 17:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=KNRIdUf44g9Un/KxayezGTbM6ynKDPZExldCQORQEZg=; b=f4B+nslvLWKhLuYnfr8J5Ch7AW
+        eYS9hKwG1Isa3JaeORvocaeLfcrBMBM6hMcuRUKO6cmeurWYjDdbWiIHd/iU4xdv52gwXW7y3l186
+        sL4lkQteOiszPMt6SOAvamG8CDRZ2Cbi2qIuJ12OjisZwztvFXPSmjgDyRDmSNZeWu9Yjec2Ts9Ym
+        BrmnfCFAiSBw9oymFpcLFvg34XBuQspLkLcbRLv2d9CTifZXjdjgj4LoQAmRzCQHtFTGpPpyTNJo9
+        KDYrecMCUzvVhAooTnbT/tYEhHvznXfnAn6Ll+fobbIT9aT3VYVn95MUXZb3O8yNE9oUjvHMB4Qjj
+        chhWT3Hg==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qjqjZ-00A3SI-1E;
+        Sat, 23 Sep 2023 00:42:57 +0000
+Message-ID: <d7fa3574-6686-4044-a808-c426be18ad9d@infradead.org>
+Date:   Fri, 22 Sep 2023 17:42:56 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] locking/semaphore: Use wake_q to wake up processes
- outside lock critical section
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/kgdb: Fix a kerneldoc issue when build with W=1
 Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
-References: <20220909192848.963982-1-longman@redhat.com>
- <20230921074247.GC14803@noisy.programming.kicks-ass.net>
- <06163c13-03b2-bfe0-90b4-5267a039a02c@redhat.com>
- <20230922194704.GA40277@noisy.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230922194704.GA40277@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <aad659537c1d4ebd86912a6f0be458676c8e69af.1695401178.git.christophe.jaillet@wanadoo.fr>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <aad659537c1d4ebd86912a6f0be458676c8e69af.1695401178.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,33 +56,36 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/22/23 15:47, Peter Zijlstra wrote:
-> On Fri, Sep 22, 2023 at 02:45:04PM -0400, Waiman Long wrote:
->
->> I believe early_printk should only be used in the non-SMP boot process. The
->> use of printk() is frequently used for debugging purpose and the insertion
->> of printk at some lock critical section can cause the lockdep splat to come
->> out obscuring the debugging process.
-> By default early_printk is disabled somewhere early, but it has a keep
-> argument to keep it around.
->
-> Anyway, printk() as it exists today is wholly unsuited for debugging.
-> There are too many contexts where it will flat out not work. When you
-> use early_print with keep then you can use early_printk() instead of
-> printk() to debug.
->
-> Also, see the patches I pointed John at. Perf would not be what it is
-> without those patches.
->
-> Serial lines and early printk are not optional. That is, I flat out
-> refuse to develop on machines without them.
 
-Thanks for the debugging tip.
+On 9/22/23 09:46, Christophe JAILLET wrote:
+> When compiled with W=1, the following warning is generated:
+>   arch/x86/kernel/kgdb.c:698: warning: Cannot understand  *
+>    on line 698 - I thought it was a doc line
+> 
+> Remove the corresponding empty comment line to fix the warning.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-BTW, it is not just printk() that can be problematic in some contexts. I 
-believe the various WARN*() calls cause the same kind of lockdep problem 
-even though these WARN() calls shouldn't be triggered that often
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Cheers,
-Longman
+Thanks.
 
+> ---
+>  arch/x86/kernel/kgdb.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+> index 3a43a2dee658..9c9faa1634fb 100644
+> --- a/arch/x86/kernel/kgdb.c
+> +++ b/arch/x86/kernel/kgdb.c
+> @@ -695,7 +695,6 @@ void kgdb_arch_exit(void)
+>  }
+>  
+>  /**
+> - *
+>   *	kgdb_skipexception - Bail out of KGDB when we've been triggered.
+>   *	@exception: Exception vector number
+>   *	@regs: Current &struct pt_regs.
+
+-- 
+~Randy
