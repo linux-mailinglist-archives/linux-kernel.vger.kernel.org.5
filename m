@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 220DF7AC408
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DFB7AC409
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjIWRhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 13:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        id S231831AbjIWRi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 13:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbjIWRhE (ORCPT
+        with ESMTP id S230054AbjIWRiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 13:37:04 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8431519C;
-        Sat, 23 Sep 2023 10:36:58 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c39f2b4f5aso29766245ad.0;
-        Sat, 23 Sep 2023 10:36:58 -0700 (PDT)
+        Sat, 23 Sep 2023 13:38:25 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D31100
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:38:19 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40535597f01so38410645e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695490618; x=1696095418; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jlE6JLRfL48qtVwq8jA/2h0BZ48NcfrSjI1lDQ5avkE=;
-        b=UUDKUWN6eT64lnmOU3admofshJbH0x33cyjAFmu3qr4uF528zwtB7P2xPv+L5jqa2S
-         SKiBgdIAmZWaHRbJbAzMDI/f+hC10EdF2q1wqM1OZ20OVJuy3AnFuYxwa16Dt5EiEps5
-         EoNpOmgTQW+g3DmAGo9domgb1o+dPiJvKpV4HwWb6gZp3x/grizgbLLaCWjlcpQVGag/
-         06jfntnoHsJPjZjXKflw/8Y22YEbJJfOd9TT7N3JiLFgvyCZg9YH5NzBlneO2us9aPEk
-         6RpzU+UvOqBqpR0ESO8dtZ9hzPMUdxMYSAjRNQxbtiD6ffjXA7TuvqvQDVFuKiaqnmf5
-         Iszg==
+        d=linaro.org; s=google; t=1695490698; x=1696095498; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V10gzi2RlVQOmrv/zaocoqbYLQ49RKI1zclTkXbhh6E=;
+        b=qHRpuCk+zZZenbhV9rlmHo+SQ5viQqIHa3HNxyyJfHOTssYG3D0U/1ds/naEiuCatl
+         ExvFiun7pThXb49Z/R7hiKpVDxrxPr8XbwzrBEXgE52deOwYXIhOZ6NLzd6A6gyD3kw1
+         VND3hgiV4+LXakH6+p2KnrRiH+lSU50o3RKyju6srNWqMugQD8yYi6fiGBfGg4Af+98H
+         +y1jQdaKPZDxbNxsWbsxNp/PP+zuzjb9+xc9NGT2nlME38JlBbX0c6Hjt00Yos0qWJsf
+         t3JRVzEzdf2ROYsKzLPM8jjyctjD7FQStZBBiKvnjPM+Nkv8UM/ynNPIkkmuoKTwvjYg
+         JFKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695490618; x=1696095418;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jlE6JLRfL48qtVwq8jA/2h0BZ48NcfrSjI1lDQ5avkE=;
-        b=C6FX4aDJ0uFzgA0DklRZZdIgongw8Hsl7mo/v1GY1xjh4rw2OMlosK2GcZCkL1XtQj
-         rNkMdP6D25vFggQOAewrrutORjSMgeS0clhroFNxpfsp1vKknhzZMN7hFCbgKiYJndDn
-         GPq2+fFOYMxOm3LvX6SrM0YFIb565DMe366NPofyhcDpMr7Ck6fkohphhHKFwQEOPhku
-         ny5MfkiW1XYQmrDP/ebiHeZ0R/FAxit5mrxGkmO+VB3U+QratOys4KjOVeQNCMJhvtAR
-         cfelCZwqme/2AQcmtCVH1oKR+eNySwgiIDTNEv6Yg4ZGL+lBLYNYseVyegUD6o97nulu
-         mhlA==
-X-Gm-Message-State: AOJu0YwmRirPCIDPgoDRr7iHVSVmUOnlaeIGoNMS0KY+WMtx+ij+UBeO
-        gfCBhbNJg7KqFwub+H26WxIL/fAYa2U=
-X-Google-Smtp-Source: AGHT+IFSlAyqGeRovEjDNA4A/S+3zh83GX0PrVo3gnROIu0Q0EjRgGRrlmfg0p7A9iVAdg6YXQtFCQ==
-X-Received: by 2002:a17:902:e84d:b0:1c4:50fd:7cd1 with SMTP id t13-20020a170902e84d00b001c450fd7cd1mr2130303plg.11.1695490617930;
-        Sat, 23 Sep 2023 10:36:57 -0700 (PDT)
-Received: from atom0118 ([2405:201:c009:52e1:3075:4405:fdad:b3f9])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b8b2b95068sm5585448plf.204.2023.09.23.10.36.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 10:36:57 -0700 (PDT)
-Date:   Sat, 23 Sep 2023 23:06:52 +0530
-From:   Atul Kumar Pant <atulpant.linux@gmail.com>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
-Cc:     shuah@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] selftests: rtc: Fixes rtctest error handling.
-Message-ID: <20230923173652.GC159038@atom0118>
-References: <20230817091401.72674-1-atulpant.linux@gmail.com>
+        d=1e100.net; s=20230601; t=1695490698; x=1696095498;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V10gzi2RlVQOmrv/zaocoqbYLQ49RKI1zclTkXbhh6E=;
+        b=bEUk7xDep0FM3PGjKpsu8bggvapqOMSSTKkJmeERgqcpJM9Qo31c2zrKtxRBh6G/Uw
+         saDEsTOqDUfivKdHZ1eaO0vgadbCnqxivvBSQUwxdbk4KftteTOGWSPvmnrOxkwwX7g+
+         UT6qzvBFBFGo7oHUJTkg6VfmlEXb5HA5kh91qsXNs/kbbXORRoMQai5nBucWGtLgC9G4
+         XL8PZBo8klyRIosWeVoaPiOrfNQro91zIqDyZvUUBRH3Kwtuf8VNZxsotdbTgSBDxagr
+         BjsOgmbtobtwGaTr1jAiuy6P97Jk07aQnvUQbNVJNtu4aps3r4hScF6+EIVpmvKa+c1k
+         PlsA==
+X-Gm-Message-State: AOJu0YwlvAJq2n4D52fKjJSQZhZ4CoETCdjzUzpRHrfdVMl96f+QsPKr
+        vYq43M63yYjcusgmeOZsy7WgNQ==
+X-Google-Smtp-Source: AGHT+IFCjRZIcLO+0g8diFjimp5gtGgP355llzi7E+8lc8YGycCcAJHapljUSf7AamsNzyP9lncAsA==
+X-Received: by 2002:a7b:c38e:0:b0:405:37bb:d942 with SMTP id s14-20020a7bc38e000000b0040537bbd942mr1967658wmj.4.1695490697643;
+        Sat, 23 Sep 2023 10:38:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id 11-20020a05600c248b00b003fee567235bsm10604723wms.1.2023.09.23.10.38.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Sep 2023 10:38:17 -0700 (PDT)
+Message-ID: <e4311804-bb06-ec04-8479-dfa0466e4b35@linaro.org>
+Date:   Sat, 23 Sep 2023 19:38:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817091401.72674-1-atulpant.linux@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/2] media: dt-bindings: mediatek: Add phandle to
+ mediatek,scp on MDP3 RDMA
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mchehab@kernel.org
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, matthias.bgg@gmail.com, moudy.ho@mediatek.com,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        u.kleine-koenig@pengutronix.de, linqiheng@huawei.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org
+References: <20230919095938.70679-1-angelogioacchino.delregno@collabora.com>
+ <20230919095938.70679-2-angelogioacchino.delregno@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230919095938.70679-2-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 02:44:01PM +0530, Atul Kumar Pant wrote:
-> Adds a check to verify if the rtc device file is valid or not
-> and prints a useful error message if the file is not accessible.
+On 19/09/2023 11:59, AngeloGioacchino Del Regno wrote:
+> The MDP3 RDMA needs to communicate with the SCP remote processor: allow
+> specifying a phandle to a SCP core.
 > 
-> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
+>  .../devicetree/bindings/media/mediatek,mdp3-rdma.yaml       | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> changes since v5:
->     Updated error message to use strerror().
-> 	If the rtc file is invalid, the skip the test.
-> 
-> changes since v4:
->     Updated the commit message.
-> 
-> changes since v3:
->     Added Linux-kselftest and Linux-kernel mailing lists.
-> 
-> changes since v2:
->     Changed error message when rtc file does not exist.
-> 
-> changes since v1:
->     Removed check for uid=0
->     If rtc file is invalid, then exit the test.
-> 
->  tools/testing/selftests/rtc/rtctest.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/rtc/rtctest.c b/tools/testing/selftests/rtc/rtctest.c
-> index 630fef735c7e..27b466111885 100644
-> --- a/tools/testing/selftests/rtc/rtctest.c
-> +++ b/tools/testing/selftests/rtc/rtctest.c
-> @@ -15,6 +15,7 @@
->  #include <sys/types.h>
->  #include <time.h>
->  #include <unistd.h>
-> +#include <error.h>
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> index d639a1461143..0e5ce2e77e99 100644
+> --- a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> @@ -46,6 +46,11 @@ properties:
+>        include/dt-bindings/gce/<chip>-gce.h of each chips.
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
 >  
->  #include "../kselftest_harness.h"
->  #include "../kselftest.h"
-> @@ -437,7 +438,7 @@ int main(int argc, char **argv)
->  	if (access(rtc_file, F_OK) == 0)
->  		ret = test_harness_run(argc, argv);
->  	else
-> -		ksft_exit_fail_msg("[ERROR]: Cannot access rtc file %s - Exiting\n", rtc_file);
-> +		ksft_exit_skip("%s: %s\n", rtc_file, strerror(errno));
->  
->  	return ret;
->  }
-> -- 
-> 2.25.1
-> 
+> +  mediatek,scp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to the System Control Processor (SCP) node
 
-	Hi Shuah, I have made the changes as per your comments. Can you please
-	review the changes ?
+Why? Why do you need it? For what do you add here phandle? Your
+description should explain the purpose.
+
+Best regards,
+Krzysztof
+
