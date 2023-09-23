@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE9E7AC4DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 21:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E707AC4DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 21:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjIWTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 15:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S229644AbjIWTdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 15:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjIWTdk (ORCPT
+        with ESMTP id S229643AbjIWTdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 15:33:40 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785D7FB;
-        Sat, 23 Sep 2023 12:33:33 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-692b43bd804so1676856b3a.1;
-        Sat, 23 Sep 2023 12:33:33 -0700 (PDT)
+        Sat, 23 Sep 2023 15:33:45 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECE119A;
+        Sat, 23 Sep 2023 12:33:38 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690d2e13074so3308616b3a.1;
+        Sat, 23 Sep 2023 12:33:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695497613; x=1696102413; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695497618; x=1696102418; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=V2uhQYW0dA/MmHO+MVwE4AWGk/2906LanaDbbQRTzq8=;
-        b=dWICs9SzszukHq2ezCzjq2uXSBxdul0u/zp32c7RIW8rAx+Mnc6Ndm5qrB/6J1roXG
-         Q+XVHk6Sdnwn9v5vZp/EyMChMCnH2Hta6zA0ZTQLFaS6LOfsipG/pwydqpUyn7ewCLzI
-         ZSxE05U1eu5zP/2NT9c4GZGDNh6TfVAEY4GBjfmNcMHuh6Vk7KogWkktb2mpdzVIusE1
-         bo4TjqAm4QsaDJV0Dcn5Bj/wtkVHVn62myu9uotpfekR98aMV/LsFdVHS8x2PiMHrpWj
-         TFfYRuOvMN6VyZaK0P91dRPrkZD8+FvUIng2kVrapnhwxG5lu5pkjs+L6IX8Y9aMStE0
-         6oEA==
+        bh=LOtuPFxlpOJnlPD5je6/bnBdPybRwVi7VM0GipzcDdc=;
+        b=DOQYnZ42H59KrQGYue6thfs1UTe1VuW8UeqkdqHSNrUN4MFWsGwNZKK9j38HJ/75oK
+         mYTV6XaYxSiFdQRZdDmVwqJukwYRaAgqw3OhwaJgtDKJVttbCExFh5CQXSTHW04McvC7
+         sFbmYoHy413fp5mH7TxwQ0MYllgSnmlNH3S6Siq/ZbtqoL6eklgNMe3GH6qs9Z0NBn+k
+         d8ywd1eoou9IKbDLLH41ueTnofmoxZxD59tYiFd2O9eMGEEudDaLyJHawxWNF/eo1lCX
+         GhF84tOWg8MPlDgye9FiGuZGBvyw/chwwuj7HZcITBJwrL9z5JPHRhPr40T4Fdh1sdEW
+         fbsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695497613; x=1696102413;
+        d=1e100.net; s=20230601; t=1695497618; x=1696102418;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V2uhQYW0dA/MmHO+MVwE4AWGk/2906LanaDbbQRTzq8=;
-        b=etWENF1VMf65ibi8JpPxtZOPhaK07YE5FEYqvIesL4xJh+xVS2nFZ/3dAKh0Eqc5HO
-         UwcDxRKGBH/u7FFhbrQruC5kPc71vZVFd43k/CpYUzVPWXrBsHcOoRo8eTK/0ACgsHxL
-         MpOlZYmVFFHYKpI9BRs9xijngTqVbJBXaoOLcV9D259IbD5x/RUDZd04WPqGjUeWET1R
-         7y06fLlMEqlvxXYE5AOIgQimib8yZ5bQzer+ZnbrG3eXZCFjS5KDSwhk1ZFC/9HRwLtd
-         YUUyIn2GpbUHoooxe8IA+/cBuGbQm/O4L39n3OJZAI4d2sj0Ynyhfzh4XsyTwSqV5Aci
-         V1DA==
-X-Gm-Message-State: AOJu0Yzm0IuzXVnPGj/MebjiA+xWfPyjbCNCoeoZVCv1H4R9rpXU3cmZ
-        r5KjWYhcjYWvLoC/h4VZztE=
-X-Google-Smtp-Source: AGHT+IH63fxYdv4NUEWQREcnUWlg7lC1Pejc1RlForkJPuVlLNWZcUashfYmlqFGFS33mFPo21LU/Q==
-X-Received: by 2002:a05:6a20:3caa:b0:135:110c:c6e1 with SMTP id b42-20020a056a203caa00b00135110cc6e1mr2606684pzj.7.1695497612884;
-        Sat, 23 Sep 2023 12:33:32 -0700 (PDT)
+        bh=LOtuPFxlpOJnlPD5je6/bnBdPybRwVi7VM0GipzcDdc=;
+        b=GCsa7YUcSP4yReugQmnzXR9GxHUCdk6V4mK9JT+ZGi4WA63c+OIx39HaIIfRYVuYxs
+         9NJ4e051QaCJWxqE1FzmfW5ykSMLIqAyVQ8brwwGethmKMO9YWFmTryAwKit5w+2hWdP
+         f3e8cIg0lFiVfjFZR/84k+DIodL1oQQRJF/mMAKhTRxP+UzByVHEJnBrTdEQaVDvTz6c
+         MdggJdY0wvV76PD/scCdXdDs0yqeclqKZFtbw9op19K7E31VPIkbwWM4SChrRnC1MIrN
+         VKowhaZHC+0eruUU+57ii4/6rwPzCNZ5XmcCnqKy78E415oTt1WWaJrNkZrPc2IWYNE0
+         9EiQ==
+X-Gm-Message-State: AOJu0YxEepAI2luucp0uc7QU+fRFd4b7/1kr8rzwq3+UEcVWzMc1hRDt
+        bE4Y00ImxT+IOUtOSAiRBws=
+X-Google-Smtp-Source: AGHT+IEfWrUgOrnrsPPCxQ5cuVt858pXyvz8DywujqeysyDyjc4YXMT9fH9xqjI3t3RUgdgy2OvKLw==
+X-Received: by 2002:a05:6a21:328e:b0:12e:98a3:77b7 with SMTP id yt14-20020a056a21328e00b0012e98a377b7mr2289038pzb.59.1695497617879;
+        Sat, 23 Sep 2023 12:33:37 -0700 (PDT)
 Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id n11-20020a170902d2cb00b001c06dcd453csm5685740plc.236.2023.09.23.12.33.29
+        by smtp.gmail.com with ESMTPSA id n11-20020a170902d2cb00b001c06dcd453csm5685740plc.236.2023.09.23.12.33.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Sep 2023 12:33:32 -0700 (PDT)
-Message-ID: <9b8aaa7a-55e0-4696-a0f1-c4f7af0e46b0@gmail.com>
-Date:   Sat, 23 Sep 2023 16:31:47 -0300
+        Sat, 23 Sep 2023 12:33:37 -0700 (PDT)
+Message-ID: <3eb24e38-710a-48cd-b9bb-3e258d914fc2@gmail.com>
+Date:   Sat, 23 Sep 2023 16:32:03 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] rust: arc: rename `ArcInner` to `WithRef`
+Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
+ `WithRef`
 Content-Language: en-US
 To:     Wedson Almeida Filho <wedsonaf@gmail.com>,
         rust-for-linux@vger.kernel.org
@@ -68,11 +69,11 @@ Cc:     Miguel Ojeda <ojeda@kernel.org>,
         linux-kernel@vger.kernel.org,
         Wedson Almeida Filho <walmeida@microsoft.com>
 References: <20230923144938.219517-1-wedsonaf@gmail.com>
- <20230923144938.219517-2-wedsonaf@gmail.com>
+ <20230923144938.219517-3-wedsonaf@gmail.com>
 From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230923144938.219517-2-wedsonaf@gmail.com>
+In-Reply-To: <20230923144938.219517-3-wedsonaf@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -86,12 +87,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 9/23/23 11:49, Wedson Almeida Filho wrote:
 > From: Wedson Almeida Filho <walmeida@microsoft.com>
 > 
-> This is in preparation for removing `ArcBorrow` and making `WithRef`
-> public.
+> With GATs, we don't need a separate type to represent a borrowed object
+> with a refcount, we can just use Rust's regular shared borrowing. In
+> this case, we use `&WithRef<T>` instead of `ArcBorrow<'_, T>`.
 > 
-> This is a pure name change with no functional changes intended.
-> 
-> Suggested-by: Björn Roy Baron <bjorn3_gh@protonmail.com>
+> Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 > ---
 > [...]
