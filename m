@@ -2,257 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641C17ABD15
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 03:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623097ABD1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 03:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbjIWBcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Sep 2023 21:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S229983AbjIWBgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Sep 2023 21:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbjIWBcK (ORCPT
+        with ESMTP id S229473AbjIWBgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Sep 2023 21:32:10 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA20C1B0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 18:32:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8571d5e71aso4007914276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Sep 2023 18:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695432720; x=1696037520; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6sBdVMfMRjf51/A4FAmBdDBudgEJD7XIV0S+Rn1ebf8=;
-        b=DHDysvaQOkX+1QeT/kRjvxWEKSghwM022OG9aVVfIA1HUHjcImsI4IF+/RT6YSchjW
-         fQDyr2N2FylsXYPtG1o+DoTbmH36dC2J/hpq09BjZJ/vyAH7BfCAkWaBq66Bi+zo/x/W
-         xkXiqymmKqvkBlPMxJ6FLjQm/JAfDhpUgJUrxucLVjn5skb/7lCJ6qydVcoEMakQTvay
-         rYb+IURzuvPwyTg7c7JJoI+x1HmEbcdIvBldc1G5e773ILAkauXmf0RjlXBmtoHPVEOo
-         wQlBuequYCqx/SI8LLggkRYDcUIGFt/kDu8uZmcO18tRvQ1eU1uUgXjmLcsz0ZSZ6H8Q
-         VT2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695432720; x=1696037520;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6sBdVMfMRjf51/A4FAmBdDBudgEJD7XIV0S+Rn1ebf8=;
-        b=gXMeGycuLclEpYwvUFEGiOhfM8XvKpee62lB2v9VE5aHxlCSEegEPbvFCBwz0R9w/R
-         MaVOM1MXF+HB01Q6dMgs6vAWapiYxWqebZoeayoz+ej0Cr8h7ifE3gm/5Gst8FaqSgwc
-         k8sIpejjrDpEGVT18l2a4jaAYQeUt8r5E+ewULtMhCyApGoMRq3QZdwt9sqmcaT9Zn9P
-         DErMpWdZY/2mpgDe4X0VrfI7MeiPqizAh89LSLYxbzWdlspLRFSV6RMOmwhgnVj+94cX
-         DmBsQtXUSdmtlt9lQ764E7ZbZoY4xYwDaZoEMjsRH0fBMg7Q4wAiiYp4pDpqYIZ+VaVD
-         kFTQ==
-X-Gm-Message-State: AOJu0YxMS9dz8T2Ouoj2+Z6eSjmB4HdtulSkbgyz6n5q4i2whI3nszHI
-        70eeO4DyyVxn85GCkdyUQu2Lu4RqJbQ=
-X-Google-Smtp-Source: AGHT+IE2yWzcwua2aqDzlLl0Y+Ymi3r6rJDilflyRWbYZnXXI88FhB4QNhRbeG/BF6XKbV1cknxCSUOXvog=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:3398:6644:ed7f:bec9])
- (user=surenb job=sendgmr) by 2002:a25:d09:0:b0:d7b:9185:e23d with SMTP id
- 9-20020a250d09000000b00d7b9185e23dmr9469ybn.6.1695432719939; Fri, 22 Sep 2023
- 18:31:59 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 18:31:46 -0700
-In-Reply-To: <20230923013148.1390521-1-surenb@google.com>
-Mime-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230923013148.1390521-4-surenb@google.com>
-Subject: [PATCH v2 3/3] selftests/mm: add UFFDIO_REMAP ioctl test
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        david@redhat.com, hughd@google.com, mhocko@suse.com,
-        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
-        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, surenb@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Fri, 22 Sep 2023 21:36:00 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A168CE8;
+        Fri, 22 Sep 2023 18:35:53 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38N16bxV006809;
+        Sat, 23 Sep 2023 01:35:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=C5Pi/Hiu81gwHXsRnreMP9dALYwD5nvn3uXY+FzJ5CU=;
+ b=UR/I0rfH5D+g0vFQjL3/9zWDvCQgqo3aCrSWEtKcbrdDnwAX4m1qrAIet41PNXQ8pYiH
+ p6elEErFhNZmClpyoo4ELt75aqRgBb9VuUflbvgVaIqmGlAzV/Ci1FlwztYmaNH9lagT
+ 9C6QuKLVm4/5+ee2fyQYp9Mc99tYxNJNQlvqypZDVBmv/EGRIeyxjEz9/BQVzmcNcJCR
+ YIWBFaphfAMVTpPZbjaQxe1387SzlynkTwmVIPQLLHRvhss96t3Ywra2CRy1h63xE0wO
+ lJcl6kjTyB1Z35MzalJsK+h77ELyxO8LnqXhBbdQypVoCRa5ESCLIhDpA0yvjCob42RL iA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9nqnr1ve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Sep 2023 01:35:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38N1ZThO017144
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Sep 2023 01:35:29 GMT
+Received: from [10.110.28.191] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 22 Sep
+ 2023 18:35:28 -0700
+Message-ID: <65566a68-3510-2e5f-7d57-e4dba08c008c@quicinc.com>
+Date:   Fri, 22 Sep 2023 18:35:27 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v3 6/7] drm/msm/dp: add
+ pm_runtime_force_suspend()/resume()
+Content-Language: en-US
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <dianders@chromium.org>, <vkoul@kernel.org>,
+        <daniel@ffwll.ch>, <airlied@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+ <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com>
+ <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+ <CAE-0n53dqHONzMTd_ZC-fKWTzDVq6Wqwo4OFZMUcghZ5SD5RhA@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAE-0n53dqHONzMTd_ZC-fKWTzDVq6Wqwo4OFZMUcghZ5SD5RhA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UlklZ01rmbcdcrNvAHp9SEp5pFYq-myZ
+X-Proofpoint-ORIG-GUID: UlklZ01rmbcdcrNvAHp9SEp5pFYq-myZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_21,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309230013
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test for new UFFDIO_REMAP ioctl which uses uffd to remaps source
-into destination buffer while checking the contents of both after
-remapping. After the operation the content of the destination buffer
-should match the original source buffer's content while the source
-buffer should be zeroed.
+Hi Stephen
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- tools/testing/selftests/mm/uffd-common.c     | 41 ++++++++++++-
- tools/testing/selftests/mm/uffd-common.h     |  1 +
- tools/testing/selftests/mm/uffd-unit-tests.c | 62 ++++++++++++++++++++
- 3 files changed, 102 insertions(+), 2 deletions(-)
+On 9/22/2023 2:54 PM, Stephen Boyd wrote:
+> Quoting Dmitry Baryshkov (2023-09-19 02:50:12)
+>> On Mon, 18 Sept 2023 at 20:48, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>>>
+>>>
+>>> On 9/15/2023 6:21 PM, Dmitry Baryshkov wrote:
+>>>> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>>>>> Add pm_runtime_force_suspend()/resume() to complete incorporating pm
+>>>>> runtime framework into DP driver. Both dp_pm_prepare() and dp_pm_complete()
+>>>>> are added to set hpd_state to correct state. After resume, DP driver will
+>>>>> re training its main link after .hpd_enable() callback enabled HPD
+>>>>> interrupts and bring up display accordingly.
+>>>> How will it re-train the main link? What is the code path for that?
+>>>
+>>> 1) for edp, dp_bridge_atomic_enable(), called from framework, to start
+>>> link training and bring up display.
+>>
+>> And this path doesn't use .hpd_enable() which you have mentioned in
+>> the commit message. Please don't try to shorten the commit message.
+>> You see, I have had questions to several of them, which means that
+>> they were not verbose enough.
+>>
+>>>
+>>> 2) for external DP, HPD_PLUG_INT will be generated to start link
+>>> training and bring up display.
+>>
+>> This should be hpd_notify, who starts link training, not some event.
+> 
+> I think this driver should train the link during atomic_enable(), not
+> hpd_notify() (or directly from the irq handler). The drm_bridge_funcs
+> talk a bit about when the clocks and timing signals are supposed to be
+> enabled. For example, struct drm_bridge_funcs::atomic_pre_enable() says
+> the "display pipe (i.e.  clocks and timing signals) feeding this bridge
+> will not yet be running when this callback is called". And struct
+> drm_bridge_funcs::atomic_enable() says "this callback must enable the
+> display link feeding the next bridge in the chain if there is one."
+> 
+> That looks to me like link training, i.e. the display link, should
+> happen in the enable path and not hpd_notify. It looks like link
+> training could fail, but when that happens I believe the driver should
+> call drm_connector_set_link_status_property() with
+> DRM_MODE_LINK_STATUS_BAD. The two callers of that which exist in the
+> tree also call drm_kms_helper_hotplug_event() or
+> drm_kms_helper_connector_hotplug_event() after updating the link so that
+> userspace knows to try again.
+> 
+> It would be nice if there was some drm_bridge_set_link_status_bad() API
+> that bridge drivers could use to signal that the link status is bad and
+> call the hotplug helper. Maybe it could also record some diagnostics
+> about which bridge failed to setup the link and stop the atomic_enable()
+> chain for that connector.
 
-diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
-index 02b89860e193..2a3ffd0ce96e 100644
---- a/tools/testing/selftests/mm/uffd-common.c
-+++ b/tools/testing/selftests/mm/uffd-common.c
-@@ -52,6 +52,13 @@ static int anon_allocate_area(void **alloc_area, bool is_src)
- 		*alloc_area = NULL;
- 		return -errno;
- 	}
-+
-+	/* Prevent source pages from collapsing into THPs */
-+	if (madvise(*alloc_area, nr_pages * page_size, MADV_NOHUGEPAGE)) {
-+		*alloc_area = NULL;
-+		return -errno;
-+	}
-+
- 	return 0;
- }
- 
-@@ -484,8 +491,14 @@ void uffd_handle_page_fault(struct uffd_msg *msg, struct uffd_args *args)
- 		offset = (char *)(unsigned long)msg->arg.pagefault.address - area_dst;
- 		offset &= ~(page_size-1);
- 
--		if (copy_page(uffd, offset, args->apply_wp))
--			args->missing_faults++;
-+		/* UFFD_REMAP is supported for anon non-shared mappings. */
-+		if (uffd_test_ops == &anon_uffd_test_ops && !map_shared) {
-+			if (remap_page(uffd, offset))
-+				args->missing_faults++;
-+		} else {
-+			if (copy_page(uffd, offset, args->apply_wp))
-+				args->missing_faults++;
-+		}
- 	}
- }
- 
-@@ -620,6 +633,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
- 	return __copy_page(ufd, offset, false, wp);
- }
- 
-+int remap_page(int ufd, unsigned long offset)
-+{
-+	struct uffdio_remap uffdio_remap;
-+
-+	if (offset >= nr_pages * page_size)
-+		err("unexpected offset %lu\n", offset);
-+	uffdio_remap.dst = (unsigned long) area_dst + offset;
-+	uffdio_remap.src = (unsigned long) area_src + offset;
-+	uffdio_remap.len = page_size;
-+	uffdio_remap.mode = UFFDIO_REMAP_MODE_ALLOW_SRC_HOLES;
-+	uffdio_remap.remap = 0;
-+	if (ioctl(ufd, UFFDIO_REMAP, &uffdio_remap)) {
-+		/* real retval in uffdio_remap.remap */
-+		if (uffdio_remap.remap != -EEXIST)
-+			err("UFFDIO_REMAP error: %"PRId64,
-+			    (int64_t)uffdio_remap.remap);
-+		wake_range(ufd, uffdio_remap.dst, page_size);
-+	} else if (uffdio_remap.remap != page_size) {
-+		err("UFFDIO_REMAP error: %"PRId64, (int64_t)uffdio_remap.remap);
-+	} else
-+		return 1;
-+	return 0;
-+}
-+
- int uffd_open_dev(unsigned int flags)
- {
- 	int fd, uffd;
-diff --git a/tools/testing/selftests/mm/uffd-common.h b/tools/testing/selftests/mm/uffd-common.h
-index 7c4fa964c3b0..2bbb15d1920c 100644
---- a/tools/testing/selftests/mm/uffd-common.h
-+++ b/tools/testing/selftests/mm/uffd-common.h
-@@ -111,6 +111,7 @@ void wp_range(int ufd, __u64 start, __u64 len, bool wp);
- void uffd_handle_page_fault(struct uffd_msg *msg, struct uffd_args *args);
- int __copy_page(int ufd, unsigned long offset, bool retry, bool wp);
- int copy_page(int ufd, unsigned long offset, bool wp);
-+int remap_page(int ufd, unsigned long offset);
- void *uffd_poll_thread(void *arg);
- 
- int uffd_open_dev(unsigned int flags);
-diff --git a/tools/testing/selftests/mm/uffd-unit-tests.c b/tools/testing/selftests/mm/uffd-unit-tests.c
-index 2709a34a39c5..a33819639187 100644
---- a/tools/testing/selftests/mm/uffd-unit-tests.c
-+++ b/tools/testing/selftests/mm/uffd-unit-tests.c
-@@ -824,6 +824,10 @@ static void uffd_events_test_common(bool wp)
- 	char c;
- 	struct uffd_args args = { 0 };
- 
-+	/* Prevent source pages from being mapped more than once */
-+	if (madvise(area_src, nr_pages * page_size, MADV_DONTFORK))
-+		err("madvise(MADV_DONTFORK) failed");
-+
- 	fcntl(uffd, F_SETFL, uffd_flags | O_NONBLOCK);
- 	if (uffd_register(uffd, area_dst, nr_pages * page_size,
- 			  true, wp, false))
-@@ -1062,6 +1066,58 @@ static void uffd_poison_test(uffd_test_args_t *targs)
- 	uffd_test_pass();
- }
- 
-+static void uffd_remap_test(uffd_test_args_t *targs)
-+{
-+	unsigned long nr;
-+	pthread_t uffd_mon;
-+	char c;
-+	unsigned long long count;
-+	struct uffd_args args = { 0 };
-+
-+	if (uffd_register(uffd, area_dst, nr_pages * page_size,
-+			  true, false, false))
-+		err("register failure");
-+
-+	if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
-+		err("uffd_poll_thread create");
-+
-+	/*
-+	 * Read each of the pages back using the UFFD-registered mapping. We
-+	 * expect that the first time we touch a page, it will result in a missing
-+	 * fault. uffd_poll_thread will resolve the fault by remapping source
-+	 * page to destination.
-+	 */
-+	for (nr = 0; nr < nr_pages; nr++) {
-+		/* Check area_src content */
-+		count = *area_count(area_src, nr);
-+		if (count != count_verify[nr])
-+			err("nr %lu source memory invalid %llu %llu\n",
-+			    nr, count, count_verify[nr]);
-+
-+		/* Faulting into area_dst should remap the page */
-+		count = *area_count(area_dst, nr);
-+		if (count != count_verify[nr])
-+			err("nr %lu memory corruption %llu %llu\n",
-+			    nr, count, count_verify[nr]);
-+
-+		/* Re-check area_src content which should be empty */
-+		count = *area_count(area_src, nr);
-+		if (count != 0)
-+			err("nr %lu remap failed %llu %llu\n",
-+			    nr, count, count_verify[nr]);
-+	}
-+
-+	if (write(pipefd[1], &c, sizeof(c)) != sizeof(c))
-+		err("pipe write");
-+	if (pthread_join(uffd_mon, NULL))
-+		err("join() failed");
-+
-+	if (args.missing_faults != nr_pages || args.minor_faults != 0)
-+		uffd_test_fail("stats check error");
-+	else
-+		uffd_test_pass();
-+}
-+
- /*
-  * Test the returned uffdio_register.ioctls with different register modes.
-  * Note that _UFFDIO_ZEROPAGE is tested separately in the zeropage test.
-@@ -1139,6 +1195,12 @@ uffd_test_case_t uffd_tests[] = {
- 		.mem_targets = MEM_ALL,
- 		.uffd_feature_required = 0,
- 	},
-+	{
-+		.name = "remap",
-+		.uffd_fn = uffd_remap_test,
-+		.mem_targets = MEM_ANON,
-+		.uffd_feature_required = 0,
-+	},
- 	{
- 		.name = "wp-fork",
- 		.uffd_fn = uffd_wp_fork_test,
--- 
-2.42.0.515.g380fc7ccd1-goog
+Doing link training when we get hpd instead of atomic_enable() is a 
+design choice we have been following for a while because for the case 
+when link training fails in atomic_enable() and setting the link status 
+property as you mentioned, the compositor needs to be able to handle 
+that and also needs to try with a different resolution or take some 
+other corrective action. We have seen many compositors not able to 
+handle this complexity. So the design sends the hotplug to usermode only 
+after link training succeeds.
 
+I do not think we should change this design unless prototyped with an 
+existing compositor such as chrome or android at this point.
+
+Thanks
+
+Abhinav
