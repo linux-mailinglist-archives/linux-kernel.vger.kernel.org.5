@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 770A27AC25F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BF37AC268
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 15:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbjIWNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 09:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S230272AbjIWNtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 09:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjIWNtg (ORCPT
+        with ESMTP id S230334AbjIWNti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 09:49:36 -0400
+        Sat, 23 Sep 2023 09:49:38 -0400
 Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2063.outbound.protection.outlook.com [40.107.21.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C671A5;
-        Sat, 23 Sep 2023 06:49:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBA819E;
+        Sat, 23 Sep 2023 06:49:31 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GdbFsbOjx7DB6aazzpGNBagMAWV2z6aQ/1FwX3kTBMnE1K9ifS6vB0SureYgTeLj170NVCYTtgGsdI2Mo1KmRUPL0ckICjsr6O9a+FUY3v+cwKRdTDrNRQLxlHJHg9Rw6l1XFjTlwoVa14oe2PJPEgoQ7HMaJ0Dc0MtbMQXXpkSbQ0VH5aNl9KJnkIrecmZKaaRcrWxzZ3Y/k6I3YYZR/5FcA2vEPSZh7hnJJ+7X1ev1ooZB/veM3ALbHu+8jozf7eAPI88GEA/JXv0/PVhVJW+pjt6vohPIQ50JRtJs27QdS48KWINoaHAZQ8vSQu5kf3IYjsR1KzVTZmkNLfm0mA==
+ b=MX19dRYCCAvt+C31gYhl6SEeH0e8k66R0BeQTWoKL+CaRdgxNG8Dot0pBmLXpV1TeC3eDi+GnIjoexFJN0RWOL1EWpcHkmZYEGqpGds+kJB697+MYHw4vz4caWqtsQUr3L59MllAffbTzzHW+VbQMLc3MNijfUfMWxUo11JRnqKmDj/ERYYlhwx8mIJOFQXyFPZHNrOtZW5g3cBzTqnT+4wq2y/g16XCaFDbq0Mq4pI0giHIu9rVz0GAT7rPgyw5X3jza7AhIRHVcZKy236zMq3jkYXB95Y3VZm2EzaYteN2D0yR5SOkW8tjCEmGkYvodiTbvm17IGIDWzTEK4osUA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5vY9X0usskXKpLQcnQGAHoEgjxFUewnZMRLemH6ly+w=;
- b=hrgXd+Qa8MUOuOSJKoSncjWUYp4kojlbJ+VDgGZHIq9LMVUUjWgUcjZNKT+Izi2XjeRo6CfLpKkUxALQWbpYsFnztNwTOoXd1xfCqvunVf4yQ1yGah6hcN1TmsAiJObj8LYWQhKTFJubZaf23ddglmI6jF+TRgKMlDGr8Q6a/3u30av4UMy5i+OlelFxDuZDArVD1Q0j45K6vF0exj8PfzqFZ26U8RlKh4EvPQy13GTbVXRKZqChlb5m1UZjO03bOX6HJqnqwmgJrFwjcD48v2crvkAxIfL4ykuqCDcmdevaoAygqN7sc61K/SZiWcZn0+Q6hz4LT2Y+RIcS4K90NA==
+ bh=XGVOAf2flIf4A1Jltg+syV089a2DDSocHMXzvwBipd4=;
+ b=MIjIAXE8EfCJgUhycXjzLDS/MXzO8k5lUOcPT0Ai3a9Kq6skbc1p4tWoLZedI+7/ABvxfMvUOmxFsNtFl3gxvHiJlL1cdXQqLxXlQBCAYuidj+rCG4XsTYm4j6bvh1N95GAxqjAKjxcp+IWwLv24k2cpCLEtujNpWjDdNcUXs5IdNQ0djRqfczOZICzjeM9ijUx4wR6cUNNcY/Hr1eDkFLHzD7HD67kmRQhTFAI22/CjtWaQ+nM8CmtBb1Y/0RiN30uCsSR/kmnrDvvRz5e1Zdrq4zfgg7z1qG+M7Xk/ziOLj1gKA2ZLvjPjxinnFsnCFOx351OOhRRXaijLfS5Ncg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5vY9X0usskXKpLQcnQGAHoEgjxFUewnZMRLemH6ly+w=;
- b=qB5wW8SqQfQONuS4pStOTgYnb2yym+fg0nD4Z0wENrjp9k85U41RQZX97FSbnel2ceCIwP0ND+WiGo4qw+cI4bGdZdCN7y7a2Wic3sZZujKeecx+jvoL++mpKLYucTDRuYmDKBgaLS9EKXyMmtzMXv2ltnJDHV5LpDD4gdmAdBE=
+ bh=XGVOAf2flIf4A1Jltg+syV089a2DDSocHMXzvwBipd4=;
+ b=bzBZwSUVEU7E0WsOJKZsw9Y6RivIxT8HpeUYwReY0mhFbeTfmZPPI4g2F5ksS/d2vYYivG5Hu46M/+VetJVw/JebdEUYo9pKlDJqmKuhC3twsNtxiqDminGyHP/fuVy+86EZvigMJp5wMQrNUFiyNmx9SgzbYnQx5dRK4GbVOlQ=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by AS1PR04MB9454.eurprd04.prod.outlook.com (2603:10a6:20b:4d9::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Sat, 23 Sep
- 2023 13:49:27 +0000
+ 2023 13:49:28 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6813.024; Sat, 23 Sep 2023
- 13:49:27 +0000
+ 13:49:28 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
@@ -57,9 +57,9 @@ Cc:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Maxime Chevallier <maxime.chevallier@bootlin.com>,
         Vinod Koul <vkoul@kernel.org>,
         Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: [RFC PATCH v2 net-next 04/15] phy: allow querying the address of protocol converters through phy_get_status()
-Date:   Sat, 23 Sep 2023 16:48:53 +0300
-Message-Id: <20230923134904.3627402-5-vladimir.oltean@nxp.com>
+Subject: [RFC PATCH v2 net-next 05/15] net: add 25GBase-KR-S and 25GBase-CR-S to ethtool link mode UAPI
+Date:   Sat, 23 Sep 2023 16:48:54 +0300
+Message-Id: <20230923134904.3627402-6-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
 References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
@@ -71,52 +71,52 @@ X-ClientProxiedBy: FR3P281CA0165.DEUP281.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AS1PR04MB9454:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11e97d8b-fd6a-40fa-a83f-08dbbc3be70c
+X-MS-Office365-Filtering-Correlation-Id: beb9c323-d5aa-413c-ffad-08dbbc3be7c8
 X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iWNzmBY2sZVJJGtTFhZNJcuT1yXmrnFcEdTzjX5pi7YXQDqhLMxp3E9LfAK2FYco1San/qxnCxdHV9+0uufPlpdrribo7LjIUJAUl9kbRyIUkDxgGWSKHJbzMJVOabEDf4jzrPraghu1vcyFHTjQP0KnBUX8JM9a+D4VFAVuVVuXnbn8iIaJ2SDG5RUwR6Yjeih/hzHGPIzvm50+eMgfXgdSZJVXbcMIJoBRTtzQoopLikD1p5bwFKVmqsRfb135ufM30g0sKLIx9lSVH6YRA7qb3B53/lxEPv8WCvuLCc+hP11voaTw1V7F4rLgjreMXGdbz5M9WHkdKCe45py5PRtAVYLQimNDz2pGCRPMp3NPQUMe8xPWcuAwAuKzRDHvjIoxfkxbPLI2lUo1UTMJIH4VaAEAuPLWncf5PsHH4ujGUQyC66Pd7igXUVrap5TxsT1e+NEltRsdV7fg6bAe6/FZoSy9TYL5diilzhW/0g0s2j98quVkjZzDDEonRCBeBVnZtFJ//y66m5XGoE0/ljixnotv/tzSZ2qpHQc+w6cG1+AZWRTlN43eyhE/fBNd+qxTDj7awRFBohfHiEPCtGtAMkFwIgwV3oPUyog0BKJgFGFMeCtM+nKGcKzjs6e8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(1800799009)(451199024)(186009)(66556008)(52116002)(2616005)(6506007)(6512007)(316002)(5660300002)(66946007)(38350700002)(6666004)(478600001)(1076003)(66476007)(26005)(44832011)(2906002)(4326008)(36756003)(41300700001)(7416002)(54906003)(38100700002)(6486002)(8936002)(86362001)(8676002)(83380400001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: aScDlhiZPYZZWaIqMboVwCNoi/PnzVoRpL0fQyBc1lqLuhn38r++tZv8F5F0JkWcojut6WCJii16XSKl9ojzAAGGEAZYdWktth8X7FRGr4rzrok09sjTQqSj+etEN3e3NJ2kTaM3hpzh3xWdhRXwWNNZ5MhRkWbz0kGWIG18mqESG7xLhLcB7RFX7hlQdy0AzSfC8GFDs3wbxD4U+C6xNbZEVn4bw9/QOPpji43vpUsRhotnBGw9fF5qKFn861ovXoO9mPoWgabCTnOdqeZXhyhjGN9xaxgEjiw+oz2gj1MnMJ+fk3YEUODDvizg8PoHyhTQnI7MVRxux8vj9DRZYuquhnYpVuZ6NSHovxaZQMlIse0I8ROM/kaVVZi+TE5Omat1sIZlnosMkSEcdKq1EMioTzjraWUujreoytZ05ZmqEv72DhIUAy/CtjIBCj9RhMti5Irsf9ytPfKdit0VFgZ+BAbcdjT8PnSsj824QGyAcNwSHADWcuatgolv7aDf0OzS+qIQlolL+CR+52obyb6UUox+lwiW2zTqp2oQCCUiBCrct4ktnuOkHLTQuJ+3Gp9afFSt9OVb92zSdqXqxDgMpOLgdbtMS+PuleSPi2kcgbP654SlbIO39/0hY46T
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(1800799009)(451199024)(186009)(66556008)(52116002)(2616005)(6506007)(6512007)(316002)(5660300002)(19627235002)(66946007)(38350700002)(6666004)(478600001)(1076003)(66476007)(26005)(44832011)(2906002)(4326008)(36756003)(41300700001)(7416002)(54906003)(38100700002)(6486002)(8936002)(86362001)(8676002)(83380400001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GVUfj2vFfBEu+jR/WPmo37tC/4h9xX/OtLEfmF7RUKydKH23VDbZL1agbVQI?=
- =?us-ascii?Q?SFv3HeGCiAe8IZPc72woJCBdrlaNe0pK3SeL9kLbGUTPd2sHrO/SO/dmqUNs?=
- =?us-ascii?Q?JM6rdlVZmyxlICloThQLnh3f88PkGydroTuks4opjL6qbJlH8mBpJwgO33U8?=
- =?us-ascii?Q?AGEv2oZERvdZOM2EQ69rbRpjfyiSbSNjm4HuVxtDGtHqKnH2WpBqlXc/ovYG?=
- =?us-ascii?Q?7M0oY6sqz8LmPpg89sik3rt7158b9HO7Jt2mdprV4E0SdvmKn7HzNFOit0fc?=
- =?us-ascii?Q?U14KbAioMEVjyTm4U8n1oZrDPmLUbGYjir6F1AlNBqgjhrJya6i1GZKRpVgi?=
- =?us-ascii?Q?MfgXUfTJRdDgDxnsutb/FmJpeiaLETbXrBJZ43ToEgmEW0nHmUqQT9mFZaRm?=
- =?us-ascii?Q?dXk2dB69ICs76LSFISe38JnjgfA5LtI7DjCzXhJXiQ/4w7qJOw60TCG7F4ig?=
- =?us-ascii?Q?ghLSGIExsZWq6W0dbz3j1z3bOIpdhgOwsWV92QPcWj0niO6kig4v9uc6TU4m?=
- =?us-ascii?Q?zPmM79IuGxjvD0YMieQJRi50ccTlAv634UjxFRjc3lJVXjimqGjqjy19RKHv?=
- =?us-ascii?Q?66o5rmGHhSVox/Uh1HBtm3D7hQBpPXHj8mObEi2GeRqpInLCuSCjCK6PbXHI?=
- =?us-ascii?Q?8DiIxLYDndY1SI08dLuIryRIZrzo+ZfEH2/zkZ7JCwXq6MP/7Cqh/ckMAsxB?=
- =?us-ascii?Q?fnhjrzFmBjItjcRysO+kmdwlbau7J442GVzSwhH2YnsPRcaaoPDbcZogxZdB?=
- =?us-ascii?Q?XZhzuXc+m31O+mfo6iJc7HUbxNhtNzW4EWKvqWrPE4qnSkC3zHPO++ff37Wg?=
- =?us-ascii?Q?r8Mt3v1uuILCCknFAPyaT6dENH5d2H17a2Nyh7OCfVDSnRRqs7CJfytVv8C5?=
- =?us-ascii?Q?a2vxrOP0WrUY3M8rSVwfECbaDBK6fKi/U4eXOwpVY5HQoVO5eoVYkZ3zBpba?=
- =?us-ascii?Q?EtuJd29gts/v+eydZDfJ3Jfpp6OcBKeZxFXADVqtCWCsjrzIoDS7vRx2q5n1?=
- =?us-ascii?Q?x+anSJYwiOzpPpvX1pSmIrlOTgR2S/sUIed3ap9ESM8aDZzenbcgzq8KrfC5?=
- =?us-ascii?Q?g0A5tjDVd9qI5fBkgINMUmVWxkydnW7UdhSnubIwCodsYuqEw1TqCf4yvQ5d?=
- =?us-ascii?Q?1YAjjsAM5aXtBxgZHj2+lcNkCoilXZDyWiN4rlgFZYyVzMB8PVjIAL8izuOA?=
- =?us-ascii?Q?4DQUajpCTDcIaP8qirEtwyJ8p2CJ2IGsLl7e7dGhV2Y6yMST7kj+Sl6kWAJO?=
- =?us-ascii?Q?CLLu8vo9JThxERg3VrrqEjZl4CToP6pIJB4Rz9oDDWe5Tl1ZN2NnHt7cijvc?=
- =?us-ascii?Q?MMm5P21xvqWQEOk1rQ7RXE2HkK6pynVoTpVaKUXd6dJKoM8rrWm03iYlcBZg?=
- =?us-ascii?Q?ivRVAOWbxcmud4Wd+A58O/TMB8I1HXlCwrIYv+JvzyAsbU5vj5iVSOVRIvAD?=
- =?us-ascii?Q?jZg2MeGyDTg2vdnHDSvfZLrsWJlBcPkRiOby/VAKR0ftBrLf2K0NgmLaMJ1A?=
- =?us-ascii?Q?zRYOyv5f3NIa+dY9otLXRSB6A0NrVOAkEVOq7OwAvwBYr2Y/DdbkOOnVpmZ0?=
- =?us-ascii?Q?nO+F7YAcLUteBm/FCEVNss6I7AXzsE8dywJ1ryQQ91MgtUPJm+nLUadbWc6b?=
- =?us-ascii?Q?pQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tKAqdbXgjELMXUcx5HeY9DyqHUXLmjzZ5DMNg9+IDPomuv6e1YwkMYu3AQhf?=
+ =?us-ascii?Q?1XQ8aa/b+ulWUOX8HJlDxsLZfMoOiCHjJcsCbtEaEIB4pu9X9a9cG/V6yIpU?=
+ =?us-ascii?Q?CQ2RQLmHcXtAe/befk1SYQ0X28KUlSSgcXKF9O0QuUkDPBTA/FjP8zIFs0X0?=
+ =?us-ascii?Q?zSVozlj00Pd8vSRRJGVKjKX9CT2ju7YM4xbyJ60zCTL5Am2BXI9aG/lGOfYr?=
+ =?us-ascii?Q?tP+MGpHVT5MCEDKqk7UV84+7ebJ3WY93HN0RVWX71jUfvsUUDqkVfut064f4?=
+ =?us-ascii?Q?Uv/VVF+CMGDxrmuAQDHwZWZfqZ03quzV5+CzB0fMlEEzQUEU0+XJvp2W22ey?=
+ =?us-ascii?Q?JwKmp5p9pXV8X8p7+PnQDfYhzQG656cz7wa3cn/0wdUWk3s6cgU77k9N5c9g?=
+ =?us-ascii?Q?SjyM6enBhbba8/ED4cDCrr4t7TImCiF7Y7fSgPClm5D58s6atu05CQFqyuPj?=
+ =?us-ascii?Q?c4RG2t2KdEGbjJYN1U63QhoNOpxlZOS9P8Y+729PRYY5D+BuiiYEpVoxS9zq?=
+ =?us-ascii?Q?aM5iTzQzKG8OdZywdHhsyRaVVOsT0A6pDGuQbFRQRmZxTyIXlnppKWr7cbIY?=
+ =?us-ascii?Q?XXZOrC7Yug/3AlC9Im2CkfhUqPIaawbuwMefrHOXd8wT4+ySNu/4CFRkrBNZ?=
+ =?us-ascii?Q?yDijXoGi6uacve8iUQYD3cnhBSG//kwtw/VK4dsOvJLolAhNnJ9NoxfoiFpv?=
+ =?us-ascii?Q?wB5G79SAXehO033tkDjmY6lWDEXgu3c6B/Vc39Iqv0CcP8MsCHTqUDdUSDRH?=
+ =?us-ascii?Q?P4Vhmtos8p1PcsLSmISjUmFCn84BtNft6x0mdI71amIGdEZaMbOSPXb6JU4x?=
+ =?us-ascii?Q?/tkOdgORJ15qmYZw6OSh4Gee6kx32jPnO87Zo76XK6JeZ+YON34mhoOVQrv/?=
+ =?us-ascii?Q?ymsj9OA41hwB6yv2iLzmJKjSNSiyYtzLJ75svh4/c4x0fl5MIOe1kUoisYlS?=
+ =?us-ascii?Q?+TLychoVMyk1EHkOmwOKVDvH29GctbwSWCHczWnJVRcQ8NUDyMFfEe3bWiJe?=
+ =?us-ascii?Q?cT9070Hsc83Gvu4F/8O4tR6lx2QtHEmwFdzGLPVT5H2LL06VVYLRcFg/3JNq?=
+ =?us-ascii?Q?Nxsuna/OmAXr5CqSxdWmE4/cHj1L59L7hO97PHcXyWcjPK+mZsPDl6kxIDo9?=
+ =?us-ascii?Q?pUh62dAyHBIGWTcpfTYyrVQUJtZ0ULk+nckoER3TBEW6MqQ2PhwHTBZr2t8r?=
+ =?us-ascii?Q?neMggfiNUteEmPzAP6Etc2GCOa+EthNHZGs4mjLQ8K5KyGSKrEROdh1pP4xT?=
+ =?us-ascii?Q?9YGkojFaKqU83fNv63YxM7IRKYkOn+x6721rAedg226Dzt9iBqYaUJwIz1yX?=
+ =?us-ascii?Q?8xJ6EUDA1z8zF0JFWxWkRVhV83jFnHVc3mJ0fpn3q7r5/a2hD2X7Xu1B0bmH?=
+ =?us-ascii?Q?AAdarvdDRWGkQEiOxI5bhCwEMYXkhAOBQUn1q79Rto/iV9AhexztAULNH+Ez?=
+ =?us-ascii?Q?egeuJpGJRE0TJiH+047dHEefVt3HAOQSrbVtp+NwCjCW5utCcuAqso20kuIQ?=
+ =?us-ascii?Q?j1xbHj7JIsY8A+5SKWfT7Ub3xLG5jZr+upwg+RFHwkc2e2/uBso0Hhv+DQEt?=
+ =?us-ascii?Q?i1HJpiY4CQ4L+b7HSwP8/3XEJHr7I4Z8OEfkDiVbYGdqIrQYDNHeym/qnlHH?=
+ =?us-ascii?Q?KQ=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11e97d8b-fd6a-40fa-a83f-08dbbc3be70c
+X-MS-Exchange-CrossTenant-Network-Message-Id: beb9c323-d5aa-413c-ffad-08dbbc3be7c8
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 13:49:26.9984
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2023 13:49:28.2780
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l+B8SSMcfwA6PPASudIaOCjpU9rmfGhOihqkByKF/YDkaYIyPyAwwGqbBFrt8wSnBQYmdwc+ISHDyYiav9KCmw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: pUlkhqZ2XSs7POPSSZt2fx10qTxsAgZtjBOhFxrGYbKhGc46NaJnh6Y0DvKvXDzHYvp0t5v4cGculQDD5nAzVQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9454
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -128,96 +128,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bit stream handled by a SerDes lane needs protocol converters to be
-usable for Ethernet. On Freescale/NXP SoCs, those protocol converters
-are located on the internal MDIO buses of the Ethernet MACs that need
-them.
+Some relevant quotes from IEEE 802.3-2018:
 
-The location on that MDIO bus, on these SoCs, is not fixed, but given by
-some control registers of the SerDes block itself.
+Clause 73.6.4 Technology Ability Field:
 
-Because no one modifies those addresses from the power-on default, so
-far we've relied on hardcoding the default values in the device trees,
-resulting in something like this:
+| 25GBASE-KR-S abilities are a subset of 25GBASE-KR abilities, and
+| likewise 25GBASE-CR-S abilities are a subset of 25GBASE-CR abilities.
+| To allow interoperation between 25GBASE-KR-S and 25GBASE-KR PHY types,
+| and between 25GBASE-CR-S and 25GBASE-CR PHY types, a device that
+| supports 25GBASE-KR or 25GBASE-CR should advertise both A9 and A10
+| ability bits during auto-negotiation.
 
-		pcs_mdio1: mdio@8c07000 {
-			compatible = "fsl,fman-memac-mdio";
+Definition 1.4.93 25GBASE-CR-S:
 
-			pcs1: ethernet-phy@0 {
-				reg = <0>;
-			};
-		};
+| IEEE 802.3 Physical Layer specification equivalent to 25GBASE-CR without
+| support for the RS-FEC sublayer specified in Clause 108.
 
-where the "reg" of "pcs1" can actually be retrieved from "serdes_1".
+Definition 1.4.96 25GBASE-KR-S:
 
-That was for the PCS. For AN/LT blocks, that can also be done, but the
-MAC to PCS to AN/LT block mapping is non-trivial and extremely easy to
-get wrong, which will confuse and frustrate any device tree writers.
+| IEEE 802.3 Physical Layer specification equivalent to 25GBASE-KR
+| without support for the RS-FEC sublayer specified in Clause 108.
 
-The proposal is to take advantage of the fact that these protocol
-converters *are* discoverable, and to side-step that entire device tree
-mapping issue by not putting them in the device tree at all. So, one of
-the consumers of the SerDes PHY uses the phy_get_status() API to figure
-out the address on the MDIO bus, it also has a reference to the MDIO bus
-=> it can create the mdio_device in a non OF-based manner.
+Because Linux already has link modes for the full 25GBase-CR and
+25GBase-KR, it makes a lot more sense to increase interoperability in
+the way that IEEE recommends, by being able to advertise the subsets
+too.
+
+Some of the existing drivers which could make use of this, based on
+a keyword search, are:
+
+NFP_MEDIA_25GBASE_KR_S, NFP_MEDIA_25GBASE_CR_S
+HINIC_25GE_BASE_KR_S, HINIC_25GE_BASE_CR_S
+ICE_PHY_TYPE_LOW_25GBASE_KR_S, ICE_PHY_TYPE_LOW_25GBASE_CR_S
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
-v1->v2: patch is new
+ drivers/net/phy/phy-core.c   | 2 +-
+ include/uapi/linux/ethtool.h | 2 ++
+ net/ethtool/common.c         | 6 ++++++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
- include/linux/phy/phy.h | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-index f1f03fa66943..ee721067517b 100644
---- a/include/linux/phy/phy.h
-+++ b/include/linux/phy/phy.h
-@@ -56,6 +56,33 @@ enum phy_media {
- enum phy_status_type {
- 	/* Valid for PHY_MODE_ETHERNET and PHY_MODE_ETHTOOL */
- 	PHY_STATUS_CDR_LOCK,
-+	PHY_STATUS_PCVT_ADDR,
-+};
-+
-+/* enum phy_pcvt_type - PHY protocol converter type
-+ *
-+ * @PHY_PCVT_ETHERNET_PCS: Ethernet Physical Coding Sublayer, top-most layer of
-+ *			   an Ethernet PHY. Connects through MII to the MAC,
-+ *			   and handles link status detection and the conversion
-+ *			   of MII signals to link-specific code words (8b/10b,
-+ *			   64b/66b etc).
-+ * @PHY_PCVT_ETHERNET_ANLT: Ethernet Auto-Negotiation and Link Training,
-+ *			    bottom-most layer of an Ethernet PHY, beneath the
-+ *			    PMA and PMD. Its activity is only visible on the
-+ *			    physical medium, and it is responsible for
-+ *			    selecting the most adequate PCS/PMA/PMD set that
-+ *			    can operate on that medium.
-+ */
-+enum phy_pcvt_type {
-+	PHY_PCVT_ETHERNET_PCS,
-+	PHY_PCVT_ETHERNET_ANLT,
-+};
-+
-+struct phy_status_opts_pcvt {
-+	enum phy_pcvt_type type;
-+	union {
-+		unsigned int mdio;
-+	} addr;
- };
- 
- /* If the CDR (Clock and Data Recovery) block is able to lock onto the RX bit
-@@ -71,9 +98,11 @@ struct phy_status_opts_cdr {
-  * union phy_status_opts - Opaque generic phy status
-  *
-  * @cdr:	Configuration set applicable for PHY_STATUS_CDR_LOCK.
-+ * @pcvt:	Configuration set applicable for PHY_STATUS_PCVT_ADDR.
+diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+index 966c93cbe616..5f4e2a120abb 100644
+--- a/drivers/net/phy/phy-core.c
++++ b/drivers/net/phy/phy-core.c
+@@ -13,7 +13,7 @@
   */
- union phy_status_opts {
- 	struct phy_status_opts_cdr		cdr;
-+	struct phy_status_opts_pcvt		pcvt;
- };
+ const char *phy_speed_to_str(int speed)
+ {
+-	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 102,
++	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 104,
+ 		"Enum ethtool_link_mode_bit_indices and phylib are out of sync. "
+ 		"If a speed or mode has been added please update phy_speed_to_str "
+ 		"and the PHY settings array.\n");
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index f7fba0dc87e5..421eb57fb6e9 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -1787,6 +1787,8 @@ enum ethtool_link_mode_bit_indices {
+ 	ETHTOOL_LINK_MODE_10baseT1S_Full_BIT		 = 99,
+ 	ETHTOOL_LINK_MODE_10baseT1S_Half_BIT		 = 100,
+ 	ETHTOOL_LINK_MODE_10baseT1S_P2MP_Half_BIT	 = 101,
++	ETHTOOL_LINK_MODE_25000baseCR_S_Full_BIT	 = 102,
++	ETHTOOL_LINK_MODE_25000baseKR_S_Full_BIT	 = 103,
  
- /**
+ 	/* must be last entry */
+ 	__ETHTOOL_LINK_MODE_MASK_NBITS
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index f5598c5f50de..2b3ddea465af 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -211,10 +211,13 @@ const char link_mode_names[][ETH_GSTRING_LEN] = {
+ 	__DEFINE_LINK_MODE_NAME(10, T1S, Full),
+ 	__DEFINE_LINK_MODE_NAME(10, T1S, Half),
+ 	__DEFINE_LINK_MODE_NAME(10, T1S_P2MP, Half),
++	__DEFINE_LINK_MODE_NAME(25000, CR_S, Full),
++	__DEFINE_LINK_MODE_NAME(25000, KR_S, Full),
+ };
+ static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+ 
+ #define __LINK_MODE_LANES_CR		1
++#define __LINK_MODE_LANES_CR_S		1
+ #define __LINK_MODE_LANES_CR2		2
+ #define __LINK_MODE_LANES_CR4		4
+ #define __LINK_MODE_LANES_CR8		8
+@@ -223,6 +226,7 @@ static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+ #define __LINK_MODE_LANES_DR4		4
+ #define __LINK_MODE_LANES_DR8		8
+ #define __LINK_MODE_LANES_KR		1
++#define __LINK_MODE_LANES_KR_S		1
+ #define __LINK_MODE_LANES_KR2		2
+ #define __LINK_MODE_LANES_KR4		4
+ #define __LINK_MODE_LANES_KR8		8
+@@ -374,6 +378,8 @@ const struct link_mode_info link_mode_params[] = {
+ 	__DEFINE_LINK_MODE_PARAMS(10, T1S, Full),
+ 	__DEFINE_LINK_MODE_PARAMS(10, T1S, Half),
+ 	__DEFINE_LINK_MODE_PARAMS(10, T1S_P2MP, Half),
++	__DEFINE_LINK_MODE_PARAMS(25000, CR_S, Full),
++	__DEFINE_LINK_MODE_PARAMS(25000, KR_S, Full),
+ };
+ static_assert(ARRAY_SIZE(link_mode_params) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+ 
 -- 
 2.34.1
 
