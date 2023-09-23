@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45A77AC169
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1707AC16F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbjIWLuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 07:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
+        id S231458AbjIWLu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 07:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbjIWLuD (ORCPT
+        with ESMTP id S231361AbjIWLuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 07:50:03 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43BD19E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:49:56 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a9cd066db5so474407666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:49:56 -0700 (PDT)
+        Sat, 23 Sep 2023 07:50:25 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911B41AB
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:50:17 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c123eed8b2so58843881fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:50:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695469795; x=1696074595; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695469816; x=1696074616; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=7bX8G2i5J1ALZVJ03xHMbBXo1RYMNHbxXzPAX+U85OE=;
-        b=trwxj07XNKdKs0y3gbtJBP34FgUJBrHbdQcQ7OHk+F3t+Lx09wuzFcvcHSVDonjlj6
-         ZEdYJdCBQ3096GMYe/q+TvyUoi6tbnOH6KzHtXCpU7W68UvSYr96oMq+2exLRaiSrQl5
-         L0UNpi3y33K1B4TFbm9GE8268vaicP6s01zGDHDD0hB/uEHYITzkvplQHbJ3FZH4wV2N
-         wSWpzlAYk6FC8Wfwl1f5HDZGT/8UJQ5jo+dVzcFpIiDoO/un3Jzzm8mIU0P1mjczjiUv
-         L3G7A2VW0ZCFwjxF4KSGCmkFmJ7tpRu1Ux2hO9cKDnTewSZyTo8ujlxEa/c27/9O63Ss
-         8z9g==
+        b=K0m+vLUa/C7Xf/+YAzKhc6H3pkg/sDzr0qXZaV8BBkMyWOCG81/uTyMZsVPA91/tQ3
+         UsCweKMYI0P2ORdI08MVMlyGXobeiKg4K/o51fpfBM17OvU8HMBqsrabFo1VjWAkP4Id
+         XMLS+jabwehKPu6J9i6Cm8OL/OT9kz2XzJEf7fF3a0XdLdCH4nwwf/KR8xFaNvuG6Vp3
+         1UbJ+JyxoOsM4qDLeHkJUqx3pb2siZPwtJ/eyIt1uHBnhgYxvhMytgDaRdgt9OaAMV3w
+         bQT10DblOasvNNF5y/JbFkmtxdxWakNEqrXRytDDt7qAU0U6ufptzsdukb/fDcf/a/S2
+         E3EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695469795; x=1696074595;
+        d=1e100.net; s=20230601; t=1695469816; x=1696074616;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=7bX8G2i5J1ALZVJ03xHMbBXo1RYMNHbxXzPAX+U85OE=;
-        b=lIZTIAdcgrO4B7XMoUgYXYyilmT/YpJmEPiTeiBNt9PZtJLLEjCc3gC5RvGDmE5+F1
-         /1iewy2iIK0YqPsSXK+O2E1aaHYrL6HF6UoiaN33hjgWgrI1wNhUy/Zhq+wO0caCoeLL
-         8Eaj9TmUuEE2kOmrzZT3n5TJA77kNYjn7Pnq0d3ZnlFkdd59sSUAMhlKyYN+nmE/RSU0
-         sLcoU1s38nDDWXgm13oILcODWM8laBH7L2QpxnTl12VAK/kr5YzG6UJ9WWMmMfzX4fF0
-         v3opYQePQZ0LxyUe6rogehLQmEdU45Lp4WJNRYihROi4a3clRy9pIxHIwHvRQBxNSpH6
-         blOw==
-X-Gm-Message-State: AOJu0YzUXfAnuWC5c+ybO+SHJySI4cHYjEbtWb7vIQ1YYYCLWQilXED+
-        dHeJLom1ni/Hvhvc2Lbdi8063sflZdYMZUtCA7LeNg==
-X-Google-Smtp-Source: AGHT+IG8DLjJo91vVqlschipubLLnfmElr6jL7EewmfjZ4KVex04FVEQhHfctFNvKnTMuL13HbeIvw==
-X-Received: by 2002:a17:906:ae81:b0:9ae:961a:de7f with SMTP id md1-20020a170906ae8100b009ae961ade7fmr1782614ejb.30.1695469795336;
-        Sat, 23 Sep 2023 04:49:55 -0700 (PDT)
+        b=M2pgEqmfOIXulMWPK56nbicob0KqO0zFVcOPLfSnVzpzC75vAQR/GdD1FahjfeTepf
+         C8H8kqToAkrvp21LS2fjFHY0cjnWSFjm77Zwa6f/iPP/87T9cs95lbLf4+MmRfZW82gp
+         WPJ0VbyFXdeZF0n51suVxYGGN0uWKog0QWmgJ+1Jx43n+5OClFTaJuZSEoRNphOzqicu
+         9Dr+DSPRYQVvlTLpSFrO8bqmvFzLFBmNfOyhi2PlwVS98QSH6hDDgRLlJCfn77PpoICo
+         kYCEjieEgd9Rfv+zmwfS+JMujU/QpyWxNrz6BobTvUf9GU8y6b+BuKF37C8ySfp+TCNe
+         Pr6Q==
+X-Gm-Message-State: AOJu0YwpR/vslf156OXWX4z3mTpNxjsJ6r3djTl3JcNSG/+yAQsNlqU6
+        Z9AoUc3VVvwwUDIoARU2H7uk/w==
+X-Google-Smtp-Source: AGHT+IFPgixQMTZBwhEQNanrBYrypYYVQy1y92nrJ8OITb8jeQ0HonezWs4Vxf8Fzb9n9BbvigDoeQ==
+X-Received: by 2002:a2e:9091:0:b0:2bf:f497:52d6 with SMTP id l17-20020a2e9091000000b002bff49752d6mr1657463ljg.22.1695469815760;
+        Sat, 23 Sep 2023 04:50:15 -0700 (PDT)
 Received: from hackbox.lan ([86.120.16.169])
-        by smtp.gmail.com with ESMTPSA id qk8-20020a170906d9c800b009ad89697c86sm3889110ejb.144.2023.09.23.04.49.53
+        by smtp.gmail.com with ESMTPSA id k15-20020a1709062a4f00b009ad8084e08asm3853310eje.0.2023.09.23.04.50.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 04:49:54 -0700 (PDT)
+        Sat, 23 Sep 2023 04:50:15 -0700 (PDT)
 From:   Abel Vesa <abel.vesa@linaro.org>
 To:     "Rafael J . Wysocki" <rafael@kernel.org>,
         Kevin Hilman <khilman@kernel.org>,
@@ -65,13 +65,13 @@ Cc:     linux-pm@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-arm-msm@vger.kernel.org
 Subject: [RESEND v3 0/5] PM: domains: Add control for switching back and forth to HW control
-Date:   Sat, 23 Sep 2023 14:49:45 +0300
-Message-Id: <20230923114950.1697701-1-abel.vesa@linaro.org>
+Date:   Sat, 23 Sep 2023 14:50:03 +0300
+Message-Id: <20230923115008.1698384-1-abel.vesa@linaro.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
