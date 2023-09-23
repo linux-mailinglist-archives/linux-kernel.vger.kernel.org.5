@@ -2,129 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 472077AC218
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0870A7AC21E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 14:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjIWMo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 08:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
+        id S231661AbjIWMwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 08:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjIWMo6 (ORCPT
+        with ESMTP id S231158AbjIWMwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 08:44:58 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA01127;
-        Sat, 23 Sep 2023 05:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695473092; x=1727009092;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hu5RoWjkAL+0NsE2efBSQIgp8d2u2PNDE0fCKAETueQ=;
-  b=TH+ihEJwnYTS1fwotVj8vFma5YCJJtrPnCcOYrvypDvNQ5fwMYjPDrlD
-   4kWgj+csStf/vzusf3iLLAYW5FloNKtmJv8FMw87BKNaYb2NvvRJ1Fjgd
-   1JnJCC0tD/IvOCtRLb9ONVhwCteFrVQ0p9caaPyCWNVye8un3KUAlninH
-   UQydZgLUvWT/F3IEb4ZBVia1zpzfnWTvAXetdQqsb4GhLBYWhAKvIqavx
-   +YCvwb9RRJ9tZ0o8QD8WaNx326Nq10HwKw4uZAGLvrMAo1r+SSy3ptrsa
-   K0ff3l2fzv5P5CfBfL/7rWdKzX6IKZTQ8INyJn4vd/akm/I40TqaMKsb8
-   g==;
-X-CSE-ConnectionGUID: AP7+RHyPQpK3JA0Ko4wGwA==
-X-CSE-MsgGUID: wDhoZVAPQGi3bNolcUsGUw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="6214214"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Sep 2023 05:44:52 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Sat, 23 Sep 2023 05:44:51 -0700
-Received: from [10.171.248.13] (10.10.85.11) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
- Transport; Sat, 23 Sep 2023 05:44:49 -0700
-Message-ID: <9a311ce3-0d29-af39-5533-c1cad6de1300@microchip.com>
-Date:   Sat, 23 Sep 2023 14:44:54 +0200
+        Sat, 23 Sep 2023 08:52:53 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982B4198
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 05:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
+ t=1695473551; x=1696078351; i=j.neuschaefer@gmx.net;
+ bh=McGn7BejShk21r7sbDRFwwAdeeAGxX+0PxOI4hrkHmg=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=D+LflzodWX/0gKH6kRjNLBE6ybB/5ecJjOyx7RiSgkBsa9kMi63i9lP4aKNTa6ql5C48lDNz8sO
+ zR+J1WU74mzkY//Er+42bCZ9TSf1gcAr/xocuim7AjvNoxvZpHn7wa8hys+D3zc0Em1NR/4UsJAE6
+ n0WjF1orXWWir3b9mnM9FO5aVRIMP5Hb4Y2zXchoYlms+N0vqHe+ianMCsZSlW87rmhboTUBe/cWo
+ 3EeMvUMc3cs3aB0Yq0sw+z6DSEEBnu+KHjnUgZOUAh5zzfkv/Di4Yl24O87L/SbLa0ssbBjorAjH1
+ xFK//4U27CTfIHtHkxJT1ASg+Ayu+yZo7itw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MMGNC-1qzuJN1huI-00JLQO; Sat, 23
+ Sep 2023 14:52:31 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     openbmc@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v5 1/2] soc: nuvoton: Add a menu for Nuvoton SoC drivers
+Date:   Sat, 23 Sep 2023 14:52:26 +0200
+Message-Id: <20230923125228.1770991-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] mmc: Fix force card detect in sdhci
-Content-Language: en-US
-To:     Mathieu Moneyron <mathieu.moneyron@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>
-CC:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230830092314.624212-1-mathieu.moneyron@gmail.com>
- <096e9122-23b8-5a36-7779-28994187c620@intel.com>
-From:   Aubin Constans <aubin.constans@microchip.com>
-In-Reply-To: <096e9122-23b8-5a36-7779-28994187c620@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TEiEqCVstzqkC02NAVuNgqGW3Q5ICPiz+Fdct4C8Ld702AK4hA6
+ bt07j8M8ZD/JOM1nq2VjuepdriJWSviDWRQstQhir1e94WWIXFcdm830h8Sa2mC3wrdow1Y
+ CdGZ7zSuyubkrTEYkgojHswCvvtNNbrqCcp4x1FHLWSNU2q0l0UutvRJUgNIEps+3NsMFYX
+ byTV9d9y1vJk0eNf4Jx7A==
+UI-OutboundReport: notjunk:1;M01:P0:yOkm6ydaOx0=;u+O+pITOmOkESlj5EaCDJlkpIZA
+ lJeByMNspASQv1jeKMNy1nlC9+75KROcmcvZgMlzRXcYW63Xj3fVcRQI7KTtaTfQr7t8KOT3o
+ A5r8w31EX1kbJTRMbeDuq8BPCUjO9+isMRiRi2vHd0VmdnDOscQYt8MBnBC7po3BWjWpaaUXP
+ Lhzk/ugCn+/vLJGwR6i6RWoTq8T04YG36fUqb0FAR7QSB4MicztvCNpPU/KyKOGI4lEar/w0u
+ nCWoY8lAe70Hk4o9dIxaFQ0XNa61LPNipWed4aofc6oENwpL4AvvQDVU+txo/jjYMhCRWbnoZ
+ UjoDCzTIl894Afq/tqwMgJF4S8QJ4xVSHTa3ConnzL4Garrgo1Ii8LasXe8KQ7QDFEgwABB1I
+ fdN6T3MF7WSRaQ86spCtfs7JtIXKg7SrK5J4+o1OckyScRMbbKdCNSw1STuT6L7MGnrpKnLVT
+ hkNiXzHfpQJCGxW3MooMmg7vH4gBV2SKxsw1Zody3ik3Ci+qpfBuW7YgF8E+wBAiK/NBs4Mlq
+ tonWSuB5fTLd1Vnc88yASTTB82SLqXKyX/dB1SIRUXUHkoOpylZdHj5TPUW4ODB9U/G1g0eCd
+ t/7yXxlypXaGtSmETnrERSyq+NiPF/Jq7u6xIqO9l0RStPSSGpUePMY0VNnNPMUgZt8/5xoUu
+ r7wjOAXm8nRktQBKLkFWzo4jSSddzwiPZf893UlxNXZmrL1NjsON+hnlwfE8lpjMsc5iydzvD
+ 6ZAYdZXLCU03n70QSrNmqnnT4zhVtAcnDOTC3dlBtfzALRQWZpp/yUlo7abifeGV7Oo1PFtsI
+ nmEn3zHi9L0/wCAcX7F1iIrNDvq+aGQsdpEZdklXv8MEPWVGui8GU3e/QG3+2+OF0MoZfMspd
+ 9tx/FvJloSuF+7MOovDSN1eHZLM7rXbexUSUsw7JrEKXoKWeK+zSzzFmWMvXRHaZ0as5LG5DU
+ 9inkZWUnTyE912KVZ1GWWja6kew=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/09/2023 09:38, Adrian Hunter wrote:
-> + Eugen Hristev  > > On 30/08/23 12:23, mathieu wrote: >> On the ATMEL at91 when using 
-the non-removable flag in device tree >> and not using the card-detect 
-pin inside the device-tree pinctrl, >> the card detect pin is physically 
-still used which can cause >> unknown behaviour when this pin is used 
-for other purposes.
-Hi Mathieu,
+Add a menu "Nuvoton SoC drivers" to make it easier to add other Nuvoton
+SoC drivers later on and to prevent asking about the Nuvoton WPCM450 SoC
+driver when configuring a kernel without support for Nuvoton SoCs.
 
-On which SoC(s) exactly, has this behaviour been observed?
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Closes: https://lore.kernel.org/lkml/CAMuHMdWo5vHCeE6BeSHrUy12uT7_wFhW-VbQ=
+mQ5u+4Q8c7-wYQ@mail.gmail.com/
+Fixes: 7dbb4a38bff3 ("soc: nuvoton: Add SoC info driver for WPCM450")
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+=2D--
+v5:
+- Rebase on 6.6-rc2
 
-Also, has this issue been discussed in any separate support request, in such
-case we could retrieve some background from it?
+v4:
+- Add Geert's tag
+- Fix commit reference
+- Change Link tag to Closes
 
-By "unknown behaviour", do you mean "the card insertion status would
-follow whatever electrical level is seen on the card-detect pin"?
+v3:
+- Split the commit into two
+- Reword the commit messages a bit
 
->>  >> From my interpretation this seems to be caused by a hardware design 
- >> flaw and the real hardware is not working as intended by the >> 
-documentation. >>
->>
->> Signed-off-by: Mathieu Moneyron <mathieu.moneyron@gmail.com>
->>
->> ---
->>  drivers/mmc/host/sdhci-of-at91.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/mmc/host/sdhci-of-at91.c 
->> b/drivers/mmc/host/sdhci-of-at91.c
->> index 69fef88e7..4fd6bfbf6 100644
->> --- a/drivers/mmc/host/sdhci-of-at91.c
->> +++ b/drivers/mmc/host/sdhci-of-at91.c
->> @@ -51,10 +51,15 @@ struct sdhci_at91_priv {
->>  static void sdhci_at91_set_force_card_detect(struct sdhci_host *host)
->>  {
->>      u8 mc1r;
->> +    u8 ctrl;
->>
->>      mc1r = readb(host->ioaddr + SDMMC_MC1R);
->>      mc1r |= SDMMC_MC1R_FCD;
->>      writeb(mc1r, host->ioaddr + SDMMC_MC1R);
->> +
->> +    ctrl = readb(host->ioaddr + SDHCI_HOST_CONTROL);
->> +    ctrl |= SDHCI_CTRL_CDTEST_INS | SDHCI_CTRL_CDTEST_EN;
->> +    writeb(ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
->>  }
->>
->>  static void sdhci_at91_set_clock(struct sdhci_host *host, unsigned 
->> int clock)
+v2:
+- https://lore.kernel.org/lkml/20230212215234.2608565-1-j.neuschaefer@gmx.=
+net/
+- Commit message improvements, as suggested by Geert Uytterhoeven.
+- Add Link after Reviewed-by, as checkpatch.pl now suggests
+=2D--
+ drivers/soc/nuvoton/Kconfig | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Kind regards,
-Aubin
+diff --git a/drivers/soc/nuvoton/Kconfig b/drivers/soc/nuvoton/Kconfig
+index df46182088ec2..853392c8a9151 100644
+=2D-- a/drivers/soc/nuvoton/Kconfig
++++ b/drivers/soc/nuvoton/Kconfig
+@@ -1,5 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+-menuconfig WPCM450_SOC
++menu "Nuvoton SoC drivers"
++	depends on ARCH_NPCM || COMPILE_TEST
++
++config WPCM450_SOC
+ 	tristate "Nuvoton WPCM450 SoC driver"
+ 	default y if ARCH_WPCM450
+ 	select SOC_BUS
+@@ -9,3 +12,5 @@ menuconfig WPCM450_SOC
+
+ 	  This driver provides information such as the SoC model and
+ 	  revision.
++
++endmenu
+=2D-
+2.40.1
 
