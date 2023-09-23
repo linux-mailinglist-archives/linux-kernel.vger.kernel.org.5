@@ -2,47 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 371627AC42B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F35D7AC42D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 19:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjIWRsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 13:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        id S231831AbjIWRtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 13:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbjIWRsE (ORCPT
+        with ESMTP id S230192AbjIWRtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 13:48:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E5D136;
-        Sat, 23 Sep 2023 10:47:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00BBAC433C8;
-        Sat, 23 Sep 2023 17:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695491277;
-        bh=pXFjjIo52VpqBLzSpVTwm0qtUeJqbtXcgnQcpU2K5IA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZX5Ich2bTnSu/1xEz5odYS2wZwmVvI2ndgOvJE1acPw9E1Z/833ffAZPllAAc4mFe
-         ouFvlaCb1KiMHtm8KWQre/4pp1EUcX7//rCaRsliU7IUBlHcE5Pttk90WC832htNzp
-         q6lMTC9mIoYOfbOywin5hvW81Ko+89JlICCw+MQ2lc8mp2W5/ittxBamp5LEWpvxov
-         EidfP5f9al4JVXhjuaN+p8Urhm8cDIWES7F/u89B812RBC+PlZGuXSk95fxTVZNIfJ
-         ow3vfmHpMViWU7hbk5SIyXuW9iWQNeTWP/BRfdQgMtd4BqjPufSpt9w+imZOLGJKr6
-         Zcb/mG+qF0W6w==
-Date:   Sat, 23 Sep 2023 18:47:51 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] iio: sx9324: replace deprecated strncpy
-Message-ID: <20230923184751.41d52b9d@jic23-huawei>
-In-Reply-To: <20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com>
-References: <20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 23 Sep 2023 13:49:19 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50058127
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:49:12 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c012232792so65947531fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695491350; x=1696096150; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oKJoZzk5+TuDNioAs1hxZJOGkwfd9HbCqvFh7/jI5HQ=;
+        b=fkVI0mTIEtILlo8ftyxWZ2j6KBrFDl1dic9hwVCaRqEITf4KfeVR1xs2eqfmf4S38+
+         MkIkRx8AfD/6PF0/NBncTeayOi6QHzNSQZF/XGVkG2P8ApaJ9NYtstelCsAKqHmDEhE0
+         zIYHzWjlKcL+ytJRhBRyFlakSU6pJTlRUoxso=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695491350; x=1696096150;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oKJoZzk5+TuDNioAs1hxZJOGkwfd9HbCqvFh7/jI5HQ=;
+        b=rIuiNbZLQe2ICf4Bqf7kf54A/taZoUAco2TXpkSp6dhJtqUuqvAEIpZYz/5efCebvL
+         MoanGXUyrhNZQSCqi/1rHpDidMTt5LKU3Md17bQyFkCeNdz29HhZztqjFCqE4ygnJFjj
+         0ii7v6GB74fJ+knduiiB4e80nMjlles0T2Zt8dM2tZ2ePfk5JkUjLBH/jZcuyM+XF6pu
+         uCahxDbOzJns6/ieokKkoSVw2pgaGmCAUGpEZ2gvTXRQ5jF1eXQX/AQ2EZ1xVdtuZKrV
+         FbR8Gk/CEMO87DLm1TcFWWulJI98jr2ofm0IQqqQ7X88rrFjReHDSSXlcDzV46JD038O
+         r6aQ==
+X-Gm-Message-State: AOJu0YzhnRvYzBL0CiT7vVuRJ9jdSMlNTujEnlWcThxlU4gzRD7AQVJw
+        45MbzpF671etgQHLR5A8ldokyTk/kNTDyD9lrYzMVILn
+X-Google-Smtp-Source: AGHT+IGMu/GwKSsOYatejLNcg+/qTU8pnEuNMAxvYDcPAEnCVpk7tMNQ7kCoHqRE5kb+2tEN27CErA==
+X-Received: by 2002:a2e:3304:0:b0:2bd:180d:67b7 with SMTP id d4-20020a2e3304000000b002bd180d67b7mr2086892ljc.40.1695491350038;
+        Sat, 23 Sep 2023 10:49:10 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id j3-20020a2eb703000000b002c0414c3b6csm1413063ljo.121.2023.09.23.10.49.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Sep 2023 10:49:09 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50437c618b4so4025079e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 10:49:09 -0700 (PDT)
+X-Received: by 2002:a05:6512:3090:b0:501:ba04:f34b with SMTP id
+ z16-20020a056512309000b00501ba04f34bmr2848652lfd.44.1695491348654; Sat, 23
+ Sep 2023 10:49:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
+ <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com>
+ <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+ <CAHk-=whAwTJduUZTrsLFnj1creZMfO7eCNERHXZQmzX+qLqZMA@mail.gmail.com> <CAOQ4uxjcyfhfRhgR97wqsJHwzyOYqOYaaZWMWWCGXu5MWtKXfQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjcyfhfRhgR97wqsJHwzyOYqOYaaZWMWWCGXu5MWtKXfQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 23 Sep 2023 10:48:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
+Message-ID: <CAHk-=wjGJEgizkXwSWVCnsGnciCKHHsWg+dkw2XAhM+0Tnd0Jw@mail.gmail.com>
+Subject: Re: [GIT PULL v2] timestamp fixes
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,LOTS_OF_MONEY,
+        MONEY_NOHTML,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,91 +79,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 07:01:01 +0000
-Justin Stitt <justinstitt@google.com> wrote:
+On Fri, 22 Sept 2023 at 23:36, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> Apparently, they are willing to handle the "year 2486" issue ;)
 
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> We should prefer more robust and less ambiguous string interfaces.
-> 
-> `prop` is defined as this string literal with size 30 (including null):
-> |       #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
-> |      	char prop[] = SX9324_PROXRAW_DEF;
-> 
-> Each of the strncpy->strscpy replacements involve string literals with a
-> size less than 30 which means there are no current problems with how
-> strncpy is used. However, let's move away from using strncpy entirely.
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding.
-> 
-> Moreover, let's opt for the more conventional `sizeof()` as opposed to
-> `ARRAY_SIZE` for these simple strings.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> FWIW: It seems fragile to base future `prop` stores on the
-> size of it's default string.
+Well, we could certainly do the same at the VFS layer.
 
-Agreed - can we just get rid of the copying?  Just set a const char *
-to point to appropriate string instead and use that?
+But I suspect 10ns resolution is entirely overkill, since on a lot of
+platforms you don't even have timers with that resolution.
 
-The dance is just about reasonable for the case where there is
-a string format being used to fill in the numbers, here I can't see any
-advantage at all. (for the other case, a kasprintf() or similar is probably
-more appropriate anyway) given this isn't a particular hot path.
+I feel like 100ns is a much more reasonable resolution, and is quite
+close to a single system call (think "one thousand cycles at 10GHz").
 
-Jonathan
-> 
-> Note: build-tested
-> ---
->  drivers/iio/proximity/sx9324.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-> index 438f9c9aba6e..25ac2733bcef 100644
-> --- a/drivers/iio/proximity/sx9324.c
-> +++ b/drivers/iio/proximity/sx9324.c
-> @@ -937,11 +937,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_AFE_CTRL4:
->  	case SX9324_REG_AFE_CTRL7:
->  		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
-> -			strncpy(prop, "semtech,ph01-resolution",
-> -				ARRAY_SIZE(prop));
-> +			strscpy(prop, "semtech,ph01-resolution", sizeof(prop));
->  		else
-> -			strncpy(prop, "semtech,ph23-resolution",
-> -				ARRAY_SIZE(prop));
-> +			strscpy(prop, "semtech,ph23-resolution", sizeof(prop));
->  
->  		ret = device_property_read_u32(dev, prop, &raw);
->  		if (ret)
-> @@ -1012,11 +1010,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_PROX_CTRL0:
->  	case SX9324_REG_PROX_CTRL1:
->  		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
-> -			strncpy(prop, "semtech,ph01-proxraw-strength",
-> -				ARRAY_SIZE(prop));
-> +			strscpy(prop, "semtech,ph01-proxraw-strength", sizeof(prop));
->  		else
-> -			strncpy(prop, "semtech,ph23-proxraw-strength",
-> -				ARRAY_SIZE(prop));
-> +			strscpy(prop, "semtech,ph23-proxraw-strength", sizeof(prop));
->  		ret = device_property_read_u32(dev, prop, &raw);
->  		if (ret)
->  			break;
-> 
-> ---
-> base-commit: 2cf0f715623872823a72e451243bbf555d10d032
-> change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
+> But the resolution change is counter to the purpose of multigrain
+> timestamps - if two syscalls updated the same or two different inodes
+> within a 100ns tick, apparently, there are some workloads that
+> care to know about it and fs needs to store this information persistently.
 
+Those workloads are broken garbage, and we should *not* use that kind
+of sh*t to decide on VFS internals.
+
+Honestly, if the main reason for the multigrain resolution is
+something like that, I think we should forget about MG *entirely*.
+Somebody needs to be told to get their act together.
+
+We have *never* guaranteed nanosecond resolution on timestamps, and I
+think we should put our foot down and say that we never will.
+
+Partly because we have platforms where that kind of timer resolution
+just does not exist.
+
+Partly because it's stupid to expect that kind of resolution anyway.
+
+And partly because any load that assumes that kind of resolution is
+already broken.
+
+End result: we should ABSOLUTELY NOT have as a target to support some
+insane resolution.
+
+100ns resolution for file access times is - and I'll happily go down
+in history for saying this - enough for anybody.
+
+If you need finer resolution than that, you'd better do it yourself in
+user space.
+
+And no, this is not a "but some day we'll have terahertz CPU's and
+100ns is an eternity". Moore's law is dead, we're not going to see
+terahertz CPUs, and people who say "but quantum" have bought into a
+technological fairytale.
+
+100ns is plenty, and has the advantage of having a very safe range.
+
+That said, we don't have to do powers-of-ten. In fact, in many ways,
+it would probably be a good idea to think of the fractional seconds in
+powers of two. That tends to make it cheaper to do conversions,
+without having to do a full 64-bit divide (a constant divide turns
+into a fancy multiply, but it's still painful on 32-bit
+architectures).
+
+So, for example, we could easily make the format be a fixed-point
+format with "sign bit, 38 bit seconds, 25 bit fractional seconds",
+which gives us about 30ns resolution, and a range of almost 9000
+years. Which is nice, in how it covers all of written history and all
+four-digit years (we'd keep the 1970 base).
+
+And 30ns resolution really *is* pretty much the limit of a single
+system call. I could *wish* we had system calls that fast, or CPU's
+that fast. Not the case right now, and sadly doesn't seem to be the
+case in the forseeable future - if ever - either. It would be a really
+good problem to have.
+
+And the nice thing about that would be that conversion to timespec64
+would be fairly straightforward:
+
+   struct timespec64 to_timespec(fstime_t fstime)
+   {
+        struct timespec64 res;
+        unsigned int frac;
+
+        frac = fstime & 0x1ffffffu;
+        res.tv_sec = fstime >> 25;
+        res.tv_nsec = frac * 1000000000ull >> 25;
+        return res;
+   }
+
+   fstime_t to_fstime(struct timespec64 a)
+   {
+        fstime_t sec = (fstime_t) a.tv_sec << 25;
+        unsigned frac = a.tv_nsec;
+
+        frac = ((unsigned long long) a.tv_nsec << 25) / 1000000000ull;
+        return sec | frac;
+   }
+
+and both of those generate good code (that large divide by a constant
+in to_fstime() is not great, but the compiler can turn it into a
+multiply).
+
+The above could be improved upon (nicer rounding and overflow
+handling, and a few modifications to generate even nicer code), but
+it's not horrendous as-is. On x86-64, to_timespec becomes a very
+reasonable
+
+        movq    %rdi, %rax
+        andl    $33554431, %edi
+        imulq   $1000000000, %rdi, %rdx
+        sarq    $25, %rax
+        shrq    $25, %rdx
+
+and to some degree that's the critical function (that code would show
+up in 'stat()').
+
+Of course, I might have screwed up the above conversion functions,
+they are untested garbage, but they look close enough to being in the
+right ballpark.
+
+Anyway, we really need to push back at any crazies who say "I want
+nanosecond resolution, because I'm special and my mother said so".
+
+                Linus
