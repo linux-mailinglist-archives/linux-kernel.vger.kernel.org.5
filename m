@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8996B7AC14A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1689C7AC153
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Sep 2023 13:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjIWLlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 07:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        id S231336AbjIWLoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 07:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjIWLlX (ORCPT
+        with ESMTP id S229655AbjIWLoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 07:41:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B379F11D;
-        Sat, 23 Sep 2023 04:41:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF22C433C8;
-        Sat, 23 Sep 2023 11:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695469277;
-        bh=ZON8kr4GUbYCZ4b1kB2ZVW9g0A5X9VAu+hWS6y27YS4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Cs4W1QnHJGdeNRwXe4HEks+w+f6j3Fn1juZdszAiLF48MCO4w7UXnWk2U5k6XUz53
-         SnzxBG54ya35i38EY4ZcExrcTIaT3ofzaj+vnMEhHZV8PylCdeT4seVmpm81sBYLin
-         H+DFX/5K9hCaAi7mqwUIn+2dsxI6BaqWfuAmvm6bzyWqd90+OIumvK7j7Ij2R5nBmr
-         xGsqV2H0NpVPvfVIcNe+ZXkXBesw/zmjvBBc0oCMHXkayN0FwOk9S+gmNIfGI99G2U
-         SWVJxKEKfJ7UaBByAc8vOzXazFiIl6NA8zE+/hJagc9hwcc0e+/dCqUd73UtKfOYN3
-         Q8nsw+pOd+DKg==
-Message-ID: <8eae1b18-b7dc-6e33-eb53-3b9df0d20dc6@kernel.org>
-Date:   Sat, 23 Sep 2023 13:41:08 +0200
+        Sat, 23 Sep 2023 07:44:12 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0158C19C
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:44:06 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533c4d20b33so1390859a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 04:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695469444; x=1696074244; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vla4OZsvqD5RmSyqkNtWVp3bfdJ5jFtYYQ5MrELcXSM=;
+        b=nDbEAVteD7aGdLtChPEt/+FkeMGFRMhA1Nd/qCP6CxF202JZWaq+YPyIYDUT0GzGFW
+         HLB3R5r/nn6/j/FJi7p6T9ALwPRXEeJOrYRywbYT8RKeO9prvdHu/7QcwPd+ZmqSYwTt
+         huVEP4SFaDkhQPZtyqFlsTfJx4qENLp1XbNhFxj5ChEEclciuqR56QcKzRP1i9hISX+h
+         3uRJx1VqodiWx+C+Yc3cN//klaJ+7mZDXvIX9hH8ZMaukf/clQue/1KVjo9ecFKdNYSF
+         DLZoNiiGaqTjfHDxqTiKOw+QXkjkEG1OGgk4aL63DfnSIT5k1zaOH+hLqiUa/Da0hKH7
+         1DfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695469444; x=1696074244;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vla4OZsvqD5RmSyqkNtWVp3bfdJ5jFtYYQ5MrELcXSM=;
+        b=ILXj+Nhi6bmXol6w0PPcFRKMv4XEGuTuzvxqDQ8vKsmXmiULViBQMLPecElpPCjbwt
+         Bx7rWoHwKVrudVs5S2VyVNEHR9kGRk45GKWmlgWmkjzGYUeJS8xkXSdOfMX3ZoUMRVlf
+         In74oRMQ1WP0m0I/k2mBLIxCYi2sHTzo9qxhE9LsxQUze5tnAqnN9xSv1NmcPPUlkrW7
+         QDNcekcfvEIsxQ8zxchN1ZszPNoMTc0kh3IegJI9RM2OKlCip3bwnnfLN4yPvaSbaDdz
+         743U5Iz317LLa0FWzgudsFhqzpsfz5YAhDNLyEfKpRqrg5iSFO08q11Liq+sz/G2Dits
+         r90g==
+X-Gm-Message-State: AOJu0YzZNVxs0pVP5rfTHHnK0fShFV4TJ7092LUeKWpvGFDcWE91QR9C
+        9Os2MUDVEZHvdxUQFeNMEJjfOw==
+X-Google-Smtp-Source: AGHT+IH6goftz+deG7oSTeTuzwqyw9P8c6mgIH9qR63I1IV/ch6sI7RIzn2uujDg7rQtq/HyjVsX6g==
+X-Received: by 2002:aa7:c158:0:b0:52a:38c3:1b4b with SMTP id r24-20020aa7c158000000b0052a38c31b4bmr3444238edp.15.1695469444353;
+        Sat, 23 Sep 2023 04:44:04 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id s3-20020aa7d783000000b0053116e45317sm3274449edq.44.2023.09.23.04.44.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Sep 2023 04:44:03 -0700 (PDT)
+Message-ID: <f4fa94ab-78fb-d01b-7188-c498ec3053ff@linaro.org>
+Date:   Sat, 23 Sep 2023 13:44:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [EXT] Re: [PATCH v2 2/2] dt-bindings: media: imx-jpeg: Assign
- slot for imx jpeg encoder/decoder
-To:     Ming Qian <ming.qian@nxp.com>,
-        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>
-Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
-        Tao Jiang <tao.jiang_2@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230921063620.22962-1-ming.qian@nxp.com>
- <20230921063620.22962-2-ming.qian@nxp.com>
- <19d2bc5c-2662-6ed8-cc3d-7efb82fd1825@kernel.org>
- <AM6PR04MB634103F226B69ADD41255FCBE7FFA@AM6PR04MB6341.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH V3 1/4] dt-bindings: thermal: qcom-tsens: Add ipq5018
+ compatible
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <AM6PR04MB634103F226B69ADD41255FCBE7FFA@AM6PR04MB6341.eurprd04.prod.outlook.com>
+To:     Sricharan R <srichara@win-platform-upstream01.qualcomm.com>,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        thara.gopinath@gmail.com, rafael@kernel.org,
+        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dmitry.baryshkov@linaro.org,
+        quic_srichara@quicinc.com
+References: <20230922115116.2748804-1-srichara@win-platform-upstream01.qualcomm.com>
+ <20230922115116.2748804-2-srichara@win-platform-upstream01.qualcomm.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230922115116.2748804-2-srichara@win-platform-upstream01.qualcomm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2023 03:33, Ming Qian wrote:
->> From: Krzysztof Kozlowski <krzk@kernel.org>
->> Sent: 2023年9月21日 17:55
->> To: Ming Qian <ming.qian@nxp.com>; Mirela Rabulea (OSS)
->> <mirela.rabulea@oss.nxp.com>; robh+dt@kernel.org; shawnguo@kernel.org
->> Cc: mchehab@kernel.org; hverkuil-cisco@xs4all.nl; s.hauer@pengutronix.de;
->> kernel@pengutronix.de; festevam@gmail.com; X.H. Bao
->> <xiahong.bao@nxp.com>; Eagle Zhou <eagle.zhou@nxp.com>; Tao Jiang
->> <tao.jiang_2@nxp.com>; dl-linux-imx <linux-imx@nxp.com>; linux-
->> media@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
->> kernel@lists.infradead.org
->> Subject: [EXT] Re: [PATCH v2 2/2] dt-bindings: media: imx-jpeg: Assign slot for
->> imx jpeg encoder/decoder
->>
->> Caution: This is an external email. Please take care when clicking links or
->> opening attachments. When in doubt, report the message using the 'Report
->> this email' button
->>
->>
->> On 21/09/2023 08:36, Ming Qian wrote:
->>> There are total 4 slots available in the IP, and we only need to use
->>> one slot in one os, assign a single slot, configure interrupt and
->>> power domain only for 1 slot, not for the all 4 slots.
->>
->> Please use scripts/get_maintainers.pl to get a list of necessary people and lists
->> to CC. It might happen, that command when run on an older kernel, gives you
->> outdated entries. Therefore please be sure you base your patches on recent
->> Linux kernel.
->>
->> You missed at least devicetree list (maybe more), so this won't be tested by
->> automated tooling. Performing review on untested code might be a waste of
->> time, thus I will skip this patch entirely till you follow the process allowing the
->> patch to be tested.
->>
->> Please kindly resend and include all necessary To/Cc entries.
->>
->>>
->>> Signed-off-by: Ming Qian <ming.qian@nxp.com>
->>> ---
->>>  .../bindings/media/nxp,imx8-jpeg.yaml         | 40 ++++++++-----------
->>>  1 file changed, 16 insertions(+), 24 deletions(-)
->>>
->>> diff --git
->>> a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
->>> b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
->>> index 3d9d1db37040..5f0e2fc1ea9c 100644
->>> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
->>> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
->>> @@ -32,25 +32,27 @@ properties:
->>>      maxItems: 1
->>>
->>>    interrupts:
->>> -    description: |
->>> -      There are 4 slots available in the IP, which the driver may use
->>> -      If a certain slot is used, it should have an associated interrupt
->>> -      The interrupt with index i is assumed to be for slot i
->>> -    minItems: 1               # At least one slot is needed by the driver
->>> -    maxItems: 4               # The IP has 4 slots available for use
->>> +    description:
->>> +      Interrupt number for slot
->>> +    maxItems: 1
->>>
->>>    power-domains:
->>>      description:
->>>        List of phandle and PM domain specifier as documented in
->>>        Documentation/devicetree/bindings/power/power_domain.txt
->>> -    minItems: 2               # Wrapper and 1 slot
->>> -    maxItems: 5               # Wrapper and 4 slots
->>> +    minItems: 1               # VPUMIX
->>> +    maxItems: 2               # Wrapper and 1 slot
->>> +
->>> +  slot:
->>> +    description:
->>> +      Integer number of slot index used. the value range is from 0 to
->>> + 3
->>
->> Don't you have here obvious errors reported by testing? Did you test this?
->>
->> Best regards,
->> Krzysztof
+On 22/09/2023 13:51, Sricharan R wrote:
+> From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 > 
-> Hi Krzysztof,
->     Can you point out which test error? I run the dt_binding_check and didn't get any error.
+> IPQ5018 has tsens v1.0 block with 4 sensors and 1 interrupt.
 
-Hm, I guess we need to add some checks for this... You miss type and
-vendor prefix. This does not look like generic property. Constraints are
-also missing, but that's minor. The main point is that this does not
-look suitable for DT at all. Your description says nothing - copies
-property name. Commit msg also does not explain it.
+Then why do you allow two interrupts?
+
+> 
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> ---
+>  [v3] Added the tsens-ipq5018 as  new binding without rpm
+> 
+>  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> index 27e9e16e6455..a02829deeb24 100644
+> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> @@ -44,6 +44,10 @@ properties:
+>                - qcom,qcs404-tsens
+>            - const: qcom,tsens-v1
+>  
+> +      - description: v1 of TSENS without rpm
+> +        enum:
+> +          - qcom,ipq5018-tsens
+
+You miss now description of interrupts, like the other variants have.
 
 Best regards,
 Krzysztof
