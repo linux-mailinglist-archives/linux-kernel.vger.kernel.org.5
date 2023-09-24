@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1557AC8C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EE87AC8CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjIXNTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
+        id S230209AbjIXNTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjIXNTA (ORCPT
+        with ESMTP id S230202AbjIXNTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:19:00 -0400
+        Sun, 24 Sep 2023 09:19:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D2DCF4;
-        Sun, 24 Sep 2023 06:17:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF457C433CD;
-        Sun, 24 Sep 2023 13:17:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C51E6B;
+        Sun, 24 Sep 2023 06:17:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46CFAC433CC;
+        Sun, 24 Sep 2023 13:17:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561462;
-        bh=wqJV0D2yVUiguXV6s0oLsSI9drzZk+wy9WPn3ugGs4Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIjTdiA2v1rMhPkyEwH9Y9b5fM26qYv/snnVxpyS5p0ST8Wxn7o/MNDNOQ81xfktJ
-         YT6Sv0Wiw2OA/Y8Txf9X7NeOJhjEYO+4bJJZ5kS9lR/gkNyLIpoQfGbms8sH5QkfmO
-         j8OBnRXrfWWgVY9KAvx3wJQiYr4Pzl/wwFowdFskNRzZ+PGcftGceK+NFemrZtzBwy
-         tb8wi9nM7rNJWR8G1qCbySGb0X+omAqkVkQN6wkqG4MqWr0OQv+YCuuH5zniGOvFkY
-         r6l+Hk2tynOy+0OtHDFUMp8PiTi4vXP5rOgUT/NSlYXyQpcFEECOD+1O4m/5CywAnI
-         WKgweIzNIcFbA==
+        s=k20201202; t=1695561469;
+        bh=7qx6tClLTt0813NcUQL4Qop7X18L1CzP2lAWaIgHtLs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jn/oOWtXPxzK3wyQFVq9jlmZlUO7qfUYDVlrU/SOq9LD/Ec+q47tjiKX3ZBHbNStS
+         6NDcpIuwIxu9thx6qjITyKfeYJLuRZ6Ae1OkVKILD8NCti7NzaYdnqcTdsvURvn+19
+         i3msN4SVC2UWDwpQ4YVH3Glumiks2wIcpXAtwQc8EvvBMVfedVwdGfJfd2VI+qWu8h
+         DKnva/tbrntoIuitx6UUZP6YLD9Kz/UrRdwfwl+j8eGzHlla6WuCVq3RY4ePm5mOgf
+         mqrVrQBhhV1hhQnRctIO9d5mDvZbxBSxE6J7r8xsclZF9Te83DmJ25gpgo30zTb4fL
+         AzLn3q8LAbwcw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Niklas Cassel <niklas.cassel@wdc.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 41/41] ata: libata-eh: do not thaw the port twice in ata_eh_reset()
-Date:   Sun, 24 Sep 2023 09:15:29 -0400
-Message-Id: <20230924131529.1275335-41-sashal@kernel.org>
+Cc:     Nigel Kirkland <nkirkland2304@gmail.com>,
+        James Smart <jsmart2021@gmail.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, james.smart@broadcom.com,
+        sagi@grimberg.me, linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 01/28] nvme-fc: Prevent null pointer dereference in nvme_fc_io_getuuid()
+Date:   Sun, 24 Sep 2023 09:17:18 -0400
+Message-Id: <20230924131745.1275960-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230924131529.1275335-1-sashal@kernel.org>
-References: <20230924131529.1275335-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.5
+X-stable-base: Linux 6.1.55
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -53,59 +53,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Cassel <niklas.cassel@wdc.com>
+From: Nigel Kirkland <nkirkland2304@gmail.com>
 
-[ Upstream commit 7a3bc2b3989e05bbaa904a63279049a401491c84 ]
+[ Upstream commit 8ae5b3a685dc59a8cf7ccfe0e850999ba9727a3c ]
 
-commit 1e641060c4b5 ("libata: clear eh_info on reset completion") added
-a workaround that broke the retry mechanism in ATA EH.
+The nvme_fc_fcp_op structure describing an AEN operation is initialized with a
+null request structure pointer. An FC LLDD may make a call to
+nvme_fc_io_getuuid passing a pointer to an nvmefc_fcp_req for an AEN operation.
 
-Tejun himself suggested to remove this workaround when it was identified
-to cause additional problems:
-https://lore.kernel.org/linux-ide/20110426135027.GI878@htj.dyndns.org/
+Add validation of the request structure pointer before dereference.
 
-He even said:
-"Hmm... it seems I wasn't thinking straight when I added that work around."
-https://lore.kernel.org/linux-ide/20110426155229.GM878@htj.dyndns.org/
-
-While removing the workaround solved the issue, however, the workaround was
-kept to avoid "spurious hotplug events during reset", and instead another
-workaround was added on top of the existing workaround in commit
-8c56cacc724c ("libata: fix unexpectedly frozen port after ata_eh_reset()").
-
-Because these IRQs happened when the port was frozen, we know that they
-were actually a side effect of PxIS and IS.IPS(x) not being cleared before
-the COMRESET. This is now done in commit 94152042eaa9 ("ata: libahci: clear
-pending interrupt status"), so these workarounds can now be removed.
-
-Since commit 1e641060c4b5 ("libata: clear eh_info on reset completion") has
-now been reverted, the ATA EH retry mechanism is functional again, so there
-is once again no need to thaw the port more than once in ata_eh_reset().
-
-This reverts "the workaround on top of the workaround" introduced in commit
-8c56cacc724c ("libata: fix unexpectedly frozen port after ata_eh_reset()").
-
-Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
-Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+Signed-off-by: Nigel Kirkland <nkirkland2304@gmail.com>
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-eh.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/nvme/host/fc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
-index d7914c7d1a0d1..960ef5c6f2c10 100644
---- a/drivers/ata/libata-eh.c
-+++ b/drivers/ata/libata-eh.c
-@@ -2829,9 +2829,6 @@ int ata_eh_reset(struct ata_link *link, int classify,
- 		slave->eh_info.serror = 0;
- 	spin_unlock_irqrestore(link->ap->lock, flags);
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 6c3d469eed7e3..177a365b8ec55 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -1911,7 +1911,7 @@ char *nvme_fc_io_getuuid(struct nvmefc_fcp_req *req)
+ 	struct nvme_fc_fcp_op *op = fcp_req_to_fcp_op(req);
+ 	struct request *rq = op->rq;
  
--	if (ata_port_is_frozen(ap))
--		ata_eh_thaw_port(ap);
--
- 	/*
- 	 * Make sure onlineness and classification result correspond.
- 	 * Hotplug could have happened during reset and some
+-	if (!IS_ENABLED(CONFIG_BLK_CGROUP_FC_APPID) || !rq->bio)
++	if (!IS_ENABLED(CONFIG_BLK_CGROUP_FC_APPID) || !rq || !rq->bio)
+ 		return NULL;
+ 	return blkcg_get_fc_appid(rq->bio);
+ }
 -- 
 2.40.1
 
