@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D06217AC89D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04477AC89F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbjIXNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
+        id S230161AbjIXNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjIXNSU (ORCPT
+        with ESMTP id S230219AbjIXNS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:18:20 -0400
+        Sun, 24 Sep 2023 09:18:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5097A1BFB;
-        Sun, 24 Sep 2023 06:17:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64386C433C8;
-        Sun, 24 Sep 2023 13:17:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6BE1729;
+        Sun, 24 Sep 2023 06:17:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15355C433C9;
+        Sun, 24 Sep 2023 13:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561434;
-        bh=vuLQUyedGq0x4DONjqzds8NBXv337ROtROrvDAx3/00=;
+        s=k20201202; t=1695561438;
+        bh=AkESHVaIEK/Q0N156xWN9b9wJHZIeDxy8gc9Dgudzoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ky9W8XDsRcTESn7+oC0UPO87QWi6mV2nESEBfQcGVSQMzWZoYZEfdU6XmGH+Djmz/
-         ez3Y2XpQtOX2Nng0tpB+4+5kl1Nj6ySvleWuCT3jf0A7FPzPhqcM/AgU3YOODERY/q
-         AxKoKmFCp/IGDccqZU4lGLWECxhQ6131ZqkUt7NpdmBAqEpxTHo6Q3VmdAAHAClqV+
-         xE01auskTFOiyEheunFyARMzGNMcxRIwM0KcRekK9h76fk16Rk1X0y/F3vFgqKToCN
-         n+zzqn5cRt53W8qp7oQvfor4khrc6aJkeSc+L+9IH4PCooMj7Bh+FmGAL3GRdwPqKB
-         ofswwaeH8Nizg==
+        b=DfeKXIX/TxbigZcVVBWGNMuiOjc1bScZaEOW+u3v1vEJ+WSiJFArA7Id95QrSIeHL
+         lzzNqrJNUv3eN7skJQJW657B3qcMolg8Ao4gU7mmiJMfsWHwbo7619cRPNLQQzRs68
+         DROWe8PzQs9o6vbf13j396Rc8fnV/3jkYB1Vqkq8w8Yjzxm/mitX1oQyruGQzJvvcR
+         GEbbS55vErLG3gz7VnzFthx0HvqIpKrb0GnkynbS3Cjy3JkuApRauLoFm7XoaJ/mK2
+         iMF6s3LmKt1voHnWQ7eno6gEPXRjrpOqaYq45X7Lgn/JuAXtgzFGwPtl/mfFCSAC4D
+         FBOujhyhiiA3g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Timmy Tsai <timmtsai@amd.com>, Sasha Levin <sashal@kernel.org>,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Hawking.Zhang@amd.com, Likun.Gao@amd.com, yifan1.zhang@amd.com,
-        kenneth.feng@amd.com, saleemkhan.jamadar@amd.com,
-        Jane.Jian@amd.com, shane.xiao@amd.com, sunran001@208suo.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 29/41] drm/amdgpu/soc21: don't remap HDP registers for SR-IOV
-Date:   Sun, 24 Sep 2023 09:15:17 -0400
-Message-Id: <20230924131529.1275335-29-sashal@kernel.org>
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, mario.limonciello@amd.com, candice.li@amd.com,
+        Hawking.Zhang@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.5 30/41] drm/amdgpu/nbio4.3: set proper rmmio_remap.reg_offset for SR-IOV
+Date:   Sun, 24 Sep 2023 09:15:18 -0400
+Message-Id: <20230924131529.1275335-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131529.1275335-1-sashal@kernel.org>
 References: <20230924131529.1275335-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.5
@@ -61,31 +58,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 1832403cd41ca6b19b24e9d64f79cb08d920ca44 ]
+[ Upstream commit ab43213e7afd08ac68d4282060bacf309e70fd14 ]
 
-This matches the behavior for soc15 and nv.
+Needed for HDP flush to work correctly.
 
-Acked-by: Christian König <christian.koenig@amd.com>
 Reviewed-by: Timmy Tsai <timmtsai@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/soc21.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/nbio_v4_3.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/soc21.c b/drivers/gpu/drm/amd/amdgpu/soc21.c
-index e5e5d68a4d702..1a5ffbf884891 100644
---- a/drivers/gpu/drm/amd/amdgpu/soc21.c
-+++ b/drivers/gpu/drm/amd/amdgpu/soc21.c
-@@ -786,7 +786,7 @@ static int soc21_common_hw_init(void *handle)
- 	 * for the purpose of expose those registers
- 	 * to process space
- 	 */
--	if (adev->nbio.funcs->remap_hdp_registers)
-+	if (adev->nbio.funcs->remap_hdp_registers && !amdgpu_sriov_vf(adev))
- 		adev->nbio.funcs->remap_hdp_registers(adev);
- 	/* enable the doorbell aperture */
- 	adev->nbio.funcs->enable_doorbell_aperture(adev, true);
+diff --git a/drivers/gpu/drm/amd/amdgpu/nbio_v4_3.c b/drivers/gpu/drm/amd/amdgpu/nbio_v4_3.c
+index d5ed9e0e1a5f1..e5b5b0f4940f4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/nbio_v4_3.c
++++ b/drivers/gpu/drm/amd/amdgpu/nbio_v4_3.c
+@@ -345,6 +345,9 @@ static void nbio_v4_3_init_registers(struct amdgpu_device *adev)
+ 		data &= ~RCC_DEV0_EPF2_STRAP2__STRAP_NO_SOFT_RESET_DEV0_F2_MASK;
+ 		WREG32_SOC15(NBIO, 0, regRCC_DEV0_EPF2_STRAP2, data);
+ 	}
++	if (amdgpu_sriov_vf(adev))
++		adev->rmmio_remap.reg_offset = SOC15_REG_OFFSET(NBIO, 0,
++			regBIF_BX_DEV0_EPF0_VF0_HDP_MEM_COHERENCY_FLUSH_CNTL) << 2;
+ }
+ 
+ static u32 nbio_v4_3_get_rom_offset(struct amdgpu_device *adev)
 -- 
 2.40.1
 
