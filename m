@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6190B7AC987
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF477AC941
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbjIXNcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        id S230171AbjIXN3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbjIXNbs (ORCPT
+        with ESMTP id S230306AbjIXN27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:31:48 -0400
+        Sun, 24 Sep 2023 09:28:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B7C126;
-        Sun, 24 Sep 2023 06:19:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A9D2C4339A;
-        Sun, 24 Sep 2023 13:19:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3157B1FE1;
+        Sun, 24 Sep 2023 06:19:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7AA5C433B9;
+        Sun, 24 Sep 2023 13:19:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561556;
-        bh=K8J0QDkxbSrQUnC9nMsSjjLZcAM3sGpsS/OS8LrWF9g=;
+        s=k20201202; t=1695561557;
+        bh=mkNO1vi1nAK+2SSQNEOGgvfs9MWPgbfJ68Qb1fHOSBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aC29fN7gZcwOmSDB0lHctCzVdf6dEkhSEnt9d0P8bGQ/ypn4AxDIUWGY/JmifRzDb
-         /RNbKoOMVRK/BkC2coFY34Sq33pTthlBiYDNkpXJGKyeuYFSH2C6H0U65ddE5lmrlm
-         tsYQCHMuGGpJ+aOu1czXAzDN5vOyEHAiOZ0Aoaq8Y7vVOEwQfQEk4ylvS071yg07eW
-         fQSdvX1vtkJ6r7unE1n5t82C6eD8ngm/YuC9nGFsTSQz9V1AOeFfDQewLxfmyxp8Yq
-         wKuDAaAFwAEkw1JPU+0eQYzVDuegsLNMqd9iqtKIwEGfyGnZB39WMHRTRk2WYNAL12
-         b1glWCmey+5sw==
+        b=RpT2J/eccxdMkzZzOcHod9mzVC5zw1kBke+cI4jWzGmuCLvf/T7RQb7I/XgmvDaBP
+         946M96o67sVT4WO8qj+Nfzcw2+kewARYEr8tAIVfukTkiDLOQc8B9mlGgJ3y+urjrm
+         nVffnMFKVZIMgJprgLjvECUhVuqSAdL/Cu7BIylnH4oVBWnQcDAsjhLN3UZX81myxC
+         Ml3mULZ+uG3W31qtMDa42ITwPNa6TirOHNMSFDqQXSelvP+O4ZWAhJxHKVNomgew63
+         SnM5m391OLtl2v7cKxKTteZwcuJhkCJ02ZilCl+ptxbBmx54/Q47GHHdHwC5h4o4A6
+         F82zZ7+6iWEZQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zheng Yejian <zhengyejian1@huawei.com>, mhiramat@kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/18] ring-buffer: Avoid softlockup in ring_buffer_resize()
-Date:   Sun, 24 Sep 2023 09:18:45 -0400
-Message-Id: <20230924131857.1276330-8-sashal@kernel.org>
+Cc:     Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 09/18] btrfs: improve error message after failure to add delayed dir index item
+Date:   Sun, 24 Sep 2023 09:18:46 -0400
+Message-Id: <20230924131857.1276330-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131857.1276330-1-sashal@kernel.org>
 References: <20230924131857.1276330-1-sashal@kernel.org>
@@ -54,43 +54,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yejian <zhengyejian1@huawei.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit f6bd2c92488c30ef53b5bd80c52f0a7eee9d545a ]
+[ Upstream commit 91bfe3104b8db0310f76f2dcb6aacef24c889366 ]
 
-When user resize all trace ring buffer through file 'buffer_size_kb',
-then in ring_buffer_resize(), kernel allocates buffer pages for each
-cpu in a loop.
+If we fail to add a delayed dir index item because there's already another
+item with the same index number, we print an error message (and then BUG).
+However that message isn't very helpful to debug anything because we don't
+know what's the index number and what are the values of index counters in
+the inode and its delayed inode (index_cnt fields of struct btrfs_inode
+and struct btrfs_delayed_node).
 
-If the kernel preemption model is PREEMPT_NONE and there are many cpus
-and there are many buffer pages to be allocated, it may not give up cpu
-for a long time and finally cause a softlockup.
+So update the error message to include the index number and counters.
 
-To avoid it, call cond_resched() after each cpu buffer allocation.
+We actually had a recent case where this issue was hit by a syzbot report
+(see the link below).
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230906081930.3939106-1-zhengyejian1@huawei.com
-
-Cc: <mhiramat@kernel.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Link: https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ring_buffer.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/delayed-inode.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index db7cefd196cec..b15d72284c7f7 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2176,6 +2176,8 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
- 				err = -ENOMEM;
- 				goto out_err;
- 			}
-+
-+			cond_resched();
- 		}
- 
- 		cpus_read_lock();
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 1e08eb2b27f0c..429a571435a5b 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1388,9 +1388,10 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	ret = __btrfs_add_delayed_insertion_item(delayed_node, delayed_item);
+ 	if (unlikely(ret)) {
+ 		btrfs_err(trans->fs_info,
+-			  "err add delayed dir index item(name: %.*s) into the insertion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)",
+-			  name_len, name, delayed_node->root->root_key.objectid,
+-			  delayed_node->inode_id, ret);
++"error adding delayed dir index item, name: %.*s, index: %llu, root: %llu, dir: %llu, dir->index_cnt: %llu, delayed_node->index_cnt: %llu, error: %d",
++			  name_len, name, index, btrfs_root_id(delayed_node->root),
++			  delayed_node->inode_id, dir->index_cnt,
++			  delayed_node->index_cnt, ret);
+ 		BUG();
+ 	}
+ 	mutex_unlock(&delayed_node->mutex);
 -- 
 2.40.1
 
