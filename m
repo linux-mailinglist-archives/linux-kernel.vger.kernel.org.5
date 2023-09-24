@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729F37ACB89
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19D37ACB8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbjIXTCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 15:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
+        id S230087AbjIXTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjIXTCY (ORCPT
+        with ESMTP id S229782AbjIXTCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 15:02:24 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9CBCE
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:18 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405361bb93bso47807425e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:18 -0700 (PDT)
+        Sun, 24 Sep 2023 15:02:25 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAE5FF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-405361bb93bso47807555e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695582136; x=1696186936; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695582138; x=1696186938; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IUzOQBeCN4IpbMK/sHUfcetB/ZJh3VTgOU3FNKUFPZc=;
-        b=UP7pFHFaZzK/RJD1Ts7yD/WHBoTud6Ckl2qmM4N2D1OnHW7w9P50UYCSBYbRpcn3Bw
-         IF6fH/eTvSKu2lduv+fGAHeiovCVMlYBfeJBkSTfWizZTRzMrY0SX2bcsM503CRSaQ9J
-         ajpdlEJL7MYfCokw8O9skqzPCIWFucMLCp5QAi33BrI+ASC2CtDHHwN1I81zYzmIQBEZ
-         0niCFoF5TilHqyD5GV1CPRwMlNxp7pXkaXdn7W0pCXoxPrbrstE4sNiPal4nJnco6GOJ
-         V9CIoRleQ8Yg1IHnw4/ywZaOKiWc0uFdxGb2H4FGbTiS2McJcVe0aqlATKviOtBNP2Lj
-         /GMw==
+        bh=yOPMhTAVaQhtNbRhJ+PsIxV5cVPsXuHbP91ZaQJ9gxo=;
+        b=OBpY8IajXqjvblAPJgepPkmTMtVOU/C213xwLpDbTcxexyZ8BRYUAYZ8Cn6DEFLp/g
+         niUA84jbFejBSB6kTg8re+ePcXC4IVbmU/A8cbiwrLVXYrHVK7qyiBcciNM21NIhDCh7
+         A8usDycbJCyOGY0mH2SdMTDUNrOmLTROu2qxmW64jxgMmbkRjD+HrPiLOj+QlK/TyN2a
+         ZhfJVuCwASDSDWvuRjyFpNDFPt4gMH7/UXFyr4udHDAKsbElhNCmWOJslrdeMNh0wgjT
+         1ftQQKZz2K8S9J9nlshca30YZu0aaXUq754T1g4Q8IQGA8JQXRiRlnROEq9ycxptRBG4
+         blTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695582136; x=1696186936;
+        d=1e100.net; s=20230601; t=1695582138; x=1696186938;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IUzOQBeCN4IpbMK/sHUfcetB/ZJh3VTgOU3FNKUFPZc=;
-        b=mBK6eqaBjmZs23yaZGcoXdrAUFNXoqKV79GtIsyHVE6I7LOFNwv2FLL56OybE0z/fQ
-         qAq4OMfdL/7ikEJ1+LcaHhnOwsqnbXx7Zdgq2kEQyHqA9xywgnF1+72nZCgbNOTqfF4M
-         vjiTTDKCverIB6wTqhwcOknEsQBisaV9cAyFrz5aLLVh0aP1Xiw6Rl+GCnTtyD+bo6zT
-         4VkwqGR0Cdr7CGnHzJvis3MMDSym4HaFGCXaFo8GC+wBqqHUPf7fNAnSpz9+CMSXiya6
-         8MmaSHhSfPbcEc0iAKo+aqRsSVVpRh9PUZVr2hFTJwBOnYNGe2qiMuDa0ZQdeLRCa4Rt
-         QqVw==
-X-Gm-Message-State: AOJu0YxErQ3+Fwccgv7IOkXIwPNGSSp2URYnoX51/FOT6X9rUt0pc1ZY
-        OUcQunaypTYUwuzvE1YXDKiaUQ==
-X-Google-Smtp-Source: AGHT+IE0W/VyhNcb5eTQUWd45FjQDZrEaC8N1D0ehhWMDrCyWxbqXd7bkOhDt4WSM5K8sLPL9ecc5Q==
-X-Received: by 2002:a7b:cd07:0:b0:401:c52c:5ed9 with SMTP id f7-20020a7bcd07000000b00401c52c5ed9mr3923561wmj.32.1695582136635;
-        Sun, 24 Sep 2023 12:02:16 -0700 (PDT)
+        bh=yOPMhTAVaQhtNbRhJ+PsIxV5cVPsXuHbP91ZaQJ9gxo=;
+        b=ViGJ2cEfE2IsJjTk9kwsGW4AGH/yXF54L2Fydaw4Or4SvwGONONBQVx0dzARMPcGVP
+         tBEOi47AMQZBfTD+dhz7vP35n6TDn/Aze/F/9/jZo+v6Ni1UFSwxZVP1y3hbyi2xMSL8
+         7Ibc8rGQuTTmKR6iwiS3y9+S558JEikxsnw4sTtOXNSyvQZ1POet37Ur8cRADcHjIZUD
+         Wv6UhE7iZ4HAr8Hwh98je4IEaKoPD3yY/cOKNqF9BwJjAb/1t/aQj1tRyRpi6tnQEQpl
+         GyDOTkevTaN30ryaGVM0o6CZ9grbLy/H4Aoa/9Yq4VPuS4LdoZ4P5VcvJRrXKym9q87j
+         4HHg==
+X-Gm-Message-State: AOJu0YxwHs2eIbKmPBzficRkZg1FV48b2YMM04GyTtPe94yQUgITcEkY
+        AoLs5az4eVlVVmI+1IiSEMD1kQ==
+X-Google-Smtp-Source: AGHT+IEmxC7DNK1cPKwojQo+bnnfYksQDd/asx+g1dwyv2MBdy9FaZoVjFzI/eTmc0DfjWHmagy58A==
+X-Received: by 2002:a05:600c:2215:b0:402:e68f:888c with SMTP id z21-20020a05600c221500b00402e68f888cmr3730981wml.7.1695582137890;
+        Sun, 24 Sep 2023 12:02:17 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.15
+        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 12:02:16 -0700 (PDT)
+        Sun, 24 Sep 2023 12:02:17 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: bitmain: lowercase unit addresses
-Date:   Sun, 24 Sep 2023 21:02:03 +0200
-Message-Id: <169558197843.54884.11610729516749489406.b4-ty@linaro.org>
+Subject: Re: [PATCH] arm64: dts: marvell: minor whitespace cleanup around '='
+Date:   Sun, 24 Sep 2023 21:02:04 +0200
+Message-Id: <169558197846.54884.8305462270796090104.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230712074611.35952-1-krzysztof.kozlowski@linaro.org>
-References: <20230712074611.35952-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230702185301.44505-1-krzysztof.kozlowski@linaro.org>
+References: <20230702185301.44505-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -77,11 +75,9 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 12 Jul 2023 09:46:11 +0200, Krzysztof Kozlowski wrote:
-> Unit addresses are expected to be lower case.  Pointed also by W=1
-> builds:
-> 
->   Warning (simple_bus_reg): /soc/serial@5801A000: simple-bus unit address format error, expected "5801a000"
+On Sun, 02 Jul 2023 20:53:01 +0200, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before and after '='
+> sign.
 > 
 > 
 
@@ -92,8 +88,8 @@ instead, let me know.
 
 Applied, thanks!
 
-[1/1] arm64: dts: bitmain: lowercase unit addresses
-      https://git.kernel.org/krzk/linux-dt/c/0b137caaaab462debb1cd342cdc0df307e301bfc
+[1/1] arm64: dts: marvell: minor whitespace cleanup around '='
+      https://git.kernel.org/krzk/linux-dt/c/12ca3ca8cf06d803b3690ef523ccf5ffd0b23a71
 
 Best regards,
 -- 
