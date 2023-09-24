@@ -2,46 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103CD7AC96F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E29F7AC903
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbjIXNbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        id S230147AbjIXNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjIXNbX (ORCPT
+        with ESMTP id S229803AbjIXNVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:31:23 -0400
+        Sun, 24 Sep 2023 09:21:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EC81F36;
-        Sun, 24 Sep 2023 06:18:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7774BC433CC;
-        Sun, 24 Sep 2023 13:18:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21229FC;
+        Sun, 24 Sep 2023 06:18:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1848C433CB;
+        Sun, 24 Sep 2023 13:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561529;
-        bh=2HOUejfb/rlXadP7F07f20zKEiFCnWDEqIcFesFF1iA=;
+        s=k20201202; t=1695561530;
+        bh=vvF025XyAxaA1yeakCzrsqP9L10bHmrvpAdW0XLXiCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vGaVm6Y2y84DUkDOHjpfHcdquZxRHT37aec+v0mcZ5ajsti6GpNvFczuEzWBuU6qk
-         iCzmNowZfUT3r4KrNBYnq1/g833kLe4poOelYHHO9oPZmrO7CaaCAgxboeHQp5fd9h
-         3BOQlG71ndQZNI2jOTY986w4Vz6Ob4i8nzvCEP9amj5cGlHAjv7Naj7adSodLAvuum
-         2/CQQafmaWW4Ojt//vVtxaj86QP2gYVjNemBwMHRr9ZiJ3uucoclEwhpcY5Oa758Jf
-         3pKC0zMIhZxVw8AMaV5lx//9v4ZwKer84j4cj1TG5+afwDY/a1TcYimJRkZwisxji3
-         VDN151y5UkAZQ==
+        b=g9j54teUJEcG9qKLPwMjTsgLStleVtw5l1znmnQI1+hO4QUMy0tJHQcrsTkm4m6cw
+         Ph8me49L6RLpivK1Pg76b/F/oDqVDAhHeKFkFhyAuKlfLzQKLoZaFkkEj5zmqzhJBd
+         Cg3Uu+QM6eT3NWqK5fzw3aPZwD3KKcDq09H63JSXp8Ixz+FK9De5i3WbYLpHupZl21
+         gTiYxOOOgb36LkXbRlTXM0ZAXjGdumopWg0UacY28Jp2oQY8qglNvKGM5RnwH1EMWP
+         431ZSthEn14DCgGHa131DOLrr07SyJ4yNikKTzGWFSac19dHtlCalbWDVOfQfi51hQ
+         zbLHk759wv5qg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Icenowy Zheng <uwu@icenowy.me>,
-        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
-        Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Sasha Levin <sashal@kernel.org>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        conor.dooley@microchip.com, ajones@ventanamicro.com,
-        samuel@sholland.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        jszhang@kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 24/28] riscv: errata: fix T-Head dcache.cva encoding
-Date:   Sun, 24 Sep 2023 09:17:41 -0400
-Message-Id: <20230924131745.1275960-24-sashal@kernel.org>
+Cc:     Michal Grzedzicki <mge@meta.com>, Jack Wang <jinpu.wang@ionos.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, jinpu.wang@cloud.ionos.com,
+        jejb@linux.ibm.com, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 25/28] scsi: pm80xx: Use phy-specific SAS address when sending PHY_START command
+Date:   Sun, 24 Sep 2023 09:17:42 -0400
+Message-Id: <20230924131745.1275960-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131745.1275960-1-sashal@kernel.org>
 References: <20230924131745.1275960-1-sashal@kernel.org>
@@ -60,49 +54,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Icenowy Zheng <uwu@icenowy.me>
+From: Michal Grzedzicki <mge@meta.com>
 
-[ Upstream commit 8eb8fe67e2c84324398f5983c41b4f831d0705b3 ]
+[ Upstream commit 71996bb835aed58c7ec4967be1d05190a27339ec ]
 
-The dcache.cva encoding shown in the comments are wrong, it's for
-dcache.cval1 (which is restricted to L1) instead.
+Some cards have more than one SAS address. Using an incorrect address
+causes communication issues with some devices like expanders.
 
-Fix this in the comment and in the hardcoded instruction.
-
-Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
-Tested-by: Sergey Matyukevich <sergey.matyukevich@syntacore.com>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Guo Ren <guoren@kernel.org>
-Tested-by: Drew Fustini <dfustini@baylibre.com>
-Link: https://lore.kernel.org/r/20230912072410.2481-1-jszhang@kernel.org
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Closes: https://lore.kernel.org/linux-kernel/A57AEA84-5CA0-403E-8053-106033C73C70@fb.com/
+Signed-off-by: Michal Grzedzicki <mge@meta.com>
+Link: https://lore.kernel.org/r/20230913155611.3183612-1-mge@meta.com
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/asm/errata_list.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
+ drivers/scsi/pm8001/pm80xx_hwi.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-index 19a771085781a..7d2675bb71611 100644
---- a/arch/riscv/include/asm/errata_list.h
-+++ b/arch/riscv/include/asm/errata_list.h
-@@ -100,7 +100,7 @@ asm volatile(ALTERNATIVE(						\
-  * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-  *   0000001    01001      rs1       000      00000  0001011
-  * dcache.cva rs1 (clean, virtual address)
-- *   0000001    00100      rs1       000      00000  0001011
-+ *   0000001    00101      rs1       000      00000  0001011
-  *
-  * dcache.cipa rs1 (clean then invalidate, physical address)
-  * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-@@ -113,7 +113,7 @@ asm volatile(ALTERNATIVE(						\
-  *   0000000    11001     00000      000      00000  0001011
-  */
- #define THEAD_inval_A0	".long 0x0265000b"
--#define THEAD_clean_A0	".long 0x0245000b"
-+#define THEAD_clean_A0	".long 0x0255000b"
- #define THEAD_flush_A0	".long 0x0275000b"
- #define THEAD_SYNC_S	".long 0x0190000b"
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 628b08ba6770b..e2c52c2d00b33 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -4313,7 +4313,7 @@ pm8001_chip_phy_start_req(struct pm8001_hba_info *pm8001_ha, u8 phy_id)
+ 	payload.sas_identify.dev_type = SAS_END_DEVICE;
+ 	payload.sas_identify.initiator_bits = SAS_PROTOCOL_ALL;
+ 	memcpy(payload.sas_identify.sas_addr,
+-		pm8001_ha->sas_addr, SAS_ADDR_SIZE);
++		&pm8001_ha->phy[phy_id].dev_sas_addr, SAS_ADDR_SIZE);
+ 	payload.sas_identify.phy_id = phy_id;
  
+ 	return pm8001_mpi_build_cmd(pm8001_ha, 0, opcode, &payload,
+diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
+index f8b8624458f73..bcccea7c1244a 100644
+--- a/drivers/scsi/pm8001/pm80xx_hwi.c
++++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+@@ -4803,7 +4803,7 @@ pm80xx_chip_phy_start_req(struct pm8001_hba_info *pm8001_ha, u8 phy_id)
+ 	payload.sas_identify.dev_type = SAS_END_DEVICE;
+ 	payload.sas_identify.initiator_bits = SAS_PROTOCOL_ALL;
+ 	memcpy(payload.sas_identify.sas_addr,
+-	  &pm8001_ha->sas_addr, SAS_ADDR_SIZE);
++		&pm8001_ha->phy[phy_id].dev_sas_addr, SAS_ADDR_SIZE);
+ 	payload.sas_identify.phy_id = phy_id;
+ 
+ 	return pm8001_mpi_build_cmd(pm8001_ha, 0, opcode, &payload,
 -- 
 2.40.1
 
