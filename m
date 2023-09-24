@@ -2,142 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AA77ACB7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 20:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C7C7ACB8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjIXSzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 14:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S230202AbjIXTCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjIXSzi (ORCPT
+        with ESMTP id S229712AbjIXTCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 14:55:38 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA6DFF
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:55:30 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso614642966b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:55:30 -0700 (PDT)
+        Sun, 24 Sep 2023 15:02:24 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4A7FE
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:14 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4053c6f1087so41978955e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695581729; x=1696186529; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nsn2423Wu8QU4AWHgBlwBYT8pU7ziT/piuFEmPTzydw=;
-        b=B7pkGzZPWYx2GHM5i0pumk7OCTljRBdRH0UD0g0ZOZXo8HbOoLBoaRy43O6O9s4bIL
-         DzxjIHPXHQ6wb87DUCIIuPPMwYYXcPL5FGjDeLK3LFm+CzzoU3SlHw6OfgW6jag/ProN
-         yGAnBc8tG3zhx6xpq+6jB7JsE6WaITx3nq7itasCEk4z+U7bF+7KP9f/72+UQISowyOm
-         VWRNnWwmoUy9wQcHdlCaqas3bCiopMJBDEuP9mkeb5yKVxDS0NpP3h3f8m8tEqRSqIzQ
-         hZZaql2Hzrf1uuaPlQe3Qabg/PXNewsZICuoyPF5cSxBqWfMNY6CAdpxBAZuHyWiZeyU
-         pAjg==
+        d=linaro.org; s=google; t=1695582133; x=1696186933; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HEY3/qK4PljH+5mRr6l/fkufOUPYsS6/LapzeXqBAzQ=;
+        b=ne+dmLLRcm3f7WcMw9E41r/pFv3VcFOaTB0aVgX5MJTHDM7hKq/gX9Dl/27cW1rPeS
+         it4AmE8ezpIArE3yMYrv1/WhBjoL205mbKPBGgQ42QjATU+y1H74IWgbMEyvvE79V3wF
+         i1ZtQ7OcEPm7eUWSkHGLs+NSiwEFegBJ+OHiZtc/N5XUAAXVlEZB6NcFqwQuRMdTRwjz
+         ByEULgUuIqt3iuTtxCQfp5hUy1l02RSnRVIohq0WFkhwyfewh45BhGdToFYfS0XFH6qL
+         YiIVkpYxzLnmcwFQWl9C4xWFObWhznf1bW9Go5UM/Ti6PynQB/TqQ//6isrgsb3CjdOF
+         7Ptw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695581729; x=1696186529;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nsn2423Wu8QU4AWHgBlwBYT8pU7ziT/piuFEmPTzydw=;
-        b=eMoEfJHM9o69Qi5W7cxwYIJ0uINCBSudBMIf5EeSuSdSQ2SAi8ZXtJ8tsp8MnSUJQc
-         2BPbtCzSaxclqqjvqPitMno6J8hZdvdxI1RWAQU//UKK0vA3HAy19yhtK6rDIEdJfWEg
-         5OkqPh88GkEHhDQ5vqhBIit8Ba6H+omu7MkARyWtapyYm2Cf42+nM5Wn9lCsgqtzHg2C
-         8hfzu+Fg1tycm0Ayw6M+spxjjO5FaI+OVgsqDbg2rbcr8GdRWI9MglRNNwLeOkvAMd4x
-         13b+SAFYt4Q4y8ZWUeVQiJwbXv5LHqIO03Pl8iD5+Dca6Dp9504DeLOMtzeNIKg5RnfB
-         V4rA==
-X-Gm-Message-State: AOJu0YxuJP5sZe43i71VNxmlAdyj07LGKnx2GlSavgJTV9JgxXDHogjU
-        XtmWkOtw7Rky6r6HrzaDgjEo5A==
-X-Google-Smtp-Source: AGHT+IEnLG4TYdoONK/svTVQQQ5YcrSa8zTV9GTRHgUsNuyl2GFa+EYUCVD28lKCojuIkcRxpY0x6A==
-X-Received: by 2002:a17:906:cc0e:b0:9ae:6355:64bb with SMTP id ml14-20020a170906cc0e00b009ae635564bbmr4090214ejb.73.1695581729396;
-        Sun, 24 Sep 2023 11:55:29 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id l9-20020a170906230900b00993004239a4sm5269799eja.215.2023.09.24.11.55.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 11:55:28 -0700 (PDT)
-Message-ID: <9b00b686-f59d-490d-bb22-ae864ac1e150@linaro.org>
-Date:   Sun, 24 Sep 2023 20:55:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ARM: dts: st: href-tvk1281618: fix touchscreen VIO
- supply
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        d=1e100.net; s=20230601; t=1695582133; x=1696186933;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HEY3/qK4PljH+5mRr6l/fkufOUPYsS6/LapzeXqBAzQ=;
+        b=fm5sjqkIKIIkDTXQk9m8XWrePyKzpsWGPuBKjEPPJ9857MSLSTLcwKZyfwy+T38nFm
+         kDuqr5y8XpcDmtj+zMtt25GtPn+NJm6Jw/sV3ax4y300/cblj6DuuFDIuG0LHuYhPj/3
+         YlJWtQZSLFMQ3ifgJrouQVcKjCsji6c7RFkQHMWUNGkJJOS7+fapQEx5Si4YZwZSW2mY
+         WIjWG5DpIi3jXpAEh1TU+6u5He+vr3tmBwkXAclLCttYWG8JjMUokfslWtA/853LlmNc
+         zb2j6IxqtMcutuOhyxx/gWmBZTOQ0dueL0pq2uTfnz5SFEh4aoCditlXZCk9DM8yHctd
+         jHzg==
+X-Gm-Message-State: AOJu0Yy2D78o3WI6kW6MmlopnkG5ZzOOx4JYP71whYafFR6y92wD1ohk
+        q3BQH9WpOnAJODDBbqjcLe+Yyw==
+X-Google-Smtp-Source: AGHT+IFTJOYNoKt70FvbEG3fkDLWzOwpTRfij0NznSyG4D41f0zuewMjBkFnGE5V08UMj/ZN+ZJrcQ==
+X-Received: by 2002:a05:600c:253:b0:401:eb0:a974 with SMTP id 19-20020a05600c025300b004010eb0a974mr3981380wmj.3.1695582132672;
+        Sun, 24 Sep 2023 12:02:12 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 12:02:12 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230720115524.137944-1-krzysztof.kozlowski@linaro.org>
- <CACRpkdbhej07QXTdPE4sx9tvHT_wjzDoCiTVJn727HHbgVtZCw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CACRpkdbhej07QXTdPE4sx9tvHT_wjzDoCiTVJn727HHbgVtZCw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] arm64: dts: mediatek: minor whitespace cleanup around '='
+Date:   Sun, 24 Sep 2023 21:02:00 +0200
+Message-Id: <169558197845.54884.14708791054897582168.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230702185128.44052-1-krzysztof.kozlowski@linaro.org>
+References: <20230702185128.44052-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 09:54, Linus Walleij wrote:
-> On Thu, Jul 20, 2023 at 1:55 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> 
->> According to bindings and Linux driver, there is no VDDIO but VIO
->> supply:
->>
->>   ste-hrefprev60-tvk.dtb: synaptics@4b: Unevaluated properties are not allowed ('vddio-supply' was unexpected)
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Patch applied!
-> Excellently shows how the schema files find real bugs in the DTS files!
 
-It seems it is not in the linux-next (one month later). Shall I take it?
+On Sun, 02 Jul 2023 20:51:27 +0200, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before and after '='
+> sign.
+> 
+> 
+
+Patches were waiting long enough on the lists. I assume there are no objections,
+at least none were shared, and this just slipped through the cracks. I applied
+to my tree for further soc pull request, but if anyone wants to take it
+instead, let me know.
+
+Applied, thanks!
+
+[1/2] arm64: dts: mediatek: minor whitespace cleanup around '='
+      https://git.kernel.org/krzk/linux-dt/c/aee69e4538e137313831bdb05512686d4f950378
+[2/2] ARM: dts: mediatek: minor whitespace cleanup around '='
+      https://git.kernel.org/krzk/linux-dt/c/96ba96612d85766b20d2e3e4445c96875351eb7b
 
 Best regards,
-Krzysztof
-
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
