@@ -2,53 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098FE7AC9D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C8A7AC9DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbjIXNvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        id S229826AbjIXNvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjIXNu7 (ORCPT
+        with ESMTP id S229545AbjIXNvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:50:59 -0400
+        Sun, 24 Sep 2023 09:51:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729B6CF
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 06:50:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAE0C433C7;
-        Sun, 24 Sep 2023 13:50:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE176AF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 06:51:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EACB7C433C8;
+        Sun, 24 Sep 2023 13:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695563453;
-        bh=vdCMjIA+d2QX5zaaLzI+lmNeBSEC2rO41zae3sOn+sk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lPmiwWFzH9szAr12Oh0Br2I63QKAsLE2GMJE6QhccIiS+Yqn8k2SGIHqjadtryFVF
-         mdB1O07lZ+ErgVdjOViWXBWehBPnPhDH5Hj8fLtUSWytNuIWnWxFPVycRAsutchP1J
-         oyjMdSTADVgNePPpvR+w/n/FWsvCgTLRVVNhy0qidLtrBUy2z5SrqgX8pd19x7loYw
-         eKSrtgi3sK7YCMeUg/oWkLklqHZI5uDraDFCLVosJbH5vyi07bzLMpl5BohvMgOCGy
-         Lhs/qQpD0epKc6JRa9y4H1H+RouPYr5d31qTGeZwGXUK7TYKg0tqc8twXlgwjzmr40
-         oDBsO6/hJwRaA==
-Date:   Sun, 24 Sep 2023 22:50:47 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>, chinglinyu@google.com,
-        lkp@intel.com, namit@vmware.com, oe-lkp@lists.linux.dev,
-        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
-        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com
-Subject: Re: [PATCH] eventfs: Remember what dentries were created on dir
- open
-Message-Id: <20230924225047.a35c3ed15f05a35399747d56@kernel.org>
-In-Reply-To: <20230920221537.521e2562@gandalf.local.home>
-References: <20230920221537.521e2562@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        s=k20201202; t=1695563489;
+        bh=RxXeubu8HZNb+nNC5zpYLJUpzwqwfPy3at7NtESJSvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gHuDTISvBx1UwPZrt2pnXtQ+Ln0jEuukUEt4MEcRcP3YiwbpPNndfGzzxeRgwQrXJ
+         7vy40Mj858jlRD3CxlMfHFNrX+BfnMf2XhleP31nRUnHwa62RM2z4HDSYojY4dHsCs
+         dTSZQdRbW16cBTUBdyvbEEr7J95nYtKaLsiT7Cns6BvGBeALntv//YSax18bpwNcln
+         +Mupy9TOv6tRgiZijESVJKJS+T427sneRwd5xFyeDSyxUY3Uvld1D877ar1rjp3xYp
+         Vf2eVJdqvV9urb3jPyqMAVUiuVMbLgx90ZRZeUR2oYY/oyhnPwKgADAcSVbH0Xy0Hu
+         3dIN4FmNHl3Qw==
+Date:   Sun, 24 Sep 2023 21:51:11 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Josua Mayer <josua@solid-run.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Fabio Estevam <festevam@denx.de>,
+        Aishwarya Kothari <aishwarya.kothari@toradex.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Marek Vasut <marex@denx.de>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>
+Subject: Re: [PATCH v5 4/4] arm64: dts: freescale: Add support for LX2162 SoM
+ & Clearfog Board
+Message-ID: <20230924135111.GJ7231@dragon>
+References: <20230818111016.11271-1-josua@solid-run.com>
+ <20230818111016.11271-5-josua@solid-run.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230818111016.11271-5-josua@solid-run.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,233 +64,537 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sep 2023 22:15:37 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Fri, Aug 18, 2023 at 01:10:16PM +0200, Josua Mayer wrote:
+> Add support for the SolidRun LX2162A System on Module (SoM), and the
+> Clearfog evaluation board.
 > 
-> Using the following code with libtracefs:
+> The SoM has few software-controllable features:
+> - AR8035 Ethernet PHY
+> - eMMC
+> - SPI Flash
+> - fan controller
+> - various eeproms
 > 
-> 	int dfd;
+> The Clearfog evaluation board provides:
+> - microSD connector
+> - USB-A
+> - 2x 10Gbps SFP+
+> - 2x 25Gbps SFP+ with a retimer
+> - 8x 2.5Gbps RJ45
+> - 2x mPCI (assembly option / disables 2xRJ45)
 > 
-> 	// create the directory events/kprobes/kp1
-> 	tracefs_kprobe_raw(NULL, "kp1", "schedule_timeout", "time=$arg1");
+> The 8x RJ45 ports are connected with an 8-port PHY: Marvell 88E2580
+> supporting up to 5Gbps, while SoC and magnetics are limited to 2.5Gbps.
 > 
-> 	// Open the kprobes directory
-> 	dfd = tracefs_instance_file_open(NULL, "events/kprobes", O_RDONLY);
+> However 2500 speed is untested due to documentation and drivier
+> limitations. To avoid confusion the phy nodes have been explicitly
+> limited to 1000 for now.
 > 
-> 	// Do a lookup of the kprobes/kp1 directory (by looking at enable)
-> 	tracefs_file_exists(NULL, "events/kprobes/kp1/enable");
+> The PCI nodes are disabled, but explicitly added to mark that this board
+> can have pci.
+> It is expected that the bootloader will patch the status property
+> "okay" and disable 2x RJ45 ports, according to active serdes configuration.
 > 
-> 	// Now create a new entry in the kprobes directory
-> 	tracefs_kprobe_raw(NULL, "kp2", "schedule_hrtimeout", "expires=$arg1");
-> 
-> 	// Do another lookup to create the dentries
-> 	tracefs_file_exists(NULL, "events/kprobes/kp2/enable"))
-> 
-> 	// Close the directory
-> 	close(dfd);
-> 
-> What happened above, the first open (dfd) will call
-> dcache_dir_open_wrapper() that will create the dentries and up their ref
-> counts.
-> 
-> Now the creation of "kp2" will add another dentry within the kprobes
-> directory.
-> 
-> Upon the close of dfd, eventfs_release() will now do a dput for all the
-> entries in kprobes. But this is where the problem lies. The open only
-> upped the dentry of kp1 and not kp2. Now the close is decrementing both
-> kp1 and kp2, which causes kp2 to get a negative count.
-> 
-> Doing a "trace-cmd reset" which deletes all the kprobes cause the kernel
-> to crash! (due to the messed up accounting of the ref counts).
-> 
-> To solve this, save all the dentries that are opened in the
-> dcache_dir_open_wrapper() into an array, and use this array to know what
-> dentries to do a dput on in eventfs_release().
-> 
-> Since the dcache_dir_open_wrapper() calls dcache_dir_open() which uses the
-> file->private_data, we need to also add a wrapper around dcache_readdir()
-> that uses the cursor assigned to the file->private_data. This is because
-> the dentries need to also be saved in the file->private_data. To do this
-> create the structure:
-> 
->   struct dentry_list {
-> 	void		*cursor;
-> 	struct dentry	**dentries;
->   };
-> 
-> Which will hold both the cursor and the dentries. Some shuffling around is
-> needed to make sure that dcache_dir_open() and dcache_readdir() only see
-> the cursor.
-> 
-> Link: https://lore.kernel.org/linux-trace-kernel/20230919211804.230edf1e@gandalf.local.home/
-
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you!
-
-> 
-> Fixes: 63940449555e7 ("eventfs: Implement eventfs lookup, read, open functions")
-> Reported-by: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Josua Mayer <josua@solid-run.com>
 > ---
->  fs/tracefs/event_inode.c | 87 ++++++++++++++++++++++++++++++++--------
->  1 file changed, 70 insertions(+), 17 deletions(-)
+> V1 -> V2: reordered "compatible" and "reg" properties
+> V1 -> V2: replaced chip-specific DT node names with generic ones
+> V1 -> V2: removed dead code from fspi node
+> V2 -> V3: dropped deprecated address-cells, address-size props from flash node
+> V3 -> V4: reordered dt properties such that status is last
+> V3 -> V4: changed ethernet-phy on som from /delete-node/ to disabled
 > 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index b23bb0957bb4..1c5c6a1ff4cc 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -30,6 +30,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
->  					  struct dentry *dentry,
->  					  unsigned int flags);
->  static int dcache_dir_open_wrapper(struct inode *inode, struct file *file);
-> +static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx);
->  static int eventfs_release(struct inode *inode, struct file *file);
+>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>  .../dts/freescale/fsl-lx2162a-clearfog.dts    | 373 ++++++++++++++++++
+>  .../dts/freescale/fsl-lx2162a-sr-som.dtsi     |  73 ++++
+>  3 files changed, 447 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts
+>  create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> index a750be13ace8..9448d2effd8a 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-honeycomb.dtb
+>  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-qds.dtb
+>  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
+>  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
+> +dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-clearfog.dtb
+
+Out of alphabetical order.
+
 >  
->  static const struct inode_operations eventfs_root_dir_inode_operations = {
-> @@ -39,7 +40,7 @@ static const struct inode_operations eventfs_root_dir_inode_operations = {
->  static const struct file_operations eventfs_file_operations = {
->  	.open		= dcache_dir_open_wrapper,
->  	.read		= generic_read_dir,
-> -	.iterate_shared	= dcache_readdir,
-> +	.iterate_shared	= dcache_readdir_wrapper,
->  	.llseek		= generic_file_llseek,
->  	.release	= eventfs_release,
->  };
-> @@ -356,6 +357,11 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
->  	return ret;
->  }
->  
-> +struct dentry_list {
-> +	void			*cursor;
-> +	struct dentry		**dentries;
+>  fsl-ls1028a-qds-13bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-13bb.dtbo
+>  fsl-ls1028a-qds-65bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-65bb.dtbo
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts b/arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts
+> new file mode 100644
+> index 000000000000..ad57f4cca62d
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts
+> @@ -0,0 +1,373 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +//
+> +// Device Tree file for LX2162A Clearfog
+> +//
+> +// Copyright 2023 Josua Mayer <josua@solid-run.com>
+> +
+> +/dts-v1/;
+> +
+> +#include "fsl-lx2160a.dtsi"
+> +#include "fsl-lx2162a-sr-som.dtsi"
+> +
+> +/ {
+> +	model = "SolidRun LX2162A Clearfog";
+> +	compatible = "solidrun,lx2162a-clearfog", "solidrun,lx2162a-som", "fsl,lx2160a";
+> +
+> +	aliases {
+> +		crypto = &crypto;
+> +		i2c0 = &i2c0;
+> +		i2c1 = &i2c2;
+> +		i2c2 = &i2c4;
+> +		i2c3 = &sfp_i2c0;
+> +		i2c4 = &sfp_i2c1;
+> +		i2c5 = &sfp_i2c2;
+> +		i2c6 = &sfp_i2c3;
+> +		i2c7 = &mpcie1_i2c;
+> +		i2c8 = &mpcie0_i2c;
+> +		i2c9 = &pcieclk_i2c;
+> +		mmc0 = &esdhc0;
+> +		mmc1 = &esdhc1;
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		led_sfp_at: led-sfp-at {
+> +			gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>; /* PROC_IRQ5 */
+> +			default-state = "off";
+> +		};
+
+Have a newline between nodes.
+
+> +		led_sfp_ab: led-sfp-ab {
+> +			gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>; /* PROC_IRQ11 */
+> +			default-state = "off";
+> +		};
+> +		led_sfp_bt: led-sfp-bt {
+> +			gpios = <&gpio2 13 GPIO_ACTIVE_HIGH>; /* EVT1_B */
+> +			default-state = "off";
+> +		};
+> +		led_sfp_bb: led-sfp-bb {
+> +			gpios = <&gpio2 14 GPIO_ACTIVE_HIGH>; /* EVT2_B */
+> +			default-state = "off";
+> +		};
+> +	};
+> +
+> +	sfp_at: sfp-at {
+> +		compatible = "sff,sfp";
+> +		i2c-bus = <&sfp_i2c0>;
+> +		mod-def0-gpios = <&gpio2 16 GPIO_ACTIVE_LOW>; /* EVT4_B */
+> +		maximum-power-milliwatt = <2000>;
+> +	};
+> +
+> +	sfp_ab: sfp-ab {
+> +		compatible = "sff,sfp";
+> +		i2c-bus = <&sfp_i2c1>;
+> +		mod-def0-gpios = <&gpio2 1 GPIO_ACTIVE_LOW>; /* PROC_IRQ1 */
+> +		maximum-power-milliwatt = <2000>;
+> +	};
+> +
+> +	sfp_bt: sfp-bt {
+> +		compatible = "sff,sfp";
+> +		i2c-bus = <&sfp_i2c2>;
+> +		mod-def0-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>; /* PROC_IRQ10 */
+> +		maximum-power-milliwatt = <2000>;
+> +	};
+> +
+> +	sfp_bb: sfp-bb {
+> +		compatible = "sff,sfp";
+> +		i2c-bus = <&sfp_i2c3>;
+> +		mod-def0-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>; /* EVT3_B */
+> +		maximum-power-milliwatt = <2000>;
+> +	};
 > +};
 > +
->  /**
->   * eventfs_release - called to release eventfs file/dir
->   * @inode: inode to be released
-> @@ -364,26 +370,25 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
->  static int eventfs_release(struct inode *inode, struct file *file)
->  {
->  	struct tracefs_inode *ti;
-> -	struct eventfs_inode *ei;
-> -	struct eventfs_file *ef;
-> -	struct dentry *dentry;
-> -	int idx;
-> +	struct dentry_list *dlist = file->private_data;
-> +	void *cursor;
-> +	int i;
->  
->  	ti = get_tracefs(inode);
->  	if (!(ti->flags & TRACEFS_EVENT_INODE))
->  		return -EINVAL;
->  
-> -	ei = ti->private;
-> -	idx = srcu_read_lock(&eventfs_srcu);
-> -	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
-> -				 srcu_read_lock_held(&eventfs_srcu)) {
-> -		mutex_lock(&eventfs_mutex);
-> -		dentry = ef->dentry;
-> -		mutex_unlock(&eventfs_mutex);
-> -		if (dentry)
-> -			dput(dentry);
-> +	if (WARN_ON_ONCE(!dlist))
-> +		return -EINVAL;
+> +&i2c2 {
+
+This label node seems out of alphabetical order.
+
+> +	status = "okay";
 > +
-> +	for (i = 0; dlist->dentries[i]; i++) {
-> +		dput(dlist->dentries[i]);
->  	}
-> -	srcu_read_unlock(&eventfs_srcu, idx);
+> +	/* retimer@18 */
 > +
-> +	cursor = dlist->cursor;
-> +	kfree(dlist->dentries);
-> +	kfree(dlist);
-> +	file->private_data = cursor;
->  	return dcache_dir_close(inode, file);
->  }
->  
-> @@ -402,22 +407,70 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
->  	struct tracefs_inode *ti;
->  	struct eventfs_inode *ei;
->  	struct eventfs_file *ef;
-> +	struct dentry_list *dlist;
-> +	struct dentry **dentries = NULL;
->  	struct dentry *dentry = file_dentry(file);
-> +	struct dentry *d;
->  	struct inode *f_inode = file_inode(file);
-> +	int cnt = 0;
->  	int idx;
-> +	int ret;
->  
->  	ti = get_tracefs(f_inode);
->  	if (!(ti->flags & TRACEFS_EVENT_INODE))
->  		return -EINVAL;
->  
-> +	if (WARN_ON_ONCE(file->private_data))
-> +		return -EINVAL;
+> +	i2c-mux@70 {
+> +		compatible = "nxp,pca9546";
+> +		reg = <0x70>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		i2c-mux-idle-disconnect;
 > +
-> +	dlist = kmalloc(sizeof(*dlist), GFP_KERNEL);
-> +	if (!dlist)
-> +		return -ENOMEM;
+> +		sfp_i2c0: i2c@0 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0>;
+> +		};
 > +
->  	ei = ti->private;
->  	idx = srcu_read_lock(&eventfs_srcu);
->  	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
->  				 srcu_read_lock_held(&eventfs_srcu)) {
-> -		create_dentry(ef, dentry, false);
-> +		d = create_dentry(ef, dentry, false);
-> +		if (d) {
-> +			struct dentry **tmp;
+> +		sfp_i2c1: i2c@1 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <1>;
+> +		};
 > +
-> +			tmp = krealloc(dentries, sizeof(d) * (cnt + 2), GFP_KERNEL);
-> +			if (!tmp)
-> +				break;
-> +			tmp[cnt] = d;
-> +			tmp[cnt + 1] = NULL;
-> +			cnt++;
-> +			dentries = tmp;
-> +		}
->  	}
->  	srcu_read_unlock(&eventfs_srcu, idx);
-> -	return dcache_dir_open(inode, file);
-> +	ret = dcache_dir_open(inode, file);
+> +		sfp_i2c2: i2c@2 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <2>;
+> +		};
 > +
+> +		sfp_i2c3: i2c@3 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <3>;
+> +		};
+> +	};
+> +
+> +	i2c-mux@71 {
+> +		compatible = "nxp,pca9546";
+> +		reg = <0x71>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		i2c-mux-idle-disconnect;
+> +
+> +		mpcie1_i2c: i2c@0 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0>;
+> +		};
+> +
+> +		mpcie0_i2c: i2c@1 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <1>;
+> +		};
+> +
+> +		pcieclk_i2c: i2c@2 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <2>;
+> +
+> +			/* clock-controller@6b */
+> +		};
+> +	};
+> +};
+> +
+> +&dpmac3 {
+> +	sfp = <&sfp_at>;
+> +	managed = "in-band-status";
+> +	phys = <&serdes_1 7>;
+> +};
+> +
+> +&dpmac4 {
+> +	sfp = <&sfp_ab>;
+> +	managed = "in-band-status";
+> +	phys = <&serdes_1 6>;
+> +};
+> +
+> +&dpmac5 {
+> +	sfp = <&sfp_bt>;
+> +	managed = "in-band-status";
+> +	phys = <&serdes_1 5>;
+> +};
+> +
+> +&dpmac6 {
+> +	sfp = <&sfp_bb>;
+> +	managed = "in-band-status";
+> +	phys = <&serdes_1 4>;
+> +};
+> +
+> +&dpmac11 {
+> +	phys = <&serdes_2 0>;
+> +	phy-handle = <&ethernet_phy3>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac12 {
+> +	phys = <&serdes_2 1>;
+> +	phy-handle = <&ethernet_phy1>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac13 {
+> +	phys = <&serdes_2 6>;
+> +	phy-handle = <&ethernet_phy6>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac14 {
+> +	phys = <&serdes_2 7>;
+> +	phy-handle = <&ethernet_phy8>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac15 {
+> +	phys = <&serdes_2 4>;
+> +	phy-handle = <&ethernet_phy4>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac16 {
+> +	phys = <&serdes_2 5>;
+> +	phy-handle = <&ethernet_phy2>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac17 {
+> +	/* override connection to on-SoM phy */
+> +	/delete-property/ phy-handle;
+> +	/delete-property/ phy-connection-type;
+> +
+> +	phys = <&serdes_2 2>;
+> +	phy-handle = <&ethernet_phy5>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&dpmac18 {
+> +	phys = <&serdes_2 3>;
+> +	phy-handle = <&ethernet_phy7>;
+> +	phy-connection-type = "sgmii";
+> +	status = "okay";
+> +};
+> +
+> +&emdio1 {
+> +	ethernet_phy1: ethernet-phy@8 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <8>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy2: ethernet-phy@9 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <9>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy3: ethernet-phy@10 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <10>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy4: ethernet-phy@11 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <11>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy5: ethernet-phy@12 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <12>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy6: ethernet-phy@13 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <13>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy7: ethernet-phy@14 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <14>;
+> +		max-speed = <1000>;
+> +	};
+> +
+> +	ethernet_phy8: ethernet-phy@15 {
+> +		compatible = "ethernet-phy-ieee802.3-c45";
+> +		reg = <15>;
+> +		max-speed = <1000>;
+> +	};
+> +};
+> +
+> +&esdhc0 {
+> +	sd-uhs-sdr104;
+> +	sd-uhs-sdr50;
+> +	sd-uhs-sdr25;
+> +	sd-uhs-sdr12;
+> +	status = "okay";
+> +};
+> +
+> +&ethernet_phy0 {
 > +	/*
-> +	 * dcache_dir_open() sets file->private_data to a dentry cursor.
-> +	 * Need to save that but also save all the dentries that were
-> +	 * opened by this function.
+> +	 * SoM has a phy at address 1 connected to SoC Ethernet Controller 1.
+> +	 * It competes for WRIOP MAC17, and no connector has been wired.
 > +	 */
-> +	dlist->cursor = file->private_data;
-> +	dlist->dentries = dentries;
-> +	file->private_data = dlist;
-> +	return ret;
-> +}
+> +	status = "disabled";
+> +};
 > +
-> +/*
-> + * This just sets the file->private_data back to the cursor and back.
-> + */
-> +static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
-> +{
-> +	struct dentry_list *dlist = file->private_data;
-> +	int ret;
+> +&pcie3 {
+> +	status = "disabled";
+> +};
 > +
-> +	file->private_data = dlist->cursor;
-> +	ret = dcache_readdir_wrapper;
-> +	dlist->cursor = file->private_data;
-> +	file->private_data = dlist;
-> +	return ret;
->  }
->  
->  /**
+> +&pcie4 {
+> +	status = "disabled";
+> +};
+> +
+> +&pcs_mdio3 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio4 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio5 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio6 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio11 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio12 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio13 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio14 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio15 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio16 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio17 {
+> +	status = "okay";
+> +};
+> +
+> +&pcs_mdio18 {
+> +	status = "okay";
+> +};
+> +
+> +&serdes_1 {
+> +	status = "okay";
+> +};
+> +
+> +&serdes_2 {
+> +	status = "okay";
+> +};
+> +
+> +&uart0 {
+> +	status = "okay";
+> +};
+> +
+> +&usb0 {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi
+> new file mode 100644
+> index 000000000000..ac3f9bc60265
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi
+> @@ -0,0 +1,73 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +//
+> +// Device Tree file for LX2162A-SOM
+> +//
+> +// Copyright 2021 Rabeeh Khoury <rabeeh@solid-run.com>
+> +// Copyright 2023 Josua Mayer <josua@solid-run.com>
+> +
+> +&crypto {
+> +	status = "okay";
+> +};
+> +
+> +&dpmac17 {
+> +	phy-handle = <&ethernet_phy0>;
+> +	phy-connection-type = "rgmii-id";
+> +};
+> +
+> +&emdio1 {
+> +	status = "okay";
+> +
+> +	ethernet_phy0: ethernet-phy@1 {
+> +		reg = <1>;
+> +	};
+> +};
+> +
+> +&esdhc1 {
+> +	status = "okay";
+> +	bus-width = <8>;
+> +	mmc-hs200-1_8v;
+> +	mmc-hs400-1_8v;
+
+We usually have 'status' be the last property.
+
+Shawn
+
+> +};
+> +
+> +&fspi {
+> +	status = "okay";
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +		m25p,fast-read;
+> +		spi-max-frequency = <50000000>;
+> +		/* The following setting enables 1-1-8 (CMD-ADDR-DATA) mode */
+> +		spi-rx-bus-width = <8>;
+> +		spi-tx-bus-width = <1>;
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +
+> +	fan-controller@18 {
+> +		compatible = "ti,amc6821";
+> +		reg = <0x18>;
+> +	};
+> +
+> +	ddr_spd: eeprom@51 {
+> +		compatible = "st,24c02", "atmel,24c02";
+> +		reg = <0x51>;
+> +		read-only;
+> +	};
+> +
+> +	config_eeprom: eeprom@57 {
+> +		compatible = "st,24c02", "atmel,24c02";
+> +		reg = <0x57>;
+> +	};
+> +};
+> +
+> +&i2c4 {
+> +	status = "okay";
+> +
+> +	variable_eeprom: eeprom@54 {
+> +		compatible = "st,24c2048", "atmel,24c2048";
+> +		reg = <0x54>;
+> +	};
+> +};
 > -- 
-> 2.40.1
+> 2.35.3
 > 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
