@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 398AE7ACB7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 20:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26E17ACB7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 20:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbjIXSsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 14:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        id S229608AbjIXSx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 14:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjIXSsj (ORCPT
+        with ESMTP id S229532AbjIXSx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 14:48:39 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD9FE3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:48:32 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-317c3ac7339so4877161f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:48:32 -0700 (PDT)
+        Sun, 24 Sep 2023 14:53:27 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D7AF1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:53:20 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso94643066b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695581311; x=1696186111; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695581598; x=1696186398; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xnmXOA+QaS63l50OfXpIek29rfu95uFcEdyHDfaQmtw=;
-        b=Flgrv60PVE8qsyt52tZJNQV3X2YWKBK7AH62/hXMjsu/1mIuPPVP3DcqX5drWF8psH
-         CBmI17DsSrih6ejAd81a7pmLX754lgCjZDx6/aX/AXoO6X8RffwZUw8qLabumnm8KlKp
-         IFJxe0IjpQdm/zrr4lr3MyyTiDxM9xIlQdmBlrMnT9+NKogIzCHjUZ2qg61YZw5r3i3d
-         XOo7T2qvAUlp+XeerKIieYfoOg5PliFdyaGOeYpVgKdMYJwfa9T6TgNQWZXtN494IMjY
-         VbcpfYBEZ1dPLdp7ubEOLUt22vBRyGTqdyubXhXLWhcmbimiWBojmF8P2rnmvopxNB+g
-         bZmg==
+        bh=AinxDjuk2OdHyvjkqST1cXyQFe11UheEyMYXILE7+oI=;
+        b=aeS+0Bsm+3iwQZkQDp8VrbCNlm0gGf86AHN1TtAvgK2CXwi8CwHZphU9y2Bu9QDj/h
+         MCml6EcHihFWWFFUFS//+c+6KeupdXPtDiBPldMA4A5n9pYgn08bNjNcKjrPMFCBBjJq
+         Vt4qut9gYlAFWeVPbdl56r9gpL/IGOLN18rNHrkxulvQYHqbcT4UawxC5zIhPvWfN0uc
+         eJW0EzsaO8ufZ/4lIW6ewe7lIq0xRVvigTJTJCxBAprByp2+IO+XP0indN6isEfMNaFq
+         rL8DTQXNclLL+6F42NY7ZuLc2OKKgwIF2xFIc8AEVG2iT/4TyUZ1IpQqkoVF+BREHeHP
+         P2GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695581311; x=1696186111;
+        d=1e100.net; s=20230601; t=1695581598; x=1696186398;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xnmXOA+QaS63l50OfXpIek29rfu95uFcEdyHDfaQmtw=;
-        b=bi58xg4HdIGP+DrHjcLN3pP9udlnAAzjhyngWheFx9Juyz9Ye4TSYpaVIjnjgfPQf9
-         FLFWGQlIJIPlYVh9ZO/ICscpaqAfGwhRHPM1u4TYpws2ZITlqeRfBYLxEZEE5MOB9u3h
-         I/Hwysat888eCibZWNlwK9HVXpJ/VTKEcuO0YBKQVZLeRHcO7Lg2tO2ZLmb2mZs3v7tN
-         aqeHW5u0408qqVIorrpMiNUmAmY8uHh2YMHgalXHrrhaR5mrLRnjJB2Mp1Hwv3jk5VBi
-         mWGySFyQMsmJB2o0nTNFovhTri8+S9hmawtOmzJZW42Tr0CN2fU3UHuT4XGuFsj50BHX
-         D6IA==
-X-Gm-Message-State: AOJu0Yznka0NtJ0GDgtuStFkRMU2el7paXTtuF0wvxgCa29TGFd5OM/M
-        XTQOYjd4ZzrTBUSEWqvkualaMQ==
-X-Google-Smtp-Source: AGHT+IHyH0HKd5TJnAMW3M3Xdk7i6R8SJsZpVD090tzbS9CszgulAe1FBk9IZWdv21USwgLraypf+g==
-X-Received: by 2002:a5d:68c6:0:b0:319:8bb3:ab83 with SMTP id p6-20020a5d68c6000000b003198bb3ab83mr4326273wrw.66.1695581311308;
-        Sun, 24 Sep 2023 11:48:31 -0700 (PDT)
+        bh=AinxDjuk2OdHyvjkqST1cXyQFe11UheEyMYXILE7+oI=;
+        b=FkmrYvi+gF/cAfG6ANKax8+OVuTTbdJy7oeRkeO/qoqTU8oZdosscrtwKju3Zuuv6Q
+         G7lJHP9zXv1kdNXzo1jT8tK943kAmtOsbhsqoscEJwKMYQse+d+2kaGUd0kA68BaWX+J
+         vZJj/ZjILWs0c7PoduQyYDj8nN6U5t2pX+LBsEprYrdQV548f6voCiYpwrdoC5fYl7ZB
+         nXJ6d7N277iNX6rHkDQG5PrLQzT+qxfIkey6FBb6mFPVH/V63hJgzbP/SDrGh0d3kgjV
+         8JsdirspVaQyYsnmSF1NEF9URHQKiYJSVFm7CnK0pnSyG2Z+jmZhSieHlZUWo/iZhFT4
+         kRkQ==
+X-Gm-Message-State: AOJu0YxSpwk5WbzD1nYBExZAfHGE+CXad5WDjHFex5fQUokTXFYMxEZb
+        Aru3PqS9K7D/H5xbSoS1WgDbkQ==
+X-Google-Smtp-Source: AGHT+IGzwEsYYaLy7950BBej6j6JoNy6OUXhiAe7cn1L40N+Xb2y0CwvAJnA0+dSI6x6ZKBDNeIdaA==
+X-Received: by 2002:a17:906:cc5c:b0:9aa:e08:9fb7 with SMTP id mm28-20020a170906cc5c00b009aa0e089fb7mr4016980ejb.76.1695581597821;
+        Sun, 24 Sep 2023 11:53:17 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id h4-20020a056000000400b0031aef72a021sm9960058wrx.86.2023.09.24.11.48.29
+        by smtp.gmail.com with ESMTPSA id t2-20020a17090616c200b0099d45ed589csm5230849ejd.125.2023.09.24.11.53.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 11:48:30 -0700 (PDT)
-Message-ID: <54d7a712-0b07-462a-8750-4b5b2f3150c4@linaro.org>
-Date:   Sun, 24 Sep 2023 20:48:29 +0200
+        Sun, 24 Sep 2023 11:53:17 -0700 (PDT)
+Message-ID: <a004afcd-08a0-4da4-9e3c-3b12445c7b43@linaro.org>
+Date:   Sun, 24 Sep 2023 20:53:15 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: dts: use capital "OR" for multiple licenses in
- SPDX
+Subject: Re: [PATCH v2 4/4] ARM: dts: st: stih407: drop max-duty-cycle
 Content-Language: en-US
-To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+To:     Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230823085238.113642-1-krzysztof.kozlowski@linaro.org>
- <5962565.lOV4Wx5bFT@jernej-laptop>
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20230730174954.5293-1-krzysztof.kozlowski@linaro.org>
+ <20230730174954.5293-4-krzysztof.kozlowski@linaro.org>
+ <e6afc5bb-7477-36d6-b05b-2afdd1107f03@foss.st.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -116,9 +114,9 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <5962565.lOV4Wx5bFT@jernej-laptop>
+In-Reply-To: <e6afc5bb-7477-36d6-b05b-2afdd1107f03@foss.st.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -129,39 +127,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 21:13, Jernej Škrabec wrote:
-> Dne sreda, 23. avgust 2023 ob 10:52:38 CEST je Krzysztof Kozlowski napisal(a):
->> Documentation/process/license-rules.rst and checkpatch expect the SPDX
->> identifier syntax for multiple licenses to use capital "OR".  Correct it
->> to keep consistent format and avoid copy-paste issues.
+On 16/08/2023 08:54, Patrice CHOTARD wrote:
+> 
+> 
+> On 7/30/23 19:49, Krzysztof Kozlowski wrote:
+>> "max-duty-cycle" property was removed in the commit f747a1fe7848
+>> ("regulator: pwm-regulator: Remove obsoleted property"):
+>>
+>>   stih418-b2199.dtb: pwm-regulator: Unevaluated properties are not allowed ('max-duty-cycle' was unexpected)
 >>
 >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 >>
 >> ---
 >>
->> Rebased on next-20230822, so might not apply cleanly.  What does not
->> apply, can be skipped and I will fix it after next RC.
+>> Changes in v2:
+>> 1. Correct subject prefix: AMR->ARM
 >> ---
->>  arch/riscv/boot/dts/allwinner/sun20i-common-regulators.dtsi     | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dts  | 2 +-
->>  .../boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-480p.dts    | 2 +-
->>  .../boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-720p.dts    | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel.dtsi | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock.dts      | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dts           | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro.dts      | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dts               | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1.dtsi                    | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dts         | 2 +-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi                   | 2 +-
->>  arch/riscv/boot/dts/allwinner/sunxi-d1-t113.dtsi                | 2 +-
->>  arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi               | 2 +-
+>>  arch/arm/boot/dts/st/stih407-family.dtsi | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/arch/arm/boot/dts/st/stih407-family.dtsi b/arch/arm/boot/dts/st/stih407-family.dtsi
+>> index 3f58383a7b59..29302e74aa1d 100644
+>> --- a/arch/arm/boot/dts/st/stih407-family.dtsi
+>> +++ b/arch/arm/boot/dts/st/stih407-family.dtsi
+>> @@ -111,7 +111,6 @@ pwm_regulator: pwm-regulator {
+>>  		regulator-min-microvolt = <784000>;
+>>  		regulator-max-microvolt = <1299000>;
+>>  		regulator-always-on;
+>> -		max-duty-cycle = <255>;
+>>  		status = "okay";
+>>  	};
+>>  
 > 
-> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 > 
-> sunxi DT changes are already closed for 6.5. I can take it after -rc1 for 6.6.
+> Applied on sti-next
 
-Hmmmm and what is the status of taking it after rc1?
+This is still not in linux-next (one month later!).
+
+I don't know what happened here, maybe patch got lost (thus let me know
+if I am expect to apply it, which should not be the norm, but meh...).
+If it is not the case and for example your tree is not in next, then
+maybe this will be of use:
+https://social.kernel.org/notice/Aa2Gbxj4cyyuUb0P8S
+https://lpc.events/event/17/contributions/1498/
+
+:)
 
 Best regards,
 Krzysztof
