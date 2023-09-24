@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 861057AC9EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 16:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A688C7AC9F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 16:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjIXOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 10:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        id S229785AbjIXOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 10:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXOOv (ORCPT
+        with ESMTP id S229782AbjIXOV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 10:14:51 -0400
-Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5100AB
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 07:14:45 -0700 (PDT)
-Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-57b78a20341so7506403eaf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 07:14:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695564885; x=1696169685;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pRsRZUAIMv4FuhiK6PMD9AshJLltQTCldVEy4Ubn5U8=;
-        b=ZxLHhGX56lc0FWKFiLQBNLcvEN2op8zNdNdqyLFtAAeccaKZX5z2PqaaV1Vgi2tBdv
-         0xxKmH1y+O672DmAmplD3Tq+1H4HD0eA3d5SW8w/e+lbZ+QcvSfL5b0mxtVdX7Zn+KQL
-         xDPALtPIBCztlz7StWuymKxBhNEFynGRd4zekwiMKnz5w7G5GjzMKJz6737FPa1f2gA+
-         V6ijldGR0+0wGXb2XHxfqhf5RFWtr/xfb6scHnHUQPnOCowt3aFaiZJVGrwL+ImbGV8n
-         HgJ4o4mwsZxrRJ6MYnwFOUIUab4V2ItH7xqEAWnGCd44VRq5wY2VAlBbR5EQyI4mWOmE
-         BBrQ==
-X-Gm-Message-State: AOJu0YytJi+H4FrosjhHO9xlP8G9EhOUfnMvyqXfOGej6FLEPF66Zwgf
-        dLNYehceu0pU9eFKumizzYPqj0NzmoNUP14kw8pb1KtBPLhv
-X-Google-Smtp-Source: AGHT+IG5OyaMel7wuQNCLuRrNrdfchiE3XRhmAnZzCL/0CReIr6zw1DVVsdtPeWqAcETeaW+OFzGNUmtSTTrKH+shN8E6+WIFjqo
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:19a2:b0:3ae:2024:837d with SMTP id
- bj34-20020a05680819a200b003ae2024837dmr2549189oib.8.1695564884924; Sun, 24
- Sep 2023 07:14:44 -0700 (PDT)
-Date:   Sun, 24 Sep 2023 07:14:44 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a8df0406061b76e6@google.com>
-Subject: [syzbot] riscv/fixes test error: BUG: got no coverage: (3)
-From:   syzbot <syzbot+2ecff9714d050e3c3a88@syzkaller.appspotmail.com>
-To:     aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        Sun, 24 Sep 2023 10:21:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04CDFB
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 07:21:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8121C433C8;
+        Sun, 24 Sep 2023 14:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695565311;
+        bh=h+by+Bpd3urcZtbmENRkjjPEMFhQuHlQ8ScQxWIt5nI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WF3iltcHUuE60EUwiSfre9imVRIRFagHHoPZed4IDgYUxXm2D7Qpcvn7MRQO8gt+r
+         WERMdkArOlxZ57kreyvIRWi0YuL81ddvlzu2GkI9EbRhpIxuzUyLclf2c1W2OPyPGp
+         s0A7jrx1jwYyky3uKID+vhocl4zQ/SaBuZBP/iQef/j2xfTlHSTB5HQwwgrBQ5NTOc
+         p2CR3IZGSzj+KLwrP0/QwdTmP7E0EQDxQtSFsyQYmM++0ZKZBtbuszk/aNr0d55BRX
+         C064niKvXbM3YykUXgfcOe9NbDs4g3MmH0tw14BmrVk++X8KIHVJNixNI6EH3ztRq3
+         fvoNP7odJtuQA==
+Date:   Sun, 24 Sep 2023 23:21:45 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+Subject: Re: [PATCH v9 1/5] lib: objpool added: ring-array based lockless
+ MPMC
+Message-Id: <20230924232145.05efde741742e24f3f4fd032@kernel.org>
+In-Reply-To: <20230905015255.81545-2-wuqiang.matt@bytedance.com>
+References: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
+        <20230905015255.81545-2-wuqiang.matt@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,51 +56,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On Tue,  5 Sep 2023 09:52:51 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 
-HEAD commit:    b06fab003ae1 riscv: kselftests: Fix mm build by removing t..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=16388918680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89f0a88d4bc7f0f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=2ecff9714d050e3c3a88
-compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: riscv64
+> +/* cleanup all percpu slots of the object pool */
+> +static void objpool_fini_percpu_slots(struct objpool_head *head)
+> +{
+> +	int i;
+> +
+> +	if (!head->cpu_slots)
+> +		return;
+> +
+> +	for (i = 0; i < head->nr_cpus; i++) {
+> +		if (!head->cpu_slots[i])
+> +			continue;
+> +		if (head->flags & OBJPOOL_FROM_VMALLOC)
+> +			vfree(head->cpu_slots[i]);
+> +		else
+> +			kfree(head->cpu_slots[i]);
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-b06fab00.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d751d3ead63f/vmlinux-b06fab00.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d72380bd99cc/Image-b06fab00.xz
+You can use kvfree() for both kmalloc object and vmalloc object.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2ecff9714d050e3c3a88@syzkaller.appspotmail.com
+> +	}
+> +	kfree(head->cpu_slots);
+> +	head->cpu_slots = NULL;
+> +	head->slot_sizes = NULL;
+> +}
 
-executing program
-executing program
-executing program
-executing program
-1970/01/01 00:05:53 SYZFATAL: BUG: got no coverage:
-loop exited with status 11
+...
+
+> +/* drop the allocated object, rather reclaim it to objpool */
+> +int objpool_drop(void *obj, struct objpool_head *head)
+> +{
+> +	if (!obj || !head)
+> +		return -EINVAL;
+> +
+> +	if (refcount_dec_and_test(&head->ref)) {
+> +		objpool_free(head);
+> +		return 0;
+> +	}
+> +
+> +	return -EAGAIN;
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_drop);
+
+To make this work correctly, you need to disable the objpool (no more
+pop the object from it) and ensure the objpool is disabled.
+Also, when disabling the objpool, its refcount must be set to the "active"
+number of objects.
+
+Thank you,
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
