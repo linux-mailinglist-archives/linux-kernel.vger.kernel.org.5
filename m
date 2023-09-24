@@ -2,811 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EB37ACC18
+	by mail.lfdr.de (Postfix) with ESMTP id 26CCF7ACC15
 	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 23:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjIXVgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 17:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S229698AbjIXVtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 17:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXVgu (ORCPT
+        with ESMTP id S229437AbjIXVtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 17:36:50 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5D9B8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 14:36:42 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32329d935d4so379858f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 14:36:41 -0700 (PDT)
+        Sun, 24 Sep 2023 17:49:16 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A9ACF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 14:49:09 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32172a50356so4919801f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 14:49:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695591400; x=1696196200; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2RhATvAcghwuhcYQhwIiXnR6w9Qtf7gg/Iu9Sssu4ZU=;
-        b=bLuni6eTTkdmf1al+m7p2BrXNORGnSg8kkWtJz5NNBdwy7/bVVGby3YoRrsLuUkgrJ
-         ruQPUyHsJl/gxBQhbAdj7DRv/Y/ErIASyEVN4lZnlRfhhg6NKvfarxv4VQrgMkUQGqvz
-         hDF8UZ1QNPIs4iw24Rc4oHY18KC/xPQOhd0oc=
+        d=gmail.com; s=20230601; t=1695592148; x=1696196948; darn=vger.kernel.org;
+        h=content-transfer-encoding:autocrypt:subject:from:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ek9BNVrpshi5cl59nDE7/GhctrsINlC8DhegSdq3I2Y=;
+        b=nJnMB0mw4otzijZtX6ZQ95vcsBGIV7klh4wTnfvgYOhpmJ82fRLAZhUYFmsXfZKxyv
+         CP845ORb6T2rYThJV8tmDQV5CnC0B1ErdhzWVGc5LQuz4mpnOODLwJLM8RxZqPs42rm/
+         qDveMAb5AM846387AFNKKKLTqPCZyuGmX3SvqETMZ5hIIdMv4YwaKZIjahcqf7Xnru+t
+         ru99Iar51GjD6WJ4JsFJDd3BSf1+55MD+SsPis6aCdIP8iLkPJOn4P62474eigxdQs32
+         C0JyzzdPb6gpwh5TRw42xtX3USaNOG8x0MyQZbR1GEWPbdsL5eoTpZVuohopm1dwnuJc
+         uweQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695591400; x=1696196200;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2RhATvAcghwuhcYQhwIiXnR6w9Qtf7gg/Iu9Sssu4ZU=;
-        b=Zq1y9uDRi7UYUQEBktvotqMVWVg7FG2g5Y/UQNqqnH0OsRrDKF3YMwthlH76MA0dl0
-         +oXUkDl0I7lpaAcStMbrJ/hHNyex71wxFqnWx/i6IEp9EQEckgoZlsXzcWdAJuyzfOXr
-         sNj1Zv2b/VtYEIUroV8o5Fw2wUfU+c+k+tT6Ov3+YrM7D0XsyVg4cMBXBXNpDgtM/4LN
-         3eywgqFLWu0WGLGkXOVcVIbjpEkArRK9Q2wLmEL55JWXSDRW5yDn521RIgU34wrQN4Bx
-         DowsmstpSoCZ2/jrTuQLh59UNH3StDL3A4Sw25AUmhF/EbXEG9BVeWZNVsvJRV6L/HWY
-         msAw==
-X-Gm-Message-State: AOJu0Yw+zuieiGM78CfZE090nNpe9dAIMiSKDRcH6Zu4Gp270a7ItnFH
-        IfdfwflOHtcq8w2SjPZbk5t9eMjMZ8N0r3gajCGHzg==
-X-Google-Smtp-Source: AGHT+IF++95lvCbLXnXdDmsKg7Vs8MrTH0jbK7gEUTAlioi1uCCmp5zzkUGRidnz7FHtfRF7i+qPkQ==
-X-Received: by 2002:adf:f004:0:b0:31a:e376:6bd6 with SMTP id j4-20020adff004000000b0031ae3766bd6mr4058055wro.45.1695591399914;
-        Sun, 24 Sep 2023 14:36:39 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id y4-20020a17090614c400b00992b510089asm5395065ejc.84.2023.09.24.14.36.39
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1695592148; x=1696196948;
+        h=content-transfer-encoding:autocrypt:subject:from:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ek9BNVrpshi5cl59nDE7/GhctrsINlC8DhegSdq3I2Y=;
+        b=omzzG0XbxLhS5eiJlLxSEkT+qN81SecgK5yjLtSjQTLsFeOIpdU3IPuizIocRVdywA
+         ncaiZPQR+u4bPqJou/wLJ1hh8XNHw1qZIwrO7+/QXxOCrYBpKJ3ZZc8gpPLs0dwnz5rF
+         U8jJf3oI/ezAcu6p173rdKfDR6tvRt7XqkRTFnJaGTBnrm2Qja4jp/m/VX/pdAOaR/26
+         EMkQKO4EPxqXTTI08hDnnXWmHMaelkF+GAf3KlLfrHM6z4lcxxR89Ozzf/1w/UCCPtSJ
+         8AWoqiAhuQWcDgJHQ+D7cVCkn/U/7/+JMrd4nnTFRV8/uZftIdGMgL5/CzGpUa0B9qvv
+         CZsw==
+X-Gm-Message-State: AOJu0YzAZyCyLIy5lL5dSzDGZP0ebY+sRIlB1pb5uTJupQ90ip6eEtAL
+        Ic1wwDdaGzf1b5Yh20GSfPg=
+X-Google-Smtp-Source: AGHT+IE4OG1Np1Fg1cDtdE7ufPEH0p7EulihEeF26GIhcE0dlOUA+gMdfk6GUgyZAafQrKW28YvEXw==
+X-Received: by 2002:adf:fbc7:0:b0:31f:d7bb:481e with SMTP id d7-20020adffbc7000000b0031fd7bb481emr4070800wrs.63.1695592147437;
+        Sun, 24 Sep 2023 14:49:07 -0700 (PDT)
+Received: from ?IPV6:2a01:c22:733a:a600:a942:a2c8:b8cd:b5bd? (dynamic-2a01-0c22-733a-a600-a942-a2c8-b8cd-b5bd.c22.pool.telefonica.de. [2a01:c22:733a:a600:a942:a2c8:b8cd:b5bd])
+        by smtp.googlemail.com with ESMTPSA id o11-20020a5d4a8b000000b0031fc4c31d77sm10172393wrq.88.2023.09.24.14.49.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 14:36:39 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso6200751a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 14:36:39 -0700 (PDT)
-X-Received: by 2002:a05:6402:2050:b0:523:b1b0:f69f with SMTP id
- bc16-20020a056402205000b00523b1b0f69fmr3734225edb.32.1695591398593; Sun, 24
- Sep 2023 14:36:38 -0700 (PDT)
+        Sun, 24 Sep 2023 14:49:06 -0700 (PDT)
+Message-ID: <18241458-52db-4537-bead-d570801253c3@gmail.com>
+Date:   Sun, 24 Sep 2023 23:49:09 +0200
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 24 Sep 2023 14:36:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
-Message-ID: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
-Subject: Linux 6.6-rc3
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH] eeprom: Remove deprecated legacy eeprom driver
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another week, another -rc.
+Driver was marked deprecated 4 years ago, so it's time to remove it.
+This driver is the only i2c client driver using class I2C_CLASS_SPD.
+Apparently, as a follow-up step, we can remove I2C_CLASS_SPD
+altogether.
 
-As usual, rc3 is a bit larger than rc2, as people have started finding
-more issues.
-
-Unusually, we have a large chunk of changes in filesystems. Part of it
-is the vfs-level revert of some of the timestamp handling that needs
-to soak a bit more, and part of it is some xfs fixes. With a few other
-filesystem fixes too.
-
-But drivers and architecture updates are also up there, so it's not
-like the fs stuff dominates. It's just more noticeable than it usually
-is.
-
-Anyway, please do go test. None of this looks scary,
-
-                 Linus
-
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 ---
+ drivers/misc/eeprom/Kconfig  |  14 ---
+ drivers/misc/eeprom/Makefile |   1 -
+ drivers/misc/eeprom/eeprom.c | 214 -----------------------------------
+ 3 files changed, 229 deletions(-)
+ delete mode 100644 drivers/misc/eeprom/eeprom.c
+
+diff --git a/drivers/misc/eeprom/Kconfig b/drivers/misc/eeprom/Kconfig
+index 2d240bfa8..4e61ac18c 100644
+--- a/drivers/misc/eeprom/Kconfig
++++ b/drivers/misc/eeprom/Kconfig
+@@ -46,20 +46,6 @@ config EEPROM_AT25
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called at25.
+ 
+-config EEPROM_LEGACY
+-	tristate "Old I2C EEPROM reader (DEPRECATED)"
+-	depends on I2C && SYSFS
+-	help
+-	  If you say yes here you get read-only access to the EEPROM data
+-	  available on modern memory DIMMs and Sony Vaio laptops via I2C. Such
+-	  EEPROMs could theoretically be available on other devices as well.
+-
+-	  This driver is deprecated and will be removed soon, please use the
+-	  better at24 driver instead.
+-
+-	  This driver can also be built as a module.  If so, the module
+-	  will be called eeprom.
+-
+ config EEPROM_MAX6875
+ 	tristate "Maxim MAX6874/5 power supply supervisor"
+ 	depends on I2C
+diff --git a/drivers/misc/eeprom/Makefile b/drivers/misc/eeprom/Makefile
+index a9b4b6579..65794e526 100644
+--- a/drivers/misc/eeprom/Makefile
++++ b/drivers/misc/eeprom/Makefile
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_EEPROM_AT24)	+= at24.o
+ obj-$(CONFIG_EEPROM_AT25)	+= at25.o
+-obj-$(CONFIG_EEPROM_LEGACY)	+= eeprom.o
+ obj-$(CONFIG_EEPROM_MAX6875)	+= max6875.o
+ obj-$(CONFIG_EEPROM_93CX6)	+= eeprom_93cx6.o
+ obj-$(CONFIG_EEPROM_93XX46)	+= eeprom_93xx46.o
+diff --git a/drivers/misc/eeprom/eeprom.c b/drivers/misc/eeprom/eeprom.c
+deleted file mode 100644
+index ccb7c2f7e..000000000
+--- a/drivers/misc/eeprom/eeprom.c
++++ /dev/null
+@@ -1,214 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (C) 1998, 1999  Frodo Looijaard <frodol@dds.nl> and
+- *                           Philip Edelbrock <phil@netroedge.com>
+- * Copyright (C) 2003 Greg Kroah-Hartman <greg@kroah.com>
+- * Copyright (C) 2003 IBM Corp.
+- * Copyright (C) 2004 Jean Delvare <jdelvare@suse.de>
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/device.h>
+-#include <linux/capability.h>
+-#include <linux/jiffies.h>
+-#include <linux/i2c.h>
+-#include <linux/mutex.h>
+-
+-/* Addresses to scan */
+-static const unsigned short normal_i2c[] = { 0x50, 0x51, 0x52, 0x53, 0x54,
+-					0x55, 0x56, 0x57, I2C_CLIENT_END };
+-
+-
+-/* Size of EEPROM in bytes */
+-#define EEPROM_SIZE		256
+-
+-/* possible types of eeprom devices */
+-enum eeprom_nature {
+-	UNKNOWN,
+-	VAIO,
+-};
+-
+-/* Each client has this additional data */
+-struct eeprom_data {
+-	struct mutex update_lock;
+-	u8 valid;			/* bitfield, bit!=0 if slice is valid */
+-	unsigned long last_updated[8];	/* In jiffies, 8 slices */
+-	u8 data[EEPROM_SIZE];		/* Register values */
+-	enum eeprom_nature nature;
+-};
+-
+-
+-static void eeprom_update_client(struct i2c_client *client, u8 slice)
+-{
+-	struct eeprom_data *data = i2c_get_clientdata(client);
+-	int i;
+-
+-	mutex_lock(&data->update_lock);
+-
+-	if (!(data->valid & (1 << slice)) ||
+-	    time_after(jiffies, data->last_updated[slice] + 300 * HZ)) {
+-		dev_dbg(&client->dev, "Starting eeprom update, slice %u\n", slice);
+-
+-		if (i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_READ_I2C_BLOCK)) {
+-			for (i = slice << 5; i < (slice + 1) << 5; i += 32)
+-				if (i2c_smbus_read_i2c_block_data(client, i,
+-							32, data->data + i)
+-							!= 32)
+-					goto exit;
+-		} else {
+-			for (i = slice << 5; i < (slice + 1) << 5; i += 2) {
+-				int word = i2c_smbus_read_word_data(client, i);
+-				if (word < 0)
+-					goto exit;
+-				data->data[i] = word & 0xff;
+-				data->data[i + 1] = word >> 8;
+-			}
+-		}
+-		data->last_updated[slice] = jiffies;
+-		data->valid |= (1 << slice);
+-	}
+-exit:
+-	mutex_unlock(&data->update_lock);
+-}
+-
+-static ssize_t eeprom_read(struct file *filp, struct kobject *kobj,
+-			   struct bin_attribute *bin_attr,
+-			   char *buf, loff_t off, size_t count)
+-{
+-	struct i2c_client *client = kobj_to_i2c_client(kobj);
+-	struct eeprom_data *data = i2c_get_clientdata(client);
+-	u8 slice;
+-
+-	/* Only refresh slices which contain requested bytes */
+-	for (slice = off >> 5; slice <= (off + count - 1) >> 5; slice++)
+-		eeprom_update_client(client, slice);
+-
+-	/* Hide Vaio private settings to regular users:
+-	   - BIOS passwords: bytes 0x00 to 0x0f
+-	   - UUID: bytes 0x10 to 0x1f
+-	   - Serial number: 0xc0 to 0xdf */
+-	if (data->nature == VAIO && !capable(CAP_SYS_ADMIN)) {
+-		int i;
+-
+-		for (i = 0; i < count; i++) {
+-			if ((off + i <= 0x1f) ||
+-			    (off + i >= 0xc0 && off + i <= 0xdf))
+-				buf[i] = 0;
+-			else
+-				buf[i] = data->data[off + i];
+-		}
+-	} else {
+-		memcpy(buf, &data->data[off], count);
+-	}
+-
+-	return count;
+-}
+-
+-static const struct bin_attribute eeprom_attr = {
+-	.attr = {
+-		.name = "eeprom",
+-		.mode = S_IRUGO,
+-	},
+-	.size = EEPROM_SIZE,
+-	.read = eeprom_read,
+-};
+-
+-/* Return 0 if detection is successful, -ENODEV otherwise */
+-static int eeprom_detect(struct i2c_client *client, struct i2c_board_info *info)
+-{
+-	struct i2c_adapter *adapter = client->adapter;
+-
+-	/* EDID EEPROMs are often 24C00 EEPROMs, which answer to all
+-	   addresses 0x50-0x57, but we only care about 0x50. So decline
+-	   attaching to addresses >= 0x51 on DDC buses */
+-	if (!(adapter->class & I2C_CLASS_SPD) && client->addr >= 0x51)
+-		return -ENODEV;
+-
+-	/* There are four ways we can read the EEPROM data:
+-	   (1) I2C block reads (faster, but unsupported by most adapters)
+-	   (2) Word reads (128% overhead)
+-	   (3) Consecutive byte reads (88% overhead, unsafe)
+-	   (4) Regular byte data reads (265% overhead)
+-	   The third and fourth methods are not implemented by this driver
+-	   because all known adapters support one of the first two. */
+-	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_READ_WORD_DATA)
+-	 && !i2c_check_functionality(adapter, I2C_FUNC_SMBUS_READ_I2C_BLOCK))
+-		return -ENODEV;
+-
+-	strscpy(info->type, "eeprom", I2C_NAME_SIZE);
+-
+-	return 0;
+-}
+-
+-static int eeprom_probe(struct i2c_client *client)
+-{
+-	struct i2c_adapter *adapter = client->adapter;
+-	struct eeprom_data *data;
+-
+-	data = devm_kzalloc(&client->dev, sizeof(struct eeprom_data),
+-			    GFP_KERNEL);
+-	if (!data)
+-		return -ENOMEM;
+-
+-	memset(data->data, 0xff, EEPROM_SIZE);
+-	i2c_set_clientdata(client, data);
+-	mutex_init(&data->update_lock);
+-	data->nature = UNKNOWN;
+-
+-	/* Detect the Vaio nature of EEPROMs.
+-	   We use the "PCG-" or "VGN-" prefix as the signature. */
+-	if (client->addr == 0x57
+-	 && i2c_check_functionality(adapter, I2C_FUNC_SMBUS_READ_BYTE_DATA)) {
+-		char name[4];
+-
+-		name[0] = i2c_smbus_read_byte_data(client, 0x80);
+-		name[1] = i2c_smbus_read_byte_data(client, 0x81);
+-		name[2] = i2c_smbus_read_byte_data(client, 0x82);
+-		name[3] = i2c_smbus_read_byte_data(client, 0x83);
+-
+-		if (!memcmp(name, "PCG-", 4) || !memcmp(name, "VGN-", 4)) {
+-			dev_info(&client->dev, "Vaio EEPROM detected, "
+-				 "enabling privacy protection\n");
+-			data->nature = VAIO;
+-		}
+-	}
+-
+-	/* Let the users know they are using deprecated driver */
+-	dev_notice(&client->dev,
+-		   "eeprom driver is deprecated, please use at24 instead\n");
+-
+-	/* create the sysfs eeprom file */
+-	return sysfs_create_bin_file(&client->dev.kobj, &eeprom_attr);
+-}
+-
+-static void eeprom_remove(struct i2c_client *client)
+-{
+-	sysfs_remove_bin_file(&client->dev.kobj, &eeprom_attr);
+-}
+-
+-static const struct i2c_device_id eeprom_id[] = {
+-	{ "eeprom", 0 },
+-	{ }
+-};
+-
+-static struct i2c_driver eeprom_driver = {
+-	.driver = {
+-		.name	= "eeprom",
+-	},
+-	.probe		= eeprom_probe,
+-	.remove		= eeprom_remove,
+-	.id_table	= eeprom_id,
+-
+-	.class		= I2C_CLASS_DDC | I2C_CLASS_SPD,
+-	.detect		= eeprom_detect,
+-	.address_list	= normal_i2c,
+-};
+-
+-module_i2c_driver(eeprom_driver);
+-
+-MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl> and "
+-		"Philip Edelbrock <phil@netroedge.com> and "
+-		"Greg Kroah-Hartman <greg@kroah.com>");
+-MODULE_DESCRIPTION("I2C EEPROM driver");
+-MODULE_LICENSE("GPL");
+-- 
+2.42.0
 
-Ahmad Khalifa (1):
-      hwmon: (nct6775) Fix non-existent ALARM warning
-
-Alexey Dobriyan (3):
-      uapi: stddef.h: Fix header guard location
-      uapi: stddef.h: Fix __DECLARE_FLEX_ARRAY for C++
-      selftests/proc: fixup proc-empty-vm test after KSM changes
-
-Alison Schofield (2):
-      cxl/region: Match auto-discovered region decoders by HPA range
-      cxl/region: Refactor granularity select in cxl_port_setup_targets()
-
-Andreas Gruenbacher (1):
-      gfs2: Fix another freeze/thaw hang
-
-Andrew Morton (1):
-      revert "scripts/gdb/symbols: add specific ko module load command"
-
-Andrii Nakryiko (1):
-      selftests/bpf: ensure all CI arches set CONFIG_BPF_KPROBE_OVERRIDE=3D=
-y
-
-Andy Shevchenko (2):
-      net: core: Use the bitmap API to allocate bitmaps
-      LoongArch: Use _UL() and _ULL()
-
-Anna Schumaker (1):
-      Revert "SUNRPC: clean up integer overflow check"
-
-Anup Patel (4):
-      RISC-V: KVM: Fix KVM_GET_REG_LIST API for ISA_EXT registers
-      RISC-V: KVM: Fix riscv_vcpu_get_isa_ext_single() for missing extensio=
-ns
-      KVM: riscv: selftests: Fix ISA_EXT register handling in get-reg-list
-      KVM: riscv: selftests: Selectively filter-out AIA registers
-
-Ard Biesheuvel (1):
-      acpi: Provide ia64 dummy implementation of acpi_proc_quirk_mwait_chec=
-k()
-
-Arnd Bergmann (2):
-      net: ti: icssg-prueth: add PTP dependency
-      drm: fix up fbdev Kconfig defaults
-
-Artem Chernyshev (1):
-      net: rds: Fix possible NULL-pointer dereference
-
-Artem Savkov (1):
-      selftests/bpf: fix unpriv_disabled check in test_verifier
-
-August Wikerfors (1):
-      ASoC: amd: yc: Fix non-functional mic on Lenovo 82QF and 82UG
-
-Bard Liao (1):
-      ASoC: SOF: ipc4-topology: fix wrong sizeof argument
-
-Bartosz Golaszewski (1):
-      gpio: sim: fix an invalid __free() usage
-
-Ben Skeggs (1):
-      MAINTAINERS: remove myself as nouveau maintainer
-
-Ben Wolsieffer (2):
-      proc: nommu: /proc/<pid>/maps: release mmap read lock
-      proc: nommu: fix empty /proc/<pid>/maps
-
-Benjamin Gray (4):
-      powerpc/watchpoints: Disable preemption in thread_change_pc()
-      powerpc/watchpoint: Disable pagefaults when getting user instruction
-      powerpc/watchpoints: Annotate atomic context in more places
-      powerpc/dexcr: Move HASHCHK trap handler
-
-Benjamin Poirier (1):
-      vxlan: Add missing entries to vxlan_get_size()
-
-Bernd Schubert (1):
-      btrfs: file_remove_privs needs an exclusive lock in direct io write
-
-Bibo Mao (1):
-      LoongArch: Fix some build warnings with W=3D1
-
-Bob Peterson (2):
-      gfs2: fix glock shrinker ref issues
-      gfs2: Fix quota=3Dquiet oversight
-
-Cai Huoqing (1):
-      net: hinic: Fix warning-hinic_set_vlan_fliter() warn: variable
-dereferenced before check 'hwdev'
-
-Chancel Liu (1):
-      ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
-
-Charles Keepax (3):
-      ASoC: soc-pcm: Shrink stack frame for __soc_pcm_hw_params
-      ASoC: cs42l43: Add shared IRQ flag for shutters
-      mfd: cs42l43: Use correct macro for new-style PM runtime ops
-
-Chen Ni (1):
-      ASoC: hdaudio.c: Add missing check for devm_kstrdup
-
-Christian Brauner (5):
-      Revert "tmpfs: add support for multigrain timestamps"
-      Revert "xfs: switch to multigrain timestamps"
-      Revert "ext4: switch to multigrain timestamps"
-      Revert "btrfs: convert to multigrain timestamps"
-      Revert "fs: add infrastructure for multigrain timestamps"
-
-Christoph Hellwig (1):
-      iomap: handle error conditions more gracefully in iomap_to_bh
-
-Christophe JAILLET (5):
-      bpf: Fix a erroneous check after snprintf()
-      media: i2c: max9286: Remove an incorrect fwnode_handle_put() call
-      media: i2c: rdacm21: Remove an incorrect fwnode_handle_put() call
-      media: imx-mipi-csis: Remove an incorrect fwnode_handle_put() call
-      gpio: tb10x: Fix an error handling path in tb10x_gpio_probe()
-
-Christophe Leroy (1):
-      powerpc/82xx: Select FSL_SOC
-
-Cong Liu (1):
-      drm/amdgpu: fix a memory leak in amdgpu_ras_feature_enable
-
-Dan Carpenter (3):
-      ASoC: codecs: aw88395: Fix some error codes
-      nouveau/u_memcpya: fix NULL vs error pointer bug
-      drm/i915/gt: Prevent error pointer dereference
-
-Dan Williams (1):
-      cxl/port: Fix cxl_test register enumeration regression
-
-Daniel Scally (1):
-      i2c: xiic: Correct return value check for xiic_reinit()
-
-Danilo Krummrich (2):
-      drm/nouveau: fence: fix type cast warning in nouveau_fence_emit()
-      drm/nouveau: sched: fix leaking memory of timedout job
-
-Darrick J. Wong (16):
-      xfs: fix per-cpu CIL structure aggregation racing with dying cpus
-      xfs: fix an agbno overflow in __xfs_getfsmap_datadev
-      xfs: use per-mount cpumask to track nonempty percpu inodegc lists
-      xfs: remove the all-mounts list
-      xfs: remove CPU hotplug infrastructure
-      xfs: use i_prev_unlinked to distinguish inodes that are not on
-the unlinked list
-      xfs: allow inode inactivation during a ro mount log recovery
-      xfs: reload entire unlinked bucket lists
-      xfs: fix log recovery when unknown rocompat bits are set
-      xfs: reserve less log space when recovering log intent items
-      xfs: load uncached unlinked inodes into memory on demand
-      xfs: make inode unlinked bucket recovery work with quotacheck
-      xfs: require a relatively recent V5 filesystem for LARP mode
-      xfs: only call xchk_stats_merge after validating scrub inputs
-      iomap: don't skip reading in !uptodate folios when unsharing a range
-      iomap: convert iomap_unshare_iter to use large folios
-
-Dave Airlie (1):
-      nouveau/u_memcpya: use vmemdup_user
-
-Dave Wysochanski (1):
-      netfs: Only call folio_start_fscache() one time for each folio
-
-David Christensen (1):
-      ionic: fix 16bit math issue when PAGE_SIZE >=3D 64KB
-
-Dennis Bonke (1):
-      platform/x86: thinkpad_acpi: Take mutex in hotkey_resume
-
-Ding Xiang (1):
-      selftests: ALSA: remove unused variables
-
-Eduard Zingerman (2):
-      bpf: Avoid dummy bpf_offload_netdev in __bpf_prog_dev_bound_init
-      selftests/bpf: Offloaded prog after non-offloaded should not cause BU=
-G
-
-Edward Cree (1):
-      sfc: handle error pointers returned by rhashtable_lookup_get_insert_f=
-ast()
-
-Eric Dumazet (3):
-      scsi: iscsi_tcp: restrict to TCP sockets
-      dccp: fix dccp_v4_err()/dccp_v6_err() again
-      net: bridge: use DEV_STATS_INC()
-
-Filipe Manana (3):
-      btrfs: set last dir index to the current last index when opening dir
-      btrfs: refresh dir last index during a rewinddir(3) call
-      btrfs: fix race between reading a directory and adding entries to it
-
-Florian Westphal (3):
-      netfilter: conntrack: fix extension size table
-      netfilter: nf_tables: disable toggling dormant table state more than =
-once
-      netfilter: nf_tables: fix memleak when more than 255 elements expired
-
-Geert Uytterhoeven (1):
-      sh: mm: re-add lost __ref to ioremap_prot() to fix modpost warning
-
-Gerhard Engleder (3):
-      tsnep: Fix NAPI scheduling
-      tsnep: Fix ethtool channels
-      tsnep: Fix NAPI polling with budget 0
-
-Guenter Roeck (1):
-      ASoC: wm8960: Fix error handling in probe
-
-Hamza Mahfooz (1):
-      drm/amd/display: fix the ability to use lower resolution modes on eDP
-
-Han Xu (1):
-      spi: nxp-fspi: reset the FLSHxCR1 registers
-
-Hans Verkuil (2):
-      media: bt8xx: bttv_risc_packed(): remove field checks
-      media: vb2: frame_vector.c: replace WARN_ONCE with a comment
-
-Hans de Goede (6):
-      ASoC: rt5640: Revert "Fix sleep in atomic context"
-      ASoC: rt5640: Fix sleep in atomic context
-      ASoC: rt5640: Do not disable/enable IRQ twice on suspend/resume
-      ASoC: rt5640: Enable the IRQ on resume after configuring jack-detect
-      ASoC: rt5640: Fix IRQ not being free-ed for HDA jack detect mode
-      ASoC: rt5640: Only cancel jack-detect work on suspend if active
-
-Heiko Carstens (1):
-      s390: update defconfigs
-
-Heiner Kallweit (1):
-      i2c: i801: unregister tco_pdev in i801_probe() error path
-
-Helge Deller (1):
-      LoongArch: Fix lockdep static memory detection
-
-Hou Tao (5):
-      bpf: Adjust size_index according to the value of KMALLOC_MIN_SIZE
-      bpf: Don't prefill for unused bpf_mem_cache
-      bpf: Ensure unit_size is matched with slab cache object size
-      selftests/bpf: Test all valid alloc sizes for bpf mem allocator
-      bpf: Skip unit_size checking for global per-cpu allocator
-
-Huacai Chen (3):
-      LoongArch: Set all reserved memblocks on Node#0 at initialization
-      kasan: Cleanup the __HAVE_ARCH_SHADOW_MAP usage
-      LoongArch: Don't inline kasan_mem_to_shadow()/kasan_shadow_to_mem()
-
-Ilpo J=C3=A4rvinen (2):
-      MAINTAINERS: Add myself into x86 platform driver maintainers
-      MAINTAINERS: Add x86 platform drivers patchwork
-
-Ilya Leoshkevich (1):
-      netfilter, bpf: Adjust timeouts of non-confirmed CTs in
-bpf_ct_insert_entry()
-
-Ira Weiny (1):
-      cxl/mbox: Fix CEL logic for poison and security commands
-
-Ivan Vecera (1):
-      i40e: Fix VF VLAN offloading when port VLAN is configured
-
-Jani Nikula (1):
-      drm/meson: fix memory leak on ->hpd_notify callback
-
-Janusz Krzysztofik (1):
-      drm/tests: Fix incorrect argument in drm_test_mm_insert_range
-
-Jean-Philippe Brucker (1):
-      KVM: arm64: nvhe: Ignore SVE hint in SMCCC function ID
-
-Jens Axboe (1):
-      task_work: add kerneldoc annotation for 'data' argument
-
-Jerome Brunet (1):
-      ASoC: meson: spdifin: start hw on dai probe
-
-Jian Shen (1):
-      net: hns3: only enable unicast promisc when mac table full
-
-Jie Wang (3):
-      net: hns3: add cmdq check for vf periodic service task
-      net: hns3: fix GRE checksum offload issue
-      net: hns3: add 5ms delay before clear firmware reset irq source
-
-Jijie Shao (1):
-      net: hns3: fix fail to delete tc flower rules during reset issue
-
-Jinjie Ruan (6):
-      net: microchip: sparx5: Fix memory leak for
-vcap_api_rule_add_keyvalue_test()
-      net: microchip: sparx5: Fix memory leak for
-vcap_api_rule_add_actionvalue_test()
-      net: microchip: sparx5: Fix possible memory leak in
-vcap_api_encode_rule_test()
-      net: microchip: sparx5: Fix possible memory leaks in
-test_vcap_xn_rule_creator()
-      net: microchip: sparx5: Fix possible memory leaks in vcap_api_kunit
-      net/handshake: Fix memory leak in __sock_create() and sock_alloc_file=
-()
-
-Jiri Olsa (5):
-      bpf: Add override check to kprobe multi link attach
-      selftests/bpf: Add kprobe_multi override test
-      selftests/bpf: Fix kprobe_multi_test/attach_override test
-      bpf: Fix uprobe_multi get_pid_task error path
-      bpf: Fix BTF_ID symbol generation collision
-
-Jisheng Zhang (1):
-      net: stmmac: fix incorrect rxq|txq_stats reference
-
-Johan Hovold (1):
-      spi: zynqmp-gqspi: fix clock imbalance on probe failure
-
-Johannes Weiner (2):
-      mm: page_alloc: fix CMA and HIGHATOMIC landing on the wrong buddy lis=
-t
-      mm: memcontrol: fix GFP_NOFS recursion in memory.high enforcement
-
-Johnathan Mantey (1):
-      ncsi: Propagate carrier gain/loss events to the NCSI controller
-
-Josef Bacik (1):
-      btrfs: don't clear uptodate on write errors
-
-Josh Poimboeuf (5):
-      x86/srso: Fix srso_show_state() side effect
-      x86/srso: Set CPUID feature bits independently of bug or mitigation s=
-tatus
-      x86/srso: Don't probe microcode in a guest
-      x86/srso: Fix SBPB enablement for spec_rstack_overflow=3Doff
-      x86/alternatives: Remove faulty optimization
-
-Jos=C3=A9 Pekkarinen (1):
-      drm/virtio: clean out_fence on complete_submit
-
-Jozsef Kadlecsik (1):
-      netfilter: ipset: Fix race between IPSET_CMD_CREATE and IPSET_CMD_SWA=
-P
-
-Juergen Gross (4):
-      xen: simplify evtchn_do_upcall() call maze
-      arm/xen: remove lazy mode related definitions
-      x86/xen: move paravirt lazy code
-      x86/xen: allow nesting of same lazy mode
-
-Julia Lawall (1):
-      ASoC: rsnd: add missing of_node_put
-
-Justin Stitt (1):
-      xen/efi: refactor deprecated strncpy
-
-Kailang Yang (3):
-      ALSA: hda/realtek - Fixed two speaker platform
-      ALSA: hda: Disable power save for solving pop issue on Lenovo
-ThinkCentre M70q
-      ALSA: hda/realtek - ALC287 Realtek I2S speaker platform support
-
-Kajol Jain (1):
-      powerpc/perf/hv-24x7: Update domain value check
-
-Karol Wachowski (1):
-      accel/ivpu/40xx: Fix buttress interrupt handling
-
-Kees Cook (1):
-      cxl/acpi: Annotate struct cxl_cxims_data with __counted_by
-
-Kirill A. Shutemov (1):
-      efi/unaccepted: Make sure unaccepted table is mapped
-
-Knyazev Arseniy (1):
-      ALSA: hda/realtek: Splitting the UX3402 into two separate models
-
-Kristina Martsenko (1):
-      arm64: cpufeature: Fix CLRBHB and BC detection
-
-Kyle Zeng (1):
-      ipv4: fix null-deref in ipv4_link_failure
-
-Laurent Pinchart (3):
-      media: i2c: imx219: Fix a typo referring to a wrong variable
-      media: i2c: imx219: Fix crop rectangle setting when changing format
-      media: i2c: imx219: Perform a full mode set unconditionally
-
-Liam R. Howlett (1):
-      kernel/sched: Modify initial boot task idle setup
-
-Liang He (1):
-      i2c: mux: gpio: Add missing fwnode_handle_put()
-
-Lijo Lazar (1):
-      Revert "drm/amdgpu: Report vbios version instead of PN"
-
-Linus Torvalds (1):
-      Linux 6.6-rc3
-
-Lukas Bulwahn (1):
-      xfs: fix select in config XFS_ONLINE_SCRUB_STATS
-
-Lukasz Majewski (1):
-      net: hsr: Properly parse HSRv1 supervisor frames.
-
-Marc Zyngier (1):
-      KVM: arm64: Properly return allocated EL2 VA from
-hyp_alloc_private_va_range()
-
-Mark Brown (3):
-      arm64/sme: Include ID_AA64PFR1_EL1.SME in cpu-feature-registers.rst
-      arm64/hbc: Document HWCAP2_HBC
-      arm64: Document missing userspace visible fields in ID_AA64ISAR2_EL1
-
-Mark Rutland (1):
-      locking/atomic: scripts: fix fallback ifdeffery
-
-Matthew Wilcox (Oracle) (1):
-      btrfs: convert btrfs_read_merkle_tree_page() to use a folio
-
-Michael Walle (1):
-      MAINTAINERS: gpio-regmap: make myself a maintainer of it
-
-Michal Wilczynski (1):
-      ACPI: processor: Fix uninitialized access of buf in acpi_set_pdc_bits=
-()
-
-Mika Westerberg (2):
-      spi: intel-pci: Add support for Granite Rapids SPI serial flash
-      net: thunderbolt: Fix TCPv6 GSO checksum calculation
-
-Mike Rapoport (IBM) (2):
-      memblock tests: fix warning: "__ALIGN_KERNEL" redefined
-      memblock tests: fix warning =E2=80=98struct seq_file=E2=80=99 declare=
-d inside
-parameter list
-
-Muhammad Ahmed (1):
-      drm/amd/display: Fix MST recognizes connected displays as one
-
-Muhammad Husaini Zulkifli (1):
-      igc: Expose tx-usecs coalesce setting to user
-
-Naveen N Rao (1):
-      powerpc: Fix build issue with LD_DEAD_CODE_DATA_ELIMINATION and
-FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
-
-Nick Desaulniers (1):
-      bpf: Fix BTF_ID symbol generation collision in tools/
-
-Olga Kornievskaia (2):
-      NFSv4.1: fix pnfs MDS=3DDS session trunking
-      NFSv4.1: fix zero value filehandle in post open getattr
-
-Oliver Upton (1):
-      MAINTAINERS: Use wildcard pattern for ARM PMU headers
-
-Pablo Neira Ayuso (6):
-      netfilter: nf_tables: disallow rule removal from chain binding
-      netfilter: nft_set_rbtree: use read spinlock to avoid datapath conten=
-tion
-      netfilter: nft_set_pipapo: call nft_trans_gc_queue_sync() in catchall=
- GC
-      netfilter: nft_set_pipapo: stop GC iteration if GC transaction
-allocation fails
-      netfilter: nft_set_hash: try later when GC hits EAGAIN on iteration
-      netfilter: nf_tables: disallow element removal on anonymous sets
-
-Paolo Abeni (5):
-      mptcp: fix bogus receive window shrinkage with multiple subflows
-      mptcp: move __mptcp_error_report in protocol.c
-      mptcp: process pending subflow error on close
-      mptcp: rename timer related helper to less confusing names
-      mptcp: fix dangling connection hang-up
-
-Paolo Bonzini (2):
-      KVM: x86/mmu: Do not filter address spaces in
-for_each_tdp_mmu_root_yield_safe()
-      KVM: SVM: INTERCEPT_RDTSCP is never intercepted anyway
-
-Paulo Alcantara (1):
-      smb: client: handle STATUS_IO_REPARSE_TAG_NOT_HANDLED
-
-Peter Lafreniere (3):
-      Documentation: netdev: fix dead link in ax25.rst
-      MAINTAINERS: Update link for linux-ax25.org
-      ax25: Kconfig: Update link for linux-ax25.org
-
-Peter Oberparleiter (1):
-      s390/cert_store: fix string length handling
-
-Peter Ujfalusi (6):
-      ALSA: core: Use dev_name of card_dev as debugfs directory name
-      ALSA: hda: intel-sdw-acpi: Use u8 type for link index
-      ALSA: usb-audio: mixer: Remove temporary string use in
-parse_clock_source_unit
-      ASoC: SOF: sof-audio: Fix DSP core put imbalance on widget setup fail=
-ure
-      ASoC: SOF: core: Only call sof_ops_free() on remove if the probe
-was successful
-      ALSA: usb-audio: scarlett_gen2: Fix another -Wformat-truncation warni=
-ng
-
-Peter Zijlstra (1):
-      x86,static_call: Fix static-call vs return-thunk
-
-Petr Oros (2):
-      iavf: add iavf_schedule_aq_request() helper
-      iavf: schedule a request immediately after add/delete vlan
-
-Phil Sutter (2):
-      netfilter: nf_tables: Fix entries val in rule reset audit log
-      selftests: netfilter: Test nf_tables audit logging
-
-Radoslaw Tyl (1):
-      iavf: do not process adminq tasks when __IAVF_IN_REMOVE_TASK is set
-
-Rafael J. Wysocki (1):
-      thermal: sysfs: Fix trip_point_hyst_store()
-
-Randy Dunlap (4):
-      bpf, cgroup: fix multiple kernel-doc warnings
-      scatterlist: add missing function params to kernel-doc
-      argv_split: fix kernel-doc warnings
-      pidfd: prevent a kernel-doc warning
-
-Ranjani Sridharan (1):
-      ASoC: SOF: Intel: MTL: Reduce the DSP init timeout
-
-Ricardo Ribalda (1):
-      media: uvcvideo: Fix OOB read
-
-Richard Fitzgerald (12):
-      ASoC: cs35l56: Call pm_runtime_dont_use_autosuspend()
-      ALSA: hda: cs35l56: Call pm_runtime_dont_use_autosuspend()
-      ASoC: cs35l56: Disable low-power hibernation mode
-      ALSA: hda: cs35l56: Disable low-power hibernation mode
-      ASoC: cs42l42: Ensure a reset pulse meets minimum pulse width.
-      ASoC: cs42l42: Don't rely on GPIOD_OUT_LOW to set RESET initially low
-      ASoC: cs42l42: Avoid stale SoundWire ATTACH after hard reset
-      firmware: cirrus: cs_dsp: Only log list of algorithms in debug build
-      ASoC: wm_adsp: Fix missing locking in wm_adsp_[read|write]_ctl()
-      ALSA: hda: cs35l56: Don't 'return ret' if ret is always zero
-      ALSA: hda: cs35l56: Fix missing RESET GPIO if _SUB is missing
-      ALSA: hda: cs35l56: Use the new RUNTIME_PM_OPS() macro
-
-Rick Edgecombe (3):
-      x86/shstk: Handle vfork clone failure correctly
-      x86/shstk: Remove useless clone error handling
-      x86/shstk: Add warning for shadow stack double unmap
-
-Rik van Riel (1):
-      x86/mm, kexec, ima: Use memblock_free_late() from ima_free_kexec_buff=
-er()
-
-Rong Tao (1):
-      memblock tests: Fix compilation errors.
-
-Ryan Roberts (1):
-      selftests: link libasan statically for tests with -fsanitize=3Daddres=
-s
-
-Sabrina Dubroca (1):
-      selftests: tls: swap the TX and RX sockets in some tests
-
-Sakari Ailus (4):
-      media: pci: ivsc: Select build dependencies
-      media: v4l: Use correct dependency for camera sensor drivers
-      media: via: Use correct dependency for camera sensor drivers
-      media: ivsc: Depend on VIDEO_DEV
-
-Sameer Pujar (2):
-      ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
-      ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
-
-Sasha Neftin (1):
-      net/core: Fix ETH_P_1588 flow dissector
-
-Sean Christopherson (3):
-      KVM: selftests: Assert that vasprintf() is successful
-      KVM: x86/mmu: Open code leaf invalidation from mmu_notifier
-      KVM: x86/mmu: Stop zapping invalidated TDP MMU roots asynchronously
-
-Sebastian Andrzej Siewior (8):
-      net: hsr: Add __packed to struct hsr_sup_tlv.
-      selftests: hsr: Use `let' properly.
-      selftests: hsr: Reorder the testsuite.
-      selftests: hsr: Extend the testsuite to also cover HSRv1.
-      locking/seqlock: Do the lockdep annotation before locking in
-do_write_seqcount_begin_nested()
-      net: ena: Flush XDP packets on error.
-      bnxt_en: Flush XDP for bnxt_poll_nitroa0()'s NAPI
-      octeontx2-pf: Do xdp_do_flush() after redirects.
-
-Shengjiu Wang (2):
-      ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH flag
-      ASoC: imx-audmix: Fix return error with devm_clk_get()
-
-Shinas Rasheed (1):
-      octeon_ep: fix tx dma unmap len values in SG
-
-Smita Koralahalli (3):
-      cxl/pci: Fix appropriate checking for _OSC while handling CXL
-RAS registers
-      PCI/AER: Export pcie_aer_is_native()
-      cxl/pci: Replace host_bridge->native_aer with pcie_aer_is_native()
-
-Stanislav Fomichev (2):
-      bpf: Clarify error expectations from bpf_clone_redirect
-      selftests/bpf: Update bpf_clone_redirect expected return code
-
-Stefan Moring (1):
-      spi: imx: Take in account bits per word instead of assuming 8-bits
-
-Stephen Boyd (4):
-      platform/x86: intel_scu_ipc: Check status after timeout in busy_loop(=
-)
-      platform/x86: intel_scu_ipc: Check status upon timeout in
-ipc_wait_for_interrupt()
-      platform/x86: intel_scu_ipc: Don't override scu in
-intel_scu_ipc_dev_simple_command()
-      platform/x86: intel_scu_ipc: Fail IPC send if still busy
-
-Steve French (4):
-      smb3: Add dynamic trace points for RDMA (smbdirect) reconnect
-      smb3: do not start laundromat thread when dir leases  disabled
-      smb3: remove duplicate error mapping
-      smb3: fix confusing debug message
-
-Steven Rostedt (Google) (1):
-      eventfs: Remember what dentries were created on dir open
-
-Takashi Iwai (19):
-      ALSA: docs: Fix a typo of midi2_ump_probe option for snd-usb-audio
-      ALSA: seq: Avoid delivery of events for disabled UMP groups
-      ALSA: seq: ump: Fix -Wformat-truncation warning
-      ALSA: seq: midi: Fix -Wformat-truncation warning
-      ALSA: usb-audio: scarlett_gen2: Fix -Wformat-truncation warning
-      ALSA: caiaq: Fix -Wformat-truncation warning
-      ALSA: sscape: Fix -Wformat-truncation warning
-      ALSA: cs4236: Fix -Wformat-truncation warning
-      ALSA: es1688: Fix -Wformat-truncation warning
-      ALSA: opti9x: Fix -Wformat-truncation warning
-      ALSA: xen: Fix -Wformat-truncation warning
-      ALSA: firewire: Fix -Wformat-truncation warning for longname string
-      ALSA: firewire: Fix -Wformat-truncation warning for MIDI stream names
-      ALSA: cmipci: Fix -Wformat-truncation warning
-      ALSA: hda: generic: Check potential mixer name string truncation
-      ALSA: ad1848: Fix -Wformat-truncation warning for longname string
-      ALSA: cs4231: Fix -Wformat-truncation warning for longname string
-      ALSA: riptide: Fix -Wformat-truncation warning for longname string
-      ALSA: rawmidi: Fix NULL dereference at proc read
-
-Thomas Zimmermann (1):
-      fbdev/sh7760fb: Depend on FB=3Dy
-
-Tianjia Zhang (1):
-      crypto: sm2 - Fix crash caused by uninitialized context
-
-Tiezhu Yang (3):
-      LoongArch: Remove dead code in relocate_new_kernel
-      docs/LoongArch: Update the links of ABI
-      docs/zh_CN/LoongArch: Update the links of ABI
-
-Toke H=C3=B8iland-J=C3=B8rgensen (1):
-      bpf: Avoid deadlock when using queue and stack maps from NMI
-
-Tom Lendacky (2):
-      KVM: SVM: Fix TSC_AUX virtualization setup
-      KVM: SVM: Do not use user return MSR support for virtualized TSC_AUX
-
-Trond Myklebust (9):
-      NFS: Fix error handling for O_DIRECT write scheduling
-      NFS: Fix O_DIRECT locking issues
-      NFS: More O_DIRECT accounting fixes for error paths
-      NFS: Use the correct commit info in nfs_join_page_group()
-      NFS: More fixes for nfs_direct_write_reschedule_io()
-      NFS/pNFS: Report EINVAL errors from connect() to the server
-      SUNRPC: Mark the cred for revalidation if the server rejects it
-      Revert "SUNRPC: Fail faster on bad verifier"
-      SUNRPC: Silence compiler complaints about tautological comparisons
-
-Umesh Nerlige Ramappa (1):
-      i915/pmu: Move execlist stats initialization to execlist specific set=
-up
-
-Valentin Caron (1):
-      spi: stm32: add a delay before SPI disable
-
-Vincent Whitchurch (2):
-      regulator: Fix voltage range selection
-      x86/asm: Fix build of UML with KASAN
-
-Vinicius Costa Gomes (1):
-      igc: Fix infinite initialization loop with early XDP redirect
-
-Walt Holman (1):
-      Add DMI ID for MSI Bravo 15 B7ED
-
-Wang Jianchao (1):
-      xfs: use roundup_pow_of_two instead of ffs during xlog_find_tail
-
-Xiaoke Wang (1):
-      i2c: mux: demux-pinctrl: check the return value of devm_kstrdup()
-
-Yann Sionneau (1):
-      i2c: designware: fix __i2c_dw_disable() in case master is holding SCL=
- low
-
-Yin Fengwei (1):
-      filemap: add filemap_map_order0_folio() to handle order0 folio
-
-YuBiao Wang (1):
-      drm/amdkfd: Use gpu_offset for user queue's wptr
-
-Zhang Xiaoxu (1):
-      cifs: Fix UAF in cifs_demultiplex_thread()
-
-Zheng Yejian (1):
-      ring-buffer: Fix bytes info in per_cpu buffer stats
-
-Ziyang Xuan (1):
-      team: fix null-ptr-deref when team device type is changed
