@@ -2,155 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70407ACB29
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B3D7ACB2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjIXRxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
+        id S230180AbjIXR6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjIXRxd (ORCPT
+        with ESMTP id S229437AbjIXR6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:53:33 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5717FC
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:53:26 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a64619d8fbso629248866b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695578005; x=1696182805; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/qtLfAzM+V+vT6yirmBbmA0Vg9kboDtVi6VeMLaQpg8=;
-        b=TJ3Xr4uQiT1bkVLwyB/gzsSnOpk0NndJnBaSCEm/B32nOpND3H2+Yb0klxyTaVkKvV
-         t4mfNydbSe67SsE5ad7fSGermClpN9jtyQSlzcCzETqvYbylzJuUzAGrtE/q+N2koeZy
-         2oKBe/I07f2izg4gi3dWPRITXVgVm+Glc/QKsMpCh9HhKqsGeJP4d2WvB+JPFEBc72B7
-         QSVAzA10i9Lm8M7VLb1N/czUf0h0YEuZTM4/gfiQIt8McAkY+5dkXp1gdqJ4r9/qrRxW
-         PxvEjjMTJRQN6SZGxBtYtuEOLVj0fleW7frhUmCl0Ryt3BeIroTP1ChQqaGolL8zjjEk
-         GvGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695578005; x=1696182805;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/qtLfAzM+V+vT6yirmBbmA0Vg9kboDtVi6VeMLaQpg8=;
-        b=PxVI0JU5pRKDDKurRetmoycWLryrKLwcRk2XeY4yyx/l8F1vDS1vMFkJGfs7z9o91n
-         16n173Jx0gwfK/DR0X2yMEEdHmhyuk0CbCh/HhTF/PSXmBMgwhYTL+ZOIxnkKimOKXay
-         pah2RCNLaXOwdHGALveH+Rja8yA00LG1k4mOcO3bbDkrg2FT+ZkmcziM9G/HPFOe6eDw
-         tu5q0NQLHeMjUndZ7kfiuhVDdIlJ5txfesiV+l1OYwD2xY+EILMEwGtJGwZNGh3HZAw+
-         clNrN3YOwO2eyI3gyYo+CPcd9n8kVrXUoZHJSE5qpZ9sHO4GwBUtISKeXOehXyIIiACb
-         84Yw==
-X-Gm-Message-State: AOJu0YzT6M8BomJAu9DPa6fpV6Jdo2Iaf2qVqDuec1y5iqfrYdLTKnis
-        WkERG2u9++uGQtK/mcDioxTQCQ==
-X-Google-Smtp-Source: AGHT+IGI9oRSVwVLifT9Q1dYYSETbKRiLhwMIL2j3CXHKQx6Qv6XCw9OfwhU7O33roUEONu2YgSUWw==
-X-Received: by 2002:a17:906:854e:b0:9ae:3e72:7c72 with SMTP id h14-20020a170906854e00b009ae3e727c72mr4489953ejy.58.1695578005183;
-        Sun, 24 Sep 2023 10:53:25 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id r26-20020a17090638da00b009ae3d711fd9sm5248529ejd.69.2023.09.24.10.53.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 10:53:24 -0700 (PDT)
-Message-ID: <dbbe81ed-4cbd-43f2-b7bd-b78b44a9b52f@linaro.org>
-Date:   Sun, 24 Sep 2023 19:53:22 +0200
+        Sun, 24 Sep 2023 13:58:38 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A596FA;
+        Sun, 24 Sep 2023 10:58:29 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38OHjTPu009471;
+        Sun, 24 Sep 2023 17:58:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7BtC9/lrc/fww1dep8gZWJTE7ouTVPIG0IE1y03qkt8=;
+ b=jdZy/IajWMtVT9RlLZkKgV0AmwfAP3AOULSYkGu34a03NhmmlaOshXQNTlCQvJM3zeB/
+ TUCdAJDQd5Ev0+qshRBEzFyxP0Yu3uLbg4XwpylZNdAOJ18/ZEVK36eAWk9CzoW1cIR9
+ KuUpz8yThOUaIksuNZafdZVIVq3woX+R1Xo6ZBVmRxHOyu+UtFitbBpqkGEpWB0TPRf5
+ eJx0bLwtQOgK9/LGx5HSGALegZP0ySjhP5SOjDTSTicK1ADOagQEtd8IfxmGKIqcHFVv
+ aLp0rIU6xKZr4TN2a/PVI/3Nzj3wUdS4rcjhHAneefnRY5ejEmvi+4Uc5NarQ8rrySB0 BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ta6un7q2n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Sep 2023 17:58:27 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38OHsahT026598;
+        Sun, 24 Sep 2023 17:58:27 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ta6un7q2b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Sep 2023 17:58:27 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38OHoZH7011010;
+        Sun, 24 Sep 2023 17:58:26 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabujvdqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Sep 2023 17:58:25 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38OHwMEQ26804918
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 24 Sep 2023 17:58:22 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C533920043;
+        Sun, 24 Sep 2023 17:58:22 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1488A20040;
+        Sun, 24 Sep 2023 17:58:22 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.29.239])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Sun, 24 Sep 2023 17:58:22 +0000 (GMT)
+Date:   Sun, 24 Sep 2023 19:58:20 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Vineeth Vijayan <vneethv@linux.ibm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH] s390/cio: Fix a memleak in css_alloc_subchannel
+Message-ID: <20230924195820.1a2865c3.pasic@linux.ibm.com>
+In-Reply-To: <b9e9eca9-413c-0301-3839-bb7534ac76d2@linux.ibm.com>
+References: <20230921071412.13806-1-dinghao.liu@zju.edu.cn>
+        <20230922141700.10895474.pasic@linux.ibm.com>
+        <87sf76z961.fsf@redhat.com>
+        <20230922152035.3ef1cb7e.pasic@linux.ibm.com>
+        <b9e9eca9-413c-0301-3839-bb7534ac76d2@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: watchdog: atmel,at91rm9200-wdt: convert
- txt to yaml
-Content-Language: en-US
-To:     Nik Bune <n2h9z4@gmail.com>, wim@linux-watchdog.org,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230924172004.59208-1-n2h9z4@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230924172004.59208-1-n2h9z4@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FxKv3IkqSwxGOiGuiFHnSmhr87GZ3GTv
+X-Proofpoint-GUID: M5z6rkkoNYwFVYac1f8IEhuSeaQeflyd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-24_15,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=635 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309240154
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2023 19:20, Nik Bune wrote:
-> Convert txt file to yaml.
+On Fri, 22 Sep 2023 21:15:48 +0200
+Vineeth Vijayan <vneethv@linux.ibm.com> wrote:
+
+> On 9/22/23 15:20, Halil Pasic wrote:
+> >> Author of 2ec2298412e1 here. If I don't completely misremember things,
+> >> this was for the orphanage stuff (i.e. ccw devices that were still kept
+> >> as disconnected, like dasd still in use, that had to be moved from their
+> >> old subchannel object because a different device appeared on that
+> >> subchannel.) That orphanage used a single dummy subchannel for all ccw
+> >> devices moved there.
+> >>
+> >> I have no idea how the current common I/O layer works, but that might
+> >> give you a hint about what to look for 😄  
+> > Yes, that is what the commit states and what the series is about. I hope
+> > Vineeth can give us some answers 😄 maybe even out of the top of his
+> > head... If not, I would trust his judgment on whether figuring things
+> > out is worthwhile or not.
+> >   
+> As Corny mentioned, orphanage is the only case i remember where
+> this scenario of dynamically allocated sch->lock  being used. I hope
+> you remember the cdev->ccwlock, which is nothing but the copy of
+> sch->lock pointer. This is rather a tricky design, where we are using 
+> the sch->lock and cdev->ccwlock, which are same pointers.
+> Because this sch is exclusively for the cdev ops. But at the same time,
+> a CC3 code in the stsch can make the attached device an orphanage and
+> remove the sch.
 > 
-> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
-> ---
-> 
+> We have already seen an issue with this approach and had couple of
+> discussions about avoiding this pointer usage without using an extra
+> lock but do not have a right solution for this now.
 
-With Alexandre's comment fixed:
+Based on your response it seem you do understand the problem but are
+struggling to find a solution. You are ahead of me. I'm still at the
+stage where I don't understand the problem. I had another look at
+that orphanage code, especially at ccw_device_move_to_sch(). Looks
+to me that the *(sch->lock) ins not required outlive the *sch and
+also that there is no move semantic in place.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Based on that let's take this offline, find a quiet hour and have a look 
+at the code and the problem. Maybe I can help with the solution once I
+understand the problem -- but maybe not.
 
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-Best regards,
-Krzysztof
-
+Regards,
+Halil
