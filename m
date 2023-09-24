@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0B47AC84E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185E37AC853
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjIXNQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
+        id S229974AbjIXNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjIXNQB (ORCPT
+        with ESMTP id S229850AbjIXNQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:16:01 -0400
+        Sun, 24 Sep 2023 09:16:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31552112;
-        Sun, 24 Sep 2023 06:15:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D4F2C433C9;
-        Sun, 24 Sep 2023 13:15:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77EB1A6;
+        Sun, 24 Sep 2023 06:15:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE5AC433C8;
+        Sun, 24 Sep 2023 13:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561348;
-        bh=e7wyZIRClwx6QhrA542JsvhuuvAQutUANRmOL4kP9x4=;
+        s=k20201202; t=1695561353;
+        bh=0lk96IEJdRepgjx+BowGMh+jQBe3fMBW1DLO0k7sSjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJmOslMrOWKG+O7K7ao3dwSdofJ5/unTC9PFFGXGUBoaXX3AWXH21Cn3u1vgvILdI
-         2MzVorzqLAUwQKsxtFevQkBMx/KNEQji8+HG2nFHOdf5KIFWL/RVTsEQlImymBLq7r
-         4PEXoT0YaZDRlh76FqfBnHePqasnq07KLkE73zxZur+epnUdFl3qnlQ9A2SWEii6tA
-         qCxlUUTTQgS//5zIjp80t2zzfqspjE3fippt5Iv+ZNujzR/j5YhVREUV44wbqbvqyk
-         iAMD34wA0x4WOeOgmsf9e9j1h+PyQrD+wX5BG+JDmt9OYtYywZaVvt/GQOiVFGrElQ
-         xr3HNQkpHmSNg==
+        b=nyGqFkQX56LC17bAo2Tuy9EKWkAGGPr8kvLybE6PWdcF+BCgYrfCPvu9wqo9y+OUp
+         +480YjD1gu2iOgB0fGh1dPspCbSdPJdCKhh8iRghee31M7FnvZJ68BBDf6ysh5j4hj
+         fjJskPdUAekUFqEeYAD44FNTexNNemvnxkmZzniEEtqqq8eyn2d0d7vx8VUekwQc3N
+         D0fldlaeSajhHVMduHME8YTybdCK9+3oo/otAEu09OLkOA++TphwdXT1+9IATmDu6q
+         jpXqiKbOdLgdYrKj/1Fl6T9us76s3EFRc3o/EcOgeLdivE5uwW4OdiY5HaZ3n1bOvP
+         PdlWMarLRxNkg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Javed Hasan <jhasan@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
+Cc:     Kiwoong Kim <kwmad.kim@samsung.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chanwoo Lee <cw9316.lee@samsung.com>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 08/41] scsi: qedf: Add synchronization between I/O completions and abort
-Date:   Sun, 24 Sep 2023 09:14:56 -0400
-Message-Id: <20230924131529.1275335-8-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, jejb@linux.ibm.com,
+        stanley.chu@mediatek.com, beanhuo@micron.com, mani@kernel.org,
+        quic_asutoshd@quicinc.com, quic_nguyenb@quicinc.com,
+        Arthur.Simchaev@wdc.com, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 09/41] scsi: ufs: core: Move __ufshcd_send_uic_cmd() outside host_lock
+Date:   Sun, 24 Sep 2023 09:14:57 -0400
+Message-Id: <20230924131529.1275335-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131529.1275335-1-sashal@kernel.org>
 References: <20230924131529.1275335-1-sashal@kernel.org>
@@ -56,97 +58,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Kiwoong Kim <kwmad.kim@samsung.com>
 
-[ Upstream commit 7df0b2605489bef3f4223ad66f1f9bb8d50d4cd2 ]
+[ Upstream commit 2d3f59cf868b4a2dd678a96cd49bdd91411bd59f ]
 
-Avoid race condition between I/O completion and abort processing by
-protecting the cmd_type with the rport lock.
+__ufshcd_send_uic_cmd() is wrapped by uic_cmd_mutex and its related
+contexts are accessed within the section wrapped by uic_cmd_mutex. Thus,
+wrapping with host_lock is redundant.
 
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Link: https://lore.kernel.org/r/20230901060646.27885-1-skashyap@marvell.com
+Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
+Link: https://lore.kernel.org/r/782ba5f26f0a96e58d85dff50751787d2d2a6b2b.1693790060.git.kwmad.kim@samsung.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Chanwoo Lee <cw9316.lee@samsung.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedf/qedf_io.c   | 10 ++++++++--
- drivers/scsi/qedf/qedf_main.c |  7 ++++++-
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ drivers/ufs/core/ufshcd.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/qedf/qedf_io.c b/drivers/scsi/qedf/qedf_io.c
-index 4750ec5789a80..10fe3383855c0 100644
---- a/drivers/scsi/qedf/qedf_io.c
-+++ b/drivers/scsi/qedf/qedf_io.c
-@@ -1904,6 +1904,7 @@ int qedf_initiate_abts(struct qedf_ioreq *io_req, bool return_scsi_cmd_on_abts)
- 		goto drop_rdata_kref;
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 9615a076735bd..75c6628af2c0e 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -2416,7 +2416,6 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
+ 		      bool completion)
+ {
+ 	lockdep_assert_held(&hba->uic_cmd_mutex);
+-	lockdep_assert_held(hba->host->host_lock);
+ 
+ 	if (!ufshcd_ready_for_uic_cmd(hba)) {
+ 		dev_err(hba->dev,
+@@ -2443,7 +2442,6 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
+ int ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
+ {
+ 	int ret;
+-	unsigned long flags;
+ 
+ 	if (hba->quirks & UFSHCD_QUIRK_BROKEN_UIC_CMD)
+ 		return 0;
+@@ -2452,9 +2450,7 @@ int ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
+ 	mutex_lock(&hba->uic_cmd_mutex);
+ 	ufshcd_add_delay_before_dme_cmd(hba);
+ 
+-	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	ret = __ufshcd_send_uic_cmd(hba, uic_cmd, true);
+-	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 	if (!ret)
+ 		ret = ufshcd_wait_for_uic_cmd(hba, uic_cmd);
+ 
+@@ -4166,8 +4162,8 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
+ 		wmb();
+ 		reenable_intr = true;
  	}
- 
-+	spin_lock_irqsave(&fcport->rport_lock, flags);
- 	if (!test_bit(QEDF_CMD_OUTSTANDING, &io_req->flags) ||
- 	    test_bit(QEDF_CMD_IN_CLEANUP, &io_req->flags) ||
- 	    test_bit(QEDF_CMD_IN_ABORT, &io_req->flags)) {
-@@ -1911,17 +1912,20 @@ int qedf_initiate_abts(struct qedf_ioreq *io_req, bool return_scsi_cmd_on_abts)
- 			 "io_req xid=0x%x sc_cmd=%p already in cleanup or abort processing or already completed.\n",
- 			 io_req->xid, io_req->sc_cmd);
- 		rc = 1;
-+		spin_unlock_irqrestore(&fcport->rport_lock, flags);
- 		goto drop_rdata_kref;
- 	}
- 
-+	/* Set the command type to abort */
-+	io_req->cmd_type = QEDF_ABTS;
-+	spin_unlock_irqrestore(&fcport->rport_lock, flags);
-+
- 	kref_get(&io_req->refcount);
- 
- 	xid = io_req->xid;
- 	qedf->control_requests++;
- 	qedf->packet_aborts++;
- 
--	/* Set the command type to abort */
--	io_req->cmd_type = QEDF_ABTS;
- 	io_req->return_scsi_cmd_on_abts = return_scsi_cmd_on_abts;
- 
- 	set_bit(QEDF_CMD_IN_ABORT, &io_req->flags);
-@@ -2210,7 +2214,9 @@ int qedf_initiate_cleanup(struct qedf_ioreq *io_req,
- 		  refcount, fcport, fcport->rdata->ids.port_id);
- 
- 	/* Cleanup cmds re-use the same TID as the original I/O */
-+	spin_lock_irqsave(&fcport->rport_lock, flags);
- 	io_req->cmd_type = QEDF_CLEANUP;
-+	spin_unlock_irqrestore(&fcport->rport_lock, flags);
- 	io_req->return_scsi_cmd_on_abts = return_scsi_cmd_on_abts;
- 
- 	init_completion(&io_req->cleanup_done);
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 7825765c936cd..91f3f1d7098eb 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -2805,6 +2805,8 @@ void qedf_process_cqe(struct qedf_ctx *qedf, struct fcoe_cqe *cqe)
- 	struct qedf_ioreq *io_req;
- 	struct qedf_rport *fcport;
- 	u32 comp_type;
-+	u8 io_comp_type;
-+	unsigned long flags;
- 
- 	comp_type = (cqe->cqe_data >> FCOE_CQE_CQE_TYPE_SHIFT) &
- 	    FCOE_CQE_CQE_TYPE_MASK;
-@@ -2838,11 +2840,14 @@ void qedf_process_cqe(struct qedf_ctx *qedf, struct fcoe_cqe *cqe)
- 		return;
- 	}
- 
-+	spin_lock_irqsave(&fcport->rport_lock, flags);
-+	io_comp_type = io_req->cmd_type;
-+	spin_unlock_irqrestore(&fcport->rport_lock, flags);
- 
- 	switch (comp_type) {
- 	case FCOE_GOOD_COMPLETION_CQE_TYPE:
- 		atomic_inc(&fcport->free_sqes);
--		switch (io_req->cmd_type) {
-+		switch (io_comp_type) {
- 		case QEDF_SCSI_CMD:
- 			qedf_scsi_completion(qedf, cqe, io_req);
- 			break;
+-	ret = __ufshcd_send_uic_cmd(hba, cmd, false);
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	ret = __ufshcd_send_uic_cmd(hba, cmd, false);
+ 	if (ret) {
+ 		dev_err(hba->dev,
+ 			"pwr ctrl cmd 0x%x with mode 0x%x uic error %d\n",
 -- 
 2.40.1
 
