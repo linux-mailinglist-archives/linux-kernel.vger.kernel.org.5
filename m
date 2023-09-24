@@ -2,275 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7117ACA71
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 17:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE217ACA75
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 17:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjIXPSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 11:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S229482AbjIXPUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 11:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjIXPSN (ORCPT
+        with ESMTP id S229450AbjIXPUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 11:18:13 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339F3CD8;
-        Sun, 24 Sep 2023 08:17:43 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0Vsio80D_1695568659;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vsio80D_1695568659)
-          by smtp.aliyun-inc.com;
-          Sun, 24 Sep 2023 23:17:41 +0800
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     wintera@linux.ibm.com, schnelle@linux.ibm.com,
-        gbayer@linux.ibm.com, pasic@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        dust.li@linux.alibaba.com, guwen@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 18/18] net/smc: add interface implementation of loopback device
-Date:   Sun, 24 Sep 2023 23:16:53 +0800
-Message-Id: <1695568613-125057-19-git-send-email-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
-References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 24 Sep 2023 11:20:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590CF9B
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 08:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695568836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OC7FZ1QXsBgttnW2koSrPf6km1TCtIWkDRa462K3Tt8=;
+        b=dfLQGLR6/q7QX4zutLNRciz61AHBtHNFQfXhIEDGV5u5xmqX9sIswVPCnvNaJannaZ9wY1
+        TWe8ocNjV2eInnH7SGFiKcSXpSgOhva5d6qSnxjpok6loM9BwnHuHTe6ZV10K3FurxCeVw
+        t1OQHn1wH9ngNf5sUtTTfdb5PByysZk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-620-Ye79ENtRNpC8VuL0PrH0OQ-1; Sun, 24 Sep 2023 11:20:35 -0400
+X-MC-Unique: Ye79ENtRNpC8VuL0PrH0OQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30e4943ca7fso3710694f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 08:20:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695568833; x=1696173633;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OC7FZ1QXsBgttnW2koSrPf6km1TCtIWkDRa462K3Tt8=;
+        b=BnyktGthW5+ROvsXMj34z8WVd9QE8Lf7UlogYGXlqgJWnePy0noc2ikwWqkSTZmlr+
+         /NcXdxjIFh2avP6wOLEyoaEuUh9eTQGFuOqlurSNLtNb7/Wl4lPeqBlepE67rR1/1U2s
+         drKsAiza7btZF5qofmXxHXg1JsnUhvOu/8oNu7tRlND9//Uvpal1G/zmDQiyFmXDwd2S
+         sPgytpddEfsBQJ3r3ejRa+5ROFfeh4SmHp9ScqUil2CP5BmYSKKYm3cT8uZnSQ7E50Kq
+         A9Itvvu5ZbiOSwH9oF4gF7kOBHXURexWReRP4z6gBYQxUD1OtNVj7y7ijWMK9RCCdy7Z
+         rtsg==
+X-Gm-Message-State: AOJu0Yx/6onZSm7BGPPQBKJQ4vDhMFYWQFVpqrjmTYHzKXAa9nusbtoV
+        UPDntx8IQy4AmqLS5iaEpZvKK78CZKLPQmOXkblva2/IXNRkxp22djCuzhYqrCk+fk84O7IPKn1
+        iv9v4b+wMWSWkgKKHkAASVX1D9rHKMyWV
+X-Received: by 2002:a05:6000:185:b0:321:8d08:855e with SMTP id p5-20020a056000018500b003218d08855emr3649143wrx.24.1695568833343;
+        Sun, 24 Sep 2023 08:20:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGsqiWL7t0c+NMRRqvOOczRdKyE4sP6LLCdR8ZY1UnXVwDlWDeFOsnOjGJe4ueob0DEyj/m4A==
+X-Received: by 2002:a05:6000:185:b0:321:8d08:855e with SMTP id p5-20020a056000018500b003218d08855emr3649132wrx.24.1695568833012;
+        Sun, 24 Sep 2023 08:20:33 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id k12-20020a7bc40c000000b00403038d7652sm9783942wmi.39.2023.09.24.08.20.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Sep 2023 08:20:32 -0700 (PDT)
+Message-ID: <c00bf4c1-0bfe-c7f9-4dea-03e9c2e94b71@redhat.com>
+Date:   Sun, 24 Sep 2023 17:20:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [GIT PULL] KVM fixes for Linux 6.6-rc3
+Content-Language: en-US
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <20230924092700.1192123-1-pbonzini@redhat.com>
+ <5cfe9a47-f461-9a5e-09e3-b78fef16a6f6@huawei.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <5cfe9a47-f461-9a5e-09e3-b78fef16a6f6@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch completes the specific implementation of loopback device
-for the newly added SMC-D DMB-related interface.
+On 9/24/23 12:32, Zenghui Yu wrote:
+> Hi Paolo,
+> 
+> On 2023/9/24 17:27, Paolo Bonzini wrote:
+>> ARM:
+>>
+>> * Fix an UV boot crash
+>>
+>> * Skip spurious ENDBR generation on_THIS_IP_
+>>
+>> * Fix ENDBR use in putuser() asm methods
+>>
+>> * Fix corner case boot crashes on 5-level paging
+>>
+>> * and fix a false positive WARNING on LTO kernels"
+> 
+> Want to point out that this doesn't describe the *real* kvmarm stuff in
+> the original PR [*] and doesn't match what you had written in the merge
+> commit. Not sure what has gone wrong.
 
-The loopback device always provides mappable DMB because the device
-users are in the same OS instance.
+Used the wrong "git log --merges" incantation to generate the draft, 
+which pulled in a message from the last merge commit in origin/master.
 
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/smc_loopback.c | 104 ++++++++++++++++++++++++++++++++++++++++++++-----
- net/smc/smc_loopback.h |   5 +++
- 2 files changed, 99 insertions(+), 10 deletions(-)
+I have replaced the tag in place, but the commit is the same.  The new 
+tag message is as follows:
 
-diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index 8375575..e9d2d62 100644
---- a/net/smc/smc_loopback.c
-+++ b/net/smc/smc_loopback.c
-@@ -106,6 +106,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	dmb_node->len = dmb->dmb_len;
- 	dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
-+	refcount_set(&dmb_node->refcnt, 1);
- 
- again:
- 	/* add new dmb into hash table */
-@@ -119,6 +120,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
- 	write_unlock(&ldev->dmb_ht_lock);
-+	atomic_inc(&ldev->dmb_cnt);
- 
- 	dmb->sba_idx = dmb_node->sba_idx;
- 	dmb->dmb_tok = dmb_node->token;
-@@ -140,18 +142,27 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
- 
--	/* remove dmb from hash table */
--	write_lock(&ldev->dmb_ht_lock);
-+	/* find dmb from hash table */
-+	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
- 		if (tmp_node->token == dmb->dmb_tok) {
- 			dmb_node = tmp_node;
-+			dmb_node->freeing = 1;
- 			break;
- 		}
- 	}
- 	if (!dmb_node) {
--		write_unlock(&ldev->dmb_ht_lock);
-+		read_unlock(&ldev->dmb_ht_lock);
- 		return -EINVAL;
- 	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	/* wait for dmb refcnt to be 0 */
-+	if (!refcount_dec_and_test(&dmb_node->refcnt))
-+		wait_event(ldev->dmbs_release, !refcount_read(&dmb_node->refcnt));
-+
-+	/* remove dmb from hash table */
-+	write_lock(&ldev->dmb_ht_lock);
- 	hash_del(&dmb_node->list);
- 	write_unlock(&ldev->dmb_ht_lock);
- 
-@@ -159,9 +170,69 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 	vfree(dmb_node->cpu_addr);
- 	kfree(dmb_node);
- 
-+	if (atomic_dec_and_test(&ldev->dmb_cnt))
-+		wake_up(&ldev->ldev_release);
- 	return 0;
- }
- 
-+static int smc_lo_attach_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
-+		if (tmp_node->token == dmb->dmb_tok && !tmp_node->freeing) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	refcount_inc(&dmb_node->refcnt);
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	/* provide dmb information */
-+	dmb->sba_idx = dmb_node->sba_idx;
-+	dmb->dmb_tok = dmb_node->token;
-+	dmb->cpu_addr = dmb_node->cpu_addr;
-+	dmb->dma_addr = dmb_node->dma_addr;
-+	dmb->dmb_len = dmb_node->len;
-+	return 0;
-+}
-+
-+static int smc_lo_detach_dmb(struct smcd_dev *smcd, u64 token)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, token) {
-+		if (tmp_node->token == token) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	if (refcount_dec_and_test(&dmb_node->refcnt))
-+		wake_up_all(&ldev->dmbs_release);
-+	return 0;
-+}
-+
-+static int smc_lo_get_dev_attr(struct smcd_dev *smcd)
-+{
-+	return BIT(ISM_ATTR_DMB_MAP);
-+}
-+
- static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
- {
- 	return -EOPNOTSUPP;
-@@ -194,7 +265,15 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok, unsigned int idx
- {
- 	struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
--
-+	struct smc_connection *conn;
-+
-+	if (!sf) {
-+		/* local sndbuf shares the same physical memory with
-+		 * peer RMB, so no need to copy data from local sndbuf
-+		 * to peer RMB.
-+		 */
-+		return 0;
-+	}
- 	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
- 		if (tmp_node->token == dmb_tok) {
-@@ -210,13 +289,10 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok, unsigned int idx
- 
- 	memcpy((char *)rmb_node->cpu_addr + offset, data, size);
- 
--	if (sf) {
--		struct smc_connection *conn =
--			smcd->conn[rmb_node->sba_idx];
-+	conn = smcd->conn[rmb_node->sba_idx];
-+	if (conn && !conn->killed)
-+		smcd_cdc_rx_handler(conn);
- 
--		if (conn && !conn->killed)
--			smcd_cdc_rx_handler(conn);
--	}
- 	return 0;
- }
- 
-@@ -253,6 +329,8 @@ static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
- 	.query_remote_gid = smc_lo_query_rgid,
- 	.register_dmb = smc_lo_register_dmb,
- 	.unregister_dmb = smc_lo_unregister_dmb,
-+	.attach_dmb = smc_lo_attach_dmb,
-+	.detach_dmb = smc_lo_detach_dmb,
- 	.add_vlan_id = smc_lo_add_vlan_id,
- 	.del_vlan_id = smc_lo_del_vlan_id,
- 	.set_vlan_required = smc_lo_set_vlan_required,
-@@ -264,6 +342,7 @@ static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
- 	.get_local_gid = smc_lo_get_local_gid,
- 	.get_chid = smc_lo_get_chid,
- 	.get_dev = smc_lo_get_dev,
-+	.get_dev_attr = smc_lo_get_dev_attr,
- };
- 
- static struct smcd_dev *smcd_lo_alloc_dev(const struct smcd_ops *ops,
-@@ -343,6 +422,9 @@ static int smc_lo_dev_init(struct smc_lo_dev *ldev)
- 	smc_lo_generate_id(ldev);
- 	rwlock_init(&ldev->dmb_ht_lock);
- 	hash_init(ldev->dmb_ht);
-+	atomic_set(&ldev->dmb_cnt, 0);
-+	init_waitqueue_head(&ldev->dmbs_release);
-+	init_waitqueue_head(&ldev->ldev_release);
- 
- 	return smcd_lo_register_dev(ldev);
- }
-@@ -376,6 +458,8 @@ static int smc_lo_dev_probe(void)
- static void smc_lo_dev_exit(struct smc_lo_dev *ldev)
- {
- 	smcd_lo_unregister_dev(ldev);
-+	if (atomic_read(&ldev->dmb_cnt))
-+		wait_event(ldev->ldev_release, !atomic_read(&ldev->dmb_cnt));
- }
- 
- static void smc_lo_dev_remove(void)
-diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index a5b501b..e42c807 100644
---- a/net/smc/smc_loopback.h
-+++ b/net/smc/smc_loopback.h
-@@ -30,6 +30,8 @@ struct smc_lo_dmb_node {
- 	u32 sba_idx;
- 	void *cpu_addr;
- 	dma_addr_t dma_addr;
-+	refcount_t refcnt;
-+	u8 freeing : 1;
- };
- 
- struct smc_lo_dev {
-@@ -40,6 +42,9 @@ struct smc_lo_dev {
- 	DECLARE_BITMAP(sba_idx_mask, SMC_LODEV_MAX_DMBS);
- 	rwlock_t dmb_ht_lock;
- 	DECLARE_HASHTABLE(dmb_ht, SMC_LODEV_DMBS_HASH_BITS);
-+	atomic_t dmb_cnt;
-+	wait_queue_head_t dmbs_release;
-+	wait_queue_head_t ldev_release;
- };
- #endif
- 
--- 
-1.8.3.1
+---------------------------------
+ARM:
+
+* Fix EL2 Stage-1 MMIO mappings where a random address was used
+
+* Fix SMCCC function number comparison when the SVE hint is set
+
+RISC-V:
+
+* Fix KVM_GET_REG_LIST API for ISA_EXT registers
+
+* Fix reading ISA_EXT register of a missing extension
+
+* Fix ISA_EXT register handling in get-reg-list test
+
+* Fix filtering of AIA registers in get-reg-list test
+
+x86:
+
+* Fixes for TSC_AUX virtualization
+
+* Stop zapping page tables asynchronously, since we don't
+   zap them as often as before
+---------------------------------
+
+Paolo
+
+> [*] https://lore.kernel.org/r/20230914144802.1637804-1-maz@kernel.org
+> 
+> Zenghui
+> 
 
