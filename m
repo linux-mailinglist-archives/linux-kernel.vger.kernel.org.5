@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531987ACBB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4197ACBB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbjIXTsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 15:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
+        id S231373AbjIXTuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjIXTsY (ORCPT
+        with ESMTP id S229993AbjIXTuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 15:48:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E5DD3;
-        Sun, 24 Sep 2023 12:48:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20080C433C7;
-        Sun, 24 Sep 2023 19:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695584898;
-        bh=aWZU5UswlWXquKo6TvzlVJ0C2F5RZIJgKxqaiKhJe0w=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=P7MuQXYExhov1tOcpJNBJi+Dptm2BawzZz407EtRwDNs0+z52FABR1ecbYXtEX6jb
-         b4ZLH4pkOC77kz3n4wSTvRGzGqaPj/4lkcqXXyIYfp6ljxnRDcb1qKBB8X/AXCgVI6
-         82vNGIkMjWEWvi/Gq9H7WnzU0f6sbqfObsxvH2HkACKrZhy99munQ/ygsamKl8SH/6
-         J2EKMTuIjq4FuGxeZXA7F9mwbCx1YmBIcCjMRjEmfREWMAApupMouHnJYZKmXXK1XZ
-         SH4mGe4Wp69zQ6mbayHCa3CSbaA/XJwrtnOLRbnCy0zxICkpoaykhoh0+cHInynUDO
-         g/vNs/JQX26Qw==
-Date:   Sun, 24 Sep 2023 12:48:15 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Kees Cook <keescook@chromium.org>
-CC:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
-        linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, john.johansen@canonical.com,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net,
-        Dave Chinner <david@fromorbit.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
-User-Agent: K-9 Mail for Android
-In-Reply-To: <dfdb82a8-85b2-4704-35b9-3ad901a179f1@I-love.SAKURA.ne.jp>
-References: <20230912205658.3432-1-casey@schaufler-ca.com> <20230912205658.3432-2-casey@schaufler-ca.com> <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp> <568c0730-b458-04b4-dbfa-77da1758aa05@schaufler-ca.com> <94743c22-bc76-e741-e577-3e0845423f69@I-love.SAKURA.ne.jp> <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com> <ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp> <202309200803.1911A584@keescook> <af696700-ae4b-346e-4c52-3a7a21b0f46c@I-love.SAKURA.ne.jp> <202309231838.CB16E6B5@keescook> <dfdb82a8-85b2-4704-35b9-3ad901a179f1@I-love.SAKURA.ne.jp>
-Message-ID: <407A11DD-932D-441E-B4EC-673F4423CEDD@kernel.org>
+        Sun, 24 Sep 2023 15:50:54 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEAAFB
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:50:47 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-404800222d2so12729845e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695585046; x=1696189846; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=STaVRB4lc8G7tgw1+DUtsUKKTjDKDxKdvDBHRRxCOFc=;
+        b=Eou0wTehhLZ32KAExs3AyNOHLnF6eYBdnZy4Z/2bjb/fif0WrtZywS3Zs7aP8VA1To
+         KcjsRFXcZkxjg9tgfpxV+gSwHXVfc/CuEPOogHP2Saoj6RzDBHx/eGC9Z9CiBpudYYb0
+         Q0gCIauDAaHbRDUzPIqU+bESi0wCTilM3DAl8BQKcvGXvBI/4NHom2eiIiCYdHbKfFNn
+         IuMmL+q1Z+wU9WI+HVnmhgR0UZ48091vgctGGX54IHCQIuDGi2NobEXTbkWJ1ZuKn/xb
+         AT/fJY4aJ5kqyWzwUVlM/9KVHPyo2DL4edjHRFeaTU8HJBAnlkW4MPTxtPIy3v+Nyp6n
+         UYEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695585046; x=1696189846;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=STaVRB4lc8G7tgw1+DUtsUKKTjDKDxKdvDBHRRxCOFc=;
+        b=RNvG/hML4D529tl/56m3nnMM1yqOkTRfeQsZZFofwy+3eXDdUxlRgQGxfZuKJQVpnN
+         UlC0RMGy+KACkH5xkHiEaVO0W09d+6hrdtXRyDMBlx6JLgU3z1igA8Ye2n/f1KjVv/hk
+         OELTPFNefD9TkeSv3MEQSYiiQIJbmaoi2GLx9PzWsyK/Xo4Um72n5576v+/OXDH+/Xuu
+         tafrb1SX233AE9VlJZOnoajyOzB0N47yP54g/fSmYSPGHmi6axe50mNvNMN7cp5fIJhN
+         aISb+8CHo0yripcCiFVn8jPy6cBzwFyvV5mZITWdPBLIezDHCzl1q/cxOcrgx3Tsa48A
+         kHvw==
+X-Gm-Message-State: AOJu0Yw39f4SmMRmejZr65rkGjHgIahUG5/dtZjoMNeTNLBQVXaRdTDB
+        RRHeOELTNdEIQWsDQIl32ZofZxROT2o=
+X-Google-Smtp-Source: AGHT+IHRdmk85zhv60MYPeVIo9rWi4BpI30IilpE7ErS0jlbks2+ZQUTEAlWSagW+aW+xBtCseoZVQ==
+X-Received: by 2002:a7b:c456:0:b0:3fe:d637:7b25 with SMTP id l22-20020a7bc456000000b003fed6377b25mr4755937wmi.0.1695585045408;
+        Sun, 24 Sep 2023 12:50:45 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id hu23-20020a05600ca29700b003fef5e76f2csm2926177wmb.0.2023.09.24.12.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 12:50:45 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 21:50:43 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] staging: rtl8192e: Resolve circular locking with wx_mutex
+Message-ID: <cover.1695582999.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On September 24, 2023 4:06:07 AM PDT, Tetsuo Handa <penguin-kernel@I-love=
-=2ESAKURA=2Ene=2Ejp> wrote:
->Patch description says
->
->  The LSM ID values are sequential, with the oldest module
->  LSM_ID_CAPABILITY being the lowest value and the existing modules
->  numbered in the order they were included in the main line kernel=2E
->  This is an arbitrary convention for assigning the values, but
->  none better presents itself=2E The value 0 is defined as being invalid=
-=2E
+Resolve circular locking with wx_mutex, rx_pkt_pending_timer and
+reorder_spinlock.
 
-"in the order they were included in the main line kernel" Out of trees are=
-n't in main line=2E
+Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+Transferred this patch over wlan connection of rtl8192e.
 
-And "This is an arbitrary convention" specifically says it's arbitrary=2E
+Philipp Hortmann (4):
+  staging: rtl8192e: Put kfree() to end of rtllib_softmac_free()
+  staging: rtl8192e: Remove mutex from rtllib_softmac_free()
+  staging: rtl8192e: Unlock mutex for one line in rtllib_stop_protocol()
+  staging: rtl8192e: Resolve circular locking with rx_pkt_pending_timer
 
-There is literally nothing here stopping out of tree modules=2E I have pro=
-ven this, and so have you with these quotes=2E What is left to object to?
+ drivers/staging/rtl8192e/rtllib_rx.c      | 4 ++++
+ drivers/staging/rtl8192e/rtllib_softmac.c | 9 +++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
->You withdraw your "Reviewed-by" response unless "The LSM ID values are se=
-quential"
->and "must be approved by the LSM maintainers" are removed and "the LSM ma=
-intainers/community
->shall never complain about what names and/or values are assigned" is adde=
-d, don't you?
+-- 
+2.42.0
 
-*For main line kernels*
-
-Please, understand both the *intent* and *reality*: this does not block ou=
-t of tree LSMs, full stop=2E
-
->Keeping how the HUGE space is used under control of the LSM community wil=
-l be
->better for both in-tree and out-of-tree LSM modules=2E I really can't und=
-erstand
->why you don't want to utilize this opportunity=2E
-
-I cannot understand what else you need to hear=2E
-
--Kees
-
-
---=20
-Kees Cook
