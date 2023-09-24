@@ -2,140 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F17E17ACD00
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 02:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3007ACDB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjIYAAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 20:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S231591AbjIYBqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 21:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjIYAAi (ORCPT
+        with ESMTP id S229480AbjIYBqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 20:00:38 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A25DF;
-        Sun, 24 Sep 2023 17:00:30 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68cc1b70e05so1370761b3a.1;
-        Sun, 24 Sep 2023 17:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695600030; x=1696204830; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SRArSTXJud9iO+LuiOtWiYL7QKMVDyDtJlWe0NRhArI=;
-        b=Ux+GYKEIRxhpvtAB8yPxfzpokmw1YPXF3ghA5EnflkLv9vab91p0Ys9JmUdOhxdMI3
-         GTzhAu0UGYAoe4/Q8fEs1+T3+7TvucrRY/m6SOuU4MV2w4kXTx7zD69OS4HOa844dQaI
-         /ILeLILZEQ2gzFa7q2uOp2UI+4Okl9tjTWIIyxxfeNDPV/wHmA11gcLT3Qgjwj7evMyf
-         0sChrnfi2aoNYjTcrDMRErMmITGsVmuvPI5jMDbx6yzxW34qcK5m7f+opT1788V9/ifV
-         lPB3CzYHiOWCo/HELuaJVLLiMMHCpGQtCSRVVTc6F94NA9nJLjTHSQ9ij4Fb7+ClQjDa
-         vzqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695600030; x=1696204830;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SRArSTXJud9iO+LuiOtWiYL7QKMVDyDtJlWe0NRhArI=;
-        b=B/LBQ/B4L1lrQJlQoQTsV35hvDT4jDDSf9f2Axq3ov5wtUUfhEc5V+i3DKd2W55135
-         TmcRFGUlJDnVG/uLj3JGqE9Iet+6SwZSo9YVxAqKFfMUFKv81U+CFddA7srCchbC7ctr
-         gpnIqPvKfQJeNyEa0ZuZ+oFbF0/fGPNZaN7GLml45y4YO+D8UhBNjNmfKjrT43uaVZLu
-         c/fAtOd3yWzyKsZEFo3G8+xUTo4QYbrqwlTNTq/TvRhiw2psK7gPQXmoYdPjDeiusGcg
-         1RShZMMA4lheN0uvhDbd9ddC2rYApCeV7eDg2EM8CjoUXRglgjPpEGl73Wi3QIjWI74K
-         aYqg==
-X-Gm-Message-State: AOJu0YzPtSR3VA5WdKd/YGbdhOfTd+AoS9Z0Oqg00QU2qJzJ/hRmRENf
-        S9wygJXHraneUsKUx/XO4mE=
-X-Google-Smtp-Source: AGHT+IFZjXcxo45vH04/tXWEB8aCKMyp6ne0ynOxQ45vG4yDpii988ZdHDNwsDmu48yUh4yj+Ln/+w==
-X-Received: by 2002:a05:6a00:999:b0:690:2ab8:2d67 with SMTP id u25-20020a056a00099900b006902ab82d67mr6461931pfg.1.1695600029966;
-        Sun, 24 Sep 2023 17:00:29 -0700 (PDT)
-Received: from sivslab-System-Product-Name ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id g23-20020aa78197000000b0068be348e35fsm6730219pfi.166.2023.09.24.17.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 17:00:29 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 08:00:26 +0800
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     kys@microsoft.com
-Cc:     haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools: hv: kvp: fix memory leak in realloc failure
- handling
-Message-ID: <20230925000026.GA1101960@sivslab-System-Product-Name>
-References: <20230924055148.1074754-1-visitorckw@gmail.com>
+        Sun, 24 Sep 2023 21:46:50 -0400
+X-Greylist: delayed 7874 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 24 Sep 2023 18:46:42 PDT
+Received: from lv.dsns.gov.ua (unknown [194.44.109.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72841BD
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 18:46:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by lv.dsns.gov.ua (Postfix) with ESMTP id 12F3C8861B9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:15:24 +0300 (EEST)
+Received: from lv.dsns.gov.ua ([127.0.0.1])
+        by localhost (lv.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id QPmhkNXfOo7z for <linux-kernel@vger.kernel.org>;
+        Mon, 25 Sep 2023 01:15:23 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lv.dsns.gov.ua (Postfix) with ESMTP id 8FC87820EEB
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:06:28 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 lv.dsns.gov.ua 8FC87820EEB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lv.dsns.gov.ua;
+        s=4E6943BC-98CF-11ED-BCC5-EEFB8C86E64E; t=1695585988;
+        bh=YTxuP/C+h4Yt9JNhuGQl1KKvzVdvwgZMpK7RTIoLC9c=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=U3lo4+XzsKf18UMcTlkeHIc3GckdhjjfqmzCCyFLD57ny6VyR3EFAXT0t3GP6ihWg
+         wdRfTqnq0eULe0F81Z+tOvVyp/5j7iwO0Q365GdhDop832z8vORSp9Kjf42Jdj9ihB
+         +tWQH9L2uMxNhKH+X8zRGwhLD/R5Z2cmUXrLok2FOV1GTx5t/TdyqDXGRIsz9cNKrP
+         S9MiyPgWqBrR8sYk7nqWuF7j2K0DUcTLbNJTiMwa67rE+syMmjC+BTvd+nN0WCzEoO
+         W4uXsk/UF/sZY8A+RL/6X3Ds0w99x++3zTYgc4jjNyfodzJRFsiiiBUtXppWPAzU5c
+         +S3mPwB6AB0Bw==
+X-Virus-Scanned: amavisd-new at lv.dsns.gov.ua
+Received: from lv.dsns.gov.ua ([127.0.0.1])
+        by localhost (lv.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qr92oMz4QB3K for <linux-kernel@vger.kernel.org>;
+        Sun, 24 Sep 2023 23:06:28 +0300 (EEST)
+Received: from [192.168.0.37] (unknown [41.216.203.228])
+        by lv.dsns.gov.ua (Postfix) with ESMTPSA id 0088382291C
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 05:28:37 +0300 (EEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230924055148.1074754-1-visitorckw@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?b?VE9UTyBKRSBWw4HFoCBEQVJPVkFDw40gS8OTRDogW0RGRFc0MzAzNFJXMjAy?=
+ =?utf-8?q?3=5D?=
+To:     linux-kernel@vger.kernel.org
+From:   "Pan Richard Wahl" <galaburda@lv.dsns.gov.ua>
+Date:   Sat, 23 Sep 2023 19:28:35 -0700
+Reply-To: info@wahlfoundation.org
+Message-Id: <20230924022838.0088382291C@lv.dsns.gov.ua>
+X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
+        SPF_PASS,SUBJ_ALL_CAPS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 01:51:48PM +0800, Kuan-Wei Chiu wrote:
-> In the previous code, there was a memory leak issue where the
-> previously allocated memory was not freed upon a failed realloc
-> operation. This patch addresses the problem by releasing the old memory
-> before setting the pointer to NULL in case of a realloc failure. This
-> ensures that memory is properly managed and avoids potential memory
-> leaks.
-> 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->  tools/hv/hv_kvp_daemon.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 27f5e7dfc2f7..af180278d56d 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -209,11 +209,13 @@ static void kvp_update_mem_state(int pool)
->  			 * We have more data to read.
->  			 */
->  			num_blocks++;
-> -			record = realloc(record, alloc_unit * num_blocks);
-> +			struct kvp_record *record_tmp =
-> +				realloc(record, alloc_unit * num_blocks);
->  
-> -			if (record == NULL) {
-> +			if (record_tmp == NULL) {
->  				syslog(LOG_ERR, "malloc failed");
->  				kvp_release_lock(pool);
-> +				free(record);
->  				exit(EXIT_FAILURE);
->  			}
->  			continue;
-> @@ -345,11 +347,15 @@ static int kvp_key_add_or_modify(int pool, const __u8 *key, int key_size,
->  	 */
->  	if (num_records == (ENTRIES_PER_BLOCK * num_blocks)) {
->  		/* Need to allocate a larger array for reg entries. */
-> -		record = realloc(record, sizeof(struct kvp_record) *
-> -			 ENTRIES_PER_BLOCK * (num_blocks + 1));
-> +		struct kvp_record *record_tmp = realloc(
-> +			record, sizeof(struct kvp_record) * ENTRIES_PER_BLOCK *
-> +					(num_blocks + 1));
->  
-> -		if (record == NULL)
-> +		if (record_tmp == NULL) {
-> +			free(record);
->  			return 1;
-> +		}
-> +		record = record_tmp;
->  		kvp_file_info[pool].num_blocks++;
->  
->  	}
-> -- 
-> 2.25.1
->
-After tracing the code more thoroughly, I have come to the realization
-that the original codebase already handles memory management correctly.
-It verifies the success of the realloc operation before updating the
-pointer, which means there is no memory leak issue, and there is no
-need to release memory explicitly.
+Drah=C3=BD pr=C3=ADteli,
 
-Consequently, my proposed changes are unnecessary and could potentially
-introduce problems if implemented.
+Jsem Richard Wahl z Vernon Township, New Jersey, USA. Je mi 52 let a vyhr=
+=C3=A1l jsem jackpot 533 milionu $ Mega Millions, co=C5=BE je jeden z nejve=
+t=C5=A1=C3=ADch jackpotu v loterii. Zas=C3=ADl=C3=A1m v=C3=A1m tuto zpr=C3=
+=A1vu, abych v=C3=A1s po=C5=BE=C3=A1dal o souhlas s uskutecnen=C3=ADm fundr=
+aisingov=C3=A9ho projektu, kter=C3=BD jsem ji=C5=BE dlouho chtel uskutecnit.
 
-Best regards,
-Kuan-Wei Chiu
+Sotva ti to pripad=C3=A1 podezrel=C3=A9, i kdy=C5=BE je pravda, =C5=BEe me =
+nezn=C3=A1=C5=A1 a =C5=BEe j=C3=A1 nezn=C3=A1m tebe. M=C3=A1m rakovinu v te=
+rmin=C3=A1ln=C3=ADm st=C3=A1diu. Muj o=C5=A1etruj=C3=ADc=C3=AD l=C3=A9kar m=
+i pr=C3=A1ve rekl, =C5=BEe m=C3=A9 dny jsou secteny kvuli m=C3=A9mu zhor=C5=
+=A1uj=C3=ADc=C3=ADmu se zdrav=C3=AD. Podle doktora se mi v mozkov=C3=A9 kle=
+ci chyst=C3=A1 usadit kulka. Trp=C3=ADm touto nemoc=C3=AD v=C3=ADce ne=C5=
+=BE 3 roky a pro=C5=A1el jsem spoustou l=C3=A9cby, abych ji vyl=C3=A9cil. V=
+et=C5=A1inu sv=C3=A9ho majetku jsem rozdal rade charitativn=C3=ADch organiz=
+ac=C3=AD a organizac=C3=AD a dobrovolne jsem v=C3=A1m dal (=E2=82=AC 2,000,=
+000'00 EUR) jako d=C3=A1rek a douf=C3=A1m, =C5=BEe s t=C3=ADm udel=C3=A1te =
+dobr=C3=A9 veci.
 
+Mu=C5=BEete pros=C3=ADm overit m=C3=A9 v=C3=BDhry prostrednictv=C3=ADm str=
+=C3=A1nky YouTube. VID=C3=8DTE ME ZDE https://www.youtube.com/watch?v=3Dtne=
+02ExNDrw
+
+TOTO JE V=C3=81=C5=A0 DAROVAC=C3=8D K=C3=93D: [DFDW43034RW2023]
+
+Odpovezte na tento e-mail a uvedte k=C3=B3d daru: info@wahlfoundation.org
+
+Prijmete pros=C3=ADm muj dar. M=C3=A1m c=C3=A1stku (=E2=82=AC 2,000,000'00 =
+EUR) jako dar. Prijmete pros=C3=ADm tuto c=C3=A1stku, proto=C5=BEe pro v=C3=
+=A1s mu=C5=BEe b=C3=BDt velk=C3=BDm pr=C3=ADnosem. Pokud prijmete moji nab=
+=C3=ADdku, mus=C3=ADte mi odpovedet pr=C3=ADmo prostrednictv=C3=ADm e-mailu=
+: info@wahlfoundation.org
+
+C=C3=ADt=C3=ADm se velmi =C5=A1patne a m=C3=A1m velk=C3=BD strach, v noci a=
+ni ve dne skoro nesp=C3=ADm. Nemohu zemr=C3=ADt bez darov=C3=A1n=C3=AD v=C5=
+=A1ech techto penez, jinak si mysl=C3=ADm, =C5=BEe by to bylo pl=C3=BDtv=C3=
+=A1n=C3=AD. Toto je m=C3=A9 nejzaz=C5=A1=C3=AD pr=C3=A1n=C3=AD a pros=C3=AD=
+m, pracujte se mnou a provedte to. Mo=C5=BEn=C3=A1 budu m=C3=ADt p=C3=A1r m=
+es=C3=ADcu =C5=BEivota na t=C3=A9to n=C3=A1dhern=C3=A9 zemi, ale chci cinit=
+ dobro v=C3=A1mi a ostatn=C3=ADmi. Chci, aby si m=C3=A9 jm=C3=A9no pamatova=
+li na zemi i v nebi.
+
+Sna=C5=BE=C3=ADm se oslovit neziskov=C3=A9 sirotcince a prispet ke zm=C3=AD=
+rnen=C3=AD chudoby a poskytnout n=C3=A1le=C5=BEitou zdravotn=C3=AD p=C3=A9c=
+i jednotlivcum, zejm=C3=A9na behem t=C3=A9to svetov=C3=A9 pandemie a inflac=
+e. Byl bych tak=C3=A9 r=C3=A1d, kdybyste c=C3=A1st tohoto daru investovali =
+do verejn=C3=A9 infrastruktury, abyste pomohli nezamestnan=C3=BDm lidem ve =
+va=C5=A1=C3=AD zemi nab=C3=ADzet pr=C3=A1ci. Vybral jsem si te, proto=C5=BE=
+e ti ver=C3=ADm. Potrebuji va=C5=A1i plnou spolupr=C3=A1ci ohledne tohoto d=
+aru. Zde je v=C3=A1mi zvolen=C3=BD tajn=C3=BD k=C3=B3d: [DFDW43034RW2023] a=
+ pros=C3=ADm, nesdelujte k=C3=B3d nikomu, pokud m=C3=A1te z=C3=A1jem a jste=
+ ochotni se mnou spolupracovat. Kontaktujte me pros=C3=ADm s va=C5=A1=C3=AD=
+m darovac=C3=ADm/tajn=C3=BDm k=C3=B3dem [DFDW43034RW2023] a cel=C3=BDm jm=
+=C3=A9nem zde na muj soukrom=C3=BD e-mail: info@wahlfoundation.org
+
+Pan Richard Wahl
+Email: info@wahlfoundation.org
+Address: Vernon Township, New Jersey, USA
+Richard Wahl Foundation
