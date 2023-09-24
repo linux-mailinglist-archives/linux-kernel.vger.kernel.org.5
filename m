@@ -2,263 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC1C7ACAD3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 18:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B467ACAD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 18:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjIXQ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 12:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S230016AbjIXQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 12:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXQ5f (ORCPT
+        with ESMTP id S229437AbjIXQ6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 12:57:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC838FC;
-        Sun, 24 Sep 2023 09:57:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFE36C433C8;
-        Sun, 24 Sep 2023 16:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695574648;
-        bh=pcqmIy1Oq4US3JaYcyp2KhT0P2GlDacSxfYdLEt31LU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=piWVI9jdLyRif7YKlT4Kl3TPfpbY+im7I7I3WCI5xe0yuB0r1GLG8PEsisSviBHE5
-         f8LsuGbVIfZBYzt/2VWh8m2dDp+2XvuGMBAi3HRBslBSP3JxzhE5RJ8OByJQsnazBs
-         nS/Rbx1GSRd+iVmeIrwZpu3RbVGuI1xaJMk6H0UBUAv8pcGFGE3nPwJ8QfN0dfH1L1
-         9Tcfl6INT2s05PvPoH5RnYN5/VwLu79K2KvrcSV4wSX2pdct3rIrjOAY6Jmi+UhyIe
-         1qKYZbPXfe1Enh2NKkmSaW7qjDeSakl9hTNp1tswqMJZzUqqKX+svBDiCcCyNapG8Z
-         xsoB9nEAi+IXw==
-Date:   Sun, 24 Sep 2023 17:57:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        Apelete Seketeli <aseketeli@baylibre.com>
-Subject: Re: [PATCH v2 01/19] dt-bindings: iio: resolver: add devicetree
- bindings for ad2s1210
-Message-ID: <20230924175720.3be2540b@jic23-huawei>
-In-Reply-To: <20230921144400.62380-2-dlechner@baylibre.com>
-References: <20230921144400.62380-1-dlechner@baylibre.com>
-        <20230921144400.62380-2-dlechner@baylibre.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 24 Sep 2023 12:58:42 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC59FC;
+        Sun, 24 Sep 2023 09:58:35 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c93638322so1166443166b.1;
+        Sun, 24 Sep 2023 09:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695574714; x=1696179514; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1XW+n8l4tbJu47AKEn2z/gzBzCsxjR0qfp5ki1h8zQs=;
+        b=HUqmdfzwZuuAP5NHCaPM55mMyYBlNZyr0WP+t8f4T/ta7sZRaasyCU61wJKu9anNUb
+         iTM+q0+kaq//kUVHaJjde8D5sFsUKUue+OoGj9Ek4HiUGsF+T/oudOOyTfPhR3hJz2+J
+         6YfoMQzJ5cWq8mrmurxAsZfdUmQh51imy2sh7MEPDpLjSwMn61mbZK6OQ0M6Rvc2lbJH
+         78nbS4KjGlcvVBXYS6H7q0PYs2aiR6sVex2y3ovfUKEkSHxnIVZpdy13y8vQirb4qnch
+         dQLS+vAkJ2zDmtkFIWt9Nl7grTHtRgETQEcvprwcQZTv3ymtTFAgKFzvUaYcHaI8IxSj
+         Ybpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695574714; x=1696179514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1XW+n8l4tbJu47AKEn2z/gzBzCsxjR0qfp5ki1h8zQs=;
+        b=lF8z2DrvsyAXxwca17l12NzIcqm63JHQzsHiJhrwvbKsmQLNG0ihoQkTzLkhaHI9Cg
+         0lBwx9DCcNdR9h/VdTyWe+205BjAfKkn+4KEmh0zVhTqMw74ZCNp36UTFyT0GMTgkMeZ
+         ZP8iKCKvOgdhv3+V7wxA+nukXwISVyAVuGIhO1O11sAu8JZbVEbk0fz5cjHQWHK26Yl8
+         P7zqP9Ja6+xDKK3Gwekcn/kM1aLkxu0SvAyxuKhwzQMJXEy/qe54ynnnPIbmDP1UTfdP
+         vNB2QgLwqiOpizW+u1EkzcrLDgeLVxlfJ6SR6EogWxoWFRB8mY3rhtHVFsLt2IvI/qJl
+         P8xw==
+X-Gm-Message-State: AOJu0Yx7395qf9nDV5+XrUZdSd0Ko2dZBRU8oCuJM0NQqyj9VarH6g9x
+        4oRpRcBPF8x/vmEw4fzpEQ==
+X-Google-Smtp-Source: AGHT+IEWYIU9wTSQiOE1m07Ej4FE0FiTCYRcI4DAMXUkgMLmZ5nj+9sRo1y2sL5IFLuY3K9R2mG6tw==
+X-Received: by 2002:a17:906:8a75:b0:9a5:cc2b:50e5 with SMTP id hy21-20020a1709068a7500b009a5cc2b50e5mr6327566ejc.32.1695574713937;
+        Sun, 24 Sep 2023 09:58:33 -0700 (PDT)
+Received: from p183 ([46.53.250.251])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099df2ddfc37sm5217076ejc.165.2023.09.24.09.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 09:58:33 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 19:58:31 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] hardening fixes for v6.6-rc3
+Message-ID: <88707e12-dba9-4a9f-95d7-8d6f3c8f0f58@p183>
+References: <202309220957.927ADC0586@keescook>
+ <CAHk-=wg0C+eEm0Tegpvc1zZjcqkdG9L0ed10tg_rQ1-WZciMGA@mail.gmail.com>
+ <202309222034.F2B777F55@keescook>
+ <CAHk-=whf6Zu3Cfm1eOTxXniZf5EPaf1iLj_q_6BVHrzTUBfUGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whf6Zu3Cfm1eOTxXniZf5EPaf1iLj_q_6BVHrzTUBfUGw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 09:43:42 -0500
-David Lechner <dlechner@baylibre.com> wrote:
-
-> This adds new DeviceTree bindings for the Analog Devices, Inc. AD2S1210
-> resolver-to-digital converter.
+On Sat, Sep 23, 2023 at 11:04:57AM -0700, Linus Torvalds wrote:
+> On Fri, 22 Sept 2023 at 20:49, Kees Cook <keescook@chromium.org> wrote:
+> >
+> > 2) __cplusplus is relatively common in UAPI headers already:
+> >    $ git grep __cplusplus -- include/uapi | wc -l
+> >    58
 > 
-> Co-developed-by: Apelete Seketeli <aseketeli@baylibre.com>
-> Signed-off-by: Apelete Seketeli <aseketeli@baylibre.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-
-We've become more fussy about it recently but for new bindings at least,
-we want to include all power supplies and mark them as required.
-
-A few other trivial things inline,
-
-Jonathan
-
-
-> ---
+> Look a bit closer.
 > 
-> v2 changes:
-> * Add Co-developed-by:
-> * Remove extraneous quotes on strings
-> * Remove extraneous pipe on some multi-line descriptions
+> Most of those - by far - is for the usual
 > 
->  .../bindings/iio/resolver/adi,ad2s1210.yaml   | 150 ++++++++++++++++++
->  1 file changed, 150 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
+>   #if defined(__cplusplus)
+>   extern "C" {
+>   #endif
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml b/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
-> new file mode 100644
-> index 000000000000..f55c9652cfb7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
-> @@ -0,0 +1,150 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/resolver/adi,ad2s1210.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD2S1210 Resolver-to-Digital Converter
-> +
-> +maintainers:
-> +  - Michael Hennerich <michael.hennerich@analog.com>
-> +
-> +description: |
-> +  The AD2S1210 is a complete 10-bit to 16-bit resolution tracking
-> +  resolver-to-digital converter, integrating an on-board programmable
-> +  sinusoidal oscillator that provides sine wave excitation for
-> +  resolvers.
-> +
-> +  The AD2S1210 allows the user to read the angular position or the
-> +  angular velocity data directly from the parallel outputs or through
-> +  the serial interface.
-> +
-> +    A1  A0  Result
+> pattern. IOW, it's explicitly not different code, but telling the C++
+> compiler that "this is C code".
+> 
+> So this new #ifdef is an ugly new pattern of "do totally different
+> things for C++".
+> 
+> Apparently required, but very ugly nonetheless.
 
-Should say what A0 and A1 are.  It's down below but seems odd
-that it is here for RES0 and RES1 but not the A1 and A0 signals.
-
-> +     0   0  Normal mode - position output
-> +     0   1  Normal mode - velocity output
-> +     1   0  Reserved
-> +     1   1  Configuration mode
-> +
-> +  In normal mode, the resolution of the digital output is selected using
-> +  the RES0 and RES1 input pins. In configuration mode, the resolution is
-> +  selected by setting the RES0 and RES1 bits in the control register.
-> +
-> +  RES1  RES0  Resolution (Bits)
-> +     0     0  10
-> +     0     1  12
-> +     1     0  14
-> +     1     1  16
-> +
-> +  Note on SPI connections: The CS line on the AD2S1210 should hard-wired to
-> +  logic low and the WR/FSYNC line on the AD2S1210 should be connected to the
-> +  SPI CSn output of the SPI controller.
-
-That is impressively random ;)  Good to call it out.
-
-> +
-> +  Datasheet:
-> +  https://www.analog.com/media/en/technical-documentation/data-sheets/ad2s1210.pdf
-> +
-> +properties:
-> +  compatible:
-> +    const: adi,ad2s1210
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 25000000
-> +
-> +  spi-cpha: true
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description: External oscillator clock (CLKIN).
-> +
-> +  reset-gpios:
-> +    description:
-> +      GPIO connected to the /RESET pin. As the line needs to be low for the
-> +      reset to be active, it should be configured as GPIO_ACTIVE_LOW.
-> +    maxItems: 1
-> +
-> +  sample-gpios:
-> +    description:
-> +      GPIO connected to the /SAMPLE pin. As the line needs to be low to trigger
-> +      a sample, it should be configured as GPIO_ACTIVE_LOW.
-> +    maxItems: 1
-> +
-> +  mode-gpios:
-> +    description:
-> +      GPIO lines connected to the A0 and A1 pins. These pins select the data
-> +      transfer mode.
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  resolution-gpios:
-> +    description:
-> +      GPIO lines connected to the RES0 and RES1 pins. These pins select the
-> +      resolution of the digital output. If omitted, it is assumed that the
-> +      RES0 and RES1 pins are hard-wired to match the assigned-resolution-bits
-> +      property.
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  fault-gpios:
-> +    description:
-> +      GPIO lines connected to the LOT and DOS pins. These pins combined indicate
-> +      the type of fault present, if any. As these pins a pulled low to indicate
-> +      a fault condition, they should be configured as GPIO_ACTIVE_LOW.
-
-What if someone is being odd and connected only 1 of them?
-It's annoying how often people run out of pins and do things like this.
-
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  adi,fixed-mode:
-> +    description:
-> +      This is used to indicate the selected mode if A0 and A1 are hard-wired
-> +      instead of connected to GPIOS (i.e. mode-gpios is omitted).
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum: [config, velocity, position]
-> +
-> +  assigned-resolution-bits:
-> +    description:
-> +      Resolution of the digital output required by the application. This
-> +      determines the precision of the angle and/or the maximum speed that can
-> +      be measured. If resolution-gpios is omitted, it is assumed that RES0 and
-> +      RES1 are hard-wired to match this value.
-> +    enum: [10, 12, 14, 16]
-
-Good description as this was non obvious.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-cpha
-> +  - clocks
-> +  - sample-gpios
-> +  - assigned-resolution-bits
-> +
-> +oneOf:
-> +  - required:
-> +      - mode-gpios
-> +  - required:
-> +      - adi,fixed-mode
-I think this allows for both.  It's fiddlier to exclude that but would be a nice
-to have perhaps rather than relying on text above that says 'don't do it'.
-
-> +
-> +allOf:
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        resolver@0 {
-> +            compatible = "adi,ad2s1210";
-> +            reg = <0>;
-> +            spi-max-frequency = <20000000>;
-> +            spi-cpha;
-> +            clocks = <&ext_osc>;
-> +            sample-gpios = <&gpio0 90 GPIO_ACTIVE_LOW>;
-> +            mode-gpios = <&gpio0 86 0>, <&gpio0 87 0>;
-> +            resolution-gpios = <&gpio0 88 0>, <&gpio0 89 0>;
-> +            assigned-resolution-bits = <16>;
-> +        };
-> +    };
-
+Most of those in uapi/ are likely unnecessary: extern "C" means
+"don't mangle", but kernel doesn't export functions to userspace
+except vDSO so there is nothing to mangle in the first place.
