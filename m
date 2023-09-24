@@ -2,47 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A327AC9E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 16:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD317AC9EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 16:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjIXOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 10:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
+        id S229708AbjIXOJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 10:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjIXOHy (ORCPT
+        with ESMTP id S229437AbjIXOJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 10:07:54 -0400
+        Sun, 24 Sep 2023 10:09:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AA1E3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 07:07:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BFECC433C7;
-        Sun, 24 Sep 2023 14:07:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB53FA
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 07:09:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68BF6C43395;
+        Sun, 24 Sep 2023 14:09:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695564468;
-        bh=/IUo5QK74OVQlJE7Haqn2Qe9bdoH4g+5kcmCTqhaxCY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kGekk4D3BViPnTVaEGGSZemWtARscM8cP8iDYJaa5D3OzjXSyQf4AKcY11CNA8LAv
-         DRcL2zJMJXR9E2G8StMtftxufNqSr1+gJjh9QPcPZXaLL59BBmKtcS98perqHVcyto
-         rG1uHS66TWJD2CV6kZZOx7Rpv2HW8vErUAGzakFgs/4AkCJ0pxgUc5MDnNr5Mgsu+V
-         gEIZlipU5qaqH7HxNwlAnAQsaGL1VDjfhh8bLKwvPYHYxgON6naAW80LRMkkdkIlkc
-         A3/OZtRMQKDNG5NGkQOXI1YrvakY59i31VH1CNd0WbpgiDscHKgiTgJZe5dL+527qx
-         6MNLT8juboHJg==
-Date:   Sun, 24 Sep 2023 22:07:34 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     s.hauer@pengutronix.de, festevam@gmail.com,
-        marcel.ziswiler@toradex.com, Frank.Li@nxp.com,
-        xiaoning.wang@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-imx@nxp.com
-Subject: Re: [PATCH v1] firmware: imx: scu-pd: Add missed PCIEA SATA0 and
- SERDES0 power domains
-Message-ID: <20230924140734.GL7231@dragon>
-References: <1692949635-27223-1-git-send-email-hongxing.zhu@nxp.com>
+        s=k20201202; t=1695564569;
+        bh=hzaEJsc/MvyTSiwHDbUNHX3pHjivtFFehSFljD3hx+8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JM4HtDoi5L9D14lI5GjMrgBYkePbSfp+99S9Vxtv2UgpN6rzsdjlKCjQQ3Ot9n34Y
+         tMMnyMNOz6LtOPhj3Jy2SurZw80l3tQUw36I8sua/AgmCkMdj5SCrCTgk1ZdTkGu3v
+         GB2O6xlqj3GT01oaMFF5LLs9BrvuZASKoIlXlFVQCj5XFNM/h42GWVCQ10pr4cozh1
+         y23Uw1Lw8PMUyefeFQsBVlxUThZjxCEejfo4Gm3jhmZSWb6riwO7WAfxK4hC1R0chU
+         xjhOrfjk+wTonCh0qL5tty5G9ZA3OuJLUYlpioJ1CnV+hLPgV8e4aMAeCVoWpeVBCR
+         NyTpgJBHn4JPA==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50307759b65so7844258e87.0;
+        Sun, 24 Sep 2023 07:09:29 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwxjspVuwoTSdq/Xsx0blGUo59cnbum7G5K6hd2j00B6IeeJdH9
+        AnJmxFth4Sv6A0WY7OOM5wRbIEKKkjnbCJQceA==
+X-Google-Smtp-Source: AGHT+IGJ8a+c8899BJiT8DoTZkR0LqKr6jfxQvm+fUmHwVYOOXPzJ4ByxiWLhAZmxxEqpxpqDluyHoh50ZPqstltjjY=
+X-Received: by 2002:a19:3803:0:b0:4fb:89b3:3373 with SMTP id
+ f3-20020a193803000000b004fb89b33373mr3292427lfa.43.1695564567547; Sun, 24 Sep
+ 2023 07:09:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692949635-27223-1-git-send-email-hongxing.zhu@nxp.com>
+References: <20230822024155.26670-1-shuijing.li@mediatek.com>
+In-Reply-To: <20230822024155.26670-1-shuijing.li@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 24 Sep 2023 22:09:12 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-xEunh0AOKTYEWn6BV5DM9zU81gsP38P1x1a-3FnpQXg@mail.gmail.com>
+Message-ID: <CAAOTY_-xEunh0AOKTYEWn6BV5DM9zU81gsP38P1x1a-3FnpQXg@mail.gmail.com>
+Subject: Re: [PATCH v6,0/4] Add compatible to increase MT8188 audio control
+To:     Shuijing Li <shuijing.li@mediatek.com>
+Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
+        daniel@ffwll.ch, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        jitao.shi@mediatek.com, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -53,34 +64,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 03:47:15PM +0800, Richard Zhu wrote:
-> Add missed PCIEA, SATA0 and SERDES0 power domains for HSIO SS.
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Hi, Shuijing:
 
-It doesn't apply to v6.6-rc.  Could you rebase?
+Shuijing Li <shuijing.li@mediatek.com> =E6=96=BC 2023=E5=B9=B48=E6=9C=8822=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8810:41=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Add dt-binding documentation of dp-tx for MediaTek MT8188 SoC.
+> Mainly add the following two flag:
+>
+> 1.The audio packet arrangement function is to only arrange audio
+> packets into the Hblanking area. In order to align with the HW
+> default setting of g1200, this function needs to be turned off.
+>
+> 2.Due to the difference of HW, different dividers need to be set.
+>
+> Base on the branch of linus/master v6.4.
 
-Shawn
+For this series, applied to mediatek-drm-next [1], thanks.
 
-> ---
->  drivers/firmware/imx/scu-pd.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/firmware/imx/scu-pd.c b/drivers/firmware/imx/scu-pd.c
-> index 84b673427073..7b8c2689b49c 100644
-> --- a/drivers/firmware/imx/scu-pd.c
-> +++ b/drivers/firmware/imx/scu-pd.c
-> @@ -165,7 +165,10 @@ static const struct imx_sc_pd_range imx8qxp_scu_pd_ranges[] = {
->  	{ "gpu0-pid", IMX_SC_R_GPU_0_PID0, 4, true, 0 },
->  
->  	/* HSIO SS */
-> +	{ "pcie-a", IMX_SC_R_PCIE_A, 1, false, 0 },
->  	{ "pcie-b", IMX_SC_R_PCIE_B, 1, false, 0 },
-> +	{ "sata-0", IMX_SC_R_SATA_0, 1, false, 0 },
-> +	{ "serdes-0", IMX_SC_R_SERDES_0, 1, false, 0 },
->  	{ "serdes-1", IMX_SC_R_SERDES_1, 1, false, 0 },
->  	{ "hsio-gpio", IMX_SC_R_HSIO_GPIO, 1, false, 0 },
->  
-> -- 
-> 2.34.1
-> 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
+
+Regards,
+Chun-Kuang.
+
+>
+> Shuijing Li (4):
+>   dt-bindings: display: mediatek: dp: Add compatible for MediaTek MT8188
+>   drm/mediatek: dp: Add the audio packet flag to mtk_dp_data struct
+>   drm/mediatek: dp: Add the audio divider to mtk_dp_data struct
+>   drm/mediatek: dp: Add support MT8188 dp/edp function
+>
+>  .../display/mediatek/mediatek,dp.yaml         |  2 ++
+>  drivers/gpu/drm/mediatek/mtk_dp.c             | 36 ++++++++++++++++++-
+>  drivers/gpu/drm/mediatek/mtk_dp_reg.h         | 23 ++++++++----
+>  3 files changed, 54 insertions(+), 7 deletions(-)
+>
+> --
+> 2.40.1
+>
