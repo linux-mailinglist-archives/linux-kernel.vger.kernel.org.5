@@ -2,112 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5638C7AC7B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EDB7AC7C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjIXLdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 07:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S229540AbjIXLic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 07:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjIXLdf (ORCPT
+        with ESMTP id S229449AbjIXLib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 07:33:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97870DA;
-        Sun, 24 Sep 2023 04:33:29 -0700 (PDT)
-Date:   Sun, 24 Sep 2023 11:33:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695555207;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sQ5Vz++03aAd/jaHF9EEyceiSFGpFYiJ8gae6ba/jkk=;
-        b=xOKb5Mq3gRkg3ndXQ6fZWQAu45wTHvR2LbJIssb2RJcFLDhlq7k1OkDDabvEQxQtNH0DNv
-        N1wtuU4ZJPiqocHQ7kds4OZyo7FBgor4QF9R1oMrSnQ5l8ULaO/bAfrU3fr1nQkl9QXjvk
-        IWrGGMKmnM9zrMC1NsTJpILoJ559lLmeqfSLovhEGu4SaGbtMrfqp317MG1aT3sfLF5SbI
-        MFBMd2yZ/kRK8AK+lIG8bZxqOD62sA4PTfP4lJaWAvF78/915c/QCavK+/aTmdb1hSfqGp
-        PfGewSoKpSuKyvYN3LCuOPlkeiO9PvTLgL1lsDZJLOrWqbmvx5/sZhRzjQaLiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695555207;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sQ5Vz++03aAd/jaHF9EEyceiSFGpFYiJ8gae6ba/jkk=;
-        b=y3CLop16d3hRurJ7gbKT94OsI/gA7mpgdeusZPL56h5jM89wDX7CIOTrR0/+JJQRZ1SHPA
-        ML1pr0RUKbFEt+DA==
-From:   "tip-bot2 for Hugh Dickins" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86_64: Show CR4.PSE on auxiliaries like on BSP
-Cc:     Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <103ad03a-8c93-c3e2-4226-f79af4d9a074@google.com>
-References: <103ad03a-8c93-c3e2-4226-f79af4d9a074@google.com>
+        Sun, 24 Sep 2023 07:38:31 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E839100;
+        Sun, 24 Sep 2023 04:38:23 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27752a1e184so169440a91.3;
+        Sun, 24 Sep 2023 04:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695555502; x=1696160302; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JhhTXSXah4I7JqQq7Z8mOSYxnO2RCWDRvV8O3bTDHb4=;
+        b=gouDfJoG5TKSbPviPZmi0oXZ+ZDYUBjNRQzBW8aCtZ07LgjFh5G82o3f9jg1uTc6hF
+         HTchtxNiaWT7iPxBawTkSbCsg38e06dV943VsTxUOGuj02nbHmx9nEsCxrbPotqFygSS
+         dNnpWK9n/S2mmb8Q/4+ck06NuyGDnLmYoXMSDiQGT7jNMV0PUOUCErveQViRCPt12oO+
+         /GgjE+9wE2eu2hoilMxxheM6Q4kfvFvLB5tcuKTHVKjWCDQZlHTn7TvXfINNI2vTYez7
+         pA41Vx7edUL9S/rM9lk8VfNrcCFMkUxwR0YMOQkZjuhLQQqFOuJ0Z+bOWHK/q7Cz52D0
+         v7Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695555502; x=1696160302;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JhhTXSXah4I7JqQq7Z8mOSYxnO2RCWDRvV8O3bTDHb4=;
+        b=sV0fE4ASJbS4lzttAiHaCg9qRnK20oUShtsC7NvhS6Bt3YP7tz1waVlkkQbcxlMqX0
+         5tLw55EHXZm+jYXLPEHDGenpsckrrkBkyiUxnnz/XoDJipIcHeuctNpHjxfYmfSRGOKV
+         1qW/c8Uu5ePRcKJQQDBUVJykjQGCU4tgfJDPPRf9UUeBRc0n6viv2c92YLagoBv8isSh
+         QkX59IGjw1quHPnD8JibzudeSrEYC4NsSKJAgmhJOtyCG/AGmR4TTabDvfxlNnHP1ALN
+         9NGJmQzHiTM2kA0nQMrL3j8lVr76toCWVeY6HGIrT9IP13vMJ3nqunJhNs2GhpaPKBzj
+         k5Gw==
+X-Gm-Message-State: AOJu0YxtLXGFWMKa99r+ufW3pt59FKXTmr1hA2Y25PkRwfEHEbh+Ebxp
+        ckeVo5Oz3Sr8V4+QeXRww1Y=
+X-Google-Smtp-Source: AGHT+IEmNQ8d7khOcZNLgbWh7MZLvEZkY2z1beZ234hDYMipdxze0OUT12np9WnjPFun/M/AImGT2g==
+X-Received: by 2002:a17:90a:5384:b0:262:d6cb:3567 with SMTP id y4-20020a17090a538400b00262d6cb3567mr3760678pjh.26.1695555502440;
+        Sun, 24 Sep 2023 04:38:22 -0700 (PDT)
+Received: from toolbox.iitism.net ([103.15.228.93])
+        by smtp.gmail.com with ESMTPSA id s2-20020a17090a6e4200b002775281b9easm422376pjm.50.2023.09.24.04.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 04:38:22 -0700 (PDT)
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+To:     greybus-dev@lists.linaro.org
+Cc:     Ayush Singh <ayushdevel1325@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        vaishnav@beagleboard.org, jkridner@beagleboard.org, nm@ti.com,
+        krzysztof.kozlowski+dt@linaro.org
+Subject: [PATCH v5 0/3] greybus: Add BeaglePlay Greybus Driver
+Date:   Sun, 24 Sep 2023 17:06:56 +0530
+Message-ID: <20230924113725.164948-1-ayushdevel1325@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Message-ID: <169555520691.27769.2960713930630159681.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+BeagleConnect is both a technology concept and a line of board designs
+that implement the technology. Born from Greybus, a mechanism for
+dynamically extending a Linux system with embedded peripherals,
+BeagleConnect adds two key elements: a 6LoWPAN transport and mikroBUS
+manifests. The 6LoWPAN transport provides for arbitrary connections,
+including the IEEE802.15.4g long-range wireless transport supported
+between BeaglePlay and BeagleConnect Freedom (the first BeagleConnect
+board design). The mikroBUS manifests provide for rapid prototyping
+and low-node-count production with sensor boards following the
+mikroBUS freely-licensable embedded bus standard such that existing
+Linux drivers can be loaded upon Greybus discovery of the nodes.
 
-Commit-ID:     f4c5ca9850124fb5715eff06cffb1beed837500c
-Gitweb:        https://git.kernel.org/tip/f4c5ca9850124fb5715eff06cffb1beed837500c
-Author:        Hugh Dickins <hughd@google.com>
-AuthorDate:    Mon, 14 Aug 2023 19:53:18 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 24 Sep 2023 13:23:54 +02:00
+This patch set provides the Linux-side hooks required for the 6LoWPAN
+transport for BeagleConnect on BeaglePlay. Also adds required devicetree
+additions.
 
-x86_64: Show CR4.PSE on auxiliaries like on BSP
+Tested over `next-20230825`.
 
-Set CR4.PSE in secondary_startup_64: the Intel SDM is clear that it does
-not matter whether it's 0 or 1 when 4-level-pts are enabled, but it's
-distracting to find CR4 different on BSP and auxiliaries - on x86_64,
-BSP alone got to add the PSE bit, in probe_page_size_mask().
+Link: https://programmershideaway.xyz/tags/gsoc23/ GSoC23 Blog
+Link: https://git.beagleboard.org/gsoc/greybus/cc1352-firmware Zephyr App
+Link: https://github.com/Ayush1325/linux/tree/gb-beagleplay GitHub Branch
+Link: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/thread/GKOFWZ5IJMNXIWVDOM3WRNU2B2S4244G/ Patch v4
+Link: https://docs.beagleboard.org/latest/boards/beagleconnect/index.html BeagleConnect
+Link: https://docs.beagleboard.org/latest/boards/beagleplay/index.html BeaglePlay
+Link: https://github.com/Ayush1325/linux/tree/gb-beagleplay Github Repo
 
-Peter Zijlstra adds:
+Changes in Patch v5
+v4 -> v5:
+- Move DT Bindings to net
+- Rename compatible to `beagle,play-cc1352`
+- Expose CC1352 as MCU
+- Remove redundant tracing messages
+- Fix memory leaks
 
-   "I think the point is that PSE bit is completely without
-    meaning in long mode.
+v3 -> v4:
+- Add DT Bindings
+- Reorder commits
+- Improve commit messages
 
-    But yes, having the same CR4 bits set across BSP and APs is
-    definitely sane."
+v2 -> v3:
+- Move gb-beagleplay out of staging
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/103ad03a-8c93-c3e2-4226-f79af4d9a074@google.com
----
- arch/x86/kernel/head_64.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v1 -> v2:
+- Combine the driver into a single file
+- Remove redundant code
+- Fix Checkpatch complaints
+- Other suggested changes
 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index ea69959..3ddce02 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -180,8 +180,8 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	movl	$0, %ecx
- #endif
- 
--	/* Enable PAE mode, PGE and LA57 */
--	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-+	/* Enable PAE mode, PSE, PGE and LA57 */
-+	orl	$(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
- #ifdef CONFIG_X86_5LEVEL
- 	testl	$1, __pgtable_l5_enabled(%rip)
- 	jz	1f
+Ayush Singh (3):
+  dt-bindings: Add beaglecc1352
+  greybus: Add BeaglePlay Linux Driver
+  dts: ti: k3-am625-beagleplay: Add beaglecc1352
+
+ .../bindings/net/beagle,play-cc1352.yaml      |  25 +
+ MAINTAINERS                                   |   7 +
+ .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |   4 +
+ drivers/greybus/Kconfig                       |  10 +
+ drivers/greybus/Makefile                      |   4 +-
+ drivers/greybus/gb-beagleplay.c               | 526 ++++++++++++++++++
+ 6 files changed, 574 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/beagle,play-cc1352.yaml
+ create mode 100644 drivers/greybus/gb-beagleplay.c
+
+
+base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+-- 
+2.41.0
+
