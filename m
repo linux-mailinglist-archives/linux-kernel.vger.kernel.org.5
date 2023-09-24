@@ -2,41 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 567A57ACB0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7487ACB0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbjIXRXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
+        id S230175AbjIXRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbjIXRXn (ORCPT
+        with ESMTP id S229710AbjIXRZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:23:43 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4ABE510F;
-        Sun, 24 Sep 2023 10:23:35 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.03,173,1694703600"; 
-   d="scan'208";a="180780927"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 25 Sep 2023 02:23:35 +0900
-Received: from localhost.localdomain (unknown [10.226.92.4])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id D2ADC402D0AD;
-        Mon, 25 Sep 2023 02:23:32 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 3/3] pinctrl: mcp23s08: Simplify probe()/mcp23s08_spi_regmap_init()
-Date:   Sun, 24 Sep 2023 18:23:20 +0100
-Message-Id: <20230924172320.15165-4-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230924172320.15165-1-biju.das.jz@bp.renesas.com>
-References: <20230924172320.15165-1-biju.das.jz@bp.renesas.com>
+        Sun, 24 Sep 2023 13:25:08 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7F5F1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:25:01 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c93638322so1172328966b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695576299; x=1696181099; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RRXyiwDnkcF0zN2JsUwtWTqR+TaAuDaKDz+KJ6kvRrU=;
+        b=HLGqwnkyzFQVdgYOXY0i49HeFCR6URzFxfpL1sidrOrd7PMp434Uk0KBW11wXZSpu4
+         3HErpiTjei99XzJzZVVKa4rHW7n49LeqZEQPOL9vz5uoFrMV1UXMbokYlOKBrlHAxAXv
+         9BQdA++xabk014UiEZT/kMxhZFGNlXbvrYpFE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695576299; x=1696181099;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RRXyiwDnkcF0zN2JsUwtWTqR+TaAuDaKDz+KJ6kvRrU=;
+        b=usCodpoNZuBHdAbV5opY6pCn843ocqJ61Al7yvzsH5WoftKR8Q5wfGpNgWTV6uWPKN
+         P1o8kCQze/66jHC0jDuj7VonxremrXF/aJ3fHCrcnBSSMvW8fmtpIaqeo/SUXR5Yg27C
+         NMdhDxNCp/ZdXl9LaoKUjimJyNRJjDppfZZcD365IJWRjonkkeG2Yqi68s3WM8++ViEj
+         uJ0dWHX5b7MFLzlw6bnunZKe02TMaWq0Sf53y6HzFHvERxWETLX4fpA3AltUSNUhVxfA
+         gwCSPt/jdWan7sYoxlY4+ExnOJY/tsYI6clbD2HfRvIr32Byo0WSqNULMFGrehUgaxyp
+         /K+A==
+X-Gm-Message-State: AOJu0Yz43G+f+5jHN4Blm6d8Wy7L5HRK9V+aDhbNdRicEwkC2WLWDqQf
+        goAM9TfkKXTu044fE97p+7qwBTSOwREC5fqgWqf1zobk
+X-Google-Smtp-Source: AGHT+IFykE8OdMPBvHPxcpjRIVIF+OsJFurmTlZEEgwyK6xQPJ5qs/642gq/FoA6BZaMNOfU7riwNQ==
+X-Received: by 2002:a17:907:62a6:b0:9a9:fa4a:5a4e with SMTP id nd38-20020a17090762a600b009a9fa4a5a4emr10148049ejc.13.1695576299387;
+        Sun, 24 Sep 2023 10:24:59 -0700 (PDT)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id k17-20020a170906681100b00992b50fbbe9sm5261067ejr.90.2023.09.24.10.24.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Sep 2023 10:24:58 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so11674462a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:24:58 -0700 (PDT)
+X-Received: by 2002:a05:6402:270d:b0:530:bfb6:66cd with SMTP id
+ y13-20020a056402270d00b00530bfb666cdmr11388000edd.7.1695576298038; Sun, 24
+ Sep 2023 10:24:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <202309220957.927ADC0586@keescook> <CAHk-=wg0C+eEm0Tegpvc1zZjcqkdG9L0ed10tg_rQ1-WZciMGA@mail.gmail.com>
+ <202309222034.F2B777F55@keescook> <CAHk-=whf6Zu3Cfm1eOTxXniZf5EPaf1iLj_q_6BVHrzTUBfUGw@mail.gmail.com>
+ <88707e12-dba9-4a9f-95d7-8d6f3c8f0f58@p183>
+In-Reply-To: <88707e12-dba9-4a9f-95d7-8d6f3c8f0f58@p183>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 24 Sep 2023 10:24:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh++R5W1ifuS6YoSb-9ExKGr7cVavo8SHiWtzyR4-hVgg@mail.gmail.com>
+Message-ID: <CAHk-=wh++R5W1ifuS6YoSb-9ExKGr7cVavo8SHiWtzyR4-hVgg@mail.gmail.com>
+Subject: Re: [GIT PULL] hardening fixes for v6.6-rc3
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,353 +76,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add struct mcp23s08_info and simplify probe()/mcp23s08_spi_regmap_init() by
-replacing match data 'type' with 'struct mcp23s08_info'.
+On Sun, 24 Sept 2023 at 09:58, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> Most of those in uapi/ are likely unnecessary: extern "C" means
+> "don't mangle", but kernel doesn't export functions to userspace
+> except vDSO so there is nothing to mangle in the first place.
 
-While at it, replace 'dev_err()'->'dev_err_probe()' and drop printing
-'type' in error path for i2c_get_match_data().
+I suspect a lot of it is "this got copied-and-pasted from a source
+that used it".
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-v2->v3:
- * Added struct mcp23s08_info in pinctrl-mcp23s08.h and both i2c and spi
-   drivers using same match data structure.
-v1->v2:
- * Updated commit description
- * Dropped printing 'type' in error path for i2c_get_match_data(). 
----
- drivers/pinctrl/pinctrl-mcp23s08.h     |  8 +++
- drivers/pinctrl/pinctrl-mcp23s08_i2c.c | 93 ++++++++++++--------------
- drivers/pinctrl/pinctrl-mcp23s08_spi.c | 88 ++++++++++++------------
- 3 files changed, 93 insertions(+), 96 deletions(-)
+And even if you don't export, you have to *match* the linkage in case
+you have the same name.
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.h b/drivers/pinctrl/pinctrl-mcp23s08.h
-index b15516af7783..105bce9e0f50 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.h
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.h
-@@ -22,6 +22,14 @@ struct regmap;
- 
- struct pinctrl_dev;
- 
-+struct mcp23s08_info {
-+	const struct regmap_config *regmap;
-+	const char *label;
-+	unsigned int type;
-+	u16 ngpio;
-+	bool reg_shift;
-+};
-+
- struct mcp23s08 {
- 	u8			addr;
- 	bool			irq_active_high;
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08_i2c.c b/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-index 41ea2650a7e4..70219c0b71c7 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-@@ -10,50 +10,30 @@
- 
- static int mcp230xx_probe(struct i2c_client *client)
- {
-+	const struct mcp23s08_info *info;
- 	struct device *dev = &client->dev;
- 	struct mcp23s08 *mcp;
--	unsigned int type;
- 	int ret;
- 
- 	mcp = devm_kzalloc(dev, sizeof(*mcp), GFP_KERNEL);
- 	if (!mcp)
- 		return -ENOMEM;
- 
--	type = (uintptr_t)i2c_get_match_data(client);
--	switch (type) {
--	case MCP_TYPE_008:
--		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x08_regmap);
--		mcp->reg_shift = 0;
--		mcp->chip.ngpio = 8;
--		mcp->chip.label = "mcp23008";
--		break;
--
--	case MCP_TYPE_017:
--		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x17_regmap);
--		mcp->reg_shift = 1;
--		mcp->chip.ngpio = 16;
--		mcp->chip.label = "mcp23017";
--		break;
--
--	case MCP_TYPE_018:
--		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x17_regmap);
--		mcp->reg_shift = 1;
--		mcp->chip.ngpio = 16;
--		mcp->chip.label = "mcp23018";
--		break;
--
--	default:
--		dev_err(dev, "invalid device type (%d)\n", type);
--		return -EINVAL;
--	}
-+	info = i2c_get_match_data(client);
-+	if (!info)
-+		return dev_err_probe(dev, -EINVAL, "invalid device type\n");
- 
-+	mcp->reg_shift = info->reg_shift;
-+	mcp->chip.ngpio = info->ngpio;
-+	mcp->chip.label = info->label;
-+	mcp->regmap = devm_regmap_init_i2c(client, info->regmap);
- 	if (IS_ERR(mcp->regmap))
- 		return PTR_ERR(mcp->regmap);
- 
- 	mcp->irq = client->irq;
- 	mcp->pinctrl_desc.name = "mcp23xxx-pinctrl";
- 
--	ret = mcp23s08_probe_one(mcp, dev, client->addr, type, -1);
-+	ret = mcp23s08_probe_one(mcp, dev, client->addr, info->type, -1);
- 	if (ret)
- 		return ret;
- 
-@@ -62,36 +42,45 @@ static int mcp230xx_probe(struct i2c_client *client)
- 	return 0;
- }
- 
-+static const struct mcp23s08_info mcp23s08_i2c_0008 = {
-+	.regmap = &mcp23x08_regmap,
-+	.label = "mcp23008",
-+	.type = MCP_TYPE_008,
-+	.ngpio = 8,
-+	.reg_shift = 0,
-+};
-+
-+static const struct mcp23s08_info mcp23s08_i2c_0017 = {
-+	.regmap = &mcp23x17_regmap,
-+	.label = "mcp23017",
-+	.type = MCP_TYPE_017,
-+	.ngpio = 16,
-+	.reg_shift = 1,
-+};
-+
-+static const struct mcp23s08_info mcp23s08_i2c_0018 = {
-+	.regmap = &mcp23x17_regmap,
-+	.label = "mcp23018",
-+	.type = MCP_TYPE_018,
-+	.ngpio = 16,
-+	.reg_shift = 1,
-+};
-+
- static const struct i2c_device_id mcp230xx_id[] = {
--	{ "mcp23008", MCP_TYPE_008 },
--	{ "mcp23017", MCP_TYPE_017 },
--	{ "mcp23018", MCP_TYPE_018 },
-+	{ "mcp23008", (kernel_ulong_t)&mcp23s08_i2c_0008 },
-+	{ "mcp23017", (kernel_ulong_t)&mcp23s08_i2c_0017 },
-+	{ "mcp23018", (kernel_ulong_t)&mcp23s08_i2c_0018 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, mcp230xx_id);
- 
- static const struct of_device_id mcp23s08_i2c_of_match[] = {
--	{
--		.compatible = "microchip,mcp23008",
--		.data = (void *) MCP_TYPE_008,
--	},
--	{
--		.compatible = "microchip,mcp23017",
--		.data = (void *) MCP_TYPE_017,
--	},
--	{
--		.compatible = "microchip,mcp23018",
--		.data = (void *) MCP_TYPE_018,
--	},
-+	{ .compatible = "microchip,mcp23008", .data = &mcp23s08_i2c_0008 },
-+	{ .compatible = "microchip,mcp23017", .data = &mcp23s08_i2c_0017 },
-+	{ .compatible = "microchip,mcp23018", .data = &mcp23s08_i2c_0018 },
- /* NOTE: The use of the mcp prefix is deprecated and will be removed. */
--	{
--		.compatible = "mcp,mcp23008",
--		.data = (void *) MCP_TYPE_008,
--	},
--	{
--		.compatible = "mcp,mcp23017",
--		.data = (void *) MCP_TYPE_017,
--	},
-+	{ .compatible = "mcp,mcp23008", .data = &mcp23s08_i2c_0008 },
-+	{ .compatible = "mcp,mcp23017", .data = &mcp23s08_i2c_0017 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mcp23s08_i2c_of_match);
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08_spi.c b/drivers/pinctrl/pinctrl-mcp23s08_spi.c
-index caf528284d07..323391bda76f 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08_spi.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08_spi.c
-@@ -80,21 +80,18 @@ static const struct regmap_bus mcp23sxx_spi_regmap = {
- };
- 
- static int mcp23s08_spi_regmap_init(struct mcp23s08 *mcp, struct device *dev,
--				    unsigned int addr, unsigned int type)
-+				    unsigned int addr,
-+				    const struct mcp23s08_info *info)
- {
--	const struct regmap_config *config;
- 	struct regmap_config *copy;
- 	const char *name;
- 
--	switch (type) {
-+	switch (info->type) {
- 	case MCP_TYPE_S08:
--		mcp->reg_shift = 0;
--		mcp->chip.ngpio = 8;
- 		mcp->chip.label = devm_kasprintf(dev, GFP_KERNEL, "mcp23s08.%d", addr);
- 		if (!mcp->chip.label)
- 			return -ENOMEM;
- 
--		config = &mcp23x08_regmap;
- 		name = devm_kasprintf(dev, GFP_KERNEL, "%d", addr);
- 		if (!name)
- 			return -ENOMEM;
-@@ -102,13 +99,10 @@ static int mcp23s08_spi_regmap_init(struct mcp23s08 *mcp, struct device *dev,
- 		break;
- 
- 	case MCP_TYPE_S17:
--		mcp->reg_shift = 1;
--		mcp->chip.ngpio = 16;
- 		mcp->chip.label = devm_kasprintf(dev, GFP_KERNEL, "mcp23s17.%d", addr);
- 		if (!mcp->chip.label)
- 			return -ENOMEM;
- 
--		config = &mcp23x17_regmap;
- 		name = devm_kasprintf(dev, GFP_KERNEL, "%d", addr);
- 		if (!name)
- 			return -ENOMEM;
-@@ -116,20 +110,18 @@ static int mcp23s08_spi_regmap_init(struct mcp23s08 *mcp, struct device *dev,
- 		break;
- 
- 	case MCP_TYPE_S18:
--		mcp->reg_shift = 1;
--		mcp->chip.ngpio = 16;
--		mcp->chip.label = "mcp23s18";
--
--		config = &mcp23x17_regmap;
--		name = config->name;
-+		mcp->chip.label = info->label;
-+		name = info->regmap->name;
- 		break;
- 
- 	default:
--		dev_err(dev, "invalid device type (%d)\n", type);
-+		dev_err(dev, "invalid device type (%d)\n", info->type);
- 		return -EINVAL;
- 	}
- 
--	copy = devm_kmemdup(dev, config, sizeof(*config), GFP_KERNEL);
-+	mcp->reg_shift = info->reg_shift;
-+	mcp->chip.ngpio = info->ngpio;
-+	copy = devm_kmemdup(dev, info->regmap, sizeof(*info->regmap), GFP_KERNEL);
- 	if (!copy)
- 		return -ENOMEM;
- 
-@@ -144,16 +136,16 @@ static int mcp23s08_spi_regmap_init(struct mcp23s08 *mcp, struct device *dev,
- static int mcp23s08_probe(struct spi_device *spi)
- {
- 	struct mcp23s08_driver_data *data;
-+	const struct mcp23s08_info *info;
- 	struct device *dev = &spi->dev;
- 	unsigned long spi_present_mask;
- 	unsigned int ngpio = 0;
--	unsigned int type;
- 	unsigned int addr;
- 	int chips;
- 	int ret;
- 	u32 v;
- 
--	type = (uintptr_t)spi_get_device_match_data(spi);
-+	info = spi_get_device_match_data(spi);
- 
- 	ret = device_property_read_u32(dev, "microchip,spi-present-mask", &v);
- 	if (ret) {
-@@ -182,7 +174,7 @@ static int mcp23s08_probe(struct spi_device *spi)
- 		data->mcp[addr] = &data->chip[--chips];
- 		data->mcp[addr]->irq = spi->irq;
- 
--		ret = mcp23s08_spi_regmap_init(data->mcp[addr], dev, addr, type);
-+		ret = mcp23s08_spi_regmap_init(data->mcp[addr], dev, addr, info);
- 		if (ret)
- 			return ret;
- 
-@@ -192,7 +184,8 @@ static int mcp23s08_probe(struct spi_device *spi)
- 		if (!data->mcp[addr]->pinctrl_desc.name)
- 			return -ENOMEM;
- 
--		ret = mcp23s08_probe_one(data->mcp[addr], dev, 0x40 | (addr << 1), type, -1);
-+		ret = mcp23s08_probe_one(data->mcp[addr], dev, 0x40 | (addr << 1),
-+					 info->type, -1);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -203,36 +196,43 @@ static int mcp23s08_probe(struct spi_device *spi)
- 	return 0;
- }
- 
-+static const struct mcp23s08_info mcp23s08_spi_s08 = {
-+	.regmap = &mcp23x08_regmap,
-+	.type = MCP_TYPE_S08,
-+	.ngpio = 8,
-+	.reg_shift = 0,
-+};
-+
-+static const struct mcp23s08_info mcp23s08_spi_s17 = {
-+	.regmap = &mcp23x17_regmap,
-+	.type = MCP_TYPE_S17,
-+	.ngpio = 16,
-+	.reg_shift = 1,
-+};
-+
-+static const struct mcp23s08_info mcp23s08_spi_s18 = {
-+	.regmap = &mcp23x17_regmap,
-+	.label = "mcp23s18",
-+	.type = MCP_TYPE_S18,
-+	.ngpio = 16,
-+	.reg_shift = 1,
-+};
-+
- static const struct spi_device_id mcp23s08_ids[] = {
--	{ "mcp23s08", MCP_TYPE_S08 },
--	{ "mcp23s17", MCP_TYPE_S17 },
--	{ "mcp23s18", MCP_TYPE_S18 },
-+	{ "mcp23s08", (kernel_ulong_t)&mcp23s08_spi_s08 },
-+	{ "mcp23s17", (kernel_ulong_t)&mcp23s08_spi_s17 },
-+	{ "mcp23s18", (kernel_ulong_t)&mcp23s08_spi_s18 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, mcp23s08_ids);
- 
- static const struct of_device_id mcp23s08_spi_of_match[] = {
--	{
--		.compatible = "microchip,mcp23s08",
--		.data = (void *) MCP_TYPE_S08,
--	},
--	{
--		.compatible = "microchip,mcp23s17",
--		.data = (void *) MCP_TYPE_S17,
--	},
--	{
--		.compatible = "microchip,mcp23s18",
--		.data = (void *) MCP_TYPE_S18,
--	},
-+	{ .compatible = "microchip,mcp23s08", .data = &mcp23s08_spi_s08 },
-+	{ .compatible = "microchip,mcp23s17", .data = &mcp23s08_spi_s17 },
-+	{ .compatible = "microchip,mcp23s18", .data = &mcp23s08_spi_s18 },
- /* NOTE: The use of the mcp prefix is deprecated and will be removed. */
--	{
--		.compatible = "mcp,mcp23s08",
--		.data = (void *) MCP_TYPE_S08,
--	},
--	{
--		.compatible = "mcp,mcp23s17",
--		.data = (void *) MCP_TYPE_S17,
--	},
-+	{ .compatible = "mcp,mcp23s08", .data = &mcp23s08_spi_s08 },
-+	{ .compatible = "mcp,mcp23s17", .data = &mcp23s08_spi_s17 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mcp23s08_spi_of_match);
--- 
-2.25.1
+So I suspect that if you have any kind of prototype sharing between
+user space (that might use C++) and kernel space, and end up with the
+same helper functions in both cases, and having some header sharing,
+you end up with that pattern. And you do it just once, and then it
+spreads by copy-and-paste.
 
+And then about a third of the hits seem to be in tools, which is
+literally user space and probably actually has C and C++ mixing.
+
+Another third is the drm uapi files. I didn't even try to look at what
+the cause there is. But presumably there are common names used in user
+space vs kernel.
+
+And then the last third is random.
+
+We do have a few other uses of __cplusplus. Sometimes just "we have a
+structure member name that the C++ people decided was a magic
+keyword".
+
+So it's not like this new pattern is *completely* new - we've had
+random "people want to use this header with C++ compilers and that
+causes random issues" before. The details are different, the cause is
+similar.
+
+                Linus
