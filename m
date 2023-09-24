@@ -2,102 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B3D7ACB2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E861C7ACB32
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjIXR6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
+        id S230237AbjIXR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXR6i (ORCPT
+        with ESMTP id S229437AbjIXR7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:58:38 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A596FA;
-        Sun, 24 Sep 2023 10:58:29 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38OHjTPu009471;
-        Sun, 24 Sep 2023 17:58:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=7BtC9/lrc/fww1dep8gZWJTE7ouTVPIG0IE1y03qkt8=;
- b=jdZy/IajWMtVT9RlLZkKgV0AmwfAP3AOULSYkGu34a03NhmmlaOshXQNTlCQvJM3zeB/
- TUCdAJDQd5Ev0+qshRBEzFyxP0Yu3uLbg4XwpylZNdAOJ18/ZEVK36eAWk9CzoW1cIR9
- KuUpz8yThOUaIksuNZafdZVIVq3woX+R1Xo6ZBVmRxHOyu+UtFitbBpqkGEpWB0TPRf5
- eJx0bLwtQOgK9/LGx5HSGALegZP0ySjhP5SOjDTSTicK1ADOagQEtd8IfxmGKIqcHFVv
- aLp0rIU6xKZr4TN2a/PVI/3Nzj3wUdS4rcjhHAneefnRY5ejEmvi+4Uc5NarQ8rrySB0 BQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ta6un7q2n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 17:58:27 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38OHsahT026598;
-        Sun, 24 Sep 2023 17:58:27 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ta6un7q2b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 17:58:27 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38OHoZH7011010;
-        Sun, 24 Sep 2023 17:58:26 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabujvdqw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 17:58:25 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38OHwMEQ26804918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 24 Sep 2023 17:58:22 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C533920043;
-        Sun, 24 Sep 2023 17:58:22 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1488A20040;
-        Sun, 24 Sep 2023 17:58:22 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.29.239])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Sun, 24 Sep 2023 17:58:22 +0000 (GMT)
-Date:   Sun, 24 Sep 2023 19:58:20 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Vineeth Vijayan <vneethv@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] s390/cio: Fix a memleak in css_alloc_subchannel
-Message-ID: <20230924195820.1a2865c3.pasic@linux.ibm.com>
-In-Reply-To: <b9e9eca9-413c-0301-3839-bb7534ac76d2@linux.ibm.com>
-References: <20230921071412.13806-1-dinghao.liu@zju.edu.cn>
-        <20230922141700.10895474.pasic@linux.ibm.com>
-        <87sf76z961.fsf@redhat.com>
-        <20230922152035.3ef1cb7e.pasic@linux.ibm.com>
-        <b9e9eca9-413c-0301-3839-bb7534ac76d2@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Sun, 24 Sep 2023 13:59:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36282FA;
+        Sun, 24 Sep 2023 10:59:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0911C433C8;
+        Sun, 24 Sep 2023 17:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695578350;
+        bh=DtuGFc95uNt0rfMj/FIhrVYgTxyWUnjNj+n/XRqLJ5s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G5ynYbOQOjE70ewF8Lxs2qiF9BAA+U2/qi3qVpFwQeB1xU7a/hKG4xT3n+ZlVkskB
+         UegYD2rXproSgfPeUmk0VYcHsFU946/eSC2nDK/H01f+KHktMzGdjSfZtApi5DZe3C
+         gXBkz+gvtC9bEBt947z3xlug/IDcqkffT6C2OXsm9zUmnW+luaO+CaZr65rveil5pp
+         z3UUeL7kZDEfdZ+DFOX7pFR+nNol/XJaNAC2+RRv55ywkyntt+UwkXheHrlga1QIur
+         0g1kfZndfx16DViRFBYdC2BL9OzTl/QfwTRv9ANX4D7UPp4MNRnmRJyZSJXo1Jj1bm
+         3+HTcfp9AV/aw==
+Date:   Sun, 24 Sep 2023 18:59:02 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>
+Subject: Re: [PATCH v2 09/19] staging: iio: resolver: ad2s1210: use regmap
+ for config registers
+Message-ID: <20230924185902.579a444b@jic23-huawei>
+In-Reply-To: <20230921144400.62380-10-dlechner@baylibre.com>
+References: <20230921144400.62380-1-dlechner@baylibre.com>
+        <20230921144400.62380-10-dlechner@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FxKv3IkqSwxGOiGuiFHnSmhr87GZ3GTv
-X-Proofpoint-GUID: M5z6rkkoNYwFVYac1f8IEhuSeaQeflyd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-24_15,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0 phishscore=0
- mlxlogscore=635 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309240154
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,47 +58,276 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 21:15:48 +0200
-Vineeth Vijayan <vneethv@linux.ibm.com> wrote:
+On Thu, 21 Sep 2023 09:43:50 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-> On 9/22/23 15:20, Halil Pasic wrote:
-> >> Author of 2ec2298412e1 here. If I don't completely misremember things,
-> >> this was for the orphanage stuff (i.e. ccw devices that were still kept
-> >> as disconnected, like dasd still in use, that had to be moved from their
-> >> old subchannel object because a different device appeared on that
-> >> subchannel.) That orphanage used a single dummy subchannel for all ccw
-> >> devices moved there.
-> >>
-> >> I have no idea how the current common I/O layer works, but that might
-> >> give you a hint about what to look for 😄  
-> > Yes, that is what the commit states and what the series is about. I hope
-> > Vineeth can give us some answers 😄 maybe even out of the top of his
-> > head... If not, I would trust his judgment on whether figuring things
-> > out is worthwhile or not.
-> >   
-> As Corny mentioned, orphanage is the only case i remember where
-> this scenario of dynamically allocated sch->lock  being used. I hope
-> you remember the cdev->ccwlock, which is nothing but the copy of
-> sch->lock pointer. This is rather a tricky design, where we are using 
-> the sch->lock and cdev->ccwlock, which are same pointers.
-> Because this sch is exclusively for the cdev ops. But at the same time,
-> a CC3 code in the stsch can make the attached device an orphanage and
-> remove the sch.
+> This makes use of the regmap API to read and write the configuration
+> registers. This simplifies code quite a bit and makes it safer
+> (previously, it was easy to write a bad value to the config registers
+> which causes the chip to lock up and need to be reset).
 > 
-> We have already seen an issue with this approach and had couple of
-> discussions about avoiding this pointer usage without using an extra
-> lock but do not have a right solution for this now.
+I'd like a bit more description in here -mostly because I have no idea
+what the original code was doing.
+What were the MSB writes that followed main config writes for and why
+can we get rid of them>
 
-Based on your response it seem you do understand the problem but are
-struggling to find a solution. You are ahead of me. I'm still at the
-stage where I don't understand the problem. I had another look at
-that orphanage code, especially at ccw_device_move_to_sch(). Looks
-to me that the *(sch->lock) ins not required outlive the *sch and
-also that there is no move semantic in place.
+Also, using regmap for only some accesses is a bit unusual. Add some
+text here to justify that decision.
 
-Based on that let's take this offline, find a quiet hour and have a look 
-at the code and the problem. Maybe I can help with the solution once I
-understand the problem -- but maybe not.
+Jonathan
 
-Regards,
-Halil
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+
+
+> -/* write 1 bytes (address or data) to the chip */
+> -static int ad2s1210_config_write(struct ad2s1210_state *st, u8 data)
+> +/*
+> + * Writes the given data to the given register address.
+> + *
+> + * If the mode is configurable, the device will first be placed in
+> + * configuration mode.
+> + */
+> +static int ad2s1210_regmap_reg_write(void *context, unsigned int reg,
+> +				     unsigned int val)
+>  {
+> -	int ret;
+> +	struct ad2s1210_state *st = context;
+> +	struct spi_transfer xfers[] = {
+> +		{
+> +			.len = 1,
+> +			.rx_buf = &st->rx[0],
+> +			.tx_buf = &st->tx[0],
+> +			.cs_change = 1,
+> +		}, {
+> +			.len = 1,
+> +			.rx_buf = &st->rx[1],
+> +			.tx_buf = &st->tx[1],
+> +		},
+> +	};
+> +
+> +	/* values can only be 7 bits, the MSB indicates an address */
+> +	if (val & ~0x7F)
+> +		return -EINVAL;
+> +
+> +	st->tx[0] = reg;
+> +	st->tx[1] = val;
+>  
+>  	ad2s1210_set_mode(MOD_CONFIG, st);
+> -	st->tx[0] = data;
+> -	ret = spi_write(st->sdev, st->tx, 1);
+> -	if (ret < 0)
+> -		return ret;
+>  
+> -	return 0;
+> +	return spi_sync_transfer(st->sdev, xfers, ARRAY_SIZE(xfers));
+>  }
+>  
+> -/* read value from one of the registers */
+> -static int ad2s1210_config_read(struct ad2s1210_state *st,
+> -				unsigned char address)
+> +/*
+> + * Reads value from one of the registers.
+> + *
+> + * If the mode is configurable, the device will first be placed in
+> + * configuration mode.
+> + */
+> +static int ad2s1210_regmap_reg_read(void *context, unsigned int reg,
+> +				    unsigned int *val)
+>  {
+> +	struct ad2s1210_state *st = context;
+>  	struct spi_transfer xfers[] = {
+>  		{
+>  			.len = 1,
+> @@ -146,22 +176,34 @@ static int ad2s1210_config_read(struct ad2s1210_state *st,
+>  			.tx_buf = &st->tx[1],
+>  		},
+>  	};
+> -	int ret = 0;
+> +	int ret;
+>  
+>  	ad2s1210_set_mode(MOD_CONFIG, st);
+> -	st->tx[0] = address | AD2S1210_MSB_IS_HIGH;
+> +	st->tx[0] = reg;
+> +	/* Must be valid register address here otherwise this could write data.
+> +	 * It doesn't matter which one.
+> +	 */
+>  	st->tx[1] = AD2S1210_REG_FAULT;
+> -	ret = spi_sync_transfer(st->sdev, xfers, 2);
+> +
+> +	ret = spi_sync_transfer(st->sdev, xfers, ARRAY_SIZE(xfers));
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	return st->rx[1];
+> +	/* If the D7 bit is set on any read/write register, it indicates a
+
+IIO comments are
+	/*
+	 * If ...
+
+> +	 * parity error. The fault register is read-only and the D7 bit means
+> +	 * something else there.
+> +	 */
+> +	if (reg != AD2S1210_REG_FAULT && st->rx[1] & AD2S1210_ADDRESS_DATA)
+> +		return -EBADMSG;
+> +
+> +	*val = st->rx[1];
+> +
+> +	return 0;
+>  }
+>
+
+
+>  static ssize_t ad2s1210_store_control(struct device *dev,
+> @@ -264,25 +297,13 @@ static ssize_t ad2s1210_store_control(struct device *dev,
+>  		return -EINVAL;
+>  
+>  	mutex_lock(&st->lock);
+> -	ret = ad2s1210_config_write(st, AD2S1210_REG_CONTROL);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	data = udata & AD2S1210_MSB_IS_LOW;
+> -	ret = ad2s1210_config_write(st, data);
+> +	data = udata & ~AD2S1210_ADDRESS_DATA;
+> +	ret = regmap_write(st->regmap, AD2S1210_REG_CONTROL, data);
+>  	if (ret < 0)
+>  		goto error_ret;
+>  
+> -	ret = ad2s1210_config_read(st, AD2S1210_REG_CONTROL);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	if (ret & AD2S1210_MSB_IS_HIGH) {
+> -		ret = -EIO;
+> -		dev_err(dev,
+> -			"ad2s1210: write control register fail\n");
+> -		goto error_ret;
+> -	}
+>  	st->resolution =
+> -		ad2s1210_resolution_value[data & AD2S1210_SET_RESOLUTION];
+> +		ad2s1210_resolution_value[data & AD2S1210_SET_RES];
+>  	ad2s1210_set_resolution_pin(st);
+>  	ret = len;
+>  	st->hysteresis = !!(data & AD2S1210_ENABLE_HYSTERESIS);
+> @@ -315,30 +336,17 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
+>  		dev_err(dev, "ad2s1210: resolution out of range\n");
+>  		return -EINVAL;
+>  	}
+> +
+> +	data = (udata - 10) >> 1;
+> +
+>  	mutex_lock(&st->lock);
+> -	ret = ad2s1210_config_read(st, AD2S1210_REG_CONTROL);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	data = ret;
+> -	data &= ~AD2S1210_SET_RESOLUTION;
+> -	data |= (udata - 10) >> 1;
+> -	ret = ad2s1210_config_write(st, AD2S1210_REG_CONTROL);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	ret = ad2s1210_config_write(st, data & AD2S1210_MSB_IS_LOW);
+> +	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +				 AD2S1210_SET_RES, data);
+>  	if (ret < 0)
+>  		goto error_ret;
+> -	ret = ad2s1210_config_read(st, AD2S1210_REG_CONTROL);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	data = ret;
+> -	if (data & AD2S1210_MSB_IS_HIGH) {
+> -		ret = -EIO;
+> -		dev_err(dev, "ad2s1210: setting resolution fail\n");
+> -		goto error_ret;
+> -	}
+> +
+>  	st->resolution =
+> -		ad2s1210_resolution_value[data & AD2S1210_SET_RESOLUTION];
+> +		ad2s1210_resolution_value[data & AD2S1210_SET_RES];
+>  	ad2s1210_set_resolution_pin(st);
+>  	ret = len;
+>  error_ret:
+> @@ -351,13 +359,14 @@ static ssize_t ad2s1210_show_fault(struct device *dev,
+>  				   struct device_attribute *attr, char *buf)
+>  {
+>  	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+> +	unsigned int value;
+>  	int ret;
+>  
+>  	mutex_lock(&st->lock);
+> -	ret = ad2s1210_config_read(st, AD2S1210_REG_FAULT);
+> +	ret = regmap_read(st->regmap, AD2S1210_REG_FAULT, &value);
+>  	mutex_unlock(&st->lock);
+>  
+> -	return (ret < 0) ? ret : sprintf(buf, "0x%02x\n", ret);
+> +	return ret < 0 ? ret : sprintf(buf, "0x%02x\n", value);
+
+You added the brackets in earlier patch. I've dropped them now
+from my tree which will make this not quite apply.
+
+
+
+>  }
+>  
+
+...
+
+>  
+>  static ssize_t ad2s1210_store_reg(struct device *dev,
+> @@ -409,14 +420,11 @@ static ssize_t ad2s1210_store_reg(struct device *dev,
+>  	struct iio_dev_attr *iattr = to_iio_dev_attr(attr);
+>  
+>  	ret = kstrtou8(buf, 10, &data);
+> -	if (ret)
+> +	if (ret < 0)
+>  		return -EINVAL;
+> +
+Unrelated. Also unnecessary as it doesn't return postive values.
+
+>  	mutex_lock(&st->lock);
+> -	ret = ad2s1210_config_write(st, iattr->address);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	ret = ad2s1210_config_write(st, data & AD2S1210_MSB_IS_LOW);
+> -error_ret:
+> +	ret = regmap_write(st->regmap, iattr->address, data);
+>  	mutex_unlock(&st->lock);
+>  	return ret < 0 ? ret : len;
+>  }
+> @@ -583,23 +591,12 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
+>  	mutex_lock(&st->lock);
+>  	ad2s1210_set_resolution_pin(st);
+>  
+> -	ret = ad2s1210_config_write(st, AD2S1210_REG_CONTROL);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	data = AD2S1210_DEF_CONTROL & ~(AD2S1210_SET_RESOLUTION);
+> +	data = AD2S1210_DEF_CONTROL & ~AD2S1210_SET_RES;
+
+Somewhat unrelated and you may sort it later, but I'd like
+to see DEF_CONTROL broken out and FIELD_PREP() used for all the fields.
+Seems crazy to use a value, then drop some bits then fill them in with
+something else.
+
+>  	data |= (st->resolution - 10) >> 1;
+> -	ret = ad2s1210_config_write(st, data);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	ret = ad2s1210_config_read(st, AD2S1210_REG_CONTROL);
+> +	ret = regmap_write(st->regmap, AD2S1210_REG_CONTROL, data);
+>  	if (ret < 0)
+>  		goto error_ret;
+>  
+> -	if (ret & AD2S1210_MSB_IS_HIGH) {
+I guess this was meant to be a sanity check on the chip responding. 
+
+> -		ret = -EIO;
+> -		goto error_ret;
+> -	}
+> -
+>  	ret = ad2s1210_update_frequency_control_word(st);
+>  	if (ret < 0)
+>  		goto error_ret;
+> @@ -652,6 +649,52 @@ static int ad2s1210_setup_gpios(struct ad2s1210_state *st)
+>  	return 0;
+>  }
+
