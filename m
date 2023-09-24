@@ -2,178 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10A47AC6D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 08:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996947AC6DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 08:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjIXGoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 02:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
+        id S229908AbjIXGra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 02:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXGoS (ORCPT
+        with ESMTP id S229498AbjIXGr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 02:44:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2580F107
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 23:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695537852; x=1727073852;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=86g9FpOzZI6bqzZb1otAqFGoX2mHTdI/u5snVzJyeJo=;
-  b=Mty1cwSJTGd/vQlbWOqZMzNuLkJ2MroD+bxLZg07egtZQRXM5lNsXVue
-   wjHKCPCE8nM6v1ukzEMLIgjqby268AZppM4PiBlV/igSYVPsN6l0JbAuE
-   KjwgtioudNLV0Lyij5fyoHtISYi7fdr8zGKNgkR6Y/TWblYZkT5f1bWSw
-   2bEEGjYjSlEufz1hxx3nQxvGL8gsA82HzQvsBSSP29FVP3QoqiUXoHQia
-   CCmBd8Q1PtqIO17NKzVcEguB0RZcrsAZxFOWB9oD1d3NtS9l8DMaviksQ
-   nYjUI9ui1k4MuBFi1/QGWJISXMQmmvi1uSdnTzQMPeJdklGe1F2xQ+LU+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="445183765"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="445183765"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 23:44:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="1078848116"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="1078848116"
-Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 23 Sep 2023 23:44:08 -0700
-Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qkIqc-0003KG-19;
-        Sun, 24 Sep 2023 06:44:06 +0000
-Date:   Sun, 24 Sep 2023 14:44:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     riel@surriel.com, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, mike.kravetz@oracle.com, leit@meta.com,
-        willy@infradead.org, Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
- invalidate_lock
-Message-ID: <202309241415.pQmcSx8R-lkp@intel.com>
-References: <20230922190552.3963067-4-riel@surriel.com>
+        Sun, 24 Sep 2023 02:47:29 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C2210B
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 23:47:21 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 755AC40E01A1;
+        Sun, 24 Sep 2023 06:47:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id LiKNzCWlXoMu; Sun, 24 Sep 2023 06:47:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695538036; bh=miEjHzEWnf3ThiVWWF82uZ3MnsD7Klip9YHQ5JoyyeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IKzdFnAgw71dF5Jk9kZcB6ovPeuJi/fNd/4vEuSrGZgbNkFD9y5EXcCYy9enx7H4Z
+         qLTUpWXGKOmzBJS7bRzVkdyMNEOAdbSG3a0UJQXPvXjnc197Rr8M7YpYBEzlBJUYlY
+         U3VToWD0Edm6V4T9PnTznPDftXUrAnXKsO3iKFfOTxYc+/BLT4GPV8BKoJWzAh9yri
+         bMO7e87CdxfEPJKjWxLveM0mO9KXw0GSclxdz384hXB6g0Eq/OJa846RXFIREz4IZL
+         p2OlwpiewpJSgEXMsvzSO++rEtyRFsf6DloAiCwJ5r+8Wl1n/WyM+bhti7NeB12oFF
+         mrBNeggChT98AlDWBmXRR74r24Zi6O7kW07SPdH7+DJQBkPbNqavK/UIY9y8R1fJTS
+         dQrt4aMKhlXoLWI7lRcfYJjN0wUlN7GA4NkHApEMQGPqqRbPkBhHEuNSRrWokytN6q
+         Gtw9tmmtXC/hAgmMrO5Y1zl+CeZBPKrnDothiOXqyjI2xbc+Rdr7+s0efeSh96LJHN
+         qdIVM4K1BQ75AZolQ4cPIUi4Kd7aWpv0LGr/JqyFFcwol1HvADy33W6G1Yq+w2YSJt
+         Cb2LtR7AkWQZxBaUEC4jC0691jZIe6dGvlAZ3ZBTvAKqUAfn91XuDfZioUZQaXzHPk
+         K49jKivj4MyxBvfoDJfuYZaE=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5246240E0176;
+        Sun, 24 Sep 2023 06:47:10 +0000 (UTC)
+Date:   Sun, 24 Sep 2023 08:47:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [patch V3 22/30] x86/microcode: Add per CPU control field
+Message-ID: <20230924064705.GMZQ/baav2qVQ3CFju@fat_crate.local>
+References: <20230912065249.695681286@linutronix.de>
+ <20230912065502.143157215@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230922190552.3963067-4-riel@surriel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230912065502.143157215@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 12, 2023 at 09:58:18AM +0200, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> Add a per CPU control field to ucode_ctrl and define constants for it:
+> 
+> SCTRL_WAIT    indicates that the CPU needs to spinwait with timeout
+> SCTRL_APPLY   indicates that the CPU needs to invoke the microcode_apply()
+> 	      callback
+> SCTRL_DONE    indicates that the CPU can proceed without invoking the
+> 	      microcode_apply() callback.
 
-kernel test robot noticed the following build errors:
+Can we put those explanations over the enum definition pls?
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.6-rc2 next-20230921]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Also, s/indicates that //g when you do.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/riel-surriel-com/hugetlbfs-extend-hugetlb_vma_lock-to-private-VMAs/20230923-030756
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230922190552.3963067-4-riel%40surriel.com
-patch subject: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with invalidate_lock
-config: i386-buildonly-randconfig-004-20230924 (https://download.01.org/0day-ci/archive/20230924/202309241415.pQmcSx8R-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230924/202309241415.pQmcSx8R-lkp@intel.com/reproduce)
+> In theory this could be a global control field, but a global control does
+> not cover the following case:
+> 
+>  15 primary CPUs load microcode successfully
+>   1 primary CPU fails and returns with an error code
+> 
+> With global control the sibling of the failed CPU would either try again or
+> the whole operation would be aborted with the consequence that the 15
+> siblings do not invoke the apply path and end up with inconsistent software
+> state. The result in dmesg would be inconsistent too.
+> 
+> There are two additional fields added and initialized:
+> 
+> ctrl_cpu and secondaries. ctrl_cpu is the CPU number of the primary thread
+> for now, but with the upcoming uniform loading at package or system scope
+> this will be one CPU per package or just one CPU. Secondaries hands the
+> control CPU a CPU mask which will be required to release the secondary CPUs
+> out of the wait loop.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309241415.pQmcSx8R-lkp@intel.com/
+Also as a comment above their definitions pls.
 
-All errors (new ones prefixed by >>):
+> Preparatory change for implementing a properly split control flow for
+> primary and secondary CPUs.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> 
+> 
+> ---
+>  arch/x86/kernel/cpu/microcode/core.c |   20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> ---
+> --- a/arch/x86/kernel/cpu/microcode/core.c
+> +++ b/arch/x86/kernel/cpu/microcode/core.c
+> @@ -324,8 +324,16 @@ static struct platform_device	*microcode
+>   *   requirement can be relaxed in the future. Right now, this is conservative
+>   *   and good.
+>   */
+> +enum sibling_ctrl {
+> +	SCTRL_WAIT,
+> +	SCTRL_APPLY,
+> +	SCTRL_DONE,
+> +};
+> +
+>  struct ucode_ctrl {
+> +	enum sibling_ctrl	ctrl;
+>  	enum ucode_state	result;
+> +	unsigned int		ctrl_cpu;
+>  };
+>  
+>  static DEFINE_PER_CPU(struct ucode_ctrl, ucode_ctrl);
+> @@ -468,7 +476,7 @@ static int ucode_load_late_stop_cpus(voi
+>   */
+>  static bool ucode_setup_cpus(void)
+>  {
+> -	struct ucode_ctrl ctrl = { .result = -1, };
+> +	struct ucode_ctrl ctrl = { .ctrl = SCTRL_WAIT, .result = -1, };
+>  	unsigned int cpu;
+>  
+>  	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
+> @@ -478,7 +486,15 @@ static bool ucode_setup_cpus(void)
+>  				return false;
+>  			}
+>  		}
+> -		/* Initialize the per CPU state */
+> +
+> +		/*
+> +		 * Initialize the per CPU state. This is core scope for now,
+> +		 * but prepared to take package or system scope into account.
+> +		 */
+> +		if (topology_is_primary_thread(cpu))
+> +			ctrl.ctrl_cpu = cpu;
+> +		else
+> +			ctrl.ctrl_cpu = cpumask_first(topology_sibling_cpumask(cpu));
 
-   In file included from arch/x86/include/asm/bug.h:87,
-                    from include/linux/bug.h:5,
-                    from include/linux/jump_label.h:256,
-                    from include/linux/static_key.h:1,
-                    from arch/x86/include/asm/nospec-branch.h:6,
-                    from arch/x86/include/asm/irqflags.h:9,
-                    from include/linux/irqflags.h:17,
-                    from include/linux/rcupdate.h:26,
-                    from include/linux/rculist.h:11,
-                    from include/linux/pid.h:5,
-                    from include/linux/sched.h:14,
-                    from include/linux/audit.h:12,
-                    from security/commoncap.c:6:
-   include/linux/hugetlb.h: In function 'hugetlb_walk':
->> include/linux/hugetlb.h:1285:56: error: invalid use of undefined type 'struct hugetlb_vma_lock'
-    1285 |                 WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                                                        ^~
-   include/asm-generic/bug.h:168:32: note: in definition of macro 'WARN_ON'
-     168 |         int __ret_warn_on = !!(condition);                              \
-         |                                ^~~~~~~~~
-   include/linux/hugetlb.h:1285:17: note: in expansion of macro 'WARN_ON_ONCE'
-    1285 |                 WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                 ^~~~~~~~~~~~
-   include/linux/hugetlb.h:1285:31: note: in expansion of macro 'lockdep_is_held'
-    1285 |                 WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                               ^~~~~~~~~~~~~~~
---
-   In file included from arch/x86/include/asm/bug.h:87,
-                    from include/linux/bug.h:5,
-                    from include/linux/mmdebug.h:5,
-                    from include/linux/mm.h:6,
-                    from mm/rmap.c:56:
-   include/linux/hugetlb.h: In function 'hugetlb_walk':
->> include/linux/hugetlb.h:1285:56: error: invalid use of undefined type 'struct hugetlb_vma_lock'
-    1285 |                 WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                                                        ^~
-   include/asm-generic/bug.h:168:32: note: in definition of macro 'WARN_ON'
-     168 |         int __ret_warn_on = !!(condition);                              \
-         |                                ^~~~~~~~~
-   include/linux/hugetlb.h:1285:17: note: in expansion of macro 'WARN_ON_ONCE'
-    1285 |                 WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                 ^~~~~~~~~~~~
-   include/linux/hugetlb.h:1285:31: note: in expansion of macro 'lockdep_is_held'
-    1285 |                 WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                               ^~~~~~~~~~~~~~~
-   In file included from mm/rmap.c:85:
-   mm/internal.h: In function 'shrinker_debugfs_name_alloc':
-   mm/internal.h:1223:9: warning: function 'shrinker_debugfs_name_alloc' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-    1223 |         shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
-         |         ^~~~~~~~
-
-
-vim +1285 include/linux/hugetlb.h
-
-185d8dcce62020 Rik van Riel 2023-09-22  1265  
-9c67a20704e763 Peter Xu     2022-12-16  1266  /*
-9c67a20704e763 Peter Xu     2022-12-16  1267   * Safe version of huge_pte_offset() to check the locks.  See comments
-9c67a20704e763 Peter Xu     2022-12-16  1268   * above huge_pte_offset().
-9c67a20704e763 Peter Xu     2022-12-16  1269   */
-9c67a20704e763 Peter Xu     2022-12-16  1270  static inline pte_t *
-9c67a20704e763 Peter Xu     2022-12-16  1271  hugetlb_walk(struct vm_area_struct *vma, unsigned long addr, unsigned long sz)
-9c67a20704e763 Peter Xu     2022-12-16  1272  {
-9c67a20704e763 Peter Xu     2022-12-16  1273  #if defined(CONFIG_HUGETLB_PAGE) && \
-9c67a20704e763 Peter Xu     2022-12-16  1274  	defined(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) && defined(CONFIG_LOCKDEP)
-9c67a20704e763 Peter Xu     2022-12-16  1275  	struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
-9c67a20704e763 Peter Xu     2022-12-16  1276  
-9c67a20704e763 Peter Xu     2022-12-16  1277  	/*
-9c67a20704e763 Peter Xu     2022-12-16  1278  	 * If pmd sharing possible, locking needed to safely walk the
-9c67a20704e763 Peter Xu     2022-12-16  1279  	 * hugetlb pgtables.  More information can be found at the comment
-9c67a20704e763 Peter Xu     2022-12-16  1280  	 * above huge_pte_offset() in the same file.
-9c67a20704e763 Peter Xu     2022-12-16  1281  	 *
-9c67a20704e763 Peter Xu     2022-12-16  1282  	 * NOTE: lockdep_is_held() is only defined with CONFIG_LOCKDEP.
-9c67a20704e763 Peter Xu     2022-12-16  1283  	 */
-9c67a20704e763 Peter Xu     2022-12-16  1284  	if (__vma_shareable_lock(vma))
-9c67a20704e763 Peter Xu     2022-12-16 @1285  		WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-9c67a20704e763 Peter Xu     2022-12-16  1286  			     !lockdep_is_held(
-9c67a20704e763 Peter Xu     2022-12-16  1287  				 &vma->vm_file->f_mapping->i_mmap_rwsem));
-9c67a20704e763 Peter Xu     2022-12-16  1288  #endif
-9c67a20704e763 Peter Xu     2022-12-16  1289  	return huge_pte_offset(vma->vm_mm, addr, sz);
-9c67a20704e763 Peter Xu     2022-12-16  1290  }
-9c67a20704e763 Peter Xu     2022-12-16  1291  
+<---- newline here.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
