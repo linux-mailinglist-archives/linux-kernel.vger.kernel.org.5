@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5790E7AC97B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6797AC94E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbjIXNb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
+        id S230473AbjIXNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjIXNbb (ORCPT
+        with ESMTP id S230476AbjIXN3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:31:31 -0400
+        Sun, 24 Sep 2023 09:29:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EDA423A;
-        Sun, 24 Sep 2023 06:19:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD2FC433CA;
-        Sun, 24 Sep 2023 13:19:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0A44489;
+        Sun, 24 Sep 2023 06:19:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CBB3C4339A;
+        Sun, 24 Sep 2023 13:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561574;
-        bh=wn0yYa9J9TDOzpYHqgGiQe2tQr3OqhjaBash6LAj8jg=;
+        s=k20201202; t=1695561580;
+        bh=Zw9+n8J3r8+aZa4uEDefj50qOMgyiy51H4x2YVGDqSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iXneB48Kq4J5/CwiELnV6Ghc7uQa6IWVJHXUNBGY+uLAc17tCibP1yNCdWHaOdYxn
-         39Qk7YZZpTRUQoIVjFODYWS2TcWiveAa3JZuVYAoD4dO/7z3L+iZ13r+l3Bwfh/5QO
-         fGOUB57fjbANUo2BRu34ma91TCGtHzgrjPDdWvnJXRSAdApKzre2Hjytn8W38qWqFY
-         3NfVEk1de//s2xZwQM8SsFoEspS9L2269aJ5jmQHKbtRVX7TlNv5T8S685RWbPd75E
-         0GcwA4Zwg3lS8ipLlcdNKdHiVDLF+W/z4sQc6aDSzXWk1lyV4AQjvoAtg4kfNW1Bbp
-         +qrm2qAWjferw==
+        b=IyFVKF00Vk/w92qAEzD2byCDkSobpdmeJXiXfa+bTp0yWK9saXLOi7EswIhaL+lD4
+         cZzWZFQcy2zt20fpaKUnwjvBRrUQaw+nndZHQrmolAA45qqsQ9f8ksc1RdLYZAUL2k
+         OrbDv3SvGEzQp/fVeR+KYEqCIk07SkipRl7HvgxM5HfdfiKpPEfcUtIZ17ndj6OUgR
+         AR3WP3Nk+PIQoL4QUC1LzZpKUU7gjT8bXLPfIWvH+FFTH3ng04DQ5+9eupB1xDkU8J
+         MnQ2X0A7kJLf2JeMd0Ipp70c9AOrwCXSawgup089lLilbM8yoHrVyRPHgSUyzyGRb3
+         TdZniZ1oXP/ww==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michal Grzedzicki <mge@meta.com>, Jack Wang <jinpu.wang@ionos.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, jinpu.wang@cloud.ionos.com,
-        jejb@linux.ibm.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 16/18] scsi: pm80xx: Avoid leaking tags when processing OPC_INB_SET_CONTROLLER_CONFIG command
-Date:   Sun, 24 Sep 2023 09:18:53 -0400
-Message-Id: <20230924131857.1276330-16-sashal@kernel.org>
+Cc:     Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>, pc@cjr.nz,
+        dchinner@redhat.com, brauner@kernel.org, vl@samba.org,
+        chenxiaosong2@huawei.com, pc@manguebit.com, sprasad@microsoft.com,
+        lsahlber@redhat.com, bharathsm@microsoft.com,
+        abelova@astralinux.ru, ematsumiya@suse.de, dhowells@redhat.com
+Subject: [PATCH AUTOSEL 5.15 17/18] smb3: correct places where ENOTSUPP is used instead of preferred EOPNOTSUPP
+Date:   Sun, 24 Sep 2023 09:18:54 -0400
+Message-Id: <20230924131857.1276330-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131857.1276330-1-sashal@kernel.org>
 References: <20230924131857.1276330-1-sashal@kernel.org>
@@ -54,39 +56,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Grzedzicki <mge@meta.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit c13e7331745852d0dd7c35eabbe181cbd5b01172 ]
+[ Upstream commit ebc3d4e44a7e05457825e03d0560153687265523 ]
 
-Tags allocated for OPC_INB_SET_CONTROLLER_CONFIG command need to be freed
-when we receive the response.
+checkpatch flagged a few places with:
+     WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+Also fixed minor typo
 
-Signed-off-by: Michal Grzedzicki <mge@meta.com>
-Link: https://lore.kernel.org/r/20230911170340.699533-2-mge@meta.com
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm80xx_hwi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/cifs/inode.c   | 2 +-
+ fs/cifs/smb2ops.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index ea305d093c871..d37b1bdb29b49 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -3793,10 +3793,12 @@ static int mpi_set_controller_config_resp(struct pm8001_hba_info *pm8001_ha,
- 			(struct set_ctrl_cfg_resp *)(piomb + 4);
- 	u32 status = le32_to_cpu(pPayload->status);
- 	u32 err_qlfr_pgcd = le32_to_cpu(pPayload->err_qlfr_pgcd);
-+	u32 tag = le32_to_cpu(pPayload->tag);
+diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
+index 82848412ad852..30a9a89c141bb 100644
+--- a/fs/cifs/inode.c
++++ b/fs/cifs/inode.c
+@@ -2531,7 +2531,7 @@ int cifs_fiemap(struct inode *inode, struct fiemap_extent_info *fei, u64 start,
+ 	}
  
- 	pm8001_dbg(pm8001_ha, MSG,
- 		   "SET CONTROLLER RESP: status 0x%x qlfr_pgcd 0x%x\n",
- 		   status, err_qlfr_pgcd);
-+	pm8001_tag_free(pm8001_ha, tag);
- 
- 	return 0;
+ 	cifsFileInfo_put(cfile);
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
  }
+ 
+ int cifs_truncate_page(struct address_space *mapping, loff_t from)
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index 560c4ababfe1a..d8ce079ba9091 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -266,7 +266,7 @@ smb2_adjust_credits(struct TCP_Server_Info *server,
+ 		cifs_server_dbg(VFS, "request has less credits (%d) than required (%d)",
+ 				credits->value, new_val);
+ 
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	spin_lock(&server->req_lock);
+@@ -1308,7 +1308,7 @@ smb2_set_ea(const unsigned int xid, struct cifs_tcon *tcon,
+ 			/* Use a fudge factor of 256 bytes in case we collide
+ 			 * with a different set_EAs command.
+ 			 */
+-			if(CIFSMaxBufSize - MAX_SMB2_CREATE_RESPONSE_SIZE -
++			if (CIFSMaxBufSize - MAX_SMB2_CREATE_RESPONSE_SIZE -
+ 			   MAX_SMB2_CLOSE_RESPONSE_SIZE - 256 <
+ 			   used_len + ea_name_len + ea_value_len + 1) {
+ 				rc = -ENOSPC;
+@@ -4822,7 +4822,7 @@ handle_read_data(struct TCP_Server_Info *server, struct mid_q_entry *mid,
+ 
+ 	if (shdr->Command != SMB2_READ) {
+ 		cifs_server_dbg(VFS, "only big read responses are supported\n");
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	if (server->ops->is_session_expired &&
 -- 
 2.40.1
 
