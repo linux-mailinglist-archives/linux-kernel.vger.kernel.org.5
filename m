@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F167AC7A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393BA7AC7B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjIXLG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 07:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
+        id S229983AbjIXLR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 07:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjIXLG5 (ORCPT
+        with ESMTP id S229450AbjIXLRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 07:06:57 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EB4101;
-        Sun, 24 Sep 2023 04:06:50 -0700 (PDT)
-Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38OB68Tn010884;
-        Sun, 24 Sep 2023 20:06:08 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
- Sun, 24 Sep 2023 20:06:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38OB68R7010880
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 24 Sep 2023 20:06:08 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <dfdb82a8-85b2-4704-35b9-3ad901a179f1@I-love.SAKURA.ne.jp>
-Date:   Sun, 24 Sep 2023 20:06:07 +0900
+        Sun, 24 Sep 2023 07:17:55 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C374FB;
+        Sun, 24 Sep 2023 04:17:49 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d7b91422da8so5481708276.2;
+        Sun, 24 Sep 2023 04:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695554269; x=1696159069; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b4HS8L745KJlohWleqIho/MyqaVQPR2qi4XVsaMxch8=;
+        b=FdG20oX2NRaIdOE1Sj9fdXAaDz4qZq23gmu5hE0c+a/7EiSeo0nvg8ILeZXyWfyoVM
+         LH6YFTVKWoAznXTXsFzq3OiUFSOBCskLu8y41JB6u9XCycG1uMAwwYeLTcD8EWG+G+u6
+         rdVaciftvOSWetHY7fvKYvJB/avxGl1aNjCePeU1DrkihNJ80vnG143W0T4H86iFk/yV
+         +7yuWhzw4pm783FCGu8zrgxRmwXPnihBsWNslFLegjt+2vvXDc3WSikPFnNyXeY3y7FK
+         UfoWzu5pamREQPqR6MfC0dSQnd1zqTP3t7eEpkyZ5by6ONZHAlQZIQHXrLJsjdyrNjDF
+         Z9xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695554269; x=1696159069;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b4HS8L745KJlohWleqIho/MyqaVQPR2qi4XVsaMxch8=;
+        b=V5VooKRDii4xQ4Plw21PrBkQXdO3pB2E9/QI1NpyOI9p6GJ1InVqYjavw47xCmAlQm
+         fC+e2jQYDb47g3Jb9olwWFrXoTgKlqSKUI+bXWRSBTOb9gOuvFOp2Beb2KqqnMn18N7z
+         tZJmKR9Q3HfGoBbvEkZbMAHRbJ8FgH5TvNHgQY5jyGPoOiK14ow3OrRD8iYfzacvPhSm
+         Y8+gM8WVKycQz3t/c4yEnhbdT3Tyt8s7wSlMXAj4eqweMNGWJjCdnUq0R1K2jGqSzFGU
+         P/xJbPP1etvJQfltPfg89WHXbfOzu34kx+Zll2yiCSvAJVP8Hf9hequMFbJDvuIHjhGh
+         gARw==
+X-Gm-Message-State: AOJu0YzYzzrUi1nc32OsAZt/nUf2H8On3XnvUvwNv926+4H8kA3Us6/E
+        tzI2qWuE+Pagcg0vsAsQAwU=
+X-Google-Smtp-Source: AGHT+IFvEPfpA/v2lWqalbgb8y7rsCvrt5ctKUb64iGmMDhnEj5omZtFyHYuVh9faGddfojaQc0X1Q==
+X-Received: by 2002:a25:dcc8:0:b0:d86:52d8:bf40 with SMTP id y191-20020a25dcc8000000b00d8652d8bf40mr4052050ybe.17.1695554268640;
+        Sun, 24 Sep 2023 04:17:48 -0700 (PDT)
+Received: from Ainz-PC-Linux.. ([103.170.182.162])
+        by smtp.googlemail.com with ESMTPSA id q9-20020a639809000000b00573f82bb00esm6037746pgd.2.2023.09.24.04.17.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 04:17:47 -0700 (PDT)
+From:   Masum Reza <masumrezarock100@gmail.com>
+Cc:     marcel@holtmann.org, Masum Reza <masumrezarock100@gmail.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: btusb: Add RTW8852BE device 13d3:3570 to device tables
+Date:   Sun, 24 Sep 2023 16:46:55 +0530
+Message-Id: <20230924111655.36749-1-masumrezarock100@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
-        linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, john.johansen@canonical.com,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net,
-        Dave Chinner <david@fromorbit.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20230912205658.3432-1-casey@schaufler-ca.com>
- <20230912205658.3432-2-casey@schaufler-ca.com>
- <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
- <568c0730-b458-04b4-dbfa-77da1758aa05@schaufler-ca.com>
- <94743c22-bc76-e741-e577-3e0845423f69@I-love.SAKURA.ne.jp>
- <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
- <ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp>
- <202309200803.1911A584@keescook>
- <af696700-ae4b-346e-4c52-3a7a21b0f46c@I-love.SAKURA.ne.jp>
- <202309231838.CB16E6B5@keescook>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <202309231838.CB16E6B5@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch description says
+This device is used in TP-Link TX20E WiFi+Bluetooth adapter.
 
-  The LSM ID values are sequential, with the oldest module
-  LSM_ID_CAPABILITY being the lowest value and the existing modules
-  numbered in the order they were included in the main line kernel.
-  This is an arbitrary convention for assigning the values, but
-  none better presents itself. The value 0 is defined as being invalid.
+Relevant information in /sys/kernel/debug/usb/devices
+about the Bluetooth device is listed as the below.
 
-and your non-sequential assignment
+T:  Bus=01 Lev=01 Prnt=01 Port=08 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=13d3 ProdID=3570 Rev= 0.00
+S:  Manufacturer=Realtek
+S:  Product=Bluetooth Radio
+S:  SerialNumber=00e04c000001
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
 
-> But lsm_id::id is a u64 (not an enum!), so there is a HUGE space available.
+Signed-off-by: Masum Reza <masumrezarock100@gmail.com>
+---
+ drivers/bluetooth/btusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-violated it. include/uapi/linux/lsm.h is a userspace API file, where
-we can't change this value after once defined.
-
-You withdraw your "Reviewed-by" response unless "The LSM ID values are sequential"
-and "must be approved by the LSM maintainers" are removed and "the LSM maintainers/community
-shall never complain about what names and/or values are assigned" is added, don't you?
-
-Quoting from https://lkml.kernel.org/r/4a6b6e2c-9872-4d4c-e42e-4ff0fb79f3ae@I-love.SAKURA.ne.jp :
-
-  You are intentionally making life difficult for the out-of-tree LSMs, by
-  requiring an LSM ID (and facilitating LSM ID collisions). No matter how
-  priority of out-of-tree LSMs is low for you, what you are about to merge
-  goes against the "developers try to avoid identifier collisions" effort.
-
-  Introducing a numeric identifier is a good opportunity for permanently
-  eliminating possibility of identifier collisions. But current usage of this
-  numeric identifier is designed for facilitating possibility of identifier
-  collisions.
-
-Keeping how the HUGE space is used under control of the LSM community will be
-better for both in-tree and out-of-tree LSM modules. I really can't understand
-why you don't want to utilize this opportunity.
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 499f4809fcdf..86adeaa11725 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -543,6 +543,8 @@ static const struct usb_device_id quirks_table[] = {
+ 						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x0bda, 0x887b), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x13d3, 0x3570), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x13d3, 0x3571), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
+ 
+-- 
+2.39.2
 
