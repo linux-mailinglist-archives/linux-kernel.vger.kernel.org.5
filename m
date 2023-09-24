@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C00E7AC64F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 04:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E3B7AC655
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 04:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjIXCki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 22:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        id S229788AbjIXCwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 22:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXCkh (ORCPT
+        with ESMTP id S229437AbjIXCwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 22:40:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C3E10C
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 19:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695523230; x=1727059230;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=+V+CDma2m6HxLGkhi72x0B/ugf2btrVh5qLHw7evXUI=;
-  b=bvnkKRMtjdIsDvqTh/kFvpfbX5hPaoz9bUen/+whuzLuNJNqThxu/iET
-   ZRY2bXeV7hlxDZcwtCbUri9CbB+Ce6cQP70vsJebQFqCqe1cjwT3xoP3G
-   QQ8v9b6KAzvc2z4W4bvMAMY0EnsEyLTWCYvoYgXI21i1l7woIzE2inygL
-   bbvV0cAEo0ataODOdCLYiwpuSyWpG0MsLrOuSAM9o9VAym0PBt7FvfGhT
-   0eEV+Wn/1USmya3TJOYYeSmCY/g/y2TupBG0YwcZkyVbs7BcmlSyDNaPc
-   q8+2Hr63vrJVtlXDXqOVY6fmV5hQCZiiRkrKR/MY0ljTKOq7kxWmQ/n6W
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="371389999"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="371389999"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 19:40:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="871685729"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
-   d="scan'208";a="871685729"
-Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 23 Sep 2023 19:40:28 -0700
-Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qkF2o-00039l-1H;
-        Sun, 24 Sep 2023 02:40:26 +0000
-Date:   Sun, 24 Sep 2023 10:40:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sandor Yu <Sandor.yu@nxp.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:332
- dw_hdmi_cec_suspend() warn: inconsistent indenting
-Message-ID: <202309241030.EdF09Szb-lkp@intel.com>
+        Sat, 23 Sep 2023 22:52:07 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896F0127
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 19:52:00 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3adc3d94f66so2956572b6e.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 19:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695523920; x=1696128720; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qoxOpoYwwbcXvP8AhdHBWCEQ7XvmIo4NgjxEavDKJS0=;
+        b=R7+78uPj1vsN9ArLH0OMzIGPyTzfVp7iVwptGLxavDM/4VWGPINkimkMWDGhYsJLLA
+         KPLMZ/osNzryQT/bOFE2YrFLhsv5W1qWrGIgc+K6wycrLBQMNxtGOYN15t0Ewsl6cHcD
+         nCBea44ociJPStjlivuIrUJ/jNR6rTgPiY/E0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695523920; x=1696128720;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qoxOpoYwwbcXvP8AhdHBWCEQ7XvmIo4NgjxEavDKJS0=;
+        b=w1Te6wprrAVXM4iYjgrXgWueB0BnxU+mQqgB08alrTOUuLxtmD4wx0BXBEs7gpKbwq
+         uCc7hjtzZzQJpfris8MgXAWGsgndaFcdEhth1qPzBwd3W0pyDGSmMXSKmOWty/ry+aZN
+         75AQ1Q6qiBI9Z7Txrqeupg18eJMLGzTLaZhB9Z13l4veIx18ZDJRTT9c/oQDK8A+AlCq
+         dI/YH3DUO6GpKdRHCvwNBNt8WvD23YClUyhghUQ61Oh49xEwG2tXrQrxatNFFDGIDEXz
+         eCrTeQAxlS/zjFNEDQH4ayrkwbDPx//2Un+0CTzKRac9vUtEnm4prOvT2/XMhQX7BsE4
+         uEaQ==
+X-Gm-Message-State: AOJu0YwLX5WYm86AfpT2mXTbquXi7hwqnqqhNSVWow4puALhRxwS+Tjo
+        9OwtBmI4i66wmOdc3kj+6sJO/w==
+X-Google-Smtp-Source: AGHT+IHcUoAikiUF1QqzgTagOroRwcP1YpmHmYrwno+IIkRbBhz92pli07wtVSNBbwi76ORGeUjvtg==
+X-Received: by 2002:aca:1c14:0:b0:3a7:aa1:f883 with SMTP id c20-20020aca1c14000000b003a70aa1f883mr3738720oic.29.1695523919867;
+        Sat, 23 Sep 2023 19:51:59 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jg13-20020a17090326cd00b001bba669a7eesm6038250plb.52.2023.09.23.19.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 19:51:58 -0700 (PDT)
+Date:   Sat, 23 Sep 2023 19:51:58 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4] EDAC/mc_sysfs: refactor deprecated strncpy
+Message-ID: <202309231950.698026E687@keescook>
+References: <20230918-strncpy-drivers-edac-edac_mc_sysfs-c-v4-1-38a23d2fcdd8@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230918-strncpy-drivers-edac-edac_mc_sysfs-c-v4-1-38a23d2fcdd8@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3aba70aed91f2b283f7952be152ad76ec5c34975
-commit: db1184e410744a680f92ca21e5acd5ae54510db8 drm: bridge: dw_hdmi: Add cec suspend/resume functions
-date:   7 weeks ago
-config: csky-randconfig-r071-20230917 (https://download.01.org/0day-ci/archive/20230924/202309241030.EdF09Szb-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230924/202309241030.EdF09Szb-lkp@intel.com/reproduce)
+On Mon, Sep 18, 2023 at 07:47:29AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> We've already calculated bounds, possible truncation with '\0' or '\n'
+> and manually NUL-terminated. The situation is now just a literal byte
+> copy from one buffer to another, let's treat it as such and use a less
+> ambiguous interface in memcpy.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309241030.EdF09Szb-lkp@intel.com/
+Yeah, I think this looks good now. If a v5 is needed, a tiny improvement
+would be to update the Subject: to "...: replace strncpy with memcpy".
 
-smatch warnings:
-drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:332 dw_hdmi_cec_suspend() warn: inconsistent indenting
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-vim +332 drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
-
-   326	
-   327	static int __maybe_unused dw_hdmi_cec_suspend(struct device *dev)
-   328	{
-   329		struct dw_hdmi_cec *cec = dev_get_drvdata(dev);
-   330	
-   331		/* store interrupt status/mask registers */
- > 332		 cec->regs_polarity = dw_hdmi_read(cec, HDMI_CEC_POLARITY);
-   333		 cec->regs_mask = dw_hdmi_read(cec, HDMI_CEC_MASK);
-   334		 cec->regs_mute_stat0 = dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT0);
-   335	
-   336		return 0;
-   337	}
-   338	
+-Kees
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kees Cook
