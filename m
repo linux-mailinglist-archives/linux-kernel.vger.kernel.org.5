@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CA37ACBC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 22:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5857ACBCA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 22:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbjIXUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 16:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S229618AbjIXUKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 16:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXUBg (ORCPT
+        with ESMTP id S229437AbjIXUJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 16:01:36 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FFBA6;
-        Sun, 24 Sep 2023 13:01:30 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bfea381255so85964581fa.3;
-        Sun, 24 Sep 2023 13:01:30 -0700 (PDT)
+        Sun, 24 Sep 2023 16:09:59 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89989AB;
+        Sun, 24 Sep 2023 13:09:52 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso673393866b.2;
+        Sun, 24 Sep 2023 13:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695585688; x=1696190488; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695586191; x=1696190991; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r/sEzFSU1WeZTVMeaZJF4z8FtiU96nb3S95OQlSjSS0=;
-        b=J04It9k9+XJZJ1aGzfPobSFbmASAnh3nI9LdU1IO6rZ8yPcb9N64fiOu43oSZ/TUYB
-         mgu+t0utjIrmyl6l8O4PTJtZc6upAUeR/vI7q3JosOgxs6WR+yiZxSAeuFfev64DNrdf
-         bhJuEY0ljY/dXHwzvo6fabHHV0KPJEnRyjmYmwxwIDZT3mZBEBvDgvlxGZhlIOvmjFQD
-         yp/BtFreRquq2ac96AHGtotqJWpkbvbsQivLKAHy7eiLDODfBp5BeWdCc6YaZFAXHc5q
-         LbKfpzf8ya8DTl0i4vxua+9CGOD3TmRDNcFcmZggiRWlV6MwfiiBR37groVW+XcfsvkP
-         6cqw==
+        bh=DxREjewkNFrWDAgPsnTZpMxgPvvi0KDP02tpQh/XKD0=;
+        b=eWjPJH3aG0iPQCwCMmoYqpQnuGeauoPyPnSEwi2vrCBuL4JXmTdrUsj3bitTTlG/q0
+         r0nFJU3CGiZnGRpNRB922ztndgKwDyJGK9ZZGZ2O/K5W6h4Mfu6N6sbgk6qRuFzmjzlN
+         LCumiBeQqb+y/yql1BTeo1W6AJ0LpjDOi98EgZlP+IXIryQU0TWUztOPIYGMLUOwdx+n
+         MSgQPq4wGfEeRwX0kWRe3bIIu0TN2pnY2G8+D6jfEAzA4skjYjMSgaSOkbOr65R4daEL
+         oCYt7OtbmyxP5pKggnqudFSIfN7lBHCHGfy2zGW0wFWOXXyAS6dyVaI3YlrwuQewXr2N
+         YGsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695585688; x=1696190488;
+        d=1e100.net; s=20230601; t=1695586191; x=1696190991;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r/sEzFSU1WeZTVMeaZJF4z8FtiU96nb3S95OQlSjSS0=;
-        b=Ew3Khn7lnwbSAOt/Kg+QbVExcAsVcSdm8B9C2ACEQ3PyIju8ZyrMyrWNbBEG+104eI
-         sDGL8mGHp5S1HmlNJpvcgZ8NJU+7IfD6rg2b7mijVaVvcOGUnPEM4UQtJyH5/Q1KhP2A
-         xb143Kp4y/Lth+ns0o1xk9A0qAj2O4pY1Hwhwv/v/gl6tlmpl7G+ONCx0daCBQ+xmgMj
-         eLXFPkXRdi0kU46Cq3qEnd9+2lhK/Wz8lT/2VCsylF/OYzvQMT0IDgbEni5syPDogLg7
-         whlYok3m/iBNWYs4V3PNRgi4K93jIwWYEKpVUGjpWEDMg/mUO+Dunkk7GNQcgp0MGCUZ
-         xTzg==
-X-Gm-Message-State: AOJu0YyROiLKdFeo1lCM6xFOzQ6GhL1MkN8kcZAW9fOHzWegt55trMok
-        +YV63+jlNI17E4kFo9iF4qY=
-X-Google-Smtp-Source: AGHT+IHXra175J8cJCP1mYtvO6y1HC5Qd13x962DSEgj/v3iYxK9Qz6wXvUiRAobb0w7iX71A52zWA==
-X-Received: by 2002:a2e:b78f:0:b0:2bf:cf44:dde5 with SMTP id n15-20020a2eb78f000000b002bfcf44dde5mr4102294ljo.30.1695585688175;
-        Sun, 24 Sep 2023 13:01:28 -0700 (PDT)
+        bh=DxREjewkNFrWDAgPsnTZpMxgPvvi0KDP02tpQh/XKD0=;
+        b=BcXVFN9WCb57KPARpFpiuNlpzkQMh0L8AnwjRQIIYyL/lz4B6uecTA33QwwRXhU257
+         zEl8bCdVY1l8FIs2kan9vzxHGpJzDpEmCuqiPQ7doBzB7MFuLSZeKR8SNRB1XLBRXnOG
+         dIFYpJ3lw6KjGOV83F8NlEOgxkct3Lu6h1gqjYrtg+0J3lKpICyGYrSV5etkYYQswZPG
+         4n8hVsVXqlz6+0Kob3DjXgH8jM4ePfEgeGPWRhwAVVOxPNELAOPVwlIj10tdnmgH0rfh
+         Swz62aD7Z3zV7Np1v73vX08MNrUDLYcRcmKKhaAb2ljWVZ0WHF8Lud4ZcKAoiGZcPbPY
+         Wqrg==
+X-Gm-Message-State: AOJu0YwLkV74W3oqH8HPII4sfAnbJWvCoEW/fmNe08USj+xsQhfduGZv
+        p5M2dKlosIESK1f1IOqIb5I=
+X-Google-Smtp-Source: AGHT+IFacAw8IlUF7W7gT0BHUL/iwLFqkcmREgIzUohJpb5r19xZXpCugD8qQ2/zyVfpFPTyuLkyFg==
+X-Received: by 2002:a17:907:7818:b0:9ae:654d:5105 with SMTP id la24-20020a170907781800b009ae654d5105mr4480937ejc.47.1695586190881;
+        Sun, 24 Sep 2023 13:09:50 -0700 (PDT)
 Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id l15-20020a1709067d4f00b009920a690cd9sm5340296ejp.59.2023.09.24.13.01.27
+        by smtp.gmail.com with ESMTPSA id la9-20020a170906ad8900b0098f33157e7dsm5342713ejb.82.2023.09.24.13.09.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 13:01:27 -0700 (PDT)
+        Sun, 24 Sep 2023 13:09:50 -0700 (PDT)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>,
         Samuel Holland <samuel@sholland.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
-Date:   Sun, 24 Sep 2023 22:01:26 +0200
-Message-ID: <3520089.iIbC2pHGDl@jernej-laptop>
-In-Reply-To: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
-References: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Inochi Amaoto <inochiama@outlook.com>,
+        Heiko Stuebner <heiko@sntech.de>, Wei Fu <wefu@redhat.com>,
+        Pei Chen <cp0613@linux.alibaba.com>,
+        Wenhan Chen <chenwenhan.cwh@alibaba-inc.com>,
+        Guo Ren <guoren@kernel.org>,
+        Inochi Amaoto <inochiama@outlook.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] riscv: dts: allwinner: d1: Add PMU event node
+Date:   Sun, 24 Sep 2023 22:09:49 +0200
+Message-ID: <1770354.VLH7GnMWUR@jernej-laptop>
+In-Reply-To: <IA1PR20MB49534918FCA69399CE2E0C53BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB49534918FCA69399CE2E0C53BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,53 +86,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 03. september 2023 ob 12:11:06 CEST je Christophe JAILLET napi=
-sal(a):
-> With gcc 12.3.0, when this file is built, we get errors such as:
->=20
-> drivers/phy/allwinner/phy-sun4i-usb.c: In function =E2=80=98sun4i_usb_phy=
-_probe=E2=80=99:
-> drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: =E2=80=98_vbus=E2=80=
-=99 directive output may be truncated writing 5 bytes into a region of size=
- between 2 and 12 [-Werror=3Dformat-truncation=3D]
->   790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
->       |                                                    ^~~~~
-> drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: =E2=80=98snprintf=E2=
-=80=99 output between 10 and 20 bytes into a destination of size 16
->   790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->=20
-> Because of the possible value of 'i', this can't be an issue in real world
-> application, but in order to have "make W=3D1" work correctly, give more
-> space for 'name'.
->=20
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Dne ponedeljek, 28. avgust 2023 ob 06:30:22 CEST je Inochi Amaoto napisal(a):
+> D1 has several pmu events supported by opensbi.
+> These events can be used by perf for profiling.
+> 
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> Link: https://dl.linux-sunxi.org/D1/Xuantie_C906_R1S0_User_Manual.pdf
+> Link: https://github.com/T-head-Semi/openc906/blob/main/C906_RTL_FACTORY/gen_rtl/pmu/rtl/aq_hpcp_top.v#L657
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Applied, thanks!
 
 Best regards,
 Jernej
 
 > ---
->  drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinne=
-r/phy-sun4i-usb.c
-> index ec551464dd4f..e53a9a9317bc 100644
-> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
-> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-> @@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device=
- *pdev)
-> =20
->  	for (i =3D 0; i < data->cfg->num_phys; i++) {
->  		struct sun4i_usb_phy *phy =3D data->phys + i;
-> -		char name[16];
-> +		char name[32];
-> =20
->  		if (data->cfg->missing_phys & BIT(i))
->  			continue;
->=20
+> changed from v3:
+> 1. remove wrong event mapping of 0x0000a
+> 2. add reference url of c906 events implementation (D1 only support events
+> described in R1S0 user manual, but event mapping is the same)
+> 
+> changed from v2:
+> 1. move pmu node from /soc to / to avoid warnings when checking.
+> 
+> The meaning of T-HEAD events can be found in this pending patch:
+> https://lore.kernel.org/linux-perf-users/IA1PR20MB4953DD82D0116EC291C21777BBE2A@IA1PR20MB4953.namprd20.prod.outlook.com
+> 
+> The patch above also provides a example that shows how to setup
+> environment and use perf with T-HEAD events.
+> ---
+>  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+> index 8275630af977..53a984d78e3f 100644
+> --- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+> +++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+> @@ -73,4 +73,43 @@ plic: interrupt-controller@10000000 {
+>  			#interrupt-cells = <2>;
+>  		};
+>  	};
+> +
+> +	pmu {
+> +		compatible = "riscv,pmu";
+> +		riscv,event-to-mhpmcounters =
+> +			<0x00003 0x00003 0x00000008>,
+> +			<0x00004 0x00004 0x00000010>,
+> +			<0x00005 0x00005 0x00000200>,
+> +			<0x00006 0x00006 0x00000100>,
+> +			<0x10000 0x10000 0x00004000>,
+> +			<0x10001 0x10001 0x00008000>,
+> +			<0x10002 0x10002 0x00010000>,
+> +			<0x10003 0x10003 0x00020000>,
+> +			<0x10019 0x10019 0x00000040>,
+> +			<0x10021 0x10021 0x00000020>;
+> +		riscv,event-to-mhpmevent =
+> +			<0x00003 0x00000000 0x00000001>,
+> +			<0x00004 0x00000000 0x00000002>,
+> +			<0x00005 0x00000000 0x00000007>,
+> +			<0x00006 0x00000000 0x00000006>,
+> +			<0x10000 0x00000000 0x0000000c>,
+> +			<0x10001 0x00000000 0x0000000d>,
+> +			<0x10002 0x00000000 0x0000000e>,
+> +			<0x10003 0x00000000 0x0000000f>,
+> +			<0x10019 0x00000000 0x00000004>,
+> +			<0x10021 0x00000000 0x00000003>;
+> +		riscv,raw-event-to-mhpmcounters =
+> +			<0x00000000 0x00000001 0xffffffff 0xffffffff 0x00000008>,
+> +			<0x00000000 0x00000002 0xffffffff 0xffffffff 0x00000010>,
+> +			<0x00000000 0x00000003 0xffffffff 0xffffffff 0x00000020>,
+> +			<0x00000000 0x00000004 0xffffffff 0xffffffff 0x00000040>,
+> +			<0x00000000 0x00000005 0xffffffff 0xffffffff 0x00000080>,
+> +			<0x00000000 0x00000006 0xffffffff 0xffffffff 0x00000100>,
+> +			<0x00000000 0x00000007 0xffffffff 0xffffffff 0x00000200>,
+> +			<0x00000000 0x0000000b 0xffffffff 0xffffffff 0x00002000>,
+> +			<0x00000000 0x0000000c 0xffffffff 0xffffffff 0x00004000>,
+> +			<0x00000000 0x0000000d 0xffffffff 0xffffffff 0x00008000>,
+> +			<0x00000000 0x0000000e 0xffffffff 0xffffffff 0x00010000>,
+> +			<0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
+> +	};
+>  };
+> --
+> 2.42.0
+> 
+> 
 
 
 
