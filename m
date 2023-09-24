@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D4E7AC79C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 12:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91497AC7A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 12:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjIXKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 06:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
+        id S229904AbjIXK70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 06:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjIXKkW (ORCPT
+        with ESMTP id S229482AbjIXK7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 06:40:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C015100;
-        Sun, 24 Sep 2023 03:40:16 -0700 (PDT)
-Date:   Sun, 24 Sep 2023 10:40:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695552015;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fT6iTXbOHGfCjfaGt+1WCThYSn0gcCFJToGGpaQ5K74=;
-        b=G0LbBYFVICUFsrdU5v+tbadO9WEMUZVMcXarsZ2ud9VTSfBiHE8YDO4hoD3RSEXS2/+FAq
-        vgAMNjfGbQGawNYSncCeM3QnS9oL4TKFbURG7cS3bKY1YW1gQNuPWn0gUofAIh3L4C6Yah
-        iM3kjbeMvYrUHntsFFPNs8jvn9qiBh4cvG9xVC3+UGgHFaxYUWPjyXB63BM6t7UseFtHK8
-        Du170ptkRYYDhXtstRxrAdY/NPgpIq67YuC7WoD4u7E2dWBHMxrlY9Qea8+bYD+juTfF3l
-        vJ34+C7XOFKAV030KrayHK6Mbh04OjdtHL7Perp8aAmJMe118rYziagBUMBqEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695552015;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fT6iTXbOHGfCjfaGt+1WCThYSn0gcCFJToGGpaQ5K74=;
-        b=A3xfMTfxE+VcZK5OQ4LUUOA1JEKZ+kQDmj352wo0zdzH1RZxohl65Rc6xuMUbzITC+E4rh
-        GaKcRXTyCHcY+pCg==
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Annotate struct
- uv_rtc_timer_head with __counted_by
-Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230922175151.work.118-kees@kernel.org>
-References: <20230922175151.work.118-kees@kernel.org>
+        Sun, 24 Sep 2023 06:59:25 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515FC103
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 03:59:18 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1bf2e81ce63so9892873fac.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 03:59:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695553157; x=1696157957;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jlk+O3J+o0kkp1OKytTuo5mn2nF+ogupL5uOl8zcGuA=;
+        b=Yr03ydFDBVJKlxejOCEMrBiZnWhqejCbs01cHS7tZhgZbovnLs34rdfHVuSXh28r9I
+         mU5XCYKeCmzZJVC4LDVkGlyqNzPVbXi0w7OVXpXGD/QuGWRqz95bPPKefG89o4/Uwlxa
+         3sZojTQYL4Wu15K9UhxI8OqI5wiPlQpJ0PvrtGKctyrHbwRPVkiay1NvPwUN6G5Vub1p
+         3KEIJX+upbkiSrsPmEmyPMp1kV1ThbAuuukJuJvdJL69Mdxf36jM3OBeL02gaDfE7tMH
+         KU4MCa8lhWVCCVMT/XCsr1aOjoTW6JjeDef7PB4w+kIdraN3XQqmK5ysgxQKTW1RRX+z
+         fbeA==
+X-Gm-Message-State: AOJu0YxAvc1IBjokXIDuuYvLSqnvsxQRu+ZobfJ5g0JP2qHtOAwHYQ71
+        8CZlAUiTLxLnighyBv89r1yV+KidbkgYahnMzdgYtqRrXwVb
+X-Google-Smtp-Source: AGHT+IGp8vx1D9jMEB/i7wblpIR1qbSKkkYzRnZBs6mxLXQ6LjSZuwUrXWRzpxMUsQ4CTqUu0G4qMtnatkOXoDUjowcVzPeX9afh
 MIME-Version: 1.0
-Message-ID: <169555201447.27769.7624440543285631039.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:9a93:b0:1d6:a9da:847 with SMTP id
+ hp19-20020a0568709a9300b001d6a9da0847mr2947177oab.0.1695553157625; Sun, 24
+ Sep 2023 03:59:17 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 03:59:17 -0700
+In-Reply-To: <0000000000000c439a05daa527cb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a87e66060618bb7e@google.com>
+Subject: Re: [syzbot] [netfilter?] INFO: rcu detected stall in gc_worker (3)
+From:   syzbot <syzbot+eec403943a2a2455adaa@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, coreteam@netfilter.org, davem@davemloft.net,
+        dvyukov@google.com, edumazet@google.com, fw@strlen.de,
+        gautamramk@gmail.com, hdanton@sina.com, jhs@mojatatu.com,
+        jiri@resnulli.us, kadlec@netfilter.org, kuba@kernel.org,
+        lesliemonis@gmail.com, linux-kernel@vger.kernel.org,
+        mohitbhasi1998@gmail.com, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pabeni@redhat.com,
+        pablo@netfilter.org, paulmck@kernel.org, sdp.sachin@gmail.com,
+        syzkaller-bugs@googlegroups.com, tahiliani@nitk.edu.in,
+        tglx@linutronix.de, vsaicharan1998@gmail.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+syzbot has bisected this issue to:
 
-Commit-ID:     d9a01959d9c954c8fe1d132b52401b0e219e37f6
-Gitweb:        https://git.kernel.org/tip/d9a01959d9c954c8fe1d132b52401b0e219e37f6
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 22 Sep 2023 10:51:51 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 24 Sep 2023 12:02:58 +02:00
+commit ec97ecf1ebe485a17cd8395a5f35e6b80b57665a
+Author: Mohit P. Tahiliani <tahiliani@nitk.edu.in>
+Date:   Wed Jan 22 18:22:33 2020 +0000
 
-x86/platform/uv: Annotate struct uv_rtc_timer_head with __counted_by
+    net: sched: add Flow Queue PIE packet scheduler
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15c5748e680000
+start commit:   d4a7ce642100 igc: Fix Kernel Panic during ndo_tx_timeout c..
+git tree:       net
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17c5748e680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13c5748e680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=77b9a3cf8f44c6da
+dashboard link: https://syzkaller.appspot.com/bug?extid=eec403943a2a2455adaa
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1504b511a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137bf931a80000
 
-Found with Coccinelle:
+Reported-by: syzbot+eec403943a2a2455adaa@syzkaller.appspotmail.com
+Fixes: ec97ecf1ebe4 ("net: sched: add Flow Queue PIE packet scheduler")
 
-  https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-
-Add __counted_by for struct uv_rtc_timer_head.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/r/20230922175151.work.118-kees@kernel.org
----
- arch/x86/platform/uv/uv_time.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-index 54663f3..ff5afc8 100644
---- a/arch/x86/platform/uv/uv_time.c
-+++ b/arch/x86/platform/uv/uv_time.c
-@@ -53,7 +53,7 @@ struct uv_rtc_timer_head {
- 	struct {
- 		int	lcpu;		/* systemwide logical cpu number */
- 		u64	expires;	/* next timer expiration for this cpu */
--	} cpu[];
-+	} cpu[] __counted_by(ncpus);
- };
- 
- /*
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
