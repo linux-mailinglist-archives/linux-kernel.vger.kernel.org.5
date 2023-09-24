@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7FE7AC992
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92337AC9AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbjIXNcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        id S229790AbjIXNgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjIXNcH (ORCPT
+        with ESMTP id S231282AbjIXN3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:32:07 -0400
+        Sun, 24 Sep 2023 09:29:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AE64684;
-        Sun, 24 Sep 2023 06:19:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6138C433CB;
-        Sun, 24 Sep 2023 13:19:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF58E66;
+        Sun, 24 Sep 2023 06:19:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F4ECC433C7;
+        Sun, 24 Sep 2023 13:19:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561588;
-        bh=/0DxeFclJanmHoVCa2JuctmAc4IoTLcES89kTw6xPoU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=j6rIJIeqbQ8lLgbd0qZLxiD0ILegLHYS6PkRRf7bxMGxj40ok0dWIrxOLVF4vPpAE
-         C+LBiMXGsD657bEfeoP898W0NstkM++6Su4KFaoX2mB5j/UVWbbaSRMTy1KqXLHHD1
-         eDh+B1zyqO+w/V8Cn4mY5QVwE2ux7hjxAYrK0ngYnxU6jiUYrzhWjTQXrWpJcj6t5K
-         110uaIywSamQ73CHFm6XQT9TfKuV0svmgeG6FXQOfZpGX3H+4QQIMjfYXYknJG07Lm
-         9QMkYX6PSgqkKgsWDHy3A5v7mKlUVnYSF2ZBt9Q3npeu5CNMxCVxaqmSR9chr7CreC
-         ry9uZuJF5lCTg==
+        s=k20201202; t=1695561590;
+        bh=LLxEAxxXYbG5OOeTGtc0lJ6R1OqdU3T0TOMANVrtLaE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZZnUYIjd1u7ITFGWUYJM5wdTgpES460lxv/c4nHSAZXV87T9xZJBlcHwQDBoy4RJf
+         AQbqecJ50pRn+ZyA377gGhKOyVFsZwwS4ts2t8zolvhMYsouhTR5II5WRFg2v5ZFlg
+         zRzBkdcqHAOTx1LQKwU4SBCWSAZ7SpiEf9eC2mzPpyCQjvs/yysasq1C2Wv35QQsnv
+         M92RyY4JwJBzBmsgzWQQ/E3vzfJU5R9V28B9Rhu1ALlnMicRqqiQGBwdvth8E5eoKo
+         J3z5xIcLZI6iNEv2INX0lS4t4+lmrtBwuyz/kujxCyX/u4mmHn2snTOKbNwo3N8wDl
+         y1iygde+TKIqw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, airlied@redhat.com,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 01/13] parisc: sba: Fix compile warning wrt list of SBA devices
-Date:   Sun, 24 Sep 2023 09:19:31 -0400
-Message-Id: <20230924131945.1276562-1-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 02/13] parisc: iosapic.c: Fix sparse warnings
+Date:   Sun, 24 Sep 2023 09:19:32 -0400
+Message-Id: <20230924131945.1276562-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230924131945.1276562-1-sashal@kernel.org>
+References: <20230924131945.1276562-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -53,46 +54,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit eb3255ee8f6f4691471a28fbf22db5e8901116cd ]
-
-Fix this makecheck warning:
-drivers/parisc/sba_iommu.c:98:19: warning: symbol 'sba_list'
-	was not declared. Should it be static?
+[ Upstream commit 927c6c8aa27c284a799b8c18784e37d3373af908 ]
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/include/asm/ropes.h | 3 +++
- drivers/char/agp/parisc-agp.c   | 2 --
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/parisc/iosapic.c         | 4 ++--
+ drivers/parisc/iosapic_private.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/parisc/include/asm/ropes.h b/arch/parisc/include/asm/ropes.h
-index 8e51c775c80a6..62399c7ea94a1 100644
---- a/arch/parisc/include/asm/ropes.h
-+++ b/arch/parisc/include/asm/ropes.h
-@@ -86,6 +86,9 @@ struct sba_device {
- 	struct ioc		ioc[MAX_IOC];
- };
+diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+index fd99735dca3e6..6ef663bbcdb01 100644
+--- a/drivers/parisc/iosapic.c
++++ b/drivers/parisc/iosapic.c
+@@ -202,9 +202,9 @@ static inline void iosapic_write(void __iomem *iosapic, unsigned int reg, u32 va
  
-+/* list of SBA's in system, see drivers/parisc/sba_iommu.c */
-+extern struct sba_device *sba_list;
-+
- #define ASTRO_RUNWAY_PORT	0x582
- #define IKE_MERCED_PORT		0x803
- #define REO_MERCED_PORT		0x804
-diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
-index 514f9f287a781..c6f181702b9a7 100644
---- a/drivers/char/agp/parisc-agp.c
-+++ b/drivers/char/agp/parisc-agp.c
-@@ -394,8 +394,6 @@ find_quicksilver(struct device *dev, void *data)
- static int __init
- parisc_agp_init(void)
+ static DEFINE_SPINLOCK(iosapic_lock);
+ 
+-static inline void iosapic_eoi(void __iomem *addr, unsigned int data)
++static inline void iosapic_eoi(__le32 __iomem *addr, __le32 data)
  {
--	extern struct sba_device *sba_list;
--
- 	int err = -1;
- 	struct parisc_device *sba = NULL, *lba = NULL;
- 	struct lba_device *lbadev = NULL;
+-	__raw_writel(data, addr);
++	__raw_writel((__force u32)data, addr);
+ }
+ 
+ /*
+diff --git a/drivers/parisc/iosapic_private.h b/drivers/parisc/iosapic_private.h
+index 73ecc657ad954..bd8ff40162b4b 100644
+--- a/drivers/parisc/iosapic_private.h
++++ b/drivers/parisc/iosapic_private.h
+@@ -118,8 +118,8 @@ struct iosapic_irt {
+ struct vector_info {
+ 	struct iosapic_info *iosapic;	/* I/O SAPIC this vector is on */
+ 	struct irt_entry *irte;		/* IRT entry */
+-	u32 __iomem *eoi_addr;		/* precalculate EOI reg address */
+-	u32	eoi_data;		/* IA64: ?       PA: swapped txn_data */
++	__le32 __iomem *eoi_addr;	/* precalculate EOI reg address */
++	__le32	eoi_data;		/* IA64: ?       PA: swapped txn_data */
+ 	int	txn_irq;		/* virtual IRQ number for processor */
+ 	ulong	txn_addr;		/* IA64: id_eid  PA: partial HPA */
+ 	u32	txn_data;		/* CPU interrupt bit */
 -- 
 2.40.1
 
