@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887257ACB8D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095A67ACB8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjIXTCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 15:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
+        id S230451AbjIXTCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjIXTC1 (ORCPT
+        with ESMTP id S230029AbjIXTC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 15:02:27 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17998FE
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:21 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405621baba7so21041435e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:21 -0700 (PDT)
+        Sun, 24 Sep 2023 15:02:28 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7071FFF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:22 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-405524e6769so15855455e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695582139; x=1696186939; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695582141; x=1696186941; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5L27vyhB+29gla8F3SJpsrlKTGzHdOCjPLcg4h4ukig=;
-        b=sSnBQ4XO88nc402Jpx2dQOHq16N54qiG6DBwHiUqXXyUVA5X0PaY8eRMFRDB5pGFh4
-         u1qwq+xcNP8GrS/0+7cEFpTZbh6+Xy9N4cNRJo0Y7Fm2LYiEELpWLQ9WPVhLmVRT0aaW
-         uI2bsoK26SaSD7SnuMIYnkWqxmX2j9JnhPy/elS2syMppnvsFs7faxPMt2Mk7xrU6OF1
-         qR6cZiGHgBvk0jS7ZEk7g+R9gk5aXCcOLZF5HfCkDBUsbmL1zlie5MGCvYF/rrTIez1h
-         lCnWiNiv0dK/FZl4Bc0KrM91YtbXUnC8xFuIr8jeB6hjw+MuCaLkL2GTBy4mN6ay8fOB
-         ogLg==
+        bh=SWFO82OJRYgOOb4Wcic+eTuDC/ArVTubTGTDywYSbzc=;
+        b=EQTvLB4/KPMaNDnSHZOBXt6alw8iLa1iSxGyVnRDvsIPP/3mke9g15fmL4yYsZLb2x
+         KujetD6l0jtCSj6YfdaQGGslHfUFsDQyxb/lp+BqmlWsYp/7fSlIGQ6AE+7mZ+9WZcPu
+         W7r9U+RLRziR0AS0LjqDKq81CzIjAf0a3KsR9GDx35cIubnXJV/lVZ3zC6hsaeDdXagk
+         hY2KClfCL8hyrAvYlS+Ja+b6iXwVjYwy+exrP/ra6o4LIdzu3/akxijAUeTtw9SLzCp9
+         nvUj7ZuGg64yMhKhe1rZ5K/kPSaCKosaF+UkOcNwpU/raKHVKEYCqOCijZLgLR64bctY
+         cpXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695582139; x=1696186939;
+        d=1e100.net; s=20230601; t=1695582141; x=1696186941;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5L27vyhB+29gla8F3SJpsrlKTGzHdOCjPLcg4h4ukig=;
-        b=IUcOAiaeXAnaixhuqPJLf6Ql+uh+XyPltrWP4/MaQfju18r8udNe+OnN4s4viyY6GW
-         H8sr4mZqrHKWR1k/uTJ8NL8pYLjcQ+unzvLm3xUAUxTIQvA9GELF5g1Vs/QYRdG6ZNKG
-         JSe+UTrc+t8/sv75Y7RUFUZbYEtsznBa3AQQtuT/tfsdYxDp4GcRWzD5BYoo0w97AXgm
-         xGkp/emWcb5S9atGVJs9HlN/xya1GvaKMcF8e3Z/pL3KyXGY8ENMlQNG2pDB9P4dyC4H
-         M3CbZ1UwTI5NKQuObMllt+6i0l0rP+w8m2uG7BtZPC+tjRgOirrbnlbK7vKl53zHF+8r
-         9Etg==
-X-Gm-Message-State: AOJu0YzXOPucp3k3Ka0sO6f3NQouHQZ0VcCS4qHXzqTYAe9Ry6OoTii3
-        Z0/jwlS5q63e5gLQGIeB7XyKnA==
-X-Google-Smtp-Source: AGHT+IErq5Wt5aJa91F9/ZnewsJx+gdkW3B8V6qLAXXHgkuVJWQLKuUo78IbX63mkvUfQKV2Y4swOg==
-X-Received: by 2002:a05:600c:2215:b0:402:e68f:888c with SMTP id z21-20020a05600c221500b00402e68f888cmr3731029wml.7.1695582139484;
-        Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
+        bh=SWFO82OJRYgOOb4Wcic+eTuDC/ArVTubTGTDywYSbzc=;
+        b=t6xqdDnV3Kq2x1kO0UbBe5hPGJPMKO3qhNwIyRt+RxSq4xdM60ZNVRpAnoQGTezHmf
+         LqY9MdPmCeHUg2Ly0X2Pvw62anBqQ6Cu45IBkh+keqqCzuzI3XvcqNJYlpWP40DF3J/O
+         X3n1+G+wHU/5H7Z3MVebPbDg1feWS+aqdssaIv0shjlENx3vAn5x7kILwxO0IAntk3dz
+         4OGXq7Uvb0C1zEDr9cn83MEzDZLBKDNoHKbkvlBajAs93w8A/O2PQFWp9L0LNuIJ/1A+
+         7gIt+e0hSmLQ/GyIyJWU3vmvK/B+4iZC8WAd/NYmYlALf4z9sfIUZuHWUmE2RiWgowgr
+         nPVA==
+X-Gm-Message-State: AOJu0YzzuyIDEH47PQuQEO0WANWHj2wA57sK3AQq2eBIcQYbBLml1zWe
+        d10CDOO0gWViMAddsolSd7JQXw==
+X-Google-Smtp-Source: AGHT+IGvIpya5xYZx8UP+clOr5taqAlEPDk6qq95Fp3D28P19k6rc0DjSP2/4NtsuZPojlLQeISVcA==
+X-Received: by 2002:a7b:ca4e:0:b0:405:3924:3cad with SMTP id m14-20020a7bca4e000000b0040539243cadmr4096134wml.15.1695582140804;
+        Sun, 24 Sep 2023 12:02:20 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.18
+        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
+        Sun, 24 Sep 2023 12:02:20 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
+To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        Conor Dooley <conor+dt@kernel.org>, linux-omap@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ARM: dts: nuvoton: add missing space before {
-Date:   Sun, 24 Sep 2023 21:02:05 +0200
-Message-Id: <169558197845.54884.14770173145446066681.b4-ty@linaro.org>
+Subject: Re: [PATCH] ARM: dts: omap3-devkit8000: correct ethernet reg addresses (split)
+Date:   Sun, 24 Sep 2023 21:02:06 +0200
+Message-Id: <169558197844.54884.5866852884871225928.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230705150045.293879-1-krzysztof.kozlowski@linaro.org>
-References: <20230705150045.293879-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230713152913.82846-1-krzysztof.kozlowski@linaro.org>
+References: <20230713152913.82846-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,8 +78,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 05 Jul 2023 17:00:45 +0200, Krzysztof Kozlowski wrote:
-> Add missing whitespace between node name/label and opening {.
+On Thu, 13 Jul 2023 17:29:13 +0200, Krzysztof Kozlowski wrote:
+> The davicom,dm9000 Ethernet Controller accepts two reg addresses.
 > 
 > 
 
@@ -93,8 +90,8 @@ instead, let me know.
 
 Applied, thanks!
 
-[1/1] ARM: dts: nuvoton: add missing space before {
-      https://git.kernel.org/krzk/linux-dt/c/73f20a373811b303fc5bd8f3d5a4c5c1582f1ba2
+[1/1] ARM: dts: omap3-devkit8000: correct ethernet reg addresses (split)
+      https://git.kernel.org/krzk/linux-dt/c/33d6227fcd1a8b68bf8d5e68f69a931dc87eac81
 
 Best regards,
 -- 
