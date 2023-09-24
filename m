@@ -2,274 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC03B7AC77F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 12:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EEC7AC784
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 12:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjIXKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 06:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S229899AbjIXKUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 06:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjIXKUJ (ORCPT
+        with ESMTP id S229508AbjIXKUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 06:20:09 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FB6E7
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 03:20:02 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5044dd5b561so1973424e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 03:20:01 -0700 (PDT)
+        Sun, 24 Sep 2023 06:20:39 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C47100
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 03:20:33 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3231df68584so843612f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 03:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695550800; x=1696155600; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695550832; x=1696155632; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hY0ljtde/5K2iYIwWscMKJ2Ri1157h8FSjz1rWDedH4=;
-        b=YswJed0iCBkxgrHydTI1oRvitXEC5uyHoRN04C0k+dqcq2RF7XK5mct9vxWLTAv+/T
-         eTT4TKMSF29UlsfN4/lS67pJCpN3mKRBTUtSd1qdfUsRdN6MLq7KOdMTHGVpfqnS+fms
-         aMhUtw5uiMkrJFx1lNvK5gP2ClZCSssqI1t1Fv1ecTHX3e2f3VAz9KEUsCMygoXd4YTP
-         AfLRp3GOT5Ohqy+5hEveuR4F1O47cD7FqNa7jzVfY+r11EXemwqPF5UDP4zpHrFn1F6I
-         RrUygYdexq3thdbZUMNju9w1GuIrMS9u8f8/bgLc72EK5WRonGoS3XCM/MZ7lVNG3sga
-         J40w==
+        bh=hRdPYxD7N5192EFL8LQJaqcXQ1ivTYH8sYpTET86uAk=;
+        b=Dmur8oY+/3Az+a5kPuFWCGarnh3QSxz47IqPMKuRBxNB7rkkPUg/v3WxS9a2NAP6Qv
+         dJM6Lw3SVvqbRaShedUGXqALGDbXI65M1ryh9DXDyxABB4qTjvqxlOqPbi2JX584txX4
+         nGbdiZPtisg1fpT9ddU9lpTFqEGzB3CgxbqsCB2K9uLbVPVmeJmFtIX4+KUNCwuEuLR7
+         dvO2fLltFtNjcCISNB43PKVskoLR9sD2xORqeff+y2pZBwmv2sL7+O5tiGXW8kljTjWU
+         82UHHW3tie8vSiqHB9SevXihImnEPfbpvxdH8cVu1F5y4PRYxmHsjO7qoOa9eMcRr/EN
+         uaug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695550800; x=1696155600;
+        d=1e100.net; s=20230601; t=1695550832; x=1696155632;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hY0ljtde/5K2iYIwWscMKJ2Ri1157h8FSjz1rWDedH4=;
-        b=Ix9+wopZNTIXc4Yc630TOldxdPf0zMufh9mV7QjRJS5KAyMhqZupPawgkemvBddHsW
-         J3p3J+YaPpGuzMS+jiasWpeMcK8m276T9BMbK2XnNR1/gWSp8TBx+v65QWJcs4cY+nUQ
-         PqkfY7ZYPgt5rPKDOzI3z7NIp/YnvojB4oidRz+HmAfe3KJIocPkk7W8x9iu1P3MAJYc
-         8j0Du158dV1qAI5jgwNsdraI0zCAe/y/FCcbpP5z2b3b69YJ3kz/4eHSJ24Ig9Qa8cn1
-         0PQhzmJ3dRJv565OiOZnsf/fB4nlxPJWhZaXb1ybBwvqxsIy00g5+q6nNNyjv1opOapo
-         thFw==
-X-Gm-Message-State: AOJu0YzJrN5YI5RUHXV4L9hN5ESXa8mPe3PRkiqRk3+ZVLLitaJLqw7E
-        Ew9+1R7UOuQ0rfD45bTanB+jcA==
-X-Google-Smtp-Source: AGHT+IE1R+kW0CUrN0+4eCznwg1+XjbH2xe2PKn1epb7KtCwDBCaHMVn5JRFspmw4xwDmbE69z5HqQ==
-X-Received: by 2002:ac2:4d86:0:b0:501:c779:b3bb with SMTP id g6-20020ac24d86000000b00501c779b3bbmr2852198lfe.60.1695550800011;
-        Sun, 24 Sep 2023 03:20:00 -0700 (PDT)
-Received: from [10.73.151.44] ([188.111.42.10])
-        by smtp.gmail.com with ESMTPSA id u7-20020a05640207c700b005311e934765sm4244799edy.27.2023.09.24.03.19.58
+        bh=hRdPYxD7N5192EFL8LQJaqcXQ1ivTYH8sYpTET86uAk=;
+        b=VP+CwVv6wESkPWUDq975R67eFCiyg2qVsIzjZgHz1mfk6WUmQ5T+ZU4P6Q2KSOTjkl
+         90eF+VYxZcSgSeC/0gRQ+euVc3f4tiKw1MNisPzgvGXPMdDzFVlc1p1F9qBnWH8fD+CO
+         Sak/sCgLmjltPosURUUiv7f2K2gY0fzpLdgGp5TbpzciyPuOl/8gTH+6PwaJh+OSLu0V
+         LMF3KdF1Gvt2D3Y5Q2+S+xx+nMgF5iJCs7pQ6C+zt6rPwTUBrOmMx9izctkvPfCFqJnn
+         nvtbGGgNJKV1aH1WAL15coRyNNwkxFbGTCPnAo5IYVlDRdehqX8ou5L35Pa5OBWRUgSx
+         VV+Q==
+X-Gm-Message-State: AOJu0Yz0x++PZgVuJaEvQI5JeRBz1IqjR1vdrFlBDB7OcjFp6wQv+Axl
+        kILnRlggIyeQ22a7C865cPBFVw==
+X-Google-Smtp-Source: AGHT+IFu0+rneWXwnLmx447DDCYpq9I+WDULyh0rK5GTi2lG1SvGjnNw8JS1kSqjNJFQLKBqC9rfxQ==
+X-Received: by 2002:a05:6000:1106:b0:31f:f72c:dfa3 with SMTP id z6-20020a056000110600b0031ff72cdfa3mr3379946wrw.68.1695550831988;
+        Sun, 24 Sep 2023 03:20:31 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id b3-20020a05600010c300b0031416362e23sm8970759wrx.3.2023.09.24.03.20.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 03:19:59 -0700 (PDT)
-Message-ID: <31d6163a-a71d-4707-a958-43bde2042d42@linaro.org>
-Date:   Sun, 24 Sep 2023 13:19:57 +0300
+        Sun, 24 Sep 2023 03:20:31 -0700 (PDT)
+Message-ID: <fac95d85-0802-4819-9efe-a31e6df7a0e4@linaro.org>
+Date:   Sun, 24 Sep 2023 11:20:30 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v6 07/10] drm/atomic: Loosen FB atomic checks
-Content-Language: en-GB
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
-        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
-        sebastian.wick@redhat.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        wayland-devel@lists.freedesktop.org
-References: <20230828-solid-fill-v6-0-a820efcce852@quicinc.com>
- <20230828-solid-fill-v6-7-a820efcce852@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230828-solid-fill-v6-7-a820efcce852@quicinc.com>
+Subject: Re: [PATCH 1/4] dt-bindings: clock: qcom,camcc.yaml: Convert
+ qcom,camcc to a single yaml file
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230923150045.1068556-1-bryan.odonoghue@linaro.org>
+ <20230923150045.1068556-2-bryan.odonoghue@linaro.org>
+ <2565aa33-619c-6c90-de96-29dc5ac5d961@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <2565aa33-619c-6c90-de96-29dc5ac5d961@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 03:05, Jessica Zhang wrote:
-> Loosen the requirements for atomic and legacy commit so that, in cases
-> where pixel_source != FB, the commit can still go through.
+On 23/09/2023 17:13, Krzysztof Kozlowski wrote:
+> On 23/09/2023 17:00, Bryan O'Donoghue wrote:
+>> Move the various camcc yaml files into one. The Camera Clock Controller
+>> is pretty similar from SoC to SoC.
+>>
+>> Mostly we have some SoCs which require fewer clocks than others. In some
+>> cases we have SoCs which have required-opps and required-power-domains.
+>>
+>> It is likely we could and should extend the thin CAMCC descriptions such
+>> as sdm845 an sm6350 to the more robust descriptions such as sm8250 and
+>> sm8450.
+>>
+>> As a result of listing sm8250 and sm8450 together required-opps and
+>> power-domains become required for sm8250, which is a NOP for the dtsi
+>> since both declarations already exist for sm8250.
+>>
+>> sm8250 is also chosen as the example for the new combined camcc.yaml.
+>>
+>> A minor tweak to fix Bjorn's email address in the Maintainer list is
+>> included.
+>>
+>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 > 
-> This includes adding framebuffer NULL checks in other areas to account for
-> FB being NULL when non-FB pixel sources are enabled.
+> No, that's not the right approach. For GCC and CamCC and all other
+> Qualcomm clock controllers, we split into device schemas, not merge into
+> one. The one schema is just becoming unreviewable over time with
+> multiple if:then clauses.
 > 
-> To disable a plane, the pixel_source must be NONE or the FB must be NULL
-> if pixel_source == FB.
+> Please use approach like we have for GCC, RPMh interconnects or remote
+> proc loaders - common file. What's more, here you probably don't even
+> need common file because it is already there - qcom,gcc.yaml
 > 
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->   drivers/gpu/drm/drm_atomic.c        | 20 +++++++++++---------
->   drivers/gpu/drm/drm_atomic_helper.c | 36 ++++++++++++++++++++----------------
->   include/drm/drm_atomic_helper.h     |  4 ++--
->   include/drm/drm_plane.h             | 29 +++++++++++++++++++++++++++++
->   4 files changed, 62 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
-> index cc0e93d19e15..cdc6cfedd433 100644
-> --- a/drivers/gpu/drm/drm_atomic.c
-> +++ b/drivers/gpu/drm/drm_atomic.c
-> @@ -668,14 +668,14 @@ static int drm_atomic_plane_check(const struct drm_plane_state *old_plane_state,
->   	const struct drm_framebuffer *fb = new_plane_state->fb;
->   	int ret;
->   
-> -	/* either *both* CRTC and FB must be set, or neither */
-> -	if (crtc && !fb) {
-> -		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] CRTC set but no FB\n",
-> +	/* either *both* CRTC and pixel source must be set, or neither */
-> +	if (crtc && !drm_plane_has_visible_data(new_plane_state)) {
-> +		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] CRTC set but no visible data\n",
->   			       plane->base.id, plane->name);
->   		return -EINVAL;
-> -	} else if (fb && !crtc) {
-> -		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] FB set but no CRTC\n",
-> -			       plane->base.id, plane->name);
-> +	} else if (drm_plane_has_visible_data(new_plane_state) && !crtc) {
-> +		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] Source %d has visible data but no CRTC\n",
-> +			       plane->base.id, plane->name, new_plane_state->pixel_source);
->   		return -EINVAL;
->   	}
->   
-> @@ -706,9 +706,11 @@ static int drm_atomic_plane_check(const struct drm_plane_state *old_plane_state,
->   	}
->   
->   
-> -	ret = drm_atomic_plane_check_fb(new_plane_state);
-> -	if (ret)
-> -		return ret;
-> +	if (new_plane_state->pixel_source == DRM_PLANE_PIXEL_SOURCE_FB && fb) {
-
-Nit: could you please be more specific here? Drop the fb variable and 
-use new_plane_state->fb directly.
-
-> +		ret = drm_atomic_plane_check_fb(new_plane_state);
-> +		if (ret)
-> +			return ret;
-> +	}
->   
->   	if (plane_switching_crtc(old_plane_state, new_plane_state)) {
->   		drm_dbg_atomic(plane->dev,
-> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-> index 41b8066f61ff..a176064ee27e 100644
-> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> @@ -864,7 +864,7 @@ int drm_atomic_helper_check_plane_state(struct drm_plane_state *plane_state,
->   	*src = drm_plane_state_src(plane_state);
->   	*dst = drm_plane_state_dest(plane_state);
->   
-> -	if (!fb) {
-> +	if (!drm_plane_has_visible_data(plane_state)) {
->   		plane_state->visible = false;
->   		return 0;
->   	}
-> @@ -881,25 +881,29 @@ int drm_atomic_helper_check_plane_state(struct drm_plane_state *plane_state,
->   		return -EINVAL;
->   	}
->   
-> -	drm_rect_rotate(src, fb->width << 16, fb->height << 16, rotation);
-> +	if (plane_state->pixel_source == DRM_PLANE_PIXEL_SOURCE_FB && fb) {
-
-
-And here too. Could you please move fb var into the condition?
-
-Other than that LGTM
-
-
-> +		drm_rect_rotate(src, fb->width << 16, fb->height << 16, rotation);
->   
-> -	/* Check scaling */
-> -	hscale = drm_rect_calc_hscale(src, dst, min_scale, max_scale);
-> -	vscale = drm_rect_calc_vscale(src, dst, min_scale, max_scale);
-> -	if (hscale < 0 || vscale < 0) {
-> -		drm_dbg_kms(plane_state->plane->dev,
-> -			    "Invalid scaling of plane\n");
-> -		drm_rect_debug_print("src: ", &plane_state->src, true);
-> -		drm_rect_debug_print("dst: ", &plane_state->dst, false);
-> -		return -ERANGE;
-> -	}
-> +		/* Check scaling */
-> +		hscale = drm_rect_calc_hscale(src, dst, min_scale, max_scale);
-> +		vscale = drm_rect_calc_vscale(src, dst, min_scale, max_scale);
->   
-> -	if (crtc_state->enable)
-> -		drm_mode_get_hv_timing(&crtc_state->mode, &clip.x2, &clip.y2);
-> +		if (hscale < 0 || vscale < 0) {
-> +			drm_dbg_kms(plane_state->plane->dev,
-> +					"Invalid scaling of plane\n");
-> +			drm_rect_debug_print("src: ", &plane_state->src, true);
-> +			drm_rect_debug_print("dst: ", &plane_state->dst, false);
-> +			return -ERANGE;
-> +		}
->   
-> -	plane_state->visible = drm_rect_clip_scaled(src, dst, &clip);
-> +		if (crtc_state->enable)
-> +			drm_mode_get_hv_timing(&crtc_state->mode, &clip.x2, &clip.y2);
->   
-> -	drm_rect_rotate_inv(src, fb->width << 16, fb->height << 16, rotation);
-> +		plane_state->visible = drm_rect_clip_scaled(src, dst, &clip);
-> +		drm_rect_rotate_inv(src, fb->width << 16, fb->height << 16, rotation);
-> +	} else if (drm_plane_solid_fill_enabled(plane_state)) {
-> +		plane_state->visible = true;
-> +	}
->   
->   	if (!plane_state->visible)
->   		/*
-> diff --git a/include/drm/drm_atomic_helper.h b/include/drm/drm_atomic_helper.h
-> index 536a0b0091c3..6d97f38ac1f6 100644
-> --- a/include/drm/drm_atomic_helper.h
-> +++ b/include/drm/drm_atomic_helper.h
-> @@ -256,8 +256,8 @@ drm_atomic_plane_disabling(struct drm_plane_state *old_plane_state,
->   	 * Anything else should be considered a bug in the atomic core, so we
->   	 * gently warn about it.
->   	 */
-> -	WARN_ON((new_plane_state->crtc == NULL && new_plane_state->fb != NULL) ||
-> -		(new_plane_state->crtc != NULL && new_plane_state->fb == NULL));
-> +	WARN_ON((new_plane_state->crtc == NULL && drm_plane_has_visible_data(new_plane_state)) ||
-> +		(new_plane_state->crtc != NULL && !drm_plane_has_visible_data(new_plane_state)));
->   
->   	return old_plane_state->crtc && !new_plane_state->crtc;
->   }
-> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
-> index a58f84b6bd5e..4c5b7bcdb25c 100644
-> --- a/include/drm/drm_plane.h
-> +++ b/include/drm/drm_plane.h
-> @@ -992,6 +992,35 @@ static inline struct drm_plane *drm_plane_find(struct drm_device *dev,
->   #define drm_for_each_plane(plane, dev) \
->   	list_for_each_entry(plane, &(dev)->mode_config.plane_list, head)
->   
-> +/**
-> + * drm_plane_solid_fill_enabled - Check if solid fill is enabled on plane
-> + * @state: plane state
-> + *
-> + * Returns:
-> + * Whether the plane has been assigned a solid_fill_blob
-> + */
-> +static inline bool drm_plane_solid_fill_enabled(struct drm_plane_state *state)
-> +{
-> +	if (!state)
-> +		return false;
-> +	return state->pixel_source == DRM_PLANE_PIXEL_SOURCE_SOLID_FILL && state->solid_fill_blob;
-> +}
-> +
-> +static inline bool drm_plane_has_visible_data(const struct drm_plane_state *state)
-> +{
-> +	switch (state->pixel_source) {
-> +	case DRM_PLANE_PIXEL_SOURCE_NONE:
-> +		return false;
-> +	case DRM_PLANE_PIXEL_SOURCE_SOLID_FILL:
-> +		return state->solid_fill_blob != NULL;
-> +	case DRM_PLANE_PIXEL_SOURCE_FB:
-> +	default:
-> +		WARN_ON(state->pixel_source != DRM_PLANE_PIXEL_SOURCE_FB);
-> +	}
-> +
-> +	return state->fb != NULL;
-> +}
-> +
->   bool drm_any_plane_has_format(struct drm_device *dev,
->   			      u32 format, u64 modifier);
->   
+> Best regards,
+> Krzysztof
 > 
 
--- 
-With best wishes
-Dmitry
+Ah OK, I see what you mean.
 
+commit f8cc21d454c50157a528c900b60aa9588b4066b3
+Author: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Date:   Tue Dec 27 15:40:56 2022 +0100
+
+     media: dt-bindings: qcom,venus: split common properties
+
+---
+bod
