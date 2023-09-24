@@ -2,119 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C97D7ACAD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678FA7ACAE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjIXRGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
+        id S230055AbjIXRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXRGf (ORCPT
+        with ESMTP id S229667AbjIXRPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:06:35 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6B3CF;
-        Sun, 24 Sep 2023 10:06:29 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5043a01ee20so5583305e87.0;
-        Sun, 24 Sep 2023 10:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695575187; x=1696179987; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gG8vnWQHvQhRnrvCqdEqT6JTTQ016xPNLohZ4GJlrMs=;
-        b=izTK4OoNLhWkjZEtI25JEFgNhwssqHSu4NJitCOmmkBopTZ/AvX2Hv/t0MFffFQS2+
-         EMTAR2XMXfA+HhSX1qJHPIkJtOx54KGFw0IFEYae0FA1JZNdepFIwZACH+sDVFHZSPCA
-         iPCBL2tyawmSUNrsQPKnz5BEaTwR0q3yuwozJKMtRXDUl0MPCPyjWF5G7QAWOhgM01D2
-         C0q7SGgZJ3CO8QM9j270aLDxfQHYGoUUru9PkQW63JIgBA2MhJdyNUbVa392dVFaigSA
-         DVP2CwujcuM7gDtuIYA+hLxOYMD1xF60K9cJaF0K/8DXZcTZxTZN74MIsGgscuUjXlBt
-         HR6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695575187; x=1696179987;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gG8vnWQHvQhRnrvCqdEqT6JTTQ016xPNLohZ4GJlrMs=;
-        b=ck3Gs++ZjBbt8UsGj563EK9/ZTuw930UjJYfo45xzrmvTCMYNE/bSd6ESZdSlwxU06
-         YiXh5GGhxlCLZJYS3p3Xz6kPok3wuxMGPSRjoV6gZcv6jqxs4wmKadh0ITi2c7qyN+d2
-         QR6RC1+Nqv+6eYdb5+aE9yhJ5S/9XIeq46NpkDKWguCV8Y+PVqbqhkJ4xn+vSS0X0dgr
-         yJtD4cnozHmp0k02Pewq6VmBoW6Bv285uAuEwXFYyz1UMnDCaWRF8L2kyMIZPz764I9p
-         sJhEyavlVnj6gl3edpl4XB5A1YhzB2yMIQsYH7gkAvNZJ6sQwcbclL2wn0ZMDYav7YKB
-         9nDA==
-X-Gm-Message-State: AOJu0YyFqgAxUen6rPdQGykJUjWrxNd1koKpfbN92+iWHxYKxg3WB1Ti
-        cMveJzvq/Dr5ck7rEQmnu5s=
-X-Google-Smtp-Source: AGHT+IEtoFr2Pbg8fZweBJMsD1JXTiezgzBgcOIx0X/hI7Iqh7usEJ41J/mea3D1UezDz38TmVOXRg==
-X-Received: by 2002:a19:2d01:0:b0:503:36cb:5438 with SMTP id k1-20020a192d01000000b0050336cb5438mr4050615lfj.21.1695575186869;
-        Sun, 24 Sep 2023 10:06:26 -0700 (PDT)
-Received: from [192.168.178.40] ([146.52.231.36])
-        by smtp.gmail.com with ESMTPSA id y19-20020a056402135300b0052fdfd8870bsm4476566edw.89.2023.09.24.10.06.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 10:06:26 -0700 (PDT)
-Message-ID: <bc42418d-117e-8d69-2630-0f072b9e196b@gmail.com>
-Date:   Sun, 24 Sep 2023 19:06:25 +0200
+        Sun, 24 Sep 2023 13:15:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4F0C6;
+        Sun, 24 Sep 2023 10:15:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF742C433C7;
+        Sun, 24 Sep 2023 17:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695575718;
+        bh=sVhGlOD14LMROhYEMLTXgJ2FHDbAiYFrk0XMDjt5gpM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Go7f/62peC6gUtxUozVC56G0Vym5HJPl9O5fY1aaMKfHyKGNIp/EKDW1s+Cgy/0M6
+         ACpBdaC44RW9makSGqkk9Y7FKU0CPa2AC/nu0WfRd+ZykRjk5vY97tKNJGjw37dhRE
+         LOR/5fcIBH9IqCdsmVdYtLYM91WHCLjuNcUWlZOzf7pc6DE4sLy/nmNDMXIQKU4+Gt
+         imD96HBRIoKwV/LCc2M/uRz4scE9ZfO1q3tz4fJV6YazJpVYhaodqU8qKKPZSEEbrN
+         ghRyyOaJV6J8vjkx3sqjVIdKBid0Gj1cF93Kb3mCJGtvGgQYKe0Dx2fUdLnV7laQeK
+         7rhE0JfmnCxoQ==
+Date:   Sun, 24 Sep 2023 18:15:10 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>
+Subject: Re: [PATCH v2 02/19] staging: iio: Documentation: document IIO
+ resolver AD2S1210 sysfs attributes
+Message-ID: <20230924181510.1fb89e74@jic23-huawei>
+In-Reply-To: <20230921144400.62380-3-dlechner@baylibre.com>
+References: <20230921144400.62380-1-dlechner@baylibre.com>
+        <20230921144400.62380-3-dlechner@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] scsi: target: tcmu: Annotate struct tcmu_tmr with
- __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230922175300.work.148-kees@kernel.org>
-Content-Language: en-US
-From:   Bodo Stroesser <bostroesser@gmail.com>
-In-Reply-To: <20230922175300.work.148-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.23 19:53, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Thu, 21 Sep 2023 09:43:43 -0500
+David Lechner <dlechner@baylibre.com> wrote:
+
+> This adds documentation for the device-specific sysfs attributes of the
+> iio/resolver/ad2s1210 driver.
 > 
-> As found with Coccinelle[1], add __counted_by for struct tcmu_tmr.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Bodo Stroesser <bostroesser@gmail.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: linux-scsi@vger.kernel.org
-> Cc: target-devel@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+
+Hi David,
+
+I'm fine with carrying these docs in staging, but I think we need to resolve
+mapping as many of these as possible to standard ABI if we can for
+all the normal reasons about software having no idea how to deal
+with custom ABI.
+
+Anyhow, I'll use this as an opportunity to comment on the individual
+files.
+
+
+
 > ---
->   drivers/target/target_core_user.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../sysfs-bus-iio-resolver-ad2s1210           | 109 ++++++++++++++++++
+>  1 file changed, 109 insertions(+)
+>  create mode 100644 drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
 > 
-> diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-> index 22cc6cac0ba2..7eb94894bd68 100644
-> --- a/drivers/target/target_core_user.c
-> +++ b/drivers/target/target_core_user.c
-> @@ -201,7 +201,7 @@ struct tcmu_tmr {
->   
->   	uint8_t tmr_type;
->   	uint32_t tmr_cmd_cnt;
-> -	int16_t tmr_cmd_ids[];
-> +	int16_t tmr_cmd_ids[] __counted_by(tmr_cmd_cnt);
->   };
->   
->   /*
+> diff --git a/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210 b/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
+> new file mode 100644
+> index 000000000000..32890c85168e
+> --- /dev/null
+> +++ b/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
+> @@ -0,0 +1,109 @@
+> +What:		/sys/bus/iio/devices/iio:deviceX/dos_mis_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Degradation of Signal Mismatch
+> +		Threshold value. Writing sets the value. Valid values are 0 (0V)
+> +		to 127 (4.826V). To convert the value to volts, multiply by
+> +		0.038.
 
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
+I mention in the cover letter, but I wonder if we can map this to a threshold
+on a differential channel between the cosine and sine channels (use labels for
+the channels to identify them). It's a stretch but perhaps better than
+completely custom as at least we have event tooling to read it.
 
-Thank you,
-Bodo
+If nothing else we need these to have standard units and the
+unit to be obvious from the name.  Voltages in IIO are mV (because
+we copied hwmon a long time back)
+
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/dos_ovr_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Degradation of Signal Overrange
+> +		Threshold value. Writing sets the value. Valid values are 0 (0V)
+> +		to 127 (4.826V). To convert the value to volts, multiply by
+> +		0.038.
+Not clear what this actually is to me, but it's a threshold on something!
+Probably two channels which is always a pain as we'll have indicate two events
+if they are enabled.
+
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/dos_rst_max_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Degradation of Signal Reset Maximum
+> +		Threshold value. Writing sets the value. Valid values are 0 (0V)
+> +		to 127 (4.826V). To convert the value to volts, multiply by
+> +		0.038.
+
+No idea what this one is.  What does 'reset' have to do with it?
+Ah I went and looked.  This is the reset value used for the running maximum / minimum
+values.  They matter because they fault detection is difference between the values
+and if we say init the minimum to lower than actually seen that will make the
+error more likely (I think!).
+
+So not sure what we map this to.  Maybe this just has to be custom ABI but
+it should be associated with the threshold event - though I'd not registered
+that's on a running minimum and maximum rather than some 'windowed' version
+for recent values...
+
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/dos_rst_min_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Degradation of Signal Reset Minimum
+> +		Threshold value. Writing sets the value. Valid values are 0 (0V)
+> +		to 127 (4.826V). To convert the value to volts, multiply by
+> +		0.038.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/fault
+
+This fails the sniff test for a sysfs attribute giving multiple things.
+If we do use this sort of reporting rather than an event, maybe a fault
+directory (sysfs group) with 8 files in it.
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns a hex value containing the fault bit flags.
+> +
+> +		Bit	Description
+> +		---	-----------
+> +		D7	Sine/cosine inputs clipped
+> +		D6	Sine/cosine inputs below LOS threshold
+> +		D5	Sine/cosine inputs exceed DOS overrange threshold
+> +		D4	Sine/cosine inputs exceed DOS mismatch threshold
+> +		D3	Tracking error exceeds LOT threshold
+> +		D2	Velocity exceeds maximum tracking rate
+> +		D1	Phase error exceeds phase lock range
+> +		D0	Configuration parity error
+> +
+> +		Writing any value will clear any fault conditions.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/excitation_frequency
+
+Hmm. I though we already had this.  Turns up in various types of device.
+But nope, can't find it.  I'm fine with this one being added to the main ABI.
+
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Excitation Frequency in Hz. Writing
+> +		sets the Excitation Frequency and performs a software reset on
+> +		the device to apply the change. Valid values are 2000 (2kHz) to
+> +		20000 (20kHz).
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/los_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Loss of Signal Reset Threshold
+> +		value. Writing sets the value. Valid values are 0 (0V) to
+> +		127 (4.826V). To convert the value to volts, multiply by 0.038.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/lot_high_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Loss of Position Tracking Detection
+> +		High Threshold value. Writing sets the value. Valid values are
+> +		0 (0 deg) to 127 (9/18/45 deg). The interpretation of the value
+> +		depends on the selected resolution. To convert the value to
+> +		degrees, multiply by 0.35 for 10-bit resolution, multiply by
+> +		0.14 for 12-bit resolution or multiply by 0.09 for 14 and 16-bit
+> +		resolution.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/lot_low_thrd
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Loss of Position Tracking Detection
+> +		Low Threshold value. Writing sets the value. Valid values are
+> +		0 (0 deg) to 127 (9/18/45 deg). The interpretation of the value
+> +		depends on the selected resolution. To convert the value to
+> +		degrees, multiply by 0.35 for 10-bit resolution, multiply by
+> +		0.14 for 12-bit resolution or multiply by 0.09 for 14 and 16-bit
+> +		resolution.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/phase_lock_range
+
+For what it's worth Phases in IIO (phase_raw in ABI docs) are defined
+in radians so this will want to be appropriately scaled if we keep it around.
+
+This one feels like a threshold on phase which is already in the IIO ABI
+(for 3 phase power monitors IIRC)
+
+Jonathan
+
+
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the current Phase lock range in degrees. Writing
+> +		sets the value in the configuration register.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/phase_lock_range_available
+> +KernelVersion:  6.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading returns the possible values for the phase_lock_range
+> +		attribute, namely 44 and 360.
+
