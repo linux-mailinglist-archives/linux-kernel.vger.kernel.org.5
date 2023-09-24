@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B70E7AC685
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 05:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3C67AC694
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 06:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjIXDnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 23:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S229549AbjIXEsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 00:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIXDnQ (ORCPT
+        with ESMTP id S229437AbjIXEsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 23:43:16 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8932109
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 20:43:09 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c4e38483d2so144120a34.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 20:43:09 -0700 (PDT)
+        Sun, 24 Sep 2023 00:48:45 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FEF11B;
+        Sat, 23 Sep 2023 21:48:39 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34ff2ee8f8eso13754785ab.3;
+        Sat, 23 Sep 2023 21:48:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695526989; x=1696131789; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=seBNO35I6t27+aW9cJIbrOKykhwY8CBfF73TPyxAkzU=;
-        b=EDFXaiYkSd1bB8l0T5fa8bmSbpBIrk1zJeZoev6LOoy0s0jSOIXjiJtr+XPk517mCe
-         vW8k3VAizHB85g+A8uuCFlJtOPhHO55Z3Ilsqw46eFFernrVTPXTQ42bEn6sS9HDganI
-         5ZJxuRwCRizbTpOZ/jBfOfHyaA86KqFaUoNYs=
+        d=gmail.com; s=20230601; t=1695530918; x=1696135718; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ruiINtpGZfULEUut8GaQI6nqxxaArMSZTd8GUgMbPVk=;
+        b=MaX3KKMx0Y+q1PVqglpKbgzk0B7TLPSFU+bntLrs/0pYbjDMVfCz5bunrYWBnmh+cC
+         d+d0w0X8d1fBaeccByCcL4pBTzd7cRL5nUmI25N1RzkX0F4QV4Z3o/td6Ls/8JdZxQcz
+         Hlbd7eGy109q9xXPO7gw9TbEU/cZb1rxyl9L9OI3vJbtz4IwdY7ByQuURo168wLnP+ky
+         CxsCeyiki6Z247ROOvuPYWgbHSf2UG6q5gt7m9C5To4Yax3cYa1/FrsxqCoXdMkEFYEM
+         ODESOzhAlUakfbYq5u09ZWb/cwshYLf6RjIBLtXb0yEHUt7HanbO+7a1djvW4HW2dhBN
+         VPQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695526989; x=1696131789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=seBNO35I6t27+aW9cJIbrOKykhwY8CBfF73TPyxAkzU=;
-        b=QBiFsTtxbXQtGATmjoGeYmSYpfOztHVHpQMeZNzB0MUCearDKibYHatSHHNuxOCg1W
-         pBWzQ46muF7QNb0HiaOoh/7D6TwDqiiWmv2honICyKo8/lMbUGFMIb+fdymdC7az8fXf
-         C71w9LsX/vWAmu8R0uqugb81bKaq7FSwUnR9x+Pe0AJOILc1cAcHSExWHv06/opngfkP
-         H1iE8yJ7lOYq7iOjin240fpQFsBmFS24pPW9sZbQMlTNZ6G2IlYvnMmTYeCwNtXZ7LbG
-         AF/a5k4CIVSS9XsKfTooV9Sd8w/B+Lc44fceJizKEP8H/0Plk/Io1RCIsEwdYgXgcM3p
-         nx1A==
-X-Gm-Message-State: AOJu0Yz/3LSTN7OxXyHAAx6PCVYbsXGPTQiasSTeOYoHzbPiNdaYimDM
-        yiLpvkuiWeZIY4/L2IvgLQjQ3w==
-X-Google-Smtp-Source: AGHT+IE2/HgUIEM6nD5lxm0qSmNTG5hyr9cbCU3gawGphubnH/fGhDM5TcuGczSqA2L3/1x/UlkG6A==
-X-Received: by 2002:a05:6358:41a3:b0:143:9f18:d71a with SMTP id w35-20020a05635841a300b001439f18d71amr3868238rwc.14.1695526989027;
-        Sat, 23 Sep 2023 20:43:09 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 23-20020a17090a199700b002694fee879csm8008047pji.36.2023.09.23.20.43.08
+        d=1e100.net; s=20230601; t=1695530918; x=1696135718;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ruiINtpGZfULEUut8GaQI6nqxxaArMSZTd8GUgMbPVk=;
+        b=fgDAQO8mDj5nwhrCrAXZfcRpaQdANZIQGmkMiWMXaynCM00gD/pKmxzIKllyKBmkPH
+         ExsnFX/s9NhxZ9gM73y28AjimPd/Ta//tcNv2eNIaxG2byeDHKoJTB0KmUwSs5yuXcPq
+         hbgam63coiWsObYjy6mR2qs3MlwIop2HZ30brsKw0QbsytKp14RFrH0YGhM1v63If0qh
+         TVsz8ESAX0kKq5wsLZQJmK2rHooPhaBRaY0A7eOT8Z3qxvDxENZ6uQWrwsb02ec/uu5l
+         RnRb4541zpYR+059eAKNIZ7HWkSrMVNPNwuHQoSQvO+n2ZfO0+WVSoXNjXAsKUeLxFrQ
+         viTQ==
+X-Gm-Message-State: AOJu0Yx0JkMwXTNWlvv2ZKZcVYUfWhiynSxkbMF1WeRzvc+jSQV6lG4j
+        d0hBtzT9lP0TjYnl7i5RJ4dN1xaEQ2618QWu
+X-Google-Smtp-Source: AGHT+IEhMnvkCdrJom/RgvNmrq7uoCatLmeqnkiWYo47n6sVmxW24FpQa+ku0Fp+fWMyKm+R2kniAw==
+X-Received: by 2002:a05:6e02:1cab:b0:34f:ae17:c23b with SMTP id x11-20020a056e021cab00b0034fae17c23bmr4680297ill.11.1695530918637;
+        Sat, 23 Sep 2023 21:48:38 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-152-19.hlrn.qwest.net. [71.33.152.19])
+        by smtp.gmail.com with ESMTPSA id z11-20020a92650b000000b0034bae80711dsm2065125ilb.82.2023.09.23.21.48.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 20:43:08 -0700 (PDT)
-Date:   Sat, 23 Sep 2023 20:43:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] leds: lp3952: replace deprecated strncpy with strscpy
-Message-ID: <202309232039.979F3B4@keescook>
-References: <20230922-strncpy-drivers-leds-leds-lp3952-c-v1-1-4941d6f60ca4@google.com>
+        Sat, 23 Sep 2023 21:48:37 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v10 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with Custom Board
+Date:   Sat, 23 Sep 2023 22:47:55 -0600
+Message-Id: <20230924044800.2199524-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922-strncpy-drivers-leds-leds-lp3952-c-v1-1-4941d6f60ca4@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,83 +91,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 03:27:17PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect `dest` to be NUL-terminated due to its use with dev_err.
-> 
-> lp3952_get_label()'s  dest argument is priv->leds[i].name:
-> |    acpi_ret = lp3952_get_label(&priv->client->dev, led_name_hdl[i],
-> |                                priv->leds[i].name);
-> ... which is then assigned to:
-> |    priv->leds[i].cdev.name = priv->leds[i].name;
-> ... which is used with a format string
-> |    dev_err(&priv->client->dev,
-> |            "couldn't register LED %s\n",
-> |            priv->leds[i].cdev.name);
-> 
-> There is no indication that NUL-padding is required but if it is let's
-> opt for strscpy_pad.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/leds/leds-lp3952.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/leds/leds-lp3952.c b/drivers/leds/leds-lp3952.c
-> index 3bd55652a706..62ade3f05a87 100644
-> --- a/drivers/leds/leds-lp3952.c
-> +++ b/drivers/leds/leds-lp3952.c
-> @@ -101,7 +101,7 @@ static int lp3952_get_label(struct device *dev, const char *label, char *dest)
->  	if (ret)
->  		return ret;
->  
-> -	strncpy(dest, str, LP3952_LABEL_MAX_LEN);
-> +	strscpy(dest, str, LP3952_LABEL_MAX_LEN);
+Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
 
-Given my desire to use sizeof(dest) for these things, I wonder if it'd
-be nicer to pass more context here for the compiler as the only user of
-this function is the immediately next function. Instead of passing in
-"char *dest", it could pass "struct lp3952_led_array *priv", and
-suddenly sizeof() would be possible.
+Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-But, since it's technically correct as-is:
-
-struct lp3952_ctrl_hdl {
-        struct led_classdev cdev;
-        char name[LP3952_LABEL_MAX_LEN];
-
-There's no pressing need to actually do the priv refactor. It's just a
-comment on the coding style of the original code. :)
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
->  	return 0;
->  }
->  
-> 
-> ---
-> base-commit: 2cf0f715623872823a72e451243bbf555d10d032
-> change-id: 20230922-strncpy-drivers-leds-leds-lp3952-c-666fcfabeebd
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 9450b2c8a678..c47f5ecdd249 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -385,6 +385,12 @@ properties:
+           - const: toradex,apalis_imx6q
+           - const: fsl,imx6q
+ 
++      - description: i.MX6Q Variscite VAR-SOM-MX6 Boards
++        items:
++          - const: variscite,mx6customboard
++          - const: variscite,var-som-imx6q
++          - const: fsl,imx6q
++
+       - description: TQ-Systems TQMa6Q SoM (variant A) on MBa6x
+         items:
+           - const: tq,imx6q-mba6x-a
 -- 
-Kees Cook
+2.34.1
+
