@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC2A7AC7C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD5B7AC7CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjIXLlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 07:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        id S229598AbjIXLpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 07:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjIXLld (ORCPT
+        with ESMTP id S229449AbjIXLpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 07:41:33 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED87103
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 04:41:26 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so5472070a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 04:41:26 -0700 (PDT)
+        Sun, 24 Sep 2023 07:45:13 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73E5101
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 04:45:06 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31f7638be6eso4532826f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 04:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695555685; x=1696160485; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1695555905; x=1696160705; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=DmGyCBQAHmjeBS0vkEvgn/fb8DOR1oVjNQmbaMrjvLU=;
-        b=Mv4+2JfPZsZBM+49lzb4pjYK2eAjyiol4TgzHPbIRFKx2/LYg6Vg6AsPQ1mYC9fxAS
-         wjjKKMIYMKKhjl+0Of7hgOO7pTBy4FGWNh/7rUFNQCxO7MZTal9Brq+OKvIx8usbahQT
-         qtD0dNxsrYIxawRr4Qyk5AfCkkXPCBs6P9rWohgjO0xr3uhvgIKpQ2Wxi+hg3Ff0Joks
-         iVSHeKvqdI6ol8c+SQ63DtfmmtOfpsItvYqEykWIomop5bAYMKLYumUsFTWtG5xVc5Za
-         rhWpU/LEOljT/CQsb/hVXmwnOWsOUK8YWIMMrkKW0PSChD99HEARNJga5tsXP+7IDdZT
-         coxg==
+        bh=Bfo+tbTQVTfcB3muEtJ5dcAI76Wff7ckKMaMA7hGJTc=;
+        b=mem4Gj/ALL5KmE+GqBobzCFoByRTLQrhDm+bsx2yj7BTmWi35kVTl+bSpbpEjhtKtb
+         2HLj4REEhbEOFrDk0ZR8uAFwXQ5fgS0m+eEF7ft8DVbZJbo1hMsyaKLP+kJo5c1icU8N
+         2B+mAcYGQLD5rid+ktVMS5B5fOdReUaiG+Hj0NJJgz70xMjY5YmKKlj2WrfOKSpANXC/
+         HwDZdVccXtgHjuW8BHGewq4oImC4JhPKjpuDF8aZPTEdLRuB9Knfg5/ilmVmEw55RQbO
+         Z47AwwybN7m86WHppRh26Fr2B8HIBsQU/7EYLCl9H1rkL1h02tk8d/DaU73nb6RKfABo
+         XcuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695555685; x=1696160485;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1695555905; x=1696160705;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DmGyCBQAHmjeBS0vkEvgn/fb8DOR1oVjNQmbaMrjvLU=;
-        b=VwGFcJdzfLwi9Bw6N+WfTYH4AqSP8I2dSoXM2iWCwm0BMqFCq03xkn8u+qRgUgSPUW
-         hSUtcCMKMyc2SDhbNKs42M3t3YYLSTJZ3FycsLlhfBseEJtgWsHSGadi7LvSizXjJx04
-         +ishFkt0jfvbeFZoP8SNcQGIaXZmHxdrnuN5pGWeDjvsEKG6LB3nDL4nR/C7Ie6v1qih
-         RQWOoaQjoTyUGau83mgGRc2bU9YyzWPEFzrT3RDn3/b5AUtYhy7f7TtU2B5w1qAsk6kN
-         xb/OAttRNaNEFjW4lm3hkTVm5THKnhZv90Ie5HNiIl77Edu3urVbMEpIX/fuGNjiqapH
-         xk2g==
-X-Gm-Message-State: AOJu0YyTrsA5TnAQ+dpoIUSRsl8uKRZlOrmT/HbNtT5Uv1ZBN9ZGaTHk
-        +4Z3pXlQooVWWIZX5HYld17plw==
-X-Google-Smtp-Source: AGHT+IHBpebMWCos5SP2RTVgowZ15+1Skx7BLOxMnh6TQpWwE2B07iMmUPw8+UnB8MbybOCT8dj8eg==
-X-Received: by 2002:aa7:c741:0:b0:533:5c03:5fce with SMTP id c1-20020aa7c741000000b005335c035fcemr3479696eds.5.1695555684782;
-        Sun, 24 Sep 2023 04:41:24 -0700 (PDT)
+        bh=Bfo+tbTQVTfcB3muEtJ5dcAI76Wff7ckKMaMA7hGJTc=;
+        b=FfCq+3SAl9S6AXWCD5qWyvWqUFC5XG6smr51/shJMyulNcbGBLv9uXHLRyw2UPUS79
+         TjNKBF5+tAAMkKm8pyIS8KfbH1+RMpL/Cfhdo3BJReW6Z18r4gjOKV1T9+PSHRz9ar0a
+         +ZVq5/4LVgIQxCDSYu7NgzNOv+bUncGvWLPEoc3ehhrDyjcUXonub+rGlqnPiFXxQSlE
+         CUw1OrF4svpjtRQ4VEV8XE+W0GQBAMtFp0vOLjlqF5Eiljngl3VJ+phQWP0qMM+0YjM+
+         JLybzSAFjwAbqEvLqnnQc2o0nN8PTULULyZDB+VphornzvY0S9C6ovC0RHMoSWzqxRBw
+         vLHQ==
+X-Gm-Message-State: AOJu0YyTLmdDQmknceEbiF4fhAh1sA6sQApME+fc7WircirCauCxWjEh
+        MecCtjzrKifmZcwizzEakfIUHA==
+X-Google-Smtp-Source: AGHT+IEatxzY4iGxij3aKDiWG2DKIBpfinUH0KyqJo8wPunfVfcVbwDKYCOzxb44z/Samx/U6zZbBg==
+X-Received: by 2002:adf:e791:0:b0:31f:fab1:c3c3 with SMTP id n17-20020adfe791000000b0031ffab1c3c3mr3898673wrm.35.1695555905240;
+        Sun, 24 Sep 2023 04:45:05 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id w25-20020aa7d299000000b005329f1aa071sm4265405edq.10.2023.09.24.04.41.23
+        by smtp.gmail.com with ESMTPSA id m12-20020a056000008c00b0031f3b04e7cdsm9077174wrx.109.2023.09.24.04.45.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 04:41:24 -0700 (PDT)
-Message-ID: <b3813a4e-3956-254c-a7cf-0fca65dc2cdd@linaro.org>
-Date:   Sun, 24 Sep 2023 13:41:23 +0200
+        Sun, 24 Sep 2023 04:45:04 -0700 (PDT)
+Message-ID: <53e67234-1dc3-0f23-c4c4-6622828a24b9@linaro.org>
+Date:   Sun, 24 Sep 2023 13:45:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: ERR_PTR(0) in a couple of places
-To:     "Dr. David Alan Gilbert" <dave@treblig.org>,
-        matthew.brost@intel.com, mgreer@animalcreek.com
-Cc:     linux-kernel@vger.kernel.org, airlied@gmail.com,
-        intel-gfx@lists.freedesktop.org
-References: <ZQ+Fo9WKyGphwI8R@gallifrey>
+Subject: Re: [PATCH 1/4] dt-bindings: clock: qcom,camcc.yaml: Convert
+ qcom,camcc to a single yaml file
 Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230923150045.1068556-1-bryan.odonoghue@linaro.org>
+ <20230923150045.1068556-2-bryan.odonoghue@linaro.org>
+ <2565aa33-619c-6c90-de96-29dc5ac5d961@linaro.org>
+ <fac95d85-0802-4819-9efe-a31e6df7a0e4@linaro.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ZQ+Fo9WKyGphwI8R@gallifrey>
+In-Reply-To: <fac95d85-0802-4819-9efe-a31e6df7a0e4@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2023 02:41, Dr. David Alan Gilbert wrote:
-> Hi,
->   I randomly noticed there are a couple of places in the kernel that
-> do
->    ERR_PTR(0);
+On 24/09/2023 12:20, Bryan O'Donoghue wrote:
+> On 23/09/2023 17:13, Krzysztof Kozlowski wrote:
+>> On 23/09/2023 17:00, Bryan O'Donoghue wrote:
+>>> Move the various camcc yaml files into one. The Camera Clock Controller
+>>> is pretty similar from SoC to SoC.
+>>>
+>>> Mostly we have some SoCs which require fewer clocks than others. In some
+>>> cases we have SoCs which have required-opps and required-power-domains.
+>>>
+>>> It is likely we could and should extend the thin CAMCC descriptions such
+>>> as sdm845 an sm6350 to the more robust descriptions such as sm8250 and
+>>> sm8450.
+>>>
+>>> As a result of listing sm8250 and sm8450 together required-opps and
+>>> power-domains become required for sm8250, which is a NOP for the dtsi
+>>> since both declarations already exist for sm8250.
+>>>
+>>> sm8250 is also chosen as the example for the new combined camcc.yaml.
+>>>
+>>> A minor tweak to fix Bjorn's email address in the Maintainer list is
+>>> included.
+>>>
+>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>
+>> No, that's not the right approach. For GCC and CamCC and all other
+>> Qualcomm clock controllers, we split into device schemas, not merge into
+>> one. The one schema is just becoming unreviewable over time with
+>> multiple if:then clauses.
+>>
+>> Please use approach like we have for GCC, RPMh interconnects or remote
+>> proc loaders - common file. What's more, here you probably don't even
+>> need common file because it is already there - qcom,gcc.yaml
+>>
+>> Best regards,
+>> Krzysztof
+>>
 > 
-> and thought that was odd - shouldn't those just be NULL's ?
+> Ah OK, I see what you mean.
 > 
-> 1) i915
->   drivers/gpu/drm/i915/gt/uc/selftest_guc_multi_lrc.c : 47
+> commit f8cc21d454c50157a528c900b60aa9588b4066b3
+> Author: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Date:   Tue Dec 27 15:40:56 2022 +0100
 > 
->     if (i <= 1)
->       return ERR_PTR(0);
-> 
->   from f9d72092cb490 
-> 
-> 2) trf7970a
->   drivers/nfc/trf7970a.c : 896
-> 
->       trf->ignore_timeout =
->          !cancel_delayed_work(&trf->timeout_work);
->       trf->rx_skb = ERR_PTR(0);
+>      media: dt-bindings: qcom,venus: split common properties
 
-I would guess that code is relying on rx_skb being valid pointer or ERR
-(if (!IS_ERR(...))).
+Yes, except that in case of camcc it might be enough to use existing
+gcc.yaml
 
 Best regards,
 Krzysztof
