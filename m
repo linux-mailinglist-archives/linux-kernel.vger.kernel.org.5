@@ -2,177 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D177ACB20
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9E97ACB1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbjIXRov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
+        id S230162AbjIXRoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXRou (ORCPT
+        with ESMTP id S229437AbjIXRoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:44:50 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2095.outbound.protection.outlook.com [40.92.90.95])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26339FA
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:44:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jb8xw/XiKco/1sAQvp0hyRcJwrbKHZwZgvUVXjw7fejT0L2hLS3FboKt+sDXl1bo9SLexcWP5PiTS8JP/wZ5uV6X4u037TO+64e7u9bMoFbjf+F3EacVFh42niy0Tfq8FUtpdVFSt7pcnrqXoxix89QgGAT/NYqtaRKsoGdFNtOi2jaUClatucsGuloUDwl353BKy9mfAgW63VEQOA8uJx308s/iZcc9VkbxDbYcK2H2lfU0KZk/cC+FclS8foJunweiuSwNpaSzCuT3x2cYEFZSc0KjlxDSFBrTQmOfUoLzfbz3dZAcb1ZTO1MdbYvn6yzUixoimPTOnHGtaBIoNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s7rl5G6j4nIMK+0duIsOTFBXzoYbShkjS4kkQr8iKdA=;
- b=ew8WJ+eg/lHE55Wxtf74LGvjZruH7tPbZYEKlI6xucFnggb2n00FlMajI8QyiHgXF2ekwltUhPBS0NyOp0l/S26wCUFlVtPx4HWjh/FkKBXHnBor7+dyjdLQPTAp5nH+CGpv7VxmvoFFdYTYpnY/KHstGD7qukalubUMMrdyvEzsv6C7iLRdgNfUoDLuC7pVbNMSLoBARsLHaTtn38XKxoqg0OE7JOAgJqiwIAd/AGSl0GCXXwM6ZunzhakY9ToxjL5xiR9K9HtL2lIPMc6uFdQ3PpUm0SeaOftgXBQj5nPc1qrghE6TLsHgkAuCkBoxr9N8vUxBqwaGYqvFQBWs2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s7rl5G6j4nIMK+0duIsOTFBXzoYbShkjS4kkQr8iKdA=;
- b=hnBeDH2A+ZsL9DrI8eEY/1xdLRS50AD/Dc9unuAGoVl5Cih3Ns32Gvhug64mEkGL0QB+Lv5O9U3Dpk38inQvMh1FJz4qzfRhjh3PmiEi3CvVpGhcQA6WNyCFllOeLn2BqEaNRkNeFn7QFLCwBOjM2wyVVYI7x6qTfco4diZPZNovGLBFbHzUbCFVMq4YbV27q12ibsAhepJxlgWHPWqWrOz+cW6tn0nXy1CCW85ZGJdGapNr2ya+Z5UJ1yUNH90IdNAAyAymdeGnkqE9seNuNRpc/dn18QF/4Qn3OV01UZ0HhxlwAzB1HseUSG2rst7i1zNC98xrWweUP/7YxcoJyA==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by AS8P193MB1461.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:39d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Sun, 24 Sep
- 2023 17:44:38 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Sun, 24 Sep 2023
- 17:44:38 +0000
-From:   Juntong Deng <juntong.deng@outlook.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v2] drm: Rename drm_ioctl_flags() to eliminate duplicate declaration warning
-Date:   Sun, 24 Sep 2023 18:43:33 +0100
-Message-ID: <VI1P193MB0752F71CC14FFC9B9A22A6E399FDA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [16lAXriSjIZ8v8Ytaj1rcYP7dsqMj6Pi]
-X-ClientProxiedBy: AS4P190CA0012.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5de::12) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <20230924174333.13398-1-juntong.deng@outlook.com>
+        Sun, 24 Sep 2023 13:44:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AED1FA;
+        Sun, 24 Sep 2023 10:44:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55C6C433C7;
+        Sun, 24 Sep 2023 17:43:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695577441;
+        bh=8H+PkF7KD25MSP7tTAzYlYBGEtMb3KxwOnralLbv0JM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=arDrOUwG1Ger2aTdse+W2vYUe9Yyvr+Hh5FCdWkNKtr3yBwBw68MVrA9/3F5a4btn
+         eBC8lyixRgXKVuXQ57vgoG25/oWaovwdfKqpV8XndblmG5Au4FO1Pol71mq0nW3MUM
+         4whTgepPNmvJEmX1Ygtu3RVjR5PL+1p2x3Pp2Y5p8HQVM8RfVBLFvOVA2r+OgATF5W
+         L1rW6OM83tNjkGdpxRrdgqQ9CvBlK4J9xkJjku2xiEXhmUGfu5OK/rrqnvVy4qmRYo
+         +hmV2IGWg9QcpEwO/ViaU3/U5Zxb/aSxazLp/WJP6JjcXqaGsD0A9MDgVon7QQdjUX
+         REcfxGuaK6+GA==
+Date:   Sun, 24 Sep 2023 18:43:53 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>
+Subject: Re: [PATCH v2 08/19] staging: iio: resolver: ad2s1210: use
+ devicetree to get fclkin
+Message-ID: <20230924184353.3f4aee27@jic23-huawei>
+In-Reply-To: <20230921144400.62380-9-dlechner@baylibre.com>
+References: <20230921144400.62380-1-dlechner@baylibre.com>
+        <20230921144400.62380-9-dlechner@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AS8P193MB1461:EE_
-X-MS-Office365-Filtering-Correlation-Id: 751dcb95-816a-474d-2899-08dbbd25ecb2
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kEQJyv20eyffHYL3nX03wUH6gyRsPTy+Y6D3incACYWAlaPDUNCOFlQw9T4cHUMvGCJHwqZTQJBfJ+S3H3LUSrbrf31zT/1xtHCf8dRCsm/PxAsrk9iigSEjOx/oHkkYB9np/bIqjLkiv5nxBthmushaN81R/r5M+4c+Avt5vaErCCDZ3971U24hIAtNN91IRZwlroQDA2CEuKwHTDIcIjUrg82d4GV6PoUPo923zS30EFI3N5D5N/5Q7AiDVLZKG25BKU3tyZzpI8J2/3u9szDg972wiJGBO9f/lSFaR3IcZacNRUJwApP5xe6JvXtToAFTDxlG08+qwYyspAnGXz1zV+fGVcmrgsWq63XgujH+pSieqvuTiXaDegTsGyoacfUlH31AxOnJtt7Gy2iG5yJTBaf9bZv6ELPIfq9CqZ+JEXVecYclKnM7ycVR+GoU4BERKZTH7zHQhfnhK5gJsM3DBut6lwF/hyCe8/sIzCzUN7s0ZgKuE/8qCiKDQ7wCUJwu3qTl5ZJoRBSxJcsKYdf6A3ImHA+ScInnKYekXw51Hffup11eEnf1RQcXPND+
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?phqQHd1bvsKKgs7/5mAR1Mp5KAoY5L9z/IMQhxJC2FF5ru0GUlwgIcxKf/3n?=
- =?us-ascii?Q?Z0T5wTH9Y9ba1TsCJPM+5QzlCO3rzAv4tF97CjySsczWbu0HoW3cuPek97+W?=
- =?us-ascii?Q?x73FPLcPXaZoFmoDP2hsFUOXEE6/EmYDzExBC91B1nh16kxnpJXyS550tYTd?=
- =?us-ascii?Q?OshXPW2o+hqOVN89chmqt0TasDK0qw5PhSucNVxXMT3aJ3M3N/hxyAJ5MfHB?=
- =?us-ascii?Q?uZNiBo11W5uxyT/hmi7dQZ7sAg7VPfS3r3VpLtl701oEW2nYnHWvWqK8cLZa?=
- =?us-ascii?Q?iWbpiUZUw3Iw25i1vFdfFxZ+8F5dKlismajeDjjR67zeomjjZWcZxukyONSK?=
- =?us-ascii?Q?bbupGckx0jQCGhjs8UrRDyrl3YQmdRI4P+6pV0hZFnaEZ5Y2WUENNe8+coUY?=
- =?us-ascii?Q?K3k/S1nlvlh3hG01I781CHiDC6uGO58tHf6+2SoQQ+B7uqkI3EdrG5B3LyLY?=
- =?us-ascii?Q?ZOmBSsawxp58FIPSJ3OW4QPp5OR5T2Fx5MhpXj6AeB8irZsF8WWFQ39f51mi?=
- =?us-ascii?Q?iEHO6qpujxAnOXMUS1FMK59O9hsNd2nUkMMWM+P7NynPugX+3e3Zom2fyKUA?=
- =?us-ascii?Q?4OZqqIuiebP2GRtJamsLfoBXW2Jt8qUNjFxhAaXrObTNUfidz2Yn1HCY3JQs?=
- =?us-ascii?Q?GrGSOLtbmRVg032rCmNH1eU+mqsSsapYyOeHcgt69S6NMsySOqQPbftn+tDY?=
- =?us-ascii?Q?0WzTwnixIftdbXcfubtPIka+jAp+CvCQjxK9dTf4rYD7t0zwCeG3iTQuCutO?=
- =?us-ascii?Q?84QQzn0LUIgqLkqwq8ui1rfdcHpOK3sBq/QL0Cllabk0TYk0XmThHXx4TLLc?=
- =?us-ascii?Q?udXN/6yCukl8+Uc9z1TXykYijWmFdQCeZeSDipUbVC8x1Adp2e0iniI2LirI?=
- =?us-ascii?Q?xCfdl9wuYonX5Fs0AFws2mzjLX0A9PJX0aBEDtdaoehASwWV4m3KyXwzdbSL?=
- =?us-ascii?Q?xKos+oavQFBxj1MMJ4cTopevC/0w2o8ftRJ/JsRpSSMJVNtnceJFp5rkhOEh?=
- =?us-ascii?Q?rpoa2l9B9hSKWBau0F0K2C3BQ2VSjmzu60PeoPG4lRKNRUnVeakR3eUI0CBz?=
- =?us-ascii?Q?aPF2x1AcHDCFe15SLG7rk0l5RHxRZTfJ5aUVOga12Ne45IgarcS/jC1DwsBZ?=
- =?us-ascii?Q?fO+mxR8JiRmrJrFDV9kJlLeTSa84Ou66BYZKPOMbIsGwaXdL1ChdvHdaG/98?=
- =?us-ascii?Q?MqPsw1K3dP6AkrFK76d6qSOMqRTE7s+9TgwHSsuaRGWj11hPK7bdvC7hKko?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 751dcb95-816a-474d-2899-08dbbd25ecb2
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2023 17:44:38.8241
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1461
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 'enum drm_ioctl_flags' and 'bool drm_ioctl_flags(...)' with the
-same name, which is not a problem in C, but it can lead to
-'WARNING: Duplicate C declaration' when generating documentation.
+On Thu, 21 Sep 2023 09:43:49 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-According to the purpose of the function, rename 'drm_ioctl_flags(...)' to
-'drm_ioctl_flags_check(...)' to eliminate the warning.
+> This removes the fclkin sysfs attribute and replaces it with getting
+> the fclkin clock rate using the clk subsystem (i.e. from the
+> devicetree).
+> 
+> The fclkin clock comes from an external oscillator that is connected
+> directly to the AD2S1210 chip, so users of the sysfs attributes should
+> not need to be concerned with this.
+> 
+> Also sort includes while we are touching this.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+>  drivers/staging/iio/resolver/Kconfig    |  1 +
+>  drivers/staging/iio/resolver/ad2s1210.c | 76 +++++++++----------------
+>  2 files changed, 28 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/resolver/Kconfig b/drivers/staging/iio/resolver/Kconfig
+> index 6d1e2622e0b0..bebb35822c9e 100644
+> --- a/drivers/staging/iio/resolver/Kconfig
+> +++ b/drivers/staging/iio/resolver/Kconfig
+> @@ -7,6 +7,7 @@ menu "Resolver to digital converters"
+>  config AD2S1210
+>  	tristate "Analog Devices ad2s1210 driver"
+>  	depends on SPI
+> +	depends on COMMON_CLK
+>  	depends on GPIOLIB || COMPILE_TEST
+>  	help
+>  	  Say yes here to build support for Analog Devices spi resolver
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index 95d43b241a75..153ac7704ad7 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -5,16 +5,17 @@
+>   * Copyright (c) 2010-2010 Analog Devices Inc.
+>   * Copyright (C) 2023 BayLibre, SAS
+>   */
+> -#include <linux/types.h>
+> -#include <linux/mutex.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+>  #include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+>  #include <linux/of.h>
+> -#include <linux/spi/spi.h>
+>  #include <linux/slab.h>
+> +#include <linux/spi/spi.h>
+>  #include <linux/sysfs.h>
+> -#include <linux/delay.h>
+> -#include <linux/gpio/consumer.h>
+> -#include <linux/module.h>
+> +#include <linux/types.h>
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- drivers/gpu/drm/drm_ioctl.c         | 6 +++---
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c | 2 +-
- include/drm/drm_ioctl.h             | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+No objection to cleaning up the includes, but not in same patch that does
+anything more significant.
 
-diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-index f03ffbacfe9b..feaa58ca36f7 100644
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -911,7 +911,7 @@ long drm_ioctl(struct file *filp,
- EXPORT_SYMBOL(drm_ioctl);
- 
- /**
-- * drm_ioctl_flags - Check for core ioctl and return ioctl permission flags
-+ * drm_ioctl_flags_check - Check for core ioctl and return ioctl permission flags
-  * @nr: ioctl number
-  * @flags: where to return the ioctl permission flags
-  *
-@@ -922,7 +922,7 @@ EXPORT_SYMBOL(drm_ioctl);
-  * Returns:
-  * True if the @nr corresponds to a DRM core ioctl number, false otherwise.
-  */
--bool drm_ioctl_flags(unsigned int nr, unsigned int *flags)
-+bool drm_ioctl_flags_check(unsigned int nr, unsigned int *flags)
- {
- 	if (nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END)
- 		return false;
-@@ -934,4 +934,4 @@ bool drm_ioctl_flags(unsigned int nr, unsigned int *flags)
- 	*flags = drm_ioctls[nr].flags;
- 	return true;
- }
--EXPORT_SYMBOL(drm_ioctl_flags);
-+EXPORT_SYMBOL(drm_ioctl_flags_check);
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-index 8b24ecf60e3e..2aafc7a62bee 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-@@ -1287,7 +1287,7 @@ static long vmw_generic_ioctl(struct file *filp, unsigned int cmd,
- 			goto out_io_encoding;
- 
- 		flags = ioctl->flags;
--	} else if (!drm_ioctl_flags(nr, &flags))
-+	} else if (!drm_ioctl_flags_check(nr, &flags))
- 		return -EINVAL;
- 
- 	return ioctl_func(filp, cmd, arg);
-diff --git a/include/drm/drm_ioctl.h b/include/drm/drm_ioctl.h
-index 6ed61c371f6c..465c5de2d5cd 100644
---- a/include/drm/drm_ioctl.h
-+++ b/include/drm/drm_ioctl.h
-@@ -175,7 +175,7 @@ long drm_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
- /* Let drm_compat_ioctl be assigned to .compat_ioctl unconditionally */
- #define drm_compat_ioctl NULL
- #endif
--bool drm_ioctl_flags(unsigned int nr, unsigned int *flags);
-+bool drm_ioctl_flags_check(unsigned int nr, unsigned int *flags);
- 
- int drm_noop(struct drm_device *dev, void *data,
- 	     struct drm_file *file_priv);
--- 
-2.39.2
+>  
+>  #include <linux/iio/iio.h>
+>  #include <linux/iio/sysfs.h>
+> @@ -91,7 +92,8 @@ struct ad2s1210_state {
+>  	struct mutex lock;
+>  	struct spi_device *sdev;
+>  	struct gpio_desc *gpios[5];
+> -	unsigned int fclkin;
+> +	/** The external oscillator frequency in Hz. */
+> +	unsigned long fclkin;
+rename it so we know the units. fclkin_hz
+
+However, I'd stash the clk instead and then get the frequency where it's needed.
+Also avoids need for a wrapper function as can just call 
+devm_get_clk_enabled() in probe()
+
+Obviously give that clk a meaningful name though.
+
+>  	unsigned int fexcit;
+>  	bool hysteresis;
+>  	u8 resolution;
+> @@ -198,45 +200,6 @@ static inline int ad2s1210_soft_reset(struct ad2s1210_state *st)
+>  	return ad2s1210_config_write(st, 0x0);
+>  }
+>  
+> -static ssize_t ad2s1210_show_fclkin(struct device *dev,
+> -				    struct device_attribute *attr,
+> -				    char *buf)
+> -{
+> -	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+> -
+> -	return sprintf(buf, "%u\n", st->fclkin);
+> -}
+> -
+> -static ssize_t ad2s1210_store_fclkin(struct device *dev,
+> -				     struct device_attribute *attr,
+> -				     const char *buf,
+> -				     size_t len)
+> -{
+> -	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+> -	unsigned int fclkin;
+> -	int ret;
+> -
+> -	ret = kstrtouint(buf, 10, &fclkin);
+> -	if (ret)
+> -		return ret;
+> -	if (fclkin < AD2S1210_MIN_CLKIN || fclkin > AD2S1210_MAX_CLKIN) {
+> -		dev_err(dev, "ad2s1210: fclkin out of range\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	mutex_lock(&st->lock);
+> -	st->fclkin = fclkin;
+> -
+> -	ret = ad2s1210_update_frequency_control_word(st);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -	ret = ad2s1210_soft_reset(st);
+> -error_ret:
+> -	mutex_unlock(&st->lock);
+> -
+> -	return ret < 0 ? ret : len;
+> -}
+> -
+>  static ssize_t ad2s1210_show_fexcit(struct device *dev,
+>  				    struct device_attribute *attr,
+>  				    char *buf)
+> @@ -546,8 +509,6 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+>  	return ret;
+>  }
+>  
+> -static IIO_DEVICE_ATTR(fclkin, 0644,
+> -		       ad2s1210_show_fclkin, ad2s1210_store_fclkin, 0);
+>  static IIO_DEVICE_ATTR(fexcit, 0644,
+>  		       ad2s1210_show_fexcit,	ad2s1210_store_fexcit, 0);
+>  static IIO_DEVICE_ATTR(control, 0644,
+> @@ -596,7 +557,6 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+>  };
+>  
+>  static struct attribute *ad2s1210_attributes[] = {
+> -	&iio_dev_attr_fclkin.dev_attr.attr,
+>  	&iio_dev_attr_fexcit.dev_attr.attr,
+>  	&iio_dev_attr_control.dev_attr.attr,
+>  	&iio_dev_attr_bits.dev_attr.attr,
+> @@ -654,6 +614,24 @@ static const struct iio_info ad2s1210_info = {
+>  	.attrs = &ad2s1210_attribute_group,
+>  };
+>  
+> +static int ad2s1210_setup_clocks(struct ad2s1210_state *st)
+> +{
+> +	struct device *dev = &st->sdev->dev;
+> +	struct clk *clk;
+> +
+> +	clk = devm_clk_get_enabled(dev, NULL);
+> +	if (IS_ERR(clk))
+> +		return dev_err_probe(dev, PTR_ERR(clk), "failed to get clock\n");
+> +
+> +	st->fclkin = clk_get_rate(clk);
+> +	if (st->fclkin < AD2S1210_MIN_CLKIN || st->fclkin > AD2S1210_MAX_CLKIN)
+> +		return dev_err_probe(dev, -EINVAL,
+> +				     "clock frequency out of range: %lu\n",
+> +				     st->fclkin);
+> +
+> +	return 0;
+> +}
+> +
+>  static int ad2s1210_setup_gpios(struct ad2s1210_state *st)
+>  {
+>  	struct spi_device *spi = st->sdev;
 
