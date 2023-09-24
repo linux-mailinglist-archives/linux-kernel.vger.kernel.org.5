@@ -2,169 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BD77AC724
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 10:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2857AC725
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 10:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbjIXITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 04:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        id S229540AbjIXIer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 04:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjIXITU (ORCPT
+        with ESMTP id S229449AbjIXIeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 04:19:20 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77FCD3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 01:19:13 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50317080342so7429392e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 01:19:13 -0700 (PDT)
+        Sun, 24 Sep 2023 04:34:46 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43F1EE;
+        Sun, 24 Sep 2023 01:34:39 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7740729ae12so301638385a.1;
+        Sun, 24 Sep 2023 01:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695543552; x=1696148352; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1hHLqx//+KHKke7RxCV9Yuyp7jdtEnxin017FD+uo04=;
-        b=j5sXX0y9otl1g2XHDtxW2ZZalq5xYNivaSQ8SC0z0+ojPDPmwsajQO6vg4MOyrLBXE
-         J68QpllXYRSs7lE6dLGUJAZe501gxmQm3h6/kJHHGffTIxZMKlukEP5MzEV7A9Pllbm4
-         YIpOvuVVgrIn7m95jBUQKLnQF0MUpG6o7Q8biARUrYs1858qE21xaGRmbi4MYi1bYGVW
-         O4CLuHb0P1Q55hEbRhk+J/SMOfqXBlFUVW+Mr5k079o/5Ji92q947QwdhWftGQzUhbQQ
-         AbJTizFNYQuFUaSLSVL0L3N+Je0H7wvTEq4h201tHcpBZaRY9krvunS/Y/M9Zo8I00+4
-         f91w==
+        d=gmail.com; s=20230601; t=1695544479; x=1696149279; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gna2reU7RFoFiox5XzjS7B8W5YuzttqF7wlldDBsONA=;
+        b=i22mThoYkQSU1Tjk5syLU9ITbuhKQ6PPCzuEY5ajtvf0BN6BqYHCYD35a6dHQgFQu5
+         sD+Ry/hEKHdpF05oiIUusAAFG4+dggK22yspeB2wUvR2MQ5I2WEDzlgu2+d3a13kwUVY
+         ieu7fhhw+9BBeHOujjSCUbEoYrn2ZVvLafYXaxonSIabCtmvFZd8ubK2rkphXAqP0eM/
+         kuqp5KlPjJPxzDiTcrYa01+MlqGfWUW67oirIZ0HhzCsTQ08cTpf4Su1H2/e8e0KK1x2
+         mBvJ82HgShmbqU0k11phsZlOqBPUb2xESmpMwndBgbkMQrqoxcVClqkxX/zshO7n9nK3
+         0X6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695543552; x=1696148352;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1hHLqx//+KHKke7RxCV9Yuyp7jdtEnxin017FD+uo04=;
-        b=g0dAH0MDbFPqZOhKzOK+l+xDCub+Nu/o7xwrMp9ukdI7oVEY2LCV3GcRJYVSBdQa8I
-         PGNluHoc8VbvtnVrL5n5AvZQgK68zELYPTPsm5kW+VCbjobhgAKRhVMVtVlKDZ0BPNcm
-         S9G+LUZA1N17PX6x/pDS9aVmbu0qwXFmPHrvXnWx5HQ5b/UaKOEz3883uI3EZ4lb/JDM
-         U8qPkmNDz+VzT9x+APYWcG148z6TRHGFXPqq1qP8CRlVqORE75RxkOpQqoqE3oFWSkwX
-         L4DKKgzFDvuF2BTZzPEt4v366JqT71T+78Td0fOcl/UmLtDDxezEX1hw4ly86ENL4qI8
-         xPVg==
-X-Gm-Message-State: AOJu0YxC88Yk/tK8Yyjl1dUPybvYySzb89Nd9ZsNoYBtY3z9Ml3Iqe+v
-        p5iYtpm7HR+dYUnlwJQ1aG1YLA==
-X-Google-Smtp-Source: AGHT+IHGm7AQbFXuimot0EDmqmJRuWEsigBLLH9wurZI26YcE210hwvBjgQtg2QBwug/Mmho6/dcrw==
-X-Received: by 2002:a05:6512:546:b0:503:2dce:4544 with SMTP id h6-20020a056512054600b005032dce4544mr2945667lfl.59.1695543551864;
-        Sun, 24 Sep 2023 01:19:11 -0700 (PDT)
-Received: from [192.168.1.2] (c-05d8225c.014-348-6c756e10.bbcust.telenor.se. [92.34.216.5])
-        by smtp.gmail.com with ESMTPSA id c19-20020a197613000000b005033948f108sm1335674lff.272.2023.09.24.01.19.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 01:19:11 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 24 Sep 2023 10:19:02 +0200
-Subject: [PATCH net-next] net: phy: amd: Support the Altima AMI101L
+        d=1e100.net; s=20230601; t=1695544479; x=1696149279;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gna2reU7RFoFiox5XzjS7B8W5YuzttqF7wlldDBsONA=;
+        b=jJ6Og68fM0yfY3iHJsJm2KNxM0dQxA2Qc1Znvo2kh0yjgLYZKWNvlrGEhYNncHjIuC
+         p4v0QtGo9XoRqDnk7MfxlnjS5AUxb/m//eaXgL0aJv7fGrfuYKN/7B7oMjaWrEEFu5HF
+         5W15Rci/koqGvglaeRjNDJaXA8nfh4dBSCDVdPS2A6/KTjeK34OcYx7eBxvUbEMOM/KN
+         YI4nMzPaf5PdC4SvC5SuevW9XsgPu61mMz/SDf+EhPlC2Ke0JR7QkpBDT8+16kOIS28i
+         cW0YFQwh3tBpowDZaHsY3vTvGr1Q4Md36lmEV8eZiGJi4k+7O4sW6iAHrID7LtlaodoJ
+         tONQ==
+X-Gm-Message-State: AOJu0YyLCuXmIDGr9ud6A0zGQ03KW7B7QwuIy4dOSHVz6jWQKKgTXn2u
+        c78F1RKl4t4fZ2WxnAPXCKUYAscEdXEhuL2VXLEd1eli9yw=
+X-Google-Smtp-Source: AGHT+IHJRCiRok3zs9e47KJhpE4yv0RKpsC2BbmyKQ7XPE4rrPa08guJ1txwjT2zZNM/BwHM5NFJ+eGuubNBzypkC3I=
+X-Received: by 2002:a05:620a:4593:b0:76a:eee2:cd09 with SMTP id
+ bp19-20020a05620a459300b0076aeee2cd09mr5165182qkb.9.1695544478919; Sun, 24
+ Sep 2023 01:34:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230924-ac101l-phy-v1-1-5e6349e28aa4@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAPXwD2UC/x3MwQpAQBRG4VfRXbt1Z5B4FVlM/LiloRmJ5N1Nl
- t/inIcigiJSmz0UcGrUzSeYPKNhcX4G65hMVmwhjS3ZDUbMyvtycy0lGiemsqgoBXvApNc/68j
- jYI/roP59P/FOBkZmAAAA
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
+References: <20230921-umgekehrt-buden-a8718451ef7c@brauner>
+ <CAHk-=wgoNW9QmEzhJR7C1_vKWKr=8JoD4b7idQDNHOa10P_i4g@mail.gmail.com> <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+In-Reply-To: <0d006954b698cb1cea3a93c1662b5913a0ded3b1.camel@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sun, 24 Sep 2023 11:34:27 +0300
+Message-ID: <CAOQ4uxi=377CcOLf4ySoZWVMRkGPdnxhL-Vw4OM28mz_xeK97w@mail.gmail.com>
+Subject: Re: [GIT PULL v2] timestamp fixes
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Altima AC101L is obviously compatible with the AMD PHY,
-as seen by reading the datasheet.
+On Thu, Sep 21, 2023 at 10:02=E2=80=AFPM Jeff Layton <jlayton@kernel.org> w=
+rote:
+>
+> On Thu, 2023-09-21 at 11:24 -0700, Linus Torvalds wrote:
+> > On Thu, 21 Sept 2023 at 04:21, Christian Brauner <brauner@kernel.org> w=
+rote:
+> > >
+> > >   git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-=
+rc3.vfs.ctime.revert
+> >
+> > So for some reason pr-tracker-bot doesn't seem to have reacted to this
+> > pull request, but it's in my tree now.
+> >
+> > I *do* have one reaction to all of this: now that you have made
+> > "i_ctime" be something that cannot be accessed directly (and renamed
+> > it to "__i_ctime"), would you mind horribly going all the way, and do
+> > the same for i_atime and i_mtime too?
+> >
+> > The reason I ask is that I *really* despise "struct timespec64" as a ty=
+pe.
+> >
+> > I despise it inherently, but I despise it even more when you really
+> > use it as another type entirely, and are hiding bits in there.
+> >
+> > I despise it because "tv_sec" obviously needs to be 64-bit, but then
+> > "tv_nsec" is this horrible abomination. It's defined as "long", which
+> > is all kinds of crazy. It's bogus and historical.
+> >
+> > And it's wasteful.
+> >
+> > Now, in the case of i_ctime, you took advantage of that waste by using
+> > one (of the potentially 2..34!) unused bits for that
+> > "fine-granularity" flag.
+> >
+> > But even when you do that, there's up to 33 other bits just lying
+> > around, wasting space in a very central data structure.
+> >
+> > So it would actually be much better to explode the 'struct timespec64'
+> > into explicit 64-bit seconds field, and an explicit 32-bit field with
+> > two bits reserved. And not even next to each other, because they don't
+> > pack well in general.
+> >
+> > So instead of
+> >
+> >         struct timespec64       i_atime;
+> >         struct timespec64       i_mtime;
+> >         struct timespec64       __i_ctime;
+> >
+> > where that last one needs accessors to access, just make them *all*
+> > have helper accessors, and make it be
+> >
+> >         u64  i_atime_sec;
+> >         u64  i_mtime_sec;
+> >         u64  i_ctime_sec;
+> >         u32  i_atime_nsec;
+> >         u32  i_mtime_nsec;
+> >         u32  i_ctime_nsec;
+> >
+> > and now that 'struct inode' should shrink by 12 bytes.
+> >
+>
+> I like it.
+>
+> > Then do this:
+> >
+> >   #define inode_time(x) \
+> >        (struct timespec64) { x##_sec, x##_nsec }
+> >
+> > and you can now create a timespec64 by just doing
+> >
+> >     inode_time(inode->i_atime)
+> >
+> > or something like that (to help create those accessor functions).
+> >
+> > Now, I agree that 12 bytes in the disaster that is 'struct inode' is
+> > likely a drop in the ocean. We have tons of big things in there (ie
+> > several list_heads, a whole 'struct address_space' etc etc), so it's
+> > only twelve bytes out of hundreds.
+> >
+> > But dammit, that 'timespec64' really is ugly, and now that you're
+> > hiding bits in it and it's no longer *really* a 'timespec64', I feel
+> > like it would be better to do it right, and not mis-use a type that
+> > has other semantics, and has other problems.
+> >
+>
+>
+> We have many, many inodes though, and 12 bytes per adds up!
+>
+> I'm on board with the idea, but...that's likely to be as big a patch
+> series as the ctime overhaul was. In fact, it'll touch a lot of the same
+> code. I can take a stab at that in the near future though.
+>
+> Since we're on the subject...another thing that bothers me with all of
+> the timestamp handling is that we don't currently try to mitigate "torn
+> reads" across the two different words. It seems like you could fetch a
+> tv_sec value and then get a tv_nsec value that represents an entirely
+> different timestamp if there are stores between them.
+>
+> Should we be concerned about this? I suppose we could do something with
+> a seqlock, though I'd really want to avoid locking on the write side.
 
-Datasheet: https://docs.broadcom.com/doc/AC101L-DS05-405-RDS.pdf
+As luck would have it, if my calculations are correct, on x86-64 and with
+CONFIG_FS_POSIX_ACL=3Dy, CONFIG_SECURITY=3Dy (as they are on
+distro kernels), __i_ctime is exactly on split cache lines and maybe even
+worse (?), __i_ctime.tv_nsec and the QUERIED bit are on the same
+cache line with i_lock :-/
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/net/phy/Kconfig |  4 ++--
- drivers/net/phy/amd.c   | 33 +++++++++++++++++++++++----------
- 2 files changed, 25 insertions(+), 12 deletions(-)
+If we reorder the inode timestamps with i_size, we improve the situation
+for this specific and very common configuration. Maybe.
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 107880d13d21..421d2b62918f 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -69,9 +69,9 @@ config SFP
- comment "MII PHY device drivers"
- 
- config AMD_PHY
--	tristate "AMD PHYs"
-+	tristate "AMD and Altima PHYs"
- 	help
--	  Currently supports the am79c874
-+	  Currently supports the AMD am79c874 and Altima AC101L.
- 
- config MESON_GXL_PHY
- 	tristate "Amlogic Meson GXL Internal PHY"
-diff --git a/drivers/net/phy/amd.c b/drivers/net/phy/amd.c
-index 001bb6d8bfce..930b15fa6ce9 100644
---- a/drivers/net/phy/amd.c
-+++ b/drivers/net/phy/amd.c
-@@ -13,6 +13,7 @@
- #include <linux/mii.h>
- #include <linux/phy.h>
- 
-+#define PHY_ID_AC101L		0x00225520
- #define PHY_ID_AM79C874		0x0022561b
- 
- #define MII_AM79C_IR		17	/* Interrupt Status/Control Register */
-@@ -87,19 +88,31 @@ static irqreturn_t am79c_handle_interrupt(struct phy_device *phydev)
- 	return IRQ_HANDLED;
- }
- 
--static struct phy_driver am79c_driver[] = { {
--	.phy_id		= PHY_ID_AM79C874,
--	.name		= "AM79C874",
--	.phy_id_mask	= 0xfffffff0,
--	/* PHY_BASIC_FEATURES */
--	.config_init	= am79c_config_init,
--	.config_intr	= am79c_config_intr,
--	.handle_interrupt = am79c_handle_interrupt,
--} };
-+static struct phy_driver am79c_drivers[] = {
-+	{
-+		.phy_id		= PHY_ID_AM79C874,
-+		.name		= "AM79C874",
-+		.phy_id_mask	= 0xfffffff0,
-+		/* PHY_BASIC_FEATURES */
-+		.config_init	= am79c_config_init,
-+		.config_intr	= am79c_config_intr,
-+		.handle_interrupt = am79c_handle_interrupt,
-+	},
-+	{
-+		.phy_id		= PHY_ID_AC101L,
-+		.name		= "AC101L",
-+		.phy_id_mask	= 0xfffffff0,
-+		/* PHY_BASIC_FEATURES */
-+		.config_init	= am79c_config_init,
-+		.config_intr	= am79c_config_intr,
-+		.handle_interrupt = am79c_handle_interrupt,
-+	},
-+};
- 
--module_phy_driver(am79c_driver);
-+module_phy_driver(am79c_drivers);
- 
- static struct mdio_device_id __maybe_unused amd_tbl[] = {
-+	{ PHY_ID_AC101L, 0xfffffff0 },
- 	{ PHY_ID_AM79C874, 0xfffffff0 },
- 	{ }
- };
-
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230924-ac101l-phy-704e9a0152e5
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
-
+Thanks,
+Amir.
