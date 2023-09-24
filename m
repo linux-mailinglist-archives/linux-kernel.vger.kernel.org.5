@@ -2,69 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51D57AC7B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5638C7AC7B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 13:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjIXLbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 07:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
+        id S229618AbjIXLdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 07:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjIXLbd (ORCPT
+        with ESMTP id S229449AbjIXLdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 07:31:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEA6FF;
-        Sun, 24 Sep 2023 04:31:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F13C433C7;
-        Sun, 24 Sep 2023 11:31:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695555086;
-        bh=BU7gXHG2Ddzg0jBacxkT5peevj5SLAgGvy3mqhhxUCI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KP8dQxeBMcRUZGCkoKma/ZQeBFfQmTC48UOM03zTEy6zVq6Z5V4IF0Ju87hyTi3T3
-         PY5lWMpzfByjfQKkIWRvzD05eZPQdHszniZa7l63YF+q+fuX6DsBKHuTa78aNYdTm0
-         NL75psSv2cCEInBHKc+9SWkGy1jM6lT4Pgm3Ke3HyqVQgpQsvCyyoIK8FqplhkkveP
-         MOIVDynnuMgMUmYvRUTtFqxJjcLopNCIja+O0SsahyOgOAacL2P7ARMVb94dIv/k9k
-         Z9kryMZNIHIOKqUNfgghNSRo0b8d/Hj4BAGRZW36POUrAS5xjaTE05ixocldAwrYGk
-         JfJx923IO0E2Q==
-Date:   Sun, 24 Sep 2023 13:31:20 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-Message-ID: <20230924-mitfeiern-vorladung-13092c2af585@brauner>
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+        Sun, 24 Sep 2023 07:33:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97870DA;
+        Sun, 24 Sep 2023 04:33:29 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 11:33:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695555207;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sQ5Vz++03aAd/jaHF9EEyceiSFGpFYiJ8gae6ba/jkk=;
+        b=xOKb5Mq3gRkg3ndXQ6fZWQAu45wTHvR2LbJIssb2RJcFLDhlq7k1OkDDabvEQxQtNH0DNv
+        N1wtuU4ZJPiqocHQ7kds4OZyo7FBgor4QF9R1oMrSnQ5l8ULaO/bAfrU3fr1nQkl9QXjvk
+        IWrGGMKmnM9zrMC1NsTJpILoJ559lLmeqfSLovhEGu4SaGbtMrfqp317MG1aT3sfLF5SbI
+        MFBMd2yZ/kRK8AK+lIG8bZxqOD62sA4PTfP4lJaWAvF78/915c/QCavK+/aTmdb1hSfqGp
+        PfGewSoKpSuKyvYN3LCuOPlkeiO9PvTLgL1lsDZJLOrWqbmvx5/sZhRzjQaLiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695555207;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sQ5Vz++03aAd/jaHF9EEyceiSFGpFYiJ8gae6ba/jkk=;
+        b=y3CLop16d3hRurJ7gbKT94OsI/gA7mpgdeusZPL56h5jM89wDX7CIOTrR0/+JJQRZ1SHPA
+        ML1pr0RUKbFEt+DA==
+From:   "tip-bot2 for Hugh Dickins" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86_64: Show CR4.PSE on auxiliaries like on BSP
+Cc:     Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <103ad03a-8c93-c3e2-4226-f79af4d9a074@google.com>
+References: <103ad03a-8c93-c3e2-4226-f79af4d9a074@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169555520691.27769.2960713930630159681.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> My initial goal was to implement multigrain timestamps on most major
-> filesystems, so we could present them to userland, and use them for
-> NFSv3, etc.
+The following commit has been merged into the x86/mm branch of tip:
 
-If there's no clear users and workloads depending on this other than for
-the sake of NFS then we shouldn't expose this to userspace. We've tried
-this and I'm not convinced we're getting anything other than regressions
-out of it. Keep it internal and confined to the filesystem that actually
-needs this.
+Commit-ID:     f4c5ca9850124fb5715eff06cffb1beed837500c
+Gitweb:        https://git.kernel.org/tip/f4c5ca9850124fb5715eff06cffb1beed837500c
+Author:        Hugh Dickins <hughd@google.com>
+AuthorDate:    Mon, 14 Aug 2023 19:53:18 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sun, 24 Sep 2023 13:23:54 +02:00
+
+x86_64: Show CR4.PSE on auxiliaries like on BSP
+
+Set CR4.PSE in secondary_startup_64: the Intel SDM is clear that it does
+not matter whether it's 0 or 1 when 4-level-pts are enabled, but it's
+distracting to find CR4 different on BSP and auxiliaries - on x86_64,
+BSP alone got to add the PSE bit, in probe_page_size_mask().
+
+Peter Zijlstra adds:
+
+   "I think the point is that PSE bit is completely without
+    meaning in long mode.
+
+    But yes, having the same CR4 bits set across BSP and APs is
+    definitely sane."
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/103ad03a-8c93-c3e2-4226-f79af4d9a074@google.com
+---
+ arch/x86/kernel/head_64.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index ea69959..3ddce02 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -180,8 +180,8 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	movl	$0, %ecx
+ #endif
+ 
+-	/* Enable PAE mode, PGE and LA57 */
+-	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
++	/* Enable PAE mode, PSE, PGE and LA57 */
++	orl	$(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
+ #ifdef CONFIG_X86_5LEVEL
+ 	testl	$1, __pgtable_l5_enabled(%rip)
+ 	jz	1f
