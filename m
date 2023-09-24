@@ -2,96 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99FB7ACC73
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271AB7ACC77
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbjIXWSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 18:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        id S230432AbjIXWS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 18:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjIXWSO (ORCPT
+        with ESMTP id S229670AbjIXWSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 18:18:14 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08CAEE
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:07 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59c00b5c8b2so62702367b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:07 -0700 (PDT)
+        Sun, 24 Sep 2023 18:18:25 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE035100
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:18 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so3671501b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695593887; x=1696198687; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=148f3od4UEgt0C3+sCv2idXUqd/hwbuqnZG5oUZXv6Y=;
-        b=aBhoVb09JCipnenktEbqDz9vuwlwrH79TNHtYoPUk0tyLwiR81+AEr920sN0jPOIvC
-         crRrZj5ZDuVeGtFVxRX18Gba/0dZCvgzCll5VvsqF4v+MrwmvZHkQaA3SRA4dXY8Wc62
-         h4IZ/M06v9GvXd+5OOMDItd5r3RKMMK5hi461diJ0Vra3913vPbmDfSBAoffxzao40tf
-         dD/7rVt0nUti6ntk9boxC1rtvwN1GhvXn66pWMsDWzv5wWWji8XHAW4XnexPRdbiihOy
-         vSZwa5/Bvjmr4C8rPUlbGEJ4XirWCZrs/0toaJy07PqVYyHYw6u2+/RJ/s072NfdBxc8
-         hSsg==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1695593898; x=1696198698; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RC3fTzW3rZT/6PIBgSkSMgoIPviq+yQKUFPzOmdRowk=;
+        b=MGChy+GkV8go65C5DY1Z8najQNDteSWc/EHRz63Ai5NqWRz/F+fhrKYhDJLqhahwm0
+         +zcfhsx/HkvaWpCEhIDmjS4RnCs9KR6ylXU0pz35iPq/HbvYSOg8RLE6MD6nVf4rjqp0
+         DluDa0OKhTav1/1FkNvNskERy9iyffQqDFJ2KCQsK45lwobkMP4g6zbz6dbQHRf+VLLz
+         3glziFf3BQ+bqwyIQ3lRRcNLpzg9tRz1g7N8iODLz9gFgdXdGTUc703lO8RuPbNU4hZp
+         p3srIvl9IxCUsW1H45lIBvtYj1YOPoQh9z0wgoJXDe6DmLghs+vdquQoNS5nIR+jkSk2
+         m+1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695593887; x=1696198687;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=148f3od4UEgt0C3+sCv2idXUqd/hwbuqnZG5oUZXv6Y=;
-        b=NumzGtireM5DSvbP73IvsXZrz/1ZCYlKA08TKsp6opshUda5ATRBPewQo4Fz7V4r0B
-         zDVyAhsdfP0kaRuU6GkjE6KPurd/wnrfQ8Sj25p6tgiHLD2BQue/sX1BRgXqA60CrWDo
-         XkjXc5YhRGkhNeYSl1qa1inl53vre6UQGcTJP4oKTRzN68we2dqsIWZfQ8yybq6z3gJI
-         G+S0iETdpC1pNNEoZ1560eddIvzINLAhAySfGfQqePQVGdwjkQUvKGA0wZnZSpgShhIZ
-         9Hs5pcanBJRoQD+z1yUMGDl0JcSSrJ3jscjVRwxTbCVlSWbVAaHcPW9dGEaM8gvesY5T
-         l6Bw==
-X-Gm-Message-State: AOJu0Yx7VicOyq6h+6xd0HBdGF2+m6JlfGmrSzoo5U1P3oeoL5MnEi+/
-        s3TCWTCK55MbJghdebh79v03mMVh4yhd5ZK7c0fz9A==
-X-Google-Smtp-Source: AGHT+IFcYRHDcxG8KWeFXXolriZPyC3AiPbFE3WBCzvXsIHeB+V+a6FXyJQypZvS1ds6r7pfEYfPu0vx7NFcpdfa5mE=
-X-Received: by 2002:a81:6e0a:0:b0:589:f995:eb9f with SMTP id
- j10-20020a816e0a000000b00589f995eb9fmr4715168ywc.45.1695593886747; Sun, 24
- Sep 2023 15:18:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695593898; x=1696198698;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RC3fTzW3rZT/6PIBgSkSMgoIPviq+yQKUFPzOmdRowk=;
+        b=NmXSV3VaNVVwgSc0wxOYGclwfKPakzyxqB52wr9KxC3taUuVclamM3L++hNIChEY9d
+         RfWOqUChBfQzQBTwN1YB1CY6ZrNMkZGGtWCm3/WATF5xHY8w3dSYh8Gxe6AXVme9QkdG
+         RuMpIZH+byDcqP3L5ooyX2364lXXT5pohkf7ydxQXBtbtAUGYYQXlFSpsdUfcrJ/z61n
+         G69Oqa+fgtymeuAa3ydTUqtK9Iisv0bFUKdoN45T0PBzkZ7KhmrcyoHOitjPPNlgjF+X
+         aP1/B1OABVP1K/ocfdQ9RYFRPPBOBer+1ODljEOtYU6SvO69LbDrELh4m1Gyl8lN/MXf
+         aMJg==
+X-Gm-Message-State: AOJu0YzxtyECZ/91/S9AsvWjdFoTG0reRHvgpfxj+cEFivv95LG6zQQd
+        jyvKkPTv/AbNui2HAqTlVwBq0A==
+X-Google-Smtp-Source: AGHT+IFYb8qYgLqg3ME5eEmOSfvW95rgVG/vOb06h6o/SDjjxpRFUWhTPApjrGqayxXZ9w5grcuYTA==
+X-Received: by 2002:a05:6a20:7346:b0:157:978c:5b74 with SMTP id v6-20020a056a20734600b00157978c5b74mr3641721pzc.0.1695593898124;
+        Sun, 24 Sep 2023 15:18:18 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id i9-20020a170902c94900b001b9c960ffeasm7296094pla.47.2023.09.24.15.18.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 15:18:17 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qkXQc-0058uB-0f;
+        Mon, 25 Sep 2023 08:18:14 +1000
+Date:   Mon, 25 Sep 2023 08:18:14 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+Message-ID: <ZRC1pjwKRzLiD6I3@dread.disaster.area>
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+ <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
+ <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
+ <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 25 Sep 2023 01:17:55 +0300
-Message-ID: <CAA8EJpoQdaKnXRaEvFpyqUD1vPvy=aQesxWZ3Usj0JcEvZpDkg@mail.gmail.com>
-Subject: Re: [RESEND PATCH 1/3] ARM: dts: qcom: sdx65: correct PCIe EP phy-names
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sept 2023 at 21:31, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Qualcomm PCIe endpoint bindings expect phy-names to be "pciephy":
->
->   arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dtb: pcie-ep@1c00000: phy-names:0: 'pciephy' was expected
->
-> Fixes: 9c0bb38414a4 ("ARM: dts: qcom: sdx65: Add support for PCIe EP")
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Sep 23, 2023 at 05:52:36PM +0300, Amir Goldstein wrote:
+> On Sat, Sep 23, 2023 at 1:46 PM Jeff Layton <jlayton@kernel.org> wrote:
+> >
+> > On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
+> > > On Fri, Sep 22, 2023 at 8:15 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > >
+> > > > My initial goal was to implement multigrain timestamps on most major
+> > > > filesystems, so we could present them to userland, and use them for
+> > > > NFSv3, etc.
+> > > >
+> > > > With the current implementation however, we can't guarantee that a file
+> > > > with a coarse grained timestamp modified after one with a fine grained
+> > > > timestamp will always appear to have a later value. This could confuse
+> > > > some programs like make, rsync, find, etc. that depend on strict
+> > > > ordering requirements for timestamps.
+> > > >
+> > > > The goal of this version is more modest: fix XFS' change attribute.
+> > > > XFS's change attribute is bumped on atime updates in addition to other
+> > > > deliberate changes. This makes it unsuitable for export via nfsd.
+> > > >
+> > > > Jan Kara suggested keeping this functionality internal-only for now and
+> > > > plumbing the fine grained timestamps through getattr [1]. This set takes
+> > > > a slightly different approach and has XFS use the fine-grained attr to
+> > > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+> > > >
+> > > > While we keep fine-grained timestamps in struct inode, when presenting
+> > > > the timestamps via getattr, we truncate them at a granularity of number
+> > > > of ns per jiffy,
+> > >
+> > > That's not good, because user explicitly set granular mtime would be
+> > > truncated too and booting with different kernels (HZ) would change
+> > > the observed timestamps of files.
+> > >
+> >
+> > Thinking about this some more, I think the first problem is easily
+> > addressable:
+> >
+> > The ctime isn't explicitly settable and with this set, we're already not
+> > truncating the atime. We haven't used any of the extra bits in the mtime
+> > yet, so we could just carve out a flag in there that says "this mtime
+> > was explicitly set and shouldn't be truncated before presentation".
+> >
+> 
+> I thought about this option too.
+> But note that the "mtime was explicitly set" flag needs
+> to be persisted to disk so you cannot store it in the high nsec bits.
+> At least XFS won't store those bits if you use them - they have to
+> be translated to an XFS inode flag and I don't know if changing
+> XFS on-disk format was on your wish list.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Remember: this multi-grain timestamp thing was an idea to solve the
+NFS change attribute problem without requiring *any* filesystem with
+sub-jiffie timestamp capability to change their on-disk format to
+implement a persistent change attribute that matches the new
+requires of the kernel nfsd.
 
+If we now need to change the on-disk format to support
+some whacky new timestamp semantic to do this, then people have
+completely lost sight of what problem the multi-grain timestamp idea
+was supposed to address.
 
-
+-Dave.
 -- 
-With best wishes
-Dmitry
+Dave Chinner
+david@fromorbit.com
