@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B377ACB9D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7A67ACBA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjIXT0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 15:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S229816AbjIXTa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjIXT03 (ORCPT
+        with ESMTP id S229552AbjIXTa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 15:26:29 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FC6103
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:26:21 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c108e106f0so83255011fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:26:21 -0700 (PDT)
+        Sun, 24 Sep 2023 15:30:26 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB55FB
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:30:19 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so41021755e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695583580; x=1696188380; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8y8h3EEz9VirQFhjmojPuvqBkQuqu/oUUWDuJnG4W+c=;
-        b=M490nm+YnzsS6uGhB710H9q5n9pSWJMhz7Du4/0xk4nZK0Ys+uQn4Rm8otYw8m9+1k
-         u9xbfRQn1GzqHGa1iKRf6xcTxJzMbHVvJac+dMci9JaGylp++6jSvxebueL4FBTQxqvm
-         dHpQ5ybxVUrq87WFvtFvt46SdGr1qYOuTqO2HtH7UH9Z7nB4iuBdMXj5O42c92goH7Nf
-         +ak19+ncEObB/QnBYQHPJ6o8ucjL6Ync/7Vo1ZfqN9En8mKIEvahRPbkY0c5n4ICKTJM
-         E0dKoHjHlFvHD7KTrFs/jAgx3/qAJW3yLpejl3eLAnGUvWqjt1/4wtwROgkNhPVRisUy
-         YspA==
+        d=gmail.com; s=20230601; t=1695583817; x=1696188617; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rgDFx3OpC7QRJPhJl74znPd+GcKZN1H5/4UCuW8FWRk=;
+        b=nkcZFVXeCZvqnp8pjGPtAbTiCWc4qjxCm22zRzk9Yr9KWh3e7A3vs1gdiwhrySe3AM
+         /vmaB7HWPO5npkaR8BhMdPJ5cXY1DxfjslJhQwrBTCqaTRvKUX57ezRwaeCxEMBxBoH2
+         d0Osd8Gpz+yfbIdSKfXfkQF36TW7ko3sj0p3XZ0wEIwm91VcrMg6E4kKOTr/7jNaWcvl
+         tcVxdVpKLHMLD32+gchMg5WSAYzcfiI3gAFrkp8q1TsDE9JxS1uONZfmQ1lSYg6vDCyZ
+         ImGu2iX3FC4thSBX3q9hni8pXOqnvC1WsqX0dIPaAEpOkzIAdP4pgvVOzCsPZNm0xMFo
+         rV6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695583580; x=1696188380;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8y8h3EEz9VirQFhjmojPuvqBkQuqu/oUUWDuJnG4W+c=;
-        b=t+hP4j/ZlJBzOa1G3qZH/WS0/foeZ4OUZvm6f+nlfBe+EzBt/3+g/d5CPOZzwqhoyQ
-         yrWb/5esaqa8yd5YJ4lBzyYl40+bGvWT0CN9+EclO9qJHPZKk43OMYqfX8PsGN2lD+JZ
-         nALUaNVVFLEVCjUDvxeB6zLETOljcyQYTi+4GRBco6D46jmZEEX/IJXNQ1vmXd2dgUrJ
-         6rzSeiGGmAiAplmxOJyu5pWuhcKPK1WOsKw8yT8QHxWD+UXsrhahmm7pfN+dps1JMc9b
-         qvaDsRYZyY8IlxKGBGzLQo2FW/5+P5EU/j3PsNWuGeLH4HVg0X2TzyDHHSADrgq8ffZJ
-         AdmA==
-X-Gm-Message-State: AOJu0Ywfm2lQhyrqwjGwXFnusC3KFDL9mkYEyu45O/o9Myaauhy9j/ze
-        D5R4zMRFJz6dduOqnTR0nmQ=
-X-Google-Smtp-Source: AGHT+IGnY2zymlYXEbyV+5gsOUvzTU+WsC5ThrC5P4hO3P9yxgQq4BLXWnYLwnhf4fRNeIa24G6f0Q==
-X-Received: by 2002:a2e:2417:0:b0:2c0:2ab7:9ab5 with SMTP id k23-20020a2e2417000000b002c02ab79ab5mr4174912ljk.12.1695583579523;
-        Sun, 24 Sep 2023 12:26:19 -0700 (PDT)
-Received: from localhost.localdomain (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id z21-20020a1709063a1500b0099d0c0bb92bsm5317632eje.80.2023.09.24.12.26.18
+        d=1e100.net; s=20230601; t=1695583817; x=1696188617;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rgDFx3OpC7QRJPhJl74znPd+GcKZN1H5/4UCuW8FWRk=;
+        b=KhwbdSBovL1U+ddvMXmieLb3t4t3Tt22EGMeox1q57NUczMK2RAoLDm3h5YeWT+UW1
+         rE534XcQs3LqV2JArCIDPlwQ1VVATpv8K02ck06FpN6Z2w+YzzLNdUbpZa12ZbkrydyT
+         IG14chyPX4B/aIsyVUCeRDeNhIae9SeIzyonUzyrLRr5erOvUZYH1t7S4ikei4h04XFJ
+         1JjBjlwUp1sgGlPeah4r0NSgfZ0Ky8rH80q/BIvKxhpT9Qa+bMPdx8+jZa8qsI3pv0Go
+         1qS9LfaSGXTMsCzi80VBwzVHNWZq3lu/iIwFO0C4fnwcHHDyME8Y+efB78D5ZgRNwuEc
+         oVww==
+X-Gm-Message-State: AOJu0Yyn4b3V4v79dNck+xlk7H0IrKBFpHWgojtL9h4Stg8mBJVZwgsN
+        ruVUjQ1SwrmPT7Bgf6rh92I=
+X-Google-Smtp-Source: AGHT+IENeyDzLBf/mxX+t3aCyhbLfEtHBeZYY7KUbadC62npJv3Xi9K3RDZOHY94J2jksRDajCe6+g==
+X-Received: by 2002:a05:600c:280b:b0:3fb:e2af:49f6 with SMTP id m11-20020a05600c280b00b003fbe2af49f6mr3935018wmb.39.1695583817290;
+        Sun, 24 Sep 2023 12:30:17 -0700 (PDT)
+Received: from nz.home ([2a00:23c8:a613:101:f234:417a:2d3e:68c9])
+        by smtp.gmail.com with ESMTPSA id h4-20020a056000000400b0031aef72a021sm10028430wrx.86.2023.09.24.12.30.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 12:26:19 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     airlied@gmail.com, daniel@ffwll.ch, samuel@sholland.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH 7/7] drm/sun4i: dw-hdmi: check for phy device first
-Date:   Sun, 24 Sep 2023 21:26:04 +0200
-Message-ID: <20230924192604.3262187-8-jernej.skrabec@gmail.com>
+        Sun, 24 Sep 2023 12:30:16 -0700 (PDT)
+Received: by nz.home (Postfix, from userid 1000)
+        id 2F43010F655DF4; Sun, 24 Sep 2023 20:30:16 +0100 (BST)
+From:   Sergei Trofimovich <slyich@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Sergei Trofimovich <slyich@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org
+Subject: [PATCH] uapi: increase MAX_ARG_STRLEN from 128K to 6M
+Date:   Sun, 24 Sep 2023 20:30:05 +0100
+Message-ID: <20230924193005.1721655-1-slyich@gmail.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230924192604.3262187-1-jernej.skrabec@gmail.com>
-References: <20230924192604.3262187-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,95 +72,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's check for phy device first. Since it uses much of the same clocks
-and resets it also lowers amount of possible deferred probes.
+Before the change linux allowed individual execve() arguments or
+environment variable entries to be only as big as 32 pages.
 
-While at it, don't report error for deferred phy probe.
+Histroically before b6a2fea3931 "mm: variable length argument support"
+MAX_ARG_STRLEN used to be full allowed size `argv[] + envp[]`.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+When full limit was abandoned individual parameters were still limited
+by a safe limit of 128K.
+
+Nowadays' linux allows `argv[]+envp[]` to be as laerge as 6MB (3/4
+`_STK_LIM`).
+
+Some build systems like `autoconf` use a single environment variable
+to pass `CFLAGS` environment variable around. It's not a bug problem
+if the argument list is short.
+
+But some packaging systems prefer installing each package into
+individual directory. As a result that requires quite long string of
+parameters like:
+
+    CFLAGS="-I/path/to/pkg1 -I/path/to/pkg2 ..."
+
+This can easily overflow 128K and does happen for `NixOS` and `nixpkgs`
+repositories on a regular basis.
+
+Similar pattern is exhibited by `gcc` which converts it's input command
+line into a single environment variable (https://gcc.gnu.org/PR111527):
+
+  $ big_100k_var=$(printf "%0*d" 100000 0)
+
+  # this works: 200KB of options for `printf` external command
+  $ $(which printf) "%s %s" $big_100k_var $big_100k_var >/dev/null; echo $?
+  0
+
+  # this fails: 200KB of options for `gcc`, fails in `cc1`
+  $ touch a.c; gcc -c a.c -DA=$big_100k_var -DB=$big_100k_var
+  gcc: fatal error: cannot execute 'cc1': execv: Argument list too long
+  compilation terminated.
+
+I would say this 128KB limitation is arbitrary.
+The change raises the limit of `MAX_ARG_STRLEN` from 32 pakes (128K
+n `x86_64`) to the maximum limit of stack allowed by Linux today.
+
+It has a minor chance of overflowing userspace programs that use
+`MAX_ARG_STRLEN` to allocate the strings on stack. It should not be a
+big problem as such programs are already are at risk of overflowing
+stack.
+
+Tested as:
+    $ V=$(printf "%*d" 1000000 0) ls
+
+Before the change it failed with `ls: Argument list too long`. After the
+change `ls` executes as expected.
+
+WDYT of abandoning the limit and allow user to fill entire environment
+with a single command or a single variable?
+
+CC: Eric Biederman <ebiederm@xmission.com>
+CC: Kees Cook <keescook@chromium.org>
+CC: linux-mm@kvack.org
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Sergei Trofimovich <slyich@gmail.com>
 ---
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c | 35 +++++++++++++--------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ include/uapi/linux/binfmts.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-index 41f815a1faec..c1becd964326 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -173,11 +173,24 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 	struct device_node *phy_node;
- 	struct drm_encoder *encoder;
- 	struct sun8i_dw_hdmi *hdmi;
-+	struct sun8i_hdmi_phy *phy;
- 	int ret;
+diff --git a/include/uapi/linux/binfmts.h b/include/uapi/linux/binfmts.h
+index c6f9450efc12..4e828515a22e 100644
+--- a/include/uapi/linux/binfmts.h
++++ b/include/uapi/linux/binfmts.h
+@@ -8,11 +8,11 @@ struct pt_regs;
  
- 	if (!pdev->dev.of_node)
- 		return -ENODEV;
+ /*
+  * These are the maximum length and maximum number of strings passed to the
+- * execve() system call.  MAX_ARG_STRLEN is essentially random but serves to
+- * prevent the kernel from being unduly impacted by misaddressed pointers.
++ * execve() system call.  MAX_ARG_STRLEN is as large as Linux allows new
++ * stack to grow.  Currently it's `_STK_LIM / 4 * 3 = 6MB` (see fs/exec.c).
+  * MAX_ARG_STRINGS is chosen to fit in a signed 32-bit integer.
+  */
+-#define MAX_ARG_STRLEN (PAGE_SIZE * 32)
++#define MAX_ARG_STRLEN (6 * 1024 * 1024)
+ #define MAX_ARG_STRINGS 0x7FFFFFFF
  
-+	phy_node = of_parse_phandle(dev->of_node, "phys", 0);
-+	if (!phy_node) {
-+		dev_err(dev, "Can't find PHY phandle\n");
-+		return -EINVAL;
-+	}
-+
-+	phy = sun8i_hdmi_phy_get(phy_node);
-+	of_node_put(phy_node);
-+	if (IS_ERR(phy))
-+		return dev_err_probe(dev, PTR_ERR(phy),
-+				     "Couldn't get the HDMI PHY\n");
-+
- 	hdmi = drmm_kzalloc(drm, sizeof(*hdmi), GFP_KERNEL);
- 	if (!hdmi)
- 		return -ENOMEM;
-@@ -185,6 +198,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 	plat_data = &hdmi->plat_data;
- 	hdmi->dev = &pdev->dev;
- 	encoder = &hdmi->encoder;
-+	hdmi->phy = phy;
- 
- 	hdmi->quirks = of_device_get_match_data(dev);
- 
-@@ -232,22 +246,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 		goto err_assert_ctrl_reset;
- 	}
- 
--	phy_node = of_parse_phandle(dev->of_node, "phys", 0);
--	if (!phy_node) {
--		dev_err(dev, "Can't found PHY phandle\n");
--		ret = -EINVAL;
--		goto err_disable_clk_tmds;
--	}
--
--	hdmi->phy = sun8i_hdmi_phy_get(phy_node);
--	of_node_put(phy_node);
--	if (IS_ERR(hdmi->phy)) {
--		dev_err(dev, "Couldn't get the HDMI PHY\n");
--		ret = PTR_ERR(hdmi->phy);
--		goto err_disable_clk_tmds;
--	}
--
--	ret = sun8i_hdmi_phy_init(hdmi->phy);
-+	ret = sun8i_hdmi_phy_init(phy);
- 	if (ret)
- 		goto err_disable_clk_tmds;
- 
-@@ -259,7 +258,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 	plat_data->mode_valid = hdmi->quirks->mode_valid;
- 	plat_data->use_drm_infoframe = hdmi->quirks->use_drm_infoframe;
- 	plat_data->output_port = 1;
--	sun8i_hdmi_phy_set_ops(hdmi->phy, plat_data);
-+	sun8i_hdmi_phy_set_ops(phy, plat_data);
- 
- 	platform_set_drvdata(pdev, hdmi);
- 
-@@ -310,7 +309,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 	drm_bridge_remove(&hdmi->enc_bridge);
- 	dw_hdmi_remove(hdmi->hdmi);
- err_deinit_phy:
--	sun8i_hdmi_phy_deinit(hdmi->phy);
-+	sun8i_hdmi_phy_deinit(phy);
- err_disable_clk_tmds:
- 	clk_disable_unprepare(hdmi->clk_tmds);
- err_assert_ctrl_reset:
+ /* sizeof(linux_binprm->buf) */
 -- 
 2.42.0
 
