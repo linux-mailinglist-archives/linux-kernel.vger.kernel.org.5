@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D19D37ACB8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887257ACB8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbjIXTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 15:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S230406AbjIXTCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjIXTCZ (ORCPT
+        with ESMTP id S229883AbjIXTC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 15:02:25 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAE5FF
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-405361bb93bso47807555e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
+        Sun, 24 Sep 2023 15:02:27 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17998FE
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:21 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405621baba7so21041435e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695582138; x=1696186938; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695582139; x=1696186939; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yOPMhTAVaQhtNbRhJ+PsIxV5cVPsXuHbP91ZaQJ9gxo=;
-        b=OBpY8IajXqjvblAPJgepPkmTMtVOU/C213xwLpDbTcxexyZ8BRYUAYZ8Cn6DEFLp/g
-         niUA84jbFejBSB6kTg8re+ePcXC4IVbmU/A8cbiwrLVXYrHVK7qyiBcciNM21NIhDCh7
-         A8usDycbJCyOGY0mH2SdMTDUNrOmLTROu2qxmW64jxgMmbkRjD+HrPiLOj+QlK/TyN2a
-         ZhfJVuCwASDSDWvuRjyFpNDFPt4gMH7/UXFyr4udHDAKsbElhNCmWOJslrdeMNh0wgjT
-         1ftQQKZz2K8S9J9nlshca30YZu0aaXUq754T1g4Q8IQGA8JQXRiRlnROEq9ycxptRBG4
-         blTg==
+        bh=5L27vyhB+29gla8F3SJpsrlKTGzHdOCjPLcg4h4ukig=;
+        b=sSnBQ4XO88nc402Jpx2dQOHq16N54qiG6DBwHiUqXXyUVA5X0PaY8eRMFRDB5pGFh4
+         u1qwq+xcNP8GrS/0+7cEFpTZbh6+Xy9N4cNRJo0Y7Fm2LYiEELpWLQ9WPVhLmVRT0aaW
+         uI2bsoK26SaSD7SnuMIYnkWqxmX2j9JnhPy/elS2syMppnvsFs7faxPMt2Mk7xrU6OF1
+         qR6cZiGHgBvk0jS7ZEk7g+R9gk5aXCcOLZF5HfCkDBUsbmL1zlie5MGCvYF/rrTIez1h
+         lCnWiNiv0dK/FZl4Bc0KrM91YtbXUnC8xFuIr8jeB6hjw+MuCaLkL2GTBy4mN6ay8fOB
+         ogLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695582138; x=1696186938;
+        d=1e100.net; s=20230601; t=1695582139; x=1696186939;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yOPMhTAVaQhtNbRhJ+PsIxV5cVPsXuHbP91ZaQJ9gxo=;
-        b=ViGJ2cEfE2IsJjTk9kwsGW4AGH/yXF54L2Fydaw4Or4SvwGONONBQVx0dzARMPcGVP
-         tBEOi47AMQZBfTD+dhz7vP35n6TDn/Aze/F/9/jZo+v6Ni1UFSwxZVP1y3hbyi2xMSL8
-         7Ibc8rGQuTTmKR6iwiS3y9+S558JEikxsnw4sTtOXNSyvQZ1POet37Ur8cRADcHjIZUD
-         Wv6UhE7iZ4HAr8Hwh98je4IEaKoPD3yY/cOKNqF9BwJjAb/1t/aQj1tRyRpi6tnQEQpl
-         GyDOTkevTaN30ryaGVM0o6CZ9grbLy/H4Aoa/9Yq4VPuS4LdoZ4P5VcvJRrXKym9q87j
-         4HHg==
-X-Gm-Message-State: AOJu0YxwHs2eIbKmPBzficRkZg1FV48b2YMM04GyTtPe94yQUgITcEkY
-        AoLs5az4eVlVVmI+1IiSEMD1kQ==
-X-Google-Smtp-Source: AGHT+IEmxC7DNK1cPKwojQo+bnnfYksQDd/asx+g1dwyv2MBdy9FaZoVjFzI/eTmc0DfjWHmagy58A==
-X-Received: by 2002:a05:600c:2215:b0:402:e68f:888c with SMTP id z21-20020a05600c221500b00402e68f888cmr3730981wml.7.1695582137890;
-        Sun, 24 Sep 2023 12:02:17 -0700 (PDT)
+        bh=5L27vyhB+29gla8F3SJpsrlKTGzHdOCjPLcg4h4ukig=;
+        b=IUcOAiaeXAnaixhuqPJLf6Ql+uh+XyPltrWP4/MaQfju18r8udNe+OnN4s4viyY6GW
+         H8sr4mZqrHKWR1k/uTJ8NL8pYLjcQ+unzvLm3xUAUxTIQvA9GELF5g1Vs/QYRdG6ZNKG
+         JSe+UTrc+t8/sv75Y7RUFUZbYEtsznBa3AQQtuT/tfsdYxDp4GcRWzD5BYoo0w97AXgm
+         xGkp/emWcb5S9atGVJs9HlN/xya1GvaKMcF8e3Z/pL3KyXGY8ENMlQNG2pDB9P4dyC4H
+         M3CbZ1UwTI5NKQuObMllt+6i0l0rP+w8m2uG7BtZPC+tjRgOirrbnlbK7vKl53zHF+8r
+         9Etg==
+X-Gm-Message-State: AOJu0YzXOPucp3k3Ka0sO6f3NQouHQZ0VcCS4qHXzqTYAe9Ry6OoTii3
+        Z0/jwlS5q63e5gLQGIeB7XyKnA==
+X-Google-Smtp-Source: AGHT+IErq5Wt5aJa91F9/ZnewsJx+gdkW3B8V6qLAXXHgkuVJWQLKuUo78IbX63mkvUfQKV2Y4swOg==
+X-Received: by 2002:a05:600c:2215:b0:402:e68f:888c with SMTP id z21-20020a05600c221500b00402e68f888cmr3731029wml.7.1695582139484;
+        Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.16
+        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm12980507wmh.35.2023.09.24.12.02.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 12:02:17 -0700 (PDT)
+        Sun, 24 Sep 2023 12:02:19 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
+To:     Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: marvell: minor whitespace cleanup around '='
-Date:   Sun, 24 Sep 2023 21:02:04 +0200
-Message-Id: <169558197846.54884.8305462270796090104.b4-ty@linaro.org>
+Subject: Re: [PATCH] ARM: dts: nuvoton: add missing space before {
+Date:   Sun, 24 Sep 2023 21:02:05 +0200
+Message-Id: <169558197845.54884.14770173145446066681.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230702185301.44505-1-krzysztof.kozlowski@linaro.org>
-References: <20230702185301.44505-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230705150045.293879-1-krzysztof.kozlowski@linaro.org>
+References: <20230705150045.293879-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -75,9 +81,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sun, 02 Jul 2023 20:53:01 +0200, Krzysztof Kozlowski wrote:
-> The DTS code coding style expects exactly one space before and after '='
-> sign.
+On Wed, 05 Jul 2023 17:00:45 +0200, Krzysztof Kozlowski wrote:
+> Add missing whitespace between node name/label and opening {.
 > 
 > 
 
@@ -88,8 +93,8 @@ instead, let me know.
 
 Applied, thanks!
 
-[1/1] arm64: dts: marvell: minor whitespace cleanup around '='
-      https://git.kernel.org/krzk/linux-dt/c/12ca3ca8cf06d803b3690ef523ccf5ffd0b23a71
+[1/1] ARM: dts: nuvoton: add missing space before {
+      https://git.kernel.org/krzk/linux-dt/c/73f20a373811b303fc5bd8f3d5a4c5c1582f1ba2
 
 Best regards,
 -- 
