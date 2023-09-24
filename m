@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7257AC991
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E7F7AC955
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbjIXNck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        id S230460AbjIXNaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbjIXNcF (ORCPT
+        with ESMTP id S231981AbjIXNaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:32:05 -0400
+        Sun, 24 Sep 2023 09:30:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED92B1FEB;
-        Sun, 24 Sep 2023 06:19:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DBFDC433B7;
-        Sun, 24 Sep 2023 13:19:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8483F1FEF;
+        Sun, 24 Sep 2023 06:19:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0626EC433BC;
+        Sun, 24 Sep 2023 13:19:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561560;
-        bh=5G+R8/4bS5QTwYkm4dcfzu9PDsZREyopQW5Nt0fIakw=;
+        s=k20201202; t=1695561562;
+        bh=jts/EMPvVmTcagWfllHVmeH6jDODs4hQD1GGVQgsJsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NJOkFhaIY1q+p9+yESpQaZU9fFZpYFCSdeyhUQe/GkKNt3s1KS906xs6ctqayJwB2
-         K8I2WJQyl7jwwnSyMHuk1ODx+GWSxVYgBOELL0NuxgNJ7PogFOfm9qi49DMXogG/hq
-         g/k5XKHz41D3XUzfAJ2ECz3XVcP2gDM5ynhIUC27xUZ1goNZIhOYX7xVcJ7GqX/z8E
-         KcDf+HxuI2J2QwZ3GwsKZFEzDYFBUxTou30VvBtbAgGr0z7dLgudWwOe/kbntNAjad
-         MJmehbuIfkBUADvykpEPs24o/Yd0VMK+Cck94gkr3J4oDBfko5MVBqUcwVZC0r8+GF
-         bkAKDqtdqESGA==
+        b=H3jeZCplvRcWu9NNL61WrZg8lOR2aAbL2RBngoM0rR5S+hunZzU02nUz9yVM7yJqQ
+         cDbhQ8k36tFRPKGF5uk7DvUXoQEkP6ogmL5TpCl5pu6yT5g8+JNztvJw7NKKXX1fro
+         aHhUHxq0ZAoed09ik/YN0IzG4zJfwy2DNpCSwsIhzJiXBr81PnBI/tXZ/fBmLxj7Ap
+         mX18jwXTbluyj020f/WIMonW4H/Nz9jNemg3IeSaoMCDJXymp2mykjjmv8os9W/tJW
+         RxKZh6r9hhh3ORmdgtYNW0aNHSjbKKIeAHV+BmiBH8qU87Q9UulK2HJc9NZHMXpT+N
+         zqvNe0f0L/e/Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Tze-nan Wu <Tze-nan.Wu@mediatek.com>,
-        Sasha Levin <sashal@kernel.org>, matthias.bgg@gmail.com,
-        linux-trace-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 11/18] ring-buffer: Do not attempt to read past "commit"
-Date:   Sun, 24 Sep 2023 09:18:48 -0400
-Message-Id: <20230924131857.1276330-11-sashal@kernel.org>
+Cc:     David Thompson <davthompson@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org, vadimp@nvidia.com,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 12/18] platform/mellanox: mlxbf-bootctl: add NET dependency into Kconfig
+Date:   Sun, 24 Sep 2023 09:18:49 -0400
+Message-Id: <20230924131857.1276330-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131857.1276330-1-sashal@kernel.org>
 References: <20230924131857.1276330-1-sashal@kernel.org>
@@ -58,55 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+From: David Thompson <davthompson@nvidia.com>
 
-[ Upstream commit 95a404bd60af6c4d9d8db01ad14fe8957ece31ca ]
+[ Upstream commit c2dffda1d8f7511505bbbf16ba282f2079b30089 ]
 
-When iterating over the ring buffer while the ring buffer is active, the
-writer can corrupt the reader. There's barriers to help detect this and
-handle it, but that code missed the case where the last event was at the
-very end of the page and has only 4 bytes left.
+The latest version of the mlxbf_bootctl driver utilizes
+"sysfs_format_mac", and this API is only available if
+NET is defined in the kernel configuration. This patch
+changes the mlxbf_bootctl Kconfig to depend on NET.
 
-The checks to detect the corruption by the writer to reads needs to see the
-length of the event. If the length in the first 4 bytes is zero then the
-length is stored in the second 4 bytes. But if the writer is in the process
-of updating that code, there's a small window where the length in the first
-4 bytes could be zero even though the length is only 4 bytes. That will
-cause rb_event_length() to read the next 4 bytes which could happen to be off the
-allocated page.
-
-To protect against this, fail immediately if the next event pointer is
-less than 8 bytes from the end of the commit (last byte of data), as all
-events must be a minimum of 8 bytes anyway.
-
-Link: https://lore.kernel.org/all/20230905141245.26470-1-Tze-nan.Wu@mediatek.com/
-Link: https://lore.kernel.org/linux-trace-kernel/20230907122820.0899019c@gandalf.local.home
-
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Reported-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309031058.JvwNDBKt-lkp@intel.com/
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: David Thompson <davthompson@nvidia.com>
+Link: https://lore.kernel.org/r/20230905133243.31550-1-davthompson@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ring_buffer.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/platform/mellanox/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b15d72284c7f7..69db849ae7dad 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2352,6 +2352,11 @@ rb_iter_head_event(struct ring_buffer_iter *iter)
- 	 */
- 	commit = rb_page_commit(iter_head_page);
- 	smp_rmb();
-+
-+	/* An event needs to be at least 8 bytes in size */
-+	if (iter->head > commit - 8)
-+		goto reset;
-+
- 	event = __rb_page_index(iter_head_page, iter->head);
- 	length = rb_event_length(event);
- 
+diff --git a/drivers/platform/mellanox/Kconfig b/drivers/platform/mellanox/Kconfig
+index edd17e1a1f88f..a57ae5cbc00a8 100644
+--- a/drivers/platform/mellanox/Kconfig
++++ b/drivers/platform/mellanox/Kconfig
+@@ -48,6 +48,7 @@ config MLXBF_BOOTCTL
+ 	tristate "Mellanox BlueField Firmware Boot Control driver"
+ 	depends on ARM64
+ 	depends on ACPI
++	depends on NET
+ 	help
+ 	  The Mellanox BlueField firmware implements functionality to
+ 	  request swapping the primary and alternate eMMC boot partition,
 -- 
 2.40.1
 
