@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185E37AC853
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B337AC856
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjIXNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
+        id S230113AbjIXNQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjIXNQN (ORCPT
+        with ESMTP id S229688AbjIXNQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:16:13 -0400
+        Sun, 24 Sep 2023 09:16:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77EB1A6;
-        Sun, 24 Sep 2023 06:15:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE5AC433C8;
-        Sun, 24 Sep 2023 13:15:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8AFCE5;
+        Sun, 24 Sep 2023 06:15:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C4DC433C9;
+        Sun, 24 Sep 2023 13:15:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561353;
-        bh=0lk96IEJdRepgjx+BowGMh+jQBe3fMBW1DLO0k7sSjs=;
+        s=k20201202; t=1695561358;
+        bh=uGVjcNiJ18PkD4l4ML3J+jLT0GVF2ALth9QK/l/lg9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nyGqFkQX56LC17bAo2Tuy9EKWkAGGPr8kvLybE6PWdcF+BCgYrfCPvu9wqo9y+OUp
-         +480YjD1gu2iOgB0fGh1dPspCbSdPJdCKhh8iRghee31M7FnvZJ68BBDf6ysh5j4hj
-         fjJskPdUAekUFqEeYAD44FNTexNNemvnxkmZzniEEtqqq8eyn2d0d7vx8VUekwQc3N
-         D0fldlaeSajhHVMduHME8YTybdCK9+3oo/otAEu09OLkOA++TphwdXT1+9IATmDu6q
-         jpXqiKbOdLgdYrKj/1Fl6T9us76s3EFRc3o/EcOgeLdivE5uwW4OdiY5HaZ3n1bOvP
-         PdlWMarLRxNkg==
+        b=ErDXlfUt4AZf9TPmfM/S5J9qZWoz2pwn9Iq67XHEYj9h5cAGN2PHqnDaPcA1MUQJ9
+         ilNbSbrakHmTSj4IERcnKFo0KjlqV09L6uvHbP6Ew3qlzUJt1TFdTe7SYwzfnNZ87Y
+         RIjx1QnH5fPrNAZUBnuZmVPP8t/X7TNzUAKopgMoHMghaPnliBEplUGB8vF4IutoFa
+         q8IZjn4LX5zKv/lV1Qd9iEQUdkQwZ7vRm/a4v1wf+V85Exukw7hqu3EkzqvQ8136IP
+         IsxkRPL4Nc37Cfj7c0APRQaw0Xga3eLBNaqV0QuNf+Ze5gybzMON1fWkDvSyge0pPs
+         MEpHQngUvpV9A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Kiwoong Kim <kwmad.kim@samsung.com>,
-        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         Chanwoo Lee <cw9316.lee@samsung.com>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>, jejb@linux.ibm.com,
-        stanley.chu@mediatek.com, beanhuo@micron.com, mani@kernel.org,
-        quic_asutoshd@quicinc.com, quic_nguyenb@quicinc.com,
+        bvanassche@acm.org, stanley.chu@mediatek.com,
+        quic_cang@quicinc.com, mani@kernel.org, quic_asutoshd@quicinc.com,
+        beanhuo@micron.com, quic_nguyenb@quicinc.com,
         Arthur.Simchaev@wdc.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 09/41] scsi: ufs: core: Move __ufshcd_send_uic_cmd() outside host_lock
-Date:   Sun, 24 Sep 2023 09:14:57 -0400
-Message-Id: <20230924131529.1275335-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 10/41] scsi: ufs: core: Poll HCS.UCRDY before issuing a UIC command
+Date:   Sun, 24 Sep 2023 09:14:58 -0400
+Message-Id: <20230924131529.1275335-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131529.1275335-1-sashal@kernel.org>
 References: <20230924131529.1275335-1-sashal@kernel.org>
@@ -60,62 +61,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kiwoong Kim <kwmad.kim@samsung.com>
 
-[ Upstream commit 2d3f59cf868b4a2dd678a96cd49bdd91411bd59f ]
+[ Upstream commit d32533d30e2119b0c0aa17596734f1f842f750df ]
 
-__ufshcd_send_uic_cmd() is wrapped by uic_cmd_mutex and its related
-contexts are accessed within the section wrapped by uic_cmd_mutex. Thus,
-wrapping with host_lock is redundant.
+With auto hibern8 enabled, UIC could be busy processing a hibern8 operation
+and the HCI would reports UIC not ready for a short while through
+HCS.UCRDY. The UFS driver doesn't currently handle this situation. The
+UFSHCI spec specifies UCRDY like this: whether the host controller is ready
+to process UIC COMMAND
+
+The 'ready' could be seen as many different meanings. If the meaning
+includes not processing any request from HCI, processing a hibern8
+operation can be 'not ready'. In this situation, the driver needs to wait
+until the operations is completed.
 
 Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
-Link: https://lore.kernel.org/r/782ba5f26f0a96e58d85dff50751787d2d2a6b2b.1693790060.git.kwmad.kim@samsung.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Link: https://lore.kernel.org/r/550484ffb66300bdcec63d3e304dfd55cb432f1f.1693790060.git.kwmad.kim@samsung.com
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
 Reviewed-by: Chanwoo Lee <cw9316.lee@samsung.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ufs/core/ufshcd.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/ufs/core/ufshcd.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 9615a076735bd..75c6628af2c0e 100644
+index 75c6628af2c0e..80c48eb6bf85c 100644
 --- a/drivers/ufs/core/ufshcd.c
 +++ b/drivers/ufs/core/ufshcd.c
-@@ -2416,7 +2416,6 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
- 		      bool completion)
+@@ -22,6 +22,7 @@
+ #include <linux/module.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/sched/clock.h>
++#include <linux/iopoll.h>
+ #include <scsi/scsi_cmnd.h>
+ #include <scsi/scsi_dbg.h>
+ #include <scsi/scsi_driver.h>
+@@ -2324,7 +2325,11 @@ static inline int ufshcd_hba_capabilities(struct ufs_hba *hba)
+  */
+ static inline bool ufshcd_ready_for_uic_cmd(struct ufs_hba *hba)
  {
- 	lockdep_assert_held(&hba->uic_cmd_mutex);
--	lockdep_assert_held(hba->host->host_lock);
+-	return ufshcd_readl(hba, REG_CONTROLLER_STATUS) & UIC_COMMAND_READY;
++	u32 val;
++	int ret = read_poll_timeout(ufshcd_readl, val, val & UIC_COMMAND_READY,
++				    500, UIC_CMD_TIMEOUT * 1000, false, hba,
++				    REG_CONTROLLER_STATUS);
++	return ret == 0 ? true : false;
+ }
  
- 	if (!ufshcd_ready_for_uic_cmd(hba)) {
- 		dev_err(hba->dev,
-@@ -2443,7 +2442,6 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
- int ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
- {
- 	int ret;
--	unsigned long flags;
- 
- 	if (hba->quirks & UFSHCD_QUIRK_BROKEN_UIC_CMD)
- 		return 0;
-@@ -2452,9 +2450,7 @@ int ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
- 	mutex_lock(&hba->uic_cmd_mutex);
- 	ufshcd_add_delay_before_dme_cmd(hba);
- 
--	spin_lock_irqsave(hba->host->host_lock, flags);
- 	ret = __ufshcd_send_uic_cmd(hba, uic_cmd, true);
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 	if (!ret)
- 		ret = ufshcd_wait_for_uic_cmd(hba, uic_cmd);
- 
-@@ -4166,8 +4162,8 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
- 		wmb();
- 		reenable_intr = true;
- 	}
--	ret = __ufshcd_send_uic_cmd(hba, cmd, false);
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	ret = __ufshcd_send_uic_cmd(hba, cmd, false);
- 	if (ret) {
- 		dev_err(hba->dev,
- 			"pwr ctrl cmd 0x%x with mode 0x%x uic error %d\n",
+ /**
 -- 
 2.40.1
 
