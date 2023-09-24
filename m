@@ -2,134 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B18D7ACACB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 18:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1087ACACD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 18:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjIXQee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 12:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S229923AbjIXQkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 12:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXQed (ORCPT
+        with ESMTP id S229437AbjIXQkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 12:34:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF66FC;
-        Sun, 24 Sep 2023 09:34:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD60C433C7;
-        Sun, 24 Sep 2023 16:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695573266;
-        bh=iASfj17cqi8s/uASPn0k5gn6J4ssJb4sKyxilelbtR0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GntrjhnzpN/FnXQcpk2ULg2lV8xUjFCbRT4RkNjDbDXBma/QqHaNu/7uIjqlvZoni
-         niHtymt/lLriBwv14b4R6YaE7DL5qh+JqlZphgug53y855hYobYaVqe65Vd0cjBikK
-         uym8BceK2cW6qWapmlcU49qf4fMHATyDaRnvumeUn3pfZX/Wpwltn+de64tgZOS28U
-         EQLw9GeVFkaVeECja6zUAZTJDITaPAawG4GzY9mpnpgkwT9Q4eS+1jCoUYFXW4PQ8E
-         hmI5JDWMFkxKz/835ZE7haw0ydNh09J0CmjaveFIPBO+Rsm65x2Q1maqoCIopof4N2
-         K6q1ueNbRWFQg==
-Date:   Sun, 24 Sep 2023 17:34:18 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     alisadariana@gmail.com
-Cc:     Alisa-Dariana Roman <alisa.roman@analog.com>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: adc: ad7192: Correct reference voltage
-Message-ID: <20230924173418.4d83ac04@jic23-huawei>
-In-Reply-To: <20230924152149.41884-1-alisadariana@gmail.com>
-References: <20230924152149.41884-1-alisadariana@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 24 Sep 2023 12:40:06 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7D2FE
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 09:39:58 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c49eec318aso10300692a34.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 09:39:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695573598; x=1696178398;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1vh+QpChEo3hjej2uReTmZoWOs+vLSS8UE3tDa6gsrY=;
+        b=LwuTBs9MXg8NFliO7wzTbPLNZwEoYirP/kiKJHtDs8/boXVXqQ9hMjX0ByUbT7Y/ok
+         7+JrdkoRKHzDJfboAlK0z/Kgc6fnxJU5zvG+7O0IWD1CIRgJPJ91Vrs0NokWInZV2JBQ
+         WJrPe3Ag3LFCah8uRtsKtTIt9dmatBDVQ5rT8Ujfk3K4nEzMuIDWSVsLCqAv6x7qL/eo
+         /WhX2ZAYawcM0fUvE1e3FQUI5sWwLFf0yZ8la8LiFFS4uMmt7AJ1FUcPhrSdwtzvI9W6
+         u6ijAvWZNSGOZRGos8DxSQi4owBYIRYL7akMIf9MbXj2N0Wi4yCUnIV227woThX3JnwG
+         xw/Q==
+X-Gm-Message-State: AOJu0YxQNhW5AMJ+Ax1Anvb4wnXmnzcHy0e/uUyWRu2U4oWOieUoXJgo
+        peG0IdLlDZ1CE5qVG7SdGt4eWuoZdEa8SuayVjWx8IgK7Y0t
+X-Google-Smtp-Source: AGHT+IHtEFc5DzTM22B0DbfWnS5y8YjgD8ZEh05EaloNZHsYNe9n4jeuQeXa12Qjm6gzD1d76udnrllpJjlais/iIOqF4tBwRxWZ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:6c04:0:b0:6bd:c74e:f21d with SMTP id
+ f4-20020a9d6c04000000b006bdc74ef21dmr1548373otq.4.1695573598150; Sun, 24 Sep
+ 2023 09:39:58 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 09:39:58 -0700
+In-Reply-To: <000000000000b782b505c2847180@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000022a3f06061d7e02@google.com>
+Subject: Re: [syzbot] [ntfs?] KASAN: use-after-free Read in ntfs_test_inode
+From:   syzbot <syzbot+2751da923b5eb8307b0b@syzkaller.appspotmail.com>
+To:     anton@tuxera.com, linkinjeon@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, phil@philpotter.co.uk,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sep 2023 18:21:48 +0300
-alisadariana@gmail.com wrote:
+syzbot has found a reproducer for the following issue on:
 
-> From: Alisa-Dariana Roman <alisa.roman@analog.com>
-> 
-> The avdd and the reference voltage are two different sources but the
-> reference voltage was assigned according to the avdd supply.
-> 
-> Add vref regulator structure and set the reference voltage according to
-> the vref supply from the devicetree.
-> 
-> In case vref supply is missing, reference voltage is set according to
-> the avdd supply for compatibility with old devicetrees.
-> 
-> Fixes: b581f748cce0 ("staging: iio: adc: ad7192: move out of staging")
-> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
-> Cc: stable@vger.kernel.org
-Applied to the fixes-togreg branch of iio.git
+HEAD commit:    3aba70aed91f Merge tag 'gpio-fixes-for-v6.6-rc3' of git://..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10fa1c8e680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e4ca82a1bedd37e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=2751da923b5eb8307b0b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=136b4412680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11aec0dc680000
 
-Thanks,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5fa097a40129/disk-3aba70ae.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/13b28020a934/vmlinux-3aba70ae.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7f3b0a1bf798/bzImage-3aba70ae.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/215dc95e52e5/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/b88b05ac266b/mount_1.gz
 
-Jonathan
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2751da923b5eb8307b0b@syzkaller.appspotmail.com
 
-> ---
-> v1 -> v2
-> 	- use dev_err_probe()
-> 	Link: https://lore.kernel.org/lkml/20230923225827.75681-1-alisadariana@gmail.com/
-> 
->  drivers/iio/adc/ad7192.c | 29 +++++++++++++++++++++++++----
->  1 file changed, 25 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-> index 69d1103b9508..b64fd365f83f 100644
-> --- a/drivers/iio/adc/ad7192.c
-> +++ b/drivers/iio/adc/ad7192.c
-> @@ -177,6 +177,7 @@ struct ad7192_chip_info {
->  struct ad7192_state {
->  	const struct ad7192_chip_info	*chip_info;
->  	struct regulator		*avdd;
-> +	struct regulator		*vref;
->  	struct clk			*mclk;
->  	u16				int_vref_mv;
->  	u32				fclk;
-> @@ -1008,10 +1009,30 @@ static int ad7192_probe(struct spi_device *spi)
->  	if (ret)
->  		return dev_err_probe(&spi->dev, ret, "Failed to enable specified DVdd supply\n");
->  
-> -	ret = regulator_get_voltage(st->avdd);
-> -	if (ret < 0) {
-> -		dev_err(&spi->dev, "Device tree error, reference voltage undefined\n");
-> -		return ret;
-> +	st->vref = devm_regulator_get_optional(&spi->dev, "vref");
-> +	if (IS_ERR(st->vref)) {
-> +		if (PTR_ERR(st->vref) != -ENODEV)
-> +			return PTR_ERR(st->vref);
-> +
-> +		ret = regulator_get_voltage(st->avdd);
-> +		if (ret < 0)
-> +			return dev_err_probe(&spi->dev, ret,
-> +					     "Device tree error, AVdd voltage undefined\n");
-> +	} else {
-> +		ret = regulator_enable(st->vref);
-> +		if (ret) {
-> +			dev_err(&spi->dev, "Failed to enable specified Vref supply\n");
-> +			return ret;
-> +		}
-> +
-> +		ret = devm_add_action_or_reset(&spi->dev, ad7192_reg_disable, st->vref);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = regulator_get_voltage(st->vref);
-> +		if (ret < 0)
-> +			return dev_err_probe(&spi->dev, ret,
-> +					     "Device tree error, Vref voltage undefined\n");
->  	}
->  	st->int_vref_mv = ret / 1000;
->  
+loop0: detected capacity change from 0 to 4096
+==================================================================
+BUG: KASAN: slab-out-of-bounds in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: slab-out-of-bounds in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+BUG: KASAN: slab-out-of-bounds in NInoAttr fs/ntfs/inode.h:200 [inline]
+BUG: KASAN: slab-out-of-bounds in ntfs_test_inode+0x7f/0x2e0 fs/ntfs/inode.c:55
+Read of size 8 at addr ffff888077b1df60 by task syz-executor108/5863
 
+CPU: 0 PID: 5863 Comm: syz-executor108 Not tainted 6.6.0-rc2-syzkaller-00386-g3aba70aed91f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ kasan_check_range+0x27e/0x290 mm/kasan/generic.c:187
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+ NInoAttr fs/ntfs/inode.h:200 [inline]
+ ntfs_test_inode+0x7f/0x2e0 fs/ntfs/inode.c:55
+ find_inode+0x16f/0x430 fs/inode.c:901
+ ilookup5_nowait fs/inode.c:1456 [inline]
+ ilookup5+0xa1/0x200 fs/inode.c:1485
+ iget5_locked+0x37/0x270 fs/inode.c:1266
+ ntfs_attr_iget+0x1b5/0x2420 fs/ntfs/inode.c:229
+ load_system_files+0x1333/0x4840 fs/ntfs/super.c:1808
+ ntfs_fill_super+0x19b3/0x2bd0 fs/ntfs/super.c:2900
+ mount_bdev+0x237/0x300 fs/super.c:1629
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:638
+ vfs_get_tree+0x8c/0x280 fs/super.c:1750
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f79473960aa
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7947351028 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007f79473960aa
+RDX: 000000002001f6c0 RSI: 000000002001f640 RDI: 00007f7947351080
+RBP: 000000002001f6c0 R08: 00007f79473510c0 R09: 000000000001f63f
+R10: 0000000000008703 R11: 0000000000000286 R12: 00007f7947351080
+R13: 000000002001f640 R14: 000000000001f646 R15: 00007f79473510c0
+ </TASK>
+
+Allocated by task 5059:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x66/0x70 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook+0x67/0x3d0 mm/slab.h:762
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc_lru+0x122/0x300 mm/slub.c:3509
+ alloc_inode_sb include/linux/fs.h:2868 [inline]
+ ntfs_alloc_inode+0x28/0x80 fs/ntfs3/super.c:546
+ alloc_inode fs/inode.c:259 [inline]
+ iget5_locked+0xa0/0x270 fs/inode.c:1269
+ ntfs_iget5+0xc6/0x38e0 fs/ntfs3/inode.c:525
+ ntfs_fill_super+0x2dec/0x4c30 fs/ntfs3/super.c:1244
+ get_tree_bdev+0x416/0x5b0 fs/super.c:1577
+ vfs_get_tree+0x8c/0x280 fs/super.c:1750
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff888077b1d880
+ which belongs to the cache ntfs_inode_cache of size 1760
+The buggy address is located 0 bytes to the right of
+ allocated 1760-byte region [ffff888077b1d880, ffff888077b1df60)
+
+The buggy address belongs to the physical page:
+page:ffffea0001dec600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x77b18
+head:ffffea0001dec600 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888141666c80 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000000110011 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Reclaimable, gfp_mask 0xd2050(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_RECLAIMABLE), pid 5056, tgid 5054 (syz-executor108), ts 62202039156, free_ts 18025050030
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc_lru+0x1bf/0x300 mm/slub.c:3509
+ alloc_inode_sb include/linux/fs.h:2868 [inline]
+ ntfs_alloc_inode+0x28/0x80 fs/ntfs3/super.c:546
+ alloc_inode fs/inode.c:259 [inline]
+ iget5_locked+0xa0/0x270 fs/inode.c:1269
+ ntfs_iget5+0xc6/0x38e0 fs/ntfs3/inode.c:525
+ ntfs_fill_super+0x2459/0x4c30 fs/ntfs3/super.c:1150
+ get_tree_bdev+0x416/0x5b0 fs/super.c:1577
+ vfs_get_tree+0x8c/0x280 fs/super.c:1750
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
+ free_contig_range+0x9e/0x150 mm/page_alloc.c:6342
+ destroy_args+0x95/0x7c0 mm/debug_vm_pgtable.c:1028
+ debug_vm_pgtable+0x4ba/0x540 mm/debug_vm_pgtable.c:1408
+ do_one_initcall+0x23d/0x7d0 init/main.c:1232
+ do_initcall_level+0x157/0x210 init/main.c:1294
+ do_initcalls+0x3f/0x80 init/main.c:1310
+ kernel_init_freeable+0x429/0x5c0 init/main.c:1547
+ kernel_init+0x1d/0x2a0 init/main.c:1437
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Memory state around the buggy address:
+ ffff888077b1de00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888077b1de80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888077b1df00: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+                                                       ^
+ ffff888077b1df80: fc fc fc fc fc fc fc fc fc fc fc fc 00 00 00 00
+ ffff888077b1e000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
