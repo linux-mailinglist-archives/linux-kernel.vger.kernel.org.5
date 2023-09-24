@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9107AC9C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469987AC9CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbjIXNjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S229973AbjIXNnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjIXNif (ORCPT
+        with ESMTP id S229716AbjIXNnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:38:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2092610E3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 06:38:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE0B3C433C7;
-        Sun, 24 Sep 2023 13:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695562700;
-        bh=Ylc3TSXa5ifgz7bjH+Ib7u/kImYYyrGh5B2vMyFRLTg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Noce4mwmQNAoIZUogYsYCHEBjWbN2VvgLO6lbPFKdhnc1rWxsAAm5qcB/hlWV7MzL
-         6M8uaClcpljpII0+yuMjMcfoXR2E4R03fEuYY1TBanEt2HyxGqBltgcZGu2xlwMcw1
-         GT1nBUt9ctylc2zKowKw8YXTloz3jhxqUqutXd+I1UwjeJr3Fz+fgwqCp1jn6obYvX
-         EbnAwCmrhQ7uQFXszvaCznoy6tg4E3WMRuPOSYmv8+iowSy3I/m+5sghxqx/z/F2qm
-         QL6KhyoirapL2JQ/JB64iPfjQKFoZV2VO2aGFRDutjDqBmqcL1+dhLeHtBXi9ik/4B
-         gmhXMtk+X90zQ==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v5 12/12] Documentation: tracing: Add a note about argument and retval access
-Date:   Sun, 24 Sep 2023 22:38:14 +0900
-Message-Id: <169556269377.146934.14829235476649685954.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169556254640.146934.5654329452696494756.stgit@devnote2>
-References: <169556254640.146934.5654329452696494756.stgit@devnote2>
-User-Agent: StGit/0.19
+        Sun, 24 Sep 2023 09:43:01 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC4483;
+        Sun, 24 Sep 2023 06:42:55 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso3589363b3a.0;
+        Sun, 24 Sep 2023 06:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695562975; x=1696167775; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nrFopNmjSQ+mWeZ3YOPDKDPIgq70BZiGeex/EKCnWEE=;
+        b=Nx+T07OLNKfRmpuCy5q/rAW0OpMKEGj04SJUCMRoK1lm52Lj8YOFtsHibN6nPkZXIZ
+         lnVrxLoCz86gJe91gGQa7NIFO0+mVnha/gtL082ArsnLHodQz8O49UuPYaU3r8OcM3IK
+         akHUvp000SyN+M4gaK8pnQrkfCKwsPgxGG1NVScSTXzGPCI87jlmbwTXbQhs4TMptn+F
+         vz74YvWHapZYHb7znz9ZpCpeco4PUNdhG29i2tmN9GVjDr9z+aEh5/e6qss7Lj9R0KuJ
+         nrA2UdMZ7q0Qo4sje9llNTzjodMlOOfF98X35FnO7gW0PwADNlaLP5LJeU0cq3Zl0R7x
+         PIYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695562975; x=1696167775;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nrFopNmjSQ+mWeZ3YOPDKDPIgq70BZiGeex/EKCnWEE=;
+        b=jCoK5MTXdbsuAnuVc6OeXO1O0ixj0bHR4e4EKrdUys6g3Kiozffj/wTh6aISFebDBD
+         9RxzBJl2ttYn9RazcfOaSBh2QWg/D9eLOFHmMXuSszIJaJ8rTR+o0GtG07WK87CgjZ5U
+         e6TJWfRviYnTB9B2ECOQkD0fqWbeHI6PC35BeehErP2kEEnNPmEIz+/67zUsrDiVNoic
+         Y9P+veC2SPDxXBDrD4rLzypBQ6ISQrHKvHc1Zzmod0Gz3zHxIkeS/K4XKM7qphppA3BO
+         /hXkWrYtwqs5hKHOGFmCIxXpH6Nd+uttydZP29be65rB3ppsQ8Iw1ixbpfRHfHfrTBtT
+         lU/w==
+X-Gm-Message-State: AOJu0YybHquaZvZL96AQmGHzzQMMTd80KpZsbscNcEPGfal4LQTPZxFk
+        8+NHA5yStOSUOse44TLrytc=
+X-Google-Smtp-Source: AGHT+IFTFONmx2+qIt3l3QdoFnCvC9IAaiNaTtSxYIDfygciCn+NvD/3U36OByjSWUCEVSaVC1G/Fw==
+X-Received: by 2002:a05:6a00:39a2:b0:68f:d44c:22f8 with SMTP id fi34-20020a056a0039a200b0068fd44c22f8mr6697763pfb.1.1695562975155;
+        Sun, 24 Sep 2023 06:42:55 -0700 (PDT)
+Received: from localhost ([162.243.44.213])
+        by smtp.gmail.com with ESMTPSA id c26-20020aa78c1a000000b00690d5d8084dsm6375415pfd.60.2023.09.24.06.42.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 06:42:54 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 21:41:53 +0800
+From:   Jianguo Bao <roidinev@gmail.com>
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH v2 1/2] rust: arc: rename `ArcInner` to `WithRef`
+Message-ID: <abrhhfol7w6a3uovjuuqgl4l63jh4ibljpbuebiikpj7glmcfu@5ryh6f2ll2vt>
+References: <20230923144938.219517-1-wedsonaf@gmail.com>
+ <20230923144938.219517-2-wedsonaf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923144938.219517-2-wedsonaf@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,56 +79,5 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Add a note about the argument and return value accecss will be best
-effort. Depending on the type, it will be passed via stack or a
-pair of the registers, but $argN and $retval only support the
-single register access.
-
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Documentation/trace/fprobetrace.rst |    8 ++++++--
- Documentation/trace/kprobetrace.rst |    8 ++++++--
- 2 files changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-index 8e9bebcf0a2e..e35e6b18df40 100644
---- a/Documentation/trace/fprobetrace.rst
-+++ b/Documentation/trace/fprobetrace.rst
-@@ -59,8 +59,12 @@ Synopsis of fprobe-events
-                   and bitfield are supported.
- 
-   (\*1) This is available only when BTF is enabled.
--  (\*2) only for the probe on function entry (offs == 0).
--  (\*3) only for return probe.
-+  (\*2) only for the probe on function entry (offs == 0). Note, this argument access
-+        is best effort, because depending on the argument type, it may be passed on
-+        the stack. But this only support the arguments via registers.
-+  (\*3) only for return probe. Note that this is also best effort. Depending on the
-+        return value type, it might be passed via a pair of registers. But this only
-+        accesses one register.
-   (\*4) this is useful for fetching a field of data structures.
-   (\*5) "u" means user-space dereference.
- 
-diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-index 8a2dfee38145..bf9cecb69fc9 100644
---- a/Documentation/trace/kprobetrace.rst
-+++ b/Documentation/trace/kprobetrace.rst
-@@ -61,8 +61,12 @@ Synopsis of kprobe_events
- 		  (x8/x16/x32/x64), "char", "string", "ustring", "symbol", "symstr"
-                   and bitfield are supported.
- 
--  (\*1) only for the probe on function entry (offs == 0).
--  (\*2) only for return probe.
-+  (\*1) only for the probe on function entry (offs == 0). Note, this argument access
-+        is best effort, because depending on the argument type, it may be passed on
-+        the stack. But this only support the arguments via registers.
-+  (\*2) only for return probe. Note that this is also best effort. Depending on the
-+        return value type, it might be passed via a pair of registers. But this only
-+        accesses one register.
-   (\*3) this is useful for fetching a field of data structures.
-   (\*4) "u" means user-space dereference. See :ref:`user_mem_access`.
- 
+Reviewed-by: Jianguo Bao <roidinev@gmail.com>
 
