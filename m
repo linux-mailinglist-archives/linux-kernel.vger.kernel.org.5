@@ -2,168 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595997AC60B
+	by mail.lfdr.de (Postfix) with ESMTP id AE71F7AC60C
 	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 03:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjIXAx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 20:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        id S229666AbjIXBC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 21:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIXAx4 (ORCPT
+        with ESMTP id S229475AbjIXBC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 20:53:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5288192
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 17:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695516783;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DTFrEa7vKTqj7wXo0iZDISbSz3Y6un7zOPt1IkyamfI=;
-        b=C6G2RxUdp5vp/wVHNg5Z0rPoDTlaT5oSn7mzm8Og1fDUy5BUX0jr2wN/pezFJKVKmQQx74
-        Oz+63z18ZZLaURVvMwJ3vlvy2oyGNMvU+pbz/Kq2WbLzGDV3Bm3y1VSdQavk32wI5al1us
-        MhXwi9TUsGYd0LEg88VCEzZPDAeUgTg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-67-sP602GgzNLKaiZQK_BLycg-1; Sat, 23 Sep 2023 20:53:00 -0400
-X-MC-Unique: sP602GgzNLKaiZQK_BLycg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7FC43806712;
-        Sun, 24 Sep 2023 00:52:59 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D4E512156701;
-        Sun, 24 Sep 2023 00:52:58 +0000 (UTC)
-Date:   Sun, 24 Sep 2023 08:52:55 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH] kexec: Annotate struct crash_mem with __counted_by
-Message-ID: <ZQ+IZxPy7qCT83OQ@MiWiFi-R3L-srv>
-References: <20230922175224.work.712-kees@kernel.org>
- <ZQ41d5majBepW48Z@MiWiFi-R3L-srv>
- <202309222012.49E3C0AA@keescook>
+        Sat, 23 Sep 2023 21:02:26 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53250F1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 18:02:20 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a9b41ffe12so2862960b6e.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 18:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wkennington-com.20230601.gappssmtp.com; s=20230601; t=1695517339; x=1696122139; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X73lBW8dYp//48BBb52n2l32mOLJg99MbHSqLw+5gsg=;
+        b=wFJx7o4tUl4/n/IMKEhKUCd4OUv0LRxnWsKwJp0PJ6Q324JZs4DL15T0zmbyZkC2+d
+         Nmuqw2JsXDFbFG6fZBoLmfBlfnYfQvy8b+GGomvbHHuCwERyRUBzKyZdPsndq03gGyDy
+         RnNkqjZn9w6Imv4nS0WaCJ/aTBcZv82bZyiWHUvWYpAQk+c/nVcTvbn5NA/tO+TwgqQA
+         j+Ng7GpngfgSPDeItke/mLSAuaIwjhSasw9yIHcm1qdfA281HjOs9FnBgcaUMQlrwaE9
+         ace7afluryHB3UUoSGNnDCRCwcVuRuKARqrwixp3LmefVvEvbtEIMX8nSYm3GiYNJiwd
+         uqdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695517339; x=1696122139;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X73lBW8dYp//48BBb52n2l32mOLJg99MbHSqLw+5gsg=;
+        b=vr6oI/E+D5GOzA4QOk3pgH0kkI6i9V4wrJWHznEJuS84AsxpvxtiGLuyz0PGtjh3En
+         8QEfkyQrnCBf3p/NuV+rYbhbeCwfh+4DbNMQstasvOpm7peX0ud8ph6tmKKuKHWZXkwU
+         tdbhC5kuR9KBPAAIFHUSNk3AB4UW+bmWYWAdztYW9eg8iS42qXMWFt8OQP4g+CEg0V6J
+         ED8rMb2LvTqF6Uo8ZR4btb7eQi1jHqRSAXw5VKxkKvnzJSu3o/vficu+eLwjHBEekqHY
+         gak/4ipmmig5/uN2bKAXuD6HTt7dIsV0+sOccuWqucBZxaBA/lbdsoS3IWP9/uZWtKvv
+         jjug==
+X-Gm-Message-State: AOJu0YwzJ0VQ8A5bav4ciQ34QxjL5bznVed7yUDxnlIA8EUoVoepoSOH
+        Eniu5HOn414u6gOS2km91P8qDw==
+X-Google-Smtp-Source: AGHT+IEHCUq8tKH+V3+QkWwMwP5hmPglWU/SHOlNBefQAgMc1vl7Isp7xNsJgSzP1G/v0dpQoxLBiQ==
+X-Received: by 2002:a05:6808:4d4:b0:3a7:35af:bbc0 with SMTP id a20-20020a05680804d400b003a735afbbc0mr4087968oie.54.1695517339619;
+        Sat, 23 Sep 2023 18:02:19 -0700 (PDT)
+Received: from wak-linux.svl.corp.google.com ([2620:15c:2a3:200:fa82:e505:60ca:9f9f])
+        by smtp.gmail.com with ESMTPSA id c8-20020a170903234800b001b8b07bc600sm5922016plh.186.2023.09.23.18.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 18:02:19 -0700 (PDT)
+From:   "William A. Kennington III" <william@wkennington.com>
+To:     tmaimon77@gmail.com, tali.perry1@gmail.com, avifishman70@gmail.com,
+        wsa@kernel.org, joel@jms.id.au
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "William A. Kennington III" <william@wkennington.com>
+Subject: [PATCH] i2c: npcm7xx: Fix callback completion ordering
+Date:   Sat, 23 Sep 2023 18:02:14 -0700
+Message-ID: <20230924010214.3700150-1-william@wkennington.com>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309222012.49E3C0AA@keescook>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/22/23 at 08:25pm, Kees Cook wrote:
-> On Sat, Sep 23, 2023 at 08:46:47AM +0800, Baoquan He wrote:
-> > On 09/22/23 at 10:52am, Kees Cook wrote:
-> > > Prepare for the coming implementation by GCC and Clang of the __counted_by
-> > > attribute. Flexible array members annotated with __counted_by can have
-> > > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> > > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> > > functions).
-> > > 
-> > > As found with Coccinelle[1], add __counted_by for struct crash_mem.
-> > > 
-> > > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> > > 
-> > > Cc: Eric Biederman <ebiederm@xmission.com>
-> > > Cc: kexec@lists.infradead.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  include/linux/crash_core.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-> > > index 3426f6eef60b..5126a4fecb44 100644
-> > > --- a/include/linux/crash_core.h
-> > > +++ b/include/linux/crash_core.h
-> > > @@ -131,7 +131,7 @@ static inline void __init reserve_crashkernel_generic(char *cmdline,
-> > >  struct crash_mem {
-> > >  	unsigned int max_nr_ranges;
-> > >  	unsigned int nr_ranges;
-> > > -	struct range ranges[];
-> > > +	struct range ranges[] __counted_by(max_nr_ranges);
-> > 
-> > This __counted_by() only makes sense when there's a obvious upper
-> > boundary, max_nr_ranges in this case.
-> 
-> Yes; it's designed to be the array element count used for the
-> allocation. For example with the above case:
-> 
->         nr_ranges += 2;
->         cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
->         if (!cmem)
->                 return NULL;
-> 
->         cmem->max_nr_ranges = nr_ranges;
->         cmem->nr_ranges = 0;
-> 
-> nr_ranges is the max count of the elements.
-> 
-> _However_, if a structure (like this one) has _two_ counters, one for
-> "in use" and another for "max available", __counted_by could specify the
-> "in use" case, as long as array indexing only happens when that "in use"
-> has been updated. So, if it were:
-> 
-> struct crash_mem {
->     unsigned int max_nr_ranges;
->     unsigned int nr_ranges;
->     struct range ranges[] __counted_by(nr_ranges);
-> };
-> 
-> then this would trigger the bounds checking:
-> 
-> 	cmem->ranges[0] = some_range;	/* "nr_ranges" is still 0 so index 0 isn't allowed */
-> 	cmem->nr_ranges ++;
-> 
-> but this would not:
-> 
-> 	cmem->nr_ranges ++;		/* index 0 is now available for use. */
-> 	cmem->ranges[0] = some_range;
-> 
-> > This heavily depends and isn't much in kernel?
-> 
-> Which "this" do you mean? The tracking of max allocation is common.
-> Tracking max and "in use" happens in some places (like here), but is
-> less common.
+Sometimes, our completions race with new master transfers and override
+the bus->operation and bus->master_or_slave variables. This causes
+transactions to timeout and kernel crashes less frequently.
 
-I thought usually it may not have a max counter of the variable length
-array embeded in struct, seems I was wrong. Here 'this' means the
-__counted_by() adding for the variable length array.
+To remedy this, we re-order all completions to the very end of the
+function.
 
-> 
-> > E.g struct swap_info_struct->avail_lists[].
-> 
-> This is even less common: tracking the count externally from the struct,
-> as done there with nr_node_ids. Shakeel asked a very similar question
-> and also pointed out nr_node_ids:
-> https://lore.kernel.org/all/202309221128.6AC35E3@keescook/
-> 
-> > Just curious, not related to this patch though.
-> 
-> I'm happy to answer questions! Yeah, as I said in the above thread,
-> I expect to expand what __counted_by can use, and I suspect (hope)
-> a global would be easier to add than an arbitrary expression. :)
+Fixes: 56a1485b102e ("i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver")
+Signed-off-by: William A. Kennington III <william@wkennington.com>
+---
+ drivers/i2c/busses/i2c-npcm7xx.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-Thanks a lot for these explanation, Kees.
-
-LGTM,
-Acked-by: Baoquan He <bhe@redhat.com>
+diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+index 495a8b5f6a2b..ae4bae63ad4f 100644
+--- a/drivers/i2c/busses/i2c-npcm7xx.c
++++ b/drivers/i2c/busses/i2c-npcm7xx.c
+@@ -694,6 +694,7 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
+ {
+ 	struct i2c_msg *msgs;
+ 	int msgs_num;
++	bool do_complete = false;
+ 
+ 	msgs = bus->msgs;
+ 	msgs_num = bus->msgs_num;
+@@ -722,23 +723,17 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
+ 				 msgs[1].flags & I2C_M_RD)
+ 				msgs[1].len = info;
+ 		}
+-		if (completion_done(&bus->cmd_complete) == false)
+-			complete(&bus->cmd_complete);
+-	break;
+-
++		do_complete = true;
++		break;
+ 	case I2C_NACK_IND:
+ 		/* MASTER transmit got a NACK before tx all bytes */
+ 		bus->cmd_err = -ENXIO;
+-		if (bus->master_or_slave == I2C_MASTER)
+-			complete(&bus->cmd_complete);
+-
++		do_complete = true;
+ 		break;
+ 	case I2C_BUS_ERR_IND:
+ 		/* Bus error */
+ 		bus->cmd_err = -EAGAIN;
+-		if (bus->master_or_slave == I2C_MASTER)
+-			complete(&bus->cmd_complete);
+-
++		do_complete = true;
+ 		break;
+ 	case I2C_WAKE_UP_IND:
+ 		/* I2C wake up */
+@@ -752,6 +747,8 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
+ 	if (bus->slave)
+ 		bus->master_or_slave = I2C_SLAVE;
+ #endif
++	if (do_complete)
++		complete(&bus->cmd_complete);
+ }
+ 
+ static u8 npcm_i2c_fifo_usage(struct npcm_i2c *bus)
+-- 
+2.42.0.515.g380fc7ccd1-goog
 
