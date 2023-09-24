@@ -2,599 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C8A7AC9DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C3B7AC9EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 16:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbjIXNvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        id S229750AbjIXONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjIXNvg (ORCPT
+        with ESMTP id S229437AbjIXONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:51:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE176AF
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 06:51:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EACB7C433C8;
-        Sun, 24 Sep 2023 13:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695563489;
-        bh=RxXeubu8HZNb+nNC5zpYLJUpzwqwfPy3at7NtESJSvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gHuDTISvBx1UwPZrt2pnXtQ+Ln0jEuukUEt4MEcRcP3YiwbpPNndfGzzxeRgwQrXJ
-         7vy40Mj858jlRD3CxlMfHFNrX+BfnMf2XhleP31nRUnHwa62RM2z4HDSYojY4dHsCs
-         dTSZQdRbW16cBTUBdyvbEEr7J95nYtKaLsiT7Cns6BvGBeALntv//YSax18bpwNcln
-         +Mupy9TOv6tRgiZijESVJKJS+T427sneRwd5xFyeDSyxUY3Uvld1D877ar1rjp3xYp
-         Vf2eVJdqvV9urb3jPyqMAVUiuVMbLgx90ZRZeUR2oYY/oyhnPwKgADAcSVbH0Xy0Hu
-         3dIN4FmNHl3Qw==
-Date:   Sun, 24 Sep 2023 21:51:11 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Josua Mayer <josua@solid-run.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Fabio Estevam <festevam@denx.de>,
-        Aishwarya Kothari <aishwarya.kothari@toradex.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Marek Vasut <marex@denx.de>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>
-Subject: Re: [PATCH v5 4/4] arm64: dts: freescale: Add support for LX2162 SoM
- & Clearfog Board
-Message-ID: <20230924135111.GJ7231@dragon>
-References: <20230818111016.11271-1-josua@solid-run.com>
- <20230818111016.11271-5-josua@solid-run.com>
+        Sun, 24 Sep 2023 10:13:34 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A505FA;
+        Sun, 24 Sep 2023 07:13:27 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-404800222d2so11921655e9.0;
+        Sun, 24 Sep 2023 07:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695564806; x=1696169606; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g75BzRaRkO9oRTJYb9F8+v/ms9n2RPmAlt8qWo05vUc=;
+        b=fKhK2bCs38DW39YoMkIIzsqCfoPKvC8T3Zj1t2+vuzKTyOrOiKGWE7ab22fUoLLz4B
+         GnDghThPyzsEpw5Zf8eUNHxXAjIh2QvO+qHqbrmRndfJQYWPCriING9taTNMY1dUNNbc
+         wlmcPMlh/ufIGN7RoWgxb7BlNxLqzMODcXKnOYOwDNbLzK8CdN6VJeJK2qFqj7xuX0hY
+         zRLlzr08oNefSl2SyApQ6IkREc0Nw5pzFDBt+AFvRX/1u+UmOU7EGuXykgbSlK3YkCqS
+         18Yy17AQ1/AlR8GLsuti70h0NYf1z1Q3dCJroHJX/AHC9Dv4rmMRvVYQ1Tn0pHR5KxVq
+         dzqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695564806; x=1696169606;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g75BzRaRkO9oRTJYb9F8+v/ms9n2RPmAlt8qWo05vUc=;
+        b=dc6O+3W6gteYyGng/pDSVmVwQZDf7o/Rykd5lmuqgI3QzeM25MmwS/fpk13hffNK36
+         bvOtPqG35qgD4UtWFF8XtG2455iHGSUu8Qht2lBCwdGQ8bimoe0iJe3jlmAvQYueOpLF
+         GoPiC2O3uRfgclZjYrx53oAIQBROblhLhmXs8wr7JMAim0y06Gbqg/C0QNd9Bpk4cnL7
+         RGczGcHFWVYOzw36Fp4tn3c0ar5BJDPxKXMWSOM7UHnWxZ6ryk1KOjySY00txJ95uReW
+         dR9EBsfe72yeu5e3ilp96krM9pOMeQaCHg0HxKLXaBAQdahzXpwfu4c8wiaKXTQvG5WK
+         lOZg==
+X-Gm-Message-State: AOJu0YyPVrp7iqPBnjgBLPZmTW7WXqXvfqxcxtj3FTK34oG9RRpgXYWz
+        CZd6GXcNbRMy7gulzG5hncU=
+X-Google-Smtp-Source: AGHT+IHLI158DJYlJQGAElRC+dFbhrB/H1duK9xvwnx70IB6Xffkh90oQ55p3nmYuDQiVbLoZUUB/g==
+X-Received: by 2002:a7b:c456:0:b0:3fe:d637:7b25 with SMTP id l22-20020a7bc456000000b003fed6377b25mr4229729wmi.0.1695564805593;
+        Sun, 24 Sep 2023 07:13:25 -0700 (PDT)
+Received: from desktop-nixos-martino.. ([2a01:e11:5004:180::bd5a:12c2])
+        by smtp.gmail.com with ESMTPSA id cb9-20020a0564020b6900b00533ec6c617asm982173edb.54.2023.09.24.07.13.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 07:13:25 -0700 (PDT)
+From:   Martino Fontana <tinozzo123@gmail.com>
+To:     djogorchock@gmail.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Martino Fontana <tinozzo123@gmail.com>
+Subject: [PATCH v3] HID: nintendo: reinitialize USB Pro Controller after resuming from suspend
+Date:   Sun, 24 Sep 2023 16:06:01 +0200
+Message-ID: <20230924140927.9844-2-tinozzo123@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818111016.11271-5-josua@solid-run.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 01:10:16PM +0200, Josua Mayer wrote:
-> Add support for the SolidRun LX2162A System on Module (SoM), and the
-> Clearfog evaluation board.
-> 
-> The SoM has few software-controllable features:
-> - AR8035 Ethernet PHY
-> - eMMC
-> - SPI Flash
-> - fan controller
-> - various eeproms
-> 
-> The Clearfog evaluation board provides:
-> - microSD connector
-> - USB-A
-> - 2x 10Gbps SFP+
-> - 2x 25Gbps SFP+ with a retimer
-> - 8x 2.5Gbps RJ45
-> - 2x mPCI (assembly option / disables 2xRJ45)
-> 
-> The 8x RJ45 ports are connected with an 8-port PHY: Marvell 88E2580
-> supporting up to 5Gbps, while SoC and magnetics are limited to 2.5Gbps.
-> 
-> However 2500 speed is untested due to documentation and drivier
-> limitations. To avoid confusion the phy nodes have been explicitly
-> limited to 1000 for now.
-> 
-> The PCI nodes are disabled, but explicitly added to mark that this board
-> can have pci.
-> It is expected that the bootloader will patch the status property
-> "okay" and disable 2x RJ45 ports, according to active serdes configuration.
-> 
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> ---
-> V1 -> V2: reordered "compatible" and "reg" properties
-> V1 -> V2: replaced chip-specific DT node names with generic ones
-> V1 -> V2: removed dead code from fspi node
-> V2 -> V3: dropped deprecated address-cells, address-size props from flash node
-> V3 -> V4: reordered dt properties such that status is last
-> V3 -> V4: changed ethernet-phy on som from /delete-node/ to disabled
-> 
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../dts/freescale/fsl-lx2162a-clearfog.dts    | 373 ++++++++++++++++++
->  .../dts/freescale/fsl-lx2162a-sr-som.dtsi     |  73 ++++
->  3 files changed, 447 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index a750be13ace8..9448d2effd8a 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-honeycomb.dtb
->  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-qds.dtb
->  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
->  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
-> +dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-clearfog.dtb
+When suspending the computer, a Switch Pro Controller connected via USB will
+lose its internal status. However, because the USB connection was technically
+never lost, when resuming the computer, the driver will attempt to communicate
+with the controller as if nothing happened (and fail).
+Because of this, the user was forced to manually disconnect the controller
+(or to press the sync button on the controller to power it off), so that it
+can be re-initialized.
 
-Out of alphabetical order.
+With this patch, the controller will be automatically re-initialized after
+resuming from suspend.
 
->  
->  fsl-ls1028a-qds-13bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-13bb.dtbo
->  fsl-ls1028a-qds-65bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-65bb.dtbo
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts b/arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts
-> new file mode 100644
-> index 000000000000..ad57f4cca62d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts
-> @@ -0,0 +1,373 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +//
-> +// Device Tree file for LX2162A Clearfog
-> +//
-> +// Copyright 2023 Josua Mayer <josua@solid-run.com>
-> +
-> +/dts-v1/;
-> +
-> +#include "fsl-lx2160a.dtsi"
-> +#include "fsl-lx2162a-sr-som.dtsi"
-> +
-> +/ {
-> +	model = "SolidRun LX2162A Clearfog";
-> +	compatible = "solidrun,lx2162a-clearfog", "solidrun,lx2162a-som", "fsl,lx2160a";
-> +
-> +	aliases {
-> +		crypto = &crypto;
-> +		i2c0 = &i2c0;
-> +		i2c1 = &i2c2;
-> +		i2c2 = &i2c4;
-> +		i2c3 = &sfp_i2c0;
-> +		i2c4 = &sfp_i2c1;
-> +		i2c5 = &sfp_i2c2;
-> +		i2c6 = &sfp_i2c3;
-> +		i2c7 = &mpcie1_i2c;
-> +		i2c8 = &mpcie0_i2c;
-> +		i2c9 = &pcieclk_i2c;
-> +		mmc0 = &esdhc0;
-> +		mmc1 = &esdhc1;
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		led_sfp_at: led-sfp-at {
-> +			gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>; /* PROC_IRQ5 */
-> +			default-state = "off";
-> +		};
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=216233
 
-Have a newline between nodes.
+Signed-off-by: Martino Fontana <tinozzo123@gmail.com>
 
-> +		led_sfp_ab: led-sfp-ab {
-> +			gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>; /* PROC_IRQ11 */
-> +			default-state = "off";
-> +		};
-> +		led_sfp_bt: led-sfp-bt {
-> +			gpios = <&gpio2 13 GPIO_ACTIVE_HIGH>; /* EVT1_B */
-> +			default-state = "off";
-> +		};
-> +		led_sfp_bb: led-sfp-bb {
-> +			gpios = <&gpio2 14 GPIO_ACTIVE_HIGH>; /* EVT2_B */
-> +			default-state = "off";
-> +		};
-> +	};
-> +
-> +	sfp_at: sfp-at {
-> +		compatible = "sff,sfp";
-> +		i2c-bus = <&sfp_i2c0>;
-> +		mod-def0-gpios = <&gpio2 16 GPIO_ACTIVE_LOW>; /* EVT4_B */
-> +		maximum-power-milliwatt = <2000>;
-> +	};
-> +
-> +	sfp_ab: sfp-ab {
-> +		compatible = "sff,sfp";
-> +		i2c-bus = <&sfp_i2c1>;
-> +		mod-def0-gpios = <&gpio2 1 GPIO_ACTIVE_LOW>; /* PROC_IRQ1 */
-> +		maximum-power-milliwatt = <2000>;
-> +	};
-> +
-> +	sfp_bt: sfp-bt {
-> +		compatible = "sff,sfp";
-> +		i2c-bus = <&sfp_i2c2>;
-> +		mod-def0-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>; /* PROC_IRQ10 */
-> +		maximum-power-milliwatt = <2000>;
-> +	};
-> +
-> +	sfp_bb: sfp-bb {
-> +		compatible = "sff,sfp";
-> +		i2c-bus = <&sfp_i2c3>;
-> +		mod-def0-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>; /* EVT3_B */
-> +		maximum-power-milliwatt = <2000>;
-> +	};
-> +};
-> +
-> +&i2c2 {
+---
+Changes for v2 and v3: Applied suggestions
 
-This label node seems out of alphabetical order.
+ drivers/hid/hid-nintendo.c | 175 ++++++++++++++++++++++---------------
+ 1 file changed, 103 insertions(+), 72 deletions(-)
 
-> +	status = "okay";
-> +
-> +	/* retimer@18 */
-> +
-> +	i2c-mux@70 {
-> +		compatible = "nxp,pca9546";
-> +		reg = <0x70>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		i2c-mux-idle-disconnect;
-> +
-> +		sfp_i2c0: i2c@0 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0>;
-> +		};
-> +
-> +		sfp_i2c1: i2c@1 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <1>;
-> +		};
-> +
-> +		sfp_i2c2: i2c@2 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <2>;
-> +		};
-> +
-> +		sfp_i2c3: i2c@3 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <3>;
-> +		};
-> +	};
-> +
-> +	i2c-mux@71 {
-> +		compatible = "nxp,pca9546";
-> +		reg = <0x71>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		i2c-mux-idle-disconnect;
-> +
-> +		mpcie1_i2c: i2c@0 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0>;
-> +		};
-> +
-> +		mpcie0_i2c: i2c@1 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <1>;
-> +		};
-> +
-> +		pcieclk_i2c: i2c@2 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <2>;
-> +
-> +			/* clock-controller@6b */
-> +		};
-> +	};
-> +};
-> +
-> +&dpmac3 {
-> +	sfp = <&sfp_at>;
-> +	managed = "in-band-status";
-> +	phys = <&serdes_1 7>;
-> +};
-> +
-> +&dpmac4 {
-> +	sfp = <&sfp_ab>;
-> +	managed = "in-band-status";
-> +	phys = <&serdes_1 6>;
-> +};
-> +
-> +&dpmac5 {
-> +	sfp = <&sfp_bt>;
-> +	managed = "in-band-status";
-> +	phys = <&serdes_1 5>;
-> +};
-> +
-> +&dpmac6 {
-> +	sfp = <&sfp_bb>;
-> +	managed = "in-band-status";
-> +	phys = <&serdes_1 4>;
-> +};
-> +
-> +&dpmac11 {
-> +	phys = <&serdes_2 0>;
-> +	phy-handle = <&ethernet_phy3>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac12 {
-> +	phys = <&serdes_2 1>;
-> +	phy-handle = <&ethernet_phy1>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac13 {
-> +	phys = <&serdes_2 6>;
-> +	phy-handle = <&ethernet_phy6>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac14 {
-> +	phys = <&serdes_2 7>;
-> +	phy-handle = <&ethernet_phy8>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac15 {
-> +	phys = <&serdes_2 4>;
-> +	phy-handle = <&ethernet_phy4>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac16 {
-> +	phys = <&serdes_2 5>;
-> +	phy-handle = <&ethernet_phy2>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac17 {
-> +	/* override connection to on-SoM phy */
-> +	/delete-property/ phy-handle;
-> +	/delete-property/ phy-connection-type;
-> +
-> +	phys = <&serdes_2 2>;
-> +	phy-handle = <&ethernet_phy5>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&dpmac18 {
-> +	phys = <&serdes_2 3>;
-> +	phy-handle = <&ethernet_phy7>;
-> +	phy-connection-type = "sgmii";
-> +	status = "okay";
-> +};
-> +
-> +&emdio1 {
-> +	ethernet_phy1: ethernet-phy@8 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <8>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy2: ethernet-phy@9 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <9>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy3: ethernet-phy@10 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <10>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy4: ethernet-phy@11 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <11>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy5: ethernet-phy@12 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <12>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy6: ethernet-phy@13 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <13>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy7: ethernet-phy@14 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <14>;
-> +		max-speed = <1000>;
-> +	};
-> +
-> +	ethernet_phy8: ethernet-phy@15 {
-> +		compatible = "ethernet-phy-ieee802.3-c45";
-> +		reg = <15>;
-> +		max-speed = <1000>;
-> +	};
-> +};
-> +
-> +&esdhc0 {
-> +	sd-uhs-sdr104;
-> +	sd-uhs-sdr50;
-> +	sd-uhs-sdr25;
-> +	sd-uhs-sdr12;
-> +	status = "okay";
-> +};
-> +
-> +&ethernet_phy0 {
-> +	/*
-> +	 * SoM has a phy at address 1 connected to SoC Ethernet Controller 1.
-> +	 * It competes for WRIOP MAC17, and no connector has been wired.
-> +	 */
-> +	status = "disabled";
-> +};
-> +
-> +&pcie3 {
-> +	status = "disabled";
-> +};
-> +
-> +&pcie4 {
-> +	status = "disabled";
-> +};
-> +
-> +&pcs_mdio3 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio4 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio5 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio6 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio11 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio12 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio13 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio14 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio15 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio16 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio17 {
-> +	status = "okay";
-> +};
-> +
-> +&pcs_mdio18 {
-> +	status = "okay";
-> +};
-> +
-> +&serdes_1 {
-> +	status = "okay";
-> +};
-> +
-> +&serdes_2 {
-> +	status = "okay";
-> +};
-> +
-> +&uart0 {
-> +	status = "okay";
-> +};
-> +
-> +&usb0 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi
-> new file mode 100644
-> index 000000000000..ac3f9bc60265
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi
-> @@ -0,0 +1,73 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +//
-> +// Device Tree file for LX2162A-SOM
-> +//
-> +// Copyright 2021 Rabeeh Khoury <rabeeh@solid-run.com>
-> +// Copyright 2023 Josua Mayer <josua@solid-run.com>
-> +
-> +&crypto {
-> +	status = "okay";
-> +};
-> +
-> +&dpmac17 {
-> +	phy-handle = <&ethernet_phy0>;
-> +	phy-connection-type = "rgmii-id";
-> +};
-> +
-> +&emdio1 {
-> +	status = "okay";
-> +
-> +	ethernet_phy0: ethernet-phy@1 {
-> +		reg = <1>;
-> +	};
-> +};
-> +
-> +&esdhc1 {
-> +	status = "okay";
-> +	bus-width = <8>;
-> +	mmc-hs200-1_8v;
-> +	mmc-hs400-1_8v;
+diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
+index 250f5d2f8..10468f727 100644
+--- a/drivers/hid/hid-nintendo.c
++++ b/drivers/hid/hid-nintendo.c
+@@ -2088,7 +2088,9 @@ static int joycon_read_info(struct joycon_ctlr *ctlr)
+ 	struct joycon_input_report *report;
+ 
+ 	req.subcmd_id = JC_SUBCMD_REQ_DEV_INFO;
++	mutex_lock(&ctlr->output_mutex);
+ 	ret = joycon_send_subcmd(ctlr, &req, 0, HZ);
++	mutex_unlock(&ctlr->output_mutex);
+ 	if (ret) {
+ 		hid_err(ctlr->hdev, "Failed to get joycon info; ret=%d\n", ret);
+ 		return ret;
+@@ -2117,6 +2119,85 @@ static int joycon_read_info(struct joycon_ctlr *ctlr)
+ 	return 0;
+ }
+ 
++static int joycon_init(struct hid_device *hdev)
++{
++	struct joycon_ctlr *ctlr = hid_get_drvdata(hdev);
++	int ret = 0;
++
++	mutex_lock(&ctlr->output_mutex);
++	/* if handshake command fails, assume ble pro controller */
++	if ((jc_type_is_procon(ctlr) || jc_type_is_chrggrip(ctlr)) &&
++	    !joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ)) {
++		hid_dbg(hdev, "detected USB controller\n");
++		/* set baudrate for improved latency */
++		ret = joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ);
++		if (ret) {
++			hid_err(hdev, "Failed to set baudrate; ret=%d\n", ret);
++			goto out_unlock;
++		}
++		/* handshake */
++		ret = joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
++		if (ret) {
++			hid_err(hdev, "Failed handshake; ret=%d\n", ret);
++			goto out_unlock;
++		}
++		/*
++		 * Set no timeout (to keep controller in USB mode).
++		 * This doesn't send a response, so ignore the timeout.
++		 */
++		joycon_send_usb(ctlr, JC_USB_CMD_NO_TIMEOUT, HZ/10);
++	} else if (jc_type_is_chrggrip(ctlr)) {
++		hid_err(hdev, "Failed charging grip handshake\n");
++		ret = -ETIMEDOUT;
++		goto out_unlock;
++	}
++
++	/* get controller calibration data, and parse it */
++	ret = joycon_request_calibration(ctlr);
++	if (ret) {
++		/*
++		 * We can function with default calibration, but it may be
++		 * inaccurate. Provide a warning, and continue on.
++		 */
++		hid_warn(hdev, "Analog stick positions may be inaccurate\n");
++	}
++
++	/* get IMU calibration data, and parse it */
++	ret = joycon_request_imu_calibration(ctlr);
++	if (ret) {
++		/*
++		 * We can function with default calibration, but it may be
++		 * inaccurate. Provide a warning, and continue on.
++		 */
++		hid_warn(hdev, "Unable to read IMU calibration data\n");
++	}
++
++	/* Set the reporting mode to 0x30, which is the full report mode */
++	ret = joycon_set_report_mode(ctlr);
++	if (ret) {
++		hid_err(hdev, "Failed to set report mode; ret=%d\n", ret);
++		goto out_unlock;
++	}
++
++	/* Enable rumble */
++	ret = joycon_enable_rumble(ctlr);
++	if (ret) {
++		hid_err(hdev, "Failed to enable rumble; ret=%d\n", ret);
++		goto out_unlock;
++	}
++
++	/* Enable the IMU */
++	ret = joycon_enable_imu(ctlr);
++	if (ret) {
++		hid_err(hdev, "Failed to enable the IMU; ret=%d\n", ret);
++		goto out_unlock;
++	}
++
++out_unlock:
++	mutex_unlock(&ctlr->output_mutex);
++	return ret;
++}
++
+ /* Common handler for parsing inputs */
+ static int joycon_ctlr_read_handler(struct joycon_ctlr *ctlr, u8 *data,
+ 							      int size)
+@@ -2248,85 +2329,19 @@ static int nintendo_hid_probe(struct hid_device *hdev,
+ 
+ 	hid_device_io_start(hdev);
+ 
+-	/* Initialize the controller */
+-	mutex_lock(&ctlr->output_mutex);
+-	/* if handshake command fails, assume ble pro controller */
+-	if ((jc_type_is_procon(ctlr) || jc_type_is_chrggrip(ctlr)) &&
+-	    !joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ)) {
+-		hid_dbg(hdev, "detected USB controller\n");
+-		/* set baudrate for improved latency */
+-		ret = joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ);
+-		if (ret) {
+-			hid_err(hdev, "Failed to set baudrate; ret=%d\n", ret);
+-			goto err_mutex;
+-		}
+-		/* handshake */
+-		ret = joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
+-		if (ret) {
+-			hid_err(hdev, "Failed handshake; ret=%d\n", ret);
+-			goto err_mutex;
+-		}
+-		/*
+-		 * Set no timeout (to keep controller in USB mode).
+-		 * This doesn't send a response, so ignore the timeout.
+-		 */
+-		joycon_send_usb(ctlr, JC_USB_CMD_NO_TIMEOUT, HZ/10);
+-	} else if (jc_type_is_chrggrip(ctlr)) {
+-		hid_err(hdev, "Failed charging grip handshake\n");
+-		ret = -ETIMEDOUT;
+-		goto err_mutex;
+-	}
+-
+-	/* get controller calibration data, and parse it */
+-	ret = joycon_request_calibration(ctlr);
++	ret = joycon_init(hdev);
+ 	if (ret) {
+-		/*
+-		 * We can function with default calibration, but it may be
+-		 * inaccurate. Provide a warning, and continue on.
+-		 */
+-		hid_warn(hdev, "Analog stick positions may be inaccurate\n");
+-	}
+-
+-	/* get IMU calibration data, and parse it */
+-	ret = joycon_request_imu_calibration(ctlr);
+-	if (ret) {
+-		/*
+-		 * We can function with default calibration, but it may be
+-		 * inaccurate. Provide a warning, and continue on.
+-		 */
+-		hid_warn(hdev, "Unable to read IMU calibration data\n");
+-	}
+-
+-	/* Set the reporting mode to 0x30, which is the full report mode */
+-	ret = joycon_set_report_mode(ctlr);
+-	if (ret) {
+-		hid_err(hdev, "Failed to set report mode; ret=%d\n", ret);
+-		goto err_mutex;
+-	}
+-
+-	/* Enable rumble */
+-	ret = joycon_enable_rumble(ctlr);
+-	if (ret) {
+-		hid_err(hdev, "Failed to enable rumble; ret=%d\n", ret);
+-		goto err_mutex;
+-	}
+-
+-	/* Enable the IMU */
+-	ret = joycon_enable_imu(ctlr);
+-	if (ret) {
+-		hid_err(hdev, "Failed to enable the IMU; ret=%d\n", ret);
+-		goto err_mutex;
++		hid_err(hdev, "Failed to initialize controller; ret=%d\n", ret);
++		goto err_close;
+ 	}
+ 
+ 	ret = joycon_read_info(ctlr);
+ 	if (ret) {
+ 		hid_err(hdev, "Failed to retrieve controller info; ret=%d\n",
+ 			ret);
+-		goto err_mutex;
++		goto err_close;
+ 	}
+ 
+-	mutex_unlock(&ctlr->output_mutex);
+-
+ 	/* Initialize the leds */
+ 	ret = joycon_leds_create(ctlr);
+ 	if (ret) {
+@@ -2352,8 +2367,6 @@ static int nintendo_hid_probe(struct hid_device *hdev,
+ 	hid_dbg(hdev, "probe - success\n");
+ 	return 0;
+ 
+-err_mutex:
+-	mutex_unlock(&ctlr->output_mutex);
+ err_close:
+ 	hid_hw_close(hdev);
+ err_stop:
+@@ -2383,6 +2396,20 @@ static void nintendo_hid_remove(struct hid_device *hdev)
+ 	hid_hw_stop(hdev);
+ }
+ 
++#ifdef CONFIG_PM
++
++static int nintendo_hid_resume(struct hid_device *hdev)
++{
++	int ret = joycon_init(hdev);
++
++	if (ret)
++		hid_err(hdev, "Failed to restore controller after resume");
++
++	return ret;
++}
++
++#endif
++
+ static const struct hid_device_id nintendo_hid_devices[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_NINTENDO,
+ 			 USB_DEVICE_ID_NINTENDO_PROCON) },
+@@ -2404,6 +2431,10 @@ static struct hid_driver nintendo_hid_driver = {
+ 	.probe		= nintendo_hid_probe,
+ 	.remove		= nintendo_hid_remove,
+ 	.raw_event	= nintendo_hid_event,
++
++#ifdef CONFIG_PM
++	.resume		= nintendo_hid_resume,
++#endif
+ };
+ module_hid_driver(nintendo_hid_driver);
+ 
+-- 
+2.42.0
 
-We usually have 'status' be the last property.
-
-Shawn
-
-> +};
-> +
-> +&fspi {
-> +	status = "okay";
-> +
-> +	flash@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +		m25p,fast-read;
-> +		spi-max-frequency = <50000000>;
-> +		/* The following setting enables 1-1-8 (CMD-ADDR-DATA) mode */
-> +		spi-rx-bus-width = <8>;
-> +		spi-tx-bus-width = <1>;
-> +	};
-> +};
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +
-> +	fan-controller@18 {
-> +		compatible = "ti,amc6821";
-> +		reg = <0x18>;
-> +	};
-> +
-> +	ddr_spd: eeprom@51 {
-> +		compatible = "st,24c02", "atmel,24c02";
-> +		reg = <0x51>;
-> +		read-only;
-> +	};
-> +
-> +	config_eeprom: eeprom@57 {
-> +		compatible = "st,24c02", "atmel,24c02";
-> +		reg = <0x57>;
-> +	};
-> +};
-> +
-> +&i2c4 {
-> +	status = "okay";
-> +
-> +	variable_eeprom: eeprom@54 {
-> +		compatible = "st,24c2048", "atmel,24c2048";
-> +		reg = <0x54>;
-> +	};
-> +};
-> -- 
-> 2.35.3
-> 
