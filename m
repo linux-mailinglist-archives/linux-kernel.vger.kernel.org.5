@@ -2,217 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D2D7AC703
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A918B7AC70D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjIXHuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 03:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S229983AbjIXHww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 03:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjIXHuE (ORCPT
+        with ESMTP id S229699AbjIXHwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 03:50:04 -0400
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0D1111
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:49:57 -0700 (PDT)
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3a9e0f4e17fso9997186b6e.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:49:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695541797; x=1696146597;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uQdCC3iDzc1EqHBtyKVAKzUBetO1Nn5fGK6Vt8x2SAw=;
-        b=QYxlIByHSc19i8EW6db1KSR+gQ4mHb1c5wUzJcUPsgO32NNRxSzhwH5LBejzGgigJu
-         kiAOZXnhvbbFLnW9Q8mo8lxNCuqAkJw/CVfhIPo4qJQ1hXu1CgBvd26CSBoQ84B7Yjoq
-         0u/u7dEkEo0WASfNWGUsdOcbbdw3n6zGj15qADhWGIZJF3Iqrub5Sht94zgu+Rg/ALOt
-         3WtiQOyYO3MW+axooJ5G9GCeqJy7+ybSFgl7jcNYXx7iygU7i155NVI+VkFnHG5oJfcT
-         FINMjA/DOlWG0qCxLEAfgRaSIwlySXc3l1kOFF07l+Hpglf2dT6SEltWE94xghSY11F4
-         ATNw==
-X-Gm-Message-State: AOJu0Yzo7Y80GNBLUjGoJjxE5+upMwtrjiqXz9plams2khtfFhT+VEeT
-        oPXfaou5Rg18siia71djnX/4Zws/NVE/ypv7OnMwuMgg3ZS0
-X-Google-Smtp-Source: AGHT+IHwdMUvkbLqFcHI/c5EGsGujCL+3pGY8pIgOZdevbYouBFUcoR4cPUdCSy8jew+6pP1zAbWN04k8YYTndQj7svb5iWz8xQ6
+        Sun, 24 Sep 2023 03:52:51 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EA0109;
+        Sun, 24 Sep 2023 00:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
+ t=1695541918; x=1696146718; i=j.neuschaefer@gmx.net;
+ bh=l762rpL78XJX6kJZnEmaPG5CMPXGEcWFqwe5ttBK0r8=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=YpFDgI6h/z+QyCVPCCDi/zKyUeTBlS/nGbSI2K7R99GYwz2fPg1iegitN57/RyxtXCqQLSI/RM5
+ kwpBTkRtqLmCwMAhRby29OwfHxllkI0YWYUAJKpC5l4jpqTUKQYQ5uGhMiBtcqTyfswZUEwXuGh1H
+ +olWxxZVRZHEExoSX2nZKJgOW1ao5BB0x3zHjHWrhrIKStFLe/9583O/Ibhb3iiquWvqMwomv0RUn
+ F4RgVsxPJX51Xs/64s5LdPuVAsN4xZhrZeSZMHVBdD1EGS30PRaQB+bNILyN9Ia27apmZcrSNdQAa
+ w+8WSf08umwiLn6NuFDg0yajl3RrXxvFDO5w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MaJ3t-1rDfAJ29Yb-00WCWT; Sun, 24
+ Sep 2023 09:51:58 +0200
+Date:   Sun, 24 Sep 2023 09:51:55 +0200
+From:   =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-clk@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v9 3/3] clk: wpcm450: Add Nuvoton WPCM450 clock/reset
+ controller driver
+Message-ID: <ZQ/qm2QH0kbz+2Vx@probook>
+References: <20230923143438.1895461-1-j.neuschaefer@gmx.net>
+ <20230923143438.1895461-4-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:f0a:b0:3ad:aeed:7ed9 with SMTP id
- m10-20020a0568080f0a00b003adaeed7ed9mr2448378oiw.2.1695541796931; Sun, 24 Sep
- 2023 00:49:56 -0700 (PDT)
-Date:   Sun, 24 Sep 2023 00:49:56 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000820e380606161640@google.com>
-Subject: [syzbot] [mm?] [hfs?] KASAN: slab-out-of-bounds Read in generic_perform_write
-From:   syzbot <syzbot+4a2376bc62e59406c414@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, hughd@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pBFYjzjBf1TpgkI2"
+Content-Disposition: inline
+In-Reply-To: <20230923143438.1895461-4-j.neuschaefer@gmx.net>
+X-Provags-ID: V03:K1:UrCyJY5yKXyKetG4NIlBC/9FZ3CNGXjUHb2ZVmhgA1GCm6ilD0x
+ IxDyp6S6rVpCvSXbwgO9GrzOBV4sKQ/OAaAi4d57UW1+JkUn+bFtPrtTxwtKlH22rg8YP0N
+ vc+GVX+XTmM1BegsDCVctoZKP2iE4YIZdV5j2Plg5K22Pzd2vV2qc0pwvwrZvX63bRNBK+I
+ J4AXUWaEv6fDZ0NS4eNnA==
+UI-OutboundReport: notjunk:1;M01:P0:8FTVNRtf2kg=;UaoUthIli/bLoGv10ARCskyds6F
+ Ykp1XreM4CWzIAbcbGdJZqoaJq+aKfSH5To3wb248/JLJda8zu90HsGGJqzcdTjLlg4v8wc5a
+ vjM2Tw8QTNTTWEwCB0lubvDQJK4DcmpSrhiCTr85bjsD0W5NOiPtFE3RpFyAfERyy0Zn4BOXN
+ fVWqOBxr7zFRO96M1iTlaC5DDLhsr5bJ4RmbO1FJ9TFpQrpbp5kZrHxRhTLy6gOAvIZVzYLNp
+ PIn1bvM8oNqHPjrxCN80SxLKaqdZ+LU1c06oC1B1alApiTVAP8eMzD5//MOTkEcrxWxG2vk7v
+ UYxvb4XKGqt9hf9mKKFV4wE/VrH2MGzOFWtOOGRxCP7lvzbs/DGp5E4Fck4ZELSHHpdusljqg
+ ENa7k8opDEuNt9R7GIsDH8U1lFN9TK0Qe/JToM1Y5f6cqVEIcrTlLmo+OF6jQOemWrfynWYqB
+ 9VymakxI1+4cpcLfZ5TghB3Ztd8vjQcevEjLj3er+lkl9CYns2uSPbhsFC9nmsxQant1OmAUZ
+ iONnAGoIhb/D5fMIfacelzBSrl8BLpDFA/DAKRJiHd4a4S4WFFVtjVX0rDNTGRIS20ALEyctd
+ ZwOSiZqJplTIMBnBv774X3z4s9x9L3CvGOjSDNEimhbmXE2TaRW8odTvq2czuteU+9I/bAY0G
+ stO6PuvjwbQjFLsUzskpIUG3kDnNLFP91AE5DHXNRQuuwYMmhbaSlnlItREbkMu5VDLoo4PBo
+ kBR1VqIhBG8LQooUPnH1Qc/t/MXEiph1i59aL6tKE6yjvnfFJvdZ+n0LEawFDu7BIi3TLkJSG
+ yypBLalJeLKeT/6S/Ono8+BeHmrCDOWIYzMS0A4JdsT0kUVGf2EwpefknMnNxoeNcbBUIKUQK
+ ZN9EeaC4fk2tzXlgdNom9+6B68wONyRcaVrYmG2V0/ytx3sijXgrYk82EhbYhZyMQq6LZ1z/B
+ b1+hpw==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--pBFYjzjBf1TpgkI2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    2cf0f7156238 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=153cd286680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e4ca82a1bedd37e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=4a2376bc62e59406c414
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e88918680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10aea78c680000
+On Sat, Sep 23, 2023 at 04:34:38PM +0200, Jonathan Neusch=C3=A4fer wrote:
+> This driver implements the following features w.r.t. the clock and reset
+> controller in the WPCM450 SoC:
+>=20
+> - It calculates the rates for all clocks managed by the clock controller
+> - It leaves the clock tree mostly unchanged, except that it enables/
+>   disables clock gates based on usage.
+> - It exposes the reset lines managed by the controller using the
+>   Generic Reset Controller subsystem
+>=20
+> NOTE: If the driver and the corresponding devicetree node are present,
+>       the driver will disable "unused" clocks. This is problem until
+>       the clock relations are properly declared in the devicetree (in a
+>       later patch). Until then, the clk_ignore_unused kernel parameter
+>       can be used as a workaround.
+>=20
+> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+> ---
+[...]
+> +config CLK_WPCM450
+> +	bool "Nuvoton WPCM450 clock/reset controller support"
+> +	default y
+> +	help
+> +	  Build the clock and reset controller driver for the WPCM450 SoC.
+> +
+[...]
+>  config RESET_SIMPLE
+>  	bool "Simple Reset Controller Driver" if COMPILE_TEST || EXPERT
+> -	default ARCH_ASPEED || ARCH_BCMBCA || ARCH_BITMAIN || ARCH_REALTEK || A=
+RCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC
+> +	default ARCH_ASPEED || ARCH_BCMBCA || ARCH_BITMAIN || ARCH_REALTEK || A=
+RCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC || ARCH_WPC=
+M450
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/eac482f1f6bc/disk-2cf0f715.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7a69dad9f1ff/vmlinux-2cf0f715.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/16676b650375/bzImage-2cf0f715.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/c040f8fc7107/mount_0.gz
+Considering the build bot failures and the fragility of adding tons of
+platforms to this "default" line, I think I'll just select RESET_CONTROLLER
+and RESET_SIMPLE from CLK_WPCM450.
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+Jonathan
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10e0a282680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12e0a282680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e0a282680000
+--pBFYjzjBf1TpgkI2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4a2376bc62e59406c414@syzkaller.appspotmail.com
+-----BEGIN PGP SIGNATURE-----
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memcpy_from_iter lib/iov_iter.c:380 [inline]
-BUG: KASAN: slab-out-of-bounds in copy_page_from_iter_atomic+0x908/0x12f0 lib/iov_iter.c:590
-Read of size 1024 at addr ffff888020b4ec00 by task kworker/u4:7/1273
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmUP6m4ACgkQCDBEmo7z
+X9s7NA/+Kb7kcTcnrZ5q9OcEGS0N4Gl5A8Zn58D+GlGntd/3PFbp4EIq+wZJKrrh
+eiIuAP6NToGOQbEBfFFBcUU+4qloCorKoQcWeY5rgoBLntU2Lyj9BTk4Mcj3YhH9
+Lm11A3S0QJQqkYmbHZD6xgAYKA+oP9bMQJd6gz2y7o8dAiXYGP1uNuRI7c58ArKD
+EmBQ3HaGiT2vwxuK0Gg1cc8EsCC1ygaKTf2B5tr/jopZb0sc21fA6cWb++iDVipk
+chYyGTroDuUI8ClBOUzAvVDK2/AMps85WPqCndf2WAva6z6BT3EnJp8O6biguSrw
+lf/yHeMBeIuHFOfD1ZNdEw7cpH9wQGn4adIuLGjIt10a5Bi9tVIX1eCKIJs1JGn6
+AkRFgkw6/SYvEdF1q28x3oxLIsFFy2N1rJ1troUUaNUFTC0pyzC7S96tf/uva3fg
+nLb/+X1qO0WSHIQQ9D4C+CuQ//KfRvWflX0cFY7H60MO+LaD0cNc3tmVrJpCb32B
+Io/2VV2p0OfuSPaRd8dVgGSHfXpC3ncZOUGnSMGfSyrbLyRlq2VtsRrROD1kqOoW
+amLSqiskO9amsmn3IXzbD9Hd/ytUwy4zXpk6R/TaK4X9GMJ1fA0g8sx7CH2KafV4
+gunw8+m8zQMM53M/IaymQqYdEIISme1PsyiJA/9Et6bih2IL5sI=
+=Dm6m
+-----END PGP SIGNATURE-----
 
-CPU: 0 PID: 1273 Comm: kworker/u4:7 Not tainted 6.6.0-rc2-syzkaller-00018-g2cf0f7156238 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Workqueue: loop0 loop_rootcg_workfn
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x175/0x1b0 mm/kasan/report.c:588
- kasan_check_range+0x27e/0x290 mm/kasan/generic.c:187
- __asan_memcpy+0x29/0x70 mm/kasan/shadow.c:105
- memcpy_from_iter lib/iov_iter.c:380 [inline]
- copy_page_from_iter_atomic+0x908/0x12f0 lib/iov_iter.c:590
- generic_perform_write+0x392/0x630 mm/filemap.c:3950
- shmem_file_write_iter+0xfc/0x120 mm/shmem.c:2865
- do_iter_write+0x84f/0xde0 fs/read_write.c:860
- lo_write_bvec drivers/block/loop.c:249 [inline]
- lo_write_simple drivers/block/loop.c:271 [inline]
- do_req_filebacked drivers/block/loop.c:495 [inline]
- loop_handle_cmd drivers/block/loop.c:1915 [inline]
- loop_process_work+0x14c3/0x22a0 drivers/block/loop.c:1950
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-
-Allocated by task 5038:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1023 [inline]
- __kmalloc+0xb9/0x230 mm/slab_common.c:1036
- kmalloc include/linux/slab.h:603 [inline]
- hfsplus_read_wrapper+0x545/0x1330 fs/hfsplus/wrapper.c:178
- hfsplus_fill_super+0x38e/0x1c90 fs/hfsplus/super.c:413
- mount_bdev+0x237/0x300 fs/super.c:1629
- legacy_get_tree+0xef/0x190 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x280 fs/super.c:1750
- do_new_mount+0x28f/0xae0 fs/namespace.c:3335
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff888020b4ec00
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 0 bytes inside of
- allocated 512-byte region [ffff888020b4ec00, ffff888020b4ee00)
-
-The buggy address belongs to the physical page:
-page:ffffea000082d300 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20b4c
-head:ffffea000082d300 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012841c80 ffffea000085e900 dead000000000002
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 12443144717, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
- alloc_page_interleave+0x22/0x1d0 mm/mempolicy.c:2131
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1114
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- dev_pm_qos_constraints_allocate+0x8f/0x400 drivers/base/power/qos.c:204
- __dev_pm_qos_add_request+0x121/0x4a0 drivers/base/power/qos.c:344
- dev_pm_qos_add_request+0x3a/0x60 drivers/base/power/qos.c:394
- usb_hub_create_port_device+0x4c6/0xc40 drivers/usb/core/port.c:727
- hub_configure drivers/usb/core/hub.c:1685 [inline]
- hub_probe+0x2469/0x3570 drivers/usb/core/hub.c:1922
- usb_probe_interface+0x5c4/0xb00 drivers/usb/core/driver.c:396
- really_probe+0x294/0xc30 drivers/base/dd.c:658
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888020b4ed00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888020b4ed80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888020b4ee00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                   ^
- ffff888020b4ee80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888020b4ef00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--pBFYjzjBf1TpgkI2--
