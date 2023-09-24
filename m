@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE957ACBB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6287ACBB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 21:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjIXTu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 15:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        id S231432AbjIXTvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 15:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjIXTu4 (ORCPT
+        with ESMTP id S231404AbjIXTu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 15:50:56 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0015EFA;
-        Sun, 24 Sep 2023 12:50:49 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9aa2c6f0806so623159266b.3;
-        Sun, 24 Sep 2023 12:50:49 -0700 (PDT)
+        Sun, 24 Sep 2023 15:50:59 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAE3FA
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:50:53 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3224c229d31so802683f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:50:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695585048; x=1696189848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b0ZBqIoDYKMVCzgLuvboaux6shOrM5HIrW6ijoQ1dls=;
-        b=W+d8e8CnuBYzNUMLvdHbm1e8ekL1oZ+fPJHI2UTQAfZO7KaNQNjKvqfn6t5hk2fCU8
-         NkVhFfeiOACZhEajm/KMo6Xj7CwgdZDjwWYv/gaAjmzDffmtBpYvc5wY3Xx/I96dIO1g
-         Um91DnBV757MiuiJneMi6CHrkViKdJT0FKlrpDB2+vPvemDB1jTQBKbkGmIQ9tyhGesl
-         HF6ynFiQCNfPJ44aipfXWKEKxEQ4b0Pgq+LchpznwsQaLI9/nAjM9BEh5oKZ7Ah6o6tI
-         gur5+S5LnVPEYsW0Kvk8zyuEx10redZfGD67e/FquULZ/5snG6Ts90kIqtzSxwWXHArF
-         SJgA==
+        d=gmail.com; s=20230601; t=1695585051; x=1696189851; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ad41TGXwIahQ49MHw+UdUbfiHlgxk7kDHjA1x4UOf8E=;
+        b=iIosmKJhwRXo2fu6OuvkG0zG0Iu5Np4YrBPTgMdpB+WIab95Mt5QgOQCp0Zi1zLX9x
+         AYj9KHfCjZj88XwDIwM6nql1sSl8xev5eOV8vxxLYvWiPPa5F45bSEpj/GzZmE1VBigf
+         AznIfFnWH35b1CDK0fyLAcxYsP+44p0v3+Tq+CQM++/V9nA7N2iodVCMxuat4BPTkEsC
+         hl4eV2HVWJaTdSnudREKWmrLPDyYvE7zDG6rr2BKDH+ODHRkzfYQE7xRHpqCSBoAp03r
+         fNp76Dywfh35WpBGVOvHV5wEWYhJRLiUdy2j/OMh0r+Ak3eGyy+1QSHgA6Wnz4LS+CBG
+         Pb9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695585048; x=1696189848;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b0ZBqIoDYKMVCzgLuvboaux6shOrM5HIrW6ijoQ1dls=;
-        b=DjlLi9J5qwsk9jmOUJnfi2dLRBa0YvthkZgMWipcqW6eBFAbdfTvSuLA6UM7aszVZe
-         IOa5u03MpLITX/Pbq9FAIyjIPdRdAZ/QXB5dOp4Ah78/XjgENZZC82CkDlq3Zx2ww1Pt
-         Ssv/eE8LH6z3jGo20Vo9voHI/3MYMAi8PEgOijM8+FzOziBWK6w/bOZ9PjhjPgV96p2v
-         D7w7LPIBymsxHXl9ha7qVaiNyHo/c8LElZdJVg/SCV3zXTEBQPCA2aNvF+CBJuiv6LgI
-         W8dMJO5qx0In94TRtpn7iHUcxCzqT/20UFpkxTVMHel41OjhPK2WwhBWdZZpEmvaZVCn
-         5XbA==
-X-Gm-Message-State: AOJu0Ywp3DVdCMONoiUQX/MzuXum9PIP1uHlok4PULNBVZMeXvuNewhx
-        aAaS/Gi6SB0R641HdwPm9l/r5AW/i5i5eQ==
-X-Google-Smtp-Source: AGHT+IHLYgqMybMHGPeaqhZNmoe5ADooSVrZz1GsWPUqF2lfGpcVEHt34hg0NCrjDiXTINlAK7E+8g==
-X-Received: by 2002:a17:906:68c9:b0:9ae:7387:897b with SMTP id y9-20020a17090668c900b009ae7387897bmr3799726ejr.30.1695585048383;
-        Sun, 24 Sep 2023 12:50:48 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170906354200b0098ec690e6d7sm5338376eja.73.2023.09.24.12.50.47
+        d=1e100.net; s=20230601; t=1695585051; x=1696189851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ad41TGXwIahQ49MHw+UdUbfiHlgxk7kDHjA1x4UOf8E=;
+        b=U6kspouQB3Ly5PSmNTb447Xq/vnH56ZYjCTo3cHvmv9lpdmsCcI7I588tqRjJKLsSk
+         E1VFvn7nr4D0MxBtmx/3X5bwJLpHepGKN9uCzIgW0JjAzFiwVH7X4sFZMZlISnrJzlET
+         5vhZEuia5vD8LOMVv/P7jMf069xhL1TPzjHhpI4y6Ay9MsxwVC+vnHXskknrNs8RSGmG
+         1anbSPtSQPrHebzH0JnCx8gqSBG8F+K2mhQ1fUi3czvoYznWx29SkyUweUp+jQOfV/KT
+         KaU6l4+cwNXNyziKLpx1HhxXRTV+9zWCc3r8Wjy2H12bTUv8570LWye2a4f2kZf9oOrV
+         ruOw==
+X-Gm-Message-State: AOJu0YxLIXg2o9jTMgggL59XG0e40AHWN2yyaWwnNcbQFPQyPxpIVQWz
+        Xu+oUR1JFe7AQ44omSHy1gfjs9Tpir8=
+X-Google-Smtp-Source: AGHT+IGNP2pZpAtLJmnr9Np23Qt3h8YDzNGMTMBeRErqYnZDanSXWZ4oGsDt2pHasl8f/J/F1MMmbw==
+X-Received: by 2002:adf:d087:0:b0:320:b1e:7e6c with SMTP id y7-20020adfd087000000b003200b1e7e6cmr3764106wrh.3.1695585051315;
+        Sun, 24 Sep 2023 12:50:51 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id n14-20020a5d400e000000b00321773bb933sm10020959wrp.77.2023.09.24.12.50.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 12:50:48 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     Icenowy Zheng <uwu@icenowy.me>, Mark Brown <broonie@kernel.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Shengyu Qu <wiagn233@outlook.com>,
-        Martin Botka <martin.botka1@gmail.com>,
-        Matthew Croughan <matthew.croughan@nix.how>,
-        linux-sunxi@lists.linux.dev, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: mfd: x-powers,axp152: make interrupt optional
- for more chips
-Date:   Sun, 24 Sep 2023 21:50:46 +0200
-Message-ID: <2900712.e9J7NaK4W3@jernej-laptop>
-In-Reply-To: <20230919103913.463156-2-andre.przywara@arm.com>
-References: <20230919103913.463156-1-andre.przywara@arm.com>
- <20230919103913.463156-2-andre.przywara@arm.com>
+        Sun, 24 Sep 2023 12:50:51 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 21:50:49 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] staging: rtl8192e: Put kfree() to end of
+ rtllib_softmac_free()
+Message-ID: <85b63c62780356af91c30cc63280c5f59cd29210.1695582999.git.philipp.g.hortmann@gmail.com>
+References: <cover.1695582999.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1695582999.git.philipp.g.hortmann@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -83,51 +71,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne torek, 19. september 2023 ob 12:39:12 CEST je Andre Przywara napisal(a):
-> All X-Powers PMICs described by this binding have an IRQ pin, and so
-> far (almost) all boards connected this to some NMI pin or GPIO on the SoC
-> they are connected to.
-> However we start to see boards that omit this connection, and technically
-> the IRQ pin is not essential to the basic PMIC operation.
-> 
-> The existing Linux driver allows skipping the IRQ pin setup for two chips
-> already, so update the binding to also make the DT property optional for
-> the missing chip. And while we are at it, add the AXP313a to that list,
-> as they are actually boards out there not connecting the IRQ pin.
-> 
-> This allows to have DTs correctly describing those boards not wiring up
-> the interrupt.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+To reverse order of initialization put kfree() to the end of
+rtllib_softmac_free().
 
-Should I pick this patch through sunxi tree?
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+ drivers/staging/rtl8192e/rtllib_softmac.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Best regards,
-Jernej
-
-> ---
->  Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml b/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
-> index 9ad55746133b5..06f1779835a1e 100644
-> --- a/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
-> @@ -67,7 +67,10 @@ allOf:
->          properties:
->            compatible:
->              contains:
-> -              const: x-powers,axp305
-> +              enum:
-> +                - x-powers,axp15060
-> +                - x-powers,axp305
-> +                - x-powers,axp313a
->  
->      then:
->        required:
-> 
-
-
-
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 982578e1c0af..d3468b646ca8 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -2462,8 +2462,6 @@ int rtllib_softmac_init(struct rtllib_device *ieee)
+ void rtllib_softmac_free(struct rtllib_device *ieee)
+ {
+ 	mutex_lock(&ieee->wx_mutex);
+-	kfree(ieee->dot11d_info);
+-	ieee->dot11d_info = NULL;
+ 	del_timer_sync(&ieee->associate_timer);
+ 
+ 	cancel_delayed_work_sync(&ieee->associate_retry_wq);
+@@ -2476,6 +2474,9 @@ void rtllib_softmac_free(struct rtllib_device *ieee)
+ 	cancel_work_sync(&ieee->ips_leave_wq);
+ 	cancel_work_sync(&ieee->wx_sync_scan_wq);
+ 	cancel_work_sync(&ieee->ps_task);
++
++	kfree(ieee->dot11d_info);
++	ieee->dot11d_info = NULL;
+ 	mutex_unlock(&ieee->wx_mutex);
+ }
+ 
+-- 
+2.42.0
 
