@@ -2,77 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBCD7AC6F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3B57AC6FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjIXH21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 03:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        id S229943AbjIXHgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 03:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXH20 (ORCPT
+        with ESMTP id S229699AbjIXHgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 03:28:26 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5123100
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:28:19 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c081a44afso83702797b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695540499; x=1696145299; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GlhytN8p6rzsoNNyF2qTaia7H0UbvnXVgo1f8ue1miw=;
-        b=bzemv4DxQIseJIZGlcspLaUqsTJ+pNLlu4GBS30lHDRoXayjlS3aKQVLaaq7mZHHAS
-         LF4KFpnYj/oqv+iLOBVj4QTA9s1ROI6Q7qbopwqBNV9M5u7wWCVP8sBZYanb5sH5If6L
-         Tpdmw6tnWY/S6+mCF8bIZOZ7l0wUic5/swoKZ5aLOPdDIY7G65ONrJEbrOSt3lfnvd8h
-         eHkCE4ys3myKIam9xyfe9tZISOAW7KX4mMYGcq69E5hKCk4cyeOdTPn+DXjnHnYPaw71
-         OTKRBQnVvfNRqio22MSKg6jrC3fjHpEkMTGOAbleiXmVLyzRX73USUTEyLbIwlW990dV
-         CTag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695540499; x=1696145299;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GlhytN8p6rzsoNNyF2qTaia7H0UbvnXVgo1f8ue1miw=;
-        b=FTixiNFSMlTOTY64CEJqJR+wP7/C0Tm3oqSoNuAk764fZBrnrseQdyS2ALoRuvn7xR
-         5crR017YyO+scAiKa+XHPv6Me8uMtkyI8r2CZj/LEyDTQAGLIG6BrNTvzElybdEXwsE5
-         CSFxhWhn/wmo9GwoxITeehDo2Mrjwuj1JQdRtRrc/qqEYn/cYZkPn9ItK1T87It/rjeM
-         BPLL5A3U+bePGIZpPtRIDfzoztRop9M83VNHlroXVn03gfrm6CUP1n5YH2xChO4jnOn/
-         7l7uYk5vrvPC+Btznum//UAf/r1VEd4b9FQ5yNmUhuZr/kfKH5kuevMDt703bPEnuLVZ
-         D8Ag==
-X-Gm-Message-State: AOJu0YxZCbiI8BfLqGCtcFeth827b21vuRbYL7K6y0LqUAT5dlDsfuba
-        9tyuarU4sixMDF7fjRYMzPXh241VeD5twQ==
-X-Google-Smtp-Source: AGHT+IEhWDis5bOzbmBGOi4zqdXmHXsB5eM3APbeJBFJO8QLORC4+n5ComSE/iuNU8T1xE+g9g77xuCbvAPMMA==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a81:e304:0:b0:59c:b9b:8940 with SMTP id
- q4-20020a81e304000000b0059c0b9b8940mr42160ywl.8.1695540498994; Sun, 24 Sep
- 2023 00:28:18 -0700 (PDT)
-Date:   Sun, 24 Sep 2023 07:28:16 +0000
-In-Reply-To: <71ac08d3-9f36-e0de-870e-3e252abcb66a@bytedance.com>
-Mime-Version: 1.0
-References: <20230920132545.56834-1-wuyun.abel@bytedance.com>
- <20230920132545.56834-2-wuyun.abel@bytedance.com> <20230921190156.s4oygohw4hud42tx@google.com>
- <82c0a442-c7d7-d0f1-54de-7a5e7e6a31d5@bytedance.com> <71ac08d3-9f36-e0de-870e-3e252abcb66a@bytedance.com>
-Message-ID: <20230924072816.6ywgoe7ab2max672@google.com>
-Subject: Re: [PATCH net-next 2/2] sock: Fix improper heuristic on raising memory
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujtsu.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Sun, 24 Sep 2023 03:36:14 -0400
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A443197
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:36:05 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id kJesqk7nIGc65kJesqQUu3; Sun, 24 Sep 2023 09:36:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695540963;
+        bh=018xaLEDvxggoMddYpgeo/uvtqjMWAwwaPEHKHKhtvA=;
+        h=From:To:Cc:Subject:Date;
+        b=pQy7OeR8/JRokKoalfqARW7ycJBOE9XFchZQxVNYhEXztu4UfdU1+F0kj2pmV28aO
+         avdVOG0lO5QJB3GNl3bBX6xGCB2HsPjwCPGC7ZqDlHUFdlzbmmvmofoZQq2OofMt9g
+         zl975c9qmr6bq2Ji42XXpKuAK1ig5oC5yVccIcVpOOYiEBRfXSZAmwF1uA43icMWrh
+         mmlPixtAbDWeRPqP7MHo3XDf6exTjL5hhPh0Jj86aRb/YFxqXekWxjXu7y0/iYnUU+
+         /R1zrZGk5lKkqODxeXGwJv1SG2Ja2xHQcrjd2mCUOXlK3zLH7MsnQCVsRnV9LjF8N4
+         mYyvzM4ZCl5dg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 24 Sep 2023 09:36:03 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: audio-iio-aux: Use flex array to simplify code
+Date:   Sun, 24 Sep 2023 09:36:01 +0200
+Message-Id: <1c0090aaf49504eaeaff5e7dd119fd37173290b5.1695540940.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,37 +55,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 06:10:06PM +0800, Abel Wu wrote:
-[...]
-> 
-> After a second thought, it is still vague to me about the position
-> the memcg pressure should be in socket memory allocation. It lacks
-> convincing design. I think the above hunk helps, but not much.
-> 
-> I wonder if we should take option (3) first. Thoughts?
-> 
+"io-channel-names" is expected to have few values, so there is no real
+point to allocate audio_iio_aux_chan structure with a dedicate memory
+allocation.
 
-Let's take a step further. Let's decouple the memcg accounting and
-global skmem accounting. __sk_mem_raise_allocated is already very hard
-to reason. There are couple of heuristics in it which may or may not
-apply to both accounting infrastructures.
+Using a flexible array for struct audio_iio_aux->chans avoids the
+overhead of an additional, managed, memory allocation.
 
-Let's explicitly document what heurisitics allows to forcefully succeed
-the allocations i.e. irrespective of pressure or over limit for both
-accounting infras. I think decoupling them would make the flow of the
-code very clear.
+This also saves an indirection when the array is accessed.
 
-There are three heuristics:
+Finally, __counted_by() can be used for run-time bounds checking if
+configured and supported by the compiler.
 
-1. minimum buffer size even under pressure.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/codecs/audio-iio-aux.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-2. allow allocation for a socket whose usage is below average of the
-system.
+diff --git a/sound/soc/codecs/audio-iio-aux.c b/sound/soc/codecs/audio-iio-aux.c
+index a8bf14239bd7..1e8e1effc2af 100644
+--- a/sound/soc/codecs/audio-iio-aux.c
++++ b/sound/soc/codecs/audio-iio-aux.c
+@@ -26,8 +26,8 @@ struct audio_iio_aux_chan {
+ 
+ struct audio_iio_aux {
+ 	struct device *dev;
+-	struct audio_iio_aux_chan *chans;
+ 	unsigned int num_chans;
++	struct audio_iio_aux_chan chans[]  __counted_by(num_chans);
+ };
+ 
+ static int audio_iio_aux_info_volsw(struct snd_kcontrol *kcontrol,
+@@ -250,23 +250,18 @@ static int audio_iio_aux_probe(struct platform_device *pdev)
+ 	int ret;
+ 	int i;
+ 
+-	iio_aux = devm_kzalloc(dev, sizeof(*iio_aux), GFP_KERNEL);
++	count = device_property_string_array_count(dev, "io-channel-names");
++	if (count < 0)
++		return dev_err_probe(dev, count, "failed to count io-channel-names\n");
++
++	iio_aux = devm_kzalloc(dev, struct_size(iio_aux, chans, count), GFP_KERNEL);
+ 	if (!iio_aux)
+ 		return -ENOMEM;
+ 
+ 	iio_aux->dev = dev;
+ 
+-	count = device_property_string_array_count(dev, "io-channel-names");
+-	if (count < 0)
+-		return dev_err_probe(dev, count, "failed to count io-channel-names\n");
+-
+ 	iio_aux->num_chans = count;
+ 
+-	iio_aux->chans = devm_kmalloc_array(dev, iio_aux->num_chans,
+-					    sizeof(*iio_aux->chans), GFP_KERNEL);
+-	if (!iio_aux->chans)
+-		return -ENOMEM;
+-
+ 	names = kcalloc(iio_aux->num_chans, sizeof(*names), GFP_KERNEL);
+ 	if (!names)
+ 		return -ENOMEM;
+-- 
+2.34.1
 
-3. socket is over its sndbuf.
-
-Let's discuss which heuristic applies to which accounting infra and
-under which state (under pressure or over limit).
-
-thanks,
-Shakeel
