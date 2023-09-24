@@ -2,56 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB077AC764
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D907AC765
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjIXJpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 05:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S229609AbjIXJsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 05:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXJpV (ORCPT
+        with ESMTP id S229437AbjIXJsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 05:45:21 -0400
+        Sun, 24 Sep 2023 05:48:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF91F1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 02:45:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 833ADC433C8;
-        Sun, 24 Sep 2023 09:45:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7B7F1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 02:48:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B8E3C433C7;
+        Sun, 24 Sep 2023 09:48:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695548714;
-        bh=LzXtXNSrED4dMzen6Q/uURvpZAZL8E9Bv/zlsiifUII=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlyGDYOLKcdOI7ErZN7x3cEp1epP1Z/Z3Ba7up5RSWSUq0KLw2R+0+1ANgitmvj4P
-         QZ74tclE1yJ4rfJgn1l0QZnYAZ3lCFGLzexHP47RxgiuDjZDM1tRXRbq8fWdqtCSvi
-         soo+5Q8vY70nDyo3NvUSfwRev0vbcS6gfpzjQM0fVn9BnoO9wO0dI9YsghbetekJr/
-         UZFR4oKcU6XNQDnvMktSngOQU63SUCgB/tlYHXWWdNZxowRRxquMcT98surVnDqBrD
-         nbkZ58dGvz5F7xM50ntR76IU71sheGal5jC6xHMo5vKMB6I+oXcTe+CTQ2FPFPXO6Q
-         hdqEJOCzhREyQ==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Siddh Raman Pant <code@siddh.me>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Qian Cai <cai@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] watch_queue: Annotate struct watch_filter with __counted_by
-Date:   Sun, 24 Sep 2023 11:45:06 +0200
-Message-Id: <20230924-fass-bass-7b1f7aa70dd3@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922175407.work.754-kees@kernel.org>
-References: <20230922175407.work.754-kees@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1237; i=brauner@kernel.org; h=from:subject:message-id; bh=LzXtXNSrED4dMzen6Q/uURvpZAZL8E9Bv/zlsiifUII=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQKsLJ+VWk8O3WrfU6JsPL0Sq3cRXuX5S86vlXvZtll8T/P HExaOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaSJsLwP/T830PVzxO/SBaxnjv9u1 xP9FfmkxNJlpX3jWsdfdZ+AanQUu6oPc5ndTmwZnf2kd/fvlWKxC5Zcu3aYk/Ho117KpkB
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1695548927;
+        bh=AzIkdfwzXD+T+Gna4WqEJFhKjFVAJriX5oQpitHh260=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GPcFfcKbd512J1G4iCQvmxZHCFALgWbCbXsu6UYm+2OERysWxhW7wcU7ANrj2JcUH
+         sG/x2uXB9d/ZeduKnmtKwtgVbqNJI4v6/WPY6inZquoXrtcyPiLqQNXrU18XOr3h8C
+         xFray+p8KneW2cA1AcNpPORJ1JjWt2pkqIdIv4tuDHKksASYlJG6O3Rg3RQO8ci18B
+         vwEa41l6VK8aW6AZ8uOp2FR4Qjlh8/BXojWPwUwKBe6lWp2ElFlnBlqxxs6uvwYUlI
+         WrGIIzyyTM4vgnDs0yKdhsOqmh7JvSQxq3GKOwDF8Jl2qAkRZIm2C6L3sCR3NH0Koi
+         jvV5GpLGtmQyQ==
+Received: from [85.255.234.76] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qkLjJ-00FfbA-4e;
+        Sun, 24 Sep 2023 10:48:45 +0100
+Date:   Sun, 24 Sep 2023 10:48:41 +0100
+Message-ID: <87v8bz52bq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, Christoffer.Dall@arm.com,
+        eauger@redhat.com, miguel.luis@oracle.com,
+        darren@os.amperecomputing.com, scott@os.amperecomputing.com
+Subject: Re: [PATCH v2 2/2] KVM: arm64: timers: Save restore CVAL of a ptimer across guest entry and exits
+In-Reply-To: <38722ba7-b7d9-368b-f946-b6c0c0a661b8@os.amperecomputing.com>
+References: <20230904114218.590304-1-gankulkarni@os.amperecomputing.com>
+        <20230904114218.590304-3-gankulkarni@os.amperecomputing.com>
+        <86bkeadzf0.wl-maz@kernel.org>
+        <ec322123-bfe7-6019-7f35-de326ee7b6c3@os.amperecomputing.com>
+        <8634zben3d.wl-maz@kernel.org>
+        <38722ba7-b7d9-368b-f946-b6c0c0a661b8@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 85.255.234.76
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, Christoffer.Dall@arm.com, eauger@redhat.com, miguel.luis@oracle.com, darren@os.amperecomputing.com, scott@os.amperecomputing.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,31 +68,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 10:54:08 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Tue, 19 Sep 2023 07:15:44 +0100,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
 > 
-> As found with Coccinelle[1], add __counted_by for struct watch_filter.
 > 
-> [...]
+> 
+> On 18-09-2023 04:59 pm, Marc Zyngier wrote:
+> > On Fri, 15 Sep 2023 10:57:46 +0100,
+> > Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> >> 
+> >> This patch did not work.
+> >> After adding changes as in below diff, it is started working.
+> > 
+> > Thanks for looking into this.
+> > 
+> >> 
+> >> diff --git a/arch/arm64/kvm/hyp/vhe/switch.c
+> >> b/arch/arm64/kvm/hyp/vhe/switch.c
+> >> index b0b07658f77d..91d2cfb03e26 100644
+> >> --- a/arch/arm64/kvm/hyp/vhe/switch.c
+> >> +++ b/arch/arm64/kvm/hyp/vhe/switch.c
+> >> @@ -117,7 +117,7 @@ static void __activate_traps(struct kvm_vcpu *vcpu)
+> >>                          val = __vcpu_sys_reg(vcpu, CNTHP_CVAL_EL2);
+> >> 
+> >>                  if (map.direct_ptimer) {
+> >> -                       write_sysreg_s(val, SYS_CNTP_CVAL_EL0);
+> >> +                       write_sysreg_el0(val, SYS_CNTP_CVAL);
+> > 
+> > Duh, of course. Silly me.
+> > 
+> >>                          isb();
+> >>                  }
+> >>          }
+> >> @@ -161,8 +161,6 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+> >> 
+> >>          ___deactivate_traps(vcpu);
+> >> 
+> >> -       write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
+> >> -
+> >>          if (has_cntpoff()) {
+> >>                  struct timer_map map;
+> >>                  u64 val, offset;
+> >> @@ -173,7 +171,7 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+> >>                   * We're exiting the guest. Save the latest CVAL value
+> >>                   * to memory and apply the offset now that TGE is set.
+> >>                   */
+> >> -               val = read_sysreg_s(SYS_CNTP_CVAL_EL0);
+> >> +               val = read_sysreg_el0(SYS_CNTP_CVAL);
+> >>                  if (map.direct_ptimer == vcpu_ptimer(vcpu))
+> >>                          __vcpu_sys_reg(vcpu, CNTP_CVAL_EL0) = val;
+> >>                  if (map.direct_ptimer == vcpu_hptimer(vcpu))
+> >> @@ -182,12 +180,13 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+> >>                  offset = read_sysreg_s(SYS_CNTPOFF_EL2);
+> >> 
+> >>                  if (map.direct_ptimer && offset) {
+> >> -                       offset = read_sysreg_s(SYS_CNTPOFF_EL2);
+> >> -                       write_sysreg_s(val + offset, SYS_CNTP_CVAL_EL0);
+> >> +                       write_sysreg_el0(val + offset, SYS_CNTP_CVAL);
+> >>                          isb();
+> >>                  }
+> >>          }
+> >> 
+> >> +       write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
+> > 
+> > Why moving the HCR_EL2 update? I don't grok what it changes. Or is it
+> 
+> This the line of code which flips the TGE and making timer cval ready
+> to handle the TGE flip is more safe way(avoids even corner case of
+> false interrupt triggers) than changing after the flipping?
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+That's pretty dubious. Do you actually see it firing on your HW?
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+> 
+> > that you end-up with spurious interrupts because your GIC is slow to
+> > retire interrupts that are transiently pending?
+> 
+> IIUC, If there are any transient interrupts or asserted already,
+> anyway they will be handled when irq is unmasked.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+That's the idea. But my question is whether you observe spurious
+interrupts when not changing the ordering.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+Thanks,
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
+	M.
 
-[1/1] watch_queue: Annotate struct watch_filter with __counted_by
-      https://git.kernel.org/vfs/vfs/c/6b601adb5e79
+-- 
+Without deviation from the norm, progress is not possible.
