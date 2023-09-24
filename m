@@ -2,109 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ACC7AC66A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 05:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7077AC672
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 05:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjIXDEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 23:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        id S229868AbjIXDQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 23:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXDEr (ORCPT
+        with ESMTP id S229437AbjIXDQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 23:04:47 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D7F124
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 20:04:41 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57b64731334so2194055eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 20:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695524680; x=1696129480; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3sQ7m4xt0fK6eu4MW7lFXq5f5EhNnp1BBnPa+JfP91w=;
-        b=Iu1Dkt85dqEYsbP3Bv+7mtNRP+/1lI+PBrMKtfjmUOwWfuacR0f2JZuyhWv6PY+cbD
-         7xyG7YLAY95X0efx/m2bKMfl+k5pTGfmtbU+slNhguQkb0eYY/wZ/4uWG9fRYxem3od0
-         4n7ZGvFuIxuJow+/eQPEJgrO2S4OMgjlb6Nto=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695524680; x=1696129480;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3sQ7m4xt0fK6eu4MW7lFXq5f5EhNnp1BBnPa+JfP91w=;
-        b=hPD19HcR9PBM1Bi8bfm8MLzLEmaBfWDNYlgIwXZSjgojs9dLKDs5GBNoAJKKapXhAD
-         cKHeCLBepc5kaJIFJivigvSFBG27OENUcFmGkf4lpD9dzo08EzBMDEOEnPGav3aNmh/m
-         /oNlj5iMjwwn6Q8NvANQDBYUgatCrIpp4r585QowvyTEvqTtevvuk/DU7up8zr4cvenS
-         3vqtjkklN8o9ANbnxMXfpJi3HTg0Xn01cc6wmCNfeI5Aiqoq05ODdFsqliyUoYYu1Az4
-         VOhbyov38nkvDo7N9xwbnxqvW1Lhq+YSuQFvxTLLz1nqBEYjl56HqGYaIBizzpMYutwB
-         lbsQ==
-X-Gm-Message-State: AOJu0YyTRvtpgIS5jj+/aX6tuAhWns105nexQE/F9utedWaTManHcF1+
-        3MlbTmePxg5/mOvDBxThK1J1+g==
-X-Google-Smtp-Source: AGHT+IEyctQpGdRHVqfskRrctSvr+c0AutzD5V01OHg/wphX4795l8UXDPxsR/JiCrGwUFsS6seQ2g==
-X-Received: by 2002:a05:6358:991e:b0:141:d2d:6da7 with SMTP id w30-20020a056358991e00b001410d2d6da7mr4584544rwa.17.1695524680210;
-        Sat, 23 Sep 2023 20:04:40 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id rm10-20020a17090b3eca00b0027480345180sm7265781pjb.2.2023.09.23.20.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 20:04:39 -0700 (PDT)
-Date:   Sat, 23 Sep 2023 20:04:38 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] i3c: replace deprecated strncpy
-Message-ID: <202309232003.05306BB415@keescook>
-References: <20230921-strncpy-drivers-i3c-master-c-v1-1-9fdb8d8169e1@google.com>
+        Sat, 23 Sep 2023 23:16:14 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E5A197;
+        Sat, 23 Sep 2023 20:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=hIhc6S9lojzS96JV1IiMmWOoZlmX89PQJ27DBWFUgb8=; b=tcs+ci/+NHqzYCxUBXKQ+iWWbo
+        HfbC2lCB0ZZoR7iP5dsuSuFXkuh1tgcCGESEariPR4RvyDkM72A02vQzkxKS8hh5eOZU/cD/Td5Tc
+        MKXK+8Wll1YtcvYbtg0SFi31WqGbXpEzFT1HVXukIcJDW6B7SWY0wnwAbN8joc058JbY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qkFaK-007KCk-Ou; Sun, 24 Sep 2023 05:15:04 +0200
+Date:   Sun, 24 Sep 2023 05:15:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH net-next v2 00/10] define and enforce phylink bindings
+Message-ID: <2be01f7e-8bd0-42c5-bc82-b1da29b83e24@lunn.ch>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <ZQ2LMe9aa1ViBcSH@shell.armlinux.org.uk>
+ <6c1bb7df-34cd-4db9-95b6-959c87b68588@arinc9.com>
+ <4856b212-5bc5-4783-a184-b34a4a915878@lunn.ch>
+ <5650a2a3-a36f-441e-b4c2-aa7c751b5af5@arinc9.com>
+ <410dfe3c-6f99-4054-88f8-0acbd134cfce@lunn.ch>
+ <228f24db-0a26-4d38-8f73-a9691262cc5f@arinc9.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230921-strncpy-drivers-i3c-master-c-v1-1-9fdb8d8169e1@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <228f24db-0a26-4d38-8f73-a9691262cc5f@arinc9.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 03:51:04AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> > There is a MAC driver currently under review which does not have a PHY
+> > at all. The MAC is directly connected to a switch, all within one
+> > IC. The link is always running at 5Gbps, the link is always up. It is
+> > physically impossible to connect a PHY, so get_link_settings just
+> > returns hard coded values.
 > 
-> We should prefer more robust and less ambiguous string interfaces.
-> 
-> We expect adap->name to be NUL-terminated based on i2c_adapter name use:
-> | dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
-> 
-> NUL-padding does not seem to be required as `master` is zero-allocated
-> and `i3c_master_to_i2c_adapter` simply returns a field from within
-> `master`:
-> |       master = devm_kzalloc(dev, sizeof(*master), GFP_KERNEL);
-> ...
-> |      	struct i2c_adapter *adap = i3c_master_to_i2c_adapter(master);
-> ...
-> |       static struct i2c_adapter *
-> |       i3c_master_to_i2c_adapter(struct i3c_master_controller *master)
-> |       {
-> |       	return &master->i2c;
-> |       }
-> 
-> This means that `adap->name` should already be filled with NUL-bytes.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> The fixed-link property would be used to describe the link of the MAC here.
 
-Looks right to me; straight replacement.
+Fixed-link make sense for a general purpose MAC which could be
+connected to a PHY, or could also be used without a PHY. fixed-link
+simplifies the code in that the MAC driver does not see a difference,
+it all looks like a PHY.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+However for a MAC which cannot be connected to a PHY, there is no need
+to emulate a PHY. The MAC driver will be simpler. So i would not
+recommend a fixed-link in this situation.
 
--- 
-Kees Cook
+	  Andrew
