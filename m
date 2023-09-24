@@ -2,229 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E13FF7AC803
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 14:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9393A7AC80C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 14:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjIXMXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 08:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
+        id S229509AbjIXMco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 08:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjIXMXG (ORCPT
+        with ESMTP id S229449AbjIXMcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 08:23:06 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA522116
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 05:22:58 -0700 (PDT)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id AED693F65A
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 12:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1695558176;
-        bh=jfhJ/0WF4K0ac4kOBJQChSkyfixsrhUS+n4MUiLhPoU=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=iW2LIj4svLCUZrx5SxaQ+u/49zmScFZYXkdxU6a6NzyLQx/iQ9GrHwQoPEms4xpo1
-         bie1RZeOufOE6WXuPzOAEMeWPUG2QHKn4lqV4suHPdBi3V0OQ57cYQhqnbT7XgtTHk
-         0M0Qi7dYUierdAnZuhDI24Zy7j7mQRNcqv9EHUl5aPXwFRF8oMPyr5htdzoZKLVpuD
-         FeJKYm393QL+Z7pK2Vrf2MnLjPipfSTKnS4op941aYGL9kkNlGkQK158il7oXTMg2z
-         jktGZGo+1Jpu7wNUpV3qQP45DheFb5mEb5ezfFZuXvU/A/tfSWgmF10bRPqn4WZ+A5
-         sBEbEdRl8w8Kg==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-418116b13a7so26005991cf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 05:22:56 -0700 (PDT)
+        Sun, 24 Sep 2023 08:32:43 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE7B101;
+        Sun, 24 Sep 2023 05:32:36 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3add37de892so2514725b6e.1;
+        Sun, 24 Sep 2023 05:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695558756; x=1696163556; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dANrrk5p+EjdkURDN78idqWaQmsYPz+72ck1VOrsJsA=;
+        b=iXhfaDG+Id8Ws9rPH653xdDDzi7WQL4bKRZ8M0z0JyMS73pzDEoW9+f3+/3dnrMfP8
+         RzSc1u4aSDZFubq/V6eZXL3sRCLB2urewnyq6VVGBghwJw0bQexRfVCZm/bRiWxbIbS2
+         5yPBh5DG5RkEG0DLttRR7yDMSWh9J40rmn0wlFxJGfXkQz7V0YUNoaoY9zm3KCzIXEL6
+         4qfOPT+RagBth1fB+H6ilwKimA0CtLwR8E9kl9bMr8Ry+sDpW4wWa0CrXhBLbkztu8u1
+         yV2NhO0LKZ/cpb3/MAMZvysXnQUuFalxnmGvAqYPWzfNKwqtwNkEZ23i1Q87eJ3IRUm+
+         dKfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695558175; x=1696162975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date
-         :mime-version:references:in-reply-to:from:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jfhJ/0WF4K0ac4kOBJQChSkyfixsrhUS+n4MUiLhPoU=;
-        b=qBTGLRcdzq0hsHgWx1PN0l4OLjAPqll+ri7ZQTL6aAJJQJ/IfllqsqOa1f6eWZOq+p
-         Zsa5NMfkrdFwuouN3MrCAWrbD53kksjPDzed4ArH3geN0WtK/ikiYFrPjXWsl7SXBQZC
-         QXWwIbIGZwTsjchb0r6ASyK9ikEqDWsqj5LVfam1if/TjC1SvQH2IyYiJJDvaypTBOrP
-         b+tG7Uje8X7Po7H/64eeYzrWTH3oBIJCvE+gn5YoGFQOA9m9EfYgFqRNvCwuKU6wfOaP
-         g8pTVvrWz6nC+78ujZKBEfABq4Wv+kWMaGjDlPgloZCQsjZbwWZ97FgsA2fT5eYHx/3g
-         sg/w==
-X-Gm-Message-State: AOJu0YwUHYMZz5knd6k/3f2m7iBrGp+DADyxoh8WuzbWDy//nHSB6CRc
-        I0jQmfnNhcDAOxI8+rLNivIeOdXEySvfDouCFB9+SbMMA9dP/QqqRB3Zn1XTCeT/GQf8VP5F0lA
-        HmRpokk3Bsj0hKe3qnYUoXiNNatpXyV4b7uMisFhhfa9gBkb1MmSO4jzqkw==
-X-Received: by 2002:a05:622a:11d0:b0:417:a2f9:bba6 with SMTP id n16-20020a05622a11d000b00417a2f9bba6mr5214495qtk.60.1695558175482;
-        Sun, 24 Sep 2023 05:22:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGiwHHrokfnfsvNrp6NSrWblhXYjJGcMv/JbnJDQvm95NLPbJFdb6zEXKfDaz8fBlIbETJ1BPCcccjlv+akHoc=
-X-Received: by 2002:a05:622a:11d0:b0:417:a2f9:bba6 with SMTP id
- n16-20020a05622a11d000b00417a2f9bba6mr5214484qtk.60.1695558175223; Sun, 24
- Sep 2023 05:22:55 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 24 Sep 2023 12:22:54 +0000
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20230923152653.3371216-1-cyrevolt@gmail.com>
-References: <20230923152653.3371216-1-cyrevolt@gmail.com>
-Mime-Version: 1.0
-Date:   Sun, 24 Sep 2023 12:22:54 +0000
-Message-ID: <CAJM55Z8hfZ3+-=Gea9o_0yRH6-kD1dVMfXHOu-k2GxghK2RwJw@mail.gmail.com>
-Subject: Re: [PATCH] riscv: dts: starfive: Add VisionFive 2 PHY supplies
-To:     Daniel Maslowski <cyrevolt@googlemail.com>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Daniel Maslowski <cyrevolt@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695558756; x=1696163556;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dANrrk5p+EjdkURDN78idqWaQmsYPz+72ck1VOrsJsA=;
+        b=ARCxpeymCxyFmQ2CKSYwoywzUDYVgua08Oq8fSvaRNgMuPdndLSwj0NHJjxjvNl8KV
+         wj+TGB7Uh0ESFauK2tIPKRUMAGaqcWvmnOZFNFudTXJHJo1kgCOJHOabrdRkROdgW3x6
+         760zzbjmNfhLtxNEltB9aOm7CBhdcafbjhxV9ubCPHOonIV+w42jOBR4xDFWw/AU3bKg
+         UMnVi+eJa2kZwVgdX5tEJdVMDDtW7ZKl5Vrmkfhz+iQcWwMGoKFTITcMwmBGwvmbef/4
+         ABZAQAZQePV+ET7YTnGgt21mtCofztJsNKHFbS8hK0B19yVKpZp9zgpo6NI7T0zhuZoT
+         T5gQ==
+X-Gm-Message-State: AOJu0Yx5swcCALlDILELVv+6tJHUbwvi3dUxZkULsGPCqIDEqylf35Hg
+        MS1SD6ImX4GiNie8Eko47Zc=
+X-Google-Smtp-Source: AGHT+IEPXUTQMEpFxBCRYjBNMbNR1c9FRtYTuWCQlBZBD5ZRM5pB0nr+aNIBOeS6b305WhBnb7Pi2g==
+X-Received: by 2002:a05:6808:488:b0:3a8:512a:41b8 with SMTP id z8-20020a056808048800b003a8512a41b8mr4494389oid.21.1695558756052;
+        Sun, 24 Sep 2023 05:32:36 -0700 (PDT)
+Received: from [172.16.116.58] ([103.15.228.93])
+        by smtp.gmail.com with ESMTPSA id 9-20020aa79249000000b00690c9fda0fesm6167584pfp.169.2023.09.24.05.32.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Sep 2023 05:32:35 -0700 (PDT)
+Message-ID: <62f5671d-738b-997c-798f-7e6cc00f7ef9@gmail.com>
+Date:   Sun, 24 Sep 2023 18:02:30 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 2/3] greybus: Add BeaglePlay Linux Driver
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        greybus-dev@lists.linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, vaishnav@beagleboard.org,
+        jkridner@beagleboard.org, nm@ti.com,
+        krzysztof.kozlowski+dt@linaro.org, johan@kernel.org,
+        elder@kernel.org
+References: <20230924113725.164948-1-ayushdevel1325@gmail.com>
+ <20230924113725.164948-3-ayushdevel1325@gmail.com>
+ <6ce74c42-d1d0-d9cb-9d90-68989933d1d4@linaro.org>
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <6ce74c42-d1d0-d9cb-9d90-68989933d1d4@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Maslowski wrote:
-> I checked the schematics to see what power supplies are needed.
-> This allows for using ethernet without other drivers enabled
-> that would coincidentally enable the same power supply. =E2=9A=A1
+>> +
+>> +	  To compile this code as a module, chose M here: the module
+>> +	  will be called gb-beagleplay.ko
+>> +
+>>   config GREYBUS_ES2
+>>   	tristate "Greybus ES3 USB host controller"
+>>   	depends on USB
+>> diff --git a/drivers/greybus/Makefile b/drivers/greybus/Makefile
+>> index 9bccdd229aa2..15a84a83788d 100644
+>> --- a/drivers/greybus/Makefile
+>> +++ b/drivers/greybus/Makefile
+>> @@ -18,9 +18,9 @@ obj-$(CONFIG_GREYBUS)		+= greybus.o
+>>   # needed for trace events
+>>   ccflags-y += -I$(src)
+>>   
+>> +obj-$(CONFIG_GREYBUS_BEAGLEPLAY)	+= gb-beagleplay.o
+>> +
+>>   # Greybus Host controller drivers
+>>   gb-es2-y := es2.o
+>>   
+>>   obj-$(CONFIG_GREYBUS_ES2)	+= gb-es2.o
+>> -
+>> -
+> Does not look related to your patch.
+You are referring to the removal of last 2 newlines, right? In that 
+case, I will fix it.
 >
-> Signed-off-by: Daniel Maslowski <cyrevolt@gmail.com>
-> ---
->  .../boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts    | 2 ++
->  1 file changed, 2 insertions(+)
+>> diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
+>> new file mode 100644
+>> index 000000000000..39d87ef3b8fc
+>> --- /dev/null
+>> +++ b/drivers/greybus/gb-beagleplay.c
+>> @@ -0,0 +1,526 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Beagleplay Linux Driver for Greybus
+>> + *
+>> + * Copyright (c) 2023 Ayush Singh <ayushdevel1325@gmail.com>
+>> + * Copyright (c) 2023  BeagleBoard.org Foundation
+>> + */
+>> +
+>> +#include <linux/gfp.h>
+>> +#include <linux/greybus.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/printk.h>
+>> +#include <linux/serdev.h>
+>> +#include <linux/tty.h>
+>> +#include <linux/tty_driver.h>
+>> +#include <linux/greybus/hd.h>
+>> +#include <linux/init.h>
+>> +#include <linux/device.h>
+>> +#include <linux/crc-ccitt.h>
+>> +#include <linux/circ_buf.h>
+>> +#include <linux/types.h>
+>> +#include <linux/workqueue.h>
+>> +
+>> +#define RX_HDLC_PAYLOAD 1024
+>> +#define CRC_LEN 2
+>> +#define MAX_RX_HDLC (1 + RX_HDLC_PAYLOAD + CRC_LEN)
+>> +#define TX_CIRC_BUF_SIZE 1024
+>> +
+>> +#define ADDRESS_GREYBUS 0x01
+>> +#define ADDRESS_DBG 0x02
+>> +#define ADDRESS_CONTROL 0x03
+>> +
+>> +#define HDLC_FRAME 0x7E
+>> +#define HDLC_ESC 0x7D
+>> +#define HDLC_XOR 0x20
+>> +
+>> +#define CONTROL_SVC_START 0x01
+>> +#define CONTROL_SVC_STOP 0x02
+>> +
+>> +/* The maximum number of CPorts supported by Greybus Host Device */
+>> +#define BEAGLEPLAY_GB_MAX_CPORTS 32
+>> +
+>> +/*
+> Use kerneldoc.
+Thanks, will do that.
+>> + */
+>> +struct gb_beagleplay {
+>> +	struct serdev_device *serdev;
+>> +
+>> +	struct gb_host_device *gb_host_device;
+>> +
+>> +	struct work_struct tx_work;
+>> +	/* tx_producer_lock: HDLC producer lock */
+> Do not comment in two places - kerneldoc and in-line. Only one place.
+I was getting some errors in checkpatch without those. I guess they will 
+go away if I am using kerneldoc?
 >
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1=
-.3b.dts b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.d=
-ts
-> index d4ea4a2c0b9b..bc1ac12bc71b 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-> @@ -16,12 +16,14 @@ &gmac0 {
->  	starfive,tx-use-rgmii-clk;
->  	assigned-clocks =3D <&aoncrg JH7110_AONCLK_GMAC0_TX>;
->  	assigned-clock-parents =3D <&aoncrg JH7110_AONCLK_GMAC0_RMII_RTX>;
-> +	phy-supply =3D <&vcc_3v3>;
->  };
+>> +	spinlock_t tx_producer_lock;
+>> +	/* tx_consumer_lock: HDLC consumer lock */
+>> +	spinlock_t tx_consumer_lock;
+>> +	struct circ_buf tx_circ_buf;
+>> +	u16 tx_crc;
+>> +	u8 tx_ack_seq;
+>> +
+>> +	u16 rx_buffer_len;
+>> +	u8 rx_in_esc;
+>> +	u8 rx_buffer[MAX_RX_HDLC];
+>> +};
+>> +
+>> +struct hdlc_payload {
+>> +	u16 length;
+>> +	void *payload;
+>> +};
+>> +
+> ...
 >
->  &gmac1 {
->  	starfive,tx-use-rgmii-clk;
->  	assigned-clocks =3D <&syscrg JH7110_SYSCLK_GMAC1_TX>;
->  	assigned-clock-parents =3D <&syscrg JH7110_SYSCLK_GMAC1_RMII_RTX>;
-> +	phy-supply =3D <&vcc_3v3>;
->  };
+>> +
+>> +static int gb_serdev_init(struct gb_beagleplay *bg)
+>> +{
+>> +	u32 speed = 115200;
+>> +	int ret;
+>> +
+>> +	serdev_device_set_drvdata(bg->serdev, bg);
+>> +	serdev_device_set_client_ops(bg->serdev, &gb_beagleplay_ops);
+>> +	ret = serdev_device_open(bg->serdev);
+>> +	if (ret) {
+>> +		return dev_err_probe(&bg->serdev->dev, ret,
+>> +				     "Unable to Open Serial Device");
+>> +	}
+> Please run scripts/checkpatch.pl --strict and fix reported warnings.
+> Some warnings can be ignored, but the code here looks like it needs a
+> fix. Feel free to get in touch if the warning is not clear.
+So I do not actually get any errors here in checkpatch. I am running the 
+follwing:
 
-Hi Daniel,
+`scripts/checkpatch.pl --codespell --strict patch/*`
 
-Thank you for the patch! I've looked into this a bit now and I found 3 thin=
-gs:
+I only get a warning in coverletter due to that path of DT bindings 
+being more than 75 character long and ` Lines should not end with a '('`.
 
-1) The vcc_3v3 regulator (DCDC1 on the PMIC) already has the
-   regulator-always-on property, so should never be turned off even if ther=
-e
-   are no consumers.
+>> +	if (!bg)
+>> +		return -ENOMEM;
+>> +
+>> +	bg->serdev = serdev;
+>> +	ret = gb_serdev_init(bg);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = hdlc_init(bg);
+>> +	if (ret)
+>> +		goto free_serdev;
+>> +
+>> +	ret = gb_greybus_init(bg);
+>> +	if (ret)
+>> +		goto free_hdlc;
+>> +
+>> +	gb_beagleplay_start_svc(bg);
+>> +
+>> +	return 0;
+>> +
+>> +free_hdlc:
+>> +	hdlc_deinit(bg);
+>> +free_serdev:
+>> +	gb_serdev_deinit(bg);
+>> +	return ret;
+>> +}
+>> +
+>> +static void gb_beagleplay_remove(struct serdev_device *serdev)
+>> +{
+>> +	struct gb_beagleplay *bg = serdev_device_get_drvdata(serdev);
+>> +
+>> +	gb_greybus_deinit(bg);
+>> +	gb_beagleplay_stop_svc(bg);
+>> +	hdlc_deinit(bg);
+>> +	gb_serdev_deinit(bg);
+>> +}
+>> +
+>> +static const struct of_device_id gb_beagleplay_of_match[] = {
+>> +	{
+>> +		.compatible = "beagle,play-cc1352",
+>> +	},
+>> +	{},
+>> +};
+>> +MODULE_DEVICE_TABLE(of, gb_beagleplay_of_match);
+>> +
+>> +static struct serdev_device_driver gb_beagleplay_driver = {
+>> +	.probe = gb_beagleplay_probe,
+>> +	.remove = gb_beagleplay_remove,
+>> +	.driver = {
+>> +	      .name = "gb_beagleplay",
+>> +	      .of_match_table = gb_beagleplay_of_match,
+> This is still wrongly aligned. Spaces after tab. Are you sure checkpatch
+> does not complain bout it?
 
-2) As far as I can tell the schematic for both the 1.2A and 1.3B says the P=
-HYs
-   are powered by DCDC6 (and not DCDC1) on the PMIC via the VDD33_IO line.
+Again, it doesn't seem to for me. Am I missing some environment 
+variables or options? Or maybe something wrong with my editor config 
+(neovim)?
 
-3) There doesn't seem to be any generic code in the dwmac driver handling t=
-he
-   phy-supply property, only the Rockchip wrapper (dwmac-rk.c) does that.
 
-So all in all I'm a little confused how this change can make a difference f=
-or
-you.
+Yours Sincerely
 
-@Walker does the above and 2) in particular seem correct to you?
+Ayush Singh
 
-I'd expect something like the following instead (although split in 3 patche=
-s).
-Daniel, does this work for you?
-
-diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.ya=
-ml
-b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-index 5e7cfbbebce6..9ce877782419 100644
---- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-@@ -54,6 +54,9 @@ properties:
-     minItems: 3
-     maxItems: 3
-
-+  phy-supply:
-+    description: PHY regulator
-+
-   resets:
-     items:
-       - description: MAC Reset signal.
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 2209d5348928..6633c8d29be7 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -101,6 +101,7 @@ &tdm_ext {
- &gmac0 {
- 	phy-handle =3D <&phy0>;
- 	phy-mode =3D "rgmii-id";
-+	phy-supply =3D <&vdd33_io>;
- 	status =3D "okay";
-
- 	mdio {
-@@ -117,6 +118,7 @@ phy0: ethernet-phy@0 {
- &gmac1 {
- 	phy-handle =3D <&phy1>;
- 	phy-mode =3D "rgmii-id";
-+	phy-supply =3D <&vdd33_io>;
- 	status =3D "okay";
-
- 	mdio {
-@@ -182,6 +184,13 @@ vdd_cpu: dcdc2 {
- 				regulator-name =3D "vdd-cpu";
- 			};
-
-+			vdd33_io: dcdc6 {
-+				regulator-boot-on;
-+				regulator-min-microvolt =3D <3300000>;
-+				regulator-max-microvolt =3D <3300000>;
-+				regulator-name =3D "vdd33_io";
-+			};
-+
- 			emmc_vdd: aldo4 {
- 				regulator-boot-on;
- 				regulator-always-on;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-index 9289bb87c3e3..2ce349421981 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-@@ -12,6 +12,7 @@
- #include <linux/property.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-
- #include "stmmac_platform.h"
-
-@@ -97,6 +98,7 @@ static int starfive_dwmac_probe(struct platform_device *p=
-dev)
- 	struct plat_stmmacenet_data *plat_dat;
- 	struct stmmac_resources stmmac_res;
- 	struct starfive_dwmac *dwmac;
-+	struct regulator *reg_phy;
- 	struct clk *clk_gtx;
- 	int err;
-
-@@ -124,6 +126,11 @@ static int starfive_dwmac_probe(struct
-platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(clk_gtx),
- 				     "error getting gtx clock\n");
-
-+	reg_phy =3D devm_regulator_get_enable_optional(&pdev->dev, "phy");
-+	if (IS_ERR(reg_phy))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(reg_phy),
-+				     "error getting phy regulator\n");
-+
- 	/* Generally, the rgmii_tx clock is provided by the internal clock,
- 	 * which needs to match the corresponding clock frequency according
- 	 * to different speeds. If the rgmii_tx clock is provided by the
