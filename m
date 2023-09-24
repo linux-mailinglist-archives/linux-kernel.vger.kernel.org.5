@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 214F57AC6F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2087E7AC6F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjIXHNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 03:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S229923AbjIXHT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 03:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXHNa (ORCPT
+        with ESMTP id S229437AbjIXHTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 03:13:30 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3006::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A40103
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bit8.no;
-        s=ds202309; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
-        To:From:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=mojJFqryOyPJuWPXoqNAnfBuFkOjQBi6DxGmjDVbMrw=; b=FvXcR3HNH7KBog38yuNQEs0Kbm
-        zf3O12X9G77h4f/71HbUzx9hvH3lVnINcs7IPsVti6xRK3KE015DIbM6tW60OFlY6HkH9WXG8QOIG
-        +9vrOmiY3QaaMUAj8aiotGNKoquypHUFmlIUHsYvkkN6+qBFK1Yco9JsyWiWDibG9nb6SRiiiswBJ
-        pZVLIfskefzIGJSRsM687p/sXafvo3BTjJgLYx4Rp3qsk4qZ7bJ0rFurowyUoa9ngb/OY3W44gjbK
-        vdk8O1t9fKx2OPuMVq53qHeMHOUENbXJ126ac/OrRH3Sa2FcA3E/hCliQy6BtKOASAeWRFeCvqR2g
-        Qy5lQRQw==;
-Received: from [84.215.119.50] (port=62026 helo=[192.168.0.2])
-        by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <Yca@bit8.no>)
-        id 1qkJIv-008pBC-4x
-        for linux-kernel@vger.kernel.org;
-        Sun, 24 Sep 2023 09:13:21 +0200
-Message-ID: <5b39cfb0-2626-4742-a91c-3b23754de1af@bit8.no>
-Date:   Sun, 24 Sep 2023 09:13:19 +0200
+        Sun, 24 Sep 2023 03:19:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD63E100
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jQog87/EAGD1kuKRgoTr1CslLjKeFhqkq6roBcGXn7U=; b=fYulvVlr29MHtBp/H3NSYcHVp7
+        ZQlgDEDnWs+EhrE+v61h5mCrxCqb1oAQb68p3UU4nL2W/FxyRB52IOMzDBos4mg9ovJQhHr5bVSCi
+        A3tRJV5s5AmFYqNSCEN6CWxDizZGMslMj1OhMC5avgzs3phHW0+/TJJBo47f6KAofU721Nrc9a1jQ
+        81tNZIjKJ43lcPlN2KRcUlH7kPdT/Xc7koFbMkJFVfx5/iw9ro9hlf9eG0Ny78x2cvq/5U7Hys38F
+        2ereuHO/zgWdjddDYq+D1tIl1QHm5NU9rV/E281QzHNDUKPVpYiQwZ+tTgX30okeYM+TWFwR/IaoA
+        ybqhOyaQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qkJOS-00Bfih-3a; Sun, 24 Sep 2023 07:19:04 +0000
+Date:   Sun, 24 Sep 2023 08:19:04 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
+        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <ZQ/i6CC86PzaYCzw@casper.infradead.org>
+References: <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <87led2wdj0.ffs@tglx>
+ <87h6nkh5bw.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?Q?Re=3A_Open_Source_++_unification_under_=CE=B8yr=3F?=
-From:   =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Yca@bit8.no>
-To:     linux-kernel@vger.kernel.org
-References: <d6a24c1b-872c-42e6-8100-ddaa39782f44@bit8.no>
-In-Reply-To: <d6a24c1b-872c-42e6-8100-ddaa39782f44@bit8.no>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h6nkh5bw.ffs@tglx>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I talked about how THACIN is a concept of The Gyad that unifies SID
-related efforts in computer design, and CIN and THA related designs in
-electronics.
+On Sun, Sep 24, 2023 at 12:50:43AM +0200, Thomas Gleixner wrote:
+> cond_resched() cannot nest and is obviously scope-less.
+> 
+> The TIF_ALLOW_RESCHED mechanism, which sparked this discussion only
+> pretends to be scoped.
+> 
+> As Peter pointed out it does not properly nest with other mechanisms and
+> it cannot even nest in itself because it is boolean.
 
-And how openSUSE was closest to a related OS effort.
+We can nest a single bit without turning it into a counter -- we
+do this for memalloc_nofs_save() for example.  Simply return the
+current value of the bit, and pass it to _restore().
 
-But why not try to unify all Open Source efforts?
+eg xfs_prepare_ioend():
 
---
+        /*
+         * We can allocate memory here while doing writeback on behalf of
+         * memory reclaim.  To avoid memory allocation deadlocks set the
+         * task-wide nofs context for the following operations.
+         */
+        nofs_flag = memalloc_nofs_save();
 
-And θyr is a variant of Thacin, that further unifies, related 
-communities. all the way down to Vikings, which seems a root concept here.
+        /* Convert CoW extents to regular */
+        if (!status && (ioend->io_flags & IOMAP_F_SHARED)) {
+                status = xfs_reflink_convert_cow(XFS_I(ioend->io_inode),
+                                ioend->io_offset, ioend->io_size);
+        }
 
-And I suggest θyrix on my blog, maybe as an offshoot of openSUSE, that 
-seems close.
+        memalloc_nofs_restore(nofs_flag);
 
-If anyone wants and has the knowledge to do this, please let me know.
-
-Peace.
-Ywe
-BiT8.no
+I like your other approach better, but just in case anybody starts
+worrying about turning a bit into a counter, there's no need to do
+that.
