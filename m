@@ -2,124 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7B97ACB1B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D177ACB20
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjIXRkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S230216AbjIXRov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjIXRkK (ORCPT
+        with ESMTP id S229437AbjIXRou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:40:10 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635BAFC;
-        Sun, 24 Sep 2023 10:40:01 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38OGehq2006698;
-        Sun, 24 Sep 2023 17:39:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=a2ctV+9L4kKCcLREiZQedto4qlgkJw8bUeFgjqbh5As=;
- b=Rhz+Gc8BTaoyzxlAeAH0FGE9+e9Kqa3pXNo6DwyLFoHRHTNKdM2ZTrhbapgsVuIlHzk7
- dgGnP2WqFB6N7bIkIrF9WiSHOKmtQbvpKZsBK1L+c+npfC3vunTw89c8KMlc6DrWLTt2
- IFbDpsChFjf8CIGpkY5P3U1oQpmny0h/xu4MNyfqo9/7h1NejWsW+/Gzt0x0nyUVPJLE
- WdPEmPUdXCP474I50K8kg2NWxoOKuWsz1Vx2QMJ+CWz/lHsjkRw2qc/rTDyrq5g/qR50
- uCICtyTff+gVgp+UOesRNcg7Mvx0ukKIs0dBWYiIwucg5j6eNAFeFsJ820is37qC4cLu aA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ta5hb0bmq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 17:39:47 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38OHdlkB003823;
-        Sun, 24 Sep 2023 17:39:47 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ta5hb0bmk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 17:39:47 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38OFaLvj030753;
-        Sun, 24 Sep 2023 17:39:46 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tacjjc3n5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 17:39:46 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38OHdhVc27394696
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 24 Sep 2023 17:39:43 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE5C92004B;
-        Sun, 24 Sep 2023 17:39:43 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C618B20040;
-        Sun, 24 Sep 2023 17:39:42 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.29.239])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Sun, 24 Sep 2023 17:39:42 +0000 (GMT)
-Date:   Sun, 24 Sep 2023 19:39:41 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: virtcrypto_dataq_callback calls crypto_finalize_request() from
- irq context
-Message-ID: <20230924193941.6a02237f.pasic@linux.ibm.com>
-In-Reply-To: <ed47fb73ad634ca395bd6c8e979dda8e@huawei.com>
-References: <20230922154546.4f7447ce.pasic@linux.ibm.com>
-        <ed47fb73ad634ca395bd6c8e979dda8e@huawei.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OAd7c8O-FiD8N90yvnR-OhbKEtCwd40N
-X-Proofpoint-ORIG-GUID: D7Y4RHuy_ajhhRgET4pDTmKzK3fghQZR
+        Sun, 24 Sep 2023 13:44:50 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2095.outbound.protection.outlook.com [40.92.90.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26339FA
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:44:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jb8xw/XiKco/1sAQvp0hyRcJwrbKHZwZgvUVXjw7fejT0L2hLS3FboKt+sDXl1bo9SLexcWP5PiTS8JP/wZ5uV6X4u037TO+64e7u9bMoFbjf+F3EacVFh42niy0Tfq8FUtpdVFSt7pcnrqXoxix89QgGAT/NYqtaRKsoGdFNtOi2jaUClatucsGuloUDwl353BKy9mfAgW63VEQOA8uJx308s/iZcc9VkbxDbYcK2H2lfU0KZk/cC+FclS8foJunweiuSwNpaSzCuT3x2cYEFZSc0KjlxDSFBrTQmOfUoLzfbz3dZAcb1ZTO1MdbYvn6yzUixoimPTOnHGtaBIoNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s7rl5G6j4nIMK+0duIsOTFBXzoYbShkjS4kkQr8iKdA=;
+ b=ew8WJ+eg/lHE55Wxtf74LGvjZruH7tPbZYEKlI6xucFnggb2n00FlMajI8QyiHgXF2ekwltUhPBS0NyOp0l/S26wCUFlVtPx4HWjh/FkKBXHnBor7+dyjdLQPTAp5nH+CGpv7VxmvoFFdYTYpnY/KHstGD7qukalubUMMrdyvEzsv6C7iLRdgNfUoDLuC7pVbNMSLoBARsLHaTtn38XKxoqg0OE7JOAgJqiwIAd/AGSl0GCXXwM6ZunzhakY9ToxjL5xiR9K9HtL2lIPMc6uFdQ3PpUm0SeaOftgXBQj5nPc1qrghE6TLsHgkAuCkBoxr9N8vUxBqwaGYqvFQBWs2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s7rl5G6j4nIMK+0duIsOTFBXzoYbShkjS4kkQr8iKdA=;
+ b=hnBeDH2A+ZsL9DrI8eEY/1xdLRS50AD/Dc9unuAGoVl5Cih3Ns32Gvhug64mEkGL0QB+Lv5O9U3Dpk38inQvMh1FJz4qzfRhjh3PmiEi3CvVpGhcQA6WNyCFllOeLn2BqEaNRkNeFn7QFLCwBOjM2wyVVYI7x6qTfco4diZPZNovGLBFbHzUbCFVMq4YbV27q12ibsAhepJxlgWHPWqWrOz+cW6tn0nXy1CCW85ZGJdGapNr2ya+Z5UJ1yUNH90IdNAAyAymdeGnkqE9seNuNRpc/dn18QF/4Qn3OV01UZ0HhxlwAzB1HseUSG2rst7i1zNC98xrWweUP/7YxcoJyA==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by AS8P193MB1461.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:39d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Sun, 24 Sep
+ 2023 17:44:38 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Sun, 24 Sep 2023
+ 17:44:38 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        zackr@vmware.com, linux-graphics-maintainer@vmware.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v2] drm: Rename drm_ioctl_flags() to eliminate duplicate declaration warning
+Date:   Sun, 24 Sep 2023 18:43:33 +0100
+Message-ID: <VI1P193MB0752F71CC14FFC9B9A22A6E399FDA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Content-Type: text/plain
+X-TMN:  [16lAXriSjIZ8v8Ytaj1rcYP7dsqMj6Pi]
+X-ClientProxiedBy: AS4P190CA0012.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5de::12) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20230924174333.13398-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-24_15,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 clxscore=1015 malwarescore=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=951 adultscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309240154
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AS8P193MB1461:EE_
+X-MS-Office365-Filtering-Correlation-Id: 751dcb95-816a-474d-2899-08dbbd25ecb2
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kEQJyv20eyffHYL3nX03wUH6gyRsPTy+Y6D3incACYWAlaPDUNCOFlQw9T4cHUMvGCJHwqZTQJBfJ+S3H3LUSrbrf31zT/1xtHCf8dRCsm/PxAsrk9iigSEjOx/oHkkYB9np/bIqjLkiv5nxBthmushaN81R/r5M+4c+Avt5vaErCCDZ3971U24hIAtNN91IRZwlroQDA2CEuKwHTDIcIjUrg82d4GV6PoUPo923zS30EFI3N5D5N/5Q7AiDVLZKG25BKU3tyZzpI8J2/3u9szDg972wiJGBO9f/lSFaR3IcZacNRUJwApP5xe6JvXtToAFTDxlG08+qwYyspAnGXz1zV+fGVcmrgsWq63XgujH+pSieqvuTiXaDegTsGyoacfUlH31AxOnJtt7Gy2iG5yJTBaf9bZv6ELPIfq9CqZ+JEXVecYclKnM7ycVR+GoU4BERKZTH7zHQhfnhK5gJsM3DBut6lwF/hyCe8/sIzCzUN7s0ZgKuE/8qCiKDQ7wCUJwu3qTl5ZJoRBSxJcsKYdf6A3ImHA+ScInnKYekXw51Hffup11eEnf1RQcXPND+
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?phqQHd1bvsKKgs7/5mAR1Mp5KAoY5L9z/IMQhxJC2FF5ru0GUlwgIcxKf/3n?=
+ =?us-ascii?Q?Z0T5wTH9Y9ba1TsCJPM+5QzlCO3rzAv4tF97CjySsczWbu0HoW3cuPek97+W?=
+ =?us-ascii?Q?x73FPLcPXaZoFmoDP2hsFUOXEE6/EmYDzExBC91B1nh16kxnpJXyS550tYTd?=
+ =?us-ascii?Q?OshXPW2o+hqOVN89chmqt0TasDK0qw5PhSucNVxXMT3aJ3M3N/hxyAJ5MfHB?=
+ =?us-ascii?Q?uZNiBo11W5uxyT/hmi7dQZ7sAg7VPfS3r3VpLtl701oEW2nYnHWvWqK8cLZa?=
+ =?us-ascii?Q?iWbpiUZUw3Iw25i1vFdfFxZ+8F5dKlismajeDjjR67zeomjjZWcZxukyONSK?=
+ =?us-ascii?Q?bbupGckx0jQCGhjs8UrRDyrl3YQmdRI4P+6pV0hZFnaEZ5Y2WUENNe8+coUY?=
+ =?us-ascii?Q?K3k/S1nlvlh3hG01I781CHiDC6uGO58tHf6+2SoQQ+B7uqkI3EdrG5B3LyLY?=
+ =?us-ascii?Q?ZOmBSsawxp58FIPSJ3OW4QPp5OR5T2Fx5MhpXj6AeB8irZsF8WWFQ39f51mi?=
+ =?us-ascii?Q?iEHO6qpujxAnOXMUS1FMK59O9hsNd2nUkMMWM+P7NynPugX+3e3Zom2fyKUA?=
+ =?us-ascii?Q?4OZqqIuiebP2GRtJamsLfoBXW2Jt8qUNjFxhAaXrObTNUfidz2Yn1HCY3JQs?=
+ =?us-ascii?Q?GrGSOLtbmRVg032rCmNH1eU+mqsSsapYyOeHcgt69S6NMsySOqQPbftn+tDY?=
+ =?us-ascii?Q?0WzTwnixIftdbXcfubtPIka+jAp+CvCQjxK9dTf4rYD7t0zwCeG3iTQuCutO?=
+ =?us-ascii?Q?84QQzn0LUIgqLkqwq8ui1rfdcHpOK3sBq/QL0Cllabk0TYk0XmThHXx4TLLc?=
+ =?us-ascii?Q?udXN/6yCukl8+Uc9z1TXykYijWmFdQCeZeSDipUbVC8x1Adp2e0iniI2LirI?=
+ =?us-ascii?Q?xCfdl9wuYonX5Fs0AFws2mzjLX0A9PJX0aBEDtdaoehASwWV4m3KyXwzdbSL?=
+ =?us-ascii?Q?xKos+oavQFBxj1MMJ4cTopevC/0w2o8ftRJ/JsRpSSMJVNtnceJFp5rkhOEh?=
+ =?us-ascii?Q?rpoa2l9B9hSKWBau0F0K2C3BQ2VSjmzu60PeoPG4lRKNRUnVeakR3eUI0CBz?=
+ =?us-ascii?Q?aPF2x1AcHDCFe15SLG7rk0l5RHxRZTfJ5aUVOga12Ne45IgarcS/jC1DwsBZ?=
+ =?us-ascii?Q?fO+mxR8JiRmrJrFDV9kJlLeTSa84Ou66BYZKPOMbIsGwaXdL1ChdvHdaG/98?=
+ =?us-ascii?Q?MqPsw1K3dP6AkrFK76d6qSOMqRTE7s+9TgwHSsuaRGWj11hPK7bdvC7hKko?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 751dcb95-816a-474d-2899-08dbbd25ecb2
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2023 17:44:38.8241
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1461
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sep 2023 11:56:25 +0000
-"Gonglei (Arei)" <arei.gonglei@huawei.com> wrote:
+There are 'enum drm_ioctl_flags' and 'bool drm_ioctl_flags(...)' with the
+same name, which is not a problem in C, but it can lead to
+'WARNING: Duplicate C declaration' when generating documentation.
 
-> Hi Halil,
-> 
-> Commit 4058cf08945 introduced a check for detecting crypto completion function 
-> called with enable BH, and indeed the virtio-crypto driver didn't disable BH, which needs
-> a patch to fix it.
-> 
-> P.S.: https://lore.kernel.org/lkml/20220221120833.2618733-5-clabbe@baylibre.com/T/
-> 
-> Regards,
-> -Gonglei
+According to the purpose of the function, rename 'drm_ioctl_flags(...)' to
+'drm_ioctl_flags_check(...)' to eliminate the warning.
 
-Thanks Gonglei!
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ drivers/gpu/drm/drm_ioctl.c         | 6 +++---
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c | 2 +-
+ include/drm/drm_ioctl.h             | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-Thanks! I would be glad to test that fix on s390x. Are you about to send
-one?
+diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+index f03ffbacfe9b..feaa58ca36f7 100644
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -911,7 +911,7 @@ long drm_ioctl(struct file *filp,
+ EXPORT_SYMBOL(drm_ioctl);
+ 
+ /**
+- * drm_ioctl_flags - Check for core ioctl and return ioctl permission flags
++ * drm_ioctl_flags_check - Check for core ioctl and return ioctl permission flags
+  * @nr: ioctl number
+  * @flags: where to return the ioctl permission flags
+  *
+@@ -922,7 +922,7 @@ EXPORT_SYMBOL(drm_ioctl);
+  * Returns:
+  * True if the @nr corresponds to a DRM core ioctl number, false otherwise.
+  */
+-bool drm_ioctl_flags(unsigned int nr, unsigned int *flags)
++bool drm_ioctl_flags_check(unsigned int nr, unsigned int *flags)
+ {
+ 	if (nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END)
+ 		return false;
+@@ -934,4 +934,4 @@ bool drm_ioctl_flags(unsigned int nr, unsigned int *flags)
+ 	*flags = drm_ioctls[nr].flags;
+ 	return true;
+ }
+-EXPORT_SYMBOL(drm_ioctl_flags);
++EXPORT_SYMBOL(drm_ioctl_flags_check);
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+index 8b24ecf60e3e..2aafc7a62bee 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+@@ -1287,7 +1287,7 @@ static long vmw_generic_ioctl(struct file *filp, unsigned int cmd,
+ 			goto out_io_encoding;
+ 
+ 		flags = ioctl->flags;
+-	} else if (!drm_ioctl_flags(nr, &flags))
++	} else if (!drm_ioctl_flags_check(nr, &flags))
+ 		return -EINVAL;
+ 
+ 	return ioctl_func(filp, cmd, arg);
+diff --git a/include/drm/drm_ioctl.h b/include/drm/drm_ioctl.h
+index 6ed61c371f6c..465c5de2d5cd 100644
+--- a/include/drm/drm_ioctl.h
++++ b/include/drm/drm_ioctl.h
+@@ -175,7 +175,7 @@ long drm_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
+ /* Let drm_compat_ioctl be assigned to .compat_ioctl unconditionally */
+ #define drm_compat_ioctl NULL
+ #endif
+-bool drm_ioctl_flags(unsigned int nr, unsigned int *flags);
++bool drm_ioctl_flags_check(unsigned int nr, unsigned int *flags);
+ 
+ int drm_noop(struct drm_device *dev, void *data,
+ 	     struct drm_file *file_priv);
+-- 
+2.39.2
 
-Regards,
-Halil
