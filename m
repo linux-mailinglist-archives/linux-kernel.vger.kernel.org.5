@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71CA7ACB07
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B90D7ACB0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjIXRXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        id S230217AbjIXRXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjIXRXg (ORCPT
+        with ESMTP id S230237AbjIXRXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:23:36 -0400
+        Sun, 24 Sep 2023 13:23:41 -0400
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 748E4FC;
-        Sun, 24 Sep 2023 10:23:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5885D103;
+        Sun, 24 Sep 2023 10:23:32 -0700 (PDT)
 X-IronPort-AV: E=Sophos;i="6.03,173,1694703600"; 
-   d="scan'208";a="180780918"
+   d="scan'208";a="180780922"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 25 Sep 2023 02:23:29 +0900
+  by relmlie6.idc.renesas.com with ESMTP; 25 Sep 2023 02:23:32 +0900
 Received: from localhost.localdomain (unknown [10.226.92.4])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 47405402D0AE;
-        Mon, 25 Sep 2023 02:23:27 +0900 (JST)
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id D111E402D0AD;
+        Mon, 25 Sep 2023 02:23:29 +0900 (JST)
 From:   Biju Das <biju.das.jz@bp.renesas.com>
 To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 1/3] pinctrl: mcp23s08_i2c: Extend match support for OF tables
-Date:   Sun, 24 Sep 2023 18:23:18 +0100
-Message-Id: <20230924172320.15165-2-biju.das.jz@bp.renesas.com>
+Subject: [PATCH v3 2/3] pinctrl: mcp23s08_spi: Simplify probe()
+Date:   Sun, 24 Sep 2023 18:23:19 +0100
+Message-Id: <20230924172320.15165-3-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230924172320.15165-1-biju.das.jz@bp.renesas.com>
 References: <20230924172320.15165-1-biju.das.jz@bp.renesas.com>
@@ -44,46 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has OF match table, still it uses ID lookup table for
-retrieving match data. Currently the driver is working on the
-assumption that a I2C device registered via OF will always match a
-legacy I2C device ID. The correct approach is to have an OF device ID
-table using of_device_match_data() if the devices are registered via OF.
+Simpilfy probe() by replacing device_get_match_data() and ID lookup for
+retrieving match data by spi_get_device_match_data().
+
+While at it, replace data type of variable type from 'int'->'unsigned int'
+and declare variables following a reverse christmas tree order.
 
 Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
 v2->v3:
- * Added Rb tag from Andy.
-v1->v2:
- * Arranged variable declaration in reverse xmas tree.
+ * Added Rb tag from Andy
+ * Reordered the patch.
+v2:
+ * New patch.
 ---
- drivers/pinctrl/pinctrl-mcp23s08_i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/pinctrl-mcp23s08_spi.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08_i2c.c b/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-index 3dd1bd8e73eb..41ea2650a7e4 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-@@ -10,16 +10,16 @@
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08_spi.c b/drivers/pinctrl/pinctrl-mcp23s08_spi.c
+index ea059b9c5542..caf528284d07 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08_spi.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08_spi.c
+@@ -143,22 +143,17 @@ static int mcp23s08_spi_regmap_init(struct mcp23s08 *mcp, struct device *dev,
  
- static int mcp230xx_probe(struct i2c_client *client)
+ static int mcp23s08_probe(struct spi_device *spi)
  {
--	const struct i2c_device_id *id = i2c_client_get_device_id(client);
- 	struct device *dev = &client->dev;
--	unsigned int type = id->driver_data;
- 	struct mcp23s08 *mcp;
+-	struct device *dev = &spi->dev;
+ 	struct mcp23s08_driver_data *data;
++	struct device *dev = &spi->dev;
+ 	unsigned long spi_present_mask;
+-	const void *match;
+-	unsigned int addr;
+ 	unsigned int ngpio = 0;
 +	unsigned int type;
++	unsigned int addr;
+ 	int chips;
+-	int type;
  	int ret;
+ 	u32 v;
  
- 	mcp = devm_kzalloc(dev, sizeof(*mcp), GFP_KERNEL);
- 	if (!mcp)
- 		return -ENOMEM;
+-	match = device_get_match_data(dev);
+-	if (match)
+-		type = (int)(uintptr_t)match;
+-	else
+-		type = spi_get_device_id(spi)->driver_data;
++	type = (uintptr_t)spi_get_device_match_data(spi);
  
-+	type = (uintptr_t)i2c_get_match_data(client);
- 	switch (type) {
- 	case MCP_TYPE_008:
- 		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x08_regmap);
+ 	ret = device_property_read_u32(dev, "microchip,spi-present-mask", &v);
+ 	if (ret) {
 -- 
 2.25.1
 
