@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2087E7AC6F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBCD7AC6F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjIXHT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 03:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
+        id S229937AbjIXH21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 03:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXHTY (ORCPT
+        with ESMTP id S229437AbjIXH20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 03:19:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD63E100
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jQog87/EAGD1kuKRgoTr1CslLjKeFhqkq6roBcGXn7U=; b=fYulvVlr29MHtBp/H3NSYcHVp7
-        ZQlgDEDnWs+EhrE+v61h5mCrxCqb1oAQb68p3UU4nL2W/FxyRB52IOMzDBos4mg9ovJQhHr5bVSCi
-        A3tRJV5s5AmFYqNSCEN6CWxDizZGMslMj1OhMC5avgzs3phHW0+/TJJBo47f6KAofU721Nrc9a1jQ
-        81tNZIjKJ43lcPlN2KRcUlH7kPdT/Xc7koFbMkJFVfx5/iw9ro9hlf9eG0Ny78x2cvq/5U7Hys38F
-        2ereuHO/zgWdjddDYq+D1tIl1QHm5NU9rV/E281QzHNDUKPVpYiQwZ+tTgX30okeYM+TWFwR/IaoA
-        ybqhOyaQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qkJOS-00Bfih-3a; Sun, 24 Sep 2023 07:19:04 +0000
-Date:   Sun, 24 Sep 2023 08:19:04 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <ZQ/i6CC86PzaYCzw@casper.infradead.org>
-References: <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx>
- <87h6nkh5bw.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h6nkh5bw.ffs@tglx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 24 Sep 2023 03:28:26 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5123100
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:28:19 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c081a44afso83702797b3.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 00:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695540499; x=1696145299; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GlhytN8p6rzsoNNyF2qTaia7H0UbvnXVgo1f8ue1miw=;
+        b=bzemv4DxQIseJIZGlcspLaUqsTJ+pNLlu4GBS30lHDRoXayjlS3aKQVLaaq7mZHHAS
+         LF4KFpnYj/oqv+iLOBVj4QTA9s1ROI6Q7qbopwqBNV9M5u7wWCVP8sBZYanb5sH5If6L
+         Tpdmw6tnWY/S6+mCF8bIZOZ7l0wUic5/swoKZ5aLOPdDIY7G65ONrJEbrOSt3lfnvd8h
+         eHkCE4ys3myKIam9xyfe9tZISOAW7KX4mMYGcq69E5hKCk4cyeOdTPn+DXjnHnYPaw71
+         OTKRBQnVvfNRqio22MSKg6jrC3fjHpEkMTGOAbleiXmVLyzRX73USUTEyLbIwlW990dV
+         CTag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695540499; x=1696145299;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GlhytN8p6rzsoNNyF2qTaia7H0UbvnXVgo1f8ue1miw=;
+        b=FTixiNFSMlTOTY64CEJqJR+wP7/C0Tm3oqSoNuAk764fZBrnrseQdyS2ALoRuvn7xR
+         5crR017YyO+scAiKa+XHPv6Me8uMtkyI8r2CZj/LEyDTQAGLIG6BrNTvzElybdEXwsE5
+         CSFxhWhn/wmo9GwoxITeehDo2Mrjwuj1JQdRtRrc/qqEYn/cYZkPn9ItK1T87It/rjeM
+         BPLL5A3U+bePGIZpPtRIDfzoztRop9M83VNHlroXVn03gfrm6CUP1n5YH2xChO4jnOn/
+         7l7uYk5vrvPC+Btznum//UAf/r1VEd4b9FQ5yNmUhuZr/kfKH5kuevMDt703bPEnuLVZ
+         D8Ag==
+X-Gm-Message-State: AOJu0YxZCbiI8BfLqGCtcFeth827b21vuRbYL7K6y0LqUAT5dlDsfuba
+        9tyuarU4sixMDF7fjRYMzPXh241VeD5twQ==
+X-Google-Smtp-Source: AGHT+IEhWDis5bOzbmBGOi4zqdXmHXsB5eM3APbeJBFJO8QLORC4+n5ComSE/iuNU8T1xE+g9g77xuCbvAPMMA==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a81:e304:0:b0:59c:b9b:8940 with SMTP id
+ q4-20020a81e304000000b0059c0b9b8940mr42160ywl.8.1695540498994; Sun, 24 Sep
+ 2023 00:28:18 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 07:28:16 +0000
+In-Reply-To: <71ac08d3-9f36-e0de-870e-3e252abcb66a@bytedance.com>
+Mime-Version: 1.0
+References: <20230920132545.56834-1-wuyun.abel@bytedance.com>
+ <20230920132545.56834-2-wuyun.abel@bytedance.com> <20230921190156.s4oygohw4hud42tx@google.com>
+ <82c0a442-c7d7-d0f1-54de-7a5e7e6a31d5@bytedance.com> <71ac08d3-9f36-e0de-870e-3e252abcb66a@bytedance.com>
+Message-ID: <20230924072816.6ywgoe7ab2max672@google.com>
+Subject: Re: [PATCH net-next 2/2] sock: Fix improper heuristic on raising memory
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Breno Leitao <leitao@debian.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujtsu.com>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 12:50:43AM +0200, Thomas Gleixner wrote:
-> cond_resched() cannot nest and is obviously scope-less.
+On Fri, Sep 22, 2023 at 06:10:06PM +0800, Abel Wu wrote:
+[...]
 > 
-> The TIF_ALLOW_RESCHED mechanism, which sparked this discussion only
-> pretends to be scoped.
+> After a second thought, it is still vague to me about the position
+> the memcg pressure should be in socket memory allocation. It lacks
+> convincing design. I think the above hunk helps, but not much.
 > 
-> As Peter pointed out it does not properly nest with other mechanisms and
-> it cannot even nest in itself because it is boolean.
+> I wonder if we should take option (3) first. Thoughts?
+> 
 
-We can nest a single bit without turning it into a counter -- we
-do this for memalloc_nofs_save() for example.  Simply return the
-current value of the bit, and pass it to _restore().
+Let's take a step further. Let's decouple the memcg accounting and
+global skmem accounting. __sk_mem_raise_allocated is already very hard
+to reason. There are couple of heuristics in it which may or may not
+apply to both accounting infrastructures.
 
-eg xfs_prepare_ioend():
+Let's explicitly document what heurisitics allows to forcefully succeed
+the allocations i.e. irrespective of pressure or over limit for both
+accounting infras. I think decoupling them would make the flow of the
+code very clear.
 
-        /*
-         * We can allocate memory here while doing writeback on behalf of
-         * memory reclaim.  To avoid memory allocation deadlocks set the
-         * task-wide nofs context for the following operations.
-         */
-        nofs_flag = memalloc_nofs_save();
+There are three heuristics:
 
-        /* Convert CoW extents to regular */
-        if (!status && (ioend->io_flags & IOMAP_F_SHARED)) {
-                status = xfs_reflink_convert_cow(XFS_I(ioend->io_inode),
-                                ioend->io_offset, ioend->io_size);
-        }
+1. minimum buffer size even under pressure.
 
-        memalloc_nofs_restore(nofs_flag);
+2. allow allocation for a socket whose usage is below average of the
+system.
 
-I like your other approach better, but just in case anybody starts
-worrying about turning a bit into a counter, there's no need to do
-that.
+3. socket is over its sndbuf.
+
+Let's discuss which heuristic applies to which accounting infra and
+under which state (under pressure or over limit).
+
+thanks,
+Shakeel
