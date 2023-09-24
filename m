@@ -2,137 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF987ACB36
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 20:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BF57ACB38
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 20:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjIXSDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 14:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        id S230220AbjIXSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 14:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXSDl (ORCPT
+        with ESMTP id S229437AbjIXSFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 14:03:41 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E760FC
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:03:34 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41513d2cca7so316651cf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 11:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695578613; x=1696183413; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sFnymHRtoiSLSE6xlXlPfUo1MSdkdwnizEDkqFjEp5M=;
-        b=0N12PufIVMADzpR5JvZrVR1zBlw3XeOS0LiFKjxachJfNLZIhXtRQzCDpapBxqeN/N
-         KOc1wyj3fz/Ng9libyDmqF6fKVTpgF0ldnPHb18GIKQM16jZZNFrlfv3OeSGIOETR1z9
-         z92OZJSBn9IweU/o5n5BizcPtqgTRoFKwvVaRp7S1Bt2dDx4rjb9wijBUs8QF0E6IILx
-         F138fTwNd1RBoe8crEm1bo7VibmUQmvqR4u+WTZwDdCNgQ6UW2KOVJqpR0Z8CvqBbWWw
-         gFyjKrPTbPDIdHj9cBQ7wvqW3ADh+w10ULYMN3MDx3EAo0ciOjqkkUQtHO62iCSSSgOn
-         Vaqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695578613; x=1696183413;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sFnymHRtoiSLSE6xlXlPfUo1MSdkdwnizEDkqFjEp5M=;
-        b=CsL8bLggbOo84IyjnSejR+eAeehviTPdK8mHjn3qRREMn4PiacMPlkLFtTkuqASq81
-         HY3wf8LqAJu5WtYPW+mSCuybLNqyX1zvF6WrqwHndq+OroD+gPW6sq974eH7FIqiK+Dy
-         D7I4lpmsy5qPbqY3N1d3d0+9ktJa7vJCuK/s+pQMEhLcxQnWFLEN53z85QMsCcVown/P
-         NbgflyMXM7QWhkxtOdPUiPfx3RkQclPjhVx6uC+di8Uq+NYFxl5iuDTib9XUmT3jvDLn
-         8rZK+IWTHakXCo56iTFnPTHQWSmkIJH9gJW6FQbWwCak2kBuTpvqNZJethuWzv+lpeXm
-         5QqQ==
-X-Gm-Message-State: AOJu0YzuorKKM+WEMogCxA4HVqDYnRliwiG+TKgoBN+A5NaYD1jWKlmx
-        YjtSsiiUXNVuaT/V3eMeuhIibNKnPRXlgOnPPsuimg==
-X-Google-Smtp-Source: AGHT+IF1Z2oLq9smh2qhEPC193F5fqkRC6B/tsHivKcbUv1O+Mhj/WxhnsnegPuh58Fu+zugRoFHFRSC8frjQTSIMog=
-X-Received: by 2002:a05:622a:111:b0:3f0:af20:1a37 with SMTP id
- u17-20020a05622a011100b003f0af201a37mr308189qtw.15.1695578613246; Sun, 24 Sep
- 2023 11:03:33 -0700 (PDT)
+        Sun, 24 Sep 2023 14:05:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B68AFA;
+        Sun, 24 Sep 2023 11:05:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 030CCC433C8;
+        Sun, 24 Sep 2023 18:05:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695578737;
+        bh=iru/77/T+RQ94qKNjJz/efepLg+hlk3IoPzLAJ8FxpQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=t6SeVMYYgWxh7g8Nik0J1P1ug48IZ1oVlkA4OHK/Mo00XsWTwizEIPMMzbqvLwqtT
+         Xip4HYeGyFMsEcFm/vHSa5eRR4mLtBPvKs44/xZ0docrnLEjwJhtsrNMuq+gwT4FaA
+         gOdUJJ+7DFSdAM9cdxLHp5o2tqzAfvJwEFbNa5JqaZIYqjnShxkURpymuK1atWkbZL
+         BlL4x7GSk1aO4lFWOaA0weopPmm+beK6cq4SUjNFCQM32wb4wGYqEetKZJtuC/Nu+J
+         n9/RuTQIiNDTzD9AYQAOYcRyvIYpWyuQf8M3jvmcMhxSzV0y6iVjfztsUgTOrYmvsm
+         7PJi+ARK1snZQ==
+Date:   Sun, 24 Sep 2023 19:05:29 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>
+Subject: Re: [PATCH v2 13/19] staging: iio: resolver: ad2s1210: implement
+ hysteresis as channel attr
+Message-ID: <20230924190529.08411ba8@jic23-huawei>
+In-Reply-To: <20230921144400.62380-14-dlechner@baylibre.com>
+References: <20230921144400.62380-1-dlechner@baylibre.com>
+        <20230921144400.62380-14-dlechner@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230922234444.3115821-1-namhyung@kernel.org>
-In-Reply-To: <20230922234444.3115821-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Sun, 24 Sep 2023 11:03:20 -0700
-Message-ID: <CAP-5=fVMdX+vLPNBSe-8arKGvAGcdgHGt7ypEX-J-SZpUi2PGg@mail.gmail.com>
-Subject: Re: [PATCH] perf record: Fix BTF type checks in the off-cpu profiling
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 4:44=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> The BTF func proto for a tracepoint has one more argument than the
-> actual tracepoint function since it has a context argument at the
-> begining.  So it should compare to 5 when the tracepoint has 4
-> arguments.
->
->   typedef void (*btf_trace_sched_switch)(void *, bool, struct task_struct=
- *, struct task_struct *, unsigned int);
->
-> Also, recent change in the perf tool would use a hand-written minimal
-> vmlinux.h to generate BTF in the skeleton.  So it won't have the info
-> of the tracepoint.  Anyway it should use the kernel's vmlinux BTF to
-> check the type in the kernel.
->
-> Fixes: b36888f71c85 ("perf record: Handle argument change in sched_switch=
-")
-> Cc: Song Liu <song@kernel.org>
-> Cc: Hao Luo <haoluo@google.com>
-> CC: bpf@vger.kernel.org
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Thu, 21 Sep 2023 09:43:54 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+> The AD2S1210 resolver has a hysteresis feature that can be used to
+> prevent flicker in the LSB of the position register. This can be either
+> enabled or disabled. Disabling hysteresis is useful for increasing
+> precision by oversampling.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+
+I'd forgotten we even had hysteresis defined other than for events.
+This seems like what it was for, it's just rarely seen in hardware
+as trivial for software to do the same.
+
+Maybe some good uses of the new cleanup.h auto releasing of locks
+stuff in here.
 
 > ---
->  tools/perf/util/bpf_off_cpu.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.=
-c
-> index 01f70b8e705a..21f4d9ba023d 100644
-> --- a/tools/perf/util/bpf_off_cpu.c
-> +++ b/tools/perf/util/bpf_off_cpu.c
-> @@ -98,7 +98,7 @@ static void off_cpu_finish(void *arg __maybe_unused)
->  /* v5.18 kernel added prev_state arg, so it needs to check the signature=
- */
->  static void check_sched_switch_args(void)
->  {
-> -       const struct btf *btf =3D bpf_object__btf(skel->obj);
-> +       const struct btf *btf =3D btf__load_vmlinux_btf();
->         const struct btf_type *t1, *t2, *t3;
->         u32 type_id;
->
-> @@ -116,7 +116,8 @@ static void check_sched_switch_args(void)
->                 return;
->
->         t3 =3D btf__type_by_id(btf, t2->type);
-> -       if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) =3D=3D 4) {
-> +       /* btf_trace func proto has one more argument for the context */
-> +       if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) =3D=3D 5) {
->                 /* new format: pass prev_state as 4th arg */
+>  drivers/staging/iio/resolver/ad2s1210.c | 88 ++++++++++++++++++++++++-
+>  1 file changed, 85 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index 7a1069d948eb..fe413759deb9 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -80,7 +80,6 @@ struct ad2s1210_state {
+>  	/** The external oscillator frequency in Hz. */
+>  	unsigned long fclkin;
+>  	unsigned int fexcit;
+> -	bool hysteresis;
+>  	u8 resolution;
+>  	u8 rx[2] __aligned(IIO_DMA_MINALIGN);
+>  	u8 tx[2];
+> @@ -456,6 +455,27 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+>  		}
+>  		break;
+>  
+> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			mutex_lock(&st->lock);
+> +			ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +					       AD2S1210_ENABLE_HYSTERESIS);
+> +			if (ret < 0)
+> +				goto error_info_hysteresis;
+> +
+> +			*val = !!ret;
+> +			ret = IIO_VAL_INT;
+> +
+> +error_info_hysteresis:
 
-nit: does this comment need updating?
+scoped_guard might be a good solution here that avoids messy labels
+within deeply nested code.
 
->                 skel->rodata->has_prev_state =3D true;
->         }
-> --
-> 2.42.0.515.g380fc7ccd1-goog
->
+
+> +			mutex_unlock(&st->lock);
+> +			break;
+> +		default:
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +		break;
+> +
+>  	default:
+>  		ret = -EINVAL;
+>  		break;
+> @@ -464,6 +484,64 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+>  	return ret;
+>  }
+>  
+> +static int ad2s1210_read_avail(struct iio_dev *indio_dev,
+> +			       struct iio_chan_spec const *chan,
+> +			       const int **vals, int *type,
+> +			       int *length, long mask)
+> +{
+> +	static const int available[] = { 0, 1 };
+> +	int ret = -EINVAL;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			*vals = available;
+> +			*type = IIO_VAL_INT;
+> +			*length = ARRAY_SIZE(available);
+> +			ret = IIO_AVAIL_LIST;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int ad2s1210_write_raw(struct iio_dev *indio_dev,
+> +			      struct iio_chan_spec const *chan,
+> +			      int val, int val2, long mask)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +	int ret = -EINVAL;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			mutex_lock(&st->lock);
+> +			ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +						 AD2S1210_ENABLE_HYSTERESIS,
+> +						 val ? AD2S1210_ENABLE_HYSTERESIS
+> +						     : 0);
+> +			mutex_unlock(&st->lock);
+> +			break;
+I'd return in these as easier to follow at this function grows.
+
+> +
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  static IIO_DEVICE_ATTR(fexcit, 0644,
+>  		       ad2s1210_show_fexcit,	ad2s1210_store_fexcit, 0);
+>  static IIO_DEVICE_ATTR(bits, 0644,
+> @@ -499,7 +577,10 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+>  		.indexed = 1,
+>  		.channel = 0,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> -				      BIT(IIO_CHAN_INFO_SCALE),
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+> +				      BIT(IIO_CHAN_INFO_HYSTERESIS),
+> +		.info_mask_separate_available =
+> +					BIT(IIO_CHAN_INFO_HYSTERESIS),
+>  	}, {
+>  		.type = IIO_ANGL_VEL,
+>  		.indexed = 1,
+> @@ -573,6 +654,8 @@ static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
+>  
+>  static const struct iio_info ad2s1210_info = {
+>  	.read_raw = ad2s1210_read_raw,
+> +	.read_avail = ad2s1210_read_avail,
+> +	.write_raw = ad2s1210_write_raw,
+>  	.attrs = &ad2s1210_attribute_group,
+>  	.debugfs_reg_access = &ad2s1210_debugfs_reg_access,
+>  };
+> @@ -689,7 +772,6 @@ static int ad2s1210_probe(struct spi_device *spi)
+>  
+>  	mutex_init(&st->lock);
+>  	st->sdev = spi;
+> -	st->hysteresis = true;
+>  	st->resolution = 12;
+>  	st->fexcit = AD2S1210_DEF_EXCIT;
+>  
+
