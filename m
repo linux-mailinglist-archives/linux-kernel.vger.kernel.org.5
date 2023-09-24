@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2047C7AC848
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D907AC84A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjIXNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
+        id S229770AbjIXNP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjIXNPt (ORCPT
+        with ESMTP id S229717AbjIXNPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:15:49 -0400
+        Sun, 24 Sep 2023 09:15:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A38FC;
-        Sun, 24 Sep 2023 06:15:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B941C433C9;
-        Sun, 24 Sep 2023 13:15:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22BC10E;
+        Sun, 24 Sep 2023 06:15:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A984C433C7;
+        Sun, 24 Sep 2023 13:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561341;
-        bh=8BZXUmtu1omK1AC4NmhDa4QjplgBqqT/vcTNAu6jmI0=;
+        s=k20201202; t=1695561344;
+        bh=ABZ1A2v0BMnJqes0vFnyRuQHSp0LsdJD9Dff/RCUQgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZXDQCfpCUeNH+TzXd1bD5ytv0y2Ddt2cFkEIkDcYvjq7S3u3P5bKNxMyVhJ67wkg/
-         Cl46HP5n+CPecDV//aZKWfsUdy7M15LUSk+EpJPSTGNFCdPqSRtrx+++y4Bb9Ee1N0
-         3ZhUgBSTd2uclaT53YeILyMw4kAYWyPXn5rstPAYwHH/02+mis/cbWQAkCiG64AJNQ
-         diL21s403ceE8Xv4v66HpYghMv0/phDPUlZRtH2yZ2XAPHhR9w20rjE1+aX8ShPDCw
-         JkaHqgcsH5VHINXEIEfE40axr1DS6AKk0coyul5zKWucl8KWbnbnwaXTvmqA+Etm5l
-         zgteWK9CRLjSA==
+        b=CJksJmhiM6x/w9QUxKXQ92UPaJe8t6INsY/7aFuAC3+fkZth1Zmzrq5ddMb6dwH31
+         AO/Ye9y5tTDZLECbrzkkYbvSdFBsiiZh6clluI52xMyionqQ4MzmEXTvnsT8rezTLS
+         2kePSFFiuC0IksqKo72Kd+IwGKoPLY8uPEtkKQGUEPgWXCMqvnZ3pMLYPo/adGrcHu
+         FCeQADW9CdDcCPAmiWw6IKDLT1o7SkimXgy6ELMQ39YhyiXSXOyn4HvjgCe18HR3HZ
+         LGo+CWHBXjhERP1AQUhVso5HxR85qRzre1fa4lPS3juXHvzOVhQ9xwFSaRQmwVs3Sa
+         J/A8OdDPgqDcw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 05/41] parisc: iosapic.c: Fix sparse warnings
-Date:   Sun, 24 Sep 2023 09:14:53 -0400
-Message-Id: <20230924131529.1275335-5-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, hdegoede@redhat.com,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 06/41] parisc: drivers: Fix sparse warning
+Date:   Sun, 24 Sep 2023 09:14:54 -0400
+Message-Id: <20230924131529.1275335-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131529.1275335-1-sashal@kernel.org>
 References: <20230924131529.1275335-1-sashal@kernel.org>
@@ -54,46 +56,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit 927c6c8aa27c284a799b8c18784e37d3373af908 ]
+[ Upstream commit b137b9d60b8add5620a06c687a71ce18776730b0 ]
+
+Fix "warning: directive in macro's argument list" warning.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parisc/iosapic.c         | 4 ++--
- drivers/parisc/iosapic_private.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/parisc/kernel/drivers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index bcc1dae007803..890c3c0f3d140 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -202,9 +202,9 @@ static inline void iosapic_write(void __iomem *iosapic, unsigned int reg, u32 va
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index 8f4b77648491a..ed8b759480614 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -925,9 +925,9 @@ static __init void qemu_header(void)
+ 	pr_info("#define PARISC_MODEL \"%s\"\n\n",
+ 			boot_cpu_data.pdc.sys_model_name);
  
- static DEFINE_SPINLOCK(iosapic_lock);
++	#define p ((unsigned long *)&boot_cpu_data.pdc.model)
+ 	pr_info("#define PARISC_PDC_MODEL 0x%lx, 0x%lx, 0x%lx, "
+ 		"0x%lx, 0x%lx, 0x%lx, 0x%lx, 0x%lx, 0x%lx\n\n",
+-	#define p ((unsigned long *)&boot_cpu_data.pdc.model)
+ 		p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]);
+ 	#undef p
  
--static inline void iosapic_eoi(void __iomem *addr, unsigned int data)
-+static inline void iosapic_eoi(__le32 __iomem *addr, __le32 data)
- {
--	__raw_writel(data, addr);
-+	__raw_writel((__force u32)data, addr);
- }
- 
- /*
-diff --git a/drivers/parisc/iosapic_private.h b/drivers/parisc/iosapic_private.h
-index 73ecc657ad954..bd8ff40162b4b 100644
---- a/drivers/parisc/iosapic_private.h
-+++ b/drivers/parisc/iosapic_private.h
-@@ -118,8 +118,8 @@ struct iosapic_irt {
- struct vector_info {
- 	struct iosapic_info *iosapic;	/* I/O SAPIC this vector is on */
- 	struct irt_entry *irte;		/* IRT entry */
--	u32 __iomem *eoi_addr;		/* precalculate EOI reg address */
--	u32	eoi_data;		/* IA64: ?       PA: swapped txn_data */
-+	__le32 __iomem *eoi_addr;	/* precalculate EOI reg address */
-+	__le32	eoi_data;		/* IA64: ?       PA: swapped txn_data */
- 	int	txn_irq;		/* virtual IRQ number for processor */
- 	ulong	txn_addr;		/* IA64: id_eid  PA: partial HPA */
- 	u32	txn_data;		/* CPU interrupt bit */
 -- 
 2.40.1
 
