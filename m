@@ -2,57 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C2B7ACBF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 22:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6817C7ACBF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 23:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbjIXU61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 16:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S230399AbjIXVB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 17:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXU60 (ORCPT
+        with ESMTP id S229437AbjIXVB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 16:58:26 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E27EE;
-        Sun, 24 Sep 2023 13:58:20 -0700 (PDT)
-Received: from mercury (cust-west-par-46-193-56-210.cust.wifirst.net [46.193.56.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2C93366072E9;
-        Sun, 24 Sep 2023 21:58:18 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695589098;
-        bh=h8S0AVpoW3F2EytvwOGglewnFQNIvkNAQbE34WlVL0E=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=XeUq47K7GoNnjFu0Z/Xl6fZURJ+CNaPsMYNqh2EYtwcf88C/4ahy2EBGI/7ioASQm
-         SyngW67glqcbQX/gvOCwXWxW9wpfS2KLxQrKoxzk6eMw5+1CVl6o++Ttk2uVgqA7uI
-         TU8qq9SAqEuA7rOzh2LeIgY6EyytQwHAyxZiGsolgYiLE4IhznVXzsdZTYw1k6dLZR
-         CRnxjy4mX1yUXxO5XY/5oLAzCcXpZxEPi7XMkkEIs5KB2CDe5B9HuI8c8ODhA1IoMs
-         BlOKefBWl5QLOEMFHpUBylE5j7g4KAwJLYE/vtM3UKWUQvz2YUJeDFVnNKG867Cglw
-         3JpD8g7/fG+vQ==
-Received: by mercury (Postfix, from userid 1000)
-        id A0C3D10611D9; Sun, 24 Sep 2023 22:58:15 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Konrad Dybcio <konradybcio@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, kernel test robot <lkp@intel.com>
-In-Reply-To: <20230923114807.2829188-1-harshit.m.mogalapalli@oracle.com>
-References: <20230923114807.2829188-1-harshit.m.mogalapalli@oracle.com>
-Subject: Re: [PATCH next] power: supply: mm8013: Fix error code in
- mm8013_probe()
-Message-Id: <169558909561.1797612.1920151492515517327.b4-ty@collabora.com>
-Date:   Sun, 24 Sep 2023 22:58:15 +0200
+        Sun, 24 Sep 2023 17:01:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AECEE;
+        Sun, 24 Sep 2023 14:01:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8142FC433C9;
+        Sun, 24 Sep 2023 21:01:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695589311;
+        bh=lQolm0foEYW5CldsqbvEkR0zZhJQsoqewB6efPhH+Q0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gaapwYwo0MrmFnL0auGF+wvd1R6ra1WgSpS2KbhlkM3Ms778ZZXVCIocnswBzcxT6
+         x6ic4IGzOA/y0750zxjMEwodnuA0xhUrjlTnDk4jjLPxmnz9u59fwrbd6IBl2PhlSM
+         2kIj3v5uXQ9C81bxZhsSTnQ6FJ5njK561yqo5y5n5NvzzZHlwFROpRcPaaofMTOquU
+         hqpZq2XPZe+PjE+cNnrXToccR/ZqBPJy2cF8wpDA/ZKA1rw56Ipx6BroWqdbJMPHiG
+         taZpVwhQCchzkPlSWgxoLh9w8Ua+eEiBWUdJWzH7VGKSoOT4G7cH3w0elYmrmvvSXA
+         OHpMuFxoSBttQ==
+Date:   Sun, 24 Sep 2023 23:01:47 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-pci@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v5 13/44] i2c: add HAS_IOPORT dependencies
+Message-ID: <ZRCju+Ctuu2Mf+1c@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-pci@vger.kernel.org,
+        Arnd Bergmann <arnd@kernel.org>, linux-i2c@vger.kernel.org
+References: <20230522105049.1467313-1-schnelle@linux.ibm.com>
+ <20230522105049.1467313-14-schnelle@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4lqQXSmnp+QVr70y"
+Content-Disposition: inline
+In-Reply-To: <20230522105049.1467313-14-schnelle@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,20 +79,45 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sat, 23 Sep 2023 04:48:06 -0700, Harshit Mogalapalli wrote:
-> The value of ret is zero when passed to dev_error_probe(), we are passing
-> zero to dev_err_probe() is a success which is incorrect.
-> 
-> Fix this by getting the error code using PTR_ERR().
-> 
-> 
+--4lqQXSmnp+QVr70y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+On Mon, May 22, 2023 at 12:50:18PM +0200, Niklas Schnelle wrote:
+> In a future patch HAS_IOPORT=3Dn will result in inb()/outb() and friends
+> not being declared. We thus need to add HAS_IOPORT as dependency for
+> those drivers using them.
+>=20
+> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-[1/1] power: supply: mm8013: Fix error code in mm8013_probe()
-      commit: 43ee22422db545800b8bf2c24ef53d040372fc7a
+In RFC v1, you agreed to drop PARPORT [1]. Is there a reason you haven't
+done this so far?
 
-Best regards,
--- 
-Sebastian Reichel <sebastian.reichel@collabora.com>
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20211227164317.414=
+6918-11-schnelle@linux.ibm.com/
 
+
+--4lqQXSmnp+QVr70y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUQo7sACgkQFA3kzBSg
+KbY6EA//dT9BVWIMC87KqS1yrlF+XkCv3Z30NXI03qrtB4wjFMu7dyQd8ZgIuDyQ
+Ijnr3yMCsn30J6MW0jhgJkXAec3KghZLaWW/Ck1oIna6IV5z323AaGOgUYcMJc6f
+a8SDSBrZRjPY/bJeTE/iR+CaC4tDLxGhk0NaSeClPQK5cAIZ248JCr6FlyW7NaT3
+WOpLVfjw8SJjnr6FqPoF2pZrPKO5DrCEnS9EicwuCAzJu7u4dGFdma6y+/47BVq5
+Pp28tvibeaFMlIrf0eZsdRkRjWLK0pwRXzwVukyBJdfr4pWa0GPQKRq2XHtX1MXL
+ri5aZ2P4/9Llg7TqyjegCiAPz2bbVUGkJA6E5M98baT6BrqiFtvNKm260B1alqaU
+AzECG0lX74SHnG9kfaU9IDRZjZ7y7G7zdeFP3gQ68SKr42UN41ESiJJnYXaPUQ8v
+HU2IwtHuS/0ipQQzUp90arffMxw32mG9i3h+ooWR6xoIkfjCRU5VsXCzhHmoLPIF
+Lxt9gCytVe2RsjhwnuAebHtvqZUHz67PdIlznuXchiJsRZGmdnEJOzLZDI95Wtgb
+FrbM61aVSv560yBvKpp9TRNCXjGINK1tGhiAYQPrxn5WtbzWhriNhaGTDzoY+iXp
+ci6YysL8Q2nQfRoh8ypZi02BTGexNrg8d+LnnM7qJrLR16Mxfn4=
+=mJCC
+-----END PGP SIGNATURE-----
+
+--4lqQXSmnp+QVr70y--
