@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A357AC8AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10CD7AC8B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 15:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbjIXNTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 09:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
+        id S230156AbjIXNTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 09:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjIXNSj (ORCPT
+        with ESMTP id S229561AbjIXNSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:18:39 -0400
+        Sun, 24 Sep 2023 09:18:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F3ECC4;
-        Sun, 24 Sep 2023 06:17:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A27C433C7;
-        Sun, 24 Sep 2023 13:17:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3009F170F;
+        Sun, 24 Sep 2023 06:17:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C630BC433BB;
+        Sun, 24 Sep 2023 13:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561449;
-        bh=lDq3UOUQY7o7x5pbXoiRH92AFPhE0J/Qm0xphQ23lAI=;
+        s=k20201202; t=1695561450;
+        bh=t9Xk/x5uTc12jjguLUmrTd//G1EkDbcQ5Y+KI6nZyno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jGnDGb/RIH4JhRL5JIVpeS/Q2akPYQ3LsAW8joAsbFsSM6QQKILmCqf9WMGOMa4RA
-         qPoTfks+4TCFXbRaOeIN4ee7XmlWhJtOx7AzU4sycWZfUOXuOFFsmi3F0/YdEudtIg
-         +B6WmJEPwsJqaBua9KWc21qIFWx2hSfCeD2vzsMsGQ2h014Xeewe8QUOb3W1mMHDiv
-         HM7usWlXckM0Hm5KffVIOuOfIQKlM282lHEAThoz7eMypdBdmpKm3EuR4gdbyRQuXt
-         NuC1BZ91eH8PgRA7yBlDaXaGRRAtxMUMArmEy39VxM+25WyjUABeEcEav/NKu7IE/N
-         29lz6IIFAcYmA==
+        b=YxeduMDPM0iTXt3JQgHpc+/Whg+8MoUU+QQQ1Jlhw+Wj3snFMBfpiwG6XJrUGL2dn
+         TK0pEmOjb38j6AvOgRVYG4nSLa4A58ybB6pqphx+V2TXGMlSD2KGIsjul630pyOROn
+         cfcWCKtIZ6G2sBhWs81xSUVaqlq+ZFgNrI51vYLCbw3W3jX2w96iK5QnvylAChWsET
+         yFL+rAAr/QwTw9Rl/Sm/Z3++23fwukmriN4tm7zEkDOkM/NFbX08pCSHTc9eSaMmXP
+         XlbruURe+up8XEv4nZPh/i/6vk6UVON75DLtUioFJbCHbJZbAl6ELG1ytvxp8lzyGr
+         coYZcHch/ktMA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Francis <David.Francis@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Felix.Kuehling@amd.com, guchun.chen@amd.com, Graham.Sider@amd.com,
-        James.Zhu@amd.com, evan.quan@amd.com, marek.olsak@amd.com,
-        srinivasan.shanmugam@amd.com, Lang.Yu@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 33/41] drm/amdgpu: Handle null atom context in VBIOS info ioctl
-Date:   Sun, 24 Sep 2023 09:15:21 -0400
-Message-Id: <20230924131529.1275335-33-sashal@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
+        nathan@kernel.org, ndesaulniers@google.com, llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.5 34/41] objtool: Fix _THIS_IP_ detection for cold functions
+Date:   Sun, 24 Sep 2023 09:15:22 -0400
+Message-Id: <20230924131529.1275335-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230924131529.1275335-1-sashal@kernel.org>
 References: <20230924131529.1275335-1-sashal@kernel.org>
@@ -58,52 +54,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Francis <David.Francis@amd.com>
+From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-[ Upstream commit 5e7e82254270c8cf8b107451c5de01cee2f135ae ]
+[ Upstream commit 72178d5d1a38dd185d1db15f177f2d122ef10d9b ]
 
-On some APU systems, there is no atom context and so the
-atom_context struct is null.
+Cold functions and their non-cold counterparts can use _THIS_IP_ to
+reference each other.  Don't warn about !ENDBR in that case.
 
-Add a check to the VBIOS_INFO branch of amdgpu_info_ioctl
-to handle this case, returning all zeroes.
+Note that for GCC this is currently irrelevant in light of the following
+commit
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: David Francis <David.Francis@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+  c27cd083cfb9 ("Compiler attributes: GCC cold function alignment workarounds")
+
+which disabled cold functions in the kernel.  However this may still be
+possible with Clang.
+
+Fixes several warnings like the following:
+
+  drivers/scsi/bnx2i/bnx2i.prelink.o: warning: objtool: bnx2i_hw_ep_disconnect+0x19d: relocation to !ENDBR: bnx2i_hw_ep_disconnect.cold+0x0
+  drivers/net/ipvlan/ipvlan.prelink.o: warning: objtool: ipvlan_addr4_event.cold+0x28: relocation to !ENDBR: ipvlan_addr4_event+0xda
+  drivers/net/ipvlan/ipvlan.prelink.o: warning: objtool: ipvlan_addr6_event.cold+0x26: relocation to !ENDBR: ipvlan_addr6_event+0xb7
+  drivers/net/ethernet/broadcom/tg3.prelink.o: warning: objtool: tg3_set_ringparam.cold+0x17: relocation to !ENDBR: tg3_set_ringparam+0x115
+  drivers/net/ethernet/broadcom/tg3.prelink.o: warning: objtool: tg3_self_test.cold+0x17: relocation to !ENDBR: tg3_self_test+0x2e1
+  drivers/target/iscsi/cxgbit/cxgbit.prelink.o: warning: objtool: __cxgbit_free_conn.cold+0x24: relocation to !ENDBR: __cxgbit_free_conn+0xfb
+  net/can/can.prelink.o: warning: objtool: can_rx_unregister.cold+0x2c: relocation to !ENDBR: can_rx_unregister+0x11b
+  drivers/net/ethernet/qlogic/qed/qed.prelink.o: warning: objtool: qed_spq_post+0xc0: relocation to !ENDBR: qed_spq_post.cold+0x9a
+  drivers/net/ethernet/qlogic/qed/qed.prelink.o: warning: objtool: qed_iwarp_ll2_comp_syn_pkt.cold+0x12f: relocation to !ENDBR: qed_iwarp_ll2_comp_syn_pkt+0x34b
+  net/tipc/tipc.prelink.o: warning: objtool: tipc_nametbl_publish.cold+0x21: relocation to !ENDBR: tipc_nametbl_publish+0xa6
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/d8f1ab6a23a6105bc023c132b105f245c7976be6.1694476559.git.jpoimboe@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ tools/objtool/check.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-index f678bdd5f353d..b9fc7e2db5e59 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-@@ -940,12 +940,17 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
- 			struct atom_context *atom_context;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 1384090530dbe..e308d1ba664ef 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -4333,7 +4333,8 @@ static int validate_ibt_insn(struct objtool_file *file, struct instruction *insn
+ 			continue;
+ 		}
  
- 			atom_context = adev->mode_info.atom_context;
--			memcpy(vbios_info.name, atom_context->name, sizeof(atom_context->name));
--			memcpy(vbios_info.vbios_pn, atom_context->vbios_pn, sizeof(atom_context->vbios_pn));
--			vbios_info.version = atom_context->version;
--			memcpy(vbios_info.vbios_ver_str, atom_context->vbios_ver_str,
--						sizeof(atom_context->vbios_ver_str));
--			memcpy(vbios_info.date, atom_context->date, sizeof(atom_context->date));
-+			if (atom_context) {
-+				memcpy(vbios_info.name, atom_context->name,
-+				       sizeof(atom_context->name));
-+				memcpy(vbios_info.vbios_pn, atom_context->vbios_pn,
-+				       sizeof(atom_context->vbios_pn));
-+				vbios_info.version = atom_context->version;
-+				memcpy(vbios_info.vbios_ver_str, atom_context->vbios_ver_str,
-+				       sizeof(atom_context->vbios_ver_str));
-+				memcpy(vbios_info.date, atom_context->date,
-+				       sizeof(atom_context->date));
-+			}
- 
- 			return copy_to_user(out, &vbios_info,
- 						min((size_t)size, sizeof(vbios_info))) ? -EFAULT : 0;
+-		if (insn_func(dest) && insn_func(dest) == insn_func(insn)) {
++		if (insn_func(dest) && insn_func(insn) &&
++		    insn_func(dest)->pfunc == insn_func(insn)->pfunc) {
+ 			/*
+ 			 * Anything from->to self is either _THIS_IP_ or
+ 			 * IRET-to-self.
 -- 
 2.40.1
 
