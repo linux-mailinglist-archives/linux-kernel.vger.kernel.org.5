@@ -2,155 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D457A7AC74C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E927AC750
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjIXJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 05:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
+        id S229520AbjIXJbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 05:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXJ12 (ORCPT
+        with ESMTP id S229487AbjIXJbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 05:27:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE442107;
-        Sun, 24 Sep 2023 02:27:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 561A3C433C8;
-        Sun, 24 Sep 2023 09:27:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695547641;
-        bh=OtKqRE8d8XyKijo02N0v5qsYYrxnvoYjWA5m+RhuMbA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Fw28rO4+0BcWKTqRtJ11UQd3yu8tYz0YafTOJiUhCVPahmTdtfqBG0kv5yk7K2uLP
-         vhfOiVZjwUntx0nkT00PKJMca5e69fEqwi4Nf0Fck4gKhkgm8zNQIqtaHipH+KWZN/
-         CHOImXvIcyMVwFFDQ/f5o5bi0TpEh50nMSX1NGsdkhFtvRiipqldcl1immYEOXLEyu
-         TMnNfHUTZ34JCc8mOpI9Q8huT/4lnzJ3n+kYO6vFjzUGVaiT+3ADARUBPmh9o1KbNh
-         0ckacHPExsD2VBXYMijC3w325KbqHLD8kAmSG7UdKyFP5u4b3a1x1dqqqx7esezVmM
-         bgZVFmUgpBKLQ==
-Received: from [85.255.234.76] (helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qkLOY-00FfQs-Sb;
-        Sun, 24 Sep 2023 10:27:19 +0100
-Date:   Sun, 24 Sep 2023 10:27:13 +0100
-Message-ID: <87wmwf53bi.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sun, 24 Sep 2023 05:31:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F879FE
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 02:31:15 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 09:31:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695547874;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uhIVsE+ib8b0OcLzP7C28dZ20AkkqV+wYbZP9GhznoI=;
+        b=U/PBlAYYJf1FRVGWMJTshREY+NzD6WjH7rNSSYp0LbXPPfiBMT7A5lN2B8bPG5NouSugzS
+        2/YI66K6wbP73w6c6v0WYEGhMO1WrhDDtgp0L50K86FedFviTAvCNQ2ZB8Fb8I/PI+NSUm
+        dPfvBLtv7yX/K/2iT5fK5PbQ6syf96A/FMNQpl8Opk5dN4uMzOAaxp25nkVCFQHY5D47Lu
+        dFOLvov9d2pF7p15pu/nHKTaNE3kc3sffnW/kSMcLr9tbT36fQl3C8pudp1ZPdO5q1ZZmb
+        bN4ebuop6edPGUJXEh4rn2YmnEI37cawzFZuAJ6SdSNpdKTm2JRjhO6RS0B+Rg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695547874;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uhIVsE+ib8b0OcLzP7C28dZ20AkkqV+wYbZP9GhznoI=;
+        b=XXk12dLav9cFryC3S6+GGdIVzw8dYg2wrFGWpj6I5ci176Q6qaW8eajxNVfyHWuyNRKLA7
+        soLCGU2Ryo0DPzAA==
+From:   "irqchip-bot for Biju Das" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-fixes] irqchip: renesas-rzg2l: Fix logic to
+ clear TINT interrupt source
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.au@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 2/3] irqchip: renesas-rzg2l: Mask interrupts for changing interrupt settings
-In-Reply-To: <20230918122411.237635-3-biju.das.jz@bp.renesas.com>
-References: <20230918122411.237635-1-biju.das.jz@bp.renesas.com>
-        <20230918122411.237635-3-biju.das.jz@bp.renesas.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 85.255.234.76
-X-SA-Exim-Rcpt-To: biju.das.jz@bp.renesas.com, tglx@linutronix.de, prabhakar.mahadev-lad.rj@bp.renesas.com, claudiu.beznea.uj@bp.renesas.com, geert+renesas@glider.be, biju.das.au@gmail.com, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <20230918122411.237635-2-biju.das.jz@bp.renesas.com>
+References: <20230918122411.237635-2-biju.das.jz@bp.renesas.com>
+MIME-Version: 1.0
+Message-ID: <169554787327.27769.4173063850512079064.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sep 2023 13:24:10 +0100,
-Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> 
-> As per RZ/G2L hardware manual Rev.1.30 section 8.8.3 Precaution when
-> changing interrupt settings,  we need to mask the interrupts for
-> any changes in below settings:
-> 
->  * When changing the noise filter settings.
->  * When switching the GPIO pins to IRQ or GPIOINT.
->  * When changing the source of TINT.
->  * When changing the interrupt detection method.
-> 
-> This patch masks the interrupts when there is a change in the interrupt
-> detection method and changing the source of TINT.
-> 
-> Fixes: 3fed09559cd8 ("irqchip: Add RZ/G2L IA55 Interrupt Controller driver")
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->  drivers/irqchip/irq-renesas-rzg2l.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
-> index 2cee5477be6b..33a22bafedcd 100644
-> --- a/drivers/irqchip/irq-renesas-rzg2l.c
-> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
-> @@ -116,11 +116,13 @@ static void rzg2l_irqc_irq_disable(struct irq_data *d)
->  		u8 tssr_index = TSSR_INDEX(offset);
->  		u32 reg;
->  
-> +		irq_chip_mask_parent(d);
->  		raw_spin_lock(&priv->lock);
->  		reg = readl_relaxed(priv->base + TSSR(tssr_index));
->  		reg &= ~(TSSEL_MASK << TSSEL_SHIFT(tssr_offset));
->  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
->  		raw_spin_unlock(&priv->lock);
-> +		irq_chip_unmask_parent(d);
+The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-What guarantees that the parent irqchip state has been correctly restored?
-Nothing refcounts the nesting of mask/unmask.
+Commit-ID:     9b8df572ba3f4e544366196820a719a40774433e
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9b8df572ba3f4e544366196820a719a40774433e
+Author:        Biju Das <biju.das.jz@bp.renesas.com>
+AuthorDate:    Mon, 18 Sep 2023 13:24:09 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Sun, 24 Sep 2023 10:18:19 +01:00
 
->  	}
->  	irq_chip_disable_parent(d);
+irqchip: renesas-rzg2l: Fix logic to clear TINT interrupt source
 
-I'd rather you start by *disabling* the parent, and then none of that
-matters at all.
+The logic to clear the TINT interrupt source in rzg2l_irqc_irq_disable()
+is wrong as the mask is correct only for LSB on the TSSR register.
+This issue is found when testing with two TINT interrupt sources. So fix
+the logic for all TINTs by using the macro TSSEL_SHIFT() to multiply
+tssr_offset with 8.
 
->  }
-> @@ -137,11 +139,13 @@ static void rzg2l_irqc_irq_enable(struct irq_data *d)
->  		u8 tssr_index = TSSR_INDEX(offset);
->  		u32 reg;
->  
-> +		irq_chip_mask_parent(d);
->  		raw_spin_lock(&priv->lock);
->  		reg = readl_relaxed(priv->base + TSSR(tssr_index));
->  		reg |= (TIEN | tint) << TSSEL_SHIFT(tssr_offset);
->  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
->  		raw_spin_unlock(&priv->lock);
-> +		irq_chip_unmask_parent(d);
->  	}
->  	irq_chip_enable_parent(d);
+Fixes: 3fed09559cd8 ("irqchip: Add RZ/G2L IA55 Interrupt Controller driver")
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20230918122411.237635-2-biju.das.jz@bp.renesas.com
+---
+ drivers/irqchip/irq-renesas-rzg2l.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Same thing: if the parent was disabled, why do we need to do anything?
-
-
->  }
-> @@ -226,10 +230,12 @@ static int rzg2l_irqc_set_type(struct irq_data *d, unsigned int type)
->  	unsigned int hw_irq = irqd_to_hwirq(d);
->  	int ret = -EINVAL;
->  
-> +	irq_chip_mask_parent(d);
->  	if (hw_irq >= IRQC_IRQ_START && hw_irq <= IRQC_IRQ_COUNT)
->  		ret = rzg2l_irq_set_type(d, type);
->  	else if (hw_irq >= IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ)
->  		ret = rzg2l_tint_set_edge(d, type);
-> +	irq_chip_unmask_parent(d);
-
-This one is the only interesting one: why don't you mask the interrupt
-at the local level rather than on the parent? And this should be
-conditioned on the interrupt state itself (enabled or disabled), not
-done unconditionally.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
+index 4bbfa2b..2cee547 100644
+--- a/drivers/irqchip/irq-renesas-rzg2l.c
++++ b/drivers/irqchip/irq-renesas-rzg2l.c
+@@ -118,7 +118,7 @@ static void rzg2l_irqc_irq_disable(struct irq_data *d)
+ 
+ 		raw_spin_lock(&priv->lock);
+ 		reg = readl_relaxed(priv->base + TSSR(tssr_index));
+-		reg &= ~(TSSEL_MASK << tssr_offset);
++		reg &= ~(TSSEL_MASK << TSSEL_SHIFT(tssr_offset));
+ 		writel_relaxed(reg, priv->base + TSSR(tssr_index));
+ 		raw_spin_unlock(&priv->lock);
+ 	}
