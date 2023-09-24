@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 184037ACCB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7746E7ACCC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjIXWpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 18:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        id S230001AbjIXWvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 18:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjIXWpF (ORCPT
+        with ESMTP id S229489AbjIXWvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 18:45:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296DCA6;
-        Sun, 24 Sep 2023 15:44:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 323771F747;
-        Sun, 24 Sep 2023 22:44:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695595497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hRwyioNPM6VJSpdWYMKoolvI/LXv7s3V/CrVe74w9Tw=;
-        b=CzYQ+qQALQzNyMq0OAU9iS3bPdIlpBZay01wf3bK4qilWoxLIQgusBo/3bA7LBs4OqVnDP
-        tNQX5HjkAbWEL4Dtbw9F3qtcR0fzUO3ABWpWCDrgGJ/Tf6mR1DnFTFri+GegtdZM7CGG2+
-        bFm/PXQE4indUPWlxlXFzrcf2lizJHs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695595497;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hRwyioNPM6VJSpdWYMKoolvI/LXv7s3V/CrVe74w9Tw=;
-        b=IDrrHhTwiqxHwHMNxnDW3xgAjEiseYLkFJC/4lSNvRN5Mo4hbsTvQr7ISNmXUdhp7P4quT
-        FoShd7mdvt1r6nAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E13013581;
-        Sun, 24 Sep 2023 22:44:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id f7VxFOO7EGWUawAAMHmgww
-        (envelope-from <neilb@suse.de>); Sun, 24 Sep 2023 22:44:51 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Sun, 24 Sep 2023 18:51:49 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A787FC
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:51:43 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59f6041395dso24152477b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695595902; x=1696200702; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XT92F+VX1pObllF5QiGwjVv1yGLhUUOiTzjpjdANyB8=;
+        b=rNcJGyuyR8s/wZqCk86cxcHesMWOLLQ0O8V9Tq3s3WE+mhxSJNAU26amGIPY0xCTAM
+         l+mwXTh3ktu0Y6xbEtN6AD2xPgWM+j2Mp+E8jgwuOIvrLkeUgUJLKPWHnXFphUNNpFVM
+         j8fEZuoiC+vlmvrDb449zcxUEuAn4YLXUSj8UDdQS9h0K5ua4vLxHqJydhj5iM0zA9Lk
+         OLAEPpXn1ViqyTGeSNvgWiDF1dfgA0FGs9Zppb+9GxUn+pc4vtEqjXLbgKT+HscvctJI
+         FkUxY8s02hUirmpUS8vVlH6FpATlHMGakjzfaTkUmp7bAIv5YKVNBa6oHo/cxZmEYiLQ
+         HM+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695595902; x=1696200702;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XT92F+VX1pObllF5QiGwjVv1yGLhUUOiTzjpjdANyB8=;
+        b=mGPVS145MbJWL+2lUm3T5Ej5sqgLiXTWov5fkt9cnjFcvTHQrsjqhl+JhlbLfy2+yT
+         7qjlDsontVueFXwRPehx5D8nBdPPBC7ZLnOPUFjDVYSE20hJRPAF1r3d9q6vYuIz/eIh
+         im55EoJ0zmMc9e4xw7AcYdkd9amCC7cr9bhD9lEn+Hvs34ZXffrHgEJSw5F/GbgkL7Hz
+         nf4ejJUwazNaeKwEWwkmbKDGd9qHMCvs5+HM/6eBlKfGySPViDMqZxQDs19/z72L+tBJ
+         l/g5MGL76sZTBsy2WYDmiBs9NnMX0qyYUJMS2ughHcQm5XltqhKoPYdmDBSA1zux2e0N
+         8HJw==
+X-Gm-Message-State: AOJu0YyeMQGYrrEgLdY/pyymBo9KJ0FFTnAJz6/4F3vtDkjGfxYokWJy
+        lchDX5AMHqU1lC8U8nZGCxYODhR7FAWstd5W5Vo9EQ==
+X-Google-Smtp-Source: AGHT+IH/peOCCFquz23wU9RxewU8UPnFL8/DlXPpvMWpBaSjdz1XxfeMfyUaXyug0k4xyNnOUT2kiPrP39X+udscZHQ=
+X-Received: by 2002:a0d:e6cf:0:b0:561:206a:ee52 with SMTP id
+ p198-20020a0de6cf000000b00561206aee52mr6249571ywe.24.1695595902344; Sun, 24
+ Sep 2023 15:51:42 -0700 (PDT)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Christian Brauner" <brauner@kernel.org>
-Cc:     "Jeff Layton" <jlayton@kernel.org>,
-        "Alexander Viro" <viro@zeniv.linux.org.uk>,
-        "Chuck Lever" <chuck.lever@oracle.com>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        "Chandan Babu R" <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Dave Chinner" <david@fromorbit.com>, "Jan Kara" <jack@suse.cz>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Kent Overstreet" <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-In-reply-to: <20230924-mitfeiern-vorladung-13092c2af585@brauner>
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>,
- <20230924-mitfeiern-vorladung-13092c2af585@brauner>
-Date:   Mon, 25 Sep 2023 08:44:47 +1000
-Message-id: <169559548777.19404.13247796879745924682@noble.neil.brown.name>
+References: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org> <20230924183103.49487-3-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230924183103.49487-3-krzysztof.kozlowski@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 25 Sep 2023 01:51:31 +0300
+Message-ID: <CAA8EJpp4ME4gvSKt_V-MHC1yi4CoYFctw_9qLZbcDAfPMWJQ+Q@mail.gmail.com>
+Subject: Re: [RESEND PATCH 3/3] ARM: dts: qcom: sdx65: correct SPMI node name
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sep 2023, Christian Brauner wrote:
-> > My initial goal was to implement multigrain timestamps on most major
-> > filesystems, so we could present them to userland, and use them for
-> > NFSv3, etc.
-> 
-> If there's no clear users and workloads depending on this other than for
-> the sake of NFS then we shouldn't expose this to userspace. We've tried
-> this and I'm not convinced we're getting anything other than regressions
-> out of it. Keep it internal and confined to the filesystem that actually
-> needs this.
-> 
+On Sun, 24 Sept 2023 at 21:31, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Node names should not have vendor prefixes:
+>
+>   qcom-sdx65-mtp.dtb: qcom,spmi@c440000: $nodename:0: 'qcom,spmi@c440000' does not match '^spmi@.*
+>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Some NFS servers run in userspace, and they would a "clear user" of this
-functionality.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-NeilBrown
+--
+With best wishes
+Dmitry
