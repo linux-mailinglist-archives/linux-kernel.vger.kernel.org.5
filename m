@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E72D7ACC70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99FB7ACC73
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjIXWPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 18:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
+        id S229665AbjIXWSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 18:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjIXWPV (ORCPT
+        with ESMTP id S229498AbjIXWSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 18:15:21 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAA5FB;
-        Sun, 24 Sep 2023 15:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695593711;
-        bh=/aPhWsKVnXOMpzKdoh51cLpxyDDtledOkHU+7Q5ovt8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Fd8HbmgmCQl7rUvCY3fcexif/CJ8vEVfCWOwDeNNyx0DUtuf6MRDePUQu4rq3GKO6
-         fLrFTfj5fkB8q9upZfBhOsoOYbNk9eJ8Rju7M14mwPurJwbewODt6I/E0K66EXWkys
-         v4Qv8S3jbDZfwbjC6p9z2u4mn4yCFvZZFsZD86Otq9iCZWyyn/0w4I8X4+N4kysg+G
-         pMQFMg7XW94jzVrpFvzY56RUBv22CnO6CN65fB+0Zq4D5egjoJdRrM3tYSyxJHTmkQ
-         BWqKjr9KQoGV9AuDfoPP39AKjDZfnbWmOjEcpHuO8xdh4VKLs06w8sKQSNTIBERAnn
-         yC6jTzxm74F6A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rv0gM503Tz4x5k;
-        Mon, 25 Sep 2023 08:15:11 +1000 (AEST)
-Date:   Mon, 25 Sep 2023 08:15:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the execve tree
-Message-ID: <20230925081510.6dacf35e@canb.auug.org.au>
+        Sun, 24 Sep 2023 18:18:14 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08CAEE
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:07 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59c00b5c8b2so62702367b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695593887; x=1696198687; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=148f3od4UEgt0C3+sCv2idXUqd/hwbuqnZG5oUZXv6Y=;
+        b=aBhoVb09JCipnenktEbqDz9vuwlwrH79TNHtYoPUk0tyLwiR81+AEr920sN0jPOIvC
+         crRrZj5ZDuVeGtFVxRX18Gba/0dZCvgzCll5VvsqF4v+MrwmvZHkQaA3SRA4dXY8Wc62
+         h4IZ/M06v9GvXd+5OOMDItd5r3RKMMK5hi461diJ0Vra3913vPbmDfSBAoffxzao40tf
+         dD/7rVt0nUti6ntk9boxC1rtvwN1GhvXn66pWMsDWzv5wWWji8XHAW4XnexPRdbiihOy
+         vSZwa5/Bvjmr4C8rPUlbGEJ4XirWCZrs/0toaJy07PqVYyHYw6u2+/RJ/s072NfdBxc8
+         hSsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695593887; x=1696198687;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=148f3od4UEgt0C3+sCv2idXUqd/hwbuqnZG5oUZXv6Y=;
+        b=NumzGtireM5DSvbP73IvsXZrz/1ZCYlKA08TKsp6opshUda5ATRBPewQo4Fz7V4r0B
+         zDVyAhsdfP0kaRuU6GkjE6KPurd/wnrfQ8Sj25p6tgiHLD2BQue/sX1BRgXqA60CrWDo
+         XkjXc5YhRGkhNeYSl1qa1inl53vre6UQGcTJP4oKTRzN68we2dqsIWZfQ8yybq6z3gJI
+         G+S0iETdpC1pNNEoZ1560eddIvzINLAhAySfGfQqePQVGdwjkQUvKGA0wZnZSpgShhIZ
+         9Hs5pcanBJRoQD+z1yUMGDl0JcSSrJ3jscjVRwxTbCVlSWbVAaHcPW9dGEaM8gvesY5T
+         l6Bw==
+X-Gm-Message-State: AOJu0Yx7VicOyq6h+6xd0HBdGF2+m6JlfGmrSzoo5U1P3oeoL5MnEi+/
+        s3TCWTCK55MbJghdebh79v03mMVh4yhd5ZK7c0fz9A==
+X-Google-Smtp-Source: AGHT+IFcYRHDcxG8KWeFXXolriZPyC3AiPbFE3WBCzvXsIHeB+V+a6FXyJQypZvS1ds6r7pfEYfPu0vx7NFcpdfa5mE=
+X-Received: by 2002:a81:6e0a:0:b0:589:f995:eb9f with SMTP id
+ j10-20020a816e0a000000b00589f995eb9fmr4715168ywc.45.1695593886747; Sun, 24
+ Sep 2023 15:18:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vQiIO3GqLKeold9CMRM2iQz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 25 Sep 2023 01:17:55 +0300
+Message-ID: <CAA8EJpoQdaKnXRaEvFpyqUD1vPvy=aQesxWZ3Usj0JcEvZpDkg@mail.gmail.com>
+Subject: Re: [RESEND PATCH 1/3] ARM: dts: qcom: sdx65: correct PCIe EP phy-names
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vQiIO3GqLKeold9CMRM2iQz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, 24 Sept 2023 at 21:31, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Qualcomm PCIe endpoint bindings expect phy-names to be "pciephy":
+>
+>   arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dtb: pcie-ep@1c00000: phy-names:0: 'pciephy' was expected
+>
+> Fixes: 9c0bb38414a4 ("ARM: dts: qcom: sdx65: Add support for PCIe EP")
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi all,
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Commit
 
-  d11362467939 ("elf, uapi: Remove struct tag 'dynamic'")
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vQiIO3GqLKeold9CMRM2iQz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUQtO4ACgkQAVBC80lX
-0GxzWwf+K18RyNdLSqPEeLBklQI63SwGoBKheDt194KTWIbPzedbMCrW60CrsP09
-lU8AdF9tdWKTG90NCLNGzGbvicR9DrqdAToQNZ72/6dXiSDW5uqcDDbpz2BfckNU
-BL9OHwB26p5S+NdX5fC2X4+ci+NlPut6MQ4BcA1beqchQ8enLazBjNlPEP2vXlmA
-zLbdvgVOa8XKxmNCFqdz9TypIQlUQXGCGk+Q1826H0hGf3OKAZ785URAosN81gKm
-DSe7BMcLC9pBJcZdvgjK9y+oGOpXZUhLrdrO9EPSIOP/4C1dbE/ZoUSKGgSKoVEc
-/9zCsiLRJongB5KaErt4qAbB0FFOTQ==
-=4T9Q
------END PGP SIGNATURE-----
-
---Sig_/vQiIO3GqLKeold9CMRM2iQz--
+-- 
+With best wishes
+Dmitry
