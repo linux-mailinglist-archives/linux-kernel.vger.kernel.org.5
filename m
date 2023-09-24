@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 977077ACA78
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 17:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C057ACA7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 17:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjIXPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 11:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        id S229708AbjIXPYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 11:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIXPWc (ORCPT
+        with ESMTP id S229437AbjIXPYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 11:22:32 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258969B;
-        Sun, 24 Sep 2023 08:22:25 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40535597f01so48647395e9.3;
-        Sun, 24 Sep 2023 08:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695568943; x=1696173743; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8QRWcmJTIU+4WH45SS9zHPUgdcrqvZWBP9VNxcfLWXQ=;
-        b=PWnS3gypkek0THl6Jwc24G60ho7UJro/eSytk4p+dH0hVkmf5YwNRuWe1IRqevnm3J
-         QkrG7FQHan1X9C2RiYT5m254OZ62FGZ9uCF4TGhzRpaibqkhID8epO59bneIEyyWodZU
-         Ox0MGnyVNbEy4gQo3lWtgNcnLtkuaf+pWQSNdpf2tYAGqYzVuzkZOC2LyW3hqFpF+3eh
-         hYkUNo9Rt5DF1mEuY3mwU+C9DVOCZxBvbRksivCozHzdBwBye9fsHAiViwvrU8podaco
-         FpFkufrEAVJj0/cck46rSl888TEG2JbnKae8bX7BdgHAnydArkfHqDCPl1GRoSYdYgdK
-         kkfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695568943; x=1696173743;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8QRWcmJTIU+4WH45SS9zHPUgdcrqvZWBP9VNxcfLWXQ=;
-        b=QlA+ilfQ3rw73dx7g44wZvOhNNyqmKAQIx0jDhCXCSyMRLXM3pb6rxyz2P7T74b4A2
-         Tf22CKPuQt9eBH6KcYX4QmOe/QAi7a40AHo/Qd6CVpUsnJEgCYUST/WRv6KFZTCXsao0
-         /nI4Qp7lEKISXHvqHuZncOMVi9Hg4z4TmgWIC0kbU0KzZcqjgxTkgYeOf789K/7GHpbR
-         HdvtuMUtHnuSXrVpuaDzEzAyyOlpClcqPghdiXrHE+9L6FOVrdNQDrjK/4GE4Kzj0rk3
-         eH7M46zMot7UG7I7VQy7HbuhXO5RgoJ8WN0KsL9QscpcDkWN+//HuY2K0jxmvpOHCx0y
-         mNpw==
-X-Gm-Message-State: AOJu0YyMpbrcKxA89KDil2/L2nKn074DpuVSoxva96KrBqh1xyvT7yQ0
-        iDgYSyupnc7/G4+66TTuCgw=
-X-Google-Smtp-Source: AGHT+IEg1Y9CDEeNmhEKaGImfvyE8aQsjJzuojQqXiKDyVyE6hAbk2Ban4rp0H4fa+gGlEf7TIkncg==
-X-Received: by 2002:a05:600c:21d2:b0:401:be70:53b6 with SMTP id x18-20020a05600c21d200b00401be7053b6mr3836420wmj.15.1695568943158;
-        Sun, 24 Sep 2023 08:22:23 -0700 (PDT)
-Received: from spiri.. ([2a02:2f08:a301:7000:1bc9:cab8:e784:6ddb])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05600c204c00b003fe1a092925sm9732838wmg.19.2023.09.24.08.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 08:22:22 -0700 (PDT)
-From:   alisadariana@gmail.com
-Cc:     Alisa-Dariana Roman <alisa.roman@analog.com>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iio: adc: ad7192: Correct reference voltage
-Date:   Sun, 24 Sep 2023 18:21:48 +0300
-Message-Id: <20230924152149.41884-1-alisadariana@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 24 Sep 2023 11:24:17 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E98B8;
+        Sun, 24 Sep 2023 08:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
+ t=1695569018; x=1696173818; i=j.neuschaefer@gmx.net;
+ bh=s5gWdQpVH21Xx+9InxWsz6K6mgquCNB9iZycdR6gpYU=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=Eret2MkaH3SBWABhFMXlk84417zAEaOVNeeYXH7F9Fq4dzf3Zp7BQcmi0SYYWW0bqA9bhw23g8i
+ nuhApZhp+yByiQJyoTt1XbR7/LyoeYthVbo6/GbDgsZ8m/uTbNsyFcKpT9Rq5SY0QAUmIxhx9AWtR
+ F9sdKrQL5QHhJkrN3J7S+fd7qd7dJ+K3b70VKkXH0x0Nck9uTtgh+3f/yjguDTYF/T2ak7CHfx4h/
+ B+mbJah0wqhkuwHsWASnmFi3w3bCmEzDaR0JExPMXBCZJwgEqD56Bnxv2JLZ81dAR0M3PoVlc/1SS
+ zjJdx4erucZ6Q29OEEjbFzqNeTLif4D5RMqw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MDhlV-1qvBvB1Z6l-00Apx2; Sun, 24
+ Sep 2023 17:23:38 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     dmaengine@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Wei Xu <xuwei5@hisilicon.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: hisi: Simplify preconditions of CONFIG_K3_DMA
+Date:   Sun, 24 Sep 2023 17:23:32 +0200
+Message-Id: <20230924152332.2254305-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mO+5wHE0RmepwGCER4agAwL5sdZdkEmD7ddZjwOsYIJ3KcobDec
+ wb3sIJdspptyosakZW9CkeABC3G/J1vWL9KND2I5KVKZ85sVDAnOGzC2hYA0ZkOtbNEg7DM
+ f0D7YP9fOBJ7Gp9DpNYUECXz0eU1uNSR0keus4fg6t75lndIOM/ONygs49N0SehJOx0gdh7
+ wg12HGeE6B4xLjtsmhEMw==
+UI-OutboundReport: notjunk:1;M01:P0:nvmjNVhzPDU=;4OysFuZ81/aARekur98DArYf/2M
+ 9eVX+uCJB5GJwtGCLsk078tv6WTI29wZzQVhWQURvgqxJ6AR0+kTR9WWEHBYLDXi7XwaEvgKK
+ 7Ts1dPYdI8N9fi0B7cOdJvKRS0S2I9QuIBaxk6HbgK4EeiQg6pQk8ejO9V1jJHAYolQ9uuwER
+ 6HXZnuhH3rFU5YyuAhtc+kFt+KcrMRRQiViOP6d4ZlgrhCtEi4uRas67nJuPWf99oOxk7G6AG
+ 2u3RH4v6ILKIJlHwGXUyvyvhqaBferMW4klA0bzF5Ke9yf8OkhDss/uBrXUs2P1q2V38J6JPh
+ OZrSi+ZW/TSUjKYpJIlI2y1BBrbwvXwyxpXpshZFAYXDCCQN4HhqTKLVd1Wgzj3pBObq2pM6v
+ 8Ha59CKXBUDqhPHwvuVMOEelumkw4vVwN40CqUz16u0X2ZZ8Ld/pUuPwKhzarxH+p9fH+fiDo
+ sJdQ9dgOVsYD8bLZWTh0ADlnUUx+0dbwUdZ1zpbnnXGt/Ry5jafOk3DxLva36iW5Qgw29Ko4l
+ Z61KLwMJKiLJNYDNCVMWS4VR6W2OHDNBn6tXPSoQ6YYDlltj4Cu6hhgL7GhqMClLs+ijNAHjn
+ rupPQtiYgQtqsfFXhDEjim1NjfxMqlqEsZc0I1JZQoU9cuoYUu+qSiPzhW0d51AKg2opqJzJa
+ v7/VRAOHFkjQLrRB412ZF3KT3VMvb0nEDZnkR44Kh52h6UFujgYMaHp0H+bZHj+3VsROHYXbx
+ x57W1O3b/In54de+iMygBNGwCBadRapXTrHDO6gMHf4DfHFjJ0qt4vgkNhntdgL1ljvfj6Q9g
+ tjXPvJW3uhWe6HjiNotlgJq85mMgMuxpEYuErl0jQt+GIOFOsV5lSq4cdrFpO0p43abzFB+5x
+ WDrAC7aw+0/uVdHSLcmrE1Na9wsyvy1O6omriZ/fSp1m6qJrbVEk6Jwx9aOcwYS1R2GZ7Mz3B
+ ZSeMGfHveklIC1ITCJ+viDXfO9k=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alisa-Dariana Roman <alisa.roman@analog.com>
+Commit e39a2329cfb09 ("Kconfig: Allow k3dma driver to be selected for
+more then HISI3xx platforms") expanded the "depends on" line of K3_DMA
+from "ARCH_HI3xxx" to "ARCH_HI3xxx || ARCH_HISI || COMPILE_TEST".
+However, ARCH_HI3xxx implies ARCH_HISI, so it's unnecessary to list
+both.
 
-The avdd and the reference voltage are two different sources but the
-reference voltage was assigned according to the avdd supply.
+Instead, just list ARCH_HISI, which covers all HiSilicon platforms.
 
-Add vref regulator structure and set the reference voltage according to
-the vref supply from the devicetree.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ drivers/dma/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In case vref supply is missing, reference voltage is set according to
-the avdd supply for compatibility with old devicetrees.
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index 4ccae1a3b8842..70ba506dabab5 100644
+=2D-- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -362,7 +362,7 @@ config INTEL_IOATDMA
 
-Fixes: b581f748cce0 ("staging: iio: adc: ad7192: move out of staging")
-Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
-Cc: stable@vger.kernel.org
----
-v1 -> v2
-	- use dev_err_probe()
-	Link: https://lore.kernel.org/lkml/20230923225827.75681-1-alisadariana@gmail.com/
-
- drivers/iio/adc/ad7192.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-index 69d1103b9508..b64fd365f83f 100644
---- a/drivers/iio/adc/ad7192.c
-+++ b/drivers/iio/adc/ad7192.c
-@@ -177,6 +177,7 @@ struct ad7192_chip_info {
- struct ad7192_state {
- 	const struct ad7192_chip_info	*chip_info;
- 	struct regulator		*avdd;
-+	struct regulator		*vref;
- 	struct clk			*mclk;
- 	u16				int_vref_mv;
- 	u32				fclk;
-@@ -1008,10 +1009,30 @@ static int ad7192_probe(struct spi_device *spi)
- 	if (ret)
- 		return dev_err_probe(&spi->dev, ret, "Failed to enable specified DVdd supply\n");
- 
--	ret = regulator_get_voltage(st->avdd);
--	if (ret < 0) {
--		dev_err(&spi->dev, "Device tree error, reference voltage undefined\n");
--		return ret;
-+	st->vref = devm_regulator_get_optional(&spi->dev, "vref");
-+	if (IS_ERR(st->vref)) {
-+		if (PTR_ERR(st->vref) != -ENODEV)
-+			return PTR_ERR(st->vref);
-+
-+		ret = regulator_get_voltage(st->avdd);
-+		if (ret < 0)
-+			return dev_err_probe(&spi->dev, ret,
-+					     "Device tree error, AVdd voltage undefined\n");
-+	} else {
-+		ret = regulator_enable(st->vref);
-+		if (ret) {
-+			dev_err(&spi->dev, "Failed to enable specified Vref supply\n");
-+			return ret;
-+		}
-+
-+		ret = devm_add_action_or_reset(&spi->dev, ad7192_reg_disable, st->vref);
-+		if (ret)
-+			return ret;
-+
-+		ret = regulator_get_voltage(st->vref);
-+		if (ret < 0)
-+			return dev_err_probe(&spi->dev, ret,
-+					     "Device tree error, Vref voltage undefined\n");
- 	}
- 	st->int_vref_mv = ret / 1000;
- 
--- 
-2.34.1
+ config K3_DMA
+ 	tristate "Hisilicon K3 DMA support"
+-	depends on ARCH_HI3xxx || ARCH_HISI || COMPILE_TEST
++	depends on ARCH_HISI || COMPILE_TEST
+ 	select DMA_ENGINE
+ 	select DMA_VIRTUAL_CHANNELS
+ 	help
+=2D-
+2.40.1
 
