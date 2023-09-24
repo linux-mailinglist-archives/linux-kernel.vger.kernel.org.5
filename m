@@ -2,114 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7487ACB0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2E07ACB10
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjIXRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S230089AbjIXR0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjIXRZI (ORCPT
+        with ESMTP id S229710AbjIXR0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:25:08 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7F5F1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:25:01 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c93638322so1172328966b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695576299; x=1696181099; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RRXyiwDnkcF0zN2JsUwtWTqR+TaAuDaKDz+KJ6kvRrU=;
-        b=HLGqwnkyzFQVdgYOXY0i49HeFCR6URzFxfpL1sidrOrd7PMp434Uk0KBW11wXZSpu4
-         3HErpiTjei99XzJzZVVKa4rHW7n49LeqZEQPOL9vz5uoFrMV1UXMbokYlOKBrlHAxAXv
-         9BQdA++xabk014UiEZT/kMxhZFGNlXbvrYpFE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695576299; x=1696181099;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RRXyiwDnkcF0zN2JsUwtWTqR+TaAuDaKDz+KJ6kvRrU=;
-        b=usCodpoNZuBHdAbV5opY6pCn843ocqJ61Al7yvzsH5WoftKR8Q5wfGpNgWTV6uWPKN
-         P1o8kCQze/66jHC0jDuj7VonxremrXF/aJ3fHCrcnBSSMvW8fmtpIaqeo/SUXR5Yg27C
-         NMdhDxNCp/ZdXl9LaoKUjimJyNRJjDppfZZcD365IJWRjonkkeG2Yqi68s3WM8++ViEj
-         uJ0dWHX5b7MFLzlw6bnunZKe02TMaWq0Sf53y6HzFHvERxWETLX4fpA3AltUSNUhVxfA
-         gwCSPt/jdWan7sYoxlY4+ExnOJY/tsYI6clbD2HfRvIr32Byo0WSqNULMFGrehUgaxyp
-         /K+A==
-X-Gm-Message-State: AOJu0Yz43G+f+5jHN4Blm6d8Wy7L5HRK9V+aDhbNdRicEwkC2WLWDqQf
-        goAM9TfkKXTu044fE97p+7qwBTSOwREC5fqgWqf1zobk
-X-Google-Smtp-Source: AGHT+IFykE8OdMPBvHPxcpjRIVIF+OsJFurmTlZEEgwyK6xQPJ5qs/642gq/FoA6BZaMNOfU7riwNQ==
-X-Received: by 2002:a17:907:62a6:b0:9a9:fa4a:5a4e with SMTP id nd38-20020a17090762a600b009a9fa4a5a4emr10148049ejc.13.1695576299387;
-        Sun, 24 Sep 2023 10:24:59 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id k17-20020a170906681100b00992b50fbbe9sm5261067ejr.90.2023.09.24.10.24.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 10:24:58 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so11674462a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:24:58 -0700 (PDT)
-X-Received: by 2002:a05:6402:270d:b0:530:bfb6:66cd with SMTP id
- y13-20020a056402270d00b00530bfb666cdmr11388000edd.7.1695576298038; Sun, 24
- Sep 2023 10:24:58 -0700 (PDT)
+        Sun, 24 Sep 2023 13:26:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0F5126;
+        Sun, 24 Sep 2023 10:25:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4248C433C8;
+        Sun, 24 Sep 2023 17:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695576356;
+        bh=bMpotNnwaohECqLY5FvgEgcZ0XP2V5cdsM+zfMWQjQ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SXzScmqNF7XuuQ2Ls4XEJeulZKQhJqqykAKSjQIplhUQqEuPsGiPYewx/5JsfUIqf
+         gb0WFVSIIErOs+S9zE0Ws9cHku3Zhyy3E+35aynp0e+mv2vZNzldHgyBDMYfEPZcOQ
+         tfAyVISJjf51o/eMxQIZYcoylY+8SIQnHgaY+8546ZUJWA4kHTNAQ1yteHILGbhNnk
+         /LE7v6YNZEew68H7QN1Vj1ksGMy2OXXUt/K/hPcLEtbqtT1n2m+xFSJYS/hfl7/anR
+         7nc/8JmMgAHcsPa/yYkcj1R54EbCw2VGtP7JAzhh/iX/HNq+Y6RYO7Zo5gbQlf802v
+         /wZ0K6WkmmEAA==
+Date:   Sun, 24 Sep 2023 18:25:48 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>
+Subject: Re: [PATCH v2 05/19] staging: iio: resolver: ad2s1210: fix probe
+Message-ID: <20230924182548.580dc03f@jic23-huawei>
+In-Reply-To: <20230921144400.62380-6-dlechner@baylibre.com>
+References: <20230921144400.62380-1-dlechner@baylibre.com>
+        <20230921144400.62380-6-dlechner@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <202309220957.927ADC0586@keescook> <CAHk-=wg0C+eEm0Tegpvc1zZjcqkdG9L0ed10tg_rQ1-WZciMGA@mail.gmail.com>
- <202309222034.F2B777F55@keescook> <CAHk-=whf6Zu3Cfm1eOTxXniZf5EPaf1iLj_q_6BVHrzTUBfUGw@mail.gmail.com>
- <88707e12-dba9-4a9f-95d7-8d6f3c8f0f58@p183>
-In-Reply-To: <88707e12-dba9-4a9f-95d7-8d6f3c8f0f58@p183>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 24 Sep 2023 10:24:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh++R5W1ifuS6YoSb-9ExKGr7cVavo8SHiWtzyR4-hVgg@mail.gmail.com>
-Message-ID: <CAHk-=wh++R5W1ifuS6YoSb-9ExKGr7cVavo8SHiWtzyR4-hVgg@mail.gmail.com>
-Subject: Re: [GIT PULL] hardening fixes for v6.6-rc3
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sept 2023 at 09:58, Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> Most of those in uapi/ are likely unnecessary: extern "C" means
-> "don't mangle", but kernel doesn't export functions to userspace
-> except vDSO so there is nothing to mangle in the first place.
+On Thu, 21 Sep 2023 09:43:46 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-I suspect a lot of it is "this got copied-and-pasted from a source
-that used it".
+> This fixes a number of issues in the ad2s1210_probe() function:
+> - Move call to ad2s1210_setup_gpios() after `st->sdev = spi;`. This
+>   fixes use of this pointer before it is initialized.
+> - Check return value on ad2s1210_initial().
+Should mention moving it as well.
+> - Move devm_iio_device_register() to the end to avoid race of
+>   registering before fully initialized.
+> - Remove call to spi_setup(). Note: MODE_3 was incorrect, it should be
+>   MODE_1 but we can let the device tree select this.
+> - Change default value for fclkin. This is an external oscillator, not
+>   the SPI bus clock. (Will use device tree to get the correct value
+>   in a future patch. For now, using the eval board value.)
+> - Remove spi_set_drvdata().
 
-And even if you don't export, you have to *match* the linkage in case
-you have the same name.
+Hmm. This is a lot of different things. I'd prefer it more split up
+as a few of these are not completely trivial.
 
-So I suspect that if you have any kind of prototype sharing between
-user space (that might use C++) and kernel space, and end up with the
-same helper functions in both cases, and having some header sharing,
-you end up with that pattern. And you do it just once, and then it
-spreads by copy-and-paste.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-And then about a third of the hits seem to be in tools, which is
-literally user space and probably actually has C and C++ mixing.
+I think the patch split up broke on this one...
 
-Another third is the drm uapi files. I didn't even try to look at what
-the cause there is. But presumably there are common names used in user
-space vs kernel.
+> ---
+>  drivers/staging/iio/resolver/ad2s1210.c | 30 ++++++++++++-------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index 0bdd5a30d45d..9c7f76114360 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -3,6 +3,7 @@
+>   * ad2s1210.c support for the ADI Resolver to Digital Converters: AD2S1210
+>   *
+>   * Copyright (c) 2010-2010 Analog Devices Inc.
+> + * Copyright (C) 2023 BayLibre, SAS
 
-And then the last third is random.
+Bit early to justify that, but I'm fine with it anyway as it will soon
+be justified!
 
-We do have a few other uses of __cplusplus. Sometimes just "we have a
-structure member name that the C++ people decided was a magic
-keyword".
+>   */
+>  #include <linux/types.h>
+>  #include <linux/mutex.h>
+> @@ -657,12 +658,8 @@ static int ad2s1210_probe(struct spi_device *spi)
+>  	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+>  	if (!indio_dev)
+>  		return -ENOMEM;
+> -	st = iio_priv(indio_dev);
+> -	ret = ad2s1210_setup_gpios(st);
+> -	if (ret < 0)
+> -		return ret;
+>  
+> -	spi_set_drvdata(spi, indio_dev);
 
-So it's not like this new pattern is *completely* new - we've had
-random "people want to use this header with C++ compilers and that
-causes random issues" before. The details are different, the cause is
-similar.
+Looks fine, but unconnected to the rest of this patch.
 
-                Linus
+> +	st = iio_priv(indio_dev);
+>  
+>  	mutex_init(&st->lock);
+>  	st->sdev = spi;
+> @@ -671,22 +668,25 @@ static int ad2s1210_probe(struct spi_device *spi)
+>  	st->resolution = 12;
+>  	st->fexcit = AD2S1210_DEF_EXCIT;
+>  
+> +	ret = ad2s1210_setup_clocks(st);
+
+doesn't exist yet.
+
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = ad2s1210_setup_gpios(st);
+
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = ad2s1210_initial(st);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	indio_dev->info = &ad2s1210_info;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->channels = ad2s1210_channels;
+>  	indio_dev->num_channels = ARRAY_SIZE(ad2s1210_channels);
+>  	indio_dev->name = spi_get_device_id(spi)->name;
+>  
+> -	ret = devm_iio_device_register(&spi->dev, indio_dev);
+> -	if (ret)
+> -		return ret;
+> -
+> -	st->fclkin = spi->max_speed_hz;
+> -	spi->mode = SPI_MODE_3;
+> -	spi_setup(spi);
+> -	ad2s1210_initial(st);
+> -
+> -	return 0;
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+>  }
+>  
+>  static const struct of_device_id ad2s1210_of_match[] = {
+
