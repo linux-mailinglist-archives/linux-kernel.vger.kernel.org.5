@@ -2,229 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 424C77AC700
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8F37AC702
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 09:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjIXHti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 03:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        id S229940AbjIXHtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 03:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjIXHti (ORCPT
+        with ESMTP id S229699AbjIXHty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 03:49:38 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D57106;
-        Sun, 24 Sep 2023 00:49:30 -0700 (PDT)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RtdMN6W6KztSZQ;
-        Sun, 24 Sep 2023 15:45:04 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sun, 24 Sep 2023 15:49:22 +0800
-Message-ID: <236310e2-b253-553e-d210-4a4928ed8ec8@huawei.com>
-Date:   Sun, 24 Sep 2023 15:49:21 +0800
+        Sun, 24 Sep 2023 03:49:54 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293B710C;
+        Sun, 24 Sep 2023 00:49:44 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qkJrw-0003js-LP; Sun, 24 Sep 2023 09:49:32 +0200
+Message-ID: <16f0e113-9103-408f-bf5f-9f90442c99ed@leemhuis.info>
+Date:   Sun, 24 Sep 2023 09:49:31 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 1/2] scsi: core: cleanup scsi_dev_queue_ready()
-Content-Language: en-US
-From:   Wenchao Hao <haowenchao2@huawei.com>
-To:     Damien Le Moal <dlemoal@kernel.org>
-CC:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <louhongxiang@huawei.com>
-References: <20230922093842.2646157-1-haowenchao2@huawei.com>
- <20230922093842.2646157-2-haowenchao2@huawei.com>
- <ea28de69-8b9d-8ff8-b7fc-eb780123f055@kernel.org>
- <7a11374c-4e8e-b7f9-aca4-55686a6ec501@huawei.com>
-In-Reply-To: <7a11374c-4e8e-b7f9-aca4-55686a6ec501@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH REGRESSION] iommu: Only allocate FQ domains for IOMMUs
+ that support them
+Content-Language: en-US, de-DE
+To:     Hector Martin <marcan@marcan.st>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     Joerg Roedel <jroedel@suse.de>, Neal Gompa <neal@gompa.dev>,
+        "Justin M. Forbes" <jforbes@fedoraproject.org>,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, stable@vger.kernel.org,
+        regressions@lists.linux.dev
+References: <20230922-iommu-type-regression-v1-1-1ed3825b2c38@marcan.st>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20230922-iommu-type-regression-v1-1-1ed3825b2c38@marcan.st>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695541784;b11f5da6;
+X-HE-SMSGID: 1qkJrw-0003js-LP
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/24 14:27, Wenchao Hao wrote:
-> On 2023/9/22 20:50, Damien Le Moal wrote:
->> On 2023/09/22 2:38, Wenchao Hao wrote:
->>> This is just a cleanup for scsi_dev_queue_ready() to avoid
->>> redundant goto and if statement, it did not change the origin
->>> logic.
->>>
->>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
->>> ---
->>>   drivers/scsi/scsi_lib.c | 35 ++++++++++++++++++-----------------
->>>   1 file changed, 18 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
->>> index ca5eb058d5c7..f3e388127dbd 100644
->>> --- a/drivers/scsi/scsi_lib.c
->>> +++ b/drivers/scsi/scsi_lib.c
->>> @@ -1254,28 +1254,29 @@ static inline int scsi_dev_queue_ready(struct request_queue *q,
->>>       int token;
->>>       token = sbitmap_get(&sdev->budget_map);
->>> -    if (atomic_read(&sdev->device_blocked)) {
->>> -        if (token < 0)
->>> -            goto out;
->>> +    if (token < 0)
->>> +        return -1;
->>
->> This is changing how this function works...
->>
-> 
-> I don't think so...
-> The origin function flow:
-> 
-> static inline int scsi_dev_queue_ready(struct request_queue *q,
->                    struct scsi_device *sdev)
-> {
->      ...
->      token = sbitmap_get(&sdev->budget_map);
->      if (atomic_read(&sdev->device_blocked)) {
->          if (token < 0)
->              goto out;
->      }
->      return token;
-> out:
->      return -1
-> }
-> 
-> If the token is less than 0, it would always return -1. So we can found
-> it's not necessary to check token after atomic_read().
-> 
->>> -        if (scsi_device_busy(sdev) > 1)
->>> -            goto out_dec;
->>> +    /*
->>> +     * device_blocked is not set at mostly time, so check it first
->>> +     * and return token when it is not set.
->>> +     */
->>> +    if (!atomic_read(&sdev->device_blocked))
->>> +        return token;
->>
->> ...because you reversed the tests order.
-> 
-> As explained in comment, the device_blocked is not set at mostly time,
-> so when it's not set, just return the token.
-> 
->>> -        /*
->>> -         * unblock after device_blocked iterates to zero
->>> -         */
->>> -        if (atomic_dec_return(&sdev->device_blocked) > 0)
->>> -            goto out_dec;
->>> -        SCSI_LOG_MLQUEUE(3, sdev_printk(KERN_INFO, sdev,
->>> -                   "unblocking device at zero depth\n"));
->>> +    /*
->>> +     * unblock after device_blocked iterates to zero
->>> +     */
->>> +    if (scsi_device_busy(sdev) > 1 ||
->>> +        atomic_dec_return(&sdev->device_blocked) > 0) {
->>
->> And here too, you are changing how the function works. The atomic_dec may not be
->> done if the first condition is true.
->>
-> 
-> the origin flow would not call atomic_dec_return() too when condition
-> "scsi_device_busy(sdev) > 1" is true like following:
-> 
-> static inline int scsi_dev_queue_ready(struct request_queue *q,
->                    struct scsi_device *sdev)
-> {
->      ...
->      if (atomic_read(&sdev->device_blocked)) {
->          if (scsi_device_busy(sdev) > 1)
->              goto out_dec;
-> 
->          /*
->           * unblock after device_blocked iterates to zero
->           */
->          if (atomic_dec_return(&sdev->device_blocked) > 0)
->              goto out_dec;
->          SCSI_LOG_MLQUEUE(3, sdev_printk(KERN_INFO, sdev,
->                     "unblocking device at zero depth\n"));
->      }
->      return token;
-> out_dec:
->      if (token >= 0)
->          sbitmap_put(&sdev->budget_map, token);
-> out:
->      return -1;
-> }
-> 
-> Here is the function before and after my change:
-> 
-> The old function:
-> static inline int scsi_dev_queue_ready(struct request_queue *q,
->                    struct scsi_device *sdev)
-> {
->      int token;
-> 
->      token = sbitmap_get(&sdev->budget_map);
->      if (token < 0)
->          return -1;
-> 
->      /*
->       * device_blocked is not set at mostly time, so check it first
->       * and return token when it is not set.
->       */
->      if (!atomic_read(&sdev->device_blocked))
->          return token;
-> 
->      /*
->       * unblock after device_blocked iterates to zero
->       */
->      if (scsi_device_busy(sdev) > 1 ||
->          atomic_dec_return(&sdev->device_blocked) > 0) {
->          sbitmap_put(&sdev->budget_map, token);
->          return -1;
->      }
-> 
->      SCSI_LOG_MLQUEUE(3, sdev_printk(KERN_INFO, sdev,
->               "unblocking device at zero depth\n"));
-> 
->      return token;
-> }
-> 
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-Sorry, I paste wrong for old function, the old function is:
+On 22.09.23 15:40, Hector Martin wrote:
+> Commit a4fdd9762272 ("iommu: Use flush queue capability") hid the
+> IOMMU_DOMAIN_DMA_FQ domain type from domain allocation. A check was
+> introduced in iommu_dma_init_domain() to fall back if not supported, but
+> this check runs too late: by that point, devices have been attached to
+> the IOMMU, and the IOMMU driver might not expect FQ domains at
+> ops->attach_dev() time.
+> 
+> Ensure that we immediately clamp FQ domains to plain DMA if not
+> supported by the driver at device attach time, not later.
+> 
+> This regressed apple-dart in v6.5.
+> [...]
 
-static inline int scsi_dev_queue_ready(struct request_queue *q,
-				  struct scsi_device *sdev)
-{
-	int token;
 
-	token = sbitmap_get(&sdev->budget_map);
-	if (atomic_read(&sdev->device_blocked)) {
-		if (token < 0)
-			goto out;
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-		if (scsi_device_busy(sdev) > 1)
-			goto out_dec;
+#regzbot ^introduced a4fdd9762272
+#regzbot title iommu: apple-dart regressed
+#regzbot monitor:
+https://lore.kernel.org/all/20230922-iommu-type-regression-v2-1-689b2ba9b673@marcan.st/
+#regzbot fix: iommu/apple-dart: Handle DMA_FQ domains in attach_dev()
+#regzbot ignore-activity
 
-		/*
-		 * unblock after device_blocked iterates to zero
-		 */
-		if (atomic_dec_return(&sdev->device_blocked) > 0)
-			goto out_dec;
-		SCSI_LOG_MLQUEUE(3, sdev_printk(KERN_INFO, sdev,
-				   "unblocking device at zero depth\n"));
-	}
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
 
-	return token;
-out_dec:
-	if (token >= 0)
-		sbitmap_put(&sdev->budget_map, token);
-out:
-	return -1;
-}
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
