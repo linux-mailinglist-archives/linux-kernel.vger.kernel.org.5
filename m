@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACAA7AC63C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 03:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4407AC642
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 03:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjIXBt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Sep 2023 21:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        id S229847AbjIXB6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Sep 2023 21:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjIXBtz (ORCPT
+        with ESMTP id S229535AbjIXB6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Sep 2023 21:49:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F2911D;
-        Sat, 23 Sep 2023 18:49:49 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38O1nQgh027351;
-        Sun, 24 Sep 2023 01:49:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4VLKUqTxeqOaNbyYh4MYg0CT/s3Ahd/+306CMK1HYi0=;
- b=M0psSG3guhtUT4LPooJOu7g64WqFePnXdBOsxI1oGt4WWwWXclgjN6extBX9qMjBvkIh
- krNCqQi74Qtt31gb17654ISEqT7RFWxaubqI6ElJzcG11HVHLAbacMh/eDjg8s2vCRri
- GTGyfPD5MTGDWhbMQ2bgHT3/Cdom/dTXwpMRFwI89MlADWdwShPjcPrmlLUNvkgr+Khv
- AUi1kQouW+P77jRutYZELs0rYCGYKQujdugZoH4Kt/y7R/lfXFwX1a9vsYh8WS67rBPY
- mN6ZbbULDf18u4Qb/xdNddgqxNhWyVbEl91wrTm81qQ3gEQT6ctgoYcrVj1VAITJkUEY Jg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9saf9ccg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 01:49:26 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38O1nPfJ006722
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Sep 2023 01:49:25 GMT
-Received: from [10.216.19.6] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sat, 23 Sep
- 2023 18:49:21 -0700
-Message-ID: <0db026e7-6017-83ed-4071-c2ea6d72e3d7@quicinc.com>
-Date:   Sun, 24 Sep 2023 07:19:18 +0530
+        Sat, 23 Sep 2023 21:58:13 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62176124
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 18:58:06 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-578a62c088cso4128072a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Sep 2023 18:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695520686; x=1696125486; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJ8gUVcwY7z28ISZZjmTU5keHHyihVN0UqOd3/TKTzs=;
+        b=ohh9zu0M8u1jGlMckxS9BXphiQDtCDbJLIy8Mo8EGzn5/LwjjPiAIYCxltJghxYgKF
+         BNjMnuoUV09bQ/Tl1yzYBz/3hIXkxP841+yJw//ZCl2NwGQzxLAWp8NsTFkrOBe77MnR
+         vtikd9iUodNl6Zr0TjtacWBpUOEHGHn4E1dyM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695520686; x=1696125486;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OJ8gUVcwY7z28ISZZjmTU5keHHyihVN0UqOd3/TKTzs=;
+        b=krCOOVE9cWZIAQDl0frstBgGv+s0R4CNOrx/1SUfBw1HujaAjEpTz2lG6axYPw+GG2
+         IHdNldQgcDri89mTZDjeUbVGANBj29VlWp82YgV69umF7LZY4AuCfiHwCayS4iJSqdDp
+         8g/u1LDtxPGyv6bXH8bH8R68gIjyt9BcUHSNz483fEUh3zJmiG6ClAAxxk+CHuZ6o6ZS
+         zP5J6u3Q3QJ/QBQbzgKtlqu5BeFKrPTEnQT6rbxJhlg2H8WSkYK7q0s2BMnwMoSQurzK
+         lUMRLTPYfO9uRcGRL9Ouv9lWAFgPLaSLykGfPZyWYYjtNez+4OCEGplK74lVTgr5F7kj
+         JmxA==
+X-Gm-Message-State: AOJu0YyqAFgQXH2c8kHIFpGQgH9+RAfKGTIiCpChuKGlR1fv1rmurUdK
+        QfhXbepdw5j0VdG4jwril3RQFQ==
+X-Google-Smtp-Source: AGHT+IFZ8OVroTf1PpluoM4S33qys6AHEQkcl5cNA4O3ypvYjGbV0p78+YtJzXG+ybZ1gN3G/6Dg0w==
+X-Received: by 2002:a17:90b:4a88:b0:274:9be9:7ee3 with SMTP id lp8-20020a17090b4a8800b002749be97ee3mr5225651pjb.8.1695520685811;
+        Sat, 23 Sep 2023 18:58:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 17-20020a17090a001100b00276a58e37c1sm7782731pja.38.2023.09.23.18.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 18:58:05 -0700 (PDT)
+Date:   Sat, 23 Sep 2023 18:58:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, john.johansen@canonical.com,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net,
+        Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
+Message-ID: <202309231838.CB16E6B5@keescook>
+References: <20230912205658.3432-1-casey@schaufler-ca.com>
+ <20230912205658.3432-2-casey@schaufler-ca.com>
+ <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
+ <568c0730-b458-04b4-dbfa-77da1758aa05@schaufler-ca.com>
+ <94743c22-bc76-e741-e577-3e0845423f69@I-love.SAKURA.ne.jp>
+ <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
+ <ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp>
+ <202309200803.1911A584@keescook>
+ <af696700-ae4b-346e-4c52-3a7a21b0f46c@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V2 net-next 2/2] net: qrtr: Add support for processing
- DEL_PROC type control message
-Content-Language: en-US
-To:     Chris Lew <quic_clew@quicinc.com>, <mani@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <quic_viswanat@quicinc.com>, <horms@kernel.org>
-References: <20230920053317.2165867-1-quic_srichara@quicinc.com>
- <20230920053317.2165867-3-quic_srichara@quicinc.com>
- <349a7b1c-915f-4f58-260f-900aa7e3db65@quicinc.com>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <349a7b1c-915f-4f58-260f-900aa7e3db65@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9xriFD8UV0JUzODUSEkrLtI4pQ8BHVnB
-X-Proofpoint-GUID: 9xriFD8UV0JUzODUSEkrLtI4pQ8BHVnB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-23_21,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- mlxscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309240013
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af696700-ae4b-346e-4c52-3a7a21b0f46c@I-love.SAKURA.ne.jp>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,84 +82,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 23, 2023 at 01:46:35PM +0900, Tetsuo Handa wrote:
+> On 2023/09/21 0:08, Kees Cook wrote:
+> > I feel like you are willfully not listening to us when we say that this
+> > doesn't block out of tree LSMs. Again, there is nothing here that stops
+> > it. To prove this point, here is an out of tree LSM that works with this
+> > series. So let's move from theoretical to practical: given this example,
+> > why do you think out of tree LSMs are blocked?
+> 
+> Because an LSM ID value
 
+But my example includes one.
 
-On 9/21/2023 5:56 AM, Chris Lew wrote:
+> > diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
+> > index eeda59a77c02..23b7a8f79cef 100644
+> > --- a/include/uapi/linux/lsm.h
+> > +++ b/include/uapi/linux/lsm.h
+> > @@ -63,6 +63,8 @@ struct lsm_ctx {
+> >  #define LSM_ID_BPF		110
+> >  #define LSM_ID_LANDLOCK		111
+> >  
+> > +#define LSM_ID_GOAT		1138
+> > +
+> >  /*
+> >   * LSM_ATTR_XXX definitions identify different LSM attributes
+> >   * which are used in the kernel's LSM userspace API. Support
 > 
-> On 9/19/2023 10:33 PM, Sricharan Ramabadhran wrote:
-> 
->> @@ -122,6 +123,9 @@ static DEFINE_XARRAY_ALLOC(qrtr_ports);
->>    * @qrtr_tx_lock: lock for qrtr_tx_flow inserts
->>    * @rx_queue: receive queue
->>    * @item: list item for broadcast list
->> + * @kworker: worker thread for recv work
->> + * @task: task to run the worker thread
->> + * @read_data: scheduled work for recv work
-> 
-> I think I made these descriptions a bit ambiguous with "recv work". 
-> Since we are only parsing DEL_PROC messages at the moment, the 
-> descriptions should be more accurate on what they are for.
+> is assigned to LSM only when that LSM became no longer out of tree.
 
-  ok, btw, then would keep your authorship in first place.
-  In our downstream, there were multiple changes around here and
-  could not get a clear author here. I fixed this while testing
-  with Modem SSR recently for our tree, that said, will fix it
-  next version.
+Why? My example code will work just fine. The only possible reason
+it could be awkward would be if an out of tree LSM became so useful
+that the author decided to upstream it, and risked colliding with an
+existing LSM id. But lsm_id::id is a u64 (not an enum!), so there is
+a HUGE space available. If out of tree LSMs used the epoch time they
+were first authored as their id, the chances of a collision would be
+approaching zero. There isn't an out of tree LSM written every second,
+but if there were, it would take 584 billion years to run out of LSM ids.
 
-> 
->>    */
->>   struct qrtr_node {
->>       struct mutex ep_lock;
->> @@ -134,6 +138,9 @@ struct qrtr_node {
->>       struct sk_buff_head rx_queue;
->>       struct list_head item;
->> +    struct kthread_worker kworker;
->> +    struct task_struct *task;
->> +    struct kthread_work read_data;
-> 
-> I think our own kthread here might have been overkill. I forget why we 
-> needed it instead of using a workqueue.
+And, as mentioned several times before, this is _not a new problem_, and
+exists for out of tree syscalls, out of tree prctls, etc. I even DID
+this for the Yama LSM when it looked like it wasn't going to get
+upstream in the early days. Its prctl number _is not sequential_:
 
-   I added a workqueue here because endpoint post is getting called from
-   atomic contexts and below DEL_PROC handling acquires qrtr_tx_lock.
+include/uapi/linux/prctl.h:#define PR_SET_PTRACER 0x59616d61
 
-> 
->> +        if (cb->type == QRTR_TYPE_DEL_PROC) {
->> +            /* Free tx flow counters */
->> +            mutex_lock(&node->qrtr_tx_lock);
->> +            radix_tree_for_each_slot(slot, &node->qrtr_tx_flow, 
->> &iter, 0) {
->> +                flow = rcu_dereference_raw(*slot);
->> +                wake_up_interruptible_all(&flow->resume_tx);
->> +            }
->> +            mutex_unlock(&node->qrtr_tx_lock);
->> +
-> 
-> I don't see any other places where we use rcu_dereference_raw for the 
-> flow. Does this need to be updated for the rest of the places we get the 
-> flow?
-> 
-     Yes, without the rcu_dereference_raw there is a SPARSE warning.
-     For some reason, did not see the same in other places where flow is
-     de-referenced. That said, yeah, will pull this common code and
-     create a new helper.
+(And you'll see 0x59616d61 in ASCII is "Yama"; my effort to avoid
+collision.)
 
-> The same loop is done in qrtr_endpoint_unregister() so maybe we should 
-> look into adding a helper for this logic?
-> 
->> +            /* Translate DEL_PROC to BYE for local enqueue */
->> +            cb->type = QRTR_TYPE_BYE;
->> +            pkt = (struct qrtr_ctrl_pkt *)skb->data;
->> +            memset(pkt, 0, sizeof(*pkt));
->> +            pkt->cmd = cpu_to_le32(QRTR_TYPE_BYE);
->> +
-> 
-> Are we relying on the remote to program the destination of this packet 
-> to be the control port?
-> 
-     Yeah, targets like SDX modems, have a qrtr_fwd_del_proc in the
-     endpoint_unregister path.
+So, there is both ability (u64) and precedent (Yama) for this. Having an
+LSM id is _not_ a blocker for out of tree LSMs, and I've given the proof.
 
-Regards,
-  Sricharan
+-Kees
 
+-- 
+Kees Cook
