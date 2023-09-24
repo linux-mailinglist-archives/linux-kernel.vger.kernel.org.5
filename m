@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECCA7ACA47
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 17:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B417ACA4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 17:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjIXPRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 11:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        id S229861AbjIXPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 11:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjIXPRR (ORCPT
+        with ESMTP id S229708AbjIXPRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 11:17:17 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C8CB8;
-        Sun, 24 Sep 2023 08:17:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0VsimeNt_1695568626;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VsimeNt_1695568626)
+        Sun, 24 Sep 2023 11:17:21 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC60EFD;
+        Sun, 24 Sep 2023 08:17:13 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0Vsio7sa_1695568628;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vsio7sa_1695568628)
           by smtp.aliyun-inc.com;
-          Sun, 24 Sep 2023 23:17:08 +0800
+          Sun, 24 Sep 2023 23:17:10 +0800
 From:   Wen Gu <guwen@linux.alibaba.com>
 To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -29,9 +29,9 @@ Cc:     wintera@linux.ibm.com, schnelle@linux.ibm.com,
         dust.li@linux.alibaba.com, guwen@linux.alibaba.com,
         linux-s390@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 04/18] net/smc: support SMCv2.x supplemental features negotiation
-Date:   Sun, 24 Sep 2023 23:16:39 +0800
-Message-Id: <1695568613-125057-5-git-send-email-guwen@linux.alibaba.com>
+Subject: [PATCH net-next v4 05/18] net/smc: reserve CHID range for SMC-D virtual device
+Date:   Sun, 24 Sep 2023 23:16:40 +0800
+Message-Id: <1695568613-125057-6-git-send-email-guwen@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
 References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
@@ -45,107 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds SMCv2.1 supplemental features negotiation. Supported
-SMCv2.1 supplemental features are represented by feature_mask in FCE
-header of CLC messages.
-
- Server                                  Client
-        Proposal(features(c-mask bits))
-      <-----------------------------------
-         Accept(features(s-mask bits))
-      ----------------------------------->
-        Confirm(features(s&c-mask bits))
-      <-----------------------------------
+This patch reserve CHID range from 0xFF00 to 0xFFFF for SMC-D virtual
+device and introduces helpers to identify them.
 
 Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 ---
- net/smc/smc_clc.c  | 7 +++++++
- net/smc/smc_clc.h  | 6 ++++--
- net/smc/smc_core.h | 1 +
- 3 files changed, 12 insertions(+), 2 deletions(-)
+ net/smc/smc_ism.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-index 8deb46c..125b0d2 100644
---- a/net/smc/smc_clc.c
-+++ b/net/smc/smc_clc.c
-@@ -426,6 +426,7 @@ static int smc_clc_fill_fce(struct smc_clc_first_contact_ext_v2x *fce,
- 	memset(fce, 0, sizeof(*fce));
- 	fce->fce_v2_base.os_type = SMC_CLC_OS_LINUX;
- 	fce->fce_v2_base.release = ini->release_nr;
-+	fce->fce_v2_base.feature_mask = htons(ini->feature_mask);
- 	memcpy(fce->fce_v2_base.hostname, smc_hostname, sizeof(smc_hostname));
- 	if (ini->is_smcd && ini->release_nr < SMC_RELEASE_1) {
- 		ret = sizeof(struct smc_clc_first_contact_ext);
-@@ -906,6 +907,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 		pclc_smcd->v2_ext_offset = htons(v2_ext_offset);
- 		plen += sizeof(*v2_ext);
+diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
+index 14d2e77..2ecc8de 100644
+--- a/net/smc/smc_ism.h
++++ b/net/smc/smc_ism.h
+@@ -15,6 +15,9 @@
  
-+		v2_ext->feature_mask = htons(ini->feature_mask);
- 		read_lock(&smc_clc_eid_table.lock);
- 		v2_ext->hdr.eid_cnt = smc_clc_eid_table.ueid_cnt;
- 		plen += smc_clc_eid_table.ueid_cnt * SMC_MAX_EID_LEN;
-@@ -1219,6 +1221,7 @@ int smc_clc_clnt_v2x_features_validate(struct smc_clc_first_contact_ext *fce,
- 			return SMC_CLC_DECL_MAXLINKERR;
- 		ini->max_links = fce_v2x->max_links;
- 	}
-+	ini->feature_mask &= ntohs(fce->feature_mask);
+ #include "smc.h"
  
- 	return 0;
- }
-@@ -1250,6 +1253,10 @@ int smc_clc_v2x_features_confirm_check(struct smc_clc_msg_accept_confirm *cclc,
- 			return SMC_CLC_DECL_MAXLINKERR;
- 	}
- 
-+	if (~(ini->feature_mask) & ntohs(fce->feature_mask))
-+		return SMC_CLC_DECL_FEATUNSUPP;
-+	ini->feature_mask = ntohs(fce->feature_mask);
++#define SMC_VIRT_ISM_CHID_MAX		0xFFFF
++#define SMC_VIRT_ISM_CHID_MIN		0xFF00
 +
- 	return 0;
+ struct smcd_dev_list {	/* List of SMCD devices */
+ 	struct list_head list;
+ 	struct mutex mutex;	/* Protects list of devices */
+@@ -57,4 +60,16 @@ static inline int smc_ism_write(struct smcd_dev *smcd, u64 dmb_tok,
+ 	return rc < 0 ? rc : 0;
  }
  
-diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
-index c5c8e7d..bcf37c8 100644
---- a/net/smc/smc_clc.h
-+++ b/net/smc/smc_clc.h
-@@ -48,6 +48,7 @@
- #define SMC_CLC_DECL_RELEASEERR	0x03030009  /* release version negotiate failed */
- #define SMC_CLC_DECL_MAXCONNERR	0x0303000a  /* max connections negotiate failed */
- #define SMC_CLC_DECL_MAXLINKERR	0x0303000b  /* max links negotiate failed */
-+#define SMC_CLC_DECL_FEATUNSUPP	0x0303000c  /* supplemental features not supported */
- #define SMC_CLC_DECL_MODEUNSUPP	0x03040000  /* smc modes do not match (R or D)*/
- #define SMC_CLC_DECL_RMBE_EC	0x03050000  /* peer has eyecatcher in RMBE    */
- #define SMC_CLC_DECL_OPTUNSUPP	0x03060000  /* fastopen sockopt not supported */
-@@ -138,7 +139,8 @@ struct smc_clc_v2_extension {
- 	u8 roce[16];		/* RoCEv2 GID */
- 	u8 max_conns;
- 	u8 max_links;
--	u8 reserved[14];
-+	__be16 feature_mask;
-+	u8 reserved[12];
- 	u8 user_eids[][SMC_MAX_EID_LEN];
- };
- 
-@@ -234,7 +236,7 @@ struct smc_clc_first_contact_ext {
- 	u8 release : 4,
- 	   os_type : 4;
++static inline bool __smc_ism_is_virtdev(u16 chid)
++{
++	return (chid >= SMC_VIRT_ISM_CHID_MIN && chid <= SMC_VIRT_ISM_CHID_MAX);
++}
++
++static inline bool smc_ism_is_virtdev(struct smcd_dev *smcd)
++{
++	u16 chid = smcd->ops->get_chid(smcd);
++
++	return __smc_ism_is_virtdev(chid);
++}
++
  #endif
--	u8 reserved2[2];
-+	__be16 feature_mask;
- 	u8 hostname[SMC_MAX_HOSTNAME_LEN];
- };
- 
-diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-index 120027d..9f65678 100644
---- a/net/smc/smc_core.h
-+++ b/net/smc/smc_core.h
-@@ -401,6 +401,7 @@ struct smc_init_info {
- 	u8			max_links;
- 	u8			first_contact_peer;
- 	u8			first_contact_local;
-+	u16			feature_mask;
- 	unsigned short		vlan_id;
- 	u32			rc;
- 	u8			negotiated_eid[SMC_MAX_EID_LEN];
 -- 
 1.8.3.1
 
