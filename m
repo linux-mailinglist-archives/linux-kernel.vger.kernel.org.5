@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E33AD7AC758
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB077AC764
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjIXJlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 05:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
+        id S229564AbjIXJpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 05:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXJlX (ORCPT
+        with ESMTP id S229437AbjIXJpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 05:41:23 -0400
+        Sun, 24 Sep 2023 05:45:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9958CFB
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 02:41:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07848C433C7;
-        Sun, 24 Sep 2023 09:41:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF91F1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 02:45:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 833ADC433C8;
+        Sun, 24 Sep 2023 09:45:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695548477;
-        bh=qZWKjqHJJnwVssDnm6P01UEP1ocRSea+ZT/5ximr2mI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G4cuq7V8yNkZZ99bYzaBeq95NvlWW/NgL8udvQ3C1vzwyo/wOA4mn+spDChkG2tJk
-         /WqknutXpMOp/1rirm4DfOMGG0ospywAKNlrRQN7PPMe1e8kGUgskm2rCzR/tlPeNX
-         lOFM+HOH30GwniZALGkGd0qAX706x+1CnKB/lOZyLFa9G89SnjdXF9iu0e1QSIuY3Y
-         71T9DFnpMUx4+Q9AIgzrGT0z7vGCHtB7KqsiTynwhlc8R4n91J/07W7rEj23qLVLqp
-         aSOuLYQcMYhV3WV6U80sFYwW5/096PxMzXM+AaQbneBMBHDA7GjpcVBYSh4dyEVsXO
-         VqMn7SUBgUghw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qkLc2-00FfXZ-CB;
-        Sun, 24 Sep 2023 10:41:14 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Maulik Shah <quic_mkshah@quicinc.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] irqchip fixes for 6.6, take #1
-Date:   Sun, 24 Sep 2023 10:41:05 +0100
-Message-Id: <20230924094105.2361754-1-maz@kernel.org>
+        s=k20201202; t=1695548714;
+        bh=LzXtXNSrED4dMzen6Q/uURvpZAZL8E9Bv/zlsiifUII=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZlyGDYOLKcdOI7ErZN7x3cEp1epP1Z/Z3Ba7up5RSWSUq0KLw2R+0+1ANgitmvj4P
+         QZ74tclE1yJ4rfJgn1l0QZnYAZ3lCFGLzexHP47RxgiuDjZDM1tRXRbq8fWdqtCSvi
+         soo+5Q8vY70nDyo3NvUSfwRev0vbcS6gfpzjQM0fVn9BnoO9wO0dI9YsghbetekJr/
+         UZFR4oKcU6XNQDnvMktSngOQU63SUCgB/tlYHXWWdNZxowRRxquMcT98surVnDqBrD
+         nbkZ58dGvz5F7xM50ntR76IU71sheGal5jC6xHMo5vKMB6I+oXcTe+CTQ2FPFPXO6Q
+         hdqEJOCzhREyQ==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Siddh Raman Pant <code@siddh.me>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Qian Cai <cai@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH] watch_queue: Annotate struct watch_filter with __counted_by
+Date:   Sun, 24 Sep 2023 11:45:06 +0200
+Message-Id: <20230924-fass-bass-7b1f7aa70dd3@brauner>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230922175407.work.754-kees@kernel.org>
+References: <20230922175407.work.754-kees@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1237; i=brauner@kernel.org; h=from:subject:message-id; bh=LzXtXNSrED4dMzen6Q/uURvpZAZL8E9Bv/zlsiifUII=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQKsLJ+VWk8O3WrfU6JsPL0Sq3cRXuX5S86vlXvZtll8T/P HExaOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaSJsLwP/T830PVzxO/SBaxnjv9u1 xP9FfmkxNJlpX3jWsdfdZ+AanQUu6oPc5ndTmwZnf2kd/fvlWKxC5Zcu3aYk/Ho117KpkB
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, biju.das.jz@bp.renesas.com, claudiu.beznea.uj@bp.renesas.com, dmitry.baryshkov@linaro.org, geert+renesas@glider.be, konrad.dybcio@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com, quic_mkshah@quicinc.com, neil.armstrong@linaro.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -64,54 +62,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Fri, 22 Sep 2023 10:54:08 -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct watch_filter.
+> 
+> [...]
 
-Here's the first cut of irqchip fixes that have graced my Inbox.
-The most interesting thing is the fix for some Qualcomm HW, which
-has a workaround for broken device trees that do not correctly
-describe the hardware. The rest is a couple of fixes for the
-Renesas RZG2L irqchip.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Please pull,
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-	M.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-6.6-1
-
-for you to fetch changes up to 9b8df572ba3f4e544366196820a719a40774433e:
-
-  irqchip: renesas-rzg2l: Fix logic to clear TINT interrupt source (2023-09-24 10:18:19 +0100)
-
-----------------------------------------------------------------
-irqchip fixes for 6.6, take #1
-
-- Fix QC PDC v3.2 support by working around broken firmware tables
-
-- Fix rzg2l-irqc missing #interrupt-cells description in the DT binding
-
-- Fix rzg2l-irqc interrupt masking
-
-----------------------------------------------------------------
-Biju Das (1):
-      irqchip: renesas-rzg2l: Fix logic to clear TINT interrupt source
-
-Dmitry Baryshkov (1):
-      arm64: dts: qcom: sm8150: extend the size of the PDC resource
-
-Lad Prabhakar (1):
-      dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Update description for '#interrupt-cells' property
-
-Neil Armstrong (1):
-      irqchip/qcom-pdc: Add support for v3.2 HW
-
- .../interrupt-controller/renesas,rzg2l-irqc.yaml   |  5 +-
- arch/arm64/boot/dts/qcom/sm8150.dtsi               |  2 +-
- drivers/irqchip/irq-renesas-rzg2l.c                |  2 +-
- drivers/irqchip/qcom-pdc.c                         | 69 ++++++++++++++++------
- 4 files changed, 56 insertions(+), 22 deletions(-)
+[1/1] watch_queue: Annotate struct watch_filter with __counted_by
+      https://git.kernel.org/vfs/vfs/c/6b601adb5e79
