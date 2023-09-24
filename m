@@ -2,153 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF017AC74E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D457A7AC74C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 11:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjIXJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 05:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        id S229564AbjIXJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 05:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXJ15 (ORCPT
+        with ESMTP id S229437AbjIXJ12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 05:27:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225F8FE
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 02:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695547624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zHKWyHfacqVewjndjBS85PHaoQHVa8lSR8E5aIAAdmQ=;
-        b=Eq4P5QZ+DMpuOeajTXeZ9sE08e7vJHfB74AdYsjHUMzKAJpflvMEzBqD2cHStXVM47YprL
-        yQ3W1WKk2lX8miJ18UYRQYk+nICaB6R6MdsJdesCPX4OEyXAMb2GE80AdCgyors65f/lE3
-        pwBfa167FRYInLcWLqwf3qyEhlwvdg0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-680-dWYrLDX-NRu4iiNPZAxlbQ-1; Sun, 24 Sep 2023 05:27:01 -0400
-X-MC-Unique: dWYrLDX-NRu4iiNPZAxlbQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B6B55380673E;
-        Sun, 24 Sep 2023 09:27:00 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 96A27711291;
-        Sun, 24 Sep 2023 09:27:00 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 6.6-rc3
-Date:   Sun, 24 Sep 2023 05:27:00 -0400
-Message-Id: <20230924092700.1192123-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Sun, 24 Sep 2023 05:27:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE442107;
+        Sun, 24 Sep 2023 02:27:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 561A3C433C8;
+        Sun, 24 Sep 2023 09:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695547641;
+        bh=OtKqRE8d8XyKijo02N0v5qsYYrxnvoYjWA5m+RhuMbA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Fw28rO4+0BcWKTqRtJ11UQd3yu8tYz0YafTOJiUhCVPahmTdtfqBG0kv5yk7K2uLP
+         vhfOiVZjwUntx0nkT00PKJMca5e69fEqwi4Nf0Fck4gKhkgm8zNQIqtaHipH+KWZN/
+         CHOImXvIcyMVwFFDQ/f5o5bi0TpEh50nMSX1NGsdkhFtvRiipqldcl1immYEOXLEyu
+         TMnNfHUTZ34JCc8mOpI9Q8huT/4lnzJ3n+kYO6vFjzUGVaiT+3ADARUBPmh9o1KbNh
+         0ckacHPExsD2VBXYMijC3w325KbqHLD8kAmSG7UdKyFP5u4b3a1x1dqqqx7esezVmM
+         bgZVFmUgpBKLQ==
+Received: from [85.255.234.76] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qkLOY-00FfQs-Sb;
+        Sun, 24 Sep 2023 10:27:19 +0100
+Date:   Sun, 24 Sep 2023 10:27:13 +0100
+Message-ID: <87wmwf53bi.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.au@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH 2/3] irqchip: renesas-rzg2l: Mask interrupts for changing interrupt settings
+In-Reply-To: <20230918122411.237635-3-biju.das.jz@bp.renesas.com>
+References: <20230918122411.237635-1-biju.das.jz@bp.renesas.com>
+        <20230918122411.237635-3-biju.das.jz@bp.renesas.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 85.255.234.76
+X-SA-Exim-Rcpt-To: biju.das.jz@bp.renesas.com, tglx@linutronix.de, prabhakar.mahadev-lad.rj@bp.renesas.com, claudiu.beznea.uj@bp.renesas.com, geert+renesas@glider.be, biju.das.au@gmail.com, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, 18 Sep 2023 13:24:10 +0100,
+Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> 
+> As per RZ/G2L hardware manual Rev.1.30 section 8.8.3 Precaution when
+> changing interrupt settings,  we need to mask the interrupts for
+> any changes in below settings:
+> 
+>  * When changing the noise filter settings.
+>  * When switching the GPIO pins to IRQ or GPIOINT.
+>  * When changing the source of TINT.
+>  * When changing the interrupt detection method.
+> 
+> This patch masks the interrupts when there is a change in the interrupt
+> detection method and changing the source of TINT.
+> 
+> Fixes: 3fed09559cd8 ("irqchip: Add RZ/G2L IA55 Interrupt Controller driver")
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>  drivers/irqchip/irq-renesas-rzg2l.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
+> index 2cee5477be6b..33a22bafedcd 100644
+> --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> @@ -116,11 +116,13 @@ static void rzg2l_irqc_irq_disable(struct irq_data *d)
+>  		u8 tssr_index = TSSR_INDEX(offset);
+>  		u32 reg;
+>  
+> +		irq_chip_mask_parent(d);
+>  		raw_spin_lock(&priv->lock);
+>  		reg = readl_relaxed(priv->base + TSSR(tssr_index));
+>  		reg &= ~(TSSEL_MASK << TSSEL_SHIFT(tssr_offset));
+>  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
+>  		raw_spin_unlock(&priv->lock);
+> +		irq_chip_unmask_parent(d);
 
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
+What guarantees that the parent irqchip state has been correctly restored?
+Nothing refcounts the nesting of mask/unmask.
 
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+>  	}
+>  	irq_chip_disable_parent(d);
 
-are available in the Git repository at:
+I'd rather you start by *disabling* the parent, and then none of that
+matters at all.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+>  }
+> @@ -137,11 +139,13 @@ static void rzg2l_irqc_irq_enable(struct irq_data *d)
+>  		u8 tssr_index = TSSR_INDEX(offset);
+>  		u32 reg;
+>  
+> +		irq_chip_mask_parent(d);
+>  		raw_spin_lock(&priv->lock);
+>  		reg = readl_relaxed(priv->base + TSSR(tssr_index));
+>  		reg |= (TIEN | tint) << TSSEL_SHIFT(tssr_offset);
+>  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
+>  		raw_spin_unlock(&priv->lock);
+> +		irq_chip_unmask_parent(d);
+>  	}
+>  	irq_chip_enable_parent(d);
 
-for you to fetch changes up to 5804c19b80bf625c6a9925317f845e497434d6d3:
+Same thing: if the parent was disabled, why do we need to do anything?
 
-  Merge tag 'kvm-riscv-fixes-6.6-1' of https://github.com/kvm-riscv/linux into HEAD (2023-09-23 05:35:55 -0400)
 
-----------------------------------------------------------------
-ARM:
+>  }
+> @@ -226,10 +230,12 @@ static int rzg2l_irqc_set_type(struct irq_data *d, unsigned int type)
+>  	unsigned int hw_irq = irqd_to_hwirq(d);
+>  	int ret = -EINVAL;
+>  
+> +	irq_chip_mask_parent(d);
+>  	if (hw_irq >= IRQC_IRQ_START && hw_irq <= IRQC_IRQ_COUNT)
+>  		ret = rzg2l_irq_set_type(d, type);
+>  	else if (hw_irq >= IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ)
+>  		ret = rzg2l_tint_set_edge(d, type);
+> +	irq_chip_unmask_parent(d);
 
-* Fix an UV boot crash
+This one is the only interesting one: why don't you mask the interrupt
+at the local level rather than on the parent? And this should be
+conditioned on the interrupt state itself (enabled or disabled), not
+done unconditionally.
 
-* Skip spurious ENDBR generation on _THIS_IP_
+Thanks,
 
-* Fix ENDBR use in putuser() asm methods
+	M.
 
-* Fix corner case boot crashes on 5-level paging
-
-* and fix a false positive WARNING on LTO kernels"
-
-RISC-V:
-
-* Fix KVM_GET_REG_LIST API for ISA_EXT registers
-
-* Fix reading ISA_EXT register of a missing extension
-
-* Fix ISA_EXT register handling in get-reg-list test
-
-* Fix filtering of AIA registers in get-reg-list test
-
-x86:
-
-* Fixes for TSC_AUX virtualization
-
-* Stop zapping page tables asynchronously, since we don't
-  zap them as often as before
-
-----------------------------------------------------------------
-Anup Patel (4):
-      RISC-V: KVM: Fix KVM_GET_REG_LIST API for ISA_EXT registers
-      RISC-V: KVM: Fix riscv_vcpu_get_isa_ext_single() for missing extensions
-      KVM: riscv: selftests: Fix ISA_EXT register handling in get-reg-list
-      KVM: riscv: selftests: Selectively filter-out AIA registers
-
-Jean-Philippe Brucker (1):
-      KVM: arm64: nvhe: Ignore SVE hint in SMCCC function ID
-
-Marc Zyngier (1):
-      KVM: arm64: Properly return allocated EL2 VA from hyp_alloc_private_va_range()
-
-Paolo Bonzini (4):
-      Merge tag 'kvmarm-fixes-6.6-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
-      KVM: x86/mmu: Do not filter address spaces in for_each_tdp_mmu_root_yield_safe()
-      KVM: SVM: INTERCEPT_RDTSCP is never intercepted anyway
-      Merge tag 'kvm-riscv-fixes-6.6-1' of https://github.com/kvm-riscv/linux into HEAD
-
-Sean Christopherson (3):
-      KVM: selftests: Assert that vasprintf() is successful
-      KVM: x86/mmu: Open code leaf invalidation from mmu_notifier
-      KVM: x86/mmu: Stop zapping invalidated TDP MMU roots asynchronously
-
-Tom Lendacky (2):
-      KVM: SVM: Fix TSC_AUX virtualization setup
-      KVM: SVM: Do not use user return MSR support for virtualized TSC_AUX
-
- arch/arm64/include/asm/kvm_hyp.h                 |   2 +-
- arch/arm64/kvm/hyp/include/nvhe/ffa.h            |   2 +-
- arch/arm64/kvm/hyp/nvhe/ffa.c                    |   3 +-
- arch/arm64/kvm/hyp/nvhe/hyp-init.S               |   1 +
- arch/arm64/kvm/hyp/nvhe/hyp-main.c               |   8 +-
- arch/arm64/kvm/hyp/nvhe/psci-relay.c             |   3 +-
- arch/arm64/kvm/mmu.c                             |   3 +
- arch/riscv/kvm/vcpu_onereg.c                     |   7 +-
- arch/x86/include/asm/kvm_host.h                  |   3 +-
- arch/x86/kvm/mmu/mmu.c                           |  21 +---
- arch/x86/kvm/mmu/mmu_internal.h                  |  15 ++-
- arch/x86/kvm/mmu/tdp_mmu.c                       | 152 ++++++++++-------------
- arch/x86/kvm/mmu/tdp_mmu.h                       |   5 +-
- arch/x86/kvm/svm/sev.c                           |  34 +++--
- arch/x86/kvm/svm/svm.c                           |  43 +++++--
- arch/x86/kvm/svm/svm.h                           |   1 +
- arch/x86/kvm/x86.c                               |   5 +-
- include/linux/arm-smccc.h                        |   2 +
- tools/testing/selftests/kvm/lib/test_util.c      |   2 +-
- tools/testing/selftests/kvm/riscv/get-reg-list.c |  60 ++++++---
- 20 files changed, 210 insertions(+), 162 deletions(-)
-
+-- 
+Without deviation from the norm, progress is not possible.
