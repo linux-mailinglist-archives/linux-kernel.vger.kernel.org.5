@@ -2,152 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC63D7ACB00
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752227ACB03
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Sep 2023 19:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjIXRWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 13:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
+        id S230157AbjIXRXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 13:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjIXRWp (ORCPT
+        with ESMTP id S229710AbjIXRXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 13:22:45 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D669BF1;
-        Sun, 24 Sep 2023 10:22:38 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533d9925094so2007517a12.2;
-        Sun, 24 Sep 2023 10:22:38 -0700 (PDT)
+        Sun, 24 Sep 2023 13:23:13 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8DE109
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:23:06 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3231df68584so1220505f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 10:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695576157; x=1696180957; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BG/XMeOWzBck9k44S9pSZJGABBvxaHdwQdAmtNGAYWQ=;
-        b=hEVMnvEMaIn9z6c21tZ0XiJE7o4PXl7eI2uK5zaAUi/pnut0tFjsJ/BdFbiNL/NplW
-         qVHZ9liVi8TXPXy33nGYCCBrDZEHKcYhUrPit8JRAmmQDEyZBUJi8BfwQ+11Tuoe1wim
-         H8sDTOqqTOHL95cJhzZbpTOMWr6GSgySCc10j+Ll84UyUQ8RtZLBhx1zc2Dj4b/HIw6G
-         eoxjjt6TljmVUc8nJmfXN1yJGwo5ZmpTsa/kNAWEmovJ2xkC4fe9n3N0JIJb4j82Gj81
-         cktnIjdPdhlZd/+SRti3TXUQpuyCWJozgeKyzV80MGeepu+aZUjZfDvyd/19Nx5febgR
-         eLJg==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1695576184; x=1696180984; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wz9hAphZ4hbgq5LD/NlJ0pJY551maKJPXOl5M0PmVhc=;
+        b=TJoFcbX4gS9pGljVHj+CXzKVIya+ZWavbGkjBFYLg/sER7Aa+oGBvf6I3FUtQeaCeP
+         4vR7w6oKawaeP7AGmZlMMtKF2zLOGoGnleoaQKqTCLeBGGtYpcd7N/D2a/Bmi/Ypwmax
+         TSjKpMIALqiOqSJaHydJfI2RcpVKTtlgtfIqqfxpkLvGCiXXel/XiCmLP8jVSFPdpR8C
+         XWLWhpuOgeMn9UgC26r1RRRdSr8hwpZ8G139v6z7+6Uc9vhZ8vfPt27//eJ0tUX6EQ34
+         c70qw1NZ/Y28/NDUhImuJhJj3rzmhI48dCMGDNyOCMGf6YZwuRZGae7FR9Eup/ibHw/M
+         uO5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695576157; x=1696180957;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BG/XMeOWzBck9k44S9pSZJGABBvxaHdwQdAmtNGAYWQ=;
-        b=iwJ25Uux7p2lZibjxV0INUYi5xUumOxolddI4PCnD3d0P9zPFHTQs0xeM9caDV3xMl
-         nl/1KeMrFyVBg4fDatKmse1HiicnJNO4AjPnGYm09LsYOviFPVVTzK4NpXDaVBCM2lls
-         3aYOmTd2aJT78V0i2D5TjFnUi84Cyly/E0I3oqzOgIaCF0a+4WCQhDa8LJx+MKKvFs3F
-         tyl56GSlZ0TyVMwLvnPJQiQWX/Qj01w9PHrhtFFu+wD5OONHVjkILFqH2QgJaV4DSyja
-         c4uObz7yvoWw+qxZ6Qu5Vyj57/lqZvfNR5qJsYA0M435jwQlVsGGrJTxUKhswWTQdrBb
-         4TzQ==
-X-Gm-Message-State: AOJu0YyC3mENscdXb+THP9f3NlKSlFhF3xwoUGTmeahWr0HSP+Vtz3nu
-        uOPCXjTEbMrbHGOSBLgqyoacFPdkvxDFjQ==
-X-Google-Smtp-Source: AGHT+IHd83zb2jYZuQjsgeaoTWgRo9yjnfNoU/bJ457JhnKE6g3ghsaeCiKR/fg/Pa8f+V7G94JjHA==
-X-Received: by 2002:aa7:d3d5:0:b0:52a:1c3c:2ecc with SMTP id o21-20020aa7d3d5000000b0052a1c3c2eccmr4040008edr.25.1695576157061;
-        Sun, 24 Sep 2023 10:22:37 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8109:8c00:3664:c01e:55ce:4cc5:315c])
-        by smtp.gmail.com with ESMTPSA id v4-20020aa7d804000000b005308a170845sm4523111edq.29.2023.09.24.10.22.36
+        d=1e100.net; s=20230601; t=1695576184; x=1696180984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wz9hAphZ4hbgq5LD/NlJ0pJY551maKJPXOl5M0PmVhc=;
+        b=gwO9xiAzlP2BcacrYa2urtJsMuqydxdO/PU9wtrA94BKAJ7XDQ5LWH0Xw+Nec99AvL
+         Kbp7N9vJHkb0Oz382t1MJRTlILm4X4Gp3jjo0C3IQNyuNZAcGAAbugMPH1yDf7MZZurz
+         WdD/+so+0nMPuteMMDkHwQL4lwUWeFRwXH0wqPpBtwDnXATHfPu1JQqHBga7qfyZFzdo
+         C+w0BBDmhNbUYAX4B3zNC2320XQbW6xd5Kwc04dxxGwkqI6NEXVxTcUOaVbTXJKBtOB1
+         nFk3Miy8rXQGpZep+rGP0P0ISmaymr5Sz93YjJeXtJlFYhfxDlAR5pTkKW8F0WXh9Nkr
+         OLrA==
+X-Gm-Message-State: AOJu0Yw8ThI0e64tJkNjKua8OxgpmEjs6bdorAMNZRjE2rN26cTotudb
+        pHTovuJqZrI7yKNyKOgIYvwX2w==
+X-Google-Smtp-Source: AGHT+IEgUK7ZrjO62XF+D4yff/sfL3h4WFmedhMgyH4sHz9AmsE6mLEDH3/51GE7kpEZutZK1lyJFQ==
+X-Received: by 2002:a05:6000:12ca:b0:31f:f94e:d276 with SMTP id l10-20020a05600012ca00b0031ff94ed276mr4912977wrx.51.1695576184210;
+        Sun, 24 Sep 2023 10:23:04 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id n11-20020a5d4c4b000000b0031fbbe347ebsm9645933wrt.22.2023.09.24.10.23.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 10:22:36 -0700 (PDT)
-From:   Nik Bune <n2h9z4@gmail.com>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com
-Cc:     Nik Bune <n2h9z4@gmail.com>, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: watchdog: atmel,at91rm9200-wdt: convert txt to yaml
-Date:   Sun, 24 Sep 2023 19:20:04 +0200
-Message-Id: <20230924172004.59208-1-n2h9z4@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 24 Sep 2023 10:23:03 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 18:23:01 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
+ uclamp constraints
+Message-ID: <20230924172301.7lqdcsnpqk7trtno@airbuntu>
+References: <20230820210640.585311-3-qyousef@layalina.io>
+ <CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com>
+ <20230829163740.uadhv2jfjuumqk3w@airbuntu>
+ <CAKfTPtCP6uX79dOrzN4PxFTMBFrDAMOOrWyZrsVypUQ0RY7BAA@mail.gmail.com>
+ <20230907215555.exjxho34ntkjmn6r@airbuntu>
+ <CAKfTPtA8Ljy4NBqjw8Wj4pEFc-OCR55QPuwh+5GgrHN6u+ugsg@mail.gmail.com>
+ <20230910174638.qe7jqq6mq36brh6o@airbuntu>
+ <CAKfTPtBFAXO=CgqSJ1+y=2ppb5t4oErCtvV336fS6J2nSjBCkQ@mail.gmail.com>
+ <20230916192509.bportepj7dbgp6ro@airbuntu>
+ <CAKfTPtA5JqNCauG-rP3wGfq+p8EEVx9Tvwj6ksM3SYCwRmfCTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtA5JqNCauG-rP3wGfq+p8EEVx9Tvwj6ksM3SYCwRmfCTg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert txt file to yaml.
+On 09/24/23 09:58, Vincent Guittot wrote:
 
-Signed-off-by: Nik Bune <n2h9z4@gmail.com>
----
+> > Shouldn't it be (568+128)*1.25 = 870? Which is almost the 860 above. We calmped
+> > the 812 to 800, with rounding errors that almost accounts for the 10 points
+> > difference between 870 and 860..
+> 
+> no I voluntarily use 568 + 128*1.25. I added dvfs headroom for irq
+> just to ensure that you will not raise that I removed the headroom for
+> irq and focus on the use case but it might have created more
+> confusion.
+> 
+> My example above demonstrate that only taking care of cases with null
+> irq pressure is not enough and you can still ends up above 800
+> 
+> IIUC you point with uclamp_max. It is a performance limit that you
+> don't want to cross because of CFS.This means that we should not go
+> above 800 in my example because of cfs utilization: Irq needs between
+> 128 and CFS asks 568 so the system needs 696 which is below the 800
+> uclamp. Even if you add the dvfs headroom on irq, the system is still
+> below 800. Only when you add dfvs headroom to cfs then you go above
+> 800 but it's not needed because uclamp say that you should not go
 
-Changes in v2:
-- Removed unnecessary copyright. 
-- Added blank line between properties.
-- Updated maintenance list. 
-- Added ref to watchdog 
-- Fixed compatible value.
+Yep, absolutely. It seems we agree that CFS shouldn't go above 800 if it is
+capped even if there's headroom, but the question you have on the way it is
+being applied. As long as we agree on this part which is a fundamental behavior
+question that I thought is the pain point, the implementation details are
+certainly something that I can improve on.
 
-v1 patch: https://lore.kernel.org/linux-devicetree/20230916154826.84925-1-n3q5u8@yahoo.com/
-related unapplied patch: https://lore.kernel.org/linux-devicetree/20230525125602.640855-5-claudiu.beznea@microchip.com/
+> above 800 because of CFS so we should stay at 800 whereas both current
+> formula and your new formula return a value above 800
 
- .../watchdog/atmel,at91rm9200-wdt.yaml        | 33 +++++++++++++++++++
- .../watchdog/atmel-at91rm9200-wdt.txt         |  9 -----
- 2 files changed, 33 insertions(+), 9 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-wdt.yaml
- delete mode 100644 Documentation/devicetree/bindings/watchdog/atmel-at91rm9200-wdt.txt
+I'm not sure how to handle irq, rt and dl here to be honest. They seem to have
+been taken as an 'additional' demand on top of CFS. So yes, we'll go above but
+irq, and dl don't have knowledge about ucalmp_max. RT does and will be equally
+capped like CFS. I kept current behavior the same, but I did wonder about them
+too in patch 4.
 
-diff --git a/Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-wdt.yaml b/Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-wdt.yaml
-new file mode 100644
-index 000000000000..37fa9a62eaac
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-wdt.yaml
-@@ -0,0 +1,33 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/atmel,at91rm9200-wdt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Atmel AT91RM9200 System Timer Watchdog
-+
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com> 
-+
-+allOf:
-+  - $ref: watchdog.yaml#
-+
-+properties:
-+  compatible:
-+    const: atmel,at91rm9200-wdt
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    watchdog@fffffd00 {
-+        compatible = "atmel,at91rm9200-wdt";
-+        reg = <0xfffffd00 0x10>;
-+    };
-diff --git a/Documentation/devicetree/bindings/watchdog/atmel-at91rm9200-wdt.txt b/Documentation/devicetree/bindings/watchdog/atmel-at91rm9200-wdt.txt
-deleted file mode 100644
-index d4d86cf8f9eb..000000000000
---- a/Documentation/devicetree/bindings/watchdog/atmel-at91rm9200-wdt.txt
-+++ /dev/null
-@@ -1,9 +0,0 @@
--Atmel AT91RM9200 System Timer Watchdog
--
--Required properties:
--- compatible: must be "atmel,at91sam9260-wdt".
--
--Example:
--	watchdog@fffffd00 {
--		compatible = "atmel,at91rm9200-wdt";
--	};
--- 
-2.34.1
+So in a system where there are active CFS, RT, DL and IRQ and both CFS and RT
+had a cap of 800, then they won't ask for me. But once we add IRQ and DL on
+top, then we'll go above.
 
+You think we shouldn't? See below for a suggestion.
+
+> > I am still not sure if you mean we are mixing up the code and we need better
+> > abstraction or something else.
+> >
+> > Beside the abstraction problem, which I agree with, I can't see what I am
+> > mixing up yet :( Sorry I think I need more helping hand to see it.
+> 
+> There is a mix between actual utilization and performance limit and
+> when we add both we then lose important information as highlighted by
+> my example. If the current formula is not correct because we can go
+> above uclamp_max value, your proposal is not better. And the root
+> cause is mainly coming from adding utilization with performance limit
+> (i.e. uclamp)
+> 
+> That's why I said that we need a new interface to enable cpufreq to
+> not blindly apply its headroom but to make smarter decision at cpufreq
+> level
+
+Okay I see. I tend to agree here too. The question is should cpufreq take each
+util (cfs, rt, dl, irq) as input and do the decision on its own. Or should the
+scheduler add them and pass the aggregated value? If the latter, how can
+cpufreq know how to apply the limit? From what I see all these decisions has to
+happen in the same function but not split.
+
+It seems the sticking point is how we interpret irq pressure with uclamp. It
+seems you think we should apply any uclamp capping to this, which I think would
+make sense.
+
+And DL bandwidth we need to max() with the aggregated value.
+
+So I think the formula could be
+
+	util = cfs + rt pressure + irq pressure
+
+	unsigned long cpufreq_convert_util_to_freq(rq, util, dl_bw)
+	{
+		eff_util = apply_dvfs_headroom(util);
+		eff_util = uclamp_rq_util_with(rq, util, NULL);
+
+		eff_util = max(eff_util, dl_bw);
+	}
+
+so we add the utilization of cfs, rt and irq (as per current formula). And then
+let cpufreq do the headroom and limit management.
+
+I changed the way we handle dl_bw as it is actually requesting to run at
+a specific level and not really a pressure. So we max() it with eff_util.
+
+If there's a DL task on the rq then it'd be running and the frequency it
+needs is defined by its bandwidth.
+
+We could also keep it as it is with
+
+	unsigned long cpufreq_convert_util_to_freq(rq, util, dl_bw)
+	{
+		eff_util = apply_dvfs_headroom(util);
+		eff_util = uclamp_rq_util_with(rq, util, NULL);
+
+		eff_util += dl_bw;
+	}
+
+RT has uclamp knowledge so it'll either run at max or whatever value it might
+have requested via uclamp_min. But DL doesn't set any uclamp_min and must be
+either added or max()ed. I'm not sure which is more correct yet, but maybe
+adding actually is better to ensure the CPU runs higher to handle all the tasks
+on the rq.
+
+What do you think?
+
+
+Thanks!
+
+--
+Qais Yousef
