@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271AB7ACC77
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C257ACC7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 00:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbjIXWS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 18:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
+        id S229696AbjIXWTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 18:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjIXWSZ (ORCPT
+        with ESMTP id S229480AbjIXWTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 18:18:25 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE035100
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:18 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so3671501b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:18:18 -0700 (PDT)
+        Sun, 24 Sep 2023 18:19:33 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA994EE
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:19:27 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59c0d329a8bso62727497b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 15:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1695593898; x=1696198698; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RC3fTzW3rZT/6PIBgSkSMgoIPviq+yQKUFPzOmdRowk=;
-        b=MGChy+GkV8go65C5DY1Z8najQNDteSWc/EHRz63Ai5NqWRz/F+fhrKYhDJLqhahwm0
-         +zcfhsx/HkvaWpCEhIDmjS4RnCs9KR6ylXU0pz35iPq/HbvYSOg8RLE6MD6nVf4rjqp0
-         DluDa0OKhTav1/1FkNvNskERy9iyffQqDFJ2KCQsK45lwobkMP4g6zbz6dbQHRf+VLLz
-         3glziFf3BQ+bqwyIQ3lRRcNLpzg9tRz1g7N8iODLz9gFgdXdGTUc703lO8RuPbNU4hZp
-         p3srIvl9IxCUsW1H45lIBvtYj1YOPoQh9z0wgoJXDe6DmLghs+vdquQoNS5nIR+jkSk2
-         m+1Q==
+        d=linaro.org; s=google; t=1695593967; x=1696198767; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=p/PeCxenQF1oBMIaK9Z0Z7Bxv1CupWtNWD6y8Xind8Y=;
+        b=c2cahi02j2Q/CFf1o5qdUXk3AooV9EQVtIrYxJ4kbBNuspnwbUopEjJlbzJwf0Xz9+
+         QG7DaNjjN+uDDhZMDBKhGebxSbJJHA5RN/iUeEPaF43+K0o3nDvzyu9T8ZXLyGPTKT3m
+         OZTAKnwYaNSM/LHmePDuNjsFrGu7ke6mGuANYc48Hxzp3hQLiKGTMvnPjtY5cG0sk4IL
+         fGXrow9hcQDS8ZNwBYJKdY76jAoVuwxlkMVhW8t6uKHPCEuwmo2rvSVIv0FhcV4P8U6K
+         Az03MvO/12AwrLkMKjYCcSak4I6cIcKPqo5+cQ+vaydx66JdlRlnJdYr1hEKy2OvuXdi
+         B5yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695593898; x=1696198698;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RC3fTzW3rZT/6PIBgSkSMgoIPviq+yQKUFPzOmdRowk=;
-        b=NmXSV3VaNVVwgSc0wxOYGclwfKPakzyxqB52wr9KxC3taUuVclamM3L++hNIChEY9d
-         RfWOqUChBfQzQBTwN1YB1CY6ZrNMkZGGtWCm3/WATF5xHY8w3dSYh8Gxe6AXVme9QkdG
-         RuMpIZH+byDcqP3L5ooyX2364lXXT5pohkf7ydxQXBtbtAUGYYQXlFSpsdUfcrJ/z61n
-         G69Oqa+fgtymeuAa3ydTUqtK9Iisv0bFUKdoN45T0PBzkZ7KhmrcyoHOitjPPNlgjF+X
-         aP1/B1OABVP1K/ocfdQ9RYFRPPBOBer+1ODljEOtYU6SvO69LbDrELh4m1Gyl8lN/MXf
-         aMJg==
-X-Gm-Message-State: AOJu0YzxtyECZ/91/S9AsvWjdFoTG0reRHvgpfxj+cEFivv95LG6zQQd
-        jyvKkPTv/AbNui2HAqTlVwBq0A==
-X-Google-Smtp-Source: AGHT+IFYb8qYgLqg3ME5eEmOSfvW95rgVG/vOb06h6o/SDjjxpRFUWhTPApjrGqayxXZ9w5grcuYTA==
-X-Received: by 2002:a05:6a20:7346:b0:157:978c:5b74 with SMTP id v6-20020a056a20734600b00157978c5b74mr3641721pzc.0.1695593898124;
-        Sun, 24 Sep 2023 15:18:18 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id i9-20020a170902c94900b001b9c960ffeasm7296094pla.47.2023.09.24.15.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 15:18:17 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qkXQc-0058uB-0f;
-        Mon, 25 Sep 2023 08:18:14 +1000
-Date:   Mon, 25 Sep 2023 08:18:14 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-Message-ID: <ZRC1pjwKRzLiD6I3@dread.disaster.area>
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
- <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
- <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
- <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1695593967; x=1696198767;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p/PeCxenQF1oBMIaK9Z0Z7Bxv1CupWtNWD6y8Xind8Y=;
+        b=dOrBqz4bUKkq811tQeejrZI1fp1v2LjLIhbZ8zmhNdKQIw8pJ6fCf2nfGekr+kRh8x
+         ZOGq5tz2cnixjJpbqetvK8zHly7HqVc2lMYxfxoLTZiP8nc93zpHbZfvNnGJ/U0sPeiP
+         B7IzmkXnpUKE05SYxSwLR16jrHaH4O87qCYjjxc8zqEqfw/uqEwf3u7k5eUPqpRJm2j5
+         /LP7GkxFbtTcOyqa6JoeGUBM+RYjXmqGFBobau3ojCDPpnOqv2nlM4Yorqs1ZHofdtIF
+         NgllX6E51uRW6VHX+OPvdgSxrFtR8t0t6SULkFmNEaIGv1KUHVYw/++LmUQTUmqv/p0Q
+         8pyA==
+X-Gm-Message-State: AOJu0YxdwqDMx6e0wXD+tO25mU2gIC+QVvCV6Mmaq0Rtvb/j2PMcgKFy
+        tGA7znXNbarlTuyf6mT9q4D6QhQ/xq784IJ1l9Rehw==
+X-Google-Smtp-Source: AGHT+IGS2JGmskFp4BL/JB5SCJAVyM6ud3ky+fox2mQdtLF42SZ+CNqRFX6h6xPTVQ9385hW0AEMaR0NJMlLlNSe4aY=
+X-Received: by 2002:a05:690c:851:b0:59f:6766:2c12 with SMTP id
+ bz17-20020a05690c085100b0059f67662c12mr2018465ywb.39.1695593966876; Sun, 24
+ Sep 2023 15:19:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org> <20230924183103.49487-2-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230924183103.49487-2-krzysztof.kozlowski@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 25 Sep 2023 01:19:16 +0300
+Message-ID: <CAA8EJprU2YiZi+XE-w5GKPXkPWV32imeZ5ktsczP+GnGzdMYoQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH 2/3] ARM: dts: qcom: sdx65: add missing GCC clocks
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 05:52:36PM +0300, Amir Goldstein wrote:
-> On Sat, Sep 23, 2023 at 1:46 PM Jeff Layton <jlayton@kernel.org> wrote:
-> >
-> > On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
-> > > On Fri, Sep 22, 2023 at 8:15 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > > >
-> > > > My initial goal was to implement multigrain timestamps on most major
-> > > > filesystems, so we could present them to userland, and use them for
-> > > > NFSv3, etc.
-> > > >
-> > > > With the current implementation however, we can't guarantee that a file
-> > > > with a coarse grained timestamp modified after one with a fine grained
-> > > > timestamp will always appear to have a later value. This could confuse
-> > > > some programs like make, rsync, find, etc. that depend on strict
-> > > > ordering requirements for timestamps.
-> > > >
-> > > > The goal of this version is more modest: fix XFS' change attribute.
-> > > > XFS's change attribute is bumped on atime updates in addition to other
-> > > > deliberate changes. This makes it unsuitable for export via nfsd.
-> > > >
-> > > > Jan Kara suggested keeping this functionality internal-only for now and
-> > > > plumbing the fine grained timestamps through getattr [1]. This set takes
-> > > > a slightly different approach and has XFS use the fine-grained attr to
-> > > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
-> > > >
-> > > > While we keep fine-grained timestamps in struct inode, when presenting
-> > > > the timestamps via getattr, we truncate them at a granularity of number
-> > > > of ns per jiffy,
-> > >
-> > > That's not good, because user explicitly set granular mtime would be
-> > > truncated too and booting with different kernels (HZ) would change
-> > > the observed timestamps of files.
-> > >
-> >
-> > Thinking about this some more, I think the first problem is easily
-> > addressable:
-> >
-> > The ctime isn't explicitly settable and with this set, we're already not
-> > truncating the atime. We haven't used any of the extra bits in the mtime
-> > yet, so we could just carve out a flag in there that says "this mtime
-> > was explicitly set and shouldn't be truncated before presentation".
-> >
-> 
-> I thought about this option too.
-> But note that the "mtime was explicitly set" flag needs
-> to be persisted to disk so you cannot store it in the high nsec bits.
-> At least XFS won't store those bits if you use them - they have to
-> be translated to an XFS inode flag and I don't know if changing
-> XFS on-disk format was on your wish list.
+On Sun, 24 Sept 2023 at 21:31, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> The SDX65 GCC clock controller expects two required clocks:
+> pcie_pipe_clk and usb3_phy_wrapper_gcc_usb30_pipe_clk.  The first one is
+> provided by existing phy node, but second is not yet implemented.
+>
+>   qcom-sdx65-mtp.dtb: clock-controller@100000: clocks: [[11, 0], [11, 1], [12]] is too short
+>   qcom-sdx65-mtp.dtb: clock-controller@100000: clock-names: ['bi_tcxo', 'bi_tcxo_ao', 'sleep_clk'] is too short
+>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
+> index c9790217320b..4a8cc28fa1db 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
+> +++ b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
+> @@ -204,8 +204,16 @@ soc: soc {
+>                 gcc: clock-controller@100000 {
+>                         compatible = "qcom,gcc-sdx65";
+>                         reg = <0x00100000 0x001f7400>;
+> -                       clocks = <&rpmhcc RPMH_CXO_CLK>, <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>;
+> -                       clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk";
+> +                       clocks = <&rpmhcc RPMH_CXO_CLK>,
+> +                                <&rpmhcc RPMH_CXO_CLK_A>,
+> +                                <&sleep_clk>,
+> +                                <&pcie_phy>,
+> +                                <0>;
 
-Remember: this multi-grain timestamp thing was an idea to solve the
-NFS change attribute problem without requiring *any* filesystem with
-sub-jiffie timestamp capability to change their on-disk format to
-implement a persistent change attribute that matches the new
-requires of the kernel nfsd.
+Maybe <&usb_ssphy> or <&usb_qmpphy>?
 
-If we now need to change the on-disk format to support
-some whacky new timestamp semantic to do this, then people have
-completely lost sight of what problem the multi-grain timestamp idea
-was supposed to address.
+> +                       clock-names = "bi_tcxo",
+> +                                     "bi_tcxo_ao",
+> +                                     "sleep_clk",
+> +                                     "pcie_pipe_clk",
+> +                                     "usb3_phy_wrapper_gcc_usb30_pipe_clk";
+>                         #power-domain-cells = <1>;
+>                         #clock-cells = <1>;
+>                         #reset-cells = <1>;
+> --
+> 2.34.1
+>
 
--Dave.
+
 -- 
-Dave Chinner
-david@fromorbit.com
+With best wishes
+Dmitry
