@@ -2,128 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AE27AD423
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE3E7AD429
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjIYJEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
+        id S233174AbjIYJGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbjIYJEf (ORCPT
+        with ESMTP id S233158AbjIYJGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:04:35 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3146DF;
-        Mon, 25 Sep 2023 02:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1695632667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v7ac3hZtdvTVdyFeEAL7Uhu4y3aVyuKPapooxkCftvI=;
-        b=h1Co+aUEgP/jyKqRhYLHkb4zBtClO36o1jT10q717JO4NmUG7V9SpuOv0ibYl0plLj1B0l
-        av6gYyD86f3oJ94XiD2sa78sK8J9E8jkRTAhWuQeegbbRCMF4BjMWF4TN2BBwCSckyHDke
-        QCLI/h6ULfsKZ0Q1wti3gRjVW2zRR1Q=
-Message-ID: <dac3b4812951d8dabf1f4017c4813a8c9183f393.camel@crapouillou.net>
-Subject: Re: [RFC PATCH v3 3/7] drm/panel: nv3052c: Allow specifying
- registers per panel
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     John Watts <contact@jookia.org>, dri-devel@lists.freedesktop.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 25 Sep 2023 11:04:25 +0200
-In-Reply-To: <20230925021059.451019-4-contact@jookia.org>
-References: <20230925021059.451019-1-contact@jookia.org>
-         <20230925021059.451019-4-contact@jookia.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+        Mon, 25 Sep 2023 05:06:09 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7976CC0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:06:00 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qkhXH-0005K2-Jk; Mon, 25 Sep 2023 11:05:47 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qkhXG-008pND-AF; Mon, 25 Sep 2023 11:05:46 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qkhXG-00BO8v-7Y; Mon, 25 Sep 2023 11:05:46 +0200
+Date:   Mon, 25 Sep 2023 11:05:46 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Tim van der Staaij | Zign <Tim.vanderstaaij@zigngroup.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] dmaengine: imx-sdma: fix deadlock in interrupt handler
+Message-ID: <20230925090546.GW637806@pengutronix.de>
+References: <AM0PR08MB30897429213E8DB9BCC1D6C880F8A@AM0PR08MB3089.eurprd08.prod.outlook.com>
+ <20230922095032.GU637806@pengutronix.de>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922095032.GU637806@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9obiwKCkxlIGx1bmRpIDI1IHNlcHRlbWJyZSAyMDIzIMOgIDEyOjEwICsxMDAwLCBKb2hu
-IFdhdHRzIGEgw6ljcml0wqA6Cj4gUGFuZWwgaW5pdGlhbGl6YXRpb24gcmVnaXN0ZXJzIGFyZSBw
-ZXItZGlzcGxheSBhbmQgbm90IHRpZWQgdG8gdGhlCj4gY29udHJvbGxlciBpdHNlbGYuIERpZmZl
-cmVudCBwYW5lbHMgd2lsbCBzcGVjaWZ5IHRoZWlyIG93biByZWdpc3RlcnMuCj4gQXR0YWNoIHRo
-ZSBzZXF1ZW5jZXMgdG8gdGhlIHBhbmVsIGluZm8gc3RydWN0IHNvIGZ1dHVyZSBwYW5lbHMKPiBj
-YW4gc3BlY2lmeSB0aGVpciBvd24gc2VxdWVuY2VzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEpvaG4g
-V2F0dHMgPGNvbnRhY3RAam9va2lhLm9yZz4KPiBSZXZpZXdlZC1ieTogSmVzc2ljYSBaaGFuZyA8
-cXVpY19qZXNzemhhbkBxdWljaW5jLmNvbT4KPiAtLS0KPiDCoC4uLi9ncHUvZHJtL3BhbmVsL3Bh
-bmVsLW5ld3Zpc2lvbi1udjMwNTJjLmPCoMKgIHwgMjQgKysrKysrKysrKysrLS0tLS0KPiAtLQo+
-IMKgMSBmaWxlIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCj4gCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1uZXd2aXNpb24tbnYzMDUy
-Yy5jCj4gYi9kcml2ZXJzL2dwdS9kcm0vcGFuZWwvcGFuZWwtbmV3dmlzaW9uLW52MzA1MmMuYwo+
-IGluZGV4IDkwZGVhMjFmOTg1Ni4uMzgyMDYyYTc5YmE4IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
-Z3B1L2RybS9wYW5lbC9wYW5lbC1uZXd2aXNpb24tbnYzMDUyYy5jCj4gKysrIGIvZHJpdmVycy9n
-cHUvZHJtL3BhbmVsL3BhbmVsLW5ld3Zpc2lvbi1udjMwNTJjLmMKPiBAQCAtMjAsMTEgKzIwLDE4
-IEBACj4gwqAjaW5jbHVkZSA8ZHJtL2RybV9tb2Rlcy5oPgo+IMKgI2luY2x1ZGUgPGRybS9kcm1f
-cGFuZWwuaD4KPiDCoAo+ICtzdHJ1Y3QgbnYzMDUyY19yZWcgewo+ICvCoMKgwqDCoMKgwqDCoHU4
-IGNtZDsKPiArwqDCoMKgwqDCoMKgwqB1OCB2YWw7Cj4gK307Cj4gKwo+IMKgc3RydWN0IG52MzA1
-MmNfcGFuZWxfaW5mbyB7Cj4gwqDCoMKgwqDCoMKgwqDCoGNvbnN0IHN0cnVjdCBkcm1fZGlzcGxh
-eV9tb2RlICpkaXNwbGF5X21vZGVzOwo+IMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBpbnQgbnVt
-X21vZGVzOwo+IMKgwqDCoMKgwqDCoMKgwqB1MTYgd2lkdGhfbW0sIGhlaWdodF9tbTsKPiDCoMKg
-wqDCoMKgwqDCoMKgdTMyIGJ1c19mb3JtYXQsIGJ1c19mbGFnczsKPiArwqDCoMKgwqDCoMKgwqBj
-b25zdCBzdHJ1Y3QgbnYzMDUyY19yZWcgKnBhbmVsX3JlZ3M7Cj4gK8KgwqDCoMKgwqDCoMKgaW50
-IHBhbmVsX3JlZ3NfbGVuOwoKVGhpcyBjYW4gYmUgdW5zaWduZWQuCgo+IMKgfTsKPiDCoAo+IMKg
-c3RydWN0IG52MzA1MmMgewo+IEBAIC0zNiwxMiArNDMsNyBAQCBzdHJ1Y3QgbnYzMDUyYyB7Cj4g
-wqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBncGlvX2Rlc2MgKnJlc2V0X2dwaW87Cj4gwqB9Owo+IMKg
-Cj4gLXN0cnVjdCBudjMwNTJjX3JlZyB7Cj4gLcKgwqDCoMKgwqDCoMKgdTggY21kOwo+IC3CoMKg
-wqDCoMKgwqDCoHU4IHZhbDsKPiAtfTsKPiAtCj4gLXN0YXRpYyBjb25zdCBzdHJ1Y3QgbnYzMDUy
-Y19yZWcgbnYzMDUyY19wYW5lbF9yZWdzW10gPSB7Cj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbnYz
-MDUyY19yZWcgbHRrMDM1YzU0NDR0X3BhbmVsX3JlZ3NbXSA9IHsKPiDCoMKgwqDCoMKgwqDCoMKg
-Ly8gRVhUQyBDb21tYW5kIHNldCBlbmFibGUsIHNlbGVjdCBwYWdlIDEKPiDCoMKgwqDCoMKgwqDC
-oMKgeyAweGZmLCAweDMwIH0sIHsgMHhmZiwgMHg1MiB9LCB7IDB4ZmYsIDB4MDEgfSwKPiDCoMKg
-wqDCoMKgwqDCoMKgLy8gTW9zdGx5IHVua25vd24gcmVnaXN0ZXJzCj4gQEAgLTI0NCw2ICsyNDYs
-OCBAQCBzdGF0aWMgaW5saW5lIHN0cnVjdCBudjMwNTJjICp0b19udjMwNTJjKHN0cnVjdAo+IGRy
-bV9wYW5lbCAqcGFuZWwpCj4gwqBzdGF0aWMgaW50IG52MzA1MmNfcHJlcGFyZShzdHJ1Y3QgZHJt
-X3BhbmVsICpwYW5lbCkKPiDCoHsKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IG52MzA1MmMgKnBy
-aXYgPSB0b19udjMwNTJjKHBhbmVsKTsKPiArwqDCoMKgwqDCoMKgwqBjb25zdCBzdHJ1Y3QgbnYz
-MDUyY19yZWcgKnBhbmVsX3JlZ3MgPSBwcml2LT5wYW5lbF9pbmZvLQo+ID5wYW5lbF9yZWdzOwo+
-ICvCoMKgwqDCoMKgwqDCoGludCBwYW5lbF9yZWdzX2xlbiA9IHByaXYtPnBhbmVsX2luZm8tPnBh
-bmVsX3JlZ3NfbGVuOwoKU2FtZSBoZXJlLgoKV2l0aCB0aGlzIGZpeGVkIEknbSBoYXBweSB3aXRo
-IHRoZSBwYXRjaC4KCkNoZWVycywKLVBhdWwKCj4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBtaXBp
-X2RiaSAqZGJpID0gJnByaXYtPmRiaTsKPiDCoMKgwqDCoMKgwqDCoMKgdW5zaWduZWQgaW50IGk7
-Cj4gwqDCoMKgwqDCoMKgwqDCoGludCBlcnI7Cj4gQEAgLTI2MCw5ICsyNjQsOSBAQCBzdGF0aWMg
-aW50IG52MzA1MmNfcHJlcGFyZShzdHJ1Y3QgZHJtX3BhbmVsCj4gKnBhbmVsKQo+IMKgwqDCoMKg
-wqDCoMKgwqBncGlvZF9zZXRfdmFsdWVfY2Fuc2xlZXAocHJpdi0+cmVzZXRfZ3BpbywgMCk7Cj4g
-wqDCoMKgwqDCoMKgwqDCoHVzbGVlcF9yYW5nZSg1MDAwLCAyMDAwMCk7Cj4gwqAKPiAtwqDCoMKg
-wqDCoMKgwqBmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShudjMwNTJjX3BhbmVsX3JlZ3MpOyBp
-KyspIHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZXJyID0gbWlwaV9kYmlfY29t
-bWFuZChkYmksCj4gbnYzMDUyY19wYW5lbF9yZWdzW2ldLmNtZCwKPiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgbnYzMDUyY19wYW5lbF9yZWdzW2ldLnZhbCk7Cj4gK8KgwqDCoMKgwqDCoMKgZm9yIChpID0g
-MDsgaSA8IHBhbmVsX3JlZ3NfbGVuOyBpKyspIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgZXJyID0gbWlwaV9kYmlfY29tbWFuZChkYmksIHBhbmVsX3JlZ3NbaV0uY21kLAo+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBwYW5lbF9yZWdzW2ldLnZhbCk7Cj4gwqAKPiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoGlmIChlcnIpIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKHByaXYtPmRldiwgIlVuYWJsZSB0byBzZXQg
-cmVnaXN0ZXI6Cj4gJWRcbiIsIGVycik7Cj4gQEAgLTQ2Myw2ICs0NjcsOCBAQCBzdGF0aWMgY29u
-c3Qgc3RydWN0IG52MzA1MmNfcGFuZWxfaW5mbwo+IGx0azAzNWM1NDQ0dF9wYW5lbF9pbmZvID0g
-ewo+IMKgwqDCoMKgwqDCoMKgwqAuaGVpZ2h0X21tID0gNjQsCj4gwqDCoMKgwqDCoMKgwqDCoC5i
-dXNfZm9ybWF0ID0gTUVESUFfQlVTX0ZNVF9SR0I4ODhfMVgyNCwKPiDCoMKgwqDCoMKgwqDCoMKg
-LmJ1c19mbGFncyA9IERSTV9CVVNfRkxBR19ERV9ISUdIIHwKPiBEUk1fQlVTX0ZMQUdfUElYREFU
-QV9EUklWRV9ORUdFREdFLAo+ICvCoMKgwqDCoMKgwqDCoC5wYW5lbF9yZWdzID0gbHRrMDM1YzU0
-NDR0X3BhbmVsX3JlZ3MsCj4gK8KgwqDCoMKgwqDCoMKgLnBhbmVsX3JlZ3NfbGVuID0gQVJSQVlf
-U0laRShsdGswMzVjNTQ0NHRfcGFuZWxfcmVncyksCj4gwqB9Owo+IMKgCj4gwqBzdGF0aWMgY29u
-c3Qgc3RydWN0IHNwaV9kZXZpY2VfaWQgbnYzMDUyY19pZHNbXSA9IHsKCg==
+On Fri, Sep 22, 2023 at 11:50:32AM +0200, Sascha Hauer wrote:
+> Hi Tim,
+> 
+> On Thu, Sep 21, 2023 at 09:57:11AM +0000, Tim van der Staaij | Zign wrote:
+> > dev_warn internally acquires the lock that is already held when
+> > sdma_update_channel_loop is called. Therefore it is acquired twice and
+> > this is detected as a deadlock. Temporarily release the lock while
+> > logging to avoid this.
+> > 
+> > Signed-off-by: Tim van der Staaij <tim.vanderstaaij@zigngroup.com>
+> > Link: https://lore.kernel.org/all/AM0PR08MB308979EC3A8A53AE6E2D3408802CA@AM0PR08MB3089.eurprd08.prod.outlook.com/
+> > ---
+> >  drivers/dma/imx-sdma.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> > index 51012bd39900..3a7cd783a567 100644
+> > --- a/drivers/dma/imx-sdma.c
+> > +++ b/drivers/dma/imx-sdma.c
+> > @@ -904,7 +904,10 @@ static void sdma_update_channel_loop(struct sdma_channel *sdmac)
+> >  	 * owned buffer is available (i.e. BD_DONE was set too late).
+> >  	 */
+> >  	if (sdmac->desc && !is_sdma_channel_enabled(sdmac->sdma, sdmac->channel)) {
+> > +		spin_unlock(&sdmac->vc.lock);
+> >  		dev_warn(sdmac->sdma->dev, "restart cyclic channel %d\n", sdmac->channel);
+> > +		spin_lock(&sdmac->vc.lock);
+> 
+> This is strange. Why and how does dev_warn() call back into the SDMA
+> driver?
+> 
+> We shouldn't merge this without having a clue what exactly goes wrong
+> here. Please provide the corresponding lockdep output.
 
+I have overlooked that you actually did provide the lockdep output in a
+link.
+
+I think this is a false positive. The i.MX UART driver makes sure that
+the console UART never uses DMA, so it shouldn't happen that the DMA
+driver issuing console messages calls back into the DMA driver.
+
+Could you give the following patch a test?
+
+Sascha
+
+
+-------------------------------8<------------------------------------
+
+From 5ac9902683710c300a64a731bcda6b3b089b2706 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Mon, 25 Sep 2023 10:39:44 +0200
+Subject: [PATCH] serial: imx: Put DMA enabled UART in separate lock subclass
+
+The i.MX UART driver never uses DMA on UARTs providing the console.
+Put the UART port lock in a separate subclass to avoid lockdep
+complaining about possible deadlocks when the DMA driver issues
+console messages under its own spinlock held.
+
+Reported-by: Tim van der Staaij <Tim.vanderstaaij@zigngroup.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/tty/serial/imx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index 7341d060f85cb..c30113cf5db85 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -1458,8 +1458,10 @@ static int imx_uart_startup(struct uart_port *port)
+ 	imx_uart_writel(sport, ucr4 & ~UCR4_DREN, UCR4);
+ 
+ 	/* Can we enable the DMA support? */
+-	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
++	if (!uart_console(port) && imx_uart_dma_init(sport) == 0) {
++		lockdep_set_subclass(&port->lock, 1);
+ 		dma_is_inited = 1;
++	}
+ 
+ 	spin_lock_irqsave(&sport->port.lock, flags);
+ 
+-- 
+2.39.2
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
