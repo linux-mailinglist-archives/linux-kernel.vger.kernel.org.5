@@ -2,47 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C2B7ADB7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46A57ADB82
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbjIYPdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        id S232915AbjIYPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbjIYPdK (ORCPT
+        with ESMTP id S231712AbjIYPd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:33:10 -0400
+        Mon, 25 Sep 2023 11:33:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC6BCD2;
-        Mon, 25 Sep 2023 08:33:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F977C433C9;
-        Mon, 25 Sep 2023 15:33:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D077CCE;
+        Mon, 25 Sep 2023 08:33:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 605D0C433C8;
+        Mon, 25 Sep 2023 15:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695655982;
-        bh=UStx6NmdCQGQvwmGC5D2pyQnQNmQ94Ptm9hxFlXeGEQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=uP+xAwOG82qTikxi0069W+JuYphMTlWTHxLVC58LB1BAuPZUl6oH6DesK73QurFeA
-         tauJcd/mXvaI65NrsdCkWfRzGjWirYkI3XlZIbN1J9jgYEtRfrwhRE11nsYn7ZsQgQ
-         aCVoZqRyHH8DpTOF+CfaJchUVy+/Q326hEen0J4ahfmnAQ0MCsy/lcMNThJNQ86uef
-         Qxv1lELjU7Y+3VUzvXAU/PNl9kJQYfLoCIfZCOf9UYPtwil4Jlh4XJ58E58i0Ek1dA
-         4mMA6W0O771IVk3e8c79TfXUM+WM5zY795KbrwPHPFL6KNjn0v4szrTemOzb/5rn0n
-         4RaXvbVXfCwIA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        alsa-devel@alsa-project.org
-In-Reply-To: <1c0090aaf49504eaeaff5e7dd119fd37173290b5.1695540940.git.christophe.jaillet@wanadoo.fr>
-References: <1c0090aaf49504eaeaff5e7dd119fd37173290b5.1695540940.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: audio-iio-aux: Use flex array to simplify code
-Message-Id: <169565598128.2480451.10167343100025422485.b4-ty@kernel.org>
-Date:   Mon, 25 Sep 2023 17:33:01 +0200
+        s=k20201202; t=1695656000;
+        bh=LlQZWb94aVblB834U6IwUKmjry1skklBbOsT2TyvxAA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RMqq13vXMBhyLOmi1LtSzfzLW0O7BdcmEjHKNmYJ5V7O+I4jDqD2JmxjirQ4e+3gO
+         2B37U9le9l/3NV2eNlAdKm73O5EAtTRwfHA7Gnlmds3uLutLsjSoeUoOezVv4BSibY
+         +7X9yzr45tNYY8BOWkEwnOXsQk8DAdanHYl7dgjIDmZZnc+rteFd7CAoSuQw9KQbWQ
+         7ElJgyU1paGTIZEXxIRLDW6z7tbXlEJYQpuIyNc5VT4sZKaJJ6KxJeqTyrqgqDbaob
+         DM2YswOxsEloaqRHbvO8n9O4beizW9/FyOIRkeXWSDctfTUFgcP878tilySmEkmXC1
+         hIV7v1AE0uMDQ==
+Date:   Mon, 25 Sep 2023 16:33:15 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] KVM RISC-V Conditional Operations
+Message-ID: <20230925-gorged-boxer-3804735e2d18@spud>
+References: <20230925133859.1735879-1-apatel@ventanamicro.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HnRIDq6Cwufm8SDg"
+Content-Disposition: inline
+In-Reply-To: <20230925133859.1735879-1-apatel@ventanamicro.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,41 +59,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sep 2023 09:36:01 +0200, Christophe JAILLET wrote:
-> "io-channel-names" is expected to have few values, so there is no real
-> point to allocate audio_iio_aux_chan structure with a dedicate memory
-> allocation.
-> 
-> Using a flexible array for struct audio_iio_aux->chans avoids the
-> overhead of an additional, managed, memory allocation.
-> 
-> [...]
 
-Applied to
+--HnRIDq6Cwufm8SDg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Sep 25, 2023 at 07:08:50PM +0530, Anup Patel wrote:
+> This series extends KVM RISC-V to allow Guest/VM discover and use
+> conditional operations related ISA extensions (namely XVentanaCondOps
+> and Zicond).
+>=20
+> To try these patches, use KVMTOOL from riscv_zbx_zicntr_smstateen_condops=
+_v1
+> branch at: https://github.com/avpatel/kvmtool.git
+>=20
+> These patches are based upon the latest riscv_kvm_queue and can also be
+> found in the riscv_kvm_condops_v2 branch at:
+> https://github.com/avpatel/linux.git
+>=20
+> Changes since v1:
+>  - Rebased the series on riscv_kvm_queue
+>  - Split PATCH1 and PATCH2 of v1 series into two patches
+>  - Added separate test configs for XVentanaCondOps and Zicond in PATCH7
+>    of v1 series.
+>=20
+> Anup Patel (9):
+>   dt-bindings: riscv: Add XVentanaCondOps extension entry
+>   RISC-V: Detect XVentanaCondOps from ISA string
+>   dt-bindings: riscv: Add Zicond extension entry
+>   RISC-V: Detect Zicond from ISA string
 
-Thanks!
+For these 4:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-[1/1] ASoC: audio-iio-aux: Use flex array to simplify code
-      commit: c351835058419c1eb8791941a057c3f3e6068cb6
+Thanks for splitting it out,
+Conor.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--HnRIDq6Cwufm8SDg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRGoOwAKCRB4tDGHoIJi
+0r9rAP4nMvXYlok1V/XcbaH47Y3D800gwvZ9PgMg5igQpnlnlAEAqMfjnm+TcNSW
+Io17cdSsNsEy4YSDZCN+vp62z3laxQM=
+=ppj2
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--HnRIDq6Cwufm8SDg--
