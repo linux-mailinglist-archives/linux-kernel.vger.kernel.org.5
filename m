@@ -2,155 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF317AE29A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292247AE2A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjIYXwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S230224AbjIYXxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233592AbjIYXwo (ORCPT
+        with ESMTP id S229592AbjIYXxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:52:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B15E124;
-        Mon, 25 Sep 2023 16:52:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E90EC433C8;
-        Mon, 25 Sep 2023 23:52:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695685957;
-        bh=+IaHrNrOxLOD1YS6ga2A3hF6ROVR2Bld68y96OWaFR8=;
+        Mon, 25 Sep 2023 19:53:50 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEF1101;
+        Mon, 25 Sep 2023 16:53:42 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RvfpX3bCrz9c;
+        Tue, 26 Sep 2023 01:53:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1695686021; bh=v/enpArCGKFex8326oiW+kSnRwwaqY0D+TB5vC+M6B0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C5+tF4bilx1bDbrjbn6CjV2Jqd8sexFYVppGHx6VERRComb8mTSbKMSa+s7qJb6m2
-         FJD9Qg1j9hspw/4/DyBucE7S1ICBuZeEahGTp1I3Ej1iO+g+844hOO0hBJ8HsCvL2G
-         743Ugzp9YtGG9hV+03SZ83ObmNqIMT8uYyVYTUBcdUhyyRCOLIZyMGrGM04+Cq2/Hd
-         JLHBZZNS53F+L65kG1qH62Pqca9OlzZP+KW6ByUIW78xvnXDrAQ9/D92oU0x55F4fC
-         8TiyY4WRpGsa9iKSweKnA1Y1jGBwiKsomM924syyCqWdCev8dLoNvrDwj7q4iINOIy
-         GS3hc1yyhf3xw==
-Date:   Tue, 26 Sep 2023 01:52:34 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/10] ioctl_userfaultfd.2: correct and update UFFDIO_API
- ioctl error codes
-Message-ID: <5ddepg57wqnidtvsio2pse44dot6pvr3rcmhwld6ml3sflwcz3@ijd3h4teqblr>
-References: <20230919190206.388896-1-axelrasmussen@google.com>
- <20230919190206.388896-8-axelrasmussen@google.com>
+        b=j4rPE1sgQXDghzDumyjisrBhl9qDBxZp4i4DeZuQgsHZy+iSgeGqvaqgG1DyvQ1HB
+         CmEHhyXP5UWngRHIfBKlKCmZUhshcWCjyOEWT5B2Wqo57YnuFzfH/aEp+k6T2oeeID
+         kI+In6QMS7RFgzC9qwvYChOhPaqok8n2welcHg0NxX4Px0MVHKsEy3i3igRvfYNm39
+         2sReddfamdcKBwrsrgrICICE6r0I+EdU9ftBcbG1XVwN24mEca/M83H5rEy4ro8zOD
+         LppTICsNRkbl0CgjtoIV1zjO/2S/09QapLBlR71f6v0IdL5tD/xcuIEVmkVAt6G5ru
+         HM7/40ST/sjKg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.10 at mail
+Date:   Tue, 26 Sep 2023 01:53:39 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 1/3] usb: chipidea: Fix DMA overwrite for Tegra
+Message-ID: <ZRIdg29ADFmKnlAQ@qmqm.qmqm.pl>
+References: <cover.1695497666.git.mirq-linux@rere.qmqm.pl>
+ <d93fc79f2fcc8da5166ccb99c5703ff3fdb46259.1695497666.git.mirq-linux@rere.qmqm.pl>
+ <20230925114522.GA2070044@nchen-desktop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sfquo6rq2unvsafx"
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <20230919190206.388896-8-axelrasmussen@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230925114522.GA2070044@nchen-desktop>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 25, 2023 at 07:45:22PM +0800, Peter Chen wrote:
+> On 23-09-23 21:41:55, Micha³ Miros³aw wrote:
+> > Tegra USB controllers seem to issue DMA in doubleword-sized chunks and thus
+> > may write past the buffer provided. This is detected by SLUB:
+> > 
+> > =============================================================================
+> > BUG kmalloc-64 (Tainted: G    B             ): kmalloc Redzone overwritten
+> > -----------------------------------------------------------------------------
+> > 
+> > 0x8555cd02-0x8555cd03 @offset=3330. First byte 0x0 instead of 0xcc
+> > Allocated in usb_get_status+0x2b/0xac age=1 cpu=3 pid=41
+> >  __kmem_cache_alloc_node+0x12f/0x1e4
+> >  __kmalloc+0x33/0x8c
+> >  usb_get_status+0x2b/0xac
+> >  hub_probe+0x5e9/0xcec
+> >  usb_probe_interface+0xbf/0x21c
+> >  really_probe+0xa5/0x2c4
+> >  __driver_probe_device+0x75/0x174
+> >  driver_probe_device+0x31/0x94
+> >  __device_attach_driver+0x65/0xc0
+> >  bus_for_each_drv+0x4b/0x74
+> >  __device_attach+0x69/0x120
+> >  bus_probe_device+0x65/0x6c
+> >  device_add+0x48b/0x5f8
+> >  usb_set_configuration+0x37b/0x6b4
+> >  usb_generic_driver_probe+0x37/0x68
+> >  usb_probe_device+0x35/0xb4
+> > Slab 0xbf622b80 objects=21 used=18 fp=0x8555cdc0 flags=0x800(slab|zone=0)
+> > Object 0x8555cd00 @offset=3328 fp=0x00000000
+> > 
+> > Redzone  8555ccc0: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Redzone  8555ccd0: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Redzone  8555cce0: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Redzone  8555ccf0: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Object   8555cd00: 01 00 00 00 cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Object   8555cd10: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Object   8555cd20: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Object   8555cd30: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+> > Redzone  8555cd40: cc cc cc cc                                      ....
+> > Padding  8555cd74: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a              ZZZZZZZZZZZZ
+> > CPU: 3 PID: 41 Comm: kworker/3:1 Tainted: G    B              6.6.0-rc1mq-00118-g59786f827ea1 #1115
+> > Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+> > Workqueue: usb_hub_wq hub_event
+> > [<8010ca28>] (unwind_backtrace) from [<801090a5>] (show_stack+0x11/0x14)
+> > [<801090a5>] (show_stack) from [<805da2fb>] (dump_stack_lvl+0x4d/0x7c)
+> > [<805da2fb>] (dump_stack_lvl) from [<8026464f>] (check_bytes_and_report+0xb3/0xe4)
+> > [<8026464f>] (check_bytes_and_report) from [<802648e1>] (check_object+0x261/0x290)
+> > [<802648e1>] (check_object) from [<802671b1>] (free_to_partial_list+0x105/0x3f8)
+> > [<802671b1>] (free_to_partial_list) from [<80268613>] (__kmem_cache_free+0x103/0x128)
+> > [<80268613>] (__kmem_cache_free) from [<80425a67>] (usb_get_status+0x73/0xac)
+> > [<80425a67>] (usb_get_status) from [<80421b31>] (hub_probe+0x5e9/0xcec)
+> > [<80421b31>] (hub_probe) from [<80428bbb>] (usb_probe_interface+0xbf/0x21c)
+> > [<80428bbb>] (usb_probe_interface) from [<803ee13d>] (really_probe+0xa5/0x2c4)
+> > [<803ee13d>] (really_probe) from [<803ee3d1>] (__driver_probe_device+0x75/0x174)
+> > [<803ee3d1>] (__driver_probe_device) from [<803ee501>] (driver_probe_device+0x31/0x94)
+> > usb 1-1: device descriptor read/8, error -71
+> > 
+> > Fixes: fc53d5279094 ("usb: chipidea: tegra: Support host mode")
+> > Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+> > ---
+> >  drivers/usb/chipidea/host.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/usb/chipidea/host.c b/drivers/usb/chipidea/host.c
+> > index 08af26b762a2..abddd39d1ff1 100644
+> > --- a/drivers/usb/chipidea/host.c
+> > +++ b/drivers/usb/chipidea/host.c
+> > @@ -411,12 +411,13 @@ static int ci_hdrc_alloc_dma_aligned_buffer(struct urb *urb, gfp_t mem_flags)
+> >  	const unsigned int ci_hdrc_usb_dma_align = 32;
+> >  	size_t kmalloc_size;
+> >  
+> > -	if (urb->num_sgs || urb->sg || urb->transfer_buffer_length == 0 ||
+> > -	    !((uintptr_t)urb->transfer_buffer & (ci_hdrc_usb_dma_align - 1)))
+> > +	if (urb->num_sgs || urb->sg || urb->transfer_buffer_length == 0)
+> > +		return 0;
+> > +	if (!((uintptr_t)urb->transfer_buffer & (ci_hdrc_usb_dma_align - 1)) && !(urb->transfer_buffer_length & 3))
+> >  		return 0;
+> >  
+> >  	/* Allocate a buffer with enough padding for alignment */
+> > -	kmalloc_size = urb->transfer_buffer_length +
+> > +	kmalloc_size = ALIGN(urb->transfer_buffer_length, 4) +
+> >  		       sizeof(struct ci_hdrc_dma_aligned_buffer) +
+> >  		       ci_hdrc_usb_dma_align - 1;
+> >  
+> 
+> Would you please explain why you make these changes?
 
---sfquo6rq2unvsafx
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 07/10] ioctl_userfaultfd.2: correct and update UFFDIO_API
- ioctl error codes
-MIME-Version: 1.0
+Can you point out what's unclear in the commit message? This is to fix
+a buffer overflow by DMA from the USB controller as it seems to write
+data 32-bit word at a time. What the patch does is extend the workaround
+code to account for the extra room needed at the tail of the buffer.
 
-Hi Axel,
-
-On Tue, Sep 19, 2023 at 12:02:03PM -0700, Axel Rasmussen wrote:
-> First, it is not correct that repeated UFFDIO_API calls result in
-> EINVAL. This is true *if both calls enable features*, but in the case
-> where we're doing a two-step feature detection handshake, the kernel
-> explicitly expects 2 calls (one with no features set). So, correct this
-> description.
->=20
-> Then, some new error cases have been added to the kernel recently, and
-> the man page wasn't updated to note these. So, add in descriptions of
-> these new error cases.
->=20
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  man2/ioctl_userfaultfd.2 | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
->=20
-> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-> index 53b1f473f..1aa9654be 100644
-> --- a/man2/ioctl_userfaultfd.2
-> +++ b/man2/ioctl_userfaultfd.2
-> @@ -280,17 +280,31 @@ refers to an address that is outside the calling pr=
-ocess's
->  accessible address space.
->  .TP
->  .B EINVAL
-> -The userfaultfd has already been enabled by a previous
-> -.B UFFDIO_API
-> -operation.
-> -.TP
-> -.B EINVAL
->  The API version requested in the
->  .I api
->  field is not supported by this kernel, or the
->  .I features
->  field passed to the kernel includes feature bits that are not supported
->  by the current kernel version.
-> +.TP
-> +.B EPERM
-
-This EPERM should probably be at the end.  Unless you have a good reason
-to break alphabetic order.
-
-Thanks,
-Alex
-
-> +The
-> +.B UFFD_FEATURE_EVENT_FORK
-> +feature was enabled,
-> +but the calling process doesn't have the
-> +.B CAP_SYS_PTRACE
-> +capability.
-> +.TP
-> +.B EINVAL
-> +A previous
-> +.B UFFDIO_API
-> +call already enabled one or more features for this userfaultfd.
-> +Calling
-> +.B UFFDIO_API
-> +twice,
-> +the first time with no features set,
-> +is explicitly allowed
-> +as per the two-step feature detection handshake.
->  .\" FIXME In the above error case, the returned 'uffdio_api' structure is
->  .\" zeroed out. Why is this done? This should be explained in the manual=
- page.
->  .\"
-> --=20
-> 2.42.0.459.ge4e396fd5e-goog
->=20
-
---sfquo6rq2unvsafx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUSHUIACgkQnowa+77/
-2zJvng/+MbsU5MfmXIe0erS8L+2Cfzvvt85W8o6bTu7AEasSaESg7NtFhZ6wyQSk
-tJcmVIh4F9UeVBwvs77EOapbDrcZuw0MfExT66INr0bxhCcZDEar3sKW6V9IDMYf
-EgOaB83nGebwIkIU0nQNCZoBwnlnlGhPygmOl10IFwdSYV+Q/hkUFOY/5vLlSvdI
-/kOSyq1S7r99I5EydbmZRzxlYtGlCoIiL8PuFtZuDv1JzpxkqL9gFDHIkkINfEcG
-MhmMLi00ERAgWA3QQcREXnx7wI39mWthNHPTXGxkpdIDTVFfWJQ6uJdLpPAblU6z
-/bnmX1ESYvOxBv/JgXExFu6dTZ2IeqncdOjwWdwrF3+E8lTkaMC+6S24QLYO7OBx
-PESaaXkSdAIkTg+sgQQSdDdWIJJKlh5b9f5fUMIZaUpMhWkf2D9xK2aqvfYUP7od
-2wV8iLjO/AGH3jopaHX+91lablgztxQSwGegH6X83PQSGpy946farEiYU0CT7j3y
-gUk8UY5p4g2OIJqvQoPEkvTeU+bx1aWwPNJ4YdrlQh5oQaVNlHSMzqa+HxONJ9G1
-K8WFVJyoMpiryQf49Gpvp8MBzmlilNB1zox2mTx/cDqJJPwKt/qE1/0ON0xaLJ+i
-gp2ra6xS4+a8EjbPLjfbFQSU7GBJJje8/yoxKB7nTVGwYEdomh8=
-=I/3k
------END PGP SIGNATURE-----
-
---sfquo6rq2unvsafx--
+Best Regards
+Micha³ Miros³aw
