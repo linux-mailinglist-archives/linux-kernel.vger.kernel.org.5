@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D028B7AD198
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA06D7AD19D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjIYH0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        id S230019AbjIYH0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 03:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjIYHZ6 (ORCPT
+        with ESMTP id S229619AbjIYHZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:25:58 -0400
+        Mon, 25 Sep 2023 03:25:59 -0400
 Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDFEC6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:25:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E9FC6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
         q=dns/txt; i=@phytec.de; t=1695626746; x=1698218746;
         h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=93rMHGvdAme1AeDl4W450VE6qEyXJijOqeQ0sdUbEmo=;
-        b=Kf770LpR2EWWK+zoF5BbBVNUMCl8QgfWoNZQ2JqRoQS/mtRhLaGx/PVgKf1gFcbj
-        Xlg2DfQQvx+rcjaOgvRehp8sP1/MoIvvJ5deXSshcsp5wPhgDsWZ3G7cIa74XsiP
-        Ji66/RQwF8TLPEIMmiuBBCMLIIerIdANgAe+IaMlTw8=;
-X-AuditID: ac14000a-6d65670000001e37-4e-651135f9e358
+        bh=UMryubw7V40Kt0s10wEsoKfNlmmVbfF67vz5HBs/8t0=;
+        b=coB/qOdIXpKB5JdLrBsV0Z3UwxYAQljV5kQ3uQnPqGvlcEX2oQUkc9KYjAYOhMXk
+        oJKBpLmYtIo6k5v/ohIe5RZgG2zpbpGSe7mtESyBIeGu+6xaLJYKDSgGOSw0lhEY
+        ofiauyPYr57KEBHO8T/AKmaPh+rrG9YH8W0G6xSoWGY=;
+X-AuditID: ac14000a-6e25770000001e37-4f-651135fa1706
 Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
         (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 60.5C.07735.9F531156; Mon, 25 Sep 2023 09:25:45 +0200 (CEST)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 51.5C.07735.AF531156; Mon, 25 Sep 2023 09:25:46 +0200 (CEST)
 Received: from lws-moog.phytec.de (172.25.0.11) by Berlix.phytec.de
  (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 25 Sep
  2023 09:25:45 +0200
 From:   Yannic Moog <y.moog@phytec.de>
-Subject: [PATCH v2 0/2] Add support for the phyGATE-Tauri-L IoT Gateway
-Date:   Mon, 25 Sep 2023 09:25:17 +0200
-Message-ID: <20230925-tauri_upstream_support-v2-0-62a6dfc48e31@phytec.de>
+Date:   Mon, 25 Sep 2023 09:25:18 +0200
+Subject: [PATCH v2 1/2] dt-bindings: arm: fsl: add phyGATE-Tauri-L board
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAN41EWUC/3WNQQ6CMBBFr0Jmbc20BCmuvIchpLaDdCE000Ikh
- Ltbce3yveS/v0Ek9hThWmzAtPjopzGDOhVgBzM+SXiXGRSqErXSIpmZfTeHmJjMq4tzCBMngbo
- 3Vsm6khVCHgem3r+P8L3NPPiYJl6Pn0V+7S/ZoPyXXKRAQa5Ee3F9rZvHLQxrInt2BO2+7x+r/
- I8rvAAAAA==
+Message-ID: <20230925-tauri_upstream_support-v2-1-62a6dfc48e31@phytec.de>
+References: <20230925-tauri_upstream_support-v2-0-62a6dfc48e31@phytec.de>
+In-Reply-To: <20230925-tauri_upstream_support-v2-0-62a6dfc48e31@phytec.de>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
@@ -61,52 +59,52 @@ X-Mailer: b4 0.12.3
 X-Originating-IP: [172.25.0.11]
 X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
  (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnkeLIzCtJLcpLzFFi42JZI8nAo/vTVDDVoGW9lcWaveeYLKZs2sFu
-        Mf/IOVaLh1f9LVZN3cli0ffiIbPFoeYDTBabHl9jtej6tZLZ4vKuOWwWrXuPsFv83b6JxeLF
-        FnGL7nfqDnweO2fdZffYtKqTzePOtT1sHpuX1Hv0d7ewetz5sZTRY+O7HUwe/X8NPD5vkgvg
-        jOKySUnNySxLLdK3S+DK2LhmM3vBTvaKvXOqGxg72boYOTkkBEwkVjzazQRiCwksYZJ4s8+i
-        i5ELyH7EKHH41RGwBJuAisTjF/dYQWxhAXeJthdfWLoYOThYBFQlVnZVg4R5BTwlbm/7ywZh
-        C0qcnPkErIRZQFNi/S59kDCzgLzE9rdzmEHGSwh8ZpT42NTPBOKICLxgkjg27QcriMMscJlR
-        4vf7NewQ1wlLtC+6BXWdrMSL871QcXmJaedeM0PYoRJHNq1mmsAoOAvJ8lkIy2chWb6AkXkV
-        o1BuZnJ2alFmtl5BRmVJarJeSuomRlBkiTBw7WDsm+NxiJGJg/EQowQHs5II769nfKlCvCmJ
-        lVWpRfnxRaU5qcWHGKU5WJTEee/3MCUKCaQnlqRmp6YWpBbBZJk4OKUaGEOjv5r5ct+9y/k1
-        WuBhuOurIJcZz7eHeEz/tYBnf0vqvLsxbWJrDPvuuMU5HF913N6qaluddjaP7ALDnK+PZZdl
-        vS98ddLOXUdnl2bE0bvrZ2lP6BSoDnysGZw77eTRo187U1gEj5e27DT51t35nmWSgvJZH9kp
-        Xqk6phpe70MmVqYYXftro8RSnJFoqMVcVJwIAD2Wg2KaAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsWyRpKBR/eXqWCqwbEPHBZr9p5jspiyaQe7
+        xfwj51gtHl71t1g1dSeLRd+Lh8wWh5oPMFlsenyN1aLr10pmi8u75rBZtO49wm7xd/smFosX
+        W8Qtut+pO/B57Jx1l91j06pONo871/aweWxeUu/R393C6nHnx1JGj43vdjB59P818Pi8SS6A
+        M4rLJiU1J7MstUjfLoEr4+Sa86wF0zgqHn09wdrAuIuti5GTQ0LARGLNukb2LkYuDiGBJUwS
+        DZdusUI4jxglDr86wgRSxSagIvH4xT1WEJtFQFVi4fnNjCC2sICHxJp3M8Am8QoISpyc+YSl
+        i5GDg1lAU2L9Ln2QMLOAvMT2t3OYIUo8JV7v/w82RgjI7tv8G2w8p4CXxM293Ywge0UEXjBJ
+        HJv2A+wIZoHLjBK/369hhzhVWKJ90S0miG5ZiRfne6Hi8hLTzr1mhrBDJY5sWs00gVFoFpKb
+        ZiHcNAvJTQsYmVcxCuVmJmenFmVm6xVkVJakJuulpG5iBEWdCAPXDsa+OR6HGJk4GA8xSnAw
+        K4nw/nrGlyrEm5JYWZValB9fVJqTWnyIUZqDRUmc934PU6KQQHpiSWp2ampBahFMlomDU6qB
+        caF2psf3fN6ZERmmW+89rr4hcOkKl/WFF9LmR1sYjupprZiU8vNTS9Mq5aATnH+VZ2u0y2Sv
+        +Xxiu6v2m1+nW8qUyg1urxfe9MNFeqM47+sj9s+3+jp2nRF/KT277S2f5SvFde4FrNraj4+y
+        /k+7dVE3+rmz+7Hpj42mX3GoKzAUMPfiet/Io8RSnJFoqMVcVJwIAO1PtoeoAgAA
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The phyGATE-Tauri-L is a SBC that uses the phyCORE-i.MX8MM SoM, but has
-a different carrier board.
-This series adds support for the board and most of its interfaces.
-Notably, RS485 support is missing.
+Add dt compatible for the phyGATE-Tauri-L board. It uses the
+phyCORE-i.MX8MM SoM
 
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Yannic Moog <y.moog@phytec.de>
 ---
-Changes in v2:
-- change license of tauri devicetree file.
-- fix devicetree style issues, no functional change
+ Documentation/devicetree/bindings/arm/fsl.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
----
-Yannic Moog (2):
-      dt-bindings: arm: fsl: add phyGATE-Tauri-L board
-      arm64: dts: freescale: add phyGATE-Tauri i.MX 8M Mini Support
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 2510eaa8906d..570794ce2813 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -974,7 +974,9 @@ properties:
+ 
+       - description: PHYTEC phyCORE-i.MX8MM SoM based boards
+         items:
+-          - const: phytec,imx8mm-phyboard-polis-rdk # phyBOARD-Polis RDK
++          - enum:
++              - phytec,imx8mm-phyboard-polis-rdk # phyBOARD-Polis RDK
++              - phytec,imx8mm-phygate-tauri-l    # phyGATE-Tauri-L Gateway
+           - const: phytec,imx8mm-phycore-som        # phyCORE-i.MX8MM SoM
+           - const: fsl,imx8mm
+ 
 
- Documentation/devicetree/bindings/arm/fsl.yaml     |   4 +-
- arch/arm64/boot/dts/freescale/Makefile             |   1 +
- .../boot/dts/freescale/imx8mm-phygate-tauri-l.dts  | 489 +++++++++++++++++++++
- 3 files changed, 493 insertions(+), 1 deletion(-)
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230828-tauri_upstream_support-08fac2175150
-
-Best regards,
 -- 
-Yannic Moog <y.moog@phytec.de>
+2.34.1
 
