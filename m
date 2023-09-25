@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 495AA7AD45F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698CF7AD464
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbjIYJSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
+        id S232991AbjIYJUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbjIYJSp (ORCPT
+        with ESMTP id S232804AbjIYJUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:18:45 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBD9C0;
-        Mon, 25 Sep 2023 02:18:38 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7870821d9a1so4083076241.1;
-        Mon, 25 Sep 2023 02:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695633517; x=1696238317; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3BFL2+1dOPDuK81BwsgyUY35mlJW/J7ln5D7kWMysTk=;
-        b=DJr/tYnSAJSrBt3S7wprYru5IqNuAHJVryDtp546qHLoG8KGYEZQz2+ydko/yAzO6T
-         k1dJxdT/GBEYhcey1ZFdB1N3DRhEYGobS/kUE69I51s0NJxGTCwk2WlKDBHOaWKnP8el
-         i+ue1kP44ljkrkxrORO5eHh7n02lokYx6pTatXoqqHSWG+L8CqJx568l6oK9fp3GMed0
-         YLoytvF2xfTadJCfxnrYUCG+Xdf51FjHowbW/OsU34WmCLwIPzGQI5MO3wtN7UwnVTyO
-         R3WgKDFvuPTRNaX4jIEIljQaRwE/dSqnoLiwokW+N3VqYRcQV/tE3XrDi2C3emqRm20d
-         5Psg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695633517; x=1696238317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3BFL2+1dOPDuK81BwsgyUY35mlJW/J7ln5D7kWMysTk=;
-        b=VvMq/PiMIOBZwZYqz8QCoaOZcd6oL5ZeiKDMYZyDd1vXcb+dL3ecwou3CDLImSKSVF
-         pzT07BVonxtjPbWFfSO6MAc3vWxo3hH0ClrGLH/ST1Pvhey0e7liydLZsU2u4zrO9cBh
-         p+jEAAES8UMBO+0c2nkxUPegxq3yrWaHPqkaWngPqcPALofccCv6lXXMFln+8mfwkXNp
-         BWtXgVFuZwdKnkkXajkpnm6gXL0kXzsjb4eVWdX9NtUqk7wO+RuAEFeAyft3nnbmFoXR
-         jCnpzvIgvNUBvpSJVtUi+rhtuh0+mNVwpmzumuW/VGQ13EF8pO6bVTyMxI6OK9xMTae0
-         ZlYg==
-X-Gm-Message-State: AOJu0Yz6LPhweSFtZ0XXglYjXOGqrEeCQmQRFs061TaHOnVqYdiKbJYl
-        EwUoAf6w9mzAvnry00BvwNGqIkZ1XjdamNkyed8=
-X-Google-Smtp-Source: AGHT+IHlfc+LLcOAb0pLXcmP5zri6tIaUbrPUeezw1TobtmZe6+W08FTH13dzozKQGIEnRyeLk6h9niE9cGdPTJrBzA=
-X-Received: by 2002:a05:6102:2c86:b0:452:6478:3e24 with SMTP id
- if6-20020a0561022c8600b0045264783e24mr4673292vsb.12.1695633517574; Mon, 25
- Sep 2023 02:18:37 -0700 (PDT)
+        Mon, 25 Sep 2023 05:20:19 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B87AB
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:20:11 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qkhl7-0007eZ-Cq; Mon, 25 Sep 2023 11:20:05 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qkhl6-008pnP-Tm; Mon, 25 Sep 2023 11:20:04 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qkhl6-004dPf-Jc; Mon, 25 Sep 2023 11:20:04 +0200
+Date:   Mon, 25 Sep 2023 11:20:04 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Tim van der Staaij | Zign <Tim.vanderstaaij@zigngroup.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] dmaengine: imx-sdma: fix deadlock in interrupt handler
+Message-ID: <20230925092004.natij4i364yupevi@pengutronix.de>
+References: <AM0PR08MB30897429213E8DB9BCC1D6C880F8A@AM0PR08MB3089.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-References: <71897125-e570-46ce-946a-d4729725e28f@kernel.dk>
-In-Reply-To: <71897125-e570-46ce-946a-d4729725e28f@kernel.dk>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 25 Sep 2023 12:18:26 +0300
-Message-ID: <CAOQ4uxj7hC5iGfJSD35xAGC97x32y9nnKk8qJa8ux6owpgT1wQ@mail.gmail.com>
-Subject: Re: [PATCH] ovl: disable IOCB_DIO_CALLER_COMP
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-unionfs@vger.kernel.org,
-        Zorro Lang <zlang@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3vziazxi4g3jfqf6"
+Content-Disposition: inline
+In-Reply-To: <AM0PR08MB30897429213E8DB9BCC1D6C880F8A@AM0PR08MB3089.eurprd08.prod.outlook.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,77 +61,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 9:21=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote:
->
-> overlayfs copies the kiocb flags when it sets up a new kiocb to handle
-> a write, but it doesn't properly support dealing with the deferred
-> caller completions of the kiocb. This means it doesn't get the final
-> write completion value, and hence will complete the write with '0' as
-> the result.
->
-> We could support the caller completions in overlayfs, but for now let's
-> just disable them in the generated write kiocb.
->
-> Reported-by: Zorro Lang <zlang@redhat.com>
-> Link: https://lore.kernel.org/io-uring/20230924142754.ejwsjen5pvyc32l4@de=
-ll-per750-06-vm-08.rhts.eng.pek2.redhat.com/
-> Fixes: 8c052fb3002e ("iomap: support IOCB_DIO_CALLER_COMP")
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->
 
-Thanks for fixing this Jens!
-If you or Christian want to send this fix to Linus, you have my ACK.
+--3vziazxi4g3jfqf6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On the bright side, I am glad that you are aware of the overlayfs
-"kiocb_clone" use case, which delegates/forwards the io request to
-another file in another fs.
+Hello,
 
-I have already posted an RFC [1] for moving this functionality to
-common vfs code. My main goal was to expose it to other filesystem
-(fuse), but a very desired side effect is that this functionality gets
-more vfs reviewer eyes and then the chances of catching a regression
-like this one during review of vfs changes hopefully increases.
-
-As for test coverage, I need to check why my tests did not catch
-this - I suspect fsx may not have been rebuilt with io_uring support,
-but not sure (not near workstation atm).
-
-If you would like to add overlayfs to your test coverage, as Zorro
-explained, it is as simple as running ./check -overlay with your
-existing fstests config.
-./check -overlay is a relatively faster test run because many of the
-tests do _notrun on overlayfs.
-I don't have to tell you that io_uring code will end up running on
-overlayfs in many container workloads, so it is not a niche setup.
-
-Thanks,
-Amir.
-
-[1] https://lore.kernel.org/linux-fsdevel/20230912185408.3343163-1-amir73il=
-@gmail.com/
-
+On Thu, Sep 21, 2023 at 09:57:11AM +0000, Tim van der Staaij | Zign wrote:
+> dev_warn internally acquires the lock that is already held when
+> sdma_update_channel_loop is called. Therefore it is acquired twice and
+> this is detected as a deadlock. Temporarily release the lock while
+> logging to avoid this.
+>=20
+> Signed-off-by: Tim van der Staaij <tim.vanderstaaij@zigngroup.com>
+> Link: https://lore.kernel.org/all/AM0PR08MB308979EC3A8A53AE6E2D3408802CA@=
+AM0PR08MB3089.eurprd08.prod.outlook.com/
 > ---
->
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index 4193633c4c7a..693971d20280 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -391,6 +391,12 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, st=
-ruct iov_iter *iter)
->         if (!ovl_should_sync(OVL_FS(inode->i_sb)))
->                 ifl &=3D ~(IOCB_DSYNC | IOCB_SYNC);
->
-> +       /*
-> +        * Overlayfs doesn't support deferred completions, don't copy
-> +        * this property in case it is set by the issuer.
-> +        */
-> +       ifl &=3D ~IOCB_DIO_CALLER_COMP;
+>  drivers/dma/imx-sdma.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index 51012bd39900..3a7cd783a567 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -904,7 +904,10 @@ static void sdma_update_channel_loop(struct sdma_cha=
+nnel *sdmac)
+>  	 * owned buffer is available (i.e. BD_DONE was set too late).
+>  	 */
+>  	if (sdmac->desc && !is_sdma_channel_enabled(sdmac->sdma, sdmac->channel=
+)) {
+> +		spin_unlock(&sdmac->vc.lock);
+>  		dev_warn(sdmac->sdma->dev, "restart cyclic channel %d\n", sdmac->chann=
+el);
+> +		spin_lock(&sdmac->vc.lock);
 > +
->         old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
->         if (is_sync_kiocb(iocb)) {
->                 file_start_write(real.file);
->
-> --
-> Jens Axboe
->
->
+
+I don't know if Sascha's patch helps, but this patch looks definitively
+wrong. If this was the right approach (and I doubt it is) this
+would definitively lack an explaining code comment.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--3vziazxi4g3jfqf6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmURUMIACgkQj4D7WH0S
+/k56XQf/Z4tp5E2PnPCbZXqG6hnW84LB48sTntvzlHjgepkXNBivI0Ww08OVuvp7
+6t6LyqUXpkh574B8mlTO29Pc1G095CmbvdOE3/CrrHh8gLbUCOgIBTefPG6xqE7C
+cPKGpwUxJ2PzxyP0GJA1pEyFLi4Dh9Bj1cLjjZdKQPL926Wf24RpgDMN4DsUpNjw
+L7kVsO/kCs7bopTZHnGNmuEE7yMz2UTSQeJ8tF9Kfl0vuoWFXT0njUVl7B1JABsM
+N8Rbo5fudyeu9+PeBf964B8jHc5hAbF1TLDrIo36QGEB4GnG9v+6SBrwcgfb9kVi
+WKCB91+hVfqHn3+AlA3pRfxrpHOuKw==
+=Jqzd
+-----END PGP SIGNATURE-----
+
+--3vziazxi4g3jfqf6--
