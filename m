@@ -2,272 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916D37AD814
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE057AD819
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjIYMdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
+        id S229877AbjIYMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjIYMdl (ORCPT
+        with ESMTP id S229450AbjIYMe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:33:41 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BFCCE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:33:34 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bfed7c4e6dso105481881fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695645212; x=1696250012; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uOrEG4tfl75vIbxlTDfOPlF5gglTowT9ubBWOy0wGIE=;
-        b=XraXWh175C0O1zeaF6oDS5y4MnsE+aL81TMVqOA8Ep1RsgCgNkscjk4Xs8zutgCURc
-         Uuz0Dbo8ZZYmSC8Fecdoy1rfUmD2P6ZlDcvNghuSxf79muMlQ7vKhKrioc9ZqvLj+8OW
-         pHW1wxxW78wozyS8earWBGR5Ib7a+l1IzH07g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695645212; x=1696250012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uOrEG4tfl75vIbxlTDfOPlF5gglTowT9ubBWOy0wGIE=;
-        b=NEoBlpZmK5B6UFTtnr0gPDJpdf446xZBBkhCwo5Wy5Cf+ChseiVMtcnSy/lTl9+cLc
-         GfJ9o4Y/smt1pyFfy2GBA1M0Qc2KvR3XUzXOYURDfMQw2W6da1d2QqAZzIBbW/A9AiVv
-         6o0NdXb++RZHmarwPgrtKCvQagkgmnN0RI+T1X6lc4EvhsXLaxWWmRRFPnOXnp3HGGE9
-         lj0dngiXmBCvtBEin9SaqLPJi4MoaiDWqbU/9pZG+BUFrL8ZMpYyw9yClUON4UKLG1q3
-         hQbvzNMU/hkloEd7n/fkYivi3GScqpB2ZbQmtXwDI53gMTNsUroXmB32x9jfcH7t27jG
-         tDfw==
-X-Gm-Message-State: AOJu0Yxw0I9SS3LkMChprWoIH1Cghuwn3ZPKMzkn5Ra6CTogrmvXHPl9
-        xqNxHM5KnNTV09+mi9ltLk5glygH/LXmi0qhSWIa3Q==
-X-Google-Smtp-Source: AGHT+IHQ2mVoYf0gISCrXjW928D9kOOj+nnB4kchHzakcfJ5+nTvY6NHkpDiRDXDUhEg1TfER0INKlLUgGq8Jiet7Nw=
-X-Received: by 2002:ac2:4c9c:0:b0:503:18c3:d87a with SMTP id
- d28-20020ac24c9c000000b0050318c3d87amr5120311lfl.21.1695645212082; Mon, 25
- Sep 2023 05:33:32 -0700 (PDT)
+        Mon, 25 Sep 2023 08:34:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34B2C0;
+        Mon, 25 Sep 2023 05:34:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77CF1C433C8;
+        Mon, 25 Sep 2023 12:34:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695645259;
+        bh=J10rv6bwcTutOdorIcDRobiFGuFoRoy6Xp7WZz1xess=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PKodcEXRYh+o0SNKQyZ8FgXZg9GWdMnNBb5H+KR/sefu8wF/OfnPLqKkM6kKbrF5e
+         PZv8/KIqipItoRw0jjQTZpRaAPb+DdI6aBLCfYBXi0KGLaXLx3NTzLT0sIV7UNkX2u
+         Ami8N9SDcJJdsoaTIam7bpnyZrb28ez1auYVMvOSj0mAjNCLPY85quBxR3ZRe9xUlG
+         HbguRxmRI7pYysI4BWAOxV1uOCsLJjf1Q89UPysZaKfa/UztP4qwgyn0R6ybCm7QCZ
+         MBxP/nY/03OnvzS4VinL5Q5YZu2CPEl39TZwqB9HOqifDYJOhWq0FzpR92vRRogL3f
+         xZhpvqllQ9Udg==
+From:   Christian Brauner <brauner@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v7 00/12] iov_iter: Convert the iterator macros into inline funcs
+Date:   Mon, 25 Sep 2023 14:34:05 +0200
+Message-Id: <20230925-zugetan-abhaken-8edd66ed06a7@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230925120309.1731676-1-dhowells@redhat.com>
+References: <20230925120309.1731676-1-dhowells@redhat.com>
 MIME-Version: 1.0
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
- <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
- <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
- <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
- <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
- <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com> <20230925092122.0b615f25@xps-13>
-In-Reply-To: <20230925092122.0b615f25@xps-13>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Mon, 25 Sep 2023 06:33:14 -0600
-Message-ID: <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2706; i=brauner@kernel.org; h=from:subject:message-id; bh=J10rv6bwcTutOdorIcDRobiFGuFoRoy6Xp7WZz1xess=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQK1hmHvPzoGPKx7qV/gLKL5G1Xu5nvRaWuGPHOjJ94O+PO 2m+nOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZym53hf/yXFaacTd13BbbPcXgjKf DuyJ0T0RVNa64c/i/7J1xty15Ghnnaub/z18qWMW+/u85tLlPsFZ3v+brXoz93TOfc9v+DBycA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Mon, 25 Sep 2023 13:02:57 +0100, David Howells wrote:
+> Could you take these patches into the block tree or the fs tree?  The
+> patches convert the iov_iter iteration macros to be inline functions.
+> 
+>  (1) Remove last_offset from iov_iter as it was only used by ITER_PIPE.
+> 
+>  (2) Add a __user tag on copy_mc_to_user()'s dst argument on x86 to match
+>      that on powerpc and get rid of a sparse warning.
+> 
+> [...]
 
-On Mon, 25 Sept 2023 at 01:21, Miquel Raynal <miquel.raynal@bootlin.com> wr=
-ote:
->
-> Hi Simon,
->
-> sjg@chromium.org wrote on Fri, 22 Sep 2023 13:51:14 -0600:
->
-> > Hi Rob,
-> >
-> > On Fri, 22 Sept 2023 at 13:43, Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Fri, Sep 22, 2023 at 1:12=E2=80=AFPM Simon Glass <sjg@chromium.org=
-> wrote:
-> > > >
-> > > > Hi Rob,
-> > > >
-> > > > On Fri, 22 Sept 2023 at 11:46, Rob Herring <robh@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Sep 22, 2023 at 11:01:18AM -0600, Simon Glass wrote:
-> > > > > > Hi Rob,
-> > > > > >
-> > > > > > On Fri, 22 Sept 2023 at 10:00, Rob Herring <robh@kernel.org> wr=
-ote:
-> > > > > > >
-> > > > > > > On Thu, Sep 21, 2023 at 1:45=E2=80=AFPM Simon Glass <sjg@chro=
-mium.org> wrote:
-> > > > > > > >
-> > > > > > > > Binman[1] is a tool for creating firmware images. It allows=
- you to
-> > > > > > > > combine various binaries and place them in an output file.
-> > > > > > > >
-> > > > > > > > Binman uses a DT schema to describe an image, in enough det=
-ail that
-> > > > > > > > it can be automatically built from component parts, disasse=
-mbled,
-> > > > > > > > replaced, listed, etc.
-> > > > > > > >
-> > > > > > > > Images are typically stored in flash, which is why this bin=
-ding is
-> > > > > > > > targeted at mtd. Previous discussion is at [2] [3].
-> > > > > > > >
-> > > > > > > > [1] https://u-boot.readthedocs.io/en/stable/develop/package=
-/binman.html
-> > > > > > > > [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3=
--sjg@chromium.org/
-> > > > > > > > [3] https://www.spinics.net/lists/devicetree/msg626149.html
-> > > > > > >
-> > > > > > > You missed:
-> > > > > > >
-> > > > > > > https://github.com/devicetree-org/dt-schema/pull/110
-> > > > > > >
-> > > > > > > where I said: We certainly shouldn't duplicate the existing p=
-artitions
-> > > > > > > bindings. What's missing from them (I assume we're mostly tal=
-king
-> > > > > > > about "fixed-partitions" which has been around forever I thin=
-k (before
-> > > > > > > me))?
-> > > > > > >
-> > > > > > > To repeat, unless there is some reason binman partitions conf=
-lict with
-> > > > > > > fixed-partitions, you need to start there and extend it. From=
- what's
-> > > > > > > posted here, it neither conflicts nor needs extending.
-> > > > > >
-> > > > > > I think at this point I am just hopelessly confused. Have you t=
-aken a
-> > > > > > look at the binman schema? [1]
-> > > > >
-> > > > > Why do I need to? That's used for some tool and has nothing to do=
- with a
-> > > > > device's DTB. However, I thought somewhere in this discussion you=
- showed
-> > > > > it under a flash device node.
-> > > >
-> > > > Yes, that is the intent (under a flash node).
-> > > >
-> > > > > Then I care because then it overlaps with
-> > > > > what we already have for partitions. If I misunderstood that, the=
-n just
-> > > > > put your schema with your tool. Only users of the tool should car=
-e about
-> > > > > the tool's schema.
-> > > >
-> > > > OK. I believe that binman will fit into both camps, since its input=
- is
-> > > > not necessarily fully formed. E.g. if you don't specify the offset =
-of
-> > > > an entry, then it will be packed automatically. But the output is
-> > > > fully formed, in that Binman now knows the offset so can write it t=
-o
-> > > > the DT.
-> > >
-> > > I suppose it could take its own format as input and then write out
-> > > something different for the "on the device" format (i.e.
-> > > fixed-partitions). At least for the dynamic offsets, we may need
-> > > something allowed for binman input, but not allowed on device. In
-> > > general, there is support for partitions without addresses/offsets,
-> > > but only for partitions that have some other way to figure that out
-> > > (on disk partition info).
-> > >
-> > > There's also the image filename which doesn't really belong in the on
-> > > device partitions. So maybe the input and output schemas should be
-> > > separate.
-> >
-> > OK, I'll focus on the output schema for now. I suspect this will be a
-> > grey area though.
-> >
-> > As an example, if you replace a binary in the firmware, Binman can
-> > repack the firmware to make room, respecting the alignment and size
-> > constraints. So these need to be in the output schema somehow.
-> >
-> > >
-> > > > > > I saw this file, which seems to extend a partition.
-> > > > > >
-> > > > > > Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-p=
-artitions.yaml
-> > > > >
-> > > > > IIRC, that's a different type where partition locations are store=
-d in
-> > > > > the flash, so we don't need location and size in DT.
-> > > >
-> > > > OK.
-> > > >
-> > > > >
-> > > > > >
-> > > > > > I was assuming that I should create a top-level compatible =3D =
-"binman"
-> > > > > > node, with subnodes like compatible =3D "binman,bl31-atf", for =
-example.
-> > > > > > I should use the compatible string to indicate the contents, ri=
-ght?
-> > > > >
-> > > > > Yes for subnodes, and we already have some somewhat standard ones=
- for
-> > > > > "u-boot" and "u-boot-env". Though historically, "label" was used.
-> > > >
-> > > > Binman has common properties for all entries, including "compress"
-> > > > which sets the compression algorithm.
-> > >
-> > > I see no issue with adding that. It seems useful and something missin=
-g
-> > > in the existing partition schemas.
-> >
-> > OK I sent a patch with that.
-> >
-> > >
-> > > > So perhaps I should start by defining a new binman,bl31-atf which h=
-as
-> > > > common properties from an "binman,entry" definition?
-> > >
-> > > I don't understand the binman prefix. The contents are ATF (or TF-A
-> > > now). Who wrote it to the flash image is not relevant.
-> >
-> > Are you suggesting just "atf-bl31", or "arm,atf-bl31" ? Or should we
-> > change it to "tfa-bl31"?
->
-> I don't really understand the relationship with TF-A here. Can't we
-> just have a kind of fixed-partitions with additional properties like
-> the compression?
+I'm giving you vfs.iov_iter as a stable (no rebases) branch so you can
+put fixes on top. Please let me know if someone else needs to take this.
 
-Binman needs to know what to put in there, which is the purpose of the
-compatible string.
+---
 
->
-> > > We already have some compatibles in use. We should reuse them if
-> > > possible. Not sure about TF-A though.
-> >
-> > OK.
-> >
->
-> Also, I still don't understand the purpose of this schema. So binman
-> generates an image, you want to flash this image and you would like the
-> tool to generate the corresponding (partition) DT snippet automatically.
-> Do I get this right? I don't get why you would need new compatibles for
-> that.
+Applied to the vfs.iov_iter branch of the vfs/vfs.git tree.
+Patches in the vfs.iov_iter branch should appear in linux-next soon.
 
-It is actually the other way around. The schema tells Binman how to
-build the image (what goes in there and where). Then outputs an
-updated DT which describes where everything ended up, for use by other
-tools, e.g. firmware update. It is a closed loop in that sense. See
-the references for more information.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Regards,
-Simon
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-[1] https://u-boot.readthedocs.io/en/latest/develop/package/index.html
-[2] https://pretalx.com/media/osfc2019/submissions/Y7EN9V/resources/Binman_=
--_A_data-controlled_firmware_packer_for_U-B_pFU3n2K.pdf
-[3] https://www.youtube.com/watch?v=3DL84ujgUXBOQ
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.iov_iter
+
+[01/12] iov_iter: Remove last_offset from iov_iter as it was for ITER_PIPE
+        https://git.kernel.org/vfs/vfs/c/581beb4fe37d
+[02/12] iov_iter, x86: Be consistent about the __user tag on copy_mc_to_user()
+        https://git.kernel.org/vfs/vfs/c/066baf92bed9
+[03/12] sound: Fix snd_pcm_readv()/writev() to use iov access functions
+        https://git.kernel.org/vfs/vfs/c/1fcb71282e73
+[04/12] infiniband: Use user_backed_iter() to see if iterator is UBUF/IOVEC
+        https://git.kernel.org/vfs/vfs/c/7ebc540b3524
+[05/12] iov_iter: Renumber ITER_* constants
+        https://git.kernel.org/vfs/vfs/c/7d9e44a6ad8a
+[06/12] iov_iter: Derive user-backedness from the iterator type
+        https://git.kernel.org/vfs/vfs/c/f1b4cb650b9a
+[07/12] iov_iter: Convert iterate*() to inline funcs
+        https://git.kernel.org/vfs/vfs/c/f1982740f5e7
+[08/12] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
+        https://git.kernel.org/vfs/vfs/c/51edcc92222f
+[09/12] iov_iter, net: Move csum_and_copy_to/from_iter() to net/
+        https://git.kernel.org/vfs/vfs/c/ef6fdd780dd4
+[10/12] iov_iter, net: Fold in csum_and_memcpy()
+        https://git.kernel.org/vfs/vfs/c/0837c6c20a4c
+[11/12] iov_iter, net: Merge csum_and_copy_from_iter{,_full}() together
+        https://git.kernel.org/vfs/vfs/c/921203282d82
+[12/12] iov_iter, net: Move hash_and_copy_to_iter() to net/
+        https://git.kernel.org/vfs/vfs/c/d7a22f309096
