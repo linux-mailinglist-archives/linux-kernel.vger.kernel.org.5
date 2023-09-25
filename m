@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D60357AE035
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345257AE037
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbjIYUKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 16:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S233311AbjIYULp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 16:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjIYUKU (ORCPT
+        with ESMTP id S229481AbjIYULo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 16:10:20 -0400
-Received: from out-208.mta1.migadu.com (out-208.mta1.migadu.com [95.215.58.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC49F9B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 13:10:13 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 06:09:27 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1695672611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m+xFfBxFFUncwVJKXrgeBDxdx+ofsQpcDpMasXC+yD0=;
-        b=UJG+alhxO3YGHw6m+goPdPo2R1H8lh7Y0AXmVpeSBD+n1/ucF8Hq2KRML6rPRE0xDRNzYa
-        GlRMzfyR2C6vEJjLnWHvPZ9yMIvEaGJUc0jEk6cTfkPP/6P/oyi54rGs0PTIsK6arhP6Z8
-        jfJEjNQ0ejAbZ0gLqI/jYmcaipAXAu7q03EfZ1eZLtgQHOwZd9U278hsbzkUD41woRE87b
-        Fhlkpn2T8BjsuYUM/bR8mE/l35LhmFih9LnzOGVDaAc+gCjBfrO5TA/hJ/oIXinA6h+2GV
-        VIvmkt5sh99Jf34T3K0aQlduBn0Gt9gDCoA3RnQeqOk0lVKS0g2QoHw5pWveAw==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   John Watts <contact@jookia.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 4/7] drm/panel: nv3052c: Add Fascontek FS035VG158
- LCD display
-Message-ID: <ZRHo9-lYq8bOtJN3@titan>
-References: <20230925021059.451019-1-contact@jookia.org>
- <20230925021059.451019-5-contact@jookia.org>
- <ebd5808fe3029e46376aea3c25d3770a6b406fdc.camel@crapouillou.net>
- <ZRFRFXCKTIb9x7GW@titan>
- <d63b2a7bf2bbabe41b8e45a6c0a4dc0b1e117bdd.camel@crapouillou.net>
- <ZRFXd3F7eit7x4aJ@titan>
- <a8a68baa0b1abfaeb9aa51d0095f4a4a62ec65fd.camel@crapouillou.net>
+        Mon, 25 Sep 2023 16:11:44 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431519B
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 13:11:38 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qkrvU-00065u-2H;
+        Mon, 25 Sep 2023 16:11:28 -0400
+Message-ID: <2813e3aea98da510b9075e2a532272a1f77f5355.camel@surriel.com>
+Subject: Re: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
+ invalidate_lock
+From:   Rik van Riel <riel@surriel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        oe-kbuild-all@lists.linux.dev, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
+Date:   Mon, 25 Sep 2023 16:11:28 -0400
+In-Reply-To: <20230925200659.GB11309@monkey>
+References: <20230922190552.3963067-4-riel@surriel.com>
+         <202309250923.NEPT0ip2-lkp@intel.com>
+         <692fafae9842a9b15b7b4a033bb7dc800784d4aa.camel@surriel.com>
+         <20230925200659.GB11309@monkey>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8a68baa0b1abfaeb9aa51d0095f4a4a62ec65fd.camel@crapouillou.net>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 12:34:55PM +0200, Paul Cercueil wrote:
-> Unless you can explain what they do and why they are needed, I'd say
-> they are not important :)
+On Mon, 2023-09-25 at 13:06 -0700, Mike Kravetz wrote:
+> On 09/25/23 15:22, Rik van Riel wrote:
+> > On Mon, 2023-09-25 at 10:04 +0800, kernel test robot wrote:
+> > > Hi,
+> > > 
+> > > kernel test robot noticed the following build errors:
+> > > 
+> > > [auto build test ERROR on akpm-mm/mm-everything]
+> > > [also build test ERROR on linus/master v6.6-rc3 next-20230921]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a
+> > > note.
+> > > And when submitting patch, we suggest to use '--base' as
+> > > documented
+> > > in
+> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > 
+> > OK, so I have a fix for patch 3/3 that gets rid of the
+> > compile error, but the libhugetlbfs test cases show that
+> > patch 3/3 opens up a condition where resv_hugepages 
+> > underflows.
+> > 
+> > I have not figured out the cause of that yet, but
+> > patches 1 & 2 seem to survive all tests fine.
 > 
-> ...
->
-> Again, doesn't mean that you have to use these.
+> In addition, I suspect patch 3 is going to cause a performance
+> regression.
+> It is taking me a little while to resurrect the test environment used
+> when
+> the hugetlb vma lock was introduced.  My plan is to exercise the
+> series in
+> that environment.
 > 
-> From what I can see, all you need to support your Fascontek panel with
-> the nv3052c driver, is to add the SPI ID and compatible strings.
+I am planning to send a v3 of the series soon, once I have
+confirmed that the bugs in patch 3 have all been fixed.
 
-This is not a patch I would be willing to submit. Sorry.
+I have no strong opinion on whether or not patch 3 gets
+merged at all. Patches 1 & 2 fix the actual bug that I am
+trying to fix, and I am perfectly fine if patch 3 ends up
+getting dropped in the end.
 
-> 
-> Cheers,
-> -Paul
+It seemed worth trying to get that cleanup though ;)
 
-John.
+> I should be able to review patches 1 & 2 later (my) today.
+
+Thank you!
+
+-- 
+All Rights Reversed.
