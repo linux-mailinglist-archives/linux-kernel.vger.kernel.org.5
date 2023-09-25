@@ -2,87 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF287ADE5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1155C7ADE5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjIYSEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 14:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
+        id S232529AbjIYSEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 14:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjIYSEl (ORCPT
+        with ESMTP id S232517AbjIYSEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:04:41 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A6A103
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:04:34 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d865854ef96so5300803276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:04:34 -0700 (PDT)
+        Mon, 25 Sep 2023 14:04:43 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6D710A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:04:35 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-405e48d8e72so1314965e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695665074; x=1696269874; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XftFOjpvnqBOvm+GyG7dS3QneDyHgJbjgRAoI+rP2Vc=;
-        b=hR7fPoA9GHElMqHoCR+hCqcwl2hviY1cJs0/p9nCUFs0yEqkiUApK5fs84WUphxHuA
-         3aRBZCaEeIn03MsA8ev3tuaBgLG5GPGQmLGgbnT4XnJbPcBxz0KqPCzXlFF2sIX94x96
-         N/GfDflSXS3ODCqdCmMuzXPTr9WPBuk8Z51rY=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695665074; x=1696269874; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PxAeeGnvhbsv/enVjw/6b27Wv5CD20lIIrS6iK6bFLQ=;
+        b=V0f7h8bImbS0OWYMOA7/yu4YKRIWlyMSQmHnZve3KC53qpWqtE/panOhlZw/bJyz9Y
+         XEnWyhuxKsASmeOKGDAyt1AtxcBeaJXUtjk5fm9YwNxFVUV1dY4bYCHwdfmKIR4POtwZ
+         OOSl8cQpaN2pEuUShuKjDYNusnes3A4qNHrnmrlBhiKvYnAaTRyPtkNi+880gKVVtQJz
+         /t8SyzsFezuF5YH2GZz8hc8d97e0DdMmlxYlL64CKKBb/wCCYEQYN6vHa3vjXziNIeZL
+         NeIOdvAEytbRPfulJe7tecaqBu4Do4zEJnlsdsME6Ohl9IsVU+697LQGX6BkfQlaYM/N
+         hI8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1695665074; x=1696269874;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XftFOjpvnqBOvm+GyG7dS3QneDyHgJbjgRAoI+rP2Vc=;
-        b=tsypWc0QrhnktxnmwaSXD/NeL1XeS2ZbLqt0wKris9QB5j2gQUDPt1H1+rRa9irKnD
-         5NlL2AbKnp97qqJ2jrWtVtSKOK8ks+mWl63qG4TsmAFNExFiaWyVjQd6Qk16SIUrsy3D
-         p9QXNbA4zoB6RcmrMSdrjjjpwvenvdkMfYwOluS300uX+Jd0ZJDplEw5l6kNh9x8jBC0
-         PoU+QJx87Va67QVgNJj12qI1uJD5TU/jM49C0yJPjAxP91CSyvto81Px0I8+3EzdFYqv
-         q15P8XkNEc9Gd6r5GYF4KROoPqRvwLuuujpuQy7WK6nD5yr9XN8MZ8767UDySvYUV1Wj
-         Y6yQ==
-X-Gm-Message-State: AOJu0YxHRNddnynuljDd7BykoqlrqjR7ooXWI78xWnwNImomjmKoAlx1
-        10lFTYGFcwVYuNzvKtsvmR5r7w==
-X-Google-Smtp-Source: AGHT+IHLxOCMidSuiT5VuJdY2s//GNKCUPI3HgEunXnWS6HNGof+bL6k1SeyWqZzqivG9gVlZPGyJQ==
-X-Received: by 2002:a25:838e:0:b0:d7f:e578:58d5 with SMTP id t14-20020a25838e000000b00d7fe57858d5mr6401728ybk.41.1695665073996;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PxAeeGnvhbsv/enVjw/6b27Wv5CD20lIIrS6iK6bFLQ=;
+        b=tSC4Rnskc623WoIQUg1YnmjksARc0r/HDiiyPNnpcW+XGDaO2ZCmxdFfhDvRRr8Iij
+         gMhayO0uX7g8j7Y3FtDJLyOR7QOw9Mo+pb5tGG9MOf+F2EpTzll5T7zqLBR3jkniwM8e
+         sADpC5gvdz3mgwCZSUTv5M85tsXUsXkpwJ784HsmgkTEayuUe/TUAhad94L+GzCLOTQo
+         GUJh9M3u5YYT+BmmHfVh0lwVPxFfiwfjNEG/eE9ZEXjV/WoaWZqxC8hR6gvvhzRHRRM1
+         wGpCs7tU10w6IIXhXosIozMTQXm+pkWJfscrmAAfTqPRjeYE4qF+fLPu3Yzrsb5fKKzR
+         bMMw==
+X-Gm-Message-State: AOJu0YwP8U4g8xTB3QEQ1jGLypcyJkC3UDhvCS+eJ03mE7s5xmIEbwnI
+        yFD/RgJRXTc1r+8dtFsHJehLnWCKGn1TRzaP4z8SYw==
+X-Google-Smtp-Source: AGHT+IEotZEtpt/O2kToE6QO87EMcwVyCmcf/D3ng00xoCsqJH3JAkcrl1vd5dpMDJwdqHKIjuY4Vw==
+X-Received: by 2002:a05:600c:5107:b0:3fe:21a6:a18 with SMTP id o7-20020a05600c510700b003fe21a60a18mr6601720wms.3.1695665073865;
         Mon, 25 Sep 2023 11:04:33 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j19-20020a633c13000000b00565009a97f0sm8168514pga.17.2023.09.25.11.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from ?IPV6:2a01:e0a:999:a3a0:9f43:3ca4:162c:d540? ([2a01:e0a:999:a3a0:9f43:3ca4:162c:d540])
+        by smtp.gmail.com with ESMTPSA id f2-20020a7bc8c2000000b003fefaf299b6sm1342198wml.38.2023.09.25.11.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 25 Sep 2023 11:04:33 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 11:04:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] dm crypt: replace open-coded kmemdup_nul
-Message-ID: <202309251104.2039A045E@keescook>
-References: <20230925-strncpy-drivers-md-dm-crypt-c-v1-1-eef875e4f9b2@google.com>
+Message-ID: <713f4916-00ff-4a24-82d1-72884500a2d3@rivosinc.com>
+Date:   Mon, 25 Sep 2023 20:04:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925-strncpy-drivers-md-dm-crypt-c-v1-1-eef875e4f9b2@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
+ alignment
+Content-Language: en-US
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230914131102.179100-1-cleger@rivosinc.com>
+ <20230914131700.0ba3ee80@gandalf.local.home>
+ <20230914132956.569dad45@gandalf.local.home>
+ <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
+ <20230922192231.GA1828-beaub@linux.microsoft.com>
+ <839c611d-6f13-403b-b37e-a69b589658cc@rivosinc.com>
+ <20230925160459.GB2615-beaub@linux.microsoft.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230925160459.GB2615-beaub@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 06:35:54AM +0000, Justin Stitt wrote:
-> kzalloc() followed by strncpy() on an expected NUL-terminated string is
-> just kmemdup_nul(). Let's simplify this code (while also dropping a
-> deprecated strncpy() call [1]).
+
+
+On 25/09/2023 18:04, Beau Belgrave wrote:
+> On Mon, Sep 25, 2023 at 09:53:16AM +0200, Clément Léger wrote:
+>>
+>>
+>> On 22/09/2023 21:22, Beau Belgrave wrote:
+>>> On Tue, Sep 19, 2023 at 02:59:12PM +0200, Clément Léger wrote:
+>>>>
+>>>>
+>>>> On 14/09/2023 19:29, Steven Rostedt wrote:
+>>>>> On Thu, 14 Sep 2023 13:17:00 -0400
+>>>>> Steven Rostedt <rostedt@goodmis.org> wrote:
+>>>>>
+>>>>>> Now lets look at big endian layout:
+>>>>>>
+>>>>>>  uaddr = 0xbeef0004
+>>>>>>  enabler = 1;
+>>>>>>
+>>>>>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>>>>>                                     ^
+>>>>>>                                     addr: 0xbeef0004
+>>>>>>
+>>>>>> 				(enabler is set )
+>>>>>>
+>>>>>> 	bitoffset = uaddr & (sizeof(unsigned long) - 1); bitoffset = 4
+>>>>>> 	bit_offset *= 8;				 bitoffset = 32
+>>>>>> 	uaddr &= ~(sizeof(unsigned long) - 1);		 uaddr = 0xbeef0000
+>>>>>>
+>>>>>> 	ptr = kaddr + (uaddr & ~PAGE_MASK);
+>>>>>>
+>>>>>> 	clear_bit(1 + 32, ptr);
+>>>>>>
+>>>>>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>>>>>                                   ^
+>>>>>> 				bit 33 of 0xbeef0000
+>>>>>>
+>>>>>> I don't think that's what you expected!
+>>>>>
+>>>>> I believe the above can be fixed with:
+>>>>>
+>>>>> 	bit_offset = uaddr & (sizeof(unsigned long) - 1);
+>>>>> 	if (bit_offset) {
+>>>>> #ifdef CONFIG_CPU_BIG_ENDIAN
+>>>>> 		bit_offest = 0;
+>>>>> #else
+>>>>> 		bit_offset *= BITS_PER_BYTE;
+>>>>> #endif
+>>>>> 		uaddr &= ~(sizeof(unsigned long) - 1);
+>>>>> 	}
+>>>>>
+>>>>> -- Steve
+>>>>
+>>>>
+>>>> Actually, after looking more in depth at that, it seems like there are
+>>>> actually 2 problems that can happen.
+>>>>
+>>>> First one is atomic access misalignment due to enable_size == 4 and
+>>>> uaddr not being aligned on a (long) boundary on 64 bits architecture.
+>>>> This can generate misaligned exceptions on various architectures. This
+>>>> can be fixed in a more general way according to Masami snippet.
+>>>>
+>>>> Second one that I can see is on 64 bits, big endian architectures with
+>>>> enable_size == 4. In that case, the bit provided by the userspace won't
+>>>> be correctly set since this code kind of assume that the atomic are done
+>>>> on 32bits value. Since the kernel assume long sized atomic operation, on
+>>>> big endian 64 bits architecture, the updated bit will actually be in the
+>>>> next 32 bits word.
+>>>>
+>>>> Can someone confirm my understanding ?
+>>>>
+>>>
+>>> I have a ppc 64bit BE VM I've been validating this on. If we do the
+>>> shifting within user_events (vs a generic set_bit_aligned approach)
+>>> 64bit BE does not need additional bit manipulation. However, if we were
+>>> to blindly pass the address and bit as is to set_bit_aligned() it
+>>> assumes the bit number is for a long, not a 32 bit word. So for that
+>>> approach we would need to offset the bit in the unaligned case.
+>>>
+>>> Here's a patch I have that I've validated on ppc64 BE, aarch64 LE, and
+>>> x86_64 LE. I personally feel more comfortable with this approach than
+>>> the generic set_bit_aligned() one.
+>>>
+>>> Thanks,
+>>> -Beau
+>>>
+>>> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+>>> index e3f2b8d72e01..ae854374d0b7 100644
+>>> --- a/kernel/trace/trace_events_user.c
+>>> +++ b/kernel/trace/trace_events_user.c
+>>> @@ -162,6 +162,23 @@ struct user_event_validator {
+>>>  	int			flags;
+>>>  };
+>>>  
+>>> +static inline void align_addr_bit(unsigned long *addr, int *bit)
+>>> +{
+>>> +	if (IS_ALIGNED(*addr, sizeof(long)))
+>>> +		return;
+>>> +
+>>> +	*addr = ALIGN_DOWN(*addr, sizeof(long));
+>>> +
+>>> +	/*
+>>> +	 * We only support 32 and 64 bit values. The only time we need
+>>> +	 * to align is a 32 bit value on a 64 bit kernel, which on LE
+>>> +	 * is always 32 bits, and on BE requires no change.
+>>> +	 */
+>>> +#ifdef __LITTLE_ENDIAN
+>>> +	*bit += 32;
+>>> +#endif
+>>
+>> Hi Beau, except the specific alignment that is basically what I ended up
+>> with for the BE 64bit case (ie just bit += 32). Regarding the generic
+>> alignment, depends on what the maintainers wishes (generic of user_event
+>> specific). I also feel like this shoulmd be handle specifically for
+>> user_events which uses set_bit in some non standard way. Any suggestion ?
+>>
 > 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Looking at this deeper, user_events needs to track some of this
+> alignment requirements within each enabler. This is needed because when
+> enablers are disabled/removed they do not have the actual size. The size
+> is needed to know if we need to update the bits, etc. (IE: If originally
+> a 32-bit value was used and it's aligned and it's on BE, it needs the
+> bits shifted.)
+> 
+> My final version that I played around with looked like this for just the
+> alignment requirements:
+> +static inline void align_addr_bit(unsigned long *addr, int *bit,
+> +                                 unsigned long *flags)
+> +{
+> +       if (IS_ALIGNED(*addr, sizeof(long))) {
+> +#ifdef __BIG_ENDIAN
+> +               if (test_bit(ENABLE_VAL_32_BIT, flags))
+> +                       *bit += 32;
+> +#endif
+> +               return;
+> +       }
+> +
+> +       *addr = ALIGN_DOWN(*addr, sizeof(long));
+> +
+> +       /*
+> +        * We only support 32 and 64 bit values. The only time we need
+> +        * to align is a 32 bit value on a 64 bit kernel, which on LE
+> +        * is always 32 bits, and on BE requires no change.
+> +        */
+> +#ifdef __LITTLE_ENDIAN
+> +       *bit += 32;
+> +#endif
+> +}
+> 
+> Below is the full patch, which is currently appearing to pass everything
+> on BE (Please note, the abi_test in selftests needs fixes that I plan to
+> push out. I'd like to get Steven to take those changes along with yours
+> together from tracing to ensure we can test BE with these changes
+> properly).
+> 
+> As you'll see, it requires a bit more work than just a generic unaligned
+> solution due to the bits having to move for 32-bit on BE and the
+> tracking requirement on when to do so during delete/clear.
 
-This looks correct to me. Thanks!
+I actually had the same kind of handling (using a size field rather than
+a flag though). However, the generic set_bit/clear bit requires a
+different handling of the 32 bits on BE 64 bits which does not sounds
+quite right, ie unconditionally add 32 bits to fixup the offset which is
+ implicit in case you are not aligned with your code (ie shifting the
+address actually give the correct bit on BE 64 bits).
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Since you already wrote the code, I think we can proceed with your
+version as I actually thinks its more clearer to understand.
 
--- 
-Kees Cook
+Thanks,
+
+Clément
+
+> 
+> Thanks,
+> -Beau
+> 
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index 6f046650e527..b05db15eaea6 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -127,8 +127,11 @@ struct user_event_enabler {
+>  /* Bit 7 is for freeing status of enablement */
+>  #define ENABLE_VAL_FREEING_BIT 7
+>  
+> +/* Bit 8 is for marking 32-bit on 64-bit */
+> +#define ENABLE_VAL_32_BIT 8
+> +
+>  /* Only duplicate the bit value */
+> -#define ENABLE_VAL_DUP_MASK ENABLE_VAL_BIT_MASK
+> +#define ENABLE_VAL_DUP_MASK (ENABLE_VAL_BIT_MASK | 1 << ENABLE_VAL_32_BIT)
+>  
+>  #define ENABLE_BITOPS(e) (&(e)->values)
+>  
+> @@ -174,6 +177,29 @@ struct user_event_validator {
+>  	int			flags;
+>  };
+>  
+> +static inline void align_addr_bit(unsigned long *addr, int *bit,
+> +				  unsigned long *flags)
+> +{
+> +	if (IS_ALIGNED(*addr, sizeof(long))) {
+> +#ifdef __BIG_ENDIAN
+> +		if (test_bit(ENABLE_VAL_32_BIT, flags))
+> +			*bit += 32;
+> +#endif
+> +		return;
+> +	}
+> +
+> +	*addr = ALIGN_DOWN(*addr, sizeof(long));
+> +
+> +	/*
+> +	 * We only support 32 and 64 bit values. The only time we need
+> +	 * to align is a 32 bit value on a 64 bit kernel, which on LE
+> +	 * is always 32 bits, and on BE requires no change.
+> +	 */
+> +#ifdef __LITTLE_ENDIAN
+> +	*bit += 32;
+> +#endif
+> +}
+> +
+>  typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
+>  				   void *tpdata, bool *faulted);
+>  
+> @@ -482,6 +508,7 @@ static int user_event_enabler_write(struct user_event_mm *mm,
+>  	unsigned long *ptr;
+>  	struct page *page;
+>  	void *kaddr;
+> +	int bit = ENABLE_BIT(enabler);
+>  	int ret;
+>  
+>  	lockdep_assert_held(&event_mutex);
+> @@ -497,6 +524,8 @@ static int user_event_enabler_write(struct user_event_mm *mm,
+>  		     test_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler))))
+>  		return -EBUSY;
+>  
+> +	align_addr_bit(&uaddr, &bit, ENABLE_BITOPS(enabler));
+> +
+>  	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
+>  				    &page, NULL);
+>  
+> @@ -515,9 +544,9 @@ static int user_event_enabler_write(struct user_event_mm *mm,
+>  
+>  	/* Update bit atomically, user tracers must be atomic as well */
+>  	if (enabler->event && enabler->event->status)
+> -		set_bit(ENABLE_BIT(enabler), ptr);
+> +		set_bit(bit, ptr);
+>  	else
+> -		clear_bit(ENABLE_BIT(enabler), ptr);
+> +		clear_bit(bit, ptr);
+>  
+>  	kunmap_local(kaddr);
+>  	unpin_user_pages_dirty_lock(&page, 1, true);
+> @@ -849,6 +878,12 @@ static struct user_event_enabler
+>  	enabler->event = user;
+>  	enabler->addr = uaddr;
+>  	enabler->values = reg->enable_bit;
+> +
+> +#if BITS_PER_LONG >= 64
+> +	if (reg->enable_size == 4)
+> +		set_bit(ENABLE_VAL_32_BIT, ENABLE_BITOPS(enabler));
+> +#endif
+> +
+>  retry:
+>  	/* Prevents state changes from racing with new enablers */
+>  	mutex_lock(&event_mutex);
+> @@ -2377,7 +2412,8 @@ static long user_unreg_get(struct user_unreg __user *ureg,
+>  }
+>  
+>  static int user_event_mm_clear_bit(struct user_event_mm *user_mm,
+> -				   unsigned long uaddr, unsigned char bit)
+> +				   unsigned long uaddr, unsigned char bit,
+> +				   unsigned long flags)
+>  {
+>  	struct user_event_enabler enabler;
+>  	int result;
+> @@ -2385,7 +2421,7 @@ static int user_event_mm_clear_bit(struct user_event_mm *user_mm,
+>  
+>  	memset(&enabler, 0, sizeof(enabler));
+>  	enabler.addr = uaddr;
+> -	enabler.values = bit;
+> +	enabler.values = bit | flags;
+>  retry:
+>  	/* Prevents state changes from racing with new enablers */
+>  	mutex_lock(&event_mutex);
+> @@ -2415,6 +2451,7 @@ static long user_events_ioctl_unreg(unsigned long uarg)
+>  	struct user_event_mm *mm = current->user_event_mm;
+>  	struct user_event_enabler *enabler, *next;
+>  	struct user_unreg reg;
+> +	unsigned long flags;
+>  	long ret;
+>  
+>  	ret = user_unreg_get(ureg, &reg);
+> @@ -2425,6 +2462,7 @@ static long user_events_ioctl_unreg(unsigned long uarg)
+>  	if (!mm)
+>  		return -ENOENT;
+>  
+> +	flags = 0;
+>  	ret = -ENOENT;
+>  
+>  	/*
+> @@ -2441,6 +2479,10 @@ static long user_events_ioctl_unreg(unsigned long uarg)
+>  		    ENABLE_BIT(enabler) == reg.disable_bit) {
+>  			set_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler));
+>  
+> +			/* We must keep compat flags for the clear */
+> +			if (test_bit(ENABLE_VAL_32_BIT, ENABLE_BITOPS(enabler)))
+> +				flags |= 1 << ENABLE_VAL_32_BIT;
+> +
+>  			if (!test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler)))
+>  				user_event_enabler_destroy(enabler, true);
+>  
+> @@ -2454,7 +2496,7 @@ static long user_events_ioctl_unreg(unsigned long uarg)
+>  	/* Ensure bit is now cleared for user, regardless of event status */
+>  	if (!ret)
+>  		ret = user_event_mm_clear_bit(mm, reg.disable_addr,
+> -					      reg.disable_bit);
+> +					      reg.disable_bit, flags);
+>  
+>  	return ret;
+>  }
