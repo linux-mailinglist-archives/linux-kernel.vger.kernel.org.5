@@ -2,117 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB7B7AD8E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFF77AD8E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbjIYNTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S231964AbjIYNT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231747AbjIYNTo (ORCPT
+        with ESMTP id S231889AbjIYNTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:19:44 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAA610A;
-        Mon, 25 Sep 2023 06:19:38 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38PDJRiN042525;
-        Mon, 25 Sep 2023 08:19:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695647967;
-        bh=rEHOTTuQUm/6EqbiYbx4/pn0I3WBPULrrSYiunXnvr4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=oLKVabkoBqDwaipdlLM00NlK+Z53VHKprZxuFxDTQsHakCJVEdtbZpUxRu7owMNwV
-         YTgIMrWKdsp0vysKOlyG30rH1RnW0OnHWu4MQv08Ch6+kEgJs9klJ+b/FY/duHanQd
-         R7gLPJaSojyEGOENxuhiwQ37Yd4Vy5bXZ/Hy+wLQ=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38PDJRNq017726
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Sep 2023 08:19:27 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Sep 2023 08:19:26 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Sep 2023 08:19:27 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38PDJRx8065676;
-        Mon, 25 Sep 2023 08:19:27 -0500
-Date:   Mon, 25 Sep 2023 08:19:27 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Keerthy <j-keerthy@ti.com>
-CC:     <robh+dt@kernel.org>, <vigneshr@ti.com>, <conor+dt@kernel.org>,
-        <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 5/7] arm64: dts: ti: k3-j784s4-mcu: Add the main
- domain watchdog instances
-Message-ID: <20230925131927.f7ff2u2ip3jxejyg@dreadful>
-References: <20230925081332.15906-1-j-keerthy@ti.com>
- <20230925081332.15906-6-j-keerthy@ti.com>
+        Mon, 25 Sep 2023 09:19:51 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D5A127
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:19:44 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59c0b9ad491so75549457b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695647983; x=1696252783; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NxcsoZ0xLkSaR9KvbRz9tqLOvey6ZsTOWgCgXDOLYzQ=;
+        b=NiRw72CF44qD5RVEI4kmkzdIE9ee+3ZrxznvKmTjcstj/djsgS2ZSul6Yf4cXCFtEi
+         V38ePqG50wqqK2umzgznK5f/1istebfAEo6AevT+9fgdfCbAd0JQlfJ9CC7PrZ92DHJQ
+         RDsSMqW01Cbo2ie0m+fEqgaypR9cqlMYiZz+1VoiJk6/EJV9o+vlYWTMz3CUurcNUJFr
+         LjIEhDTx6ad6//cW4bC8opbrhvJZaY60dZObGU/3bZ8B1WGPt+Odk8z9w4qS+KUhvse+
+         rMlCwNMvIxM+44YiWQo6fXX0YR2WEzLuYuZox4PJidi/JVOkMj0ntUiyHTdbtyVnGZcJ
+         zkdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695647983; x=1696252783;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NxcsoZ0xLkSaR9KvbRz9tqLOvey6ZsTOWgCgXDOLYzQ=;
+        b=cpQ2JPJmjRQa7BgoWciMtlYrdqndk840+GeWc2hYbOeWrpyP9Mo5FRHWJgZr3XCapA
+         q7N58bQSqn1Uwsqj5LlhDKqpHcDkqondtZdxMDESbDca0zlDSUGycIgm9dRwmZwS06A8
+         XuyDcqh9UGJ2c3bBcy4m3JO+eceeVumrWMRI89o5mvJX4O4cp8RRjEBguYUnqtsOlLWU
+         QFM5M0UE0bQPvpXygUIWWyHafqLYJ9txrIOddmnaaxduZlGPsid2FuqUvOl6/M9eYeuc
+         awLobUvXV3bgDaw8igU5YvFT/Dndzf0wmrnl1C/UKdNW0J0WHqG6fGDeow6WodKJuu/Y
+         UUVA==
+X-Gm-Message-State: AOJu0YxKQw1no4BRgk+SEKeZ71ROp7tuUp274W7zgFNGxfJ4bH/sQQ7r
+        Ij8g85u0uPkhq9QI/dIwA7tu3h0Z6YJsFjwfx+jlCA==
+X-Google-Smtp-Source: AGHT+IEp1iHR121kzotgjzMhLMq2qfNvPKxxyO5GLYRSemVkpZ14ry7yATEh5Q8hfy1iqDe+/zxbrW+97FmCXF1eaG8=
+X-Received: by 2002:a81:4e12:0:b0:5a1:d352:9fe1 with SMTP id
+ c18-20020a814e12000000b005a1d3529fe1mr115994ywb.42.1695647983132; Mon, 25 Sep
+ 2023 06:19:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230925081332.15906-6-j-keerthy@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918123355.262115-1-biju.das.jz@bp.renesas.com>
+ <20230918123355.262115-3-biju.das.jz@bp.renesas.com> <CACRpkdYYKAFLvpKH0ih5qZVbv7L3auny5WWx+qKa_HD1o-vsog@mail.gmail.com>
+ <OS0PR01MB5922A256D2C57963ADEBCEDB86F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <CACRpkdbM+XNjvxBZQFzZCsU+3V7PucBhbi_WjVtnGpakFQasAw@mail.gmail.com> <OS0PR01MB592202B4523DDC18B3E4511D86F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+In-Reply-To: <OS0PR01MB592202B4523DDC18B3E4511D86F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 Sep 2023 15:19:32 +0200
+Message-ID: <CACRpkdYXXWVemZ0TBKN46rTTO4yChLjfsKioNm-HSZrNKQZDZw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: renesas: rzg2l: Enable noise filter for GPIO
+ interrupt input
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        Biju Das <biju.das.au@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:43-20230925, Keerthy wrote:
-> There are totally 2 instances of watchdog module in MCU domain.
-> 
-> Signed-off-by: Keerthy <j-keerthy@ti.com>
-> ---
->  .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     | 20 +++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-> index a7b5c4cb7d3e..0b7cc277a567 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-> @@ -714,4 +714,24 @@
->  		ti,esm-pins = <63>;
->  		bootph-pre-ram;
->  	};
-> +
-> +	mcu_watchdog0: watchdog@40600000 {
-> +		compatible = "ti,j7-rti-wdt";
-> +		reg = <0x00 0x40600000 0x00 0x100>;
-> +		clocks = <&k3_clks 367 1>;
-> +		power-domains = <&k3_pds 367 TI_SCI_PD_EXCLUSIVE>;
-> +		assigned-clocks = <&k3_clks 367 0>;
-> +		assigned-clock-parents = <&k3_clks 367 4>;
-> +		status = "disabled";
-> +	};
-> +
-> +	mcu_watchdog1: watchdog@40610000 {
-> +		compatible = "ti,j7-rti-wdt";
-> +		reg = <0x00 0x40610000 0x00 0x100>;
-> +		clocks = <&k3_clks 368 1>;
-> +		power-domains = <&k3_pds 368 TI_SCI_PD_EXCLUSIVE>;
-> +		assigned-clocks = <&k3_clks 368 0>;
-> +		assigned-clock-parents = <&k3_clks 368 4>;
-> +		status = "disabled";
+On Wed, Sep 20, 2023 at 4:06=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.co=
+m> wrote:
 
-Explain in commit message as to why these are disabled. I believe it is
-because this RTI instances are tightly coupled to the micro
-controllers. but that information needs to be documented.
-> +	};
->  };
-> -- 
-> 2.17.1
-> 
+> > > 2) Digital Noise Filter Clock Selection Register (FILCLKSEL):
+> > >
+> > > The FILCLKSEL register selects the divided clock to be input to digit=
+al
+> > noise filters.
+> > >
+> > > 00b: Not divided (initial value)
+> > > 01b: Divided by 9000 (41.666 ns x 9000 =3D 375,000 ns)
+> > > 10b: Divided by 18000 (41.666 ns x 18000 =3D 750,000 ns)
+> > > 11b: Divided by 36000 (41.666 ns x 36000 =3D 1,500,000 ns)
+> > > Note: This value is the value when the external clock is 24MHz.
+> > >
+> > > Q1) What is the recommended way to associate the above values with
+> > >     PIN_CONFIG_INPUT_DEBOUNCE?
+> > >
+> > > Eg: I need to configure filter on, 8 stage filter , a divisor of 1800=
+0
+> > for a mechanical button bounce noise.
+> >
+> > As per the generic pin config and DT bindings:
+> >
+> >  * @PIN_CONFIG_INPUT_DEBOUNCE: this will configure the pin to debounce
+> > mode,
+> >  *      which means it will wait for signals to settle when reading inp=
+uts.
+> > The
+> >  *      argument gives the debounce time in usecs. Setting the
+> >  *      argument to zero turns debouncing off.
+> >
+> >   input-debounce:
+> >     $ref: /schemas/types.yaml#/definitions/uint32
+> >     description: Takes the debounce time in usec as argument or 0 to
+> > disable
+> >       debouncing
+> >
+> > The recommended way is to pass the desired clock cycle in microseconds =
+as
+> > the argument to the pin config.
+>
+> How to add number of FF stages info on top of this clock cycle?
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+You don't, look below.
+
+> Use some encoding in DT and decode it in driver??
+
+No you put in the desired delay in microseconds, the  you use
+the table that you already provided to look up the appropriate
+divisor:
+
+> 00b: Not divided (initial value)
+> 01b: Divided by 9000 (41.666 ns x 9000 =3D 375,000 ns)
+> 10b: Divided by 18000 (41.666 ns x 18000 =3D 750,000 ns)
+> 11b: Divided by 36000 (41.666 ns x 36000 =3D 1,500,000 ns)
+
+For 0, 375, 750 and 1500 us...
+
+> Note: This value is the value when the external clock is 24MHz.
+
+And this can be provided from the clock framework, and then
+you need some more elaborate math to calculate the right
+divisor from the parameter in the device tree.
+
+Yours,
+Linus Walleij
