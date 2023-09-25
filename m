@@ -2,158 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98247ACE2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06DB7ACE30
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbjIYCfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
+        id S231772AbjIYCgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIYCfl (ORCPT
+        with ESMTP id S230194AbjIYCga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:35:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E289D3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695609290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANXg/1DJ0/VAI2GEzIk6D4Il3nqQ5iQ0RRx80UDWkrQ=;
-        b=CpJ5c+r/7Q+M62xlaWzk6k1KDKWCDS5GwDUyz4QgZoLROyfS12EIfQv9GY9ffNFuK57OVu
-        CqM0U/oMOks1BZvshthMhvUh+lmm+87E4KLPE6Kv9HBbBrI9uv5tRbfGh7xJmhWzjazPZv
-        M1bihj1Pplj6/b7A55HsBP5ZDyURaMc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-265-H1gpPwTHOImLDJI_px70dw-1; Sun, 24 Sep 2023 22:34:47 -0400
-X-MC-Unique: H1gpPwTHOImLDJI_px70dw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C2035811E7B;
-        Mon, 25 Sep 2023 02:34:46 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0152A492C37;
-        Mon, 25 Sep 2023 02:34:45 +0000 (UTC)
-Date:   Mon, 25 Sep 2023 10:34:42 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Eric DeVolder <eric.devolder@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        vschneid@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
-        sourabhjain@linux.ibm.com, konrad.wilk@oracle.com,
-        boris.ostrovsky@oracle.com
-Subject: Re: [PATCH] Crash: add lock to serialize crash hotplug handling
-Message-ID: <ZRDxwqY669XsDsMk@MiWiFi-R3L-srv>
-References: <20230922235446.260966-1-bhe@redhat.com>
- <8515c858-4be8-fbd6-7868-c8bfb5492f83@oracle.com>
+        Sun, 24 Sep 2023 22:36:30 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E92FC2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:36:02 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c61acd1285so4888155ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1695609361; x=1696214161; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dzmBYOC+iwFysYemk8kdLeE2Dt2aHmz4Un9SzH6Y5Wg=;
+        b=bEPsr68MnOBQdj+Rj5S5E9z+oTlmdfS3vCrMIPE2MugjG3iq6EtHs+RL3S0noErXHF
+         Gtf6ucm30U2aeRbb59OuRWRh6Bqan4lbe3206VlgZlpDgP/HJH86yZCc3XGYQGIv9S20
+         BuQEGUd+s71KazqxFCeAyiGAqM++LRocDdekkc5SenypHyLqCVKDopwscI5pBBbqG+bD
+         Sql6HNSekdhWUxlJD/v6B5ArwDocOSa5qt+GqxFtO3/x8lkxrsWN+nNAvR55N7uckpG7
+         9AVm02ydI4EtbuJkwQeZ8d2Z2GvneG2Ic5lUZ74HDzAvGnNy5SON8QvcUwiqynXiWh49
+         AFSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695609361; x=1696214161;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dzmBYOC+iwFysYemk8kdLeE2Dt2aHmz4Un9SzH6Y5Wg=;
+        b=ZnjB5htCChRN8F71KmCu0M1Se7g9eyfF0CimmWUbkVTnsO/H24BQjBC7tCr2SYO83P
+         u2uM8/671WGbp5OQV94HB6lVKB9jlCDwPNo/d29aXIcHXLMcxn2EcnX3+mN7pMCWKIgQ
+         vkUL3vfR3xkcoqHvfe9VUXv6PIYMgNdzXafIAuOFSS6GrpT9QFTb5kCBmqL5uc791Orm
+         COaZ66lNveqhU0wP5HPj16Bs7AXtfHbabHBhblgFrOZOMo9MgYVqvWeOiV37kIfHsw5P
+         6H8SEbw5bhi6NENvWkTKBNjd8R9QOv3NJWPSZhoo161NSWzhr2oXWfH2h3fqoImYSe+0
+         vNEw==
+X-Gm-Message-State: AOJu0YwgfKB406L3V1kIBzuDrjPBPMOno/pQC/rUyCLDPwRKU/lnDvlX
+        ZdjaHN+irMU6wi5Q+Xjk6qtgIA==
+X-Google-Smtp-Source: AGHT+IGI/P4ONGXx2/V7iBF+Z7EgcwNg8/ly8pcWV1DYWBNVGQ2Hpvcgq3ygJUmT517X+1OMzu2zig==
+X-Received: by 2002:a17:902:bd97:b0:1bb:9506:d47c with SMTP id q23-20020a170902bd9700b001bb9506d47cmr3693386pls.19.1695609361476;
+        Sun, 24 Sep 2023 19:36:01 -0700 (PDT)
+Received: from C02FG34NMD6R.bytedance.net ([203.208.189.6])
+        by smtp.gmail.com with ESMTPSA id u15-20020a170902e5cf00b001a5fccab02dsm7516445plf.177.2023.09.24.19.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 19:36:00 -0700 (PDT)
+From:   Albert Huang <huangjie.albert@bytedance.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>
+Cc:     Albert Huang <huangjie.albert@bytedance.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net/smc: add support for netdevice in containers.
+Date:   Mon, 25 Sep 2023 10:35:45 +0800
+Message-Id: <20230925023546.9964-1-huangjie.albert@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8515c858-4be8-fbd6-7868-c8bfb5492f83@oracle.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/23/23 at 07:10am, Eric DeVolder wrote:
-> 
-> 
-> On 9/22/23 18:54, Baoquan He wrote:
-> > Eric reported that handling corresponding crash hotplug event can be
-> > failed easily when many momery hotplug event are notified in a short period.
-> > They failed because failing to take __kexec_lock.
-> > 
-> > =======
-> > [   78.714569] Fallback order for Node 0: 0
-> > [   78.714575] Built 1 zonelists, mobility grouping on.  Total pages: 1817886
-> > [   78.717133] Policy zone: Normal
-> > [   78.724423] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
-> > [   78.727207] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
-> > [   80.056643] PEFILE: Unsigned PE binary
-> > =======
-> > 
-> > The memory hotplug events are notified very quickly and very many,
-> > while the handling of crash hotplug is much slower relatively. So the
-> > atomic variable __kexec_lock and kexec_trylock() can't guarantee the
-> > serialization of crash hotplug handling.
-> > 
-> > Here, add a new mutex lock __crash_hotplug_lock to serialize crash
-> > hotplug handling specifically. This doesn't impact the usage of
-> > __kexec_lock.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > ---
-> >   kernel/crash_core.c     |  3 +++
-> >   kernel/kexec_core.c     |  1 +
-> >   kernel/kexec_internal.h | 11 +++++++++++
-> >   3 files changed, 15 insertions(+)
-> > 
-> > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> > index 03a7932cde0a..e8851724a530 100644
-> > --- a/kernel/crash_core.c
-> > +++ b/kernel/crash_core.c
-> > @@ -783,9 +783,11 @@ static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
-> >   {
-> >   	struct kimage *image;
-> > +	crash_hotplug_lock();
-> >   	/* Obtain lock while changing crash information */
-> >   	if (!kexec_trylock()) {
-> >   		pr_info("kexec_trylock() failed, elfcorehdr may be inaccurate\n");
-> > +		crash_hotplug_unlock();
-> >   		return;
-> >   	}
-> > @@ -852,6 +854,7 @@ static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
-> >   out:
-> >   	/* Release lock now that update complete */
-> >   	kexec_unlock();
-> > +	crash_hotplug_unlock();
-> >   }
-> 
-> The crash_check_update_elfcorehdr() also has kexec_trylock() and needs similar treatment.
-> 
-> >   static int crash_memhp_notifier(struct notifier_block *nb, unsigned long val, void *v)
-> > diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> > index 9dc728982d79..b95a73f35d9a 100644
-> > --- a/kernel/kexec_core.c
-> > +++ b/kernel/kexec_core.c
-> > @@ -48,6 +48,7 @@
-> >   #include "kexec_internal.h"
-> >   atomic_t __kexec_lock = ATOMIC_INIT(0);
-> > +DEFINE_MUTEX(__crash_hotplug_lock);
-> >   /* Flag to indicate we are going to kexec a new kernel */
-> >   bool kexec_in_progress = false;
-> > diff --git a/kernel/kexec_internal.h b/kernel/kexec_internal.h
-> > index 74da1409cd14..1db31625ef20 100644
-> > --- a/kernel/kexec_internal.h
-> > +++ b/kernel/kexec_internal.h
-> > @@ -28,6 +28,17 @@ static inline void kexec_unlock(void)
-> >   	atomic_set_release(&__kexec_lock, 0);
-> >   }
-> > +/*
-> > + * Different than kexec/kdump loading/unloading/crash or kexec jumping/shrinking
-> > + * which usually rarely happen, there will be many crash hotplug events notified
-> > + * during one short period, e.g one memory board is hot added and memory regions
-> > + * are online. So mutex lock  __crash_hotplug_lock is used to serialize the crash
-> > + * hotplug handling specificially.
-> > + * */
-> > +extern struct mutex __crash_hotplug_lock;
-> > +#define crash_hotplug_lock() mutex_lock(&__crash_hotplug_lock)
-> > +#define crash_hotplug_unlock() mutex_unlock(&__crash_hotplug_lock)
-> > +
-> >   #ifdef CONFIG_KEXEC_FILE
-> >   #include <linux/purgatory.h>
-> >   void kimage_file_post_load_cleanup(struct kimage *image);
-> 
-> The new content for kexec_internal.h and kexec_core.c could/should probably be
-> moved into crash_core.c, within the CONFIG_CRASH_HOTPLUG?
+If the netdevice is within a container and communicates externally
+through network technologies like VXLAN, we won't be able to find
+routing information in the init_net namespace. To address this issue,
+we need to add a struct net parameter to the smc_ib_find_route function.
+This allow us to locate the routing information within the corresponding
+net namespace, ensuring the correct completion of the SMC CLC interaction.
 
-That makes sense, I will spin v2 and post.
+Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+---
+ net/smc/af_smc.c | 3 ++-
+ net/smc/smc_ib.c | 7 ++++---
+ net/smc/smc_ib.h | 2 +-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index bacdd971615e..7a874da90c7f 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -1201,6 +1201,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+ 		(struct smc_clc_msg_accept_confirm_v2 *)aclc;
+ 	struct smc_clc_first_contact_ext *fce =
+ 		smc_get_clc_first_contact_ext(clc_v2, false);
++	struct net *net = sock_net(&smc->sk);
+ 	int rc;
+ 
+ 	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
+@@ -1210,7 +1211,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+ 		memcpy(ini->smcrv2.nexthop_mac, &aclc->r0.lcl.mac, ETH_ALEN);
+ 		ini->smcrv2.uses_gateway = false;
+ 	} else {
+-		if (smc_ib_find_route(smc->clcsock->sk->sk_rcv_saddr,
++		if (smc_ib_find_route(net, smc->clcsock->sk->sk_rcv_saddr,
+ 				      smc_ib_gid_to_ipv4(aclc->r0.lcl.gid),
+ 				      ini->smcrv2.nexthop_mac,
+ 				      &ini->smcrv2.uses_gateway))
+diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+index 9b66d6aeeb1a..89981dbe46c9 100644
+--- a/net/smc/smc_ib.c
++++ b/net/smc/smc_ib.c
+@@ -193,7 +193,7 @@ bool smc_ib_port_active(struct smc_ib_device *smcibdev, u8 ibport)
+ 	return smcibdev->pattr[ibport - 1].state == IB_PORT_ACTIVE;
+ }
+ 
+-int smc_ib_find_route(__be32 saddr, __be32 daddr,
++int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
+ 		      u8 nexthop_mac[], u8 *uses_gateway)
+ {
+ 	struct neighbour *neigh = NULL;
+@@ -205,7 +205,7 @@ int smc_ib_find_route(__be32 saddr, __be32 daddr,
+ 
+ 	if (daddr == cpu_to_be32(INADDR_NONE))
+ 		goto out;
+-	rt = ip_route_output_flow(&init_net, &fl4, NULL);
++	rt = ip_route_output_flow(net, &fl4, NULL);
+ 	if (IS_ERR(rt))
+ 		goto out;
+ 	if (rt->rt_uses_gateway && rt->rt_gw_family != AF_INET)
+@@ -235,6 +235,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
+ 	if (smcrv2 && attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP &&
+ 	    smc_ib_gid_to_ipv4((u8 *)&attr->gid) != cpu_to_be32(INADDR_NONE)) {
+ 		struct in_device *in_dev = __in_dev_get_rcu(ndev);
++		struct net *net = dev_net(ndev);
+ 		const struct in_ifaddr *ifa;
+ 		bool subnet_match = false;
+ 
+@@ -248,7 +249,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
+ 		}
+ 		if (!subnet_match)
+ 			goto out;
+-		if (smcrv2->daddr && smc_ib_find_route(smcrv2->saddr,
++		if (smcrv2->daddr && smc_ib_find_route(net, smcrv2->saddr,
+ 						       smcrv2->daddr,
+ 						       smcrv2->nexthop_mac,
+ 						       &smcrv2->uses_gateway))
+diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
+index 4df5f8c8a0a1..ef8ac2b7546d 100644
+--- a/net/smc/smc_ib.h
++++ b/net/smc/smc_ib.h
+@@ -112,7 +112,7 @@ void smc_ib_sync_sg_for_device(struct smc_link *lnk,
+ int smc_ib_determine_gid(struct smc_ib_device *smcibdev, u8 ibport,
+ 			 unsigned short vlan_id, u8 gid[], u8 *sgid_index,
+ 			 struct smc_init_info_smcrv2 *smcrv2);
+-int smc_ib_find_route(__be32 saddr, __be32 daddr,
++int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
+ 		      u8 nexthop_mac[], u8 *uses_gateway);
+ bool smc_ib_is_valid_local_systemid(void);
+ int smcr_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
+-- 
+2.37.1 (Apple Git-137.1)
 
