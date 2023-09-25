@@ -2,158 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4437AD38F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA4F7AD39A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbjIYIkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
+        id S232997AbjIYImB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbjIYIki (ORCPT
+        with ESMTP id S232960AbjIYIl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:40:38 -0400
-Received: from forwardcorp1a.mail.yandex.net (forwardcorp1a.mail.yandex.net [178.154.239.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661ADFC
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:40:30 -0700 (PDT)
-Received: from mail-nwsmtp-smtp-corp-main-83.vla.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-83.vla.yp-c.yandex.net [IPv6:2a02:6b8:c18:d11:0:640:6943:0])
-        by forwardcorp1a.mail.yandex.net (Yandex) with ESMTP id 2E3725FC6F;
-        Mon, 25 Sep 2023 11:40:23 +0300 (MSK)
-Received: from valesini-ubuntu.yandex.net (unknown [2a02:6b8:0:419:ef2d:88e2:d835:7089])
-        by mail-nwsmtp-smtp-corp-main-83.vla.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id DeJIo00OrSw0-TSrfTwG7;
-        Mon, 25 Sep 2023 11:40:22 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
-        s=default; t=1695631222;
-        bh=XpSiMgstCaB6mxfNqbC2zgKSk3FX6BnjwH2YglOmEPc=;
-        h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-        b=Svadz1E5rOcwMmK9x7PKuN3gkyOGs0PPhiEmDZ7n/liwKc5SzFr6whjnZxhW+zDPu
-         hzNy0UrzRoVb2JmXlaw2T2AU6VVdb6j3dIJSgvppd3fT5mT3ZhZX1RNEpt7Dl8FVvo
-         3QVkjU0uT5DUkrqspIVNHkzFbuiNhHFASAtZR5bI=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-83.vla.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-From:   Valentine Sinitsyn <valesini@yandex-team.ru>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH v9 2/2] PCI: Implement custom llseek for sysfs resource entries
-Date:   Mon, 25 Sep 2023 11:40:13 +0300
-Message-Id: <20230925084013.309399-2-valesini@yandex-team.ru>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <2023092241-obedient-squirt-966c@gregkh>
-References: <2023092241-obedient-squirt-966c@gregkh>
+        Mon, 25 Sep 2023 04:41:59 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F83EBC;
+        Mon, 25 Sep 2023 01:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695631312; x=1727167312;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ik/VX0jzwD0mpvhQYFDRhT2i5D3eVP3vzyDvpQ2/UoM=;
+  b=mcf2al/GdRMVA524h7PChzU9J6AJIVcz77B3nvQ3cIoBOvG2MynQlcIa
+   MW4Mpeaok8PI8GPVQpZ/p5WWl+WM4GqshdtqnCrdtibykf2cuBN0fhi9t
+   f/anj+/00/clhTjFWggmkrUMGsUsIuTrQIxslnlDfEBC2OOWAEZWHdkEv
+   wwLW7JhPjsd+xseln5FeIeifhBfisM4wyex3RFcilnx12FoN633bzggzS
+   EQ5j5k1pmc2aJzC7CxsNCtiuTHM6a6qZ61tWVJx7b35osNwtV3XwpjIE8
+   gUdrQEPU3w4Eu8pkxqG5AZpNUfs5BkKHmEuhI+MLsgCfBCR/AeV2+ZNYl
+   w==;
+X-CSE-ConnectionGUID: 1TnWewJoSl6L34RRtFQyew==
+X-CSE-MsgGUID: a2jL1wM1TCiKyhjY2IueuA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="asc'?scan'208";a="173396645"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Sep 2023 01:41:51 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 25 Sep 2023 01:41:35 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 25 Sep 2023 01:41:32 -0700
+Date:   Mon, 25 Sep 2023 09:41:14 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
+CC:     Conor Dooley <conor@kernel.org>, <dmitry.torokhov@gmail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <jikos@kernel.org>,
+        <benjamin.tissoires@redhat.com>, <linux-input@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <poyuan_chang@himax.corp-partner.google.com>,
+        <hbarnor@chromium.org>,
+        "jingyliang@chromium.org" <jingyliang@chromium.org>
+Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
+ device
+Message-ID: <20230925-cod-vacancy-08dc8d88f90e@wendy>
+References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
+ <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
+ <20230919-70b2f1e368a8face73468dfa@fedora>
+ <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
+ <20230919-cc4646dbfb953bd34e05658c@fedora>
+ <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
+ <20230922-unclothed-bottom-5531329f9724@spud>
+ <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
+ <20230922-removable-footwork-f1d4d96d38dd@spud>
+ <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6yswMwPAh/4Cve9z"
+Content-Disposition: inline
+In-Reply-To: <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 636b21b50152 ("PCI: Revoke mappings like devmem"), mmappable
-sysfs entries have started to receive their f_mapping from the iomem
-pseudo filesystem, so that CONFIG_IO_STRICT_DEVMEM is honored in sysfs
-(and procfs) as well as in /dev/[k]mem.
+--6yswMwPAh/4Cve9z
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This resulted in a userspace-visible regression:
+On Mon, Sep 25, 2023 at 09:44:21AM +0800, yang tylor wrote:
+> On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@kernel.org> =
+wrote:
+> >
+> > On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
+> > > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@kernel.or=
+g> wrote:
+> > > >
+> > > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
+> > > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@kerne=
+l.org> wrote:
+> > > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
+> > > >
+> > > > > > > The behavior of "himax,boot_time_fw_upgrade" seems not stable=
+ and
+> > > > > > > should be removed. "himax,fw_in_flash", I use the kernel conf=
+ig for
+> > > > > > > user to select.
+> > > > > >
+> > > > > > That seems like a bad idea, we want to be able to build one ker=
+nel that
+> > > > > > works for all hardware at the same time.
+> > > > > >
+> > > > > I see, so I should take that back?
+> > > > > I'll explain more about it.
+> > > >
+> > > > Are there particular ICs where the firmware would always be in flas=
+h and
+> > > > others where it would never be? Or is this a choice made by the boa=
+rd or
+> > > > system designer?
+> > > >
+> > > Most cases it's about the system designer's decision. But some ICs ma=
+y be forced
+> > > to use flash because of its architecture(multiple IC inside, need to
+> > > load firmware to
+> > > multiple IC's sram by master IC). But if there is no limitation on
+> > > this part, most system
+> > > designers will prefer flashless.
+> >
+> > Forgive me if I am not understanding correctly, there are some ICs that
+> > will need to load the firmware from flash and there are some where it
+> > will be a decision made by the designer of the board. Is the flash part
+> > of the IC or is it an external flash chip?
+> >
+>=20
+> Both are possible, it depends on the IC type. For TDDI, the IC is long
+> and thin, placed on panel PCB, flash will be located at the external
+> flash chip. For the OLED TP, IC is usually placed at FPC and its flash
+> is embedded, thus the IC size is large compared to TDDI. But from the
+> driver's perspective either external flash or embedded flash, the IC
+> itself will load firmware from flash automatically when reset pin is
+> released. Only if firmware is loading from the host storage system,
+> the driver needs to operate the IC in detail.
 
-1. Open a sysfs PCI resource file (eg. /sys/bus/pci/devices/*/resource0)
-2. Use lseek(fd, 0, SEEK_END) to determine its size
 
-Expected result: a PCI region size is returned.
-Actual result: 0 is returned.
+Since there are ICs that can use the external flash or have it loaded
+=66rom the host, it sounds like you do need a property to differentiate
+between those cases.
+Is it sufficient to just set the firmware-name property for these cases?
+If the property exists, then you know you need to load firmware & what
+its name is. If it doesn't, then the firmware either isn't needed or
+will be automatically loaded from the external flash.
 
-The reason is that PCI resource files residing in sysfs use
-generic_file_llseek(), which relies on f_mapping->host inode to get the
-file size. As f_mapping is now redefined, f_mapping->host points to an
-anonymous zero-sized iomem_inode which has nothing to do with sysfs file
-in question.
+--6yswMwPAh/4Cve9z
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Implement a custom llseek method for sysfs PCI resources, which is
-almost the same as proc_bus_pci_lseek() used for procfs entries.
+-----BEGIN PGP SIGNATURE-----
 
-This makes sysfs and procfs entries consistent with regards to seeking,
-but also introduces userspace-visible changes to seeking PCI resources
-in sysfs:
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRFHmgAKCRB4tDGHoIJi
+0nMVAQD0/+RvD0e0+hNILOkQtK4zp8D2AVRzfWJAv2WJqNTsjAD/byS1txiZNPpM
+fKg2haa7MvIoQWxWAckF+Bk6qkgBkgY=
+=B6aB
+-----END PGP SIGNATURE-----
 
-- SEEK_DATA and SEEK_HOLE are no longer supported;
-- Seeking past the end of the file is prohibited while previously
-  offsets up to MAX_NON_LFS were accepted (reading from these offsets
-  was always invalid).
-
-Fixes: 636b21b50152 ("PCI: Revoke mappings like devmem")
-Cc: stable@vger.kernel.org
-Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/pci-sysfs.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index d9eede2dbc0e..97c9c62d5e3e 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -835,6 +835,19 @@ static const struct attribute_group pci_dev_config_attr_group = {
- 	.is_bin_visible = pci_dev_config_attr_is_visible,
- };
- 
-+/*
-+ * llseek operation for mmappable PCI resources.
-+ * May be left unused if the arch doesn't provide them.
-+ */
-+static __maybe_unused loff_t
-+pci_llseek_resource(struct file *filep,
-+		    struct kobject *kobj __always_unused,
-+		    struct bin_attribute *attr,
-+		    loff_t offset, int whence)
-+{
-+	return fixed_size_llseek(filep, offset, whence, attr->size);
-+}
-+
- #ifdef HAVE_PCI_LEGACY
- /**
-  * pci_read_legacy_io - read byte(s) from legacy I/O port space
-@@ -967,6 +980,8 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_io->attr.mode = 0600;
- 	b->legacy_io->read = pci_read_legacy_io;
- 	b->legacy_io->write = pci_write_legacy_io;
-+	/* See pci_create_attr() for motivation */
-+	b->legacy_io->llseek = pci_llseek_resource;
- 	b->legacy_io->mmap = pci_mmap_legacy_io;
- 	b->legacy_io->f_mapping = iomem_get_mapping;
- 	pci_adjust_legacy_attr(b, pci_mmap_io);
-@@ -981,6 +996,8 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_mem->size = 1024*1024;
- 	b->legacy_mem->attr.mode = 0600;
- 	b->legacy_mem->mmap = pci_mmap_legacy_mem;
-+	/* See pci_create_attr() for motivation */
-+	b->legacy_mem->llseek = pci_llseek_resource;
- 	b->legacy_mem->f_mapping = iomem_get_mapping;
- 	pci_adjust_legacy_attr(b, pci_mmap_mem);
- 	error = device_create_bin_file(&b->dev, b->legacy_mem);
-@@ -1199,8 +1216,15 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
- 			res_attr->mmap = pci_mmap_resource_uc;
- 		}
- 	}
--	if (res_attr->mmap)
-+	if (res_attr->mmap) {
- 		res_attr->f_mapping = iomem_get_mapping;
-+		/*
-+		 * generic_file_llseek() consults f_mapping->host to determine
-+		 * the file size. As iomem_inode knows nothing about the
-+		 * attribute, it's not going to work, so override it as well.
-+		 */
-+		res_attr->llseek = pci_llseek_resource;
-+	}
- 	res_attr->attr.name = res_attr_name;
- 	res_attr->attr.mode = 0600;
- 	res_attr->size = pci_resource_len(pdev, num);
--- 
-2.34.1
-
+--6yswMwPAh/4Cve9z--
