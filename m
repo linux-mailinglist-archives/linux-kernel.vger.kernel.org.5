@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F49F7AD92D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7C27AD930
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbjIYNbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
+        id S231948AbjIYNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbjIYNbW (ORCPT
+        with ESMTP id S231954AbjIYNcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:31:22 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D7F139
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:14 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-578a91aca06so4986241a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:14 -0700 (PDT)
+        Mon, 25 Sep 2023 09:32:06 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00AB11C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:59 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-565e54cb93aso3180170a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695648673; x=1696253473; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1695648719; x=1696253519; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZmJTmtECk3UTpEd/PcXzUGGmidlRTD2ZKXvirZ79/Ts=;
-        b=pbMALBirw4CpLrzHlD/06L7U9fHjQm4D8U7M30OdVAYBd7fBWZJFO4PvcyQyqlzdtn
-         ONp5qrZKfEmkgUIQ/tvjCHVpQXro6mpT63lfoI2KvSCn01berGNQeaMT4hMgDq/m36+t
-         fNkWEFNwB2a8wKxqA+tYPnrqt+0g9RscPaU4kRRBnaV5CN816tLBXGIGqct9eiNdhP2O
-         UVljwcj1K8NN9BwM/ZgtN2iLsH74TyEDEgGHc+2X6LkfxKYUC1iwvDYuvUgjy/B3eGMJ
-         tA9V1wCL9tUwD/MWbUAdaIrOjwm8LnxUt7k+Lios0PvK93Dng6ZLdkceIE9/+neAqRIX
-         wltw==
+        bh=hxe02J5CeYVcOEGcf8pNL/E6NkBfjDIHUjgTsmbzDPc=;
+        b=ftZVngTnplPi3cTNuVoQC66uDnjPOOT5cK7EL954SKSzq9yPkU6PCgfMKE5UflM4ja
+         BvI7CITXpHAo+PwAPlS3g/aBJ0ZLaU5yEKkS9iXn7llENFX59fbyN8zqRo20NbWRw1Jt
+         I5uV3l2xap7Q3La8E0pUzY2ozICnoe3zmIpn0ssqyYZA2WMqkg3gx5MzfOwDS5K8PXu7
+         oGbp+uxL1eBoq1yaLPS/KOU3zGfhymqqvTCe9AmP1tzn/RrZ0Ktsal208hDgYmxjYjCp
+         UcOVGpDcF6DSXlObSqK9r6L85Tq7q7vIThErsC3VaqIwLI82WOJeaPSVrXdv3HM3LWz4
+         8PMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695648673; x=1696253473;
+        d=1e100.net; s=20230601; t=1695648719; x=1696253519;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZmJTmtECk3UTpEd/PcXzUGGmidlRTD2ZKXvirZ79/Ts=;
-        b=oHGa7a7+am6/VRXXsd3Dt24hLfqnpTnMFtKZZAmGGdky2jor7ZHnPszYpE3uOEQs1f
-         cmXTflt8F6DlQUdDbn2ls7yOth5y+4OpINHzyUO+gsZgWJQ1eE/n6lIRD13wjyeMIIhz
-         cvpqqa5uIMLLMFILK27BCmjFIByNUriTnaPRa08nSf++zdLHjHCHFVp3kRhVjGuC9Pu5
-         WwwHoiSjZLGnO6YXXNcWOkP/XpA0PCoR2Sq6oMbTQe0ljXiglsOc1dgkOYCw2LFbw0df
-         fYzCUGtMPhPRaDM7N6SFzPCmnK1FP1O0w5OQlVGIW6lXJywS4CigAqhOsE5PaneUoLqS
-         RnPg==
-X-Gm-Message-State: AOJu0YxpJidiVeGtj+4Y5svxnXiMm6Gk2chBvgGrKew8iUfjCKjw7T3T
-        FPi9xRk3tSGIvP9/J7mkfLsw7zAcewTK2/mQBYQUJg==
-X-Google-Smtp-Source: AGHT+IGGvck9YMKSdm9ezUm/4fp6J691a817X3hV3Hdc5HpIvnPCHDNYUHsrRSX8zcRkK2XQ4QU/TA/mW0tBlTBxlcw=
-X-Received: by 2002:a17:90b:4a4b:b0:26d:49c8:76d8 with SMTP id
- lb11-20020a17090b4a4b00b0026d49c876d8mr5801013pjb.18.1695648673541; Mon, 25
- Sep 2023 06:31:13 -0700 (PDT)
+        bh=hxe02J5CeYVcOEGcf8pNL/E6NkBfjDIHUjgTsmbzDPc=;
+        b=TNmVultfJw7qf8CsahaZ2pPtSBygZ2OxIy9CZGirsE80agVS15lJeYrcf/6lW+FK/L
+         eNGmMjzgYhJRnD+46C4lyjE2RmwN4OlGGNb+KW7q7534jeMgI5pASN/1pe6Ym2gI7RUZ
+         k5vJJ2VSTf70i+/OAnHxxl23KuPrLXWIiIb0l0qMwam46kac8bg3LJPLeds8a3voyp0c
+         oHUIsZGh7ZP2PALWAoi6Tt9XIdZLWQNQIAMDDCTkNgjeggrUw2ZM0gtyIJFuBH7EetHa
+         xJRtkN3aWqdomIg6BSpl+Cw14g+WDZnqH8o5EDCmKU7TzeXMSjEHo5djUjYPlklY4n3h
+         Bk4w==
+X-Gm-Message-State: AOJu0YxihWh/+gg1dDbM8zgJ1kSYGuIoCTNlU0Oy+gKtkJRKbTJk66fS
+        T2yxDmjr9swVV8SJEVh+JqpU89Oz3AQ3tBa2qOKzXWXHxppnL3Q0Tsk=
+X-Google-Smtp-Source: AGHT+IFaH5uvy57wyDPlz/5yfAqVsr1P33R5peI3FCNpL74KbP+nR6csDctzWbKGZ+EBEtyteZ3Ao+ghiq3rYYaecLQ=
+X-Received: by 2002:a17:90a:f698:b0:271:9237:a07f with SMTP id
+ cl24-20020a17090af69800b002719237a07fmr4386827pjb.32.1695648719052; Mon, 25
+ Sep 2023 06:31:59 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-3-apatel@ventanamicro.com> <20230919-3a8fcdaa86607d0ff8399132@fedora>
-In-Reply-To: <20230919-3a8fcdaa86607d0ff8399132@fedora>
+ <20230919035343.1399389-3-apatel@ventanamicro.com> <20230920-36a5645f766ed9cce75a9e8c@orel>
+In-Reply-To: <20230920-36a5645f766ed9cce75a9e8c@orel>
 From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Mon, 25 Sep 2023 19:01:02 +0530
-Message-ID: <CAK9=C2Wgt69Tj1U-e2eyVrpC+=JaApuKYEx56JbGJRuHn3N5gQ@mail.gmail.com>
+Date:   Mon, 25 Sep 2023 19:01:48 +0530
+Message-ID: <CAK9=C2XVyN7nkMW+kgELaHCAjLcQ3z-6xVdrGa_UtxfJMdm7Dg@mail.gmail.com>
 Subject: Re: [PATCH 2/7] RISC-V: Detect Zicond from ISA string
-To:     Conor Dooley <conor@kernel.org>
+To:     Andrew Jones <ajones@ventanamicro.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Atish Patra <atishp@atishpatra.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
+        Conor Dooley <conor@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
         Mayuresh Chitale <mchitale@ventanamicro.com>,
         devicetree@vger.kernel.org, kvm@vger.kernel.org,
         kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
@@ -80,8 +80,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 12:57=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
-ote:
+On Wed, Sep 20, 2023 at 1:14=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
 >
 > On Tue, Sep 19, 2023 at 09:23:38AM +0530, Anup Patel wrote:
 > > The RISC-V integer conditional (Zicond) operation extension defines
@@ -93,18 +93,6 @@ ote:
 > > DT or ACPI.
 > >
 > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
->
-> Same applies here w.r.t. splitting in two.
-
-Okay, I will update.
-
-Regards,
-Anup
-
->
-> Thanks,
-> Conor.
->
 > > ---
 > >  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
 > >  arch/riscv/include/asm/hwcap.h                          | 1 +
@@ -127,6 +115,13 @@ nd
 > > +            conditional-select/move operations as ratified in commit 8=
 fb6694
 > > +            ("Update Gemfile") of riscv-zicond.
+>
+> As of yesterday, v1.0 of the spec points at commit 95cf1f9 ("Add changes
+> requested by Ved during signoff")
+
+Okay, I will update.
+
+>
 > > +
 > >          - const: zicsr
 > >            description: |
@@ -156,9 +151,21 @@ ure.c
 > >       __RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
 > >       __RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
 > > +     __RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+>
+> Zi extensions come before Zb extensions.
+
+Okay, I will update.
+
+>
 > >       __RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
 > >       __RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
 > >       __RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
 > > --
 > > 2.34.1
 > >
+>
+> Thanks,
+> drew
+
+Regards,
+Anup
