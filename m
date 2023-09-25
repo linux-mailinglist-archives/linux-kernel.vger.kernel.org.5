@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 267AC7AD60C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8C27AD610
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbjIYKcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
+        id S231733AbjIYKeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232149AbjIYKcO (ORCPT
+        with ESMTP id S231276AbjIYKeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:32:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D70127;
-        Mon, 25 Sep 2023 03:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695637925; x=1727173925;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=G7gQNM2ETXkwxgbdw0M0S6loHs2HYqulZXnsb3ikQcU=;
-  b=RTXjcYLbwD4jCCpZI8rqtIZMM3MHXrgOt67Lj+65mpMFF/l6DYPOLits
-   /pXEK3KLDZch4pm85RclXIsXk0MTPDpHnVcrH4uZEzCXd/NjA8EqFyHuO
-   oJQ+ejzdUxU/MUpdcqpKV6l5yraxSluKvfcSZ+s9Pan2CB5cgG4sGKXkH
-   a6ENWQ0SB8qaZbCoVSGsMElxGT0rS5xNn4E7bP39CxYVUmqZHwJkeTj4H
-   vSlxxxgsaclBqxjDoFZpDe/kTkFR9X4OiGwPD3wOVKiWb0XtmoSGwDDBA
-   fm8P/rMn34WKjeqtwlATt+AxGAggDglmbvv7AMOZFHlAhTYp1ubfiIlPw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="361473793"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="361473793"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 03:32:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818562298"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="818562298"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.180])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 03:31:59 -0700
-Message-ID: <30f4276b-5e29-4a7a-9b4c-6bab505984ab@intel.com>
-Date:   Mon, 25 Sep 2023 13:31:56 +0300
+        Mon, 25 Sep 2023 06:34:03 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF6DB3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:33:55 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso743241766b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695638034; x=1696242834; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ekCv4qzE66DA9iSUYqv5BiKSB2t3mh63TAlLnqGfHvY=;
+        b=Jtz28gQNbDQCex1zu5TcxEHE3N8LNUjVrSLD+VM8q+/OruhKMtcKpeVoIa2y1FYfkl
+         pNRxkDSWdP78zovMznhZPZJUv7HhwI0FCB1fM/34UOnau1l8LdIcAx6BT4KrrTDOleIh
+         VzDHMX7oFRgrvq1nuK55fXRLEubOpWtg7pd82BJynGArSv6Ln7jpY/lYiSblK7CNT1ZE
+         7Ayux8l/FCURDfUajgAVJIVGrN10lF9qJHC6D/GAJsNB1ZAGkyu0K3LEf7pG1qHHE662
+         9OHWCCUZiLLwGSj8WvWrDqR2zAWca1Zk9ag+z7UcIbv7/4vztz2Wtrlg+BVUarG9QwjI
+         kXaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695638034; x=1696242834;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ekCv4qzE66DA9iSUYqv5BiKSB2t3mh63TAlLnqGfHvY=;
+        b=WSwdLwnmlDroGzcqkduJM9FybOfpipJHtDtzX3kHa1Au3+FtFF/x2VTwUHJeVd6b7E
+         YafAjW652GdBzQ73BjhOtCmACtkZd/h5PGs3gWB6+CA4DAW+KNQs6OPpcyytFLk7jHMb
+         WSZusZqKNJHNbQmscCxdU6GK+4z6ooPIjgTvHhNZpQdJ5A7pzfD65z5v9lQuzDAuXt+m
+         KiMHYGheWXyYA8APjYfs3FHylSaMvqv4JH3FYDCmKqh9/NfZQswRFom63aFOMhsvjhIz
+         xXypZXref7bXpLlt0sQU7l6BmbK7mWmdf/26YNFtMmWNSsIen5dLrlR+ok7p1M8TWMFl
+         ZLeQ==
+X-Gm-Message-State: AOJu0YxlbHYC9ZNN/wapV5bMK+/hJ4uyAuQ97dSqN1MI/MHUuHxeBKnX
+        hcPMYwHF36H1/3VUzHj7/mwTUA==
+X-Google-Smtp-Source: AGHT+IGDOBf7GsrQglZf0+8h8vnRYXgH/eCzX9qj4ZhPwRp3Mst8jCCWek8RtGVV9RKUTj83nCJXEg==
+X-Received: by 2002:a17:906:3153:b0:9ae:552a:3d3f with SMTP id e19-20020a170906315300b009ae552a3d3fmr5619986eje.28.1695638034032;
+        Mon, 25 Sep 2023 03:33:54 -0700 (PDT)
+Received: from linaro.org ([86.120.16.169])
+        by smtp.gmail.com with ESMTPSA id i18-20020a17090639d200b00982a352f078sm6046747eje.124.2023.09.25.03.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 03:33:53 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 13:33:51 +0300
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lpieralisi@kernel.org, kw@linux.com, andersson@kernel.org,
+        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Add interconnect bandwidth for PCIe Gen4
+Message-ID: <ZRFiD3EXwZI/B8JB@linaro.org>
+References: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
+ <f49d0543-17bb-4105-9cdf-3df8c116481a@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] mmc: sdhci: add __sdhci_execute_tuning() to header
-Content-Language: en-US
-To:     Xi Ruoyao <xry111@xry111.site>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>
-Cc:     Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Han Gao <gaohan@iscas.ac.cn>, Icenowy Zheng <uwu@icenowy.me>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
- <20230921-th1520-mmc-v1-2-49f76c274fb3@baylibre.com>
- <4ef60ffd-3661-4bca-91a3-b49d6189c71b@intel.com>
- <aeb2cc43ea4e5281195c8bccd1f033ed73e6a7ef.camel@xry111.site>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <aeb2cc43ea4e5281195c8bccd1f033ed73e6a7ef.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f49d0543-17bb-4105-9cdf-3df8c116481a@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/23 13:23, Xi Ruoyao wrote:
-> On Mon, 2023-09-25 at 13:21 +0300, Adrian Hunter wrote:
->> On 22/09/23 04:49, Drew Fustini wrote:
->>> Expose __sdhci_execute_tuning() so that it can be called from the
->>> mmc host controller drivers.
->>>
->>> In the sdhci-of-dwcmshc driver, sdhci_dwcmshc_th1520_ops sets
->>> platform_execute_tuning to th1520_execute_tuning(). That function has
->>> to manipulate phy registers before tuning can be performed. To avoid
->>> copying the code verbatim from __sdhci_execute_tuning() into
->>> th1520_execute_tuning(), make it possible for __sdhci_execute_tuning()
->>> to be called from sdhci-of-dwcmshc.
->>>
->>> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
->>> ---
->>>  drivers/mmc/host/sdhci.c | 2 +-
->>>  drivers/mmc/host/sdhci.h | 1 +
->>>  2 files changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
->>> index ff41aa56564e..fd607058d176 100644
->>> --- a/drivers/mmc/host/sdhci.c
->>> +++ b/drivers/mmc/host/sdhci.c
->>> @@ -2841,7 +2841,7 @@ void sdhci_send_tuning(struct sdhci_host *host, u32 opcode)
->>>  }
->>>  EXPORT_SYMBOL_GPL(sdhci_send_tuning);
->>>  
->>> -static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
->>> +int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
->>
->> Also need
->> 	EXPORT_SYMBOL_GPL(__sdhci_execute_tuning);
->>
->>>  {
->>>  	int i;
-> 
-> By the way should we rename this function?  I think
-> "__sdhci_execute_tuning" vs "sdhci_execute_tuning" might be confusing
-> when we export both.
-> 
+On 23-09-25 10:57:47, Konrad Dybcio wrote:
+> On 24.09.2023 18:07, Manivannan Sadhasivam wrote:
+> > PCIe Gen4 supports the interconnect bandwidth of 1969 MBps. So let's add
+> > the bandwidth support in the driver. Otherwise, the default bandwidth of
+> > 985 MBps will be used.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-qcom.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > index 297442c969b6..6853123f92c1 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > @@ -1384,11 +1384,14 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+> >  	case 2:
+> >  		bw = MBps_to_icc(500);
+> >  		break;
+> > +	case 3:
+> > +		bw = MBps_to_icc(985);
+> > +		break;
+> >  	default:
+> >  		WARN_ON_ONCE(1);
+> >  		fallthrough;
+> > -	case 3:
+> > -		bw = MBps_to_icc(985);
+> > +	case 4:
+> > +		bw = MBps_to_icc(1969);
+> >  		break;
+> Are you adding case 4 under `default`? That looks.. bizzare..
 
-'name()' and '__name()' is not a particularly rare paradigm in the kernel,
-so it seems ok.
+That's intentional. You want it to use 1969MBps if there is a different
+gen value. AFAIU.
 
+> 
+> Konrad
