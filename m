@@ -2,130 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C737AD97C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D6C7AD97D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbjIYNt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S232052AbjIYNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjIYNtX (ORCPT
+        with ESMTP id S230263AbjIYNuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:49:23 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2053.outbound.protection.outlook.com [40.92.48.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4731E8;
-        Mon, 25 Sep 2023 06:49:16 -0700 (PDT)
+        Mon, 25 Sep 2023 09:50:11 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2075.outbound.protection.outlook.com [40.107.237.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB31E8;
+        Mon, 25 Sep 2023 06:50:02 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BfYa8WauShdUdEvulzlwYDnvrS1O54NjxlQd7zZwzcwBk4oDgfVgqlsQG+wRXYlEFkkuHeHXlX29YMCht5/gHOYEsZbui4zkGffaItacsRGg/ahfhRE5EY20suua/K3KUC7AiqNfPw3hgmNiuEzWkXdfCgF0PVzF4RS6RgUT9pOCqLgqphjfPkC8OFcoOoRxcbDgjA3Hob45TwIijm8fA/2suIAtXeRFv9tJXWdgCpfN5LYvcaUUPcQnnL4ypTCb2kCetZJ+wGIzYl+2YxHvnQJ5uwWdlURsncrhT0fKCU8Nl+Dmb4z/tOwpKiQcN8J3ywiSbQBa1/NlKoqM/OuIEg==
+ b=cgl2/kpa83cl3g1Ipg+oJ/GnFJYmPXPjQPn11VqCKtt4NrILkVy3r4NvbHGJpj6HT9tzh6K7S0zpNOmKrJO+KSE5uv7aOSaqBczS0/ZHlb5IdIs53lF1XxmunCgw+HllISjU+EjAsta7CWnOimPonNhfcMmchu32stlk/2N9v6baBDHWC+t+aYxFtL2LPN2qUadt/3m349Kw5ZhoCmVpf80Pn+Gy/hhec6tPJfpRgPEcvilUCAJEET2nEyppsA10sB5eGXjifI7NOfa/qjctUZKsZQ2Io0aWUo716V5iMynW8/BN4NgJNWyzJ3Ng9vVAKxl7ADbcXLQe1wIOcq3k7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vuqiSa766LRRK8Mhw7oz0wQ7NCzjhOgJY1nFgKBOevY=;
- b=W3p3+JENHHmmFvFja5G0Wglu0xfOzyzUUnSMl0z426yB6OMOx4An+4y+W0eHx1kjs9P2zYoxwhi2RfEdhMnVRVzO2rvfiFIkMCOK+eIm44K2APIEsrM1PMtHF8mNhgAPe/tGGbJyEqXtrEZRork+uxPka3XTpDnjorgE8cfell/I0YBME5+DwS14JEj52HyRdpQNVUiAtirrDpf2/5CLHJmQbx1jvgPy5zT4rGwHWSMF8G63SOo978M/29CTpTH5KOJmJ3u24Y7gH3xH7UiCEj7coXG86n9Gg8eWKKSUcF8P/nmIOGJrF2v5/4PCpXLUWHUmPmO9Pgid6wk3aGFbrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
+ bh=AW13iBp9iuVmDId0J230kW9CPNnXZCVintRCii8s6QI=;
+ b=Wp2uRt0l6hnR3deM5xVs2uHXFmJHibzjj0fPF0EO9uC7fDl2dpdK8XWUeKR/xZ9wIznSX8p/T3PLiMp5IZ4m5cQKmP2OquKjluDhTyvUxsp2SALY0RjHqA2oOVwN9kJdNS7lABZIjKNqA9UprLczvZ2jzVJUpMnxPAN4ns2hZFgNbMheyUcdtypzKl1v5arIT7b4FF1+WrvcW2HyorRMBPxb5+zFR8imCvaBkmcahAoWL2Mh753a/seGp7TkBWghmHtx11dZ2Z8fmc3zccxA31NyJlYSmecR+2d29Efl09EoctZ6lmYlw5cpLuR85Wx/CIwfN+ujulVAALbl361TIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vuqiSa766LRRK8Mhw7oz0wQ7NCzjhOgJY1nFgKBOevY=;
- b=dMjEWmm9qJ8JhkkH7Viv5EKi2Et1RMKi5bPYemFnN6hr2oBRfW5Gru11aQfp8TpLP8dwtxJrfNKJknrWp2Tf1CidJvsJYSxZpQrm6rJeRKyCoyArfrksC/O1yzJmCvJd43fiJemeWLkSRKCYXxO270Q5AIv/XxjeKntrhfvNXdiAJQ4ie6iuQZ4FwZTG1jfOadpmtyNHIRHHur36XRcvCF5+wyByE8ZMRloS5WHrgXzxlevAa6VOkTaYplTznz+8cmrTPeY0a8atB2fgnahFXcYicBpb1EWwlyMAlh+zYz4b4bRD4S2SZnS+GKdR7B8YhIqTELx1dVPzGHMjBzhAww==
-Received: from PAXP192MB1278.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:1a0::14)
- by DB9P192MB1324.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:26a::15) with
+ bh=AW13iBp9iuVmDId0J230kW9CPNnXZCVintRCii8s6QI=;
+ b=UBtB7jkouVCsNd2Eh5Z/or6kFDDPVwJ/bfytptAF7sK4PPxVlkuM7B7WzZiTmabzDAnQFDxxEMe7Z3VvB7LPzE7VyhzhLXRHTqhDREHy/fH+xxe2NkNVUtYJDhw2AZJlr7V+synsaY2AQfNUeIxzNsgDEzEH9NwOjxbO2MDbFhmKmiyGBE+cUd3jI7Y5VjzN4n8S2Sqowt48KHPp8B3F0kGqtG6qlSDAqXPspPw3sfz1aa8GnfTlmI+WwIiw9srxgw2fVBXgzDEC7RWu8X/tfVZEG7Osh6r64GY4KyAiQdT5gMETN+3qlIf5Rv4pIbNTd/UKq5HqwC7tB/ClV4P6wg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH7PR12MB6636.namprd12.prod.outlook.com (2603:10b6:510:212::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 13:49:14 +0000
-Received: from PAXP192MB1278.EURP192.PROD.OUTLOOK.COM
- ([fe80::96b5:b07f:1856:4593]) by PAXP192MB1278.EURP192.PROD.OUTLOOK.COM
- ([fe80::96b5:b07f:1856:4593%4]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 13:49:14 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     axboe@kernel.dk
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] drivers/block: Updates loop_set_size comment
-Date:   Mon, 25 Sep 2023 19:18:39 +0530
-Message-ID: <PAXP192MB1278B70E2258023496F97F2FE8FCA@PAXP192MB1278.EURP192.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [K2lhH7PZIeGMuu0qlv0zWDZS7JfOpoNC]
-X-ClientProxiedBy: JNAP275CA0061.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::19)
- To PAXP192MB1278.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:1a0::14)
-X-Microsoft-Original-Message-ID: <20230925134839.1132789-1-yuran.pereira@hotmail.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Mon, 25 Sep
+ 2023 13:50:00 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
+ 13:50:00 +0000
+Date:   Mon, 25 Sep 2023 10:49:59 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Cindy Lu <lulu@redhat.com>
+Cc:     jasowang@redhat.com, mst@redhat.com, yi.l.liu@intel.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [RFC 3/7] vhost: Add 3 new uapi to support iommufd
+Message-ID: <20230925134959.GD13733@nvidia.com>
+References: <20230923170540.1447301-1-lulu@redhat.com>
+ <20230923170540.1447301-4-lulu@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923170540.1447301-4-lulu@redhat.com>
+X-ClientProxiedBy: BLAPR03CA0124.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::9) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXP192MB1278:EE_|DB9P192MB1324:EE_
-X-MS-Office365-Filtering-Correlation-Id: b6c13824-73b9-4bf1-6f66-08dbbdce344e
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB6636:EE_
+X-MS-Office365-Filtering-Correlation-Id: 34b29616-598c-4826-c9ee-08dbbdce4fca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v/qZWrrj6qAZ567v5ujX7DiFecEPECd0gxK8zcngi657ab4o3k2DlX0RM4dYZTfAAwrfvhWnOGwTSNOPnvCcC11Ab7dMHiG0ePHUmwOxgDCuA4g5QdbA0CDnMAGdOayKdUZIUVhoYs21XdSpnCiWQVL1MdjNGsAhvPW3CGsZ3pHdyLb8w+EpRjXcl2JWMbzy0+qYpMLobhVU5na1dkWrKRLlKIZ+oWIdLs1zBijB8r/sKPa2zQYhCCVFiRpFH40qP6ikc1yP3yQ/2vaIIQguK0hPz8ysLy0uWnN8C9ZghJMNN1YLMyAEW1krgXylPP24cP1Pue82fA21xqviV+4JMek+JqrAXPBD7201Al5TTWdFg90gRpgHGyUfU0cno1rm6bvziEN23cpQgUOcak9gDppoEq++2B8Spof9HiSAT/uvuTt5g9PODOsMvMyT2avSXXN1ZDS41U3D6UutmJjdLPRbIc4gmN/JmyzS5GVfALQuyk0oW5QsJKt5UpM2pekMiu7HfL20eqnwJlBP+2hQDX1HxzFRa+CVwFHTl4xCDY0ktGGqx/TKRxMqywq9drAkoXnmS0BCj8xYnWRRNQvVcJvsdGpoHnvo1pYZBfTM+cU=
+X-Microsoft-Antispam-Message-Info: aEr9k3bHcfzunK3WxIAKhfgzWq3R6NMtNyyfsA45Usq+jN/Mr9fcXho2tKauOU7bwqeZUK6nFZkm1r4PQ4zr/im0vuJltIyUk/QTP5hZKsVBG81QkUePMYnbMIVuSsC71fuMehlPGdNBsHHuM+fzwObooBYcC+hCJ25hrSjFljmPQfCOExHKYwg5wBXn+Z6KMNY5v4ZJryJb2OOYEUU7zXbtlaIm9pHBGItyA8mZy8E5r+JZuzxu2fIGF1PfTsPI7bhwgdLFdGdpqLciJpPoZg56wh9VszUH8iPcKpKFCNeENJDQL/30lAyaTeGLgFrSV8dFN/eMJYsoKWigpHGotjQhbHl+XRZpVg0XIXY5AaI+u+juc8CFFmfjnc0a+Q2UguJbOIOSTVhzvJxpLnih74kWQE1zbnFolltLpnI6/b84xiDNkebwS03CYuc5P/oyu/cxTBHQ9RaUybJt+Yz9KYxJPTmnNQe0ciqnvEPTI9VXhDn9oWz1DbrixDgjONIH8SasrXqKVdD/iXXCL/nIJXPXyrVXXPo2QZfShKknf8OIhMNSot3xT4jvEy9otGhJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(39860400002)(346002)(230922051799003)(1800799009)(186009)(451199024)(4326008)(83380400001)(478600001)(8936002)(6506007)(6486002)(6512007)(66556008)(26005)(66946007)(316002)(66476007)(1076003)(8676002)(6916009)(5660300002)(2906002)(33656002)(86362001)(36756003)(2616005)(41300700001)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6dgAg5bVsIpO7pJoASBRT4Keh55Mb7m6AhxymsoUOJC19EzZi3vRD1llNBji?=
- =?us-ascii?Q?QSilpVraS3PJoXCVIqQ7KtJC4SlWD84BVLmTs94OMm7XUiYlQG1j9sylywe4?=
- =?us-ascii?Q?uiVQhUwXKYmun0Ze9hluOkHh8XmedHVkqXs6Qie5qYLYs2a2oqFOox4cyegb?=
- =?us-ascii?Q?aILpPQvA6kQWhrQSLCYJcef8HwBJ8ePsAVN7tk2MX4QOndZ7grUokRcAIfrr?=
- =?us-ascii?Q?H4FbjnTe3wMS9RjR+DimCvy6aGp7KPA4pFeLybhnySPKfkE72gSj/svxs3fY?=
- =?us-ascii?Q?9/a+4/de85OEzjXme5sgya2dGJIo+GA0M6KmxAiMgDm5IjuE4oaqrX991Dab?=
- =?us-ascii?Q?88BJRyxJxidLXHMuMmzB5LZd71bzwmnwA2Zra8wSBfysAsvSvfc3Vu7nOSt4?=
- =?us-ascii?Q?Fgm/Fm9PZ+adNcESkblzp46DWtrX51bIfCFfoW/0Baf7ihEftQEtA/9yLvIN?=
- =?us-ascii?Q?sQy7PhUuTTIQvIrFalKYwDwqIIedN6slVCOql+TGn5z/mNx5ZZuiH39dCVhL?=
- =?us-ascii?Q?Ov9ikI9jl34WzQjdyvADf/aXZwvlx6Ivh08ZRHcOclFBbH9fSsgbqZLmLff6?=
- =?us-ascii?Q?AUgBouKFZN7hKWrUG31lSPvIJJvopGe7F+dxJssu0qS7iQPJdHprvj+K4cc3?=
- =?us-ascii?Q?W5BYdh/kJQke1IS0iHRUibrBbCyTlqU+V7ahzaUCue5VCOF0UjQ3gTsme1cv?=
- =?us-ascii?Q?FvK/nWNUihrsBj6GZEsrSCOqmrwIkxO3/Ofwoyi66eESXON8QxiOfNwOZbnw?=
- =?us-ascii?Q?yjFd0MsSvbq7FiaaXDNkWR6rTDp/q6dqgpWNUkwFYrgy0+aWE00GcbKqr/5U?=
- =?us-ascii?Q?jAvzadp7fWdLNfrUimHYbr/o3VHCeDHuYfcwt/jXjtmy2M7nAG/qrwrxblqd?=
- =?us-ascii?Q?K3RYaaUzsfk9tXR93xxxhcp/oGX0QNUrc7aL5rw5/3LAU+EIddKwJhRl5QtT?=
- =?us-ascii?Q?ruqrvGBe9ueo0eH0IUdiZhAHGY76mkfda4VuZFXdV4h/PmkUqJ8CyIhrOaYL?=
- =?us-ascii?Q?D5ml8M7yz6qcwloipKaaVfAtXaSutrt0pFLmbDi2XY/bbbDMLjfa8WWeDm9m?=
- =?us-ascii?Q?SzL7hNNIJOuqWdMpxs+ao2xBIIjRbQw0B1uEncfOFYoj7PmfmDWFHv7zuwYW?=
- =?us-ascii?Q?/fBGz6PmPlxYl76VQYrANknD9QFWNUgiSWFkxEgingzL8Jd4jVYA8+KsCozG?=
- =?us-ascii?Q?gxBZUsbqcKJDS7/0xx3Iov99VAGkk0IISCLsvwrhMGKyypwu3v7+qkNwmOQ?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-fb43a.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6c13824-73b9-4bf1-6f66-08dbbdce344e
-X-MS-Exchange-CrossTenant-AuthSource: PAXP192MB1278.EURP192.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?K8XWuXiPv1mdyxw1oQ3+83Z19AzyJ9CKb2ClOl9TyEhPB2RAjGjBBWPvOuK7?=
+ =?us-ascii?Q?co00X4QtPyp/1i3wJTO2NGA4tbJuTcutfj5whTynnpvUZwjv81re30VFpIIH?=
+ =?us-ascii?Q?/YPsia3Y8gwIil236bbD2H2AxpyLak0DtB54QcOukI3wH2CpZZHWo3l12Zf6?=
+ =?us-ascii?Q?9Qdyzl5qNK1v+Rk80Cu0vFfgT7NQ9NgV/xbMAPC/E8v1qMzRxWrpstAtfL1z?=
+ =?us-ascii?Q?Zcvkh51J2FVvpu27w9KIz6vXX8WE8lv2wSLD6r5eKB/7VkE/jrwe0xMd7NY0?=
+ =?us-ascii?Q?VxaFPRza6ifmu7AZI9k9N6LUou6Ymz8ygG00FeHD918KxK67Or+QzXXhRKB1?=
+ =?us-ascii?Q?0AzCajOZG7+SFnl+Wz5Jw+xeREKIir5z1b1SxMLiwTVUYJHPHCuYfK2/X3Cc?=
+ =?us-ascii?Q?1Yekso2q418rB/bsG8kUNxjNFSGlfZiqDU1XoPY41934qd/ub02mM2Bo/dnO?=
+ =?us-ascii?Q?9AmVtd7zum4oyNOWlqAgZfVk39v/ekndS7wPMMF3A3YKeUDf3Vz5x8ngS+/S?=
+ =?us-ascii?Q?/1jPVgrp4btRjYi7wHKl230u0dhV2qH8QN7qJcfsH4DSttmZMSoNXHUfFFUp?=
+ =?us-ascii?Q?3MYrbcHRXhpmQslIQCHq+XTv18h1zR+pebaIpLD/L3u3wMjo3Yet2u8egUfz?=
+ =?us-ascii?Q?TVcJsxc/JlRsJ5or/hnQrPyy0aMFI17cgFXWxjHaknwyDb0gd01Vq/JrfJQw?=
+ =?us-ascii?Q?1m3gdy17zKjAM3BFGP41XGQ4Qck+/TtjBNJJNZ+2kB5f6hIuaawNvt3Pq3uj?=
+ =?us-ascii?Q?NZOELJIF+PqReclhDC8brCbnkS3otcS3V9+R1SGZgoUP28yEBaOi9r2L6fag?=
+ =?us-ascii?Q?wiQmTk0s09DaXBc5rIZ9+htXKaeCWrs/y+5fzF8r7dYGxtF6HBfc+5DQZj/j?=
+ =?us-ascii?Q?sVMsM2vu9+DXK0RPjvniHBuwTjk7QcPOQB3z38/daPrczZwcWA0cPoM0gk8M?=
+ =?us-ascii?Q?92dMOIyH+c42lmA9STHT+osUY/sfI2oz9J7o48JU3o9leJGB3aF9SzGD1d9J?=
+ =?us-ascii?Q?taSrUd4Tj2sN67ImxrsCMaPyboh5AzNRx2huXQzJeSaS/p4QkfqgXNfC1Cbg?=
+ =?us-ascii?Q?Zo69recyLhYtU1p0LMrac6VfiwG/15NyRmgL/ESEYCjz3irk3ujA1u3nINZN?=
+ =?us-ascii?Q?Eo4wIxyyr8b5j02dT2Ei7Q6eh3s8mv6tAnnskxR2X90eqkV1BOf99IkxwSkA?=
+ =?us-ascii?Q?QkHnf6dRFXLsIXYm0knz1jS67NFg5OIR+NTSMvW/QMfkhy05MhxkFOHAzQjk?=
+ =?us-ascii?Q?CKfhw3odsu7TqdNsoXrQ3Uh7Zsj1MEfmW46+fzJm4+HG2eWWKrzrfNwloqOp?=
+ =?us-ascii?Q?4O9xA0wufN4cgv3y3u9VN3N5Mt71siMcSjqrfab3VlRc0UnESgGiKSfHucSU?=
+ =?us-ascii?Q?QNO0OVTSq7c9l+OI6EMLZ9WDxNA5eydFVQyrISwz1sOKp2PIDQKBvz0SkaM1?=
+ =?us-ascii?Q?NmMbISuktaG+7kSGIuXd3q7nWPoartlIUvJ+HFzwuRyvQP4NMse/ziD1WEx/?=
+ =?us-ascii?Q?5Wf5MzahXh+oF84nI2U/wNpYFXudu4PTX7ZKzGSnAI0AixTRLfTn1PPsx7Kx?=
+ =?us-ascii?Q?M5XWS5gIwgnaGSNqyObqBE9Ts5p25mBuSUZuhx1D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34b29616-598c-4826-c9ee-08dbbdce4fca
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 13:49:14.7116
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 13:50:00.3873
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P192MB1324
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AUoz4gqEliZN8QzWczvakNx3kD5c46JYvMparTkBg9QTCro6RIKgapih7UoG3qLq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6636
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since loop_validate_size() has been removed, there is no longer a need
-to validate the size passed to loop_set_size(). This patch removes
-the comment from loop_set_size() that states otherwise.
+On Sun, Sep 24, 2023 at 01:05:36AM +0800, Cindy Lu wrote:
 
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- drivers/block/loop.c | 3 ---
- 1 file changed, 3 deletions(-)
+> +/* vhost vdpa set iommufd
+> + * Input parameters:
+> + * @iommufd: file descriptor from /dev/iommu; pass -1 to unset
+> + * @group_id: identifier of the group that a virtqueue belongs to
+> + * @ioas_id: IOAS identifier returned from ioctl(IOMMU_IOAS_ALLOC)
+> + * Output parameters:
+> + * @out_dev_id: device identifier
+> + * @out_hwpt_id: hardware IO pagetable identifier
+> + */
+> +struct vhost_vdpa_set_iommufd {
+> +	__s32 iommufd;
+> +	__u32 group_id;
+> +	__u32 ioas_id;
+> +	__u32 out_dev_id;
+> +	__u32 out_hwpt_id;
+> +};
+> +
+> +#define VHOST_VDPA_SET_IOMMU_FD \
+> +	_IOW(VHOST_VIRTIO, 0x7e, struct vhost_vdpa_set_iommufd)
+> +
+> +/*
+> + * VDPA_DEVICE_ATTACH_IOMMUFD_AS -
+> + * _IOW(VHOST_VIRTIO, 0x7f, struct vdpa_device_attach_iommufd_as)
+> + *
+> + * Attach a vdpa device to an iommufd address space specified by IOAS
+> + * id.
+> + *
+> + * Available only after a device has been bound to iommufd via
+> + * VHOST_VDPA_SET_IOMMU_FD
+> + *
+> + * Undo by VDPA_DEVICE_DETACH_IOMMUFD_AS or device fd close.
+> + *
+> + * @argsz:	user filled size of this data.
+> + * @flags:	must be 0.
+> + * @ioas_id:	Input the target id which can represent an ioas
+> + *		allocated via iommufd subsystem.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +struct vdpa_device_attach_iommufd_as {
+> +	__u32 argsz;
+> +	__u32 flags;
+> +	__u32 ioas_id;
+> +};
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 9f2d412fc560..68b8684ca16f 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -228,9 +228,6 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
-  * loop_set_size() - sets device size and notifies userspace
-  * @lo: struct loop_device to set the size for
-  * @size: new size of the loop device
-- *
-- * Callers must validate that the size passed into this function fits into
-- * a sector_t, eg using loop_validate_size()
-  */
- static void loop_set_size(struct loop_device *lo, loff_t size)
- {
--- 
-2.25.1
+I don't know this at all, but it seems really weird that the API
+taking in the iommfd is more specific (eg includes the group_id) than
+the API taking in the ioas.
 
+I'd expect that you have one iommfd setup per virtio FD.
+
+And the various virtio queues would be able to be linked to their own
+IOAS.
+
+I'm not sure multiple iommufd's per virito FD is worthwhile.
+
+Jason
