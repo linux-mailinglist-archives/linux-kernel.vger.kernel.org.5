@@ -2,173 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0DE7ACFEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF697ACFF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjIYGPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
+        id S231928AbjIYGTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjIYGPo (ORCPT
+        with ESMTP id S229511AbjIYGTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:15:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450B1C5;
-        Sun, 24 Sep 2023 23:15:37 -0700 (PDT)
+        Mon, 25 Sep 2023 02:19:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDABDF;
+        Sun, 24 Sep 2023 23:19:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695622537; x=1727158537;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=1RFs13/2evvW0GEUFrpNdg22op40mOaiWlGjnlygTZI=;
-  b=oA++gC6fTElzfzelXZ1aLsOhtbdjWXK2ocZeXvomy+KBuoc3F10JOaED
-   /LVEah0ud/5VON/+ZHdLmy64F+WWYspDyZiGEVq0nZzOOZ9uO3p5d3tAB
-   O31+8S/6VqljtM10Vvg4sh++c+xeSBxAsoCl6Lw8JNKtnu4xMXplIrOpf
-   mMzpNAlyDEozGPDD31OdnOk44U5ZmrQ+807PRy/Za2ZVa3B22g87ohasb
-   8fm4l2aC7HGlG3pv4JpHnEhOeYafnIUMSoTvqofSSZGEQSDdxQBb/Tn+l
-   wWTywgFzdM00h5Yk8NOHHcGBwYt81POLrL1ufRajy6gcsuRhO9vK4GItA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="383934501"
+  t=1695622749; x=1727158749;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4Obo2SIzygs8SZ0g6qVFXJblfFe784mBRrqGqQ0ZfSU=;
+  b=ci7sAPsGdtJd/NZU6m+vnYPhGIBJksZL2HtiEswiCGwNLPGxKkaG9XJd
+   Yh+DIxWEeuJNG3T/C82DtJiLdqyz0KD7r+paCbgAb1htcQjqJXDB9ZqVj
+   EUwGRLBIc6ChhyLdJTRpv1yPeMDoDLqO1jsbAaYO+97MhePtH4FN6Eppp
+   AsTtoKbLF51bfKU42oqX+KzXibAawTSAHzP0AasU9iMJKpXYyYu0hhLQr
+   Z2GvIJQVVkZf6XU840XVObQgRaC/VXlnY1rsBGcBouRn3MP0TGmS00Vbk
+   U3r0LED/Yc4EMdumNOotfPo0Pzyjurn9a4xTHbTSpg4f+G6EmqHx7gqe3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445279363"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="383934501"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 23:15:28 -0700
+   d="scan'208";a="445279363"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 23:19:08 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="783350457"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818494306"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="783350457"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Sep 2023 23:15:27 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 24 Sep 2023 23:15:26 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 24 Sep 2023 23:15:25 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sun, 24 Sep 2023 23:15:25 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sun, 24 Sep 2023 23:15:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iYktEagej6vHhae6RBDVolUptrDi2Myq7tfR6YbhBWPOT7QYBWEYnuTQnwkwZE5+C2Tx7YPSLATTruTqu1bauiVIbYzSvoLtmnMdglpK0mrozSBZQRDVCl5AVbsc21SX/yHeEijcMX46gQKRiSWu9lSXaYS/Ypwyg39GbwbAvxe4hB3CnZAB348cdTv4pZ6OOVf3fTktY2kTlN0xXaGKJDgslRXk7r9CfCRQM45w3ijBPUbWJSejvs1QvIDu3x6F0JvpQjhItTE1kGBSTORVEI+EbgIrXUU0pKu/SVFghGHjBVSyow+hdeUIZYP90ZXyPEwVlkmOtLpR31VRNHSDZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BXXmybq6dYQ/Q3KypcNhar7qEhw5HU5VN3NZgCBpquk=;
- b=TX8JbREMa1n+q/UKnlCBfU55bHF5QpqAVkqEacnh0bDh8ShiWyOSmTtBVft78MXk3/iRcJIa8ojiGH19WBN6Plf6ttcLNqAwJfgr6EzdGPqX2a0shkDbjB2WJUr4nMogLj8IH/WBFWGQQCQFPx0p4tghgtYFYXiutQw5hDo/KjpOZeEiq9AhhYjKpu6MrRN4aM+2wJUOm0HQJRaxfTvgn3/PO50opG53hsakZCgUdxuIJoEOc5zbGoNMeDpi060emqbO9teDRqG4OqrAQCf5mzsWNeBVz9YbGyxTNAyhx/Y5PEJrx+r6McfMtC/6DrfR5uTLPMxvcqAvt+NAjuUtPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by CH3PR11MB8441.namprd11.prod.outlook.com (2603:10b6:610:1bc::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.23; Mon, 25 Sep
- 2023 06:15:23 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 06:15:23 +0000
-Message-ID: <94004987-3cab-9fde-a231-7c63ac88a866@intel.com>
-Date:   Mon, 25 Sep 2023 14:17:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
- domain_alloc_user op
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Baolu Lu <baolu.lu@linux.intel.com>
-CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>,
-        <kevin.tian@intel.com>, <cohuck@redhat.com>,
-        <eric.auger@redhat.com>, <nicolinc@nvidia.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-2-yi.l.liu@intel.com>
- <0d37a1b1-e7ef-fa73-d17c-629cd254ae75@linux.intel.com>
- <20230921164447.GQ13733@nvidia.com>
- <dcde6757-8d14-6460-c75e-c30d69219e4b@arm.com>
-Content-Language: en-US
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <dcde6757-8d14-6460-c75e-c30d69219e4b@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR02CA0118.apcprd02.prod.outlook.com
- (2603:1096:4:92::34) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+   d="scan'208";a="818494306"
+Received: from b49691a75598.jf.intel.com ([10.54.34.22])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Sep 2023 23:19:07 -0700
+From:   weilin.wang@intel.com
+To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [RFC PATCH 00/25] Perf stat metric grouping with hardware information
+Date:   Sun, 24 Sep 2023 23:17:59 -0700
+Message-Id: <20230925061824.3818631-1-weilin.wang@intel.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CH3PR11MB8441:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6262718a-fb85-4c31-2c14-08dbbd8ecd12
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BywFCGd/33qLlHA0DMaHzRtD10msPb0YJU9+x6ANwba5sqZYz+7o3XxzKfeLIV03Xi/FWinzW62nJJ5d2o/X46/w8O3TXWWY3utls3Hqp6UH8D6I52oX7A+dYCUR+Wtu4gc30li2Rz32HDc7g5yjWJ8kmXqFCbJWe5yk0xuELRSxDnQau4JUPdt9vU7z/SBrbnBbm/pTlNz50NQuD/rmeEOc1t5wpm++vaDrXBgDS2HKRkM4dNWs1QE5GYG1tEVqdNuhXyTRqnX2SvLpAhGwGAYRQmqrt+eMrRAz7vhcFvRUymhNXNXFXYs1MSK5h2LBjKoGjfkHGJDOYGB6A19WiFN/aQeapiQvIR0TxTrjul9DOpoMgj/StXOldCIXyHklSQopmryjKgWsiGsDrd/J6Rxi9ubEZEwFjCEhXhPJu3ungZ95iGIjC31IyqaWNp/RnUEwQo2q40xngJoRu1jnUEdfE/9RdTQjpXpNOr8T4S201iIKQX8cPnmwA3b6M7Iv0oc/P/Q49/W+54lkhtF7MBA6DvR8rfre+F+NmX49ZVWI6BiKYNlw1v1Xhu6xX6o4XhPR1QzQSmu6fwR7GK4B+uHlljbAwwMidR6kTNtbK66yvy33bqXRXNpr1q9/AHxnaZDQ6Ob2oYXHXmNmKG+eWw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(230922051799003)(1800799009)(186009)(451199024)(31686004)(6666004)(6486002)(53546011)(6506007)(4326008)(66556008)(7416002)(82960400001)(86362001)(38100700002)(2906002)(41300700001)(2616005)(31696002)(66476007)(6512007)(26005)(36756003)(83380400001)(316002)(5660300002)(478600001)(8936002)(8676002)(110136005)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWJRbWdXalBUbU12VkhOL3dtUlNwdjFseFBmb1FCN2RGVXBScEo4amZ5Q3NM?=
- =?utf-8?B?ODJWdWJOL3NYd1ByMlg1RWJFSU5xVzhYdkVJbmwwZlJKREJ6VmlKYmNycnVZ?=
- =?utf-8?B?NUpPMDBIWnJZM1pLT29hVjZWczhVM0JIT3h0TWhnZHVIWFZuOVZSWFdDMDlG?=
- =?utf-8?B?Q0JqNFZiL1ZjM0pNUVI0TmZmd2hzMVo1TEJwdlkxM2Zwd3llTEw3SnozZ0JO?=
- =?utf-8?B?ZUZpUC85OW5SSmcxVHJBZWtiblo1N3E2dE9xQVRhWEhMc0lSeE9KdEF2K0RS?=
- =?utf-8?B?V2tqTGhRMjRrRVVQTXlyMWlsQnRtNFYwRGlpeTljTVlGQjN2MjZXSnRzYmp2?=
- =?utf-8?B?aVE5TTZrRktLeWhjUWhPbHo4QThJK01OQllWTk9mUk9meGcyMHozSzZlMTJ2?=
- =?utf-8?B?Vk5mdWY5b1lTM0pZOWF1MEpsQ2kzVzhlYW4yMFlXNUFqbXlWRysyT1RMZGwv?=
- =?utf-8?B?Z29tcFhMRGw0akdJbUpiZWtYL01VUUs0VlF1cGtJdStuRm1QYmNjcUlqYVJG?=
- =?utf-8?B?MXRlWDhuZmdwdGdWeWFMME9uZlg1VUtZNllCWEN3NU1XL2dzRUkzZi9DaVdV?=
- =?utf-8?B?aFB6cUpJanJBZjdXSERiUlE4VlF4K21CaWFiMFJaVmFXYndHd0NJZGJKME5u?=
- =?utf-8?B?djVwSFE1NkwyUzJ2ZnhuYlR6amhQNTFnUEZJaUFKU0JCeFpNMGNVUEsvQldM?=
- =?utf-8?B?cGx6T3VhRFlwY1NQcGlDclhJVTVwZU5HVEVnMFhlY2F3N3lYNW5UUGVtRU9M?=
- =?utf-8?B?ZFprMXpMY2JCL1ZtRmFEN1lGRTZidndSSjhOczRpa1Nib1pYaFhHalRrWVRu?=
- =?utf-8?B?d3RSaU1jNmc1cEhqbGVtTExob0JKOUxFYlB4OUZpZHNXTHZZd1hQKzRaNEo1?=
- =?utf-8?B?WUNCM01RdjBzQ1RCL2cxVHpNQnpGMitVUjFBRHNwbXNnQ2xEWjJOY1ZReU04?=
- =?utf-8?B?VjZOZk1KT1pzYUYrTjd2cTU4R0ZWdU8rSzcvMXlLakJBSTJWUURWOGhWaTZp?=
- =?utf-8?B?b01IM0JweTZ6UDY4NUNpTHJ6RHM4QzVReG5YTDQ2NXplTkhZcmxYZ2JlbXQy?=
- =?utf-8?B?bzNrMFB0VVdibFhkQ0hoL2d6VHlTMUNtbHpscDlnM2c1b3hjd2pkaDIya2F3?=
- =?utf-8?B?b0x0Q3JmN3Nkd1phMllDUXpVWXVMenRrTjZnNktIdTErWlRDY0w2YWtQWS9s?=
- =?utf-8?B?MzlxdHVzR3FqeitoUDVsVVgvUlBCWjJjQnpZSHFWcGF5ZGozaTJsS0MySVd2?=
- =?utf-8?B?cUwzbnc1c0xhbkZiSVcvbnB3SW92MGxqQmhYMGNFMjYyZHM2Rk5UZk5oN3hD?=
- =?utf-8?B?dStubjJZM3VlYzc0aTl1dGdLNzIzK0kvQnR1Nk56RHQzZVN4S1JYVGdEZHFE?=
- =?utf-8?B?d1NhWGVxU3NvUms3SlNkb0hMWVZxUmthNnF1YjVNenN6OGRTa1NCWnJ3dk0r?=
- =?utf-8?B?STZuRTBIcHB4KzRDSmRubmxSb29VTWR6L25FOEJLVFE4S1hmSHh3UlBwb3Bl?=
- =?utf-8?B?a3ArcHY1SFlhWStGNDNic2c2Ym02NGorSWRZRlF5eVE3MDZ5Y1ZSNlA0S3Mw?=
- =?utf-8?B?Y2VBUkpSM3pwNVpXMVJLR2FoUXZvb0FFVThicExlRjRQMXArUnlLUHRpRWdr?=
- =?utf-8?B?MDIzN0ZrWXpxcDVxeHdIOUVYSFJLWGF1S3JsYlFyeEhiQW9wa09pSVY5cVoz?=
- =?utf-8?B?cGtHTklOUmFDY1hET3EwUzMwdVhaTytmZ1BuQlhUMVJOUVI0VU9rdUVqdThJ?=
- =?utf-8?B?aGtxV2lFUkpYVjFzZ3drUTdCSE16dXdrN1dRT0ZzRE1mWjREdlN1ZWg4YUpi?=
- =?utf-8?B?alZudkdGUmxPb2dBWnRrMHllTk96WHN5c3d5Zk9rTXlRcFh3eTljUGl5eEls?=
- =?utf-8?B?R2JBaEc3NWhoc015ZmlLTjl5cUFjR1VKb0JVZTlrZjJXbFdIeEV4QmVXbE85?=
- =?utf-8?B?KzVpYnUvNHg2LzlucC8zSHRuK0RhVHFZY040VHp2cFRpWGpwVWpjck5uQnBE?=
- =?utf-8?B?VWg5V1BKSGZkSzcyZXhkTWZZVUUyWjBnN3ZBVmRZMEpwZVp5Qmx4dUJjdXB6?=
- =?utf-8?B?MEZCRWdxSlNFNi9SRW9vYmdkR2VyaG1vRUJtcjRJb1B4ekJSdDNudWlyWDJo?=
- =?utf-8?Q?FK3FYVr2IJqMA6QzyErJDJ8zu?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6262718a-fb85-4c31-2c14-08dbbd8ecd12
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 06:15:22.9984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e8YXp5cpcNTyje9SKd/MAC5lQ7RCu7E993I3E8bHIGHhHQX17YVIzv+j+er46EiNDsaHzg1V5tOmBpdb5NXlzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8441
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -176,59 +69,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/22 17:47, Robin Murphy wrote:
-> On 2023-09-21 17:44, Jason Gunthorpe wrote:
->> On Thu, Sep 21, 2023 at 08:12:03PM +0800, Baolu Lu wrote:
->>> On 2023/9/21 15:51, Yi Liu wrote:
->>>> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
->>>> index 4a7c5c8fdbb4..3c8660fe9bb1 100644
->>>> --- a/include/uapi/linux/iommufd.h
->>>> +++ b/include/uapi/linux/iommufd.h
->>>> @@ -357,6 +357,14 @@ enum iommufd_hwpt_alloc_flags {
->>>>        IOMMU_HWPT_ALLOC_NEST_PARENT = 1 << 0,
->>>>    };
->>>> +/**
->>>> + * enum iommu_hwpt_type - IOMMU HWPT Type
->>>> + * @IOMMU_HWPT_TYPE_DEFAULT: default
->>>
->>> How about s/default/vendor agnostic/ ?
->>
->> Please don't use the word vendor :)
->>
->> IOMMU_HWPT_TYPE_GENERIC perhaps if we don't like default
-> 
-> Ah yes, a default domain type, not to be confused with any default domain 
-> type, including the default default domain type. Just in case anyone had 
-> forgotten how gleefully fun this is :D
-> 
-> I particularly like the bit where we end up with this construct later:
-> 
->      switch (hwpt_type) {
->      case IOMMU_HWPT_TYPE_DEFAULT:
->          /* allocate a domain */
->      default:
->          /* allocate a different domain */
->      }
-> 
-> But of course neither case allocates a *default* domain, because it's quite 
-> obviously the wrong place to be doing that.
-> 
-> I could go on enjoying myself, but basically yeah, "default" can't be a 
-> type in itself (at best it would be a meta-type which could be requested, 
-> such that it resolves to some real type to actually allocate), so a good 
-> name should reflect what the type functionally *means* to the user. IIUC 
-> the important distinction is that it's an abstract kernel-owned pagetable 
-> for the user to indirectly control via the API, rather than one it owns and 
-> writes directly (and thus has to be in a specific agreed format).
+From: Weilin Wang <weilin.wang@intel.com>
 
-yes. It is just what the existing domain_alloc_user op does. Here we add
-a hwpt_type as the type can be given by user, so we need to define a 
-specific type for it.
+Perf stat metric grouping generates event groups that are provided to kernel for
+data collection using the hardware counters. Sometimes, the grouping might fail
+and kernel has to retry the groups because generated groups do not fit in the
+hardware counters correctly. In some other cases, the groupings are collected
+correctly, however, they left some hardware counters unused.
 
-Perhaps we can also name it as IOMMU_HWPT_TYPE_UNMANAGED to be aligned with
-the domain type naming. IOMMU_HWPT_TYPE_GENERIC is also a good choice.
-Please feel free let me know your preference.
+To improve these inefficiencies, we would like to propose a hardware aware
+grouping method that does metric/event grouping based on event counter
+restriction rules and the availability of hardware counters in the system. This
+method is generic as long as all the restriction rules could be provided from
+the pmu-event JSON files.
 
--- 
-Regards,
-Yi Liu
+This patch set includes code that does hardware aware grouping and updated
+pmu-event JSON files for four platforms (SapphireRapids, Icelakex, Cascadelakex,
+and Tigerlake) for your testing and experimenting. We've successfully tested
+these patches on three platforms (SapphireRapids, Icelakex, and Cascadelakex)
+with topdown metrics from TopdownL1 to TopdownL6.
+
+There are some optimization opportunities that we might implement in the future:
+1) Better NMI hanlding: when NMI watchdog is enabled, we reduce the default_core
+total counter size by one. This could be improved to better utilize the counter.
+2) Fill important events into unused counter for better counter utlization:
+there might be some unused counters scattered in the groups. We could consider
+to add important events in this slots if necessary. This could help increase the
+multiplexing percentage and help improve accuracy if the event is critical.
+
+Remaining questions for dicussion:
+3) Where to start grouping from? The current implementation start grouping by
+combining all the events into a single list. This step deduplicates events. But
+it does not maintain the relationship of events according to the metrics, i.e.
+events required by one metric may not be collected at the same time. Another
+type of starting point would be grouping each individual metric and then try to
+merge the groups.
+4) Any comments, suggestions, new ideas?
+5) If you are interested to test the patch out and the pmu-event JSON files of
+your testing platform is not provided here, please let me know so that I could
+provide you the files.
+
+
+Weilin Wang (25):
+  perf stat: Add hardware-grouping cmd option to perf stat
+  perf stat: Add basic functions for the hardware-grouping stat cmd
+    option
+  perf pmu-events: Add functions in jevent.py
+  perf pmu-events: Add counter info into JSON files for SapphireRapids
+  perf pmu-events: Add event counter data for Cascadelakex
+  perf pmu-events: Add event counter data for Icelakex
+  perf stat: Add helper functions for hardware-grouping method
+  perf stat: Add functions to get counter info
+  perf stat: Add helper functions for hardware-grouping method
+  perf stat: Add helper functions to hardware-grouping method
+  perf stat: Add utility functions to hardware-grouping method
+  perf stat: Add more functions for hardware-grouping method
+  perf stat: Add functions to hardware-grouping method
+  perf stat: Add build string function and topdown events handling in
+    hardware-grouping
+  perf stat: Add function to combine metrics for hardware-grouping
+  perf stat: Update keyword core to default_core to adjust to the
+    changes for events with no unit
+  perf stat: Handle taken alone in hardware-grouping
+  perf stat: Handle NMI in hardware-grouping
+  perf stat: Handle grouping method fall back in hardware-grouping
+  perf stat: Code refactoring in hardware-grouping
+  perf stat: Add tool events support in hardware-grouping
+  perf stat: Add TSC support in hardware-grouping
+  perf stat: Fix a return error issue in hardware-grouping
+  perf stat: Add check to ensure correctness in platform that does not
+    support hardware-grouping
+  perf pmu-events: Add event counter data for Tigerlake
+
+ tools/lib/bitmap.c                            |   20 +
+ tools/perf/builtin-stat.c                     |    7 +
+ .../arch/x86/cascadelakex/cache.json          | 1237 ++++++++++++
+ .../arch/x86/cascadelakex/counter.json        |   17 +
+ .../arch/x86/cascadelakex/floating-point.json |   16 +
+ .../arch/x86/cascadelakex/frontend.json       |   68 +
+ .../arch/x86/cascadelakex/memory.json         |  751 ++++++++
+ .../arch/x86/cascadelakex/other.json          |  168 ++
+ .../arch/x86/cascadelakex/pipeline.json       |  102 +
+ .../arch/x86/cascadelakex/uncore-cache.json   | 1138 +++++++++++
+ .../x86/cascadelakex/uncore-interconnect.json | 1272 +++++++++++++
+ .../arch/x86/cascadelakex/uncore-io.json      |  394 ++++
+ .../arch/x86/cascadelakex/uncore-memory.json  |  509 +++++
+ .../arch/x86/cascadelakex/uncore-power.json   |   25 +
+ .../arch/x86/cascadelakex/virtual-memory.json |   28 +
+ .../pmu-events/arch/x86/icelakex/cache.json   |   98 +
+ .../pmu-events/arch/x86/icelakex/counter.json |   17 +
+ .../arch/x86/icelakex/floating-point.json     |   13 +
+ .../arch/x86/icelakex/frontend.json           |   55 +
+ .../pmu-events/arch/x86/icelakex/memory.json  |   53 +
+ .../pmu-events/arch/x86/icelakex/other.json   |   52 +
+ .../arch/x86/icelakex/pipeline.json           |   92 +
+ .../arch/x86/icelakex/uncore-cache.json       |  965 ++++++++++
+ .../x86/icelakex/uncore-interconnect.json     | 1667 +++++++++++++++++
+ .../arch/x86/icelakex/uncore-io.json          |  966 ++++++++++
+ .../arch/x86/icelakex/uncore-memory.json      |  186 ++
+ .../arch/x86/icelakex/uncore-power.json       |   26 +
+ .../arch/x86/icelakex/virtual-memory.json     |   22 +
+ .../arch/x86/sapphirerapids/cache.json        |  104 +
+ .../arch/x86/sapphirerapids/counter.json      |   17 +
+ .../x86/sapphirerapids/floating-point.json    |   25 +
+ .../arch/x86/sapphirerapids/frontend.json     |   98 +-
+ .../arch/x86/sapphirerapids/memory.json       |   44 +
+ .../arch/x86/sapphirerapids/other.json        |   40 +
+ .../arch/x86/sapphirerapids/pipeline.json     |  118 ++
+ .../arch/x86/sapphirerapids/uncore-cache.json |  534 +++++-
+ .../arch/x86/sapphirerapids/uncore-cxl.json   |   56 +
+ .../sapphirerapids/uncore-interconnect.json   |  476 +++++
+ .../arch/x86/sapphirerapids/uncore-io.json    |  373 ++++
+ .../x86/sapphirerapids/uncore-memory.json     |  391 ++++
+ .../arch/x86/sapphirerapids/uncore-power.json |   24 +
+ .../x86/sapphirerapids/virtual-memory.json    |   20 +
+ .../pmu-events/arch/x86/tigerlake/cache.json  |   65 +
+ .../arch/x86/tigerlake/counter.json           |    7 +
+ .../arch/x86/tigerlake/floating-point.json    |   13 +
+ .../arch/x86/tigerlake/frontend.json          |   56 +
+ .../pmu-events/arch/x86/tigerlake/memory.json |   31 +
+ .../pmu-events/arch/x86/tigerlake/other.json  |    4 +
+ .../arch/x86/tigerlake/pipeline.json          |   96 +
+ .../x86/tigerlake/uncore-interconnect.json    |   11 +
+ .../arch/x86/tigerlake/uncore-memory.json     |    6 +
+ .../arch/x86/tigerlake/uncore-other.json      |    1 +
+ .../arch/x86/tigerlake/virtual-memory.json    |   20 +
+ tools/perf/pmu-events/jevents.py              |  179 +-
+ tools/perf/pmu-events/pmu-events.h            |   26 +-
+ tools/perf/util/metricgroup.c                 |  927 +++++++++
+ tools/perf/util/metricgroup.h                 |   82 +
+ tools/perf/util/pmu.c                         |    5 +
+ tools/perf/util/pmu.h                         |    1 +
+ tools/perf/util/stat.h                        |    1 +
+ 60 files changed, 13790 insertions(+), 25 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/x86/cascadelakex/counter.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/counter.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sapphirerapids/counter.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/tigerlake/counter.json
+
+--
+2.39.3
+
