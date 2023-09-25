@@ -2,127 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 857F37AD9CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589637AD9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbjIYONx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        id S230510AbjIYOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbjIYONv (ORCPT
+        with ESMTP id S230448AbjIYOOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:13:51 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58DC11B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:13:43 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-532c66a105bso7589962a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:13:43 -0700 (PDT)
+        Mon, 25 Sep 2023 10:14:32 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC27FC
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:14:25 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-533c4d20b33so7512658a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695651222; x=1696256022; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w3Y94KioZ4lUB6KTiVYafyhITdpeQDnL5Ld1MTAmwrE=;
-        b=hfUBVOCFs3JQ8XJruqqfgzplqM+0J404RkIxvxayfzutmyY+gvOenIAsUzgTOoQ9o0
-         YvvU44CgTV1BqgcdL/Wpp27xlxsBqT6mHtm22EO+/sDc8USVegMlDg1YDZaY1qAi/Tj4
-         8Te9J7g5jZZD0Ya1m0omDV1rBCeCQj3YZmP0rM0VAmDCsVERGSeP4AMs8qq6O5NlGlOW
-         kIMePhgX2nvtT1N5DMgwWWVR7jYZm8sfel2iOcAKMHeDz/353ychoNTTtEBJdK2lhSpC
-         TTpEh1+xUWe28EheibJ/GWMXN3rdY9OrXF+AVhnLPp2zx3th8hcWmdZm6dHw3xNkglps
-         4IjQ==
+        d=tuxon.dev; s=google; t=1695651264; x=1696256064; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vdRnBQhusGIL2b+v+H5dfPPmDF9lKDRORIGAAQ+Woys=;
+        b=NuvsRN+8S7EMpVCauIiLl50WRygRZSAF4E/HKnGx6aUA4Px16dEg1ntffjmgYQ7FE7
+         97ZjAscny8bLBirlLc6Hjxh7l8zJFaWZfzqgWqBOPzxGlB5UdQHgzBu5BuhT81P+idzr
+         0ifxU3NG1y73WM8I8kGnCR+35dnmAMLJXqqb2iFspMshs5iWxmkd39fajj4MK0hug2Ru
+         eJslZCc291B/TXptYQaYsNhCBFXhULI3E3l6ydy0ZTLcTuAUGuKrxty+PAtbnhC3j3gv
+         +Vwdt6/HW886/k1KSaHlqczUiZWJDoq/txvxKs2C7ldt1z/ZVv0AmV/oVqYL3EJ155T7
+         Ex9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695651222; x=1696256022;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w3Y94KioZ4lUB6KTiVYafyhITdpeQDnL5Ld1MTAmwrE=;
-        b=UuJgZ6XzFJpgIncFDKPx2wEn0vVDPxZB/qc2MCu3PLgxNFqiLG6aNs3n8WjnknHkVE
-         Xik1Myqa4C+Vk8hBMJg4PgRar0zcpVrrxirh/ecUK6bAQ0t5UBqq36tk1rMs+17Wvrgf
-         z0r4bqfxQTd5ldX0ezzxxQ8WQSF9M2PafWED+0Qc6+5UxtskNV80F5TzhILMk1cLXOqj
-         FpujIlc5DmXxV7ooU24CLPb2sraZW2iD7bSrdPu4aI1lGV7iGcl0RQ8D8GoOVrrUW2an
-         tc/LkXMnfJvC+AMvlkeiHu2kQD5QenyOkglYr5bO0V/4bt6pDRabzZ2I5Ci6hm6lKh5n
-         Cy+Q==
-X-Gm-Message-State: AOJu0Yyqen1ZuWD9pfQkgVaD2TTuxathAHKkLVnLyE8qZ2F7GrYI7f0R
-        Ft/+T4nLqg+61hBCZA9z8JF5gQ==
-X-Google-Smtp-Source: AGHT+IHN01Ha+0X82LArkbyFm3JD30PWtG77y/LlloFpNITht78xOEe93gDgtfpCK1tmqX0gcB9MJg==
-X-Received: by 2002:aa7:c481:0:b0:52c:b469:bafd with SMTP id m1-20020aa7c481000000b0052cb469bafdmr4951595edq.41.1695651222046;
-        Mon, 25 Sep 2023 07:13:42 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id n18-20020a05640206d200b005224d960e66sm5533135edy.96.2023.09.25.07.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 07:13:41 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 16:13:40 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] RISC-V: Detect Zicond from ISA string
-Message-ID: <20230925-434ad7cfaea0011fe0fb9989@orel>
-References: <20230925133859.1735879-1-apatel@ventanamicro.com>
- <20230925133859.1735879-5-apatel@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1695651264; x=1696256064;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vdRnBQhusGIL2b+v+H5dfPPmDF9lKDRORIGAAQ+Woys=;
+        b=hPlnCw+Jg96n/a29et0HaoJ4LR5Xj2S7K4SAl+CYgsIhd+WBY5hhAgpamnvaVMciKO
+         0jqEZ7YzmoflafMrzqW3u4nTzYxrHhLLyGA5ZG3o6r906E/cSruYTcVuIB6L8+iEKk8I
+         OByOd0WCgVZsxsK9BDBwC7wxCrmcHrcvruMgl3MkwVkZUgq/sPfwqxtYN5/Iswp6e0ll
+         vJv6w7L7gXhxtfVfBrJ1axhABTmx+wbfkL0V+KFCZwjFfmG7LfH/j0ACzRbXVIlMwfxi
+         Wr11ynrH6+MF/7abv6luMw0OrkRnOshH53WAb4BNCP/wlaIK0jial1tetoAJQRwub8m8
+         Lj4w==
+X-Gm-Message-State: AOJu0YxMRVIhJ/JdSKW1qyF4cNMScM+Twp9z3yafuiJ8un5ufsfoMORj
+        BCIGJy2Yr++BukPRikgjVVcMcA==
+X-Google-Smtp-Source: AGHT+IG3P2pMWfKC6BxP+BEDyGl/OKpELub+ARSQfEls3L7kOdsakdL4CdWODUbaZsReEBrgZPKR+A==
+X-Received: by 2002:a05:6402:27ca:b0:52c:f73:3567 with SMTP id c10-20020a05640227ca00b0052c0f733567mr15302759ede.13.1695651264216;
+        Mon, 25 Sep 2023 07:14:24 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.177])
+        by smtp.gmail.com with ESMTPSA id o12-20020aa7d3cc000000b005259dd903e5sm5533339edr.67.2023.09.25.07.14.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 07:14:23 -0700 (PDT)
+Message-ID: <2e73d0c0-4a3f-bea2-9779-bf929341296d@tuxon.dev>
+Date:   Mon, 25 Sep 2023 17:14:21 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925133859.1735879-5-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 6/8] drm: atmel-hlcdc: add DPI mode support for XLCDC
+Content-Language: en-US
+To:     Manikandan Muralidharan <manikandan.m@microchip.com>,
+        sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
+        daniel@ffwll.ch, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, lee@kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Hari.PrasathGE@microchip.com,
+        Balamanikandan.Gunasundar@microchip.com,
+        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
+        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
+        Balakrishnan.S@microchip.com
+References: <20230915104849.187146-1-manikandan.m@microchip.com>
+ <20230915104849.187146-7-manikandan.m@microchip.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230915104849.187146-7-manikandan.m@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 07:08:54PM +0530, Anup Patel wrote:
-> The RISC-V integer conditional (Zicond) operation extension defines
-> standard conditional arithmetic and conditional-select/move operations
-> which are inspired from the XVentanaCondOps extension. In fact, QEMU
-> RISC-V also has support for emulating Zicond extension.
-> 
-> Let us detect Zicond extension from ISA string available through
-> DT or ACPI.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/hwcap.h | 1 +
->  arch/riscv/kernel/cpufeature.c | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index b7efe9e2fa89..15bafc02ffd4 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -60,6 +60,7 @@
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_SMSTATEEN		43
->  #define RISCV_ISA_EXT_XVENTANACONDOPS	44
-> +#define RISCV_ISA_EXT_ZICOND		45
->  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 3a31d34fe709..7f683916f2c2 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -167,6 +167,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
->  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
-> +	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
->  	__RISCV_ISA_EXT_DATA(zifencei, RISCV_ISA_EXT_ZIFENCEI),
->  	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
-> -- 
-> 2.34.1
->
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+
+On 15.09.2023 13:48, Manikandan Muralidharan wrote:
+> Add support for Display Pixel Interface (DPI) Compatible Mode
+> support in atmel-hlcdc driver for XLCDC IP along with legacy
+> pixel mapping.DPI mode BIT is configured in LCDC_CFG5 register.
+
+Space after .
+
+> 
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> [durai.manickamkr@microchip.com: update DPI mode bit using is_xlcdc flag]
+> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
+> ---
+>  .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 22 ++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+> index 1ac31c0c474a..b0051ec02f7f 100644
+> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+> @@ -30,10 +30,12 @@
+>   *
+>   * @base: base CRTC state
+>   * @output_mode: RGBXXX output mode
+> + * @dpi: output DPI mode
+>   */
+>  struct atmel_hlcdc_crtc_state {
+>  	struct drm_crtc_state base;
+>  	unsigned int output_mode;
+> +	u8 dpi;
+>  };
+>  
+>  static inline struct atmel_hlcdc_crtc_state *
+> @@ -164,6 +166,8 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
+>  
+>  	state = drm_crtc_state_to_atmel_hlcdc_crtc_state(c->state);
+>  	cfg = state->output_mode << 8;
+> +	if (is_xlcdc)
+> +		cfg |= state->dpi << 11;
+>  
+>  	if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NVSYNC))
+>  		cfg |= ATMEL_HLCDC_VSPOL;
+> @@ -176,7 +180,9 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
+>  			   ATMEL_HLCDC_VSPDLYS | ATMEL_HLCDC_VSPDLYE |
+>  			   ATMEL_HLCDC_DISPPOL | ATMEL_HLCDC_DISPDLY |
+>  			   ATMEL_HLCDC_VSPSU | ATMEL_HLCDC_VSPHO |
+> -			   ATMEL_HLCDC_GUARDTIME_MASK | ATMEL_HLCDC_MODE_MASK,
+> +			   ATMEL_HLCDC_GUARDTIME_MASK |
+> +			   (is_xlcdc ? ATMEL_XLCDC_MODE_MASK |
+> +			   ATMEL_XLCDC_DPI : ATMEL_HLCDC_MODE_MASK),
+>  			   cfg);
+>  
+>  	clk_disable_unprepare(crtc->dc->hlcdc->sys_clk);
+> @@ -374,7 +380,15 @@ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
+>  
+>  	hstate = drm_crtc_state_to_atmel_hlcdc_crtc_state(state);
+>  	hstate->output_mode = fls(output_fmts) - 1;
+> -
+> +	if (crtc->dc->desc->is_xlcdc) {
+> +		/* check if MIPI DPI bit needs to be set */
+> +		if (fls(output_fmts) > 3) {
+> +			hstate->output_mode -= 4;
+> +			hstate->dpi = 1;
+> +		} else {
+> +			hstate->dpi = 0;
+> +		}
+> +	}
+>  	return 0;
+>  }
+>  
+> @@ -478,7 +492,7 @@ static struct drm_crtc_state *
+>  atmel_hlcdc_crtc_duplicate_state(struct drm_crtc *crtc)
+>  {
+>  	struct atmel_hlcdc_crtc_state *state, *cur;
+> -
+> +	struct atmel_hlcdc_crtc *c = drm_crtc_to_atmel_hlcdc_crtc(crtc);
+
+Keep the blank line here.
+
+>  	if (WARN_ON(!crtc->state))
+>  		return NULL;
+>  
+> @@ -489,6 +503,8 @@ atmel_hlcdc_crtc_duplicate_state(struct drm_crtc *crtc)
+>  
+>  	cur = drm_crtc_state_to_atmel_hlcdc_crtc_state(crtc->state);
+>  	state->output_mode = cur->output_mode;
+> +	if (c->dc->desc->is_xlcdc)
+> +		state->dpi = cur->dpi;
+>  
+>  	return &state->base;
+>  }
