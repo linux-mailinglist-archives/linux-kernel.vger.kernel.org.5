@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6962A7AE253
+	by mail.lfdr.de (Postfix) with ESMTP id CD2227AE254
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbjIYXfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        id S233523AbjIYXfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjIYXfN (ORCPT
+        with ESMTP id S230125AbjIYXfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Sep 2023 19:35:13 -0400
-Received: from mo-csw.securemx.jp (mo-csw1801.securemx.jp [210.130.202.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A495010A;
-        Mon, 25 Sep 2023 16:35:05 -0700 (PDT)
-Received: by mo-csw.securemx.jp (mx-mo-csw1801) id 38PNYYKI916596; Tue, 26 Sep 2023 08:34:34 +0900
-X-Iguazu-Qid: 2yAaOS3aFSpfO9O1tT
-X-Iguazu-QSIG: v=2; s=0; t=1695684873; q=2yAaOS3aFSpfO9O1tT; m=7wX4E90bFd4ma85p1R3YT6pZKoeimqEkQGdwTD8cSwU=
+Received: from mo-csw.securemx.jp (mo-csw1800.securemx.jp [210.130.202.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556D610C;
+        Mon, 25 Sep 2023 16:35:06 -0700 (PDT)
+Received: by mo-csw.securemx.jp (mx-mo-csw1800) id 38PNYcE63254912; Tue, 26 Sep 2023 08:34:38 +0900
+X-Iguazu-Qid: 2yAamNv3Hdm5ss8ObB
+X-Iguazu-QSIG: v=2; s=0; t=1695684878; q=2yAamNv3Hdm5ss8ObB; m=4CKC7fq3bEeu+oe2Km30DmtaFOJ0dzfnSYt5DXFKzJE=
 Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1802) id 38PNYWHb3789012
+        by relay.securemx.jp (mx-mr1801) id 38PNYbVi3694591
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Sep 2023 08:34:33 +0900
-X-SA-MID: 8623328
+        Tue, 26 Sep 2023 08:34:37 +0900
+X-SA-MID: 8623330
 From:   Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
 To:     Hans Verkuil <hverkuil@xs4all.nl>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
@@ -34,155 +34,185 @@ To:     Hans Verkuil <hverkuil@xs4all.nl>,
         Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
 Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 0/5] Add Toshiba Visconti Video Input Interface driver
-Date:   Tue, 26 Sep 2023 08:28:01 +0900
+Subject: [PATCH v8 1/5] dt-bindings: media: platform: visconti: Add Toshiba Visconti Video Input Interface
+Date:   Tue, 26 Sep 2023 08:28:02 +0900
 X-TSB-HOP2: ON
-Message-Id: <20230925232806.950683-1-yuji2.ishikawa@toshiba.co.jp>
+Message-Id: <20230925232806.950683-2-yuji2.ishikawa@toshiba.co.jp>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230925232806.950683-1-yuji2.ishikawa@toshiba.co.jp>
+References: <20230925232806.950683-1-yuji2.ishikawa@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is the Video Input Interface driver
-for Toshiba's ARM SoC, Visconti.
-This provides DT binding documentation,
-device driver, documentation and MAINTAINER files.
+Adds the Device Tree binding documentation that allows to describe
+the Video Input Interface found in Toshiba Visconti SoCs.
 
-A visconti VIIF driver instance exposes
-1 media control device file and 3 video device files
-for a VIIF hardware.
-Detailed HW/SW are described in documentation directory.
-The VIIF hardware has CSI2 receiver,
-image signal processor and DMAC inside.
-The subdevice for image signal processor provides
-vendor specific V4L2 controls.
-
-The device driver depends on two other drivers under development;
-clock framework driver and IOMMU driver.
-Corresponding features will be added later.
-
-Best regards,
-Yuji
-
+Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
+Reviewed-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+---
 Changelog v2:
-- Resend v1 because a patch exceeds size limit.
+- no change
 
 Changelog v3:
-- Add documentation to describe SW and HW
-- Adapted to media control framework
-- Introduced ISP subdevice, capture device
-- Remove private IOCTLs and add vendor specific V4L2 controls
-- Change function name avoiding camelcase and uppercase letters
+- no change
 
 Changelog v4:
-- Split patches because a patch exceeds size limit
-- fix dt-bindings document
-- stop specifying ID numbers for driver instance explicitly at device tree
-- use pm_runtime to trigger initialization of HW
-  along with open/close of device files.
-- add a entry for a header file at MAINTAINERS file
+- fix style problems at the v3 patch
+- remove "index" member
+- update example
 
 Changelog v5:
-- Fix coding style problem in viif.c (patch 2/6)
+- no change
 
 Changelog v6:
-- add register definition of BUS-IF and MPU in dt-bindings
-- add CSI2RX subdevice (separeted from ISP subdevice)
-- change directory layout (moved to media/platform/toshiba/visconti)
-- change source file layout (removed hwd_xxxx.c)
-- pointer to userland memory is removed from uAPI parameters
-- change register access (from struct style to macro style)
-- remove unused macros
+- add register definition of BUS-IF and MPU
 
 Changelog v7:
-- remove redundant "bindings" from header and description text
-- fix multiline text of "description"
-- change "compatible" to "visconti5-viif"
+- remove trailing "bindings" from commit header message
+- remove trailing "Device Tree Bindings" from title
+- fix text wrapping of description
+- change compatible to visconti5-viif
 - explicitly define allowed properties for port::endpoint
-- remove unused variables
-- update kerneldoc comments
-- update references to headers
 
 Changelog v8:
-- rename bindings description file
-- remove/simplify items in bindings
-- update operations around v4l2_async_notifier
-- use v4l2_async_connection instead of v4l2_async_subdev
-- use dev_err_probe()
-- better error handling at probe
-- remove redundant mutex
-- add V4L2_CTRL_TYPE_VISCONTI_ISP constant
+- Suggestion from Krzysztof Kozlowski
+  - rename bindings description file
+  - use block style array instead of inline style
+  - remove clock-lane (as it is fixed at position 0)
+  - update sample node's name
+  - use lowercase hex for literals
+- Suggestion from Laurent Pinchart
+  - update description message port::description
+  - remove port::endpoint::bus-type as it is fixed to <4>
+  - remove port::endpoint::clock-lanes from example
+  - add port::endpoint::data-lanes to required parameters list
+  - fix sequence of data-lanes: <1 2 3 4> because current driver does not support data reordering
+  - update port::endpoint::data-lanes::description
+  - remove redundant type definition for port::endpoint::data-lanes
 
-Yuji Ishikawa (5):
-  dt-bindings: media: platform: visconti: Add Toshiba Visconti Video
-    Input Interface
-  media: platform: visconti: Add Toshiba Visconti Video Input Interface
-    driver
-  media: add V4L2 vendor specific control handlers
-  documentation: media: add documentation for Toshiba Visconti Video
-    Input Interface driver
-  MAINTAINERS: Add entries for Toshiba Visconti Video Input Interface
-
- .../media/toshiba,visconti5-viif.yaml         |  105 +
- .../driver-api/media/drivers/index.rst        |    1 +
- .../media/drivers/visconti-viif.rst           |  462 +++
- .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
- .../media/v4l/vidioc-queryctrl.rst            |    5 +
- MAINTAINERS                                   |    4 +
- drivers/media/platform/Kconfig                |    1 +
- drivers/media/platform/Makefile               |    1 +
- drivers/media/platform/toshiba/Kconfig        |    6 +
- drivers/media/platform/toshiba/Makefile       |    2 +
- .../media/platform/toshiba/visconti/Kconfig   |   18 +
- .../media/platform/toshiba/visconti/Makefile  |    8 +
- .../media/platform/toshiba/visconti/viif.c    |  650 ++++
- .../media/platform/toshiba/visconti/viif.h    |  374 ++
- .../platform/toshiba/visconti/viif_capture.c  | 1489 ++++++++
- .../platform/toshiba/visconti/viif_capture.h  |   22 +
- .../platform/toshiba/visconti/viif_common.c   |  199 +
- .../platform/toshiba/visconti/viif_common.h   |   38 +
- .../platform/toshiba/visconti/viif_controls.c | 3394 +++++++++++++++++
- .../platform/toshiba/visconti/viif_controls.h |   18 +
- .../platform/toshiba/visconti/viif_csi2rx.c   |  691 ++++
- .../platform/toshiba/visconti/viif_csi2rx.h   |   24 +
- .../toshiba/visconti/viif_csi2rx_regs.h       |  102 +
- .../platform/toshiba/visconti/viif_isp.c      | 1259 ++++++
- .../platform/toshiba/visconti/viif_isp.h      |   24 +
- .../platform/toshiba/visconti/viif_regs.h     |  716 ++++
- drivers/media/v4l2-core/v4l2-ctrls-core.c     |    7 +-
- include/uapi/linux/v4l2-controls.h            |    6 +
- include/uapi/linux/videodev2.h                |    2 +
- include/uapi/linux/visconti_viif.h            | 1800 +++++++++
- 30 files changed, 11431 insertions(+), 1 deletion(-)
+ .../media/toshiba,visconti5-viif.yaml         | 105 ++++++++++++++++++
+ 1 file changed, 105 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/toshiba,visconti5-viif.yaml
- create mode 100644 Documentation/driver-api/media/drivers/visconti-viif.rst
- create mode 100644 drivers/media/platform/toshiba/Kconfig
- create mode 100644 drivers/media/platform/toshiba/Makefile
- create mode 100644 drivers/media/platform/toshiba/visconti/Kconfig
- create mode 100644 drivers/media/platform/toshiba/visconti/Makefile
- create mode 100644 drivers/media/platform/toshiba/visconti/viif.c
- create mode 100644 drivers/media/platform/toshiba/visconti/viif.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.c
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.c
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.c
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.c
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx_regs.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.c
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.h
- create mode 100644 drivers/media/platform/toshiba/visconti/viif_regs.h
- create mode 100644 include/uapi/linux/visconti_viif.h
 
+diff --git a/Documentation/devicetree/bindings/media/toshiba,visconti5-viif.yaml b/Documentation/devicetree/bindings/media/toshiba,visconti5-viif.yaml
+new file mode 100644
+index 000000000000..7ac1f5c5e9d5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/toshiba,visconti5-viif.yaml
+@@ -0,0 +1,105 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/toshiba,visconti5-viif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Toshiba Visconti5 SoC Video Input Interface
++
++maintainers:
++  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
++
++description: |-
++  Toshiba Visconti5 SoC Video Input Interface (VIIF) receives MIPI CSI2 video
++  stream, processes the stream with image signal processors (L1ISP, L2ISP),
++  then stores pictures to main memory.
++
++properties:
++  compatible:
++    const: toshiba,visconti5-viif
++
++  reg:
++    items:
++      - description: Registers for capture control
++      - description: Registers for CSI2 receiver control
++      - description: Registers for bus interface unit control
++      - description: Registers for Memory Protection Unit
++
++  interrupts:
++    items:
++      - description: Sync Interrupt
++      - description: Status (Error) Interrupt
++      - description: CSI2 Receiver Interrupt
++      - description: L1ISP Interrupt
++
++  port:
++    $ref: /schemas/graph.yaml#/$defs/port-base
++    unevaluatedProperties: false
++    description: CSI-2 input port, with a single endpoint connected to the CSI-2 transmitter.
++
++    properties:
++      endpoint:
++        $ref: video-interfaces.yaml#
++        additionalProperties: false
++
++        required:
++          - clock-noncontinuous
++          - link-frequencies
++          - remote-endpoint
++          - data-lanes
++
++        properties:
++          data-lanes:
++            description: VIIF supports 1, 2, 3 or 4 data lanes
++            minItems: 1
++            items:
++              - const: 1
++              - const: 2
++              - const: 3
++              - const: 4
++
++          clock-noncontinuous: true
++          link-frequencies: true
++          remote-endpoint: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        video@1c000000 {
++            compatible = "toshiba,visconti5-viif";
++            reg = <0 0x1c000000 0 0x6000>,
++                  <0 0x1c008000 0 0x400>,
++                  <0 0x1c00e000 0 0x1000>,
++                  <0 0x2417a000 0 0x1000>;
++            interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
++
++            port {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                csi_in0: endpoint {
++                    remote-endpoint = <&imx219_out0>;
++                    data-lanes = <1 2>;
++                    clock-noncontinuous;
++                    link-frequencies = /bits/ 64 <456000000>;
++                };
++            };
++        };
++    };
 -- 
 2.34.1
 
