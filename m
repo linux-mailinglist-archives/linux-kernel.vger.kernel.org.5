@@ -2,179 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255C87AD641
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF337AD643
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjIYKmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S232651AbjIYKnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbjIYKmO (ORCPT
+        with ESMTP id S229735AbjIYKnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:42:14 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BE6BE;
-        Mon, 25 Sep 2023 03:42:07 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-313e742a787so4102502f8f.1;
-        Mon, 25 Sep 2023 03:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695638526; x=1696243326; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=voR699bb0bdw0l6UqKCMNJTCM4/iNMslEQN87HAl0MY=;
-        b=ZdtGQnvvGWLI8dB7eTgtITWhUgAkddUCkP70f929NC3W9qzSapknChYQ4Kg2yi0/lo
-         6cLPm5+MjdMU0ayXUqNy+KokeGnVv4DM4rswcAlnj6JKa9rODF55nzkoxtFAUD8Dl/Ju
-         4lPbesFKQUCU3C4x66WRUH/5yt1RHimn0IpuNrTAQmlbcL+fit2jUOAaPy2bm5v1Qwim
-         zMJfptYpDLuuESizFgPvGdMe05aaOEVDdNZTkZwYGKMLI2LICvhBiJzdw9NpdUzOYwg6
-         eQSNH/aO6hGK1EiXAnsz7+7o5bT89WuPacHg8PPYgnPC3XOPl7E7Sm+zAAmUBkSmib2S
-         /aGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695638526; x=1696243326;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=voR699bb0bdw0l6UqKCMNJTCM4/iNMslEQN87HAl0MY=;
-        b=qOjoJq08iBjx/8XYDmd9vPx5vKywjZZ3lBoJDsSrquOsItuHG3mioQRAvghuTw/5T0
-         /GR0T8aQufSAeZi+ScIIrLZnn3gsJASW/MgFGpXAGITNsG7c6qz1EqH7sk6XrZeqxjDu
-         t/4W3xFVOszD+VdqbEKMtQn0bcpEZj+jZDnyT8nKSvRkKewJsOpIvb6pVKYrNtf+o4Pp
-         GQzFoYXBqinxh9hbSuH+654QTn44oWgWm8tkwsO4uTaTqk5lpTJVOZdwKbCIa8o+PeP8
-         iHMjRdbu6xjcPWglCUMZBx3G7dTRnRUP0AuydPNQ64uNTAky6H+frS9i2baESqApfAjs
-         Y6WQ==
-X-Gm-Message-State: AOJu0YxXA2eWB9wjZ5p6GFMmzuOalLpF0H0KBvl4ZB6wyipk/9KXZKUn
-        13rTlUzzeAtrSr+NsjWutyE=
-X-Google-Smtp-Source: AGHT+IGxwD4t/L7OvoLQKPIzffYr9JP1lAdBs94RQ+kWG68W6GyuqlsaOpfTmIm/WUowXaiKX+ykfg==
-X-Received: by 2002:a05:6000:1c5:b0:31f:e5cb:88e3 with SMTP id t5-20020a05600001c500b0031fe5cb88e3mr7139801wrx.21.1695638525822;
-        Mon, 25 Sep 2023 03:42:05 -0700 (PDT)
-Received: from krava (37-188-188-137.red.o2.cz. [37.188.188.137])
-        by smtp.gmail.com with ESMTPSA id a8-20020a056000100800b0031f9bdb79dasm11465965wrx.61.2023.09.25.03.42.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 03:42:05 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 25 Sep 2023 12:41:59 +0200
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 04/12] fprobe: Use ftrace_regs in fprobe entry handler
-Message-ID: <ZRFj97DJtbXc4naO@krava>
-References: <169556254640.146934.5654329452696494756.stgit@devnote2>
- <169556259571.146934.4558592076420704031.stgit@devnote2>
+        Mon, 25 Sep 2023 06:43:04 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2110.outbound.protection.outlook.com [40.107.215.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83DBBE;
+        Mon, 25 Sep 2023 03:42:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cWvYmM/Fs+rqkcbf4otnO8/GjYhwh/gwIufyw8lwUeAJ5q2jIVE2M8dBXaDZFJo7DO0TLlfW0zT6OLdx3I4Oqly6TwOb7Mw8Nrpy3TZQ/B3x2f2s1K4ZDH1nD0grnOfJqpx5D07XMYCuWv/ozbA7KbgGrOsFgRXH4602kJRBiRbGnEy8U1VSkUb3xUBN0cWgJYEMbbuywGmaFZtxqwRu3zMPYM5LKLkCnYE0MEx/Asy7wVmEE2USsGHk1WhI0FBwUu7A5mpJrnuogSZOdfaRtGs5JPIWN9eP2elTS5miPEPnD2dcUpoBcQ404D3+Qa17GtUGNq1B8I6pR//sQrfvmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VwI0gfbmPjW5pBx3s0+8Kl1TIQo+ZO0ShHR0ZGa6v+A=;
+ b=egdyAQ9fWaVNchaCtQpOhJ7+JAro9BzJ0Gnvoogg1tYB6ZQCP3oXuEcl31NvTSfgtf2/RgRmkaNgIMWeDTAj+TD3WAkFZyv8kOpTPGvRfjzwGurDVfdFFyj6G/0MQrZS9zbcrDJBAeopN7i+79lxaEpAZtNW8YrqFr/sTZ8Bs4WXVA9Vi0gdq2PEaZJ/TTLjabunLblkfxCuMODfkEMxk1ziEI/1WB6/oZMxCswRn7x3f/KjkIPyEyeeCqcgIf8p/26hMvPzjPyTZoBwR/9akROHg7Nula4Git29j31hMIKgWa3Bquc7uxUha7ctTdgCfMqelUA5gsvZk1O/WNBq/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VwI0gfbmPjW5pBx3s0+8Kl1TIQo+ZO0ShHR0ZGa6v+A=;
+ b=r1leUs2lMb+pm/xLP5w5ZUdnNmCiQb/65DCzgG81RZYla4hPaHAcuYXrv2xCFF+lGn9tQqFgxuOHQev0MIgPpOBRMIztZqRCGrE5V7qghPSl7uMNxIGYOkC2o79vhvn76ZnnQovPgxQfyyV4/rAkleI+v8jxPKzvqdBxvPFilSU8TqvaT/u57985FQZdAgP6bqoMO/OZ5tE5INAjkOa4tGeUYgI5A6WEWtnuK85+fCePz9WjUvjwVAhSXh0cSWOzh5R1FhwllAQ/8PrE36jUVi2F+A7sG0D6GkQ6YYai7Kt32u7bkHP/BAPM8FUZ3PkWU6s42tCn76U5G4S9O5H38g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from KL1PR03MB7221.apcprd03.prod.outlook.com (2603:1096:820:cb::11)
+ by SI2PR03MB5860.apcprd03.prod.outlook.com (2603:1096:4:144::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 10:42:09 +0000
+Received: from KL1PR03MB7221.apcprd03.prod.outlook.com
+ ([fe80::3f14:c67:12ac:af39]) by KL1PR03MB7221.apcprd03.prod.outlook.com
+ ([fe80::3f14:c67:12ac:af39%3]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 10:42:09 +0000
+Message-ID: <bb20efd5-4f60-5ded-caa6-2c9c94a10a44@amlogic.com>
+Date:   Mon, 25 Sep 2023 18:42:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] arm64: dts: Add watchdog node for Amlogic-C3 SoCs
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        neil.armstrong@linaro.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230925090641.1185942-1-huqiang.qin@amlogic.com>
+ <51470d7a-65a7-44c7-856b-53ca4b065553@linaro.org>
+Content-Language: en-US
+From:   Huqiang Qin <huqiang.qin@amlogic.com>
+In-Reply-To: <51470d7a-65a7-44c7-856b-53ca4b065553@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYCPR01CA0167.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b2::7) To KL1PR03MB7221.apcprd03.prod.outlook.com
+ (2603:1096:820:cb::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169556259571.146934.4558592076420704031.stgit@devnote2>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: KL1PR03MB7221:EE_|SI2PR03MB5860:EE_
+X-MS-Office365-Filtering-Correlation-Id: 89c27e15-cfd4-462d-52f3-08dbbdb410ec
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iXPs9bXzO50b/eluq7ljD9CV2loEUbfLrmx2FqplWdJKMptL4g6Da+FPC4Roz2HdzagiXL5pp4IEIluoHtr5I2ST+mUnCetrMluiZw1UeM9oTsRjBUmQlaQ9/Km6CWSZeauxWaAJXspb1lPpjf6+xNGnFimWntuLKVpuym62qD61vBTkHpZazF5jBYeKFENN76rt0O70sabmiKrxfLooEsLo7D6nY8FXU15JhL/ZPVqZy14+duQFVT9Z4ZcKRbw3Ed7yGmWpLxhIxAqeRYKBLw1/P2TChIG5ov5+DvKlDnKEsM71Ta6ojYh00xoH+DwiJFyPK2/4GbqzzNReWTjTHrwL3nhieQDkMkFoxz8RAzFThcSa9iLuWMVBT8ACeUvn9ll5iTupmSnsr4HYHdXZiVZF/e6Ca4t7J0l/pInOkeCkfsCIyGurFTQ6/09M1jsyxOvWcy7pVJolq2d5g5B+NKPrJbsh0SrtH7yyQEWblMV1FjaSZe6vRu9lrAS1KYlJvbIsxqQwhrC1rHiJFjMUBdG+/ximne+H9W3Q6KwuoBxkqnZvWu0Oy7Xo9t3XLhNQhvnxrQeH8rTwwLFnrZ4gTpYdl8pTulHi98eux/ZJp/WNN0HSeWLwnz0iry78K3UBP7AHwlYkqxhW/iPeJdEh6aa18A+hK9shoCzS/5DAex6jF8gCm+AVfwszflUFFnqp9x6JkRLPAH4Gx/+uK3AESL2Pwps7Jf+SRScLmoPUaQA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB7221.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(6029001)(346002)(136003)(376002)(366004)(396003)(39850400004)(230922051799003)(1800799009)(186009)(451199024)(6512007)(53546011)(6486002)(6666004)(6506007)(52116002)(31696002)(86362001)(558084003)(38350700002)(38100700002)(36756003)(2616005)(26005)(44832011)(2906002)(31686004)(8936002)(8676002)(4326008)(41300700001)(7416002)(66556008)(66946007)(316002)(66476007)(5660300002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dFMzbUVTdXI4ZlAwWXN0MVQ1MTBZRlh6OVYxSDVqVFZ0b0tWUXRMSEVvNXJN?=
+ =?utf-8?B?R2hkWlYxT1Y2R1lHZnNRN2d3UXFNNG1DNjFJTTNPZ1IxNmJoM3I5blVkSnVw?=
+ =?utf-8?B?aXoxUlhsdnBXVGwzVVlMWStBN2F4ZkxSaVRqTTZIOHVQdFpPM3FqUUJkVEdJ?=
+ =?utf-8?B?Nmo1VEgzcFlIK0VObFlBZFVLdnMzVjZSb0xDMEtUeGw2WDJBelZ0MUVhcS83?=
+ =?utf-8?B?RTliV29nWnpjZHNLU09uSFBjYzhoZUc3RGo4aUkyZDVBS1J2ZThkZE95c2M3?=
+ =?utf-8?B?NURPbURMN3Y4aFNBL24vdDZ6MU9uNlU5bmx5QXVackxBSHg3OGlDeTltWStV?=
+ =?utf-8?B?ODY2UXRTWHhxL3g5SU1rODk3SFJIRW1KSnZMYTB0YnBwTXIxOVR4T1FEVm1J?=
+ =?utf-8?B?RWxEdFFQamQ5b1pIVC8rTGVxM0dGNXI0MUZXamdhdE1NQ1NzdnVYZnBLbE1y?=
+ =?utf-8?B?TTVZeVpaM2ozSTA0OTR2LzkxblRhNGhFbmNGcUtCWHkxcThlaWVJTlZPWG11?=
+ =?utf-8?B?eSsvcUl5Z2lCMXFhTlpibFNMenR1ckJzZjlCdHB3Sm9sVzhRNDdYQkFBVzJn?=
+ =?utf-8?B?U3lhN3l2M0lWYno5ZU1FV1RFMkJpUzgyZGJqVkhVN3ErUE8zMXlVdUhESDJE?=
+ =?utf-8?B?UTYrN2RNQjB4TmVjUVdTUUZnbmRzMUZoZnhJMnJZdUN4bjJPM3hRYUZQZDFH?=
+ =?utf-8?B?R1VMV3pROEVaaGRwWk0wZ2VXSjIvRFY4RzI1SG1jSE1SckxlbmNucGpjNVJP?=
+ =?utf-8?B?QXNtTTMwNFFJanhiNHdMZGl2MzdzUWlBQjdyVlR2VVNxVGk0ako2L3RrUmtM?=
+ =?utf-8?B?YUJGeUQrRE5RaklNd05QMzkzK2dvNXVvV1pONG03ejBOcUNUaFNlWTBUTzNp?=
+ =?utf-8?B?Z2JsWitTV09Jd29LU240a0ppelRFeXM0elFrTVdBak1ZcHpkUzlhK1ZsK2Za?=
+ =?utf-8?B?MGgyZG9Ia0Rhb0t3TStoVEt3STNJNjBSd0o2UTlMSzkwSlFPRTRWNGcvK05r?=
+ =?utf-8?B?aVc3dnk2anBvc3pCMTdhVTBKWlBwYlRQT0cvV0JHclJWZHY3N3pXVHppcm1Z?=
+ =?utf-8?B?TEw4cnNKcjhsMjVmNnEreWhjaDRodzdpUThnWGF3dmk2YWl3NUYwd3JNbEVD?=
+ =?utf-8?B?a1dXTHE1WXF1Z0cvdWlLdHk4SkZWN3pNcWVsWk01QzV4VXFKYlB2Slo3S2ZM?=
+ =?utf-8?B?MWdvaXAyczY4d0JYZ1puNnU3cVpGajE5b0prRzJyaFhDQnhoS0dESDUwcEcz?=
+ =?utf-8?B?Z2J4aWNIc3N0NENqdEFBYUlWYXU2WkZ1bjExMFd6Y0xwWEhYREYxYnJTcnMr?=
+ =?utf-8?B?SHhIRnNmZjgreFhnUU1idlVFTkJSbmNtMlgweGlXd3krWUlMQUQ5REJTc1p3?=
+ =?utf-8?B?T1NSRkZlbS96dkJBaCt3UGpDWC90bWFNY1IvT1Q4ZmtUMXdibW1PcVJXQlEy?=
+ =?utf-8?B?cGZrZnMzTENzQjg3WmRNdWoxZVFIUTl0ZFpjUmRIZHBxanFwZzV3eDlERnNw?=
+ =?utf-8?B?aFJ0cUovR21xQ0txZVhQaFZRYmJwUXhhSDlIS29Pc1dEcDA0WGtCTWc4bzRK?=
+ =?utf-8?B?blZpWXZKTk8rWDFIS2d0U0hKQzZvZlU0M3hxc0hzaDhvSlJOOGMxOE5BZlNa?=
+ =?utf-8?B?R0MyS3FNdW9jaU9TTXJxK0owa1I4RytMd2lsTTNkVU1DdXhyRDd4U0c1ejVT?=
+ =?utf-8?B?MVVGaWlJczM0TVhlZEtNaTNUN0l0VHRSd2RTUUwydzByaURUaVVDOWxEeUNL?=
+ =?utf-8?B?b21oK1Z4NEJsUjFGaTRxQW5YcGJBSGV5Wm92UDdERDJONm5oR0VhbkExeE4y?=
+ =?utf-8?B?WEp5UGpoMnRLMlBmd1NvMGRhbGVXU2xGVE9saXRTNmxZK2pJVEwyTjF4MDky?=
+ =?utf-8?B?dVA2T1piWGRhRE9DNG5IbWhIdktZWGFhdWpTbzA4Sm5kVnM5NjhFUmFvaUc0?=
+ =?utf-8?B?TWp2UzNtNHdLRTJGb0JmN205RU5ndU1xYU5GZG5ZK1M4NmlUV3hKbVFCMWNO?=
+ =?utf-8?B?MnpuTkdxWVhKTGk0OHg0N040Vk54NFU1UW41NFVTdnhKc0xUOW1jeEIydlk5?=
+ =?utf-8?B?S2Jub1JWZGhGOXZaeHFNTVQ3c3FHSFNMNnlXQ0Nxb3B4aTNxS1NHNFVDNzBu?=
+ =?utf-8?B?TmJxUFB2c0hQL2x1bDVTL3U4Y1JuQ3JVVHcvMUEwaFBzS2tBQWFpZFMzUUNL?=
+ =?utf-8?B?S0E9PQ==?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89c27e15-cfd4-462d-52f3-08dbbdb410ec
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB7221.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 10:42:08.7863
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FkKH+7y+4V6GTlgvwRkofpM6BsUgk8u0/ppPnPBvyFkJ1SJtp/TrZYUT2UPhObrxDLlTNptzgGooUeAwyssIcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB5860
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 10:36:36PM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
-> on arm64.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Acked-by: Florent Revest <revest@chromium.org>
+Hi Krzysztof,
 
-I was getting bpf selftests failures with this patchset and when
-bisecting I'm getting crash when running on top of this change
+On 2023/9/25 17:33, Krzysztof Kozlowski wrote:
+> This is c3, not t7. Why do you use t7 compatible alone?
 
-looks like it's missing some of the regs NULL checks added later?
+The C3 and T7 use the same watchdog controller, so they are compatible.
 
-jirka
-
-
----
-[  124.089449][  T677] BUG: kernel NULL pointer dereference, address: 0000000000000098
-[  124.090102][  T677] #PF: supervisor read access in kernel mode
-[  124.090568][  T677] #PF: error_code(0x0000) - not-present page
-[  124.091039][  T677] PGD 158fd8067 P4D 158fd8067 PUD 10896a067 PMD 0 
-[  124.091482][  T677] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
-[  124.091986][  T677] CPU: 1 PID: 677 Comm: test_progs Tainted: G           OE      6.6.0-rc2+ #768 1c8a8990289f2615e36dadd01915b80e8da29bf5
-[  124.092898][  T677] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-[  124.093613][  T677] RIP: 0010:arch_rethook_prepare+0x0/0x30
-[  124.094060][  T677] Code: 90 90 90 90 90 90 90 90 90 90 48 89 b7 a8 00 00 00 c3 cc cc cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <48> 8b 86 98 00 00 00 48 8b 10 48 89 57 20 48 8b 96 98 00 00 00 48
-[  124.096239][  T677] RSP: 0018:ffffc90003d3bc98 EFLAGS: 00010286
-[  124.096708][  T677] RAX: 0000000000000000 RBX: ffff88815d9fbe50 RCX: ffff88815d9fbe40
-[  124.097332][  T677] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff88815d9fbe40
-[  124.097946][  T677] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000004
-[  124.098554][  T677] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81fbb7b0
-[  124.099108][  T677] R13: ffffffff81fbd47b R14: fffffffffffffff7 R15: ffff88815d9fbe40
-[  124.099720][  T677] FS:  00007f9c2063ed00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-[  124.100403][  T677] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  124.100908][  T677] CR2: 0000000000000098 CR3: 0000000108e02002 CR4: 0000000000770ee0
-[  124.101537][  T677] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  124.102096][  T677] DR3: 0000000000000000 DR6: 00000000ffff4ff0 DR7: 0000000000000400
-[  124.102689][  T677] PKRU: 55555554
-[  124.102988][  T677] Call Trace:
-[  124.103303][  T677]  <TASK>
-[  124.103580][  T677]  ? __die+0x1f/0x70
-[  124.103928][  T677]  ? page_fault_oops+0x176/0x4d0
-[  124.104348][  T677]  ? __pte_offset_map_lock+0xa5/0x190
-[  124.104818][  T677]  ? do_user_addr_fault+0x73/0x870
-[  124.105277][  T677]  ? exc_page_fault+0x81/0x250
-[  124.105709][  T677]  ? asm_exc_page_fault+0x22/0x30
-[  124.106171][  T677]  ? bpf_prog_test_run_tracing+0x14b/0x2c0
-[  124.106675][  T677]  ? __pfx_bpf_fentry_test1+0x10/0x10
-[  124.107135][  T677]  ? __pfx_arch_rethook_prepare+0x10/0x10
-[  124.107598][  T677]  rethook_hook+0x10/0x30
-[  124.107966][  T677]  fprobe_handler+0x129/0x210
-[  124.108351][  T677]  ? __pfx_bpf_fentry_test1+0x10/0x10
-[  124.108796][  T677]  ? bpf_prog_test_run_tracing+0x14b/0x2c0
-[  124.109276][  T677]  arch_ftrace_ops_list_func+0xf2/0x200
-[  124.109708][  T677]  ftrace_call+0x5/0x44
-[  124.110060][  T677]  ? bpf_fentry_test1+0x5/0x10
-[  124.110463][  T677]  bpf_fentry_test1+0x5/0x10
-[  124.110881][  T677]  bpf_prog_test_run_tracing+0x14b/0x2c0
-[  124.111337][  T677]  __sys_bpf+0x305/0x2820
-[  124.111705][  T677]  __x64_sys_bpf+0x1a/0x30
-[  124.112053][  T677]  do_syscall_64+0x38/0x90
-[  124.116245][  T677]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[  124.116688][  T677] RIP: 0033:0x7f9c20806b5d
-[  124.117078][  T677] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7b 92 0c 00 f7 d8 64 89 01 48
-[  124.118487][  T677] RSP: 002b:00007ffc615e5228 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
-[  124.119090][  T677] RAX: ffffffffffffffda RBX: 00007f9c20918000 RCX: 00007f9c20806b5d
-[  124.119698][  T677] RDX: 0000000000000050 RSI: 00007ffc615e5260 RDI: 000000000000000a
-[  124.120298][  T677] RBP: 00007ffc615e5240 R08: 0000000000000000 R09: 00007ffc615e5260
-[  124.120893][  T677] R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000001
-[  124.121486][  T677] R13: 0000000000000000 R14: 00007f9c2094d000 R15: 00000000011a8db0
-[  124.122156][  T677]  </TASK>
-[  124.122421][  T677] Modules linked in: bpf_testmod(OE) intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
-[  124.125064][  T677] CR2: 0000000000000098
-[  124.125431][  T677] ---[ end trace 0000000000000000 ]---
-[  124.125861][  T677] RIP: 0010:arch_rethook_prepare+0x0/0x30
-[  124.126316][  T677] Code: 90 90 90 90 90 90 90 90 90 90 48 89 b7 a8 00 00 00 c3 cc cc cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <48> 8b 86 98 00 00 00 48 8b 10 48 89 57 20 48 8b 96 98 00 00 00 48
-[  124.127761][  T677] RSP: 0018:ffffc90003d3bc98 EFLAGS: 00010286
-[  124.128238][  T677] RAX: 0000000000000000 RBX: ffff88815d9fbe50 RCX: ffff88815d9fbe40
-[  124.128856][  T677] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff88815d9fbe40
-[  124.129502][  T677] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000004
-[  124.130129][  T677] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81fbb7b0
-[  124.130767][  T677] R13: ffffffff81fbd47b R14: fffffffffffffff7 R15: ffff88815d9fbe40
-[  124.131410][  T677] FS:  00007f9c2063ed00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-[  124.132084][  T677] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  124.132600][  T677] CR2: 0000000000000098 CR3: 0000000108e02002 CR4: 0000000000770ee0
-[  124.133128][  T677] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  124.133698][  T677] DR3: 0000000000000000 DR6: 00000000ffff4ff0 DR7: 0000000000000400
-[  124.134302][  T677] PKRU: 55555554
-[  124.134584][  T677] note: test_progs[677] exited with irqs disabled
-[  124.135192][  T677] note: test_progs[677] exited with preempt_count 2
+Best regards,
+Huqiang Qin
