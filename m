@@ -2,149 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728377AD33C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469827AD341
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbjIYIWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S232730AbjIYIWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbjIYIWO (ORCPT
+        with ESMTP id S232521AbjIYIWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:22:14 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064C810E;
-        Mon, 25 Sep 2023 01:22:06 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38P8Lv9F118247;
-        Mon, 25 Sep 2023 03:21:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695630117;
-        bh=p6gt9baC8c8rsme8Bo+yhUVgFUMBBOgqzA9mgp1/qe8=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=yNmW+lFDQiSeBmEhZBtumqOytU5gBh0fyuUDIwOu4xQvCcrPH3AUzqcg8N+VYMAyZ
-         5bSaJkouxcsLu6CJJg8d080KhHITCGsf5Zmht6lt7jRIxcXHIBCTy9J7o05cOe4bCM
-         aPwtb/bc7I61vE6QwAJbEml1NoAM9WH10iD4G5mM=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38P8Lvru050192
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Sep 2023 03:21:57 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Sep 2023 03:21:57 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Sep 2023 03:21:57 -0500
-Received: from [10.24.69.199] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38P8LqHP082913;
-        Mon, 25 Sep 2023 03:21:53 -0500
-Message-ID: <8db10b88-5b06-af84-cb0a-9fbaa29cf78c@ti.com>
-Date:   Mon, 25 Sep 2023 13:51:52 +0530
+        Mon, 25 Sep 2023 04:22:38 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181E7A2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:22:32 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d8168d08bebso6621688276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695630151; x=1696234951; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4sZK+xCuT0P0uH5eP+c4/6boHa42doWBfySEpYJVCK8=;
+        b=3vMb1WfNB52Ctd8ZUSYd3LaVttK5c7Bfurq43e9L29hBs7NUW8q0+grL80cz4YRTfZ
+         u/mqAWWMBom+VTxVTJp0DOeT0Rz/1VbBBv3e86WhH/Bsy4PiEw7RHGuX4iHAkLyRnmjH
+         XXaYcHZM8HPKX8D8CskW81EF6/FJROCkpEQeXxjPUjqvK6ViOJcMxLkl/Hdcga2XkNbv
+         zmNO8fKxha8IrVBud/Hb4Hie5by8IMGjhhhM662qhj6eMgtdbGzFYf2wV9jvSgv3SPzp
+         3kngQmiV8uUFuLc0eEoQJ1wXXj2fQD7XRml8KvSwBpO8jHx0XS5Y4Fy6lBeXq2IU4u3u
+         ofdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695630151; x=1696234951;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4sZK+xCuT0P0uH5eP+c4/6boHa42doWBfySEpYJVCK8=;
+        b=YR67oEBQZ2V0+qPcQS6nV9TZieuYaBMyYVJdRXjYlefEVFE9GzKnsUG9+TL+1Lotx8
+         pwHGyrxs8q1E1JtBEiwedQqXeU76LjwVW5AozCz3TuL+vMwOgHkmUmpE68he5RzPDY+D
+         kzc0mSSrabz2hv1XwuHNhfFJoJ4Ro2Q0ijZFM7sqtrlG0fHgbXeaBojHO5hWojP/SfQ1
+         qsQG1DaiWq9+51I/onOgtedhCt9ZIYJgFHlMXYy5XBd5AIKT5HZ67yEuEXD6T0Zlldx9
+         hgb//CB1q0swZy2NBswmDbkVt/ABcqfpmxoQQe/kTyogWpKqemcnrp8LD4gRLtbhPOSc
+         Ynow==
+X-Gm-Message-State: AOJu0YyI+mn89qXpJ0SFELtJcVix+Cgoka3u69Eih8EWXBuHO1+gsRGz
+        x0Tru6azyjsiguwSaz4l3HjG9A==
+X-Google-Smtp-Source: AGHT+IEwv44FcIamrq7TyieXIPq5bY4OaPs0D1yBi6vYNp4KwxZNNaUgHfeQiKSegaaLKY4KIVfLOQ==
+X-Received: by 2002:a25:6942:0:b0:d7b:9580:240c with SMTP id e63-20020a256942000000b00d7b9580240cmr6055638ybc.47.1695630151093;
+        Mon, 25 Sep 2023 01:22:31 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id n80-20020a25da53000000b00d217e46d25csm2127705ybf.4.2023.09.25.01.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 01:22:30 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 01:22:27 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH 02/12] kernfs: drop shared NUMA mempolicy hooks
+In-Reply-To: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
+Message-ID: <dffc667-5dc9-a980-dab8-8554eafbda7@google.com>
+References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
- Ethernet support
-Content-Language: en-US
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Andrew Davis <afd@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-References: <20230921060913.721336-1-danishanwar@ti.com>
- <20230921060913.721336-3-danishanwar@ti.com>
- <3b4629c7-5625-f32f-0532-5f50832c1714@ti.com>
- <52572af4-771e-3bd9-b290-74482694f020@ti.com>
-In-Reply-To: <52572af4-771e-3bd9-b290-74482694f020@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+It seems strange that kernfs should be an outlier with a set_policy and
+get_policy in its kernfs_vm_ops.  Ah, it dates back to v2.6.30's commit
+095160aee954 ("sysfs: fix some bin_vm_ops errors"), when I had crashed
+on powerpc's pci_mmap_legacy_page_range() fallback to shmem_zero_setup().
 
-On 22/09/23 09:52, MD Danish Anwar wrote:
-> On 21/09/23 22:57, Andrew Davis wrote:
->> On 9/21/23 1:09 AM, MD Danish Anwar wrote:
->>> ICSSG2 provides dual Gigabit Ethernet support.
->>>
->>> For support SR2.0 ICSSG Ethernet firmware:
->>> - provide different firmware blobs and use TX_PRU.
->>> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
->>> - TX timestamp notification comes via INTC interrupt.
->>>
->>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->>> ---
->>>   arch/arm64/boot/dts/ti/Makefile               |   4 +-
->>>   ...se-board.dts => k3-am654-common-board.dts} |   0
->>>   arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 ++++++++++++++++++
->>>   3 files changed, 148 insertions(+), 1 deletion(-)
->>>   rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts =>
->>> k3-am654-common-board.dts} (100%)
->>>   create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/Makefile
->>> b/arch/arm64/boot/dts/ti/Makefile
->>> index e7b8e2e7f083..85c91f5e832e 100644
->>> --- a/arch/arm64/boot/dts/ti/Makefile
->>> +++ b/arch/arm64/boot/dts/ti/Makefile
->>> @@ -42,12 +42,14 @@ dtb-$(CONFIG_ARCH_K3) +=
->>> k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
->>>   dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
->>>     # Boards with AM65x SoC
->>> -k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
->>> k3-am654-base-board-rocktech-rk101-panel.dtbo
->>> +k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
->>> k3-am654-base-board-rocktech-rk101-panel.dtbo
->>
->> Should the k3-am654-gp-evm.dtb not also have this icssg2 support? Does
->> it work
->> to keep this line like before or is there some conflict having both
->> enabled?
->>
-> 
-> I have not tested this dtb (k3-am654-gp-evm.dtb). So just to be on the
-> safe side I kept gp-evm.dtb as it was. Ideally gp-evm.dtb should have
-> icssg2 support as well. But I haven't tested the combination of
-> base-board + icssg dtbo + rockteck dtbo. That is why I kept gp-evm dtb
-> as it was. Anyways, for ICSSG2's use case only k3-am654-base-board.dtb
-> is used so I think it's ok to leave k3-am654-gp-evm.dtb to as it was.
-> 
->> Andrew
->>
+Well, that was commendably thorough, to give sysfs-bin a set_policy and
+get_policy, just to avoid the way it was coded resulting in EINVAL from
+mmap when CONFIG_NUMA; but somehow feels a bit over-the-top to me now.
 
-I tested AM654x-GP EVM with k3-am654-gp-evm.dtb with both the
-combination below (having k3-am654-base-board-dtbs :=
-k3-am654-common-board.dtb k3-am654-icssg2.dtbo), ICSSG worked fine in
-both the scenarios and I didn't see any issue. I don't have a rocktech
-panel with me so couldn't test that. But as far as ICSSG is concerned it
-works fine with the both the combinations. Please let me know which one
-should I use. Should I keep gp-evm as it is (use dtb without the icssg2
-overlay) or should I add icssg2 overlay in gp-evm.dtb as well.
+It's easier to say that nobody should expect to manage a shmem object's
+shared NUMA mempolicy via some kernfs backdoor to that object: delete
+that code (and there's no longer an EINVAL from mmap in the NUMA case).
 
+This then leaves set_policy/get_policy as implemented only by shmem -
+though importantly also by SysV SHM, which has to interface with shmem
+which implements them, and with SHM_HUGETLB which does not.
 
-1. k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
-k3-am654-base-board-rocktech-rk101-panel.dtbo
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ fs/kernfs/file.c | 49 ------------------------------------------------
+ 1 file changed, 49 deletions(-)
 
-
-2. k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
-k3-am654-base-board-rocktech-rk101-panel.dtbo
-
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 180906c36f51..aaa76410e550 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -429,60 +429,11 @@ static int kernfs_vma_access(struct vm_area_struct *vma, unsigned long addr,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_NUMA
+-static int kernfs_vma_set_policy(struct vm_area_struct *vma,
+-				 struct mempolicy *new)
+-{
+-	struct file *file = vma->vm_file;
+-	struct kernfs_open_file *of = kernfs_of(file);
+-	int ret;
+-
+-	if (!of->vm_ops)
+-		return 0;
+-
+-	if (!kernfs_get_active(of->kn))
+-		return -EINVAL;
+-
+-	ret = 0;
+-	if (of->vm_ops->set_policy)
+-		ret = of->vm_ops->set_policy(vma, new);
+-
+-	kernfs_put_active(of->kn);
+-	return ret;
+-}
+-
+-static struct mempolicy *kernfs_vma_get_policy(struct vm_area_struct *vma,
+-					       unsigned long addr)
+-{
+-	struct file *file = vma->vm_file;
+-	struct kernfs_open_file *of = kernfs_of(file);
+-	struct mempolicy *pol;
+-
+-	if (!of->vm_ops)
+-		return vma->vm_policy;
+-
+-	if (!kernfs_get_active(of->kn))
+-		return vma->vm_policy;
+-
+-	pol = vma->vm_policy;
+-	if (of->vm_ops->get_policy)
+-		pol = of->vm_ops->get_policy(vma, addr);
+-
+-	kernfs_put_active(of->kn);
+-	return pol;
+-}
+-
+-#endif
+-
+ static const struct vm_operations_struct kernfs_vm_ops = {
+ 	.open		= kernfs_vma_open,
+ 	.fault		= kernfs_vma_fault,
+ 	.page_mkwrite	= kernfs_vma_page_mkwrite,
+ 	.access		= kernfs_vma_access,
+-#ifdef CONFIG_NUMA
+-	.set_policy	= kernfs_vma_set_policy,
+-	.get_policy	= kernfs_vma_get_policy,
+-#endif
+ };
+ 
+ static int kernfs_fop_mmap(struct file *file, struct vm_area_struct *vma)
 -- 
-Thanks and Regards,
-Danish
+2.35.3
+
