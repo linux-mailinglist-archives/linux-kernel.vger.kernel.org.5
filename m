@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B2B7AD55E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877F57AD56B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjIYKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
+        id S230300AbjIYKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbjIYKIb (ORCPT
+        with ESMTP id S230335AbjIYKIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:08:31 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED95CFA;
-        Mon, 25 Sep 2023 03:08:10 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvJSf1Frqz6K9P9;
-        Mon, 25 Sep 2023 18:06:58 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
- 2023 11:08:07 +0100
-Date:   Mon, 25 Sep 2023 11:08:06 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jeongtae Park <jtp.park@samsung.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ben Widawsky" <bwidawsk@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Fan Ni <fan.ni@samsung.com>, <linux-cxl@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyungsan Kim <ks0204.kim@samsung.com>,
-        "Wonjae Lee" <wj28.lee@samsung.com>,
-        Hojin Nam <hj96.nam@samsung.com>,
-        Junhyeok Im <junhyeok.im@samsung.com>,
-        Jehoon Park <jehoon.park@samsung.com>,
-        "Jeongtae Park" <jeongtae.park@gmail.com>
-Subject: Re: [PATCH v2 3/7] cxl/mem: Fix a checkpatch error
-Message-ID: <20230925110806.00001eec@Huawei.com>
-In-Reply-To: <20230922113533.3299401-1-jtp.park@samsung.com>
-References: <CGME20230922113247epcas2p1c22bf16ed783e3b4415ab3810758c109@epcas2p1.samsung.com>
-        <20230922113533.3299401-1-jtp.park@samsung.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 25 Sep 2023 06:08:48 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D4E10D0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Y7E2bQ4BW1hdfSm1jmBqima+v3SGUmJwYC5NN1UQOGs=; b=BwDRgNfNuC128GwhOi5yLtjQFJ
+        5iPjYYCJ3ixmHKGM/6B+7Innix6B5Yocgt73ouQKyvklSfFGIdhUt6q4iZ+tXqj7QeqDFbX9ZCRqA
+        6Gv6Hl9cHTHJngWHbud9hY0ARV730WrmidC7Llj05Qu0fzJkAcCMmyXJHx+dnpHpegxJ/iWAfyT85
+        FndGq+/Czwf8pWl9Lq88DNJ1FRVYlYBiNYdqxWJBr3ytQN6ACd6INvlblqzFADbmEVeOHMT4XQgsa
+        5iVwombFguHPNRON890voSS+vKXDUU3sH0DUc/rYESAqYYocCompaJgrgA+ohkjQKbmNOG/m7/9Gj
+        e9pZwXPw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qkiVh-001Z9v-28;
+        Mon, 25 Sep 2023 10:08:16 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C108E30027E; Mon, 25 Sep 2023 12:08:14 +0200 (CEST)
+Date:   Mon, 25 Sep 2023 12:08:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ming Qian <ming.qian@nxp.com>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, eagle.zhou@nxp.com,
+        tao.jiang_2@nxp.com, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] wait: don't wake up freezable wait by freezing fake
+ signal
+Message-ID: <20230925100814.GA31921@noisy.programming.kicks-ass.net>
+References: <20230822074547.8037-1-ming.qian@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822074547.8037-1-ming.qian@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 20:35:33 +0900
-Jeongtae Park <jtp.park@samsung.com> wrote:
-
-> ERROR: spaces required around that '=' (ctx:WxV)
+On Tue, Aug 22, 2023 at 03:45:47PM +0800, Ming Qian wrote:
+> kernel may try to wake up task with fake signal when freezing task,
+> if the task is waiting event using wait_event_freezable,
+> it's better to freeze the wait, instead of breaking it.
 > 
-> Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
-> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/cxl/cxlmem.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> otherwise the caller may need to retry the wait,
+> maybe like below code:
 > 
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 79e99c873ca2..1ac3eb2be84f 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -183,7 +183,7 @@ struct cxl_mbox_cmd_rc {
->  };
->  
->  static const
-> -struct cxl_mbox_cmd_rc cxl_mbox_cmd_rctable[] ={ CMD_CMD_RC_TABLE };
-> +struct cxl_mbox_cmd_rc cxl_mbox_cmd_rctable[] = { CMD_CMD_RC_TABLE };
->  #undef C
->  
->  static inline const char *cxl_mbox_cmd_rc2str(struct cxl_mbox_cmd *mbox_cmd)
+> 	if (rc == -ERESTARTSYS && freezing(current)) {
+> 		clear_thread_flag(TIF_SIGPENDING);
+> 		goto again;
+> 	}
 
+I'm not sure I get it -- is there an actual problem, or are you trying
+to optimize something?
