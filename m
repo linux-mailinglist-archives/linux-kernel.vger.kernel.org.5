@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A514A7AD921
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708977AD924
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbjIYN3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        id S231792AbjIYNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbjIYN3u (ORCPT
+        with ESMTP id S230284AbjIYNaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:29:50 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C07E10D
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:29:44 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-65afac36b2cso15456986d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:29:44 -0700 (PDT)
+        Mon, 25 Sep 2023 09:30:55 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDB9FE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:30:48 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-53fa455cd94so3996338a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695648583; x=1696253383; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oga/n0wXfl4psvEJuTUVdx2OlpRGQg6ZYgAQVtMIKuE=;
-        b=U6JmnXhfE2Zak3TeDX3A3OoRhuIcjPiquZX6jNTUn6aPFki160vBGExjCXvUulqCuQ
-         krl+QMFwCaqkJu3K6teC+RxVn8VbtiVNWMQ+s3ZwAkDvA3nBmLQshwxtDTeKHfUt6kRV
-         Foyh63M55JWbIgpHTr1PZ/7yYguHecEAbDoC3Wt8+wAbk/WDzYoGqBR/Y6BrhiffeQ8u
-         CU3tHGnp8QOctkW+H6INMc7EukeQUFxZvfRR6bWPM6t6nziMR06CAg7URf0UN2ALDTJz
-         B1iLRRA3MaSBtmXH930JqrIkJayvru0fU/McYaOXvpjyNyYpDGuV5qjANluoRkqtfhC1
-         PoqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695648583; x=1696253383;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1695648648; x=1696253448; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oga/n0wXfl4psvEJuTUVdx2OlpRGQg6ZYgAQVtMIKuE=;
-        b=BLAil3duDO59AD9Z34voA3xpkMHS3UEvfI3BaXLPhb41RetFxK5bBF+vPcrp9tbs0i
-         eZYSYatp/xUrGtzNW89G/sJ+PzSyGuHYbAou6wB7/wjm+EDI76/MSCFOE9HNkHVADL9B
-         6s6miNlrToXLnmesAd3srS8JbBcWX4TerP+RvOo7vOoag8xlXBZ6860+bJMSztBbnMvu
-         bRzMzIRpfknw0ID4g/9VBpsvBRz6m3KGg8mVxf4vWzT38AsR3wsId6OPXGs/caT42sIk
-         loLfpHqXbMaRKxGkoJtYDZKZwHsbtfWWl8Br5hus3PVwdhLZt97k2DjQYRTiuGeyJuN1
-         f9NA==
-X-Gm-Message-State: AOJu0Yzl76HMScoiWEGpTXNVw2IP9APwm7CAxGYvDv35tjwyhbSl86+4
-        VX5/MfNTit24G8Ln9eSAjNi6hA==
-X-Google-Smtp-Source: AGHT+IEKfw0t5lrzqptyLs66b/Idloen/u4q+DsYXXRRj02Iy22p185Epb13OQZKjHg6eVfFlxN1qg==
-X-Received: by 2002:a0c:f14a:0:b0:65a:fd46:c464 with SMTP id y10-20020a0cf14a000000b0065afd46c464mr3996185qvl.33.1695648583234;
-        Mon, 25 Sep 2023 06:29:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id u17-20020a0cf1d1000000b0065b1f90ff8csm155250qvl.40.2023.09.25.06.29.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 06:29:42 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qklef-000rby-UV;
-        Mon, 25 Sep 2023 10:29:41 -0300
-Date:   Mon, 25 Sep 2023 10:29:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] iommu/virtio: Make use of ops->iotlb_sync_map
-Message-ID: <20230925132941.GK13795@ziepe.ca>
-References: <ae7e513b-eb86-97e2-bed0-3cca91b8c959@arm.com>
- <20230919081519.GA3860249@myrica>
- <20230919144649.GT13795@ziepe.ca>
- <20230922075719.GB1361815@myrica>
- <20230922124130.GD13795@ziepe.ca>
- <900b644e-6e21-1038-2252-3dc86cbf0a32@arm.com>
- <20230922162714.GH13795@ziepe.ca>
- <123c53c3-d259-9c20-9aa6-0c216d7eb3c0@arm.com>
- <20230922233309.GI13795@ziepe.ca>
- <ade90cd5-bbf1-f4f9-0511-75e0e18d1a83@arm.com>
+        bh=VTAe+igFn40GXZ4NBAxS7RiCj1q3ukys0lCN9eYvcaY=;
+        b=A1IrmBz3pmI/MHQfCtnfQwMosOHpO/GRytwO/+Uni3ZRg5rMOvcseh4/169+JlLVcK
+         t1EdIRE0NPrr+UWhYkyzRQ/umJohMWs+XvXGP6MXZjZjrE1yMiFCNI0iOrfzybTnBWCu
+         f8YmYiUQ/Sd0FFq/aJVVuZBL1EXuIIJcRxwJ1KBHkkCSMyPsFzHPsaxn6r28az+M9/Qu
+         j1TWaKZIafv7F6LXCBFG/E/2r3JvuiAWBIa4eMgQwHWzQBGitOegyLJkJmM6aTs7roxb
+         wOf9xStK7W4rktgYqcqkdl0PORURkwT482vJKa6jK331lO4WmYg/w3m4JYtfPonL8W8m
+         ZuxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695648648; x=1696253448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VTAe+igFn40GXZ4NBAxS7RiCj1q3ukys0lCN9eYvcaY=;
+        b=t7S5L1P5Mp8J29Bx/JS3yRNvvxkG8asi0+op5i7DBV36rUgU4QThVKsFWmX3GoWkf+
+         kqjvA3azzJPFdpTpQpSxaHN54OSNQIjTmHiiOqg5L/apSjLvb4R6wnXpbnKubxingq4j
+         YrOv3daXazPrIt+yhpaS+cDk+xqm7zoxtA/ktKKYvxA73iZBe7fWxkn5534zffXwe5Wi
+         eylYRYu3U4rvxExa+qHXvBAnmzLfV4Hd0OgEe1muczk237Z67LZanw3hk1GawtZL5izO
+         naY8qrA8BRttclt+9CsyntqAXoY78skIxcigYO006YkPeoNKpRB36EwpK285hM20N2kS
+         6jbA==
+X-Gm-Message-State: AOJu0Yzr3RsWCwNdOG2Qyk6dtRUh6JzmG8eLS/op3syC47dJ8qOne3v8
+        BjrKMZsE0qk+opWeYpDpxAFnVXb99DVs3EyBp5pn4Q==
+X-Google-Smtp-Source: AGHT+IGU7gRk9/0iLRnse7x9jQcD2qTYI6KEpxx8F337G2Vkhth9oLL6ElHvVj6WCup2zLolI768fLqgUgDAY/Hd65U=
+X-Received: by 2002:a17:90a:f40e:b0:276:6b9d:7503 with SMTP id
+ ch14-20020a17090af40e00b002766b9d7503mr4488656pjb.28.1695648648206; Mon, 25
+ Sep 2023 06:30:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ade90cd5-bbf1-f4f9-0511-75e0e18d1a83@arm.com>
+References: <20230919035343.1399389-1-apatel@ventanamicro.com>
+ <20230919035343.1399389-2-apatel@ventanamicro.com> <20230919-bbcb3627b6d9d0238c5ba351@fedora>
+In-Reply-To: <20230919-bbcb3627b6d9d0238c5ba351@fedora>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Mon, 25 Sep 2023 19:00:37 +0530
+Message-ID: <CAK9=C2Ub7+4QOdq4rXoSOuLoYaUczeqaLoCVRZ_63dZOZwiu1w@mail.gmail.com>
+Subject: Re: [PATCH 1/7] RISC-V: Detect XVentanaCondOps from ISA string
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -86,55 +79,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 02:07:50PM +0100, Robin Murphy wrote:
-> On 2023-09-23 00:33, Jason Gunthorpe wrote:
-> > On Fri, Sep 22, 2023 at 07:07:40PM +0100, Robin Murphy wrote:
-> > 
-> > > virtio isn't setting ops->pgsize_bitmap for the sake of direct mappings
-> > > either; it sets it once it's discovered any instance, since apparently it's
-> > > assuming that all instances must support identical page sizes, and thus once
-> > > it's seen one it can work "normally" per the core code's assumptions. It's
-> > > also I think the only driver which has a "finalise" bodge but *can* still
-> > > properly support map-before-attach, by virtue of having to replay mappings
-> > > to every new endpoint anyway.
-> > 
-> > Well it can't quite do that since it doesn't know the geometry - it
-> > all is sort of guessing and hoping it doesn't explode on replay. If it
-> > knows the geometry it wouldn't need finalize...
-> 
-> I think it's entirely reasonable to assume that any direct mappings
-> specified for a device are valid for that device and its IOMMU. However, in
-> the particular case of virtio, it really shouldn't ever have direct mappings
-> anyway, since even if the underlying hardware did have any, the host can
-> enforce the actual direct-mapping aspect itself, and just present them as
-> unusable regions to the guest.
+On Tue, Sep 19, 2023 at 12:56=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> Hey Anup,
+>
+> On Tue, Sep 19, 2023 at 09:23:37AM +0530, Anup Patel wrote:
+> > The Veyron-V1 CPU supports custom conditional arithmetic and
+> > conditional-select/move operations referred to as XVentanaCondOps
+> > extension. In fact, QEMU RISC-V also has support for emulating
+> > XVentanaCondOps extension.
+> >
+> > Let us detect XVentanaCondOps extension from ISA string available
+> > through DT or ACPI.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
+> >  arch/riscv/include/asm/hwcap.h                          | 1 +
+> >  arch/riscv/kernel/cpufeature.c                          | 1 +
+> >  3 files changed, 9 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/=
+Documentation/devicetree/bindings/riscv/extensions.yaml
+> > index 36ff6749fbba..cad8ef68eca7 100644
+> > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > @@ -171,6 +171,13 @@ properties:
+> >              memory types as ratified in the 20191213 version of the pr=
+ivileged
+> >              ISA specification.
+> >
+> > +        - const: xventanacondops
+> > +          description: |
+> > +            The Ventana specific XVentanaCondOps extension for conditi=
+onal
+> > +            arithmetic and conditional-select/move operations defined =
+by the
+> > +            Ventana custom extensions specification v1.0.1 (or higher)=
+ at
+> > +            https://github.com/ventanamicro/ventana-custom-extensions/=
+releases.
+> > +
+>
+> For this and the next patch, the binding change needs to be split out
+> from the code. checkpatch should've complained about it.
 
-I assume this machinery is for the ARM GIC ITS page....
+Okay, I will split this patch.
 
-> Again, that's irrelevant. It can only be about whether the actual
-> ->map_pages call succeeds or not. A driver could well know up-front that all
-> instances support the same pgsize_bitmap and aperture, and set both at
-> ->domain_alloc time, yet still be unable to handle an actual mapping without
-> knowing which instance(s) that needs to interact with (e.g. omap-iommu).
+>
+> >          - const: zba
+> >            description: |
+> >              The standard Zba bit-manipulation extension for address ge=
+neration
+> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hw=
+cap.h
+> > index 0f520f7d058a..b7efe9e2fa89 100644
+> > --- a/arch/riscv/include/asm/hwcap.h
+> > +++ b/arch/riscv/include/asm/hwcap.h
+> > @@ -59,6 +59,7 @@
+> >  #define RISCV_ISA_EXT_ZIFENCEI               41
+> >  #define RISCV_ISA_EXT_ZIHPM          42
+> >  #define RISCV_ISA_EXT_SMSTATEEN              43
+> > +#define RISCV_ISA_EXT_XVENTANACONDOPS        44
+> >
+> >  #define RISCV_ISA_EXT_MAX            64
+> >
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
+ure.c
+> > index 3755a8c2a9de..3a31d34fe709 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
+ {
+> >       __RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+> >       __RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+> >       __RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+> > +     __RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDO=
+PS),
+>
+> I've been banging on for a bit about people doing weird stuff to detect
+> their vendor extensions, so nice to see it being done properly :)
+>
+>
+> Cheers,
+> Conor.
+>
+> >  };
+> >
+> >  const size_t riscv_isa_ext_count =3D ARRAY_SIZE(riscv_isa_ext);
+> > --
+> > 2.34.1
+> >
 
-I think this is a different issue. The domain is supposed to represent
-the actual io pte storage, and the storage is supposed to exist even
-when the domain is not attached to anything.
-
-As we said with tegra-gart, it is a bug in the driver if all the
-mappings disappear when the last device is detached from the domain.
-Driver bugs like this turn into significant issues with vfio/iommufd
-as this will result in warn_on's and memory leaking.
-
-So, I disagree that this is something we should be allowing in the API
-design. map_pages should succeed (memory allocation failures aside) if
-a IOVA within the aperture and valid flags are presented. Regardless
-of the attachment status. Calling map_pages with an IOVA outside the
-aperture should be a caller bug.
-
-It looks omap is just mis-designed to store the pgd in the omap_iommu,
-not the omap_iommu_domain :( pgd is clearly a per-domain object in our
-API. And why does every instance need its own copy of the identical
-pgd?
-
-Jason
+Regards,
+Anup
