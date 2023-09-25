@@ -2,186 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AB07ADCB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949187ADCC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbjIYQHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
+        id S233193AbjIYQJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbjIYQHu (ORCPT
+        with ESMTP id S232936AbjIYQJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:07:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE85C101;
-        Mon, 25 Sep 2023 09:07:43 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PEGBFt007267;
-        Mon, 25 Sep 2023 16:07:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=JAoOarfwvRZXn1BQvmqwapFIbkl3fBs0IHfImvog/zI=;
- b=aiOKnXcw7wl0G0ITN3J/vczi8Kh32vc1HHKXjyzgTXrA60pXUzHE2v5wHFFiEhjZde9U
- sRaveN32STxxQcpSuxGiUznzYM78ODWB6+pkAQtkQ0wlmXbg/ET3rfh6CpJ4eJDC97wq
- RmsWtKgtjtKL4aD7fUFYcXOVh4buTV+xiPO1f6SMXgpEemlTGSM1F28DCJD4sgYnkO+i
- SRTJAPxUSm/WtmebBRT9Ow/vBWFWQsKPPkmRIwtw66miNPKyg96bl3vUxrXz4W1Uwns+
- IDrf7B8t15FOcAE5piowVGX7YBs99kLZIj/LVv/w1ErLKRkvR5ngFjxTjJTEsTfK9cod pA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb5n89877-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 16:07:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38PG7LFQ027910
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 16:07:21 GMT
-Received: from [10.110.46.220] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 25 Sep
- 2023 09:07:19 -0700
-Message-ID: <1d9bf80d-0267-937b-4dd9-c57db7a89cb4@quicinc.com>
-Date:   Mon, 25 Sep 2023 09:07:18 -0700
+        Mon, 25 Sep 2023 12:09:07 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EA6FB;
+        Mon, 25 Sep 2023 09:09:00 -0700 (PDT)
+Received: from [127.0.0.1] ([99.8.153.148])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38PG7vwg1512316
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Mon, 25 Sep 2023 09:07:58 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38PG7vwg1512316
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1695658079;
+        bh=D4dkY7ib239sJgAi09Fyq922U7t4CmCadoRO6xTmuuw=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=m+YYgtMYbvG0oSi6qazn8+RQFHlQXxy4UY2F0Rjs+LlWVTXbJbLPUJNxUdaSMUJq+
+         b7/To74zymNcjg+EeY5RtIp7nST07IEQfhIeHothUwS4zDyLxItkTUc7ZPCdMuN6BB
+         QRaFihbHEYpIbAfr/55Q5ZC5HWI0PCGLeubKxlwLdb8R4e9SC2t4rY7hPGQxGO8Nii
+         qQxaxc6FPDuDh2d7sdIIUuXNsw+noU3Xhr4VJg/M8+Fd03my+G3N4jdPz6q+N1Fzm2
+         kZF9LFH7Je5OllJOyYS8lR7SKuvShm49bOICGyBzUkB+iYLoG0co28aUJ0lbcNNhc1
+         sdrrP/d4qsEWQ==
+Date:   Mon, 25 Sep 2023 09:07:47 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+CC:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
+        nik.borisov@suse.com
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v11_35/37=5D_x86/syscall=3A_Split_ID?= =?US-ASCII?Q?T_syscall_setup_code_into_idt=5Fsyscall=5Finit=28=29?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20230923094212.26520-36-xin3.li@intel.com>
+References: <20230923094212.26520-1-xin3.li@intel.com> <20230923094212.26520-36-xin3.li@intel.com>
+Message-ID: <D4167CD5-B619-448D-B660-24ABC0786E0A@zytor.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 6/7] drm/msm/dp: add
- pm_runtime_force_suspend()/resume()
-Content-Language: en-US
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <dianders@chromium.org>, <vkoul@kernel.org>,
-        <daniel@ffwll.ch>, <airlied@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
- <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
- <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com>
- <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
- <CAE-0n53dqHONzMTd_ZC-fKWTzDVq6Wqwo4OFZMUcghZ5SD5RhA@mail.gmail.com>
- <65566a68-3510-2e5f-7d57-e4dba08c008c@quicinc.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <65566a68-3510-2e5f-7d57-e4dba08c008c@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Wij6QzDqF0P95Gh71wzbih36j-IAi5RL
-X-Proofpoint-GUID: Wij6QzDqF0P95Gh71wzbih36j-IAi5RL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_13,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- adultscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- clxscore=1015 malwarescore=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309250124
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/22/2023 6:35 PM, Abhinav Kumar wrote:
-> Hi Stephen
+On September 23, 2023 2:42:10 AM PDT, Xin Li <xin3=2Eli@intel=2Ecom> wrote:
+>Because FRED uses the ring 3 FRED entrypoint for SYSCALL and SYSENTER and
+>ERETU is the only legit instruction to return to ring 3, there is NO need
+>to setup SYSCALL and SYSENTER MSRs for FRED, except the IA32_STAR MSR=2E
 >
-> On 9/22/2023 2:54 PM, Stephen Boyd wrote:
->> Quoting Dmitry Baryshkov (2023-09-19 02:50:12)
->>> On Mon, 18 Sept 2023 at 20:48, Kuogee Hsieh 
->>> <quic_khsieh@quicinc.com> wrote:
->>>>
->>>>
->>>> On 9/15/2023 6:21 PM, Dmitry Baryshkov wrote:
->>>>> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh 
->>>>> <quic_khsieh@quicinc.com> wrote:
->>>>>> Add pm_runtime_force_suspend()/resume() to complete incorporating pm
->>>>>> runtime framework into DP driver. Both dp_pm_prepare() and 
->>>>>> dp_pm_complete()
->>>>>> are added to set hpd_state to correct state. After resume, DP 
->>>>>> driver will
->>>>>> re training its main link after .hpd_enable() callback enabled HPD
->>>>>> interrupts and bring up display accordingly.
->>>>> How will it re-train the main link? What is the code path for that?
->>>>
->>>> 1) for edp, dp_bridge_atomic_enable(), called from framework, to start
->>>> link training and bring up display.
->>>
->>> And this path doesn't use .hpd_enable() which you have mentioned in
->>> the commit message. Please don't try to shorten the commit message.
->>> You see, I have had questions to several of them, which means that
->>> they were not verbose enough.
->>>
->>>>
->>>> 2) for external DP, HPD_PLUG_INT will be generated to start link
->>>> training and bring up display.
->>>
->>> This should be hpd_notify, who starts link training, not some event.
->>
->> I think this driver should train the link during atomic_enable(), not
->> hpd_notify() (or directly from the irq handler). The drm_bridge_funcs
->> talk a bit about when the clocks and timing signals are supposed to be
->> enabled. For example, struct drm_bridge_funcs::atomic_pre_enable() says
->> the "display pipe (i.e.  clocks and timing signals) feeding this bridge
->> will not yet be running when this callback is called". And struct
->> drm_bridge_funcs::atomic_enable() says "this callback must enable the
->> display link feeding the next bridge in the chain if there is one."
->>
->> That looks to me like link training, i.e. the display link, should
->> happen in the enable path and not hpd_notify. It looks like link
->> training could fail, but when that happens I believe the driver should
->> call drm_connector_set_link_status_property() with
->> DRM_MODE_LINK_STATUS_BAD. The two callers of that which exist in the
->> tree also call drm_kms_helper_hotplug_event() or
->> drm_kms_helper_connector_hotplug_event() after updating the link so that
->> userspace knows to try again.
->>
->> It would be nice if there was some drm_bridge_set_link_status_bad() API
->> that bridge drivers could use to signal that the link status is bad and
->> call the hotplug helper. Maybe it could also record some diagnostics
->> about which bridge failed to setup the link and stop the atomic_enable()
->> chain for that connector.
+>Split IDT syscall setup code into idt_syscall_init() to make it easy to
+>skip syscall setup code when FRED is enabled=2E
 >
-> Doing link training when we get hpd instead of atomic_enable() is a 
-> design choice we have been following for a while because for the case 
-> when link training fails in atomic_enable() and setting the link 
-> status property as you mentioned, the compositor needs to be able to 
-> handle that and also needs to try with a different resolution or take 
-> some other corrective action. We have seen many compositors not able 
-> to handle this complexity. So the design sends the hotplug to usermode 
-> only after link training succeeds.
+>Suggested-by: Thomas Gleixner <tglx@linutronix=2Ede>
+>Tested-by: Shan Kang <shan=2Ekang@intel=2Ecom>
+>Signed-off-by: Xin Li <xin3=2Eli@intel=2Ecom>
+>---
+> arch/x86/kernel/cpu/common=2Ec | 13 ++++++++++---
+> 1 file changed, 10 insertions(+), 3 deletions(-)
 >
-> I do not think we should change this design unless prototyped with an 
-> existing compositor such as chrome or android at this point.
->
-> Thanks
->
-> Abhinav
+>diff --git a/arch/x86/kernel/cpu/common=2Ec b/arch/x86/kernel/cpu/common=
+=2Ec
+>index 20bbedbf6dcb=2E=2E2ee4e7b597a3 100644
+>--- a/arch/x86/kernel/cpu/common=2Ec
+>+++ b/arch/x86/kernel/cpu/common=2Ec
+>@@ -2071,10 +2071,8 @@ static void wrmsrl_cstar(unsigned long val)
+> 		wrmsrl(MSR_CSTAR, val);
+> }
+>=20
+>-/* May not be marked __init: used by software suspend */
+>-void syscall_init(void)
+>+static inline void idt_syscall_init(void)
+> {
+>-	wrmsr(MSR_STAR, 0, (__USER32_CS << 16) | __KERNEL_CS);
+> 	wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);
+>=20
+> 	if (ia32_enabled()) {
+>@@ -2108,6 +2106,15 @@ void syscall_init(void)
+> 	       X86_EFLAGS_AC|X86_EFLAGS_ID);
+> }
+>=20
+>+/* May not be marked __init: used by software suspend */
+>+void syscall_init(void)
+>+{
+>+	/* The default user and kernel segments */
+>+	wrmsr(MSR_STAR, 0, (__USER32_CS << 16) | __KERNEL_CS);
+>+
+>+	idt_syscall_init();
+>+}
+>+
+> #else	/* CONFIG_X86_64 */
+>=20
+> #ifdef CONFIG_STACKPROTECTOR
 
-
-We did perform link training at atomic_enable() at eDP case since we can 
-assume link training will always success without link rate or link lane 
-being reduced.
-
-However for external DP case, link training can not be guarantee always 
-success without link rate or lane being reduced as Abhinav mentioned.
-
-In addition,  CTS (compliance test) it required to complete link 
-training within 10ms after hpd asserted.
-
-I am not sure do link training at atomic_enable() can meet this timing 
-requirement.
-
-
-
+Am I missing something, or is this patch a noop?
