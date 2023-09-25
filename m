@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 074D37AD017
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1471C7AD018
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbjIYGXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        id S232094AbjIYGXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjIYGXb (ORCPT
+        with ESMTP id S232240AbjIYGXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:23:31 -0400
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3DD47109
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:22:31 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.190.70.223])
-        by mail-app4 (Coremail) with SMTP id cS_KCgB3H832JhFl9IXbAA--.20158S4;
-        Mon, 25 Sep 2023 14:21:48 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Toan Le <toan@os.amperecomputing.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, Duc Dang <dhdang@apm.com>,
-        Tanmay Inamdar <tinamdar@apm.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: xgene-msi: Fix a potential UAF in xgene_msi_probe
-Date:   Mon, 25 Sep 2023 14:21:32 +0800
-Message-Id: <20230925062133.14170-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgB3H832JhFl9IXbAA--.20158S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF13Cr4xXr15WF13Gr18uFg_yoWDArb_uF
-        yxXF1ruFyDGr13KF48tr4FvF9093WkWw1kKa4FyF1fAa4Iqw1fXry3CrW2qF97Crs8CrnF
-        yr4jyryfC34UZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
-        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
-        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
-        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
-        1lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0HBmUNoyAhBwAJsK
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 02:23:33 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFED226A0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:21:39 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40471c054f9so18560645e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695622897; x=1696227697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lGoflC/MDGiByLKpoE4UCpKhG9wCXgC3jrpF9mnawmc=;
+        b=ECMthtLkjF0hBBM6O/lZvvlfnDcHj5vR4Lxe+D45C7tZDbaykHERGtOEudoribQwOl
+         Fte35//cCpWckzrS07O64yvry6jMO7VfOKtLeD/nXLDiv4Ysfkf+H89g1LNrj1z+yqOT
+         2I18D6Y96LGQEkTX0YHq8CBhSFjxCwXQXdq3HR3fjFYO2ESM8TMMf2E8WFwpGpGwdPup
+         XZLZmKwIZdtOhxGa5aszprHKFkSXUEiPr/yUWolFA3Ywh6qOHjxnGhu8WpG7cMtjaH2c
+         2AkCOgUwfisfgx/0KcsWXaeaUjfgFWCRkxWW6LnHiDTfwMkT8kuRNTF18tyYP5NqQBI2
+         LJzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695622897; x=1696227697;
+        h=content-transfer-encoding:cc:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lGoflC/MDGiByLKpoE4UCpKhG9wCXgC3jrpF9mnawmc=;
+        b=HBAT1djwmFrZLhAKp0bUfZ20k6k+WLIbR9mvxHHuozFTZLGJ5MrtPI1wqpRPd6VVz3
+         9kpx3ghen5/yvZrCq31FzIGyJdM5kMhmXAejp+lxiUWTty6mo74O70dA0fpMHzZUJraz
+         RXcKcoYIiTMbOYImbXnhbySj5BOmzKIfqQzqzsOLv+5HfyGX4XtOaDQXky46AOc/X6KU
+         MlLHbEPvbribZ7HRmRQo2eKRTCgiyba94qEdjWLS/Wv9DvquGmC1ILS3Nsypg1dZ88kq
+         Ap2wOiSBpPB8LlEvF3PsW1cEtW5TIWc+F1L6eY9rgW+pYMrlXLVVFNys5Wx9XkkeyKJi
+         us2Q==
+X-Gm-Message-State: AOJu0YxAViUFHrHMIoJHKPP8DdccOIJfJzFXrx5iJ2LYFCAjGUe3rrG1
+        Bn3sppw0eTNQ9/bw5rTe/ruTSQ==
+X-Google-Smtp-Source: AGHT+IHHKt7P8p/soHCBdqvFETlHa38Td/2/3ju/wDTL8KeMQizTMtjs/G1nKdI1QABkE1BOVrDTEw==
+X-Received: by 2002:a05:600c:4e05:b0:405:3cc1:e115 with SMTP id b5-20020a05600c4e0500b004053cc1e115mr5041954wmq.3.1695622896458;
+        Sun, 24 Sep 2023 23:21:36 -0700 (PDT)
+Received: from [172.20.13.88] ([45.147.210.162])
+        by smtp.gmail.com with ESMTPSA id u23-20020a05600c211700b004042dbb8925sm14054942wml.38.2023.09.24.23.21.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Sep 2023 23:21:35 -0700 (PDT)
+Message-ID: <71897125-e570-46ce-946a-d4729725e28f@kernel.dk>
+Date:   Mon, 25 Sep 2023 00:21:35 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Amir Goldstein <amir73il@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] ovl: disable IOCB_DIO_CALLER_COMP
+Cc:     Zorro Lang <zlang@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xgene_allocate_domains() will call irq_domain_remove() to free
-msi->inner_domain on failure. However, its caller, xgene_msi_probe(),
-will also call irq_domain_remove() through xgene_msi_remove() on the
-same failure, which may lead to a use-after-free. Set the freed pointer
-to NULL to fix this issue.
+overlayfs copies the kiocb flags when it sets up a new kiocb to handle
+a write, but it doesn't properly support dealing with the deferred
+caller completions of the kiocb. This means it doesn't get the final
+write completion value, and hence will complete the write with '0' as
+the result.
 
-Fixes: dcd19de36775 ("PCI: xgene: Add APM X-Gene v1 PCIe MSI/MSIX termination driver")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+We could support the caller completions in overlayfs, but for now let's
+just disable them in the generated write kiocb.
+
+Reported-by: Zorro Lang <zlang@redhat.com>
+Link: https://lore.kernel.org/io-uring/20230924142754.ejwsjen5pvyc32l4@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
+Fixes: 8c052fb3002e ("iomap: support IOCB_DIO_CALLER_COMP")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
 ---
- drivers/pci/controller/pci-xgene-msi.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
-index 3ce38dfd0d29..c0192c5ff0f3 100644
---- a/drivers/pci/controller/pci-xgene-msi.c
-+++ b/drivers/pci/controller/pci-xgene-msi.c
-@@ -253,6 +253,7 @@ static int xgene_allocate_domains(struct xgene_msi *msi)
+diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+index 4193633c4c7a..693971d20280 100644
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -391,6 +391,12 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	if (!ovl_should_sync(OVL_FS(inode->i_sb)))
+ 		ifl &= ~(IOCB_DSYNC | IOCB_SYNC);
  
- 	if (!msi->msi_domain) {
- 		irq_domain_remove(msi->inner_domain);
-+		msi->inner_domain = NULL;
- 		return -ENOMEM;
- 	}
- 
++	/*
++	 * Overlayfs doesn't support deferred completions, don't copy
++	 * this property in case it is set by the issuer.
++	 */
++	ifl &= ~IOCB_DIO_CALLER_COMP;
++
+ 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+ 	if (is_sync_kiocb(iocb)) {
+ 		file_start_write(real.file);
+
 -- 
-2.17.1
+Jens Axboe
 
+	
