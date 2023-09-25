@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFF07ADD05
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C8B7ADD11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbjIYQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        id S231873AbjIYQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjIYQ1D (ORCPT
+        with ESMTP id S229522AbjIYQ2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:27:03 -0400
-Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57FEB8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:26:54 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id koQ6q3Yk8DuGykoQ6q06qm; Mon, 25 Sep 2023 18:26:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695659211;
-        bh=bqF3lbG0kh1bVAZBrRIplUrNJ8DhjKKRSQSx2fty2V0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=OkHLq97M1aXHkJYZD8y4nPXi5uJJJzBTnQTJHMkVqdde8rtX3Eje3PNapDsW9TQ/a
-         6uYvQQsmyKopFlG87IIc28UPfubipI7y0mSEKZIv1N8X6GlpuT+6fVQUUHSKWbGVVv
-         4A7bNtXHeejeiXGvFUQICEsw0egoUTZA4/0nWMJcgWqrkaBFLplSwg/vHHQL3Kkyqx
-         ZY2gisEycvYzR1TUerI928arUdUUhy8YU3cGnrZq8wh+SKPuEUcDfS4R3yy/o3ji7U
-         ScU7TnjYanEelaovZjtUA2fltxxLiLSRylCHUeA9NDlz9i5kEfe0LaSZXI2sVjwFMd
-         9JUn79JwI4Nag==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 25 Sep 2023 18:26:51 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <f705117e-41dd-cb2f-ed06-6c47876fd6a2@wanadoo.fr>
-Date:   Mon, 25 Sep 2023 18:26:50 +0200
+        Mon, 25 Sep 2023 12:28:55 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79557FB;
+        Mon, 25 Sep 2023 09:28:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jROqAEkQNpkWnS8v1ykP5/ZLrZmkwHf52pIZ146JzkU=; b=OPsoFGfj8SogLijb61TbCQuFSt
+        r4U1AjausZZbDS27ervs0UVLeeq/WXWif6Bh/olU2Qkd/m88ZC7i50Q4IEiaSyOcgayZOj/gokqDf
+        9UjOInzdI3xWKacekNqsVxKIqdAhb7mCb+oe1nLzUtlxb+POA2R7L2yk1SUexyVkAICS06SwQu5Gx
+        iurZp+pFY53XFqRieu4DkNjH1s6wiGpzRRAENsy4JQUVQtgWfhktUAeLli2UJKJrWmE5iZN7MaaRa
+        RePP8EhvmHKz5NFOQjXgzyLWPE/f3Lmp9d+DJTdFija9ojwlpSnrC/R/Klx/ZYDf1TIyExMKpNErb
+        cpI4VWNA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48484)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qkoRs-0001Kh-2U;
+        Mon, 25 Sep 2023 17:28:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qkoRo-0007xJ-Iu; Mon, 25 Sep 2023 17:28:36 +0100
+Date:   Mon, 25 Sep 2023 17:28:36 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-acpi@vger.kernel.org, James Morse <james.morse@arm.com>,
+        loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Salil Mehta <salil.mehta@huawei.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-ia64@vger.kernel.org
+Subject: Re: [PATCH RFC v2] cpu-hotplug: provide prototypes for arch CPU
+ registration
+Message-ID: <ZRG1NBNbljy2/LEy@shell.armlinux.org.uk>
+References: <E1qgnh2-007ZRZ-WD@rmk-PC.armlinux.org.uk>
+ <871qez1cfd.ffs@tglx>
+ <ZQgHUvW8qgyj5Puv@shell.armlinux.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH net-next] udp_tunnel: Use flex array to simplify code
-Content-Language: fr, en-CA
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <4a096ba9cf981a588aa87235bb91e933ee162b3d.1695542544.git.christophe.jaillet@wanadoo.fr>
- <65105d3a8e70e_12c73e29410@willemb.c.googlers.com.notmuch>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <65105d3a8e70e_12c73e29410@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQgHUvW8qgyj5Puv@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 24/09/2023 à 18:00, Willem de Bruijn a écrit :
-> Christophe JAILLET wrote:
->> 'n_tables' is small, UDP_TUNNEL_NIC_MAX_TABLES	= 4 as a maximum. So there
->> is no real point to allocate the 'entries' pointers array with a dedicate
->> memory allocation.
->>
->> Using a flexible array for struct udp_tunnel_nic->entries avoids the
->> overhead of an additional memory allocation.
->>
->> This also saves an indirection when the array is accessed.
->>
->> Finally, __counted_by() can be used for run-time bounds checking if
->> configured and supported by the compiler.
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   net/ipv4/udp_tunnel_nic.c | 11 ++---------
->>   1 file changed, 2 insertions(+), 9 deletions(-)
->>
->> diff --git a/net/ipv4/udp_tunnel_nic.c b/net/ipv4/udp_tunnel_nic.c
->> index 029219749785..b6d2d16189c0 100644
->> --- a/net/ipv4/udp_tunnel_nic.c
->> +++ b/net/ipv4/udp_tunnel_nic.c
->> @@ -47,7 +47,7 @@ struct udp_tunnel_nic {
->>   
->>   	unsigned int n_tables;
->>   	unsigned long missed;
->> -	struct udp_tunnel_nic_table_entry **entries;
->> +	struct udp_tunnel_nic_table_entry *entries[] __counted_by(n_tables);
->>   };
->>   
->>   /* We ensure all work structs are done using driver state, but not the code.
->> @@ -725,16 +725,12 @@ udp_tunnel_nic_alloc(const struct udp_tunnel_nic_info *info,
->>   	struct udp_tunnel_nic *utn;
->>   	unsigned int i;
->>   
->> -	utn = kzalloc(sizeof(*utn), GFP_KERNEL);
->> +	utn = kzalloc(struct_size(utn, entries, n_tables), GFP_KERNEL);
->>   	if (!utn)
->>   		return NULL;
->>   	utn->n_tables = n_tables;
+On Mon, Sep 18, 2023 at 09:16:18AM +0100, Russell King (Oracle) wrote:
+> On Fri, Sep 15, 2023 at 09:09:10PM +0200, Thomas Gleixner wrote:
+> > On Thu, Sep 14 2023 at 15:51, Russell King wrote:
+> > > Provide common prototypes for arch_register_cpu() and
+> > > arch_unregister_cpu(). These are called by acpi_processor.c, with
+> > > weak versions, so the prototype for this is already set. It is
+> > > generally not necessary for function prototypes to be conditional
+> > > on preprocessor macros.
+> > >
+> > > Some architectures (e.g. Loongarch) are missing the prototype for this,
+> > > and rather than add it to Loongarch's asm/cpu.h, lets do the job once
+> > > for everyone.
+> > >
+> > > Since this covers everyone, remove the now unnecessary prototypes in
+> > > asm/cpu.h, and we also need to remove the 'static' from one of ia64's
+> > > arch_register_cpu() definitions.
+> > >
+> > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > ---
+> > > Spotted during the review of James Morse's patches, I think rather than
+> > > adding prototypes for loongarch to its asm/cpu.h, it would make more
+> > > sense to provide the prototypes in a non-arch specific header file so
+> > > everyone can benefit, rather than having each architecture do its own
+> > > thing.
+> > >
+> > > I'm sending this as RFC as James has yet to comment on my proposal, and
+> > > also to a wider audience, and although it makes a little more work for
+> > > James (to respin his series) it does mean that his series should get a
+> > > little smaller.
+> > 
+> > And it makes tons of sense.
+> > 
+> > > See:
+> > >  https://lore.kernel.org/r/20230913163823.7880-2-james.morse@arm.com
+> > >  https://lore.kernel.org/r/20230913163823.7880-4-james.morse@arm.com
+> > >  https://lore.kernel.org/r/20230913163823.7880-23-james.morse@arm.com
+> > >
+> > > v2: lets try not fat-fingering vim.
+> > 
+> > Yeah. I wondered how you managed to mangle that :)
+> > 
+> > >  arch/ia64/include/asm/cpu.h | 5 -----
+> > >  arch/ia64/kernel/topology.c | 2 +-
+> > 
+> > That's moot as ia64 is queued for removal :)
 > 
-> Should utn->n_tables be initialized before first use of
-> struct_size(utn, entries, n_tables)?
+> Okay, one less thing to worry about. Tomorrow, I'll re-spin without the
+> ia64 bits included.
 > 
+> I would really like to hear from James before we think about merging
+> this, as it will impact James' patch set and would add a dependency
+> for that. I wouldn't want this patch to become a reason to delay
+> James' patch set for another kernel cycle.
 
-It can't be.
-struct_size() is used to compute the memory size to allocate.
+It's been totally quiet for a week both from James and from Thomas,
+I'll send the patch with the ia64 bits dropped.
 
-Before the kzalloc() call, utn does not exist, so we can't write 
-anything to utn->n_tables. It is undefined at this point.
-
-It is initialized the line just after, after the allocation, but before 
-any use.
-
-
-CJ
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
