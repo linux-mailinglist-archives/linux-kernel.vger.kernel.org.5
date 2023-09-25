@@ -2,151 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3145C7AD328
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92137AD32A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbjIYISb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        id S232627AbjIYITB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbjIYIS1 (ORCPT
+        with ESMTP id S232117AbjIYIS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:18:27 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DC7E73
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:18:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LvmdatgX4CQVCy6LBbFwmoIafqCE1fPegSCAtFsohoAqXI6jrBSAcY4zMxImZZR9jqUUDCyoGgcw/0/TWEl9DhQ8n2NnTMW1lFfn4QmM4OjAJ69jdxQ4CMrtHlnOHtFdMbr0tXKtQlCBAnRyDpkB8Kotvyh8lGx3AetxR1wGs4HJJ2NgQRL+Jo8pUn39PcO4VvyJYIQBI0IlelgSGhVb/gNI4/yrcfrRYK6DkqPNFCH5UroKZkELrrEfMjuFf1Rj4qHko/z01+4dtydUxiuOgdfo6gQFyZZ46OERn2E+L+9nXYdS7rcobGeLkWNN8fcKZTAtqNZp4zbDaZtAZhFmKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bzMfrURqQjlqbBcs9MBTXo1dmQpen9EUPgS5JdkirTo=;
- b=LF4SfB/sd7bM9jN98SVUo9IZpUE8MO6lCHWCj8Z96f+qXszy9L2um2I5pVDcuPkAT4kGPMxzPCPAGiCF5+B3sx0F1rk7EQT6ZxGp9HOQIUO0p1IDJVETF+Gb9QbSwckMRF3wRFpAauwcKI0T/zqDZ6e0yxWE/ujh04S9vsN4ctvkbgAQvxINJrKmULXdl9H1k6B6oadKPaUfRaqh8P1HM2XHLJPZRBOM0SEUzUAlaBOpiG24KD5kGB7NPsY6ZSkkweq/YU2t0XxhXMv31v/yTRHiLpttXWqjZRuyWGaaAmzsh1HLu1ytEZk6jA/XGT9NsmOQbYnRE9lGWg6uaSbuvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bzMfrURqQjlqbBcs9MBTXo1dmQpen9EUPgS5JdkirTo=;
- b=gj6p7oi3Hv9FNR9IC/3z8GJVeAQbBkgy2o8OyinWzXQLqxhFz0gmjr2VTex+i5FKi4MdeBQVsZsAc35YBpCW4G9iiVTdvAEV8LFyoJoyf79bZOf6HThIRb3k6nk/LLf3lsGD2rUT5FmAUF3oEOk5RQsC+WIddl7v8FkxiHlD69o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW6PR12MB8898.namprd12.prod.outlook.com (2603:10b6:303:246::8)
- by DM6PR12MB4926.namprd12.prod.outlook.com (2603:10b6:5:1bb::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 08:18:19 +0000
-Received: from MW6PR12MB8898.namprd12.prod.outlook.com
- ([fe80::a67a:d5d:8219:56ce]) by MW6PR12MB8898.namprd12.prod.outlook.com
- ([fe80::a67a:d5d:8219:56ce%3]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 08:18:19 +0000
-Date:   Mon, 25 Sep 2023 16:18:07 +0800
-From:   Lang Yu <Lang.Yu@amd.com>
-To:     Juntong Deng <juntong.deng@outlook.com>
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        aurabindo.pillai@amd.com, shiwu.zhang@amd.com,
-        Bhawanpreet.Lakha@amd.com, harry.wentland@amd.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/amdgpu: Add description for AMD_IP_BLOCK_TYPE_VPE
-Message-ID: <ZRFCP23GbTLjig5u@lang-desktop>
-References: <VI1P193MB07528C2081A3A8BBDFAF2BED99FDA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1P193MB07528C2081A3A8BBDFAF2BED99FDA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-ClientProxiedBy: PS2PR02CA0050.apcprd02.prod.outlook.com
- (2603:1096:300:5a::14) To MW6PR12MB8898.namprd12.prod.outlook.com
- (2603:10b6:303:246::8)
+        Mon, 25 Sep 2023 04:18:57 -0400
+Received: from TWMBX02.aspeed.com (mail.aspeedtech.com [211.20.114.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A560CA3;
+        Mon, 25 Sep 2023 01:18:49 -0700 (PDT)
+Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Sep
+ 2023 16:18:46 +0800
+Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Sep 2023 16:18:46 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <billy_tsai@aspeedtech.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <Potin.Lai@quantatw.com>, <patrickw3@meta.com>
+Subject: [PATCH v1] iio: adc: aspeed: Support deglitch feature.
+Date:   Mon, 25 Sep 2023 16:18:45 +0800
+Message-ID: <20230925081845.4147424-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW6PR12MB8898:EE_|DM6PR12MB4926:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2f8aaaa3-d41c-4852-8543-08dbbd9ff95e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1ljQkcsQNwHsHplr36qkKvzteJrOscPShPM7WaCH9F78oo0vxo1SpXZilKoJFlmneSK+JrMOKX0y2nwNuAmeDEJIKo7c/UB1HW8gQ4d4vFDtKzrdy+QGtBfJVMXVkeDSGPOiC4DEHRWbZboauHA0eDOQULuOKPyAAZ3TCRX9kF+pWI0zGtKeIW3HUN2Bc3o2FZ53hr3WqZe1kpw0Xi+wphn01l9Ei/f8AJNCuk48WXiQy1Ell3Mt9DQ7G9EZbxu/t/QOBL117MBiVm1aCbQ8K0GYot8hVxDySQHh7Ybaa5336IsHjQRsFRth1296P8LTqPLUSnOFLwswd31msz6BEyNbzlvLAJfkLoRTR+7pFNO8x9V94g5UujUD4bHEUZOfF08IZU3CJR2OXO0zrfH7x7yIJQNzO4lNIvPkmfQ3GrHlGmmkryccJGZXyZfjlBm+aaQjsJ6h02bSgiyaPW0AXEqVkgoWxLesJcdS4F+gMAefPiV2E9qPSkySzcsvM04ARIELn7A1bX82AyzMLjcq9bywkXbaXAe/GbJe6+ZAFgH3PlWkLRN7hFunAbDC62rv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW6PR12MB8898.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(396003)(136003)(346002)(376002)(230922051799003)(451199024)(186009)(1800799009)(83380400001)(2906002)(5660300002)(316002)(6916009)(41300700001)(8676002)(8936002)(4326008)(66476007)(66556008)(66946007)(86362001)(45080400002)(6486002)(9686003)(6512007)(6666004)(6506007)(26005)(38100700002)(478600001)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pd/u2xLbVcl7C7Gbo8IFaB59z1RWqBUwSBgQEu0jlOC/NDrAF5wfDOGNRIzl?=
- =?us-ascii?Q?UKWB+j1LYFxdW7QB6lD8/RWNzbx30wzPYYkPLVlrtQcj9Yl6VqMwxs8EXNKu?=
- =?us-ascii?Q?rzLgsKv9GCp48+0mQwcjZy4/XbXV4LsV73tNTbV8t5+1fbYsN1NSdvF8TxaM?=
- =?us-ascii?Q?G93Tgu0BR/bJuxC16QB283NoNb3E9zZvt5Zia+9CyIoK8ddvaWwbcohnVOYA?=
- =?us-ascii?Q?DEG+FibidPhEwANUD8idO3+NHgGZ3Xl518UdtWCp1JrAzutvzIOV0NKeDfXm?=
- =?us-ascii?Q?2nHoaFzzwr1NI5BWkYsugFBVLnPsslxcJwTBuqRIbzF+Sg/viasg7GTQNV12?=
- =?us-ascii?Q?kkLVWVgDP6Yng3V01PVxiHnxDB8QgAfP0OTmXO6fWTMTj3VzmW6WxWmuULCr?=
- =?us-ascii?Q?WI/bYGB17rmZoxGU09LP/GhP84YKg6W32hKMyRnoCixzqjicurdIUDWVH7bO?=
- =?us-ascii?Q?yYm4SE2tU7WQjFGojJsl6CUlFMDYDtYT9gURZ+uIIRjYNg5FyXfHB6u4+wYb?=
- =?us-ascii?Q?mT3nkRN1bqmoEC/0WocILe5CTucGEuzckF0voyBDHcLRMveW2+y/WXNL22Fe?=
- =?us-ascii?Q?1Ql97EhrCKwYVsv0u0yYNXvWCP5B1bnyu4CbU3orHegPmeRIK7g48f8+Nld3?=
- =?us-ascii?Q?ofbCKCPbZWpuSzACm8ZoTFJwZZgJSJIqMkG84lUnuXtBgJQHa4whps8R6LEw?=
- =?us-ascii?Q?0LegOm1M19d02H2p+laK/KQCayJlunD2AKiab6pWG9zH/MmRxA5sxJRfXZFv?=
- =?us-ascii?Q?O1u3Cd65XA4R9xNOJYcXWEF3q7aytjlN2/KrEgL57YhwiSKSUGynPzOnzGFU?=
- =?us-ascii?Q?0P20RtfpHyWVkKswsKTZoRjTyDdRCGCC/MZfH0DNS647Pleabea4jdkXth/7?=
- =?us-ascii?Q?5R3AYKR72zpUo8seJzTtQDuN+CtLxcVdSTGdxW5CIi1nu4aZRBqaCdK/YmE/?=
- =?us-ascii?Q?QkP+3g9UuQOY2hu2qI6B1T7m0xyhIY1zXlZQnLUhLyTOH9SevgSdDJ46Pjgs?=
- =?us-ascii?Q?Bgf1r4UmqJX41N4Q07R98ILQEduKaaUdaRmOtys/GBY+WTjdSl4MXp/YiDhG?=
- =?us-ascii?Q?HibGrelIT7HYlOpN39QPI9Spix67K2QZLLYYWJmKVpgi/GYmUQd4HOY7AcxS?=
- =?us-ascii?Q?GZvi1qkK8Rwj3mHI+yVgGRxqF3dPBOGl298CzMzz08KSYJ3lUuTNZkl9VmZ1?=
- =?us-ascii?Q?1zN2OHVRL1/r1MI5+aaqYQuxx3ppuOpO+pvY9b3qFFT/N8JzKFLZobxJVaGx?=
- =?us-ascii?Q?4aRElwelUdS0uGILX1zg4HdF0Bly9bEmmyE13Jrs/qvJVAAunGuo7+6j9PAh?=
- =?us-ascii?Q?7/cOl7phUvNAgnyTjOLG8PDNIh9NFmxEoVnB2FDgyQQkPp9HUxE0tgQch2F3?=
- =?us-ascii?Q?3edQXZg05QDcsfo68MPM+uXx6MzZULQwttFqsVUnlAiTWyRuFXDVq9SU4lRH?=
- =?us-ascii?Q?4ju0zRewI28Q6eCO5XC33j7Repjy4Db2Hbt1A4m+JYqESAqgmimATRNUSA9+?=
- =?us-ascii?Q?CGmHLx7gN5W+tPtOfEt4VXzszmzBObBC3BixDifVKAqtGootTrDSZGAVpYn8?=
- =?us-ascii?Q?YCbfNoGHh/Y/8u0E47XXfZAuwiO+OL+7mlQaO3LE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f8aaaa3-d41c-4852-8543-08dbbd9ff95e
-X-MS-Exchange-CrossTenant-AuthSource: MW6PR12MB8898.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 08:18:18.7280
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3pmGjq+skjkV9jUlB0GW4YpyGBwgkDnTDerlJLPYslpWQuRJUISIHpurxWU0/nQBB075TxY8y+CtWHdyznsaFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4926
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: Fail (TWMBX02.aspeed.com: domain of billy_tsai@aspeedtech.com
+ does not designate 192.168.10.10 as permitted sender)
+ receiver=TWMBX02.aspeed.com; client-ip=192.168.10.10;
+ helo=twmbx02.aspeed.com;
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_FAIL,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/24/ , Juntong Deng wrote:
-> AMD_IP_BLOCK_TYPE_VPE is a new IP BLOCK type for Video Processing Engine,
-> but currently lacks description.
-> 
-> Fix the documentation warning:
-> warning: Enum value 'AMD_IP_BLOCK_TYPE_VPE' not described in
-> enum 'amd_ip_block_type'
-> 
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Create event sysfs for applying the deglitch condition. When
+in_voltageY_thresh_rising_en/in_voltageY_thresh_falling_en is set to true,
+the driver will use the in_voltageY_thresh_rising_value and
+in_voltageY_thresh_falling_value as threshold values. If the ADC value
+falls outside this threshold, the driver will wait for the ADC sampling
+period and perform an additional read once to achieve the deglitching
+purpose.
 
-Thanks!
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+---
+ drivers/iio/adc/aspeed_adc.c | 193 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 189 insertions(+), 4 deletions(-)
 
-Reviewed-by: Lang Yu <lang.yu@amd.com>
+diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+index 998e8bcc06e1..9e746c81d916 100644
+--- a/drivers/iio/adc/aspeed_adc.c
++++ b/drivers/iio/adc/aspeed_adc.c
+@@ -95,6 +95,7 @@ struct aspeed_adc_model_data {
+ 	bool wait_init_sequence;
+ 	bool need_prescaler;
+ 	bool bat_sense_sup;
++	bool require_extra_eoc;
+ 	u8 scaler_bit_width;
+ 	unsigned int num_channels;
+ 	const struct aspeed_adc_trim_locate *trim_locate;
+@@ -120,6 +121,26 @@ struct aspeed_adc_data {
+ 	int			cv;
+ 	bool			battery_sensing;
+ 	struct adc_gain		battery_mode_gain;
++	unsigned int		required_eoc_num;
++	u16			*upper_bound;
++	u16			*lower_bound;
++	bool			*upper_en;
++	bool			*lower_en;
++};
++
++static const struct iio_event_spec aspeed_adc_events[] = {
++	{
++		.type = IIO_EV_TYPE_THRESH,
++		.dir = IIO_EV_DIR_RISING,
++		.mask_separate =
++			BIT(IIO_EV_INFO_VALUE) | BIT(IIO_EV_INFO_ENABLE),
++	},
++	{
++		.type = IIO_EV_TYPE_THRESH,
++		.dir = IIO_EV_DIR_FALLING,
++		.mask_separate =
++			BIT(IIO_EV_INFO_VALUE) | BIT(IIO_EV_INFO_ENABLE),
++	},
+ };
+ 
+ #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
+@@ -131,6 +152,8 @@ struct aspeed_adc_data {
+ 	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |	\
+ 				BIT(IIO_CHAN_INFO_SAMP_FREQ) |	\
+ 				BIT(IIO_CHAN_INFO_OFFSET),	\
++	.event_spec = aspeed_adc_events,			\
++	.num_event_specs = ARRAY_SIZE(aspeed_adc_events),	\
+ }
+ 
+ static const struct iio_chan_spec aspeed_adc_iio_channels[] = {
+@@ -277,6 +300,35 @@ static int aspeed_adc_set_sampling_rate(struct iio_dev *indio_dev, u32 rate)
+ 	return 0;
+ }
+ 
++static int aspeed_adc_get_voltage_raw(struct aspeed_adc_data *data,
++				      struct iio_chan_spec const *chan)
++{
++	int val;
++
++	val = readw(data->base + chan->address);
++	dev_dbg(data->dev,
++		"%d upper_bound: %d %x, lower_bound: %d %x, delay: %d * %d ns",
++		chan->channel, data->upper_en[chan->channel],
++		data->upper_bound[chan->channel], data->lower_en[chan->channel],
++		data->lower_bound[chan->channel], data->sample_period_ns,
++		data->required_eoc_num);
++	if (data->upper_en[chan->channel]) {
++		if (val >= data->upper_bound[chan->channel]) {
++			ndelay(data->sample_period_ns *
++			       data->required_eoc_num);
++			val = readw(data->base + chan->address);
++		}
++	}
++	if (data->lower_en[chan->channel]) {
++		if (val <= data->lower_bound[chan->channel]) {
++			ndelay(data->sample_period_ns *
++			       data->required_eoc_num);
++			val = readw(data->base + chan->address);
++		}
++	}
++	return val;
++}
++
+ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+ 			       struct iio_chan_spec const *chan,
+ 			       int *val, int *val2, long mask)
+@@ -299,14 +351,15 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+ 			 * Experiment result is 1ms.
+ 			 */
+ 			mdelay(1);
+-			*val = readw(data->base + chan->address);
++			*val = aspeed_adc_get_voltage_raw(data, chan);
+ 			*val = (*val * data->battery_mode_gain.mult) /
+ 			       data->battery_mode_gain.div;
+ 			/* Restore control register value */
+ 			writel(adc_engine_control_reg_val,
+ 			       data->base + ASPEED_REG_ENGINE_CONTROL);
+-		} else
+-			*val = readw(data->base + chan->address);
++		} else {
++			*val = aspeed_adc_get_voltage_raw(data, chan);
++		}
+ 		return IIO_VAL_INT;
+ 
+ 	case IIO_CHAN_INFO_OFFSET:
+@@ -369,9 +422,106 @@ static int aspeed_adc_reg_access(struct iio_dev *indio_dev,
+ 	return 0;
+ }
+ 
++static int aspeed_adc_read_event_config(struct iio_dev *indio_dev,
++					const struct iio_chan_spec *chan,
++					enum iio_event_type type,
++					enum iio_event_direction dir)
++{
++	struct aspeed_adc_data *data = iio_priv(indio_dev);
++
++	switch (dir) {
++	case IIO_EV_DIR_RISING:
++		return data->upper_en[chan->channel];
++	case IIO_EV_DIR_FALLING:
++		return data->lower_en[chan->channel];
++	default:
++		return -EINVAL;
++	}
++}
++
++static int aspeed_adc_write_event_config(struct iio_dev *indio_dev,
++					 const struct iio_chan_spec *chan,
++					 enum iio_event_type type,
++					 enum iio_event_direction dir,
++					 int state)
++{
++	struct aspeed_adc_data *data = iio_priv(indio_dev);
++
++	switch (dir) {
++	case IIO_EV_DIR_RISING:
++		data->upper_en[chan->channel] = state ? 1 : 0;
++		break;
++	case IIO_EV_DIR_FALLING:
++		data->lower_en[chan->channel] = state ? 1 : 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int aspeed_adc_write_event_value(struct iio_dev *indio_dev,
++					const struct iio_chan_spec *chan,
++					enum iio_event_type type,
++					enum iio_event_direction dir,
++					enum iio_event_info info, int val,
++					int val2)
++{
++	struct aspeed_adc_data *data = iio_priv(indio_dev);
++
++	if (info != IIO_EV_INFO_VALUE)
++		return -EINVAL;
++
++	switch (dir) {
++	case IIO_EV_DIR_RISING:
++		if (val >= BIT(ASPEED_RESOLUTION_BITS))
++			return -EINVAL;
++		data->upper_bound[chan->channel] = val;
++		break;
++	case IIO_EV_DIR_FALLING:
++		data->lower_bound[chan->channel] = val;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int aspeed_adc_read_event_value(struct iio_dev *indio_dev,
++				       const struct iio_chan_spec *chan,
++				       enum iio_event_type type,
++				       enum iio_event_direction dir,
++				       enum iio_event_info info, int *val,
++				       int *val2)
++{
++	struct aspeed_adc_data *data = iio_priv(indio_dev);
++
++	if (info != IIO_EV_INFO_VALUE)
++		return -EINVAL;
++
++	switch (dir) {
++	case IIO_EV_DIR_RISING:
++		*val = data->upper_bound[chan->channel];
++		break;
++	case IIO_EV_DIR_FALLING:
++		*val = data->lower_bound[chan->channel];
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return IIO_VAL_INT;
++}
++
+ static const struct iio_info aspeed_adc_iio_info = {
+ 	.read_raw = aspeed_adc_read_raw,
+ 	.write_raw = aspeed_adc_write_raw,
++	.read_event_config = &aspeed_adc_read_event_config,
++	.write_event_config = &aspeed_adc_write_event_config,
++	.read_event_value = &aspeed_adc_read_event_value,
++	.write_event_value = &aspeed_adc_write_event_value,
+ 	.debugfs_reg_access = aspeed_adc_reg_access,
+ };
+ 
+@@ -502,6 +652,30 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+ 	if (IS_ERR(data->base))
+ 		return PTR_ERR(data->base);
+ 
++	data->upper_bound = devm_kzalloc(&pdev->dev,
++					 sizeof(data->upper_bound) *
++						 data->model_data->num_channels,
++					 GFP_KERNEL);
++	if (!data->upper_bound)
++		return -ENOMEM;
++	data->upper_en = devm_kzalloc(&pdev->dev,
++				      sizeof(data->upper_en) *
++					      data->model_data->num_channels,
++				      GFP_KERNEL);
++	if (!data->upper_en)
++		return -ENOMEM;
++	data->lower_bound = devm_kzalloc(&pdev->dev,
++					 sizeof(data->lower_bound) *
++						 data->model_data->num_channels,
++					 GFP_KERNEL);
++	if (!data->lower_bound)
++		return -ENOMEM;
++	data->lower_en = devm_kzalloc(&pdev->dev,
++				      sizeof(data->lower_en) *
++					      data->model_data->num_channels,
++				      GFP_KERNEL);
++	if (!data->lower_en)
++		return -ENOMEM;
+ 	/* Register ADC clock prescaler with source specified by device tree. */
+ 	spin_lock_init(&data->clk_lock);
+ 	snprintf(clk_parent_name, ARRAY_SIZE(clk_parent_name), "%s",
+@@ -632,7 +806,14 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+ 	adc_engine_control_reg_val |= ASPEED_ADC_CTRL_CHANNEL;
+ 	writel(adc_engine_control_reg_val,
+ 	       data->base + ASPEED_REG_ENGINE_CONTROL);
+-
++	adc_engine_control_reg_val =
++		FIELD_GET(ASPEED_ADC_CTRL_CHANNEL,
++			  readl(data->base + ASPEED_REG_ENGINE_CONTROL));
++	data->required_eoc_num = hweight_long(adc_engine_control_reg_val);
++	if (data->model_data->require_extra_eoc &&
++	    (adc_engine_control_reg_val &
++	     BIT(data->model_data->num_channels - 1)))
++		data->required_eoc_num += 12;
+ 	indio_dev->name = data->model_data->model_name;
+ 	indio_dev->info = &aspeed_adc_iio_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+@@ -668,6 +849,7 @@ static const struct aspeed_adc_model_data ast2400_model_data = {
+ 	.need_prescaler = true,
+ 	.scaler_bit_width = 10,
+ 	.num_channels = 16,
++	.require_extra_eoc = 0,
+ };
+ 
+ static const struct aspeed_adc_model_data ast2500_model_data = {
+@@ -680,6 +862,7 @@ static const struct aspeed_adc_model_data ast2500_model_data = {
+ 	.scaler_bit_width = 10,
+ 	.num_channels = 16,
+ 	.trim_locate = &ast2500_adc_trim,
++	.require_extra_eoc = 0,
+ };
+ 
+ static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
+@@ -691,6 +874,7 @@ static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
+ 	.scaler_bit_width = 16,
+ 	.num_channels = 8,
+ 	.trim_locate = &ast2600_adc0_trim,
++	.require_extra_eoc = 1,
+ };
+ 
+ static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
+@@ -702,6 +886,7 @@ static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
+ 	.scaler_bit_width = 16,
+ 	.num_channels = 8,
+ 	.trim_locate = &ast2600_adc1_trim,
++	.require_extra_eoc = 1,
+ };
+ 
+ static const struct of_device_id aspeed_adc_matches[] = {
+-- 
+2.25.1
 
-> ---
->  drivers/gpu/drm/amd/include/amd_shared.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/amd/include/amd_shared.h b/drivers/gpu/drm/amd/include/amd_shared.h
-> index 63e2153c00c4..314fd44ec018 100644
-> --- a/drivers/gpu/drm/amd/include/amd_shared.h
-> +++ b/drivers/gpu/drm/amd/include/amd_shared.h
-> @@ -83,6 +83,7 @@ enum amd_apu_flags {
->  * @AMD_IP_BLOCK_TYPE_VCN: Video Core/Codec Next
->  * @AMD_IP_BLOCK_TYPE_MES: Micro-Engine Scheduler
->  * @AMD_IP_BLOCK_TYPE_JPEG: JPEG Engine
-> +* @AMD_IP_BLOCK_TYPE_VPE: Video Processing Engine
->  * @AMD_IP_BLOCK_TYPE_UMSCH_MM: User Mode Schduler for Multimedia
->  * @AMD_IP_BLOCK_TYPE_NUM: Total number of IP block types
->  */
-> -- 
-> 2.39.2
-> 
