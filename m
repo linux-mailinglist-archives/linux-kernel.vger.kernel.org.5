@@ -2,48 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8C77ACF22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642267ACF35
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjIYEbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 00:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S229908AbjIYEgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 00:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjIYEbU (ORCPT
+        with ESMTP id S229449AbjIYEgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 00:31:20 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0B492;
-        Sun, 24 Sep 2023 21:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695616269;
-        bh=mFtZmp57nNWMU4FuhVoG4kMRNHEtiQUN/DihPuwqMhA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pkKXJ+yNrPuxJR2hyRMKEKmiJwqF18HUZfAn5vVCfyFxzW3eJsSAOpCTg0mwDDT/k
-         2cjpNF8cKs0qk1A4raslsoBPQzWCdIbUwmYZFuB1v5l+WhkTBhsujBay9SqYSUizWD
-         V1SLyB7sqRkStBPaJldbW/YnXRsbgERtfLVvmV2/v7xUY3Xtp6iOZnWR60fheg8+ls
-         QFiSba7TwBY/z2tMBNGNgGYRGypobXijgTO7QLaZS/w3xqvE17dUaUAXuJHVQu0kGg
-         R5ZHe/A/d2Q267W4eOCDlmwAegusVz5W3S+A33/7oxK42rdqi+ubrF++TKTLc40bz1
-         aaBuaSreRSfrg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rv9191C3gz4x5p;
-        Mon, 25 Sep 2023 14:31:09 +1000 (AEST)
-Date:   Mon, 25 Sep 2023 14:31:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the vfs-brauner tree
-Message-ID: <20230925143107.27476fcb@canb.auug.org.au>
+        Mon, 25 Sep 2023 00:36:21 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5536492
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:36:13 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53368df6093so9677a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695616572; x=1696221372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=utpCVSnKwmUjnI78nqFvLGOx8w1hMljEMO2FokBLE1I=;
+        b=ybr6RM4CPXpwC9LRY3DBeFzRR8xUW4feAfauDPvuNqGD1XTEgTZJ6PysV1BcIGUkUW
+         YpPV4a1uIofNpKwJGKIAfmzVso2/MAKtqv9JruN5CBBgnotdlr2lHuyMX1lB71iVsovG
+         U/DSoEXgp/YIsyIPnhIsjH8h0SsTWPfJ/j5TEABPMYSUa9VXHeJObZ1U//c60mvSXaAg
+         Uyzfyc0JGX5Df0HeGB5VSwYoZ02krp79yhq9F1wpQIqpxGAD/zrR+ITeyQmSJ8xE1pQY
+         5wKjCRB2yRF4+Gi3Kaxg2BbJo8xffQCdHyjmzOzzwR9xP8YYllbzMcnr9xwnj4Azy0LH
+         qYLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695616572; x=1696221372;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=utpCVSnKwmUjnI78nqFvLGOx8w1hMljEMO2FokBLE1I=;
+        b=M95d5oeHaKoNUrStWgvRwIDEx95awZih7kSSXSVYpALeQbnx3jc3RQq2O30rrS4m0s
+         29re5F8YirRN4Z+UXNQBe5PhmuBLJ0VFZWN9j1VPWX9p7sYQEhPL3PhRUtEckZ4thvel
+         33bIhu0a9tfJA8TIS+Y/s0R7bbAsllv9hoskbx30tYlR1Rx0TN+DEJ9Amh1thqyrNWLg
+         3XMbRg8low4IqIaFIPIQjmdrxa33Eo5FTQpXq4smNnsWGuqPubecS87mBvltZNV8SPl+
+         NmZKdTyA0d0n/vtS3AU4OINwugjn1N3iT9vY2S0TPir/LZjp9mtnipxBbHvJqBSME/2s
+         sFFw==
+X-Gm-Message-State: AOJu0YyWp8CaQckb9y2Vk9VTuiwg+sXgPXIRB9FVhTftMG52enJkcetw
+        J3FG37WAnQ9CZjCpNTA5exDW2g3NF2r5Ofc7ErZyug==
+X-Google-Smtp-Source: AGHT+IHKR23zBujhctNddZ7OKF7KZBJFI4TepLmmMkO/RSku8CnURNUbVfdbS2tNLuBfQcREKCgWH/+nVYtyPrKezTY=
+X-Received: by 2002:a50:9fc5:0:b0:525:573c:6444 with SMTP id
+ c63-20020a509fc5000000b00525573c6444mr23731edf.1.1695616571593; Sun, 24 Sep
+ 2023 21:36:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/U_zxesrkufRKC2Tx.DQqzff";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230922210530.2045146-1-i.maximets@ovn.org>
+In-Reply-To: <20230922210530.2045146-1-i.maximets@ovn.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 25 Sep 2023 06:35:58 +0200
+Message-ID: <CANn89iJgeCvJbcapir8WkJv6nYop5CcfxgBrx3BoxEuwp0WA_w@mail.gmail.com>
+Subject: Re: [PATCH net] ipv6: tcp: add a missing nf_reset_ct() in 3WHS handling
+To:     Ilya Maximets <i.maximets@ovn.org>
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        David Ahern <dsahern@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Madhu Koriginja <madhu.koriginja@nxp.com>,
+        Frode Nordahl <frode.nordahl@canonical.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,40 +76,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/U_zxesrkufRKC2Tx.DQqzff
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 22, 2023 at 11:04=E2=80=AFPM Ilya Maximets <i.maximets@ovn.org>=
+ wrote:
+>
+> Commit b0e214d21203 ("netfilter: keep conntrack reference until
+> IPsecv6 policy checks are done") is a direct copy of the old
+> commit b59c270104f0 ("[NETFILTER]: Keep conntrack reference until
+> IPsec policy checks are done") but for IPv6.  However, it also
+> copies a bug that this old commit had.  That is: when the third
+> packet of 3WHS connection establishment contains payload, it is
+> added into socket receive queue without the XFRM check and the
+> drop of connection tracking context.
+>
+> That leads to nf_conntrack module being impossible to unload as
+> it waits for all the conntrack references to be dropped while
+> the packet release is deferred in per-cpu cache indefinitely, if
+> not consumed by the application.
+>
+> The issue for IPv4 was fixed in commit 6f0012e35160 ("tcp: add a
+> missing nf_reset_ct() in 3WHS handling") by adding a missing XFRM
+> check and correctly dropping the conntrack context.  However, the
+> issue was introduced to IPv6 code afterwards.  Fixing it the
+> same way for IPv6 now.
+>
+> Fixes: b0e214d21203 ("netfilter: keep conntrack reference until IPsecv6 p=
+olicy checks are done")
+> Link: https://lore.kernel.org/netdev/d589a999-d4dd-2768-b2d5-89dec64a4a42=
+@ovn.org/
+> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+> ---
 
-Hi all,
+Nica catch, thanks a lot.
 
-After merging the vfs-brauner tree, today's linux-next build (htmldocs)
-produced this warning:
-
-include/linux/pipe_fs_i.h:132: warning: Function parameter or member 'pipe'=
- not described in 'pipe_has_watch_queue'
-
-Introduced by commit
-
-  7084dde72592 ("fs/pipe: move check to pipe_has_watch_queue()")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/U_zxesrkufRKC2Tx.DQqzff
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmURDQsACgkQAVBC80lX
-0GwymQf/SSN9OTOSSsrAWVbJx0L6P0Qc8/v3HzPs8/Jfyv0O+vD0ENDh8p/8xRcB
-oGaoMkLX/MlHYXJZ0ivdjO2XtCSfVhRnei3LI+PtU2lZzIOPyoqTJkfhMcFkSgfV
-3Ot363iN9kMydDPXoTahdaM9/vtEQJzvJGOHTRIUETJu2tDYlY+IRgv5pUDB8yi3
-bHgflWBguFvGySDudqlUsPqXYknPi3M//5N30ORDoFZmMK3SYHMRqWBu6isv33SI
-J0mEWTtOF9sDZYBni5F0ZSy8HqCjay44ewkgMtNbTyyHgEamYX4NXu9DIUj3H8SB
-3yjZ9ConA9IM4A8nSkVmJ2eQrug9ow==
-=7RnT
------END PGP SIGNATURE-----
-
---Sig_/U_zxesrkufRKC2Tx.DQqzff--
+Reviewed-by: Eric Dumazet <edumazet@google.com>
