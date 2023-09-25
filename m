@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742197ACFAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 07:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A917ACFAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 07:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbjIYF6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 01:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
+        id S232026AbjIYF64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 01:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjIYF6j (ORCPT
+        with ESMTP id S231637AbjIYF6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 01:58:39 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2008783;
-        Sun, 24 Sep 2023 22:58:31 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0Vsl7J2k_1695621508;
-Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vsl7J2k_1695621508)
+        Mon, 25 Sep 2023 01:58:41 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83D6E3;
+        Sun, 24 Sep 2023 22:58:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0Vsl7J3-_1695621509;
+Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vsl7J3-_1695621509)
           by smtp.aliyun-inc.com;
-          Mon, 25 Sep 2023 13:58:28 +0800
+          Mon, 25 Sep 2023 13:58:29 +0800
 From:   Jing Zhang <renyu.zj@linux.alibaba.com>
 To:     John Garry <john.g.garry@oracle.com>,
         Ian Rogers <irogers@google.com>
@@ -38,12 +38,15 @@ Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
         Zhuo Song <zhuo.song@linux.alibaba.com>,
         Jing Zhang <renyu.zj@linux.alibaba.com>,
         Shuai Xue <xueshuai@linux.alibaba.com>
-Subject: [PATCH v10 5/7] perf test: Add pmu-event test for "Compat" and new event_field.
-Date:   Mon, 25 Sep 2023 13:57:22 +0800
-Message-Id: <1695621444-56530-6-git-send-email-renyu.zj@linux.alibaba.com>
+Subject: [PATCH v10 6/7] perf jevents: Add support for Arm CMN PMU aliasing
+Date:   Mon, 25 Sep 2023 13:57:23 +0800
+Message-Id: <1695621444-56530-7-git-send-email-renyu.zj@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1695621444-56530-1-git-send-email-renyu.zj@linux.alibaba.com>
 References: <1695621444-56530-1-git-send-email-renyu.zj@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
@@ -54,130 +57,311 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new event test for uncore system event which is used to verify the
-functionality of "Compat" matching multiple identifiers and the new event
-fields "EventidCode" and "NodeType".
+Currently just add aliases for part of Arm CMN PMU events which
+are general and compatible for any SoC and CMN-ANY.
+
+"Compat" value "(434|436|43c|43a).*" means it is compatible with
+all CMN600/CMN650/CMN700/Ci700, which can be obtained from
+commit 7819e05a0dce ("perf/arm-cmn: Revamp model detection").
+
+The arm-cmn PMU events got from:
+[0] https://developer.arm.com/documentation/100180/0302/?lang=en
+[1] https://developer.arm.com/documentation/101408/0100/?lang=en
+[2] https://developer.arm.com/documentation/102308/0302/?lang=en
+[3] https://developer.arm.com/documentation/101569/0300/?lang=en
 
 Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+Reviewed-by: John Garry <john.g.garry@oracle.com>
 ---
- .../pmu-events/arch/test/test_soc/sys/uncore.json  |  8 ++++
- tools/perf/pmu-events/empty-pmu-events.c           |  8 ++++
- tools/perf/tests/pmu-events.c                      | 55 ++++++++++++++++++++++
- 3 files changed, 71 insertions(+)
+ .../pmu-events/arch/arm64/arm/cmn/sys/cmn.json     | 266 +++++++++++++++++++++
+ tools/perf/pmu-events/jevents.py                   |   1 +
+ 2 files changed, 267 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
 
-diff --git a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
-index c7e7528..4d423b1 100644
---- a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
-+++ b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
-@@ -12,5 +12,13 @@
-            "EventName": "sys_ccn_pmu.read_cycles",
-            "Unit": "sys_ccn_pmu",
-            "Compat": "0x01"
-+   },
-+   {
-+           "BriefDescription": "Counts total cache misses in first lookup result (high priority)",
-+           "EventidCode": "0x1",
-+           "NodeType": "0x5",
-+           "EventName": "sys_cmn_pmu.hnf_cache_miss",
-+           "Unit": "sys_cmn_pmu",
-+           "Compat": "(434|436|43c|43a).*"
-    }
- ]
-diff --git a/tools/perf/pmu-events/empty-pmu-events.c b/tools/perf/pmu-events/empty-pmu-events.c
-index 12bd043..1372742 100644
---- a/tools/perf/pmu-events/empty-pmu-events.c
-+++ b/tools/perf/pmu-events/empty-pmu-events.c
-@@ -245,6 +245,14 @@ struct pmu_events_map {
- 		.pmu = "uncore_sys_ccn_pmu",
- 	},
- 	{
-+		.name = "sys_cmn_pmu.hnf_cache_miss",
-+		.event = "eventid=0x1,type=0x5",
-+		.desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_sys_cmn_pmu ",
-+		.compat = "(434|436|43c|43a).*",
-+		.topic = "uncore",
-+		.pmu = "uncore_sys_cmn_pmu",
+diff --git a/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
+new file mode 100644
+index 0000000..428605c
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
+@@ -0,0 +1,266 @@
++[
++	{
++		"EventName": "hnf_cache_miss",
++		"EventidCode": "0x1",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts total cache misses in first lookup result (high priority).",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
 +	},
 +	{
- 		.name = 0,
- 		.event = 0,
- 		.desc = 0,
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 0cf572f..a56d329 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -262,9 +262,24 @@ struct perf_pmu_test_pmu {
- 	.matching_pmu = "uncore_sys_ccn_pmu4",
- };
- 
-+static const struct perf_pmu_test_event sys_cmn_pmu_hnf_cache_miss = {
-+	.event = {
-+		.name = "sys_cmn_pmu.hnf_cache_miss",
-+		.event = "eventid=0x1,type=0x5",
-+		.desc = "Counts total cache misses in first lookup result (high priority)",
-+		.topic = "uncore",
-+		.pmu = "uncore_sys_cmn_pmu",
-+		.compat = "(434|436|43c|43a).*",
-+	},
-+	.alias_str = "eventid=0x1,type=0x5",
-+	.alias_long_desc = "Counts total cache misses in first lookup result (high priority)",
-+	.matching_pmu = "uncore_sys_cmn_pmu0",
-+};
-+
- static const struct perf_pmu_test_event *sys_events[] = {
- 	&sys_ddr_pmu_write_cycles,
- 	&sys_ccn_pmu_read_cycles,
-+	&sys_cmn_pmu_hnf_cache_miss,
- 	NULL
- };
- 
-@@ -707,6 +722,46 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
- 			&sys_ccn_pmu_read_cycles,
- 		},
- 	},
-+	{
-+		.pmu = {
-+			.name = (char *)"uncore_sys_cmn_pmu0",
-+			.is_uncore = 1,
-+			.id = (char *)"43401",
-+		},
-+		.aliases = {
-+			&sys_cmn_pmu_hnf_cache_miss,
-+		},
++		"EventName": "hnf_slc_sf_cache_access",
++		"EventidCode": "0x2",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of cache accesses in first access (high priority).",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
 +	},
 +	{
-+		.pmu = {
-+			.name = (char *)"uncore_sys_cmn_pmu0",
-+			.is_uncore = 1,
-+			.id = (char *)"43602",
-+		},
-+		.aliases = {
-+			&sys_cmn_pmu_hnf_cache_miss,
-+		},
++		"EventName": "hnf_cache_fill",
++		"EventidCode": "0x3",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts total allocations in HN SLC (all cache line allocations to SLC).",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
 +	},
 +	{
-+		.pmu = {
-+			.name = (char *)"uncore_sys_cmn_pmu0",
-+			.is_uncore = 1,
-+			.id = (char *)"43c03",
-+		},
-+		.aliases = {
-+			&sys_cmn_pmu_hnf_cache_miss,
-+		},
++		"EventName": "hnf_pocq_retry",
++		"EventidCode": "0x4",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of retried requests.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
 +	},
 +	{
-+		.pmu = {
-+			.name = (char *)"uncore_sys_cmn_pmu0",
-+			.is_uncore = 1,
-+			.id = (char *)"43a01",
-+		},
-+		.aliases = {
-+			&sys_cmn_pmu_hnf_cache_miss,
-+		},
++		"EventName": "hnf_pocq_reqs_recvd",
++		"EventidCode": "0x5",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of requests that HN receives.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_sf_hit",
++		"EventidCode": "0x6",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of SF hits.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_sf_evictions",
++		"EventidCode": "0x7",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of SF eviction cache invalidations initiated.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_dir_snoops_sent",
++		"EventidCode": "0x8",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of directed snoops sent (not including SF back invalidation).",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_brd_snoops_sent",
++		"EventidCode": "0x9",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of multicast snoops sent (not including SF back invalidation).",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_slc_eviction",
++		"EventidCode": "0xa",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of SLC evictions (dirty only).",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_slc_fill_invalid_way",
++		"EventidCode": "0xb",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of SLC fills to an invalid way.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_mc_retries",
++		"EventidCode": "0xc",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of retried transactions by the MC.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_mc_reqs",
++		"EventidCode": "0xd",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of requests that are sent to MC.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hnf_qos_hh_retry",
++		"EventidCode": "0xe",
++		"NodeType": "0x5",
++		"BriefDescription": "Counts number of times a HighHigh priority request is protocolretried at the HN‑F.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_s0_rdata_beats",
++		"EventidCode": "0x1",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of RData beats (RVALID and RREADY) dispatched on port 0. This event measures the read bandwidth, including CMO responses.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_s1_rdata_beats",
++		"EventidCode": "0x2",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of RData beats (RVALID and RREADY) dispatched on port 1. This event measures the read bandwidth, including CMO responses.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_s2_rdata_beats",
++		"EventidCode": "0x3",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of RData beats (RVALID and RREADY) dispatched on port 2. This event measures the read bandwidth, including CMO responses.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_rxdat_flits",
++		"EventidCode": "0x4",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of RXDAT flits received. This event measures the true read data bandwidth, excluding CMOs.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_txdat_flits",
++		"EventidCode": "0x5",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of TXDAT flits dispatched. This event measures the write bandwidth.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_txreq_flits_total",
++		"EventidCode": "0x6",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of TXREQ flits dispatched. This event measures the total request bandwidth.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "rnid_txreq_flits_retried",
++		"EventidCode": "0x7",
++		"NodeType": "0xa",
++		"BriefDescription": "Number of retried TXREQ flits dispatched. This event measures the retry rate.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "sbsx_txrsp_retryack",
++		"EventidCode": "0x4",
++		"NodeType": "0x7",
++		"BriefDescription": "Number of RXREQ flits dispatched. This event is a measure of the retry rate.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "sbsx_txdat_flitv",
++		"EventidCode": "0x5",
++		"NodeType": "0x7",
++		"BriefDescription": "Number of TXDAT flits dispatched from XP to SBSX. This event is a measure of the write bandwidth.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "sbsx_arvalid_no_arready",
++		"EventidCode": "0x21",
++		"NodeType": "0x7",
++		"BriefDescription": "Number of cycles the SBSX bridge is stalled because of backpressure on AR channel.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "sbsx_awvalid_no_awready",
++		"EventidCode": "0x22",
++		"NodeType": "0x7",
++		"BriefDescription": "Number of cycles the SBSX bridge is stalled because of backpressure on AW channel.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "sbsx_wvalid_no_wready",
++		"EventidCode": "0x23",
++		"NodeType": "0x7",
++		"BriefDescription": "Number of cycles the SBSX bridge is stalled because of backpressure on W channel.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_txrsp_retryack",
++		"EventidCode": "0x2a",
++		"NodeType": "0x4",
++		"BriefDescription": "Number of RXREQ flits dispatched. This event is a measure of the retry rate.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_arvalid_no_arready",
++		"EventidCode": "0x2b",
++		"NodeType": "0x4",
++		"BriefDescription": "Number of cycles the HN-I bridge is stalled because of backpressure on AR channel.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_arready_no_arvalid",
++		"EventidCode": "0x2c",
++		"NodeType": "0x4",
++		"BriefDescription": "Number of cycles the AR channel is waiting for new requests from HN-I bridge.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_awvalid_no_awready",
++		"EventidCode": "0x2d",
++		"NodeType": "0x4",
++		"BriefDescription": "Number of cycles the HN-I bridge is stalled because of backpressure on AW channel.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_awready_no_awvalid",
++		"EventidCode": "0x2e",
++		"NodeType": "0x4",
++		"BriefDescription": "Number of cycles the AW channel is waiting for new requests from HN-I bridge.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_wvalid_no_wready",
++		"EventidCode": "0x2f",
++		"NodeType": "0x4",
++		"BriefDescription": "Number of cycles the HN-I bridge is stalled because of backpressure on W channel.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
++	},
++	{
++		"EventName": "hni_txdat_stall",
++		"EventidCode": "0x30",
++		"NodeType": "0x4",
++		"BriefDescription": "TXDAT valid but no link credit available.",
++		"Unit": "arm_cmn",
++		"Compat": "(434|436|43c|43a).*"
 +	}
- };
++]
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 057d51aa..b1ab412 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -289,6 +289,7 @@ class JsonEvent:
+           'cpu_core': 'cpu_core',
+           'cpu_atom': 'cpu_atom',
+           'ali_drw': 'ali_drw',
++          'arm_cmn': 'arm_cmn',
+       }
+       return table[unit] if unit in table else f'uncore_{unit.lower()}'
  
- /* Test that aliases generated are as expected */
 -- 
 1.8.3.1
 
