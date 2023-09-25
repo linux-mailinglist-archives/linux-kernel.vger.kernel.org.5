@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EBB7ACE0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5E87ACE11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjIYCWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        id S231675AbjIYCZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIYCWl (ORCPT
+        with ESMTP id S229561AbjIYCZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:22:41 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB68CF;
-        Sun, 24 Sep 2023 19:22:34 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Vsjmorv_1695608551;
-Received: from 30.221.128.98(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Vsjmorv_1695608551)
-          by smtp.aliyun-inc.com;
-          Mon, 25 Sep 2023 10:22:32 +0800
-Message-ID: <ef147298-26a5-26e7-67c9-cd2f13ffb81b@linux.alibaba.com>
-Date:   Mon, 25 Sep 2023 10:22:31 +0800
+        Sun, 24 Sep 2023 22:25:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C957CF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:25:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4149DC433C7;
+        Mon, 25 Sep 2023 02:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695608700;
+        bh=T/XV+0SsXCSGWGhOD8i/yu+HGiaAsIrLlBsjD29NE/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D5ixLGFiKW2q3sOWnAVj9ykoageE6rq4sBlzkm1loacSWrk1p554HsqJSQpZWGLhA
+         lkdV/FakWD7KUeyobejc6MJYBloUEiQdE3dJN0/76XMAb11pBWAl3Y6vlVpWI2ATI3
+         FzEwYCh1X8+aOfB2545/hg5YZ7nzYiXIDopdtdmMKI0bAoPP3w3IoXOjHqEkNkbWeR
+         uKayjlpAJsV8aKzqr6FiMludn0h24mUUdJqSedsoCxP41DId6pQ44miUHeQuIwsUUx
+         1fODBRa2nlxT3Dfniwif/bQ4D9CjqtEBrJ/aGFFNARkLyELy1xXYjmeKRyQOAE/YpY
+         liTOqoJJbZ8tA==
+Date:   Mon, 25 Sep 2023 10:24:50 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Jander <david@protonic.nl>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: imx: Add imx8mm-prt8mm.dtb to build
+Message-ID: <20230925022450.GY7231@dragon>
+References: <20230911214547.2200528-1-robh@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] ocfs2: Annotate struct ocfs2_replay_map with __counted_by
-To:     Kees Cook <keescook@chromium.org>, Mark Fasheh <mark@fasheh.com>,
-        akpm <akpm@linux-foundation.org>
-Cc:     Joel Becker <jlbec@evilplan.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, ocfs2-devel@lists.linux.dev,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20230922174925.work.293-kees@kernel.org>
-Content-Language: en-US
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20230922174925.work.293-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911214547.2200528-1-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/23/23 1:49 AM, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Mon, Sep 11, 2023 at 04:45:37PM -0500, Rob Herring wrote:
+> imx8mm-prt8mm.dts was not getting built. Add it to the build.
 > 
-> As found with Coccinelle[1], add __counted_by for struct ocfs2_replay_map.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Mark Fasheh <mark@fasheh.com>
-> Cc: Joel Becker <jlbec@evilplan.org>
-> Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Tom Rix <trix@redhat.com>
-> Cc: ocfs2-devel@lists.linux.dev
-> Cc: llvm@lists.linux.dev
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Fixes: 58497d7a13ed ("arm64: dts: imx: add Protonic PRT8MM board")
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  fs/ocfs2/journal.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/boot/dts/freescale/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> index ce215565d061..604fea3a26ff 100644
-> --- a/fs/ocfs2/journal.c
-> +++ b/fs/ocfs2/journal.c
-> @@ -90,7 +90,7 @@ enum ocfs2_replay_state {
->  struct ocfs2_replay_map {
->  	unsigned int rm_slots;
->  	enum ocfs2_replay_state rm_state;
-> -	unsigned char rm_replay_slots[];
-> +	unsigned char rm_replay_slots[] __counted_by(rm_slots);
->  };
->  
->  static void ocfs2_replay_map_set_state(struct ocfs2_super *osb, int state)
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> index c6872b7e9471..0935626c3dfb 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -65,6 +65,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-bl-osm-s.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-mx8menlo.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-nitrogen-r2.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-phg.dtb
+> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-prt8mm.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-phyboard-polis-rdk.dtb
+
+I flipped above two to keep the alphabetical order.
+
+Applied, thanks!
+
+Shawn
+
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-tqma8mqml-mba8mx.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+> -- 
+> 2.40.1
+> 
