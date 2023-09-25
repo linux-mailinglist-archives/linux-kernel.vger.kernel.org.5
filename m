@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3197AE29D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB4B7AE29F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbjIYXtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S233578AbjIYXuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233551AbjIYXtl (ORCPT
+        with ESMTP id S233554AbjIYXuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:49:41 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34C5116
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 16:49:32 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PNDqPG030138;
-        Mon, 25 Sep 2023 23:49:00 GMT
+        Mon, 25 Sep 2023 19:50:01 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F71CD4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 16:49:48 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PNDuU1027594;
+        Mon, 25 Sep 2023 23:49:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=TX7Kgu5vLRMl23g6p2+L9qirIhzBjTxtaL2mM0XH1ng=;
- b=MH3VXNXiykAcZ82q7iGD9SxPU3MKP/6Xu4v4uJuVhqjVWXu6IW3TzAaI8SWEGwfTGzgD
- yybf/3re2sXZcyLkQthnLIX2Y92/HCTvIC0gOlbh38ufd7BWcC11Ig7ADEK1ZUErt5iV
- 6oUbXKUvGUpGnVjgGs8wcDKA4eWXGUJW0Es7B9qmkT59WxvbEZwUpS0jqiHqs9VwSnIr
- o0T/aej2ovz1HIYs3b/0Q0VABGF5aRkirtJT2xJoojezqeuhLZNJ0Z7Sp+k81q30zDhY
- QOMlLDI+r/yQDQ2reYzWZGoZF3SyOWZBD61+wBI+iFigqr2f0BHirBmjLJaFw2mPAlTM Hw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9pt3n62x-1
+ s=corp-2023-03-30; bh=o8COXuu6/TtJ5IDPv6UZqVnZDWI+bSmwncS3etnX9L8=;
+ b=L8jVeAs9Oqs/V8o1E7WXzffvQBJTn+5wKbXP85K/fAZF7b9QnUhzNiMyT8M9DGE5VkhT
+ a+0anpZuXhcsSDqZI087kOi2AfqOVQ5oiyrse5KtYU7vFumQegqfRLPVI1i0WEzSrzMU
+ pJSPseTDI0bGEqRym2TLMj3560Sri2KtFDsWQH7V/PYLlhc2JhQ1Pa5gIZY7oJJYXWj9
+ qhw7eGg3rkP2ErdO4uO3LnVX+nVqjKdoTb2f+O3qBIj6BoTL97upex+Y1SNhGH4HgKmB
+ KTCbz+k3WuY5zmz4+gaiDkFuMFGRBKgC4CvC4nnlmaS/S+cz+uWdBmcI5hGugujYihrs kQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9pm2595y-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Sep 2023 23:48:59 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38PN62tx030634;
-        Mon, 25 Sep 2023 23:48:58 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf53054-1
+        Mon, 25 Sep 2023 23:49:03 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38PMYNr0030858;
+        Mon, 25 Sep 2023 23:49:02 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfbawgu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Sep 2023 23:48:58 +0000
+        Mon, 25 Sep 2023 23:49:02 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BRk0MDvnYqEiNAdP95TfQdz2eLol+felrzcqd6ZnhTz8LdtyxSNRC4nwAQE1h4AU//r5kPuJYoP9bjOyZCH4I59Fg2aSo7PHPJ1jLodZlU5CQtNSXTSG9pvHcHutDaOxl55ucboD393i6Zn40jLNFtd0BbVl+XQewdJclW66vFn+nm4La+Zr8PCbE9yDoUnejWUA3f5TpMRSlfzarKFup2nZlWK2yNTor6cR1qbFtxgTwqS1FJr2My4bStxbbuExtuGkx370m5NC6cGgmWOkKQ0+If4ptRZQ6mfI9BwDVvpgfWi8KdNxoo/sN6hV7pz4GuC0RvLbRB3J9l9CW0qtSw==
+ b=foopS/ycNYn07ONnmdabdzGYWCIJR6nph6XkkL46bg6hMZRMWVAjaAjzCBnD16t5PNHGKcPNwwQ/Lphtwy/cKoN66FrkE2dSUnKU11Y7unB2wnlqtmvR5tkbQojslFBueVkTc/ZTm9NwzjpuJj+vOn1ZtcjnxSiskcuDC00AS+nY7dcXVj13OY6WkucY+E+9076xrVBABVi0GZDPLax+BewZC5Y6xLxcK+gqd+9yG5rk12oZR9S0ZRjP5TSmeK87Wtth+nQE4FuXWYftlt3BRjv0KUYRXOcg9QtZ2B0BtMMQE1JxKWXOBSGIQJDTDShfPAjcxWiC+etSPlHnjPb/Vg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TX7Kgu5vLRMl23g6p2+L9qirIhzBjTxtaL2mM0XH1ng=;
- b=lWLM03FjNcRhF1R+QY54PQwpxFqKgI8ol+krJ2bUwVNqo5iDlMi5wnP5Sj8opvjV0Y8jhQyAN7+WsoB0nXSDTjZ7BvvS/K20gXI4Iob4mtOBMgbRVpJunpTIdve3hWP6RStezfALM/DN6ytLPENKXy7m3o3mIHd1CKAFAhv1ft2nEKJ8ujAIvJwuDFS8EmEw4YY4B21gr2zExmoBYpYVJHMd6sUsLAOsl3i6O4hJMjAqT+N4KSwzI8+MWB2Loc3cEoj7cJlNjGCwFjJtzmhhFfdm023AOJXGXmICfCiKOm8C47eNzfK/DMlHI8tMtXzwMKkymjM+wjTY/8phL7HaDQ==
+ bh=o8COXuu6/TtJ5IDPv6UZqVnZDWI+bSmwncS3etnX9L8=;
+ b=cxF5KEIesA2Hj4JYdOFvKhSKwrott4yp6HwcyazTtAQig/hnaq5n7GZjBEg8VFRP0nUwYSuPZ4Gd5ged/9Oi4/OQFDf0cgXZOOqspt2cxNTcruC8dQn3cKs+WD3htWO+Egy9auFimeg8EBjCfZqVvH2W5QBdLv6YH2QPri2wJIrHVHyaqv4u9i0ipiER5t5oYWH2ponw4kQzqYzfnA10ykoMsff/BQXlq5sGNyFoG63ScuxxSY4doSJwxzVxkaH9n/b02kYZYbXH4Kn6hVPICSQtYxPValBKtivqR2pvsJKS5vZ0g3FeeQKgsInSVXvRa/IcEgWY7R1zwbwXtTFgTA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TX7Kgu5vLRMl23g6p2+L9qirIhzBjTxtaL2mM0XH1ng=;
- b=e0AH5xuQkacN7aed44ooaajpz2KCqCbDwI/rq3XJhe2A4Ppw249bCxr6w4gcmbJ43PH/HTUel3ziFLJI73P7LZK3p/Dyh+W3hoLzM+sVjMrjcnHYlZVbN1uYwZqMZTBmEUhbKuWulmGxa4/+MNO1qzZ/531j4opRYV4oSO/oQF4=
+ bh=o8COXuu6/TtJ5IDPv6UZqVnZDWI+bSmwncS3etnX9L8=;
+ b=JdShc/2Zc2AaCspt0hYRkVZXR6gEe81fUZlw/pe10RG4NZXvQ8G51SLazw+3mVQYJKzoq2BYQQ4OSfYVnuSMseQUogdKcDXOGWvfNEEwyzrK9mBCH5WdiXzfv8ALUcgfJJ36hlna/LW5x0VnFEweZDGjGJfnc2it9X+I692gj4Y=
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by CY8PR10MB6730.namprd10.prod.outlook.com (2603:10b6:930:95::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Mon, 25 Sep
- 2023 23:48:56 +0000
+ 2023 23:49:00 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::c621:12ca:ba40:9054]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::c621:12ca:ba40:9054%5]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 23:48:56 +0000
+ 23:49:00 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Muchun Song <songmuchun@bytedance.com>,
@@ -77,96 +77,96 @@ Cc:     Muchun Song <songmuchun@bytedance.com>,
         Xiongchun Duan <duanxiongchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v6 4/8] hugetlb: perform vmemmap restoration on a list of pages
-Date:   Mon, 25 Sep 2023 16:48:32 -0700
-Message-ID: <20230925234837.86786-5-mike.kravetz@oracle.com>
+Subject: [PATCH v6 5/8] hugetlb: batch freeing of vmemmap pages
+Date:   Mon, 25 Sep 2023 16:48:33 -0700
+Message-ID: <20230925234837.86786-6-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230925234837.86786-1-mike.kravetz@oracle.com>
 References: <20230925234837.86786-1-mike.kravetz@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MW4PR02CA0027.namprd02.prod.outlook.com
- (2603:10b6:303:16d::32) To BY5PR10MB4196.namprd10.prod.outlook.com
+X-ClientProxiedBy: MW4PR02CA0005.namprd02.prod.outlook.com
+ (2603:10b6:303:16d::14) To BY5PR10MB4196.namprd10.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|CY8PR10MB6730:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2b17b64f-d85b-46b4-391a-08dbbe21fb7b
+X-MS-Office365-Filtering-Correlation-Id: 79ed3d25-09af-483d-c813-08dbbe21fd8e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mTi6UPTHZcB/Qqyrfhsd2bb0l0444Ge5YRAG34R8TlmnYaIks05WcGhP9d0aQBO7V5XIvjoyW7DaY86yc325hW0bLOuRDC9nvZh33tlMSEX0gN1CfvC7UpH4k1UwQMODXdd/pvHp9H4w0XGQD/HK29spJLFt976y64koMXM5ERsaB3xH96o8597fJhBifo0HDSGHX4tm29QeGrtCPJwelYdfEyQjjhs3hEBdqZCV1gL0pflBRHLJDcQ897XL/X/pWcRY9Gb0y4tiX9SgtsM+IWEDBZUVBn5RbuOhxB61NCc5LLD7UHqrmGlDpsMjC2Ei9bmzbJo4DdAeWYeqILyyqtlJyA48NfGKEQ/vRDziwawbT73NdrON0QlD9Cv9xSuFgTDRrtn2GqRJq5LMA4Zci/Qx6UBsFIK10FpE+XVNDQNlxgaXExyK+PAZERhYG5PjkGU7+sdfzm003GYo67RtCX2SwYrUvj3MLsuc/yk4s/6UsLjjoKy2DBk1TWpM9NaPHpXgYZ8wmuvdGJdnw9/Tc2iPFZqlOauqQB0opoKX4yvzf03LShLbWZXTSIB+XlHW
+X-Microsoft-Antispam-Message-Info: 5ncVl4pVfYVMeOPvF/g59DG37d2xEv9xvvaDXroJKeItKpqTDcbZVs2Zn31bB/NriRmsB45Qbdzt+Y8Bdgu4yfLh/xYh2+R7/APDuz9EOYManxED+WbZ0nepZpr0g7FHmEX0HwFscwg07brRR8CLRVRZtXxkudnBcxPNxIEtW/fP23fD2KIVqTmHp1yxsPkYXJWU4E25WpqA5BO0I4mRMxZNjyJexzjs+rA8IyKq/fF4nq7sWsr4fY67d9DWTI5mLsQ/GOBICwiCWS2jRNfDayCvLO8bVFaibMigmUy+QysSVwO1TZ4STp6C0aBguZ6uAFL4OEStCW+f/yOeqxRURPYw1WVs1G2N1o+KwT3gDOQPMq+zDevuisyA2bjyhn5ES4X8AxmLhnt+Sn42BYD12RfY7wh66fAyxk0kqCOpuu4Y0SmIcP405q4oKgQtZSayUG9i89MCjj9bzV/SbYR/pEmf9l7y9iYiornPKOnT2Ak1DwTv6wnR+2Sh1OoYANG7+RO8ZjQxrvHu9mwXAg676l9SmIG2XiXbhvHfAB/ue6bhV0KAOAEuBGljVfu6zH6d
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(366004)(376002)(346002)(230922051799003)(186009)(1800799009)(451199024)(478600001)(6506007)(6666004)(6486002)(1076003)(2906002)(2616005)(5660300002)(6512007)(7416002)(54906003)(316002)(107886003)(66946007)(8936002)(66476007)(8676002)(4326008)(41300700001)(44832011)(66556008)(26005)(38100700002)(36756003)(86362001)(83380400001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bVwfuVNE5uYL7exCj70AaN3/FjPtKy19bYgWL/xs+1cWmds1lYUncG52dsUu?=
- =?us-ascii?Q?3oDWenGW8vOWTSgML9vM0WO8QNLEhEQHrBETggfbzZBEnUa3SyryHUUw7xND?=
- =?us-ascii?Q?sTmDubz9VWG8YcEl2kHkyKYuQpjSxu7e94iT6/bXY2jYEhqP2iInh+YhNRbO?=
- =?us-ascii?Q?X/LmnsdJpoYiGFzRvIU6huVq/CC43gozmprf+qas92Rh7eW1SZagK/4cU2gv?=
- =?us-ascii?Q?Qj5//UCPv4t1b9huLlg+ujWelcvjXeK40uhNPe6jtQbOTy7nYixsZwIjmkQM?=
- =?us-ascii?Q?5jzQoo7SKjiIR3/HmPZIHq5m2WBMUROLgX1Ac/nIkB6Q+u2BH6IGJDH1n/Xt?=
- =?us-ascii?Q?cYS4yZoQmsmZ/6BQfOA5OTvm64z4+vT4int0bnISqXnYd6DzUUSG4ST1EmS4?=
- =?us-ascii?Q?gGlsGkXa2l9fiBwkl47jgqI6Vea0yqr1g4Vvs3tnhpyv7mfCcMWZXFUvLVbI?=
- =?us-ascii?Q?58lue48mvCNWw3Si1xZfyM2oVZPmPDxJ4+BTe56nOQzTtxZDcN+0AWp4aCe9?=
- =?us-ascii?Q?r3M5FyGZUApCfXGBqBAHlrtxsDQpjYGer/CkFdmp6fdJN6QzZQnmrC8JPwqZ?=
- =?us-ascii?Q?yPrmMFT6NnxuI+dqny/lOHh7Xg5yUk7mfaSX32TM5fwSqmS1uAHfMZDAlkdM?=
- =?us-ascii?Q?+EtrpDB30BNyMoe9kcekHfka8Y/3qynf+Aq82vPKQzSXgqvjearj3TV4E2Jm?=
- =?us-ascii?Q?Vu61FnWKurGMd1D4dcXgBxiduco/xIDqywFcPrmtVtHURDiItkpozLDwHrqH?=
- =?us-ascii?Q?cqYNBhFOe8d0bTEXPh8XXcyHbwGv11KGDXXpbviCYGMwW3IhhY2nOpcf78a2?=
- =?us-ascii?Q?WSXo6WwOgW6aHNqtaUr2xYdYYkIZGFQNLTW0CRXMuT0Pl4JJPpU4gfI6oRiG?=
- =?us-ascii?Q?9jLDs78ES9e+h+8adKa0rfasy1kvXTFeaYB0a0W1f3aG9qdlQ+0NwwO5Ica5?=
- =?us-ascii?Q?oh0TBW2S9dfRjoAHpnBiMR3+NKjU6FT/8raVxvl4am96Wgt0RnxKJOuJaMOQ?=
- =?us-ascii?Q?fnFeTO+x2vrXXsvgIEPr5dvN0pAqjXOGHLNujxqPvutlJLUOFvXdbxJCByV5?=
- =?us-ascii?Q?hw8hmmIt8EGoLQp2AmD949UAWnbg099uC1eWKe3nTJT6fom9/Vbn+ZLnmxgk?=
- =?us-ascii?Q?Wxor+5MOQ6CnOc3qT19RibWBNedAr3DRL7IsM4x96EL/Jmw97nMTg3wsBK7X?=
- =?us-ascii?Q?l5vTVEC9fdpoGQrm4pji/q+P/YNrbsKAIM4L2gmx8axWnIK1Kopzg+4zRv1H?=
- =?us-ascii?Q?klSxXeFWweGh93vZGi4tOA6uNhmpjM6XCQ+uTuBNh4ODoRbnngCIcxHU1LjR?=
- =?us-ascii?Q?krHPtX/clXYCcG0Age/W005o5BnRb+PXpdd0XdGPWQQacInB63lYt3MUtDiA?=
- =?us-ascii?Q?2Fl/6Uk9Go4tilBxuZ8yAv52jklAyy5IWqiAdfyrpngGRJKj7xXZlNmZoE8l?=
- =?us-ascii?Q?pE0wArUWm+ifRMPK3UcnjearqCXjjz8/shnGE/3H9bUG0g7fPBg/pTxNZ5zy?=
- =?us-ascii?Q?Phq7HZ+mSekZq1iJBhrutWDRN9V9jSej9mydntRU5q3ARZ1+weCBS3KkKX3a?=
- =?us-ascii?Q?VBCkUio4Mwa1xsm2gj9mlMrAt17nVVranHxw9xailYo8CxeKKFIiyvqB6zeu?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VPXIP6mmrrURJYyacryDztT7xHB5654Jhp8+5J7xSVW/AhNjXclAGxIcl6ty?=
+ =?us-ascii?Q?Wvjcik+2Jfz+jSQt7lELbLH9Cly1Kggt5H2QNcjA3e3qzuTNpnq1zfWP3m1B?=
+ =?us-ascii?Q?FlaYiZHqtSLFlu4n0vE6BuHcdFCaH5NRoUol7KqR1gTD/+u65b7sW1FD6DBz?=
+ =?us-ascii?Q?J2mPoe7emEB2J/wzeTd2eyQmJh4tE/jQafyC3DIb9hlIXdgesg9JgnlnDFVL?=
+ =?us-ascii?Q?sOVZqsuLf6alRDnuuq+HCN0Rd5WRUcalryRYnH0yUmavdH/vs+c0Z1F7D6S+?=
+ =?us-ascii?Q?M03p42clA8xYH64Ll8LeHKZoI2sjTJno3FN+GHjIC+5ioTcaREE/W2pYRBHy?=
+ =?us-ascii?Q?A8mNAhNnGSBAmatSMumsLbr0yKKIOSqI3n9Hr0e+QH0DFv5DnoyMq8MHGNQy?=
+ =?us-ascii?Q?Jmv0+vzka2X5uqUtBbLr6Dh2DfiHZQKceOeFiD1q7P/ovZbYuN2+IXV1PF56?=
+ =?us-ascii?Q?4DPxFInyIqCnOYxNgGFtBNz8qUOBrhbqz6ck2Ss/d8FVhrfZ7Qftkbtrwezh?=
+ =?us-ascii?Q?KgadIsPTQ7fWatwtWooXfHKQxPSmt9XBin6DD3DJENEJZUtQDX1F29w4sHPm?=
+ =?us-ascii?Q?XKfpuUXdcsy1hyYlgvLeBk6lVN08imQX32g5xu1m2mJx5vJCaDOj7HE4/SvN?=
+ =?us-ascii?Q?GWs3lvUhjxbPiBNXDrYoZ1v2IGVDudXsK/yhxi6FYpm/47PehAQM5tiTeUqp?=
+ =?us-ascii?Q?pD2Hkew7UQcRQHpaXUMJaQu4KEICeBj6zeNdiGNUujFyURUE8vSJ9wdiQUDF?=
+ =?us-ascii?Q?/XolUHGSvvoeFUye1EZ8jEnxkw40G0qu7hdmD5EGX7Ebs6mzRQjJyegvQGJW?=
+ =?us-ascii?Q?eWVmxUXvzohq9DPf4XhBKq/58NNLFrBhPRmHEvqTL+zVr/Crsrtyf+aWNrfQ?=
+ =?us-ascii?Q?j55+J0AoKvMKMWzSW9oUK+qjow1zWBVp7flxkhCokGBHKI1M4B1+rnj+SowO?=
+ =?us-ascii?Q?7t2bX3sVl29sreilsOaBS4r/mxOncbbwcGLfucJ9zSjyBhGlwfPw4MEdv4U6?=
+ =?us-ascii?Q?g4f5T0jvV9R0HsmM06UZhtMtvI7NVV80W4ULoJPcUWQA7mg7OkYFavRjQ1mn?=
+ =?us-ascii?Q?wSrqwiSk5mGBr4NqkYJgFDFZpgK489cAkOon9yY4AHg4WvMV5R4yPN+DiAQC?=
+ =?us-ascii?Q?S/I7JSy7iMYo08UFlwFdQIAL8EkX68K3ttGMJ0CTjY9ZKYPD7MNQhkrxEdlJ?=
+ =?us-ascii?Q?NrAgMPEOpWnNfPc39R1UcO1zRTDkB+mc3UjJpkBbrgTnvhKQeiRcPfu3Zy/7?=
+ =?us-ascii?Q?osdSm+b0F/u5rW4Vnx6TUUypXJCakMwewOmaQMmjPHnBUH5mdY+kSfeb2806?=
+ =?us-ascii?Q?tWu0iFie+zzt1JbzmSIfV8/xt4VtY56F3zJLM0DfVnE6/0qw+pzVE6yHdOhd?=
+ =?us-ascii?Q?Bm4bDP18cesrmqtGJ3tWWOmWCLMIBeq0boFdsnvYUHuQ4k1djoiukaG9nK/3?=
+ =?us-ascii?Q?gikxzuvs3iSUa6srYwNnL+TLZd72KT3UliKwzRMxepvKlpJ50YnmAqo3ilyS?=
+ =?us-ascii?Q?t8gEG3wMsDGEof2dDGmB3DH7ZGagQcqNA02KAHuoGHhacPOnuxZK1glAphSl?=
+ =?us-ascii?Q?x0uL167uTYT0Jqz+d5b23UiyUOtQ4scW6efEcvUh0JbnucAiL+ZMWF0fOEq4?=
  =?us-ascii?Q?Ig=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?oyHYJHu6VgRIUw8a4vI6GUb8Gm5SBz6PuFMFTOs9P400o6zVRKcvTq+l74MW?=
- =?us-ascii?Q?hCXlWl4zWZGG79VZij2D+TJ9Nait/eenrVcpOcnhz9q9FEwgvqJ49XycMY1V?=
- =?us-ascii?Q?/H2IKPvMv/AwZFobP2B9IxQAoB+R5HjE4APIQok5S8042g9zeMiyZSqH+VNM?=
- =?us-ascii?Q?dAUbM1EsPD9eFzJPLh79yoG1QCRja10HEA9ziN8SXawBuh/T9LKYC0rZqcxx?=
- =?us-ascii?Q?6WdS0LcYL0XJC0z4XYTjHqUpkaJX+YW6z7wejk0Krk6jM+E/ZOjmfzi01fFV?=
- =?us-ascii?Q?rlSyYFdyyJ2ZyiXSkagCBTS4m6AaY6OYcaULrVNeSU4DEnOED1FcGluHzudj?=
- =?us-ascii?Q?Hi8HIdgawV9o7nAs14nv/zlkijvUWF7C3P0MS/pPXKecnmSX+6qW7SlQuUAN?=
- =?us-ascii?Q?/ko7TegSOCuIqnGh3usUylKz9TFFgTixBrR/PWihdp9ILOKoM4eA+Xmx4247?=
- =?us-ascii?Q?17S0Eou5ZV4CTeCmTKi11dg8PZ8GF9gYincyE8Cgd0gkxO9JeMUx9Pwt6Mab?=
- =?us-ascii?Q?jpqivcfybjPb6TaxfVY96l5K5ssHxBAhYTOIF2qHbYOd4fwvobQt8zcj65oC?=
- =?us-ascii?Q?MsRBMIe7VfrjKpG6Ffkyu7HlyIBF/VBgXYwiuydfQdbn6fmWkU78nlfyqR94?=
- =?us-ascii?Q?uHD4l2tVPu6FA2M+D6BQfGY42MX3fANCxOslIBoTvkcH24mNHDJZ8vOpq2aG?=
- =?us-ascii?Q?XZuQydXMlg3GzMLz4184u89wZF/ygKuIEYbhpvXGgTJbqIbcHoiO6a+5PlzC?=
- =?us-ascii?Q?Pn2auHCWmtR8WoDPyL2i01sMUCkoRMTY+S1b1nDLr2GYelnq4KyoOOIZpxT5?=
- =?us-ascii?Q?VoAtMSsmArpZx+EleNMwfvvAURhQPFYp7OSoQTH2gHif2ccPnc8hBm2Cb5I3?=
- =?us-ascii?Q?Ob3mzGzKTJpvw0de9RPUDlVTotQ3JiApmbzimENC5Im85zkyMberGz5mmGTf?=
- =?us-ascii?Q?3GeMUifahu/AGHFdq3eStDEBh4Z0j1wClvWL2/xy52a2Bh6HD9kxdvymySje?=
- =?us-ascii?Q?t1CHTm6Qk/oc+eOdDsmmm4MqZSZSkgSU5dJVTi2tLx5UIIASWWXKq+xW8JOA?=
- =?us-ascii?Q?0VYXegGfyNTj8UANHjc7gBf0mNFVJdqskOOcZt9WCXPsh8XyOYPPYVSGqp9a?=
- =?us-ascii?Q?SlZXOQsdCLQZ?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?ye1JjnqvYGCdEMQQsW9CJ9Jzjcequq+DDBz4Q8bgOwyfIo4QL2T1WVrf+aRU?=
+ =?us-ascii?Q?BjtMHyA6yRnJCf/Jly0Bp7ZOIH/tSiqE4H/fKcpHPxRmdovXYHTxL5PTjSRc?=
+ =?us-ascii?Q?G7XntE6ZGQoLq0kDhQ5lqJ24Z1lj42GAhAfAy9H+kk+M96z+VCpDbUCbhPkW?=
+ =?us-ascii?Q?kOuwBeRWB8E72mdyHCKbWzAriXo3nGRiYhakiSHXFNcuAXlo3M5349oM1NQO?=
+ =?us-ascii?Q?7f3iSZLhq/ZWyIFxoHYVTYYgxbAUbIEw7655j+dLs/0rQVjmXK4MnxAMBVCY?=
+ =?us-ascii?Q?xo7WMc54DnUuWlxhYd+uAvZ0KL06kEhsnXqET1bBIyMP83yIwMbECTIq2OhG?=
+ =?us-ascii?Q?K0u4WTNzbaBytbbyxpaEfTqRPTIk2vc1RElXQFeBo3OjhuP+uDgzPB0km3Jk?=
+ =?us-ascii?Q?1e1A1R9xZCbXKhUdiF7Xittcs9vY0wDaTmc/z0PnHMokTqDc9Nq7q8VoeAGf?=
+ =?us-ascii?Q?I0xOC35bYUzX8SJzbFYVnnB8S3IhLXoYZoL8wyJ/p6Qli9srkDPuns74U+n9?=
+ =?us-ascii?Q?tWM/aUAd+0AbhKxyHCou+42LWwV3Ps/4/DoNCQMN4VRdEww2mBlqZdcHSuAx?=
+ =?us-ascii?Q?En5xlnxeruVfvpLLl0AuTNZhiA04/JOjYjFPjw9r0ArxRx3IF7/660rW6nlB?=
+ =?us-ascii?Q?DsQGySkJKAFtva0yV9tDBbnhcvSxrsdhim9junaBaFOC1QbfjIjn+aQBEuQF?=
+ =?us-ascii?Q?BInA4yccBKo8viWkm+4D7hPSRYITi/V5enCFd+Haa077IZfCfiSwz1YI2XYP?=
+ =?us-ascii?Q?uG5/HSc/r2FPkCMzN/re3+4It1as2zOhJkPfUt90Qv4lDJIqH7XHKFdBJDPZ?=
+ =?us-ascii?Q?/29jio8sa9tD3XzAeA14hmBQUmVdjtkVfY2OWoU37SDvMM42n3O8YMlcP7JM?=
+ =?us-ascii?Q?3OeVOFDZVI/43xY63osG4KvdUzWBLzFqz4hAbFjwVK0bZWP6X/FR3GPJZRGO?=
+ =?us-ascii?Q?fLoUkk4jWxkSHeIEZP7PwhESkZtbF41O6c9Y/17xd/E5N928Ksc4e0XrBHDQ?=
+ =?us-ascii?Q?7Qiy+ThCACX9hvH/0Wmky2z4uO+btJDmnKXl4TEDWNI6nf1pyoN/OLWvWtGa?=
+ =?us-ascii?Q?mXltXOii38b3CRoM+onzM10dFmEOl71uygr1omnxVEa12MTMsrTxj0Xyk9l3?=
+ =?us-ascii?Q?lax1mdX7A36+?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b17b64f-d85b-46b4-391a-08dbbe21fb7b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79ed3d25-09af-483d-c813-08dbbe21fd8e
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 23:48:56.6971
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 23:49:00.1709
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O/Cl9FVQx8UCEzO3PFPsXUczOnN6V6S/qHZIMCpjxZesnDJXqs1Q4g3iJR/O6cv6M4reNesbpTe6OQS28jIJ4A==
+X-MS-Exchange-CrossTenant-UserPrincipalName: fb9ItMCTFJQt8MGzJ/Ppi6Z2vELRWhBZV7gnp1om+K0BtQ4t9FJuATUhjf31bBVKb8ZWCziKCBAJoZ/Dro+oZQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6730
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-25_18,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
  definitions=main-2309250185
-X-Proofpoint-ORIG-GUID: MM-Hq3KOHZXnrrsAtRxcEwdahMlX7fe2
-X-Proofpoint-GUID: MM-Hq3KOHZXnrrsAtRxcEwdahMlX7fe2
+X-Proofpoint-ORIG-GUID: q671Qzs-QNK0dNZL3hVuOoxUS69WXdWJ
+X-Proofpoint-GUID: q671Qzs-QNK0dNZL3hVuOoxUS69WXdWJ
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -177,231 +177,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The routine update_and_free_pages_bulk already performs vmemmap
-restoration on the list of hugetlb pages in a separate step.  In
-preparation for more functionality to be added in this step, create a
-new routine hugetlb_vmemmap_restore_folios() that will restore
-vmemmap for a list of folios.
+Now that batching of hugetlb vmemmap optimization processing is possible,
+batch the freeing of vmemmap pages.  When freeing vmemmap pages for a
+hugetlb page, we add them to a list that is freed after the entire batch
+has been processed.
 
-This new routine must provide sufficient feedback about errors and
-actual restoration performed so that update_and_free_pages_bulk can
-perform optimally.
-
-Special care must be taken when encountering an error from
-hugetlb_vmemmap_restore_folios.  We want to continue making as much
-forward progress as possible.  A new routine bulk_vmemmap_restore_error
-handles this specific situation.
+This enhances the ability to return contiguous ranges of memory to the
+low level allocators.
 
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- mm/hugetlb.c         | 99 +++++++++++++++++++++++++++++++-------------
- mm/hugetlb_vmemmap.c | 38 +++++++++++++++++
- mm/hugetlb_vmemmap.h | 10 +++++
- 3 files changed, 119 insertions(+), 28 deletions(-)
+ mm/hugetlb_vmemmap.c | 82 ++++++++++++++++++++++++++++++--------------
+ 1 file changed, 56 insertions(+), 26 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index da0ebd370b5f..c484bb74201a 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1834,50 +1834,93 @@ static void update_and_free_hugetlb_folio(struct hstate *h, struct folio *folio,
- 		schedule_work(&free_hpage_work);
- }
- 
--static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
-+static void bulk_vmemmap_restore_error(struct hstate *h,
-+					struct list_head *folio_list,
-+					struct list_head *non_hvo_folios)
- {
- 	struct folio *folio, *t_folio;
--	bool clear_dtor = false;
- 
--	/*
--	 * First allocate required vmemmmap (if necessary) for all folios on
--	 * list.  If vmemmap can not be allocated, we can not free folio to
--	 * lower level allocator, so add back as hugetlb surplus page.
--	 * add_hugetlb_folio() removes the page from THIS list.
--	 * Use clear_dtor to note if vmemmap was successfully allocated for
--	 * ANY page on the list.
--	 */
--	list_for_each_entry_safe(folio, t_folio, list, lru) {
--		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
-+	if (!list_empty(non_hvo_folios)) {
-+		/*
-+		 * Free any restored hugetlb pages so that restore of the
-+		 * entire list can be retried.
-+		 * The idea is that in the common case of ENOMEM errors freeing
-+		 * hugetlb pages with vmemmap we will free up memory so that we
-+		 * can allocate vmemmap for more hugetlb pages.
-+		 */
-+		list_for_each_entry_safe(folio, t_folio, non_hvo_folios, lru) {
-+			list_del(&folio->lru);
-+			spin_lock_irq(&hugetlb_lock);
-+			__clear_hugetlb_destructor(h, folio);
-+			spin_unlock_irq(&hugetlb_lock);
-+			update_and_free_hugetlb_folio(h, folio, false);
-+			cond_resched();
-+		}
-+	} else {
-+		/*
-+		 * In the case where there are no folios which can be
-+		 * immediately freed, we loop through the list trying to restore
-+		 * vmemmap individually in the hope that someone elsewhere may
-+		 * have done something to cause success (such as freeing some
-+		 * memory).  If unable to restore a hugetlb page, the hugetlb
-+		 * page is made a surplus page and removed from the list.
-+		 * If are able to restore vmemmap and free one hugetlb page, we
-+		 * quit processing the list to retry the bulk operation.
-+		 */
-+		list_for_each_entry_safe(folio, t_folio, folio_list, lru)
- 			if (hugetlb_vmemmap_restore(h, &folio->page)) {
-+				list_del(&folio->lru);
- 				spin_lock_irq(&hugetlb_lock);
- 				add_hugetlb_folio(h, folio, true);
- 				spin_unlock_irq(&hugetlb_lock);
--			} else
--				clear_dtor = true;
--		}
-+			} else {
-+				list_del(&folio->lru);
-+				spin_lock_irq(&hugetlb_lock);
-+				__clear_hugetlb_destructor(h, folio);
-+				spin_unlock_irq(&hugetlb_lock);
-+				update_and_free_hugetlb_folio(h, folio, false);
-+				cond_resched();
-+				break;
-+			}
- 	}
-+}
-+
-+static void update_and_free_pages_bulk(struct hstate *h,
-+						struct list_head *folio_list)
-+{
-+	long ret;
-+	struct folio *folio, *t_folio;
-+	LIST_HEAD(non_hvo_folios);
- 
- 	/*
--	 * If vmemmmap allocation was performed on any folio above, take lock
--	 * to clear destructor of all folios on list.  This avoids the need to
--	 * lock/unlock for each individual folio.
--	 * The assumption is vmemmap allocation was performed on all or none
--	 * of the folios on the list.  This is true expect in VERY rare cases.
-+	 * First allocate required vmemmmap (if necessary) for all folios.
-+	 * Carefully handle errors and free up any available hugetlb pages
-+	 * in an effort to make forward progress.
- 	 */
--	if (clear_dtor) {
-+retry:
-+	ret = hugetlb_vmemmap_restore_folios(h, folio_list, &non_hvo_folios);
-+	if (ret < 0) {
-+		bulk_vmemmap_restore_error(h, folio_list, &non_hvo_folios);
-+		goto retry;
-+	}
-+
-+	/*
-+	 * At this point, list should be empty, ret should be >= 0 and there
-+	 * should only be pages on the non_hvo_folios list.
-+	 * Do note that the non_hvo_folios list could be empty.
-+	 * Without HVO enabled, ret will be 0 and there is no need to call
-+	 * __clear_hugetlb_destructor as this was done previously.
-+	 */
-+	VM_WARN_ON(!list_empty(folio_list));
-+	VM_WARN_ON(ret < 0);
-+	if (!list_empty(&non_hvo_folios) && ret) {
- 		spin_lock_irq(&hugetlb_lock);
--		list_for_each_entry(folio, list, lru)
-+		list_for_each_entry(folio, &non_hvo_folios, lru)
- 			__clear_hugetlb_destructor(h, folio);
- 		spin_unlock_irq(&hugetlb_lock);
- 	}
- 
--	/*
--	 * Free folios back to low level allocators.  vmemmap and destructors
--	 * were taken care of above, so update_and_free_hugetlb_folio will
--	 * not need to take hugetlb lock.
--	 */
--	list_for_each_entry_safe(folio, t_folio, list, lru) {
-+	list_for_each_entry_safe(folio, t_folio, &non_hvo_folios, lru) {
- 		update_and_free_hugetlb_folio(h, folio, false);
- 		cond_resched();
- 	}
 diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 4558b814ffab..77f44b81ff01 100644
+index 77f44b81ff01..4ac521e596db 100644
 --- a/mm/hugetlb_vmemmap.c
 +++ b/mm/hugetlb_vmemmap.c
-@@ -480,6 +480,44 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+@@ -251,7 +251,7 @@ static void vmemmap_remap_pte(pte_t *pte, unsigned long addr,
+ 	}
+ 
+ 	entry = mk_pte(walk->reuse_page, pgprot);
+-	list_add_tail(&page->lru, walk->vmemmap_pages);
++	list_add(&page->lru, walk->vmemmap_pages);
+ 	set_pte_at(&init_mm, addr, pte, entry);
+ }
+ 
+@@ -306,18 +306,20 @@ static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
+  * @end:	end address of the vmemmap virtual address range that we want to
+  *		remap.
+  * @reuse:	reuse address.
++ * @vmemmap_pages: list to deposit vmemmap pages to be freed.  It is callers
++ *		responsibility to free pages.
+  *
+  * Return: %0 on success, negative error code otherwise.
+  */
+ static int vmemmap_remap_free(unsigned long start, unsigned long end,
+-			      unsigned long reuse)
++			      unsigned long reuse,
++			      struct list_head *vmemmap_pages)
+ {
+ 	int ret;
+-	LIST_HEAD(vmemmap_pages);
+ 	struct vmemmap_remap_walk walk = {
+ 		.remap_pte	= vmemmap_remap_pte,
+ 		.reuse_addr	= reuse,
+-		.vmemmap_pages	= &vmemmap_pages,
++		.vmemmap_pages	= vmemmap_pages,
+ 	};
+ 	int nid = page_to_nid((struct page *)reuse);
+ 	gfp_t gfp_mask = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+@@ -334,7 +336,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
+ 	if (walk.reuse_page) {
+ 		copy_page(page_to_virt(walk.reuse_page),
+ 			  (void *)walk.reuse_addr);
+-		list_add(&walk.reuse_page->lru, &vmemmap_pages);
++		list_add(&walk.reuse_page->lru, vmemmap_pages);
+ 	}
+ 
+ 	/*
+@@ -365,15 +367,13 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
+ 		walk = (struct vmemmap_remap_walk) {
+ 			.remap_pte	= vmemmap_restore_pte,
+ 			.reuse_addr	= reuse,
+-			.vmemmap_pages	= &vmemmap_pages,
++			.vmemmap_pages	= vmemmap_pages,
+ 		};
+ 
+ 		vmemmap_remap_range(reuse, end, &walk);
+ 	}
+ 	mmap_read_unlock(&init_mm);
+ 
+-	free_vmemmap_page_list(&vmemmap_pages);
+-
  	return ret;
  }
  
-+/**
-+ * hugetlb_vmemmap_restore_folios - restore vmemmap for every folio on the list.
-+ * @h:			hstate.
-+ * @folio_list:		list of folios.
-+ * @non_hvo_folios:	Output list of folios for which vmemmap exists.
-+ *
-+ * Return: number of folios for which vmemmap was restored, or an error code
-+ *		if an error was encountered restoring vmemmap for a folio.
-+ *		Folios that have vmemmap are moved to the non_hvo_folios
-+ *		list.  Processing of entries stops when the first error is
-+ *		encountered. The folio that experienced the error and all
-+ *		non-processed folios will remain on folio_list.
-+ */
-+long hugetlb_vmemmap_restore_folios(const struct hstate *h,
-+					struct list_head *folio_list,
-+					struct list_head *non_hvo_folios)
-+{
-+	struct folio *folio, *t_folio;
-+	long restored = 0;
-+	long ret = 0;
+@@ -389,7 +389,7 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
+ 		page = alloc_pages_node(nid, gfp_mask, 0);
+ 		if (!page)
+ 			goto out;
+-		list_add_tail(&page->lru, list);
++		list_add(&page->lru, list);
+ 	}
+ 
+ 	return 0;
+@@ -577,24 +577,17 @@ static bool vmemmap_should_optimize(const struct hstate *h, const struct page *h
+ 	return true;
+ }
+ 
+-/**
+- * hugetlb_vmemmap_optimize - optimize @head page's vmemmap pages.
+- * @h:		struct hstate.
+- * @head:	the head page whose vmemmap pages will be optimized.
+- *
+- * This function only tries to optimize @head's vmemmap pages and does not
+- * guarantee that the optimization will succeed after it returns. The caller
+- * can use HPageVmemmapOptimized(@head) to detect if @head's vmemmap pages
+- * have been optimized.
+- */
+-void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
++static int __hugetlb_vmemmap_optimize(const struct hstate *h,
++					struct page *head,
++					struct list_head *vmemmap_pages)
+ {
++	int ret = 0;
+ 	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+ 	unsigned long vmemmap_reuse;
+ 
+ 	VM_WARN_ON_ONCE(!PageHuge(head));
+ 	if (!vmemmap_should_optimize(h, head))
+-		return;
++		return ret;
+ 
+ 	static_branch_inc(&hugetlb_optimize_vmemmap_key);
+ 
+@@ -604,21 +597,58 @@ void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+ 
+ 	/*
+ 	 * Remap the vmemmap virtual address range [@vmemmap_start, @vmemmap_end)
+-	 * to the page which @vmemmap_reuse is mapped to, then free the pages
+-	 * which the range [@vmemmap_start, @vmemmap_end] is mapped to.
++	 * to the page which @vmemmap_reuse is mapped to.  Add pages previously
++	 * mapping the range to vmemmap_pages list so that they can be freed by
++	 * the caller.
+ 	 */
+-	if (vmemmap_remap_free(vmemmap_start, vmemmap_end, vmemmap_reuse))
++	ret = vmemmap_remap_free(vmemmap_start, vmemmap_end, vmemmap_reuse, vmemmap_pages);
++	if (ret)
+ 		static_branch_dec(&hugetlb_optimize_vmemmap_key);
+ 	else
+ 		SetHPageVmemmapOptimized(head);
 +
-+	list_for_each_entry_safe(folio, t_folio, folio_list, lru) {
-+		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
-+			ret = hugetlb_vmemmap_restore(h, &folio->page);
-+			if (ret)
-+				break;
-+			restored++;
-+		}
-+
-+		/* Add non-optimized folios to output list */
-+		list_move(&folio->lru, non_hvo_folios);
-+	}
-+
-+	if (!ret)
-+		ret = restored;
 +	return ret;
 +}
 +
- /* Return true iff a HugeTLB whose vmemmap should and can be optimized. */
- static bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
- {
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index c512e388dbb4..0b7710f90e38 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -19,6 +19,9 @@
- 
- #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
- int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
-+long hugetlb_vmemmap_restore_folios(const struct hstate *h,
-+					struct list_head *folio_list,
-+					struct list_head *non_hvo_folios);
- void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
- void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list);
- 
-@@ -45,6 +48,13 @@ static inline int hugetlb_vmemmap_restore(const struct hstate *h, struct page *h
- 	return 0;
- }
- 
-+static long hugetlb_vmemmap_restore_folios(const struct hstate *h,
-+					struct list_head *folio_list,
-+					struct list_head *non_hvo_folios)
++/**
++ * hugetlb_vmemmap_optimize - optimize @head page's vmemmap pages.
++ * @h:		struct hstate.
++ * @head:	the head page whose vmemmap pages will be optimized.
++ *
++ * This function only tries to optimize @head's vmemmap pages and does not
++ * guarantee that the optimization will succeed after it returns. The caller
++ * can use HPageVmemmapOptimized(@head) to detect if @head's vmemmap pages
++ * have been optimized.
++ */
++void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
 +{
-+	return 0;
-+}
++	LIST_HEAD(vmemmap_pages);
 +
- static inline void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
- {
++	__hugetlb_vmemmap_optimize(h, head, &vmemmap_pages);
++	free_vmemmap_page_list(&vmemmap_pages);
  }
+ 
+ void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list)
+ {
+ 	struct folio *folio;
++	LIST_HEAD(vmemmap_pages);
++
++	list_for_each_entry(folio, folio_list, lru) {
++		int ret = __hugetlb_vmemmap_optimize(h, &folio->page,
++								&vmemmap_pages);
++
++		/*
++		 * Pages to be freed may have been accumulated.  If we
++		 * encounter an ENOMEM,  free what we have and try again.
++		 */
++		if (ret == -ENOMEM && !list_empty(&vmemmap_pages)) {
++			free_vmemmap_page_list(&vmemmap_pages);
++			INIT_LIST_HEAD(&vmemmap_pages);
++			__hugetlb_vmemmap_optimize(h, &folio->page, &vmemmap_pages);
++		}
++	}
+ 
+-	list_for_each_entry(folio, folio_list, lru)
+-		hugetlb_vmemmap_optimize(h, &folio->page);
++	free_vmemmap_page_list(&vmemmap_pages);
+ }
+ 
+ static struct ctl_table hugetlb_vmemmap_sysctls[] = {
 -- 
 2.41.0
 
