@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 589637AD9D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABC67AD9DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjIYOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        id S232236AbjIYOOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbjIYOOc (ORCPT
+        with ESMTP id S232184AbjIYOOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:14:32 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC27FC
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:14:25 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-533c4d20b33so7512658a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:14:25 -0700 (PDT)
+        Mon, 25 Sep 2023 10:14:46 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366D8CE;
+        Mon, 25 Sep 2023 07:14:40 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3add255c88aso4061859b6e.1;
+        Mon, 25 Sep 2023 07:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695651264; x=1696256064; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vdRnBQhusGIL2b+v+H5dfPPmDF9lKDRORIGAAQ+Woys=;
-        b=NuvsRN+8S7EMpVCauIiLl50WRygRZSAF4E/HKnGx6aUA4Px16dEg1ntffjmgYQ7FE7
-         97ZjAscny8bLBirlLc6Hjxh7l8zJFaWZfzqgWqBOPzxGlB5UdQHgzBu5BuhT81P+idzr
-         0ifxU3NG1y73WM8I8kGnCR+35dnmAMLJXqqb2iFspMshs5iWxmkd39fajj4MK0hug2Ru
-         eJslZCc291B/TXptYQaYsNhCBFXhULI3E3l6ydy0ZTLcTuAUGuKrxty+PAtbnhC3j3gv
-         +Vwdt6/HW886/k1KSaHlqczUiZWJDoq/txvxKs2C7ldt1z/ZVv0AmV/oVqYL3EJ155T7
-         Ex9g==
+        d=gmail.com; s=20230601; t=1695651279; x=1696256079; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MJfyUt1ShfjZl6t8cnVtNZYV0Rqi3aBl3H7mr80x/Gw=;
+        b=JbWQ5Iz/GUZz9GMC8qoI3gy9GFRjgwCAZ4qS84sY4F9B+a/8vDDRrFDUpyGBNMmtYI
+         Fc6wfuRYySfTSfDhM9KnOs/6k0QxO9XL8bQnVXZQaQ4WIyKV+yx8fPoSRGSJ8OOC7nCO
+         2gd4j97YohuNZGLOnBuDVNmfHSJrBdzjCReQpIhwVxdemgNHmqP7AQhaww7ZkH/Sf1ze
+         B+7EU6/1FDBDYP4Shrzj42np3547VTJfcwqj6dMnl3zx/t02nheTJG9iLJuD+iQ2i7bi
+         olWG/yAeK6T4x9ggobE8nrByRrYuuXeRLHfFLTvSdtVmre4c2ENeBwh0TcLrc1sCDsWe
+         D2GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695651264; x=1696256064;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vdRnBQhusGIL2b+v+H5dfPPmDF9lKDRORIGAAQ+Woys=;
-        b=hPlnCw+Jg96n/a29et0HaoJ4LR5Xj2S7K4SAl+CYgsIhd+WBY5hhAgpamnvaVMciKO
-         0jqEZ7YzmoflafMrzqW3u4nTzYxrHhLLyGA5ZG3o6r906E/cSruYTcVuIB6L8+iEKk8I
-         OByOd0WCgVZsxsK9BDBwC7wxCrmcHrcvruMgl3MkwVkZUgq/sPfwqxtYN5/Iswp6e0ll
-         vJv6w7L7gXhxtfVfBrJ1axhABTmx+wbfkL0V+KFCZwjFfmG7LfH/j0ACzRbXVIlMwfxi
-         Wr11ynrH6+MF/7abv6luMw0OrkRnOshH53WAb4BNCP/wlaIK0jial1tetoAJQRwub8m8
-         Lj4w==
-X-Gm-Message-State: AOJu0YxMRVIhJ/JdSKW1qyF4cNMScM+Twp9z3yafuiJ8un5ufsfoMORj
-        BCIGJy2Yr++BukPRikgjVVcMcA==
-X-Google-Smtp-Source: AGHT+IG3P2pMWfKC6BxP+BEDyGl/OKpELub+ARSQfEls3L7kOdsakdL4CdWODUbaZsReEBrgZPKR+A==
-X-Received: by 2002:a05:6402:27ca:b0:52c:f73:3567 with SMTP id c10-20020a05640227ca00b0052c0f733567mr15302759ede.13.1695651264216;
-        Mon, 25 Sep 2023 07:14:24 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.177])
-        by smtp.gmail.com with ESMTPSA id o12-20020aa7d3cc000000b005259dd903e5sm5533339edr.67.2023.09.25.07.14.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 07:14:23 -0700 (PDT)
-Message-ID: <2e73d0c0-4a3f-bea2-9779-bf929341296d@tuxon.dev>
-Date:   Mon, 25 Sep 2023 17:14:21 +0300
+        d=1e100.net; s=20230601; t=1695651279; x=1696256079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MJfyUt1ShfjZl6t8cnVtNZYV0Rqi3aBl3H7mr80x/Gw=;
+        b=TJtdqz9qahgu/Vd9GVYX5gspgktM7sQi+OLl4H4fIaoARYBt01NHsa+x1DfVWDIio0
+         9hoZOajFRzTY9Hq7NHkX0UQag3i8e3HMSsNQ1ZnQ21zjbcyxRR2jAQsICN2KV50XqN1F
+         Gtay9Olrsgh5SM/6NybBSPX05SaJqMZJr/Zh9r8OazCKXaK6bCGMA5DfG/81dNufohgl
+         dj4d+deONp+ylbwnJZDvvpyjlHiSV7qM4k0JNviR1/KMKn3QZV6W0FpbhYfXBLG2+aSL
+         iR0OEtnxqLWGfGGf0x6Up94B01zLLERSFe6z73fddgDp4B0yCtRwlZFBOLkP4W0QTZBE
+         gC8Q==
+X-Gm-Message-State: AOJu0YzoSCghnomtSDg3nDneI1CRjnf6sJ30wMuJj8CT2K3lZIXO6pWz
+        aJ7x8vDO0KpyQHPBXX/Jebh63GrnBz8YJJyVgZk=
+X-Google-Smtp-Source: AGHT+IGzozeIAKQxxu15vnXC4O0U2/wFx2Ttdhu1Ykj7GBRveGIst2ctDf9dvYvaREsBKdttLh7p7tRIuZBiTVLnOX8=
+X-Received: by 2002:a05:6871:c10:b0:1dc:dcf9:18d8 with SMTP id
+ ve16-20020a0568710c1000b001dcdcf918d8mr4061353oab.24.1695651279489; Mon, 25
+ Sep 2023 07:14:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 6/8] drm: atmel-hlcdc: add DPI mode support for XLCDC
-Content-Language: en-US
-To:     Manikandan Muralidharan <manikandan.m@microchip.com>,
-        sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
-        daniel@ffwll.ch, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, lee@kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hari.PrasathGE@microchip.com,
-        Balamanikandan.Gunasundar@microchip.com,
-        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
-        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
-        Balakrishnan.S@microchip.com
-References: <20230915104849.187146-1-manikandan.m@microchip.com>
- <20230915104849.187146-7-manikandan.m@microchip.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230915104849.187146-7-manikandan.m@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230922173110.work.084-kees@kernel.org> <20230922173216.3823169-1-keescook@chromium.org>
+ <CADnq5_P2p3bmczci=pU+pG6f9+hqn=-xp1EynP2345CJZRW08w@mail.gmail.com>
+ <2635922e-f52a-4e91-40c6-4f1358972786@amd.com> <CADnq5_P1tg2-rWUmsRAy3aPJLT7ZmaZORMSOrPa6t6oSc5xS3g@mail.gmail.com>
+In-Reply-To: <CADnq5_P1tg2-rWUmsRAy3aPJLT7ZmaZORMSOrPa6t6oSc5xS3g@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 25 Sep 2023 10:14:28 -0400
+Message-ID: <CADnq5_P3xDDi-MS2PkAA7paAOQ3f7DQ8+sL6W7O5HcWTFQ0BSg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] drm/amd/pm: Annotate struct smu10_voltage_dependency_table
+ with __counted_by
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        David Airlie <airlied@gmail.com>,
+        Tejas Upadhyay <tejas.upadhyay@intel.com>,
+        Emma Anholt <emma@anholt.net>, Tom Rix <trix@redhat.com>,
+        llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Prike Liang <Prike.Liang@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        amd-gfx@lists.freedesktop.org,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        nouveau@lists.freedesktop.org, David Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-hardening@vger.kernel.org, Lijo Lazar <lijo.lazar@amd.com>,
+        Yifan Zhang <yifan1.zhang@amd.com>,
+        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Melissa Wen <mwen@igalia.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Evan Quan <evan.quan@amd.com>, Sean Paul <sean@poorly.run>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>, Le Ma <le.ma@amd.com>,
+        freedreno@lists.freedesktop.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nirmoy Das <nirmoy.das@intel.com>, Lang Yu <Lang.Yu@amd.com>,
+        John Harrison <john.c.harrison@intel.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,95 +115,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 25, 2023 at 10:07=E2=80=AFAM Alex Deucher <alexdeucher@gmail.co=
+m> wrote:
+>
+> On Mon, Sep 25, 2023 at 2:30=E2=80=AFAM Christian K=C3=B6nig
+> <christian.koenig@amd.com> wrote:
+> >
+> > Am 22.09.23 um 19:41 schrieb Alex Deucher:
+> > > On Fri, Sep 22, 2023 at 1:32=E2=80=AFPM Kees Cook <keescook@chromium.=
+org> wrote:
+> > >> Prepare for the coming implementation by GCC and Clang of the __coun=
+ted_by
+> > >> attribute. Flexible array members annotated with __counted_by can ha=
+ve
+> > >> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_=
+BOUNDS
+> > >> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-fa=
+mily
+> > >> functions).
+> > >>
+> > >> As found with Coccinelle[1], add __counted_by for struct smu10_volta=
+ge_dependency_table.
+> > >>
+> > >> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examp=
+les/counted_by.cocci
+> > >>
+> > >> Cc: Evan Quan <evan.quan@amd.com>
+> > >> Cc: Alex Deucher <alexander.deucher@amd.com>
+> > >> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> > >> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> > >> Cc: David Airlie <airlied@gmail.com>
+> > >> Cc: Daniel Vetter <daniel@ffwll.ch>
+> > >> Cc: Xiaojian Du <Xiaojian.Du@amd.com>
+> > >> Cc: Huang Rui <ray.huang@amd.com>
+> > >> Cc: Kevin Wang <kevin1.wang@amd.com>
+> > >> Cc: amd-gfx@lists.freedesktop.org
+> > >> Cc: dri-devel@lists.freedesktop.org
+> > >> Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > Acked-by: Alex Deucher <alexander.deucher@amd.com>
+> >
+> > Mhm, I'm not sure if this is a good idea. That is a structure filled in
+> > by the firmware, isn't it?
+> >
+> > That would imply that we might need to byte swap count before it is
+> > checkable.
+>
+> True. Good point.  Same for the other amdgpu patch.
 
+Actually the other patch is fine.  That's just a local structure.
 
-On 15.09.2023 13:48, Manikandan Muralidharan wrote:
-> Add support for Display Pixel Interface (DPI) Compatible Mode
-> support in atmel-hlcdc driver for XLCDC IP along with legacy
-> pixel mapping.DPI mode BIT is configured in LCDC_CFG5 register.
+Alex
 
-Space after .
-
-> 
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-> [durai.manickamkr@microchip.com: update DPI mode bit using is_xlcdc flag]
-> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-> ---
->  .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 22 ++++++++++++++++---
->  1 file changed, 19 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-> index 1ac31c0c474a..b0051ec02f7f 100644
-> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-> @@ -30,10 +30,12 @@
->   *
->   * @base: base CRTC state
->   * @output_mode: RGBXXX output mode
-> + * @dpi: output DPI mode
->   */
->  struct atmel_hlcdc_crtc_state {
->  	struct drm_crtc_state base;
->  	unsigned int output_mode;
-> +	u8 dpi;
->  };
->  
->  static inline struct atmel_hlcdc_crtc_state *
-> @@ -164,6 +166,8 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
->  
->  	state = drm_crtc_state_to_atmel_hlcdc_crtc_state(c->state);
->  	cfg = state->output_mode << 8;
-> +	if (is_xlcdc)
-> +		cfg |= state->dpi << 11;
->  
->  	if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NVSYNC))
->  		cfg |= ATMEL_HLCDC_VSPOL;
-> @@ -176,7 +180,9 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
->  			   ATMEL_HLCDC_VSPDLYS | ATMEL_HLCDC_VSPDLYE |
->  			   ATMEL_HLCDC_DISPPOL | ATMEL_HLCDC_DISPDLY |
->  			   ATMEL_HLCDC_VSPSU | ATMEL_HLCDC_VSPHO |
-> -			   ATMEL_HLCDC_GUARDTIME_MASK | ATMEL_HLCDC_MODE_MASK,
-> +			   ATMEL_HLCDC_GUARDTIME_MASK |
-> +			   (is_xlcdc ? ATMEL_XLCDC_MODE_MASK |
-> +			   ATMEL_XLCDC_DPI : ATMEL_HLCDC_MODE_MASK),
->  			   cfg);
->  
->  	clk_disable_unprepare(crtc->dc->hlcdc->sys_clk);
-> @@ -374,7 +380,15 @@ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
->  
->  	hstate = drm_crtc_state_to_atmel_hlcdc_crtc_state(state);
->  	hstate->output_mode = fls(output_fmts) - 1;
-> -
-> +	if (crtc->dc->desc->is_xlcdc) {
-> +		/* check if MIPI DPI bit needs to be set */
-> +		if (fls(output_fmts) > 3) {
-> +			hstate->output_mode -= 4;
-> +			hstate->dpi = 1;
-> +		} else {
-> +			hstate->dpi = 0;
-> +		}
-> +	}
->  	return 0;
->  }
->  
-> @@ -478,7 +492,7 @@ static struct drm_crtc_state *
->  atmel_hlcdc_crtc_duplicate_state(struct drm_crtc *crtc)
->  {
->  	struct atmel_hlcdc_crtc_state *state, *cur;
-> -
-> +	struct atmel_hlcdc_crtc *c = drm_crtc_to_atmel_hlcdc_crtc(crtc);
-
-Keep the blank line here.
-
->  	if (WARN_ON(!crtc->state))
->  		return NULL;
->  
-> @@ -489,6 +503,8 @@ atmel_hlcdc_crtc_duplicate_state(struct drm_crtc *crtc)
->  
->  	cur = drm_crtc_state_to_atmel_hlcdc_crtc_state(crtc->state);
->  	state->output_mode = cur->output_mode;
-> +	if (c->dc->desc->is_xlcdc)
-> +		state->dpi = cur->dpi;
->  
->  	return &state->base;
->  }
+>
+> Alex
+>
+> >
+> > Regards,
+> > Christian.
+> >
+> > >
+> > >> ---
+> > >>   drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h | 2 +-
+> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h b/=
+drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
+> > >> index 808e0ecbe1f0..42adc2a3dcbc 100644
+> > >> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
+> > >> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
+> > >> @@ -192,7 +192,7 @@ struct smu10_clock_voltage_dependency_record {
+> > >>
+> > >>   struct smu10_voltage_dependency_table {
+> > >>          uint32_t count;
+> > >> -       struct smu10_clock_voltage_dependency_record entries[];
+> > >> +       struct smu10_clock_voltage_dependency_record entries[] __cou=
+nted_by(count);
+> > >>   };
+> > >>
+> > >>   struct smu10_clock_voltage_information {
+> > >> --
+> > >> 2.34.1
+> > >>
+> >
