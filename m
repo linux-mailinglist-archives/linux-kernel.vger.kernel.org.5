@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C197AD4E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5419D7AD4E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjIYJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        id S230198AbjIYJ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjIYJzq (ORCPT
+        with ESMTP id S229805AbjIYJzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:55:46 -0400
+        Mon, 25 Sep 2023 05:55:47 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB011C6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434CCA3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:41 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJW-0007na-Ei; Mon, 25 Sep 2023 11:55:38 +0200
+        id 1qkiJW-0007ow-P3; Mon, 25 Sep 2023 11:55:38 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJW-008pzG-2C; Mon, 25 Sep 2023 11:55:38 +0200
+        id 1qkiJW-008pzJ-BI; Mon, 25 Sep 2023 11:55:38 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-004dl4-PJ; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJW-004dl8-24; Mon, 25 Sep 2023 11:55:38 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Halasa <khalasa@piap.pl>
+To:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>, Joel Stanley <joel@jms.id.au>
 Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 11/40] soc/ixp4xx: ixp4xx-qmgr: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:55:02 +0200
-Message-Id: <20230925095532.1984344-12-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 12/40] soc/litex: litex_soc_ctrl: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:03 +0200
+Message-Id: <20230925095532.1984344-13-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1717; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=HudFbgOcgVWKgqxMtzAy+tK9o9GlSRRwK6tTBfx+JS4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhMmDxj6OX/DR/bhIvlFUD5d6B8TbKN3gQz7 EKAN2ByP9GJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYTAAKCRCPgPtYfRL+ TgFYB/44oA3f0XXEXVKeBOSu5mPOcVc6nis5SiomTDO+TuP/3MPMHeLWmQ+omdc3yj6nDHwYnro Lp1nc8AmtBlXzlzkOTsAXKj/qJR6xBGZ+6lB1jZvR5pN2g6EcT3NbVOPl350D/wGi/4mmY1f4lm G8ozjN+5mkmY5g3ldYNKxVI/QyXtaazAzRd+QJ50nfwpLXc+eIVgoeXI/QonEE8185eaDHX+44+ 3LTGCTSFaMG3zbILZ0t6+hnZpluWiOrOQYHi3dHfEWbchWHi0cba1C8PjHJO4dczWPKxLKp+huA C/tu8Qaa7DEps5/HQWafKiLWkKMIhhnFl+xptdgYnE9mkLpR
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1834; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=+aJKU9kQ906MNGjvm2UkK9UOq1OE6knQipDDEsBvRok=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhNqCRoX3E4tgYELpgXaTNQI0/SvvNFeLtdI b55H1R1c+iJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYTQAKCRCPgPtYfRL+ Ts5KB/sGPfoH5i1nQoeV08Wpif32WBtRNbG3tWRhtvBYv8/jkPBuLyVPdFvPmarJ2uXvu++QqZQ KzOT3RBgwE21ZEZc9UfbOsLi/fT5s8kErxZth+P6ynkpTSM8jGIGM4nrdKiljcChlUa/qhCwWI8 BOjZOL85i+QXSg1nNW/Kp4b5QU1p9l3lwCA7zIbMMN8H3mFjQcTUowAYTLaTytCFMNoi/nqcvpN 7lDomFtFdeln3Y4F6LCs85QRun4zgHT9WSPtCflnI48vaVuNyBfIo4Q9yRhsfZ4mTGCTEeNrkGl DKpobOZJHu9c9e/e7KKoB2iIfBg1gNs+GcSk3lMO5nLSMS3o
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,35 +72,36 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/ixp4xx/ixp4xx-qmgr.c | 5 ++---
+ drivers/soc/litex/litex_soc_ctrl.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soc/ixp4xx/ixp4xx-qmgr.c b/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-index 291086bb9313..244ad8d7e80b 100644
---- a/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-+++ b/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-@@ -442,11 +442,10 @@ static int ixp4xx_qmgr_probe(struct platform_device *pdev)
+diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+index f75790091d38..10813299aa10 100644
+--- a/drivers/soc/litex/litex_soc_ctrl.c
++++ b/drivers/soc/litex/litex_soc_ctrl.c
+@@ -120,12 +120,11 @@ static int litex_soc_ctrl_probe(struct platform_device *pdev)
  	return 0;
  }
  
--static int ixp4xx_qmgr_remove(struct platform_device *pdev)
-+static void ixp4xx_qmgr_remove(struct platform_device *pdev)
+-static int litex_soc_ctrl_remove(struct platform_device *pdev)
++static void litex_soc_ctrl_remove(struct platform_device *pdev)
  {
- 	synchronize_irq(qmgr_irq_1);
- 	synchronize_irq(qmgr_irq_2);
+ 	struct litex_soc_ctrl_device *soc_ctrl_dev = platform_get_drvdata(pdev);
+ 
+ 	unregister_restart_handler(&soc_ctrl_dev->reset_nb);
 -	return 0;
  }
  
- static const struct of_device_id ixp4xx_qmgr_of_match[] = {
-@@ -462,7 +461,7 @@ static struct platform_driver ixp4xx_qmgr_driver = {
- 		.of_match_table = ixp4xx_qmgr_of_match,
+ static struct platform_driver litex_soc_ctrl_driver = {
+@@ -134,7 +133,7 @@ static struct platform_driver litex_soc_ctrl_driver = {
+ 		.of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
  	},
- 	.probe = ixp4xx_qmgr_probe,
--	.remove = ixp4xx_qmgr_remove,
-+	.remove_new = ixp4xx_qmgr_remove,
+ 	.probe = litex_soc_ctrl_probe,
+-	.remove = litex_soc_ctrl_remove,
++	.remove_new = litex_soc_ctrl_remove,
  };
- module_platform_driver(ixp4xx_qmgr_driver);
  
+ module_platform_driver(litex_soc_ctrl_driver);
 -- 
 2.40.1
 
