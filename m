@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CAF7AD697
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0157F7AD69B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjIYLCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        id S229945AbjIYLEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjIYLCy (ORCPT
+        with ESMTP id S229632AbjIYLEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:02:54 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F214D3;
-        Mon, 25 Sep 2023 04:02:46 -0700 (PDT)
-Received: from pd9e2f713.dip0.t-ipconnect.de ([217.226.247.19] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1qkjMB-004AHQ-OP; Mon, 25 Sep 2023 13:02:27 +0200
-Date:   Mon, 25 Sep 2023 13:02:25 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <jic23@kernel.org>, <lars@metafoo.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <bcousson@baylibre.com>, <tony@atomide.com>,
-        <jean-baptiste.maneyrol@tdk.com>, <chenhuiz@axis.com>,
-        <andy.shevchenko@gmail.com>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: iio: imu: mpu6050: Add level shifter
-Message-ID: <20230925130225.55fe6fd4@aktux>
-In-Reply-To: <20230925112852.00007d34@Huawei.com>
-References: <20230924222559.2038721-1-andreas@kemnade.info>
-        <20230924222559.2038721-2-andreas@kemnade.info>
-        <6db5b758-2ae6-46fb-a699-d73a2b98b4c2@linaro.org>
-        <20230925112852.00007d34@Huawei.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Mon, 25 Sep 2023 07:04:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B616AB;
+        Mon, 25 Sep 2023 04:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695639838; x=1727175838;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=w8jzm9ukgkRaSpCF3iWY59UBd1VY/ShRBJdRFVOKN0U=;
+  b=nUPOnuwIAwesCAhKDUbmf6PpjAvOkASj6KngY/wkEQNebW97J4Dc9t3w
+   v5l8uRoqMXcyBa7Cd4bIx2vmb2yZ2583CVomUGCMXaZNF2wOK7KcnQQjl
+   QLcnvxFUEM+ZJkbgSjkwG+mqWoMMnhoSC+ii0GSI+Dk90qAZnB4S9ViYs
+   rLjnefSm4D/LehMrNFpoqZE/HGAu3Ho3KdSyZulmAcbWt7uZoP2Bkmkyq
+   vBDhmRrIOrnQO1QN335xNWX3QB7sx8Osn4YWoCqFpSsKx9meCV/Ks07ah
+   aoMICmlh+5Ew/rC52XewfzWOKG98D/BfuC9CIH/x3JeUP9/VbM+51Isxs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="412153494"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="412153494"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 04:03:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="921936202"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="921936202"
+Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 04:03:54 -0700
+Date:   Mon, 25 Sep 2023 13:03:52 +0200
+From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, dri-devel@lists.freedesktop.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] accel/ivpu: Annotate struct ivpu_job with __counted_by
+Message-ID: <20230925110352.GB846747@linux.intel.com>
+References: <20230922175416.work.272-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922175416.work.272-kees@kernel.org>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023 11:28:52 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-
-> On Mon, 25 Sep 2023 08:54:08 +0200
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Fri, Sep 22, 2023 at 10:54:17AM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> > On 25/09/2023 00:25, Andreas Kemnade wrote:  
-> > > Found in ancient platform data struct:
-> > > level_shifter: 0: VLogic, 1: VDD
-> > > 
-> > > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > > ---
-> > >  .../devicetree/bindings/iio/imu/invensense,mpu6050.yaml         | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml b/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
-> > > index 1db6952ddca5e..6aae2272fa15c 100644
-> > > --- a/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
-> > > +++ b/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
-> > > @@ -48,6 +48,8 @@ properties:
-> > >  
-> > >    mount-matrix: true
-> > >  
-> > > +  invensense,level-shifter: true    
-> > 
-> > It does not look like you tested the bindings, at least after quick
-> > look. Please run `make dt_binding_check` (see
-> > Documentation/devicetree/bindings/writing-schema.rst for instructions).
-> > Maybe you need to update your dtschema and yamllint.
-> > 
-> > Best regards,
-> > Krzysztof
-> > 
-> >   
+> As found with Coccinelle[1], add __counted_by for struct ivpu_job.
 > 
-> Also this one isn't obvious - give it a description in the binding doc.
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
-> I'm not sure of the arguement for calling it level shift in general.
+> Cc: Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
+> Cc: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+> Cc: Oded Gabbay <ogabbay@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Tom Rix <trix@redhat.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+
+Please apply the patch via whatever tree is appropriate. Or if I have
+to take it via drm-misc, please let me know.
+
+Regards
+Stanislaw
+
+> ---
+>  drivers/accel/ivpu/ivpu_job.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-I have no more descrption than the old source (see the citation from there)
-https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-9150-Register-Map.pdf
-
-does not list it. But that bit is needed to get things to work what also does the
-vendor kernel do.
-
-What could be a better descrption?
-
-Regards,
-Andreas
+> diff --git a/drivers/accel/ivpu/ivpu_job.h b/drivers/accel/ivpu/ivpu_job.h
+> index aa1f0b9479b0..5514c2d8a609 100644
+> --- a/drivers/accel/ivpu/ivpu_job.h
+> +++ b/drivers/accel/ivpu/ivpu_job.h
+> @@ -51,7 +51,7 @@ struct ivpu_job {
+>  	u32 job_id;
+>  	u32 engine_idx;
+>  	size_t bo_count;
+> -	struct ivpu_bo *bos[];
+> +	struct ivpu_bo *bos[] __counted_by(bo_count);
+>  };
+>  
+>  int ivpu_submit_ioctl(struct drm_device *dev, void *data, struct drm_file *file);
+> -- 
+> 2.34.1
+> 
