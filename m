@@ -2,187 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BEE7AD879
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F029A7AD87F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbjIYNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
+        id S231391AbjIYNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjIYNAk (ORCPT
+        with ESMTP id S229862AbjIYNBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:00:40 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2075.outbound.protection.outlook.com [40.107.212.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28FF10B;
-        Mon, 25 Sep 2023 06:00:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nm9i2ZZ6X9BLL7+kerx/QHXwhUu/YX9a4SxbWGk20KAjvbQMhQ0xdUlx77w3tIEz9We4UIXHso/ijnpB2aZPTzDXP5hac6rBPS3A5F74Py52kz0oiyXjN6z5WhZfRQ7Z2MM+QnW6D95BkwWXUTv6fmOEi2ck6v1TbCMvWrwEX5BVrqhtEdaNcYgQj2sV53oq0elg/FeIIhsRR7hw1PaL3lPtZkuqHcQbZnU1BjphXFAJjBDp9RNPo5BAzOfUDIk+vXfa1ef8uLzx5ofuPke2VtRl2AtdGv0XG+/LmA8jXRZurU+efeDPxSlZafl97YTNrZgof7xnquVHf8HWimL/CQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mj21gdlEM3mfx1yhlMJc+27UE45nkcnPIiLAfSlM6A0=;
- b=CnSfLUCl+SzqrVFwmBmroDubythXAnxs04U5JAsCRhj1VM+76HglJhSGZkxxC5iK/wZiwmQ79fH7zrEWUv6ZoGE2timGKB14AvXBGhIizTspzj451zacAQ/T00YpVN2tX5gQlmpkSskCKWYAcWM1KtdUHI5IfilWPcGhcqboynpgbSSRIAzgPHw7MBpR7AWF9nGxnxGxfMETEh/8Qt3OCjJGj1QGAISOGa2sbRHm2SZ+fYpsvkbajvkBibJqfumi9Be9c7P3aCUukA/1ZDAj5jXyhn5FEB/IYwy7FiAJ35lnR2ehmNyZN25SRn3rbUI50+VTpefdBI4DXCbD5r0/Bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mj21gdlEM3mfx1yhlMJc+27UE45nkcnPIiLAfSlM6A0=;
- b=X8KriZkxYW61uTdBB8bshgxYJwwMK/ZrYljhHVQf+U8guhrcDE5yOuTrUJkdslJFWN7YXxWC5f+rNd64tJr8Tqlyjy1+YT6zcHvKT/50liJyvdomy7WxSxVb4S2qYMieMCS2DCNNpFsXLr6nW8JkepbTgMa2f0q4YwFp9CiMPzRID3PB3zpIbn4PXUJqH9TS7mBJqK+FPYnFE0uMI23Avc27n7Fzbd6pZKmp6TgSshbAKynlmQVBxuHrnSp2fj0chTvBkjaqAf95IamIVZyZVHXf+fNPOd4X2Q44rtUzPEc6xzmGmXqOCVK8+Dlh3do1MY65ayVuQc+WR0oYgcW9yA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ2PR12MB7992.namprd12.prod.outlook.com (2603:10b6:a03:4c3::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 13:00:30 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
- 13:00:30 +0000
-Date:   Mon, 25 Sep 2023 10:00:29 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, cohuck@redhat.com, eric.auger@redhat.com,
-        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
- domain_alloc_user op
-Message-ID: <20230925130029.GZ13733@nvidia.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-2-yi.l.liu@intel.com>
- <4b17d331-957b-44d3-8a19-0b2ccc59150b@linux.intel.com>
- <15831871-cace-f954-6af1-328039ffda16@intel.com>
- <473d4050-2f2a-f9a2-6c40-3efd5b582b4e@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <473d4050-2f2a-f9a2-6c40-3efd5b582b4e@linux.intel.com>
-X-ClientProxiedBy: MN2PR03CA0011.namprd03.prod.outlook.com
- (2603:10b6:208:23a::16) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 25 Sep 2023 09:01:24 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A88F9F;
+        Mon, 25 Sep 2023 06:01:14 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RvNFR4w9hzMlbW;
+        Mon, 25 Sep 2023 20:57:31 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 25 Sep 2023 21:01:11 +0800
+Message-ID: <efd9f7dc-c9e8-99a5-e139-20133b30903c@huawei.com>
+Date:   Mon, 25 Sep 2023 21:01:11 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB7992:EE_
-X-MS-Office365-Filtering-Correlation-Id: 83e50798-7102-4144-e3db-08dbbdc76562
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2EbV1Anvgd8IdokZIVfZxzgAMFXHf4wjkBKeH5PIKZaNx1vrbLnjCCtwMRhbEfu5fky5qjIfn0ZSGzbN508PqNMyfKjKNvrTVt+uQwXtgeRNhAChfC8y/qVxOAaju7tdaL6mdfth/lZDL/qFgWI6QGa5RmvUEDHgkWs4hq+dgTgyvB3+UA+3v8rydlx9a84FJlBg+Rg7uY8n0xPkUxLH2wNieZFKrHcuJQHJJpUX+igUmX6NkguRSmx9RURzhX4f3q149l8z7r1GuveXSBWJCoIHPW2k498drAUrYcmC/U6Wztq4POCiQtT1xxJN9ZQXm7LuFhZ0LDU4Ecl3iRHs2Mi2JW9xPNZ9+vEnOBVZXQQ+8P3RCOwngYZ2BBip36eAQSltQwD6W9Pi1WcVm7/mQO/MP6ZIyE9KfXmMH+PwHc6AMa53DtfQ5KO4ebQTJZopYhqMHE5F+G8LLqcq3fwjFRjxDJtCLcNRSDvKVAKu0tIzKF0NZRn5Fjk0wqvdNDn2VXgD744q61Dn4eEHbJnGZkgVBxRXg7DI+HCyYx4JsKZrnm5PPpl1Yrc/SKRqKooY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(376002)(39860400002)(230922051799003)(1800799009)(451199024)(186009)(26005)(478600001)(2616005)(1076003)(36756003)(86362001)(33656002)(5660300002)(6486002)(53546011)(38100700002)(6506007)(6512007)(4326008)(2906002)(8936002)(8676002)(41300700001)(316002)(6916009)(66946007)(66476007)(66556008)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ekVDWHFZQ0IwL2tKVDZkQ1llZ2dOQ1dRbFJpeXhNVW5ta0VUU2JRVWY1Qkcv?=
- =?utf-8?B?SFVsWkhwZkJtNWhtWjZyUVBWZjZvVXVjZS9QT1hqcTNJRmRqd21MaFg2Z2Fi?=
- =?utf-8?B?VWcrTEZIaTNGWnpoWGNPalVURHhtUzFVZDhkSVJ4eHQyWVhvcTdLaUxVYkI1?=
- =?utf-8?B?Mld3MHlvVnR1OUJtTjY1MGtIRWlOWDIyOFhzOEJyVFo0M1NIa2NoV1JGTlJa?=
- =?utf-8?B?WjdmUjFkdTg2NlNiK1dibTkveStxNm5aYmFnTm1Gb0RCeFdMT0tEKzBsRzJi?=
- =?utf-8?B?NE00VVRKbW5uaWptRzRBSk5XVkxRbzRNVnFZcDQvMy8yelE2aG5kRWUrNUxw?=
- =?utf-8?B?UEFxWHYvcFRaaGJ2WVR3NUFzVytnUEYyeWx2RzhFZ3MxWWZZUzVOTTZ2MnNm?=
- =?utf-8?B?NWZZdG8yNlhJQ0JST1NLYm1hT1BITzRnSzN2ZGZSc3ZRTmRBeUpPeXprdVpx?=
- =?utf-8?B?VFNsTWx2OVREVll0ZDlZamZtZzE2VlVaMkU1d091NWt0alZrUWJFcDhrMzZH?=
- =?utf-8?B?LzQyU3F0WU5GaktCZ0lpR1JmeDE0SzVoL2tEeFBCMkVEQzM4VTN4ZCs0ZnNS?=
- =?utf-8?B?ZlcvUXF3NFBmeVFzdUxzdUZseHZUOVVDOXh0dmVjVjV0bi96SWhuRG4rYlpE?=
- =?utf-8?B?UHBnamdieGFEL3pXV2xENzJDNWlkMVNQQjRyOExOenhWbnJ2VmdUd2VXMjMr?=
- =?utf-8?B?Y1R5aGhZb0U1L0JmZ1FGQktSQ3Q1Sm5vbEZhYThjWXg1Rm5FY3JHQkc1cVFL?=
- =?utf-8?B?b2pqOEV2a0FRcGVRcVpOa2hIM2dXaGxuaVpEaHRwZ2RqSGt0bWFnN1dIYXQ3?=
- =?utf-8?B?WGNEYmxWYnZXb0JzaVpSeUxUSGFPRm03QkJzekd2Wm5KRytubmUyS3p5Tjl5?=
- =?utf-8?B?cUJEN1h3WVR3V0JGTjZHdGVzUEFtQlF3NmFsT04xcDZiamxHNGVrcGdZQ2ZR?=
- =?utf-8?B?Nnc2TWg0OCtUbVNJc1g3dVhBN0h0NWhRK0lONlprR0trdlg2TFBwWjZyNjBs?=
- =?utf-8?B?VGZjREUrN09DSk5ybmROWUc5OS9OaFNqS0Y0SlliWFFDc0tGcUZ6L1pTQVFp?=
- =?utf-8?B?QVhNUVVRUU44UVJRMGlRWFhnWmVpMzgxVlFXL0doMTFTdjVlaUFZNGRiMzM5?=
- =?utf-8?B?MUQ2cmFieStVUm04MkVVSnh6Umo0QTk5c1N1RzFkVzZ6d2Uwd0dkUTFRV0ZJ?=
- =?utf-8?B?U0xON1k5T2xpbmh0QzZUSWVoYk5SdXQxT0pQMkNRVVE3MVNHK3ZmTE5EVEU4?=
- =?utf-8?B?SWNVK2dEQjZEZ2h2QW41cDZtMVN2V0MrZ2VNK1IvSWRubXlKVjJHRUljZm5w?=
- =?utf-8?B?aTFTbTFxeWJjRGl6cWxjc1JxK1prTE0rUkRuT28zbWFDL0tpeVJ0eFluRjFV?=
- =?utf-8?B?Q3NlY2g3KzRKeVF2V1FLVldsMmJ2OVp6QlN2ODlJbENKQVBSSHBKNjFSM1hu?=
- =?utf-8?B?NE1nT0R6MkZRWlIvbTlNKzVRcDQwVWErS3NQTW5EL210NnNhK3NnMm0waEJw?=
- =?utf-8?B?T21sUmtnMFd4T09HQWZVekIvalREMHBweUhjaTh2LytrSVVxcWRPWkp0S29D?=
- =?utf-8?B?ekd6RDRpV082bTM1MzRvSnRIUkMraTNkWURMRVVFVU5vWnVJUXFxbHdNVlRN?=
- =?utf-8?B?YU1ickhUY2syYm1xcGh6TEV5NnhITGx5M1cyVHJoY1RIVzZqRFpwWmg1SjBL?=
- =?utf-8?B?R0I4cTVLVGl5K0ZCZUY2SE00TFJrMHNWY1J2VEVncnV0QU5RWjFVcU9HSmJ0?=
- =?utf-8?B?OEFzNWg0K0FTUS9saVFDcGY5WUdwZDNOcHRtZU1tbXRkNUNVNy8yQmgyMm5q?=
- =?utf-8?B?S0FFMHpZa05wN2YzU1BjdE5TRTBjTTZtbXlFV0R5bnU1em9mVXovbElXQTNL?=
- =?utf-8?B?UWIvRm9qdjRUQnR3aHNpL0gzc1M0UTZZUXl4OHZCc3kvTEpQbjd1QWxQMEZY?=
- =?utf-8?B?OWZWZ0xHUDNaMnBjYXN2U2VJTkZubHh2L1lxWksvNUFaSExKYThyL0ZwWTNX?=
- =?utf-8?B?TUsrNlN6K0E3dmhXRXhBellFODQ2Y3NDMnlvUEVGeEEwcnJBM3R6ZUg3RER5?=
- =?utf-8?B?QUxSaG1FdmhIRmQrM2E4aDRsU3MwTlhCdHpqNy9kSHNDL3p0YUFDZ3JlTTJX?=
- =?utf-8?Q?TrEQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83e50798-7102-4144-e3db-08dbbdc76562
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 13:00:30.1682
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0hoybaDahh9iMIv39XIrJEUF0CFOuK2JGKPk+fWQWLhpd/V3zzB2p78PqjBbvJo1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7992
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH v8 10/16] irqchip/riscv-imsic: Add support for platform
+ MSI irqdomain
+Content-Language: en-US
+To:     Anup Patel <apatel@ventanamicro.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        <linux-kernel@vger.kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        <linux-riscv@lists.infradead.org>,
+        Andrew Jones <ajones@ventanamicro.com>
+References: <20230912174928.528414-1-apatel@ventanamicro.com>
+ <20230912174928.528414-11-apatel@ventanamicro.com>
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+In-Reply-To: <20230912174928.528414-11-apatel@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.109.254]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 04:01:55PM +0800, Baolu Lu wrote:
-> On 2023/9/25 14:22, Yi Liu wrote:
-> > On 2023/9/21 20:10, Baolu Lu wrote:
-> > > On 2023/9/21 15:51, Yi Liu wrote:
-> > > > +/**
-> > > > + * iommu_copy_user_data - Copy iommu driver specific user space data
-> > > > + * @dst_data: Pointer to an iommu driver specific user data
-> > > > that is defined in
-> > > > + *            include/uapi/linux/iommufd.h
-> > > > + * @src_data: Pointer to a struct iommu_user_data for user
-> > > > space data info
-> > > > + * @data_len: Length of current user data structure, i.e.
-> > > > sizeof(struct _dst)
-> > > > + * @min_len: Initial length of user data structure for backward
-> > > > compatibility.
-> > > > + *           This should be offsetofend using the last member
-> > > > in the user data
-> > > > + *           struct that was initially added to
-> > > > include/uapi/linux/iommufd.h
-> > > > + */
-> > > > +static inline int iommu_copy_user_data(void *dst_data,
-> > > > +                       const struct iommu_user_data *src_data,
-> > > > +                       size_t data_len, size_t min_len)
-> > > > +{
-> > > > +    if (WARN_ON(!dst_data || !src_data))
-> > > > +        return -EINVAL;
-> > > > +    if (src_data->len < min_len || data_len < src_data->len)
-> > > > +        return -EINVAL;
-> > > > +    return copy_struct_from_user(dst_data, data_len,
-> > > > +                     src_data->uptr, src_data->len);
-> > > > +}
-> > > 
-> > > I am not sure that I understand the purpose of "min_len" correctly. It
-> > > seems like it would always be equal to data_len?
-> > 
-> > no, it will not be equal to data_len once there is extension in the
-> > uAPI structure.
-> > 
-> > > Or, it means the minimal data length that the iommu driver requires?
-> > 
-> > it is the minimal data length the uAPI requires. min_len is finalized
-> > per the upstream of the first version of the uAPI.
+
+
+On 2023/9/13 1:49, Anup Patel wrote:
+> The Linux platform MSI support requires a platform MSI irqdomain so
+> let us add a platform irqchip driver for RISC-V IMSIC which provides
+> a base IRQ domain and platform MSI domain. This driver assumes that
+> the IMSIC state is already initialized by the IMSIC early driver.
 > 
-> So, it looks like a constant. Perhaps we should document it in the
-> uapi/iommuf.h and avoid using it as a parameter of a helper
-> function?
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  drivers/irqchip/Makefile                   |   2 +-
+>  drivers/irqchip/irq-riscv-imsic-platform.c | 280 +++++++++++++++++++++
+>  2 files changed, 281 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/irqchip/irq-riscv-imsic-platform.c
+> 
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index d714724387ce..abca445a3229 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -95,7 +95,7 @@ obj-$(CONFIG_QCOM_MPM)			+= irq-qcom-mpm.o
+>  obj-$(CONFIG_CSKY_MPINTC)		+= irq-csky-mpintc.o
+>  obj-$(CONFIG_CSKY_APB_INTC)		+= irq-csky-apb-intc.o
+>  obj-$(CONFIG_RISCV_INTC)		+= irq-riscv-intc.o
+> -obj-$(CONFIG_RISCV_IMSIC)		+= irq-riscv-imsic-state.o irq-riscv-imsic-early.o
+> +obj-$(CONFIG_RISCV_IMSIC)		+= irq-riscv-imsic-state.o irq-riscv-imsic-early.o irq-riscv-imsic-platform.o
+>  obj-$(CONFIG_SIFIVE_PLIC)		+= irq-sifive-plic.o
+>  obj-$(CONFIG_IMX_IRQSTEER)		+= irq-imx-irqsteer.o
+>  obj-$(CONFIG_IMX_INTMUX)		+= irq-imx-intmux.o
+> diff --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip/irq-riscv-imsic-platform.c
+> new file mode 100644
+> index 000000000000..b78f1b2ee3dc
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-riscv-imsic-platform.c
+> @@ -0,0 +1,280 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> + * Copyright (C) 2022 Ventana Micro Systems Inc.
+> + */
+> +
+> +#include <linux/bitmap.h>
+> +#include <linux/cpu.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/module.h>
+> +#include <linux/msi.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/smp.h>
+> +
+> +#include "irq-riscv-imsic-state.h"
+> +
+> +static int imsic_cpu_page_phys(unsigned int cpu,
+> +			       unsigned int guest_index,
+> +			       phys_addr_t *out_msi_pa)
+> +{
+> +	struct imsic_global_config *global;
+> +	struct imsic_local_config *local;
+> +
+> +	global = &imsic->global;
+> +	local = per_cpu_ptr(global->local, cpu);
+> +
+> +	if (BIT(global->guest_index_bits) <= guest_index)
+> +		return -EINVAL;
+> +
+> +	if (out_msi_pa)
+> +		*out_msi_pa = local->msi_pa +
+> +			      (guest_index * IMSIC_MMIO_PAGE_SZ);
+> +
+> +	return 0;
+> +}
+> +
+> +static int imsic_get_cpu(const struct cpumask *mask_val, bool force,
+> +			 unsigned int *out_target_cpu)
+> +{
+> +	unsigned int cpu;
+> +
+> +	if (force)
+> +		cpu = cpumask_first(mask_val);
+> +	else
+> +		cpu = cpumask_any_and(mask_val, cpu_online_mask);
+> +
+> +	if (cpu >= nr_cpu_ids)
+> +		return -EINVAL;
+> +
+> +	if (out_target_cpu)
+> +		*out_target_cpu = cpu;
+> +
+> +	return 0;
+> +}
+> +
+> +static void imsic_irq_mask(struct irq_data *d)
+> +{
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&imsic->ids_lock, flags);
+> +	bitmap_clear(imsic->ids_enabled_bimap, d->hwirq, 1);
+> +	__imsic_id_disable(d->hwirq);
+> +	raw_spin_unlock_irqrestore(&imsic->ids_lock, flags);
+> +
+> +	imsic_ids_remote_sync();
+> +}
+> +
+> +static void imsic_irq_unmask(struct irq_data *d)
+> +{
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&imsic->ids_lock, flags);
+> +	bitmap_set(imsic->ids_enabled_bimap, d->hwirq, 1);
+> +	__imsic_id_enable(d->hwirq);
+> +	raw_spin_unlock_irqrestore(&imsic->ids_lock, flags);
+> +
+> +	imsic_ids_remote_sync();
+> +}
+> +
+> +static void imsic_irq_compose_msi_msg(struct irq_data *d,
+> +				      struct msi_msg *msg)
+> +{
+> +	phys_addr_t msi_addr;
+> +	unsigned int cpu;
+> +	int err;
+> +
+> +	cpu = imsic_id_get_target(d->hwirq);
+> +	if (WARN_ON(cpu == UINT_MAX))
+> +		return;
+> +
+> +	err = imsic_cpu_page_phys(cpu, 0, &msi_addr);
+> +	if (WARN_ON(err))
+> +		return;
+> +
+> +	msg->address_hi = upper_32_bits(msi_addr);
+> +	msg->address_lo = lower_32_bits(msi_addr);
+> +	msg->data = d->hwirq;
+> +}
+> +
+> +#ifdef CONFIG_SMP
+> +static int imsic_irq_set_affinity(struct irq_data *d,
+> +				  const struct cpumask *mask_val,
+> +				  bool force)
+> +{
+> +	unsigned int target_cpu;
+> +	int rc;
+> +
+> +	rc = imsic_get_cpu(mask_val, force, &target_cpu);
+> +	if (rc)
+> +		return rc;
+> +
+> +	imsic_id_set_target(d->hwirq, target_cpu);
+> +	irq_data_update_effective_affinity(d, cpumask_of(target_cpu));
 
-It is per-driver, per-struct, so this is the right way to do it
+According to the “The RISC-V Advanced Interrupt Architecture Version
+0.2-draft”，the "3.1 Interrupt files and interrupt identities" has
+following description.
 
-Jason
+Thus the total number of MSI sources that can be separately distinguished
+within a system is potentially the product of the number of interrupt
+identities at a single interrupt
+file times the total number of interrupt files in the system, over all
+harts.
+
+In my opinion, the MSI interrupt number is a local interrupt number.
+However, when the above interrupt affinity is set, it is processed as a
+global interrupt number, which seems not comply with the above RISC-V
+specifications.
+
+> +
+> +	return IRQ_SET_MASK_OK;
+> +}
+> +#endif
+> +
+> +static struct irq_chip imsic_irq_base_chip = {
+> +	.name			= "IMSIC-BASE",
+> +	.irq_mask		= imsic_irq_mask,
+> +	.irq_unmask		= imsic_irq_unmask,
+> +#ifdef CONFIG_SMP
+> +	.irq_set_affinity	= imsic_irq_set_affinity,
+> +#endif
+> +	.irq_compose_msi_msg	= imsic_irq_compose_msi_msg,
+> +	.flags			= IRQCHIP_SKIP_SET_WAKE |
+> +				  IRQCHIP_MASK_ON_SUSPEND,
+> +};
+> +
+> +static int imsic_irq_domain_alloc(struct irq_domain *domain,
+> +				  unsigned int virq,
+> +				  unsigned int nr_irqs,
+> +				  void *args)
+> +{
+> +	int i, hwirq, err = 0;
+> +	unsigned int cpu;
+> +
+> +	err = imsic_get_cpu(cpu_online_mask, false, &cpu);
+> +	if (err)
+> +		return err;
+> +
+> +	hwirq = imsic_ids_alloc(get_count_order(nr_irqs));
+> +	if (hwirq < 0)
+> +		return hwirq;
+> +
+> +	for (i = 0; i < nr_irqs; i++) {
+> +		imsic_id_set_target(hwirq + i, cpu);
+> +		irq_domain_set_info(domain, virq + i, hwirq + i,
+> +				    &imsic_irq_base_chip, imsic,
+> +				    handle_simple_irq, NULL, NULL);
+> +		irq_set_noprobe(virq + i);
+> +		irq_set_affinity(virq + i, cpu_online_mask);
+> +		/*
+> +		 * IMSIC does not implement irq_disable() so Linux interrupt
+> +		 * subsystem will take a lazy approach for disabling an IMSIC
+> +		 * interrupt. This means IMSIC interrupts are left unmasked
+> +		 * upon system suspend and interrupts are not processed
+> +		 * immediately upon system wake up. To tackle this, we disable
+> +		 * the lazy approach for all IMSIC interrupts.
+> +		 */
+> +		irq_set_status_flags(virq + i, IRQ_DISABLE_UNLAZY);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void imsic_irq_domain_free(struct irq_domain *domain,
+> +				  unsigned int virq,
+> +				  unsigned int nr_irqs)
+> +{
+> +	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
+> +
+> +	imsic_ids_free(d->hwirq, get_count_order(nr_irqs));
+> +	irq_domain_free_irqs_parent(domain, virq, nr_irqs);
+> +}
+> +
+> +static const struct irq_domain_ops imsic_base_domain_ops = {
+> +	.alloc		= imsic_irq_domain_alloc,
+> +	.free		= imsic_irq_domain_free,
+> +};
+> +
+> +static struct irq_chip imsic_plat_irq_chip = {
+> +	.name			= "IMSIC-PLAT",
+> +};
+> +
+> +static struct msi_domain_ops imsic_plat_domain_ops = {
+> +};
+> +
+> +static struct msi_domain_info imsic_plat_domain_info = {
+> +	.flags	= (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS),
+> +	.ops	= &imsic_plat_domain_ops,
+> +	.chip	= &imsic_plat_irq_chip,
+> +};
+> +
+> +static int imsic_irq_domains_init(struct device *dev)
+> +{
+> +	/* Create Base IRQ domain */
+> +	imsic->base_domain = irq_domain_create_tree(dev->fwnode,
+> +					&imsic_base_domain_ops, imsic);
+> +	if (!imsic->base_domain) {
+> +		dev_err(dev, "failed to create IMSIC base domain\n");
+> +		return -ENOMEM;
+> +	}
+> +	irq_domain_update_bus_token(imsic->base_domain, DOMAIN_BUS_NEXUS);
+> +
+> +	/* Create Platform MSI domain */
+> +	imsic->plat_domain = platform_msi_create_irq_domain(dev->fwnode,
+> +						&imsic_plat_domain_info,
+> +						imsic->base_domain);
+> +	if (!imsic->plat_domain) {
+> +		dev_err(dev, "failed to create IMSIC platform domain\n");
+> +		irq_domain_remove(imsic->base_domain);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int imsic_platform_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct imsic_global_config *global;
+> +	int rc;
+> +
+> +	if (!imsic) {
+> +		dev_err(dev, "early driver not probed\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (imsic->base_domain) {
+> +		dev_err(dev, "irq domain already created\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	global = &imsic->global;
+> +
+> +	/* Initialize IRQ and MSI domains */
+> +	rc = imsic_irq_domains_init(dev);
+> +	if (rc) {
+> +		dev_err(dev, "failed to initialize IRQ and MSI domains\n");
+> +		return rc;
+> +	}
+> +
+> +	dev_info(dev, "  hart-index-bits: %d,  guest-index-bits: %d\n",
+> +		 global->hart_index_bits, global->guest_index_bits);
+> +	dev_info(dev, " group-index-bits: %d, group-index-shift: %d\n",
+> +		 global->group_index_bits, global->group_index_shift);
+> +	dev_info(dev, " mapped %d interrupts at base PPN %pa\n",
+> +		 global->nr_ids, &global->base_addr);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id imsic_platform_match[] = {
+> +	{ .compatible = "riscv,imsics" },
+> +	{}
+> +};
+> +
+> +static struct platform_driver imsic_platform_driver = {
+> +	.driver = {
+> +		.name		= "riscv-imsic",
+> +		.of_match_table	= imsic_platform_match,
+> +	},
+> +	.probe = imsic_platform_probe,
+> +};
+> +
+> +static int __init imsic_platform_init(void)
+> +{
+> +	/*
+> +	 * Register IMSIC driver as early as possible so that IMSIC
+> +	 * platform device is probed as soon as it is created.
+> +	 */
+> +	return platform_driver_register(&imsic_platform_driver);
+> +}
+> +core_initcall(imsic_platform_init);
