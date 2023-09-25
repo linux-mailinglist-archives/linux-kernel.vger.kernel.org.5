@@ -2,44 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A481E7ACF12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E02F7ACF15
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbjIYEX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 00:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
+        id S231750AbjIYEZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 00:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjIYEXZ (ORCPT
+        with ESMTP id S231176AbjIYEZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 00:23:25 -0400
+        Mon, 25 Sep 2023 00:25:39 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC7D92;
-        Sun, 24 Sep 2023 21:23:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B1BDF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:25:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ILGZAfdelVgoTP+HxOb4cMyS2JXCc5vOiwjWFc+TAx4=; b=BNFEnifCAjgxh2RF+vXKaqjzDZ
-        GRupHL37U4qUc6ifu4iShlMqaAp0tT6cZNPOP3jxC83eb+PEWzaa8VIC7s5lBHJesUuU/SErRAimb
-        /Si67+b8F88x905/e+5+0z6TzR8Fw+PnJi62FTpe3NYnDTCTACduytwgekPUX59UhJIkR64eodcmc
-        2o/aaz8dYrGwvyhERBms0QB0ErjaBC4gLyyJ5CSEbJTY8vZ287ilNOMJjL9sKiUdCaTj1b9Iwu1/v
-        YNmVrOihwAeOAwBEFzHtu041L1j6sWyeGH84JdHph4srWBdkz7wW6XaWO/53ri6RUYRgRM3nUlHjO
-        RM+9hRXQ==;
-Received: from [2601:1c2:980:9ec0::9fed] (helo=bombadil.infradead.org)
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=w4XXZlfw+xZ3KRqTeBP98yMWcU3Sg6iOetUlD/igc34=; b=pvQSeP0BXwKuh1EWIHnXj0L0Ru
+        DUo9+xbJ800/DNzBXfbJiMNV5/+TaJTgJQSVSjy+lDURSF2eklfDFunDVPEfzIAYAdCUf4RkMGnhI
+        7n1ffAW3I0EACo7vdDxfHMHOt3W/VVTrpXuxfCLG/eEho2ti5ZqX+fnWiJFhHY49XlIostAuLZQcx
+        mxrVbtBy0MelCjsKPCHam85NLlv7Xw+qoVPRTokDnVWD+0bYADMdY7JyrJcnD5Y9UaxXW93FTb6d1
+        Gf6lfDlrs2/TJC3mxXi53RIG3pgAyogg+3UJnXO61gvEQhxOvbLcZcwXV7EOZHieoVsR/PloHQFBP
+        S6tA1Ymg==;
+Received: from [2601:1c2:980:9ec0::9fed]
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qkd7t-00DI3i-2o;
-        Mon, 25 Sep 2023 04:23:17 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: [PATCH] PCI: make pci_assign_unassigned_resources() non-init
-Date:   Sun, 24 Sep 2023 21:23:16 -0700
-Message-ID: <20230925042316.15415-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        id 1qkdA3-00DIAq-1B;
+        Mon, 25 Sep 2023 04:25:31 +0000
+Message-ID: <aa6270c5-46d7-4082-ab5a-9a850616b6fe@infradead.org>
+Date:   Sun, 24 Sep 2023 21:25:29 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: ERR_PTR(0) in a couple of places
+Content-Language: en-US
+To:     Matthew Brost <matthew.brost@intel.com>,
+        "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc:     mgreer@animalcreek.com, krzysztof.kozlowski@linaro.org,
+        linux-kernel@vger.kernel.org, airlied@gmail.com,
+        intel-gfx@lists.freedesktop.org
+References: <ZQ+Fo9WKyGphwI8R@gallifrey>
+ <ZREKJpfMx7ZEcw3n@DUT025-TGLU.fm.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZREKJpfMx7ZEcw3n@DUT025-TGLU.fm.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -49,33 +55,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a section mismatch warning on Sparc 32-bit:
 
-WARNING: modpost: vmlinux: section mismatch in reference: leon_pci_init+0xf8 (section: .text) -> pci_assign_unassigned_resources (section: .init.text)
 
-This is due to this comment from arch/sparc/kernel/leon_pci.c:
- * The LEON architecture does not rely on a BIOS or bootloader to setup
- * PCI for us. The Linux generic routines are used to setup resources,
- * reset values of configuration-space register settings are preserved.
+On 9/24/23 21:18, Matthew Brost wrote:
+> On Sun, Sep 24, 2023 at 12:41:07AM +0000, Dr. David Alan Gilbert wrote:
+>> Hi,
+>>   I randomly noticed there are a couple of places in the kernel that
+>> do
+>>    ERR_PTR(0);
+>>
+>> and thought that was odd - shouldn't those just be NULL's ?
+>>
+>> 1) i915
+>>   drivers/gpu/drm/i915/gt/uc/selftest_guc_multi_lrc.c : 47
+>>
+>>     if (i <= 1)
+>>       return ERR_PTR(0);
+> 
+> Yes, s/ERR_PTR(0)/ERR_PTR(NULL)/
+> 
+> Matt
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
----
- drivers/pci/setup-bus.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I agree with Dave's original suggestion since casting NULL isn't needed.
 
-diff -- a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
---- a/drivers/pci/setup-bus.c
-+++ b/drivers/pci/setup-bus.c
-@@ -2129,7 +2129,7 @@ dump:
- 	pci_bus_dump_resources(bus);
- }
- 
--void __init pci_assign_unassigned_resources(void)
-+void pci_assign_unassigned_resources(void)
- {
- 	struct pci_bus *root_bus;
- 
+> 
+>>
+>>   from f9d72092cb490 
+>>
+>> 2) trf7970a
+>>   drivers/nfc/trf7970a.c : 896
+>>
+>>       trf->ignore_timeout =
+>>          !cancel_delayed_work(&trf->timeout_work);
+>>       trf->rx_skb = ERR_PTR(0);
+>>       trf7970a_send_upstream(trf);
+>>
+>>    from 1961843ceeca0
+>>
+>> Dave
+>> -- 
+>>  -----Open up your eyes, open up your mind, open up your code -------   
+>> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+>> \        dave @ treblig.org |                               | In Hex /
+>>  \ _________________________|_____ http://www.treblig.org   |_______/
+
+-- 
+~Randy
