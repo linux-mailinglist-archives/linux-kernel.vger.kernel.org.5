@@ -2,105 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BC07ADB25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4897ADB2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjIYPPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        id S232705AbjIYPQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232699AbjIYPPE (ORCPT
+        with ESMTP id S231603AbjIYPQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:15:04 -0400
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E22101
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1695654892; x=1698246892;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Aztr3VYtO8kOtoJBuY53Z9iJWLMmwPwq9fsB2RzDtKk=;
-        b=AnBSQtaPa9MTodUaSH+SFciBGM7DR5ig4na9sM40UjF6Jb34TgyJQHK1w7qhjLIV
-        n9/k2Oin/9H1dXYM6XvGuMDs16OJK7o47mP1NSbEPus8a0qVGoD9rhQOMdSCygld
-        1E7/WveNSA3ZSwRNcxuTSYm+Rri8yWKVRjkekjCMNfI=;
-X-AuditID: ac14000a-6d65670000001e37-95-6511a3eca3b2
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 3E.42.07735.CE3A1156; Mon, 25 Sep 2023 17:14:52 +0200 (CEST)
-Received: from augenblix2.phytec.de (172.25.0.11) by Berlix.phytec.de
- (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 25 Sep
- 2023 17:14:52 +0200
-From:   Wadim Egorov <w.egorov@phytec.de>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <keescook@chromium.org>,
-        <tony.luck@intel.com>, <gpiccoli@igalia.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <upstream@lists.phytec.de>
-Subject: [PATCH v2] arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops reg
-Date:   Mon, 25 Sep 2023 17:14:44 +0200
-Message-ID: <20230925151444.1856852-1-w.egorov@phytec.de>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Sep 2023 11:16:26 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6DA99C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:16:19 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FF5FDA7;
+        Mon, 25 Sep 2023 08:16:57 -0700 (PDT)
+Received: from [10.57.65.61] (unknown [10.57.65.61])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFC423F5A1;
+        Mon, 25 Sep 2023 08:16:16 -0700 (PDT)
+Message-ID: <9f731870-ed36-d2e4-378b-f7fbf338ebd6@arm.com>
+Date:   Mon, 25 Sep 2023 16:16:06 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.25.0.11]
-X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgkeLIzCtJLcpLzFFi42JZI8nAo/tmsWCqwdv/0hZr9p5jsph/5Byr
-        xbzzh9ktznTnWiz/PJvdou/FQ2aLTY+vAcXX/2S0uLxrDpvFmx9nmSxa9x5ht3hz4R6LRfc7
-        dYv/Zz+wO/B5zG64yOIxYXY3m8fiPS+ZPDat6mTzuHNtD5vH5iX1Hv3dLawex29sZ/L4vEku
-        gDOKyyYlNSezLLVI3y6BK+P4ywvsBZs4Kpbs2s/awNjA3sXIySEhYCJxr28HSxcjF4eQwBIm
-        iYk/37KBJIQEnjBKTLuiD2KzCahL3NnwjRWkSETgCqPElgNz2EEcZoHVjBKz3m5nAqkSFgiQ
-        6J36lBXEZhFQlbjccogZxOYVsJS4u24HM8Q6eYmZl76zQ8QFJU7OfMICYjMDxZu3zmaGsCUk
-        Dr54wQxxhbzEi0vLWWB6p517DTUnVGLrl+1MExgFZiEZNQvJqFlIRi1gZF7FKJSbmZydWpSZ
-        rVeQUVmSmqyXkrqJERRLIgxcOxj75ngcYmTiYDzEKMHBrCTC++sZX6oQb0piZVVqUX58UWlO
-        avEhRmkOFiVx3vs9TIlCAumJJanZqakFqUUwWSYOTqkGxrXSqzYZ9P9wPF/s7Z/ROC27aK7U
-        7DdfozK9tnGItkWbbmru5sgU3Ol4UaFZVy4u6AErS5DZkcM8yzoatSeFbRLpX1Mcvnz9o87Z
-        PxX27okyc+yLNC1baHp3x0PLycpc3Qdea5itk+h2iJVpOif1kTfs7ufvF5f0To3mfq4YkO42
-        RV1C/t0TJZbijERDLeai4kQA4eOXKJMCAAA=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/2] KVM: arm64: Add handler for MOPS exceptions
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+ <20230922112508.1774352-2-kristina.martsenko@arm.com>
+ <87sf734ofv.wl-maz@kernel.org>
+From:   Kristina Martsenko <kristina.martsenko@arm.com>
+In-Reply-To: <87sf734ofv.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Seems like the address value of the reg property was mistyped.
-Update reg to 0x9ca00000 to match node's definition.
+On 24/09/2023 15:48, Marc Zyngier wrote:
+> Hi Kristina,
 
-Fixes: f5a731f0787f ("arm64: dts: ti: Add k3-am625-beagleplay")
-Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
-Reviewed-by: Nishanth Menon <nm@ti.com>
----
-v2:
-  - Add Fixes: f5a731f0787f ("arm64: dts: ti: Add k3-am625-beagleplay")
-  - Add Reviewed-by: Nishanth Menon <nm@ti.com>
+Hi Marc,
 
----
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, 22 Sep 2023 12:25:07 +0100,
+> Kristina Martsenko <kristina.martsenko@arm.com> wrote:
+>>
+>> An Armv8.8 FEAT_MOPS main or epilogue instruction will take an exception
+>> if executed on a CPU with a different MOPS implementation option (A or
+>> B) than the CPU where the preceding prologue instruction ran. In this
+>> case the OS exception handler is expected to reset the registers and
+>> restart execution from the prologue instruction.
+>>
+>> A KVM guest may use the instructions at EL1 at times when the guest is
+>> not able to handle the exception, expecting that the instructions will
+>> only run on one CPU (e.g. when running UEFI boot services in the guest).
+>> As KVM may reschedule the guest between different types of CPUs at any
+>> time (on an asymmetric system), it needs to also handle the resulting
+>> exception itself in case the guest is not able to. A similar situation
+>> will also occur in the future when live migrating a guest from one type
+>> of CPU to another.
+>>
+>> Add handling for the MOPS exception to KVM. The handling can be shared
+>> with the EL0 exception handler, as the logic and register layouts are
+>> the same. The exception can be handled right after exiting a guest,
+>> which avoids the cost of returning to the host exit handler.
+>>
+>> Similarly to the EL0 exception handler, in case the main or epilogue
+>> instruction is being single stepped, it makes sense to finish the step
+>> before executing the prologue instruction, so advance the single step
+>> state machine.
+> 
+> What is the rationale for advancing the state machine? Shouldn't we
+> instead return to the guest and immediately get the SS exception,
+> which in turn gets reported to userspace? Is it because we rollback
+> the PC to a previous instruction?
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-index 7cfdf562b53b..2de74428a8bd 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-@@ -58,7 +58,7 @@ reserved-memory {
- 
- 		ramoops: ramoops@9ca00000 {
- 			compatible = "ramoops";
--			reg = <0x00 0x9c700000 0x00 0x00100000>;
-+			reg = <0x00 0x9ca00000 0x00 0x00100000>;
- 			record-size = <0x8000>;
- 			console-size = <0x8000>;
- 			ftrace-size = <0x00>;
--- 
-2.25.1
+Yes, because we rollback the PC to the prologue instruction. We advance the
+state machine so that the SS exception is taken immediately upon returning to
+the guest at the prologue instruction. If we didn't advance it then we would
+return to the guest, execute the prologue instruction, and then take the SS
+exception on the middle instruction. Which would be surprising as userspace
+would see the middle and epilogue instructions executed multiple times but not
+the prologue.
+
+> In the latter case, won't userspace see multiple SS exceptions for the
+> middle instruction if trapping from the epilogue? This would be a bit
+> surprising, to say the least.
+
+Not sure I follow. Do you mean multiple in a row or multiple in total? Not in a
+row (we step the prologue instruction in between), but yes in total (every time
+we start executing the middle instruction). And this happens when trapping from
+the middle instruction too, not just the epilogue. Do you see a better way of
+handling it?
+
+Here is an example of what GDB sees when single stepping a guest while the
+guest executes these instructions ("mops ex" are debug prints in kvm; I've
+added prologue/main/epilogue comments):
+
+Breakpoint 2, 0xffff80008051b6a4 in ?? ()
+0xffff80008051b6a8 in ?? () # prologue
+0xffff80008051b6ac in ?? () # main
+[   33.615305] mops ex: memcpy: B->A: fwd: main
+0xffff80008051b6a8 in ?? () # prologue
+0xffff80008051b6ac in ?? () # main
+0xffff80008051b6b0 in ?? () # epilogue
+[   34.141251] mops ex: memcpy: A->B: fwd: epi
+0xffff80008051b6a8 in ?? () # prologue
+0xffff80008051b6ac in ?? () # main
+0xffff80008051b6b0 in ?? () # epilogue
+[   34.209822] mops ex: memcpy: B->A: fwd: epi
+0xffff80008051b6a8 in ?? () # prologue
+0xffff80008051b6ac in ?? () # main
+0xffff80008051b6b0 in ?? () # epilogue
+0xffff80008051b6b4 in ?? ()
+[...]
+
+Thanks,
+Kristina
 
