@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F517AD2F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500967AD2F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbjIYIMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
+        id S232925AbjIYIMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbjIYIMA (ORCPT
+        with ESMTP id S232665AbjIYIMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:12:00 -0400
+        Mon, 25 Sep 2023 04:12:03 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA983121;
-        Mon, 25 Sep 2023 01:11:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74AF419C;
+        Mon, 25 Sep 2023 01:11:56 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A5C2DA7;
-        Mon, 25 Sep 2023 01:12:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B4B4DA7;
+        Mon, 25 Sep 2023 01:12:34 -0700 (PDT)
 Received: from e129166.arm.com (unknown [10.57.93.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F3B753F5A1;
-        Mon, 25 Sep 2023 01:11:50 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B44523F5A1;
+        Mon, 25 Sep 2023 01:11:53 -0700 (PDT)
 From:   Lukasz Luba <lukasz.luba@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         rafael@kernel.org
@@ -29,9 +29,9 @@ Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, rui.zhang@intel.com,
         daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
         len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
         qyousef@layalina.io, wvw@google.com
-Subject: [PATCH v4 15/18] PM: EM: Adjust performance with runtime modification callback
-Date:   Mon, 25 Sep 2023 09:11:36 +0100
-Message-Id: <20230925081139.1305766-16-lukasz.luba@arm.com>
+Subject: [PATCH v4 16/18] PM: EM: Support late CPUs booting and capacity adjustment
+Date:   Mon, 25 Sep 2023 09:11:37 +0100
+Message-Id: <20230925081139.1305766-17-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230925081139.1305766-1-lukasz.luba@arm.com>
 References: <20230925081139.1305766-1-lukasz.luba@arm.com>
@@ -46,103 +46,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The performance value may be modified at runtime together with the
-power value for each OPP. They both would form a different power
-and performance profile in the EM. Modify the callback interface
-to make this possible.
+The patch adds needed infrastructure to handle the late CPUs boot, which
+might change the previous CPUs capacity values. With this changes the new
+CPUs which try to register EM will trigger the needed re-calculations for
+other CPUs EMs. Thanks to that the em_per_state::performance values will
+be aligned with the CPU capacity information after all CPUs finish the
+boot.
 
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- include/linux/energy_model.h | 24 +++++++++++++++---------
- kernel/power/energy_model.c  |  7 ++++---
- 2 files changed, 19 insertions(+), 12 deletions(-)
+ kernel/power/energy_model.c | 108 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index 37fc8490709d..65a8794d1565 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -174,24 +174,29 @@ struct em_data_callback {
- 			unsigned long *cost);
- 
- 	/**
--	 * update_power() - Provide new power at the given performance state of
--	 *		a device
-+	 * update_power_perf() - Provide new power and performance at the given
-+	 *		performance state of a device
- 	 * @dev		: Device for which we do this operation (can be a CPU)
- 	 * @freq	: Frequency at the performance state in kHz
- 	 * @power	: New power value at the performance state
- 	 *		(modified)
-+	 * @perf	: New performance value at the performance state
-+	 *		(modified)
- 	 * @priv	: Pointer to private data useful for tracking context
- 	 *		during runtime modifications of EM.
- 	 *
--	 * The update_power() is used by runtime modifiable EM. It aims to
--	 * provide updated power value for a given frequency, which is stored
--	 * in the performance state. The power value provided by this callback
--	 * should fit in the [0, EM_MAX_POWER] range.
-+	 * The update_power_perf() is used by runtime modifiable EM. It aims to
-+	 * provide updated power and performance value for a given frequency,
-+	 * which is stored in the performance state. The power value provided
-+	 * by this callback should fit in the [0, EM_MAX_POWER] range. The
-+	 * performance value should be lower or equal to the CPU max capacity
-+	 * (1024).
- 	 *
- 	 * Return 0 on success, or appropriate error value in case of failure.
- 	 */
--	int (*update_power)(struct device *dev, unsigned long freq,
--			    unsigned long *power, void *priv);
-+	int (*update_power_perf)(struct device *dev, unsigned long freq,
-+				 unsigned long *power, unsigned long *perf,
-+				 void *priv);
- };
- #define EM_SET_ACTIVE_POWER_CB(em_cb, cb) ((em_cb).active_power = cb)
- #define EM_ADV_DATA_CB(_active_power_cb, _cost_cb)	\
-@@ -199,7 +204,8 @@ struct em_data_callback {
- 	  .get_cost = _cost_cb }
- #define EM_DATA_CB(_active_power_cb)			\
- 		EM_ADV_DATA_CB(_active_power_cb, NULL)
--#define EM_UPDATE_CB(_update_power_cb) { .update_power = &_update_power_cb }
-+#define EM_UPDATE_CB(_update_pwr_perf_cb)		\
-+	{ .update_power_perf = &_update_pwr_perf_cb }
- 
- struct em_perf_domain *em_cpu_get(int cpu);
- struct em_perf_domain *em_pd_get(struct device *dev);
 diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index c7ad42b42c46..17a59a7717f7 100644
+index 17a59a7717f7..6bfd33c2e48c 100644
 --- a/kernel/power/energy_model.c
 +++ b/kernel/power/energy_model.c
-@@ -217,11 +217,11 @@ int em_dev_update_perf_domain(struct device *dev, struct em_data_callback *cb,
- 			      void *priv)
+@@ -25,6 +25,9 @@ static DEFINE_MUTEX(em_pd_mutex);
+ 
+ static void em_cpufreq_update_efficiencies(struct device *dev,
+ 					   struct em_perf_state *table);
++static void em_check_capacity_update(void);
++static void em_update_workfn(struct work_struct *work);
++static DECLARE_DELAYED_WORK(em_update_work, em_update_workfn);
+ 
+ static bool _is_cpu_device(struct device *dev)
  {
- 	struct em_perf_table *runtime_table;
--	unsigned long power, freq;
-+	unsigned long power, freq, perf;
- 	struct em_perf_domain *pd;
- 	int ret, i;
+@@ -591,6 +594,10 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
  
--	if (!cb || !cb->update_power)
-+	if (!cb || !cb->update_power_perf)
- 		return -EINVAL;
- 
- 	/*
-@@ -262,13 +262,14 @@ int em_dev_update_perf_domain(struct device *dev, struct em_data_callback *cb,
- 		 * Call driver callback to get a new power value for
- 		 * a given frequency.
- 		 */
--		ret = cb->update_power(dev, freq, &power, priv);
-+		ret = cb->update_power_perf(dev, freq, &power, &perf, priv);
- 		if (ret) {
- 			dev_dbg(dev, "EM: runtime update error: %d\n", ret);
- 			goto free_runtime_state_table;
- 		}
- 
- 		runtime_table->state[i].power = power;
-+		runtime_table->state[i].performance = perf;
- 	}
- 
- 	ret = em_compute_costs(dev, runtime_table->state, cb,
+ unlock:
+ 	mutex_unlock(&em_pd_mutex);
++
++	if (_is_cpu_device(dev))
++		em_check_capacity_update();
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(em_dev_register_perf_domain);
+@@ -651,3 +658,104 @@ void em_dev_unregister_perf_domain(struct device *dev)
+ 	mutex_unlock(&em_pd_mutex);
+ }
+ EXPORT_SYMBOL_GPL(em_dev_unregister_perf_domain);
++
++/*
++ * Adjustment of CPU performance values after boot, when all CPUs capacites
++ * are correctly calculated.
++ */
++static int get_updated_perf(struct device *dev, unsigned long freq,
++				   unsigned long *power, unsigned long *perf,
++				   void *priv)
++{
++	struct em_perf_state *table = priv;
++	int i, cpu, nr_states;
++	u64 fmax, max_cap;
++
++	nr_states = dev->em_pd->nr_perf_states;
++
++	cpu = cpumask_first(em_span_cpus(dev->em_pd));
++
++	fmax = (u64) table[nr_states - 1].frequency;
++	max_cap = (u64) arch_scale_cpu_capacity(cpu);
++
++	for (i = 0; i < nr_states; i++) {
++		if (freq != table[i].frequency)
++			continue;
++
++		*power = table[i].power;
++		*perf = div64_u64(max_cap * freq, fmax);
++		break;
++	}
++
++	return 0;
++}
++
++static void em_check_capacity_update(void)
++{
++	struct em_data_callback em_cb = EM_UPDATE_CB(get_updated_perf);
++	struct em_perf_table *runtime_table;
++	struct em_perf_domain *em_pd;
++	cpumask_var_t cpu_done_mask;
++	unsigned long cpu_capacity;
++	struct em_perf_state *ps;
++	struct device *dev;
++	int cpu, ret;
++
++	if (!zalloc_cpumask_var(&cpu_done_mask, GFP_KERNEL)) {
++		pr_warn("EM: no free memory\n");
++		return;
++	}
++
++	/* Loop over all EMs and check if the CPU capacity has changed. */
++	for_each_possible_cpu(cpu) {
++		unsigned long em_max_performance;
++		struct cpufreq_policy *policy;
++
++		if (cpumask_test_cpu(cpu, cpu_done_mask))
++			continue;
++
++		policy = cpufreq_cpu_get(cpu);
++		if (!policy) {
++			pr_debug("EM: Accessing cpu%d policy failed\n", cpu);
++			schedule_delayed_work(&em_update_work,
++					      msecs_to_jiffies(1000));
++			break;
++		}
++
++		em_pd = em_cpu_get(cpu);
++		if (!em_pd || em_is_artificial(em_pd))
++			continue;
++
++		cpu_capacity = arch_scale_cpu_capacity(cpu);
++
++		rcu_read_lock();
++		runtime_table = rcu_dereference(em_pd->runtime_table);
++		ps = &runtime_table->state[em_pd->nr_perf_states - 1];
++		em_max_performance = ps->performance;
++		rcu_read_unlock();
++
++		/*
++		 * Check if the CPU capacity has been adjusted during boot
++		 * and trigger the update for new performance values.
++		 */
++		if (em_max_performance != cpu_capacity) {
++			dev = get_cpu_device(cpu);
++			ret = em_dev_update_perf_domain(dev, &em_cb,
++						em_pd->default_table->state);
++			if (ret)
++				dev_warn(dev, "EM: update failed %d\n", ret);
++			else
++				dev_info(dev, "EM: updated\n");
++		}
++
++		cpumask_or(cpu_done_mask, cpu_done_mask,
++			   em_span_cpus(em_pd));
++	}
++
++	free_cpumask_var(cpu_done_mask);
++}
++
++static void em_update_workfn(struct work_struct *work)
++{
++	em_check_capacity_update();
++}
 -- 
 2.25.1
 
