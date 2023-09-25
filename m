@@ -2,183 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CE17AD0D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7157AD0DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjIYG6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        id S232304AbjIYG7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbjIYG57 (ORCPT
+        with ESMTP id S232229AbjIYG7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:57:59 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4394BF
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:57:52 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99de884ad25so704854766b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695625071; x=1696229871; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VG+6Xq/ASFsGoWBTTYjiIoHFQswBUUcv0GAt9Hgd6pE=;
-        b=YlCz2c5BKy7HeQ5lfdB8VkEUi+1c166Yl8wpdkz9Aa0jBQ84d3sZmBhHmf3lGsB2qd
-         ZhNkwFXl8BDeHBUpF41+XlsvpkKjOua7grltXymdhP0+/nVY7zEroHWEE88wFC0Krlf/
-         KvWOgwfTIXFoBg6ydiYlwAOotrXIaLw1bfk6Mvc4k+gYegzG2Tx7kfOjELpqkxK0ftiP
-         6/8hzlVf+l8DsfyPaJd8W9nkcNrPWAj7Os50u0qjEXFU/5LYfaF2bBfvY/PxqRhwpGfB
-         gEU4jC9GFLs266jG0DwSGyuJTG0W//ssOiGBhvFvt5hXJyj/oN+r4N6v3XazuBCt/ZSL
-         I3Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695625071; x=1696229871;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VG+6Xq/ASFsGoWBTTYjiIoHFQswBUUcv0GAt9Hgd6pE=;
-        b=mNeHnAIL/MAVK96SVM5tFOtk02quJ5vPjvQlWzHYmNFRawH5BJ4Dll2l+pCDxF79xd
-         uuUZOTMuBvLwoX48YIy0dE0BSlgqyJo4VXl31paeYFTg5SUNPM6L08IH+JC9ptd6+TTZ
-         RI0XQOFIU3/5Dgzml6bIsaPybn+x2g/0bzJcll3aK6wSk0cv9mZRlvswYdxH6t5MszYy
-         2d5TL/KhLX0+dlJCfSfI1O5ECYi223uPBlAN9p85oS97vpz5UDlQlpKEOpM0JEP3BP5c
-         Gux2J1rlSx0CWA9ukl2GZhq+MPcITtnd0Oe4NaIifhvWxHm8GEc7QLafhONtc18GCAEE
-         youQ==
-X-Gm-Message-State: AOJu0YysBZuii1i1D/PcFVYJRuLce0NugLyQkxyE3xrE02/OCN8h6p9K
-        WyPuF+rnpMdLAZqNATcAV++nuw==
-X-Google-Smtp-Source: AGHT+IFxCVTNHJvlQP8y3JcQW8lBT4gWQjafPrW/whl5M7iEpho5GlXkCsnAKu6tfKMlbtbSjcmaEQ==
-X-Received: by 2002:a17:907:7d90:b0:9ae:68d6:48f5 with SMTP id oz16-20020a1709077d9000b009ae68d648f5mr6051822ejc.41.1695625071258;
-        Sun, 24 Sep 2023 23:57:51 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id g27-20020a170906349b00b0099bc0daf3d7sm5843290ejb.182.2023.09.24.23.57.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 23:57:50 -0700 (PDT)
-Message-ID: <d08f6f17-f90c-4d71-a203-1d5365b5598a@linaro.org>
-Date:   Mon, 25 Sep 2023 08:57:49 +0200
+        Mon, 25 Sep 2023 02:59:01 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B8ABF;
+        Sun, 24 Sep 2023 23:58:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XIXeILk6NcWw4m8XwF9Pzck/gHaPGuux29I6cHTrhJosN6qtInmVSCUZeDDCAho9w1/dWMkRKJdLzvmIYU/MWYfu+So5bIokSCd0mzRQWRDwX3LPkSkvzPgAg+9ZvNiQTRpuIlx5pwDtaHWwmHpR9HjIDzoywNyyneTmPVktB0Rvl1SSbZwpoyiQfKEZDHjwnj+7Cl9WLcCBUe7SD2uzA59uD9CVZKI8G+njM1y56C7dH970ooRsmu+J/PtsHUlyoJSBEoml+eiWIsjC1XxzbIfnRzIQM5LNe3Kjplrp4RX5R/KF4EZZWkY08e9loeP6a8IiK2nPVa+z6NqjCy6wNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jVJc7s+rNFVrNPhF90Yp4VSHKlhfUcR4qAlX2ZgHe+E=;
+ b=RZoXgByd28v8Oe3BqqqxoDew7h2yYqQfGxoy3ipz6uViTjf9JcOuzqTeHPMYcQON2jPIui+Ny63jTr2qWqrL1gfjt7Omg8kqlxtlrVQ6dFgeSZ/acd62OUjY2WfYcXXBNlKCFlMwJdzCnLCV7QEYvNBO4xgAK/f/IN61j9aI5amYa1Tbhi8RmQwwfiC/1axvVIhw+NrMBxwBA2IyKitye5EZPCnKWFYLaSf3hSAcVAU+RRWEdm8X61OaPAx5UfdAsLlqG5V0LNc6sjIFRsVe80Kb04zA1wYAtqD8IXrtw0tZE1ueNKxXZ89kWFq32titQO8nk0chUmKQJo8DKFjyjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jVJc7s+rNFVrNPhF90Yp4VSHKlhfUcR4qAlX2ZgHe+E=;
+ b=FxBoWQjTzU/90O7NcjCky6kDBcX4VinRTBGd/4/jACsNXPgbUzLINQ2N/la6k23o88yR9LpNg3bXuZMF0cCjl9rgwvIISpC63rAyeAFp5QyLmmrsB34pEFdmOgZHXExlPRM61AEEdUL8ri43iomIeMRmHo49AI5/sQv8Ute1l9A=
+Received: from MN2PR16CA0029.namprd16.prod.outlook.com (2603:10b6:208:134::42)
+ by PH0PR12MB8031.namprd12.prod.outlook.com (2603:10b6:510:28e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 06:58:51 +0000
+Received: from BL6PEPF0001AB75.namprd02.prod.outlook.com
+ (2603:10b6:208:134:cafe::3b) by MN2PR16CA0029.outlook.office365.com
+ (2603:10b6:208:134::42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33 via Frontend
+ Transport; Mon, 25 Sep 2023 06:58:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB75.mail.protection.outlook.com (10.167.242.168) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Mon, 25 Sep 2023 06:58:51 +0000
+Received: from BLR-PF38F8CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 25 Sep
+ 2023 01:58:47 -0500
+From:   Ayush Jain <ayush.jain3@amd.com>
+To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <Mario.Limonciello@amd.com>, <wyes.karny@amd.com>,
+        <Perry.Yuan@amd.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <santosh.shukla@amd.com>, Ayush Jain <ayush.jain3@amd.com>
+Subject: [PATCH] amd-pstate: Only print supported epp values for performance governor
+Date:   Mon, 25 Sep 2023 12:28:18 +0530
+Message-ID: <20230925065818.1502-1-ayush.jain3@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] ARM: dts: st: stih407: drop max-duty-cycle
-Content-Language: en-US
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20230730174954.5293-1-krzysztof.kozlowski@linaro.org>
- <20230730174954.5293-4-krzysztof.kozlowski@linaro.org>
- <e6afc5bb-7477-36d6-b05b-2afdd1107f03@foss.st.com>
- <a004afcd-08a0-4da4-9e3c-3b12445c7b43@linaro.org>
- <b02d3983-c238-f79f-0edc-dd0db305b697@foss.st.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <b02d3983-c238-f79f-0edc-dd0db305b697@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB75:EE_|PH0PR12MB8031:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73a0bd2c-2ed6-43d9-83b3-08dbbd94e006
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q9cc4V5BX+UKNFXaAghxtBQIGfp1GBleUngUirn3/u//JU/6/ikZUlkntGA/Pammg2c12VLBD6cAxkI5oP4Q97tq6vMBxsH9Ez66w3IgGl4iBtCILHij9PtxC3qhLfpA0MH6ugnWgZSuCEyoD8YgKdUdIcbfRDKByjlzlxxOP93Lk2NkCN6NeITvivjrV6BCjsmqXzxjF6YOdv9RQcCkrcyaD3FP1jAL+DrvbpwUAMJOR3FiAfofkIBzroCqdCNDdyGvOB4jLrvyc46EKN9RbpYJdydr2RBf8Yc2mESAXgKLxxlLjfHanLXNAe59qxm/mV5KMSyAX20Su0v1snbPWhqXjzWirEJOUwJiXmAqY+/+sA85TVDybJrZZIyzPxINig0b0K5G9pr47g4Yz/ocv2T6hdBQJr3nLOB9f3VgB1GlGWuB0umzAiE49UCFirQy9YTMihwA91cT4ynI/tTiLt6u3IJPv/VbJYkElOadPR1Z7VXqxQHXBa06fYrM4MWUhXHg22THXULiqglmDnlZbgkQ6F6XXG1jcZ0znB58Pdlx5gCQP3fP+t+m2tRC94sk5kubKpex+LroZjFFGdROMbyOoMXUkyOagITsRtitS/Rz2vxc2usHUiB5qpN/YI8eHBRTQwTiLjwI4vRG3qMKSh2KRAex15QIdsdMl0c94yiYRPaRnqIN8jHUeKFHGWn87qqFZfwOJkA9n4CZulYGP2UnpiJQluBwNOdqHdyBnb5q2Bho/WEcQEO5Ln7SZSSEc+19dDyDnCk6H9cA9q8dAg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(346002)(136003)(230922051799003)(186009)(82310400011)(1800799009)(451199024)(36840700001)(40470700004)(46966006)(40480700001)(40460700003)(2906002)(47076005)(36860700001)(83380400001)(82740400003)(356005)(81166007)(70206006)(70586007)(54906003)(110136005)(6666004)(5660300002)(26005)(16526019)(336012)(1076003)(316002)(6636002)(426003)(41300700001)(7696005)(478600001)(8936002)(8676002)(4326008)(2616005)(86362001)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 06:58:51.3921
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73a0bd2c-2ed6-43d9-83b3-08dbbd94e006
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB75.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8031
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 08:50, Patrice CHOTARD wrote:
-> 
-> 
-> On 9/24/23 20:53, Krzysztof Kozlowski wrote:
->> On 16/08/2023 08:54, Patrice CHOTARD wrote:
->>>
->>>
->>> On 7/30/23 19:49, Krzysztof Kozlowski wrote:
->>>> "max-duty-cycle" property was removed in the commit f747a1fe7848
->>>> ("regulator: pwm-regulator: Remove obsoleted property"):
->>>>
->>>>   stih418-b2199.dtb: pwm-regulator: Unevaluated properties are not allowed ('max-duty-cycle' was unexpected)
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>>
->>>> ---
->>>>
->>>> Changes in v2:
->>>> 1. Correct subject prefix: AMR->ARM
->>>> ---
->>>>  arch/arm/boot/dts/st/stih407-family.dtsi | 1 -
->>>>  1 file changed, 1 deletion(-)
->>>>
->>>> diff --git a/arch/arm/boot/dts/st/stih407-family.dtsi b/arch/arm/boot/dts/st/stih407-family.dtsi
->>>> index 3f58383a7b59..29302e74aa1d 100644
->>>> --- a/arch/arm/boot/dts/st/stih407-family.dtsi
->>>> +++ b/arch/arm/boot/dts/st/stih407-family.dtsi
->>>> @@ -111,7 +111,6 @@ pwm_regulator: pwm-regulator {
->>>>  		regulator-min-microvolt = <784000>;
->>>>  		regulator-max-microvolt = <1299000>;
->>>>  		regulator-always-on;
->>>> -		max-duty-cycle = <255>;
->>>>  		status = "okay";
->>>>  	};
->>>>  
->>>
->>>
->>> Applied on sti-next
->>
->> This is still not in linux-next (one month later!).
-> 
-> Hi Krzysztof
-> 
-> Yes i saw that, i submitted my pull request to ML but it hasn't be merged.
-> I just notice i forgot to add soc@kernel.org in the sender list, my bad :-(
-> I expect to resubmit it for v6.7.
+show_energy_performance_available_preferences() to show only supported
+values which is performance in performance governor policy.
 
-So if you have them in your tree, why they are not in linux-next? Soc
-has nothing to do with it.
+-------Before--------
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_driver
+amd-pstate-epp
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+performance
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+performance
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_available_preferences
+default performance balance_performance balance_power power
 
-Best regards,
-Krzysztof
+-------After--------
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_driver
+amd-pstate-epp
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+performance
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+performance
+$ cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_available_preferences
+performance
+
+Fixes: ffa5096a7c33 ("cpufreq: amd-pstate: implement Pstate EPP support for the AMD processors")
+Suggested-by: Wyes Karny <wyes.karny@amd.com>
+Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
+Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+
+---
+Changes v1->v2
+* Fixed spacebar and spelling issues
+* Using EPP_INDEX_PERFORMANCE instead of hardcoding index 1
+* collected reviewed-by
+---
+ drivers/cpufreq/amd-pstate.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+index 9a1e194d5cf8..469461937fb6 100644
+--- a/drivers/cpufreq/amd-pstate.c
++++ b/drivers/cpufreq/amd-pstate.c
+@@ -850,11 +850,15 @@ static ssize_t show_energy_performance_available_preferences(
+ {
+ 	int i = 0;
+ 	int offset = 0;
++	struct amd_cpudata *cpudata = policy->driver_data;
++
++	if (cpudata->policy == CPUFREQ_POLICY_PERFORMANCE)
++		return sysfs_emit_at(buf, offset, "%s\n", energy_perf_strings[EPP_INDEX_PERFORMANCE]);
+ 
+ 	while (energy_perf_strings[i] != NULL)
+ 		offset += sysfs_emit_at(buf, offset, "%s ", energy_perf_strings[i++]);
+ 
+-	sysfs_emit_at(buf, offset, "\n");
++	offset += sysfs_emit_at(buf, offset, "\n");
+ 
+ 	return offset;
+ }
+-- 
+2.34.1
 
