@@ -2,166 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA4F7AD39A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C305E7AD397
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbjIYImB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        id S232985AbjIYIlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbjIYIl7 (ORCPT
+        with ESMTP id S232960AbjIYIlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:41:59 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F83EBC;
-        Mon, 25 Sep 2023 01:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695631312; x=1727167312;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ik/VX0jzwD0mpvhQYFDRhT2i5D3eVP3vzyDvpQ2/UoM=;
-  b=mcf2al/GdRMVA524h7PChzU9J6AJIVcz77B3nvQ3cIoBOvG2MynQlcIa
-   MW4Mpeaok8PI8GPVQpZ/p5WWl+WM4GqshdtqnCrdtibykf2cuBN0fhi9t
-   f/anj+/00/clhTjFWggmkrUMGsUsIuTrQIxslnlDfEBC2OOWAEZWHdkEv
-   wwLW7JhPjsd+xseln5FeIeifhBfisM4wyex3RFcilnx12FoN633bzggzS
-   EQ5j5k1pmc2aJzC7CxsNCtiuTHM6a6qZ61tWVJx7b35osNwtV3XwpjIE8
-   gUdrQEPU3w4Eu8pkxqG5AZpNUfs5BkKHmEuhI+MLsgCfBCR/AeV2+ZNYl
-   w==;
-X-CSE-ConnectionGUID: 1TnWewJoSl6L34RRtFQyew==
-X-CSE-MsgGUID: a2jL1wM1TCiKyhjY2IueuA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="asc'?scan'208";a="173396645"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Sep 2023 01:41:51 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 25 Sep 2023 01:41:35 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 25 Sep 2023 01:41:32 -0700
-Date:   Mon, 25 Sep 2023 09:41:14 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
-CC:     Conor Dooley <conor@kernel.org>, <dmitry.torokhov@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <jikos@kernel.org>,
-        <benjamin.tissoires@redhat.com>, <linux-input@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <poyuan_chang@himax.corp-partner.google.com>,
-        <hbarnor@chromium.org>,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
- device
-Message-ID: <20230925-cod-vacancy-08dc8d88f90e@wendy>
-References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
- <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
- <20230919-70b2f1e368a8face73468dfa@fedora>
- <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
- <20230919-cc4646dbfb953bd34e05658c@fedora>
- <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
- <20230922-unclothed-bottom-5531329f9724@spud>
- <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
- <20230922-removable-footwork-f1d4d96d38dd@spud>
- <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
+        Mon, 25 Sep 2023 04:41:35 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1F5C4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:41:28 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9ad8bba8125so775711766b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695631287; x=1696236087; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5nZM1wjScMD2Az3LPRwqpKiggBr0NlZk5J18HvgucsI=;
+        b=X47QOaPHGKcV7O6PQYiYiUsO072ErhBhaNtOvLWc3zE5t/0jHcL8zIgsRhDctxl9I2
+         0YqKDcFTbL/rz9kmPatiMg1NPn24HjTSTOePv+MYF20i7DEZLMESsjrRD3d/t9P7qeyN
+         +V+a+kpcdkjnEH6OQsEZiaS6TZCesB+011sK1zi33/rz6jCtCEhfJI1cJq7rJwhF1rNN
+         hYYWd32z75vYFb9oyIVOc6bHGVcnaMB+lkD+ZsWTJK0UP3UUtgkDISmdc49dln70NXx8
+         Iz5/oXDFL/3z+Pl1D++t/PLqBMxzgO3IgW1H28dTvevYbD5rAB55wWtyqV8NlL4y341b
+         FWxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695631287; x=1696236087;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5nZM1wjScMD2Az3LPRwqpKiggBr0NlZk5J18HvgucsI=;
+        b=NCQPreBFxDUHKsrXnvXw3/cpPoHAGJZJxqda3JKSH5gZgN+/y/OMut1udUMc3yG1f/
+         6PmsjTpyZn4h+sospA3BfBh/YuUl6uoDLkww/job+b8lJ/D8qMII1difvSfbo//mWjNk
+         aK73BRZEQiwgcy67gaMvlH7oNGI8zKw3EjrQHaevTzdsHwDjO/p2/g1Dhqq9bnYNNXNo
+         YEyY2ntYmbwuD2va6YDk47bJjac/auxsQ3tefmzRdrVmGA+gOSywvNMYOj2uhaoV2OiU
+         yegO8dtCM1A5d5vYJ7ZmFhQyb3DJFXFkfKc1oqqCSMF5vh5CDKufrFrV4r97ogcpscSc
+         JMKA==
+X-Gm-Message-State: AOJu0Yz9vHS1eQ4rJfCKgJVS1Fw1jMVVVPLt0PsJ7Ymb4UO2jRliB3IZ
+        We/i7166vg4uhgRd4+yG+Mw=
+X-Google-Smtp-Source: AGHT+IE97aDC9pNM5/oAHpLAXFsIDcfeHVEMTKLED3XZ88HKiUyF5K0qTPkmyKMrTGca3vJu0hXPEg==
+X-Received: by 2002:a17:906:cc0c:b0:9ae:6355:6435 with SMTP id ml12-20020a170906cc0c00b009ae63556435mr6059333ejb.15.1695631286890;
+        Mon, 25 Sep 2023 01:41:26 -0700 (PDT)
+Received: from gmail.com (195-38-113-94.pool.digikabel.hu. [195.38.113.94])
+        by smtp.gmail.com with ESMTPSA id h21-20020a170906591500b0099bd0b5a2bcsm5978408ejq.101.2023.09.25.01.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 01:41:26 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 25 Sep 2023 10:41:24 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Alexey Kardashevskiy <aik@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH kernel] x86/compressed/64: reduce #VC nesting for
+ intercepted CPUID for SEV-SNP guest
+Message-ID: <ZRFHtCCsL4kKajKF@gmail.com>
+References: <20230925042302.593317-1-aik@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6yswMwPAh/4Cve9z"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230925042302.593317-1-aik@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---6yswMwPAh/4Cve9z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 25, 2023 at 09:44:21AM +0800, yang tylor wrote:
-> On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@kernel.org> =
-wrote:
-> >
-> > On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
-> > > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@kernel.or=
-g> wrote:
-> > > >
-> > > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
-> > > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@kerne=
-l.org> wrote:
-> > > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
-> > > >
-> > > > > > > The behavior of "himax,boot_time_fw_upgrade" seems not stable=
- and
-> > > > > > > should be removed. "himax,fw_in_flash", I use the kernel conf=
-ig for
-> > > > > > > user to select.
-> > > > > >
-> > > > > > That seems like a bad idea, we want to be able to build one ker=
-nel that
-> > > > > > works for all hardware at the same time.
-> > > > > >
-> > > > > I see, so I should take that back?
-> > > > > I'll explain more about it.
-> > > >
-> > > > Are there particular ICs where the firmware would always be in flas=
-h and
-> > > > others where it would never be? Or is this a choice made by the boa=
-rd or
-> > > > system designer?
-> > > >
-> > > Most cases it's about the system designer's decision. But some ICs ma=
-y be forced
-> > > to use flash because of its architecture(multiple IC inside, need to
-> > > load firmware to
-> > > multiple IC's sram by master IC). But if there is no limitation on
-> > > this part, most system
-> > > designers will prefer flashless.
-> >
-> > Forgive me if I am not understanding correctly, there are some ICs that
-> > will need to load the firmware from flash and there are some where it
-> > will be a decision made by the designer of the board. Is the flash part
-> > of the IC or is it an external flash chip?
-> >
->=20
-> Both are possible, it depends on the IC type. For TDDI, the IC is long
-> and thin, placed on panel PCB, flash will be located at the external
-> flash chip. For the OLED TP, IC is usually placed at FPC and its flash
-> is embedded, thus the IC size is large compared to TDDI. But from the
-> driver's perspective either external flash or embedded flash, the IC
-> itself will load firmware from flash automatically when reset pin is
-> released. Only if firmware is loading from the host storage system,
-> the driver needs to operate the IC in detail.
+* Alexey Kardashevskiy <aik@amd.com> wrote:
 
+> For certain intercepts an SNP guest uses the GHCB protocol to talk to
+> the hypervisor from the #VC handler. The protocol requires a shared page so
+> there is one per vCPU. In case NMI arrives in a middle of #VC or the NMI
+> handler triggers a #VC, there is another "backup" GHCB page which stores
+> the content of the first one while SVM_VMGEXIT_NMI_COMPLETE is sent.
+> The vc_raw_handle_exception() handler manages main and backup GHCB pages
+> via __sev_get_ghcb/__sev_put_ghcb.
+> 
+> This works fine for #VC and occasional NMIs. This does not work so fine if
+> the #VC handler causes intercept + another #VC, if NMI arrives during
+> the second #VC, there are no more pages for SVM_VMGEXIT_NMI_COMPLETE.
+> The problem place is the #VC CPUID handler. Running perf in the SNP guest
+> crashes with:
+> 
+> Kernel panic - not syncing: Unable to handle #VC exception! GHCB and Backup GHCB are already in use
+> 
+> vc_raw_handle_exception #1: exit_code 72 (CPUID) eax d ecx 1
+> We lock the main GHCB and while it is locked we get to
+> snp_cpuid_postprocess() which executes "rdmsr" of MSR_IA32_XSS==0xda0 which
+> triggers:
+> 
+> vc_raw_handle_exception #2: exit_code 7c (MSR) ecx da0
+> Here we lock the backup ghcb.
+> 
+> And then PMC NMI comes which cannot complete as there is no GHCB page left
+> to use:
+> 
+> CPU: 5 PID: 566 Comm: touch Not tainted 6.5.0-rc2-aik-ad9c-g7413e71d3dcf-dirty #27
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown unknown
+> Call Trace:
+>  <NMI>
+>  dump_stack_lvl+0x44/0x60
+>  panic+0x222/0x310
+>  ____sev_get_ghcb+0x21e/0x220
+>  __sev_es_nmi_complete+0x28/0xf0
+>  exc_nmi+0x1ac/0x1c0
+>  end_repeat_nmi+0x16/0x67
+> ...
+>  </NMI>
+>  <TASK>
+>  vc_raw_handle_exception+0x9e/0x2c0
+>  kernel_exc_vmm_communication+0x4d/0xa0
+>  asm_exc_vmm_communication+0x31/0x60
+> RIP: 0010:snp_cpuid+0x2ad/0x420
+> 
+> Drop one #VC by replacing "rdmsr" with GHCB's VMGEXIT to read the value from
+> the hypervisor.
+> 
+> Fixes: ee0bfa08a345 ("x86/compressed/64: Add support for SEV-SNP CPUID table in #VC handlers")
+> Cc: x86@kernel.org
+> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+> ---
+> 
+> This is made on top of (which has the "efi/unaccepted: Make sure unaccepted table is mapped"
+> fix for booting SNP):
+> b996cbe1203c (tip/master) 15 hours ago Ingo Molnar Merge branch into tip/master: 'x86/tdx'
+> 
+> plus:
+> https://lore.kernel.org/lkml/a5856fa1ebe3879de91a8f6298b6bbd901c61881.1690578565.git.thomas.lendacky@amd.com/
+> ---
+>  arch/x86/kernel/sev-shared.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index e73c90c9cc5b..399219de5a9b 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -477,11 +477,19 @@ static int snp_cpuid_postprocess(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+>  		if (leaf->subfn == 1) {
+>  			/* Get XSS value if XSAVES is enabled. */
+>  			if (leaf->eax & BIT(3)) {
+> -				unsigned long lo, hi;
+> -
+> -				asm volatile("rdmsr" : "=a" (lo), "=d" (hi)
+> -						     : "c" (MSR_IA32_XSS));
+> -				xss = (hi << 32) | lo;
+> +				/*
+> +				 * Since we're here, it is SNP and rdmsr will trigger
+> +				 * another #VC and waste one of just two GHCB pages.
+> +				 * Skip the intercept and do direct hypercall.
+> +				 */
+> +				ghcb_set_rcx(ghcb, MSR_IA32_XSS);
+> +				if (sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_MSR, 0, 0) != ES_OK)
+> +					return -EINVAL;
+> +
+> +				xss = (ghcb->save.rdx << 32) | ghcb->save.rax;
+> +
+> +				/* Invalidate qwords for likely another following GHCB call */
+> +				vc_ghcb_invalidate(ghcb);
 
-Since there are ICs that can use the external flash or have it loaded
-=66rom the host, it sounds like you do need a property to differentiate
-between those cases.
-Is it sufficient to just set the firmware-name property for these cases?
-If the property exists, then you know you need to load firmware & what
-its name is. If it doesn't, then the firmware either isn't needed or
-will be automatically loaded from the external flash.
+Ok, so I agree with this fix, but could you please reduce the ugliness
+of this open-coded RDMSR by factoring out this sequence into a new
+helper, called rdmsr_GHCB() or so, with a similar signature as
+rdmsr(), where rdmsr_GHCB() emulates RDMSR behavior via a hypercall?
 
---6yswMwPAh/4Cve9z
-Content-Type: application/pgp-signature; name="signature.asc"
+That makes this workaround to reduce nesting a lot easier to read & maintain
+in the longer run.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRFHmgAKCRB4tDGHoIJi
-0nMVAQD0/+RvD0e0+hNILOkQtK4zp8D2AVRzfWJAv2WJqNTsjAD/byS1txiZNPpM
-fKg2haa7MvIoQWxWAckF+Bk6qkgBkgY=
-=B6aB
------END PGP SIGNATURE-----
-
---6yswMwPAh/4Cve9z--
+	Ingo
