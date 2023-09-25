@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966D67AD936
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9322E7AD93B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjIYNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
+        id S231890AbjIYNef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbjIYNdN (ORCPT
+        with ESMTP id S231766AbjIYNed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:33:13 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A05FF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:33:06 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2773cc1721bso1495341a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:33:06 -0700 (PDT)
+        Mon, 25 Sep 2023 09:34:33 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35793E8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:34:26 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d86a0c97ae6so2585174276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:34:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695648786; x=1696253586; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JWWpsmuiT0DkC2S1ORrZVL7ehSbw0Lmve5XUeVl5vjQ=;
-        b=mGyc4CtzzL7jmvrO+UVQijx/aJdxWbngibdJKHFKIvgrcHVrN2vVA1c/t2qUqUrTQz
-         WWVejohSwgbd1EHl7YkO2tstIROtBo0ghxQmzGDZbKdNvuE2tf2/ELWPGSoFyOI1YRF3
-         +qAzUysBtkl816f93hfMt6i12dw7g8cw9zaAIjgDxA1F0OzMv1qsy/ebsAkmFYjOLKz/
-         7zyjHGrTFD8AVR5T0sTXE+/U1BNl/fgpAjARKpbPD2tURP+slsxI3nfINKkQujD7b6dP
-         wrduMVLsPElRfvSV8pt9s2oUTkS5JSFdt2VQ6hoUc2s0u6GZc3+DaQkI+5cWaAnk2RaE
-         OoCg==
+        d=linaro.org; s=google; t=1695648865; x=1696253665; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FqmWWR+G31hZDZUGZwMonL2cb5Bksu8antYerZiIOYs=;
+        b=gbN24MEulHvwjYFQHPDX8C7xaIVJT92ZeJE24qjdsMU2H2mSIUkxuvweCi5/j4EiJ6
+         BOFCqvUNReRxZ2nd0m9i0lYbl3x4Kog47wqlDcepVYLpi83rilHcoxphBy0MFZTWzBjd
+         5PArA2KFnbYPRsVHZ9cguFZbMkxEPpkVGvk6o0oMx+nm64yPfD4BqRu2Xc0KxuybwX2c
+         Cyqwa5hvzCAKJHJ0r43pMrNfjw8jXjf/8SmxNX+F5yEpsJb2GZZwDnsYuV+n3boFa4pf
+         klWoD9mHggnHyjq5UF2WVIOK42ykXJmGBhZRRLMZoyysZUKPXf14Vwfl3sHBIauqpEKl
+         9q1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695648786; x=1696253586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JWWpsmuiT0DkC2S1ORrZVL7ehSbw0Lmve5XUeVl5vjQ=;
-        b=T71eboKZbLE2J0a/VsGmI3UFmfg+GkTYg2pQwK03KmyP+mCcNazyOyjT5gmStoG8y/
-         Ju6tyyEq16HoH3MkiNBjVYw+sH8PhJm++SHgBFBDvQ7CleOZIp/C1fhYJS2wq/MXdoQV
-         S+sIY5PKXsg4ROeMXvqSWotj4+PIpdYKqiosm8C6hWCWDhalhSiMU3tUY8ZV7WUjoseH
-         Jwr//qXLlFfYRK7r9t9Rl+E4rYj6zaF28LTOehs8YvCdY5DIVuHpkZYcSUgG2sIc0pr9
-         MGD65TYZfhGIzSr3DNmHeKzptpGQpdGE9ZR87OmE8JFWyVC8DtjTsIVweR+jVQioZ1Uh
-         yr/g==
-X-Gm-Message-State: AOJu0YwytX8KHepOduyRtoM6+rSmQH3RjMyozEIyyA3pk6L6MU2gKnlw
-        D1ezQ7LxsYSpWUKBsV9E1z+B/z6poOdQ87oNwy5Qig==
-X-Google-Smtp-Source: AGHT+IHvwDRQn3v039uMTkyZOXLfNbfqYk8vrxj7zH1v4k0e9teZWE9FtAuclu3zJWXqqqQSY3Tmt4Ji3RAYL/Go4VQ=
-X-Received: by 2002:a17:90a:5785:b0:274:8330:c7da with SMTP id
- g5-20020a17090a578500b002748330c7damr4567601pji.28.1695648785859; Mon, 25 Sep
- 2023 06:33:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695648865; x=1696253665;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FqmWWR+G31hZDZUGZwMonL2cb5Bksu8antYerZiIOYs=;
+        b=LDGM9AEj4LF5MZ7TV8N4amYyaYXnMQmp8EUeycnP3WKHYcZ0RPOFSytwsvYZBu5SFC
+         AbDwP0CRh5BqNn69CMIRglmBp5Ex/SejwXtwHUfQpyB00tXzMKCJwjSwXSahGgODHJCF
+         bVTrJBa6Cif/9mzpbYgiNRDH72Hhl7YuzBC7Dej6hjiWXG8npKcultYlPvH6aYGAZ5EL
+         /JJ/U3Z3dILun8GYKiHyeGRpi/qO/QE/wX/quQw5/wk7BjKKi0dZl1TB+jB8KaunNL5f
+         ynJdIDaKr+GM1H0k3G5g2EL8ilbV8KB56ILe4qzCGhzouK2LHKQcq9JAuMb4Rd2iXneI
+         Aj5Q==
+X-Gm-Message-State: AOJu0YwAL07oQI8vgLrg49tx4YhqAQpNAWyiI+4B8D3wOQ66ua8do3qG
+        zgK59MUvAIx4+4eoDldKnCqX6Tkd5/1C4yv1HMzdHQ==
+X-Google-Smtp-Source: AGHT+IE094/N30rRuL4yk94xTu3o08g/uw1o9Y6Hcdw7g+Q4lyl5BlkWJaRuOamwwrUMa8Hlgy0Db0VXX8f/+UhsMdo=
+X-Received: by 2002:a25:9949:0:b0:d89:4829:6a63 with SMTP id
+ n9-20020a259949000000b00d8948296a63mr534949ybo.65.1695648865345; Mon, 25 Sep
+ 2023 06:34:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-8-apatel@ventanamicro.com> <20230920-d30b398a99804418792264c3@orel>
-In-Reply-To: <20230920-d30b398a99804418792264c3@orel>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Mon, 25 Sep 2023 19:02:54 +0530
-Message-ID: <CAK9=C2WAZWdcKEKy6DjQRhJZxMfWZmcX4hVxSuV3=_nAQnYb4A@mail.gmail.com>
-Subject: Re: [PATCH 7/7] KVM: riscv: selftests: Add condops extensions to
- get-reg-list test
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230925131715.138411-1-ulf.hansson@linaro.org> <20230925131715.138411-7-ulf.hansson@linaro.org>
+In-Reply-To: <20230925131715.138411-7-ulf.hansson@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 25 Sep 2023 15:33:49 +0200
+Message-ID: <CAPDyKFo+XCEtTSNqtA1SeajWo4tuRroA4GrRegta5TsqSGd4eQ@mail.gmail.com>
+Subject: Re: [PATCH 6/9] OPP: Extend support for the opp-level beyond required-opps
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -81,51 +74,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 1:48=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
+On Mon, 25 Sept 2023 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> On Tue, Sep 19, 2023 at 09:23:43AM +0530, Anup Patel wrote:
-> > We have a new conditional operations related ISA extensions so let us a=
-dd
-> > these extensions to get-reg-list test.
-> >
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  tools/testing/selftests/kvm/riscv/get-reg-list.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/t=
-esting/selftests/kvm/riscv/get-reg-list.c
-> > index 9f464c7996c6..4ad4bf87fa78 100644
-> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > @@ -50,6 +50,8 @@ bool filter_reg(__u64 reg)
-> >       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
-> >       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
-> >       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SMSTATEEN:
-> > +     case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_XVENTANACONDOPS:
-> > +     case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICOND:
-> >               return true;
-> >       /* AIA registers are always available when Ssaia can't be disable=
-d */
-> >       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(siselect):
-> > @@ -360,6 +362,8 @@ static const char *isa_ext_id_to_str(__u64 id)
-> >               "KVM_RISCV_ISA_EXT_ZIFENCEI",
-> >               "KVM_RISCV_ISA_EXT_ZIHPM",
-> >               "KVM_RISCV_ISA_EXT_SMSTATEEN",
-> > +             "KVM_RISCV_ISA_EXT_XVENTANACONDOPS",
-> > +             "KVM_RISCV_ISA_EXT_ZICOND",
-> >       };
-> >
-> >       if (reg_off >=3D ARRAY_SIZE(kvm_isa_ext_reg_name)) {
-> > --
-> > 2.34.1
-> >
+> At this point the level (performance state) for an OPP is currently limited
+> to be requested for a device that is attached to a PM domain.  Moreover,
+> the device needs to have the so called required-opps assigned to it, which
+> are based upon OPP tables being described in DT.
 >
-> Don't we want to add test configs for these?
+> To extend the support beyond required-opps and DT, let's enable the level
+> to be set for all OPPs. More precisely, if the requested OPP has a valid
+> level let's try to request it through the device's optional PM domain, via
+> calling dev_pm_domain_set_performance_state().
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/opp/core.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 60dca60ac4af..afb73978cdcb 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1107,6 +1107,22 @@ void _update_set_required_opps(struct opp_table *opp_table)
+>                 opp_table->set_required_opps = _opp_set_required_opps_generic;
+>  }
+>
+> +static int _set_opp_level(struct device *dev, struct opp_table *opp_table,
+> +                         struct dev_pm_opp *opp)
+> +{
+> +       int ret = 0;
+> +
+> +       /* Request a new performance state through the device's PM domain. */
+> +       if (opp && opp->level) {
+> +               ret = dev_pm_domain_set_performance_state(dev, opp->level);
+> +               if (ret)
+> +                       dev_err(dev, "Failed to set performance state %u (%d)\n",
+> +                               opp->level, ret);
+> +       }
 
-Okay, I will update.
+Okay, so reviewing my own code found a problem here. We need an "else"
+here, that should request the performance state to be set to 0.
 
-Regards,
-Anup
+I am not sending a new version at this point, but awaiting more feedback first.
+
+> +
+> +       return ret;
+> +}
+> +
+>  static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+>  {
+>         struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
+> @@ -1154,8 +1170,13 @@ static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
+>         if (opp_table->regulators)
+>                 regulator_disable(opp_table->regulators[0]);
+>
+> +       ret = _set_opp_level(dev, opp_table, NULL);
+> +       if (ret)
+> +               goto out;
+> +
+>         ret = _set_required_opps(dev, opp_table, NULL, false);
+>
+> +out:
+>         opp_table->enabled = false;
+>         return ret;
+>  }
+> @@ -1198,6 +1219,10 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+>                         return ret;
+>                 }
+>
+> +               ret = _set_opp_level(dev, opp_table, opp);
+> +               if (ret)
+> +                       return ret;
+> +
+>                 ret = _set_opp_bw(opp_table, opp, dev);
+>                 if (ret) {
+>                         dev_err(dev, "Failed to set bw: %d\n", ret);
+> @@ -1241,6 +1266,10 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+>                         return ret;
+>                 }
+>
+> +               ret = _set_opp_level(dev, opp_table, opp);
+> +               if (ret)
+> +                       return ret;
+> +
+>                 ret = _set_required_opps(dev, opp_table, opp, false);
+>                 if (ret) {
+>                         dev_err(dev, "Failed to set required opps: %d\n", ret);
+> --
+> 2.34.1
+>
+
+Kind regards
+Uffe
