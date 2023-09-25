@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED4A7ACECE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0097ACED0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbjIYDy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 23:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S231416AbjIYDzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 23:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIYDy0 (ORCPT
+        with ESMTP id S229495AbjIYDzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 23:54:26 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87682DF;
-        Sun, 24 Sep 2023 20:54:20 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d849df4f1ffso6574700276.0;
-        Sun, 24 Sep 2023 20:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695614059; x=1696218859; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ITTBpzczqd4LSWTAD9aZOIvJ8J7Zcd7g95EdndUh4GE=;
-        b=Us4f8NXuy1Pc9HAme2OiaRc+1fSl1RMv5SxecL9lK1hnV1RVf5OXaEpnyB9seZUITm
-         uOEyn6LWbGnipYnqbzwyvLldTu5fuEdQ5q3/68cL6X8GpGQpN0pwdz1eJslI4zcbtbuk
-         yd9BTaCm29nWQ9lCy/+U4aehHN1TKtTIj8EFikKulxxLNC1/2dOM3DfgrzPV0I6L9gMp
-         lzBx9IHuL1Otc9m+8I4UcdjtwkAv0rSk8hKedSmbOQoYQgSzvOpb/ds+wslFiX2YHkvg
-         jsscELyOJ1H8MIFYO0CpkpvjL0nusMUCMSYuxJZMBV4SFZCtvFOhdLfWDUS2s3AhFni9
-         EOaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695614059; x=1696218859;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ITTBpzczqd4LSWTAD9aZOIvJ8J7Zcd7g95EdndUh4GE=;
-        b=wCkDK0oxSnKs6mei2ej8G1KmmSNGBXmoYEnMFTbc78XYzyBZGzbYManfPA5mv04muO
-         xygjfo0kHTAJLO3naOzoHPU7Kdx1wwGvKsgbu7eh9ENlxqvUyLP0lpQ9YbCm1c6812mK
-         mQcjuvIfSnI4CXRUhdiVWpJLF5Z9fFhw8FqoK9G1wm64+9DL6D3rCo/aiyxEHpfEQ47e
-         HeMAQkWpVa6Vjbe1ly/sV4TbUSfESrw3fXHa19OA2qWganRJVlT2ancs5z6L14/+/Bvk
-         yV/8tHcyd1X4ad8G82KTbERGfUZXqn609mFoFF1pCD+sqMt4YoIMd9GJUYZlAQvhpLVb
-         YcPg==
-X-Gm-Message-State: AOJu0YyF3yDs1CrvkTDUZZNndSiRej1Y6tWvatIjYSnFb1mngoiU715A
-        rm0AWf/UgpC4KqLwesWcjq5MRTMJKf01INeycymQwCNR2kI=
-X-Google-Smtp-Source: AGHT+IEPOLAmcobHAk1T8K+we8QFLN4PFzlGhEPu6UIp+fRvfWYf2Xav/jX3C/IYkXWacdxhlKDFU1i+P3s28fkvDpw=
-X-Received: by 2002:a25:4106:0:b0:d78:be:6f02 with SMTP id o6-20020a254106000000b00d7800be6f02mr5161748yba.11.1695614059628;
- Sun, 24 Sep 2023 20:54:19 -0700 (PDT)
+        Sun, 24 Sep 2023 23:55:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647DAE8
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:55:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E19AC433C7;
+        Mon, 25 Sep 2023 03:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695614100;
+        bh=sFDUVTld+wLrRGA8kSPjstZBYcXz1u/THaVhZN78kJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LDqqQthfBeA2tOZ/hhVddpYxYijZQx7fJLdwhIfnhDZbf10yM28ufwW/bx84cBGCw
+         BlPwFOGH8IO8OU5CPAYOcTvIpPbb9UgaYdvoB5uojGHJmYK3T07JwKCoIISPRxAyIf
+         J8dC1MTZs9ow966Zr45iJGLjpDOTK0kLdp1++J83uGOd5Asz/Y+UPqa19/++AnBFVz
+         E6f/nndGqHyy3D9pwr47h7hW4VNPNjaE3i4KfzqEUIJRoVuBnhFrVSa4SbPMu3puA3
+         1XNNVUnQJXcU3fe2IPsI5xMern8H3lvolp4lyfc9lyDaKM+D1/JZrXwWo73Ux/izeR
+         HhNVLxwB8zUEg==
+Date:   Mon, 25 Sep 2023 11:54:45 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v10 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with
+ Custom Board
+Message-ID: <20230925035445.GN7231@dragon>
+References: <20230924044800.2199524-1-james.hilliard1@gmail.com>
+ <20230925035036.GL7231@dragon>
+ <CADvTj4oz6oJ_ifLO83JhaAnjmbLM=hTPmFG4S3h_TBnUeZrC=Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <e486db16-d36d-9e14-4f10-dc755c0ef97d@linux.alibaba.com>
- <20230920230257.GA280837@bhelgaas> <625cdd6c55994bf3a50efd8f79680029@AcuMS.aculab.com>
-In-Reply-To: <625cdd6c55994bf3a50efd8f79680029@AcuMS.aculab.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Mon, 25 Sep 2023 13:54:08 +1000
-Message-ID: <CAOSf1CEML1s0pOpi92By9Ms4nnq5onSX-d7wCY4jXXAviXO_qg@mail.gmail.com>
-Subject: Re: Questions: Should kernel panic when PCIe fatal error occurs?
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "mahesh@linux.ibm.com" <mahesh@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "lenb@kernel.org" <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADvTj4oz6oJ_ifLO83JhaAnjmbLM=hTPmFG4S3h_TBnUeZrC=Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 8:23=E2=80=AFAM David Laight <David.Laight@aculab.c=
-om> wrote:
->
-> > It would be nice if they worked the same, but I suspect that vendors
-> > may rely on the fact that CPER_SEV_FATAL forces a restart/panic as
-> > part of their system integrity story.
->
-> The file system errors created by a panic (especially an NMI panic)
-> could easily be more problematic than a failed PCIe data transfer.
-> Evan a read that returned ~0u - which can be checked for.
->
-> Panicking a system that is converting TDM telephony to RTP for the
-> 911 emergency service because a PCIe cable/riser connecting one of the
-> TDM board has become loose doesn't seem ideal.
+On Sun, Sep 24, 2023 at 09:52:59PM -0600, James Hilliard wrote:
+> On Sun, Sep 24, 2023 at 9:50 PM Shawn Guo <shawnguo@kernel.org> wrote:
+> >
+> > On Sat, Sep 23, 2023 at 10:47:55PM -0600, James Hilliard wrote:
+> > > Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
+> > >
+> > > Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+> > > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> >
+> > So what's been changed between v9 and v10?
+> 
+> I had forgotten to add uart3/pinctrl_uart3 in this patch:
+> https://lore.kernel.org/all/20230924044800.2199524-3-james.hilliard1@gmail.com/
 
-For kernel native AER the default reaction to errors is
-reset-and-reinit which probably isn't much better for your case.
-Sounds like you would want a knob to suppress everything except error
-reporting so you can handle it in userspace?
-
-> (Or because the TDM board's fpga has decided it isn't going to respond
-> to any accesses until the BARs are setup again...)
->
-> The system can carry on with some TDM connections disabled - but that
-> is ok because they are all duplicated in case a cable gets cuit.
-
-Well that's a relief :)
-
-Oliver
+Ok, applied v10 instead.
