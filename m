@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5517AD747
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8474A7AD749
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbjIYLwl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 07:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
+        id S231316AbjIYLxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjIYLwi (ORCPT
+        with ESMTP id S231284AbjIYLxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:52:38 -0400
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B57B9B;
-        Mon, 25 Sep 2023 04:52:32 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59bbdb435bfso72837577b3.3;
-        Mon, 25 Sep 2023 04:52:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695642751; x=1696247551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WI0HHzOCVMwTunWGzqcCRD7tcpAmjOBuqvI8GGa/sWs=;
-        b=rYaVlH4vITYu/C6jjhlLmIZHKTY+hN3QpgruqccMSU5CJu7+Vpx9Ee68+B+TCzuSd4
-         bv6PDfZ55qxGPoAWyFR/9YZ68ak6A6fLHu9gXY+XuOZERbAYZq9xMqOOaX2u+H3KaIZI
-         rPWvRbvsdgYndxyEuVomlcal5n+7eqcDT8scJEBwTavqLgIXehItgaNUEbm94yKw5ik0
-         WnFPwTxBnGNJ/C0eegLAy0lg3/mCYuoOLzeISeMAT5lpJv9X05BkUdq3p/W3urFDy6Ik
-         8OxGH83RYhqEMfnL2L+8duxcEbaKSKEowcpCQs6/ULqCceNwAVAwB8C1I442vPwVFz2x
-         WkgA==
-X-Gm-Message-State: AOJu0Yw36OkT78gc27PAiPnHixqN3fCiHYCikurdDoFma408tg3N8Lw4
-        WHyx0NKcDvS3VPjfVkroggXLKMzGkK5wcw==
-X-Google-Smtp-Source: AGHT+IGSRvdhafQcsbGwCa/MArnOYvD43G3mbb4HCtSzB9lIhtSok14ScdEEHGoLIMITLogQnMDyOg==
-X-Received: by 2002:a81:ae09:0:b0:5a1:8b2:4330 with SMTP id m9-20020a81ae09000000b005a108b24330mr798825ywh.10.1695642751423;
-        Mon, 25 Sep 2023 04:52:31 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id m128-20020a0de386000000b0059b50f126fbsm2349062ywe.114.2023.09.25.04.52.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 04:52:31 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59c0b9ad491so72978567b3.1;
-        Mon, 25 Sep 2023 04:52:31 -0700 (PDT)
-X-Received: by 2002:a81:9194:0:b0:59b:c11:ad7c with SMTP id
- i142-20020a819194000000b0059b0c11ad7cmr6654246ywg.18.1695642750888; Mon, 25
- Sep 2023 04:52:30 -0700 (PDT)
+        Mon, 25 Sep 2023 07:53:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B797D103
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:53:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29217C433C8;
+        Mon, 25 Sep 2023 11:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695642790;
+        bh=YRhfpioOfX3S6JRC0rfosLAUExubXaO5w4Y65Hn0l3Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a6+WVnlGezj+qtyUXIXhLe67qX3OJQ0fWbhw0S038ekCwzLpi1+NXHMKhdQ29V3dN
+         4167nqxFrnEgn32OxJsYLFgw3ZLa3EskOVouzXgoCTZ0bomEP9Ex3uKrO4HfONA0UC
+         2YikxQkceBk2dE0PiFOjpvUJKNUwPM34/92yujU5KTQOaJ9fGp6+1Sqn6cSKPP6rGj
+         gxvYjvqLBagF8b4uUSyjQ3zhTe98iCSg90cezYi/0onijme4eTgeDETP9OXjzfyjxm
+         cyHBdGCgOVJZARPG08VigXX7vVPioD7eZxY8BrLaZzYC1fy5J1a/RPGfWvf/oWWQ3K
+         T+XBUulr4kvmQ==
+Date:   Mon, 25 Sep 2023 19:53:00 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Xiaolei Wang <xiaolei.wang@windriver.com>
+Cc:     pawell@cadence.com, pavel@denx.de, rogerq@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] usb: cdns3: Modify the return value of
+ cdns_set_active () to void when CONFIG_PM_SLEEP is disabled
+Message-ID: <20230925115300.GC2070044@nchen-desktop>
+References: <20230920144045.2165758-1-xiaolei.wang@windriver.com>
 MIME-Version: 1.0
-References: <20230922080421.35145-1-wsa+renesas@sang-engineering.com> <20230922080421.35145-4-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20230922080421.35145-4-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 Sep 2023 13:52:18 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXdPXRSVV1TC7mzB=crYp5AN_7g9LbCgMPjKsxNhdsXwg@mail.gmail.com>
-Message-ID: <CAMuHMdXdPXRSVV1TC7mzB=crYp5AN_7g9LbCgMPjKsxNhdsXwg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] media: dvb-frontends: drop check because
- i2c_unregister_device() is NULL safe
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920144045.2165758-1-xiaolei.wang@windriver.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 1:45 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> No need to check the argument of i2c_unregister_device() because the
-> function itself does it.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On 23-09-20 22:40:45, Xiaolei Wang wrote:
+> The return type of cdns_set_active () is inconsistent
+> depending on whether CONFIG_PM_SLEEP is enabled, so the
+> return value is modified to void type.
+> 
+> Reported-by: Pavel Machek <pavel@denx.de>
+> Closes: https://lore.kernel.org/all/ZP7lIKUzD68XA91j@duo.ucw.cz/
+> Fixes: 2319b9c87fe2 ("usb: cdns3: Put the cdns set active part outside the spin lock")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+> Reviewed-by: Pavel Machek <pavel@denx.de>
+> Reviewed-by: Roger Quadros <rogerq@kernel.org>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Acked-by: Peter Chen <peter.chen@kernel.org>
+> ---
+> 
+> Changes in v3:
+> - Add Cc: stable@vger.kernel.org
+> 
+> ---
+>  drivers/usb/cdns3/core.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
+> index 4a4dbc2c1561..81a9c9d6be08 100644
+> --- a/drivers/usb/cdns3/core.h
+> +++ b/drivers/usb/cdns3/core.h
+> @@ -131,8 +131,7 @@ void cdns_set_active(struct cdns *cdns, u8 set_active);
+>  #else /* CONFIG_PM_SLEEP */
+>  static inline int cdns_resume(struct cdns *cdns)
+>  { return 0; }
+> -static inline int cdns_set_active(struct cdns *cdns, u8 set_active)
+> -{ return 0; }
+> +static inline void cdns_set_active(struct cdns *cdns, u8 set_active) { }
+>  static inline int cdns_suspend(struct cdns *cdns)
+>  { return 0; }
+>  #endif /* CONFIG_PM_SLEEP */
+> -- 
+> 2.25.1
+> 
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Peter Chen
