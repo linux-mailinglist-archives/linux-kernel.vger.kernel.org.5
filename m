@@ -2,234 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD97E7AE08D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 23:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CFD7AE08E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 23:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbjIYVHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 17:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S233355AbjIYVK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 17:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjIYVHe (ORCPT
+        with ESMTP id S229513AbjIYVK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 17:07:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FC0115
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 14:07:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695676047; x=1727212047;
-  h=date:from:to:cc:subject:message-id;
-  bh=d+7M7rEP6WygkOKf6CQiUNLz+ko4kK6IIR7nNll/w2k=;
-  b=i5pMNP8bT38rBKn52Tt9A0sbE0tF10kPG2Hk7C9R6w/0fh0XHkPqoBkN
-   8r6qzXXfFf4ic7F/1r9H3LFXePn0tlygyH2pQuC8ze5XBHXqhrFdU8aEB
-   2OCKgr91gz1SFuH0W+ufY/LjR2VM7j/ZA90SGcJSH/lqMuhlnKncwR69l
-   qvQpGi4nLiex7MMkVCeKoHAebt/sfnekrWG2bsYwjnfyi/gaF1ODbbM3I
-   a9+c2ej6smwUeDOEQmeQYEbjweC9xV+pW7nypId3NqGdzn8o5kTQKjqJ3
-   nxlRA4LaU+JkoxHuhptAf+qzlmOvjN0Hi0zaYWDLMcPr5v1guOGEokF1t
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445514755"
-X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="445514755"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 14:06:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818778372"
-X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="818778372"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Sep 2023 14:06:52 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qksn4-00021b-21;
-        Mon, 25 Sep 2023 21:06:50 +0000
-Date:   Tue, 26 Sep 2023 05:06:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 612f769edd06a6e42f7cd72425488e68ddaeef0a
-Message-ID: <202309260510.qCOlTTXa-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 17:10:29 -0400
+Received: from zproxy1.foxvalley.net (zimbra.foxvalley.net [212.78.26.134])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 85D35109
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 14:10:22 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zproxy1.foxvalley.net (Postfix) with ESMTP id A6158410A4;
+        Mon, 25 Sep 2023 16:10:21 -0500 (CDT)
+Received: from zproxy1.foxvalley.net ([127.0.0.1])
+ by localhost (zproxy1.foxvalley.net [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id 59Enhg-zmMGu; Mon, 25 Sep 2023 16:10:21 -0500 (CDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zproxy1.foxvalley.net (Postfix) with ESMTP id 5827141030;
+        Mon, 25 Sep 2023 16:10:21 -0500 (CDT)
+X-Virus-Scanned: amavis at zproxy1.foxvalley.net
+Received: from zproxy1.foxvalley.net ([127.0.0.1])
+ by localhost (zproxy1.foxvalley.net [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id gV-ALChgn-ry; Mon, 25 Sep 2023 16:10:21 -0500 (CDT)
+Received: from [192.168.1.3] (unknown [161.97.241.227])
+        by zproxy1.foxvalley.net (Postfix) with ESMTPSA id 12DC140F10;
+        Mon, 25 Sep 2023 16:10:21 -0500 (CDT)
+Message-ID: <62596842-2389-889c-752b-632cee7a6da7@foxvalley.net>
+Date:   Mon, 25 Sep 2023 15:10:20 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1] arch/x86: port I/O tracing on x86
+Content-Language: en-US
+From:   Dan Raymond <draymond@foxvalley.net>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        Peter Zijlstra <peterz@infradead.org>
+References: <14c27df7-12a3-e432-a741-17672185c092@foxvalley.net>
+In-Reply-To: <14c27df7-12a3-e432-a741-17672185c092@foxvalley.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 612f769edd06a6e42f7cd72425488e68ddaeef0a  sched/rt: Make rt_rq->pushable_tasks updates drive rto_mask
+Can I get more feedback on this please?  I think I've addressed all of
+Peter Zijlstra's concerns:
 
-elapsed time: 730m
+1) cannot use early_console->write()
 
-configs tested: 158
-configs skipped: 2
+   That is not true.  Everything that includes boot.h (ie.
+   'arch/x86/boot/early_serial_console.c') will not change due to the
+   '#ifdef BOOT_BOOT_H' guard.  Also tracing will not be compiled in
+   unless 'CONFIG_TRACEPOINTS' is true.  Finally, tracing will be
+   disabled at boot until the user mounts the tracefs and explicitly
+   enables 'portio' events.  When tracing is disabled the trace
+   routines execute a nop instruction and return immediately.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+2) tracing relies on RCU which might not be alive yet and might
+   itself be the problem
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                   randconfig-001-20230925   gcc  
-arc                   randconfig-001-20230926   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                        clps711x_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230925   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230925   gcc  
-i386         buildonly-randconfig-001-20230926   gcc  
-i386         buildonly-randconfig-002-20230925   gcc  
-i386         buildonly-randconfig-002-20230926   gcc  
-i386         buildonly-randconfig-003-20230925   gcc  
-i386         buildonly-randconfig-003-20230926   gcc  
-i386         buildonly-randconfig-004-20230925   gcc  
-i386         buildonly-randconfig-004-20230926   gcc  
-i386         buildonly-randconfig-005-20230925   gcc  
-i386         buildonly-randconfig-005-20230926   gcc  
-i386         buildonly-randconfig-006-20230925   gcc  
-i386         buildonly-randconfig-006-20230926   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230925   gcc  
-i386                  randconfig-002-20230925   gcc  
-i386                  randconfig-003-20230925   gcc  
-i386                  randconfig-004-20230925   gcc  
-i386                  randconfig-005-20230925   gcc  
-i386                  randconfig-006-20230925   gcc  
-i386                  randconfig-011-20230925   gcc  
-i386                  randconfig-012-20230925   gcc  
-i386                  randconfig-013-20230925   gcc  
-i386                  randconfig-014-20230925   gcc  
-i386                  randconfig-015-20230925   gcc  
-i386                  randconfig-016-20230925   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230925   gcc  
-loongarch             randconfig-001-20230926   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        bcm63xx_defconfig   clang
-mips                           ip32_defconfig   gcc  
-mips                           rs90_defconfig   clang
-mips                   sb1250_swarm_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      pmac32_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230925   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230925   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230925   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230925   gcc  
-x86_64       buildonly-randconfig-002-20230925   gcc  
-x86_64       buildonly-randconfig-003-20230925   gcc  
-x86_64       buildonly-randconfig-004-20230925   gcc  
-x86_64       buildonly-randconfig-005-20230925   gcc  
-x86_64       buildonly-randconfig-006-20230925   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230925   gcc  
-x86_64                randconfig-002-20230925   gcc  
-x86_64                randconfig-003-20230925   gcc  
-x86_64                randconfig-004-20230925   gcc  
-x86_64                randconfig-005-20230925   gcc  
-x86_64                randconfig-006-20230925   gcc  
-x86_64                randconfig-011-20230925   gcc  
-x86_64                randconfig-012-20230925   gcc  
-x86_64                randconfig-013-20230925   gcc  
-x86_64                randconfig-014-20230925   gcc  
-x86_64                randconfig-015-20230925   gcc  
-x86_64                randconfig-016-20230925   gcc  
-x86_64                randconfig-071-20230925   gcc  
-x86_64                randconfig-071-20230926   gcc  
-x86_64                randconfig-072-20230925   gcc  
-x86_64                randconfig-072-20230926   gcc  
-x86_64                randconfig-073-20230925   gcc  
-x86_64                randconfig-073-20230926   gcc  
-x86_64                randconfig-074-20230925   gcc  
-x86_64                randconfig-074-20230926   gcc  
-x86_64                randconfig-075-20230925   gcc  
-x86_64                randconfig-075-20230926   gcc  
-x86_64                randconfig-076-20230925   gcc  
-x86_64                randconfig-076-20230926   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+   RCU is not needed unless/until tracing is enabled.  I also
+   demonstrated that port I/O tracing works correctly during boot by
+   testing this patch with "trace_event=portio" on the command line.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I plan to submit another patch due to the compiler warning reported
+by the "kernel test robot".  Before I do that I would like to get
+more feedback so I can address any other concerns or suggestions.
+
