@@ -2,103 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD8D7ADD4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9CD7ADD56
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbjIYQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S231982AbjIYQnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYQkz (ORCPT
+        with ESMTP id S230230AbjIYQnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:40:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9320C9F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695660049; x=1727196049;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=irBX2fasYwTUTHpDqrmJbVhDOEvr62Ct3dNu3hj8gtw=;
-  b=Sllz4jYInlsUtVT9GfYHEeS5CPBYkQUT5Z5UwU4Sz1lYBn3ODfNbcf7z
-   GVBXsoyTmLgC51wbaVqeoLBPcDYEV+Jn8GmYlCszPGGcW+ycBK7XjuuhT
-   Ob91alLENKJ78DneOT1Mr5CgJWOxogz+K0yDaSsCdC6pY+K9YGF29KWDl
-   0AUYPR3sgN597NDTMVQiLvF287/eD7z8elMSD8VMzPhT/19QLKU5CGTIm
-   pkSMzG7sRuonEFe9I9idlXnnVm/hGf73tkk3mQR8RpjuicST4Rb10h1qH
-   W1zGTW8FmrZf32TqWk5npphVb9Uzdu7soiSq5S3uY0uGlHvu/t1Q1tkbs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="378582735"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="378582735"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 09:40:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="751771015"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="751771015"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 25 Sep 2023 09:40:45 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qkodU-0001o2-1r;
-        Mon, 25 Sep 2023 16:40:41 +0000
-Date:   Tue, 26 Sep 2023 00:40:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>, mripard@kernel.org,
-        wens@csie.org
-Cc:     oe-kbuild-all@lists.linux.dev, airlied@gmail.com, daniel@ffwll.ch,
-        samuel@sholland.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: Re: [PATCH 5/7] drm/sun4i: dw-hdmi: Split driver registration
-Message-ID: <202309260027.aNIjQRBI-lkp@intel.com>
-References: <20230924192604.3262187-6-jernej.skrabec@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230924192604.3262187-6-jernej.skrabec@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 12:43:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09833EE;
+        Mon, 25 Sep 2023 09:43:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D39D3C433C7;
+        Mon, 25 Sep 2023 16:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695660223;
+        bh=iptOd//4GXzFCwWM9L7SD9q66r8M+qbkCRBfCuZ7Lpk=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=Uvf/hphfDgJaZQyn421/HgoOCcUfj4eh11ZR8eHsjXR8AgyYeLMVz7vpkGE0/CnJa
+         G7MJ/WUDsM+rHitk9O2s31pM7V17eIhVWAiGffpXh2u5YB5mgSSRB+Y7CJJTmFt0iT
+         D8ZRphEtpfdkL3mW5IHg8/UOR4rBCxb8LrMsQeRno24Jw2qXjJ1tFihK2ZFHoyu4z+
+         +1Dy71DHUw5FkD2D01dmlJN+bhGmpeLYEb34paru+Qsvt+vFNgxFCQX4frsUIMMnI2
+         MvwBfc2D0hqmNsYgUfZjvlDTBXLQwUsVkI5Q+05rP3A8w8BAHBck/xY3Ayx5JpcvmC
+         h6cDJWho5QTcQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 25 Sep 2023 19:43:38 +0300
+Message-Id: <CVS5DQME8XMT.2DEPELDXBPGIX@suppilovahvero>
+Subject: Re: [systemd-devel] [PATCH 0/1] x86/kexec: UKI support
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Dimitri John Ledkov" <dimitri.ledkov@canonical.com>
+Cc:     "Neal Gompa" <ngompa13@gmail.com>,
+        <systemd-devel@lists.freedesktop.org>, <x86@kernel.org>,
+        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <dhowells@redhat.com>, <keyrings@vger.kernel.org>,
+        <bhelgaas@google.com>, "Jan Hendrik Farr" <kernel@jfarr.cc>,
+        <tglx@linutronix.de>, <akpm@linux-foundation.org>,
+        <bluca@debian.org>
+X-Mailer: aerc 0.14.0
+References: <20230909161851.223627-1-kernel@jfarr.cc>
+ <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+ <CAEg-Je9GF5S+QcsspM_CzDSxzCN8h2eRp7BbctC1x7-rH8j68g@mail.gmail.com>
+ <CVGVGJIQPIZ2.WN97L6BV5S97@suppilovahvero>
+ <CADWks+bRm9LnujBo1SiATDfC1sCNU0vvCy_r=YBpYLXcQrbQeA@mail.gmail.com>
+In-Reply-To: <CADWks+bRm9LnujBo1SiATDfC1sCNU0vvCy_r=YBpYLXcQrbQeA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej,
+On Mon Sep 18, 2023 at 6:41 PM EEST, Dimitri John Ledkov wrote:
+> On Tue, 12 Sept 2023 at 11:38, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >
+> > On Tue Sep 12, 2023 at 2:20 AM EEST, Neal Gompa wrote: > On Mon, Sep 11=
+, 2023 at 7:15=E2=80=AFPM Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > > On Sat Sep 9, 2023 at 7:18 PM EEST, Jan Hendrik Farr wrote:
+> > > > > Hello,
+> > > > >
+> > > > > this patch implements UKI support for kexec_file_load. It will re=
+quire support
+> > > > > in the kexec-tools userspace utility. For testing purposes the fo=
+llowing can be used:
+> > > > > https://github.com/Cydox/kexec-test/
+> > > > >
+> > > > > There has been discussion on this topic in an issue on GitHub tha=
+t is linked below
+> > > > > for reference.
+> > > > >
+> > > > >
+> > > > > Some links:
+> > > > > - Related discussion: https://github.com/systemd/systemd/issues/2=
+8538
+> > > > > - Documentation of UKIs: https://uapi-group.org/specifications/sp=
+ecs/unified_kernel_image/
+> > > > >
+> > > > > Jan Hendrik Farr (1):
+> > > > >   x86/kexec: UKI support
+> > > > >
+> > > > >  arch/x86/include/asm/kexec-uki.h       |   7 ++
+> > > > >  arch/x86/include/asm/parse_pefile.h    |  32 +++++++
+> > > > >  arch/x86/kernel/Makefile               |   2 +
+> > > > >  arch/x86/kernel/kexec-uki.c            | 113 +++++++++++++++++++=
+++++++
+> > > > >  arch/x86/kernel/machine_kexec_64.c     |   2 +
+> > > > >  arch/x86/kernel/parse_pefile.c         | 110 +++++++++++++++++++=
++++++
+> > > > >  crypto/asymmetric_keys/mscode_parser.c |   2 +-
+> > > > >  crypto/asymmetric_keys/verify_pefile.c | 110 +++----------------=
+-----
+> > > > >  crypto/asymmetric_keys/verify_pefile.h |  16 ----
+> > > > >  9 files changed, 278 insertions(+), 116 deletions(-)
+> > > > >  create mode 100644 arch/x86/include/asm/kexec-uki.h
+> > > > >  create mode 100644 arch/x86/include/asm/parse_pefile.h
+> > > > >  create mode 100644 arch/x86/kernel/kexec-uki.c
+> > > > >  create mode 100644 arch/x86/kernel/parse_pefile.c
+> > > > >
+> > > > > --
+> > > > > 2.40.1
+> > > >
+> > > > What the heck is UKI?
+> > >
+> > > Unified Kernel Images. More details available here:
+> > > https://uapi-group.org/specifications/specs/unified_kernel_image/
+> > >
+> > > It's a way of creating initramfs-style images as fully generic,
+> > > reproducible images that can be built server-side.
+> >
+> > You can build today a kernel with these compiled in:
+> >
+> > 1. EFI stub
+> > 2. initeramfs
+> > 3. cmdline
+> >
+> > Why another way (and label 'UKI') for a pre-existing feature?
+> >
+>
+> In Ubuntu, we have considered to use the existing kernel features
+> before going off to use UKI. Here are some of the reasons why we
+> didn't opt to use the kernel builtin things:
+> 1) we wanted to have ability to have TPM measured kernel commandline
+> performed before kernel is being executed, which is what sd-stub
+> provides us
 
-kernel test robot noticed the following build errors:
+OK this does make a lot of sense.
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.6-rc3 next-20230925]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 2) we wanted to have ability to update / regenerate initrd, without
+> rebuilding kernel. Thus whenever userspace in the initrd needs
+> updating, we can generate new initrd for existing kernel build, create
+> new kernel.efi, whilst using existing .linux / vmlinuz build. I don't
+> believe it is currently trivial to relink vmlinuz with builtin initrd.
+> 3) licensing wise it was not clear if initrd has to be GPLv2
+> compatible when linked inside vmlinuz, or if it can contain GPLv3 /
+> LGPLv3 userspace code - with UKI it is believed unambigiously true,
+> because vmlinuz boots by itself standalone and is compiled separately
+> of the UKI.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jernej-Skrabec/drm-sun4i-dw-hdmi-Deinit-PHY-in-fail-path/20230925-032818
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230924192604.3262187-6-jernej.skrabec%40gmail.com
-patch subject: [PATCH 5/7] drm/sun4i: dw-hdmi: Split driver registration
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20230926/202309260027.aNIjQRBI-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230926/202309260027.aNIjQRBI-lkp@intel.com/reproduce)
+Right UKI wraps kernel and kernel is a "leaf object".
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309260027.aNIjQRBI-lkp@intel.com/
+> 4) we wanted to have ability to override cmdline via kernel args
+> without secureboot, and use stock cmdline args under secureboot, to
+> allow debugging & production behaviour from a single signed kernel.efi
+> (that was custom development, and could be done in the stock vmlinuz
+> too).
+> 5) obvious mention, the intention here is to have TPM PCR measurements
+> and Secureboot signature for vmlinuz and initrd and cmdline and dtb.
+> There is otherwise no support for standalone signed initrd, cmdline,
+> dtb today. Nor does vendoring it into vmlinuz achieves this to the
+> same extent (and ease of predicting for sealing / resealing purposes).
 
-All errors (new ones prefixed by >>):
+ok
 
-   s390-linux-ld: drivers/gpu/drm/sun4i/sun8i_hdmi_phy.o: in function `sun8i_hdmi_phy_driver_init':
->> sun8i_hdmi_phy.c:(.init.text+0x0): multiple definition of `init_module'; drivers/gpu/drm/sun4i/sun8i_dw_hdmi.o:sun8i_dw_hdmi.c:(.init.text+0x0): first defined here
-   s390-linux-ld: drivers/gpu/drm/sun4i/sun8i_hdmi_phy.o: in function `sun8i_hdmi_phy_driver_exit':
->> sun8i_hdmi_phy.c:(.exit.text+0x0): multiple definition of `cleanup_module'; drivers/gpu/drm/sun4i/sun8i_dw_hdmi.o:sun8i_dw_hdmi.c:(.exit.text+0x0): first defined here
+> 6) in Ubuntu kernel.efi also has sbat section for targeted revocations
+> (discussed separately elsewhere)
+>
+> Overall, it is mostly about flexibility to be able to reuse the same
+> initrd against multiple kernel builds, or update use multiple initrd
+> against the same kernel build. This is imho the biggest issue with
+> using initrd built-into the vmlinuz itself.
+> Resource wise, the initrd passed in via kernel.efi can be freed, as
+> far as I understand. I don't know if the one built-into the vmlinuz is
+> freeable.
+>
+> Improving design to do something else instead of UKI would be
+> welcomed. Or for example improving the zimg linus upstream format to
+> be a partial or a valid UKI would help as well. For example, building
+> the kernel built-in initrd as a .initrd section that is replacable
+> would be nice, or allowing to preload zimg with .dtb or .cmdline
+> sections would help, and appropriately improve the linux efi stab to
+> do measurements and loading of .dtb / .initrd from itself would be
+> nice. Because then all the benefits / requirements described above
+> could be made available out of the box and be trivially updatable. The
+> biggest one being splitting out things into sections that can be
+> updated with objcopy.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+BR, Jarkko
