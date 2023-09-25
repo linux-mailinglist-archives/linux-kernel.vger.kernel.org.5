@@ -2,158 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D087AD974
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951217AD976
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbjIYNph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        id S232004AbjIYNqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbjIYNpc (ORCPT
+        with ESMTP id S231358AbjIYNp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:45:32 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96D5B3;
-        Mon, 25 Sep 2023 06:45:25 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38PDjITt048292;
-        Mon, 25 Sep 2023 08:45:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695649518;
-        bh=C+GLtsfIZeXgjPd418k2iGjNqMJ7Mr3S/9rXBh3m0cA=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=gNS/PfBSsStWf3JChko/SCFRnKHUQKwjTm1NrjDGGhZz1lH4UrnK1Jdc/oeBetoYO
-         zuDvkpIn2/Gys6pw9U3GcdRQxlygUGY15eh2O1obhwBZKjUcRRoiqvLlY2nbp5DUOL
-         5rDssY66h8K+6W78kIXN/Ii0Sm9tGn1ShMUf505Y=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38PDjImM066303
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Sep 2023 08:45:18 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Sep 2023 08:45:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Sep 2023 08:45:17 -0500
-Received: from [10.250.38.120] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38PDjGBv004398;
-        Mon, 25 Sep 2023 08:45:16 -0500
-Message-ID: <3869499c-532d-8cd0-f428-6697bbbedd8d@ti.com>
-Date:   Mon, 25 Sep 2023 08:45:16 -0500
+        Mon, 25 Sep 2023 09:45:58 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64266116;
+        Mon, 25 Sep 2023 06:45:50 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qkluH-0001kB-8Q; Mon, 25 Sep 2023 15:45:49 +0200
+Message-ID: <e049aa41-b136-4071-850f-d06b47fe67a1@leemhuis.info>
+Date:   Mon, 25 Sep 2023 15:45:48 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
- Ethernet support
-Content-Language: en-US
-To:     MD Danish Anwar <danishanwar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-References: <20230921060913.721336-1-danishanwar@ti.com>
- <20230921060913.721336-3-danishanwar@ti.com>
- <3b4629c7-5625-f32f-0532-5f50832c1714@ti.com>
- <52572af4-771e-3bd9-b290-74482694f020@ti.com>
- <8db10b88-5b06-af84-cb0a-9fbaa29cf78c@ti.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <8db10b88-5b06-af84-cb0a-9fbaa29cf78c@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: s2idle stopped working with 6.6-rc on Thinkpad T14 G1 (AMD)
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <0d84fb59-4628-4c7f-ab1a-f58889ef2c9b@leemhuis.info>
+ <e556ae63-0539-4b34-b33f-5f5beb4183d1@amd.com>
+Content-Language: en-US, de-DE
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <e556ae63-0539-4b34-b33f-5f5beb4183d1@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1695649551;a712ef3c;
+X-HE-SMSGID: 1qkluH-0001kB-8Q
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/23 3:21 AM, MD Danish Anwar wrote:
-> Hi Andrew,
-> 
-> On 22/09/23 09:52, MD Danish Anwar wrote:
->> On 21/09/23 22:57, Andrew Davis wrote:
->>> On 9/21/23 1:09 AM, MD Danish Anwar wrote:
->>>> ICSSG2 provides dual Gigabit Ethernet support.
->>>>
->>>> For support SR2.0 ICSSG Ethernet firmware:
->>>> - provide different firmware blobs and use TX_PRU.
->>>> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
->>>> - TX timestamp notification comes via INTC interrupt.
->>>>
->>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->>>> ---
->>>>    arch/arm64/boot/dts/ti/Makefile               |   4 +-
->>>>    ...se-board.dts => k3-am654-common-board.dts} |   0
->>>>    arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 ++++++++++++++++++
->>>>    3 files changed, 148 insertions(+), 1 deletion(-)
->>>>    rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts =>
->>>> k3-am654-common-board.dts} (100%)
->>>>    create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
->>>>
->>>> diff --git a/arch/arm64/boot/dts/ti/Makefile
->>>> b/arch/arm64/boot/dts/ti/Makefile
->>>> index e7b8e2e7f083..85c91f5e832e 100644
->>>> --- a/arch/arm64/boot/dts/ti/Makefile
->>>> +++ b/arch/arm64/boot/dts/ti/Makefile
->>>> @@ -42,12 +42,14 @@ dtb-$(CONFIG_ARCH_K3) +=
->>>> k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
->>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
->>>>      # Boards with AM65x SoC
->>>> -k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
->>>> k3-am654-base-board-rocktech-rk101-panel.dtbo
->>>> +k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
->>>> k3-am654-base-board-rocktech-rk101-panel.dtbo
->>>
->>> Should the k3-am654-gp-evm.dtb not also have this icssg2 support? Does
->>> it work
->>> to keep this line like before or is there some conflict having both
->>> enabled?
->>>
->>
->> I have not tested this dtb (k3-am654-gp-evm.dtb). So just to be on the
->> safe side I kept gp-evm.dtb as it was. Ideally gp-evm.dtb should have
->> icssg2 support as well. But I haven't tested the combination of
->> base-board + icssg dtbo + rockteck dtbo. That is why I kept gp-evm dtb
->> as it was. Anyways, for ICSSG2's use case only k3-am654-base-board.dtb
->> is used so I think it's ok to leave k3-am654-gp-evm.dtb to as it was.
->>
->>> Andrew
->>>
-> 
-> I tested AM654x-GP EVM with k3-am654-gp-evm.dtb with both the
-> combination below (having k3-am654-base-board-dtbs :=
-> k3-am654-common-board.dtb k3-am654-icssg2.dtbo), ICSSG worked fine in
-> both the scenarios and I didn't see any issue. I don't have a rocktech
-> panel with me so couldn't test that. But as far as ICSSG is concerned it
-> works fine with the both the combinations. Please let me know which one
-> should I use. Should I keep gp-evm as it is (use dtb without the icssg2
-> overlay) or should I add icssg2 overlay in gp-evm.dtb as well.
-> 
-> 
-> 1. k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
-> k3-am654-base-board-rocktech-rk101-panel.dtbo
-> 
-> 
-> 2. k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
-> k3-am654-base-board-rocktech-rk101-panel.dtbo
-> 
+On 25.09.23 15:25, Mario Limonciello wrote:
+> On 9/25/2023 05:55, Thorsten Leemhuis wrote:
+>> Hi Mario! Did you by chance hear anything about lock-ups on resume with
+>> mainline affecting AMD systems? I'm asking, as s2idle stopped working
+>> for me with 6.6-rc on my Thinkpad T14 G1 (AMD). 
+> You're the first report I've heard of this.
 
-As you said here before, most will expect the icssg2 to work
-on the EVM out of box, you should include it. If anyone wants
-something else they can apply the set of overlays that match
-on their own.
+Thx for taking the time and replying.
 
-So, use base-board.
+> Yeah not too much useful stuff here unfortunately.  Can you check
+> /var/lib/systemd/pstore to see if you got a traceback for whatever
+> caused the problem?
 
-Andrew
+Sadly nothing there.
+
+>> Dmesg for 6.6-rc3 (with a USB-C dock, but problem happens without it,
+>> too):
+>> https://www.leemhuis.info/files/misc/dmesg-6.6_rc3
+> 
+> Being G1, can you try "amdgpu.mcbp=0" on kernel command line?
+
+Just tried it, but didn't help.
+
+Guess it bisection time then...
+
+Thx again for your reply. Ciao, Thorsten
