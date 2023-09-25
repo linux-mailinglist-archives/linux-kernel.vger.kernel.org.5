@@ -2,138 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF9D7ADE5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50F17ADE66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbjIYSG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 14:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        id S229966AbjIYSM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 14:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjIYSG0 (ORCPT
+        with ESMTP id S229844AbjIYSMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:06:26 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E4C210C;
-        Mon, 25 Sep 2023 11:06:17 -0700 (PDT)
-Received: from localhost.localdomain (unknown [167.220.81.210])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C1BC1212C816;
-        Mon, 25 Sep 2023 11:06:16 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C1BC1212C816
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695665176;
-        bh=p14Nn8yShFD3PfmnLpi1+w5sDpk1yljf0ug3OMUAn1A=;
-        h=From:To:Subject:Date:From;
-        b=aYiDuMSiNfoqP1ABMbBcdZ++MtF6+932VxIdLt8NPUWFwI0NqurbgHc0dOFr6h1nz
-         vjeT21O0jYE2Agwul0i8dRPtNgd3O8wC/xO0I6GG6gnJ5BQX5rllfGvZesNZwHqG43
-         yH7M126uFcTaVUIciQeaIsPaSHpW7y+pfFksFMFs=
-From:   Jarred White <jarredwhite@linux.microsoft.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org (open list:ACPI),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] acpi: Use access_width over register_width for system memory accesses
-Date:   Mon, 25 Sep 2023 11:05:52 -0700
-Message-Id: <20230925180552.76071-1-jarredwhite@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 25 Sep 2023 14:12:55 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C05A115
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:12:46 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27751ac0653so1802527a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695665566; x=1696270366; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KsRIBM7dOdcj87tvwe4EQo8GqJ5cXnTOsGKKYnAPAk4=;
+        b=p+wkVPXVac2IdmsmXQNOMTyp2QGxdpZV3v/ms7JJKanYUFUYLKgISa5R1YS+SEeIIS
+         18CeoB5wYm/sXkounIH9X9nPLVJnJ//R6FcgQTUUZAz81tTZF4aJWTqRaOO4yBhLJNo4
+         VR8FNMHCD1A7CH4kYo7DDFXZMYwjcOosINnUgCrFlHY3CFqe1ROXIQ+0gjBdZ3er4D49
+         eAw29SCzpnniBEQ9JSC5ykrydO+XY9ouTjHyVakOPsB5IQGH1Nio39p9sBHNlv12qwtg
+         ef13lc71Tba9GoFQuOkwgHMcJ3MqjnfOx6CiGbhufL/4XMuXqc9EhOpw0uvzfrXKs/WS
+         qeHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695665566; x=1696270366;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KsRIBM7dOdcj87tvwe4EQo8GqJ5cXnTOsGKKYnAPAk4=;
+        b=pT4xO4k4RSXKNkxEgXmDmFKrs/GCOulVMoD3KfAqOrG0dr/xb3+Kq8a014hZm6w0vr
+         BeshJHwdz4AgSlhMhqWOf5joEbmfydxE364Z9myKJscN9s62iYaZ6Ke5oOrQy6FQSdWN
+         ZkVvn5dh7SRt7pDW32uoN2Z548ObDNhO+dydFB3o4PhwhL7Wh3W8k3N1St7Ygahum2+U
+         HgshKHdb8y/YKFdVIkS08aAn0XP+Y28/GaFs0oCPFLF+nJhBvT6IDinFXoI4LSZlDj0A
+         c85iciEzNiEHCgjsIcPCh00zTkuTke7o0N5VyPkaW6RrpP4XxAL5udLBa6CPT8nR+0ze
+         +Urw==
+X-Gm-Message-State: AOJu0Ywdh8SJLehCdIVoDSJk+Irm00Py9vMRKfTHpcBFsYlFGuKBnKfV
+        H2mC5NaazfGaw+ha5UqPsBY1fA==
+X-Google-Smtp-Source: AGHT+IEITTnOWUqqZd2QQfvnjuWHs46rWx0fKoZhZxeSiyP6OtQJWAzOWXHuNzwpn4hPs7lDCludXw==
+X-Received: by 2002:a17:90b:2386:b0:267:faba:705 with SMTP id mr6-20020a17090b238600b00267faba0705mr3779807pjb.10.1695665565853;
+        Mon, 25 Sep 2023 11:12:45 -0700 (PDT)
+Received: from ghost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id az14-20020a17090b028e00b002777001ee76sm949619pjb.18.2023.09.25.11.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 11:12:45 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 11:12:42 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/9] RISC-V: Detect XVentanaCondOps from ISA string
+Message-ID: <ZRHNmuv8KzUU7u0r@ghost>
+References: <20230925133859.1735879-1-apatel@ventanamicro.com>
+ <20230925133859.1735879-3-apatel@ventanamicro.com>
+ <ZRHH25IyJJLWSolC@ghost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRHH25IyJJLWSolC@ghost>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To align with ACPI 6.3+, since bit_width can be any 8-bit value, we cannot
-depend on it being always on a clean 8b boundary. Instead, use access_width
-to determine the size and use the offset and width to shift and mask the
-bit swe want to read/write out. Make sure to add a check for system memory
-since pcc redefines the access_width to subspace id.
+On Mon, Sep 25, 2023 at 10:48:11AM -0700, Charlie Jenkins wrote:
+> On Mon, Sep 25, 2023 at 07:08:52PM +0530, Anup Patel wrote:
+> > The Veyron-V1 CPU supports custom conditional arithmetic and
+> > conditional-select/move operations referred to as XVentanaCondOps
+> > extension. In fact, QEMU RISC-V also has support for emulating
+> > XVentanaCondOps extension.
+> > 
+> > Let us detect XVentanaCondOps extension from ISA string available
+> > through DT or ACPI.
+> > 
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > ---
+> >  arch/riscv/include/asm/hwcap.h | 1 +
+> >  arch/riscv/kernel/cpufeature.c | 1 +
+> >  2 files changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+> > index 0f520f7d058a..b7efe9e2fa89 100644
+> > --- a/arch/riscv/include/asm/hwcap.h
+> > +++ b/arch/riscv/include/asm/hwcap.h
+> > @@ -59,6 +59,7 @@
+> >  #define RISCV_ISA_EXT_ZIFENCEI		41
+> >  #define RISCV_ISA_EXT_ZIHPM		42
+> >  #define RISCV_ISA_EXT_SMSTATEEN		43
+> > +#define RISCV_ISA_EXT_XVENTANACONDOPS	44
+> >  
+> >  #define RISCV_ISA_EXT_MAX		64
+> >  
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> > index 3755a8c2a9de..3a31d34fe709 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+> >  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+> >  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+> >  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+> > +	__RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDOPS),
+> >  };
+> >  
+> >  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
+> > -- 
+> > 2.34.1
+> > 
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+> I worry about storing vendor extensions in this file. Because vendor
+> extensions are not standardized, they can only be expected to have the
+> desired behavior on hardware with the appropriate vendor id. A couple
+> months ago I sent a patch to address this by handling vector extensions
+> independently for each vendor [1]. I dropped the patch because it
+> relied upon Heiko's T-Head vector extension support that he stopped
+> working on. However, I can revive this patch so you can build off of it.
+> 
+> This scheme has the added benefit that vendors do not have to worry
+> about conficting extensions, and the kernel does not have to act as a
+> key registry for vendors.
+> 
+> What are your thoughts?
+> 
+> - Charlie
+> 
+> [1] https://lore.kernel.org/lkml/20230705-thead_vendor_extensions-v1-2-ad6915349c4d@rivosinc.com/
+> 
 
-Signed-off-by: Jarred White <jarredwhite@linux.microsoft.com>
----
- drivers/acpi/cppc_acpi.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+I guess I don't need to revive the patch, you could just take the code
+and update it for xventanacondops.
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 7ff269a78c20..07619b36c056 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -777,6 +777,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 			} else if (gas_t->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
- 				if (gas_t->address) {
- 					void __iomem *addr;
-+					size_t access_width;
- 
- 					if (!osc_cpc_flexible_adr_space_confirmed) {
- 						pr_debug("Flexible address space capability not supported\n");
-@@ -784,7 +785,8 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 							goto out_free;
- 					}
- 
--					addr = ioremap(gas_t->address, gas_t->bit_width/8);
-+					access_width = ((8 << (gas_t->access_width - 1)) / 8);
-+					addr = ioremap(gas_t->address, access_width);
- 					if (!addr)
- 						goto out_free;
- 					cpc_ptr->cpc_regs[i-2].sys_mem_vaddr = addr;
-@@ -980,6 +982,7 @@ int __weak cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
- static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- {
- 	void __iomem *vaddr = NULL;
-+	int size;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
- 
-@@ -1015,7 +1018,12 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- 		return acpi_os_read_memory((acpi_physical_address)reg->address,
- 				val, reg->bit_width);
- 
--	switch (reg->bit_width) {
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
-+		size = (8 << (reg->access_width - 1));
-+	else
-+		size = reg->bit_width;
-+
-+	switch (size) {
- 	case 8:
- 		*val = readb_relaxed(vaddr);
- 		break;
-@@ -1034,12 +1042,16 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- 		return -EFAULT;
- 	}
- 
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
-+		*val = (*val >> reg->bit_offset) & GENMASK((reg->bit_width) - 1, 0);
-+
- 	return 0;
- }
- 
- static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- {
- 	int ret_val = 0;
-+	int size;
- 	void __iomem *vaddr = NULL;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
-@@ -1067,7 +1079,13 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 		return acpi_os_write_memory((acpi_physical_address)reg->address,
- 				val, reg->bit_width);
- 
--	switch (reg->bit_width) {
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-+		size = (8 << (reg->access_width - 1));
-+		val = (val >> reg->bit_offset) & GENMASK((reg->bit_width) - 1, 0);
-+	} else
-+		size = reg->bit_width;
-+
-+	switch (size) {
- 	case 8:
- 		writeb_relaxed(val, vaddr);
- 		break;
--- 
-2.34.1
-
+- Charlie
