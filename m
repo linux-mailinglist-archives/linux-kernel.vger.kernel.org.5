@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 708977AD924
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986BA7AD928
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjIYNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
+        id S231562AbjIYNbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjIYNaz (ORCPT
+        with ESMTP id S231293AbjIYNbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:30:55 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDB9FE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:30:48 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-53fa455cd94so3996338a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:30:48 -0700 (PDT)
+        Mon, 25 Sep 2023 09:31:14 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFA010E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:05 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d7ecdb99b7aso7242335276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695648648; x=1696253448; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695648664; x=1696253464; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VTAe+igFn40GXZ4NBAxS7RiCj1q3ukys0lCN9eYvcaY=;
-        b=A1IrmBz3pmI/MHQfCtnfQwMosOHpO/GRytwO/+Uni3ZRg5rMOvcseh4/169+JlLVcK
-         t1EdIRE0NPrr+UWhYkyzRQ/umJohMWs+XvXGP6MXZjZjrE1yMiFCNI0iOrfzybTnBWCu
-         f8YmYiUQ/Sd0FFq/aJVVuZBL1EXuIIJcRxwJ1KBHkkCSMyPsFzHPsaxn6r28az+M9/Qu
-         j1TWaKZIafv7F6LXCBFG/E/2r3JvuiAWBIa4eMgQwHWzQBGitOegyLJkJmM6aTs7roxb
-         wOf9xStK7W4rktgYqcqkdl0PORURkwT482vJKa6jK331lO4WmYg/w3m4JYtfPonL8W8m
-         ZuxQ==
+        bh=dx0cuMZ0YuASpvGCtMLSsLnfXajgyvJdGZMPWwTyE+c=;
+        b=r4OVMyU1a2PKN/56wKaO2/1r2JM85Q/J6xX3Nkj1kLJrGG+uYy98pQ1Us0jYhJ1wiH
+         I9ncWWJHw3R2BPSrN91MmTzrQwqC4PvW4v4DJF9n8/wjlQ8x93Kyh1CA/FB9tCnRQklJ
+         P8Gizf1zgIyDziTxPmXWp616XXkAa2XpllCzAonWuD+UVtIoLRg/YK0eihfb0FSn0Yk3
+         747TTuM2Pplt842KWmkO+Df+Jakpl9HhAq1q5WQAxaR+8zI7j2GIYk+cwTJdt3mjTFiA
+         EnMIR8UtjNwjzftCGCtCNB7lJ4BwMdinA5zj9+Ia5hMeQ9uBkJwxcSmUXurP16w42Lwp
+         x1Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695648648; x=1696253448;
+        d=1e100.net; s=20230601; t=1695648664; x=1696253464;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VTAe+igFn40GXZ4NBAxS7RiCj1q3ukys0lCN9eYvcaY=;
-        b=t7S5L1P5Mp8J29Bx/JS3yRNvvxkG8asi0+op5i7DBV36rUgU4QThVKsFWmX3GoWkf+
-         kqjvA3azzJPFdpTpQpSxaHN54OSNQIjTmHiiOqg5L/apSjLvb4R6wnXpbnKubxingq4j
-         YrOv3daXazPrIt+yhpaS+cDk+xqm7zoxtA/ktKKYvxA73iZBe7fWxkn5534zffXwe5Wi
-         eylYRYu3U4rvxExa+qHXvBAnmzLfV4Hd0OgEe1muczk237Z67LZanw3hk1GawtZL5izO
-         naY8qrA8BRttclt+9CsyntqAXoY78skIxcigYO006YkPeoNKpRB36EwpK285hM20N2kS
-         6jbA==
-X-Gm-Message-State: AOJu0Yzr3RsWCwNdOG2Qyk6dtRUh6JzmG8eLS/op3syC47dJ8qOne3v8
-        BjrKMZsE0qk+opWeYpDpxAFnVXb99DVs3EyBp5pn4Q==
-X-Google-Smtp-Source: AGHT+IGU7gRk9/0iLRnse7x9jQcD2qTYI6KEpxx8F337G2Vkhth9oLL6ElHvVj6WCup2zLolI768fLqgUgDAY/Hd65U=
-X-Received: by 2002:a17:90a:f40e:b0:276:6b9d:7503 with SMTP id
- ch14-20020a17090af40e00b002766b9d7503mr4488656pjb.28.1695648648206; Mon, 25
- Sep 2023 06:30:48 -0700 (PDT)
+        bh=dx0cuMZ0YuASpvGCtMLSsLnfXajgyvJdGZMPWwTyE+c=;
+        b=gKICP66vVZqNpnd8MFsxOGmmCxj2uGDDEmye6ifcyZOK48xyttX/JA5Owa+BihxUPf
+         WX+FDBF5N7lwaCfZ/B20hwX7Enn43AXTZmmZorzOaLfNypRJdnIlWSgRVGJ14FfugZdl
+         rGNHCJvPse/s4JvZBop3f5mTSZ5dtwFVUhxu3xW9I2y1ayt6Zebm/dgn5b9VQ6856Jxb
+         XQFHfGv5hFkgvvLPvP8xl7RM3nX8T/WHrlR1nF9RigNlQvUdOcz/tHagPxbYNve1+ynl
+         MSg9tjEpRBtfIjm46aSOE4A1eAcd0zjipLL24cogfhPyBLKi9l1dC4PN+A9CzsfGtv2G
+         FCPw==
+X-Gm-Message-State: AOJu0Ywse1uJdmlPoBbBeOxRdGktEwLOIQ1TYwr/KXVpbGvR8h+xn3bH
+        oRbbmtkhjFHg+NGuEexui9uDP43fGly1wHDW0SFgGA==
+X-Google-Smtp-Source: AGHT+IF4T3RldjnrswDnLCdW2zO37YsRTW+jRjJz/sEOlYabku9rVj0hZiONpvJLKYsrMU2Ba0Eqic2BQlyBd/mmnVw=
+X-Received: by 2002:a25:6b45:0:b0:d80:1441:9010 with SMTP id
+ o5-20020a256b45000000b00d8014419010mr5402395ybm.26.1695648664346; Mon, 25 Sep
+ 2023 06:31:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-2-apatel@ventanamicro.com> <20230919-bbcb3627b6d9d0238c5ba351@fedora>
-In-Reply-To: <20230919-bbcb3627b6d9d0238c5ba351@fedora>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Mon, 25 Sep 2023 19:00:37 +0530
-Message-ID: <CAK9=C2Ub7+4QOdq4rXoSOuLoYaUczeqaLoCVRZ_63dZOZwiu1w@mail.gmail.com>
-Subject: Re: [PATCH 1/7] RISC-V: Detect XVentanaCondOps from ISA string
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <ZQs1RgTKg6VJqmPs@google.com>
+In-Reply-To: <ZQs1RgTKg6VJqmPs@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 Sep 2023 15:30:53 +0200
+Message-ID: <CACRpkdbuOn4gKBE-tB4MHQ3mx_ujQZLdPp1hp75ANFgsGb1jQQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: avoid unsafe code pattern in find_pinctrl()
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,98 +68,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 12:56=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
-ote:
->
-> Hey Anup,
->
-> On Tue, Sep 19, 2023 at 09:23:37AM +0530, Anup Patel wrote:
-> > The Veyron-V1 CPU supports custom conditional arithmetic and
-> > conditional-select/move operations referred to as XVentanaCondOps
-> > extension. In fact, QEMU RISC-V also has support for emulating
-> > XVentanaCondOps extension.
-> >
-> > Let us detect XVentanaCondOps extension from ISA string available
-> > through DT or ACPI.
-> >
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
-> >  arch/riscv/include/asm/hwcap.h                          | 1 +
-> >  arch/riscv/kernel/cpufeature.c                          | 1 +
-> >  3 files changed, 9 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/=
-Documentation/devicetree/bindings/riscv/extensions.yaml
-> > index 36ff6749fbba..cad8ef68eca7 100644
-> > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> > @@ -171,6 +171,13 @@ properties:
-> >              memory types as ratified in the 20191213 version of the pr=
-ivileged
-> >              ISA specification.
-> >
-> > +        - const: xventanacondops
-> > +          description: |
-> > +            The Ventana specific XVentanaCondOps extension for conditi=
-onal
-> > +            arithmetic and conditional-select/move operations defined =
-by the
-> > +            Ventana custom extensions specification v1.0.1 (or higher)=
- at
-> > +            https://github.com/ventanamicro/ventana-custom-extensions/=
-releases.
-> > +
->
-> For this and the next patch, the binding change needs to be split out
-> from the code. checkpatch should've complained about it.
+On Wed, Sep 20, 2023 at 8:09=E2=80=AFPM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 
-Okay, I will split this patch.
+> The code in find_pinctrl() takes a mutex and traverses a list of pinctrl
+> structures. Later the caller bumps up reference count on the found
+> structure. Such pattern is not safe as pinctrl that was found may get
+> deleted before the caller gets around to increasing the reference count.
+>
+> Fix this by taking the reference count in find_pinctrl(), while it still
+> holds the mutex.
+>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
->
-> >          - const: zba
-> >            description: |
-> >              The standard Zba bit-manipulation extension for address ge=
-neration
-> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hw=
-cap.h
-> > index 0f520f7d058a..b7efe9e2fa89 100644
-> > --- a/arch/riscv/include/asm/hwcap.h
-> > +++ b/arch/riscv/include/asm/hwcap.h
-> > @@ -59,6 +59,7 @@
-> >  #define RISCV_ISA_EXT_ZIFENCEI               41
-> >  #define RISCV_ISA_EXT_ZIHPM          42
-> >  #define RISCV_ISA_EXT_SMSTATEEN              43
-> > +#define RISCV_ISA_EXT_XVENTANACONDOPS        44
-> >
-> >  #define RISCV_ISA_EXT_MAX            64
-> >
-> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
-ure.c
-> > index 3755a8c2a9de..3a31d34fe709 100644
-> > --- a/arch/riscv/kernel/cpufeature.c
-> > +++ b/arch/riscv/kernel/cpufeature.c
-> > @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
- {
-> >       __RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
-> >       __RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
-> >       __RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-> > +     __RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDO=
-PS),
->
-> I've been banging on for a bit about people doing weird stuff to detect
-> their vendor extensions, so nice to see it being done properly :)
->
->
-> Cheers,
-> Conor.
->
-> >  };
-> >
-> >  const size_t riscv_isa_ext_count =3D ARRAY_SIZE(riscv_isa_ext);
-> > --
-> > 2.34.1
-> >
+After some thinking, applied for fixes and tagged for stable as
+it is a very real problem that can cause random crashes under
+the right circumstances.
 
-Regards,
-Anup
+Thanks for finding this Dmitry!!
+
+Yours,
+Linus Walleij
