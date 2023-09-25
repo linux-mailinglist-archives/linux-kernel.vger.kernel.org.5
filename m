@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5987AD08B
+	by mail.lfdr.de (Postfix) with ESMTP id A01747AD08C
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbjIYGup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
+        id S232228AbjIYGut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbjIYGul (ORCPT
+        with ESMTP id S232221AbjIYGuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:50:41 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4254116;
-        Sun, 24 Sep 2023 23:50:34 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P5PI7Q006052;
-        Mon, 25 Sep 2023 06:50:01 GMT
+        Mon, 25 Sep 2023 02:50:44 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CAEFE;
+        Sun, 24 Sep 2023 23:50:37 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P5Hmwg030766;
+        Mon, 25 Sep 2023 06:50:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=9EanaLrILZopHgciFWq8LH3Z8/1L29aFYXgd26r0rcQ=;
- b=lhgobpWWXGKTOl1HxNz2iAFufAPQiBcsVllz9pNb4IfYAjfDHnFy9GizTWygqqnG/Mdr
- SKpRMIhUNKetsLVC162bPTNqj7ENTI7NZ/ZKoIWcywpPmwNS1gEo3yXrYwNl4qRHEyXc
- Q+rxN4bmmd4yknR1eKikrbzU4iMAP8Xuh/k7Gw+fJeaBzK2iZIs1dEEhLYVzYThTaB5o
- iRXGv66i1sjnwD5OEaO8FfBkfFZcCGhBj4afhRZkgkHSMVMtc2vhonFw+su0rv+IbzHP
- 931A1Zx82TiK3XDCZeYlSDAml67YRiidR8tfKnYKQ88QwVcUbvHIzmmZMSaZeRndLjgi wg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9qm7u1rc-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=HXfmrwraKHCTGKdEye19XEXOahD/K6cQmPz0RvUS+U4=;
+ b=gtkaAPR0ndupLP/GWzve3RXzcQPmvrtWBrI2jd1zep1l/GmdPIqcuFdQ3ot220PMJXZ0
+ tItu6K2ZSArHga4FlDXzlfX3FTgtKM2tBD9+hVhpFULlwEOZU8+vhC/sEwVODEzagkxq
+ 3tKAOH2X6YS0S1guDIk9pbPds8pDN4wdpCKN5usru3XX1jv1WlvP/T4QGImahiWOcffh
+ fCRW9n6hR7S5H4fFIbAYtCe3SFODURTgCdJU7li2WE15YnOTVn6FEzIT73pBGyPN4Peh
+ MDdv9Tt26q2QHtdCWhPe2u3wor+1kAgkssNp0ALzgkcpG+uaOtIVcSEDhit6H0Sf5niu EA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9safba7d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 06:50:00 +0000
+        Mon, 25 Sep 2023 06:50:07 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38P6nxpJ015602
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38P6o6iY006686
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 06:49:59 GMT
+        Mon, 25 Sep 2023 06:50:06 GMT
 Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Sun, 24 Sep 2023 23:49:51 -0700
+ 15.2.1118.36; Sun, 24 Sep 2023 23:49:57 -0700
 From:   Tengfei Fan <quic_tengfan@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <tglx@linutronix.de>, <maz@kernel.org>,
@@ -53,10 +54,12 @@ CC:     <geert+renesas@glider.be>, <arnd@arndb.de>,
         <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
         <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
         Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: [PATCH v5 0/7] soc: qcom: Add uart console support for SM4450
-Date:   Mon, 25 Sep 2023 14:49:20 +0800
-Message-ID: <20230925064927.26448-1-quic_tengfan@quicinc.com>
+Subject: [PATCH v5 1/7] dt-bindings: interrupt-controller: qcom,pdc: document qcom,sm4450-pdc
+Date:   Mon, 25 Sep 2023 14:49:21 +0800
+Message-ID: <20230925064927.26448-2-quic_tengfan@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230925064927.26448-1-quic_tengfan@quicinc.com>
+References: <20230925064927.26448-1-quic_tengfan@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
@@ -64,87 +67,45 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _kcrEzW5oURGsRJdN0eAK89zb01EKw7b
-X-Proofpoint-ORIG-GUID: _kcrEzW5oURGsRJdN0eAK89zb01EKw7b
+X-Proofpoint-ORIG-GUID: vy1iQejiYEV8P9hL8ATDVAdy_aqBSI5-
+X-Proofpoint-GUID: vy1iQejiYEV8P9hL8ATDVAdy_aqBSI5-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_03,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- bulkscore=0 priorityscore=1501 impostorscore=0 adultscore=0 suspectscore=0
- phishscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0 mlxlogscore=630
+ definitions=2023-09-25_04,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ mlxscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=885 spamscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
  definitions=main-2309250047
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series add base description of UART, TLMM, RPMHCC, GCC and RPMh PD
-nodes which helps SM4450 boot to shell with console on boards with this
-SoC.
+Add SM4450 PDC, which will used in SM4450 DTS.
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 ---
-This patch series depends on below patch series:
-"[PATCH v2 0/4] clk: qcom: Add support for GCC and RPMHCC on SM4450"
-https://lore.kernel.org/linux-arm-msm/20230909123431.1725728-1-quic_ajipan@quicinc.com/
-"[PATCH v4 0/2] pinctl: qcom: Add SM4450 pinctrl driver"
-https://lore.kernel.org/linux-arm-msm/20230920082102.5744-1-quic_tengfan@quicinc.com/
+ .../devicetree/bindings/interrupt-controller/qcom,pdc.yaml       | 1 +
+ 1 file changed, 1 insertion(+)
 
-v4 -> v5:
-  - separate reserved gpios setting from enable UART console patch
-
-v3 -> v4:
-  - adjustment the sequence of property and property-names
-  - update 0 to 0x0 for reg params
-  - remove unrelated change
-  - separate SoC change and board change
-
-v2 -> v3:
-  - fix dtbs_check warning
-  - remove interconnect, iommu, scm and tcsr related code
-  - rearrangement dt node
-  - remove smmu, scm and tcsr related documentation update
-  - enable CONFIG_SM_GCC_4450 in defconfig related patch
-
-v1 -> v2:
-  - setting "qcom,rpmh-rsc" compatible to the first property
-  - keep order by unit address
-  - move tlmm node into soc node
-  - update arm,smmu.yaml
-  - add enable pinctrl and interconnect defconfig patches
-  - remove blank line
-  - redo dtbs_check check
-
-previous discussion here:
-[1] v4: https://lore.kernel.org/linux-arm-msm/20230922081026.2799-1-quic_tengfan@quicinc.com
-[2] v3: https://lore.kernel.org/linux-arm-msm/20230920082102.5744-1-quic_tengfan@quicinc.com
-[3] v2: https://lore.kernel.org/linux-arm-msm/20230915021509.25773-1-quic_tengfan@quicinc.com
-[4] v1: https://lore.kernel.org/linux-arm-msm/20230908065847.28382-1-quic_tengfan@quicinc.com
-
-Ajit Pandey (1):
-  arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db node
-
-Tengfei Fan (6):
-  dt-bindings: interrupt-controller: qcom,pdc: document qcom,sm4450-pdc
-  arm64: dts: qcom: sm4450: Add RPMH and Global clock
-  arm64: dts: qcom: add uart console support for SM4450
-  arm64: dts: qcom: sm4450-qrd: add QRD4450 uart support
-  arm64: dts: qcom: sm4450-qrd: mark QRD4450 reserved gpios
-  arm64: defconfig: enable clock controller and pinctrl
-
- .../interrupt-controller/qcom,pdc.yaml        |   1 +
- arch/arm64/boot/dts/qcom/sm4450-qrd.dts       |  19 +++-
- arch/arm64/boot/dts/qcom/sm4450.dtsi          | 107 ++++++++++++++++++
- arch/arm64/configs/defconfig                  |   2 +
- 4 files changed, 127 insertions(+), 2 deletions(-)
-
-
-base-commit: 940fcc189c51032dd0282cbee4497542c982ac59
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+index 4847b04be1a1..86d61896f591 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+@@ -35,6 +35,7 @@ properties:
+           - qcom,sdm845-pdc
+           - qcom,sdx55-pdc
+           - qcom,sdx65-pdc
++          - qcom,sm4450-pdc
+           - qcom,sm6350-pdc
+           - qcom,sm8150-pdc
+           - qcom,sm8250-pdc
 -- 
 2.17.1
 
