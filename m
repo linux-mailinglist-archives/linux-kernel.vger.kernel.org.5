@@ -2,200 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A6D7AD728
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B6B7AD726
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjIYLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
+        id S229968AbjIYLnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbjIYLnh (ORCPT
+        with ESMTP id S229584AbjIYLnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:43:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AC4EE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:43:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB333C433C9;
-        Mon, 25 Sep 2023 11:43:25 +0000 (UTC)
-Date:   Mon, 25 Sep 2023 12:43:23 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] swiotlb: fix the check whether a device has used
- software IO TLB
-Message-ID: <ZRFyW/pFpnL+bDbg@arm.com>
-References: <20230913121403.GB4544@lst.de>
- <20230913142656.29e135d6@meshulam.tesarici.cz>
- <ZQNQscYr0rQWdw66@arm.com>
- <20230915111343.01496320@meshulam.tesarici.cz>
- <ZQSPyBRjnSISNFmD@arm.com>
- <20230917114741.01a23364@meshulam.tesarici.cz>
- <ZQhwnhOQbDp3j8y7@arm.com>
- <20230922153129.69b26975@meshulam.tesarici.cz>
- <20230922191213.379d440a@meshulam.tesarici.cz>
- <20230922202057.47d93603@meshulam.tesarici.cz>
+        Mon, 25 Sep 2023 07:43:31 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B12101;
+        Mon, 25 Sep 2023 04:43:24 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EC3322C6;
+        Mon, 25 Sep 2023 13:41:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695642102;
+        bh=7drmX4x0568COQ3pmzKZZ5GBj/TdmLP8mLIm57UxoTk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kdMLdujFa+CaEAZgea7ohvBwyIGATOAD46fquHT85pDVPg8wfFfhb0E4VPru3Eiky
+         TP6THd4p+RNmisuYDj1FxIsv93yIne1grVH2+/odWIVVe45WP0Hs9IVJPHlO4+eVUt
+         RB4GmJgmkL1P+o0QWWp8EhRUF7D7dboQvBwuSg70=
+Date:   Mon, 25 Sep 2023 14:43:32 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
+Message-ID: <20230925114332.GC8583@pendragon.ideasonboard.com>
+References: <20230901155732.252436-1-alain.volmat@foss.st.com>
+ <20230901155732.252436-5-alain.volmat@foss.st.com>
+ <20230905090258.GC31594@pendragon.ideasonboard.com>
+ <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
+ <20230922160818.GJ19112@pendragon.ideasonboard.com>
+ <20230925113542.GA646870@gnbcxd0016.gnb.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230922202057.47d93603@meshulam.tesarici.cz>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230925113542.GA646870@gnbcxd0016.gnb.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 08:20:57PM +0200, Petr Tesařík wrote:
-> On Fri, 22 Sep 2023 19:12:13 +0200
-> Petr Tesařík <petr@tesarici.cz> wrote:
-> > On Fri, 22 Sep 2023 15:31:29 +0200
-> > Petr Tesařík <petr@tesarici.cz> wrote:
-> > > On Mon, 18 Sep 2023 16:45:34 +0100
-> > > Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > > On Sun, Sep 17, 2023 at 11:47:41AM +0200, Petr Tesařík wrote:    
-> > > > > Ah... You may have a point after all if this sequence of events is
-> > > > > possible:
+On Mon, Sep 25, 2023 at 01:35:42PM +0200, Alain Volmat wrote:
+> On Fri, Sep 22, 2023 at 07:08:18PM +0300, Laurent Pinchart wrote:
+> > On Fri, Sep 22, 2023 at 06:02:27PM +0200, Alain Volmat wrote:
+> > > On Tue, Sep 05, 2023 at 12:02:58PM +0300, Laurent Pinchart wrote:
+> > > > On Fri, Sep 01, 2023 at 05:57:23PM +0200, Alain Volmat wrote:
+> > > > > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
 > > > > > 
-> > > > > - CPU 0 writes new value to mem->pools->next in swiotlb_dyn_alloc().
+> > > > > Add dcmipp support to STM32MP135.
 > > > > > 
-> > > > > - CPU 1 observes the new value in swiotlb_find_slots(), even though it
-> > > > >   is not guaranteed by any barrier, allocates a slot and sets the
-> > > > >   dev->dma_uses_io_tlb flag.
+> > > > > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > > > > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > > > > ---
+> > > > >  arch/arm/boot/dts/st/stm32mp135.dtsi | 8 ++++++++
+> > > > >  1 file changed, 8 insertions(+)
 > > > > > 
-> > > > > - CPU 1 (driver code) writes the returned buffer address into its
-> > > > >   private struct. This write is ordered after dev->dma_uses_io_tlb
-> > > > >   thanks to the smp_wmb() in swiotlb_find_slots().
-> > > > > 
-> > > > > - CPU 2 (driver code) reads the buffer address, and DMA core passes it
-> > > > >   to is_swiotlb_buffer(), which contains smp_rmb().
-> > > > > 
-> > > > > - IIUC CPU 2 is guaranteed to observe the new value of
-> > > > >   dev->dma_uses_io_tlb, but it may still use the old value of
-> > > > >   mem->pools->next, because the write on CPU 0 was not ordered
-> > > > >   against anything. The fact that the new value was observed by CPU 1
-> > > > >   does not mean that it is also observed by CPU 2.      
+> > > > > diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > > > index abf2acd37b4e..beee9ec7ed0d 100644
+> > > > > --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > > > +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > > > @@ -8,5 +8,13 @@
+> > > > >  
+> > > > >  / {
+> > > > >  	soc {
+> > > > > +		dcmipp: dcmipp@5a000000 {
+> > > > > +			compatible = "st,stm32mp13-dcmipp";
+> > > > > +			reg = <0x5a000000 0x400>;
+> > > > > +			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+> > > > > +			resets = <&rcc DCMIPP_R>;
+> > > > > +			clocks = <&rcc DCMIPP_K>;
+> > > > > +			status = "disabled";
 > > > > 
-> > > > Yes, that's possible. On CPU 1 there is a control dependency between the
-> > > > read of mem->pools->next and the write of dev->dma_uses_io_tlb but I
-> > > > don't think this is sufficient to claim multi-copy atomicity (if CPU 1
-> > > > sees mem->pools->next write by CPU 0, CPU 2 must see it as well), at
-> > > > least not on all architectures supported by Linux. memory-barriers.txt
-> > > > says that a full barrier on CPU 1 is needed between the read and write,
-> > > > i.e. smp_mb() before WRITE_ONCE(dev->dma_uses_io_tlb). You could add it
-> > > > just before "goto found" in swiotlb_find_slots() since it's only needed
-> > > > on this path.    
+> > > > This needs a port, as it's marked as required in the bindings. You can
+> > > > leave the endpoint out.
 > > > 
-> > > Let me check my understanding. This smp_mb() is not needed to make sure
-> > > that the write to dev->dma_uses_io_tlb cannot be visible before the
-> > > read of mem->pools->next. Since stores are not speculated, that
-> > > ordering is provided by the control dependency alone.
+> > > I first agreed with your comment but, having done the check (make
+> > > CHECK_DTBS=y  ...) this doesn't seem to be required because the dcmipp
+> > > node is kept disabled within our dtsi.
+> > 
+> > Interesting.
+> > 
+> > > (it is later on only enabled in dts file which as well have the port
+> > > property).
+> > > Indeed, to check this I changed it to okay and DTC_CHK complained about
+> > > missing port property.
 > > > 
-> > > But a general barrier ensures that a third CPU will observe the write to
-> > > mem->pools->next after the read of mem->pools->next. Makes sense.  
+> > > Hence, I'd think that port doesn't have to be added in this dtsi file.
+> > > Would you agree with that ?
 > > 
-> > Now that I'm writing the patch, I get your idea to replace WRITE_ONCE()
-> > with smp_store_release(). Since a full memory barrier is required for
-> > multicopy atomicity, it is not "more than I need". Instead, the
-> > ordering contraints may be possibly restricted to "CPUs participating
-> > in a release-acquire chain" if I also replace READ_ONCE() in
-> > is_swiotlb_buffer() with smp_read_acquire().
-> > 
-> > I believe it does not matter that the CPU which writes a new value to
-> > mem->pools->next in swiotlb_dyn_alloc() does not participate in the
-> > chain, because the value must have been visible to the CPU which
-> > executes swiotlb_find_slots() and which does participate in the chain.
-> > 
-> > Let me double-check this thinking with a litmus test.
+> > I still think the port belongs here, as it's an intrinsic property of
+> > the dcmipp, not a property of the board. Does it cause any issue to add
+> > a port in the .dtsi ?
 > 
-> Hm. I didn't have much luck with smp_store_release(), because I need
-> to ensure ordering of the SUBSEQUENT store (by a device driver).
-> 
-> However, inserting smp_mb() _after_ WRITE_ONCE(dev->dma_uses_io_tlb)
-> seems to be enough to ensure proper ordering. I could even remove the
-> write memory barrier in swiotlb_dyn_alloc().
+> I agree that the port refers more to the SoC (hence dtsi) rather than
+> the board (hence dts), however I am wondering if this is really
+> something usually done.  I had a look at other dtsi with node related
+> to similar kind of devices and it seems to me that there is no such case
+> of a dtsi with a port having nothing in it.  Did I missed something ?
 
-The smp_wmb() in swiotlb_dyn_alloc() should be removed, it doesn't help
-anything.
+Look at the csi@32e4000 and csi@32e5000 nodes in
+arch/arm64/boot/dts/freescale/imx8mp.dtsi for instance. There are quite
+a few other examples.
 
-> This is my first time using herd7, so I can only hope I got everything
-> right. FWIW this is my litmus test:
-
-Nice, easier to reason on a smaller test.
-
-> C swiotlb-new-pool
-> 
-> (*
->  * Result: Never
->  *
->  * Check that a newly allocated pool is always visible when the corresponding
->  * swiotlb buffer is visible.
->  *)
-> 
-> {}
-> 
-> P0(int *pool)
-> {
-> 	/* swiotlb_dyn_alloc() */
-> 	WRITE_ONCE(*pool, 999);
-> }
-> 
-> P1(int *pool, int *flag, int *buf)
-> {
-> 	/* swiotlb_find_slots() */
-> 	int r0 = READ_ONCE(*pool);
-> 	if (r0) {
-> 		WRITE_ONCE(*flag, 1);
-> 		smp_mb();
-
-I think in the current code, that's the smp_wmb() just before the
-presumed driver write. IIUC, smp_wmb() is not sufficient to ensure that
-WRITE_ONCE() on P0 is also observed, it would need to be smp_mb(). Nor
-would the smp_store_release() instead of WRITE_ONCE(*flag, 1).
-
-My initial thought was to place an smp_mb() just before WRITE_ONCE()
-above as it matches the multicopy atomicity description in
-memory-barriers.txt. But since we have the presumed driver write anyway,
-we can use that as the write on P1, read-from by P2, to ensure the
-global visibility of the write on P0.
-
-> 	}
-> 
-> 	/* device driver (presumed) */
-> 	WRITE_ONCE(*buf, r0);
-> }
-> 
-> P2(int *pool, int *flag, int *buf)
-> {
-> 	/* device driver (presumed) */
-> 	int r1 = READ_ONCE(*buf);
-> 
-> 	/* is_swiotlb_buffer() */
-> 	int r2;
-> 	int r3;
-> 
-> 	smp_rmb();
-> 	r2 = READ_ONCE(*flag);
-> 	if (r2) {
-> 		r3 = READ_ONCE(*pool);
-> 	}
-> }
-> 
-> exists (2:r1<>0 /\ 2:r3=0) (* Not flagged or pool not found. *)
-> 
-> Petr T
-
-I guess a v2 of this patch would only need to change the smp_wmb() in
-swiotlb_find_slots() (and the original fix). But write some comments,
-I'll forget everything in a week.
+> > > > With this fixed,
+> > > > 
+> > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > 
+> > > > > +		};
+> > > > >  	};
+> > > > >  };
 
 -- 
-Catalin
+Regards,
+
+Laurent Pinchart
