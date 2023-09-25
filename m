@@ -2,139 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921F87ACDAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0417ACDB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbjIYBol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 21:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
+        id S231605AbjIYBrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 21:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjIYBok (ORCPT
+        with ESMTP id S229480AbjIYBrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 21:44:40 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8C8BD
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 18:44:33 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so44436675e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 18:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695606272; x=1696211072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m/CGTipvVjSZ3BP+G1gXdYpyR8CRzYcGoUaEJ1H1ROo=;
-        b=cH1nibGsEno7h53G+HUXEX5DY7YxWwe8icKDDNkvLsmIHNHnSCgf83RsN2ovsBNdp1
-         jCQ5TKOWTgC5TbwESp06TSMaS0dcY3gS/RJNc+RITyNDfJLb+syN5xXT0X3nROTZfV2A
-         waN8NNhtxQ6rWvkk+qPna2/+l2RMpqrcu+kgKF26UdOUnBCjezvopykY3wvS3Jn2m5eH
-         90JZnKpKYFwCp57pnbnHVxDx16cFxK1v5wT0hkaBAUbVzjiBKxsrjihNscfS7sYj6yMZ
-         Tc4MGs+WkVDNwMx+Iqp/7cbz1NQKgbEYl7Vf0dv9i1QtwEDpZNMh/OCdtnh5nx2d6XGA
-         mcMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695606272; x=1696211072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m/CGTipvVjSZ3BP+G1gXdYpyR8CRzYcGoUaEJ1H1ROo=;
-        b=ejwl98ZVqI9qVYO1NrPoE/webx9IrBXAz+gFky7T6ifhtbCfgffDeXAcAeAG/MUODi
-         YgCnrDc52RYo8j/mjy0x7h6ls9+BpqhuNfdB9arUhNx5ckbQAmPDCp6p03GzN4Dj1G/x
-         yP78yZF7V75WZ4pJiBdsqzNFkCqfPbuaEkQPTI4suG8Psk+NgdctcUJBgqfzMVC5u0K6
-         MXabHuVWkYurfe1FD7mKyCgouGaxSziN0JRtenmPvClvqd6+PPHFMW35OxFbhPiRIKpN
-         wqwUq/xIhMKtdV6IYUQlG+g+PUKkS0y3RuTNEDoKqK+0zpQ2rpIC3osxHHXM0DlBxDnD
-         pbTg==
-X-Gm-Message-State: AOJu0YzwXgVfsIKvBQNz0cBzLrVBbZg/qLiSq97257J2oBElpCq+0CS8
-        ZrtlDzhLuy2oZSl/WU+WQA5OXHsuR/gEDVwA1uLjJw==
-X-Google-Smtp-Source: AGHT+IEto/nIwajWxdPEL+t63YAllqUl92DqGJqCOKkzzSeGUIbaehdRQ2XaCYWirPmYDwHDzZuTwM3EKoch6oDtrY4=
-X-Received: by 2002:adf:ec4b:0:b0:313:f4e2:901d with SMTP id
- w11-20020adfec4b000000b00313f4e2901dmr5880997wrn.22.1695606271729; Sun, 24
- Sep 2023 18:44:31 -0700 (PDT)
+        Sun, 24 Sep 2023 21:47:23 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86AFBD;
+        Sun, 24 Sep 2023 18:47:15 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Vsjo5EY_1695606431;
+Received: from 30.221.129.66(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vsjo5EY_1695606431)
+          by smtp.aliyun-inc.com;
+          Mon, 25 Sep 2023 09:47:13 +0800
+Message-ID: <0b49743f-1e2f-f0fd-22af-b9f76068fa75@linux.alibaba.com>
+Date:   Mon, 25 Sep 2023 09:47:11 +0800
 MIME-Version: 1.0
-References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
- <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
- <20230919-70b2f1e368a8face73468dfa@fedora> <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
- <20230919-cc4646dbfb953bd34e05658c@fedora> <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
- <20230922-unclothed-bottom-5531329f9724@spud> <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
- <20230922-removable-footwork-f1d4d96d38dd@spud>
-In-Reply-To: <20230922-removable-footwork-f1d4d96d38dd@spud>
-From:   yang tylor <tylor_yang@himax.corp-partner.google.com>
-Date:   Mon, 25 Sep 2023 09:44:21 +0800
-Message-ID: <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI device
-To:     Conor Dooley <conor@kernel.org>
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH net-next v4 12/18] net/smc: implement DMB-related
+ operations of loopback
+To:     kernel test robot <lkp@intel.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     oe-kbuild-all@lists.linux.dev, wintera@linux.ibm.com,
+        schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1695568613-125057-13-git-send-email-guwen@linux.alibaba.com>
+ <202309250749.LB7ZUUGJ-lkp@intel.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <202309250749.LB7ZUUGJ-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
-ote:
->
-> On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
-> > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > >
-> > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
-> > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@kernel.=
-org> wrote:
-> > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
-> > >
-> > > > > > The behavior of "himax,boot_time_fw_upgrade" seems not stable a=
-nd
-> > > > > > should be removed. "himax,fw_in_flash", I use the kernel config=
- for
-> > > > > > user to select.
-> > > > >
-> > > > > That seems like a bad idea, we want to be able to build one kerne=
-l that
-> > > > > works for all hardware at the same time.
-> > > > >
-> > > > I see, so I should take that back?
-> > > > I'll explain more about it.
-> > >
-> > > Are there particular ICs where the firmware would always be in flash =
-and
-> > > others where it would never be? Or is this a choice made by the board=
- or
-> > > system designer?
-> > >
-> > Most cases it's about the system designer's decision. But some ICs may =
-be forced
-> > to use flash because of its architecture(multiple IC inside, need to
-> > load firmware to
-> > multiple IC's sram by master IC). But if there is no limitation on
-> > this part, most system
-> > designers will prefer flashless.
->
-> Forgive me if I am not understanding correctly, there are some ICs that
-> will need to load the firmware from flash and there are some where it
-> will be a decision made by the designer of the board. Is the flash part
-> of the IC or is it an external flash chip?
->
-
-Both are possible, it depends on the IC type. For TDDI, the IC is long
-and thin, placed on panel PCB, flash will be located at the external
-flash chip. For the OLED TP, IC is usually placed at FPC and its flash
-is embedded, thus the IC size is large compared to TDDI. But from the
-driver's perspective either external flash or embedded flash, the IC
-itself will load firmware from flash automatically when reset pin is
-released. Only if firmware is loading from the host storage system,
-the driver needs to operate the IC in detail.
-
-> Cheers,
-> Conor.
 
 
-Thanks,
-Tylor
+On 2023/9/25 07:29, kernel test robot wrote:
+> Hi Wen,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on net-next/main]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Wen-Gu/net-smc-decouple-ism_dev-from-SMC-D-device-dump/20230924-231933
+> base:   net-next/main
+> patch link:    https://lore.kernel.org/r/1695568613-125057-13-git-send-email-guwen%40linux.alibaba.com
+> patch subject: [PATCH net-next v4 12/18] net/smc: implement DMB-related operations of loopback
+> config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20230925/202309250749.LB7ZUUGJ-lkp@intel.com/config)
+> compiler: mips-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230925/202309250749.LB7ZUUGJ-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309250749.LB7ZUUGJ-lkp@intel.com/
+> 
+> All error/warnings (new ones prefixed by >>):
+> 
+>     net/smc/smc_loopback.c: In function 'smc_lo_register_dmb':
+>>> net/smc/smc_loopback.c:102:30: error: implicit declaration of function 'vzalloc'; did you mean 'kvzalloc'? [-Werror=implicit-function-declaration]
+>       102 |         dmb_node->cpu_addr = vzalloc(dmb->dmb_len);
+>           |                              ^~~~~~~
+>           |                              kvzalloc
+>>> net/smc/smc_loopback.c:102:28: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+>       102 |         dmb_node->cpu_addr = vzalloc(dmb->dmb_len);
+>           |                            ^
+>     net/smc/smc_loopback.c: In function 'smc_lo_unregister_dmb':
+>>> net/smc/smc_loopback.c:159:9: error: implicit declaration of function 'vfree'; did you mean 'kvfree'? [-Werror=implicit-function-declaration]
+>       159 |         vfree(dmb_node->cpu_addr);
+>           |         ^~~~~
+>           |         kvfree
+>     cc1: some warnings being treated as errors
+> 
+
+It can be fixed by including corresponding header file:
+
+#include <linux/vmalloc.h>
+
+
+Continue to wait for other review comments and will fix this in the next version.
+
+Thanks.
+
+> 
+> vim +102 net/smc/smc_loopback.c
+> 
+>      79	
+>      80	static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
+>      81				       void *client_priv)
+>      82	{
+>      83		struct smc_lo_dmb_node *dmb_node, *tmp_node;
+>      84		struct smc_lo_dev *ldev = smcd->priv;
+>      85		int sba_idx, rc;
+>      86	
+>      87		/* check space for new dmb */
+>      88		for_each_clear_bit(sba_idx, ldev->sba_idx_mask, SMC_LODEV_MAX_DMBS) {
+>      89			if (!test_and_set_bit(sba_idx, ldev->sba_idx_mask))
+>      90				break;
+>      91		}
+>      92		if (sba_idx == SMC_LODEV_MAX_DMBS)
+>      93			return -ENOSPC;
+>      94	
+>      95		dmb_node = kzalloc(sizeof(*dmb_node), GFP_KERNEL);
+>      96		if (!dmb_node) {
+>      97			rc = -ENOMEM;
+>      98			goto err_bit;
+>      99		}
+>     100	
+>     101		dmb_node->sba_idx = sba_idx;
+>   > 102		dmb_node->cpu_addr = vzalloc(dmb->dmb_len);
+>     103		if (!dmb_node->cpu_addr) {
+>     104			rc = -ENOMEM;
+>     105			goto err_node;
+>     106		}
+>     107		dmb_node->len = dmb->dmb_len;
+>     108		dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
+>     109	
+>     110	again:
+>     111		/* add new dmb into hash table */
+>     112		get_random_bytes(&dmb_node->token, sizeof(dmb_node->token));
+>     113		write_lock(&ldev->dmb_ht_lock);
+>     114		hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_node->token) {
+>     115			if (tmp_node->token == dmb_node->token) {
+>     116				write_unlock(&ldev->dmb_ht_lock);
+>     117				goto again;
+>     118			}
+>     119		}
+>     120		hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
+>     121		write_unlock(&ldev->dmb_ht_lock);
+>     122	
+>     123		dmb->sba_idx = dmb_node->sba_idx;
+>     124		dmb->dmb_tok = dmb_node->token;
+>     125		dmb->cpu_addr = dmb_node->cpu_addr;
+>     126		dmb->dma_addr = dmb_node->dma_addr;
+>     127		dmb->dmb_len = dmb_node->len;
+>     128	
+>     129		return 0;
+>     130	
+>     131	err_node:
+>     132		kfree(dmb_node);
+>     133	err_bit:
+>     134		clear_bit(sba_idx, ldev->sba_idx_mask);
+>     135		return rc;
+>     136	}
+>     137	
+>     138	static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
+>     139	{
+>     140		struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
+>     141		struct smc_lo_dev *ldev = smcd->priv;
+>     142	
+>     143		/* remove dmb from hash table */
+>     144		write_lock(&ldev->dmb_ht_lock);
+>     145		hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
+>     146			if (tmp_node->token == dmb->dmb_tok) {
+>     147				dmb_node = tmp_node;
+>     148				break;
+>     149			}
+>     150		}
+>     151		if (!dmb_node) {
+>     152			write_unlock(&ldev->dmb_ht_lock);
+>     153			return -EINVAL;
+>     154		}
+>     155		hash_del(&dmb_node->list);
+>     156		write_unlock(&ldev->dmb_ht_lock);
+>     157	
+>     158		clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
+>   > 159		vfree(dmb_node->cpu_addr);
+>     160		kfree(dmb_node);
+>     161	
+>     162		return 0;
+>     163	}
+>     164	
+> 
