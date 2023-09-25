@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A95A7ACE98
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A157ACE99
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbjIYDHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 23:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S230137AbjIYDIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 23:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbjIYDHM (ORCPT
+        with ESMTP id S229846AbjIYDIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 23:07:12 -0400
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF5BA4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:07:04 -0700 (PDT)
-Received: from localhost.localdomain (ppp118-210-175-231.adl-adc-lon-bras34.tpg.internode.on.net [118.210.175.231])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 71CB420172;
-        Mon, 25 Sep 2023 11:06:58 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codeconstruct.com.au; s=2022a; t=1695611219;
-        bh=hSW2jDWPujgtEV8cEoru33vgnmkR7CY+fa5+NBEC1Nk=;
-        h=From:To:Cc:Subject:Date;
-        b=f8WhEEgjV/kX+2QkmOwA8DmSGzO0Yw/NczkDPL3N4ZbRC7fWrJkh1JMQeL33TqAab
-         pvm+q0+TA+kOhf6y5ZPAqGPPV6j+nFYGjah3sLs8fH0fRpYQNFaxs0w/1h4IV0JI5y
-         YxBkYAJ3QisHi4G+x0g7yMqeSRzPZB3bN0FfaJLBQZ+4ATQOJb760AL6ZpnI047EdK
-         e6gd3AoJgHcF+NLya3sM/dj5vsamoUm4ixMfw78jD9DOJPqEJ+lRk9eJeQU3X2oBmS
-         eKVaSjKBEtaGvf3aXXOhYm0NcJzhubp9pZram9hl3odv3ln6j+ExF0HZla4QfHrcGw
-         gOGSUfkvdww6Q==
-From:   Andrew Jeffery <andrew@codeconstruct.com.au>
-To:     joel@jms.id.au, andrew@aj.id.au
-Cc:     Andrew Jeffery <andrew@codeconstruct.com.au>,
-        linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-Subject: [PATCH] MAINTAINERS: aspeed: Update Andrew's email address
-Date:   Mon, 25 Sep 2023 12:36:47 +0930
-Message-Id: <20230925030647.40283-1-andrew@codeconstruct.com.au>
-X-Mailer: git-send-email 2.39.2
+        Sun, 24 Sep 2023 23:08:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36746A3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695611231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LibzKZdeb1DOWmi/oEB5Gnb73A+4XGeHqkUmug2NkOM=;
+        b=Qb/68mnugye4Ta//yCjKcUAQN+hqu90j4Xf49vF8AUduqxCxiCf66Cn1aGGfub4LHC015Z
+        YFsruJf2qrAzMMKGHqtrKnVitzU2/Akv0p/iZEPY72nEuMKXnKeqII6aWnzhJypTqOIt5M
+        dEzAidRwg2aeTSkqhsKLz+IVq43rUXg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-655-uZKBFWG_Pa2dv_Xgk2SIig-1; Sun, 24 Sep 2023 23:07:08 -0400
+X-MC-Unique: uZKBFWG_Pa2dv_Xgk2SIig-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C756C85A5A8;
+        Mon, 25 Sep 2023 03:07:07 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 69B5B2026D68;
+        Mon, 25 Sep 2023 03:07:04 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, akpm@linux-foundation.org,
+        eric.devolder@oracle.com, vschneid@redhat.com, dyoung@redhat.com,
+        sourabhjain@linux.ibm.com, Baoquan He <bhe@redhat.com>
+Subject: [PATCH v2] Crash: add lock to serialize crash hotplug handling
+Date:   Mon, 25 Sep 2023 11:07:01 +0800
+Message-ID: <20230925030701.338672-1-bhe@redhat.com>
 MIME-Version: 1.0
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've changed employers, have company email that deals with patch-based
-workflows without too much of a headache, and am trying to steer some
-content out of my personal mail.
+Eric reported that handling corresponding crash hotplug event can be
+failed easily when many memory hotplug event are notified in a short
+period. They failed because failing to take __kexec_lock.
 
-Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+=======
+[   78.714569] Fallback order for Node 0: 0
+[   78.714575] Built 1 zonelists, mobility grouping on.  Total pages: 1817886
+[   78.717133] Policy zone: Normal
+[   78.724423] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
+[   78.727207] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
+[   80.056643] PEFILE: Unsigned PE binary
+=======
+
+The memory hotplug events are notified very quickly and very many,
+while the handling of crash hotplug is much slower relatively. So the
+atomic variable __kexec_lock and kexec_trylock() can't guarantee the
+serialization of crash hotplug handling.
+
+Here, add a new mutex lock __crash_hotplug_lock to serialize crash
+hotplug handling specifically. This doesn't impact the usage of
+__kexec_lock.
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- MAINTAINERS | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v1->v2:
+ - Move mutex lock definition into CONFIG_CRASH_HOTPLUG ifdeffery
+   scope in kernel/crash_core.c because the lock is only needed and
+   used in that scope. Suggested by Eric.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b19995690904..1965cee433b0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1963,7 +1963,7 @@ F:	drivers/irqchip/irq-aspeed-i2c-ic.c
+ kernel/crash_core.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index 03a7932cde0a..5951d6366b72 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -739,6 +739,17 @@ subsys_initcall(crash_notes_memory_init);
+ #undef pr_fmt
+ #define pr_fmt(fmt) "crash hp: " fmt
  
- ARM/ASPEED MACHINE SUPPORT
- M:	Joel Stanley <joel@jms.id.au>
--R:	Andrew Jeffery <andrew@aj.id.au>
-+R:	Andrew Jeffery <andrew@codeconstruct.com.au>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
- S:	Supported
-@@ -3058,7 +3058,7 @@ F:	Documentation/devicetree/bindings/peci/peci-aspeed.yaml
- F:	drivers/peci/controller/peci-aspeed.c
++/*
++ * Different than kexec/kdump loading/unloading/jumping/shrinking which
++ * usually rarely happen, there will be many crash hotplug events notified
++ * during one short period, e.g one memory board is hot added and memory
++ * regions are online. So mutex lock  __crash_hotplug_lock is used to
++ * serialize the crash hotplug handling specifically.
++ */
++DEFINE_MUTEX(__crash_hotplug_lock);
++#define crash_hotplug_lock() mutex_lock(&__crash_hotplug_lock)
++#define crash_hotplug_unlock() mutex_unlock(&__crash_hotplug_lock)
++
+ /*
+  * This routine utilized when the crash_hotplug sysfs node is read.
+  * It reflects the kernel's ability/permission to update the crash
+@@ -783,9 +794,11 @@ static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
+ {
+ 	struct kimage *image;
  
- ASPEED PINCTRL DRIVERS
--M:	Andrew Jeffery <andrew@aj.id.au>
-+M:	Andrew Jeffery <andrew@codeconstruct.com.au>
- L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- L:	linux-gpio@vger.kernel.org
-@@ -3075,7 +3075,7 @@ F:	drivers/irqchip/irq-aspeed-scu-ic.c
- F:	include/dt-bindings/interrupt-controller/aspeed-scu-ic.h
++	crash_hotplug_lock();
+ 	/* Obtain lock while changing crash information */
+ 	if (!kexec_trylock()) {
+ 		pr_info("kexec_trylock() failed, elfcorehdr may be inaccurate\n");
++		crash_hotplug_unlock();
+ 		return;
+ 	}
  
- ASPEED SD/MMC DRIVER
--M:	Andrew Jeffery <andrew@aj.id.au>
-+M:	Andrew Jeffery <andrew@codeconstruct.com.au>
- L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- L:	linux-mmc@vger.kernel.org
+@@ -852,6 +865,7 @@ static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
+ out:
+ 	/* Release lock now that update complete */
+ 	kexec_unlock();
++	crash_hotplug_unlock();
+ }
+ 
+ static int crash_memhp_notifier(struct notifier_block *nb, unsigned long val, void *v)
 -- 
-2.39.2
+2.41.0
 
