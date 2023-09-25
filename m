@@ -2,190 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A99B7AD364
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28EA7AD374
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbjIYIcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        id S232895AbjIYIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjIYIcN (ORCPT
+        with ESMTP id S232827AbjIYIdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:32:13 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18FABC
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:32:06 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59c07cf02ebso70286667b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:32:06 -0700 (PDT)
+        Mon, 25 Sep 2023 04:33:38 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A53D3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:33:31 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ae75ece209so531033866b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:33:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695630726; x=1696235526; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ESRqX1PlrIchswbjY6F5gY3I+wvwb2kVpQ+ph7N3oWo=;
-        b=YE4gVrE5UL3QWSJeaJ9+SqhEvadjQ/UUiak38YJh+2A9pLX7wZzVsi9aHGiMb016GF
-         HlobMBNghSGPFjKkEaNDAevbtJm0qXJ4cK37tYR6nvMlGOkIgTPNlrYHa6bbomG5EMHu
-         t+cPaCGIPOE8961bC5sw5/bOdB5361HMj0UJfZbj4RKKYgSj+9PnMU1M38qV/SQzOZbW
-         M13g6E1MhUumfqBexsINmPKFI9tftuGgc0E56/rFOOXZwUFeKw5Nym9UsRU+f6Eio/4F
-         9P8NyUxY0PvSVjzGahoALL+o+6pKQkMAkDewE59zN5VGavTCUrfJZBr50bxIYvOcV6tw
-         BDGg==
+        d=linaro.org; s=google; t=1695630810; x=1696235610; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XJHSZ26T3MOsUizLOBZhGM+0h1d7T5Ujoo+fZj6JV3g=;
+        b=d5o96ZdoFftzNJAVZmgUlLPYKvS8Mh9Fw1CkDrM2suFptCT6NG3eLRZMOmJ83Whgdk
+         hrm8OtycYnm62nBABKCe4puWGnhhsXo7QbZcaQr2ZG/V3GqKR19xaYsJrluw2NS4H8CT
+         XjCc9hrTCxAWUCheTk8k03BkeoGbRWJvcSUNImMXoPp0PVk8/Q5eclseqQEmqDa3ky71
+         75MTeQdrAeVJZcMOo8CdXjfgEYjOPsbJ0RmlyZU5bkZgXhDXQhAo6SQqYVkL4XjpXddl
+         UQ7oNdyBKcD16vHtXtj+btsJHN9iUyDwzlakbesl7wds+jMEFDfcme1OatUeCHR7dlXO
+         UVEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695630726; x=1696235526;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ESRqX1PlrIchswbjY6F5gY3I+wvwb2kVpQ+ph7N3oWo=;
-        b=YJe5QZdOi0128JeJUqMWV1+kQnm1hcxyFHi6rC50g+I6ECm6muUccQ8GxfjCvH7ihN
-         F4Fwsoln/XES18aIfLhORWs0NIs/oYzGmQRlyuri55v9UEaF8+2EudGMq1BfR/Ej3ItH
-         PkMFdrtqZB8tiCSLKH1LW/wfNpbm3hmzHv9L2WTNmbBwgGgTkglNXNELX4I6KjDW/i7m
-         Ht6qkrhQCdDmT32+8h4htmtxRJTybB1F0f4zM2Azxj+cGXOIlVgS5uWQBYHprom4R07D
-         8gR/hd+fiY/MvUaVcBY7Uf1c9LWJoC1qBrVbcQK9dQx2OGR46G9erXvipETEuVN6qBkG
-         MkDw==
-X-Gm-Message-State: AOJu0YyMb/fCyWWzjcnwqHkgEsfgptHKgx6EBT22GHGMNiVFHEMhraZu
-        GHY8lnEC4xCEt6gk8+T/ibWX5A==
-X-Google-Smtp-Source: AGHT+IFI7sWdT9SaX/WaLFmLycQV1E3ZHD2waCsU6dSHFKECPifOP+qkTIKONo5XkYDTZbJNeNdwNw==
-X-Received: by 2002:a25:744b:0:b0:d84:da24:96de with SMTP id p72-20020a25744b000000b00d84da2496demr5304926ybc.33.1695630725781;
-        Mon, 25 Sep 2023 01:32:05 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t3-20020a056902018300b00d1b86efc0ffsm2024884ybh.6.2023.09.25.01.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 01:32:05 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 01:32:02 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 09/12] mm: add page_rmappable_folio() wrapper
-In-Reply-To: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
-Message-ID: <f4dc7bb6-be3a-c1b-c30-37c4e0c16e4d@google.com>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
+        d=1e100.net; s=20230601; t=1695630810; x=1696235610;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XJHSZ26T3MOsUizLOBZhGM+0h1d7T5Ujoo+fZj6JV3g=;
+        b=SkFdHl68GCkJZnxXTcqAkHa795BbV/lUrCcs/ccQM/BYHCnjx4zYh4i2QhFLoquaQu
+         2yf1zTE6CAdzlkJl9y9C8U8q7+V4mP/46VIZtJArVB3K15Rl09qgv5JhlwlrjaLkCsSy
+         s8hXToShAvU24IG2WR8LhS6KqFUGKcGvsr8bIT3aHXGuPfKl57GJ85TZlR3a43WJh1B+
+         fWXFJV2zTa4nnvDSbSKB6wstXnuU8q+EVe4VQVTjgtXG69i0NVtDdQ9UUp8uhAUPFOYa
+         vWg6JbzhC+5ffLya/Oy6qtMALBowKMHNGc0f3bXysoMFqE4wRvu/6HQ5VFp9TYrnIrCy
+         ZHqQ==
+X-Gm-Message-State: AOJu0Yw79ZPnJ2O79zOiZNycFdBT/YWNmdmxN2DnsIx5RNXrcc/5Pvjt
+        Sj/o1FpT52UQU8SpHHs1d74hfA==
+X-Google-Smtp-Source: AGHT+IFfuv30iJKFaQZblE5W2CuoAPDtpaqHfR9cl7zQ99pN7d4jonBQ0udhcCD4y3K2MN621drBuA==
+X-Received: by 2002:a17:906:3389:b0:9a5:9f8d:770 with SMTP id v9-20020a170906338900b009a59f8d0770mr5378906eja.46.1695630809684;
+        Mon, 25 Sep 2023 01:33:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id hs35-20020a1709073ea300b009b28ad521f4sm542452ejc.4.2023.09.25.01.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 01:33:28 -0700 (PDT)
+Message-ID: <df86ea4b-d389-4060-bd3b-830bacabde1c@linaro.org>
+Date:   Mon, 25 Sep 2023 10:33:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXT] Re: [PATCH v3 2/2] dt-bindings: media: imx-jpeg: Assign
+ slot for imx jpeg encoder/decoder
+Content-Language: en-US
+To:     Ming Qian <ming.qian@nxp.com>,
+        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>
+Cc:     "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
+        Tao Jiang <tao.jiang_2@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230925074131.10133-1-ming.qian@nxp.com>
+ <20230925074131.10133-2-ming.qian@nxp.com>
+ <bbc8dd05-8589-44ec-87dd-f2d7b4368245@linaro.org>
+ <AM6PR04MB63418AE18D3D0ED98CCC1A0FE7FCA@AM6PR04MB6341.eurprd04.prod.outlook.com>
+ <751a552e-5209-4d5e-9292-23339a06f8a9@linaro.org>
+ <AM6PR04MB63410BEA725DDBF1D1B7814FE7FCA@AM6PR04MB6341.eurprd04.prod.outlook.com>
+ <10c50df3-9a99-4552-9b25-0844b87e28f5@linaro.org>
+ <AM6PR04MB6341C8E7553F66695467C398E7FCA@AM6PR04MB6341.eurprd04.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <AM6PR04MB6341C8E7553F66695467C398E7FCA@AM6PR04MB6341.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-folio_prep_large_rmappable() is being used repeatedly along with a
-conversion from page to folio, a check non-NULL, a check order > 1:
-wrap it all up into struct folio *page_rmappable_folio(struct page *).
+On 25/09/2023 10:20, Ming Qian wrote:
+>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Sent: 2023年9月25日 16:14
+>> To: Ming Qian <ming.qian@nxp.com>; Mirela Rabulea (OSS)
+>> <mirela.rabulea@oss.nxp.com>; robh+dt@kernel.org; shawnguo@kernel.org
+>> Cc: krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>> mchehab@kernel.org; hverkuil-cisco@xs4all.nl; s.hauer@pengutronix.de;
+>> kernel@pengutronix.de; festevam@gmail.com; X.H. Bao
+>> <xiahong.bao@nxp.com>; Eagle Zhou <eagle.zhou@nxp.com>; Tao Jiang
+>> <tao.jiang_2@nxp.com>; dl-linux-imx <linux-imx@nxp.com>;
+>> devicetree@vger.kernel.org; linux-media@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+>> Subject: Re: [EXT] Re: [PATCH v3 2/2] dt-bindings: media: imx-jpeg: Assign slot
+>> for imx jpeg encoder/decoder
+>>
+>> Caution: This is an external email. Please take care when clicking links or
+>> opening attachments. When in doubt, report the message using the 'Report
+>> this email' button
+>>
+>>
+>> On 25/09/2023 10:13, Ming Qian wrote:
+>>>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>> Sent: 2023年9月25日 16:10
+>>>> To: Ming Qian <ming.qian@nxp.com>; Mirela Rabulea (OSS)
+>>>> <mirela.rabulea@oss.nxp.com>; robh+dt@kernel.org;
+>> shawnguo@kernel.org
+>>>> Cc: krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>>>> mchehab@kernel.org; hverkuil-cisco@xs4all.nl; s.hauer@pengutronix.de;
+>>>> kernel@pengutronix.de; festevam@gmail.com; X.H. Bao
+>>>> <xiahong.bao@nxp.com>; Eagle Zhou <eagle.zhou@nxp.com>; Tao Jiang
+>>>> <tao.jiang_2@nxp.com>; dl-linux-imx <linux-imx@nxp.com>;
+>>>> devicetree@vger.kernel.org; linux-media@vger.kernel.org; linux-
+>>>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+>>>> Subject: Re: [EXT] Re: [PATCH v3 2/2] dt-bindings: media: imx-jpeg:
+>>>> Assign slot for imx jpeg encoder/decoder
+>>>>
+>>>> Caution: This is an external email. Please take care when clicking
+>>>> links or opening attachments. When in doubt, report the message using
+>>>> the 'Report this email' button
+>>>>
+>>>>
+>>>> On 25/09/2023 10:07, Ming Qian wrote:
+>>>>>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>>>> Sent: 2023年9月25日 16:02
+>>>>>> To: Ming Qian <ming.qian@nxp.com>; Mirela Rabulea (OSS)
+>>>>>> <mirela.rabulea@oss.nxp.com>; robh+dt@kernel.org;
+>>>> shawnguo@kernel.org
+>>>>>> Cc: krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>>>>>> mchehab@kernel.org; hverkuil-cisco@xs4all.nl;
+>>>>>> s.hauer@pengutronix.de; kernel@pengutronix.de; festevam@gmail.com;
+>>>>>> X.H. Bao <xiahong.bao@nxp.com>; Eagle Zhou <eagle.zhou@nxp.com>;
+>>>>>> Tao Jiang <tao.jiang_2@nxp.com>; dl-linux-imx <linux-imx@nxp.com>;
+>>>>>> devicetree@vger.kernel.org; linux-media@vger.kernel.org; linux-
+>>>>>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+>>>>>> Subject: [EXT] Re: [PATCH v3 2/2] dt-bindings: media: imx-jpeg:
+>>>>>> Assign slot for imx jpeg encoder/decoder
+>>>>>>
+>>>>>> Caution: This is an external email. Please take care when clicking
+>>>>>> links or opening attachments. When in doubt, report the message
+>>>>>> using the 'Report this email' button
+>>>>>>
+>>>>>>
+>>>>>> On 25/09/2023 09:41, Ming Qian wrote:
+>>>>>>> There are total 4 slots available in the IP, and we only need to
+>>>>>>> use one slot in one os, assign a single slot, configure interrupt
+>>>>>>> and power domain only for 1 slot, not for the all 4 slots.
+>>>>>>
+>>>>>> No changelog and I do not see much of improvements. Do not ignore
+>>>>>> the feedback but respond to it or fix the patch. Really, what happened
+>> here?
+>>>>>>
+>>>>>
+>>>>> Hi Krzysztof,
+>>>>>    What do you mean wrap commit message? Do you mean line wrapped
+>> at
+>>>> 75 columns?
+>>>>>
+>>>>>   - The body of the explanation, line wrapped at 75 columns, which will
+>>>>>     be copied to the permanent changelog to describe this patch.
+>>>>
+>>>> I gave you clear link to the doc explaining this. What is unclear there?
+>>>>
+>>>> And you decide to ignore all the rest of the comments here as well?
+>>
+>> So this is still ignored? Can you respond to all my comments?
+>>
+>>>>
+>>>> Best regards,
+>>>> Krzysztof
+>>>
+>>> The link content is as below:
+>>>
+>>>   - The body of the explanation, line wrapped at 75 columns, which will
+>>>     be copied to the permanent changelog to describe this patch.
+>>>
+>>> I'm sorry that I didn’t get your point.
+>>
+>> Wrap
+>> your
+>> commit
+>> according
+>> to
+>> coding
+>> style.
+>>
+>> Best regards,
+>> Krzysztof
+> 
+> Hi Krzysztof,
+>     I opened your link about the Linux coding style / submission process, but I only find the following message:
+> 
+>   - The body of the explanation, line wrapped at 75 columns, which will
+>     be copied to the permanent changelog to describe this patch.
+> 
+>      So I don't know what do you mean the coding style.
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- include/linux/huge_mm.h | 13 +++++++++++++
- mm/mempolicy.c          | 17 +++--------------
- mm/page_alloc.c         |  8 ++------
- 3 files changed, 18 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index fa0350b0812a..58e7662a8a62 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -141,6 +141,15 @@ unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
- 		unsigned long len, unsigned long pgoff, unsigned long flags);
- 
- void folio_prep_large_rmappable(struct folio *folio);
-+static inline struct folio *page_rmappable_folio(struct page *page)
-+{
-+	struct folio *folio = (struct folio *)page;
-+
-+	if (folio && folio_order(folio) > 1)
-+		folio_prep_large_rmappable(folio);
-+	return folio;
-+}
-+
- bool can_split_folio(struct folio *folio, int *pextra_pins);
- int split_huge_page_to_list(struct page *page, struct list_head *list);
- static inline int split_huge_page(struct page *page)
-@@ -281,6 +290,10 @@ static inline bool hugepage_vma_check(struct vm_area_struct *vma,
- }
- 
- static inline void folio_prep_large_rmappable(struct folio *folio) {}
-+static inline struct folio *page_rmappable_folio(struct page *page)
-+{
-+	return (struct folio *)page;
-+}
- 
- #define transparent_hugepage_flags 0UL
- 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 7ab6102d7da4..4c3b3f535630 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -2137,10 +2137,7 @@ struct folio *vma_alloc_folio(gfp_t gfp, int order, struct vm_area_struct *vma,
- 		mpol_cond_put(pol);
- 		gfp |= __GFP_COMP;
- 		page = alloc_page_interleave(gfp, order, nid);
--		folio = (struct folio *)page;
--		if (folio && order > 1)
--			folio_prep_large_rmappable(folio);
--		goto out;
-+		return page_rmappable_folio(page);
- 	}
- 
- 	if (pol->mode == MPOL_PREFERRED_MANY) {
-@@ -2150,10 +2147,7 @@ struct folio *vma_alloc_folio(gfp_t gfp, int order, struct vm_area_struct *vma,
- 		gfp |= __GFP_COMP;
- 		page = alloc_pages_preferred_many(gfp, order, node, pol);
- 		mpol_cond_put(pol);
--		folio = (struct folio *)page;
--		if (folio && order > 1)
--			folio_prep_large_rmappable(folio);
--		goto out;
-+		return page_rmappable_folio(page);
- 	}
- 
- 	if (unlikely(IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hugepage)) {
-@@ -2247,12 +2241,7 @@ EXPORT_SYMBOL(alloc_pages);
- 
- struct folio *folio_alloc(gfp_t gfp, unsigned order)
- {
--	struct page *page = alloc_pages(gfp | __GFP_COMP, order);
--	struct folio *folio = (struct folio *)page;
--
--	if (folio && order > 1)
--		folio_prep_large_rmappable(folio);
--	return folio;
-+	return page_rmappable_folio(alloc_pages(gfp | __GFP_COMP, order));
- }
- EXPORT_SYMBOL(folio_alloc);
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 95546f376302..5b1707d9025a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4456,12 +4456,8 @@ struct folio *__folio_alloc(gfp_t gfp, unsigned int order, int preferred_nid,
- 		nodemask_t *nodemask)
- {
- 	struct page *page = __alloc_pages(gfp | __GFP_COMP, order,
--			preferred_nid, nodemask);
--	struct folio *folio = (struct folio *)page;
--
--	if (folio && order > 1)
--		folio_prep_large_rmappable(folio);
--	return folio;
-+					  preferred_nid, nodemask);
-+	return page_rmappable_folio(page);
- }
- EXPORT_SYMBOL(__folio_alloc);
- 
--- 
-2.35.3
+Linked document explains what is a patch, how it is formatted. Just read
+entire doc, not one sentence.
+
+You keep ignoring my other comments all the time, so I will stop asking
+you to respond to them. Instead I will be NAK-ing your patches till you
+decide to respond.
+
+Best regards,
+Krzysztof
 
