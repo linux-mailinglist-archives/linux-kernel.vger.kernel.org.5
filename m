@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278217AD3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC0C7AD3B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbjIYItE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
+        id S233069AbjIYItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbjIYIsx (ORCPT
+        with ESMTP id S232958AbjIYIsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:48:53 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97CCAB;
-        Mon, 25 Sep 2023 01:48:46 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3aca1543608so3972595b6e.0;
-        Mon, 25 Sep 2023 01:48:46 -0700 (PDT)
+        Mon, 25 Sep 2023 04:48:54 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC56C0;
+        Mon, 25 Sep 2023 01:48:47 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68fdcc37827so5055110b3a.0;
+        Mon, 25 Sep 2023 01:48:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695631726; x=1696236526; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yPJ+3v8IOYRN+sZVaPmkV2aQfR1DvyQl9AclCfckmVw=;
-        b=d1GFOBp0JrI664v9zquznNWKxNr7dNMlUoHJS9Yf7AsxVdPyX2MUqOjGQ55yBA32mj
-         0eib3bYTUtbI0zaNmEqfMiMrliKhxdREJRnAnpGmm5hiosJ0vMD81oEvb0PqqZdJqGRD
-         G5rhjHrGTvT4AOhbCWyR5RtOnAtYNR4kixUL7fzx78tC9/Ul3pYnM3tt0u/g5WdhIbw/
-         yjf0ceodNi7aw0792qoc2GyN0NLiLHEqkEEpO7mdd9bqQPIvy2tBr8djdQVrV9Rv3Ac+
-         6fHSLiiN/12rhfMLbJ3uL19GQ+MoMVruhUMNVWRh7+LxvZLZTFlQZwH9r/x+c4q6O1te
-         9l9w==
+        d=gmail.com; s=20230601; t=1695631727; x=1696236527; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fa6uFbknqzj199lmh6a4GX+0E1qDjG74urk1D5Bo0C8=;
+        b=KoVFIylw9Ffdbf0MPUb4AVzbVAkRiVgE8itnC/b7+l1fEC+zWCSJ1ycMnMArbgYynv
+         1q6w63Ijkp9aQvwTRrzu+GnDJn5RsW4dvZMTz60eZX7j206ysiFZ4ylE30fW/pesnbwv
+         xOR0+GrsHF45zacF6Ww0duyRha/kUQQj348NaZR8G5WViWjpLsjR/Tggcd9qwL1cMd2X
+         WZ+1g1uSx/EKLNAfCoWV0SStfCwBKp5swb34uMxNK2z/bzqM5x+4q7Qmb50BBNCHHKhA
+         azVe/2pydS58zXm/AbA2zSvxx8AwzzPCL8bk4Ov+TWGTqqqPZ/q0tMASiU23PGOUbUL1
+         KmTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695631726; x=1696236526;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yPJ+3v8IOYRN+sZVaPmkV2aQfR1DvyQl9AclCfckmVw=;
-        b=S8rzhb8WMIU16bPBrYze2JUkJdkWL3Kj4EI0BObVhUoR2U1S+TFxUl+u0hLuvX9hi5
-         4AYx8Z+kp4iznMaMT/H46LiE1TtbL7XwjbCDey1unmGPPL3VR+Mxcqf3yduXBBLFh38S
-         bUfw0s4tPPXOkXEc9sMIvYgm3n7t8YtBeLQKvykO2NrkBy+QKfEnBtUWPEa8cG9RvbNM
-         hDBurngyjutSMX5xD1hi4UkyAr8I/n6Ru9P+eSoNaui1w99b1gzVLbPxlRLDWEwhaI8F
-         FPiW7CypqVxJgu+r/fClLGHy59ioS0nxNPkIGK7ivQF4EMs+FD0AA1uNBrZAvbUF0X4H
-         19IQ==
-X-Gm-Message-State: AOJu0YxSr+ZGP8oBQzBQbRfZfEb7BCCgLrUTgXe1X3AEg9IXUW5UA+hN
-        Hr6GQeg+Lja+VCqbAFR6yQgzxzHMz+Q=
-X-Google-Smtp-Source: AGHT+IHh9hH6MoxKgalPFqOg/TE46W4aOCGn+Ge6yIDFMiehR1QC4s+gbJDY1rbjW2Ih3A35e/hrIQ==
-X-Received: by 2002:a05:6808:14a:b0:3ae:17af:7387 with SMTP id h10-20020a056808014a00b003ae17af7387mr8222096oie.43.1695631725786;
-        Mon, 25 Sep 2023 01:48:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695631727; x=1696236527;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fa6uFbknqzj199lmh6a4GX+0E1qDjG74urk1D5Bo0C8=;
+        b=GEaZ5fGP6Ipu/uoq0zMGd+iRG1aq4kyQggLj9haIQpU5z9xWaobdDy/8VzK4uy3MC/
+         LC8zqlH1SMcAAi5cmyOiicbFqzUFw2uKe5QB94DbFVFCEUQH3vcj9U6hHQO+S44eZMTO
+         a3GJxSUcPZXMam2QD8XBEcTqFueJNoObJqK9fh8BJlEnVrUbnyCXSOqVP2o4lAQ2XTgx
+         EKoV5s4OjccWeUBOd8Exqt7JZIAOCv1WAoimHUo8Z4OcmVH+/KlD1spsTLyT7PkhG+g+
+         g5hKRmS7vfgDOa6ohlasR3YNhkaU57+3Y3WwaMiY7rgdsWxH7lFBWoXXlb440v1oAOHL
+         vUXw==
+X-Gm-Message-State: AOJu0YzYrIyB0PNWrpi0StOw5Fwhh50i9CLR3Gd1IxGrv7JHyaZ13JAz
+        /Hyc8mP5VcSRCWENsZkWtEZ1H0MkR6o=
+X-Google-Smtp-Source: AGHT+IHo7YQXy60TF3U/ZHqmijuB8Jn7bkioepae2MbCkiWaX2sBluLP9B5ctJp56zZEQugh1jMD4g==
+X-Received: by 2002:a05:6a20:1587:b0:15d:1646:285a with SMTP id h7-20020a056a20158700b0015d1646285amr9403726pzj.21.1695631726991;
+        Mon, 25 Sep 2023 01:48:46 -0700 (PDT)
 Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:bc97:e554:1bd8:be33])
-        by smtp.gmail.com with ESMTPSA id t63-20020a638142000000b0055c178a8df1sm7406376pgd.94.2023.09.25.01.48.44
+        by smtp.gmail.com with ESMTPSA id t63-20020a638142000000b0055c178a8df1sm7406376pgd.94.2023.09.25.01.48.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 01:48:45 -0700 (PDT)
+        Mon, 25 Sep 2023 01:48:46 -0700 (PDT)
 From:   Max Filippov <jcmvbkbc@gmail.com>
 To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
         devicetree@vger.kernel.org
@@ -59,10 +60,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Conor Dooley <conor+dt@kernel.org>,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH v3 0/5] serial: add drivers for the ESP32xx serial devices
-Date:   Mon, 25 Sep 2023 01:48:20 -0700
-Message-Id: <20230925084825.4160708-1-jcmvbkbc@gmail.com>
+Subject: [PATCH v3 1/5] serial: core: tidy invalid baudrate handling in uart_get_baud_rate
+Date:   Mon, 25 Sep 2023 01:48:21 -0700
+Message-Id: <20230925084825.4160708-2-jcmvbkbc@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230925084825.4160708-1-jcmvbkbc@gmail.com>
+References: <20230925084825.4160708-1-jcmvbkbc@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,39 +79,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+uart_get_baud_rate has input parameters 'min' and 'max' limiting the
+range of acceptable baud rates from the caller's perspective. If neither
+current or old termios structures have acceptable baud rate setting and
+9600 is not in the min/max range either the function returns 0 and
+issues a warning.
+However for a UART that does not support speed of 9600 baud this is
+expected behavior.
+Clarify that 0 can be (and always could be) returned from the
+uart_get_baud_rate. Don't issue a warning in that case.
+Move the warinng to the uart_get_divisor instead, which is often called
+with the uart_get_baud_rate return value.
 
-this series adds drivers for the UART and ACM controllers found in the
-Espressif ESP32 and ESP32S3 SoCs.
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+---
+ drivers/tty/serial/serial_core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Changes v2->v3:
-- address review comments, listed in each patch
-
-Changes v1->v2:
-- address review comments, listed in each patch
-- add cleanup for the uart_get_baud_rate function
-
-Max Filippov (5):
-  serial: core: tidy invalid baudrate handling in uart_get_baud_rate
-  dt-bindings: serial: document esp32-uart
-  drivers/tty/serial: add driver for the ESP32 UART
-  dt-bindings: serial: document esp32s3-acm
-  drivers/tty/serial: add ESP32S3 ACM device driver
-
- .../bindings/serial/esp,esp32-acm.yaml        |  42 +
- .../bindings/serial/esp,esp32-uart.yaml       |  51 ++
- drivers/tty/serial/Kconfig                    |  27 +
- drivers/tty/serial/Makefile                   |   2 +
- drivers/tty/serial/esp32_acm.c                | 459 +++++++++++
- drivers/tty/serial/esp32_uart.c               | 741 ++++++++++++++++++
- drivers/tty/serial/serial_core.c              |   5 +-
- include/uapi/linux/serial_core.h              |   6 +
- 8 files changed, 1330 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
- create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
- create mode 100644 drivers/tty/serial/esp32_acm.c
- create mode 100644 drivers/tty/serial/esp32_uart.c
-
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 7bdc21d5e13b..a8e2915832e8 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -431,7 +431,7 @@ EXPORT_SYMBOL(uart_update_timeout);
+  * baud.
+  *
+  * If the new baud rate is invalid, try the @old termios setting. If it's still
+- * invalid, we try 9600 baud.
++ * invalid, we try 9600 baud. If that is also invalid 0 is returned.
+  *
+  * The @termios structure is updated to reflect the baud rate we're actually
+  * going to be using. Don't do this for the case where B0 is requested ("hang
+@@ -515,8 +515,6 @@ uart_get_baud_rate(struct uart_port *port, struct ktermios *termios,
+ 							max - 1, max - 1);
+ 		}
+ 	}
+-	/* Should never happen */
+-	WARN_ON(1);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(uart_get_baud_rate);
+@@ -539,6 +537,7 @@ uart_get_divisor(struct uart_port *port, unsigned int baud)
+ {
+ 	unsigned int quot;
+ 
++	WARN_ON(baud == 0);
+ 	/*
+ 	 * Old custom speed handling.
+ 	 */
 -- 
 2.30.2
 
