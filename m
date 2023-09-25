@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20ABB7ACE76
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BBA7ACE7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjIYCvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
+        id S229606AbjIYCwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjIYCvO (ORCPT
+        with ESMTP id S229636AbjIYCwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:51:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79FD9E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:51:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37CF8C433C7;
-        Mon, 25 Sep 2023 02:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695610267;
-        bh=eEnE+E+YbvrX1hAE7s8/RxswnX8+mLTgwcg7qFx1qME=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DdcSpMEQ5grzOpBF7pzMISDNt7KfswBtnME75jG3pbGTc4gm7zSWL+lsqu+H+Bq6x
-         778Nn0Cfsnd2vH6WZe3peINmlt4AHVYuouem5zkWP2E6fJZjdbXxrgc6tzxrs/YtRI
-         d0yQCK1eXa3UvPujgcdII3Z8zzIdDNgwZLLMsV89Vv/8Pfn8FJeoC+TOFvL+pZVyVl
-         eS9PZFXbksnVDxKrQDj69rO61FzyvdaGvdXOz51he97HQaOkc+5ecnRtTR9+mZbXEE
-         HqssQQqbzZhAsTQUblyFNT/QX1v9XcYUSp9MDltwv22p3H1V0aSgq8PSrHI1fiamLM
-         hg6Y5L5Gh+jGw==
-Date:   Mon, 25 Sep 2023 10:50:58 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: ls208xa: use a pseudo-bus to constrain
- usb dma size
-Message-ID: <20230925025058.GE7231@dragon>
-References: <20230914155935.6042-1-laurentiu.tudor@nxp.com>
+        Sun, 24 Sep 2023 22:52:10 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D554FB
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:52:03 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-577e62e2adfso3358028a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695610323; x=1696215123; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xqbrouaImx5KBoP6AYN1d+wBdtJOt9nHHasbW1/FriU=;
+        b=X8A6zbP+K5TtNV3tpMuIrzAHno5Aqq0JNx+MkI4wTxqe4h/enuJoJhEBAfWYJrpRDV
+         h7y3U57M2rbv+/jLviKiKqtxfH9z0U5+XUgDhAZfabInpOizExi4lEu8IXteSuXmj/RG
+         gB1qEHQAEJ8k8ZvYAckUJ6d3AKOU3B/qx6svebR3lHJQIGDkli9PGPX1/9cxZ2AmnfiP
+         4L7aPuSdLI8iHDKu0le3psQPvwsS7Fy4MMcwBgE6jTLGwraudIM48hjnwqTBy3SS0QR7
+         NRX45b3cE1Odz6GgSo5rfYk7DycA+YAqMC7LnbdOm2iYDfZYGqjIHI1BhXCAP4HXoqWF
+         lByA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695610323; x=1696215123;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xqbrouaImx5KBoP6AYN1d+wBdtJOt9nHHasbW1/FriU=;
+        b=ZunEgwx1yj/IW0huIkfcSgXtZYRy+0ilixJX/RTHgeTsE6kHgyBxgj2HgE77hw7Nh6
+         8FRiB0wL8mD7jh5uiehqbSevw93emxxHj3g5Tevb+xKM5RQtAXWdu09psxmiwOzCDW9j
+         CsgBrYNF8jg7ewWCHKxpdCcHm4kg/B/hbvSS8Zx5t2JaVJ+fLK0JiVJwHZOpKq3uNgWN
+         2zXaqEvCCWyP+brikXZ2xJSKkjl3okhVeMPy7fuvPIujh4fsOBGU3tghn9nr0qNt0w2m
+         w4T6mROzohDOsQqViMaGPHnnlwLy/xEzxJd6KgeOMUi82joCGmWmHL182zYD+fw/ccvB
+         X73g==
+X-Gm-Message-State: AOJu0Yy3+iYHulbe81Ml15N/OQFqvFFu33aVDXGxho6ftgryfzJRhUh1
+        YVukVkCWgpVJL2yCLimpjUJ2UzrpYi4=
+X-Google-Smtp-Source: AGHT+IGC3u1JK+vxSE9Q5Ig8CHy4MoFD+p0J4AzBqJUhbEyNlIy0+NtQ7BuQkNU0p4SYdVc0vZoWyw==
+X-Received: by 2002:a05:6a20:4421:b0:14e:429e:b0e3 with SMTP id ce33-20020a056a20442100b0014e429eb0e3mr4772065pzb.52.1695610322822;
+        Sun, 24 Sep 2023 19:52:02 -0700 (PDT)
+Received: from localhost.localdomain ([111.108.111.133])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001bb99e188fcsm7511962plx.194.2023.09.24.19.52.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 Sep 2023 19:52:02 -0700 (PDT)
+From:   Wei Gong <gongwei833x@gmail.com>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, Wei Gong <gongwei833x@gmail.com>
+Subject: [PATCH v2] genirq: avoid long loops in handle_edge_irq
+Date:   Mon, 25 Sep 2023 10:51:54 +0800
+Message-Id: <20230925025154.37959-1-gongwei833x@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914155935.6042-1-laurentiu.tudor@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 06:59:35PM +0300, Laurentiu Tudor wrote:
-> Wrap the usb controllers in an intermediate simple-bus and use it to
-> constrain the dma address size of these usb controllers to the 40b
-> that they generate toward the interconnect. This is required because
-> the SoC uses 48b address sizes and this mismatch would lead to smmu
-> context faults [1] because the usb generates 40b addresses while the
-> smmu page tables are populated with 48b wide addresses.
-> 
-> [1]
-> xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
-> xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 1
-> xhci-hcd xhci-hcd.0.auto: hcc params 0x0220f66d hci version 0x100 quirks 0x0000000002000010
-> xhci-hcd xhci-hcd.0.auto: irq 108, io mem 0x03100000
-> xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
-> xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 2
-> xhci-hcd xhci-hcd.0.auto: Host supports USB 3.0 SuperSpeed
-> arm-smmu 5000000.iommu: Unhandled context fault: fsr=0x402, iova=0xffffffb000, fsynr=0x0, cbfrsynra=0xc01, cb=3
-> 
-> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> ---
-> Changes in v2:
->  - renamed pseudo-bus from 'aux_bus' to just 'bus'
-> 
->  .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 46 +++++++++++--------
->  1 file changed, 27 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-> index d2f5345d0560..6c311c61c5bc 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-> @@ -1186,26 +1186,34 @@
->  			dma-coherent;
->  		};
->  
-> -		usb0: usb@3100000 {
-> -			status = "disabled";
-> -			compatible = "snps,dwc3";
-> -			reg = <0x0 0x3100000 0x0 0x10000>;
-> -			interrupts = <0 80 0x4>; /* Level high type */
-> -			dr_mode = "host";
-> -			snps,quirk-frame-length-adjustment = <0x20>;
-> -			snps,dis_rxdet_inp3_quirk;
-> -			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
-> -		};
-> +		bus: bus {
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			compatible = "simple-bus";
-> +			ranges;
-> +			dma-ranges = <0x0 0x0 0x0 0x0 0x100 0x00000000>;
-> +
-> +			usb0: usb@3100000 {
-> +				status = "disabled";
+When there are a large number of interrupts occurring on the tx
+queue(irq smp_affinity=1) of the network card, changing the CPU
+affinity of the tx queue (echo 2 > /proc/irq/xx/smp_affinity)
+will cause handle_edge_irq to loop for a long time in the
+do {} while() loop.
 
-While you are at it, could you move 'status' to end of the property
-list?
+After setting the IRQ CPU affinity, the next interrupt will only
+be activated when it arrives. Therefore, the next interrupt will
+still be on CPU 0. When a new CPU affinity is activated on CPU 0,
+subsequent interrupts will be processed on CPU 1.
 
-Shawn
+       cpu 0                                cpu 1
+  - handle_edge_irq
+    - apic_ack_irq
+      - irq_do_set_affinity
+                                        - handle_edge_irq
+    - do {
+        - handle_irq_event
+          - istate &= ~IRQS_PENDIN
+          - IRQD_IRQ_INPROGRESS
+          - spin_unlock()
+                                          - spin_lock()
+                                          - istate |= IRQS_PENDIN
+          - handle_irq_event_percpu       - mask_ack_irq()
+                                          - spin_unlock()
+          - spin_unlock
 
-> +				compatible = "snps,dwc3";
-> +				reg = <0x0 0x3100000 0x0 0x10000>;
-> +				interrupts = <0 80 0x4>; /* Level high type */
-> +				dr_mode = "host";
-> +				snps,quirk-frame-length-adjustment = <0x20>;
-> +				snps,dis_rxdet_inp3_quirk;
-> +				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
-> +			};
->  
-> -		usb1: usb@3110000 {
-> -			status = "disabled";
-> -			compatible = "snps,dwc3";
-> -			reg = <0x0 0x3110000 0x0 0x10000>;
-> -			interrupts = <0 81 0x4>; /* Level high type */
-> -			dr_mode = "host";
-> -			snps,quirk-frame-length-adjustment = <0x20>;
-> -			snps,dis_rxdet_inp3_quirk;
-> -			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
-> +			usb1: usb@3110000 {
-> +				status = "disabled";
-> +				compatible = "snps,dwc3";
-> +				reg = <0x0 0x3110000 0x0 0x10000>;
-> +				interrupts = <0 81 0x4>; /* Level high type */
-> +				dr_mode = "host";
-> +				snps,quirk-frame-length-adjustment = <0x20>;
-> +				snps,dis_rxdet_inp3_quirk;
-> +				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
-> +			};
->  		};
->  
->  		ccn@4000000 {
-> -- 
-> 2.17.1
-> 
+      } while(IRQS_PENDIN &&
+              !irq_disable)
+
+Therefore, when determining whether to continue looping, we add a check
+to see if the current CPU belongs to the affinity table of the interrupt.
+
+Signed-off-by: Wei Gong <gongwei833x@gmail.com>
+---
+ kernel/irq/chip.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index dc94e0bf2c94..6da455e1a692 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -831,7 +831,8 @@ void handle_edge_irq(struct irq_desc *desc)
+ 		handle_irq_event(desc);
+ 
+ 	} while ((desc->istate & IRQS_PENDING) &&
+-		 !irqd_irq_disabled(&desc->irq_data));
++		 !irqd_irq_disabled(&desc->irq_data) &&
++		 cpumask_test_cpu(smp_processor_id(), irq_data_get_affinity_mask(&desc->irq_data)));
+ 
+ out_unlock:
+ 	raw_spin_unlock(&desc->lock);
+-- 
+2.32.1 (Apple Git-133)
+
