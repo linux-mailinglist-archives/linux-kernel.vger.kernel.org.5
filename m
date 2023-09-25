@@ -2,724 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6580E7AD9EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3380F7AD9EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbjIYORb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        id S232226AbjIYORd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjIYOR3 (ORCPT
+        with ESMTP id S232187AbjIYORb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:17:29 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665F9CE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:17:19 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-503065c4b25so10303930e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695651437; x=1696256237; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DzjzmsFmTwciDX31Hw65ql0biQiBzhyqc5jR/rF5nuk=;
-        b=K0/gy30fM/v8A5IcB31NHglO1ETxogdnI75oZAootjIS2xUByB2Fg8+jXcMgCBhF/q
-         HTbvl/oyUIwTVode/e1+awL6TfN1axV4A5UwGgiWs/A8n7ZekrbJZRXJGLvznL61k2jj
-         egFZoQk2nW35r3UYijy6eAltUq1d7KDiXI87J4BHrCebVldwX17Qnzo1pYEs3TRn5MIO
-         NrD3IFgsxaviR0GYur/RkQG8T8Yn1FzKYcp9AVySnVIk+AA9GcmKcxoEeCHj6HKg/wCN
-         WdDWHc5o1h8XmgJRhZiORF1IZXv3QLFRltDkrNDQzCt/+0lF2DHot8oFysdJRI/DnGbj
-         jgLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695651437; x=1696256237;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DzjzmsFmTwciDX31Hw65ql0biQiBzhyqc5jR/rF5nuk=;
-        b=EC42sWCcWla8AgV59mF6YLDbyEqf1gmUD+rRhOrLmzz7++xZWHcmELLjUn5a1PJOlX
-         A/4c4fJ0oYFp+BUmFEw2wDH3x1QTqvzKdbFqWU1EGcJC9fFgjtSbhMRcYgaORR6xBEEc
-         ELIoKSud7IC4Vmn+XFYygKmUC8EFtc1SZMpGcmbYyzxzQBUFc6UmFidtnG7PA5cTNrsL
-         I7xRXSGINYVTtJvE63d8M/fQO5iicNnQXKxE1TdXRyTpCF/wMF9gTa61LobkZ4ufr6Qa
-         B0lEvBh22hagdydLTX7gwi+aRWSGQRheN4Mavi1WUVTJF0W2MpnNHp0kIY97ArV+zmTw
-         dCPQ==
-X-Gm-Message-State: AOJu0YyqZKfOEiHoRnPytwYIH3I066oBDRD+p9+eDicFCb1bV9pleUl4
-        L+SSVjIqKNpCdqtjxo8t7qcL/g==
-X-Google-Smtp-Source: AGHT+IGu0wWgiX5d77OPvc74Ib3xbCwo/fWtFFAkInnENB8lY6QCfCZFADPPZwwVVOCz/DBYDYaAnA==
-X-Received: by 2002:a05:6512:3148:b0:504:3c1f:cbd1 with SMTP id s8-20020a056512314800b005043c1fcbd1mr5693952lfi.12.1695651437346;
-        Mon, 25 Sep 2023 07:17:17 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.177])
-        by smtp.gmail.com with ESMTPSA id d14-20020aa7c1ce000000b005272523b162sm5495967edp.69.2023.09.25.07.17.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 07:17:16 -0700 (PDT)
-Message-ID: <7e41f19f-41e1-26db-09e5-490456298e62@tuxon.dev>
-Date:   Mon, 25 Sep 2023 17:17:14 +0300
+        Mon, 25 Sep 2023 10:17:31 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2040.outbound.protection.outlook.com [40.92.52.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C45BFC
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:17:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f+4HN5ti1CiZ7jeT4l9DE9rnKHA+NL7cX2khS4j07PBqgFIrk4F69VUYdsczGUJCqcaMOdQV4XBaAdQaSBpxpwPCxFjiHJ/apDrGeabjzxwNYy5jsIW+OluhiOkcGWfW3gWhSQa9FzlfiDLqjjCeUkpHakRbzN7l0y8HkeTbBG4VzjaSjqlhfgBjyVwccUTKxhEZslFgFZR6KTGXr311vxyV3/wTCZYaqRraMU/Z+iarazrXGLNWa3LPbZutvy4Ezwirx3y0NMk6qf70PyW3ZJW0kBddv5bbDk5V9ilQUkFKPxxCReBtgPo3e7g8gTvMadWmzbNRfDvNAleidMdlOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jiLCyaHvZHgTcgzw6C9kEy6h5jQ04EN25wWdp0jyFks=;
+ b=eqhL79KRnr0M8ZmTTNyCTm9KPhfwa4mA1pGTvOZYxviUBYU84UW1JamHGL8Z3slheRWx6W6h0wBoHFIkZnn/IYjbekIL/2w1xRv68TnkTdWIrv+Snhk/LwmfJag8S3ML9wkeGejjo68F2ue4bmZi0WLNpHrjzhZ5EDljSMSLxbfnb1u29ncRn+zGdNH5R2t+1abCDTmGtWUnWag+J3HHtRdn2R/gihx03TOdvF2QrApwN6hG53K3rCx1Dbmva/BWBQ/L+e6JmHPsiqND3JrgUCUW5EOrAIdp6nFajCamfMQxhlRUN6p2ze0ktS3jrV/KlvEg4vFNK9TuJlBihN2EQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jiLCyaHvZHgTcgzw6C9kEy6h5jQ04EN25wWdp0jyFks=;
+ b=W7WtnL+YM7//SoNmKDkQx0XMHdb8fq4uBE+X6sgkPNVIZ8sY8VPgksO8uNm2PHiqv5FE4gdzS6MJXgcvTYFF+7EcymbRw1SRRj9PuL1P2FfBJ+R1pa5Ws3iYYZudcTI/PNk8d4pjYcxGb1LWJDJohsrjtknEh9GCI6I0AQ/jnB9jdNF1f/EgZ1Hg0vjNh2ExMbqQdgZVUfoYJuNIw7VqxIsF/t91+1bvaYhzMfnOmbwho8e4s/GhVfKgCVPg/HhNPWRfYJUQ3YnpONQBug6R93oF9zRFUGq4UkVdVEvyimzOMLm2cPawAck17BiyfUIzz4iIWdt53RT9fuw2WtubrQ==
+Received: from TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:e5::14) by SEYPR01MB5535.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:13c::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 14:17:19 +0000
+Received: from TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+ ([fe80::61:7bba:9541:ee98]) by TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+ ([fe80::61:7bba:9541:ee98%6]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 14:17:19 +0000
+From:   Kelly Devilliv <kelly.devilliv@outlook.com>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>
+CC:     "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: dma_map_resource() has a bad performance in pcie peer to peer
+ transactions when iommu enabled in Linux
+Thread-Topic: dma_map_resource() has a bad performance in pcie peer to peer
+ transactions when iommu enabled in Linux
+Thread-Index: Adnvsh05WtiJBSKaQFmKOQwTLVDZzA==
+Date:   Mon, 25 Sep 2023 14:17:19 +0000
+Message-ID: <TY2PR0101MB31361E2EE3391EBFAB78014B84FCA@TY2PR0101MB3136.apcprd01.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [FQhn8SGKHtrWP7z9RoD10hzG+L+k4GHO]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY2PR0101MB3136:EE_|SEYPR01MB5535:EE_
+x-ms-office365-filtering-correlation-id: f344dbbf-22d6-4e0e-c93d-08dbbdd220d3
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: taHMEerZqaEapeFEVyMhCv+ozlpyr8NnwMCwm7ABD1ADw0VMJjDdYEZLFG5THiJ5g288L+/1524ro0ADG+9btktB2bR385CqXN8ZXvgKfCgIO3a0fJpqwoGmrK5KF78SQZW2wQmDdyizMVk7cT9+gCO9Hw6bjeSixXvwIG0xup5DGk1t9JeApti9XJ33meKeiOS2yIZpoBIJJK8FMkPiA9cRIcsLxIuWf3dKhMpm9uqLGHwq8cMG8V1EihEElK2uDmo8ciBGRmb0mtee/F5oDJq/vVPyxTphb6YYdehS8VgKctdmiszdTdBqZ7znDa22XRV/IgJFYWAmYhI//94t5G8VZMrt9nCgP/GnhR4teqantOOYyZayAqJ2QGm7FaB8tVjeG4lN5tBJukF5EmNRfvDynMNm5ukwUZmEkFZuvsEDbjrgly9zX0BFSo4qLUkoSndNPUDtzTWWiU8OwOVKa6vKpHNqWyRSE269W7O/4Gg5z5IPA1OIeKDSkYUJ7G2vJeEbNMH6+YfAygWkRo1wwxZkJX50r8ecz3pfx3Vf/+TFxFn7TOtrX82A0vnhehY/
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cW5jWG1FUlU5TGJibjJvKzdJOEFrd2F5dmFFRXczTHM4cnN4YnpQbFRsWHUy?=
+ =?utf-8?B?M05YMFBWRUk2NDRpOGtCTkUxeFJKYzRYZkhyZG5tSXNnWGVqRWRhaGVYNW5R?=
+ =?utf-8?B?SzNxOHZMcGx0YUtKeE82eG8zZHl6dksvcjlxUkFOeGZjRDVZRHFON0VGUmd4?=
+ =?utf-8?B?YnV0dmF0TDc3aWZQOHFQOWZCMHBnN3JPZldoRGNsZVY3QjZPUGhvT3ZwbWFE?=
+ =?utf-8?B?cEZwb3JrSk16K2Jia0FjR2N4RkY3YzUvSWIvQ1JVTVp4WndNakhhZ2dia0ZH?=
+ =?utf-8?B?ajZCR0xWTkVTWFpnT3Z2eDZ4S2FzaXpBdTBOb1NYblRrc291NGhOVm1VQmFD?=
+ =?utf-8?B?aWVvRVRYdlNHcjZVcjFjQmlxdi9EM0M2cWp5YjhTMlR5dU9MOEZoS1lEUW5i?=
+ =?utf-8?B?dElHMnRnRWhVYWZaVXBSTUM1dzFrNVE1ZjZOVVZyQjUvRTJadlJ6K1lIbGVt?=
+ =?utf-8?B?dVc4clB3OFNKdW9MZk44Y004WHduMlBWelhhNUJOYng4Wm81SzFSMlNsUUFa?=
+ =?utf-8?B?MjRnUUc1TEd6TERPVlg2U3FweXBIaVJ1OVF0QjNZTVc4c1JWL0ZuS2t2SmpO?=
+ =?utf-8?B?eGpYTE5LbVJacUZKSzJjZUw4eUxyaDdCNnZnRG1QUjNUN25HWnZSOU81U0Z3?=
+ =?utf-8?B?M3d4VXRHUy9HY1FORzVhTDhpSGpUN1J1alM3UDhYZ04yY21RZnJRWjQ1WStQ?=
+ =?utf-8?B?MUhpQVVVeC9mZ3lFbGpCKzkrVHdCaUNFZmZLaU5hV3dxVWNkd1ZXOEJ0UFd2?=
+ =?utf-8?B?U3RlZzVSdmhBTERaVE9GS1NBUW43Y3c3d2EwRE8yTHczdUVrRjlVQVkzK0tB?=
+ =?utf-8?B?b2FRTFdDanZjR3Z3ekRUcEpxVVlVSFdkUWVsWGIvaURBR1UveTBadkx6cDBO?=
+ =?utf-8?B?RksxMWJYOEJWWGs3ck1tQlZhOVFPNEJ1UXkwc2F6cVFFTUoxSmRBM3I3Z0lP?=
+ =?utf-8?B?L245NWtrSExYUDhIVzZkbjFUbUhtc0kvcFIrZUNYVnEyNUgvakZQZ1pNbU52?=
+ =?utf-8?B?TVBBSFNjbU9kcGoxMy9iSG9sdjlBRGNYcVhKUkc3YjNoVUpGUEFUZmhqUkcv?=
+ =?utf-8?B?UUdUSXd1ejhtV3V5b3h6NTFOWGhJN0g2MG9Oeng5QnBqM2NmcjFJMDB3NWZ6?=
+ =?utf-8?B?MEtXYnJIOHNWYlVOK3d0NWpNSFpNWmI0MjBYd3dMZG1WdDA1S1V6aGk3Z0Zw?=
+ =?utf-8?B?MWFXd2llZEpuOHgvTnh4RXBXeXJ0UnVWeFcvRnR5bEdyYjZkbDFDTnllVnI2?=
+ =?utf-8?B?azFsa1VJcXhhVThWUU9VODlvaStqVXJzajR3TExhR2RubEN5RmxCQ1V5TzFk?=
+ =?utf-8?B?TkJkbmVSWURLNVdJUUd1ZFhSWW95YmpXWmZSRVVRalBMWCsvZWVKVVEvU1hL?=
+ =?utf-8?B?ZzhTcEVhTm02QlJ2K002VFJWUG5UV0szWmN3a3dtc25MMFJmNkVTcFlTdUJM?=
+ =?utf-8?B?SkNMQXV0VFB3dWlhMHA0blJVbWQwaitQWnJnOG1hek9yaEk4OVRtUi83NEN0?=
+ =?utf-8?B?eTBCd21aV3FTS1kwdVFEV3pEOVA0UWtGQ0g3d0gwZDlXUjBhc3hZTGhNQk00?=
+ =?utf-8?B?WE44Nklld1ZYZXJPbDdpamJ3MnRkUEd5eVo1K3ZtNkhNdHVFbnlaeU5mZUoy?=
+ =?utf-8?B?TWJFdkw4LzJRakJoTTdCcHZGeENMcWc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 5/8] drm: atmel_hlcdc: Add support for XLCDC in atmel
- LCD driver
-Content-Language: en-US
-To:     Manikandan Muralidharan <manikandan.m@microchip.com>,
-        sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
-        daniel@ffwll.ch, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, lee@kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hari.PrasathGE@microchip.com,
-        Balamanikandan.Gunasundar@microchip.com,
-        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
-        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
-        Balakrishnan.S@microchip.com
-References: <20230915104849.187146-1-manikandan.m@microchip.com>
- <20230915104849.187146-6-manikandan.m@microchip.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230915104849.187146-6-manikandan.m@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: f344dbbf-22d6-4e0e-c93d-08dbbdd220d3
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 14:17:19.4391
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR01MB5535
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15.09.2023 13:48, Manikandan Muralidharan wrote:
-> - XLCDC in SAM9X7 has different sets of registers and additional
-> configuration bits when compared to previous HLCDC IP. Read/write
-> operation on the controller registers is now separated using the
-> XLCDC status flag and with HLCDC and XLCDC IP specific ops.
-> 	- HEO scaling, window resampling, Alpha blending, YUV-to-RGB
-> conversion in XLCDC is derived and handled using additional
-> configuration bits and registers.
-> 	- Writing one to the Enable fields of each layer in LCD_ATTRE
-> is required to reflect the values set in Configuration, FBA, Enable
-> registers of each layer
-
-Having "-" may be interpreted as you are doing multiple things in this patch.
-
-> 
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-> Co-developed-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-> Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-> Co-developed-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-> ---
->  .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    |  33 +-
->  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c  |  26 ++
->  .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   | 317 ++++++++++++++----
->  3 files changed, 315 insertions(+), 61 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-> index cc5cf4c2faf7..1ac31c0c474a 100644
-> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-> @@ -79,6 +79,7 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
->  	unsigned int mask = ATMEL_HLCDC_CLKDIV_MASK | ATMEL_HLCDC_CLKPOL;
->  	unsigned int cfg = 0;
->  	int div, ret;
-> +	bool is_xlcdc = crtc->dc->desc->is_xlcdc;
->  
->  	/* get encoder from crtc */
->  	drm_for_each_encoder(en_iter, ddev) {
-> @@ -164,10 +165,10 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
->  	state = drm_crtc_state_to_atmel_hlcdc_crtc_state(c->state);
->  	cfg = state->output_mode << 8;
->  
-> -	if (adj->flags & DRM_MODE_FLAG_NVSYNC)
-> +	if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NVSYNC))
->  		cfg |= ATMEL_HLCDC_VSPOL;
->  
-> -	if (adj->flags & DRM_MODE_FLAG_NHSYNC)
-> +	if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NHSYNC))
->  		cfg |= ATMEL_HLCDC_HSPOL;
->  
->  	regmap_update_bits(regmap, ATMEL_HLCDC_CFG(5),
-> @@ -202,6 +203,20 @@ static void atmel_hlcdc_crtc_atomic_disable(struct drm_crtc *c,
->  
->  	pm_runtime_get_sync(dev->dev);
->  
-> +	if (crtc->dc->desc->is_xlcdc) {
-> +		regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_XLCDC_CM);
-> +		if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
-> +					     !(status & ATMEL_XLCDC_CM),
-> +					     10, 1000))
-> +			dev_warn(dev->dev, "Atmel LCDC status register CMSTS timeout\n");
-> +
-> +		regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_XLCDC_SD);
-> +		if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
-> +					     status & ATMEL_XLCDC_SD,
-> +					     10, 1000))
-> +			dev_warn(dev->dev, "Atmel LCDC status register SDSTS timeout\n");
-> +	}
-> +
->  	regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_HLCDC_DISP);
->  	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
->  	       (status & ATMEL_HLCDC_DISP))
-> @@ -256,6 +271,20 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
->  	       !(status & ATMEL_HLCDC_DISP))
->  		cpu_relax();
->  
-> +	if (crtc->dc->desc->is_xlcdc) {
-> +		regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_XLCDC_CM);
-> +		if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
-> +					     status & ATMEL_XLCDC_CM,
-> +					     10, 1000))
-> +			dev_warn(dev->dev, "Atmel LCDC status register CMSTS timeout\n");
-> +
-> +		regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_XLCDC_SD);
-> +		if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
-> +					     !(status & ATMEL_XLCDC_SD),
-> +					     10, 1000))
-> +			dev_warn(dev->dev, "Atmel LCDC status register SDSTS timeout\n");
-> +	}
-> +
->  	pm_runtime_put_sync(dev->dev);
->  
->  }
-> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-> index d30aec174aa2..7702c2f16178 100644
-> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-> @@ -30,6 +30,26 @@
->  
->  #define ATMEL_HLCDC_LAYER_IRQS_OFFSET		8
->  
-> +static const struct atmel_lcdc_dc_ops  atmel_hlcdc_ops = {
-
-there are 2 spaces b/w atmel_lcdc_dc_ops and atmel_hlcdc_ops.
-
-> +	.plane_setup_scaler = atmel_hlcdc_plane_setup_scaler,
-> +	.update_lcdc_buffers = update_hlcdc_buffers,
-> +	.lcdc_atomic_disable = hlcdc_atomic_disable,
-> +	.lcdc_update_general_settings = atmel_hlcdc_plane_update_general_settings,
-> +	.lcdc_atomic_update = hlcdc_atomic_update,
-> +	.lcdc_csc_init = hlcdc_csc_init,
-> +	.lcdc_irq_dbg = hlcdc_irq_dbg,
-> +};
-> +
-> +static const struct atmel_lcdc_dc_ops  atmel_xlcdc_ops = {
-
-Same here.
-
-> +	.plane_setup_scaler = atmel_xlcdc_plane_setup_scaler,
-> +	.update_lcdc_buffers = update_xlcdc_buffers,
-> +	.lcdc_atomic_disable = xlcdc_atomic_disable,
-> +	.lcdc_update_general_settings = atmel_xlcdc_plane_update_general_settings,
-> +	.lcdc_atomic_update = xlcdc_atomic_update,
-> +	.lcdc_csc_init = xlcdc_csc_init,
-> +	.lcdc_irq_dbg = xlcdc_irq_dbg,
-> +};
-> +
->  static const struct atmel_hlcdc_layer_desc atmel_hlcdc_at91sam9n12_layers[] = {
->  	{
->  		.name = "base",
-> @@ -58,6 +78,7 @@ static const struct atmel_hlcdc_dc_desc atmel_hlcdc_dc_at91sam9n12 = {
->  	.conflicting_output_formats = true,
->  	.nlayers = ARRAY_SIZE(atmel_hlcdc_at91sam9n12_layers),
->  	.layers = atmel_hlcdc_at91sam9n12_layers,
-> +	.ops = &atmel_hlcdc_ops,
->  };
->  
->  static const struct atmel_hlcdc_layer_desc atmel_hlcdc_at91sam9x5_layers[] = {
-> @@ -151,6 +172,7 @@ static const struct atmel_hlcdc_dc_desc atmel_hlcdc_dc_at91sam9x5 = {
->  	.conflicting_output_formats = true,
->  	.nlayers = ARRAY_SIZE(atmel_hlcdc_at91sam9x5_layers),
->  	.layers = atmel_hlcdc_at91sam9x5_layers,
-> +	.ops = &atmel_hlcdc_ops,
->  };
->  
->  static const struct atmel_hlcdc_layer_desc atmel_hlcdc_sama5d3_layers[] = {
-> @@ -269,6 +291,7 @@ static const struct atmel_hlcdc_dc_desc atmel_hlcdc_dc_sama5d3 = {
->  	.conflicting_output_formats = true,
->  	.nlayers = ARRAY_SIZE(atmel_hlcdc_sama5d3_layers),
->  	.layers = atmel_hlcdc_sama5d3_layers,
-> +	.ops = &atmel_hlcdc_ops,
->  };
->  
->  static const struct atmel_hlcdc_layer_desc atmel_hlcdc_sama5d4_layers[] = {
-> @@ -364,6 +387,7 @@ static const struct atmel_hlcdc_dc_desc atmel_hlcdc_dc_sama5d4 = {
->  	.max_hpw = 0x3ff,
->  	.nlayers = ARRAY_SIZE(atmel_hlcdc_sama5d4_layers),
->  	.layers = atmel_hlcdc_sama5d4_layers,
-> +	.ops = &atmel_hlcdc_ops,
->  };
->  
->  static const struct atmel_hlcdc_layer_desc atmel_hlcdc_sam9x60_layers[] = {
-> @@ -460,6 +484,7 @@ static const struct atmel_hlcdc_dc_desc atmel_hlcdc_dc_sam9x60 = {
->  	.fixed_clksrc = true,
->  	.nlayers = ARRAY_SIZE(atmel_hlcdc_sam9x60_layers),
->  	.layers = atmel_hlcdc_sam9x60_layers,
-> +	.ops = &atmel_hlcdc_ops,
->  };
->  
->  static const struct atmel_hlcdc_layer_desc atmel_xlcdc_sam9x75_layers[] = {
-> @@ -553,6 +578,7 @@ static const struct atmel_hlcdc_dc_desc atmel_xlcdc_dc_sam9x75 = {
->  	.is_xlcdc = true,
->  	.nlayers = ARRAY_SIZE(atmel_xlcdc_sam9x75_layers),
->  	.layers = atmel_xlcdc_sam9x75_layers,
-> +	.ops = &atmel_xlcdc_ops,
->  };
->  
->  static const struct of_device_id atmel_hlcdc_of_match[] = {
-> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
-> index daa508504f47..e2a5bed86fdb 100644
-> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
-> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
-> @@ -282,7 +282,7 @@ atmel_hlcdc_plane_scaler_set_phicoeff(struct atmel_hlcdc_plane *plane,
->  					    coeff_tab[i]);
->  }
->  
-> -static void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
-> +void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
->  					   struct atmel_hlcdc_plane_state *state)
-
-run checkpatch.pl on scripts: align struct atmel_hlcdc_plane_state *state
-with (. But may not be needed if follows advices on previous patches.
-
->  {
->  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> @@ -330,11 +330,56 @@ static void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
->  								     yfactor));
->  }
->  
-> +void atmel_xlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
-> +				    struct atmel_hlcdc_plane_state *state)
-> +{
-> +	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> +	u32 xfactor, yfactor;
-> +
-> +	if (!desc->layout.scaler_config)
-> +		return;
-> +
-> +	if (state->crtc_w == state->src_w && state->crtc_h == state->src_h) {
-> +		atmel_hlcdc_layer_write_cfg(&plane->layer,
-> +					    desc->layout.scaler_config, 0);
-> +		return;
-> +	}
-> +
-> +	/* xfactor = round[(2^20 * XMEMSIZE)/XSIZE)] */
-> +	xfactor = (u32)(((1 << 20) * state->src_w) / state->crtc_w);
-> +
-> +	/* yfactor = round[(2^20 * YMEMSIZE)/YSIZE)] */
-> +	yfactor = (u32)(((1 << 20) * state->src_h) / state->crtc_h);
-> +
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config,
-> +				    ATMEL_XLCDC_LAYER_VSCALER_LUMA_ENABLE |
-> +				    ATMEL_XLCDC_LAYER_VSCALER_CHROMA_ENABLE |
-> +				    ATMEL_XLCDC_LAYER_HSCALER_LUMA_ENABLE |
-> +				    ATMEL_XLCDC_LAYER_HSCALER_CHROMA_ENABLE);
-> +
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 1,
-> +				    yfactor);
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 3,
-> +				    xfactor);
-> +
-> +	/* As per YCbCr window resampling configuration */
-> +	if (state->base.fb->format->format == DRM_FORMAT_YUV420) {
-> +		yfactor /= 2;
-> +		xfactor /= 2;
-> +	} /* else As per ARGB window resampling configuration */
-
-This kind of describing behavior is a bit odd. You could try to describe
-what is needed before if statement.
-
-> +
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
-> +				    yfactor);
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
-> +				    xfactor);
-> +}
-> +
->  static void
->  atmel_hlcdc_plane_update_pos_and_size(struct atmel_hlcdc_plane *plane,
->  				      struct atmel_hlcdc_plane_state *state)
->  {
->  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->  
->  	if (desc->layout.size)
->  		atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.size,
-> @@ -352,10 +397,10 @@ atmel_hlcdc_plane_update_pos_and_size(struct atmel_hlcdc_plane *plane,
->  					ATMEL_HLCDC_LAYER_POS(state->crtc_x,
->  							      state->crtc_y));
->  
-> -	atmel_hlcdc_plane_setup_scaler(plane, state);
-> +	dc->desc->ops->plane_setup_scaler(plane, state);
->  }
->  
-> -static void
-> +void
->  atmel_hlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
->  					struct atmel_hlcdc_plane_state *state)
->  {
-> @@ -393,6 +438,40 @@ atmel_hlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
->  				    cfg);
->  }
->  
-> +void
-> +atmel_xlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
-> +					  struct atmel_hlcdc_plane_state *state)
-> +{
-> +	unsigned int cfg;
-
-Add it after pointers. Reverse christmass tree is more readable AFAICT.
-
-> +	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> +	const struct drm_format_info *format = state->base.fb->format;
-> +
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, ATMEL_XLCDC_LAYER_DMA_CFG,
-> +				    ATMEL_HLCDC_LAYER_DMA_BLEN_INCR16 | state->ahb_id);
-> +
-> +	cfg = ATMEL_XLCDC_LAYER_DMA | ATMEL_XLCDC_LAYER_REP;
-> +
-> +	if (plane->base.type != DRM_PLANE_TYPE_PRIMARY) {
-> +		/*
-> +		 * Alpha Blending bits specific to SAM9X7 SoC
-> +		 */
-> +		cfg |= ATMEL_XLCDC_LAYER_SFACTC_A0_MULT_AS |
-> +		       ATMEL_XLCDC_LAYER_SFACTA_ONE |
-> +		       ATMEL_XLCDC_LAYER_DFACTC_M_A0_MULT_AS |
-> +		       ATMEL_XLCDC_LAYER_DFACTA_ONE;
-> +		if (format->has_alpha)
-> +			cfg |= ATMEL_XLCDC_LAYER_A0(0xff);
-> +		else
-> +			cfg |= ATMEL_XLCDC_LAYER_A0(state->base.alpha);
-> +	}
-> +
-> +	if (state->disc_h && state->disc_w)
-> +		cfg |= ATMEL_XLCDC_LAYER_DISCEN;
-> +
-> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.general_config,
-> +				    cfg);
-> +}
-> +
->  static void atmel_hlcdc_plane_update_format(struct atmel_hlcdc_plane *plane,
->  					struct atmel_hlcdc_plane_state *state)
->  {
-> @@ -437,36 +516,53 @@ static void atmel_hlcdc_plane_update_clut(struct atmel_hlcdc_plane *plane,
->  	}
->  }
->  
-> +void update_hlcdc_buffers(struct atmel_hlcdc_plane *plane,
-> +			  struct atmel_hlcdc_plane_state *state, u32 sr, int i)
-> +{
-> +	atmel_hlcdc_layer_write_reg(&plane->layer,
-> +				    ATMEL_HLCDC_LAYER_PLANE_HEAD(i),
-> +				    state->dscrs[i]->self);
-> +
-> +	if (sr & ATMEL_HLCDC_LAYER_EN)
-> +		return;
-
-One extra line here makes it more readable.
-
-> +	atmel_hlcdc_layer_write_reg(&plane->layer,
-> +				    ATMEL_HLCDC_LAYER_PLANE_ADDR(i),
-> +				    state->dscrs[i]->addr);
-> +	atmel_hlcdc_layer_write_reg(&plane->layer,
-> +				    ATMEL_HLCDC_LAYER_PLANE_CTRL(i),
-> +				    state->dscrs[i]->ctrl);
-> +	atmel_hlcdc_layer_write_reg(&plane->layer,
-> +				    ATMEL_HLCDC_LAYER_PLANE_NEXT(i),
-> +				    state->dscrs[i]->self);
-> +}
-> +
-> +void update_xlcdc_buffers(struct atmel_hlcdc_plane *plane,
-> +			  struct atmel_hlcdc_plane_state *state,
-> +			  u32 sr, int i)
-> +{
-> +	atmel_hlcdc_layer_write_reg(&plane->layer,
-> +				    ATMEL_XLCDC_LAYER_PLANE_ADDR(i),
-> +				    state->dscrs[i]->addr);
-> +}
-> +
->  static void atmel_hlcdc_plane_update_buffers(struct atmel_hlcdc_plane *plane,
-> -					struct atmel_hlcdc_plane_state *state)
-> +					     struct atmel_hlcdc_plane_state *state)
->  {
->  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->  	struct drm_framebuffer *fb = state->base.fb;
->  	u32 sr;
->  	int i;
->  
-> -	sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
-> +	if (!dc->desc->is_xlcdc)
-> +		sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
->  
->  	for (i = 0; i < state->nplanes; i++) {
->  		struct drm_gem_dma_object *gem = drm_fb_dma_get_gem_obj(fb, i);
->  
->  		state->dscrs[i]->addr = gem->dma_addr + state->offsets[i];
->  
-> -		atmel_hlcdc_layer_write_reg(&plane->layer,
-> -					    ATMEL_HLCDC_LAYER_PLANE_HEAD(i),
-> -					    state->dscrs[i]->self);
-> -
-> -		if (!(sr & ATMEL_HLCDC_LAYER_EN)) {
-> -			atmel_hlcdc_layer_write_reg(&plane->layer,
-> -					ATMEL_HLCDC_LAYER_PLANE_ADDR(i),
-> -					state->dscrs[i]->addr);
-> -			atmel_hlcdc_layer_write_reg(&plane->layer,
-> -					ATMEL_HLCDC_LAYER_PLANE_CTRL(i),
-> -					state->dscrs[i]->ctrl);
-> -			atmel_hlcdc_layer_write_reg(&plane->layer,
-> -					ATMEL_HLCDC_LAYER_PLANE_NEXT(i),
-> -					state->dscrs[i]->self);
-> -		}
-> +		dc->desc->ops->update_lcdc_buffers(plane, state, sr, i);
->  
->  		if (desc->layout.xstride[i])
->  			atmel_hlcdc_layer_write_cfg(&plane->layer,
-> @@ -712,11 +808,8 @@ static int atmel_hlcdc_plane_atomic_check(struct drm_plane *p,
->  	return 0;
->  }
->  
-> -static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
-> -					     struct drm_atomic_state *state)
-> +void hlcdc_atomic_disable(struct atmel_hlcdc_plane *plane)
->  {
-> -	struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
-> -
->  	/* Disable interrupts */
->  	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IDR,
->  				    0xffffffff);
-> @@ -731,6 +824,70 @@ static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
->  	atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
->  }
->  
-> +void xlcdc_atomic_disable(struct atmel_hlcdc_plane *plane)
-> +{
-> +	/* Disable interrupts */
-> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_IDR,
-> +				    0xffffffff);
-> +
-> +	/* Disable the layer */
-> +	atmel_hlcdc_layer_write_reg(&plane->layer,
-> +				    ATMEL_XLCDC_LAYER_ENR, 0);
-> +
-> +	/* Clear all pending interrupts */
-> +	atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_XLCDC_LAYER_ISR);
-> +}
-> +
-> +static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
-> +					     struct drm_atomic_state *state)
-> +{
-> +	struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
-> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
-> +
-> +	dc->desc->ops->lcdc_atomic_disable(plane);
-> +}
-> +
-> +void hlcdc_atomic_update(struct atmel_hlcdc_plane *plane,
-> +			 struct atmel_hlcdc_dc *dc)
-> +{
-> +	u32 sr;
-> +
-> +	/* Enable the overrun interrupts. */
-> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IER,
-> +				    ATMEL_HLCDC_LAYER_OVR_IRQ(0) |
-> +				    ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
-> +				    ATMEL_HLCDC_LAYER_OVR_IRQ(2));
-> +
-> +	/* Apply the new config at the next SOF event. */
-> +	sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
-> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHER,
-> +				    ATMEL_HLCDC_LAYER_UPDATE |
-> +				    (sr & ATMEL_HLCDC_LAYER_EN ?
-> +				    ATMEL_HLCDC_LAYER_A2Q : ATMEL_HLCDC_LAYER_EN));
-> +}
-> +
-> +void xlcdc_atomic_update(struct atmel_hlcdc_plane *plane,
-> +			 struct atmel_hlcdc_dc *dc)
-> +{
-> +	/* Enable the overrun interrupts. */
-> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_IER,
-> +				    ATMEL_XLCDC_LAYER_OVR_IRQ(0) |
-> +				    ATMEL_XLCDC_LAYER_OVR_IRQ(1) |
-> +				    ATMEL_XLCDC_LAYER_OVR_IRQ(2));
-> +
-> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_ENR,
-> +				    ATMEL_XLCDC_LAYER_EN);
-> +
-> +	/*
-> +	 * Updating XLCDC_xxxCFGx, XLCDC_xxxFBA and XLCDC_xxxEN,
-> +	 * (where xxx indicates each layer) requires writing one to the
-> +	 * Update Attribute field for each layer in LCDC_ATTRE register for SAM9X7.
-> +	 */
-> +	regmap_write(dc->hlcdc->regmap, ATMEL_XLCDC_ATTRE, ATMEL_XLCDC_BASE_UPDATE |
-> +		     ATMEL_XLCDC_OVR1_UPDATE | ATMEL_XLCDC_OVR3_UPDATE |
-> +		     ATMEL_XLCDC_HEO_UPDATE);
-> +}
-> +
->  static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
->  					    struct drm_atomic_state *state)
->  {
-> @@ -739,7 +896,7 @@ static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
->  	struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
->  	struct atmel_hlcdc_plane_state *hstate =
->  			drm_plane_state_to_atmel_hlcdc_plane_state(new_s);
-> -	u32 sr;
-> +	struct atmel_hlcdc_dc *dc = p->dev->dev_private;
->  
->  	if (!new_s->crtc || !new_s->fb)
->  		return;
-> @@ -750,29 +907,63 @@ static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
->  	}
->  
->  	atmel_hlcdc_plane_update_pos_and_size(plane, hstate);
-> -	atmel_hlcdc_plane_update_general_settings(plane, hstate);
-> +	dc->desc->ops->lcdc_update_general_settings(plane, hstate);
->  	atmel_hlcdc_plane_update_format(plane, hstate);
->  	atmel_hlcdc_plane_update_clut(plane, hstate);
->  	atmel_hlcdc_plane_update_buffers(plane, hstate);
->  	atmel_hlcdc_plane_update_disc_area(plane, hstate);
->  
-> -	/* Enable the overrun interrupts. */
-> -	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IER,
-> -				    ATMEL_HLCDC_LAYER_OVR_IRQ(0) |
-> -				    ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
-> -				    ATMEL_HLCDC_LAYER_OVR_IRQ(2));
-> +	dc->desc->ops->lcdc_atomic_update(plane, dc);
-> +}
->  
-> -	/* Apply the new config at the next SOF event. */
-> -	sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
-> -	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHER,
-> -			ATMEL_HLCDC_LAYER_UPDATE |
-> -			(sr & ATMEL_HLCDC_LAYER_EN ?
-> -			 ATMEL_HLCDC_LAYER_A2Q : ATMEL_HLCDC_LAYER_EN));
-> +void hlcdc_csc_init(struct atmel_hlcdc_plane *plane,
-> +		    const struct atmel_hlcdc_layer_desc *desc)
-> +{
-> +	/*
-> +	 * TODO: declare a "yuv-to-rgb-conv-factors" property to let
-> +	 * userspace modify these factors (using a BLOB property ?).
-> +	 */
-> +	static u32 hlcdc_csc_coeffs[] = {
-
-static const u32 hlcdc_csc_coeffs[] = {
-
-> +		0x4c900091,
-> +		0x7a5f5090,
-> +		0x40040890
-> +	};
-> +
-> +	for (int i = 0; i < ARRAY_SIZE(hlcdc_csc_coeffs); i++) {
-> +		atmel_hlcdc_layer_write_cfg(&plane->layer,
-> +					    desc->layout.csc + i,
-> +					    hlcdc_csc_coeffs[i]);
-> +	}
-> +}
-> +
-> +void xlcdc_csc_init(struct atmel_hlcdc_plane *plane,
-> +		    const struct atmel_hlcdc_layer_desc *desc)
-> +{
-> +	/*
-> +	 * yuv-to-rgb-conv-factors are now defined from LCDC_HEOCFG16 to
-> +	 * LCDC_HEOCFG21 registers in SAM9X7.
-> +	 */
-> +	static u32 xlcdc_csc_coeffs[] = {
-
-static const u32 xlcdc_csc_coeffs[] = {
-
-> +		0x00000488,
-> +		0x00000648,
-> +		0x1EA00480,
-> +		0x00001D28,
-> +		0x08100480,
-> +		0x00000000,
-> +		0x00000007
-> +	};
-> +
-> +	for (int i = 0; i < ARRAY_SIZE(xlcdc_csc_coeffs); i++) {
-> +		atmel_hlcdc_layer_write_cfg(&plane->layer,
-> +					    desc->layout.csc + i,
-> +					    xlcdc_csc_coeffs[i]);
-> +	}
->  }
->  
->  static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
->  {
->  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->  
->  	if (desc->type == ATMEL_HLCDC_OVERLAY_LAYER ||
->  	    desc->type == ATMEL_HLCDC_CURSOR_LAYER) {
-> @@ -796,31 +987,16 @@ static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
->  			return ret;
->  	}
->  
-> -	if (desc->layout.csc) {
-> -		/*
-> -		 * TODO: decare a "yuv-to-rgb-conv-factors" property to let
-> -		 * userspace modify these factors (using a BLOB property ?).
-> -		 */
-> -		atmel_hlcdc_layer_write_cfg(&plane->layer,
-> -					    desc->layout.csc,
-> -					    0x4c900091);
-> -		atmel_hlcdc_layer_write_cfg(&plane->layer,
-> -					    desc->layout.csc + 1,
-> -					    0x7a5f5090);
-> -		atmel_hlcdc_layer_write_cfg(&plane->layer,
-> -					    desc->layout.csc + 2,
-> -					    0x40040890);
-> -	}
-> +	if (desc->layout.csc)
-> +		dc->desc->ops->lcdc_csc_init(plane, desc);
->  
->  	return 0;
->  }
->  
-> -void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
-> +void hlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
-> +		   const struct atmel_hlcdc_layer_desc *desc)
->  {
-> -	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> -	u32 isr;
-> -
-> -	isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
-> +	u32 isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
->  
->  	/*
->  	 * There's not much we can do in case of overrun except informing
-> @@ -830,8 +1006,31 @@ void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
->  	if (isr &
->  	    (ATMEL_HLCDC_LAYER_OVR_IRQ(0) | ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
->  	     ATMEL_HLCDC_LAYER_OVR_IRQ(2)))
-> -		dev_dbg(plane->base.dev->dev, "overrun on plane %s\n",
-> -			desc->name);
-> +		dev_warn(plane->base.dev->dev, "overrun on plane %s\n", desc->name);
-
-why changed it to dev_warn() ?
-
-> +}
-> +
-> +void xlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
-> +		   const struct atmel_hlcdc_layer_desc *desc)
-> +{
-> +	u32 isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_XLCDC_LAYER_ISR);
-> +
-> +	/*
-> +	 * There's not much we can do in case of overrun except informing
-> +	 * the user. However, we are in interrupt context here, hence the
-> +	 * use of dev_dbg().
-> +	 */
-> +	if (isr &
-> +	    (ATMEL_XLCDC_LAYER_OVR_IRQ(0) | ATMEL_XLCDC_LAYER_OVR_IRQ(1) |
-> +	     ATMEL_XLCDC_LAYER_OVR_IRQ(2)))
-> +		dev_warn(plane->base.dev->dev, "overrun on plane %s\n", desc->name);
-> +}
-> +
-> +void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
-> +{
-> +	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
-> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
-> +
-> +	dc->desc->ops->lcdc_irq_dbg(plane, desc);
->  }
->  
->  static const struct drm_plane_helper_funcs atmel_hlcdc_layer_plane_helper_funcs = {
+PiBPbiAyMDIzLTA5LTI1IDA0OjU5LCBLZWxseSBEZXZpbGxpdiB3cm90ZToNCj4gPiBEZWFyIGFs
+bCwNCj4gPg0KPiA+IEkgYW0gd29ya2luZyBvbiBhbiBBUk0tVjggc2VydmVyIHdpdGggdHdvIGdw
+dSBjYXJkcyBvbiBpdC4gUmVjZW50bHksIEkgbmVlZA0KPiB0byB0ZXN0IHBjaWUgcGVlciB0byBw
+ZWVyIGNvbW11bmljYXRpb24gYmV0d2VlbiB0aGUgdHdvIGdwdSBjYXJkcywgYnV0IHRoZQ0KPiB0
+aHJvdWdocHV0IGlzIG9ubHkgNEdCL3MuDQo+ID4NCj4gPiBBZnRlciBJIGV4cGxvcmVkIHRoZSBn
+cHUncyBrZXJuZWwgbW9kZSBkcml2ZXIsIEkgZm91bmQgaXQgd2FzIHVzaW5nIHRoZQ0KPiBkbWFf
+bWFwX3Jlc291cmNlKCkgQVBJIHRvIG1hcCB0aGUgcGVlciBkZXZpY2UncyBNTUlPIHNwYWNlLiBU
+aGUgYXJtDQo+IGlvbW11IGRyaXZlciB0aGVuIHdpbGwgaGFyZGNvZGUgYSAnSU9NTVVfTU1JTycg
+cHJvdCBpbiB0aGUgbGF0ZXIgZG1hIG1hcDoNCj4gPg0KPiA+ICAgICAgICAgc3RhdGljIGRtYV9h
+ZGRyX3QgaW9tbXVfZG1hX21hcF9yZXNvdXJjZShzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+IHBoeXNf
+YWRkcl90IHBoeXMsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZV90
+IHNpemUsIGVudW0gZG1hX2RhdGFfZGlyZWN0aW9uDQo+IGRpciwgdW5zaWduZWQgbG9uZyBhdHRy
+cykNCj4gPiAgICAgICAgICB7DQo+ID4gICAgICAgICAgICAgICAgICByZXR1cm4gX19pb21tdV9k
+bWFfbWFwKGRldiwgcGh5cywgc2l6ZSwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIGRtYV9pbmZvX3RvX3Byb3QoZGlyLCBmYWxzZSwNCj4gYXR0cnMpIHwgSU9N
+TVVfTU1JTywNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRt
+YV9nZXRfbWFzayhkZXYpKTsNCj4gPiAgICAgICAgICB9DQo+ID4NCj4gPiBBbmQgdGhhdCB3aWxs
+IGZpbmFsbHkgc2V0IHRoZSAnQVJNX0xQQUVfUFRFX01FTUFUVFJfREVWJyBhdHRyaWJ1dGUgaW4g
+UFRFLA0KPiB3aGljaCBtYXkgaGF2ZSBhIG5lZ2F0aXZlIGltcGFjdCBvbiB0aGUgcGVyZm9ybWFu
+Y2Ugb2YgdGhlIHBjaWUgcGVlciB0byBwZWVyDQo+IHRyYW5zYWN0aW9ucy4NCj4gPg0KPiA+ICAg
+ICAgICAgIC8qDQo+ID4gICAgICAgICAgICogTm90ZSB0aGF0IHRoaXMgbG9naWMgaXMgc3RydWN0
+dXJlZCB0byBhY2NvbW1vZGF0ZSBNYWxpIExQQUUNCj4gPiAgICAgICAgICAgKiBoYXZpbmcgc3Rh
+Z2UtMS1saWtlIGF0dHJpYnV0ZXMgYnV0IHN0YWdlLTItbGlrZSBwZXJtaXNzaW9ucy4NCj4gPiAg
+ICAgICAgICAgKi8NCj4gPiAgICAgICAgICBpZiAoZGF0YS0+aW9wLmZtdCA9PSBBUk1fNjRfTFBB
+RV9TMiB8fA0KPiA+ICAgICAgICAgICAgICBkYXRhLT5pb3AuZm10ID09IEFSTV8zMl9MUEFFX1My
+KSB7DQo+ID4gICAgICAgICAgICAgICAgICBpZiAocHJvdCAmIElPTU1VX01NSU8pDQo+ID4gICAg
+ICAgICAgICAgICAgICAgICAgICAgIHB0ZSB8PSBBUk1fTFBBRV9QVEVfTUVNQVRUUl9ERVY7DQo+
+ID4gICAgICAgICAgICAgICAgICBlbHNlIGlmIChwcm90ICYgSU9NTVVfQ0FDSEUpDQo+ID4gICAg
+ICAgICAgICAgICAgICAgICAgICAgIHB0ZSB8PSBBUk1fTFBBRV9QVEVfTUVNQVRUUl9PSVdCOw0K
+PiA+ICAgICAgICAgICAgICAgICAgZWxzZQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICBw
+dGUgfD0gQVJNX0xQQUVfUFRFX01FTUFUVFJfTkM7DQo+ID4gICAgICAgICAgfSBlbHNlIHsNCj4g
+PiAgICAgICAgICAgICAgICAgIGlmIChwcm90ICYgSU9NTVVfTU1JTykNCj4gPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgcHRlIHw9IChBUk1fTFBBRV9NQUlSX0FUVFJfSURYX0RFVg0KPiA+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDw8IEFSTV9MUEFFX1BURV9BVFRSSU5EWF9T
+SElGVCk7DQo+ID4gICAgICAgICAgICAgICAgICBlbHNlIGlmIChwcm90ICYgSU9NTVVfQ0FDSEUp
+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgIHB0ZSB8PSAoQVJNX0xQQUVfTUFJUl9BVFRS
+X0lEWF9DQUNIRQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDw8IEFSTV9M
+UEFFX1BURV9BVFRSSU5EWF9TSElGVCk7DQo+ID4gICAgICAgICAgfQ0KPiA+DQo+ID4gSSB0cmll
+ZCB0byByZW1vdmUgdGhlICdJT01NVV9NTUlPJyBwcm90IGluIHRoZSBkbWFfbWFwX3Jlc291cmNl
+KCkgQVBJDQo+IGFuZCByZS1jb21waWxlIHRoZSBsaW51eCBrZXJuZWwsIHRoZSB0aHJvdWdocHV0
+IHRoZW4gY2FuIGJlIHVwIHRvIDI4R0Ivcy4NCj4gPg0KPiA+IElzIHRoZXJlIGFuIGVsZWdhbnQg
+d2F5IHRvIHNvbHZlIHRoaXMgaXNzdWUgd2l0aG91dCBtb2RpZnlpbmcgdGhlIGxpbnV4IGtlcm5l
+bD8NCj4gZS5nLiwgYSBzdWJzdGl0dXRpb24gb2YgZG1hX21hcF9yZXNvdXJjZSgpIEFQST8NCj4g
+DQo+IE5vdCByZWFsbHkuIE90aGVyIHVzZS1jYXNlcyBmb3IgZG1hX21hcF9yZXNvdXJjZSgpIGlu
+Y2x1ZGUgRE1BIG9mZmxvYWQNCj4gZW5naW5lcyBhY2Nlc3NpbmcgRklGTyByZWdpc3RlcnMsIHdo
+ZXJlIGFsbG93aW5nIHJlb3JkZXJpbmcsIHdyaXRlLWdhdGhlcmluZywNCj4gZXRjLiB3b3VsZCBi
+ZSBhIHRlcnJpYmxlIGlkZWEuIFRodXMgaXQgbmVlZHMgdG8gYXNzdW1lIGEgInNhZmUiIE1NSU8g
+bWVtb3J5DQo+IHR5cGUsIHdoaWNoIG9uIEFybSBtZWFucyBEZXZpY2UtbkduUkUuDQo+IA0KPiBI
+b3dldmVyLCB0aGUgInByb3BlciIgUENJIHBlZXItdG8tcGVlciBzdXBwb3J0IHVuZGVyIENPTkZJ
+R19QQ0lfUDJQRE1BDQo+IGVuZGVkIHVwIG1vdmluZyBhd2F5IGZyb20gdGhlIGRtYV9tYXBfcmVz
+b3VyY2UoKSBhcHByb2FjaCBhbnl3YXksIGFuZA0KPiBhbGxvd3MgdGhpcyBraW5kIG9mIGRldmlj
+ZSBtZW1vcnkgdG8gYmUgdHJlYXRlZCBtb3JlIGxpa2UgcmVndWxhciBtZW1vcnkgKHZpYQ0KPiBa
+T05FX0RFVklDRSkgcmF0aGVyIHRoYW4gYXJiaXRyYXJ5IE1NSU8gcmVzb3VyY2VzLCBzbyB5b3Vy
+IGJlc3QgYmV0IHdvdWxkDQo+IGJlIHRvIGdldCB0aGUgR1BVIGRyaXZlciBjb252ZXJ0ZWQgb3Zl
+ciB0byB1c2luZyB0aGF0Lg0KDQpUaGFua3MgUm9iaW4uDQpTbyB5b3VyIHN1Z2dlc3Rpb24gaXMg
+d2UnZCBiZXR0ZXIgd29yayBvdXQgYSBuZXcgaW1wbGVtZW50YXRpb24ganVzdCBhcyB3aGF0IGl0
+DQpkb2VzIHVuZGVyIENPTkZJR19QQ0lfUDJQRE1BIGluc3RlYWQgb2YganVzdCB1c2luZyB0aGUg
+ZG1hX21hcF9yZXNvdXJjZSgpDQpBUEk/DQoNCkkgaGF2ZSBleHBsb3JlZCB0aGUgR1BVIGRyaXZl
+cnMgZnJvbSBBTUQsIE52aWRpYSBhbmQgaGFiYW5hbGFicywgZS5nLiwgYW5kIGZvdW5kDQp0aGV5
+IGFsbCB1c2luZyB0aGUgZG1hX21hcF9yZXNvdXJjZSgpIEFQSSB0byBtYXAgdGhlIHBlZXIgZGV2
+aWNlJ3MgYmFyIGFkZHJlc3MuDQpJZiBzbywgaXMgaXQgcG9zc2libGUgdG8gYmUgYSBjb21tb24g
+cGVyZm9ybWFuY2UgaXNzdWUgaW4gUENJIHBlZXItdG8tcGVlciBzY2VuYXJpbz8NCg0KPiANCj4g
+VGhhbmtzLA0KPiBSb2Jpbi4NCj4gDQo+ID4NCj4gPiBUaGFuayB5b3UhDQo+ID4NCj4gPiBQbGF0
+Zm9ybSBpbmZvOg0KPiA+IExpbnV4IGtlcm5lbCB2ZXJzaW9uOiA1LjEwDQo+ID4gUENJRSBHRU40
+IHgxNg0KPiA+DQo+ID4gU2luY2VyZWx5LA0KPiA+IEtlbGx5DQo+ID4NCg==
