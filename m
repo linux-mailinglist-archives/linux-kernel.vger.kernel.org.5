@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE8A7AD971
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D087AD974
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbjIYNpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
+        id S232063AbjIYNph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjIYNpT (ORCPT
+        with ESMTP id S231803AbjIYNpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:45:19 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C23B3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:45:12 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso802765166b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695649511; x=1696254311; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=84D7PUCePQFRdDvu62AGfV5k8flmGsh21RMLVVMuFo4=;
-        b=ifHFgFtblJYBz/kVUmR/tU+nFN/vzWULOGae1UDTbAWO//v2tLMi98iyUFdFoE6Yvn
-         08yCOIbHhyLs1JwYS5dWV8v3DGxZkw7fURiNVF+n2v8NabHgpwOzlAyUQdhIa/5SYpoR
-         PFG37m2eK9DG8aew7ZvUTEzOdx6uO3YAElzaflwIZPYRMuvkaHWuQmvxYevGP89ThC4w
-         ZYEATY2xjbcBxckEbkK/13dNv09mzrlMcnhrwYmPbzvBCmWjUTQoV/f6K98VozTwDyBN
-         d8fhRimdp93+3DXN9Yo2M/GJU1RuT3sSf76rakRqyoB9apLV+qPBwjz/5uK8UN/tYPiK
-         h7RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695649511; x=1696254311;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=84D7PUCePQFRdDvu62AGfV5k8flmGsh21RMLVVMuFo4=;
-        b=Sd0uoQ6W1ILKD1FZRKnv4gQnR1vL3Havw+U6bQsXys+Z66GjS6NWgjIjC+t8Zsq7vj
-         wbNIRKpbEOVBa2pExte85aMwH4mxsYkj4G4GBMlerGE0OW0f2YWhq2+uL32RrU6JZlCa
-         eGmvTkgSGmOOpQ2cMdaMoBbNdL1lIyjgtd+pixvkPapYI+E2hI5TWR2IcscrjZYinHE3
-         sPuWK1kxvcCumZhw76rIDG+i9Dc7FURQ0/503qVLJb+T7OGunfC/W11QGgQSG0KjU5bu
-         N2/PFJWGFOVl9vZBUaIePUsAi8/1G+pEAUUesy0CZNcXBTVMlq3nWHbCFKLo6KfVODcP
-         VNtw==
-X-Gm-Message-State: AOJu0YwNJv6Hn2BtDg1tCTWZl9Ix5i0O19z5m8ocDqAU/eHiPk7BJwNG
-        G8PW7RYqAq/3SFPcvC97sdVQBg==
-X-Google-Smtp-Source: AGHT+IHvPWYEayt34nl/PR7DhItXzsockASsra1AeLMx+QWFmGE2UZXNROAwEZtXhcRI1+w8Rhf+dA==
-X-Received: by 2002:a17:906:2258:b0:9a9:f2fd:2a2b with SMTP id 24-20020a170906225800b009a9f2fd2a2bmr4920386ejr.73.1695649510994;
-        Mon, 25 Sep 2023 06:45:10 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id dt11-20020a170906b78b00b009ae482d70besm6275624ejb.134.2023.09.25.06.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 06:45:10 -0700 (PDT)
-Message-ID: <93cd247e-3491-d8aa-ed02-6c77247023dd@baylibre.com>
-Date:   Mon, 25 Sep 2023 15:45:09 +0200
+        Mon, 25 Sep 2023 09:45:32 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96D5B3;
+        Mon, 25 Sep 2023 06:45:25 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38PDjITt048292;
+        Mon, 25 Sep 2023 08:45:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695649518;
+        bh=C+GLtsfIZeXgjPd418k2iGjNqMJ7Mr3S/9rXBh3m0cA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=gNS/PfBSsStWf3JChko/SCFRnKHUQKwjTm1NrjDGGhZz1lH4UrnK1Jdc/oeBetoYO
+         zuDvkpIn2/Gys6pw9U3GcdRQxlygUGY15eh2O1obhwBZKjUcRRoiqvLlY2nbp5DUOL
+         5rDssY66h8K+6W78kIXN/Ii0Sm9tGn1ShMUf505Y=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38PDjImM066303
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Sep 2023 08:45:18 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
+ Sep 2023 08:45:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 25 Sep 2023 08:45:17 -0500
+Received: from [10.250.38.120] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38PDjGBv004398;
+        Mon, 25 Sep 2023 08:45:16 -0500
+Message-ID: <3869499c-532d-8cd0-f428-6697bbbedd8d@ti.com>
+Date:   Mon, 25 Sep 2023 08:45:16 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v1] thermal/drivers/mediatek/lvts_thermal: fix error check
- in lvts_debugfs_init()
-To:     Minjie Du <duminjie@vivo.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Cc:     opensource.kernel@vivo.com
-References: <20230921091057.3812-1-duminjie@vivo.com>
+Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
+ Ethernet support
 Content-Language: en-US
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230921091057.3812-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+To:     MD Danish Anwar <danishanwar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>
+References: <20230921060913.721336-1-danishanwar@ti.com>
+ <20230921060913.721336-3-danishanwar@ti.com>
+ <3b4629c7-5625-f32f-0532-5f50832c1714@ti.com>
+ <52572af4-771e-3bd9-b290-74482694f020@ti.com>
+ <8db10b88-5b06-af84-cb0a-9fbaa29cf78c@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <8db10b88-5b06-af84-cb0a-9fbaa29cf78c@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,13 +78,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+On 9/25/23 3:21 AM, MD Danish Anwar wrote:
+> Hi Andrew,
+> 
+> On 22/09/23 09:52, MD Danish Anwar wrote:
+>> On 21/09/23 22:57, Andrew Davis wrote:
+>>> On 9/21/23 1:09 AM, MD Danish Anwar wrote:
+>>>> ICSSG2 provides dual Gigabit Ethernet support.
+>>>>
+>>>> For support SR2.0 ICSSG Ethernet firmware:
+>>>> - provide different firmware blobs and use TX_PRU.
+>>>> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
+>>>> - TX timestamp notification comes via INTC interrupt.
+>>>>
+>>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>>>> ---
+>>>>    arch/arm64/boot/dts/ti/Makefile               |   4 +-
+>>>>    ...se-board.dts => k3-am654-common-board.dts} |   0
+>>>>    arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 ++++++++++++++++++
+>>>>    3 files changed, 148 insertions(+), 1 deletion(-)
+>>>>    rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts =>
+>>>> k3-am654-common-board.dts} (100%)
+>>>>    create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/ti/Makefile
+>>>> b/arch/arm64/boot/dts/ti/Makefile
+>>>> index e7b8e2e7f083..85c91f5e832e 100644
+>>>> --- a/arch/arm64/boot/dts/ti/Makefile
+>>>> +++ b/arch/arm64/boot/dts/ti/Makefile
+>>>> @@ -42,12 +42,14 @@ dtb-$(CONFIG_ARCH_K3) +=
+>>>> k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
+>>>>    dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
+>>>>      # Boards with AM65x SoC
+>>>> -k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
+>>>> k3-am654-base-board-rocktech-rk101-panel.dtbo
+>>>> +k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
+>>>> k3-am654-base-board-rocktech-rk101-panel.dtbo
+>>>
+>>> Should the k3-am654-gp-evm.dtb not also have this icssg2 support? Does
+>>> it work
+>>> to keep this line like before or is there some conflict having both
+>>> enabled?
+>>>
+>>
+>> I have not tested this dtb (k3-am654-gp-evm.dtb). So just to be on the
+>> safe side I kept gp-evm.dtb as it was. Ideally gp-evm.dtb should have
+>> icssg2 support as well. But I haven't tested the combination of
+>> base-board + icssg dtbo + rockteck dtbo. That is why I kept gp-evm dtb
+>> as it was. Anyways, for ICSSG2's use case only k3-am654-base-board.dtb
+>> is used so I think it's ok to leave k3-am654-gp-evm.dtb to as it was.
+>>
+>>> Andrew
+>>>
+> 
+> I tested AM654x-GP EVM with k3-am654-gp-evm.dtb with both the
+> combination below (having k3-am654-base-board-dtbs :=
+> k3-am654-common-board.dtb k3-am654-icssg2.dtbo), ICSSG worked fine in
+> both the scenarios and I didn't see any issue. I don't have a rocktech
+> panel with me so couldn't test that. But as far as ICSSG is concerned it
+> works fine with the both the combinations. Please let me know which one
+> should I use. Should I keep gp-evm as it is (use dtb without the icssg2
+> overlay) or should I add icssg2 overlay in gp-evm.dtb as well.
+> 
+> 
+> 1. k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb
+> k3-am654-base-board-rocktech-rk101-panel.dtbo
+> 
+> 
+> 2. k3-am654-gp-evm-dtbs := k3-am654-common-board.dtb
+> k3-am654-base-board-rocktech-rk101-panel.dtbo
+> 
 
-On 21/09/2023 11:10, Minjie Du wrote:
-> debugfs_create_dir() function returns an error value embedded in
-> the pointer (PTR_ERR). Evaluate the return value using IS_ERR
-> rather than checking for NULL.
+As you said here before, most will expect the icssg2 to work
+on the EVM out of box, you should include it. If anyone wants
+something else they can apply the set of overlays that match
+on their own.
 
--- 
-Regards,
-Alexandre
+So, use base-board.
+
+Andrew
