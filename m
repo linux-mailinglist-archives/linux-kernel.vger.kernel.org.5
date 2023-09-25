@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF207ADA12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06077ADA11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbjIYO22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
+        id S232296AbjIYO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232204AbjIYO21 (ORCPT
+        with ESMTP id S232204AbjIYO2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:28:27 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AD8FC;
-        Mon, 25 Sep 2023 07:28:20 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38PERtRa100982;
-        Mon, 25 Sep 2023 09:27:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695652075;
-        bh=kiIE/cuC2sOtvlWX64aG3nF6nKMN73VRz8KekUZdOYQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=JUe7AiMUo2yByN6iefSA1twMjHVoU9UHnpQVAW7ZJRQTighFC/ZmpfF3Sh+37uW9Z
-         d3J7lcVRJnnlu1+8coZjbLaDi+Fr8M6wvyLXr+9dxxEgIZJWjHQGqHOEwHIA1NOAnv
-         Lu7BlRIgXP0lEEnkzJ0pPfSwkJyBgXjOP8MS/ZAQ=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38PERtSl002275
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Sep 2023 09:27:55 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Sep 2023 09:27:54 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Sep 2023 09:27:54 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38PERsLG051392;
-        Mon, 25 Sep 2023 09:27:54 -0500
-Date:   Mon, 25 Sep 2023 09:27:54 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Wadim Egorov <w.egorov@phytec.de>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <upstream@lists.phytec.de>
-Subject: Re: [PATCH] arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops
- reg
-Message-ID: <20230925142754.vzvk6o2jncecaphv@whiny>
-References: <20230925140710.478027-1-w.egorov@phytec.de>
+        Mon, 25 Sep 2023 10:28:21 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F59EE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:28:14 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32003aae100so5276599f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aceart.de; s=google; t=1695652093; x=1696256893; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=o3p8nJzBx02DNMJ+7EnZtFgR5MAZSx4FbGOUUlLpYxw=;
+        b=d9Lkph9E3pMO4GQYRdiuYmhfuCQRo0HYu2OVHL7mzNYBTBpuRd0DftyfFmVJ5F5Wm1
+         N/kcJQtI7m54vukvj6tNBZpFPCqWY8PfyxnlGREn1IYM/Lo9gkfMCHcGu5GX5GsfgOyR
+         hV4g+AP56ngrIZZxshO46d+Hz1D0jtn+Qoq+alBkAafHdb18uvWcgu3kfYMdrUq12nTy
+         mmJvQi1R8tdUnMtRITfbzTHmXXw7T2q6RcO1D1Wws7b1U7hijbEYS5uI00PlomE4ZMZt
+         nVZBdAIbvr26Kc49OOxUd54kPMOfIp4ROU4wJ4Nx7BxKZ4gi/IkfCM+Kfc4nHuwOvigR
+         mTSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695652093; x=1696256893;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o3p8nJzBx02DNMJ+7EnZtFgR5MAZSx4FbGOUUlLpYxw=;
+        b=HuHmS9wIhsMVSZ7DAmwBI3MMKr882Hqtw4M2LnAZWZELQyQCxb919DD1+wXt+JB22D
+         R5n+2SxDL7j8WzEAae0luYxYmKMkDN3m/R+Wrtvmv+zIQ9yr5tj9aXQYEx1d9dGirJ2o
+         o/3TY0uoYzyOzn19Ve4tYQvRzs1F3mQqKPV3Hwdl96u5xX3i8SKoOW7JZ7uQ6F2l7e3X
+         NWXzMA8EeHnCLk7o8BgrlnbEVHjIDuegEs45qwL6Me9S/nXP8EWhjqgfe0NjzXPdMXBv
+         10B6PBiBKgX4tYGqPbs5EeSMHuDFCmROHJ57QFAbit+Y/5yVYTGikrhC/zD4OSbBi8Tf
+         YsNQ==
+X-Gm-Message-State: AOJu0YwKpVNKxPp4WI0SdM5y+XwIvM/l63pXFAnCD0LYvDSTi4GPAdC3
+        DDQj5BKAhVmMBE68gZK2jnVavw==
+X-Google-Smtp-Source: AGHT+IHyhLLHIMrxMT5+MjTuP9mXxsxsvs3bZXzseRBVbE5hWbY+ZOUden2sS//p4i8tzLc8BaX4jw==
+X-Received: by 2002:adf:ef0b:0:b0:316:fc03:3c66 with SMTP id e11-20020adfef0b000000b00316fc033c66mr5604701wro.3.1695652093259;
+        Mon, 25 Sep 2023 07:28:13 -0700 (PDT)
+Received: from [192.168.2.171] ([94.186.212.25])
+        by smtp.gmail.com with ESMTPSA id o9-20020a5d6849000000b0031989784d96sm12043993wrw.76.2023.09.25.07.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 07:28:12 -0700 (PDT)
+Message-ID: <9ca32137e42a22b016d8d417ee9e0dc024ef2aa9.camel@aceart.de>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial
+ device tree
+From:   lukas walter <lukas.walter@aceart.de>
+To:     konrad.dybcio@linaro.org
+Cc:     agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lukas.walter@aceart.de, phone-devel@vger.kernel.org,
+        raymondhackley@protonmail.com, robh+dt@kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Date:   Mon, 25 Sep 2023 16:28:12 +0200
+In-Reply-To: <44a00fc6-d700-4713-34f0-36b172d8cb90@linaro.org>
+Organization: aceArt GmbH
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230925140710.478027-1-w.egorov@phytec.de>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:07-20230925, Wadim Egorov wrote:
-> Seems like the address value of the reg property was mistyped.
-> Update reg to 0x9ca00000 to match node's definition.
-> 
-> Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
+Date: Wed, 20 Sep 2023 16:47:30 +0200
 
-Missing:
+>> +
+>> +	reserved-memory {
+>> +		reserved@84a00000 {
+>> +			reg =3D <0x0 0x84a00000 0x0 0x1600000>;
+>> +			no-map;
+>> +		};
+>Do we know what this is for?
 
-Fixes: f5a731f0787f ("arm64: dts: ti: Add k3-am625-beagleplay")
+This seems to be some QSEE/TrustZone memory required to boot.
+I would name it `qseecom_mem: qseecom@84a00000` like other phones
+currently have it.
 
-With that:
+`[    1.162115] QSEECOM: qseecom_probe: secure app region
+addr=3D0x84a00000 size=3D0x1900000`
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
+>> +	};
+>> +
+>> +	gpio-hall-sensor {
+>> +		compatible =3D "gpio-keys";
+>> +
+>> +		pinctrl-0 =3D <&gpio_hall_sensor_default>;
+>> +		pinctrl-names =3D "default";
+>> +
+>> +		label =3D "GPIO Hall Effect Sensor";
+>I think we can have both hall sensor and V+ under gpio-keys
+>
+>And then I am not sure how useful the label is for the container
+>node, maybe you or somebody else can tell me whether it's used
+>anywhere
+>> +
+>> +		event-hall-sensor {
+>> +			label =3D "Hall Effect Sensor";
+>> +			gpios =3D <&tlmm 69 GPIO_ACTIVE_LOW>;
+>> +			linux,input-type =3D <EV_SW>;
+>> +			linux,code =3D <SW_LID>;
+>> +			linux,can-disable;
+>Should this not be a wakeup-source btw?
 
-> ---
->  arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-> index 7cfdf562b53b..2de74428a8bd 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-> @@ -58,7 +58,7 @@ reserved-memory {
->  
->  		ramoops: ramoops@9ca00000 {
->  			compatible = "ramoops";
-> -			reg = <0x00 0x9c700000 0x00 0x00100000>;
-> +			reg = <0x00 0x9ca00000 0x00 0x00100000>;
->  			record-size = <0x8000>;
->  			console-size = <0x8000>;
->  			ftrace-size = <0x00>;
-> -- 
-> 2.25.1
-> 
+I am not sure how to change this. I would like to leave this as many
+other hall sensors seem to be configured identically.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Is this fine?
+Should I send a V2 with the signoff and reserved-memory changes?
