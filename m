@@ -2,272 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8FF7ACF07
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDD17ACF06
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbjIYEJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 00:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S230194AbjIYEJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 00:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjIYEJO (ORCPT
+        with ESMTP id S229907AbjIYEJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 00:09:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108B2E8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695614947; x=1727150947;
-  h=date:from:to:cc:subject:message-id;
-  bh=REVEuj2rNghwoqvfIp2Q3LaajiM9zRe6PDyRKxmuj+c=;
-  b=njPOLPyHOikCiIU/69qc5rBoXssRR4rS61fauVqDB9qxmVoO/9Hxvims
-   xWfj4g8gUR2LeqmR8sQWlKzU6hGGDWxsa+/n7SNLxhOWLm3muvyqymrsQ
-   mrhgOddmDy4bb7i8ZFEk9MMsG2M0WmXwg79qZEw0r+K2AsFJcqyx9IdV3
-   odb0y9TnfWYJy8aHmWif/xjNbEOgFADGkPgc/H2UcF2P38k5sRXxKLONd
-   wVrR9GfkjHr2hLwdmfZZW8rKEmvTgOSDvBuRzefVKSWF5+2biLdIlRDKc
-   rl86fVQwpOGz9ZIyL2NdiamqGpRX6sGpzI7yZ5Tsje1VPnkff/JWbiFKS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="447648027"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="447648027"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 21:09:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="921842424"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="921842424"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 24 Sep 2023 21:09:05 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qkcu6-0001At-39;
-        Mon, 25 Sep 2023 04:09:02 +0000
-Date:   Mon, 25 Sep 2023 12:08:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 3eafe225995c67f8c179011ec2d6e4c12b32a53d
-Message-ID: <202309251200.Fg8rbtOe-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 00:09:06 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E04492;
+        Sun, 24 Sep 2023 21:09:00 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P3aZtM031137;
+        Mon, 25 Sep 2023 04:08:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=h+QparGQTfIJiFmNIANr44K4zJ5QDRsLnD5BNsEpy5g=;
+ b=HLU/1lPxh3eOYnxhYhgDVjLkMS3GoXdiX5oq5YNpqPCuV5yEKa7+cfoEh+vG7eMq8zAM
+ AcPfCJumP+CEY7bZUmZRJ9e7eGhMoNjjPb/V7P4RaDKI1BPfnoC6Z541JixEPNgwPG8o
+ 6tvKBQwJxQLUyKuBmClroQGwVHj35qylw39t2lpvnfmOPjuOFS0NmrjMtVMyrxh0KD7x
+ qTxxp8u9qNHHAovntjhFpb6lZkbOtTI2jMOjLchwyzovxG2MOa/GRNmSfGf1L21EiGLa
+ xbjOQlRsOQ3PJnKJnjxWiss4JaiyuWcc2ZgX9bofKrdhk6VvQC3MhFQ/gktIZ00uwygw GQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9r88jwka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 04:08:50 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38P48nub022964
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 04:08:49 GMT
+Received: from [10.253.15.18] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 24 Sep
+ 2023 21:08:47 -0700
+Message-ID: <a82e188e-2d0e-7c0f-de54-79bbc4b6957b@quicinc.com>
+Date:   Mon, 25 Sep 2023 12:08:44 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/2] bus: mhi: host: Take irqsave lock after TRE is
+ generated
+Content-Language: en-US
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>, <mani@kernel.org>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>, Hemant Kumar <quic_hemantk@quicinc.com>,
+        "Lazarus Motha" <quic_lmotha@quicinc.com>
+References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
+ <1694594861-12691-3-git-send-email-quic_qianyu@quicinc.com>
+ <e40a1dca-f23e-af32-320e-bf66a894bc6c@quicinc.com>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <e40a1dca-f23e-af32-320e-bf66a894bc6c@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: VqtJn1SGVwMN2sEuurqh-VWrsL-mbU0P
+X-Proofpoint-GUID: VqtJn1SGVwMN2sEuurqh-VWrsL-mbU0P
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-25_01,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=771 adultscore=0
+ impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309250027
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 3eafe225995c67f8c179011ec2d6e4c12b32a53d  sched/core: Refactor the task_flags check for worker sleeping in sched_submit_work()
 
-elapsed time: 1044m
+On 9/22/2023 10:50 PM, Jeffrey Hugo wrote:
+> On 9/13/2023 2:47 AM, Qiang Yu wrote:
+>> From: Hemant Kumar <quic_hemantk@quicinc.com>
+>>
+>> Take irqsave lock after TRE is generated to avoid deadlock due to core
+>> getting interrupts enabled as local_bh_enable must not be called with
+>> irqs disabled based on upstream patch.
+>
+> Where is local_bh_enable() being called?  What patch?  What is 
+> upstream of the codebase you submitted this to?  Why is it safe to 
+> call mhi_gen_tre() without the lock?
 
-configs tested: 194
-configs skipped: 2
+This patch is to fix the issue included by  "[PATCH v2 1/2] bus: mhi: 
+host: Add spinlock to protect WP access when queueing TREs". In that 
+patch, we add write_lock_bh/write_unlock_bh in mhi_gen_tre().
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+However, before mhi_gen_tre() is invoked, mhi_cntrl->pm_lock is getted, 
+line 1125, and it is a spin lock. So it becomes we want to get and 
+release bh lock after spin lock.  __local_bh_enable_ip is called as part 
+of write_unlock_bh
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20230924   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g4_defconfig   clang
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230924   gcc  
-arm                   randconfig-001-20230925   gcc  
-arm                           u8500_defconfig   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230924   gcc  
-i386         buildonly-randconfig-002-20230924   gcc  
-i386         buildonly-randconfig-003-20230924   gcc  
-i386         buildonly-randconfig-004-20230924   gcc  
-i386         buildonly-randconfig-005-20230924   gcc  
-i386         buildonly-randconfig-006-20230924   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230924   gcc  
-i386                  randconfig-001-20230925   gcc  
-i386                  randconfig-002-20230924   gcc  
-i386                  randconfig-002-20230925   gcc  
-i386                  randconfig-003-20230924   gcc  
-i386                  randconfig-003-20230925   gcc  
-i386                  randconfig-004-20230924   gcc  
-i386                  randconfig-004-20230925   gcc  
-i386                  randconfig-005-20230924   gcc  
-i386                  randconfig-005-20230925   gcc  
-i386                  randconfig-006-20230924   gcc  
-i386                  randconfig-006-20230925   gcc  
-i386                  randconfig-011-20230924   gcc  
-i386                  randconfig-011-20230925   gcc  
-i386                  randconfig-012-20230924   gcc  
-i386                  randconfig-012-20230925   gcc  
-i386                  randconfig-013-20230924   gcc  
-i386                  randconfig-013-20230925   gcc  
-i386                  randconfig-014-20230924   gcc  
-i386                  randconfig-014-20230925   gcc  
-i386                  randconfig-015-20230924   gcc  
-i386                  randconfig-015-20230925   gcc  
-i386                  randconfig-016-20230924   gcc  
-i386                  randconfig-016-20230925   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230924   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-mips                           ip32_defconfig   gcc  
-mips                           rs90_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                       maple_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc                      pmac32_defconfig   clang
-powerpc                     stx_gp3_defconfig   gcc  
-powerpc                     tqm8548_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                    nommu_k210_defconfig   gcc  
-riscv                 randconfig-001-20230924   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230924   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         apsh4a3a_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230925   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230925   gcc  
-x86_64       buildonly-randconfig-002-20230925   gcc  
-x86_64       buildonly-randconfig-003-20230925   gcc  
-x86_64       buildonly-randconfig-004-20230925   gcc  
-x86_64       buildonly-randconfig-005-20230925   gcc  
-x86_64       buildonly-randconfig-006-20230925   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20230924   gcc  
-x86_64                randconfig-001-20230925   gcc  
-x86_64                randconfig-002-20230924   gcc  
-x86_64                randconfig-002-20230925   gcc  
-x86_64                randconfig-003-20230924   gcc  
-x86_64                randconfig-003-20230925   gcc  
-x86_64                randconfig-004-20230924   gcc  
-x86_64                randconfig-004-20230925   gcc  
-x86_64                randconfig-005-20230924   gcc  
-x86_64                randconfig-005-20230925   gcc  
-x86_64                randconfig-006-20230924   gcc  
-x86_64                randconfig-006-20230925   gcc  
-x86_64                randconfig-011-20230924   gcc  
-x86_64                randconfig-011-20230925   gcc  
-x86_64                randconfig-012-20230924   gcc  
-x86_64                randconfig-012-20230925   gcc  
-x86_64                randconfig-013-20230924   gcc  
-x86_64                randconfig-013-20230925   gcc  
-x86_64                randconfig-014-20230924   gcc  
-x86_64                randconfig-014-20230925   gcc  
-x86_64                randconfig-015-20230924   gcc  
-x86_64                randconfig-015-20230925   gcc  
-x86_64                randconfig-016-20230924   gcc  
-x86_64                randconfig-016-20230925   gcc  
-x86_64                randconfig-071-20230924   gcc  
-x86_64                randconfig-071-20230925   gcc  
-x86_64                randconfig-072-20230924   gcc  
-x86_64                randconfig-072-20230925   gcc  
-x86_64                randconfig-073-20230924   gcc  
-x86_64                randconfig-073-20230925   gcc  
-x86_64                randconfig-074-20230924   gcc  
-x86_64                randconfig-074-20230925   gcc  
-x86_64                randconfig-075-20230924   gcc  
-x86_64                randconfig-075-20230925   gcc  
-x86_64                randconfig-076-20230924   gcc  
-x86_64                randconfig-076-20230925   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
+and local_bh_enable. When CONFIG_TRACE_IRQFLAGS is enabled, irq will be 
+enabled once __local_bh_enable_ip is called. The commit message is not 
+clear and confusing, will change it in [patch v3].
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
