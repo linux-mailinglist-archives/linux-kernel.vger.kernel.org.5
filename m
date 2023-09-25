@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3FB7AE07D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E354C7AE080
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjIYUzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 16:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S233390AbjIYU4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 16:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjIYUzt (ORCPT
+        with ESMTP id S230250AbjIYUz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 16:55:49 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85255C0;
-        Mon, 25 Sep 2023 13:55:41 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-49032a0ff13so2667256e0c.0;
-        Mon, 25 Sep 2023 13:55:41 -0700 (PDT)
+        Mon, 25 Sep 2023 16:55:59 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC64F180;
+        Mon, 25 Sep 2023 13:55:52 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bf3f59905so886609266b.3;
+        Mon, 25 Sep 2023 13:55:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695675340; x=1696280140; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dIA+qziFaiYcJMDJC+/kx6eXDbvvT/HPXUlpCtHOxiU=;
-        b=Ji37eCiw1aGJbbqBRggFFY9ZDbH8T0ei9Rb0kNHSBEYZDHrQlNznrcWJci3ZFWkH6L
-         257mNo61mtK22xJwgPBEZYwXIgQvo1ClduzwXfh9zgHIKCTUJHTz+rDZUWj9WAewIPhK
-         RwQTzkqCMxCfrE5D76oPZ8daim6QVay37L8DL6d3Uq1rrCoslOERa1W59cFTn5jSiIVH
-         1zgPg0yk9ST8LUN/nLg5IeU1ENsdNkMUmnweg3ei5i1t9zNKXvMyz7RzhtgsKX8h7X56
-         frt7gjMbu/pOT5Cux/OJltxlkI1aqR/r6ulL6E0OgHkAgliv56UNtF5unU517pdudiT3
-         X/tg==
+        d=gmail.com; s=20230601; t=1695675351; x=1696280151; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gqCt6JwiCOkZZaJC5IQZARnFIIp0VwWgUE64FLRm04k=;
+        b=XEkjk89iabc0nmDNqhNuf5ZDIxTEEcBbsJpiDrh7TSdlbh/aqxHs7WjyioxqLIkB9i
+         s4XxPMhf48YEzuYcn/5vYqhlthxBemyPlBqGspOlT6RHs9EHHIC8V1x1NPwytc/UpCUV
+         n59Hu1/GrRCxgD+d84N7T0Z9IJ3E3GPx8SkC5eRjaisy5F0Egu4YNdCKkv9sWCmEqaIo
+         s9K6y+qCGG6PNGsrFWKGz60M1KBzkuLjMrIERhWcvqCf2PtqxYTbztYcrCnXntuiqb3l
+         KzTaWxtSl3kiTfp2rICt3e2MC6nojCQ6aX1I256jOViSfMdfAE2+gRmOi2SG8BIztZxc
+         43bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695675340; x=1696280140;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dIA+qziFaiYcJMDJC+/kx6eXDbvvT/HPXUlpCtHOxiU=;
-        b=Po6RAfbfsxYSj7dc/vivkqLfAUwLeQ112b1oRvUsdyI7wMArpR97GJLOF1/2UxhOeV
-         U4tGJngJIKnHx4vSsHPXv+Rqn6z3yLXXv9u1N/BzS0YPcN/VcC1BBiUIB/vmnhHfII6K
-         1RX/Dl84mC3n7yRhiWoWO01KZqaBE71qsi2TdnX2OMV2x7xLNRsB8L38wrgtYZ1SO7KN
-         UEQ3JQYzyGcP7XpuqAK8uBnH1lxM7gzaYE3ZpNL4ff9H7K4BK3vVybyenpG5yjIJkxCW
-         vAwH6ZWot04OBj2UQawBSRWVp7Xprgo75A7sCDnKuPGBJP7hVZbxTYtfBNb13xvXUXFg
-         E/aw==
-X-Gm-Message-State: AOJu0Yw0zP9AZ4fGpllbRRzBy3No3eAZHXd9EJT0ED6VZ93b2iR3rIOq
-        FzR5kxgPLt75OWkq5COJaZds2xTJ0xg5Q/2+c1A=
-X-Google-Smtp-Source: AGHT+IE8OXQ5qBWmBH2Wg+f0Rn0UrvAUxFonYCEfiWSdmlJpE5mh59jI9o8qMwt1vMu66AnDRdbHAFQ8ahoC5NLTvPg=
-X-Received: by 2002:a1f:c6c1:0:b0:48d:1e9:2707 with SMTP id
- w184-20020a1fc6c1000000b0048d01e92707mr4461061vkf.7.1695675340584; Mon, 25
- Sep 2023 13:55:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695675351; x=1696280151;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gqCt6JwiCOkZZaJC5IQZARnFIIp0VwWgUE64FLRm04k=;
+        b=swD4Iy0Ax1jRacWG/2FcJD/yPw2lf8zssN2xLiNpIKc5a13rD2q71YocIsSbyVVBZP
+         /C/bK9l+L1jDvNNYpBGnOcC1LyKDcMSsEDsT3zaycyg10h/ON2m+AdpcM1Y0WYKh2PXF
+         +QI+/BAu6RBwGfqOKvfdJFHFXu+FxJGmj+oaJXJnJSHAHfFfjLz1qA8cKLHOm+B5+dJb
+         y23beLRhGZjZXQnhYPPDpSfB5FIJPggnCbxkZLDK4985ZKLE1toUEBnIvTiipYlzC9K8
+         X5E3+5iL4Ui3axVrIadKQKxmKi9tooxuSZ2Pjp6TXKFtjS4uY95bKWY0446LNcndcCC5
+         j0Pw==
+X-Gm-Message-State: AOJu0Yw+/8tQ3hA+whIxrqOroRfu5sejHg+evJIX/H2dAAOftDLixEj1
+        x7JFZVFLpwheNWC5l3zJRas=
+X-Google-Smtp-Source: AGHT+IExNVYjC7Q5VDEbkKf7d89D/MJHrDMgaWYvjkGbyT78VB1cYYWG570TN6Ye7Trfv2C2hrjkLg==
+X-Received: by 2002:a17:906:23ea:b0:9ae:65fc:be7 with SMTP id j10-20020a17090623ea00b009ae65fc0be7mr6896502ejg.17.1695675351020;
+        Mon, 25 Sep 2023 13:55:51 -0700 (PDT)
+Received: from f.. (cst-prg-24-34.cust.vodafone.cz. [46.135.24.34])
+        by smtp.gmail.com with ESMTPSA id y4-20020a17090614c400b00992b510089asm6769302ejc.84.2023.09.25.13.55.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 13:55:50 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     brauner@kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH] vfs: shave work on failed file open
+Date:   Mon, 25 Sep 2023 22:55:45 +0200
+Message-Id: <20230925205545.4135472-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230912122201.3752918-1-paweldembicki@gmail.com>
- <20230912122201.3752918-7-paweldembicki@gmail.com> <20230912213937.wqwiex32ojlojnue@skbuf>
-In-Reply-To: <20230912213937.wqwiex32ojlojnue@skbuf>
-From:   =?UTF-8?Q?Pawe=C5=82_Dembicki?= <paweldembicki@gmail.com>
-Date:   Mon, 25 Sep 2023 22:55:29 +0200
-Message-ID: <CAJN1KkyV_B4Dhd65WmeetE8ynf+w=_L3XqE55=4+QWNLNRaDsQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 6/8] net: dsa: vsc73xx: introduce tag 8021q
- for vsc73xx
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     netdev@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,155 +70,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 12 wrz 2023 o 23:39 Vladimir Oltean <olteanv@gmail.com> napisa=C5=82(a=
-):
->
-> Hi Pawel,
+Failed opens (mostly ENOENT) legitimately happen a lot, for example here
+are stats from stracing kernel build for few seconds (strace -fc make):
 
-Hi Vladimir,
+  % time     seconds  usecs/call     calls    errors syscall
+  ------ ----------- ----------- --------- --------- ------------------
+    0.76    0.076233           5     15040      3688 openat
 
->
-> On Tue, Sep 12, 2023 at 02:22:00PM +0200, Pawel Dembicki wrote:
-> > This commit introduces a new tagger based on 802.1q tagging.
-> > It's designed for the vsc73xx driver. The VSC73xx family doesn't have
-> > any tag support for the RGMII port, but it could be based on VLANs.
-> >
-> > Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-> > ---
-> > diff --git a/net/dsa/tag_vsc73xx_8021q.c b/net/dsa/tag_vsc73xx_8021q.c
-> > new file mode 100644
-> > index 000000000000..9093a71e6eb0
-> > --- /dev/null
-> > +++ b/net/dsa/tag_vsc73xx_8021q.c
-> > @@ -0,0 +1,91 @@
-> > +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> > +/* Copyright (C) 2022 Pawel Dembicki <paweldembicki@gmail.com>
->
-> 2022-2023 by now, maybe?
->
-> > + * Based on tag_sja1105.c:
-> > + * Copyright (c) 2019, Vladimir Oltean <olteanv@gmail.com>
-> > + */
-> > +#include <linux/dsa/8021q.h>
-> > +
-> > +#include "tag.h"
-> > +#include "tag_8021q.h"
-> > +
-> > +#define VSC73XX_8021Q_NAME "vsc73xx-8021q"
-> > +
-> > +static struct sk_buff *vsc73xx_xmit(struct sk_buff *skb, struct net_de=
-vice *netdev)
-> > +{
-> > +     struct dsa_port *dp =3D dsa_slave_to_port(netdev);
-> > +     u16 queue_mapping =3D skb_get_queue_mapping(skb);
-> > +     u16 tx_vid =3D dsa_tag_8021q_standalone_vid(dp);
-> > +     u8 pcp;
-> > +
-> > +     if (skb->offload_fwd_mark) {
-> > +             unsigned int bridge_num =3D dsa_port_bridge_num_get(dp);
-> > +             struct net_device *br =3D dsa_port_bridge_dev_get(dp);
-> > +
-> > +             if (br_vlan_enabled(br))
-> > +                     return skb;
-> > +
-> > +             tx_vid =3D dsa_tag_8021q_bridge_vid(bridge_num);
-> > +     }
-> > +
-> > +     pcp =3D netdev_txq_to_tc(netdev, queue_mapping);
-> > +
-> > +     return dsa_8021q_xmit(skb, netdev, ETH_P_8021Q,
-> > +                           ((pcp << VLAN_PRIO_SHIFT) | tx_vid));
-> > +}
-> > +
-> > +static void vsc73xx_vlan_rcv(struct sk_buff *skb, int *source_port,
-> > +                          int *switch_id, int *vbid, u16 *vid)
-> > +{
-> > +     if (vid_is_dsa_8021q(skb_vlan_tag_get(skb) & VLAN_VID_MASK))
-> > +             return dsa_8021q_rcv(skb, source_port, switch_id, vbid);
-> > +
-> > +     /* Try our best with imprecise RX */
-> > +     *vid =3D skb_vlan_tag_get(skb) & VLAN_VID_MASK;
-> > +}
-> > +
-> > +static struct sk_buff *vsc73xx_rcv(struct sk_buff *skb, struct net_dev=
-ice *netdev)
-> > +{
-> > +     int src_port =3D -1, switch_id =3D -1, vbid =3D -1;
-> > +     u16 vid;
-> > +
-> > +     if (skb_vlan_tag_present(skb)) {
-> > +             /* Normal traffic path. */
-> > +             vsc73xx_vlan_rcv(skb, &src_port, &switch_id, &vbid, &vid)=
-;
-> > +     } else {
-> > +             netdev_warn(netdev, "Couldn't decode source port\n");
-> > +             return NULL;
-> > +     }
-> > +
-> > +     if (vbid >=3D 1)
-> > +             skb->dev =3D dsa_tag_8021q_find_port_by_vbid(netdev, vbid=
-);
-> > +     else if (src_port =3D=3D -1 || switch_id =3D=3D -1)
-> > +             skb->dev =3D dsa_find_designated_bridge_port_by_vid(netde=
-v, vid);
-> > +     else
-> > +             skb->dev =3D dsa_master_find_slave(netdev, switch_id, src=
-_port);
->
-> Hmm, this isn't looking too good.
->
-> I think the fact that you had to add my copyright on what should be such
-> a simple thing as a VLAN-based tagger is a bad sign :)
->
-> It's time to consolidate some more stuff that currently lives in
-> tag_sja1105 and move it into tag_8021q so that you can reuse it more
-> easily.
->
-> I've prepared some (only compile-tested) patches on this branch here:
-> https://github.com/vladimiroltean/linux/commits/pawel-dembicki-vsc73xx-v3
->
-> I need to double-check that they don't introduce regressions,
+(this is tons of header files tried in different paths)
 
-I tested it on my device and I couldn't find any regressions. vlan
-filtering and tagging work as expected.
+Apart from a rare corner case where the file object is fully constructed
+and we need to abort, there is a lot of overhead which can be avoided.
 
-> and we
-> should discuss the merging strategy. Probably you're going to submit
-> them together with your patch set.
+Most notably delegation of freeing to task_work, which comes with an
+enormous cost (see 021a160abf62 ("fs: use __fput_sync in close(2)" for
+an example).
 
-I prepared the v4 patch series. Please look if that format is ok with you.
-https://github.com/CHKDSK88/linux/commits/vsc73xx-vlan-net-next
+Benched with will-it-scale with a custom testcase based on
+tests/open1.c:
+[snip]
+        while (1) {
+                int fd = open("/tmp/nonexistent", O_RDONLY);
+                assert(fd == -1);
 
->
-> With that, you can drop my part of the copyright :) The remainder should
-> look like straightforward use of API which can be written in only a
-> limited number of ways.
+                (*iterations)++;
+        }
+[/snip]
 
-Now it is much simpler.
+Sapphire Rapids, one worker in single-threaded case (ops/s):
+before:	1950013
+after:	2914973 (+49%)
 
->
-> > +     if (!skb->dev) {
-> > +             netdev_warn(netdev, "Couldn't decode source port\n");
-> > +             return NULL;
-> > +     }
-> > +
-> > +     dsa_default_offload_fwd_mark(skb);
-> > +
-> > +     if (dsa_port_is_vlan_filtering(dsa_slave_to_port(skb->dev)) &&
-> > +         eth_hdr(skb)->h_proto =3D=3D htons(ETH_P_8021Q))
-> > +             __vlan_hwaccel_clear_tag(skb);
->
-> Why do you need to do this? We send VLAN-tagged packets to the
-> VLAN-aware bridge intentionally, so that it knows what VLAN they come
-> from (in the dsa_find_designated_bridge_port_by_vid() case). So don't
-> strip it if it's not causing a problem.
->
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ fs/file_table.c      | 39 +++++++++++++++++++++++++++++++++++++++
+ fs/namei.c           |  2 +-
+ include/linux/file.h |  1 +
+ 3 files changed, 41 insertions(+), 1 deletion(-)
 
-I dropped it in v4. I needed it when I started with this patch series,
-because bridge in vlan filtering causes double tagged frames (one from
-hardware and one from bridge). But after recent changes it is useless
-and it could be dropped because vlan works as expected without it.
+diff --git a/fs/file_table.c b/fs/file_table.c
+index ee21b3da9d08..320dc1f9aa0e 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -82,6 +82,16 @@ static inline void file_free(struct file *f)
+ 	call_rcu(&f->f_rcuhead, file_free_rcu);
+ }
+ 
++static inline void file_free_badopen(struct file *f)
++{
++	BUG_ON(f->f_mode & (FMODE_BACKING | FMODE_OPENED));
++	security_file_free(f);
++	put_cred(f->f_cred);
++	if (likely(!(f->f_mode & FMODE_NOACCOUNT)))
++		percpu_counter_dec(&nr_files);
++	kmem_cache_free(filp_cachep, f);
++}
++
+ /*
+  * Return the total number of open files in the system
+  */
+@@ -468,6 +478,35 @@ void __fput_sync(struct file *file)
+ EXPORT_SYMBOL(fput);
+ EXPORT_SYMBOL(__fput_sync);
+ 
++/*
++ * Clean up after failing to open (e.g., open(2) returns with -ENOENT).
++ *
++ * This represents opportunities to shave on work in the common case compared
++ * to the usual fput:
++ * 1. vast majority of the time FMODE_OPENED is not set, meaning there is no
++ *    need to delegate to task_work
++ * 2. if the above holds then we are guaranteed we have the only reference with
++ *    nobody else seeing the file, thus no need to use atomics to release it
++ * 3. then there is no need to delegate freeing to RCU
++ */
++void fput_badopen(struct file *file)
++{
++	if (unlikely(file->f_mode & (FMODE_BACKING | FMODE_OPENED))) {
++		fput(file);
++		return;
++	}
++
++	if (WARN_ON(atomic_long_read(&file->f_count) != 1)) {
++		fput(file);
++		return;
++	}
++
++	/* zero out the ref count to appease possible asserts */
++	atomic_long_set(&file->f_count, 0);
++	file_free_badopen(file);
++}
++EXPORT_SYMBOL(fput_badopen);
++
+ void __init files_init(void)
+ {
+ 	filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
+diff --git a/fs/namei.c b/fs/namei.c
+index 567ee547492b..67579fe30b28 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -3802,7 +3802,7 @@ static struct file *path_openat(struct nameidata *nd,
+ 		WARN_ON(1);
+ 		error = -EINVAL;
+ 	}
+-	fput(file);
++	fput_badopen(file);
+ 	if (error == -EOPENSTALE) {
+ 		if (flags & LOOKUP_RCU)
+ 			error = -ECHILD;
+diff --git a/include/linux/file.h b/include/linux/file.h
+index 6e9099d29343..96300e27d9a8 100644
+--- a/include/linux/file.h
++++ b/include/linux/file.h
+@@ -15,6 +15,7 @@
+ struct file;
+ 
+ extern void fput(struct file *);
++extern void fput_badopen(struct file *);
+ 
+ struct file_operations;
+ struct task_struct;
+-- 
+2.39.2
 
-> > +
-> > +     return skb;
-> > +}
