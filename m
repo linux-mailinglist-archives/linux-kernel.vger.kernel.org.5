@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2347AD63E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255C87AD641
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbjIYKmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        id S232509AbjIYKmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbjIYKmK (ORCPT
+        with ESMTP id S231278AbjIYKmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:42:10 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC43AA3;
-        Mon, 25 Sep 2023 03:42:03 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6c496719a9aso3168760a34.0;
-        Mon, 25 Sep 2023 03:42:03 -0700 (PDT)
+        Mon, 25 Sep 2023 06:42:14 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BE6BE;
+        Mon, 25 Sep 2023 03:42:07 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-313e742a787so4102502f8f.1;
+        Mon, 25 Sep 2023 03:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695638523; x=1696243323; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BCYYXo6QUFwHENfz0rJ0lvEQqMwZMCKqE5h3IXB6SP4=;
-        b=GQMxrc4uaqUAdD4IFXQzz4bl/EcVU3G0L+Vd4EAdO3bbYt2po0LLV2L80SOh0gQ2EB
-         NyKHAEg9SouH5LNQOS57rfE1eRi4h0KIXZ46hiVXJ0KjpVFVvdDGK0TTE4ccYNrD64T1
-         NaAMGN0GNlMbDE8FetPQhyYaC9Ivqy9lx2Uz3bMEuUimkeukcfnz4OQwBjdVGRZNAfcp
-         HNiY4qMwKjBoXQrUR4dpMTyNlyUcLH3BgA3gXRcHgYyxnGYgy34df/4dFCzzVD8/9yOo
-         zK86jKreAy9M8eacJ1jtInYUD8RRgjeN4oyHZbGF0cUavif4TEeUtcB+JAhqhvNydIVa
-         gP3Q==
+        d=gmail.com; s=20230601; t=1695638526; x=1696243326; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=voR699bb0bdw0l6UqKCMNJTCM4/iNMslEQN87HAl0MY=;
+        b=ZdtGQnvvGWLI8dB7eTgtITWhUgAkddUCkP70f929NC3W9qzSapknChYQ4Kg2yi0/lo
+         6cLPm5+MjdMU0ayXUqNy+KokeGnVv4DM4rswcAlnj6JKa9rODF55nzkoxtFAUD8Dl/Ju
+         4lPbesFKQUCU3C4x66WRUH/5yt1RHimn0IpuNrTAQmlbcL+fit2jUOAaPy2bm5v1Qwim
+         zMJfptYpDLuuESizFgPvGdMe05aaOEVDdNZTkZwYGKMLI2LICvhBiJzdw9NpdUzOYwg6
+         eQSNH/aO6hGK1EiXAnsz7+7o5bT89WuPacHg8PPYgnPC3XOPl7E7Sm+zAAmUBkSmib2S
+         /aGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695638523; x=1696243323;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BCYYXo6QUFwHENfz0rJ0lvEQqMwZMCKqE5h3IXB6SP4=;
-        b=DhEc1JOcMmRGlqztkpwnlGLPARzhKUVbg1U31fLhXH8w5Fv9njn1Opoarifr1x4TFj
-         HtHZVHto9SOFXLwV5nVERZWVx+D5e3tjPsPbvca57orINcbjcqW00tc2uN/cHawoiW3m
-         GEqVjizfTUKH62/4mqd1OmCRN8U44BhkwkwrfT/ON96mH2RCYMACWnhPyzZK1W+IcdJ3
-         ZjItthH22lvlCrnc0PbxNIDN8sRmgWUyyma91sSHpBA2jMOk9t8CHgPyIYEEqsTaGu4K
-         3IUWhjp79XSJ4RLzFZS3skrmCqK9cjVcP2Fh9/TNk6K9CJFrzIN90LuB5L489jpcZvH8
-         hMkA==
-X-Gm-Message-State: AOJu0YyoSiT1ErKCDLZNclYemkaK4/A4v5xkhLy80jjVwEr6f4O4oZPa
-        Xd0EnGwOGXbAwldLm+9TLe5PByZMAGLNezI3URw=
-X-Google-Smtp-Source: AGHT+IHRj6B4gV6c9UrNFtjuTnDus2mT2FyyKn58IUZeKZXJH1hrC5+sjE4iyYt+aE7mj3ooEtN5n8Hajc099CwwSM0=
-X-Received: by 2002:a05:6830:438e:b0:6bd:335e:1eda with SMTP id
- s14-20020a056830438e00b006bd335e1edamr5653596otv.11.1695638523271; Mon, 25
- Sep 2023 03:42:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695638526; x=1696243326;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=voR699bb0bdw0l6UqKCMNJTCM4/iNMslEQN87HAl0MY=;
+        b=qOjoJq08iBjx/8XYDmd9vPx5vKywjZZ3lBoJDsSrquOsItuHG3mioQRAvghuTw/5T0
+         /GR0T8aQufSAeZi+ScIIrLZnn3gsJASW/MgFGpXAGITNsG7c6qz1EqH7sk6XrZeqxjDu
+         t/4W3xFVOszD+VdqbEKMtQn0bcpEZj+jZDnyT8nKSvRkKewJsOpIvb6pVKYrNtf+o4Pp
+         GQzFoYXBqinxh9hbSuH+654QTn44oWgWm8tkwsO4uTaTqk5lpTJVOZdwKbCIa8o+PeP8
+         iHMjRdbu6xjcPWglCUMZBx3G7dTRnRUP0AuydPNQ64uNTAky6H+frS9i2baESqApfAjs
+         Y6WQ==
+X-Gm-Message-State: AOJu0YxXA2eWB9wjZ5p6GFMmzuOalLpF0H0KBvl4ZB6wyipk/9KXZKUn
+        13rTlUzzeAtrSr+NsjWutyE=
+X-Google-Smtp-Source: AGHT+IGxwD4t/L7OvoLQKPIzffYr9JP1lAdBs94RQ+kWG68W6GyuqlsaOpfTmIm/WUowXaiKX+ykfg==
+X-Received: by 2002:a05:6000:1c5:b0:31f:e5cb:88e3 with SMTP id t5-20020a05600001c500b0031fe5cb88e3mr7139801wrx.21.1695638525822;
+        Mon, 25 Sep 2023 03:42:05 -0700 (PDT)
+Received: from krava (37-188-188-137.red.o2.cz. [37.188.188.137])
+        by smtp.gmail.com with ESMTPSA id a8-20020a056000100800b0031f9bdb79dasm11465965wrx.61.2023.09.25.03.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 03:42:05 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 25 Sep 2023 12:41:59 +0200
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 04/12] fprobe: Use ftrace_regs in fprobe entry handler
+Message-ID: <ZRFj97DJtbXc4naO@krava>
+References: <169556254640.146934.5654329452696494756.stgit@devnote2>
+ <169556259571.146934.4558592076420704031.stgit@devnote2>
 MIME-Version: 1.0
-References: <20230922062558.1739642-1-max.kellermann@ionos.com>
-In-Reply-To: <20230922062558.1739642-1-max.kellermann@ionos.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Mon, 25 Sep 2023 12:41:51 +0200
-Message-ID: <CAOi1vP80WvQhuXgzhvzupQP=4K2ckgu_WpUCtUSy5M+QdDycqw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fs/ceph/debugfs: make all files world-readable
-To:     Max Kellermann <max.kellermann@ionos.com>
-Cc:     Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169556259571.146934.4558592076420704031.stgit@devnote2>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,24 +86,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 8:26=E2=80=AFAM Max Kellermann <max.kellermann@iono=
-s.com> wrote:
->
-> I'd like to be able to run metrics collector processes without special
-> privileges
+On Sun, Sep 24, 2023 at 10:36:36PM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
+> on arm64.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Acked-by: Florent Revest <revest@chromium.org>
 
-Hi Max,
+I was getting bpf selftests failures with this patchset and when
+bisecting I'm getting crash when running on top of this change
 
-A word of caution about building metrics collectors based on debugfs
-output: there are no stability guarantees.  While the format won't be
-changed just for the sake of change of course, expect zero effort to
-preserve backwards compatibility.
+looks like it's missing some of the regs NULL checks added later?
 
-The latency metrics in particular are sent to the MDS in binary form
-and are intended to be consumed through commands like "ceph fs top".
-debugfs stuff is there just for an occasional sneak peek (apart from
-actual debugging).
+jirka
 
-Thanks,
 
-                Ilya
+---
+[  124.089449][  T677] BUG: kernel NULL pointer dereference, address: 0000000000000098
+[  124.090102][  T677] #PF: supervisor read access in kernel mode
+[  124.090568][  T677] #PF: error_code(0x0000) - not-present page
+[  124.091039][  T677] PGD 158fd8067 P4D 158fd8067 PUD 10896a067 PMD 0 
+[  124.091482][  T677] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
+[  124.091986][  T677] CPU: 1 PID: 677 Comm: test_progs Tainted: G           OE      6.6.0-rc2+ #768 1c8a8990289f2615e36dadd01915b80e8da29bf5
+[  124.092898][  T677] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
+[  124.093613][  T677] RIP: 0010:arch_rethook_prepare+0x0/0x30
+[  124.094060][  T677] Code: 90 90 90 90 90 90 90 90 90 90 48 89 b7 a8 00 00 00 c3 cc cc cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <48> 8b 86 98 00 00 00 48 8b 10 48 89 57 20 48 8b 96 98 00 00 00 48
+[  124.096239][  T677] RSP: 0018:ffffc90003d3bc98 EFLAGS: 00010286
+[  124.096708][  T677] RAX: 0000000000000000 RBX: ffff88815d9fbe50 RCX: ffff88815d9fbe40
+[  124.097332][  T677] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff88815d9fbe40
+[  124.097946][  T677] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000004
+[  124.098554][  T677] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81fbb7b0
+[  124.099108][  T677] R13: ffffffff81fbd47b R14: fffffffffffffff7 R15: ffff88815d9fbe40
+[  124.099720][  T677] FS:  00007f9c2063ed00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
+[  124.100403][  T677] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  124.100908][  T677] CR2: 0000000000000098 CR3: 0000000108e02002 CR4: 0000000000770ee0
+[  124.101537][  T677] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  124.102096][  T677] DR3: 0000000000000000 DR6: 00000000ffff4ff0 DR7: 0000000000000400
+[  124.102689][  T677] PKRU: 55555554
+[  124.102988][  T677] Call Trace:
+[  124.103303][  T677]  <TASK>
+[  124.103580][  T677]  ? __die+0x1f/0x70
+[  124.103928][  T677]  ? page_fault_oops+0x176/0x4d0
+[  124.104348][  T677]  ? __pte_offset_map_lock+0xa5/0x190
+[  124.104818][  T677]  ? do_user_addr_fault+0x73/0x870
+[  124.105277][  T677]  ? exc_page_fault+0x81/0x250
+[  124.105709][  T677]  ? asm_exc_page_fault+0x22/0x30
+[  124.106171][  T677]  ? bpf_prog_test_run_tracing+0x14b/0x2c0
+[  124.106675][  T677]  ? __pfx_bpf_fentry_test1+0x10/0x10
+[  124.107135][  T677]  ? __pfx_arch_rethook_prepare+0x10/0x10
+[  124.107598][  T677]  rethook_hook+0x10/0x30
+[  124.107966][  T677]  fprobe_handler+0x129/0x210
+[  124.108351][  T677]  ? __pfx_bpf_fentry_test1+0x10/0x10
+[  124.108796][  T677]  ? bpf_prog_test_run_tracing+0x14b/0x2c0
+[  124.109276][  T677]  arch_ftrace_ops_list_func+0xf2/0x200
+[  124.109708][  T677]  ftrace_call+0x5/0x44
+[  124.110060][  T677]  ? bpf_fentry_test1+0x5/0x10
+[  124.110463][  T677]  bpf_fentry_test1+0x5/0x10
+[  124.110881][  T677]  bpf_prog_test_run_tracing+0x14b/0x2c0
+[  124.111337][  T677]  __sys_bpf+0x305/0x2820
+[  124.111705][  T677]  __x64_sys_bpf+0x1a/0x30
+[  124.112053][  T677]  do_syscall_64+0x38/0x90
+[  124.116245][  T677]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[  124.116688][  T677] RIP: 0033:0x7f9c20806b5d
+[  124.117078][  T677] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7b 92 0c 00 f7 d8 64 89 01 48
+[  124.118487][  T677] RSP: 002b:00007ffc615e5228 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
+[  124.119090][  T677] RAX: ffffffffffffffda RBX: 00007f9c20918000 RCX: 00007f9c20806b5d
+[  124.119698][  T677] RDX: 0000000000000050 RSI: 00007ffc615e5260 RDI: 000000000000000a
+[  124.120298][  T677] RBP: 00007ffc615e5240 R08: 0000000000000000 R09: 00007ffc615e5260
+[  124.120893][  T677] R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000001
+[  124.121486][  T677] R13: 0000000000000000 R14: 00007f9c2094d000 R15: 00000000011a8db0
+[  124.122156][  T677]  </TASK>
+[  124.122421][  T677] Modules linked in: bpf_testmod(OE) intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
+[  124.125064][  T677] CR2: 0000000000000098
+[  124.125431][  T677] ---[ end trace 0000000000000000 ]---
+[  124.125861][  T677] RIP: 0010:arch_rethook_prepare+0x0/0x30
+[  124.126316][  T677] Code: 90 90 90 90 90 90 90 90 90 90 48 89 b7 a8 00 00 00 c3 cc cc cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <48> 8b 86 98 00 00 00 48 8b 10 48 89 57 20 48 8b 96 98 00 00 00 48
+[  124.127761][  T677] RSP: 0018:ffffc90003d3bc98 EFLAGS: 00010286
+[  124.128238][  T677] RAX: 0000000000000000 RBX: ffff88815d9fbe50 RCX: ffff88815d9fbe40
+[  124.128856][  T677] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff88815d9fbe40
+[  124.129502][  T677] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000004
+[  124.130129][  T677] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81fbb7b0
+[  124.130767][  T677] R13: ffffffff81fbd47b R14: fffffffffffffff7 R15: ffff88815d9fbe40
+[  124.131410][  T677] FS:  00007f9c2063ed00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
+[  124.132084][  T677] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  124.132600][  T677] CR2: 0000000000000098 CR3: 0000000108e02002 CR4: 0000000000770ee0
+[  124.133128][  T677] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  124.133698][  T677] DR3: 0000000000000000 DR6: 00000000ffff4ff0 DR7: 0000000000000400
+[  124.134302][  T677] PKRU: 55555554
+[  124.134584][  T677] note: test_progs[677] exited with irqs disabled
+[  124.135192][  T677] note: test_progs[677] exited with preempt_count 2
