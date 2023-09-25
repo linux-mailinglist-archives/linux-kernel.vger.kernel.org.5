@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3187ACDFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40307ACDFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbjIYCMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        id S231710AbjIYCOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjIYCMI (ORCPT
+        with ESMTP id S230421AbjIYCOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:12:08 -0400
-Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [IPv6:2001:41d0:203:375::c9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764CD1AB
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:12:01 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1695607919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JhEQ1dqgKvz3w9QUVhZNxp0xbOiz8esdacL61UcOl+o=;
-        b=reLviE8eY03Zixne93aJYjmlNnoeKH3LZ7mp6VsZHKBJPOc9sKjWVPwEFW3s/4NENAjZW8
-        deain8KjDdxO8t7euO5BpC0nX+tduW1A7cUFDILo6X9gQ80H8zliAQH+Ztk1O4ROyg73UJ
-        54pJspsixPhbOEElPzb4l94W8GodS+ejKgyLe57267wK011zlpqD/yI08N+DNLt8KiaP6Q
-        pG5ePA7/BwT/nsX6BhG01wc8F76Q5GsUt7uUWqupdyStwXj9LM5F3AjerqhzJbDBI6kSZl
-        qTPbUemZr6Oe6HeGCfvo6saHRrIpN3X+MjWFf2u/h3IbDQab1bpH8kzypWy8EQ==
-From:   John Watts <contact@jookia.org>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>, John Watts <contact@jookia.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: [RFC PATCH v3 7/7] dt-bindings: display: panel: add Fascontek FS035VG158 panel
-Date:   Mon, 25 Sep 2023 12:10:58 +1000
-Message-ID: <20230925021059.451019-8-contact@jookia.org>
-In-Reply-To: <20230925021059.451019-1-contact@jookia.org>
-References: <20230925021059.451019-1-contact@jookia.org>
+        Sun, 24 Sep 2023 22:14:30 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B2BC6;
+        Sun, 24 Sep 2023 19:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695608062;
+        bh=EkhDackxSfFieoGUWeVtOtGWn3+W1tDL1N3rERMkARA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mMHLk4kVK953Ezes7KGMVBGp451KsgVM3IQb6wnSU+W/2kG1Suop3nSy6ueABtlwM
+         TnpFH4kadya4Fyyl9uXhfIIzGfxefxOFRMMs+V3v3FuvMe/O4EkQt1MgHUOy3/JxJB
+         W79zIQJkmAph4rJ+GUjh6EfqiMo1LuDpCxoqkszcluT+JM4+lojR5IwjG5/UP08t8D
+         3kkH0/IGWsskVHAGwrwsnb4bucB2ag8HIF21e04r0e6pfYGar+Yo7jK1ypiKS3pcc5
+         /V/P/5NrYbjBuVUgje6HwkfLQJBkkUML5m6HrZyQqUPkFXbiU4lv71PpJKnoKtce4O
+         +1Uq5g1WmndGw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rv5zK3Zqsz4xGC;
+        Mon, 25 Sep 2023 12:14:21 +1000 (AEST)
+Date:   Mon, 25 Sep 2023 12:14:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Lee Jones <lee@kernel.org>, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the mfd tree
+Message-ID: <20230925121420.520e91fa@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/u7varwAHQlwd/t1W6/03L.E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a small 3.5" 640x480 IPS LCD panel.
+--Sig_/u7varwAHQlwd/t1W6/03L.E
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: John Watts <contact@jookia.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../display/panel/fascontek,fs035vg158.yaml   | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
+Hi all,
 
-diff --git a/Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml b/Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
-new file mode 100644
-index 000000000000..d13c4bd26de4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/fascontek,fs035vg158.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Fascontek FS035VG158 3.5" (640x480 pixels) 24-bit IPS LCD panel
-+
-+maintainers:
-+  - John Watts <contact@jookia.org>
-+
-+allOf:
-+  - $ref: panel-common.yaml#
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+properties:
-+  compatible:
-+    const: fascontek,fs035vg158
-+
-+  spi-3wire: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - port
-+  - power-supply
-+  - reset-gpios
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        panel@0 {
-+            compatible = "fascontek,fs035vg158";
-+            reg = <0>;
-+
-+            spi-3wire;
-+            spi-max-frequency = <3125000>;
-+
-+            reset-gpios = <&gpe 2 GPIO_ACTIVE_LOW>;
-+
-+            backlight = <&backlight>;
-+            power-supply = <&vcc>;
-+
-+            port {
-+                panel_input: endpoint {
-+                    remote-endpoint = <&panel_output>;
-+                };
-+            };
-+        };
-+    };
--- 
-2.42.0
+The following commit is also in the net-next tree as different commit
+(but the same patch):
 
+  d6e3854f720f ("dt-bindings: mfd: syscon: Add compatibles for Loongson-1 s=
+yscon")
+
+This is commit
+
+  7e10088bc4e4 ("dt-bindings: mfd: syscon: Add compatibles for Loongson-1 s=
+yscon")
+
+in the net-next tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/u7varwAHQlwd/t1W6/03L.E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUQ7PwACgkQAVBC80lX
+0GwU8gf+KxcF954ii0iKnlLfcX6hdg017KWY4btd4V1FtYfpQLpbIbMhkhPWVXEw
+juT7N9fhLVk/mbZPN+4pO10TM+9PdmX6mi1vxB77JEV4pENsMVDHLcMNyD42adXr
+Tlr+87DdlnYkXUbeIEfrs1fR2oLbnZSmsBJZY5SsPjfx9+DgUk9bzv7S/m4G08p+
+bKYCabUgVMYXu07UE+TPMczH2kpUldpA/m1epJblv4FZKLcZSeCCgVeCUsqkb/LR
+nwTfG68vHdoPgQ7Dg2/EPCMBFNSCCYxIKWs5NW57EZ78U+9at1fs5zuFzVOqv/6U
+G7FXiRDN7RxuKzCUzLScL5cf7WTyiA==
+=CuD1
+-----END PGP SIGNATURE-----
+
+--Sig_/u7varwAHQlwd/t1W6/03L.E--
