@@ -2,344 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AE27ACEF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5864B7ACEF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbjIYD74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 23:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
+        id S232111AbjIYEAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 00:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbjIYD7Z (ORCPT
+        with ESMTP id S232078AbjIYD7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 23:59:25 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55114CF5
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:58:49 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fdcc37827so4757515b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695614328; x=1696219128; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TuxzCiUZ2DltVBwaDerHzUDGuv+dY7UUUi86i/t9rYc=;
-        b=LoUYQ7SUJa5qtkdfo5OKFD8pcWi+jh2Zuw7XbbU7mTJci+zvHt/nEep1nMXyFsuEpJ
-         brpx+K7N14v4f7k4fMqEB+u42rcGdiMRfUf/l7p9jp2Pq+etUAxeTLjP20C0vEWGhKyJ
-         kSBZcAphexmKzUtMJRqk138sW1Sr9Nun7XuHgbZN4zPBPLP+mb4KVhs02ceM/1I2SCR1
-         nIlG5BdzoW8s7s9f4ojeSNVQMe+jYUdHyaOUO2XwMmDvRv51gvuizbZZ/SPqAsjsmdPV
-         7po03mPpTsMvQWxCIej1rcV1Fkvu943ciSoAn9JODnuDJ5tffx7xEzOpZhq9DUwRCNLD
-         uSJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695614328; x=1696219128;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TuxzCiUZ2DltVBwaDerHzUDGuv+dY7UUUi86i/t9rYc=;
-        b=hfuLuVGmnRzfk5YRuhRJTrNh4YLIHyh0y8J2PSnM2n0xS8d3N7b3X/hLadS1bm2PyQ
-         5zpkS1U06X2tfWcYJcXe2mm83HCkxN+UmT63PDVpzYShMCKDsZge17YeWTFtqNy1XLnR
-         GQYf9KId0aiEStSCY74cntmgT2t2bwRd2WAyzfXRBhkkjNTU4EotmBMZcM9qEELhcsQO
-         v8w4aXicVc/f/d5timF+1qphG+0oclGuRWC4lfXhrD7df2urIJWD+Z4VB4UwQXJnfzao
-         rmDTofub01RckuWctXHpD3QlY7Pgz8pApQPr8q0QCnojIYiLqYpFpvVoTPRnIerI0DZo
-         NXyg==
-X-Gm-Message-State: AOJu0YylmdfcHZdcV6YRFwIJNjS1zKY85RcGWTDjyGCzf7v1q0lUjd6q
-        rCd8F0O1om/u4/LnjgJfu+7eMQ==
-X-Google-Smtp-Source: AGHT+IHw8XcQ7+xdyaLtlqVJu3dj2MsTxRgYeF9x/JPrG30bCLmD6fzrqcUdIisXeiq7bW/XX9H8sQ==
-X-Received: by 2002:a05:6a20:7486:b0:159:c07d:66f0 with SMTP id p6-20020a056a20748600b00159c07d66f0mr8362964pzd.6.1695614328529;
-        Sun, 24 Sep 2023 20:58:48 -0700 (PDT)
-Received: from GL4FX4PXWL.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id fm1-20020a056a002f8100b00679a4b56e41sm7025387pfb.43.2023.09.24.20.58.41
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 24 Sep 2023 20:58:47 -0700 (PDT)
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
-        willy@infradead.org, brauner@kernel.org, surenb@google.com,
-        michael.christie@oracle.com, mjguzik@gmail.com,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
-        peterz@infradead.org, oliver.sang@intel.com
-Cc:     zhangpeng.00@bytedance.com, maple-tree@lists.infradead.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 9/9] fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
-Date:   Mon, 25 Sep 2023 11:56:17 +0800
-Message-Id: <20230925035617.84767-10-zhangpeng.00@bytedance.com>
-X-Mailer: git-send-email 2.37.0 (Apple Git-136)
-In-Reply-To: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
-References: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
+        Sun, 24 Sep 2023 23:59:41 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2050.outbound.protection.outlook.com [40.92.53.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D1210A
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:59:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c6xW+jkmakmf2VM/sXPhjhBEZ+rQti+gDTjzjrha8+2IUiJ/pBwBFMraD546z6IEHfabuen37v7DNwhH5BOhCwaOTXq4yOzT56TcD3614F/uvTlUnAOi5G28Lvq/SUGCFSF7kZVROKylzaGHrGIj1ICyW28gEOrkHWqFQ+yyT2GonVOkYfEHpi3eSm/Rj8f8mdJdo9fR/PhEpwTcPW2JydCYk+4XP2RRSkkrpDChO6nkQKjAjS6pI7SqAnEDVXgIByGKhWI6oHLNJg7nPxtZXjb7Z7kjNlNP6nKpqBASKDDuNcRxe4xo+HK4ZxzxG5G3aQuESGHdD2/Pi27iqDjtNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lm+anXVwSRREiQT5tWz8cBBHoJo+VmNh5WvxoqSawgM=;
+ b=R7xmH9z2gLQVB5JhYNsiMkGL+uRtV1//cT75vfgVQ0XvSzoKFjaIrSUQsGj9I5ViYnVmSO8/OGjjN55qn4JOUc8l+ktaf7wl/Sl+WGpQB4qucmsAh9DXKo5Fhq/en/yZI7Pn9GTmihkYrsxun3NXKmUoYNZ4FB0yXsJoy5+zFthINYyhXP0cLkoiMMdS20YjdxSzNfNIpNQ5ZNQIqedly91CWQ/1qTcXrXqMwCgy1TJpd9cXgWEl+xNqVY0JT2uctCqldDoz/sPlgDK4KWrPkTlovkgi4DA27TQ+5rYV+tPlaXjvXLb6DvcAfXaJCvxrj22Wv2W6xbG+wjWfHF6/uQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lm+anXVwSRREiQT5tWz8cBBHoJo+VmNh5WvxoqSawgM=;
+ b=PBMTZclity5Dkd1xhJpOaE6nMHTsehNxcaqvHxYcndJYOF5cakkmHEAZIztdmlf5Hgfle83n1CmbWQHlsNUw0qNx1gaFn2YOWUcshQZY0MJQ2crM49UC7iZWtUpq55qLS2Cp5/W9gm05ghGiNalQJbx+ZKP4SEacAokQMseUtogjpxK4egFFm1kOXCxpd7enUm0MVUHJUPB6S/6fWf87N9y08FSj/ElxL9FSVqfsB34fLwH7v5Lx3n/MMBOjFG/7LD5gWp9a1ud3Z1iepfUAaN846sEUB2UeSjE77tY1BzoC+oW6HpY4JWPBOcThy79j3wRAcMg0dIg1E2c0MMPfyQ==
+Received: from TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:e5::14) by PSAPR01MB3893.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:21::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 03:59:03 +0000
+Received: from TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+ ([fe80::61:7bba:9541:ee98]) by TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+ ([fe80::61:7bba:9541:ee98%6]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 03:59:03 +0000
+From:   Kelly Devilliv <kelly.devilliv@outlook.com>
+To:     "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>
+CC:     "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: dma_map_resource() has a bad performance in pcie peer to peer
+ transactions when iommu enabled in Linux
+Thread-Topic: dma_map_resource() has a bad performance in pcie peer to peer
+ transactions when iommu enabled in Linux
+Thread-Index: AdnvZEYkV1103f9cR66I8K02bYRACg==
+Date:   Mon, 25 Sep 2023 03:59:03 +0000
+Message-ID: <TY2PR0101MB313681440D640B215C5DF5E784FCA@TY2PR0101MB3136.apcprd01.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [brlklJ18Ly5s5OTEATEulY8YaXH04SB8]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY2PR0101MB3136:EE_|PSAPR01MB3893:EE_
+x-ms-office365-filtering-correlation-id: 0ec75ca3-0980-486e-d454-08dbbd7bc1d6
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bJle5TuL0U3ucThLIYyFcsxrNDkHIM8hr41XweCZdXTkyTb2ZBBzD+HJMQq1/VCH1hb5v2N5Cln+hjWhKffcsanmNlQHyOcBDBFXtPOb5DYoh51flER/RpNOyF7oONKIJPkTCdBZ7bJLeJxUovL39JiUSf6+L2KjXyLPplnNn2+dG7BNyh/4QtVXqmZua4PVSCKzTKfBTFvxdX2cGg1u3TJ3kBhByFKpIpD32HsPHMIf9dN0FEkTc0TS/+c95RAMUw/WYp3cjXOZXUjbNpqCvNwwSzbKPyMeiOrtsngTbneN/T/hkoyhj2VnSJWRudeh9XeHixdcDP87qPBPhwT6z+fnWNdTJ6MGlbsyKC2JXIDBfBDZoejd5ybFQx3kAwGZLfuBuq+nwLjndGUEGX4ok1NknXTz+pvwzcbORreimlq0JvfdX8GBXbZHQjg/0/frcg1HsB9O17un+Zoe3NT1TKie0zjJxZksEbPFMhyDfOIZDL7BI4ZCgdkA7N7pJH+J1hq8Ko9Y9EfRXGX0btHs5EXjVe+ykhID8qF2zJY/ZqPxmkse8TdJxv5wXRtuR34g
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ZdL2aaLxpaqbi/4qg9A9azfU8n9yqQtamXFwQSjOxZc9OgumNKJFtH7buxiG?=
+ =?us-ascii?Q?SZHViX2lru3rNavnHh1uPdhPP5lREwBq43kViRLE3qJAQrN/5cb1Wms3iaYL?=
+ =?us-ascii?Q?28QyYPZcXWq1junpabfeD0E0Am8kJ0tvki1BXU/yZIhbC/ll5kmMwjnMYw0V?=
+ =?us-ascii?Q?w+Nr08tK0eCH2cASQ8AbbjwXTatMXs/EmHN3mtde/prYbNpsRGsVK2wnxC+3?=
+ =?us-ascii?Q?5LeSYh+jOaQTmwTkxppB9VKNVDxuQmctYzrvHLJZuSkF9O2te8vUrxaJOl67?=
+ =?us-ascii?Q?j+NUbOJwRniaHktjWwx3OFq2x2xGmm0CQclly374tHDVRZQ86Rq1utL9V5WX?=
+ =?us-ascii?Q?CX+uI78vG4Y1w5yI5CB9YKXCsMXe8g5R+68uNWSIsAXr9+AosBCrjhl8LMNK?=
+ =?us-ascii?Q?POn3q9z6IlR7qzHLmGzrlV+qcJp9Rrhent6tcICLNjc4LrJG41mwoBh5Kdz4?=
+ =?us-ascii?Q?jBTkdXXmd2DnZddD0+PzZTCPbzEj5qZjSjkmWwqeql3BTDRAManLHAtjExQG?=
+ =?us-ascii?Q?CI96soMDiN+dndm3pPG1khwvzSB7G1zWnMvStQbazJY34ebMaP3t3sCpBI4D?=
+ =?us-ascii?Q?eKuiojfgozzl2NR2CZYOHaP5hWPADqz98tsYZZ/7eniPiBxAfWiC8onf0Bqg?=
+ =?us-ascii?Q?iNaUwXpOyxV/hDzLbV4kJX1v8jaaZ3yaQpwdbewaLxZqN54ou+GM2/Y9I9Lq?=
+ =?us-ascii?Q?kDxUaQT+batm8PUKQI1i7X24g1JtcZpEXUITjY5ADUSfgkXLijymvCPiUwcY?=
+ =?us-ascii?Q?ZZowm102pzX6FeY+b3tTSkhRz9089N7UKilZmCrgLetnOpm2ZYMy0kLbMYUJ?=
+ =?us-ascii?Q?T8j0SBRv63RwaROb949nDc2NvOxV37M7MkaLt0AP6ka0ITowX34Y/yAypGDX?=
+ =?us-ascii?Q?lN/zPaL0lVy9Grk/BccJGnyMkkd/p+TwMjZkeJ5LptMal9n4yhxjRvDZfVb9?=
+ =?us-ascii?Q?bxjA+Q95KvKKvvMXQ0UzoVDtDn7jzRmVIFBoh5hTcg7a3laTigRL62JNz/Jr?=
+ =?us-ascii?Q?Rq4bd5AG7v0BUk4HtAYnSTbDZkDO4DTTszL1d8Mx9ibOSJC81B+Hndtrg/MA?=
+ =?us-ascii?Q?9SL97rFJaoYDCYzuD/GS1mueK5YqUpbRWrB3L/I8K59WgVTjB8UKl4RePBmM?=
+ =?us-ascii?Q?fQQvoxir6c5isRbqY3sUOdlN1dwsaWYQN7ho1tCmAeqqfjcJrh8gJgeyBa7x?=
+ =?us-ascii?Q?OQmJK99sNvbgLN0jgTtFZky908v8w6wuLTBErw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR0101MB3136.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ec75ca3-0980-486e-d454-08dbbd7bc1d6
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 03:59:03.3502
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR01MB3893
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dup_mmap(), using __mt_dup() to duplicate the old maple tree and then
-directly replacing the entries of VMAs in the new maple tree can result
-in better performance. __mt_dup() uses DFS pre-order to duplicate the
-maple tree, so it is very efficient. The average time complexity of
-duplicating VMAs is reduced from O(n * log(n)) to O(n). The optimization
-effect is proportional to the number of VMAs.
+Dear all,
 
-As the entire maple tree is duplicated using __mt_dup(), if dup_mmap()
-fails, there will be a portion of VMAs that have not been duplicated in
-the maple tree. This makes it impossible to unmap all VMAs in exit_mmap().
-To solve this problem, undo_dup_mmap() is introduced to handle the failure
-of dup_mmap(). I have carefully tested the failure path and so far it
-seems there are no issues.
+I am working on an ARM-V8 server with two gpu cards on it. Recently, I need=
+ to test pcie peer to peer communication between the two gpu cards, but the=
+ throughput is only 4GB/s.
 
-There is a "spawn" in byte-unixbench[1], which can be used to test the
-performance of fork(). I modified it slightly to make it work with
-different number of VMAs.
+After I explored the gpu's kernel mode driver, I found it was using the dma=
+_map_resource() API to map the peer device's MMIO space. The arm iommu driv=
+er then will hardcode a 'IOMMU_MMIO' prot in the later dma map:
 
-Below are the test results. By default, there are 21 VMAs. The first row
-shows the number of additional VMAs added on top of the default. The last
-two rows show the number of fork() calls per ten seconds. The test results
-were obtained with CPU binding to avoid scheduler load balancing that
-could cause unstable results. There are still some fluctuations in the
-test results, but at least they are better than the original performance.
+       static dma_addr_t iommu_dma_map_resource(struct device *dev, phys_ad=
+dr_t phys,
+                                size_t size, enum dma_data_direction dir, u=
+nsigned long attrs)
+        {
+                return __iommu_dma_map(dev, phys, size,
+                                        dma_info_to_prot(dir, false, attrs)=
+ | IOMMU_MMIO,
+                                        dma_get_mask(dev));
+        }
 
-Increment of VMAs: 0      100     200     400     800     1600    3200    6400
-next-20230921:     112326 75469   54529   34619   20750   11355   6115    3183
-Apply this:        116505 85971   67121   46080   29722   16665   9050    4805
-                   +3.72% +13.92% +23.09% +33.11% +43.24% +46.76% +48.00% +50.96%
+And that will finally set the 'ARM_LPAE_PTE_MEMATTR_DEV' attribute in PTE, =
+which may have a negative impact on the performance of the pcie peer to pee=
+r transactions.
 
-[1] https://github.com/kdlucas/byte-unixbench/tree/master
+        /*
+         * Note that this logic is structured to accommodate Mali LPAE
+         * having stage-1-like attributes but stage-2-like permissions.
+         */
+        if (data->iop.fmt =3D=3D ARM_64_LPAE_S2 ||
+            data->iop.fmt =3D=3D ARM_32_LPAE_S2) {
+                if (prot & IOMMU_MMIO)
+                        pte |=3D ARM_LPAE_PTE_MEMATTR_DEV;
+                else if (prot & IOMMU_CACHE)
+                        pte |=3D ARM_LPAE_PTE_MEMATTR_OIWB;
+                else
+                        pte |=3D ARM_LPAE_PTE_MEMATTR_NC;
+        } else {
+                if (prot & IOMMU_MMIO)
+                        pte |=3D (ARM_LPAE_MAIR_ATTR_IDX_DEV
+                                << ARM_LPAE_PTE_ATTRINDX_SHIFT);
+                else if (prot & IOMMU_CACHE)
+                        pte |=3D (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+                                << ARM_LPAE_PTE_ATTRINDX_SHIFT);
+        }
 
-Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
----
- include/linux/mm.h |  1 +
- kernel/fork.c      | 34 ++++++++++++++++++++----------
- mm/internal.h      |  3 ++-
- mm/memory.c        |  7 ++++---
- mm/mmap.c          | 52 ++++++++++++++++++++++++++++++++++++++++++++--
- 5 files changed, 80 insertions(+), 17 deletions(-)
+I tried to remove the 'IOMMU_MMIO' prot in the dma_map_resource() API and r=
+e-compile the linux kernel, the throughput then can be up to 28GB/s.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1f1d0d6b8f20..10c59dc7ffaa 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3242,6 +3242,7 @@ extern void unlink_file_vma(struct vm_area_struct *);
- extern struct vm_area_struct *copy_vma(struct vm_area_struct **,
- 	unsigned long addr, unsigned long len, pgoff_t pgoff,
- 	bool *need_rmap_locks);
-+extern void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end);
- extern void exit_mmap(struct mm_struct *);
- 
- static inline int check_data_rlimit(unsigned long rlim,
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 7ae36c2e7290..2f3d83e89fe6 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	int retval;
- 	unsigned long charge = 0;
- 	LIST_HEAD(uf);
--	VMA_ITERATOR(old_vmi, oldmm, 0);
- 	VMA_ITERATOR(vmi, mm, 0);
- 
- 	uprobe_start_dup_mmap();
-@@ -678,16 +677,25 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 		goto out;
- 	khugepaged_fork(mm, oldmm);
- 
--	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
--	if (retval)
-+	/* Use __mt_dup() to efficiently build an identical maple tree. */
-+	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_KERNEL);
-+	if (unlikely(retval))
- 		goto out;
- 
- 	mt_clear_in_rcu(vmi.mas.tree);
--	for_each_vma(old_vmi, mpnt) {
-+	for_each_vma(vmi, mpnt) {
- 		struct file *file;
- 
- 		vma_start_write(mpnt);
- 		if (mpnt->vm_flags & VM_DONTCOPY) {
-+			mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
-+
-+			/* If failed, undo all completed duplications. */
-+			if (unlikely(mas_is_err(&vmi.mas))) {
-+				retval = xa_err(vmi.mas.node);
-+				goto loop_out;
-+			}
-+
- 			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
- 			continue;
- 		}
-@@ -749,9 +757,11 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 		if (is_vm_hugetlb_page(tmp))
- 			hugetlb_dup_vma_private(tmp);
- 
--		/* Link the vma into the MT */
--		if (vma_iter_bulk_store(&vmi, tmp))
--			goto fail_nomem_vmi_store;
-+		/*
-+		 * Link the vma into the MT. After using __mt_dup(), memory
-+		 * allocation is not necessary here, so it cannot fail.
-+		 */
-+		mas_store(&vmi.mas, tmp);
- 
- 		mm->map_count++;
- 		if (!(tmp->vm_flags & VM_WIPEONFORK))
-@@ -760,15 +770,19 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 		if (tmp->vm_ops && tmp->vm_ops->open)
- 			tmp->vm_ops->open(tmp);
- 
--		if (retval)
-+		if (retval) {
-+			mpnt = vma_next(&vmi);
- 			goto loop_out;
-+		}
- 	}
- 	/* a new mm has just been created */
- 	retval = arch_dup_mmap(oldmm, mm);
- loop_out:
- 	vma_iter_free(&vmi);
--	if (!retval)
-+	if (likely(!retval))
- 		mt_set_in_rcu(vmi.mas.tree);
-+	else
-+		undo_dup_mmap(mm, mpnt);
- out:
- 	mmap_write_unlock(mm);
- 	flush_tlb_mm(oldmm);
-@@ -778,8 +792,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	uprobe_end_dup_mmap();
- 	return retval;
- 
--fail_nomem_vmi_store:
--	unlink_anon_vmas(tmp);
- fail_nomem_anon_vma_fork:
- 	mpol_put(vma_policy(tmp));
- fail_nomem_policy:
-diff --git a/mm/internal.h b/mm/internal.h
-index 7a961d12b088..288ec81770cb 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -111,7 +111,8 @@ void folio_activate(struct folio *folio);
- 
- void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
- 		   struct vm_area_struct *start_vma, unsigned long floor,
--		   unsigned long ceiling, bool mm_wr_locked);
-+		   unsigned long ceiling, unsigned long tree_end,
-+		   bool mm_wr_locked);
- void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
- 
- struct zap_details;
-diff --git a/mm/memory.c b/mm/memory.c
-index 983a40f8ee62..1fd66a0d5838 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -362,7 +362,8 @@ void free_pgd_range(struct mmu_gather *tlb,
- 
- void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
- 		   struct vm_area_struct *vma, unsigned long floor,
--		   unsigned long ceiling, bool mm_wr_locked)
-+		   unsigned long ceiling, unsigned long tree_end,
-+		   bool mm_wr_locked)
- {
- 	do {
- 		unsigned long addr = vma->vm_start;
-@@ -372,7 +373,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
- 		 * Note: USER_PGTABLES_CEILING may be passed as ceiling and may
- 		 * be 0.  This will underflow and is okay.
- 		 */
--		next = mas_find(mas, ceiling - 1);
-+		next = mas_find(mas, tree_end - 1);
- 
- 		/*
- 		 * Hide vma from rmap and truncate_pagecache before freeing
-@@ -393,7 +394,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
- 			while (next && next->vm_start <= vma->vm_end + PMD_SIZE
- 			       && !is_vm_hugetlb_page(next)) {
- 				vma = next;
--				next = mas_find(mas, ceiling - 1);
-+				next = mas_find(mas, tree_end - 1);
- 				if (mm_wr_locked)
- 					vma_start_write(vma);
- 				unlink_anon_vmas(vma);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 2ad950f773e4..daed3b423124 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2312,7 +2312,7 @@ static void unmap_region(struct mm_struct *mm, struct ma_state *mas,
- 	mas_set(mas, mt_start);
- 	free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
- 				 next ? next->vm_start : USER_PGTABLES_CEILING,
--				 mm_wr_locked);
-+				 tree_end, mm_wr_locked);
- 	tlb_finish_mmu(&tlb);
- }
- 
-@@ -3178,6 +3178,54 @@ int vm_brk(unsigned long addr, unsigned long len)
- }
- EXPORT_SYMBOL(vm_brk);
- 
-+void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end)
-+{
-+	unsigned long tree_end;
-+	VMA_ITERATOR(vmi, mm, 0);
-+	struct vm_area_struct *vma;
-+	unsigned long nr_accounted = 0;
-+	int count = 0;
-+
-+	/*
-+	 * vma_end points to the first VMA that has not been duplicated. We need
-+	 * to unmap all VMAs before it.
-+	 * If vma_end is NULL, it means that all VMAs in the maple tree have
-+	 * been duplicated, so setting tree_end to 0 will overflow to ULONG_MAX
-+	 * when using it.
-+	 */
-+	if (vma_end) {
-+		tree_end = vma_end->vm_start;
-+		if (tree_end == 0)
-+			goto destroy;
-+	} else
-+		tree_end = 0;
-+
-+	vma = mas_find(&vmi.mas, tree_end - 1);
-+
-+	if (vma) {
-+		arch_unmap(mm, vma->vm_start, tree_end);
-+		unmap_region(mm, &vmi.mas, vma, NULL, NULL, 0, tree_end,
-+			     tree_end, true);
-+
-+		mas_set(&vmi.mas, vma->vm_end);
-+		do {
-+			if (vma->vm_flags & VM_ACCOUNT)
-+				nr_accounted += vma_pages(vma);
-+			remove_vma(vma, true);
-+			count++;
-+			cond_resched();
-+			vma = mas_find(&vmi.mas, tree_end - 1);
-+		} while (vma != NULL);
-+
-+		BUG_ON(count != mm->map_count);
-+
-+		vm_unacct_memory(nr_accounted);
-+	}
-+
-+destroy:
-+	__mt_destroy(&mm->mm_mt);
-+}
-+
- /* Release all mmaps. */
- void exit_mmap(struct mm_struct *mm)
- {
-@@ -3217,7 +3265,7 @@ void exit_mmap(struct mm_struct *mm)
- 	mt_clear_in_rcu(&mm->mm_mt);
- 	mas_set(&mas, vma->vm_end);
- 	free_pgtables(&tlb, &mas, vma, FIRST_USER_ADDRESS,
--		      USER_PGTABLES_CEILING, true);
-+		      USER_PGTABLES_CEILING, USER_PGTABLES_CEILING, true);
- 	tlb_finish_mmu(&tlb);
- 
- 	/*
--- 
-2.20.1
+Is there an elegant way to solve this issue without modifying the linux ker=
+nel? e.g., a substitution of dma_map_resource() API?
 
+Thank you!
+
+Platform info:
+Linux kernel version: 5.10
+PCIE GEN4 x16
+
+Sincerely,
+Kelly
