@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD3F7AD103
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4804E7AD105
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbjIYHDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
+        id S232422AbjIYHDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 03:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232353AbjIYHDK (ORCPT
+        with ESMTP id S232348AbjIYHDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:03:10 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B229B8;
-        Mon, 25 Sep 2023 00:03:04 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3ab3aa9ae33so3994827b6e.2;
-        Mon, 25 Sep 2023 00:03:04 -0700 (PDT)
+        Mon, 25 Sep 2023 03:03:13 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CACC6;
+        Mon, 25 Sep 2023 00:03:06 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3ae0b0e9a68so3795146b6e.0;
+        Mon, 25 Sep 2023 00:03:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695625383; x=1696230183; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695625386; x=1696230186; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fpAcRisUyrskcWS9AV1ql1Z9KFMGwKdSa1ZIJWKbDtE=;
-        b=FU9zrD2sq8w3Xbadp21A6j5gshEOJCAswOpX2X9XEFKkFAGTlm/9NPoQYUibwGEfzJ
-         6Kqb3oPsMjhUaIFkmPbDgLNOWkOQe5PahJsQI348vCiLi52WH6WcfUMnSrVBDjZhzzH+
-         qiO3e5YpRKBZQSzlJqikGFNCXyDNYd312r+M0Puc065cP1uSiHBve21Bf9yZPMihXpZj
-         4Stv/hVuEYA7hw6bur3dpeQ1E33wfibHWSHZG4h57PRdp6RuD+p+TXHSgEjAZK3CkEY2
-         EFKyYXA+9HOpNpGQ/9F+AxFuKWDlWlv//MikOcvbeNlrmG4WgLUKtmwJhNSskReJkWw0
-         juvA==
+        bh=WDGT67Q+ic1nejZuLGS46+I/MVwpubEr1pR0ugjy0IU=;
+        b=G1QMWT8JVjav9cfYKo6W4V9tEiTFM677khgXsdb+3DmD9KyzoETpoYU4mhMWez8FZd
+         /WGYQ1HHFvTgToS5UsraZC9zPlgbaOmcxjpa8897j9itIJ46lW7aCHtnhv/URg2Q8hw1
+         vB29FBYcjM7yo1iPnwPqiaB0bnxF08LrHlWDExY3XVpuJeGiD65Vzau5qbMrKtVyt+uP
+         sWgbQuiYQauNlyCaoNlRvt1ugu5WFPI4Cpw8acbgrOhj0NipzfLlnz14rMHR5CV5nM19
+         fYn949jdChMJMaREPz4brtWw/rXl/v5VselSoU5szDahuj6t/ITVi8wRXqI43wJ3/cgw
+         yqyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695625383; x=1696230183;
+        d=1e100.net; s=20230601; t=1695625386; x=1696230186;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fpAcRisUyrskcWS9AV1ql1Z9KFMGwKdSa1ZIJWKbDtE=;
-        b=D/x8sPvcecyxD/K6sL1QfBqANbvvcIrCknffMGvYMVp5CbYWKKPKGaNxo+v0HsAhgS
-         DvqHt321q5qQVjhdfHq9buO7ZaCPsMRruYuSt3w90+Inq8IqrHGcI2SyVqylxaeHjHGh
-         UsN9OPxLyVbyKiecG1zjSqwy1cH7NWVcwHg7KiiEynuAcw9eKDA0G62Lg/Rp+fgOZVF3
-         Kn9DyTlNUCSnTIueUvWbegO5qMCuOBLqX9o4uU13IxWHk8+LqX5HTlgZ5oXNTChHliPe
-         K7bCoMpFajKPi6PnDhBpWNa+hHHQef8+lNVzoh2F6WABF/Tins0y8lW+L/J+B1WIVL93
-         7MJQ==
-X-Gm-Message-State: AOJu0Yzo0O4/ig+FHEuY/x+tg4PhhOVPB9NjOS937XF+FFJkQAZxWdvq
-        3+dha7LX97Il5yl3wCi/JaWynfMvnUU=
-X-Google-Smtp-Source: AGHT+IFmYTfy6kqOkq0zc0gJ4SiSVDy8hVafMmQgbxQ6f9NUQxlyGjrsnM0kn2IvDTVMo3JG8lsY6g==
-X-Received: by 2002:aca:f154:0:b0:3ad:fc3f:1202 with SMTP id p81-20020acaf154000000b003adfc3f1202mr6275365oih.53.1695625383369;
-        Mon, 25 Sep 2023 00:03:03 -0700 (PDT)
+        bh=WDGT67Q+ic1nejZuLGS46+I/MVwpubEr1pR0ugjy0IU=;
+        b=Q/3QGCC7SDPQHUho7wdvRroFugD97l9t/kyh/FpEPM7WNW2TTfBeoHpu+gevTASJCL
+         19aKev9BpUSnWQAaaYCxplfYYM/ik4h5qhCPpcnceloz19HCEUhrYO30BmceQn3nMo5s
+         a+gR90JPh4kPkJS++pONSObpiHf2wCuiLw5+Fh9YNfUDMSZmE3dhGyP0p9t627wX0p4V
+         ryR6oo9eWahKR6p+k68kmmhrAgkYodzDyAi/RSjzGQly0sJdqQ+gS6hc1tuZ/u60deBD
+         xwWfwDwt1Unexa8YBKGCxrIMR9L1w4GRHrBILkmTpb01Y5ou+CwpOn+YSLQMHqPEb+4K
+         hJ8A==
+X-Gm-Message-State: AOJu0Yxeek0diHasJm3rKK/5pJlt9dCgu8Q/n7F726XAqd4bwoveHgm7
+        8HbQnqQY7b/ryZCFnVywYBI=
+X-Google-Smtp-Source: AGHT+IGuIf5mBPt88+M6/YIuuNJKLE8C/47l0VkV0khzucuV5WQH4sTDrzNExeLrUZwNC2wFVnVfUg==
+X-Received: by 2002:a05:6808:23cc:b0:3ad:fcd5:3dd6 with SMTP id bq12-20020a05680823cc00b003adfcd53dd6mr9828065oib.13.1695625385867;
+        Mon, 25 Sep 2023 00:03:05 -0700 (PDT)
 Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id y5-20020a62b505000000b0068ffb8da107sm7349833pfe.212.2023.09.25.00.03.01
+        by smtp.gmail.com with ESMTPSA id y5-20020a62b505000000b0068ffb8da107sm7349833pfe.212.2023.09.25.00.03.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 00:03:03 -0700 (PDT)
+        Mon, 25 Sep 2023 00:03:05 -0700 (PDT)
 From:   Jacky Huang <ychuang570808@gmail.com>
 To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -57,11 +57,10 @@ To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
 Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         mjchen@nuvoton.com, schung@nuvoton.com,
-        Jacky Huang <ychuang3@nuvoton.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 1/3] dt-bindings: rtc: Add Nuvoton ma35d1 rtc
-Date:   Mon, 25 Sep 2023 07:02:49 +0000
-Message-Id: <20230925070251.28-2-ychuang570808@gmail.com>
+        Jacky Huang <ychuang3@nuvoton.com>
+Subject: [PATCH v4 2/3] arm64: dts: nuvoton: Add rtc for ma35d1
+Date:   Mon, 25 Sep 2023 07:02:50 +0000
+Message-Id: <20230925070251.28-3-ychuang570808@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230925070251.28-1-ychuang570808@gmail.com>
 References: <20230925070251.28-1-ychuang570808@gmail.com>
@@ -79,69 +78,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jacky Huang <ychuang3@nuvoton.com>
 
-Add documentation describing the Nuvoton ma35d1 rtc controller.
+Add rtc controller support to the dtsi of ma35d1 SoC and
+enable rtc on SOM and IoT boards.
 
 Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+ arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts | 4 ++++
+ arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts | 4 ++++
+ arch/arm64/boot/dts/nuvoton/ma35d1.dtsi         | 8 ++++++++
+ 3 files changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
-new file mode 100644
-index 000000000000..5e4ade803eed
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/nuvoton,ma35d1-rtc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts b/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts
+index b89e2be6abae..b3be4331abcf 100644
+--- a/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts
++++ b/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts
+@@ -54,3 +54,7 @@ &clk {
+ 			   "integer",
+ 			   "integer";
+ };
 +
-+title: Nuvoton MA35D1 Real Time Clock
++&rtc {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts b/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts
+index a1ebddecb7f8..9858788a589c 100644
+--- a/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts
++++ b/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts
+@@ -54,3 +54,7 @@ &clk {
+ 			   "integer",
+ 			   "integer";
+ };
 +
-+maintainers:
-+  - Min-Jen Chen <mjchen@nuvoton.com>
++&rtc {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi b/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
+index 781cdae566a0..394395bfd3ae 100644
+--- a/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
++++ b/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
+@@ -95,6 +95,14 @@ clk: clock-controller@40460200 {
+ 			clocks = <&clk_hxt>;
+ 		};
+ 
++		rtc: rtc@40410000 {
++			compatible = "nuvoton,ma35d1-rtc";
++			reg = <0x0 0x40410000 0x0 0x200>;
++			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&clk RTC_GATE>;
++			status = "disabled";
++		};
 +
-+allOf:
-+  - $ref: rtc.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nuvoton,ma35d1-rtc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/nuvoton,ma35d1-clk.h>
-+    rtc@40410000 {
-+        compatible = "nuvoton,ma35d1-rtc";
-+        reg = <0x40410000 0x200>;
-+        interrupts = <GIC_SPI 5 IRQ_TYPE_EDGE_RISING>;
-+        clocks = <&clk RTC_GATE>;
-+    };
-+
-+...
+ 		uart0: serial@40700000 {
+ 			compatible = "nuvoton,ma35d1-uart";
+ 			reg = <0x0 0x40700000 0x0 0x100>;
 -- 
 2.34.1
 
