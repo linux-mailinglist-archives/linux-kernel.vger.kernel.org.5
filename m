@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 978C87ACDCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418FC7ACDD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjIYCEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        id S231620AbjIYCFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIYCEi (ORCPT
+        with ESMTP id S229810AbjIYCFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:04:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2350BD
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695607471; x=1727143471;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N5N1MVnoLtn6COPC+Z9AaoRWzoVIYhiBRP33WVklB48=;
-  b=hK8oa/SyYBFgEBR4XWTIZGjwz9VDwf1T/PcLemofkv9ozL1WYiqMvT8C
-   BMX5rogVNa0skrWLhDrAtHKr9IFgrKkRrDlpUnuxuQiF/gJ+LLyauJ/ST
-   TxcPpWBExXzNrS3vkGhMajM7wwdeGIVaZjJVP3hDCJKURkUI0e1TE/epp
-   twKHrxU2Gsr3mER6Rft2EMt2z/KgQ8d4/akfGzCt3S+svF+WpAjCEF/qM
-   SMdecIa+xMVV4n8rVmwwG72mgWPpWxjvJzT1Jsn+zqS9aaVGIPw8YLI1C
-   RCxK3Ex1zgzlpfCEwTJubwOwn2VHhbIWFOCuUsMuP3WpFqeNckWmPs/mX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="467433261"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="467433261"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 19:04:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="751499138"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="751499138"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Sep 2023 19:04:14 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qkaxI-0000lZ-1W;
-        Mon, 25 Sep 2023 02:04:12 +0000
-Date:   Mon, 25 Sep 2023 10:04:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     riel@surriel.com, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, mike.kravetz@oracle.com, leit@meta.com,
-        willy@infradead.org, Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
- invalidate_lock
-Message-ID: <202309250923.NEPT0ip2-lkp@intel.com>
-References: <20230922190552.3963067-4-riel@surriel.com>
+        Sun, 24 Sep 2023 22:05:40 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1574CCA;
+        Sun, 24 Sep 2023 19:05:34 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59c0d002081so65067137b3.2;
+        Sun, 24 Sep 2023 19:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695607533; x=1696212333; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ofetUYGKfUn8Y5bB/sKf2dY2Hbj366ZFweBVoXSLdk=;
+        b=RR5ooqax/xkraHGJ/4sPxKmV2y2co0eHz78bqOv2mdzOKizZmgSNipt9iGK1UOprq8
+         Q3+jx773UEegEUhBt0yKAqFyXcYk4T8GCDOg0fAEkwYgKcYK1OCCx13Yr32KxibQOGAE
+         XsHnfN5pvHwIxhYFUFy34odXW+NqWvThH9zgEhIaqgwdgm+AieKLEHdBwjCXVPHMU8T0
+         ROcma4CqYUq9HqBQyNWzhVMM/wQzw80uEgo2A2eudSwgPfDTIspTC2fGbx9virjiJEQ5
+         BhVe8DXzoGg7avmbrKi5aSWOoDaM9g0jMdKizzdFFtHzNCDBPxZHQjgdHuYe7QFxSr6X
+         GRNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695607533; x=1696212333;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2ofetUYGKfUn8Y5bB/sKf2dY2Hbj366ZFweBVoXSLdk=;
+        b=aKou8ilEVwvUfuVo5LpHLH46InESDWT1LAU2GqOQ6CQhUmOMgKN0hyE+oZN8IfEY8x
+         +lnAwJWUD0JCxbOZXnfxoz2dFM9BahmaSETiUS9OUGbJ6S8x0a5mGQUoS6Dyz3e2UR7A
+         XfZouvgKv7NUzmuFlj3Zz8MPDTPTH2DpEFbYnXQLy2VKMqG+60nBqgAMJrSmoMI7LeU6
+         jcHlqK/eafAkfLV75U+Nd7b/P968nIfzTtCW5ktcgK8I1VuSs9goJXAUW8hyReUcpCa4
+         DAkkSDXRjGgc97Qq+79FSx4doPxKwIBt893fn1kkepNASGCcgRwm72q443cNFfwRpwQ8
+         M2uw==
+X-Gm-Message-State: AOJu0Yxt/XdM0njheX1hzASh8DB6FCEfJQAG+s13w0PsKonF5zxE3RKq
+        N/Sa7D22e+6JyaAIlRY7h4HhXuMMW1Y=
+X-Google-Smtp-Source: AGHT+IEV0y8VzWJxet49qM1rIgLG05Ph3podhumDhLkyFgatTAhH70X71TzeU9R0NgBnqz06DfgVmA==
+X-Received: by 2002:a81:b186:0:b0:59b:f152:8998 with SMTP id p128-20020a81b186000000b0059bf1528998mr5416624ywh.19.1695607532826;
+        Sun, 24 Sep 2023 19:05:32 -0700 (PDT)
+Received: from localhost ([2607:fb90:3eac:cd78:b6b5:ba0f:9e64:f2e1])
+        by smtp.gmail.com with ESMTPSA id gb8-20020a05690c408800b0059f61be458esm810048ywb.82.2023.09.24.19.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 19:05:32 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>
+Subject: [PATCH 0/4] sched: drop for_each_numa_hop_mask()
+Date:   Sun, 24 Sep 2023 19:05:24 -0700
+Message-Id: <20230925020528.777578-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922190552.3963067-4-riel@surriel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Recently added mlx5_cpumask_default_spread() makes for_each_numa_hop_mask()
+opencoding cpumask_local_spread().
 
-kernel test robot noticed the following build errors:
+This series replaces mlx5_cpumask_default_spread() with generic
+cpumask_local_spread(). And because mlx5_cpumask_default_spread()
+is the only user of for_each_numa_hop_mask() machinery, drops it
+entirely.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.6-rc3 next-20230921]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Regarding for_each_numa_hop_mask(), I've got a small series introducing
+a better version of it - for_each_numa_cpu():
 
-url:    https://github.com/intel-lab-lkp/linux/commits/riel-surriel-com/hugetlbfs-extend-hugetlb_vma_lock-to-private-VMAs/20230923-030756
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230922190552.3963067-4-riel%40surriel.com
-patch subject: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with invalidate_lock
-config: x86_64-randconfig-013-20230925 (https://download.01.org/0day-ci/archive/20230925/202309250923.NEPT0ip2-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230925/202309250923.NEPT0ip2-lkp@intel.com/reproduce)
+https://lore.kernel.org/netdev/20230430171809.124686-1-yury.norov@gmail.com/T/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309250923.NEPT0ip2-lkp@intel.com/
+But with the lack of interest, I believe it's wotrth to drop
+for_each_numa_hop_mask() and put for_each_numa_cpu() on hold
+until further updates...
 
-All errors (new ones prefixed by >>):
+Yury Norov (4):
+  net: mellanox: drop mlx5_cpumask_default_spread()
+  Revert "sched/topology: Introduce for_each_numa_hop_mask()"
+  Revert "sched/topology: Introduce sched_numa_hop_mask()"
+  lib/cpumask: don't mention for_each_numa_hop_mask in
+    cpumask_local_spread()"
 
-   In file included from arch/x86/include/asm/bug.h:87,
-                    from include/linux/bug.h:5,
-                    from include/linux/thread_info.h:13,
-                    from arch/x86/include/asm/preempt.h:9,
-                    from include/linux/preempt.h:79,
-                    from include/linux/spinlock.h:56,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/slab.h:16,
-                    from fs/nfs/write.c:11:
-   include/linux/hugetlb.h: In function 'hugetlb_walk':
->> include/linux/hugetlb.h:1285:42: error: dereferencing pointer to incomplete type 'struct hugetlb_vma_lock'
-    1285 |   WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                                          ^~
-   include/asm-generic/bug.h:111:25: note: in definition of macro 'WARN_ON_ONCE'
-     111 |  int __ret_warn_on = !!(condition);   \
-         |                         ^~~~~~~~~
-   include/linux/hugetlb.h:1285:17: note: in expansion of macro 'lockdep_is_held'
-    1285 |   WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-         |                 ^~~~~~~~~~~~~~~
-
-
-vim +1285 include/linux/hugetlb.h
-
-185d8dcce62020 Rik van Riel 2023-09-22  1265  
-9c67a20704e763 Peter Xu     2022-12-16  1266  /*
-9c67a20704e763 Peter Xu     2022-12-16  1267   * Safe version of huge_pte_offset() to check the locks.  See comments
-9c67a20704e763 Peter Xu     2022-12-16  1268   * above huge_pte_offset().
-9c67a20704e763 Peter Xu     2022-12-16  1269   */
-9c67a20704e763 Peter Xu     2022-12-16  1270  static inline pte_t *
-9c67a20704e763 Peter Xu     2022-12-16  1271  hugetlb_walk(struct vm_area_struct *vma, unsigned long addr, unsigned long sz)
-9c67a20704e763 Peter Xu     2022-12-16  1272  {
-9c67a20704e763 Peter Xu     2022-12-16  1273  #if defined(CONFIG_HUGETLB_PAGE) && \
-9c67a20704e763 Peter Xu     2022-12-16  1274  	defined(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) && defined(CONFIG_LOCKDEP)
-9c67a20704e763 Peter Xu     2022-12-16  1275  	struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
-9c67a20704e763 Peter Xu     2022-12-16  1276  
-9c67a20704e763 Peter Xu     2022-12-16  1277  	/*
-9c67a20704e763 Peter Xu     2022-12-16  1278  	 * If pmd sharing possible, locking needed to safely walk the
-9c67a20704e763 Peter Xu     2022-12-16  1279  	 * hugetlb pgtables.  More information can be found at the comment
-9c67a20704e763 Peter Xu     2022-12-16  1280  	 * above huge_pte_offset() in the same file.
-9c67a20704e763 Peter Xu     2022-12-16  1281  	 *
-9c67a20704e763 Peter Xu     2022-12-16  1282  	 * NOTE: lockdep_is_held() is only defined with CONFIG_LOCKDEP.
-9c67a20704e763 Peter Xu     2022-12-16  1283  	 */
-9c67a20704e763 Peter Xu     2022-12-16  1284  	if (__vma_shareable_lock(vma))
-9c67a20704e763 Peter Xu     2022-12-16 @1285  		WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-9c67a20704e763 Peter Xu     2022-12-16  1286  			     !lockdep_is_held(
-9c67a20704e763 Peter Xu     2022-12-16  1287  				 &vma->vm_file->f_mapping->i_mmap_rwsem));
-9c67a20704e763 Peter Xu     2022-12-16  1288  #endif
-9c67a20704e763 Peter Xu     2022-12-16  1289  	return huge_pte_offset(vma->vm_mm, addr, sz);
-9c67a20704e763 Peter Xu     2022-12-16  1290  }
-9c67a20704e763 Peter Xu     2022-12-16  1291  
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 28 ++---------------
+ include/linux/topology.h                     | 25 ---------------
+ kernel/sched/topology.c                      | 33 --------------------
+ lib/cpumask.c                                | 21 -------------
+ 4 files changed, 2 insertions(+), 105 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
