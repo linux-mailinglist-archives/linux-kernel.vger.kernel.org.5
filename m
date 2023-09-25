@@ -2,157 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0F57AD5DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE1E7AD5EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjIYK2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        id S231500AbjIYK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjIYK2O (ORCPT
+        with ESMTP id S231437AbjIYK3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:28:14 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679DF8E;
-        Mon, 25 Sep 2023 03:28:06 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0A3201C0002;
-        Mon, 25 Sep 2023 10:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695637685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CtO8T+sDShN7p7U0G6qKR0fuN42cZzhkfeW3eGEM+Oc=;
-        b=LVvprKIVChYwTJzlxBd2ZNYXBHm9J7hWY1K7wpTo7zgvqzqBZGISmFtj5OfIFjje66P6S6
-        HlEwH3l0nVjpj8nD5vuMQ04HpzK0kR9ZM/U4jh0pWSEMRb4F5bMp+1A6JeZwWYC3nZTpNn
-        /U6LnsAPSh0QZnEt3y0Lr0BoJp0UQrIcws9zjf3FD4NOdCmt44AIAujr+TSxw3+AlvXtxH
-        hfW+hGSVKZ+Hawd0vhvwNMVNosgsJYz2ky2HPFjrWkgsQ6PX7giQJvvsZAQmr4u96kgbX/
-        2NKS6FPh8EB5P2zy/eURoCGbCNJb1KY9NL1nF8B1faIJpM3bP2F6JtT1GYIe7w==
-Date:   Mon, 25 Sep 2023 12:27:58 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v6 08/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
- Add support for QMC HDLC
-Message-ID: <20230925122758.43963736@bootlin.com>
-In-Reply-To: <5b804a1a-6bfd-429d-ad84-696b7ecef72d@linaro.org>
-References: <20230922075913.422435-1-herve.codina@bootlin.com>
-        <20230922075913.422435-9-herve.codina@bootlin.com>
-        <5efae150-3d92-81b8-5c25-68846d27132e@linaro.org>
-        <20230925101703.1bf083f1@bootlin.com>
-        <5b804a1a-6bfd-429d-ad84-696b7ecef72d@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 25 Sep 2023 06:29:04 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7088B9B;
+        Mon, 25 Sep 2023 03:28:58 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P8eEgU012494;
+        Mon, 25 Sep 2023 10:28:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=vws1dp5OU+F2CqVIXLbul7wyURVu7p3uJsVpOZVrkwo=;
+ b=V2qkHE9XgnNVKwvUSX/IK5gnGU8stqHCdFWyv2O2NZxGzJ1vOno7idTybDy/dLkw3GEU
+ I6+WRd1KZFaT3bxxdIXW8QyeWpFGyswelgy4RxhTzMNB5nMUvvso02VBebLh/CgC7U65
+ 8hhoiIZivrMImWdV8NMLk7BB9LqeSQrUgTvzfeEXMDEgqfrkhSx4lbi/LFROl7cEaKqu
+ j8yecKejxrIQs74jfRYIxYX9IEOiga2ZD+X2eP99UVWLEMO8b0hOi7YkzXPPjvkl6zY1
+ hCE+ByQ8xbHQSK2dzpOJ3Ry30J+ti1nce+qw9qd2tlJsMi24/jBc9D2/3mIH5v1XPhki Mg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9safbsrt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 10:28:45 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38PASiDu031432
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 10:28:44 GMT
+Received: from hu-gokulsri-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 25 Sep 2023 03:28:39 -0700
+From:   Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+To:     <dmitry.baryshkov@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <jassisinghbrar@gmail.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
+        <quic_gokulsri@quicinc.com>
+Subject: [PATCH V3 0/3] Add APSS clock driver support for IPQ5018
+Date:   Mon, 25 Sep 2023 15:58:23 +0530
+Message-ID: <20230925102826.405446-1-quic_gokulsri@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: I0WKHb-HDuuba0GaV1oevpXrrllpqIS8
+X-Proofpoint-GUID: I0WKHb-HDuuba0GaV1oevpXrrllpqIS8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-25_07,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ mlxscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=643 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309250076
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023 10:21:15 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+This series adds support for the APSS clock to bump the CPU frequency
+above 800MHz. APSS PLL found in the IPQ5018 is of type Stromer. 
 
-> On 25/09/2023 10:17, Herve Codina wrote:
-> > Hi Krzysztof,
-> > 
-> > On Sat, 23 Sep 2023 19:39:49 +0200
-> > Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> >   
-> >> On 22/09/2023 09:58, Herve Codina wrote:  
-> >>> The QMC (QUICC mutichannel controller) is a controller present in some
-> >>> PowerQUICC SoC such as MPC885.
-> >>> The QMC HDLC uses the QMC controller to transfer HDLC data.
-> >>>
-> >>> Additionally, a framer can be connected to the QMC HDLC.
-> >>> If present, this framer is the interface between the TDM bus used by the
-> >>> QMC HDLC and the E1/T1 line.
-> >>> The QMC HDLC can use this framer to get information about the E1/T1 line
-> >>> and configure the E1/T1 line.
-> >>>
-> >>> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> >>> ---
-> >>>  .../soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml      | 24 +++++++++++++++++++
-> >>>  1 file changed, 24 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-> >>> index 82d9beb48e00..61dfd5ef7407 100644
-> >>> --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-> >>> +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-> >>> @@ -101,6 +101,27 @@ patternProperties:
-> >>>            Channel assigned Rx time-slots within the Rx time-slots routed by the
-> >>>            TSA to this cell.
-> >>>  
-> >>> +      compatible:
-> >>> +        const: fsl,qmc-hdlc    
-> >>
-> >> Why this is not a device/SoC specific compatible?  
-> > 
-> > This compatible is present in a QMC channel.
-> > The parent node (the QMC itself) contains a compatible with device/SoC:
-> > --- 8< ---
-> >   compatible:
-> >     items:
-> >       - enum:
-> >           - fsl,mpc885-scc-qmc
-> >           - fsl,mpc866-scc-qmc
-> >       - const: fsl,cpm1-scc-qmc
-> > --- 8< ---
-> > 
-> > At the child level (ie QMC channel), I am not sure that adding device/SoC
-> > makes sense. This compatible indicates that the QMC channel is handled by
-> > the QMC HDLC driver.
-> > At this level, whatever the device/SoC, we have to be QMC compliant.
-> > 
-> > With these details, do you still think I need to change the child (channel)
-> > compatible ?  
-> 
-> From OS point of view, you have a driver binding to this child-level
-> compatible. How do you enforce Linux driver binding based on parent
-> compatible? I looked at your next patch and I did not see it.
+- The first patch in the series adds the required a53pll compatible.
 
-We do not need to have the child driver binding based on parent.
-We have to ensure that the child handles a QMC channel and the parent provides
-a QMC channel.
+- The second patch reuses Stormer Plus PLL offsets, adds configuration values
+  for Stromer.
 
-A QMC controller (parent) has to implement the QMC API (include/soc/fsl/qe/qmc.h)
-and a QMC channel driver (child) has to use the QMC API.
+- The third patch adds dts nodes to enable the pll along with the cpu
+  operating frequency table.
 
-Best regards,
-Hervé
+This series depends on below series
+https://patchwork.kernel.org/project/linux-arm-msm/cover/20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com/
 
-> 
-> Best regards,
-> Krzysztof
-> 
+Changes in v3:
+- Addressed review comment by Dmitry in patch 3.
+
+Changes in v2:
+- Addressed review comments
+- Adds dependency on above mentioned patch series for dropping
+  CLK_SET_RATE_PARENT flag from GPLL clocks, GPLL0 clock provider for
+  mailbox
+- Add CPU operating point at 800MHz based on the review comments.
+
+Gokul Sriram Palanisamy (3):
+  dt-bindings: clock: qcom,a53pll: add IPQ5018 compatible
+  clk: qcom: apss-ipq-pll: add support for IPQ5018
+  arm64: dts: qcom: ipq5018: enable the CPUFreq support
+
+ .../bindings/clock/qcom,a53pll.yaml           |  1 +
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi         | 40 +++++++++++++++++++
+ drivers/clk/qcom/apss-ipq-pll.c               | 21 ++++++++++
+ 3 files changed, 62 insertions(+)
+
+-- 
+2.34.1
+
