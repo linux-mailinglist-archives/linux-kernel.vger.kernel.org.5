@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925D47ADA30
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC3C7ADA37
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjIYOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
+        id S230260AbjIYOnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjIYOlr (ORCPT
+        with ESMTP id S229450AbjIYOna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:41:47 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8919A103
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:41:40 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-404fbfac998so73866165e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695652899; x=1696257699; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZnQkb6b5eXRZq2LrytU5CtIWVTHEXBAeVcMvdSE/Rjs=;
-        b=RgrjnsBAhL6Gsfqefnw2S4Nddo2drXSwMMH3mHDEhVQILMGP2SstZN882aVhsvu3Dx
-         jEU5hGPGMuOS96AWyEsw5yI2nSuXu36pR6so+ZjVD2GO26joIZ+xPZMEq2dBTqIeXiC4
-         0PoLZfHkDnK1fCiPeiOuAo/3G3gpDbezpoiqq/4iP7X6Dc/TFjEwSR6PlyvEk6Djrhjd
-         CdCI2Ir1ClAcaXdrObTwAZswQVphBhq2PZd5Z0mJ7Dv/d7/n80+bcQIpqTeMm6hUvjAQ
-         h+NPxqixVADe3HyJnaitXq7qVHoOiu7vTjPvpgmTeYfA8+k5kjSlVua3f87IZrcpBFCD
-         XZrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695652899; x=1696257699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZnQkb6b5eXRZq2LrytU5CtIWVTHEXBAeVcMvdSE/Rjs=;
-        b=sdlrxp1gUqQDXEdDrO7i5fhvUMJjI2IaGUxoHBJtr+nqclG8Y/sj1ORWNpWXIDB0LW
-         5oKlaH9Q3J/llP6Ox9d9fofEJ1l/Xt/zZuK6kRWlS1okVyKUnPk1VlkSnfR0CviuL78i
-         A6VwZtxXzwBc9mIpsDKvtY/TbR/CDgDcHd8HdYkYeHngC/wPKFspAMLV9FA7kPxQ1Ajq
-         b+g4tXEBrrbYMlq8yeKvmfIVDcBj6hOo5/pdrOWZgPIdAaXzl+BTNhZLYZJMLHVB8nEO
-         6ChH3orBz9B2xASORxY5hxoKCHZEmy492+QBZ31pOzJeEmRTbs+qdgnl72Faur8KMAZE
-         iccw==
-X-Gm-Message-State: AOJu0Yyyqw/S6IZrEfvpvrV1HNDm9RDuLP/Vg7ECjpXo01zmKeGJX9YQ
-        hPEApCVqVPeuq669pOxRVNcZaA==
-X-Google-Smtp-Source: AGHT+IHPb8vKchvFnY0s05TsviFcSJxnsXgmrDWlqO7Le6/fH+Zwot+4Ces80LRgrG4M+d5CjIT0Lw==
-X-Received: by 2002:adf:f205:0:b0:31f:8a6d:e527 with SMTP id p5-20020adff205000000b0031f8a6de527mr6030302wro.45.1695652898924;
-        Mon, 25 Sep 2023 07:41:38 -0700 (PDT)
-Received: from x1 ([193.52.24.5])
-        by smtp.gmail.com with ESMTPSA id bt14-20020a056000080e00b003200c918c81sm5683354wrb.112.2023.09.25.07.41.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 07:41:38 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 16:41:30 +0200
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 2/6] mmc: sdhci: add __sdhci_execute_tuning() to header
-Message-ID: <ZRGcGnl8N80yblkw@x1>
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
- <20230921-th1520-mmc-v1-2-49f76c274fb3@baylibre.com>
- <4ef60ffd-3661-4bca-91a3-b49d6189c71b@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ef60ffd-3661-4bca-91a3-b49d6189c71b@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 25 Sep 2023 10:43:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAC8101;
+        Mon, 25 Sep 2023 07:43:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 693E4C433C7;
+        Mon, 25 Sep 2023 14:43:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695653004;
+        bh=zLu+VnRpIsjtnAXABy7BDzCTOqyINaVoPvsO++Hkwow=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=qw77X9fkt0hBOpDdvTU2WKmu46P3XwVZXqEmHv04wqXA/tZs4NgonJaHKf7T8MZAC
+         oPNae1MmhWZ3eOq+eqzdXMUr7j7oPNnBXePU3V/yvxGYt+LT2sEv94UA86N3ssa4p9
+         fz6Z0JVoPlrWpHUK4hmHg0rA8lKjUp3uYG452ywN2dkQxUZlpqN4ML0W/HvnTG/LnR
+         mQw58kFoNZmb/HPdqzWT0XPfhg/ijXT/GT5Lcx89pnr12GhQ1x5zAlOPlUT4HhfwTS
+         xy1RrnkmKut5d1yXF7k93DE2LrJT+5zXjmyv4CnjDdS+Abrr+nZp1g5CeFrS7FcnLD
+         QhF4td3R7tIOg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 25 Sep 2023 17:43:15 +0300
+Message-Id: <CVS2TK6J4193.2X0455FSP2MLQ@suppilovahvero>
+Cc:     <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <linux-edac@vger.kernel.org>,
+        <acpica-devel@lists.linuxfoundation.org>, <stable@vger.kernel.org>,
+        <x86@kernel.org>, <justin.he@arm.com>, <ardb@kernel.org>,
+        <ying.huang@intel.com>, <ashish.kalra@amd.com>,
+        <baolin.wang@linux.alibaba.com>, <bp@alien8.de>,
+        <tglx@linutronix.de>, <mingo@redhat.com>,
+        <dave.hansen@linux.intel.com>, <lenb@kernel.org>, <hpa@zytor.com>,
+        <robert.moore@intel.com>, <lvying6@huawei.com>,
+        <xiexiuqi@huawei.com>, <zhuo.song@linux.alibaba.com>
+Subject: Re: [RESEND PATCH v8 1/2] ACPI: APEI: set memory failure flags as
+ MF_ACTION_REQUIRED on synchronous events
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Shuai Xue" <xueshuai@linux.alibaba.com>, <rafael@kernel.org>,
+        <wangkefeng.wang@huawei.com>, <tanxiaofei@huawei.com>,
+        <mawupeng1@huawei.com>, <tony.luck@intel.com>,
+        <linmiaohe@huawei.com>, <naoya.horiguchi@nec.com>,
+        <james.morse@arm.com>, <gregkh@linuxfoundation.org>,
+        <will@kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20230919022127.69732-2-xueshuai@linux.alibaba.com>
+In-Reply-To: <20230919022127.69732-2-xueshuai@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,44 +66,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 01:21:05PM +0300, Adrian Hunter wrote:
-> On 22/09/23 04:49, Drew Fustini wrote:
-> > Expose __sdhci_execute_tuning() so that it can be called from the
-> > mmc host controller drivers.
-> > 
-> > In the sdhci-of-dwcmshc driver, sdhci_dwcmshc_th1520_ops sets
-> > platform_execute_tuning to th1520_execute_tuning(). That function has
-> > to manipulate phy registers before tuning can be performed. To avoid
-> > copying the code verbatim from __sdhci_execute_tuning() into
-> > th1520_execute_tuning(), make it possible for __sdhci_execute_tuning()
-> > to be called from sdhci-of-dwcmshc.
-> > 
-> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> > ---
-> >  drivers/mmc/host/sdhci.c | 2 +-
-> >  drivers/mmc/host/sdhci.h | 1 +
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index ff41aa56564e..fd607058d176 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -2841,7 +2841,7 @@ void sdhci_send_tuning(struct sdhci_host *host, u32 opcode)
-> >  }
-> >  EXPORT_SYMBOL_GPL(sdhci_send_tuning);
-> >  
-> > -static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
-> > +int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
-> 
-> Also need
-> 	EXPORT_SYMBOL_GPL(__sdhci_execute_tuning);
+On Tue Sep 19, 2023 at 5:21 AM EEST, Shuai Xue wrote:
+> There are two major types of uncorrected recoverable (UCR) errors :
+>
+> - Action Required (AR): The error is detected and the processor already
+>   consumes the memory. OS requires to take action (for example, offline
+>   failure page/kill failure thread) to recover this uncorrectable error.
+>
+> - Action Optional (AO): The error is detected out of processor execution
+>   context. Some data in the memory are corrupted. But the data have not
+>   been consumed. OS is optional to take action to recover this
+>   uncorrectable error.
+>
+> The essential difference between AR and AO errors is that AR is a
+> synchronous event, while AO is an asynchronous event. The hardware will
+> signal a synchronous exception (Machine Check Exception on X86 and
+> Synchronous External Abort on Arm64) when an error is detected and the
+> memory access has been architecturally executed.
+>
+> When APEI firmware first is enabled, a platform may describe one error
+> source for the handling of synchronous errors (e.g. MCE or SEA notificati=
+on
+> ), or for handling asynchronous errors (e.g. SCI or External Interrupt
+> notification). In other words, we can distinguish synchronous errors by
+> APEI notification. For AR errors, kernel will kill current process
+> accessing the poisoned page by sending SIGBUS with BUS_MCEERR_AR. In
+> addition, for AO errors, kernel will notify the process who owns the
+> poisoned page by sending SIGBUS with BUS_MCEERR_AO in early kill mode.
+> However, the GHES driver always sets mf_flags to 0 so that all UCR errors
+> are handled as AO errors in memory failure.
+>
+> To this end, set memory failure flags as MF_ACTION_REQUIRED on synchronou=
+s
+> events.
+>
+> Fixes: ba61ca4aab47 ("ACPI, APEI, GHES: Add hardware memory error recover=
+y support")'
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  drivers/acpi/apei/ghes.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index ef59d6ea16da..88178aa6222d 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -101,6 +101,20 @@ static inline bool is_hest_type_generic_v2(struct gh=
+es *ghes)
+>  	return ghes->generic->header.type =3D=3D ACPI_HEST_TYPE_GENERIC_ERROR_V=
+2;
+>  }
+> =20
+> +/*
+> + * A platform may describe one error source for the handling of synchron=
+ous
+> + * errors (e.g. MCE or SEA), or for handling asynchronous errors (e.g. S=
+CI
+> + * or External Interrupt). On x86, the HEST notifications are always
+> + * asynchronous, so only SEA on ARM is delivered as a synchronous
+> + * notification.
+> + */
+> +static inline bool is_hest_sync_notify(struct ghes *ghes)
+> +{
+> +	u8 notify_type =3D ghes->generic->notify.type;
+> +
+> +	return notify_type =3D=3D ACPI_HEST_NOTIFY_SEA;
+> +}
+> +
+>  /*
+>   * This driver isn't really modular, however for the time being,
+>   * continuing to use module_param is the easiest way to remain
+> @@ -475,7 +489,7 @@ static bool ghes_do_memory_failure(u64 physical_addr,=
+ int flags)
+>  }
+> =20
+>  static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gd=
+ata,
+> -				       int sev)
+> +				       int sev, bool sync)
+>  {
+>  	int flags =3D -1;
+>  	int sec_sev =3D ghes_severity(gdata->error_severity);
+> @@ -489,7 +503,7 @@ static bool ghes_handle_memory_failure(struct acpi_he=
+st_generic_data *gdata,
+>  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+>  		flags =3D MF_SOFT_OFFLINE;
+>  	if (sev =3D=3D GHES_SEV_RECOVERABLE && sec_sev =3D=3D GHES_SEV_RECOVERA=
+BLE)
+> -		flags =3D 0;
+> +		flags =3D sync ? MF_ACTION_REQUIRED : 0;
 
-Thank, I will add that.
+Not my territory but this branching looks a bit weird to my
+eyes so just in case putting a comment.
 
-I wasn't sure if making __sdhci_execute_tuning() available outside of
-sdhci.c was going to be seen as an acceptable solution.
+What *if* the previous condition sets MF_SOFT_OFFLINE and
+this condition overwrites the value?
 
-Do you think my apporach is acceptable (once I add EXPORT_SYMBOL_GPL)?
+I know that earlier it could have been overwritten by zero.
 
-Thanks,
-Drew
+Neither the function comment has any explanation why it is
+ok overwrite like this.
+
+Or if these cannot happen simultaenously why there is not
+immediate return after settting MF_SOFT_OFFLINE?
+
+For someone like me the functions logic is tediously hard
+to understand tbh.
+
+BR, Jarkko
