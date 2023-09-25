@@ -2,57 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10397AD5B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28E67AD5B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjIYKRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        id S230464AbjIYKTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjIYKRX (ORCPT
+        with ESMTP id S229475AbjIYKT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:17:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED309F;
-        Mon, 25 Sep 2023 03:17:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BC36C433C8;
-        Mon, 25 Sep 2023 10:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695637037;
-        bh=iRlJHmpvIWYSQoj21tvtV2DoXT4u3L4h+gWlWYry4PM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=NIfRXmW1lLGxqAV/3eDoSAlnVOJLZ47aAU/jKqo58kbnYax2KcWGFD2loAF340lGJ
-         sFIB23H5PgnpEhlFlj1gFBkIhw+0As+UPG1MLX3Gj1H4jM6VkUOyRkf8tv/GeGI9HH
-         wZDSUZTCY+UdvbGFdSFtWPzEEcVKwfLOSNpiYUm2U8/MPSCmqp2waTGLv3H+UJJZre
-         ARpA0/puvMLsKXBC5yWqfaH770rGku8aA3R7DBpURcYI1Iihb0mjWqqTZ4HzIutDX+
-         DggWMd4j+g2WtmHR5gnN0TvTiLkHmayeP81udlLo8BZsmg9sPvcH97J0augzlIDXyD
-         xcklk5YYnYzOg==
-Message-ID: <9b81a1f52b4dc777dbb5259b2e12e90eba0ff507.camel@kernel.org>
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>, Christian Brauner <brauner@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Mon, 25 Sep 2023 06:17:14 -0400
-In-Reply-To: <169559548777.19404.13247796879745924682@noble.neil.brown.name>
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
-        , <20230924-mitfeiern-vorladung-13092c2af585@brauner>
-         <169559548777.19404.13247796879745924682@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 25 Sep 2023 06:19:29 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1C3A3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:19:22 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-405505b07dfso22396145e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695637160; x=1696241960; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BHtjwLPuNIM982JG8tRGrHl7cHo/0iOH5NWHHo23YQ0=;
+        b=kq/BZrKIniVcrT/riHVdGvJKkbh0cmY0CBflhmr6xg20tqNTd7ktEbnrV16ctca1ZR
+         KnTLjjb2XYwss6REge+2CS0d0fz5nKLd8uQQcWdGlGf6uX6QOYWbiPCfccLAbu08T+U9
+         2oHEVQ9vk72FOfpo6/TWws9TFVcCnjMuL8xAV8mkMegLU5zKsa6Mqd1Rq51zuoKNYt3h
+         DlpGAxC19mopX8TzfW08oLyDHfY/NOJ4HUmtQSwl5YB7vo2H+zC5t50uRTvzVv7szkCm
+         5elcVOPQx/hP3gR3zQ0ejcoJ+H9O6jqASaocar98TuXMuSSGkET/OMcTN55s2MLU+lF0
+         9UzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695637160; x=1696241960;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BHtjwLPuNIM982JG8tRGrHl7cHo/0iOH5NWHHo23YQ0=;
+        b=NKCGozjVLHkfvxkCSLwRqW8Ues/tALYsjEJ9rLo9RIx+u7EKD+VFsp+HZyneimrq/l
+         L8el/KRdnecLdr/qEc66K9TKsNgeVBlM6E9e2uXZtN4V1RJDwMCW/sJ4GM3BfBJvfkPF
+         GKIMhAsQUN+gEFdy/BXPE6gCMNIXO9RYaCrF+TtiPwc9TLEoefnUE0Jsl/27FYPKzADs
+         mJWWuFD9yuibJ7rTdh0Cfl1UHqnxmRSCCg+KeYkHw0JYCfaEJPaDXPZgx8uvkrp14lfO
+         yGoKvBrPStadyNJterbF1iYhbhjxcxYs0ul+C5B+3muHQ7Bu/UtdDupoHtszf1zVqIQH
+         J5YA==
+X-Gm-Message-State: AOJu0YwEqkmg9XSIOaZI/hvWdP47YC2LdRr06VkYozM+DU0ByGa+FSUN
+        x1Mi7aTYS0PCk+zwDeAncKzel/Henqh6pGxZ5zQ=
+X-Google-Smtp-Source: AGHT+IEk9j2816s7sFR+gkKxXV2xh8ch+/ES8qsjs/S06EjJobIwoZuLiCcNyAiK37ukW2W8UqWo7g==
+X-Received: by 2002:a1c:6a1a:0:b0:403:c70b:b688 with SMTP id f26-20020a1c6a1a000000b00403c70bb688mr5207596wmc.6.1695637160370;
+        Mon, 25 Sep 2023 03:19:20 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c0e1:63ab:648b:6287? ([2a05:6e02:1041:c10:c0e1:63ab:648b:6287])
+        by smtp.googlemail.com with ESMTPSA id v20-20020a05600c215400b00401b242e2e6sm9199319wml.47.2023.09.25.03.19.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 03:19:19 -0700 (PDT)
+Message-ID: <7558dd96-0d96-9463-9a97-7ea8bac2046e@linaro.org>
+Date:   Mon, 25 Sep 2023 12:19:18 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] thermal: core: Check correct temperature for thermal trip
+ notification
+Content-Language: en-US
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20230922192724.295129-1-nfraprado@collabora.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20230922192724.295129-1-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,34 +80,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-25 at 08:44 +1000, NeilBrown wrote:
-> On Sun, 24 Sep 2023, Christian Brauner wrote:
-> > > My initial goal was to implement multigrain timestamps on most major
-> > > filesystems, so we could present them to userland, and use them for
-> > > NFSv3, etc.
-> >=20
-> > If there's no clear users and workloads depending on this other than fo=
-r
-> > the sake of NFS then we shouldn't expose this to userspace. We've tried
-> > this and I'm not convinced we're getting anything other than regression=
-s
-> > out of it. Keep it internal and confined to the filesystem that actuall=
-y
-> > needs this.
-> >=20
->=20
-> Some NFS servers run in userspace, and they would a "clear user" of this
-> functionality.
->=20
 
-Indeed. Also, all of the programs that we're concerned about breaking
-here (make, rsync, etc.) could benefit from proper fine-grained
-timestamps:
+Hi Nicolas,
 
-Today, when they see two identical timestamps on files, these programs
-have to assume the worst: rsync has to do the copy, make has to update
-the target, etc. With a real distinguishable fine-grained timestamps,
-these programs would likely be more efficient and some of these unneeded
-operations would be avoided.
---=20
-Jeff Layton <jlayton@kernel.org>
+On 22/09/2023 21:27, Nícolas F. R. A. Prado wrote:
+> The thermal trip down notification should be triggered when the
+> temperature goes below the trip temperature minus the hysteresis. But
+> while the temperature is correctly checked against that, the last
+> temperature is instead compared against the trip point temperature. The
+> end result is that the notification won't always be triggered, only when
+> the temperature happens to drop quick enough so that the last
+> temperature was still above the trip point temperature.
+> 
+> Fix the incorrect check.
+> 
+> Fixes: 55cdf0a283b8 ("thermal: core: Add notifications call in the framework")
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> 
+> ---
+> 
+>   drivers/thermal/thermal_core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 58533ea75cd9..120fcf23b8e5 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -361,7 +361,7 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip_id)
+>   		    tz->temperature >= trip.temperature)
+>   			thermal_notify_tz_trip_up(tz->id, trip_id,
+>   						  tz->temperature);
+> -		if (tz->last_temperature >= trip.temperature &&
+> +		if (tz->last_temperature >= (trip.temperature - trip.hysteresis) &&
+>   		    tz->temperature < (trip.temperature - trip.hysteresis))
+>   			thermal_notify_tz_trip_down(tz->id, trip_id,
+>   						    tz->temperature);
+
+We already did a try to fix the thermal trip cross notification but this 
+is not sufficient for a full fix.
+
+We are receiving multiple notifications from the same event, all this 
+due to the hysteresis.
+
+Let's say, we have a trip point T and a hysteresis H.
+
+There is a trip point crossed the way up when:
+
+	last_temperature < T and temperature >= T
+
+At this point, we send a notification
+
+Now, the temperature decreases but it stays in the hysteresis:
+
+	last_temperature >= T and temperature > (T - H)
+
+And then, the temperature increases again and is greater than T.
+
+	last_temperature > (T - H) and temperature >= T
+
+We send a second notification.
+
+With the mitigation kicking in at temp >= T, we end up with multiple 
+events 'temperature crossed the trip point the way up"'. That forces the 
+receiver of the events to detect duplicate events in order to ignore them.
+
+More info:
+
+	https://lore.kernel.org/all/20220718145038.1114379-4-daniel.lezcano@linaro.org/
+	
+We have done a lot of cleanups to use the 'generic trip points' and 
+remove those get_trip_* ops. So the trip point structure is a core 
+component being reused by the drivers and registered as an array.
+
+Next step is to make sure the trip points are ordered in the array, so 
+we can implement the correct trip point crossing detection.
+
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
