@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0FC7ADAE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD57ADAE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjIYPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
+        id S232516AbjIYPGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjIYPEg (ORCPT
+        with ESMTP id S232134AbjIYPGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:04:36 -0400
-Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1ED2103
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:04:29 -0700 (PDT)
-Received: by mail-ej1-x649.google.com with SMTP id a640c23a62f3a-9a681c3470fso520551966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695654268; x=1696259068; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=STVyCq0Z9CufVRuINVHUuC/ypT8+q7NNtSadYInOtW4=;
-        b=ctpBL/1MdXZGWRF2Kk2lWUh5PkmjgwLrz6aoBCJo/aQtWjR3+5nHZmhLZnh/bppn/w
-         W3TXczLgW1ZUXih+uN+0DsMjmYMKNg0TkU1hgmEzlFepKoixlVo37tDcsb4B0aJqcO6V
-         bZVJLkIEbbvfCk4tnx75ycaa8pyYtFcwRc0N0wPkUgA5Qa8Oj1QH8Fzd/AgwfU/I2alD
-         lqAPQlkISJzKqeJ5iZUsEw+Yf7D+pAt2VQT4b4Y+mINZgTZuOHMLqcUn4wcMxfySawBN
-         ijD2de6eU4LWTJNjrRA7VaKM75JW15aayjSzRREUxEpi/rCU4Mdz8PXAXiGrEwMH/L/5
-         ts8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695654268; x=1696259068;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=STVyCq0Z9CufVRuINVHUuC/ypT8+q7NNtSadYInOtW4=;
-        b=vM9ac1DQbULkI2svPqTsQGQntyCwtzG253YPUpFaolC/1BjHuXDzsD7IKTwnBIXLVB
-         nngUPEbFpoPwe8MthTThUox+XnXmfN+6NwtayO6EwZl0ezsfqW170xa/+2H1KeukoHLG
-         56SAKC6l229zRf8kxwVxFsJjZjr6f+Z/XADWfcGs3Pf4suDyuqMjr49Xx/1WUZbNrE/R
-         dog3nOERgPnlf22+gUL8XG+jHo/14RV/1xCS8sD87aKQjjj8/6YjeBLjprs8sT54Jjtk
-         2zBUBES8B7QPL6PxOtIkPEPFz6EIPS45qBRphTAlBhkXpPl9hQIIoaaWgfNCSj3he/80
-         +BzA==
-X-Gm-Message-State: AOJu0Yw9dY2iDkt8jQiKv0wr4zpoPTSWl4iqvyyDF2tq9aAJL0SEHdmG
-        OPS03lr8+R17IG9kYTZdF9Bid4D+RwshQQc=
-X-Google-Smtp-Source: AGHT+IH7Na/bTQRJPh5OVjpPoU8+J4wtAuLH0qHTCMReqZ7k5fdQVXk3PGAPOoKxQk4F2zSDDAx/nTy11Ol/0YM=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a17:907:3447:b0:9a9:dffb:4c6 with SMTP
- id ac7-20020a170907344700b009a9dffb04c6mr25326ejc.10.1695654268118; Mon, 25
- Sep 2023 08:04:28 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 15:04:25 +0000
-In-Reply-To: <969eab7f-ad40-0dfb-18b9-6002fc54e12b@proton.me>
-Mime-Version: 1.0
-References: <969eab7f-ad40-0dfb-18b9-6002fc54e12b@proton.me>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230925150425.1963183-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of `WithRef`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, walmeida@microsoft.com,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 11:06:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E50101
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695654388; x=1727190388;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=KUWjDSlWrX8xWrBc85JL4lN5tIVKXcw3qOJlVcn0cnY=;
+  b=Vlihd15HmqZM3o9MI2UMCCheYUX9nFJ/S4371nBIWXD3JDTHpBHNKkeE
+   r1ZOIfAQJ+EePNHlwulIzLe8/9OooUxeE6PWXW3QpxjhZsGtlBu+CMOgJ
+   vupRj9r7BKrUjtZ9eGbE2PZDyO1ntAYiMNwtrjYTZEj9VXx7wfiu/6Bgs
+   bpBHHiV+9gwJh6DTDnEsXdnXk02lJxbJsr6ZF4YGSImMq4RLOoZXPfNRS
+   N96GKqN6pvp63x3BBsJL4luH9bUThbApkjNzDal4soHeH29fhDZXGcPB3
+   TTIfburwHmiUIdee4grQuVnNRI1+CG4msKIQwGLkG5cnyUSNM83ZFdDaL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="366332911"
+X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
+   d="scan'208";a="366332911"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:06:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="741950756"
+X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
+   d="scan'208";a="741950756"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 25 Sep 2023 08:06:25 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qknAF-0001dV-0j;
+        Mon, 25 Sep 2023 15:06:23 +0000
+Date:   Mon, 25 Sep 2023 23:06:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Liming Sun <limings@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        David Thompson <davthompson@nvidia.com>,
+        Vadim Pasternak <vadimp@nvidia.com>
+Subject: drivers/platform/mellanox/mlxbf-tmfifo.c:148: warning: cannot
+ understand function prototype: 'struct mlxbf_tmfifo_io '
+Message-ID: <202309252330.saRU491h-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> I'm concerned about this change, because an `&WithRef<T>` only has
->> immutable permissions for the allocation. No pointer derived from it
->> may be used to modify the value in the Arc, however, the drop
->> implementation of Arc will do exactly that. 
-> 
-> That is indeed a problem. We could put the value in an `UnsafeCell`, but
-> that would lose us niche optimizations and probably also other optimizations.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6465e260f48790807eef06b583b38ca9789b6072
+commit: bc05ea63b39420fd561dcffba00753da90338ea8 platform/mellanox: Add BlueField-3 support in the tmfifo driver
+date:   10 months ago
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20230925/202309252330.saRU491h-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230925/202309252330.saRU491h-lkp@intel.com/reproduce)
 
-This is an option. Niche optimizations don't matter for `WithRef` since
-it's never directly wrapped with `Option`.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309252330.saRU491h-lkp@intel.com/
 
-> > It also means that we
-> > can't convert an Arc with refcount 1 into a UniqueArc.
-> 
-> I think you still can, since to do that you would consume the `Arc<T>` by
-> value, thus guaranteeing that no references (and thus no `&WithRef<T>`) exist.
-> So I think this would still be fine.
+All warnings (new ones prefixed by >>):
 
-The problem is that if you have an `&WithRef<T>` and use that to create
-an `Arc<T>`, then the raw pointer in the `Arc<T>` was created from an
-immutable reference, so the same restrictions apply to that `Arc<T>`.
-And if you convert it into an `UniqueArc<T>`, then the same restrictions
-also apply to the `UniqueArc<T>` because it's raw pointer was derived
-from the immutable reference.
+   drivers/platform/mellanox/mlxbf-tmfifo.c:72: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_vring '
+   drivers/platform/mellanox/mlxbf-tmfifo.c:118: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_vdev '
+   drivers/platform/mellanox/mlxbf-tmfifo.c:136: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_irq_info '
+>> drivers/platform/mellanox/mlxbf-tmfifo.c:148: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_io '
+   drivers/platform/mellanox/mlxbf-tmfifo.c:172: warning: cannot understand function prototype: 'struct mlxbf_tmfifo '
+   drivers/platform/mellanox/mlxbf-tmfifo.c:198: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_msg_hdr '
 
-Alice
 
+vim +148 drivers/platform/mellanox/mlxbf-tmfifo.c
+
+   141	
+   142	/**
+   143	 * mlxbf_tmfifo_io - Structure of the TmFifo IO resource (for both rx & tx)
+   144	 * @ctl: control register offset (TMFIFO_RX_CTL / TMFIFO_TX_CTL)
+   145	 * @sts: status register offset (TMFIFO_RX_STS / TMFIFO_TX_STS)
+   146	 * @data: data register offset (TMFIFO_RX_DATA / TMFIFO_TX_DATA)
+   147	 */
+ > 148	struct mlxbf_tmfifo_io {
+   149		void __iomem *ctl;
+   150		void __iomem *sts;
+   151		void __iomem *data;
+   152	};
+   153	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
