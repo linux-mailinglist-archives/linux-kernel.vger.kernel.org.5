@@ -2,90 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 986BA7AD928
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F49F7AD92D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbjIYNbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        id S231293AbjIYNbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbjIYNbO (ORCPT
+        with ESMTP id S231956AbjIYNbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:31:14 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFA010E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:05 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d7ecdb99b7aso7242335276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:05 -0700 (PDT)
+        Mon, 25 Sep 2023 09:31:22 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D7F139
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:14 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-578a91aca06so4986241a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695648664; x=1696253464; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1695648673; x=1696253473; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dx0cuMZ0YuASpvGCtMLSsLnfXajgyvJdGZMPWwTyE+c=;
-        b=r4OVMyU1a2PKN/56wKaO2/1r2JM85Q/J6xX3Nkj1kLJrGG+uYy98pQ1Us0jYhJ1wiH
-         I9ncWWJHw3R2BPSrN91MmTzrQwqC4PvW4v4DJF9n8/wjlQ8x93Kyh1CA/FB9tCnRQklJ
-         P8Gizf1zgIyDziTxPmXWp616XXkAa2XpllCzAonWuD+UVtIoLRg/YK0eihfb0FSn0Yk3
-         747TTuM2Pplt842KWmkO+Df+Jakpl9HhAq1q5WQAxaR+8zI7j2GIYk+cwTJdt3mjTFiA
-         EnMIR8UtjNwjzftCGCtCNB7lJ4BwMdinA5zj9+Ia5hMeQ9uBkJwxcSmUXurP16w42Lwp
-         x1Yw==
+        bh=ZmJTmtECk3UTpEd/PcXzUGGmidlRTD2ZKXvirZ79/Ts=;
+        b=pbMALBirw4CpLrzHlD/06L7U9fHjQm4D8U7M30OdVAYBd7fBWZJFO4PvcyQyqlzdtn
+         ONp5qrZKfEmkgUIQ/tvjCHVpQXro6mpT63lfoI2KvSCn01berGNQeaMT4hMgDq/m36+t
+         fNkWEFNwB2a8wKxqA+tYPnrqt+0g9RscPaU4kRRBnaV5CN816tLBXGIGqct9eiNdhP2O
+         UVljwcj1K8NN9BwM/ZgtN2iLsH74TyEDEgGHc+2X6LkfxKYUC1iwvDYuvUgjy/B3eGMJ
+         tA9V1wCL9tUwD/MWbUAdaIrOjwm8LnxUt7k+Lios0PvK93Dng6ZLdkceIE9/+neAqRIX
+         wltw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695648664; x=1696253464;
+        d=1e100.net; s=20230601; t=1695648673; x=1696253473;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dx0cuMZ0YuASpvGCtMLSsLnfXajgyvJdGZMPWwTyE+c=;
-        b=gKICP66vVZqNpnd8MFsxOGmmCxj2uGDDEmye6ifcyZOK48xyttX/JA5Owa+BihxUPf
-         WX+FDBF5N7lwaCfZ/B20hwX7Enn43AXTZmmZorzOaLfNypRJdnIlWSgRVGJ14FfugZdl
-         rGNHCJvPse/s4JvZBop3f5mTSZ5dtwFVUhxu3xW9I2y1ayt6Zebm/dgn5b9VQ6856Jxb
-         XQFHfGv5hFkgvvLPvP8xl7RM3nX8T/WHrlR1nF9RigNlQvUdOcz/tHagPxbYNve1+ynl
-         MSg9tjEpRBtfIjm46aSOE4A1eAcd0zjipLL24cogfhPyBLKi9l1dC4PN+A9CzsfGtv2G
-         FCPw==
-X-Gm-Message-State: AOJu0Ywse1uJdmlPoBbBeOxRdGktEwLOIQ1TYwr/KXVpbGvR8h+xn3bH
-        oRbbmtkhjFHg+NGuEexui9uDP43fGly1wHDW0SFgGA==
-X-Google-Smtp-Source: AGHT+IF4T3RldjnrswDnLCdW2zO37YsRTW+jRjJz/sEOlYabku9rVj0hZiONpvJLKYsrMU2Ba0Eqic2BQlyBd/mmnVw=
-X-Received: by 2002:a25:6b45:0:b0:d80:1441:9010 with SMTP id
- o5-20020a256b45000000b00d8014419010mr5402395ybm.26.1695648664346; Mon, 25 Sep
- 2023 06:31:04 -0700 (PDT)
+        bh=ZmJTmtECk3UTpEd/PcXzUGGmidlRTD2ZKXvirZ79/Ts=;
+        b=oHGa7a7+am6/VRXXsd3Dt24hLfqnpTnMFtKZZAmGGdky2jor7ZHnPszYpE3uOEQs1f
+         cmXTflt8F6DlQUdDbn2ls7yOth5y+4OpINHzyUO+gsZgWJQ1eE/n6lIRD13wjyeMIIhz
+         cvpqqa5uIMLLMFILK27BCmjFIByNUriTnaPRa08nSf++zdLHjHCHFVp3kRhVjGuC9Pu5
+         WwwHoiSjZLGnO6YXXNcWOkP/XpA0PCoR2Sq6oMbTQe0ljXiglsOc1dgkOYCw2LFbw0df
+         fYzCUGtMPhPRaDM7N6SFzPCmnK1FP1O0w5OQlVGIW6lXJywS4CigAqhOsE5PaneUoLqS
+         RnPg==
+X-Gm-Message-State: AOJu0YxpJidiVeGtj+4Y5svxnXiMm6Gk2chBvgGrKew8iUfjCKjw7T3T
+        FPi9xRk3tSGIvP9/J7mkfLsw7zAcewTK2/mQBYQUJg==
+X-Google-Smtp-Source: AGHT+IGGvck9YMKSdm9ezUm/4fp6J691a817X3hV3Hdc5HpIvnPCHDNYUHsrRSX8zcRkK2XQ4QU/TA/mW0tBlTBxlcw=
+X-Received: by 2002:a17:90b:4a4b:b0:26d:49c8:76d8 with SMTP id
+ lb11-20020a17090b4a4b00b0026d49c876d8mr5801013pjb.18.1695648673541; Mon, 25
+ Sep 2023 06:31:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZQs1RgTKg6VJqmPs@google.com>
-In-Reply-To: <ZQs1RgTKg6VJqmPs@google.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Sep 2023 15:30:53 +0200
-Message-ID: <CACRpkdbuOn4gKBE-tB4MHQ3mx_ujQZLdPp1hp75ANFgsGb1jQQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: avoid unsafe code pattern in find_pinctrl()
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230919035343.1399389-1-apatel@ventanamicro.com>
+ <20230919035343.1399389-3-apatel@ventanamicro.com> <20230919-3a8fcdaa86607d0ff8399132@fedora>
+In-Reply-To: <20230919-3a8fcdaa86607d0ff8399132@fedora>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Mon, 25 Sep 2023 19:01:02 +0530
+Message-ID: <CAK9=C2Wgt69Tj1U-e2eyVrpC+=JaApuKYEx56JbGJRuHn3N5gQ@mail.gmail.com>
+Subject: Re: [PATCH 2/7] RISC-V: Detect Zicond from ISA string
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 8:09=E2=80=AFPM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
-
-> The code in find_pinctrl() takes a mutex and traverses a list of pinctrl
-> structures. Later the caller bumps up reference count on the found
-> structure. Such pattern is not safe as pinctrl that was found may get
-> deleted before the caller gets around to increasing the reference count.
+On Tue, Sep 19, 2023 at 12:57=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
 >
-> Fix this by taking the reference count in find_pinctrl(), while it still
-> holds the mutex.
+> On Tue, Sep 19, 2023 at 09:23:38AM +0530, Anup Patel wrote:
+> > The RISC-V integer conditional (Zicond) operation extension defines
+> > standard conditional arithmetic and conditional-select/move operations
+> > which are inspired from the XVentanaCondOps extension. In fact, QEMU
+> > RISC-V also has support for emulating Zicond extension.
+> >
+> > Let us detect Zicond extension from ISA string available through
+> > DT or ACPI.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 >
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Same applies here w.r.t. splitting in two.
 
-After some thinking, applied for fixes and tagged for stable as
-it is a very real problem that can cause random crashes under
-the right circumstances.
+Okay, I will update.
 
-Thanks for finding this Dmitry!!
+Regards,
+Anup
 
-Yours,
-Linus Walleij
+>
+> Thanks,
+> Conor.
+>
+> > ---
+> >  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
+> >  arch/riscv/include/asm/hwcap.h                          | 1 +
+> >  arch/riscv/kernel/cpufeature.c                          | 1 +
+> >  3 files changed, 8 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/=
+Documentation/devicetree/bindings/riscv/extensions.yaml
+> > index cad8ef68eca7..7ea90e2dbc5b 100644
+> > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > @@ -225,6 +225,12 @@ properties:
+> >              ratified in the 20191213 version of the unprivileged ISA
+> >              specification.
+> >
+> > +        - const: zicond
+> > +          description:
+> > +            The standard Zicond extension for conditional arithmetic a=
+nd
+> > +            conditional-select/move operations as ratified in commit 8=
+fb6694
+> > +            ("Update Gemfile") of riscv-zicond.
+> > +
+> >          - const: zicsr
+> >            description: |
+> >              The standard Zicsr extension for control and status regist=
+er
+> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hw=
+cap.h
+> > index b7efe9e2fa89..15bafc02ffd4 100644
+> > --- a/arch/riscv/include/asm/hwcap.h
+> > +++ b/arch/riscv/include/asm/hwcap.h
+> > @@ -60,6 +60,7 @@
+> >  #define RISCV_ISA_EXT_ZIHPM          42
+> >  #define RISCV_ISA_EXT_SMSTATEEN              43
+> >  #define RISCV_ISA_EXT_XVENTANACONDOPS        44
+> > +#define RISCV_ISA_EXT_ZICOND         45
+> >
+> >  #define RISCV_ISA_EXT_MAX            64
+> >
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
+ure.c
+> > index 3a31d34fe709..49b6551f3347 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -174,6 +174,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
+ {
+> >       __RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+> >       __RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+> >       __RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
+> > +     __RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+> >       __RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
+> >       __RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
+> >       __RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+> > --
+> > 2.34.1
+> >
