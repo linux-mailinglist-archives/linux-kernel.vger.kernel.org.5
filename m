@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 023BC7AD687
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DE27AD68A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjIYK5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        id S229511AbjIYK7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbjIYK5f (ORCPT
+        with ESMTP id S231226AbjIYK64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:57:35 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EBFDA
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:57:27 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ae75ece209so566959266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:57:27 -0700 (PDT)
+        Mon, 25 Sep 2023 06:58:56 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABE6192
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:58:39 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5334f9a56f6so6647415a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695639446; x=1696244246; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BnAAhfoYruyD394fjKRaDPqkZa0mFeKHrn6AwAJI6Tc=;
-        b=Z1rl6IfjbBStqA++k+n5TKMVhv4ac1WgpKIcINMsyyXBQIzlpKdplMVWrU3+dO/qpE
-         o3GH7p6m3GwADvAOM9WS00MU9mSMOF85It74YHbpCJJIg+DU3yvGfj5KXQ6qe1x3V7R7
-         s8UaQV9zwO4hgQg4m1bp4alKlGlEbfZHjK2Et80CoQ0ElM8HofpKIgSQU5jN1lIDoPF1
-         0O5LVPX4T3A7qGomEbh7Dm2GqRpMVYL0RRTekiTvomLkEB4Lsdy1k514rjQ5dT+PsrZc
-         CuO6a5wK0+xOq8VEJMYMaAp6GuOOkLF2VSAOsrq0B0r7BGKnimSANLYd2E9LkdfInyFL
-         z7Jg==
+        d=linaro.org; s=google; t=1695639517; x=1696244317; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=tiTROYF3AfFrBmjQFXrAqpJSodgoRsdidpAw5hshkTU=;
+        b=FLKl2V3vmobbEixJUCh0DehmgdkiLELyjAbAvleH3+eGbPMxLbPzIm5sqpjnRndZg1
+         MLYOcT/8baEtESE+X0OhKKX/sQUOQScpVvES3jyzXCMGGutDqNNoX5t3iMfL6sab67Uy
+         grP5gG//L8ngJs8ykPU0mG+8GMCHsvmmdsGE1dwE7c8BMzMybeq2gIRWDxp4vh0Hu0/I
+         pJZx9Z16FQQLcTquRrX4Z3RFrPu4lMI09+zLxOEFHcYLr0tEZvJupXlZPQsWHGBkxh8X
+         5sD4Ymink+ALwRwrw6/ZUVDWE3bjWTtcOdCM/fPRo/d74ww2qCElQXaSejK9PXYpDLaJ
+         zhFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695639446; x=1696244246;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BnAAhfoYruyD394fjKRaDPqkZa0mFeKHrn6AwAJI6Tc=;
-        b=R1PTO2c0RFMNfCCq6FJWBORLQlDtwvzknqgBsauEUJPnWcC8Z1XscnO8v/YUssc89G
-         YGDIQg50HJToMHfcHH6zHLKO+3nQSucdouEVUpI0kzzeBV8KIDcplSj0ENIg0BooEbxA
-         70jG3Ha4jOPcpxbbjiTfuyqsHYAQXWh9I8yffI18QnstazaDyRVx1aL0mZaWKb0jwG2d
-         5O6eeLoPIOAKGxNfoVEcamLjmOf4xkhrxBJvKpD0+nMLF4oBo6CPb06VlfiUuAj0tNNN
-         Ys46cd+D3iH5SIBrPlzgQhTJvBuqcRxoW91uvjf5/aXyXRq/e8zDrvc60SBuvRMKkPG6
-         wJtQ==
-X-Gm-Message-State: AOJu0YzrfmOWDUqaFLVnylyF+L9lHw2ty4XQzpFLHOlCDGUuYYA8ibhB
-        ZGabi5R4481RL9+LJSlgCLo18Q==
-X-Google-Smtp-Source: AGHT+IG1F15xbFHscKHKRV3WbAIyTcqu8JRFrpo2XrTc5Q5Vvm/44wjKqk98GU5NEYjklPgGA7dvlg==
-X-Received: by 2002:a17:907:e92:b0:9ae:50e3:7e40 with SMTP id ho18-20020a1709070e9200b009ae50e37e40mr7306548ejc.52.1695639446232;
-        Mon, 25 Sep 2023 03:57:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695639517; x=1696244317;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tiTROYF3AfFrBmjQFXrAqpJSodgoRsdidpAw5hshkTU=;
+        b=H6nFrwmZytAYHPB5IWucC3/41H9JpiwFTRKOCI1TlUBWSQSyXbQ2aEMAcL+HSLZn1O
+         4PCxTVfoHNm5aXXrEg4+LVZg7ftEXUkRSMd141/jUN03L9KdJa1HmfRTg+IA/ZW4yGii
+         7Q2N1kM67ScL3eYm+y7nPXW3ooHB9QI01WydFGE7s0kMOxynu+QG338eDv8CDlsePvWe
+         /0g839UPw2XpvRQk/3eeS2o4qeWpUvsHm5Sq2M4uLZ+AWr5qkY32NjwKz6j4FlDW7b65
+         NX19ICV6tkgfGx73aI5/MOCSvLzaVMwymG65UEZd3/JiuLhaxtqp8HWnc9VcJmCZexgo
+         jIWQ==
+X-Gm-Message-State: AOJu0YzJ0yvDkip/cG1X3PkgPyqTXk4F7uK5BW7U0IBX4KqCOe6qWZNB
+        irLLaUOBKfDeo676w5kI6Eq9JA==
+X-Google-Smtp-Source: AGHT+IF4gmtwCV/DJZX7wQ3igBMhnDs1k843Cr+1i4Its1jXiSjTaCKZiPsBP0dbK9WpkYc5jNaQqQ==
+X-Received: by 2002:a17:906:cc4e:b0:9ae:5a9f:6a9f with SMTP id mm14-20020a170906cc4e00b009ae5a9f6a9fmr4978421ejb.52.1695639517106;
+        Mon, 25 Sep 2023 03:58:37 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id s14-20020a170906bc4e00b009937dbabbd5sm6146381ejv.220.2023.09.25.03.57.23
+        by smtp.gmail.com with ESMTPSA id s14-20020a170906bc4e00b009937dbabbd5sm6146381ejv.220.2023.09.25.03.58.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 03:57:25 -0700 (PDT)
-Message-ID: <0489cc26-b728-4460-be6b-6cfd401e6bff@linaro.org>
-Date:   Mon, 25 Sep 2023 12:57:23 +0200
+        Mon, 25 Sep 2023 03:58:36 -0700 (PDT)
+Message-ID: <e9334edb-bf2e-4dca-9752-14b2924763a4@linaro.org>
+Date:   Mon, 25 Sep 2023 12:58:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq
- support
+Subject: Re: [PATCH] arm64: dts: Add watchdog node for Amlogic-C3 SoCs
 Content-Language: en-US
-To:     Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
-        dmitry.baryshkov@linaro.org, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, jassisinghbrar@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     quic_varada@quicinc.com, quic_srichara@quicinc.com
-References: <20230925102826.405446-1-quic_gokulsri@quicinc.com>
- <20230925102826.405446-4-quic_gokulsri@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Huqiang Qin <huqiang.qin@amlogic.com>, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230925090641.1185942-1-huqiang.qin@amlogic.com>
+ <51470d7a-65a7-44c7-856b-53ca4b065553@linaro.org>
+ <bb20efd5-4f60-5ded-caa6-2c9c94a10a44@amlogic.com>
+ <235b17ef-b34c-4006-baa4-a1d4360dca16@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -112,33 +113,41 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230925102826.405446-4-quic_gokulsri@quicinc.com>
+In-Reply-To: <235b17ef-b34c-4006-baa4-a1d4360dca16@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 12:28, Gokul Sriram Palanisamy wrote:
-> Add the APCS, A53 PLL, cpu-opp-table nodes to set
-> the CPU frequency at 800MHz (idle) or 1.008GHz.
+On 25/09/2023 12:45, Krzysztof Kozlowski wrote:
+> On 25/09/2023 12:42, Huqiang Qin wrote:
+>> Hi Krzysztof,
+>>
+>> On 2023/9/25 17:33, Krzysztof Kozlowski wrote:
+>>> This is c3, not t7. Why do you use t7 compatible alone?
+>>
+>> The C3 and T7 use the same watchdog controller, so they are compatible.
 > 
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 40 +++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
-> 
+> I am not saying that they are not compatible. I am saying that different
+> SoCs should use the same compatible. Just like for every other platform,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Eh, missing "not", so "should not use":
+
+I am not saying that they are not compatible. I am saying that different
+SoCs should not use the same compatible. Just like for every other
+platform, Amlogic is not special here.
+
+> Amlogic is not special here.
+> 
+> https://elixir.bootlin.com/linux/v6.6-rc1/source/Documentation/devicetree/bindings/writing-bindings.rst
+
+Please define compatibility list with t7 as fallback.
 
 Best regards,
 Krzysztof
