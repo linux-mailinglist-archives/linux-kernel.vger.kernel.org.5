@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0EF7AE233
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EFD7AE234
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbjIYXZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
+        id S233496AbjIYXZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233467AbjIYXZM (ORCPT
+        with ESMTP id S229501AbjIYXZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:25:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BAA101;
-        Mon, 25 Sep 2023 16:25:03 -0700 (PDT)
+        Mon, 25 Sep 2023 19:25:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE68136;
+        Mon, 25 Sep 2023 16:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695684304; x=1727220304;
+  t=1695684327; x=1727220327;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=ES8wX734WzB2K/7mAcxRSDDkKSkDDqSKRHQYSjX1rNE=;
-  b=VYYnRJiRq1EH1F+oqzZtUkbNEhfkiaSkvfk3rk55GO3ig8++siSmHZTa
-   UXsOcPMBAO5FvxT2BUE9uLqJMeE0lm+JdqRU2oBykW9Nl2XsLJiHHhpAg
-   pMjY24TUgjauECwX6ABCKfemVEBidUPnJnOUBguJJvTZfa78U9D5K0s7Y
-   RwWCG1Hnx8YrMTGOAn4lW5OURSaaHOk69lj8zBWSCbvAK9g4L21Y+fiZs
-   79LK0dY38bFFV5cwcyhRsBk2F2K8V353AldDaQ+qOtZsqAekZ1JruKTAj
-   KszlEgWnva/uXzoKHMyPqWvWD5TCXPEEfGHZn5F1r4dvaYCGNRKuBepyE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="385284511"
+  bh=LFlk+Vo3ZML/6LDqQHG1AHIXBd4dKU9WCLK1kbEBReM=;
+  b=hCbexrc1QPEgzxBmuQmRjRq+8eKBmyKcdemtR9ZnZyV91s9CJFTEy+SX
+   6hG1TbGzcls1Kng1V+XJpxxAglQF/YBkAij4QvG9PVUdSNZAh7bq6qkjO
+   5mBGZ1oQXv5fHVHWPFck+3Akgs7zObulxGgROxir8vH/skHxDu6oBVLaW
+   7yyAv8lHowpGYYuGyAULGMhLVkEAG5sZ/us2pp2Eitwnnprz0vyO5Tbu6
+   sUuMzkkOvJ066j6f2BNWUGQt0zXPgWcSuDwABHZA7WF9AiM1rwMoP/Gvz
+   ohsrJCxgyPwTEcQoAO+5z8tuStkHvXxg8pqM3u67B1pfSPoKHGOrOUUdT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="384215865"
 X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="385284511"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 16:24:27 -0700
+   d="scan'208";a="384215865"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 16:25:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="783733892"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="995595596"
 X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="783733892"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Sep 2023 16:24:18 -0700
+   d="scan'208";a="995595596"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Sep 2023 16:25:26 -0700
 Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 25 Sep 2023 16:24:18 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 25 Sep 2023 16:24:17 -0700
+ 15.1.2507.32; Mon, 25 Sep 2023 16:25:25 -0700
 Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 25 Sep 2023 16:24:17 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ 15.1.2507.32 via Frontend Transport; Mon, 25 Sep 2023 16:25:25 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
  by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 25 Sep 2023 16:24:16 -0700
+ 15.1.2507.32; Mon, 25 Sep 2023 16:25:25 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EzyO0CvfBqCbKh0Rr8lArZsslhBPfL7dh8UxfnSdTQWEESjfqh89ffCid/IzO7TTHHYtndoZxFYa5fRLnHjScUnXW/+Cj9vnpY5f2vyEP/kDtFUDdodA4iadk7Ist0lzCmVdWYbF0K3HInDAqHB4YMBljzA/BnB/32+Otp0NpJKGvV6ckaeCECkcGStmoPwA13GZ4+BVNog9afWbbBv7bvbpI/3O7ZZ5pbobDZ4/uqzc1VoJel7sI7ZEapGNnGZLrG8MQZafx5XBugoThwU7mlBT1e0Mng7fZD8Cp2exdUnUuvxMeCmr+mNstRQsuJ2t7K1I5eyKdlLRtNX6gsq2pA==
+ b=cQVfe0CpiSW0mKxUCqhUEjlcJJCyRQo3LmpSh/+AX4bVyiLb4wMP6v9aIGilyP04RWWYqpkQzpfxFFcvy/pQhUvAgB1+B+j+f1aAQywhTH8m0S+BhnkNINi2EfZT5LDOaGTnl/T35XLv2FR/2b67MmzwTWabhnfrsW2Ib6KMrlzfXM8cuvp0Po5gexXi/kA6XYuv+jGBq0byCv1OiwMW0mogrwXjJFqVKAth7uwt4lq7TU0O7WnO9C1eFeV1SJZZ4mvKx9Wi5BPj6FG2L1l5L2WS0HDEkSlB70gAukmEpRh/Ze5AI/lEq0ESSiwJLdyJ6i2azF0Shuy+gV3sU+glew==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RsPFRaXe9hMkQwqxWo5owtEKkEDAor+WIvsGdkJQlBI=;
- b=PAsBDX93WBfVXhVUSs2aZyhZzXQclyAV1C5SYZJ40epr77fNf5Bpn4TXRQPO/NohSo11PP3WQjWH4YRsHIjShcm5yFM7R80fv7LNRckVC/KoN2IbkJBzlsOzWpDWQxJ1sZqOs/WI83UsG2qgkx1udn0QfChOdJ5f/iTDpQEPB0MlAgr15UQuJ9u/gaIX/c0UoO7PADZBVvDRkvOx4DlP8YaArwhS8OkB29iRseVCPIox4Dy8v1jztc1yJIGNTlkH3TPfxNRgrNOK2WB3MJHpvGWvQ+Ew21fVXr0LdsN4QhMipOBfljEsOjdu1qk51dkh/R6o84Oo3XESiOL5XlFWZA==
+ bh=Iml24Va7oHlaBZ3+9J601+x2oVYTtyV190dsObV2EXo=;
+ b=WaUkJFAZIarz/MAdEy6whBWeth6Bviq+CZdyv1DLj/3u6C8KxwqQl1cgEi2dacHXaAiKcn6rPaqRFa9rujMY9yrz+fBBIA7cB7yejoamFJDefR91Hvtp9vL26XbbNBQobZAK6ToWf55TSq9mkhNSrp1prN8Yg4Bf1gjonvEdY0RWHDMqx8ukxdaX2ftddYDC1yqPO8gm3KmNtkRPvBVPieY+Xns5m36qcng9QPHfi9PZvppd17bcR/H7tp2uV1k5XJnkz+9uq2L2AKzyY/i1EhmojyUa2YzgsSmZWOmgD5RTS6JgZt9Af9yW6TeuRiIjWDZYoTA6FP5PvYT6y4K7rw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -71,22 +67,21 @@ Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
  by PH7PR11MB8033.namprd11.prod.outlook.com (2603:10b6:510:246::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 23:24:13 +0000
+ 2023 23:25:18 +0000
 Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
  ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
  ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Mon, 25 Sep 2023
- 23:24:13 +0000
-Message-ID: <34671424-8dc5-3937-3779-8a8e52f47904@intel.com>
-Date:   Mon, 25 Sep 2023 16:24:10 -0700
+ 23:25:18 +0000
+Message-ID: <5f1256d3-737e-a447-abbe-f541767b2c8f@intel.com>
+Date:   Mon, 25 Sep 2023 16:25:15 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v5 2/8] x86/resctrl: Prepare for different scope for
- control/monitor operations
+Subject: Re: [PATCH v5 3/8] x86/resctrl: Split the rdt_domain structure
 Content-Language: en-US
 To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
         "Peter Newman" <peternewman@google.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        "Shuah Khan" <skhan@linuxfoundation.org>, <x86@kernel.org>
+        Shuah Khan <skhan@linuxfoundation.org>, <x86@kernel.org>
 CC:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
         James Morse <james.morse@arm.com>,
         Jamie Iles <quic_jiles@quicinc.com>,
@@ -96,76 +91,76 @@ CC:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
         <patches@lists.linux.dev>
 References: <20230722190740.326190-1-tony.luck@intel.com>
  <20230829234426.64421-1-tony.luck@intel.com>
- <20230829234426.64421-3-tony.luck@intel.com>
+ <20230829234426.64421-4-tony.luck@intel.com>
 From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230829234426.64421-3-tony.luck@intel.com>
+In-Reply-To: <20230829234426.64421-4-tony.luck@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0186.namprd03.prod.outlook.com
- (2603:10b6:303:b8::11) To SJ2PR11MB7573.namprd11.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0327.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::32) To SJ2PR11MB7573.namprd11.prod.outlook.com
  (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH7PR11MB8033:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38641db9-7aa8-4a83-92b2-08dbbe1e874e
+X-MS-Office365-Filtering-Correlation-Id: 2ddb2cd4-f44e-451a-5fe5-08dbbe1eae01
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rsQGjjkiENzg0k2HtQFB9MQOAhOh3cYji3T7H2cYffo6QR+Pod7lUHXo/LP+hXLWivNb3VyQ9QQw+PTiEdW1T6HfJKDdXPpyCOA8EWQNKrkLwk11jEeuHXQxkyOQ3o6r5l/9C4AY0S9gCAarULuX7I33wSg+MN1Fnx+mN0CcmGxs7c0qXeiwSnmhh9qRj9ln3aLoxle2dHzdL/yIg08zHlT8b7/u54e2g/qAA/uLlO+lPRpYs1B/eiQ6B3eMfc2HGQUEbFh8SqGIw/nWwMSrrORlrhOODGZ9CpwXQdpLi6yCbROawAhWIz9ouc8GwBeHdE/LOPhrc+W98YI1kuvTLbZpRuEj6cvwl1D710eRoJUGxD5UuWBDa0aSO22WVA0CL3o+8LE5ql9tRVayzXWdF0QgjP9cnJDNnoyW9fNNF/av1bsI+j+NYcdFmqa4jXVA0V2yUHFyM1rydHWWeOiyGDBzt8Fse1VnYd4A2wBi4ckNElx9/VWNIMmiTvQf/UmTxHZrOBPeaXOPezptOBzGq7uooBLWnu57Ipq8sbQLOfWpAYA+mwWVvGFT0+BYvvQSn2bZ7+vOvMa2iq++EdyFAhyrBVYq0NV6w9fPngpNTBoI/wFLQI5UZaGjCoPv0KjBwlm5DxgAH5z1SHNYCJR1cA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(30864003)(31686004)(2906002)(7416002)(5660300002)(110136005)(66476007)(44832011)(66946007)(66556008)(54906003)(478600001)(6512007)(53546011)(2616005)(26005)(6506007)(6486002)(4326008)(8676002)(8936002)(316002)(41300700001)(83380400001)(82960400001)(31696002)(36756003)(38100700002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: f/Uaz2BA54+MfZvtVtcBMlqpPAY3FU68Fn/zsRFl1PpffJZrg7IsFS2lpymHzjm77eQfoewXIR6HCUCdpfHQYSi59nn1Kg5JmoAsk4voManvrmfw2X0l+5INw10ti1NnIbkSVzzEq5GxMfsBm2TVRTpvEeNbF4Dx2+s3dGP0+uY5uvzOpumRC4h7xZCRwGgg1P/7jBgtB5bWvtVBxKj+rS6trLQ7q36U0SeMaGVsoLSKmLLKzQs2GwE2A15xy8Jlh19K+PyoI3G2Wmr+BjyzLRxrKyqUd9rieFfGIJs55qFjOtL7Itd4aMBIuBmlvK2YNCM2J+RXwolnBm9MaUTQzuhWsWPu/oPNPWfF/E42mWKYOXO//MSLKDX96ax9JeFKmxwbDcaM6sPnfCvu6swcH8fdcJASUmftBKfgNemTZ2xp+1Fm0GKdhoSeBRgWV9TsCVCSjavUlH+fa8UKuO6zd9dsPs7IaWt1uUZm9tkl3Tt9ywdyyhgzuMdiDZZCQqtUsjqOBn/2JGutToPFwhsMpkgAcr0zHrxdpnOyK640/oxtxelWtV4uWkCrfKiwZdE4coMK9JeAZHxiX3paXvgLB/vR1XoeAZCmYnP9nAr8VNyJacS8uR3zVrYsCn8FgiBnpvWLcmXUymSdFRueuaqEWQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(31686004)(2906002)(7416002)(5660300002)(110136005)(66476007)(44832011)(66946007)(66556008)(54906003)(478600001)(6666004)(6512007)(53546011)(2616005)(26005)(6506007)(6486002)(4326008)(8676002)(8936002)(316002)(41300700001)(83380400001)(82960400001)(31696002)(36756003)(38100700002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3F3TTk5Z3hIWW5LQVUxeTVIM051akN6KzI5bWdFL3MzdzJheVFYQ1V0QVM2?=
- =?utf-8?B?Y3RCVGk5dWdJbWRidkZOdDBtaFk0aUNFbllJNEh2VWtsS2dzUnBoWnBOUDRo?=
- =?utf-8?B?anhjblp0dzJUdHVXL1F5VjFOUVBEWWxTTVp0bFJzdXdJQmJiRnRyNS9BeGJo?=
- =?utf-8?B?S0lWNkxHQ1VBSjRFL1VTcGNpdFpET0tua3dHUnVvN0VIMWt4WEpycWJ3Tlhh?=
- =?utf-8?B?R1VpNlpSMDhDeGRTSTBGTzRFbzFnb0duSFdnQXVicG4rQUpoMnB6N2ZUSGpG?=
- =?utf-8?B?MzJPVlp0cXhwZkI4M3UwUCtzTUxRUVVZeGhQSWMvdDhZMG5JM3hUMDRrUkFD?=
- =?utf-8?B?NUZUQW55MWg4OVJoby9iYVdIa3VjWTFYajAzNEJ6elJacUlTTmRXTFJVNkwr?=
- =?utf-8?B?RHJUM3FqNUs5UlJTdkF6cCtTSnVLTEdtVC91aG9lUVgzOWoyYm9meVpRU2Fx?=
- =?utf-8?B?QnRwbmdURzVna0wwVUp4R2gzTzZFdU9XN1ZmeDN5MC9odmk1MDFMVDYyUU50?=
- =?utf-8?B?RzlBc05jVFVGQUFUTGkxWFpGQ1hHQm84Z2RkL1J5K1NmUmh3S1d0Z0xsT1BJ?=
- =?utf-8?B?TXUvUmdTck9VUDVLcVJKdGExNi9xOHBCRXNKREY2R3ZEK0VRcmpEL1RTWXow?=
- =?utf-8?B?b20zRnh3aklPRzhDNXMwMzI2ajIydmNRdjJ1VWZ0ZllUSVkyUDdNclQ2QVNt?=
- =?utf-8?B?a0pBb1NLRURhckRaM3gvd1FlOHc5Rnd3ZnpVMGgzWFU0TkNSZ1RHdnRsSE1Z?=
- =?utf-8?B?Vkx5MHhzWm8vWXoxam43YlFVU0FOejhZSmxmcm1ZM1dvN2pHVEx6OFpsdEpY?=
- =?utf-8?B?UU1QbGl3S1dPWUVOdTVFc0E1ZlpjbjdCUUxTOE1sakkvamhRaGVBYlpEZ3N0?=
- =?utf-8?B?c3Q0RE9CZG83dU81NWVRdklDL0YrZU5iMVgvS0k4UWhtV1h2bW96ekh6YzJ4?=
- =?utf-8?B?VnJVaU80TGhINzVpbjRYRFJORy9tazFIL20vNHpZc3J5dCtWQjhZWGFqNXZK?=
- =?utf-8?B?ZEYxb0lHQnJ2NlpzUDNISEd4a29yeWVNT3J2ZUdGU1RxNUZ5b241bXRqTTRN?=
- =?utf-8?B?TXZGWTJDZERtNkQ5dG1uT1ZYZmNxRVg2dWhCZ0U1b1dHTG5zUmVYT3pHOElH?=
- =?utf-8?B?Tnd6UE5UUC9hUXRac1BRV0tGaTgzOE8rV01GaUhpMDNPQ2JLbXlucGg0elFW?=
- =?utf-8?B?N3NUMFBhdWNJblNHU1R3WlJ0RXl5ZDFDalJCV0MycGNaYmpXdnVaQ2piMGJZ?=
- =?utf-8?B?THNSMmFWeUNuQ1pKejl6Wldyc1c5NTRtS1lDUnU4SmtUNkc5b1VSeUN3QkQy?=
- =?utf-8?B?SU91NHllc2hwNkg4cEE0YVNTVFFWRUVxWi9VcXo2YWdOeFZjdFc3L2ZsY05Z?=
- =?utf-8?B?VnBVaTNHZlJwUllJM1huSmRwWjcrWVhHQTNYUlo5YWlDTDhXNEFZYzBGY3Jk?=
- =?utf-8?B?OVlDcmUzNG1hZTFGcFJoMkxUNzM5R3BOZlpJeXdwVTR4TFF2SEg3dm1oT0Rh?=
- =?utf-8?B?TktqcVI2aEhYbnlOMmdPRE9Ua2lURXRiOTdLUmw1OWlEVnlFdG00czMrYVlF?=
- =?utf-8?B?ZmRCNHBRcE9ta1BWQWxtKzNGQTVCMVlKR3V1NTNsMjNaREVLeC9vZHM4cVBw?=
- =?utf-8?B?RHVDaUFpMDdvcTZoWS9TQkNVZ2plaE1MVmZtRWZ6V3ZRUDFtOUkyRXd3RDBo?=
- =?utf-8?B?OW9pWU52emtvMkZmUlNKNUpaNXVYUndDd1dWOW5sTnFHRUZML3ZEdnJPamZp?=
- =?utf-8?B?dklVQ1oyUGFyeXRKRVRUaHBJM2F6bTc2THR6Tk5LQ3dDcHRZNGNCWTFRZ0ds?=
- =?utf-8?B?c25YOXc5U2JrekpSVlhIN3FMcjN4TXoxVkZMZ1lOYk9RR2pKeWNZYUxOMWpV?=
- =?utf-8?B?NFRLcm05MXhOclN2TlcrM3YrRXM1eXZFMWVEMXhES1R0U0VGT0hsNGtJVVN1?=
- =?utf-8?B?Q1lqbGNWQlNvM0ZwZ1BObnIzZnZiZFM0SDNYK3NtVFUvV1VvQjVWVnQwUFov?=
- =?utf-8?B?cWlQdmlEeEYxS0I5QTJTem9MZmlyY245WHgyNFJ5U1ZvUzIwb2k4SkRXaDda?=
- =?utf-8?B?aDhTazhIRjlwNVhwR3lTWXFnY2xEQS9SOWh1UXZPWE9FdjNMKzh1VGI0dWh6?=
- =?utf-8?B?dFRsUUViQVU3UEJUbU9qSDM4QXlNd1hIb21MSjhreW02dFJxS1FhbHA3UytE?=
- =?utf-8?B?MVE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38641db9-7aa8-4a83-92b2-08dbbe1e874e
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djhJdmc2VXNaVkRuR0doSVBRUXF4K3hQdWhia1h5RWgrZDBpSDJ1bGJkR054?=
+ =?utf-8?B?MlcvcUVCcUNZbzVXdENqWGpZNUt0SHR0cWpraTR3QllUY3c1QTlpR0ljdzFQ?=
+ =?utf-8?B?d3kzcEszWGlHSVNpSVQ4T2piZFhUZTl3eWp1dy8wbTN4WlNXeEhDZUhPeXlk?=
+ =?utf-8?B?MU50emp4YTQ0TWNTOXg4dXJyRFc5K1lmcFhpamdMQ29pVno0YWlsSVdtdVB2?=
+ =?utf-8?B?cUJKWHVrWnlzdk81SElJLzJzTEI4cUswMm40anR5V0dOTVpDM0ZPV1JPT0g5?=
+ =?utf-8?B?U2ZBVGR0aU5yRGRrcVQ0L2xkVFVZZmZQUExTYkpqZmdaZFZLTzVaRUhyTUpN?=
+ =?utf-8?B?MzFDdFNsWDFaNFZnbXl0VXZqQklLeTVHNUJiZ21hd1dsNmRHajcyK1k3bjRD?=
+ =?utf-8?B?UFI3K3VBWjJuaDBFL0RCRCtHWm9CRzVLK3h5THV3YW9QS3FaTDVseDdxSlJa?=
+ =?utf-8?B?NDRtWXdCQjZJdm8zYVl1cnk0NFVxTjY4ZGY0SW1uWnBGNExwMUFUYnVoZ0JW?=
+ =?utf-8?B?VmhHWEVVenNUVkVxUXhVdHBFMThJVEx3ZTZLWTdiY0xiN01VZjZCVnp6Vkt5?=
+ =?utf-8?B?MmMwM25OWXJWMTJEYzVxQVZTdVJXV3MzdVZvNDR1WWxjaDlGMVFaNzQ5TXdM?=
+ =?utf-8?B?TDZNRnMrb2xKY3Fwa2lZUVRtNmZmQlMzYisrUHlIaEg3cGNEMStLUTk4ZzJN?=
+ =?utf-8?B?ZVdxa09SbnY3dGdhTlR2SEU3aXF1SkZwUGhUdmJGaUxtVy9hTGVlTWZ1ZHhs?=
+ =?utf-8?B?Y1lPaC9kdEpYNkRjcUZ3Tm9nTGw4TkdLbS8vQUkwWTduQkE0eHAreVRaMTFK?=
+ =?utf-8?B?Ukc0TE9tb29uTWVQSnlVS2xJWXh1MSt2ZUttT284eVdKZW5sZ1BiVWl1Z1RQ?=
+ =?utf-8?B?eS90Yk9VME9SNFBmbXlBSHBKaE43dkFYVzBpcWtvZFlwQXR5Y3VQd043dGFT?=
+ =?utf-8?B?d3FhVXhKVTg3aUNZOWdzL3pBcllrZ0pFc3VQT1V3OFJXUXBrNnJTaXlWeDFt?=
+ =?utf-8?B?T2c5MW9kUzl4ZEpQM09QcEhUcEFXR0pnWlhPZzROalJHeFBBVU5BWTNXWDBu?=
+ =?utf-8?B?bU1UV0FleUVkVTkrOGZ4T01vdG5hSWVZeElMSUN0SE5uTVk3Z3cvQ3ZvMmpJ?=
+ =?utf-8?B?eTYrQUtyTkh2OTl2cjBxSDFHNnQ1K3JyTVV5Mkp3bkpJcTA3VjM0TzcwbklX?=
+ =?utf-8?B?RzFnNDdyeGphYUN2Zk9EQWs5a2RoNWhLYkxPV1pLRkVESTN3cHBMaEZZd3ZY?=
+ =?utf-8?B?MkJxYVA0aERHdGtLcU4xWS9iT29GaHhXbHRrTVdPby9WNkNwUFhVM3BKcEsr?=
+ =?utf-8?B?TEpZWjQ2VmZJbU9XQ2JoN0I5SmpxOW1sQ3FHcUVvNkwyQSt4OGV1Z2QwNllG?=
+ =?utf-8?B?MVVEd3R5L3NoNGRYZ1dEdVhJSjljWlNNWTZmWVdqWWVpYlk0K2J4Y0p2eVMz?=
+ =?utf-8?B?OWJaZmJwTHlDU0o1V2FwcXcxMkVyRENtWUhIazNxaklacGxSRU5pQnh2a1F4?=
+ =?utf-8?B?K1dZMFozSE1Pb2kzVTdnaVpRTUI1b1hlMlV6UTUzN0JiOXZaakRMdDcxekV0?=
+ =?utf-8?B?T0YzRFBVZ3VlMkRlOExVbEpEQm9RT0g5TU5tMkJXcTZ1MXh0aisvR0Q5bCtV?=
+ =?utf-8?B?S3plVjlyS2dEaVVmZDgrSkFyNDBKaUVkakIrOWphZmdsUEtRRlNUeTBtdDJv?=
+ =?utf-8?B?MWhXOUE3NmxvZmNseEdxMDY1R0FWYUt4YmJtSDNUM1NwdmxxcDh0WnRObmlK?=
+ =?utf-8?B?K3J5Mnp3NmFCamdLcXM5eWRPbE9nZVJ2UFBWZjZqd2J1MkZFOTdac3hhU3lh?=
+ =?utf-8?B?YTVHdHRBd0hFREdEYTFUS01BbGh4bEM1c1E2L3h5WUdpUmxnQ0l1cStxVndp?=
+ =?utf-8?B?VHZGc3hUbTh1ZWhrUUpwK1NxZnlmWjdvQWJkVy9PSDVabUxCckV1c2NWaEwr?=
+ =?utf-8?B?QnQwSFlSZHBlME5VWjE0OHM5dDhaNkIvMmxoaTQyb2hnVG1OVDgxbEI4djY2?=
+ =?utf-8?B?cFgwZTJQWjRUZVBVSGxXaUNWbkx3SDN6b2FaZkRaaXhBQU82OHJ1aFZLbE9Z?=
+ =?utf-8?B?ei9XTHdmVERsQitrU0xXSXN2MW1WSW9nQXZEVyt6eVJDMWFvdkk3UXhyOUVu?=
+ =?utf-8?B?VjRuQzkwUDdKTUxnSVJXNmVNNUV0SU15Q2NnNzZ0Q0FBS0dnSFFiWmdFY1VY?=
+ =?utf-8?B?NXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ddb2cd4-f44e-451a-5fe5-08dbbe1eae01
 X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 23:24:13.2418
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 23:25:18.1992
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iLgr6ReynVCw65421GeBVkMTmGKLhw8//i7IeUl8GHMZiv1MLo9d/QBLP+JIg7gHn32HIas+TyQwqkANWVVcn2hYbb1W/t9DfbR4yfluzYQ=
+X-MS-Exchange-CrossTenant-UserPrincipalName: D0D3FrfFo9IbCcpTn0wxG7SHzTAABLbwhYzuIY06tsgVX661r9i2W0OwDMcJrou+bKtVswXC1a+Vm+/i6TknZKzD0EkgZ130eq0ZyGHn5HU=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8033
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -174,467 +169,276 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Tony,
 
+Subject:
+
+x86/resctrl: Split the rdt_domain and rdt_hw_domain structures
+
+
 On 8/29/2023 4:44 PM, Tony Luck wrote:
-> Existing resctrl assumes that control and monitor operations on a
+> The same rdt_domain structure is used for both control an monitor
 
-Please remove "Existing", it can just be "resctrl assumes ..."
+"control an monitor" -> "control and monitor"
 
-> resource are performed at the same scope.
+> functions. But this results in wasted memory as some of the fields
+> are only used by control functions, while most are only used for monitor
+> functions.
 > 
-> Prepare for systems that use different scope (specifically L3 scope
-> for cache control and NODE scope for cache occupancy and memory
-> bandwidth monitoring).
+> Create a new rdt_mondomain structure tailored explicitly for use in
+> monitor parts of the core. Slim down the rdt_domain structure by
+> removing the unused monitor fields.
 > 
-> Create separate domain lists for control and monitor operations.
-> 
-> No important functional change. But note that errors during
-> initialization of either control or monitor functions on a domain would
-> previously result in that domain being excluded from both control and
-> monitor operations. Now the domains are allocated independently it is
-> no longer required to disable both control and monitor operations if
-> either fail.
+
+Similar to the previous patch I think it will make the code
+easier to understand if the naming is clear for both
+monitoring and control structured. Why not rdt_mondomain
+and rdt_ctrldomain instead?
+
+
+> Similar breakout of struct rdt_hw_mondomain from struct rdt_hw_domain.
+
+rdt_hw_mondomain and rdt_hw_ctrldomain?
+
 > 
 > Signed-off-by: Tony Luck <tony.luck@intel.com>
 > ---
->  include/linux/resctrl.h                   |  16 +-
->  arch/x86/kernel/cpu/resctrl/internal.h    |   6 +-
->  arch/x86/kernel/cpu/resctrl/core.c        | 227 +++++++++++++++-------
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |   2 +-
->  arch/x86/kernel/cpu/resctrl/monitor.c     |   2 +-
->  arch/x86/kernel/cpu/resctrl/pseudo_lock.c |   2 +-
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  32 +--
->  7 files changed, 199 insertions(+), 88 deletions(-)
+>  include/linux/resctrl.h                   | 46 +++++++++++++++--------
+>  arch/x86/kernel/cpu/resctrl/internal.h    | 38 +++++++++++++------
+>  arch/x86/kernel/cpu/resctrl/core.c        | 18 ++++-----
+>  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  4 +-
+>  arch/x86/kernel/cpu/resctrl/monitor.c     | 40 ++++++++++----------
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 24 ++++++------
+>  6 files changed, 101 insertions(+), 69 deletions(-)
 > 
 > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 2db1244ae642..33856943a787 100644
+> index 33856943a787..08382548571e 100644
 > --- a/include/linux/resctrl.h
 > +++ b/include/linux/resctrl.h
-> @@ -155,10 +155,12 @@ enum resctrl_scope {
->   * @alloc_capable:	Is allocation available on this machine
->   * @mon_capable:	Is monitor feature available on this machine
->   * @num_rmid:		Number of RMIDs available
-> - * @scope:		Scope of this resource
-> + * @ctrl_scope:		Scope of this resource for control functions
-> + * @mon_scope:		Scope of this resource for monitor functions
->   * @cache:		Cache allocation related data
->   * @membw:		If the component has bandwidth controls, their properties.
-> - * @domains:		All domains for this resource
-> + * @domains:		Control domains for this resource
-> + * @mon_domains:	Monitor domains for this resource
->   * @name:		Name to use in "schemata" file.
->   * @data_width:		Character width of data when displaying
->   * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-> @@ -173,10 +175,12 @@ struct rdt_resource {
->  	bool			alloc_capable;
->  	bool			mon_capable;
->  	int			num_rmid;
-> -	enum resctrl_scope	scope;
-> +	enum resctrl_scope	ctrl_scope;
-> +	enum resctrl_scope	mon_scope;
->  	struct resctrl_cache	cache;
->  	struct resctrl_membw	membw;
->  	struct list_head	domains;
-> +	struct list_head	mondomains;
-
-kerneldoc is "mon_domains" while member is "mondomains".
-I do think to be consistent with other members that "mon_domains"
-would be appropriate. I also think it will be very helpful it
-domains is renamed to "ctrl_domains" to more accurately match
-"ctrl_scope" and what it represents.
-
->  	char			*name;
->  	int			data_width;
->  	u32			default_ctrl;
-> @@ -222,8 +226,10 @@ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
->  
->  u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
->  			    u32 closid, enum resctrl_conf_type type);
-> -int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d);
-> -void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
-> +int resctrl_online_ctrl_domain(struct rdt_resource *r, struct rdt_domain *d);
-> +int resctrl_online_mon_domain(struct rdt_resource *r, struct rdt_domain *d);
-> +void resctrl_offline_ctrl_domain(struct rdt_resource *r, struct rdt_domain *d);
-> +void resctrl_offline_mon_domain(struct rdt_resource *r, struct rdt_domain *d);
+> @@ -53,7 +53,29 @@ struct resctrl_staged_config {
+>  };
 >  
 >  /**
->   * resctrl_arch_rmid_read() - Read the eventid counter corresponding to rmid
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 85ceaf9a31ac..31a5fc3b717f 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -511,8 +511,10 @@ void rdtgroup_kn_unlock(struct kernfs_node *kn);
->  int rdtgroup_kn_mode_restrict(struct rdtgroup *r, const char *name);
->  int rdtgroup_kn_mode_restore(struct rdtgroup *r, const char *name,
->  			     umode_t mask);
-> -struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
-> -				   struct list_head **pos);
-> +struct rdt_domain *rdt_find_ctrldomain(struct list_head *h, int id,
-> +				       struct list_head **pos);
-> +struct rdt_domain *rdt_find_mondomain(struct list_head *h, int id,
-> +				      struct list_head **pos);
+> - * struct rdt_domain - group of CPUs sharing a resctrl resource
+> + * struct rdt_domain - group of CPUs sharing a resctrl control resource
+> + * @list:		all instances of this resource
+> + * @id:			unique id for this instance
+> + * @cpu_mask:		which CPUs share this resource
+> + * @plr:		pseudo-locked region (if any) associated with domain
+> + * @staged_config:	parsed configuration to be applied
+> + * @mbps_val:		When mba_sc is enabled, this holds the array of user
+> + *			specified control values for mba_sc in MBps, indexed
+> + *			by closid
+> + */
+> +struct rdt_domain {
+> +	// First three fields must match struct rdt_mondomain below.
 
-This is not what I expected after our previous discussion. It
-should not be necessary for caller to be aware of the different
-lists. It looks to me like the original parameters of (struct rdt_resource *r,
-int id, struct list_head **pos) can be maintained.
+Please avoid comments within declarations. Even so, could you please
+elaborate what the above means? Why do the first three fields have to
+match? I understand there is common code, for example, __rdt_find_domain()
+that operated on the same members of the two structs but does that
+require the members be in the same position in the struct?
+I understand that a comment may be required if position in the struct
+is important but I cannot see that it is.
 
->  ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
->  				char *buf, size_t nbytes, loff_t off);
->  int rdtgroup_schemata_show(struct kernfs_open_file *of,
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-> index 0d3bae523ecb..97f6f9715fdb 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -57,7 +57,7 @@ static void
->  mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m,
->  	      struct rdt_resource *r);
+> +	struct list_head		list;
+> +	int				id;
+> +	struct cpumask			cpu_mask;
+> +
+> +	struct pseudo_lock_region	*plr;
+> +	struct resctrl_staged_config	staged_config[CDP_NUM_TYPES];
+> +	u32				*mbps_val;
+> +};
+> +
+> +/**
+> + * struct rdt_mondomain - group of CPUs sharing a resctrl monitor resource
+>   * @list:		all instances of this resource
+>   * @id:			unique id for this instance
+>   * @cpu_mask:		which CPUs share this resource
+> @@ -64,16 +86,13 @@ struct resctrl_staged_config {
+>   * @cqm_limbo:		worker to periodically read CQM h/w counters
+>   * @mbm_work_cpu:	worker CPU for MBM h/w counters
+>   * @cqm_work_cpu:	worker CPU for CQM h/w counters
+> - * @plr:		pseudo-locked region (if any) associated with domain
+> - * @staged_config:	parsed configuration to be applied
+> - * @mbps_val:		When mba_sc is enabled, this holds the array of user
+> - *			specified control values for mba_sc in MBps, indexed
+> - *			by closid
+>   */
+> -struct rdt_domain {
+> +struct rdt_mondomain {
+> +	// First three fields must match struct rdt_domain above.
+
+Same comment.
+
+>  	struct list_head		list;
+>  	int				id;
+>  	struct cpumask			cpu_mask;
+> +
+>  	unsigned long			*rmid_busy_llc;
+>  	struct mbm_state		*mbm_total;
+>  	struct mbm_state		*mbm_local;
+> @@ -81,9 +100,6 @@ struct rdt_domain {
+>  	struct delayed_work		cqm_limbo;
+>  	int				mbm_work_cpu;
+>  	int				cqm_work_cpu;
+> -	struct pseudo_lock_region	*plr;
+> -	struct resctrl_staged_config	staged_config[CDP_NUM_TYPES];
+> -	u32				*mbps_val;
+>  };
 >  
-> -#define domain_init(id) LIST_HEAD_INIT(rdt_resources_all[id].r_resctrl.domains)
-> +#define domain_init(id, field) LIST_HEAD_INIT(rdt_resources_all[id].r_resctrl.field)
->  
+>  /**
 
-It may make the code easier to read if this is split into
-a "mon_domain_init()" and "ctrl_domain_init()"
+...
 
->  struct rdt_hw_resource rdt_resources_all[] = {
->  	[RDT_RESOURCE_L3] =
-> @@ -65,8 +65,10 @@ struct rdt_hw_resource rdt_resources_all[] = {
->  		.r_resctrl = {
->  			.rid			= RDT_RESOURCE_L3,
->  			.name			= "L3",
-> -			.scope			= RESCTRL_L3_CACHE,
-> -			.domains		= domain_init(RDT_RESOURCE_L3),
-> +			.ctrl_scope		= RESCTRL_L3_CACHE,
-> +			.mon_scope		= RESCTRL_L3_CACHE,
-> +			.domains		= domain_init(RDT_RESOURCE_L3, domains),
-> +			.mondomains		= domain_init(RDT_RESOURCE_L3, mondomains),
->  			.parse_ctrlval		= parse_cbm,
->  			.format_str		= "%d=%0*x",
->  			.fflags			= RFTYPE_RES_CACHE,
-> @@ -79,8 +81,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
->  		.r_resctrl = {
->  			.rid			= RDT_RESOURCE_L2,
->  			.name			= "L2",
-> -			.scope			= RESCTRL_L2_CACHE,
-> -			.domains		= domain_init(RDT_RESOURCE_L2),
-> +			.ctrl_scope		= RESCTRL_L2_CACHE,
-> +			.domains		= domain_init(RDT_RESOURCE_L2, domains),
->  			.parse_ctrlval		= parse_cbm,
->  			.format_str		= "%d=%0*x",
->  			.fflags			= RFTYPE_RES_CACHE,
-> @@ -93,8 +95,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
->  		.r_resctrl = {
->  			.rid			= RDT_RESOURCE_MBA,
->  			.name			= "MB",
-> -			.scope			= RESCTRL_L3_CACHE,
-> -			.domains		= domain_init(RDT_RESOURCE_MBA),
-> +			.ctrl_scope		= RESCTRL_L3_CACHE,
-> +			.domains		= domain_init(RDT_RESOURCE_MBA, domains),
->  			.parse_ctrlval		= parse_bw,
->  			.format_str		= "%d=%*u",
->  			.fflags			= RFTYPE_RES_MB,
-> @@ -105,8 +107,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
->  		.r_resctrl = {
->  			.rid			= RDT_RESOURCE_SMBA,
->  			.name			= "SMBA",
-> -			.scope			= RESCTRL_L3_CACHE,
-> -			.domains		= domain_init(RDT_RESOURCE_SMBA),
-> +			.ctrl_scope		= RESCTRL_L3_CACHE,
-> +			.domains		= domain_init(RDT_RESOURCE_SMBA, domains),
->  			.parse_ctrlval		= parse_bw,
->  			.format_str		= "%d=%*u",
->  			.fflags			= RFTYPE_RES_MB,
-> @@ -384,15 +386,16 @@ void rdt_ctrl_update(void *arg)
+> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> index 468c1815edfd..5167ac9cbe98 100644
+> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> @@ -521,7 +521,7 @@ int rdtgroup_schemata_show(struct kernfs_open_file *of,
 >  }
 >  
->  /*
-> - * rdt_find_domain - Find a domain in a resource that matches input resource id
-> + * __rdt_find_domain - Find a domain in either the list of control or
-> + * monitor domains that matches input resource id
->   *
->   * Search resource r's domain list to find the resource id. If the resource
->   * id is found in a domain, return the domain. Otherwise, if requested by
->   * caller, return the first domain whose id is bigger than the input id.
->   * The domain list is sorted by id in ascending order.
->   */
-> -struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
-> -				   struct list_head **pos)
-> +static void *__rdt_find_domain(struct list_head *h, int id,
-> +			       struct list_head **pos)
+>  void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+> -		    struct rdt_domain *d, struct rdtgroup *rdtgrp,
+> +		    struct rdt_mondomain *d, struct rdtgroup *rdtgrp,
+>  		    int evtid, int first)
 >  {
->  	struct rdt_domain *d;
->  	struct list_head *l;
-> @@ -400,7 +403,7 @@ struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
->  	if (id < 0)
->  		return ERR_PTR(-ENODEV);
+>  	/*
+> @@ -544,7 +544,7 @@ int rdtgroup_mondata_show(struct seq_file *m, void *arg)
+>  	struct rdtgroup *rdtgrp;
+>  	struct rdt_resource *r;
+>  	union mon_data_bits md;
+> -	struct rdt_domain *d;
+> +	struct rdt_mondomain *d;
+
+Reverse fir order.
+
+>  	struct rmid_read rr;
+>  	int ret = 0;
 >  
-> -	list_for_each(l, &r->domains) {
-> +	list_for_each(l, h) {
->  		d = list_entry(l, struct rdt_domain, list);
->  		/* When id is found, return its domain. */
->  		if (id == d->id)
-> @@ -416,6 +419,18 @@ struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
+> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> index 66beca785535..42262d59ef9b 100644
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -170,7 +170,7 @@ static int __rmid_read(u32 rmid, enum resctrl_event_id eventid, u64 *val)
+>  	return 0;
+>  }
+>  
+> -static struct arch_mbm_state *get_arch_mbm_state(struct rdt_hw_domain *hw_dom,
+> +static struct arch_mbm_state *get_arch_mbm_state(struct rdt_hw_mondomain *hw_dom,
+>  						 u32 rmid,
+>  						 enum resctrl_event_id eventid)
+>  {
+> @@ -189,10 +189,10 @@ static struct arch_mbm_state *get_arch_mbm_state(struct rdt_hw_domain *hw_dom,
 >  	return NULL;
 >  }
 >  
-> +struct rdt_domain *rdt_find_ctrldomain(struct list_head *h, int id,
-> +				       struct list_head **pos)
-> +{
-> +	return __rdt_find_domain(h, id, pos);
-> +}
-> +
-> +struct rdt_domain *rdt_find_mondomain(struct list_head *h, int id,
-> +				      struct list_head **pos)
-> +{
-> +	return __rdt_find_domain(h, id, pos);
-> +}
-> +
->  static void setup_default_ctrlval(struct rdt_resource *r, u32 *dc)
+> -void resctrl_arch_reset_rmid(struct rdt_resource *r, struct rdt_domain *d,
+> +void resctrl_arch_reset_rmid(struct rdt_resource *r, struct rdt_mondomain *d,
+>  			     u32 rmid, enum resctrl_event_id eventid)
+>  {
+> -	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+> +	struct rdt_hw_mondomain *hw_dom = resctrl_to_arch_mondom(d);
+>  	struct arch_mbm_state *am;
+>  
+>  	am = get_arch_mbm_state(hw_dom, rmid, eventid);
+> @@ -208,9 +208,9 @@ void resctrl_arch_reset_rmid(struct rdt_resource *r, struct rdt_domain *d,
+>   * Assumes that hardware counters are also reset and thus that there is
+>   * no need to record initial non-zero counts.
+>   */
+> -void resctrl_arch_reset_rmid_all(struct rdt_resource *r, struct rdt_domain *d)
+> +void resctrl_arch_reset_rmid_all(struct rdt_resource *r, struct rdt_mondomain *d)
+>  {
+> -	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+> +	struct rdt_hw_mondomain *hw_dom = resctrl_to_arch_mondom(d);
+>  
+>  	if (is_mbm_total_enabled())
+>  		memset(hw_dom->arch_mbm_total, 0,
+> @@ -229,11 +229,11 @@ static u64 mbm_overflow_count(u64 prev_msr, u64 cur_msr, unsigned int width)
+>  	return chunks >> shift;
+>  }
+>  
+> -int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+> +int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_mondomain *d,
+>  			   u32 rmid, enum resctrl_event_id eventid, u64 *val)
 >  {
 >  	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
-> @@ -431,10 +446,15 @@ static void setup_default_ctrlval(struct rdt_resource *r, u32 *dc)
->  }
+> -	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+> +	struct rdt_hw_mondomain *hw_mondom = resctrl_to_arch_mondom(d);
+
+Reverse fir.
+
+>  	struct arch_mbm_state *am;
+>  	u64 msr_val, chunks;
+>  	int ret;
+> @@ -245,7 +245,7 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>  	if (ret)
+>  		return ret;
 >  
->  static void domain_free(struct rdt_hw_domain *hw_dom)
-> +{
-> +	kfree(hw_dom->ctrl_val);
-> +	kfree(hw_dom);
-> +}
-> +
-> +static void mondomain_free(struct rdt_hw_domain *hw_dom)
->  {
->  	kfree(hw_dom->arch_mbm_total);
->  	kfree(hw_dom->arch_mbm_local);
-> -	kfree(hw_dom->ctrl_val);
->  	kfree(hw_dom);
->  }
->  
-> @@ -502,6 +522,93 @@ static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
->  	return -1;
->  }
->  
-> +static void domain_add_cpu_ctrl(int cpu, struct rdt_resource *r)
-> +{
-> +	int id = get_domain_id_from_scope(cpu, r->ctrl_scope);
-> +	struct list_head *add_pos = NULL;
-> +	struct rdt_hw_domain *hw_dom;
-> +	struct rdt_domain *d;
-> +	int err;
-> +
-> +	d = rdt_find_ctrldomain(&r->domains, id, &add_pos);
-> +	if (IS_ERR(d)) {
-> +		pr_warn("Couldn't find scope id=%d for CPU %d\n", id, cpu);
-
-I am not sure here ... this generates identical error messages
-for control and monitor domain. How will the user know what failed?
-Also, how does printing id help? If I understand correctly it can
-only be -1 when the above prints.
-
-> +		return;
-> +	}
-> +
-> +	if (d) {
-> +		cpumask_set_cpu(cpu, &d->cpu_mask);
-> +		if (r->cache.arch_has_per_cpu_cfg)
-> +			rdt_domain_reconfigure_cdp(r);
-> +		return;
-> +	}
-> +
-> +	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-> +	if (!hw_dom)
-> +		return;
-> +
-> +	d = &hw_dom->d_resctrl;
-> +	d->id = id;
-> +	cpumask_set_cpu(cpu, &d->cpu_mask);
-> +
-> +	rdt_domain_reconfigure_cdp(r);
-> +
-> +	if (domain_setup_ctrlval(r, d)) {
-> +		domain_free(hw_dom);
-> +		return;
-> +	}
-> +
-> +	list_add_tail(&d->list, add_pos);
-> +
-> +	err = resctrl_online_ctrl_domain(r, d);
-> +	if (err) {
-> +		list_del(&d->list);
-> +		domain_free(hw_dom);
-> +	}
-> +}
-> +
-> +static void domain_add_cpu_mon(int cpu, struct rdt_resource *r)
-> +{
-> +	int id = get_domain_id_from_scope(cpu, r->mon_scope);
-> +	struct rdt_hw_domain *hw_mondom;
-> +	struct list_head *add_pos = NULL;
-
-Please maintain reverse fir ordering. Please check all code.
-
-> +	struct rdt_domain *d;
-> +	int err;
-> +
-> +	d = rdt_find_mondomain(&r->mondomains, id, &add_pos);
-> +	if (IS_ERR(d)) {
-> +		pr_warn("Couldn't find scope id=%d for CPU %d\n", id, cpu);
-> +		return;
-> +	}
-> +
-> +	if (d) {
-> +		cpumask_set_cpu(cpu, &d->cpu_mask);
-> +
-
-This is an unnecessary empty line that distracts from how the rest
-of the function looks.
-
-> +		return;
-> +	}
-> +
-> +	hw_mondom = kzalloc_node(sizeof(*hw_mondom), GFP_KERNEL, cpu_to_node(cpu));
-> +	if (!hw_mondom)
-> +		return;
-> +
-> +	d = &hw_mondom->d_resctrl;
-> +	d->id = id;
-> +	cpumask_set_cpu(cpu, &d->cpu_mask);
-> +
-> +	if (arch_domain_mbm_alloc(r->num_rmid, hw_mondom)) {
-> +		mondomain_free(hw_mondom);
-> +		return;
-> +	}
-> +
-> +	list_add_tail(&d->list, add_pos);
-> +
-> +	err = resctrl_online_mon_domain(r, d);
-> +	if (err) {
-> +		list_del(&d->list);
-> +		mondomain_free(hw_mondom);
-> +	}
-> +}
-> +
->  /*
->   * domain_add_cpu - Add a cpu to a resource's domain list.
->   *
-
-Note that this leaves the comments about list management here while all
-the list management code is moved away.
-
-> @@ -517,70 +624,28 @@ static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
+> -	am = get_arch_mbm_state(hw_dom, rmid, eventid);
+> +	am = get_arch_mbm_state(hw_mondom, rmid, eventid);
+>  	if (am) {
+>  		am->chunks += mbm_overflow_count(am->prev_msr, msr_val,
+>  						 hw_res->mbm_width);
+> @@ -266,7 +266,7 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>   * decrement the count. If the busy count gets to zero on an RMID, we
+>   * free the RMID
 >   */
->  static void domain_add_cpu(int cpu, struct rdt_resource *r)
+> -void __check_limbo(struct rdt_domain *d, bool force_free)
+> +void __check_limbo(struct rdt_mondomain *d, bool force_free)
 >  {
-> -	int id = get_domain_id_from_scope(cpu, r->scope);
-> -	struct list_head *add_pos = NULL;
-> -	struct rdt_hw_domain *hw_dom;
-> -	struct rdt_domain *d;
-> -	int err;
-> -
-> -	d = rdt_find_domain(r, id, &add_pos);
-> -	if (IS_ERR(d)) {
-> -		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> -		return;
-> -	}
-> -
-> -	if (d) {
-> -		cpumask_set_cpu(cpu, &d->cpu_mask);
-> -		if (r->cache.arch_has_per_cpu_cfg)
-> -			rdt_domain_reconfigure_cdp(r);
-> -		return;
-> -	}
-> -
-> -	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-> -	if (!hw_dom)
-> -		return;
-> -
-> -	d = &hw_dom->d_resctrl;
-> -	d->id = id;
-> -	cpumask_set_cpu(cpu, &d->cpu_mask);
-> -
-> -	rdt_domain_reconfigure_cdp(r);
-> -
-> -	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
-> -		domain_free(hw_dom);
-> -		return;
-> -	}
-> -
-> -	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
-> -		domain_free(hw_dom);
-> -		return;
-> -	}
-> -
-> -	list_add_tail(&d->list, add_pos);
-> -
-> -	err = resctrl_online_domain(r, d);
-> -	if (err) {
-> -		list_del(&d->list);
-> -		domain_free(hw_dom);
-> -	}
-> +	if (r->alloc_capable)
-> +		domain_add_cpu_ctrl(cpu, r);
-> +	if (r->mon_capable)
-> +		domain_add_cpu_mon(cpu, r);
+>  	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+>  	struct rmid_entry *entry;
+> @@ -305,7 +305,7 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+>  	}
 >  }
 >  
-> -static void domain_remove_cpu(int cpu, struct rdt_resource *r)
-> +static void domain_remove_cpu_ctrl(int cpu, struct rdt_resource *r)
+> -bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d)
+> +bool has_busy_rmid(struct rdt_resource *r, struct rdt_mondomain *d)
 >  {
-> -	int id = get_domain_id_from_scope(cpu, r->scope);
-> +	int id = get_domain_id_from_scope(cpu, r->ctrl_scope);
->  	struct rdt_hw_domain *hw_dom;
->  	struct rdt_domain *d;
+>  	return find_first_bit(d->rmid_busy_llc, r->num_rmid) != r->num_rmid;
+>  }
+> @@ -334,7 +334,7 @@ int alloc_rmid(void)
+>  static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  {
+>  	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+> -	struct rdt_domain *d;
+> +	struct rdt_mondomain *d;
+>  	int cpu, err;
+>  	u64 val = 0;
 >  
-> -	d = rdt_find_domain(r, id, NULL);
-> +	d = rdt_find_ctrldomain(&r->domains, id, NULL);
->  	if (IS_ERR_OR_NULL(d)) {
-> -		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> +		pr_warn("Couldn't find scope id=%d for CPU %d\n", id, cpu);
->  		return;
+> @@ -383,7 +383,7 @@ void free_rmid(u32 rmid)
+>  		list_add_tail(&entry->list, &rmid_free_lru);
+>  }
+>  
+> -static struct mbm_state *get_mbm_state(struct rdt_domain *d, u32 rmid,
+> +static struct mbm_state *get_mbm_state(struct rdt_mondomain *d, u32 rmid,
+>  				       enum resctrl_event_id evtid)
+>  {
+>  	switch (evtid) {
+> @@ -516,7 +516,7 @@ void mon_event_count(void *info)
+>   * throttle MSRs already have low percentage values.  To avoid
+>   * unnecessarily restricting such rdtgroups, we also increase the bandwidth.
+>   */
+> -static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+> +static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_mondomain *dom_mbm)
+>  {
+>  	u32 closid, rmid, cur_msr_val, new_msr_val;
+>  	struct mbm_state *pmbm_data, *cmbm_data;
+> @@ -600,7 +600,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
 >  	}
->  	hw_dom = resctrl_to_arch_dom(d);
+>  }
 >  
->  	cpumask_clear_cpu(cpu, &d->cpu_mask);
->  	if (cpumask_empty(&d->cpu_mask)) {
-> -		resctrl_offline_domain(r, d);
-> +		resctrl_offline_ctrl_domain(r, d);
->  		list_del(&d->list);
+> -static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
+> +static void mbm_update(struct rdt_resource *r, struct rdt_mondomain *d, int rmid)
+>  {
+>  	struct rmid_read rr;
 >  
->  		/*
-> @@ -593,6 +658,30 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
->  
->  		return;
->  	}
-> +}
-> +
-> +static void domain_remove_cpu_mon(int cpu, struct rdt_resource *r)
-> +{
-> +	int id = get_domain_id_from_scope(cpu, r->mon_scope);
-> +	struct rdt_hw_domain *hw_mondom;
-> +	struct rdt_domain *d;
-> +
-> +	d = rdt_find_mondomain(&r->mondomains, id, NULL);
-> +	if (IS_ERR_OR_NULL(d)) {
-> +		pr_warn("Couldn't find scope id=%d for CPU %d\n", id, cpu);
-> +		return;
-> +	}
-> +	hw_mondom = resctrl_to_arch_dom(d);
-> +
-> +	cpumask_clear_cpu(cpu, &d->cpu_mask);
-> +	if (cpumask_empty(&d->cpu_mask)) {
-> +		resctrl_offline_mon_domain(r, d);
-> +		list_del(&d->list);
-> +
+> @@ -641,12 +641,12 @@ void cqm_handle_limbo(struct work_struct *work)
+>  	unsigned long delay = msecs_to_jiffies(CQM_LIMBOCHECK_INTERVAL);
+>  	int cpu = smp_processor_id();
+>  	struct rdt_resource *r;
+> -	struct rdt_domain *d;
+> +	struct rdt_mondomain *d;
 
-This is an awkward empty line.
-
-> +		mondomain_free(hw_mondom);
-> +
-> +		return;
-> +	}
->  
->  	if (r == &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl) {
->  		if (is_mbm_enabled() && cpu == d->mbm_work_cpu) {
-
-...
+Reverse fir (Please check all code).
 
 Reinette
