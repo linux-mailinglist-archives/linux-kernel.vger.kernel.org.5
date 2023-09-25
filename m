@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE2A7ADAD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58337ADADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbjIYPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S232470AbjIYPCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232413AbjIYPBK (ORCPT
+        with ESMTP id S229647AbjIYPCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:01:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4255A111;
-        Mon, 25 Sep 2023 08:01:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE86C433C8;
-        Mon, 25 Sep 2023 15:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695654060;
-        bh=GUTPMlEVCxAI4XqyqO0Rqf3KWAa3RuxtFqcc2gmHP1w=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=pOGJqd26WmXtEWG9MwBrMWw6yfwLBt3Fw2NdJtV5xHWOD9eyLgAixcnEsCAXLJ0c4
-         7TJ5DR4cATHHVbGVNr+Q3jly+GM51Q2ZlonAvbt1NhNKnW31AscOFyc1S4kvdkUiFM
-         NWQyqQHZ5bj9XsrhrHNcluOpevJyyVSBpDTTYVHhmrH7/OVKUA4aUkIQWJdMfNAII+
-         Hj8TmgzsACQLRXu6XyBY01uCt3rFzIl5g88tina/t3F2zrwDagissLn4I2EDC7UG+A
-         Rv+zkYxxCros8yPuumZmQe9IYfZiz7vyqRTKGDzfZ1aP8XOR9pCn6QybtRugRVLJVo
-         0+wnUc4uR62/Q==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 25 Sep 2023 18:00:52 +0300
-Message-Id: <CVS371QBH3QK.3354DSBK53OFS@suppilovahvero>
-Subject: Re: [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous exceptions
- in task work
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Shuai Xue" <xueshuai@linux.alibaba.com>, <rafael@kernel.org>,
-        <wangkefeng.wang@huawei.com>, <tanxiaofei@huawei.com>,
-        <mawupeng1@huawei.com>, <tony.luck@intel.com>,
-        <linmiaohe@huawei.com>, <naoya.horiguchi@nec.com>,
-        <james.morse@arm.com>, <gregkh@linuxfoundation.org>,
-        <will@kernel.org>
-Cc:     <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <linux-edac@vger.kernel.org>,
-        <acpica-devel@lists.linuxfoundation.org>, <stable@vger.kernel.org>,
-        <x86@kernel.org>, <justin.he@arm.com>, <ardb@kernel.org>,
-        <ying.huang@intel.com>, <ashish.kalra@amd.com>,
-        <baolin.wang@linux.alibaba.com>, <bp@alien8.de>,
-        <tglx@linutronix.de>, <mingo@redhat.com>,
-        <dave.hansen@linux.intel.com>, <lenb@kernel.org>, <hpa@zytor.com>,
-        <robert.moore@intel.com>, <lvying6@huawei.com>,
-        <xiexiuqi@huawei.com>, <zhuo.song@linux.alibaba.com>
-X-Mailer: aerc 0.14.0
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20230919022127.69732-3-xueshuai@linux.alibaba.com>
-In-Reply-To: <20230919022127.69732-3-xueshuai@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 11:02:22 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48EB101;
+        Mon, 25 Sep 2023 08:02:15 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RvQym20rJzrSxy;
+        Mon, 25 Sep 2023 23:00:00 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 25 Sep 2023 23:02:13 +0800
+Message-ID: <6531a3b0-915d-8078-b265-95231405ac4d@huawei.com>
+Date:   Mon, 25 Sep 2023 23:02:12 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 1/2] scsi: core: scsi_device_online() return false if
+ state is SDEV_CANCEL
+Content-Language: en-US
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
+References: <20230922093636.2645961-1-haowenchao2@huawei.com>
+ <20230922093636.2645961-2-haowenchao2@huawei.com>
+From:   Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <20230922093636.2645961-2-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Sep 19, 2023 at 5:21 AM EEST, Shuai Xue wrote:
-> Hardware errors could be signaled by synchronous interrupt, e.g.  when an
-> error is detected by a background scrubber, or signaled by synchronous
-> exception, e.g. when an uncorrected error is consumed. Both synchronous a=
-nd
-> asynchronous error are queued and handled by a dedicated kthread in
-> workqueue.
->
-> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
-> synchronous errors") keep track of whether memory_failure() work was
-> queued, and make task_work pending to flush out the workqueue so that the
-> work for synchronous error is processed before returning to user-space.
-> The trick ensures that the corrupted page is unmapped and poisoned. And
-> after returning to user-space, the task starts at current instruction whi=
-ch
-> triggering a page fault in which kernel will send SIGBUS to current proce=
-ss
-> due to VM_FAULT_HWPOISON.
->
-> However, the memory failure recovery for hwpoison-aware mechanisms does n=
-ot
-> work as expected. For example, hwpoison-aware user-space processes like
-> QEMU register their customized SIGBUS handler and enable early kill mode =
-by
-> seting PF_MCE_EARLY at initialization. Then the kernel will directy notif=
-y
-> the process by sending a SIGBUS signal in memory failure with wrong
-> si_code: the actual user-space process accessing the corrupt memory
-> location, but its memory failure work is handled in a kthread context, so
-> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
-> process instead of BUS_MCEERR_AR in kill_proc().
->
-> To this end, separate synchronous and asynchronous error handling into
-> different paths like X86 platform does:
->
-> - valid synchronous errors: queue a task_work to synchronously send SIGBU=
-S
->   before ret_to_user.
-> - valid asynchronous errors: queue a work into workqueue to asynchronousl=
-y
->   handle memory failure.
-> - abnormal branches such as invalid PA, unexpected severity, no memory
->   failure config support, invalid GUID section, OOM, etc.
->
-> Then for valid synchronous errors, the current context in memory failure =
-is
-> exactly belongs to the task consuming poison data and it will send SIBBUS
-> with proper si_code.
->
-> Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for syn=
-chronous errors")
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+On 2023/9/22 17:36, Wenchao Hao wrote:
+> SDEV_CANCEL is set when removing device and scsi_device_online() should
+> return false if sdev_state is SDEV_CANCEL.
+> 
+> IO hang would be caused if return true when state is SDEV_CANCEL with
+> following order:
+> 
+> T1:					    T2:scsi_error_handler
+> __scsi_remove_device()
+>    scsi_device_set_state(sdev, SDEV_CANCEL)
+>    					    scsi_eh_flush_done_q()
+> 					    if (scsi_device_online(sdev))
+> 					      scsi_queue_insert(scmd,...)
+> 
+> The command added by scsi_queue_insert() would never be handled any
+> more.
+> 
+> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+> ---
+>   include/scsi/scsi_device.h | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
+> index 75b2235b99e2..c498a12f7715 100644
+> --- a/include/scsi/scsi_device.h
+> +++ b/include/scsi/scsi_device.h
+> @@ -517,7 +517,8 @@ static inline int scsi_device_online(struct scsi_device *sdev)
+>   {
+>   	return (sdev->sdev_state != SDEV_OFFLINE &&
+>   		sdev->sdev_state != SDEV_TRANSPORT_OFFLINE &&
+> -		sdev->sdev_state != SDEV_DEL);
+> +		sdev->sdev_state != SDEV_DEL &&
+> +		sdev->sdev_state != SDEV_CANCEL);
+>   }
+>   static inline int scsi_device_blocked(struct scsi_device *sdev)
+>   {
 
-Did 7f17b4a121d0 actually break something that was not broken before?
+Return false when if sdev_state is SDEV_CANCEL seems change some flow in
+error handle, but I don't know if we should introduce these changes.
+I think it's both ok to finish the failed command or try more recovery steps.
 
-If not, this is (afaik) not a bug fix.
+For example, in scsi_eh_bus_device_reset(), when scsi_try_bus_device_reset()
+returned SUCCEED but the sdev_state is SDEV_CANCEL, should skip TUR and just
+call scsi_eh_finish_cmd() to add this LUN's error command to done_q?
 
-BR, Jarkko
+We can address the issue of IO hang described in this patch by running
+scsi_device's queue regardless of the scsi_device's state and it seems
+a better solution because the main reason of IO hang is as following:
 
+scsi_restart_operations()
+	-> scsi_run_host_queues()
+		-> shost_for_each_device() // skip scsi_device with SDEV_DEL
+					   // or SDEV_CANCEL state
