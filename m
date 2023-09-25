@@ -2,126 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B387B7ACF7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 07:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2DF7ACF7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 07:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjIYF3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 01:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
+        id S231909AbjIYFbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 01:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbjIYF3g (ORCPT
+        with ESMTP id S229751AbjIYFbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 01:29:36 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E465DA;
-        Sun, 24 Sep 2023 22:29:29 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38P5TIVk126664;
-        Mon, 25 Sep 2023 00:29:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695619758;
-        bh=lcO/fVluxHl1soRdHSkiD6yfVkOlWW5O2VYj33gaqHM=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=jf7dO/nbH7JhIUAyysU+l8W4L3t/pzCRvZ898JiYSEsXHQrXBKGs2OARoyD0ub/m4
-         DIBXqWQhvuru+HQpZKcGbGqWdlrbLGZ0bQztcZosRdVBkjU+x0vD5r5HdlsygsG954
-         gzMapH6EbAfUXro7N7ggbOl2SQ4QYNzYEs17Fylg=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38P5TIwK025984
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Sep 2023 00:29:18 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Sep 2023 00:29:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Sep 2023 00:29:17 -0500
-Received: from [172.24.20.156] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38P5TE84096023;
-        Mon, 25 Sep 2023 00:29:15 -0500
-Message-ID: <2cc9060f-b44d-a870-6b98-20f17b2feac1@ti.com>
-Date:   Mon, 25 Sep 2023 10:59:13 +0530
+        Mon, 25 Sep 2023 01:31:21 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AE8FB;
+        Sun, 24 Sep 2023 22:31:13 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 17AE5320095C;
+        Mon, 25 Sep 2023 01:31:10 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 25 Sep 2023 01:31:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695619869; x=1695706269; bh=+I
+        pDiZzF3DKExTv5IVzORzCKYeVAxi82DUbw/6rDpoA=; b=aT8WwluRKgTf7xUkPe
+        ezbA6eGetjjg1AuUB5740howO/AF5R4PcU8RPwCFrQ0C+MPCBbnnl2An3Hu1i63X
+        ePHr0JSPg4aTB7ceUUKURxGIoOJFwWXpuUj3c15wMw/YxHZcRt/cJCQezWoNBtxR
+        PE34NX19bPF7iv09gt8SssTfaGpIrmFYFozoowO8xuEvcres3fr+SgebUlPNQqqe
+        cVctYgEiluhoLaGHIyvr/zlneNStvfeHTLR77Gq7ExDLCLUWmDWDPR8LFArw9wj2
+        pshOrwbkCb9yuvdGeC5vVFhkj1sXIlVJOIu9rqeIVwsXW42hwkPc2nowuMvG79aY
+        30sg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695619869; x=1695706269; bh=+IpDiZzF3DKEx
+        Tv5IVzORzCKYeVAxi82DUbw/6rDpoA=; b=pCef46apQXaNghIR4qvNaltwCw+mk
+        A9aaUZQhh75W0NNt0W/bXe2FPxMH1dxqYViRz4IFnsQ0EJcHT//t4E6ek9bLryhJ
+        3sAVG5fBZ9AQcLBLGaRyoqrN8r9hreBSCFROlLPAyDao3i+Ovrt2diqOOs+yofE8
+        EZ6CUL/1acJ+/Cnj0ij5EDVs6DpmpFZyo3otpWGd42NepQge9XYrloGkFAOm3jz/
+        F3mubBsDO0EEFXbbbAi6C3FPpk3jqaJFdOuZ9jzX+tuzjTQwg8ul7K0CGXrIlDlg
+        hJ752ub6ZNt1ly//5ZeDL9Anm5vHB99AfIjBO4dX880e5HlzQUsv+YvDQ==
+X-ME-Sender: <xms:HRsRZcBaSqCBnNuYFTBSJGOLIjlYlcEVwZdx-_suWnLIMj7ThxfqOg>
+    <xme:HRsRZeg_J34cEe4hf2eJL4uVQlg2BTkzwv02W2T7YfGyBP3YOEB3kemfXAhMgcuI5
+    5cMakM4zvCj46tWve0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelfedgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:HRsRZfn9YAt9FoUe_xO_a7LL_YndwZxsgn_sDoEF6cFh-6I_GZtsXA>
+    <xmx:HRsRZSxF6VC570ke1drf123QT3e2Am3W4mKKOkAgfTJtSJmmE1NbfQ>
+    <xmx:HRsRZRTASzDOpi74H28-lWzBaJtS8riiBMulrH_QcSByh_CXdiO6FQ>
+    <xmx:HRsRZSSUAD40TOx1MDmpPJyqunnzboUukpGGhZovFW_rwpY61jD4uQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 27B4FB60089; Mon, 25 Sep 2023 01:31:09 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/7] arm64: dts: ti: k3-j784s4: Add ESM instances
-Content-Language: en-US
-To:     Keerthy <j-keerthy@ti.com>, <robh+dt@kernel.org>, <nm@ti.com>,
-        <vigneshr@ti.com>, <conor+dt@kernel.org>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230911040942.31031-1-j-keerthy@ti.com>
- <20230911040942.31031-3-j-keerthy@ti.com>
-From:   "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <20230911040942.31031-3-j-keerthy@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <c1ab31ae-97ec-4630-818d-06cd37ea3d86@app.fastmail.com>
+In-Reply-To: <20230925010449.GB7231@dragon>
+References: <20230829-for-ml-tqmls10xxa-v2-test-v2-0-b1da63785b25@ew.tq-group.com>
+ <20230829-for-ml-tqmls10xxa-v2-test-v2-6-b1da63785b25@ew.tq-group.com>
+ <20230925010449.GB7231@dragon>
+Date:   Mon, 25 Sep 2023 07:30:48 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Shawn Guo" <shawnguo@kernel.org>,
+        "Gregor Herburger" <gregor.herburger@ew.tq-group.com>
+Cc:     "Leo Li" <leoyang.li@nxp.com>, "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@ew.tq-group.com
+Subject: Re: [PATCH v2 6/6] MAINTAINERS: add tqml device trees to TQ-Systems entry
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/11/2023 9:39 AM, Keerthy wrote:
-> Patch adds the ESM instances for j784s4. It has 3 instances.
-> One in the main domain and two in the mcu-wakeup domian.
+On Mon, Sep 25, 2023, at 03:04, Shawn Guo wrote:
+> + Arnd
 >
-> Signed-off-by: Keerthy <j-keerthy@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       |  7 +++++++
->   arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 12 ++++++++++++
->   2 files changed, 19 insertions(+)
+> On Tue, Aug 29, 2023 at 11:27:02AM +0200, Gregor Herburger wrote:
+>> Update file entries for TQ-Systems Layerscape modules.
+>> 
+>> Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+>> ---
 >
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index efed2d683f63..02d549a2ca06 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -1568,4 +1568,11 @@
->   		firmware-name = "j784s4-c71_3-fw";
->   		status = "disabled";
->   	};
-> +
-> +	main_esm: esm@700000 {
-> +		compatible = "ti,j721e-esm";
-> +		reg = <0x00 0x700000 0x00 0x1000>;
-> +		ti,esm-pins = <688>, <689>, <690>, <691>, <692>, <693>, <694>,
-> +			      <695>;
-> +	};
->   };
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-> index 4ab4018d3695..f1dfa4144168 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-> @@ -700,4 +700,16 @@
->   			status = "disabled";
->   		};
->   	};
-> +
-> +	mcu_esm: esm@40800000 {
-> +		compatible = "ti,j721e-esm";
-> +		reg = <0x00 0x40800000 0x00 0x1000>;
-> +		ti,esm-pins = <95>;
-> +	};
-> +
-> +	wkup_esm: esm@42080000 {
-> +		compatible = "ti,j721e-esm";
-> +		reg = <0x00 0x42080000 0x00 0x1000>;
-> +		ti,esm-pins = <63>;
-> +	};
+> I do not have a branch for this file, so you may want to send the
+> change to Arnd directly.
 
+The MAINTAINERS files can usually go into the same branch
+as arch/arm/mach-*/ and arch/arm64/Kconfig changes. If you have
+nothing for that, merging this one along with the corresponding
+arch/arm64/boot/dts changes is also fine.
 
-Please consider adding bootph node for esm,
+We used to have a separate branch just for the maintainer
+file updates a long time ago, but they rarely cause conflicts.
 
-I understand these nodes will be used in R5/SPL
+Whichever way you end up doing it, please ensure that the person
+sending the pull request or patch addresses it to:soc@kernel.org
+cc:linux-arm-kernel@lists.infradead.org to make it end up in
+patchwork, otherwise I'm more likely to miss it or expect that
+I'll get it as part of the normal pull requests.
 
-Thanks
-
->   };
+     Arnd
