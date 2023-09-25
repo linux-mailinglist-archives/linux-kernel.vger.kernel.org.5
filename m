@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFC57AD9B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136CD7AD9B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjIYOHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
+        id S232138AbjIYOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjIYOHR (ORCPT
+        with ESMTP id S232067AbjIYOHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:07:17 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E513C0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:07:11 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81f079fe73so7392335276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695650830; x=1696255630; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbeInWKlUN3Z2QQBrR4UtpzNoToZLCsYpJRewAj23h8=;
-        b=u6KT1EOy4DnS7okQTzXwROIFx2P8jddoRYL+AKF9JeJKCFdlFeZ1mz8ZmqzNoLjtKA
-         1ux1WoOTPuvTMB1EZXr982mOOOxj89bC+SNRrFWtB6IMGJwqLENeWovlgeyBmFmLK5Kl
-         GzP9/9gPBmw3qe50jgBsnCdJg93PAeo1LkNWWoCoZwsfW/YBQKL6nG8xgTgC9N0Yvgrf
-         Mcb/Xn4/3CZlxmfxiFXkTA5rCT4l6YY5lLu92g5buyRh0nSGfFdFdKu7aeR65y04P0YM
-         aS7BAVKv+jRpsxdkT9SRanDPGkqXjNIYAVkKMWI72p9C2PCNq1cUtjir5+H0mLLdK53n
-         q/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695650830; x=1696255630;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pbeInWKlUN3Z2QQBrR4UtpzNoToZLCsYpJRewAj23h8=;
-        b=mCEafJOJI+PGwKE2vf+SwwIXk5/IKTLR27/+zxEQo6d76N5AkWz9qAH8HjH/mxv4hX
-         bzWxzCAnXp2BLx9UHx11XOC7aGNXnN2eDilvUc3GGoDpnJNG8DzhRXgYdy2jdLkam1Cl
-         4jKxVJqVdJvj30GLEaP4T18gq4OsoUIMAswIXJT/XdQtwP2FCn+boYSmVzWXlxq1NV3H
-         oUnIFGHy0UKJum2ulo9HShRi9sQOIxmg2Li1YMgsZMRherjNtLYHscSGFi7MEVrKyIXC
-         TLMFZarTCuY3SeeaU1J8V3KdyinvnAUznqcW+irLM7wkyWIrNK2H0Uyk/ZRlXYaS1fkt
-         X+EQ==
-X-Gm-Message-State: AOJu0YxVzpsOUZP0h5/JmhOE7Ce1gNadGzEjQ6x6VL2f9+8IrYmPHT22
-        6Ji8AgAfbh3haCqhsrNOsT40WqZ1aaXdzda7Io4PMkLwSWsSCfokW1Q=
-X-Google-Smtp-Source: AGHT+IGybh6b+QMCWVSNtS3PoG9odUy0INJ8lN7t0nCkj2GqRCzX4hr4FBHQ6scP86ZT8zt2NFX8jVlVz6abd2tcvGs=
-X-Received: by 2002:a25:ce4c:0:b0:d80:9ef:928e with SMTP id
- x73-20020a25ce4c000000b00d8009ef928emr5922448ybe.33.1695650830416; Mon, 25
- Sep 2023 07:07:10 -0700 (PDT)
+        Mon, 25 Sep 2023 10:07:30 -0400
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C0CCE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1695650840; x=1698242840;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MEYxuz1Uw+VReTSa6PXtiqg+xBQ1tt+ZjnGvZk0sYws=;
+        b=a8l0irkyH0tn3osUvH57okwDktBI5iEMP3HQBVhH/oM5euNy6qpHI3G0oetRVBau
+        PgDqfG4Nh84oMChggAElbWvRP1giJKaRm7ZysfUVrpuOY0I82OmInqU1fXJBYhPV
+        YlxYH2gcGR65t6gewHobru3Q8GfSN7cSJvdJRuBx7yY=;
+X-AuditID: ac14000a-6d65670000001e37-fb-65119417c4c9
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 9E.91.07735.71491156; Mon, 25 Sep 2023 16:07:20 +0200 (CEST)
+Received: from augenblix2.phytec.de (172.25.0.11) by Berlix.phytec.de
+ (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 25 Sep
+ 2023 16:07:19 +0200
+From:   Wadim Egorov <w.egorov@phytec.de>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <keescook@chromium.org>,
+        <tony.luck@intel.com>, <gpiccoli@igalia.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <upstream@lists.phytec.de>
+Subject: [PATCH] arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops reg
+Date:   Mon, 25 Sep 2023 16:07:10 +0200
+Message-ID: <20230925140710.478027-1-w.egorov@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230921203426.638262-1-beanhuo@iokpp.de>
-In-Reply-To: <20230921203426.638262-1-beanhuo@iokpp.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 25 Sep 2023 16:06:34 +0200
-Message-ID: <CAPDyKFqN9xASjqJWmjtkTGdYEG0AauMzCVkR7VJ10Va0oF-B4w@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron
- eMMC Q2J54A
-To:     Bean Huo <beanhuo@iokpp.de>
-Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
-        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.25.0.11]
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWyRpKBR1diimCqwYmzTBZr9p5jsph/5Byr
+        xbzzh9ktznTnWiz/PJvdou/FQ2aLTY+vAcXX/2S0uLxrDpvFmx9ADa17j7BbvLlwj8Wi+526
+        xf+zH9gd+DxmN1xk8Zgwu5vNY/Gel0wem1Z1snncubaHzWPzknqP/u4WVo/jN7YzeXzeJBfA
+        GcVlk5Kak1mWWqRvl8CVcfLdScaCQ2wV/ZcDGxh3sHYxcnJICJhI3H/5nKmLkYtDSGAJk8Sq
+        g3uZIZwnjBJXT19nA6liE1CXuLPhGytIQkTgCqPElgNz2EEcZoHVjBKz3m5nAqkSFvCVuHa1
+        jxHEZhFQlXi7rh2og4ODV8BCon1vCMQ6eYmZl76zg9i8AoISJ2c+YQGxmYHizVtnM0PYEhIH
+        X7wAs4WA4i8uLWeB6Z127jUzhB0qsfXLdqYJjAKzkIyahWTULCSjFjAyr2IUys1Mzk4tyszW
+        K8ioLElN1ktJ3cQIiiQRBq4djH1zPA4xMnEwHmKU4GBWEuH99YwvVYg3JbGyKrUoP76oNCe1
+        +BCjNAeLkjjv/R6mRCGB9MSS1OzU1ILUIpgsEwenVAOj+CxN3WWJXB9Pn525KUz3IAdPu7no
+        GwOGZSJa/zxvH72vdaLyXUDPX8N77VYSVwrXfp7PNfnUs9gV7kYNDN6fL7/8qxPArLjJZaLT
+        B/u1nMYpxeJrNLiCy5NL9rPKHtVbsbHTTvBryclljHvzSj6LcE1d7mP157xYYaYik/2iW1cT
+        2cw85jopsRRnJBpqMRcVJwIA2fvwtpICAAA=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sept 2023 at 22:35, Bean Huo <beanhuo@iokpp.de> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
-> operation be allowed only after a write has occurred. Otherwise, the
-> cache flush command or subsequent commands will time out.
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
-> Cc: stable@vger.kernel.org
-> ---
-> Changelog:
->
-> v2--v3:
->     1. Set card->written_flag in mmc_blk_mq_issue_rq().
-> v1--v2:
->     1. Add Rafael's test-tag, and Co-developed-by.
->     2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
-> ---
->  drivers/mmc/core/block.c  | 4 ++++
->  drivers/mmc/core/mmc.c    | 5 +++++
->  drivers/mmc/core/quirks.h | 7 ++++---
->  include/linux/mmc/card.h  | 2 ++
->  4 files changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 3a8f27c3e310..14d0dc7942de 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2387,6 +2387,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
->                                 ret = mmc_blk_cqe_issue_rw_rq(mq, req);
->                         else
->                                 ret = mmc_blk_mq_issue_rw_rq(mq, req);
-> +
-> +                       if (host->card->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH &&
+Seems like the address value of the reg property was mistyped.
+Update reg to 0x9ca00000 to match node's definition.
 
-Please add an inline helper function for this in
-drivers/mmc/core/card.h, along with the others.
+Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
+---
+ arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[...]
+diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+index 7cfdf562b53b..2de74428a8bd 100644
+--- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
++++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+@@ -58,7 +58,7 @@ reserved-memory {
+ 
+ 		ramoops: ramoops@9ca00000 {
+ 			compatible = "ramoops";
+-			reg = <0x00 0x9c700000 0x00 0x00100000>;
++			reg = <0x00 0x9ca00000 0x00 0x00100000>;
+ 			record-size = <0x8000>;
+ 			console-size = <0x8000>;
+ 			ftrace-size = <0x00>;
+-- 
+2.25.1
 
-Kind regards
-Uffe
