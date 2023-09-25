@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3C47AD942
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0BA7AD946
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbjIYNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S231984AbjIYNja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjIYNjV (ORCPT
+        with ESMTP id S231908AbjIYNj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:39:21 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB28107
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:39:15 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c5bbb205e3so58370665ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:39:15 -0700 (PDT)
+        Mon, 25 Sep 2023 09:39:29 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8141FF
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:39:21 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso42172135ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:39:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695649155; x=1696253955; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eKlzTcjLE8dmyYbSp67mSfFAcCqOvfM8wch2jpInsyI=;
-        b=IwlgH3JaVqRgAfe5QvA4D82+ZQ+nIPNE0MP8Q/Rirgaup/3e0cwODR80PQem3A57/u
-         R4m5kbxmkB3js5vwIpuPPMbhVKc6ZZIYCDcz+VfYwNLnUaMYekV1e9mQ4qWuabHTB4JA
-         Dpv6vsWCPffnq6BhhtFTf7DUy3uX6eqO9I6j8qpS7aRkfrOaZ5TNWH9AOcIobTyzCxxG
-         PuqFXhO5tf/8X9Ncbxe4xgf2/ZPsV68W84ZgR9m6nJFibdaQKrDb6zv9G+Izm++Yl1XL
-         t3XN4UAY6nDajWDVZNacq6XtmZg6VlX2uR7QEE0wR97+r1FwNpPLcQr6u/1GMsTwEK9S
-         lRmg==
+        d=ventanamicro.com; s=google; t=1695649161; x=1696253961; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CsJSyEFV+awfjzqWEQrKDCJAKL6BoM6HZkqImf1ste0=;
+        b=m9RKglTm9ThCLxCO6QpyfZX+xezakDScSzhxxCsFI2lcoF1CdQ2n2+6QirVUvUM6cz
+         8ufWJLRbXuynmoYSnlJWMyah5Tk+hmQQTWhajOdEIwobybVnPXOvrDXZVxcSMyknMJNY
+         DrcAdTeaa5F+XOQc+N/2DT9aO70g9tkGfXqY4Y7dL3V71b722/nkrxyQll8PZ5hrS/RZ
+         q4izsoLjRn+QectI65Ncw1/r9i6fciqPf7eQoB4Dt1PGE5aCmlMNu6GMcr+8Zl31A9hI
+         1Zj/FPCi4MTY4XU5OpQDu5Dyv4/JYb++1ryf6qbIW5x3YWEyc7u2sKr3Empqil/3qkmF
+         xe3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695649155; x=1696253955;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eKlzTcjLE8dmyYbSp67mSfFAcCqOvfM8wch2jpInsyI=;
-        b=l4YhWrBwVRsstP3+MiGs7ps9/sqSltu2qJwOHrYc3l+14bY8MC41QUzEJ1CXDoiv2w
-         teWD8BGJDsmQl8efGyNqGVVbYJufVo/n9WtljbrL5jv2itHdNfIZMVQ40HwwsIwrFhV9
-         5zqlkL/u65uIrZWBgC/PoFYqsgS8Tk8/phYeszdt4MXkKwQJdHEXBNV5gNdb7udhzAZQ
-         qmOEF9wRvpFyBZ8LHVCZxrixNF/3cUpCRDD9qD+qQBR3xiVcADnT1EUirUGhhZeOkP+m
-         WablvOG90YrqsTLpDzteJMbbLt5QYtPaawSIIbDbmd86x8Yjr0UIfpdKZ7SuxaRjKHev
-         j7WQ==
-X-Gm-Message-State: AOJu0YyueUaO7EAwY4UR+mpXCgQ4rfVNK5cJ+KxASCYpxrPJNYfgf7QQ
-        Fk1WeArTbpZKh/FNfS26AaA2fA==
-X-Google-Smtp-Source: AGHT+IHS8Wv/g/qamJVplasJy8yBOlFgPURiUvskvgySyTGlNOySwwqAtel1reKcngtN7Jgwh6mD8A==
-X-Received: by 2002:a17:902:c950:b0:1c5:db4e:bb2c with SMTP id i16-20020a170902c95000b001c5db4ebb2cmr9270815pla.64.1695649154596;
-        Mon, 25 Sep 2023 06:39:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695649161; x=1696253961;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CsJSyEFV+awfjzqWEQrKDCJAKL6BoM6HZkqImf1ste0=;
+        b=Rbt80+hb+v262F0fNvDwjZ0eMSnerqTKGKOoIiKnew0utOsaK/vIdxbitbOo9z6jCm
+         NFmhOtX7+y+hMjL3QG/sCsx1kP29ObnXt8bLKcpPh1Bp6QtzQt3VN1wUQ40tosdPLatu
+         kRgqWx15kBuF6NHshk9HzYYc94EHHvoCuC54Y8fGNKiWPCqq2D82E/Y3n31jU9z5/Gv9
+         eJ9slvrNkK9oevkK4ljoLhFNrDZfxIfckUo2XlUzUkAr4hNAnFyEAaehzL0N4s3XBmAx
+         JLVI/0iuz1eh4r5RP39OLCWMncn8qNfgTIOdQ9LxPdVQ4HtJOqeKZO2bMnmHjJwqNB6c
+         Sq/g==
+X-Gm-Message-State: AOJu0Yy3m8pbRhyDRc/C5TaCpQ5BevydJEmKKHzQvsZsOJ+lAu8bTpox
+        O9pFSIPlhtKqMWp0WS4avnI9Qg==
+X-Google-Smtp-Source: AGHT+IGqj9n3VQj53FXQlpdMHVR+4bQF5JgIjkaYGnLOH0hemDoUwEedX5Qz4D6VU5amsUQF9Mm5Cg==
+X-Received: by 2002:a17:903:32cf:b0:1c6:1ac5:144c with SMTP id i15-20020a17090332cf00b001c61ac5144cmr2569000plr.40.1695649161179;
+        Mon, 25 Sep 2023 06:39:21 -0700 (PDT)
 Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
-        by smtp.gmail.com with ESMTPSA id p11-20020a170902eacb00b001c625d6ffccsm969433pld.129.2023.09.25.06.39.08
+        by smtp.gmail.com with ESMTPSA id p11-20020a170902eacb00b001c625d6ffccsm969433pld.129.2023.09.25.06.39.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 06:39:14 -0700 (PDT)
+        Mon, 25 Sep 2023 06:39:20 -0700 (PDT)
 From:   Anup Patel <apatel@ventanamicro.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Atish Patra <atishp@atishpatra.org>,
@@ -64,14 +65,16 @@ Cc:     Andrew Jones <ajones@ventanamicro.com>,
         kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
         Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v2 0/9] KVM RISC-V Conditional Operations
-Date:   Mon, 25 Sep 2023 19:08:50 +0530
-Message-Id: <20230925133859.1735879-1-apatel@ventanamicro.com>
+Subject: [PATCH v2 1/9] dt-bindings: riscv: Add XVentanaCondOps extension entry
+Date:   Mon, 25 Sep 2023 19:08:51 +0530
+Message-Id: <20230925133859.1735879-2-apatel@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230925133859.1735879-1-apatel@ventanamicro.com>
+References: <20230925133859.1735879-1-apatel@ventanamicro.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,42 +83,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series extends KVM RISC-V to allow Guest/VM discover and use
-conditional operations related ISA extensions (namely XVentanaCondOps
-and Zicond).
+Add an entry for the XVentanaCondOps extension to the
+riscv,isa-extensions property.
 
-To try these patches, use KVMTOOL from riscv_zbx_zicntr_smstateen_condops_v1
-branch at: https://github.com/avpatel/kvmtool.git
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+---
+ Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-These patches are based upon the latest riscv_kvm_queue and can also be
-found in the riscv_kvm_condops_v2 branch at:
-https://github.com/avpatel/linux.git
-
-Changes since v1:
- - Rebased the series on riscv_kvm_queue
- - Split PATCH1 and PATCH2 of v1 series into two patches
- - Added separate test configs for XVentanaCondOps and Zicond in PATCH7
-   of v1 series.
-
-Anup Patel (9):
-  dt-bindings: riscv: Add XVentanaCondOps extension entry
-  RISC-V: Detect XVentanaCondOps from ISA string
-  dt-bindings: riscv: Add Zicond extension entry
-  RISC-V: Detect Zicond from ISA string
-  RISC-V: KVM: Allow XVentanaCondOps extension for Guest/VM
-  RISC-V: KVM: Allow Zicond extension for Guest/VM
-  KVM: riscv: selftests: Add senvcfg register to get-reg-list test
-  KVM: riscv: selftests: Add smstateen registers to get-reg-list test
-  KVM: riscv: selftests: Add condops extensions to get-reg-list test
-
- .../devicetree/bindings/riscv/extensions.yaml | 13 ++++
- arch/riscv/include/asm/hwcap.h                |  2 +
- arch/riscv/include/uapi/asm/kvm.h             |  2 +
- arch/riscv/kernel/cpufeature.c                |  2 +
- arch/riscv/kvm/vcpu_onereg.c                  |  4 ++
- .../selftests/kvm/riscv/get-reg-list.c        | 71 +++++++++++++++++++
- 6 files changed, 94 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+index 36ff6749fbba..cad8ef68eca7 100644
+--- a/Documentation/devicetree/bindings/riscv/extensions.yaml
++++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+@@ -171,6 +171,13 @@ properties:
+             memory types as ratified in the 20191213 version of the privileged
+             ISA specification.
+ 
++        - const: xventanacondops
++          description: |
++            The Ventana specific XVentanaCondOps extension for conditional
++            arithmetic and conditional-select/move operations defined by the
++            Ventana custom extensions specification v1.0.1 (or higher) at
++            https://github.com/ventanamicro/ventana-custom-extensions/releases.
++
+         - const: zba
+           description: |
+             The standard Zba bit-manipulation extension for address generation
 -- 
 2.34.1
 
