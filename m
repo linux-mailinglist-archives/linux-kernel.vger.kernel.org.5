@@ -2,200 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA22D7ADE9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC9D7ADEB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbjIYS0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 14:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
+        id S230114AbjIYS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 14:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjIYS03 (ORCPT
+        with ESMTP id S229584AbjIYS35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:26:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F9D95;
-        Mon, 25 Sep 2023 11:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695666383; x=1727202383;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=GDO9NBdQbb2vHvaxEPsWi3O0MELW2Mq02eQ81ork968=;
-  b=ZOk++WD+SpNB3gplCo2nZH9S5qh/nVpPIzQVcSSoJbJCUyq2cNFW/k6U
-   qWwhnKepN80UXmVrLjVB48lbwOUl2OrQu5uTY4ltcd33VHmeMXkcOqYbV
-   uumdorXYD/Z3/cbnwNNzaFHsfG/JmzGnNUt2395lSZhCwij+xP1UgXEqN
-   NFIajcdbCNyldMoo+S8sE5kw4XELt5lEXLjPNo8HGm7MU/GlZMvxzJovc
-   Hv1xLsEsGd8/+NFFnya8Zr3hw8RtJ3pm0uqCJe2hOe/i56obU0TyxGp7I
-   i6yNiAGiFlXEC8c3sRnaGkaSKtDZ7NyzqwK54DvXvOlsNt+63bLJQBhoI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="366392196"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="366392196"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 11:25:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="814085340"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="814085340"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Sep 2023 11:25:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 25 Sep 2023 11:25:58 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 25 Sep 2023 11:25:58 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 25 Sep 2023 11:25:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jhAoP+bzOl+T+KTIRFl17WnA0gmf1ZoDyRxll2vwkCJIwI2L8p0fYiVr1rnHocWS6z/TNvHXy1uCMXREYnVDkJDxfm8DdvQ4uDj/30dyPFvterhCHvpf/xopW3mJsmjAedRZN3f+GaGAWPo/h/2pfh8ESX6x21WVPCKeR/nYTy12MaqTcbsvrfEewqfrIqbaMlr1Gr5KCmM3H6LULpedp19DkzDCiURVKFoumDC3sWDLVkS35+PflQMPGKNbDrPTFpKORjHi0yH3/uZnSn0IVpyoAUkZcwIGLj5IGiXNZ49Qhknu0vsDpjweZFxv9KSkmlKaoRS32VRNchAFB9p2Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d3omtEYilo4HP6jhdJBax4gXSuST5xFAuo5PGFVdc3I=;
- b=lnswQd9MTdKl407fftaDeJVfhWcadFcEIPejs8i9jCBXui6HBq6sSdACIQ9Tb7j62IS1171tprSTiIi2+qnTCC4FTVePzgjvbXxq/hhxIayBFDrbLKPFjfSmwO2ObrZg2hsAduouNTysHZmKZliGPXUdoAASlNkQdhAVt06BwI9PJYmUz6UNde4f1eUUlvSgn/zICXsPsNidQZErA1z0kgSPhAk1cxqRNWN6iP+HlZfJ+Xf5btwhQd7gvPCjHbru7Ri8T25Av+K8sJ5HDiHAd36YBY6Pg+TbvLSpfqzOGUOf0jLBC2Wi43/66NpEf+wf/+rQ4OHz8WcEWQh89t2B7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3768.namprd11.prod.outlook.com (2603:10b6:a03:fa::20)
- by DM6PR11MB4529.namprd11.prod.outlook.com (2603:10b6:5:2ae::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 18:25:56 +0000
-Received: from BYAPR11MB3768.namprd11.prod.outlook.com
- ([fe80::fca6:a86:a250:ad54]) by BYAPR11MB3768.namprd11.prod.outlook.com
- ([fe80::fca6:a86:a250:ad54%7]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 18:25:56 +0000
-Message-ID: <8db70d9a-28e0-1b3a-afb2-e569037471cc@intel.com>
-Date:   Mon, 25 Sep 2023 11:25:52 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 6/9] platform/x86/intel/ifs: Metadata validation for
- start_chunk
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC:     Hans de Goede <hdegoede@redhat.com>, <markgross@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-        <rostedt@goodmis.org>, <ashok.raj@intel.com>,
-        <tony.luck@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>, <patches@lists.linux.dev>,
-        <ravi.v.shankar@intel.com>, <pengfei.xu@intel.com>
-References: <20230913183348.1349409-1-jithu.joseph@intel.com>
- <20230922232606.1928026-1-jithu.joseph@intel.com>
- <20230922232606.1928026-7-jithu.joseph@intel.com>
- <e628f81c-5023-2e59-f45f-e76885e41446@linux.intel.com>
-From:   "Joseph, Jithu" <jithu.joseph@intel.com>
-In-Reply-To: <e628f81c-5023-2e59-f45f-e76885e41446@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW2PR16CA0058.namprd16.prod.outlook.com
- (2603:10b6:907:1::35) To BYAPR11MB3768.namprd11.prod.outlook.com
- (2603:10b6:a03:fa::20)
+        Mon, 25 Sep 2023 14:29:57 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E2595
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:29:50 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-41513d2cca7so64421cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695666589; x=1696271389; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+PMYRfehl7AKwIuYYv4VYHbWKGFD1AMTVVElbcrzeIk=;
+        b=qxik4R9HkVKTqGeIWOJhuEN3oz8egBGnDC/O1lXDBmQStvd0vqtovtXGQHbVYd8ga+
+         r7/eQLEHJ5vbSAqWX90YpdUTxOltKsk+vHqDz48rq0BjQ3hSNFgEaW2yTcFjf+SVWaaJ
+         n7V3ibpg9NXiL5ptxcK8d89Kan3koLe1lijZ8EQHQ8ZfmytvVeXLKCguiRfpmQrkFXEA
+         TwFEY3ksv2Vg1u20J3FHxatFtQlaE2q8/SpitKwgr0nJanFfx18+uZWaUWZJssEP2FN4
+         JjKPXUvJZ1ZxqzJYSbl4RS4/Vr+dCcjkoxWcEHwubM8pXF7Zo3vptSkSrK4K+l9o5ZKO
+         VusQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695666589; x=1696271389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+PMYRfehl7AKwIuYYv4VYHbWKGFD1AMTVVElbcrzeIk=;
+        b=f/R7IeUqEU/tgzHVoIUN15XGbUmaunqasb5dbAlMZS670tJonmRY8mtML949HZV7ON
+         EDGkga16Qf2ibBa8r05tE8Z1VC6TLdV1roCgceQd/i7i53F8QRCSkdm8h0FR1XMBEaRf
+         fygJEXvgmr53BXi6FvcpxWPrkvy3CVTmorANmHFoCWDOwP9mFEAj16LSixWf8xSPimbw
+         j9n62alpnH01awcHSzLfQmqWN7B/zRMaGYpXianzQRCInVI8s6OraeyjW4FV46ACKMeo
+         NRRvHD1vqS+yHoRuRpMzljhyWdT9/mUBJDSL0TwWp5T503zGHwHL8ktmiyabJY7fSgZj
+         mZ0A==
+X-Gm-Message-State: AOJu0YzY/PsbvEzjPGucpEroIzle5yKiuv0huSszSBbHyrCTUg4KwC4K
+        fHC0tFluExPJAp3SbGvaiq5i98M1fe13RfO9zWHbLA==
+X-Google-Smtp-Source: AGHT+IHicwa9QDTeTPHHU8BVtkrgHPiklf5M3rzkcoONXTpM6moVUBITlBvKtKVa9IkskmrsHPc6ryXwgvT56Sv09eY=
+X-Received: by 2002:ac8:5a46:0:b0:410:88dc:21b with SMTP id
+ o6-20020ac85a46000000b0041088dc021bmr45741qta.26.1695666589355; Mon, 25 Sep
+ 2023 11:29:49 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3768:EE_|DM6PR11MB4529:EE_
-X-MS-Office365-Filtering-Correlation-Id: a086c32b-9779-4275-6c3b-08dbbdf4dbb5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lhJi0U+31lmA3m71xHtpHtu8nCn/vUGvbdq6nupGzeIlK3xx+wdmMsc3KmAdGYlvCVkIqOwhZfamWlS1ZdrYyc1wnvCinOzXTv8h6c5KjwOoEEDc9DkrrdMxsIl7cAUiQze6EMLu7VoCb5o+vVWRcMuBuYiP8ImpUmsIeCFeJq4JCoL6Z46jrlBX3TXS3xrBtnbunYomtwuXG5DkFUCQbZh2g1sBwemcigbfdWEkMAYQpSzF1ZeQgx6CGlMjFxWIK7T7fj6eCQ31vRkdfaCBonMKzHfkiNIOg/2pDKbQzZl1VNkSMn4/01IVHFo5KuIOcyyXNeAf7XlwwKl2e4UOJq5O7HJSBK8yb/aXnlrUJrQqmI0Ly3xCEjtAd+OOG2QIi1sktNR67sAFsZZJ27v64P5wzRwVJ39WDMj7p1ZNtAA61baUatDZ1uNqhfdtzawLRJuc0ACOlPiJMzEbU2vSr0E2XibQFZXrRIM4KwOTc5PmfEOfzwXG/Fbf0GCQldg3Po8gkVDiiMf6AJgGCKm2GhvqOPN2HqdW7o0r0E76aIbStS1ggXId5p+LpH03xvn68+8/kDzc5bdQC4m+67dpRAg0OxJ0nRomBssjz6vX5BO2uB8mao7gMgvVllrP74LJw6hfLac8DnYOrplqWo7lhA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3768.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(451199024)(1800799009)(186009)(31686004)(54906003)(83380400001)(2906002)(5660300002)(316002)(6916009)(41300700001)(7416002)(8676002)(8936002)(36756003)(4326008)(66476007)(86362001)(66946007)(66556008)(31696002)(6486002)(26005)(6512007)(6666004)(6506007)(53546011)(66574015)(82960400001)(2616005)(38100700002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXl5cGNhRFljQUY5VWJWUEZPOTE1amUvMHJXSlNMY1FtL0w2NE9wdUZ6dFpp?=
- =?utf-8?B?bHJTRHFMbFE3cnFKWGs3aWhxZnRqb2J0bFdRT1dXN2NiVVFtVlVXdWRxODVk?=
- =?utf-8?B?MVdENkRiNG9rMlZNOWNoVVVvZ3VlUVZKYTRPeDVId3huWVZCMENCUzBGOHFm?=
- =?utf-8?B?N0NHYjJrV09jUnIrWVBwaGEzRk5Ba2E4YVQ5RFE3ZUV6U0VWWFkzNWhhWGsr?=
- =?utf-8?B?Z0pxdk5Sa1VjYnFQcERCVGE2NVNiYzlQbWVyaDZFYUg4S3hNcFJIQTJlL3BN?=
- =?utf-8?B?b1c4YXZyRWhiVTFCTm8wVlpxQ3BtY0VqVCtyUXYvZEI0cWxwQXF6bWJRL1NZ?=
- =?utf-8?B?MUdKa0FzbGw4VjFndTlxRVA3bGpWUk1WUHVGSnhZb2xvS0wrWHZVcnhNMGZV?=
- =?utf-8?B?cnhjMVgzblJRZnl5YlYwME1KUnFRWkdod1E3MU9CZkhZWFRHbldJNm5UTTg3?=
- =?utf-8?B?RFUzcnd1bnBaSnVSb0F2SHc4ZG5DT01DYXEvcHRHTkVieFpFR3MyL1lBb3Zm?=
- =?utf-8?B?T1lnQzdUdm1ZOXlqdTJCQndlanZNR0h5c3R3VVc2K0dzNUsrdWN4dkV1aWlQ?=
- =?utf-8?B?VCtVd3ZiQ3V5eVBjem1QK2QzOXljS3hrWitaK1ZTUkpRa3JoNlduNDh5T0Jm?=
- =?utf-8?B?U2srNjBTU0NJcTNrQkZKVGdRYlJ6OUhLMU5xRzVZYmZ5cklLMDlXNWgxcDhQ?=
- =?utf-8?B?dXlxcDJjSmF2S2hxU2xOTE9UQ0g1ZmdTOXhmVkhrYyt4Y3Btcitib1l1eGM5?=
- =?utf-8?B?ZXNRL3lqNlVRSU0rcWdGS3ZIbVk3VG1yYTRhNnVVRXBVbll4YkFLeWlsUlpU?=
- =?utf-8?B?UElaTE1ZU1J4b3JtcmJDY2VjOS92Ykw2THBiNHRVelJsb2NGQ2cxOUdUcFpI?=
- =?utf-8?B?b2t0ZnBtYm05OExBcUdvd0JYWVNDS2dUeHFxWUYrZ1FqUmNiaHI1VUFraW1m?=
- =?utf-8?B?TG93VGVwNzdxcUFmejJicXQwN0QxWWtobFVja2dKSkNUaWFSckxEbWcrZDJm?=
- =?utf-8?B?aXhpNWFpcWpvb2NsMitja0E5S2JBS2FmeFZ6NWtzZU1ib1ZRaWxrcGJvZmR3?=
- =?utf-8?B?bWdVRXY0N1MwOW42dnhsY0RoVXBUN1NIczhyVXpzM2ErMTY5R29YUlpjc3hY?=
- =?utf-8?B?aUt0RDRMZDhMaFZ0K24vOXV5MWJJRWkwY1UrL1ZTdHU4bWxtTHRYN0NBNkRE?=
- =?utf-8?B?SE5uQW5xK25RdHBlTFdieWxIL2xpck5UZ2R6WERWTjk4U1VhcnpLQU9wUTB0?=
- =?utf-8?B?RHR3TFFTV25wRURROEpRRDAzUzNJRDVvOSswSTlMUkZ4bDNXSXV1WG5SSmQ5?=
- =?utf-8?B?UW51dVAwbi9YTndhOWphbmhjd3NrVkdUc2E5Y0tqRkVHYUU3NEptNW5jc2xN?=
- =?utf-8?B?bWg3SnV2SFpLZUQvY3hhN3pacGRHditDQlRzclRUZFByQVdZOG9vZnVBV1hx?=
- =?utf-8?B?ZFJFVC9RcFJLdW51Rk12YVlmM1RaSmdVOXVOTzQwV1h1ODJnY1FQZTU3SWdi?=
- =?utf-8?B?Zk95T2xMdlNSS2UzWTFFcGpTckc4ZE1qMDVMMFRuZ1hLK1lrSkRiWktoSFI5?=
- =?utf-8?B?a2x0Qm8yNmZZWVNJKyt3bGZweVhxcFBoSFhpR0hpZnhGaDgxVkluSWorRWJL?=
- =?utf-8?B?UzRsOEVXMDZVNU4rTkRRVjhncjc3aG05TnhhRlJKSVJQbDUyblZEUHEzL2xm?=
- =?utf-8?B?aWhXUTVPSFpuQit2bTdKOUNjNHZ1NzVpUW1aVFQ2ejdPNUN1eE5STUowTStn?=
- =?utf-8?B?Yk5RL1g2Zmh0Mm11d2JYZHk1RnpEQlpSSThoand6N25HUlF3czNZNFdwN1FZ?=
- =?utf-8?B?eHRPM0FFT0hYSnFtdFdKZ3Z2TjgvU0lERVU1M1U2TXdvb2dwUEl0RnNIQklP?=
- =?utf-8?B?MEhYWXRGV2ZGTWpuODRKeGc0VzZIOFk1SkJDNkJSZFk5czNzYklVelNNNUJP?=
- =?utf-8?B?ZDN6cEZ2NUpRY3F0dTN5MndzeXM0b2tGcmhEdjlsVXVhMkdOQ3ZxQm40T2FJ?=
- =?utf-8?B?UmM4TTI0L3ZScld6bmNORExuQ3U4TnBna0RQS09tRTlpRFFjTG8vRk41NFJs?=
- =?utf-8?B?bE5MWmRkdTIrTkwxNGQyeDdxeWNZbGpjWXhMUDZ2elBab0FzdXc0U0xyV3Q0?=
- =?utf-8?B?M210UnduMmdCUGE3dDBQY1l5T2dYTTJGc3JMa0kyWFZtVTRYQ1NSS3F4YTly?=
- =?utf-8?B?YlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a086c32b-9779-4275-6c3b-08dbbdf4dbb5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3768.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 18:25:56.0682
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2p7rpe8j+VlROLMsl+eYC9VyLy+3fdO1Uqijffcb3zB1TTpoMe/ZZJgaqL0zwf7Wr6E/FlhEMnO2Wu0HKk+o/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4529
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230925061824.3818631-1-weilin.wang@intel.com>
+In-Reply-To: <20230925061824.3818631-1-weilin.wang@intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 25 Sep 2023 11:29:34 -0700
+Message-ID: <CAP-5=fU-jTKpo8j=7t_xbgnmQDT2+BcmmRY7SWb8e7tyRS7hQQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/25] Perf stat metric grouping with hardware information
+To:     weilin.wang@intel.com
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/25/2023 8:45 AM, Ilpo Järvinen wrote:
-> On Fri, 22 Sep 2023, Jithu Joseph wrote:
-> 
->> Add an additional check to validate IFS image metadata field prior to
->> loading the test image.
->>
->> If start_chunk is not a multiple of chunks_per_stride error out.
->>
->> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
->> Reviewed-by: Tony Luck <tony.luck@intel.com>
->> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
->> ---
->>  drivers/platform/x86/intel/ifs/load.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
->> index b09106034fac..c92d313b921f 100644
->> --- a/drivers/platform/x86/intel/ifs/load.c
->> +++ b/drivers/platform/x86/intel/ifs/load.c
->> @@ -291,6 +291,13 @@ static int validate_ifs_metadata(struct device *dev)
->>  		return ret;
->>  	}
->>  
->> +	if (ifs_meta->chunks_per_stride != 0 &&
->> +	    (ifs_meta->starting_chunk % ifs_meta->chunks_per_stride)) {
-> 
-> I meant that != 0 should be on the second line.
+On Sun, Sep 24, 2023 at 11:19=E2=80=AFPM <weilin.wang@intel.com> wrote:
 >
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> Perf stat metric grouping generates event groups that are provided to ker=
+nel for
+> data collection using the hardware counters. Sometimes, the grouping migh=
+t fail
+> and kernel has to retry the groups because generated groups do not fit in=
+ the
+> hardware counters correctly. In some other cases, the groupings are colle=
+cted
+> correctly, however, they left some hardware counters unused.
+>
+> To improve these inefficiencies, we would like to propose a hardware awar=
+e
+> grouping method that does metric/event grouping based on event counter
+> restriction rules and the availability of hardware counters in the system=
+. This
+> method is generic as long as all the restriction rules could be provided =
+from
+> the pmu-event JSON files.
+>
+> This patch set includes code that does hardware aware grouping and update=
+d
+> pmu-event JSON files for four platforms (SapphireRapids, Icelakex, Cascad=
+elakex,
+> and Tigerlake) for your testing and experimenting. We've successfully tes=
+ted
+> these patches on three platforms (SapphireRapids, Icelakex, and Cascadela=
+kex)
+> with topdown metrics from TopdownL1 to TopdownL6.
+>
+> There are some optimization opportunities that we might implement in the =
+future:
+> 1) Better NMI hanlding: when NMI watchdog is enabled, we reduce the defau=
+lt_core
+> total counter size by one. This could be improved to better utilize the c=
+ounter.
 
-Ah I see ... Will change
+Thanks Weilin! I'm checking out the series. Hopefully the NMI watchdog
+perf event can go away soon with the buddy scheme:
+https://lore.kernel.org/lkml/20230527014153.2793931-1-dianders@chromium.org=
+/
+But better NMI handling would be true for people without the latest kernel.
 
-Jithu
+Thanks,
+Ian
+
+> 2) Fill important events into unused counter for better counter utlizatio=
+n:
+> there might be some unused counters scattered in the groups. We could con=
+sider
+> to add important events in this slots if necessary. This could help incre=
+ase the
+> multiplexing percentage and help improve accuracy if the event is critica=
+l.
+>
+> Remaining questions for dicussion:
+> 3) Where to start grouping from? The current implementation start groupin=
+g by
+> combining all the events into a single list. This step deduplicates event=
+s. But
+> it does not maintain the relationship of events according to the metrics,=
+ i.e.
+> events required by one metric may not be collected at the same time. Anot=
+her
+> type of starting point would be grouping each individual metric and then =
+try to
+> merge the groups.
+> 4) Any comments, suggestions, new ideas?
+> 5) If you are interested to test the patch out and the pmu-event JSON fil=
+es of
+> your testing platform is not provided here, please let me know so that I =
+could
+> provide you the files.
+>
+>
+> Weilin Wang (25):
+>   perf stat: Add hardware-grouping cmd option to perf stat
+>   perf stat: Add basic functions for the hardware-grouping stat cmd
+>     option
+>   perf pmu-events: Add functions in jevent.py
+>   perf pmu-events: Add counter info into JSON files for SapphireRapids
+>   perf pmu-events: Add event counter data for Cascadelakex
+>   perf pmu-events: Add event counter data for Icelakex
+>   perf stat: Add helper functions for hardware-grouping method
+>   perf stat: Add functions to get counter info
+>   perf stat: Add helper functions for hardware-grouping method
+>   perf stat: Add helper functions to hardware-grouping method
+>   perf stat: Add utility functions to hardware-grouping method
+>   perf stat: Add more functions for hardware-grouping method
+>   perf stat: Add functions to hardware-grouping method
+>   perf stat: Add build string function and topdown events handling in
+>     hardware-grouping
+>   perf stat: Add function to combine metrics for hardware-grouping
+>   perf stat: Update keyword core to default_core to adjust to the
+>     changes for events with no unit
+>   perf stat: Handle taken alone in hardware-grouping
+>   perf stat: Handle NMI in hardware-grouping
+>   perf stat: Handle grouping method fall back in hardware-grouping
+>   perf stat: Code refactoring in hardware-grouping
+>   perf stat: Add tool events support in hardware-grouping
+>   perf stat: Add TSC support in hardware-grouping
+>   perf stat: Fix a return error issue in hardware-grouping
+>   perf stat: Add check to ensure correctness in platform that does not
+>     support hardware-grouping
+>   perf pmu-events: Add event counter data for Tigerlake
+>
+>  tools/lib/bitmap.c                            |   20 +
+>  tools/perf/builtin-stat.c                     |    7 +
+>  .../arch/x86/cascadelakex/cache.json          | 1237 ++++++++++++
+>  .../arch/x86/cascadelakex/counter.json        |   17 +
+>  .../arch/x86/cascadelakex/floating-point.json |   16 +
+>  .../arch/x86/cascadelakex/frontend.json       |   68 +
+>  .../arch/x86/cascadelakex/memory.json         |  751 ++++++++
+>  .../arch/x86/cascadelakex/other.json          |  168 ++
+>  .../arch/x86/cascadelakex/pipeline.json       |  102 +
+>  .../arch/x86/cascadelakex/uncore-cache.json   | 1138 +++++++++++
+>  .../x86/cascadelakex/uncore-interconnect.json | 1272 +++++++++++++
+>  .../arch/x86/cascadelakex/uncore-io.json      |  394 ++++
+>  .../arch/x86/cascadelakex/uncore-memory.json  |  509 +++++
+>  .../arch/x86/cascadelakex/uncore-power.json   |   25 +
+>  .../arch/x86/cascadelakex/virtual-memory.json |   28 +
+>  .../pmu-events/arch/x86/icelakex/cache.json   |   98 +
+>  .../pmu-events/arch/x86/icelakex/counter.json |   17 +
+>  .../arch/x86/icelakex/floating-point.json     |   13 +
+>  .../arch/x86/icelakex/frontend.json           |   55 +
+>  .../pmu-events/arch/x86/icelakex/memory.json  |   53 +
+>  .../pmu-events/arch/x86/icelakex/other.json   |   52 +
+>  .../arch/x86/icelakex/pipeline.json           |   92 +
+>  .../arch/x86/icelakex/uncore-cache.json       |  965 ++++++++++
+>  .../x86/icelakex/uncore-interconnect.json     | 1667 +++++++++++++++++
+>  .../arch/x86/icelakex/uncore-io.json          |  966 ++++++++++
+>  .../arch/x86/icelakex/uncore-memory.json      |  186 ++
+>  .../arch/x86/icelakex/uncore-power.json       |   26 +
+>  .../arch/x86/icelakex/virtual-memory.json     |   22 +
+>  .../arch/x86/sapphirerapids/cache.json        |  104 +
+>  .../arch/x86/sapphirerapids/counter.json      |   17 +
+>  .../x86/sapphirerapids/floating-point.json    |   25 +
+>  .../arch/x86/sapphirerapids/frontend.json     |   98 +-
+>  .../arch/x86/sapphirerapids/memory.json       |   44 +
+>  .../arch/x86/sapphirerapids/other.json        |   40 +
+>  .../arch/x86/sapphirerapids/pipeline.json     |  118 ++
+>  .../arch/x86/sapphirerapids/uncore-cache.json |  534 +++++-
+>  .../arch/x86/sapphirerapids/uncore-cxl.json   |   56 +
+>  .../sapphirerapids/uncore-interconnect.json   |  476 +++++
+>  .../arch/x86/sapphirerapids/uncore-io.json    |  373 ++++
+>  .../x86/sapphirerapids/uncore-memory.json     |  391 ++++
+>  .../arch/x86/sapphirerapids/uncore-power.json |   24 +
+>  .../x86/sapphirerapids/virtual-memory.json    |   20 +
+>  .../pmu-events/arch/x86/tigerlake/cache.json  |   65 +
+>  .../arch/x86/tigerlake/counter.json           |    7 +
+>  .../arch/x86/tigerlake/floating-point.json    |   13 +
+>  .../arch/x86/tigerlake/frontend.json          |   56 +
+>  .../pmu-events/arch/x86/tigerlake/memory.json |   31 +
+>  .../pmu-events/arch/x86/tigerlake/other.json  |    4 +
+>  .../arch/x86/tigerlake/pipeline.json          |   96 +
+>  .../x86/tigerlake/uncore-interconnect.json    |   11 +
+>  .../arch/x86/tigerlake/uncore-memory.json     |    6 +
+>  .../arch/x86/tigerlake/uncore-other.json      |    1 +
+>  .../arch/x86/tigerlake/virtual-memory.json    |   20 +
+>  tools/perf/pmu-events/jevents.py              |  179 +-
+>  tools/perf/pmu-events/pmu-events.h            |   26 +-
+>  tools/perf/util/metricgroup.c                 |  927 +++++++++
+>  tools/perf/util/metricgroup.h                 |   82 +
+>  tools/perf/util/pmu.c                         |    5 +
+>  tools/perf/util/pmu.h                         |    1 +
+>  tools/perf/util/stat.h                        |    1 +
+>  60 files changed, 13790 insertions(+), 25 deletions(-)
+>  create mode 100644 tools/perf/pmu-events/arch/x86/cascadelakex/counter.j=
+son
+>  create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/counter.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/sapphirerapids/counter=
+.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/tigerlake/counter.json
+>
+> --
+> 2.39.3
+>
