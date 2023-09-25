@@ -2,114 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158717ADDF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACAE7ADDFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjIYRrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 13:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S229533AbjIYRsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 13:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjIYRru (ORCPT
+        with ESMTP id S230084AbjIYRsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:47:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CA2E8;
-        Mon, 25 Sep 2023 10:47:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E92C433C8;
-        Mon, 25 Sep 2023 17:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695664063;
-        bh=Kd5DB5lD9N9X5cbnp5J7jsLmId4kH+fDVReORU0+IDc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZcB+V3TgdH6MzxVKhGXICVICPUyFCbPYSuXdFtbe6jVmY0Ja+qbPuCs8ALEe4gf8u
-         09dfdya+O/JKqgJKTwNr7DHo+S3P4pAGLVahnxLmMqqyHJqiMAhmF7j+2WaQQ2O1S2
-         AQDZoc9RCfn3lxnYbGOnmJat99ll720ebys7FCs0HokP9EyQLkYX4sQ3JX+Wos79wB
-         GTBbiMaWb3imtinrQaCeLWyF6ZuKzMB5ZqVh2q4wuTNct3fnjiaAzuzC+PvbSrHTAz
-         zwCGl9LakzazBi6/SsaKMmhDKm0AwlhaIRncuN1SXbpQmYiaxnGa0X0rpSry0EPUS9
-         5Hj2lE8NGoBbA==
-Date:   Mon, 25 Sep 2023 13:47:42 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com,
-        linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
- previous transaction commit
-Message-ID: <ZRHHvrAf/3BIO4E+@sashalap>
-References: <20230924131529.1275335-1-sashal@kernel.org>
- <20230924131529.1275335-13-sashal@kernel.org>
- <20230925130112.GK13697@suse.cz>
+        Mon, 25 Sep 2023 13:48:09 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F79111
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:48:02 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso857361966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695664081; x=1696268881; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1/UN+h0syPysLtxsvFcqWbygnTfY7kE0+mV4pd8zbOE=;
+        b=RYEr9cYaG57l52hf6D92FVsynybyMfC04x1z06kXcMPBIFTgkV3pwcPmmyEh6CHsmZ
+         k9CFkgieBKsHcaSx4R3liGCSX28LEbeboiK6HiPvLpc3mbsX5BoMREGE+yark4ZU3Se3
+         VJxat/ofNc+oYjiaENTdqRdcvyCkWWctYItLGqsHgn0EUopDDxjbN6Mym/OnxCnTFgci
+         d58HDyP4YLN3C8hXPz7utdfofyPoHVPy9lWxenzQJSsJQ0YLBxQ2aZ/fwf4G4dQoJ1UQ
+         5nXUnkFKlAgaAglDfKOysQpm/JFwVkhIaP4uidAO8XxBrxUfw7/wjSsqM/Sx4fqXv9q5
+         QFHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695664081; x=1696268881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1/UN+h0syPysLtxsvFcqWbygnTfY7kE0+mV4pd8zbOE=;
+        b=Z95iR5yLvh/NNZ1fsBjRxcdqa7qrr38gwTMBgwA+KUJ23bw+ngyToMXzTg9WSvpJI0
+         j+R4YqNg5GyZ2xaDc8/VzOWCJtasiazOi9+Ip4Ogj7mMrqvH149speZN2iRwvSw049rH
+         YwBxoXrk8eYL8aA0kZ1ONivL7VidlZgzAci0UmuAk9V3OZL9MGdVNe9DnMmxtUNysgFr
+         zYHiQLe6t3yUEgDt+Q0jexmqkNNVQ+/BakaYBI1C0BIobp7wjBg25LMZvWlzhnQmziaF
+         LZSUxA/msrF6eab9LROo4yy2KtC2ENUNA9nrXY9J02wGIjniLbWRaaDGj6KbJ4msoj05
+         DXBg==
+X-Gm-Message-State: AOJu0Yz1DhtrHgZ31SXDZMZtMqwr5xVmmED+Kor9TObj2nwnxnLfVrqu
+        bgo6U2kqv/wbPUmNFFyBnKZFX4an+5YQR70ZhB9+Qw==
+X-Google-Smtp-Source: AGHT+IFopHnRoAlyF6POHIUhcvwlhiL61OgNYhhH4qY+wuY7Lc/f7rCYUm4UIz9VvEggFLjrRogYHi+m9F2UFzb7uQQ=
+X-Received: by 2002:a17:906:2189:b0:9a1:e941:6f49 with SMTP id
+ 9-20020a170906218900b009a1e9416f49mr6620490eju.44.1695664081274; Mon, 25 Sep
+ 2023 10:48:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230925130112.GK13697@suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921144400.62380-1-dlechner@baylibre.com> <20230921144400.62380-2-dlechner@baylibre.com>
+ <20230924175720.3be2540b@jic23-huawei>
+In-Reply-To: <20230924175720.3be2540b@jic23-huawei>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Mon, 25 Sep 2023 12:47:50 -0500
+Message-ID: <CAMknhBF56CWKNZ-xvsiaC3c+av8Dvyh+i-op1YxvXv2g8BPYWg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/19] dt-bindings: iio: resolver: add devicetree
+ bindings for ad2s1210
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        Apelete Seketeli <aseketeli@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 03:01:12PM +0200, David Sterba wrote:
->On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
->> From: Josef Bacik <josef@toxicpanda.com>
->>
->> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
->>
->> Internally I got a report of very long stalls on normal operations like
->> creating a new file when auto relocation was running.  The reporter used
->> the 'bpf offcputime' tracer to show that we would get stuck in
->> start_transaction for 5 to 30 seconds, and were always being woken up by
->> the transaction commit.
->>
->> Using my timing-everything script, which times how long a function takes
->> and what percentage of that total time is taken up by its children, I
->> saw several traces like this
->>
->> 1083 took 32812902424 ns
->>         29929002926 ns 91.2110% wait_for_commit_duration
->>         25568 ns 7.7920e-05% commit_fs_roots_duration
->>         1007751 ns 0.00307% commit_cowonly_roots_duration
->>         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
->>         271980 ns 0.00082% btrfs_run_delayed_items_duration
->>         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
->>         9656 ns 2.9427e-05% switch_commit_roots_duration
->>         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
->>         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
->>
->> Here I was only tracing functions that happen where we are between
->> START_COMMIT and UNBLOCKED in order to see what would be keeping us
->> blocked for so long.  The wait_for_commit() we do is where we wait for a
->> previous transaction that hasn't completed it's commit.  This can
->> include all of the unpin work and other cleanups, which tends to be the
->> longest part of our transaction commit.
->>
->> There is no reason we should be blocking new things from entering the
->> transaction at this point, it just adds to random latency spikes for no
->> reason.
->>
->> Fix this by adding a PREP stage.  This allows us to properly deal with
->> multiple committers coming in at the same time, we retain the behavior
->> that the winner waits on the previous transaction and the losers all
->> wait for this transaction commit to occur.  Nothing else is blocked
->> during the PREP stage, and then once the wait is complete we switch to
->> COMMIT_START and all of the same behavior as before is maintained.
->>
->> Reviewed-by: Filipe Manana <fdmanana@suse.com>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> Reviewed-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Sun, Sep 24, 2023 at 11:57=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
+> wrote:
 >
->Please postpone adding this patch to stable trees until 6.6 is
->released. Thanks.
+> On Thu, 21 Sep 2023 09:43:42 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+>
+...
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - spi-cpha
+> > +  - clocks
+> > +  - sample-gpios
+> > +  - assigned-resolution-bits
+> > +
+> > +oneOf:
+> > +  - required:
+> > +      - mode-gpios
+> > +  - required:
+> > +      - adi,fixed-mode
+> I think this allows for both.  It's fiddlier to exclude that but would be=
+ a nice
+> to have perhaps rather than relying on text above that says 'don't do it'=
+.
+>
 
-Ack.
-
--- 
-Thanks,
-Sasha
+example-schema.yaml says that oneOf is XOR (anyOf is OR and would
+allow both).
