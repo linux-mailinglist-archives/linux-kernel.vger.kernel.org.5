@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186C97AD6B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CD67AD6B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbjIYLJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S230210AbjIYLKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbjIYLIv (ORCPT
+        with ESMTP id S229449AbjIYLKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:08:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78906D3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695640124; x=1727176124;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=9p+XqtzXvIJ3hJIh/2hgy3YcmayjqQFoFDHhEcEBbDk=;
-  b=KmHHfcb5g91IPuWi6XO94KkeSowm8yY0aWCV8q3zLwsfYAEF5K8UPCkv
-   n9mNbrkuu92qHjzGQPkPUMnk9wOtgQS5h+6WWJN+1kG92rwMk6uvPJ8C4
-   3itvL9SGHVbhGDADYffqVCFxfiuCofCHIUpmOMgKKJeC65asKJrXStVYV
-   wZ8efo6QVHSlvB9ARotFZzeu5lkrawehWsca6wJm42cO8wxTAtSQca5n9
-   vidopMgvxU8lk/YlUm4sIjh2SHNOz5Wk91kEzIKWYw4IsW9ligtoOO+/v
-   WXwmTxfEgxxvxAe/8kAcpaI4ssN+IuL/Jj8++d1wr2COXCRZCU0cp6iaS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="467510679"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="467510679"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 04:08:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="838536484"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="838536484"
-Received: from smgotth-mobl.ger.corp.intel.com (HELO localhost) ([10.252.40.46])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 04:08:27 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Robert Foss <rfoss@kernel.org>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     neil.armstrong@linaro.org, jonas@kwiboo.se,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        jernej.skrabec@gmail.com, Laurent.pinchart@ideasonboard.com,
-        andrzej.hajda@intel.com
-Subject: Re: [PATCH -next] drm/bridge: clean up some inconsistent indentings
-In-Reply-To: <CAN6tsi44s3h3Ox3mK2pi+Mw8pGCB9fgMcoWmJhCenHoK9=t=-w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230920004400.81091-1-yang.lee@linux.alibaba.com>
- <CAN6tsi44s3h3Ox3mK2pi+Mw8pGCB9fgMcoWmJhCenHoK9=t=-w@mail.gmail.com>
-Date:   Mon, 25 Sep 2023 14:08:25 +0300
-Message-ID: <87a5tao6hi.fsf@intel.com>
+        Mon, 25 Sep 2023 07:10:30 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2086.outbound.protection.outlook.com [40.107.20.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43045C0;
+        Mon, 25 Sep 2023 04:10:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RWj5VRNYi1Ubn1EoSnv5McFkN8azhtdoJ3clI7eLE1NOHf/URaayddenNTkF5vWWFaPaJd1er0rrYVtWV0+lt2kRCnm2ZKmSkNluG2AOHrN1YUQYNLNnt+sjomZKjgHjjfEmBRRRGOM6Jij8l4RVEC48YoinEjdIjdPjplkq9/elrGyofr+dw0EG+WHaUogiepS+j6M6eKNtwaWlaXL077duzaAX2FN9quB49dZ33bPKvxwd//Tx342zT/DTfs2Cf7c0dfp521INQPvmB6X8iLlmqDS6qW6Vd1jgXEBiBzy7yQ/Tg4NAMwS9eD70S9DOMUGGDHRkrlGQroVWL+J/7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PI4uIdIkV9AyG0puYfKz4ztIaAoslrT9fpFWHeY2n3M=;
+ b=Ao+vol1bSAmLTreHQgAmRCNJyrVNykwL0n7fyTgTUxAFREKV7jhO/QCua4MUlqKzI16x4XEEPyFUiRKUM0htQ8m4zNLWLrAdL7qGaizmC1EXf/bFJqE5JC+IhoiirS5NoNm9GPWsAhFAvrvdXEh1hdm9xjSLkqHF/niug7aw+EEyQWPZB3jy7pLNiKFY9IZCZFRz1zdxKsBdi+UJvhqf7bKGDYjyUAFajXdHJ1eOZRdiBT6cZRewmjerDNUKJ38GnP+mOMzsjfIXAlreNHqYRtggxwkHcAjlrlfoB8ibAkNIWfhye5xhpYE8um3Olp2oLEgB7yKe7U/PIbDT5UbtrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PI4uIdIkV9AyG0puYfKz4ztIaAoslrT9fpFWHeY2n3M=;
+ b=UtvSzIEPcPKJiHH8UBLoGELYNzywXhgBBaGT80DTUn0lwtPuZND6OZRyvSN3MIcGB6BqBOQW6eLpBhtzDGLn4YpiYt0KYuSlrVp/EW/F5x0PYjk3gfNu72SyKwaD3SEa6SBSiWIf38pjKjQjyTy8BCYNdgGyJ69pa8HpI17GzGQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by DBBPR04MB7884.eurprd04.prod.outlook.com (2603:10a6:10:1f2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 11:10:17 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 11:10:16 +0000
+From:   Chancel Liu <chancel.liu@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: fsl_rpmsg: List DAPM endpoints ignoring system suspend
+Date:   Mon, 25 Sep 2023 19:09:45 +0800
+Message-Id: <20230925110946.3156100-1-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0023.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::19) To DB9PR04MB9498.eurprd04.prod.outlook.com
+ (2603:10a6:10:360::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DBBPR04MB7884:EE_
+X-MS-Office365-Filtering-Correlation-Id: e90646e2-6d6a-470a-f9b9-08dbbdb7ff47
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C59mhd3rGIjNzXfeK6SNPJL0GTDqg6SQNc0SKdk8iAuyAJd/IeXjV0lerT7bILTrMq/Q63ffoJJAmcIgzzdH/LcJbhkreSIqEOesva1jq5Nx3TcaZq+/Z5QViNUk288+NXj+4Y/sbLWmU0CsSGZKRL207Er0kKqsYjUiWJhB4UZr1iUWt/swVr2C0yq8oyNiSyHNNuGjzoYSxjX99EQitkMJ4vYRoEtPqyLDZ0sia7KmuX2aVPe31Qm6xXBKaHyhadkF4kJOK6pTn77IwJKOkgcTr3a0ub6xIgHg9IbylpZmsPJswlA0R0nJfeAMG5/ynmMRESuQkTDyUXcXnOlYcYQstAkJhStA0QkC8PZugSLAdjXG+2nYnfAcu137rOKNHqdX14xxmjXdp1sIOk/Wx8sa99OCRJoK4WapzDwGiYWUy+97X/Txqocdfhu2Ea6COT/PjrpKQj2KIEvjsgWo8tpJzKGM9uIfN8V2QG+oQZ03/qvfUTy/Nun4/xwDIQ2c/6iTAwv1bGGE2+DRuii13zgu6LTfMgx0NjwBDgB7PaeLBh4ne7MVuXA2J8+p+1ylwW5n/JL942WHrDo4WwJmoiMk581nI6VRbt7TEkjzV7QoNAKZ0TyJIZnpLlodBowT+ZNOoGJUn2lGmFTALKsB2Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39860400002)(376002)(366004)(396003)(230922051799003)(1800799009)(186009)(451199024)(6506007)(52116002)(6512007)(6666004)(1076003)(2616005)(66476007)(86362001)(66946007)(66556008)(6486002)(478600001)(38100700002)(38350700002)(921005)(83380400001)(2906002)(7416002)(8936002)(8676002)(4326008)(36756003)(15650500001)(316002)(5660300002)(41300700001)(44832011)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Qr5kSPlv5BemCjZD4v2K1E4uJjBvj31h9TKjN9+TGm4XvYdTqCeTx1+ecM5T?=
+ =?us-ascii?Q?kSi2CpaG/43Y/86vd/VlWzYFV0cKrDRs6B2FCfzICmaqgqIKsR7V0rfxxx08?=
+ =?us-ascii?Q?1H+ZjzRzmfyvBFxm1mJqJ33AKk17xKOAr/r0oZw7acEvrUG0rhNOhVSfd64e?=
+ =?us-ascii?Q?JAaysHKgaFBXHvtRoVaQ8nV4j93XdSPtxXo/9ABGZ/xnJ+0DgnviDuVVgzek?=
+ =?us-ascii?Q?z+fgeRdkMxhLcmwTX7Jiv/3ysyPSl9pH0WXMG4bEnhQ0CVVjfZUZo7umYHYQ?=
+ =?us-ascii?Q?FVu5HsoK/+M1VDdFdj/i6vBd/WH+3GbsVfzwkEBE15nidblpTmzGYubSsE0Q?=
+ =?us-ascii?Q?oZrC0wgZGlCu4faPQMgPPah86t/HQvXcvq608FbU6muUbkkzM2IScHQ+ohUQ?=
+ =?us-ascii?Q?DzVfmBrX1iP0a/7sPJy9L+Y3771xdWCHoWGyTlE7f8KXg7X6kLq/gPb9zHbj?=
+ =?us-ascii?Q?2LOgaMYmG4BBGH9mfpplI1qmGnfKURhUhwC9bb2lGFq5J8F7PKtNNimytw5v?=
+ =?us-ascii?Q?TlfGhUoJodohSKK1/tuusqCUKHbfV3xjbAT6cUdW2YEbBXME+AeIoZMV+mjT?=
+ =?us-ascii?Q?S8jYJzdW4Q1A2CSAOGyBm/W7K2mcro6sgn/z5f9sogS/LD29zkiaeKdaMDKT?=
+ =?us-ascii?Q?HQvmleZ868hjFaAghzJqUMwX/xPB+SRPci3PgYezygTdHshji2mGqDcLPzjH?=
+ =?us-ascii?Q?JkyMLl8UvUTvk5BtSgIIGjaXTJj0tILu1jViKXQwuivuAP5b12pVOg9Ci0+i?=
+ =?us-ascii?Q?56ZemChAAd/AlpaqC9SmL9oLBztyuqBYCivBf0TI+zRLvH3XqtmzBT2AJfM6?=
+ =?us-ascii?Q?Eb5PiLfVc5cYZCOhn/1Pf1G9SOrZdaq1+aLy6yBbY1bN3zgRhz0UtCgSNzxr?=
+ =?us-ascii?Q?bWyCA05QJCfCyn2xWa264ypaHLHEg4n+FdgSx8kH4wVRiU2P7x5xmz/KFK6J?=
+ =?us-ascii?Q?sARNL6cHPiNWCNUsnGXTsBmOYZB1WcqGaaT4FCxtHNm2aH8bDcDHR5JlDD/n?=
+ =?us-ascii?Q?73roJUrnGXCQL556IFq5EFcui52JOtqHm78TpEUPBfOEHkaJLTX4E0YZCcpI?=
+ =?us-ascii?Q?Gd4SHhP3sfsKHNRFX3p27FsAhZGPyDpOQR1/prnVDv8FACXx03LFRBbaw3o7?=
+ =?us-ascii?Q?4qN3sfZtbdbXhtJ7TSztvZObbCnryN4KSbG6iUrf4QdFzcjnAN0tOeFyHIPD?=
+ =?us-ascii?Q?wR9ZusaPDAtcAamdYdYdHILMB+p0WmGcf8HIxBcfXT+7fRDmoJbFrVOxegYq?=
+ =?us-ascii?Q?XfIpEcC2gjCT5BmI5sqkyG6U3dnHnyAHUwJLXyjR1cTI9EFab4PwFLaglTbq?=
+ =?us-ascii?Q?HEprEU0yROFRtCVpqP7YX0n2wjmdv5Kg5Edetb2y71eU9ZJTf224sRM9/BmM?=
+ =?us-ascii?Q?iS0H91BcBYID3DyZlcjc9ojV/l1oxH52zWUHWaRuzqLchYlcgxq6gsweLoUk?=
+ =?us-ascii?Q?E6n99sgO+qc3GAdw3aB55bp3u/DZe1dwlnmBM2WpAdioPDkFPI1EP84iS4f3?=
+ =?us-ascii?Q?KegwSh55fh+TMmeTh9MbCDFGx16HWp2IT8dVcqcm5zU498NhmMQyMtJck7fE?=
+ =?us-ascii?Q?5clEkm8b6oXfBdAEBV8gl/TG867wLob6ic5qdO8G?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e90646e2-6d6a-470a-f9b9-08dbbdb7ff47
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 11:10:16.5136
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hGflbsOZg+xOQecSoXbMQK2jsJy0xvAVUiaMpkiI9D7Dp+amvyh2FThd0/zN34FB6A6ux0Ghyh0PpbXhid5yPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7884
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023, Robert Foss <rfoss@kernel.org> wrote:
-> NAK
+Add a property to list DAPM endpoints which mark paths between these
+endpoints should not be disabled when system enters in suspend state.
 
-Feels a bit harsh.
+LPA means low power audio case. On asymmetric multiprocessor, there are
+Cortex-A core and Cortex-M core, Linux is running on Cortex-A core,
+RTOS or other OS is running on Cortex-M core. The audio hardware
+devices can be controlled by Cortex-M. LPA can be explained as a
+mechanism that Cortex-A allocates a large buffer and fill audio data,
+then Cortex-A can enter into suspend for the purpose of power saving.
+Cortex-M continues to play the sound during suspend phase of Cortex-A.
+When the data in buffer is consumed, Cortex-M will trigger the Cortex-A
+to wakeup to fill data. LPA requires some audio paths still enabled
+when Cortex-A enters into suspend.
 
-> Personally I value maintaining a simple to follow `git blame` history
-> over correcting indentation.
->
-> Ideally bad indentation should never be committed in the first place.
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+---
+ .../devicetree/bindings/sound/fsl,rpmsg.yaml      | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Agreed, but when that inevitably happens, do you really want it to be
-cast in stone? To me leaving bad indent (or style, or whatever) in place
-indicates we don't care, while the opposite is true.
+diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+index 188f38baddec..d8fd17615bf2 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
++++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+@@ -91,6 +91,21 @@ properties:
+       - rpmsg-audio-channel
+       - rpmsg-micfil-channel
+ 
++  fsl,lpa-widgets:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      A list of DAPM endpoints which mark paths between these endpoints should
++      not be disabled when system enters in suspend state. LPA means low power
++      audio case. On asymmetric multiprocessor, there are Cortex-A core and
++      Cortex-M core, Linux is running on Cortex-A core, RTOS or other OS is
++      running on Cortex-M core. The audio hardware devices can be controlled by
++      Cortex-M. LPA can be explained as a mechanism that Cortex-A allocates a
++      large buffer and fill audio data, then Cortex-A can enter into suspend
++      for the purpose of power saving. Cortex-M continues to play the sound
++      during suspend phase of Cortex-A. When the data in buffer is consumed,
++      Cortex-M will trigger the Cortex-A to wakeup to fill data. LPA requires
++      some audio paths still enabled when Cortex-A enters into suspend.
++
+ required:
+   - compatible
+ 
+-- 
+2.25.1
 
-Maybe look into tooling that lets you easily git blame the parent commit
-of a line in git blame? (For example, in emacs vc-annotate, it's just a
-matter of hitting 'a'.)
-
-
-BR,
-Jani.
-
-
->
-> On Wed, Sep 20, 2023 at 2:44=E2=80=AFAM Yang Li <yang.lee@linux.alibaba.c=
-om> wrote:
->>
->> drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:336 dw_hdmi_cec_suspend() =
-warn: inconsistent indenting
->>
->> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
->> ---
->>  drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu=
-/drm/bridge/synopsys/dw-hdmi-cec.c
->> index 673661160e54..fe2ff4984fc5 100644
->> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
->> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
->> @@ -333,9 +333,9 @@ static int __maybe_unused dw_hdmi_cec_suspend(struct=
- device *dev)
->>         struct dw_hdmi_cec *cec =3D dev_get_drvdata(dev);
->>
->>         /* store interrupt status/mask registers */
->> -        cec->regs_polarity =3D dw_hdmi_read(cec, HDMI_CEC_POLARITY);
->> -        cec->regs_mask =3D dw_hdmi_read(cec, HDMI_CEC_MASK);
->> -        cec->regs_mute_stat0 =3D dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STA=
-T0);
->> +       cec->regs_polarity =3D dw_hdmi_read(cec, HDMI_CEC_POLARITY);
->> +       cec->regs_mask =3D dw_hdmi_read(cec, HDMI_CEC_MASK);
->> +       cec->regs_mute_stat0 =3D dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT=
-0);
->>
->>         return 0;
->>  }
->> --
->> 2.20.1.7.g153144c
->>
-
---=20
-Jani Nikula, Intel
