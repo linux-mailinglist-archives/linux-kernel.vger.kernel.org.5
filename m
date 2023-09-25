@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C19397ADDBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892707ADDC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbjIYRRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 13:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
+        id S232748AbjIYRUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 13:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbjIYRRk (ORCPT
+        with ESMTP id S229437AbjIYRUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:17:40 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01EF10D
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:17:33 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-690d8c05784so5105399b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:17:33 -0700 (PDT)
+        Mon, 25 Sep 2023 13:20:52 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F109107
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:20:46 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c5bbb205e3so62783005ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695662253; x=1696267053; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jh8DqYJ2SwbIqpzzYZaUHPp5PasBm1tKXhMFi2b/M3M=;
-        b=auVOZIDFNAxr9Vgv0qza15dkVmMNPEeW3sab25uiXkrOyMWHtRDypNrAVaeqm/5rfl
-         w5D4DTNUj1s1dRAZfk1REwy7irJXXs6Rx7PQwf+0t2xhaX893VYS55SRj8KOx6JuBGFN
-         dmLLZixHt7ZBWcPhm72lMDb/10XSjQ+XyS3I0=
+        d=chromium.org; s=google; t=1695662446; x=1696267246; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPLbH/Tf+wdfFPVL445Q4TNBVYOrnwBXbZL8JKEtuvw=;
+        b=iu+sNNU2PCMSdc4vDSJEV2lj2fW8yaSajEyyasj4YQhtXfTprLeHrZcg8Lw2mypyJ8
+         kVyEspUVRx45v13jeTtRS9/p1wUN/TuB0aTukwJcFKSvPJ+SOxeEDK3gdN6DnQZm2sxB
+         nm0jWge5ktkN6/shuGjvoxbWv/q8hUBQ7q3Ig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695662253; x=1696267053;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jh8DqYJ2SwbIqpzzYZaUHPp5PasBm1tKXhMFi2b/M3M=;
-        b=ePJVIFlxJISw9WhTvv6PovluA9vhRofEQXvgc9Z9ZZXkzppRT4c69TdiBjxi0FMbd3
-         mjlUEfaRi/f5zn8x//AxP26ulugM+h9AXafwUgqcJT1EhLRprukwcHxoqlG3/s1kJC6l
-         tqpbbIpBC3qAeuuBsAWUhF1a2RXLbk44HsIPME8LoU8aV5b375gKL6oy/sKKzS+K1feO
-         UDsazHVkIWGeU2rVNpa9lSLnpZFlZOd1QG0Kp5TLt+Lw6rq7mBkDJ1MlLjFPHDaLyToB
-         b5tLLy3uSeQ9fp6bJcHZNldpCPGJjFuqbJKL0asMP1yfajXecpjo5Xj5grNB/UFCzu99
-         HJ5w==
-X-Gm-Message-State: AOJu0YwUnLaD51UDxVhtu7e0ho2CpcBmQCmOI95lJBgGOmmGRVtr83g4
-        PSiWczKxDPlF88Hwzj8zaFrVnw==
-X-Google-Smtp-Source: AGHT+IEthMrGJUlIHLvFMqKnkR1JjLvwrAVSHFpBA55LiKKvZb2xEbera8+CZE1rcTc6k8edakLzyA==
-X-Received: by 2002:a05:6a20:1593:b0:138:92ef:78f9 with SMTP id h19-20020a056a20159300b0013892ef78f9mr6679763pzj.6.1695662253260;
-        Mon, 25 Sep 2023 10:17:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695662446; x=1696267246;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kPLbH/Tf+wdfFPVL445Q4TNBVYOrnwBXbZL8JKEtuvw=;
+        b=wYtPKRXw3F3efNE3rzuSAWTozvtiKWh62Ls7I8LxuuGeExZiSqtTO/JX7nLUeoq7kU
+         ZwY67fQaLCMlqVYwE+kHb2MRkuJinQSRqUab2u+P5SJfcDDHq6kiaAYSfqiV3IT9YBbh
+         kgfSQ+/L9400gCbql4u3xyMeE0kiUYkdFwi74l4y5esFpZe6xvkLUDaoVJ5BNBPCV1ck
+         BPL9t7IHnArbLDYFYJodnvTaEHNwgYL26GQAN00GkfsQe7NHJ3NS20YfTkVwgHsmTi2G
+         h3yxBtNAqljTEhc3YryCjU3YfcoxDWv3AyvQZjxfebgdFei+W/Ctj+xxD+XJ7dbAIVJ0
+         oMfQ==
+X-Gm-Message-State: AOJu0YxHSV7wmDJ0FkoqXnkZkmmSt8T9H24UB0kl8p7ejG5B+a44nuhb
+        FnEBpAqkOyAmJdUO7Ekx9Aw8OQ==
+X-Google-Smtp-Source: AGHT+IH/2iId8tq9z0S+QgPxRRa+XsbO8n2kJks60ziSQmgdUQFCwvKzoBFQaNPGDPAy1E/11VievQ==
+X-Received: by 2002:a17:902:ab1a:b0:1b6:6f12:502e with SMTP id ik26-20020a170902ab1a00b001b66f12502emr7369227plb.49.1695662446062;
+        Mon, 25 Sep 2023 10:20:46 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n26-20020aa78a5a000000b006889664aa6csm8377453pfa.5.2023.09.25.10.17.32
+        by smtp.gmail.com with ESMTPSA id u5-20020a170902b28500b001c62b9a51a4sm202654plr.239.2023.09.25.10.20.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 10:17:32 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 10:17:32 -0700
+        Mon, 25 Sep 2023 10:20:45 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Annotate struct linereq with
- __counted_by()
-Message-ID: <202309251016.DEC84A52@keescook>
-References: <20230918091553.1103567-1-andriy.shevchenko@linux.intel.com>
- <ZREuqs2LkkF3jqD8@smile.fi.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: hardening: Add __counted_by regex
+Date:   Mon, 25 Sep 2023 10:20:41 -0700
+Message-Id: <20230925172037.work.853-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZREuqs2LkkF3jqD8@smile.fi.intel.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=680; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=rAmWngsH0Gjx5R0B8Ys0oawcRtQO9WskXs2KSeiUA0Q=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlEcFpTbJw89m25nOYSCFD8DEggHluPsQVN8XIj
+ Dd0XtZOxYaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRHBaQAKCRCJcvTf3G3A
+ JliCD/wOfGWDGI4gYxLuP8jKyzmW7RXSI+PJQ5RlwWdPQlrIl+Us8l+/HAoEMqpJ1Ax5Mr3h0+x
+ NpwgnoB1lpv8enkEOTwaZ4CFp8evfv3MwpQhCKJkXKBCix69B+PvOAb2msqVAvT//xFUIUha5go
+ /YuGCwJ9gEMBzY1aJf0AHMZCZi8FhcjxnSy4Wi+SF6l6L4AXqvyW5UwQFJ2bqnUt/i87GeQ7OUu
+ PQ8R7a+yyVGFxJE7W8pZYFNaslP4M7/wpxCBgnR8eLry38r7xYswvFxxK+6IRF0vyG6Oj0Lqy3P
+ Ri2YDmzYXl7+uFLDOmCvVCcpQj2gzlHlwVvhj+q1mo2C0h+QC/wXVj3C+I/ESWFaUXvV9Vw+h/X
+ S9ACAHO6c1vswtu6XHKGj0EQDeb7oUvwh2c2QCo0CB82c/7KxqJ2YhX6ZACogah01ILQfBuxCH+
+ lCTidggRtPjrcqzAP2n/UYOhRslJgcZWUav64Vj+KcPtg1ub2UBHURQOrjuvpjQC+iCtr61jOjy
+ RkzDM9adZPgS51Tg0EVtDIL4BewxrrgohkdaPd0vFKwlVi/uW9EJ7hP9v0ZA4mcGLPzjBhviR8Q
+ mSrf0DiCHqEFZoNdIyT0gZZAYVnYJfw/xUHv1XTozZ3UfMrzQQamRvLsAUMZnX87iXmQIxcMgUR
+ hk5tj/uB DMwrDKw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
@@ -75,19 +80,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 09:54:34AM +0300, Andy Shevchenko wrote:
-> On Mon, Sep 18, 2023 at 12:15:53PM +0300, Andy Shevchenko wrote:
-> > Prepare for the coming implementation by GCC and Clang of the __counted_by
-> > attribute. Flexible array members annotated with __counted_by can have
-> > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family                                         functions).
-> 
-> Kees' patch is better, please ignore this one.
+Since __counted_by annotations may also require that code be changed to
+get initialization ordering correct, let's get an extra group of eyes on
+code that is working on these annotations.
 
-Oh! I didn't get CCed so I didn't know you'd sent this. :)
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for taking the initiative on this, though! (But, yes,
-initialization order matters.)
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 737dcc7a2155..741285b8246e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11405,6 +11405,7 @@ F:	kernel/configs/hardening.config
+ F:	mm/usercopy.c
+ K:	\b(add|choose)_random_kstack_offset\b
+ K:	\b__check_(object_size|heap_object)\b
++K:	\b__counted_by\b
+ 
+ KERNEL JANITORS
+ L:	kernel-janitors@vger.kernel.org
 -- 
-Kees Cook
+2.34.1
+
