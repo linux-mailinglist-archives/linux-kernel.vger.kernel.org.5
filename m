@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E117ADC83
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68C97ADC86
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbjIYP7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
+        id S232984AbjIYP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbjIYP7N (ORCPT
+        with ESMTP id S233019AbjIYP7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:59:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FA7B6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:59:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3A7AC433C7;
-        Mon, 25 Sep 2023 15:59:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695657545;
-        bh=RrtU4RECwP4yzk+K9XzYnJXLXX3xo09O9R98nMyytTY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Adys9/F3M27GS5RkwihTaM+15EOZe0NoXZRfBW44jWh/4iZgMZKGQiwtiLFmEFe4h
-         GrYPKAY8ly1lmpAoolOo8ypEQjWeCAqyTqwAB9Q1M9Rqu4MLN1RBSOKAdth7yokiZm
-         ZkhqrtOyVcR6oMSvDzV8b6tKxve6HsHRYALXckry1DzFgfSacu/ostOrnGliGiGbZh
-         HrNTKf2/FPad5fLLS3VSxkrlG5hbZWNAQplFDuHL5cZr+QFBEpkfMAuK5UNM/LwQJw
-         PGTA8bsbRiEdcoJ1XMIrci4AN7UEs9WLkIjNysN+wl4wqlhvqVs/6HbUcCSmNdXpCo
-         mYnAGuYGoxwkg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alan Brady <alan.brady@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Phani Burra <phani.r.burra@intel.com>,
-        Joshua Hay <joshua.a.hay@intel.com>,
-        Pavan Kumar Linga <pavan.kumar.linga@intel.com>,
-        Madhu Chittim <madhu.chittim@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] idpf: fix building without IPv4
-Date:   Mon, 25 Sep 2023 17:58:44 +0200
-Message-Id: <20230925155858.651425-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 25 Sep 2023 11:59:22 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBF411C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:59:14 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3231d6504e1so3100319f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695657553; x=1696262353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GneicmgZfpXE6hx2WHE29gWRFXhiOHILZTpcrUZlhUs=;
+        b=eO0GQOk9rO3VWfe5L4Zn1t3B+hziKSgid0CunDNrkfKvz2gGhHd/kaJupXAdSbrBlH
+         ziOjRMiP/vofXhHsS18kTIp0+zArqtf2OT2oXPwHzLvlBjzmmH3oy/SbpEEMWV3GAeXG
+         fMnfQZjQjC8f6VukFun6dGY3s0EnruVCWjJ/zIUhmOygioc1Zti0Q2nkm/Dahr+dv4lD
+         JOaI+8Kzgk0fE3ZXtRonoVxk2qceLtQPmf4YvOd/RO0Sh6FHxdvGyKzuD8beWNScAtXK
+         sgscV0wrXRnro5x10eh+O3OddhX6c7u7bPJFKdrvrPmnAp2inYWnh+tPCT+gErVJQlsP
+         5qCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695657553; x=1696262353;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GneicmgZfpXE6hx2WHE29gWRFXhiOHILZTpcrUZlhUs=;
+        b=NpKVXWCzwrWwxkjGVf0TJ7gGyJJOjmtr2jihVf7JTEoCzhTVlJGHxYdnNU9CmsRng/
+         Hy6qYvBOJjRbXJjVY5bcIsulBIhVEyRVrDJJ9xgvfk+hvhq8VzRgFiHC515mc9UyJJAt
+         xCbnWHMtQcqH2B2FlgldbhuELqo8rb960lHVy9dwpfpDxA9vD+iukiiZ3N75hkbgUYfs
+         2WWnJdkAf4m3ClNQKdl1tNZFkT1B7ME4rlznZK7ax5eqEng69NkOc1oifv8J6UwRqQBv
+         TAcWIjcYsLuKE9115Ql9o3ceONXNfTUb9IwJ+aIyu/1aAvnu4bkjsWx8XBd4sVcgrRLM
+         jAQA==
+X-Gm-Message-State: AOJu0Ywr2VuazczvmEkwReGh4snGLfOK68KandD2dLKKvBfiYNoBrYfV
+        snyoh52r20N9Mc3fp4dbpHf05hgTemsikfp2ebc=
+X-Google-Smtp-Source: AGHT+IHaL2nHE+gPfmVIVjPbQh46rGimWfCVGxsyc2a2vOkwGLunOTR0JtGlIvoOswcgNExhEDbq/g==
+X-Received: by 2002:a5d:6084:0:b0:320:7fa:c71e with SMTP id w4-20020a5d6084000000b0032007fac71emr6996682wrt.15.1695657552615;
+        Mon, 25 Sep 2023 08:59:12 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c0e1:63ab:648b:6287? ([2a05:6e02:1041:c10:c0e1:63ab:648b:6287])
+        by smtp.googlemail.com with ESMTPSA id o13-20020adfeacd000000b00317f3fd21b7sm12307395wrn.80.2023.09.25.08.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 08:59:12 -0700 (PDT)
+Message-ID: <9fcd9003-c210-be46-6a25-460ad6c0e53a@linaro.org>
+Date:   Mon, 25 Sep 2023 17:59:11 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 3/9] ACPI: thermal: Determine the number of trip points
+ earlier
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <5708760.DvuYhMxLoT@kreacher> <1863318.tdWV9SEqCh@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <1863318.tdWV9SEqCh@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 12/09/2023 20:37, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Compute the number of trip points in acpi_thermal_add() so as to allow the
+> driver's data structures to be simplified going forward.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-The newly added offload code fails to link when IPv4 networking is disabled:
 
-arm-linux-gnueabi-ld: drivers/net/ethernet/intel/idpf/idpf_txrx.o: in function `idpf_vport_splitq_napi_poll':
-idpf_txrx.c:(.text+0x7a20): undefined reference to `tcp_gro_complete'
+Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-Add complile-time checks for both CONFIG_INET (ipv4) and CONFIG_IPV6
-in order to drop the corresponding code when the features are unavailable.
-This should also help produce slightly better output for IPv4-only
-kernel builds, if anyone still uses those.
-
-Fixes: 3a8845af66edb ("idpf: add RX splitq napi poll support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/intel/idpf/idpf_txrx.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 6fa79898c42c5..140c1ad3e0679 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -2770,8 +2770,10 @@ static void idpf_rx_csum(struct idpf_queue *rxq, struct sk_buff *skb,
- 	if (!(csum_bits->l3l4p))
- 		return;
- 
--	ipv4 = IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV4);
--	ipv6 = IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV6);
-+	ipv4 = IS_ENABLED(CONFIG_INET) &&
-+	       IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV4);
-+	ipv6 = IS_ENABLED(CONFIG_IPV6) &&
-+	       IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV6);
- 
- 	if (ipv4 && (csum_bits->ipe || csum_bits->eipe))
- 		goto checksum_fail;
-@@ -2870,8 +2872,10 @@ static int idpf_rx_rsc(struct idpf_queue *rxq, struct sk_buff *skb,
- 	if (unlikely(!rsc_seg_len))
- 		return -EINVAL;
- 
--	ipv4 = IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV4);
--	ipv6 = IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV6);
-+	ipv4 = IS_ENABLED(CONFIG_INET) &&
-+	       IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV4);
-+	ipv6 = IS_ENABLED(CONFIG_IPV6) &&
-+	       IDPF_RX_PTYPE_TO_IPV(decoded, IDPF_RX_PTYPE_OUTER_IPV6);
- 
- 	if (unlikely(!(ipv4 ^ ipv6)))
- 		return -EINVAL;
 -- 
-2.39.2
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
