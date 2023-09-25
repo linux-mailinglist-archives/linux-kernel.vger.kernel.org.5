@@ -2,115 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 951217AD976
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0647AD978
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbjIYNqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S231954AbjIYNrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbjIYNp6 (ORCPT
+        with ESMTP id S229965AbjIYNq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:45:58 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64266116;
-        Mon, 25 Sep 2023 06:45:50 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qkluH-0001kB-8Q; Mon, 25 Sep 2023 15:45:49 +0200
-Message-ID: <e049aa41-b136-4071-850f-d06b47fe67a1@leemhuis.info>
-Date:   Mon, 25 Sep 2023 15:45:48 +0200
+        Mon, 25 Sep 2023 09:46:57 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2055.outbound.protection.outlook.com [40.107.94.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D6CB3;
+        Mon, 25 Sep 2023 06:46:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TpZQZj751Zwjq3nrNVdawky48KABXz0Rkkh7i/8Dc8V98w8gcVYfasw3C+ws+KtHWs5mZB/8ZDir+Ocmsa4yMdKppZsfVAPqLi1jo6t8gsQB8Z79vKIUNbUWCpzUc95I+SGXzBqPY2+KizyU65lR7Mbxl7+6r5xOQ7D3XZDFp8YkqU0WZdBEmF55Hqtqn7DcFJvfQIsf6EPhhL9YHLLhOMZOL4DGLo0p8vAFxWBQwkbRuCPOMHMLMY1KiDDAc5Bq42beREJTcHvpJHo4QThrATsEpBIgg+b5Mcoai7THwS+/VH3/kwQ0W0u/Mo6PFByxKt5tZ/zsW0lS8RMh7Hprww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jPhOsksxiW2H+qmbctn8ZcR9Y/mtRIyyVectba202bU=;
+ b=jrhQW7zAhV0xPEJKJtigXdk82fPtPUCLj1cOFu/f+CGKS3j8C+4WSuLomOZkTTEb7aRvzVlFhL3pLpqmX7Hq9wSLUxzZ646kYUS03RkkNPsm5HusrEquzCiM2+HWAC4NQglzUUwj3l9Bg3erPDf72lvPYYTe2KKEwVk8U5hcZEjLkK957+5ZNeX9N2m7yIPjbVvpv7m8pJVlUTcGrWg7LJHRMiS1SWnaTIk3Ya9CpZQV1af1BeaUvyzTOyy6Lq+H2ZL18JA2Y5jn9EhuYIFDp3wTlw0twnJIGVDYf0iyfE2ATm20mE07+GydiJ0ePZu0CkYq7DdI23gC4sZFZjIAQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jPhOsksxiW2H+qmbctn8ZcR9Y/mtRIyyVectba202bU=;
+ b=MpunAQD5tZWrsTwyoTEkzP+C6FPjhoGvB3KdLOTK5YVXjKHclnApNN6W7/khcjW2bX8j9k/6CO9pcz22G6r71ZhzFhpdXQNT7YFeXgoAsyLbqNDl/O1yPNSqnKxrpCVuocO+Qw3us9kPhdY/JPSQi3+GrAhxsOOugffzIggyyixeMhJAktn/l1YEzs5zmI4TsVBayDiatrdLTC81P8EVv2yyzb4toe0UUHo0iNuZoLUyUfXsSYaKul8QopZkxhuuoOSE7nSKbzAjmly3GqCd4AddVN9ErBjx9oDwSnvNCPrqJkswm0WABgqm/hN7hu2cadOH4vBCLABV7ckMEXzNUw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH7PR12MB9066.namprd12.prod.outlook.com (2603:10b6:510:1f6::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Mon, 25 Sep
+ 2023 13:46:48 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
+ 13:46:48 +0000
+Date:   Mon, 25 Sep 2023 10:46:46 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Cindy Lu <lulu@redhat.com>
+Cc:     jasowang@redhat.com, mst@redhat.com, yi.l.liu@intel.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [RFC 6/7] vdpa_sim :Add support for iommufd
+Message-ID: <20230925134646.GC13733@nvidia.com>
+References: <20230923170540.1447301-1-lulu@redhat.com>
+ <20230923170540.1447301-7-lulu@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923170540.1447301-7-lulu@redhat.com>
+X-ClientProxiedBy: BL1PR13CA0207.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::32) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: s2idle stopped working with 6.6-rc on Thinkpad T14 G1 (AMD)
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <0d84fb59-4628-4c7f-ab1a-f58889ef2c9b@leemhuis.info>
- <e556ae63-0539-4b34-b33f-5f5beb4183d1@amd.com>
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-In-Reply-To: <e556ae63-0539-4b34-b33f-5f5beb4183d1@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1695649551;a712ef3c;
-X-HE-SMSGID: 1qkluH-0001kB-8Q
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB9066:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0592dd27-acc5-4d54-bc44-08dbbdcddd1c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +lC1mlRAP9RZ/Nv2dC5KM6xLkpTTI5k+mdAPmaXjGzp451YK4CthAt+SsZTdx43eRNZM2pkX6J+Xky1nX5DeXmwr7mCkCD7JSsKyI+kF5WsdlGfaDS2GDlQmPCYeRThvNdP4iR+pyBA9l8nSzUuDvlNEq5Bm79aIcWSEIiUwqw6r1ONnbe/Wg+SHINcUTKD4xNDiaF+/Ya1HG91lPaujOPM+Te9ARG/ZbSwVxN2nmPIueJ0WNxVO33xOfnAseC98nrK9yBVYjVK/bruNpsKGqVqgMu753GSuJ32f/IWBHtiHQkV3x1IJ+N47HrOSculf6mtSooJXqwLRg19EvnvOGsQIB6Gp/VN2LDL4Xe/TUicRg+5UxFQLs1y2ApjwX5dIAWaWRCpSsoe7FXfgFiL4CyGuAJkTM2cQKy8nTygigFw7/XwXa6RZMWqzuS1zlC1+BUEtvspvuq46gHrYzrpEb+C7T31K8Vm2SnE+s5i1fQA+VxKPX+OSzUcr6MYQtSN+chL0rJaiJeGfQMWy/g6iM5l3TQ7hdBblGOiuO1DA95PRCmvMERgC9kpmc2LhPV9I
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(346002)(366004)(230922051799003)(186009)(1800799009)(451199024)(478600001)(8676002)(6506007)(83380400001)(66476007)(66946007)(6512007)(6486002)(6916009)(66556008)(316002)(8936002)(1076003)(5660300002)(4326008)(36756003)(38100700002)(86362001)(33656002)(2906002)(4744005)(41300700001)(26005)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5mneuuNa4820R8KCBeT/nTVPab1YsRD0E00wmF4cu0M4+PSEk8DiXBWRcY1Q?=
+ =?us-ascii?Q?TubstUxdUCMpqxm7FyEJvg0yoRWAOY8hdshf2Xy7LnMFYmvNt2c+PBpR0Mpj?=
+ =?us-ascii?Q?4yIK3kngDFOqKVUuYTQE2xPzi5pOAcTy5Vm/7gTe+NOMhTYmuHEShFvoJvlC?=
+ =?us-ascii?Q?1c2JKI5b/fZhbkK+wSoZ2UP4GzvEig03I9FW3FcoN95Q9JKYtECXk3AfkYH1?=
+ =?us-ascii?Q?WwgaV5I9nbkVQ3l2+MkiVwbP3+J6mNFwiPjMBpAGpay2epJoc3GCJTTjoT+i?=
+ =?us-ascii?Q?GQB7y8n7CDGzv6isnqRcKP65UBnmkDx8weXgf5jM5teiWD4pQgnIFODDWM4i?=
+ =?us-ascii?Q?FQtkYXkfrdqultX1STUiY53RHkjjKMJSKNSn60gs9+el4rs3IvsL5rHZsiiL?=
+ =?us-ascii?Q?5qSXAj2aEU91NSf2VRu2P32Lleff3EMBLmizeJu/N25Cn7NBdO/CIRqwYOLQ?=
+ =?us-ascii?Q?pysLoIarvtSyrA1BrFXXtHZ5MqCqy0JXcr8l83DWY8VWC6z719d5KnacrUHt?=
+ =?us-ascii?Q?x+lSZcEnYbWDiwrDdT4Vwj+eGvV/t9OcdkfRJ9wOlI/DmUwjYgdTmETJ3fXX?=
+ =?us-ascii?Q?OopF2ZS99L9C+GrayVv44RtXnPRCV5oRlWRnMUrDhLgJoDI6pAdYDwGwAL1S?=
+ =?us-ascii?Q?3cMsLLrGUfvnNWEh+UPT0i9EyzeAAFOAe1kpCOridKU/dZo5tHu0/IiICPQF?=
+ =?us-ascii?Q?XQ5oXb07a9fNnGSc6RUjZ2hX9UWnFXxdS4idWk0wVSBnLneapKw793RiJRNB?=
+ =?us-ascii?Q?+ZjW9L7iV22KZWhXT2Vs5P4Lo2zw79S0ITp6RbUX510WLqFHOeuzgXUkRQpq?=
+ =?us-ascii?Q?ZxzxIvQXphyoCnE2YCZDfeuXITceFPzvUQwnYhQPUlu5Y20/rlTNXXwn2IHY?=
+ =?us-ascii?Q?pSQ0boLlDNubgnb4X0dAevGPF/PxsJh+wpAAMpRDLRich92qxqC8QpjIyj9b?=
+ =?us-ascii?Q?fv/54Mma1KoRrkVBjA3VokUI7byulOiZwq2dBhQzOIgIwSI8sX03KnF0ilpC?=
+ =?us-ascii?Q?ck58iSLKaCP3hnl0bAyT0C0symS3SXLuAYZLgpHcbsPu7BAdRkhjdcdD46xl?=
+ =?us-ascii?Q?XROX3TU5mnhtfgH7gd1qCm1Zjg/ArydP/RPy0UEdm+sDvvp2erWajdytpyLZ?=
+ =?us-ascii?Q?IUIeahEMSu9SiERTxVRJUmT15se5VcZ+6uPFEwGZXxDAOSYfMg7t+Bd8Qd5o?=
+ =?us-ascii?Q?msC9PuxgZy/iBD/AWCzoeX6fo3hCRc/ni+w6c1gRGEzXukEsHbEgLiH0KC+l?=
+ =?us-ascii?Q?g8BrJhEG++uXBpcA7Jx73ZIZQPaeIHktr5N6BJzXjL3Hk28djLNOjb1d3eyf?=
+ =?us-ascii?Q?mcz7I77+UAgMuRG52DGuC82o+FVobXeZZ01+2thVZBShogLXN3aV+LjMJxA3?=
+ =?us-ascii?Q?F2gZgWeeQTJklQ9TrZxaCjklBbhO2Je6cpsVz72AM9DsgsPudlGmOyH8HIQv?=
+ =?us-ascii?Q?DSNafkFZW5AyM9V2BNyRfUmp045PBX8qNPvq9q6TkjZJGdcSmBnMmXqBRE6p?=
+ =?us-ascii?Q?ZGuWzAlXSSrly5vgB8Tj42uWBXNlD9DZVc8Y7RzDlxGq0wuKxox+J8FVoqA4?=
+ =?us-ascii?Q?hfYJFUfSfaZIJhcVAivGBuX1EkxOOZZDUHsLQabe?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0592dd27-acc5-4d54-bc44-08dbbdcddd1c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 13:46:48.0142
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w6ZUI/lb9gRqmVETV+D7IqiZqZ2jYvwTreOyy66PrFBGRBYplGMHv6gTY0kwc0+q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9066
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.23 15:25, Mario Limonciello wrote:
-> On 9/25/2023 05:55, Thorsten Leemhuis wrote:
->> Hi Mario! Did you by chance hear anything about lock-ups on resume with
->> mainline affecting AMD systems? I'm asking, as s2idle stopped working
->> for me with 6.6-rc on my Thinkpad T14 G1 (AMD). 
-> You're the first report I've heard of this.
-
-Thx for taking the time and replying.
-
-> Yeah not too much useful stuff here unfortunately.  Can you check
-> /var/lib/systemd/pstore to see if you got a traceback for whatever
-> caused the problem?
-
-Sadly nothing there.
-
->> Dmesg for 6.6-rc3 (with a USB-C dock, but problem happens without it,
->> too):
->> https://www.leemhuis.info/files/misc/dmesg-6.6_rc3
+On Sun, Sep 24, 2023 at 01:05:39AM +0800, Cindy Lu wrote:
+> Add new vdpa_config_ops to support iommufd
 > 
-> Being G1, can you try "amdgpu.mcbp=0" on kernel command line?
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> ---
+>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> index cb88891b44a8..55e6f45bb274 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -727,6 +727,10 @@ static const struct vdpa_config_ops vdpasim_config_ops = {
+>  	.dma_map                = vdpasim_dma_map,
+>  	.dma_unmap              = vdpasim_dma_unmap,
+>  	.free                   = vdpasim_free,
+> +	.bind_iommufd			= vdpa_iommufd_emulated_bind,
+> +	.unbind_iommufd			= vdpa_iommufd_emulated_unbind,
+> +	.attach_ioas			= vdpa_iommufd_emulated_attach_ioas,
+> +	.detach_ioas			= vdpa_iommufd_emulated_detach_ioas,
+>  };
 
-Just tried it, but didn't help.
+Er, this series never calls iommufd_access_pin_pages() or
+iommufd_access_rw(), so something pretty big is missing
 
-Guess it bisection time then...
-
-Thx again for your reply. Ciao, Thorsten
+Jason
