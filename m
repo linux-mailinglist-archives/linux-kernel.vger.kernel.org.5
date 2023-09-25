@@ -2,72 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E827ADF83
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152717ADF86
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbjIYTXm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 15:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        id S233075AbjIYTYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 15:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjIYTXl (ORCPT
+        with ESMTP id S229920AbjIYTYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 15:23:41 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24575AF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:23:35 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qkrA5-0005Zv-2J;
-        Mon, 25 Sep 2023 15:22:29 -0400
-Message-ID: <692fafae9842a9b15b7b4a033bb7dc800784d4aa.camel@surriel.com>
-Subject: Re: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
- invalidate_lock
-From:   Rik van Riel <riel@surriel.com>
-To:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, mike.kravetz@oracle.com, leit@meta.com,
-        willy@infradead.org
-Date:   Mon, 25 Sep 2023 15:22:29 -0400
-In-Reply-To: <202309250923.NEPT0ip2-lkp@intel.com>
-References: <20230922190552.3963067-4-riel@surriel.com>
-         <202309250923.NEPT0ip2-lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Mon, 25 Sep 2023 15:24:46 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8999BE;
+        Mon, 25 Sep 2023 12:24:39 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id AED1D5C27BA;
+        Mon, 25 Sep 2023 15:24:36 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 25 Sep 2023 15:24:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1695669876; x=1695756276; bh=5YkBrqvzG1
+        Jlekk42DoeCAtVDkGf3aQHqWIlJPo84PU=; b=rTEv/5QNmW1lbqE89+kczg1HvU
+        PNborzPx7y2hTwMUgI6jTqbOgjhh6Z8OoPg7sgEJZ+R5H8oA3zeNtvlgjE4DPpvO
+        WhpqknfknLmkDndQ5JSCQY6IAkDcFdOH1COKOzRRwKGUROUjoAK92ZUltgMaO7pN
+        nbm6pLSoX8rtEQ12h/C52Hy7E36j+jyhPeJCt0jW5QDeBPYgCJKqJdvjIVOPgKDi
+        83oZ9Voe4ofLn0zX52fZtHn85BSgLa8zYLQdQ72sFdAnXvoGKkCWP77DqAovz8FB
+        jY2Q52SKWREr8/kc6bx7e69RbPMCq1QSFd7OWK89HINq5rFhlp3eVzcDz+Wg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695669876; x=1695756276; bh=5YkBrqvzG1Jle
+        kk42DoeCAtVDkGf3aQHqWIlJPo84PU=; b=a8xN2o4LLDEoxAjLlu75CRIZh+ExM
+        qsHmiFc7jjjoNQapYXt7/BOX3wBRzLXKetMTmMnVTf+2QJ8iBDCG4CTthCu38SVz
+        xfGoxbzmQxukhQYdbpxy6bQtCb1PmWXoQbW7DyFkIEHFkyMxfADTvPvMWRTvIYzw
+        /ZES2SdfcTBX9qXywqA627qjYV/zI1SWZC4iidI6lMGF7yRvj5c5junvtfk1z1kp
+        ktsRtZ0pbLZoQsgDtwTpDLTA7fbl6XV/vmkX/xqjzcsvHW/uvkMf4CkSuvma1O4o
+        ruJI29GUZHJwnjmBdkzAaMZxbylGXg8sqWTfYSyu2kX5EveIgx4e3pLqw==
+X-ME-Sender: <xms:dN4RZf-VY4Tdr6CaCVkW1XzH35ox1cirpY8ip6vlQk9ywfciy7VWew>
+    <xme:dN4RZbsTNIjMS2-U8ynYebeDZ2PSG8rnjzHr9ATZdxVGyNbQis_j2mN8KBTuVI-5h
+    aSmQAu6Juu3GH9db5c>
+X-ME-Received: <xmr:dN4RZdDAqhkDW5CGVVB4M0xaylW8PKtWErbvjlv4lUMaNk_dWHFjguPvkV7HdbaGMJyARmEFC0lzbhW7IcIkFKYgwvHokqnwwSLE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflvghrvghm
+    hicuvehlihhnvgcuoehjvghrvghmhiesjhgtlhhinhgvrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeevleevfeehuefhhfeiudevgfdufeeivdefudetjeelffelgffgkedvuefhgfet
+    veenucffohhmrghinhepshihiihkrghllhgvrhdrrghpphhsphhothdrtghomhenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjvghrvghmhies
+    jhgtlhhinhgvrdhorhhg
+X-ME-Proxy: <xmx:dN4RZbdkkrsH-03oU-ruhJfuzskx6Qm33PkCB1Xw086OdVHrSt974w>
+    <xmx:dN4RZUMQySrDol70N-GqvJcIRP5aUrL_oxk5Q4rX2r6olHVQeCcAIw>
+    <xmx:dN4RZdm64nQGMH5agL90VLoGYjtMW9TYjE40nPQptoVzRr4BvFl7KQ>
+    <xmx:dN4RZToh9iQN6wvxHod5Dpxd5FzKBowpDI5opgN7EgFFAiCWwl4aag>
+Feedback-ID: i7a7146c5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Sep 2023 15:24:35 -0400 (EDT)
+From:   Jeremy Cline <jeremy@jcline.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Lin Ma <linma@zju.edu.cn>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>,
+        syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+Subject: [PATCH v2 net] net: nfc: llcp: Add lock when modifying device list
+Date:   Mon, 25 Sep 2023 15:23:51 -0400
+Message-ID: <20230925192351.40744-1-jeremy@jcline.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-25 at 10:04 +0800, kernel test robot wrote:
-> Hi,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on akpm-mm/mm-everything]
-> [also build test ERROR on linus/master v6.6-rc3 next-20230921]
-> [If your patch is applied to the wrong git tree, kindly drop us a
-> note.
-> And when submitting patch, we suggest to use '--base' as documented
-> in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The device list needs its associated lock held when modifying it, or the
+list could become corrupted, as syzbot discovered.
 
-OK, so I have a fix for patch 3/3 that gets rid of the
-compile error, but the libhugetlbfs test cases show that
-patch 3/3 opens up a condition where resv_hugepages 
-underflows.
+Reported-and-tested-by: syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=c1d0a03d305972dbbe14
+Fixes: 6709d4b7bc2e ("net: nfc: Fix use-after-free caused by nfc_llcp_find_local")
+Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+---
+Changes from v1: added the correct Fixes tag
 
-I have not figured out the cause of that yet, but
-patches 1 & 2 seem to survive all tests fine.
+ net/nfc/llcp_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
+index f60e424e0607..6705bb895e23 100644
+--- a/net/nfc/llcp_core.c
++++ b/net/nfc/llcp_core.c
+@@ -1636,7 +1636,9 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
+ 	timer_setup(&local->sdreq_timer, nfc_llcp_sdreq_timer, 0);
+ 	INIT_WORK(&local->sdreq_timeout_work, nfc_llcp_sdreq_timeout_work);
+ 
++	spin_lock(&llcp_devices_lock);
+ 	list_add(&local->list, &llcp_devices);
++	spin_unlock(&llcp_devices_lock);
+ 
+ 	return 0;
+ }
 -- 
-All Rights Reversed.
+2.41.0
+
