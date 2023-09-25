@@ -2,260 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D347ACEBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BABE7ACEBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjIYDfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 23:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
+        id S230248AbjIYDlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 23:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIYDfc (ORCPT
+        with ESMTP id S229495AbjIYDlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 23:35:32 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D696C2;
-        Sun, 24 Sep 2023 20:35:25 -0700 (PDT)
-Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rv7hP6k84zNnny;
-        Mon, 25 Sep 2023 11:31:33 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 25 Sep 2023 11:35:21 +0800
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-CC:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20230916040915.1075620-1-irogers@google.com>
- <08995efc-d5af-6ba6-831b-1a483daabef4@intel.com>
- <CAP-5=fW783G9fUEHrmzUu7UmvOm65Fp6vAQybCcNz2C0QRz26w@mail.gmail.com>
- <8086150e-3c6d-4001-b3cc-bb12ebe15928@intel.com>
- <CAM9d7chtVQqySGOGQrA065Fr8M2Y6jg9JJccYtMycQFvaheU+Q@mail.gmail.com>
- <f64c4283-6ced-411a-b69f-8c4375fb91f7@intel.com>
- <CAP-5=fWJzpQ14CQk+Lf5EY4CwJ4ACPsYT49XJwCnC_qEpS-DAA@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <9759e3d4-703d-30a6-5334-b33a6e5a38d7@huawei.com>
-Date:   Mon, 25 Sep 2023 11:35:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sun, 24 Sep 2023 23:41:17 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D855C4;
+        Sun, 24 Sep 2023 20:41:08 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4121f006c30so37114961cf.2;
+        Sun, 24 Sep 2023 20:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695613268; x=1696218068; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5PLBn0yYlxfEY2BUUTSRuAq0bGO1rEdFQ2dy2FEYG60=;
+        b=L73eyGzlO7Q1k6Acu0XzD0KiPjYDnOFVvN1wHOF5d/iPFW+VgxbF6jhOehYubUYRbD
+         2H0zlVsbJOB29xHRyBmoxJ1ERDUlrkIOqaflNnWicitWGq57R7m0J9fVTF3gsnkyU9Sx
+         kRORvvF60tW/8utOrjMPZBykGUghUz59p+UCudDKvXjKVHlKCPSvdiJhffYokheEer/f
+         Ns8s77wq93ZptdoC3WXXzOGPyjA4UrTAN+o5F/BduK1xhv+0awykegGAfl1/N7FuEo68
+         H4sGA936mL5mTH0e5VvwLFQ3UYbPwFNbH8mmKes7MhAi2zdzHOgJ+pvifCvZpwu0AAPI
+         ThMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695613268; x=1696218068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5PLBn0yYlxfEY2BUUTSRuAq0bGO1rEdFQ2dy2FEYG60=;
+        b=bUkZCTFR6YL1LaovOE4B/7afpmuv5LMAMPdm65iDIpm7pnEKWHzKKsy3zWC6IaEOkp
+         JEKriNIbXuDQRQhZ9uFl3jpH10/0ZrCyI0nn1Pvai0C6P24AMbnz9SOuglUQfUYrF2CP
+         1uC1nUHnQnC2FwYaq8vL2moDV6N+KOIuTl9he8GPpK/5LEcG6KE8XuhpRbvxGrxuAzBA
+         Oq6WbaWv4FYtOesOmagfepJuFuWUtRjSxKecDUWyiyh6KyciuwHpV7CoyKAxNYXy+JSz
+         rR8ShqekBQxaFuG5YA8oynqXeifsu0X8m5hf19XYJlFbAKPF4h49JDhCCHa08+irkfu6
+         bhXg==
+X-Gm-Message-State: AOJu0Yw0ZgX7TQedJbaeq4TESy8vI+/uMdDvsR7axPc8V2bEJ6Gl3Gnt
+        H29SMMOWQP79twkFOrscjJ36CuifWA8QmFy44oY=
+X-Google-Smtp-Source: AGHT+IGi8+aSCezg+sYFwJ/HbV59G5QdoE5ZQFsFU9Sb2HqH1hpu2W+U+OnUE2F4C3hXg84ax7F7HspN9VuAyX9NEUA=
+X-Received: by 2002:a05:622a:589:b0:417:add1:c0a3 with SMTP id
+ c9-20020a05622a058900b00417add1c0a3mr6340288qtb.55.1695613267973; Sun, 24 Sep
+ 2023 20:41:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fWJzpQ14CQk+Lf5EY4CwJ4ACPsYT49XJwCnC_qEpS-DAA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000003.china.huawei.com (7.193.23.66)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921055611.1459374-1-james.hilliard1@gmail.com> <20230925033344.GH7231@dragon>
+In-Reply-To: <20230925033344.GH7231@dragon>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Sun, 24 Sep 2023 21:40:55 -0600
+Message-ID: <CADvTj4qWHzjvp6BYarHWF2R=gRqD6WdLt4EhbEx93nu3up6=kA@mail.gmail.com>
+Subject: Re: [PATCH v9 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with
+ Custom Board
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Sep 24, 2023 at 9:34=E2=80=AFPM Shawn Guo <shawnguo@kernel.org> wro=
+te:
+>
+> On Wed, Sep 20, 2023 at 11:56:06PM -0600, James Hilliard wrote:
+> > Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
+> >
+> > Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+>
+> Applied all, thanks!
 
-On 2023/9/22 23:05, Ian Rogers wrote:
-> On Thu, Sep 21, 2023 at 10:36 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 21/09/23 22:26, Namhyung Kim wrote:
->>> Hi,
->>>
->>> On Mon, Sep 18, 2023 at 11:00 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>
->>>> On 19/09/23 00:48, Ian Rogers wrote:
->>>>> On Mon, Sep 18, 2023 at 1:14 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>>>
->>>>>> On 16/09/23 07:09, Ian Rogers wrote:
->>>>>>> Dummy events are created with an attribute where the period and freq
->>>>>>> are zero. evsel__config will then see the uninitialized values and
->>>>>>> initialize them in evsel__default_freq_period. As fequency mode is
->>>>>>> used by default the dummy event would be set to use frequency
->>>>>>> mode. However, this has no effect on the dummy event but does cause
->>>>>>> unnecessary timers/interrupts. Avoid this overhead by setting the
->>>>>>> period to 1 for dummy events.
->>>>>>>
->>>>>>> evlist__add_aux_dummy calls evlist__add_dummy then sets freq=0 and
->>>>>>> period=1. This isn't necessary after this change and so the setting is
->>>>>>> removed.
->>>>>>>
->>>>>>>  From Stephane:
->>>>>>>
->>>>>>> The dummy event is not counting anything. It is used to collect mmap
->>>>>>> records and avoid a race condition during the synthesize mmap phase of
->>>>>>> perf record. As such, it should not cause any overhead during active
->>>>>>> profiling. Yet, it did. Because of a bug the dummy event was
->>>>>>> programmed as a sampling event in frequency mode. Events in that mode
->>>>>>> incur more kernel overheads because on timer tick, the kernel has to
->>>>>>> look at the number of samples for each event and potentially adjust
->>>>>>> the sampling period to achieve the desired frequency. The dummy event
->>>>>>> was therefore adding a frequency event to task and ctx contexts we may
->>>>>>> otherwise not have any, e.g., perf record -a -e
->>>>>>> cpu/event=0x3c,period=10000000/. On each timer tick the
->>>>>>> perf_adjust_freq_unthr_context() is invoked and if ctx->nr_freq is
->>>>>>> non-zero, then the kernel will loop over ALL the events of the context
->>>>>>> looking for frequency mode ones. In doing, so it locks the context,
->>>>>>> and enable/disable the PMU of each hw event. If all the events of the
->>>>>>> context are in period mode, the kernel will have to traverse the list for
->>>>>>> nothing incurring overhead. The overhead is multiplied by a very large
->>>>>>> factor when this happens in a guest kernel. There is no need for the
->>>>>>> dummy event to be in frequency mode, it does not count anything and
->>>>>>> therefore should not cause extra overhead for no reason.
->>>>>>>
->>>>>>> Fixes: 5bae0250237f ("perf evlist: Introduce perf_evlist__new_dummy constructor")
->>>>>>> Reported-by: Stephane Eranian <eranian@google.com>
->>>>>>> Signed-off-by: Ian Rogers <irogers@google.com>
->>>
->>> I'll take the original patch first.
->>>
->>>
->>>>>>> ---
->>>>>>>   tools/perf/util/evlist.c | 5 +++--
->>>>>>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>>>>>
->>>>>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->>>>>>> index 25c3ebe2c2f5..e36da58522ef 100644
->>>>>>> --- a/tools/perf/util/evlist.c
->>>>>>> +++ b/tools/perf/util/evlist.c
->>>>>>> @@ -251,6 +251,9 @@ static struct evsel *evlist__dummy_event(struct evlist *evlist)
->>>>>>>                .type   = PERF_TYPE_SOFTWARE,
->>>>>>>                .config = PERF_COUNT_SW_DUMMY,
->>>>>>>                .size   = sizeof(attr), /* to capture ABI version */
->>>>>>> +             /* Avoid frequency mode for dummy events to avoid associated timers. */
->>>>>>> +             .freq = 0,
->>>>>>> +             .sample_period = 1,
->>>>>>>        };
->>>>>>>
->>>>>>>        return evsel__new_idx(&attr, evlist->core.nr_entries);
->>>>>>> @@ -277,8 +280,6 @@ struct evsel *evlist__add_aux_dummy(struct evlist *evlist, bool system_wide)
->>>>>>>        evsel->core.attr.exclude_kernel = 1;
->>>>>>>        evsel->core.attr.exclude_guest = 1;
->>>>>>>        evsel->core.attr.exclude_hv = 1;
->>>>>>> -     evsel->core.attr.freq = 0;
->>>>>>> -     evsel->core.attr.sample_period = 1;
->>>>>>>        evsel->core.system_wide = system_wide;
->>>>>>>        evsel->no_aux_samples = true;
->>>>>>>        evsel->name = strdup("dummy:u");
->>>>>>
->>>>>> Note that evsel__config() will put it back to freq if -F is used.
->>>>>
->>>>> Right, I was looking for a minimal fix in part for the sake of back
->>>>> porting. For the -F we could do:
->>>>>
->>>>> ```
->>>>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->>>>> index d5363d23f5d3..806185a39e17 100644
->>>>> --- a/tools/perf/util/evsel.c
->>>>> +++ b/tools/perf/util/evsel.c
->>>>> @@ -1083,11 +1083,15 @@ void __weak arch__post_evsel_config(struct
->>>>> evsel *evsel __maybe_unused,
->>>>> static void evsel__set_default_freq_period(struct record_opts *opts,
->>>>>                                            struct perf_event_attr *attr)
->>>>> {
->>>>> -       if (opts->freq) {
->>>>> +       bool is_dummy = attr->type == PERF_TYPE_SOFTWARE &&
->>>>> +               attr->config == PERF_COUNT_SW_DUMMY;
->>>>> +
->>>>> +       if (opts->freq && !is_dummy) {
->>>>>                 attr->freq = 1;
->>>>>                 attr->sample_freq = opts->freq;
->>>>>         } else {
->>>>> -               attr->sample_period = opts->default_interval;
->>>>> +               attr->freq = 0;
->>>>> +               attr->sample_period = is_dummy ? 1 : opts->default_interval;
->>>>>         }
->>>>> }
->>>>> ```
->>>>>
->>>>> But this felt like it could potentially have other side-effects.
->>>>
->>>> Perhaps leave it alone, if the period has already been defined:
->>>>
->>>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->>>> index d5363d23f5d3..ad3e12f5ec88 100644
->>>> --- a/tools/perf/util/evsel.c
->>>> +++ b/tools/perf/util/evsel.c
->>>> @@ -1166,7 +1166,8 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->>>>          if ((evsel->is_libpfm_event && !attr->sample_period) ||
->>>>              (!evsel->is_libpfm_event && (!attr->sample_period ||
->>>>                                           opts->user_freq != UINT_MAX ||
->>>> -                                        opts->user_interval != ULLONG_MAX)))
->>>> +                                        opts->user_interval != ULLONG_MAX) &&
->>>> +            !(is_dummy && attr->sample_period)))
->>>>                  evsel__set_default_freq_period(opts, attr);
->>>>
->>>>          /*
->>>
->>> Or simply like this?
->>>
->>>
->>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->>> index d5363d23f5d3..6ce832ce62f1 100644
->>> --- a/tools/perf/util/evsel.c
->>> +++ b/tools/perf/util/evsel.c
->>> @@ -1169,6 +1169,9 @@ void evsel__config(struct evsel *evsel, struct
->>> record_opts *opts,
->>>                                           opts->user_interval != ULLONG_MAX)))
->>>                  evsel__set_default_freq_period(opts, attr);
->>>
->>> +       if (evsel__is_dummy_event(evsel))
->>> +               attr->freq = 0;
->>> +
->>>          /*
->>>           * If attr->freq was set (here or earlier), ask for period
->>>           * to be sampled.
->>
->> I thought there might be corner cases where it made a difference,
->> but I can't find any, so that should do.
->>
-> 
-> It seemed more intention revealing to do it at creation/initialization
-> than on a later not obviously executed code path - I'm thinking of
-> future me trying to understand the code. My priority is the clearing
-> of the flag, so I'm easy.
-> 
-evsel__apply_config_terms() also sets freq. For example:
-
-# perf record -vv -e dummy/freq=100/ true
-<SNIP>
-------------------------------------------------------------
-perf_event_attr:
-   type                             1 (PERF_TYPE_SOFTWARE)
-   size                             136
-   config                           0x9 (PERF_COUNT_SW_DUMMY)
-   { sample_period, sample_freq }   100
-   sample_type                      IP|TID|TIME|PERIOD
-   read_format                      ID|LOST
-   disabled                         1
-   inherit                          1
-   mmap                             1
-   comm                             1
-   freq                             1
-   enable_on_exec                   1
-   task                             1
-   sample_id_all                    1
-   exclude_guest                    1
-   mmap2                            1
-   comm_exec                        1
-   ksymbol                          1
-   bpf_event                        1
-------------------------------------------------------------
-<SNIP>
-
-Therefore, do we need to perform special processing on dummy events in 
-evsel__apply_config_terms?
-
-Thanks,
-Yang
+Just verifying, you applied my v10 and not my v9 right?
+https://lore.kernel.org/all/20230924044800.2199524-1-james.hilliard1@gmail.=
+com/
