@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1DA7AD8C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442D37AD8C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjIYNRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
+        id S231239AbjIYNRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjIYNRl (ORCPT
+        with ESMTP id S230208AbjIYNRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:17:41 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4887FE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:17:34 -0700 (PDT)
-X-UUID: e0a73a565ba511ee8051498923ad61e6-20230925
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6cnfI5ytzDCvg+dOj6lTpy2XkiFT0LZU5C3nD7lJxK8=;
-        b=kKPDUhqHDfjVpJYyjDBiYY/bZMVvJqSEKdOESTe5uUshKX11md0XKsjOriiCmfJYHs5C1r2u2rMvCdhA+ReP52TFOhF/uJ57xny+/Ij2wnCxwr1XM7K+Yyp7/+PqCy5is0+zBnJSiPvUrSp+fCJ6/FyjTuJgo+vaQqLfp4Ydr9o=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:3f2a2951-c247-495f-8481-6456795d22d9,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:43461cf0-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: e0a73a565ba511ee8051498923ad61e6-20230925
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 191219675; Mon, 25 Sep 2023 21:17:29 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 25 Sep 2023 21:17:27 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 25 Sep 2023 21:17:27 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     <yj.chiang@mediatek.com>, <robin.murphy@arm.com>,
-        <xuewen.yan@unisoc.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v2] ARM: vfp: Add missing VFP instructions to neon_support_hook
-Date:   Mon, 25 Sep 2023 21:17:19 +0800
-Message-ID: <20230925131720.7672-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 25 Sep 2023 09:17:36 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD6AA2;
+        Mon, 25 Sep 2023 06:17:29 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvNdp4dbPz6D9xP;
+        Mon, 25 Sep 2023 21:15:10 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
+ 2023 14:17:27 +0100
+Date:   Mon, 25 Sep 2023 14:17:26 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        "Christophe JAILLET" <christophe.jaillet@wanadoo.fr>,
+        Benjamin Bara <bbara93@gmail.com>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/6] iio: improve doc for available_scan_mask
+Message-ID: <20230925141726.0000325d@Huawei.com>
+In-Reply-To: <9c0938d7-7c35-4d46-ec69-4171e0cf14ae@gmail.com>
+References: <cover.1695380366.git.mazziesaccount@gmail.com>
+        <74b66a5b9eee2fb7046f254928391e3da61aa3b2.1695380366.git.mazziesaccount@gmail.com>
+        <20230924165908.5a332fac@jic23-huawei>
+        <9c0938d7-7c35-4d46-ec69-4171e0cf14ae@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing "Unconditional Advanced SIMD and floating-point
-instructions" in [1] to the VFP undef hook.
+On Mon, 25 Sep 2023 12:50:46 +0300
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-This commit addresses the issue reported in [2], where
-executing the vudot instruction on a platform with FEAT_DotProd
-support resulted in an undefined instruction error.
+> On 9/24/23 18:59, Jonathan Cameron wrote:
+> > On Fri, 22 Sep 2023 14:16:57 +0300
+> > Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> >   
+> >> The available_scan_mask is an array of bitmaps representing the channels
+> >> which can be simultaneously enabled by the driver. In many cases the
+> >> hardware can offer more channels than what the user is interested in
+> >> obtaining. In such cases it may be preferred that only subset of
+> >> channels are enabled, and driver reads only a subset of the channels from
+> >> the hardware.
+> >>
+> >> Some devices can't support all channel combinations. For example the
+> >> BM1390 pressure sensor must always read the pressure data in order to
+> >> acknowledge the watermark IRQ, while reading temperature can be omitted.
+> >> So, the available scan mask would be 'pressure and temperature' and
+> >> 'pressure only'.
+> >>
+> >> When IIO seatchs for the scan mask it asks the driver to use, it will  
+> > 
+> > Spell check description.  searches  
+> 
+> Oh, right. Thanks!
+> 
+> >   
+> >> pick the first suitable one from the 'available_scan_mask' array. Hence,
+> >> ordering the masks in the array makes difference. We should 'prefer'
+> >> reading just the pressure from the hardware (as it is cheaper operation
+> >> than reading both pressure and temperature) over reading both pressure
+> >> and temperature. Hence, we should set the 'only pressure' as first scan
+> >> mask in available_scan_mask array. If we set the 'pressure and
+> >> temperature' as first in array, then the 'only temperature' will never
+> >> get used as 'pressure and temperature' can always serve the user's
+> >> needs.
+> >>
+> >> Add (minimal) kerneldoc to the 'available_scan_mask' to hint the user
+> >> that ordering of masks matters.
+> >>
+> >> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> >> ---
+> >>   include/linux/iio/iio.h | 4 +++-
+> >>   1 file changed, 3 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> >> index 202e55b0a28b..7bfa1b9bc8a2 100644
+> >> --- a/include/linux/iio/iio.h
+> >> +++ b/include/linux/iio/iio.h
+> >> @@ -556,7 +556,9 @@ struct iio_buffer_setup_ops {
+> >>    *			and owner
+> >>    * @buffer:		[DRIVER] any buffer present
+> >>    * @scan_bytes:		[INTERN] num bytes captured to be fed to buffer demux
+> >> - * @available_scan_masks: [DRIVER] optional array of allowed bitmasks
+> >> + * @available_scan_masks: [DRIVER] optional array of allowed bitmasks. Sort the
+> >> + *			   array in order of preference, the most preferred
+> >> + *			   masks first.  
+> > 
+> > LGTM  
+> 
+> I'll try to spell check the commit message and then I treat this as an 
+> ack. Please, let me know if it's not Ok.
+Given I'll be picking these up anyway, not a formal Ack that you should carry
+with the next version, but looks fine to me.
 
-Link: https://developer.arm.com/documentation/ddi0597/2023-06/?lang=en [1]
-Link: https://lore.kernel.org/lkml/20230920083907.30479-1-mark-pk.tsai@mediatek.com/ [2]
-Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
----
- arch/arm/vfp/vfpmodule.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+J
 
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index 7e8773a2d99d..b68efe643a12 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -800,6 +800,24 @@ static struct undef_hook neon_support_hook[] = {{
- 	.cpsr_mask	= PSR_T_BIT,
- 	.cpsr_val	= PSR_T_BIT,
- 	.fn		= vfp_support_entry,
-+}, {
-+	.instr_mask	= 0xff000800,
-+	.instr_val	= 0xfc000800,
-+	.cpsr_mask	= 0,
-+	.cpsr_val	= 0,
-+	.fn		= vfp_support_entry,
-+}, {
-+	.instr_mask	= 0xff000800,
-+	.instr_val	= 0xfd000800,
-+	.cpsr_mask	= 0,
-+	.cpsr_val	= 0,
-+	.fn		= vfp_support_entry,
-+}, {
-+	.instr_mask	= 0xff000800,
-+	.instr_val	= 0xfe000800,
-+	.cpsr_mask	= 0,
-+	.cpsr_val	= 0,
-+	.fn		= vfp_support_entry,
- }};
- 
- static struct undef_hook vfp_support_hook = {
--- 
-2.18.0
+> 
+> >>    * @masklength:		[INTERN] the length of the mask established from
+> >>    *			channels
+> >>    * @active_scan_mask:	[INTERN] union of all scan masks requested by buffers  
+> >   
+> 
 
