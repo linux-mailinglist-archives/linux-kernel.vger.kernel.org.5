@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF897AE1F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C29B7AE1F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbjIYW4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
+        id S233419AbjIYW5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIYW4D (ORCPT
+        with ESMTP id S229585AbjIYW5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:56:03 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F539101;
-        Mon, 25 Sep 2023 15:55:57 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5045cb9c091so5553965e87.3;
-        Mon, 25 Sep 2023 15:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695682555; x=1696287355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ns7ZEArTE1BO39sjKDu0VPQj937rLVJ+UOWzKiwxhK0=;
-        b=dU8fdycnK6zg32sU5NgvslIrefjuvnuh7HC5eRg71jzxv6kA13y6HD5BN+2xwoT5zI
-         K+HKxFAmANmWo/i0E3qLA6A04r6xvJ8sVfsR9p4QwwLKax3GGIrzVLagqXgppWvEE3DE
-         hG6VL+KCLut1LbFegyfezuxfRPpNGStlhJ7c+cUpxlUOuyg0f0z3YA2RHQEMiV/leY6H
-         RGYEmbOK5QYrUM0Dk6Ua9xfwzcprfEMjzGmHjFNLR5rgMSiAWo7qh5B62ed6cN7GGVQu
-         8JuKqgxIbiLsvOLYZtzO4iHWq3nWc9Sd4aKRM9jg4ASzhE4FR5Sw52AmfTkzVv+zQFG1
-         TUew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695682555; x=1696287355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ns7ZEArTE1BO39sjKDu0VPQj937rLVJ+UOWzKiwxhK0=;
-        b=jmr9qsEUs+6a9a8Q0ETr1koATy9w4by5tQPsdk1t2W6r9W9ZsFMPTV3MXXhQWEJ25+
-         flfJ3+dAxOt8qLXtWJQQjKEDqGJfGm2tw13er4vLHrCAo0HB9uXmr1sj51IFk8ib2Qg7
-         TMirQ7P9LuJk7PP+qUe5R9eNvOZpo0W0xBVX2cxlxhnINK2OsEsii4vzd3ku4atTYfQ2
-         E9C0oGKPPK2D9dTBAU83rOXizk+clKa6vWBaE10iF8r5G4y6R1ygm5svnEPaf0SC8ULu
-         a3Kevoh9npRZWPcuphHEpB5L0ccV+nVziG6F9cFZnSeATGNWcm48QUj8PfbAz1QivRpy
-         fYzQ==
-X-Gm-Message-State: AOJu0YwUvsDbAZr9rwNfhSjotwh/jrZPHrEOgS1D5CO/dPgBR7uV26Nt
-        Xn5+yVZ7YQv+8PgaPIbOyu8xpuxK7pqsucMC0MM=
-X-Google-Smtp-Source: AGHT+IEoPsnqkNoSwbveI2pV7v6ITpQkKQVTfdMSq6RV6I51JKONyhAkoGY+gDqo8UW32GHv0kFdF+T97NIDzpUc7ac=
-X-Received: by 2002:a19:7009:0:b0:502:adbb:f9db with SMTP id
- h9-20020a197009000000b00502adbbf9dbmr6403156lfc.65.1695682554861; Mon, 25 Sep
- 2023 15:55:54 -0700 (PDT)
+        Mon, 25 Sep 2023 18:57:23 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CC810C;
+        Mon, 25 Sep 2023 15:57:15 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PMjvcC001796;
+        Mon, 25 Sep 2023 22:57:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=DSjRjYkmB7BUFVNAKJ4xYkcEzmZhEXiK8XKFZovjGcU=;
+ b=H8NTLX4+J0Nvfambodg6NzHsKmqLb6SVSMnzWbnukSQyPGxZSJtchJ/bO1Ee/QzDBvMi
+ LhtPQNhLKozmaK0QRRtuDhLSe6VJGz7/BjiEQ0p/IjxwTB3mWo5CtQVpGC4P0Ui9/w9+
+ 1XxaxeDRhqt6w2kxgTJIGbypLp29Jpwz3uZY0gnP4FnjXpBzhEZ2haJLeggOKd+B8s7J
+ qpaNBpdL2SAQ30l3twHfcmc2YWHYf3EyAIS4Pz/OLLWW7XDVh1Ult3KIkn0XIb/8fyOJ
+ zyDRhi4zr8VtXLSbQoEuGaDAFdF1ewZp2o0OCuhS9OAPYO2N5bZD5h6yQB06w4HrRQow 9A== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb5n8a2kp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 22:57:02 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38PMv14c010258
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 22:57:01 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 25 Sep 2023 15:57:01 -0700
+Date:   Mon, 25 Sep 2023 15:57:00 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: Re: [PATCH V3] crypto: qcom-rng - Add hw_random interface support
+Message-ID: <20230925225700.GC437346@hu-bjorande-lv.qualcomm.com>
+References: <20230925172312.2843262-1-quic_omprsing@quicinc.com>
 MIME-Version: 1.0
-References: <20230925020528.777578-1-yury.norov@gmail.com> <20230925020528.777578-3-yury.norov@gmail.com>
- <49c0fa46-3787-99c5-2b8b-3da71ce33216@intel.com>
-In-Reply-To: <49c0fa46-3787-99c5-2b8b-3da71ce33216@intel.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Mon, 25 Sep 2023 15:55:43 -0700
-Message-ID: <CAAH8bW_Lu_wk7q6eu6evV-ejVXJZn0s3ikw=e=r_tJfYOvqg0Q@mail.gmail.com>
-Subject: Re: [PATCH 2/4] Revert "sched/topology: Introduce for_each_numa_hop_mask()"
-To:     Jacob Keller <jacob.e.keller@intel.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Tariq Toukan <ttoukan.linux@gmail.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Maher Sanalla <msanalla@nvidia.com>,
-        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Pawel Chmielewski <pawel.chmielewski@intel.com>,
-        Yury Norov <ynorov@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230925172312.2843262-1-quic_omprsing@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZuTC_JaemTshKClJTMs3DsKAeZpgi9uV
+X-Proofpoint-GUID: ZuTC_JaemTshKClJTMs3DsKAeZpgi9uV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-25_18,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 mlxlogscore=998 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309250177
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 3:46=E2=80=AFPM Jacob Keller <jacob.e.keller@intel.=
-com> wrote:
->
->
->
-> On 9/24/2023 7:05 PM, Yury Norov wrote:
-> > Now that the only user of for_each_numa_hop_mask() is switched to using
-> > cpumask_local_spread(), for_each_numa_hop_mask() is a dead code. Thus,
-> > revert commit 06ac01721f7d ("sched/topology: Introduce
-> > for_each_numa_hop_mask()").
-> >
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > Signed-off-by: Yury Norov <ynorov@nvidia.com>
-> > ---
-> >  include/linux/topology.h | 18 ------------------
-> >  1 file changed, 18 deletions(-)
-> >
-> > diff --git a/include/linux/topology.h b/include/linux/topology.h
-> > index fea32377f7c7..344c2362755a 100644
-> > --- a/include/linux/topology.h
-> > +++ b/include/linux/topology.h
-> > @@ -261,22 +261,4 @@ sched_numa_hop_mask(unsigned int node, unsigned in=
-t hops)
-> >  }
-> >  #endif       /* CONFIG_NUMA */
-> >
->
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
->
-> I might have squashed all of 2 through 4 into a single patch but not a
-> big deal.
+On Mon, Sep 25, 2023 at 10:53:12PM +0530, Om Prakash Singh wrote:
+> From: Om Prakash Singh <omprsing@qti.qualcomm.com>
 
-I just wanted to keep the changes more trackable. No objections to squash 2=
--4,
-whatever maintainers will feel better.
+That is not a valid email address here, please correct this.
 
-Thanks,
-Yury
+> 
+> Add hw_random interface support in qcom-rng driver as new IP block
+> in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
+> to generate true random number.
+> 
+> Keeping current rng_alg interface as well for random number generation
+> using Kernel Crypto API.
+> 
+> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+[..]
+> diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
+[..]
+> +static int qcom_hwrng_read(struct hwrng *hwrng, void *data, size_t max, bool wait)
+> +{
+> +	struct qcom_rng *qrng =  container_of(hwrng, struct qcom_rng, hwrng);
+
+Please also remove one of the spaces after '='.
+
+
+Other than that, this looks good to me.
+
+Regards,
+Bjorn
