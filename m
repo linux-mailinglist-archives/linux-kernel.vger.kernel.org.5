@@ -2,219 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEB17ACE8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C607C7ACEAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjIYC6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
+        id S230268AbjIYDVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 23:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIYC6y (ORCPT
+        with ESMTP id S229674AbjIYDVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:58:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775E6A4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695610681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=03qSg2yEAIVwRPqjjQs4G4M60zsU0m+0zE8R/M2ccL4=;
-        b=Gx7p+WNaMcz41qn7JSOpljDkAZ+m4EuctKM8tD7FgNW2+zGr5N6AZQhGGJ0Qd9i7wLf/Ja
-        EDdTrRU19+BIvyt/bQ+iseTcH0qGhY9lDo31XnNdM95O75qLAWC+RYPkJEnecBhHmmkWOK
-        JYfR8ElawbhwEAXoXoniewbgcVYuVx4=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-499-K_mMcmUEPZ-EcolO575I2A-1; Sun, 24 Sep 2023 22:57:59 -0400
-X-MC-Unique: K_mMcmUEPZ-EcolO575I2A-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5030ed95acdso7544181e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:57:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695610678; x=1696215478;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=03qSg2yEAIVwRPqjjQs4G4M60zsU0m+0zE8R/M2ccL4=;
-        b=F9PPZglkqe4VQu403QJ6Ey9TTn4/D572ATerzfW6P00l/v8hmGSG3HLnJRAZgiDE+B
-         QT3rVJ4/Hv68qiwtM/u2115nCt7zJh005rmSDrr7B7OwSeTvbUgskFmE8RBY5PoKVar3
-         baQMR+7UghBELsIWMMNZQgMalt/3S17OOV3bTRdxhhuyTgNzs/jz0/gl6RqTxl/KevJa
-         hndStC3gwc7zRInC8OUeibEfzlTOk+UHRcP073xbh2XU8hTeh7ZVrgTptp5aCF6nO5Eo
-         JL6aEU1EJuD7+aipwj5J5zEMNTkKBNAq4XMHw4V3Mb9PjBXAFRMY6PrvF2n7Hr+XmT2u
-         eebg==
-X-Gm-Message-State: AOJu0Yx4nEO1PQXlxy00SWe97SqNguFg2hIcMiz5X0MV7jszALgqIGoK
-        6WXBrFVN0S1PiQ9RuFfpyGntP96W8lk79D0s/fyVRnyWynd9XqEQ9EU1DZekIpIqjSzL7ycrQXq
-        yuHw5RWAo061XwBeEFq2Z8wfqsae8lR1Ny1Z0FQXk
-X-Received: by 2002:a05:6512:12c5:b0:4fb:8948:2b28 with SMTP id p5-20020a05651212c500b004fb89482b28mr5070670lfg.63.1695610678409;
-        Sun, 24 Sep 2023 19:57:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEHF2qhzIv6Pe7cJCbr0RrCTBfYBL4roCVlrTfhCiGgKQygDz63GyQyQzV/OUarEVYJNkAsC1zhXb8toENTH6k=
-X-Received: by 2002:a05:6512:12c5:b0:4fb:8948:2b28 with SMTP id
- p5-20020a05651212c500b004fb89482b28mr5070657lfg.63.1695610678004; Sun, 24 Sep
- 2023 19:57:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-5-lulu@redhat.com>
- <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com> <CACLfguW3NS_4+YhqTtGqvQb70mVazGVfheryHx4aCBn+=Skf9w@mail.gmail.com>
-In-Reply-To: <CACLfguW3NS_4+YhqTtGqvQb70mVazGVfheryHx4aCBn+=Skf9w@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 25 Sep 2023 10:57:47 +0800
-Message-ID: <CACGkMEt-m9bOh9YnqLw0So5wqbZ69D0XRVBbfG73Oh7Q8qTJsQ@mail.gmail.com>
-Subject: Re: [RFC v2 4/4] vduse: Add new ioctl VDUSE_GET_RECONNECT_INFO
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
-        xieyongji@bytedance.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Sun, 24 Sep 2023 23:21:10 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6661BA3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:21:00 -0700 (PDT)
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230925032057epoutp02bd7df681305cf0d704114593c49a386f~IBi6vhWhx2543425434epoutp029
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:20:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230925032057epoutp02bd7df681305cf0d704114593c49a386f~IBi6vhWhx2543425434epoutp029
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695612057;
+        bh=B/ub6Usw4gRZsUbbcyLG7PBsaPuCJ/yTkPdBOWY2Hr8=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=TTjxoqN8J3HjGEkj3N7L8hHp/OGkJghHiMyvTnQR6MBopCrFuZ60IAbHN+EcJ6m4C
+         Oq8KRwUgHp49hfqKGSnOrszac9owoVW9iQHWfsENDoj4LwQnSZhMOhKI/s5NjXwEJo
+         v9lZy3f6PgEnnvLCs6lYZrGC6uA2IV7ywlnRuqNc=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20230925032056epcas1p3f512410619704080a75922d7bfe6880a~IBi6XmdoE1962219622epcas1p3q;
+        Mon, 25 Sep 2023 03:20:56 +0000 (GMT)
+Received: from epsmgec1p1-new.samsung.com (unknown [182.195.38.250]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Rv7S816Vzz4x9Q2; Mon, 25 Sep
+        2023 03:20:56 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmgec1p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        79.05.18968.79CF0156; Mon, 25 Sep 2023 12:20:56 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230925032055epcas1p4c11234eb7130356a7cab01a50032390c~IBi5SvqTV0874908749epcas1p4t;
+        Mon, 25 Sep 2023 03:20:55 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230925032055epsmtrp19b36a469a450bda4057ce8a82c180e38~IBi5SHiil3002530025epsmtrp1E;
+        Mon, 25 Sep 2023 03:20:55 +0000 (GMT)
+X-AuditID: b6c32a4c-a9bff70000004a18-77-6510fc970650
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D9.18.08742.79CF0156; Mon, 25 Sep 2023 12:20:55 +0900 (KST)
+Received: from VDBS1328.vd.sec.samsung.net (unknown [168.219.243.40]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230925032055epsmtip1813d94f40a90e7cd69fa2063afa908fb~IBi5IbEcy0181701817epsmtip1e;
+        Mon, 25 Sep 2023 03:20:55 +0000 (GMT)
+From:   "yw85.kim" <yw85.kim@samsung.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     "yw85.kim" <yw85.kim@samsung.com>
+Subject: [PATCH] timers: Add warning if timer list is corrupted
+Date:   Mon, 25 Sep 2023 12:00:22 +0900
+Message-Id: <1695610822-3242-1-git-send-email-yw85.kim@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsWy7bCmnu6MPwKpBsevM1n8ObGRzeLyrjls
+        Fv+ubWSx2LxpKrNFx+ebbA6sHgs2lXpsWtXJ5vHu3Dl2j74tqxg9Pm+SC2CNyrbJSE1MSS1S
+        SM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAdqtpFCWmFMKFApILC5W
+        0rezKcovLUlVyMgvLrFVSi1IySkwK9ArTswtLs1L18tLLbEyNDAwMgUqTMjO2HtjFVvBCcGK
+        5Xs2szQwXuDtYuTkkBAwkZizewtzFyMXh5DAHkaJf69+MkI4nxgl/i9sg3K+AWVmXWPqYuQA
+        a3m5tBgivpdR4vKsQ0wQzi9GiVX/3jKDzGUTUJf4sPArG0hCRKCbUWLFzE5WkG5mAVWJaWsS
+        QWqEBewlnqzfDFbPAhTeeWATC4jNK+AscWTLe2aI++Qkbp7rBLtPQmARu8SBB2uYIBIuEluX
+        97BD2MISr45vgbKlJF72t7FDXJou8fxJOkS4QOL8zQmsELaxxLu3a5khztGUWL9LHyKsKLHz
+        91xGEJtZgE/i3dceVogpvBIdbUIQppLE8VMlENUSEnsbetkgbA+JI4cegnUKCcRKtPc+ZpzA
+        KDsLYf4CRsZVjFKpBcW56anJhgWGunmp5fBoSs7P3cQITlBaPjsYv6//q3eIkYmD8RCjBAez
+        kgjvr2d8qUK8KYmVValF+fFFpTmpxYcYTYEhNpFZSjQ5H5gi80riDU0sDUzMjEwsjC2NzZTE
+        eWM+tacICaQnlqRmp6YWpBbB9DFxcEo1MK1m0Pq96Mu1P+Kykk8kJm07V3Z/3sLfjK1JPn9d
+        r2qtuT/DleP2De/m54bqWf8rd73urHD/6X0jWWBPSv8ckQr7i7yr1zhsOsfGVeWa6th37JJA
+        9+r9370N5y/6eHub1PHj8nsWqzOEbKiYMT/IaP2TSS3XXDd+1/Wr8Gw/t6B3/e7TL57+k9jb
+        yu6zJu6byC7uObF9lSav2D6+yNm8XOF5aVel5vPyKuPvaizd/sd2nrmrW+r6a+bpqcd2xi6Z
+        Fy13+NFn/0B3Y7V/nn9umlxvtfq71LdSjbdOoDCiKLtRjO+TuVx5ntD3ldsvGC+/ybmKf6qn
+        wDqBSQbLgzjP+wX57L3Jkn3J5N9RHYvW9itKLMUZiYZazEXFiQCSqQIJ2QMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIJMWRmVeSWpSXmKPExsWy7bCSnO70PwKpBo+a1C3+nNjIZnF51xw2
+        i3/XNrJYbN40ldmi4/NNNgdWjwWbSj02repk83h37hy7R9+WVYwenzfJBbBGcdmkpOZklqUW
+        6dslcGXsvbGKreCEYMXyPZtZGhgv8HYxcnBICJhIvFxa3MXIySEksJtRYtYNSRBbQkBCovdc
+        NzNEibDE4cNAJVxAJT8YJdZtW84IUsMmoC7xYeFXNpCEiEA/o8TLawtYQBqYBVQlpq1JBKkR
+        FrCXeLJ+MzOIzQIU3nlgEwuIzSvgLHFky3tmiF1yEjfPdTJPYORZwMiwilEytaA4Nz232LDA
+        MC+1XK84Mbe4NC9dLzk/dxMjOFS0NHcwbl/1Qe8QIxMH4yFGCQ5mJRHeX8/4UoV4UxIrq1KL
+        8uOLSnNSiw8xSnOwKInzir/oTRESSE8sSc1OTS1ILYLJMnFwSjUwZTcds5XmWzztX7/WvgO7
+        OY0tq5+umbF+x6KVUjMnO/o3rVod9YN3fpp+UkRaQM+DFYXhk4/In7v88M3ljW9We+metv2R
+        9F88bnvg47s/jn11f9zlk7I0+V2QIhv3ibq4OxaCyucDrWV3HDuj+oHHtPhqVT9fZVGCinet
+        b7/qyVaurHtHFly37l7r9jh8bljXjwk6TnoLKvn8DTj9isVyV7ye31zVwfBKiZ+HIzNq5fbG
+        r18WJZ5fs19TqO/3C+/t78RT3E4HRG290S0r3Zwi8VElhUHwZaXbeS73P2kxgvcfGZ9i+l80
+        mZXtro2fi9O06qdPxZf0HbCW7VT6JvI791bwx8mzDM1m5ZrcWpagxFKckWioxVxUnAgAaemE
+        TYQCAAA=
+X-CMS-MailID: 20230925032055epcas1p4c11234eb7130356a7cab01a50032390c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230925032055epcas1p4c11234eb7130356a7cab01a50032390c
+References: <CGME20230925032055epcas1p4c11234eb7130356a7cab01a50032390c@epcas1p4.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 10:07=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
->
-> On Mon, Sep 18, 2023 at 4:49=E2=80=AFPM Jason Wang <jasowang@redhat.com> =
-wrote:
-> >
-> > On Tue, Sep 12, 2023 at 11:01=E2=80=AFAM Cindy Lu <lulu@redhat.com> wro=
-te:
-> > >
-> > > In VDUSE_GET_RECONNECT_INFO, the Userspace App can get the map size
-> > > and The number of mapping memory pages from the kernel. The userspace
-> > > App can use this information to map the pages.
-> > >
-> > > Signed-off-by: Cindy Lu <lulu@redhat.com>
-> > > ---
-> > >  drivers/vdpa/vdpa_user/vduse_dev.c | 15 +++++++++++++++
-> > >  include/uapi/linux/vduse.h         | 15 +++++++++++++++
-> > >  2 files changed, 30 insertions(+)
-> > >
-> > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_u=
-ser/vduse_dev.c
-> > > index 680b23dbdde2..c99f99892b5c 100644
-> > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > @@ -1368,6 +1368,21 @@ static long vduse_dev_ioctl(struct file *file,=
- unsigned int cmd,
-> > >                 ret =3D 0;
-> > >                 break;
-> > >         }
-> > > +       case VDUSE_GET_RECONNECT_INFO: {
-> > > +               struct vduse_reconnect_mmap_info info;
-> > > +
-> > > +               ret =3D -EFAULT;
-> > > +               if (copy_from_user(&info, argp, sizeof(info)))
-> > > +                       break;
-> > > +
-> > > +               info.size =3D PAGE_SIZE;
-> > > +               info.max_index =3D dev->vq_num + 1;
-> > > +
-> > > +               if (copy_to_user(argp, &info, sizeof(info)))
-> > > +                       break;
-> > > +               ret =3D 0;
-> > > +               break;
-> > > +       }
-> > >         default:
-> > >                 ret =3D -ENOIOCTLCMD;
-> > >                 break;
-> > > diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
-> > > index d585425803fd..ce55e34f63d7 100644
-> > > --- a/include/uapi/linux/vduse.h
-> > > +++ b/include/uapi/linux/vduse.h
-> > > @@ -356,4 +356,19 @@ struct vhost_reconnect_vring {
-> > >         _Bool avail_wrap_counter;
-> > >  };
-> > >
-> > > +/**
-> > > + * struct vduse_reconnect_mmap_info
-> > > + * @size: mapping memory size, always page_size here
-> > > + * @max_index: the number of pages allocated in kernel,just
-> > > + * use for check
-> > > + */
-> > > +
-> > > +struct vduse_reconnect_mmap_info {
-> > > +       __u32 size;
-> > > +       __u32 max_index;
-> > > +};
-> >
-> > One thing I didn't understand is that, aren't the things we used to
-> > store connection info belong to uAPI? If not, how can we make sure the
-> > connections work across different vendors/implementations. If yes,
-> > where?
-> >
-> > Thanks
-> >
-> The process for this reconnecttion  is
-> A.The first-time connection
-> 1> The userland app checks if the device exists
-> 2>  use the ioctl to create the vduse device
-> 3> Mapping the kernel page to userland and save the
-> App-version/features/other information to this page
-> 4>  if the Userland app needs to exit, then the Userland app will only
-> unmap the page and then exit
->
-> B, the re-connection
-> 1> the userland app finds the device is existing
-> 2> Mapping the kernel page to userland
-> 3> check if the information in shared memory is satisfied to
-> reconnect,if ok then continue to reconnect
-> 4> continue working
->
->  For now these information are all from userland,So here the page will
-> be maintained by the userland App
-> in the previous code we only saved the api-version by uAPI .  if  we
-> need to support reconnection maybe we need to add 2 new uAPI for this,
-> one of the uAPI is to save the reconnect  information and another is
-> to get the information
->
-> maybe something like
->
-> struct vhost_reconnect_data {
-> uint32_t version;
-> uint64_t features;
-> uint8_t status;
-> struct virtio_net_config config;
-> uint32_t nr_vrings;
-> };
+[Description]
+If some drivers use timers wrong, it can cause list corruption
+(LIST_POISON2) and oops.
 
-Probably, then we can make sure the re-connection works across
-different vduse-daemon implementations.
+        detach_timer(struct timer_list *timer, bool clear_pending)
+          __hlist_del(entry);
+            next->pprev = pprev;  // oops, next is LIST_POISON2(0x122)
 
->
-> #define VDUSE_GET_RECONNECT_INFO _IOR (VDUSE_BASE, 0x1c, struct
-> vhost_reconnect_data)
->
-> #define VDUSE_SET_RECONNECT_INFO  _IOWR(VDUSE_BASE, 0x1d, struct
-> vhost_reconnect_data)
+However, it is difficult to find the cause through backtrace.
 
-Not sure I get this, but the idea is to map those pages to user space,
-any reason we need this uAPI?
+        [1-11.7841] Unable to handle kernel NULL pointer dereference at
+          virtual address 00000126
+        [1-11.7841] pgd = 0ac52d81
+        [1-11.7841] [00000126] *pgd=00000000
+        Die cpu info :
+        [1-11.7841] Internal error: Oops: 805 [#1] PREEMPT SMP ARM
+        [1-11.7842] PC is at run_timer_softirq+0x1f0/0x684
+        [1-11.7842] LR is at __warn+0xb4/0xf8
+        ...
+        [1-11.7842] Backtrace:
+        [1-11.7842] [<c00bd464>] (run_timer_softirq)
+        [1-11.7842] [<c000a438>] (__do_softirq+0x1ac/0x50c)
+        [1-11.7842] [<c00362d4>] (run_ksoftirqd+0x84/0x98)
+        [1-11.7842] [<c005a564>] (smpboot_thread_fn+0x140/0x2c0)
+        [1-11.7843] [<c00560c0>] (kthread+0x1cc/0x1d0)
 
-Thanks
+Adding this warning will give us more detailed information.
+In this case the hdmi_switch driver was the cause.
 
->
-> Thanks
-> Cindy
->
->
->
->
-> > > +
-> > > +#define VDUSE_GET_RECONNECT_INFO \
-> > > +       _IOWR(VDUSE_BASE, 0x1b, struct vduse_reconnect_mmap_info)
-> > > +
-> > >  #endif /* _UAPI_VDUSE_H_ */
-> > > --
-> > > 2.34.3
-> > >
-> >
->
+A problem occurred because multiple schedule delayed works
+were created using same dw(struct delayed_work dw) structure.
+
+        [1-11.7835] WARNING: CPU: 1 PID: 17 at kernel/time/timer.c:830
+          run_timer_softirq+0x50c/0x684
+        [1-11.7836] timer: list corruption, entry->next is LIST_POISON2,
+          entry:dw+0x10/0xfffe1a3c [hdmi_switch],
+          fn:delayed_work_timer_fn+0x0/0x28
+
+Signed-off-by: yw85.kim <yw85.kim@samsung.com>
+---
+ kernel/time/timer.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 63a8ce7..e1e3340 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -877,6 +877,10 @@ static inline void detach_timer(struct timer_list *timer, bool clear_pending)
+ 
+ 	debug_deactivate(timer);
+ 
++	if (unlikely(entry->next == LIST_POISON2))
++		WARN_ONCE(1, "timer: list corruption, next is LIST_POISON2, entry:%pS, fn:%pS\n",
++			entry, timer->function);
++
+ 	__hlist_del(entry);
+ 	if (clear_pending)
+ 		entry->pprev = NULL;
+-- 
+2.7.4
 
