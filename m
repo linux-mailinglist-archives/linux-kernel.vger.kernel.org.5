@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D047ADA89
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8EA7ADA93
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbjIYOvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
+        id S232532AbjIYOvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232576AbjIYOu6 (ORCPT
+        with ESMTP id S232525AbjIYOvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:50:58 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E306F10F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:50:40 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405361bb9cdso64020875e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:50:40 -0700 (PDT)
+        Mon, 25 Sep 2023 10:51:01 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4EA12A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:50:42 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a65f9147ccso809859966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:50:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695653439; x=1696258239; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695653441; x=1696258241; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iqDQqT2DLj9ftb1a+cS59Q82hjk6LlDusCS/om2BnIQ=;
-        b=ScfjfFpLK1xKnUr2VTavZyRt4HjBbISxkcUP+bN45bJ/CUucDAkbXOZr6j7kVnrefI
-         0T/HzAnC+miNdrwfnhy+4yXMh4gLqtjj5YJrz2rM1Ilq9i0G+5NQGUfVL8crWkTwqZdy
-         NApkvONJ1A55PbFPOc+47aKYuXK0zxkk+NejuvMSLF9Gdzgg0FOAlcnaClYYTIVtL4uY
-         4YZsy6BAhvjIKA47TG550j+T6Gx+naqjyl1Q7VvSyhsBdR4z0D2CVcYJDubGWt+WNKX+
-         XJl9ERrO1PabQrL1Bx0cWXSDSK9a2vdIWGrQWJiKSlq0poPFWXQDOeV6Wuvl7wkjGloL
-         JVlA==
+        bh=Ir9r9aQtaSZLleag9LnQwnbzzTQdAeEYrkqtlWNxaqg=;
+        b=bOuDOD+RpyFvJG2sgsMNlDk4IvQAy6xtX97834h/Ay4UjBfklJQ+vul+f6wYkEy4HS
+         +aNZshIZK6NZMtKvy2uRJ0tsyuxo8/Fc21zeZWqLzIztVnCGQdAy67cmCFO5dl+ErzmM
+         D4plO9cLFAKnluvBpA4AoD/Qt2od3Jk5O6buqaYHCFBD8ASbjlDZKZOOTExiBL9NXhXN
+         fShdDNX0/4YkYm2VcEk4hYkSqJ5hFxD6uITBeF9qzTNgrCTAhd3OlUuMvn7QmLGjtXl9
+         WA+I9w/JdkeZp5J4CWl7HgAnhNO6qsYzFCMhSFuCczpzSisEduAZD0yrMwb2Q1q/69vY
+         15WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695653439; x=1696258239;
+        d=1e100.net; s=20230601; t=1695653441; x=1696258241;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iqDQqT2DLj9ftb1a+cS59Q82hjk6LlDusCS/om2BnIQ=;
-        b=XxaGP0YDiMTn2//nG4hdYoe4i5oXCO7Q0LUeu8FJ9ZiLUoSBoNfwYwLvKNqaYSuN6D
-         m+7OGCokguIyOt/dUEufsGus7Yri9GWw/qH0oODKBAOLIXStx5ju0S4lZdLO8wC0wVCW
-         7G1otFb6eTLJJB/U5fFfAinrhb3MfaIh/vRCTkhGLCn6VVX+kOpRVuCyowXoplnDx75z
-         jp4Mtws7XeGny+KjNtvE2GXZhmEuXf+9QPPpGOPKvOSLjKXufPXowEQZpGjLfwUYKgLn
-         VJtnOaduXvwp+U9TI39Bsa+uMbriOSbIpU3XOiypyB+velh05SOWBQjE0iY+h4uHT/qO
-         oveQ==
-X-Gm-Message-State: AOJu0YyI3O/q4iOb/WHn9PXLX7c7CTR0NscEzD4hUNWbDuqLiN7tsY08
-        5TjmxEbjcBU5gC6ToVG8jrqIGQ==
-X-Google-Smtp-Source: AGHT+IGb3673GOOtKMB73cB0OpDzVMreybHEgPR0HZphki/E0Du6EKRHegiTKTBna0+j64IS3Gi2kg==
-X-Received: by 2002:adf:eb84:0:b0:314:dc0:2fca with SMTP id t4-20020adfeb84000000b003140dc02fcamr5633684wrn.29.1695653439086;
-        Mon, 25 Sep 2023 07:50:39 -0700 (PDT)
+        bh=Ir9r9aQtaSZLleag9LnQwnbzzTQdAeEYrkqtlWNxaqg=;
+        b=lNsv4w6oVY23UlEF/Rd8YfbIqaWWnczFWaCmmD+SVmjU87sjCzJEh/U095efi1PRVH
+         TDKBy+tuJIvu5OjTdezDlMNktWiOaK+HyigRjQJJUrVQEtuVSZKqrCHmFxuR5wH8fR3R
+         b1aUbbigK+eywA2FwfHapGWJ1FmU+Jg3ruSJ3dL+aiDvLmtkm6TQAC23X829gWMgM9Ga
+         RqGF3DHiaMAkDXQZ0b2HXscBc7frq1xYDExuynG6ZCFHzYGs9HCtHWBunrAKNzBY2n5N
+         Km09mfj6pO8pNG0oPLeoQY0kueYDwwbh6Q1VgyVei+LaeJ81KaiA1ayEanwwMvKQT046
+         ChOA==
+X-Gm-Message-State: AOJu0YxLlm4Bp6XBf0fIAQ0icuX3+jPHd25U/VD0fAOgie7oVdvaOCEm
+        rAK/Co03yL/xi86SbdXgvPhx3g==
+X-Google-Smtp-Source: AGHT+IGHgppQ3t1g2t9wIH8gzziGpmJuiaRZ/DBH8tYnX7LyRs0DsJWIUJeBhl3sIsr96cxKd34DGQ==
+X-Received: by 2002:a17:906:51c9:b0:9ae:82b4:e309 with SMTP id v9-20020a17090651c900b009ae82b4e309mr6338031ejk.0.1695653440967;
+        Mon, 25 Sep 2023 07:50:40 -0700 (PDT)
 Received: from [10.167.154.1] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id k8-20020a170906a38800b0099bc2d1429csm6426640ejz.72.2023.09.25.07.50.37
+        by smtp.gmail.com with ESMTPSA id k8-20020a170906a38800b0099bc2d1429csm6426640ejz.72.2023.09.25.07.50.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 07:50:38 -0700 (PDT)
+        Mon, 25 Sep 2023 07:50:40 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 25 Sep 2023 16:50:31 +0200
-Subject: [PATCH v5 02/10] dt-bindings: display/msm/gmu: Allow passing QMP
- handle
+Date:   Mon, 25 Sep 2023 16:50:32 +0200
+Subject: [PATCH v5 03/10] dt-bindings: display/msm/gpu: Allow A7xx SKUs
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230628-topic-a7xx_drmmsm-v5-2-3dc527b472d7@linaro.org>
+Message-Id: <20230628-topic-a7xx_drmmsm-v5-3-3dc527b472d7@linaro.org>
 References: <20230628-topic-a7xx_drmmsm-v5-0-3dc527b472d7@linaro.org>
 In-Reply-To: <20230628-topic-a7xx_drmmsm-v5-0-3dc527b472d7@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>,
@@ -75,63 +74,58 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695653434; l=1312;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695653434; l=1566;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=3t6V8wanxGXA/i0mTDCvRvjHggKHs3OjhBjkt6x7rlo=;
- b=GoJwpk3Vnxi78DXqBVEHwcY7i3nunpLwnIlz6jJr9Ti3ctmzI5ms3Pb95nenYzkdUPJL4B0HD
- FzG0v1hhsYSCC5QdQyBqa/CbKk4AQMNbfRbzIsJD+5+s0LuZx6TuW9g
+ bh=VV4z2afr+St9/dA+OjbMmt+l3E+tCjarurRFVAL3RG8=;
+ b=4eEgEPSWcXcG1XOQWyF6YaP+CTqzt1E587uUOjGP0HmHvsTNjiBkWW/tLiSqzWD/JO3j/KXdI
+ 64z6gyrDFYpCrI9hRLtQhTiLfCrFW+MsMrtlMDTn7b4jVPCYXnI11gO
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When booting the GMU, the QMP mailbox should be pinged about some tunables
-(e.g. adaptive clock distribution state). To achieve that, a reference to
-it is necessary. Allow it and require it with A730.
+Allow A7xx SKUs, such as the A730 GPU found on SM8450 and friends.
+They use GMU for all things DVFS, just like most A6xx GPUs.
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
 Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> # sm8450
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- Documentation/devicetree/bindings/display/msm/gmu.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/display/msm/gpu.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/gmu.yaml b/Documentation/devicetree/bindings/display/msm/gmu.yaml
-index 428eb138881a..4e1c25b42908 100644
---- a/Documentation/devicetree/bindings/display/msm/gmu.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/gmu.yaml
-@@ -64,6 +64,10 @@ properties:
-   iommus:
-     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/display/msm/gpu.yaml b/Documentation/devicetree/bindings/display/msm/gpu.yaml
+index 56b9b247e8c2..b019db954793 100644
+--- a/Documentation/devicetree/bindings/display/msm/gpu.yaml
++++ b/Documentation/devicetree/bindings/display/msm/gpu.yaml
+@@ -23,7 +23,7 @@ properties:
+           The driver is parsing the compat string for Adreno to
+           figure out the gpu-id and patch level.
+         items:
+-          - pattern: '^qcom,adreno-[3-6][0-9][0-9]\.[0-9]$'
++          - pattern: '^qcom,adreno-[3-7][0-9][0-9]\.[0-9]$'
+           - const: qcom,adreno
+       - description: |
+           The driver is parsing the compat string for Imageon to
+@@ -203,7 +203,7 @@ allOf:
+         properties:
+           compatible:
+             contains:
+-              pattern: '^qcom,adreno-6[0-9][0-9]\.[0-9]$'
++              pattern: '^qcom,adreno-[67][0-9][0-9]\.[0-9]$'
  
-+  qcom,qmp:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Reference to the AOSS side-channel message RAM
-+
-   operating-points-v2: true
- 
-   opp-table:
-@@ -251,6 +255,9 @@ allOf:
-             - const: hub
-             - const: demet
- 
-+      required:
-+        - qcom,qmp
-+
-   - if:
-       properties:
-         compatible:
+       then: # Starting with A6xx, the clocks are usually defined in the GMU node
+         properties:
 
 -- 
 2.42.0
