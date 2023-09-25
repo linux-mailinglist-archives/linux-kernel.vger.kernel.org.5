@@ -2,52 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4897ADB2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405C17ADB2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbjIYPQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
+        id S232038AbjIYPSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjIYPQ0 (ORCPT
+        with ESMTP id S229905AbjIYPSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:16:26 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6DA99C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:16:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FF5FDA7;
-        Mon, 25 Sep 2023 08:16:57 -0700 (PDT)
-Received: from [10.57.65.61] (unknown [10.57.65.61])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFC423F5A1;
-        Mon, 25 Sep 2023 08:16:16 -0700 (PDT)
-Message-ID: <9f731870-ed36-d2e4-378b-f7fbf338ebd6@arm.com>
-Date:   Mon, 25 Sep 2023 16:16:06 +0100
+        Mon, 25 Sep 2023 11:18:01 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A509C;
+        Mon, 25 Sep 2023 08:17:54 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99c93638322so1517828366b.1;
+        Mon, 25 Sep 2023 08:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695655073; x=1696259873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cp05RJcC1kdlonhGXdkkByIHpEVtVJUJziov6gnH670=;
+        b=ZFVqU31W2m8GZQlgRKzGzniC2VYw+yfFaqsIsn0Q7VzHrk9gxtsY89C/Zm2R+rPD8R
+         W5es7notYtwI/Nj4o10WnuCgaTaSpMMhsXyiAnwsGmQka2bMRnZtFDTQKBpWPe3jSXaN
+         NHXpuOHzah/sTxd2GfkZlBCUv5Tf4RauYzRHWreamswERK5Z9ezqE54i5jRv4rkU5jfO
+         GzV/UBoWCmYr58fbWHLSN/EvmXRbHj2O1eJMg/SqTOXBdGYwebPow7+HdSwCF0kt+mtY
+         DX+zz80/amZ7pyIq4XUdWoz4dAViqcD9b4vZcmG+N9SdRaEoGzohRCdcfniUYxUVB5wF
+         fnjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695655073; x=1696259873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cp05RJcC1kdlonhGXdkkByIHpEVtVJUJziov6gnH670=;
+        b=i/5Yjs+VGRsQMZaDsAmHS59Fey45NEjbCWqf4AqywIH5G6PsUSjnc9zvMKsZrdhPce
+         N7jBVs8XG/7b2YANH+djZQRvSHFeJZiFws+3DTNWbn2lmKd/K1Q+b7ZYwvP2OiXlkt/I
+         Is1cZoOETjfOdT//8lYs6v0O13Om5e4UcV/7YyOgItHbRfts3niHGLidGiZG+7XbpM6Z
+         p7lHF1vlmw7k7PHqtf7I+z5/V3rI9L9dLY+BXCEvb5y8fxa8eBQ31KRh3LjRWhtRsyar
+         BSdDolX32aWdeeCn1W6Yomt1NUcJHgAG1uU7w4CiMm22DGTob6RQSoYtrdZgsjHeFxtA
+         2DVg==
+X-Gm-Message-State: AOJu0Yz8VWFjBiD8uRfnW5U2cdxem3h2CXopHiuH2NJoteDGwoppcykm
+        SeUXA2DJxcGBehvbVRA2LEI=
+X-Google-Smtp-Source: AGHT+IH17sOAakA6E4KIl7AQ2cJ0ihfCuFvx8Dn3Ay6445MXkQDyU0l3BiWoooFZywY+fEu45pmmzQ==
+X-Received: by 2002:a17:907:60cc:b0:9a1:8993:9532 with SMTP id hv12-20020a17090760cc00b009a189939532mr15927357ejc.30.1695655072767;
+        Mon, 25 Sep 2023 08:17:52 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id s16-20020a05640217d000b0053420e55616sm1166104edy.75.2023.09.25.08.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 08:17:52 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 5254527C005C;
+        Mon, 25 Sep 2023 11:17:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 25 Sep 2023 11:17:50 -0400
+X-ME-Sender: <xms:nqQRZQRWdODf_W6EBlylGlOjcBsv_OtE8nAB2yb0Dh3rCSuic2HAYA>
+    <xme:nqQRZdxTdiL3aBr9kmz82XXiWcPYd7W8MBBmlqBBok4JxI8HQXsSjU8JnUWYmUUit
+    7LvK0QPUgJgyuvt6w>
+X-ME-Received: <xmr:nqQRZd206QmrRemHVyTsJp43-uTCAeuHJ4TMunNwxGEIykEEyWzzBrdwwao>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:nqQRZUD8n9cX46mi6HI8R3bwLCjTLbBXYP_QGxq7wPCV4GvvVJlp7Q>
+    <xmx:nqQRZZirA9NjzTfLdRDOzN3WF13EXe4FcLnegcaanlXSsi1sKaLlXQ>
+    <xmx:nqQRZQo8waW6EePgwQ-uB_dAqatYIowUGzdhDRIhVZKx1zM4lTTpgw>
+    <xmx:nqQRZeZTjOyuNGyEiyrdGKzIUUEJEN_z0eKd4bPh6_MGL2X00IgNlg>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Sep 2023 11:17:49 -0400 (EDT)
+Date:   Mon, 25 Sep 2023 08:17:48 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        benno.lossin@proton.me, bjorn3_gh@protonmail.com, gary@garyguo.net,
+        linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, walmeida@microsoft.com,
+        wedsonaf@gmail.com
+Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
+ `WithRef`
+Message-ID: <ZRGknJCB6tFgX3Gr@Boquns-Mac-mini.home>
+References: <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
+ <20230925150047.1961646-1-aliceryhl@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/2] KVM: arm64: Add handler for MOPS exceptions
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
- <20230922112508.1774352-2-kristina.martsenko@arm.com>
- <87sf734ofv.wl-maz@kernel.org>
-From:   Kristina Martsenko <kristina.martsenko@arm.com>
-In-Reply-To: <87sf734ofv.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925150047.1961646-1-aliceryhl@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,84 +103,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2023 15:48, Marc Zyngier wrote:
-> Hi Kristina,
-
-Hi Marc,
-
-> On Fri, 22 Sep 2023 12:25:07 +0100,
-> Kristina Martsenko <kristina.martsenko@arm.com> wrote:
->>
->> An Armv8.8 FEAT_MOPS main or epilogue instruction will take an exception
->> if executed on a CPU with a different MOPS implementation option (A or
->> B) than the CPU where the preceding prologue instruction ran. In this
->> case the OS exception handler is expected to reset the registers and
->> restart execution from the prologue instruction.
->>
->> A KVM guest may use the instructions at EL1 at times when the guest is
->> not able to handle the exception, expecting that the instructions will
->> only run on one CPU (e.g. when running UEFI boot services in the guest).
->> As KVM may reschedule the guest between different types of CPUs at any
->> time (on an asymmetric system), it needs to also handle the resulting
->> exception itself in case the guest is not able to. A similar situation
->> will also occur in the future when live migrating a guest from one type
->> of CPU to another.
->>
->> Add handling for the MOPS exception to KVM. The handling can be shared
->> with the EL0 exception handler, as the logic and register layouts are
->> the same. The exception can be handled right after exiting a guest,
->> which avoids the cost of returning to the host exit handler.
->>
->> Similarly to the EL0 exception handler, in case the main or epilogue
->> instruction is being single stepped, it makes sense to finish the step
->> before executing the prologue instruction, so advance the single step
->> state machine.
+On Mon, Sep 25, 2023 at 03:00:47PM +0000, Alice Ryhl wrote:
+> >>> I'm concerned about this change, because an `&WithRef<T>` only has
+> >>> immutable permissions for the allocation. No pointer derived from it
+> >>> may be used to modify the value in the Arc, however, the drop
+> >>> implementation of Arc will do exactly that. 
+> >> 
+> >> That is indeed a problem. We could put the value in an `UnsafeCell`, but
+> >> that would lose us niche optimizations and probably also other optimizations.
+> >> 
+> > 
+> > Not sure I understand the problem here, why do we allow modifying the
+> > value in the Arc if you only have a shared ownership?
 > 
-> What is the rationale for advancing the state machine? Shouldn't we
-> instead return to the guest and immediately get the SS exception,
-> which in turn gets reported to userspace? Is it because we rollback
-> the PC to a previous instruction?
+> Well, usually it's when you have exclusive access even though the value
+> is in an `Arc`.
+> 
+> The main example of this is the destructor of the `Arc`. When the last
+> refcount drops to zero, this gives you exclusive access. This lets you
+> run the destructor. The destructor requires mutable access.
+> 
+> Another example would be converting the `Arc` back into an `UniqueArc`
+> by checking that the refcount is 1. Once you have a `UniqueArc`, you can
+> use it to mutate the inner value.
+> 
+> Finally, there are methods like `Arc::get_mut_unchecked`, where you
+> unsafely assert that nobody else is using the value while you are
+> modifying it. We don't have that in our version of `Arc` right now, but
+> we might want to add it later.
+> 
 
-Yes, because we rollback the PC to the prologue instruction. We advance the
-state machine so that the SS exception is taken immediately upon returning to
-the guest at the prologue instruction. If we didn't advance it then we would
-return to the guest, execute the prologue instruction, and then take the SS
-exception on the middle instruction. Which would be surprising as userspace
-would see the middle and epilogue instructions executed multiple times but not
-the prologue.
+Hmm.. but the only way to get an `Arc` from `&WithRef` is
 
-> In the latter case, won't userspace see multiple SS exceptions for the
-> middle instruction if trapping from the epilogue? This would be a bit
-> surprising, to say the least.
+	impl From<&WithRef<T>> for Arc<T> {
+	    ...
+	}
 
-Not sure I follow. Do you mean multiple in a row or multiple in total? Not in a
-row (we step the prologue instruction in between), but yes in total (every time
-we start executing the middle instruction). And this happens when trapping from
-the middle instruction too, not just the epilogue. Do you see a better way of
-handling it?
+, and we clone `Arc` in the that function (i.e. copying the raw
+pointer), so we are still good?
 
-Here is an example of what GDB sees when single stepping a guest while the
-guest executes these instructions ("mops ex" are debug prints in kvm; I've
-added prologue/main/epilogue comments):
+Regards,
+Boqun
 
-Breakpoint 2, 0xffff80008051b6a4 in ?? ()
-0xffff80008051b6a8 in ?? () # prologue
-0xffff80008051b6ac in ?? () # main
-[   33.615305] mops ex: memcpy: B->A: fwd: main
-0xffff80008051b6a8 in ?? () # prologue
-0xffff80008051b6ac in ?? () # main
-0xffff80008051b6b0 in ?? () # epilogue
-[   34.141251] mops ex: memcpy: A->B: fwd: epi
-0xffff80008051b6a8 in ?? () # prologue
-0xffff80008051b6ac in ?? () # main
-0xffff80008051b6b0 in ?? () # epilogue
-[   34.209822] mops ex: memcpy: B->A: fwd: epi
-0xffff80008051b6a8 in ?? () # prologue
-0xffff80008051b6ac in ?? () # main
-0xffff80008051b6b0 in ?? () # epilogue
-0xffff80008051b6b4 in ?? ()
-[...]
-
-Thanks,
-Kristina
-
+> > Also I fail to see why `ArcBorrow` doesn't have the problem. Maybe I'm
+> > missing something subtle here? Could you provide an example?
+> 
+> It's because `ArcBorrow` just has a raw pointer inside it. Immutable
+> references give up write permissions, but raw pointers don't even if
+> they are `*const T`.
+> 
+> Alice
