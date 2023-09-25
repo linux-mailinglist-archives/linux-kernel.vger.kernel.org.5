@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C49957ADC60
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0457ADC63
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbjIYPxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        id S232561AbjIYPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjIYPxk (ORCPT
+        with ESMTP id S232469AbjIYPy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:53:40 -0400
+        Mon, 25 Sep 2023 11:54:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73FAA2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:53:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E3C9C433C8;
-        Mon, 25 Sep 2023 15:53:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92092
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:54:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D79BC433C7;
+        Mon, 25 Sep 2023 15:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695657213;
-        bh=IfkWee5NGXcjx2dGOM+wKo9pmVmBViwhCPWD/UdzuuQ=;
+        s=k20201202; t=1695657259;
+        bh=B4lato5sKbIJfj/DcTxCJi6Fpi7KSgnK6AAG1dAv0WI=;
         h=From:To:Cc:Subject:Date:From;
-        b=tDkFmT81D6oSNGqYSQjqpGYlSgfdMvsbHE6HpCPrdP7RZmhBsyfXOaZtuTR3ZNFu4
-         jxtvqsQXaGGZMdxIMLivsUiUlWsmK88pY3rGZZHlVBdO/3zQ2X9tSYmbYr3jBIXjhc
-         vtFpi2JG/0MuR2my9PL6fBriQGIZCPNPMOJ4Z7+vxQiQf7jXZtP+LwGb3lBLw6reiW
-         XwqDvdnSylbGfnwtu1B5gpar4gDbGW6nLAw8ApmvdZoRp/rjlx5UziY1peZeOPKGac
-         G/ecgEcLlB0Pz224zq/oYB9As3CCTkwAOSi/cwTyx+xzYMCXlhGBm8nEPZRXtpMg2D
-         26Ni3YWFv0miQ==
+        b=Xz+FlTT0VGq3tgbriqS2EDaNs11wwdg05SylJzWh/+MjuJrj6gv1A33uV0K9z5PZC
+         uOISJiUJKkEfwop5py2fR6lDz+1iQQ6PHYEaklwFtAntZ98Sjo2CZkjVZQB6/mZ4W1
+         7E+xM/4XJFyE5im3h2UkBLth88NECJC+iYzwrzAW1r5CdowA+gkpxrOIGwIrt8sjW2
+         g7J6SLzreVvMH81sYwZlSKjZpAFTQR6r/s+P4suoajmsgKqxGuadxO7oXDBUklo+s+
+         cPSE8QCwH/QgHLGt4KMavTHbP2MAqnGwY8I+Cq8haydsunntR0FqvgV3tQkU46n1TB
+         WY+A+7V+baI3w==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: asm/io.h: mark mmio read addresses as const
-Date:   Mon, 25 Sep 2023 17:53:20 +0200
-Message-Id: <20230925155328.443664-1-arnd@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tree Davies <tdavies@darkphysics.net>,
+        Yogesh Hegde <yogi.kernel@gmail.com>,
+        Sumitra Sharma <sumitraartsy@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] staging: rtl8192e: fix structure alignment
+Date:   Mon, 25 Sep 2023 17:54:03 +0200
+Message-Id: <20230925155413.471287-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,112 +52,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Passing constant __iomem tokens into the readl() family of helpers
-or any of the others causes a warning on m68k:
+A recent cleanup changed the rtl8192e from using the custom misaligned
+rtllib_hdr_3addr structure to the generic ieee80211_hdr_3addr definition
+that enforces 16-bit structure alignment in memory.
 
-include/asm-generic/io.h: In function 'ioread8_rep':
-arch/m68k/include/asm/io_mm.h:375:44: warning: passing argument 1 of 'raw_insb' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     375 | #define readsb(port, buf, nr)     raw_insb((port), (u8
+This causes a gcc warning about conflicting alignment requirements:
 
-Add a 'const' modifier to the pointers to shut up the warnings here.
+drivers/staging/rtl8192e/rtllib.h:645:1: error: alignment 1 of 'struct rtllib_authentication' is less than 2 [-Werror=packed-not-aligned]
+  645 | } __packed;
+      | ^
+rtllib.h:650:1: error: alignment 1 of 'struct rtllib_disauth' is less than 2 [-Werror=packed-not-aligned]
+rtllib.h:655:1: error: alignment 1 of 'struct rtllib_disassoc' is less than 2 [-Werror=packed-not-aligned]
+rtllib.h:661:1: error: alignment 1 of 'struct rtllib_probe_request' is less than 2 [-Werror=packed-not-aligned]
+rtllib.h:672:1: error: alignment 1 of 'struct rtllib_probe_response' is less than 2 [-Werror=packed-not-aligned]
+rtllib.h:683:1: error: alignment 1 of 'struct rtllib_assoc_request_frame' is less than 2 [-Werror=packed-not-aligned]
+rtllib.h:691:1: error: alignment 1 of 'struct rtllib_assoc_response_frame' is less than 2 [-Werror=packed-not-aligned]
 
-Closes: https://lore.kernel.org/oe-kbuild-all/202309251926.bPl23AhG-lkp@intel.com/
-Reported-by: kernel test robot <lkp@intel.com>
+Change all of the structure definitions that include this one to also
+use 16-bit alignment. This assumes that the objects are actually aligned
+in memory, but that is normally guaranteed by the slab allocator already.
+
+All members of the structure definitions are already 16-bit aligned,
+so the layouts do not change. As an added benefit, 16-bit accesses are
+generally faster than 8-bit accesses, so architectures without unaligned
+load/store instructions can produce better code now by avoiding byte-wise
+accesses.
+
+Fixes: 71ddc43ed7c71 ("staging: rtl8192e: Replace struct rtllib_hdr_3addr in structs of rtllib.h")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/include/asm/raw_io.h | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ drivers/staging/rtl8192e/rtllib.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index 3ba40bc1dfaa9..4bc29e57e57fb 100644
---- a/arch/m68k/include/asm/raw_io.h
-+++ b/arch/m68k/include/asm/raw_io.h
-@@ -17,15 +17,15 @@
-  * two accesses to memory, which may be undesirable for some devices.
-  */
- #define in_8(addr) \
--    ({ u8 __v = (*(__force volatile u8 *) (unsigned long)(addr)); __v; })
-+    ({ u8 __v = (*(__force const volatile u8 *) (unsigned long)(addr)); __v; })
- #define in_be16(addr) \
--    ({ u16 __v = (*(__force volatile u16 *) (unsigned long)(addr)); __v; })
-+    ({ u16 __v = (*(__force const volatile u16 *) (unsigned long)(addr)); __v; })
- #define in_be32(addr) \
--    ({ u32 __v = (*(__force volatile u32 *) (unsigned long)(addr)); __v; })
-+    ({ u32 __v = (*(__force const volatile u32 *) (unsigned long)(addr)); __v; })
- #define in_le16(addr) \
--    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (unsigned long)(addr)); __v; })
-+    ({ u16 __v = le16_to_cpu(*(__force const volatile __le16 *) (unsigned long)(addr)); __v; })
- #define in_le32(addr) \
--    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (unsigned long)(addr)); __v; })
-+    ({ u32 __v = le32_to_cpu(*(__force const volatile __le32 *) (unsigned long)(addr)); __v; })
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index 5517b9df65bee..7d26910a0b162 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -642,23 +642,23 @@ struct rtllib_authentication {
+ 	__le16 status;
+ 	/*challenge*/
+ 	struct rtllib_info_element info_element[];
+-} __packed;
++} __packed __aligned(2);
  
- #define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned long)(addr)) = (b))
- #define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned long)(addr)) = (w))
-@@ -98,7 +98,8 @@
- #define raw_rom_outw(val, port) rom_out_be16((port), (val))
- #endif /* CONFIG_ATARI_ROM_ISA */
+ struct rtllib_disauth {
+ 	struct ieee80211_hdr_3addr header;
+ 	__le16 reason;
+-} __packed;
++} __packed __aligned(2);
  
--static inline void raw_insb(volatile u8 __iomem *port, u8 *buf, unsigned int len)
-+static inline void raw_insb(const volatile u8 __iomem *port, u8 *buf,
-+			    unsigned int len)
- {
- 	unsigned int i;
+ struct rtllib_disassoc {
+ 	struct ieee80211_hdr_3addr header;
+ 	__le16 reason;
+-} __packed;
++} __packed __aligned(2);
  
-@@ -146,7 +147,7 @@ static inline void raw_outsb(volatile u8 __iomem *port, const u8 *buf,
- 	}
- }
+ struct rtllib_probe_request {
+ 	struct ieee80211_hdr_3addr header;
+ 	/* SSID, supported rates */
+ 	struct rtllib_info_element info_element[];
+-} __packed;
++} __packed __aligned(2);
  
--static inline void raw_insw(volatile u16 __iomem *port, u16 *buf, unsigned int nr)
-+static inline void raw_insw(volatile const u16 __iomem *port, u16 *buf, unsigned int nr)
- {
- 	unsigned int tmp;
+ struct rtllib_probe_response {
+ 	struct ieee80211_hdr_3addr header;
+@@ -669,7 +669,7 @@ struct rtllib_probe_response {
+ 	 * CF params, IBSS params, TIM (if beacon), RSN
+ 	 */
+ 	struct rtllib_info_element info_element[];
+-} __packed;
++} __packed __aligned(2);
  
-@@ -225,7 +226,7 @@ static inline void raw_outsw(volatile u16 __iomem *port, const u16 *buf,
- 	}
- }
+ /* Alias beacon for probe_response */
+ #define rtllib_beacon rtllib_probe_response
+@@ -680,7 +680,7 @@ struct rtllib_assoc_request_frame {
+ 	__le16 listen_interval;
+ 	/* SSID, supported rates, RSN */
+ 	struct rtllib_info_element info_element[];
+-} __packed;
++} __packed __aligned(2);
  
--static inline void raw_insl(volatile u32 __iomem *port, u32 *buf, unsigned int nr)
-+static inline void raw_insl(const volatile u32 __iomem *port, u32 *buf, unsigned int nr)
- {
- 	unsigned int tmp;
+ struct rtllib_assoc_response_frame {
+ 	struct ieee80211_hdr_3addr header;
+@@ -688,7 +688,7 @@ struct rtllib_assoc_response_frame {
+ 	__le16 status;
+ 	__le16 aid;
+ 	struct rtllib_info_element info_element[]; /* supported rates */
+-} __packed;
++} __packed __aligned(2);
  
-@@ -305,7 +306,7 @@ static inline void raw_outsl(volatile u32 __iomem *port, const u32 *buf,
- }
- 
- 
--static inline void raw_insw_swapw(volatile u16 __iomem *port, u16 *buf,
-+static inline void raw_insw_swapw(const volatile u16 __iomem *port, u16 *buf,
- 				  unsigned int nr)
- {
-     if ((nr) % 8)
-@@ -413,7 +414,8 @@ static inline void raw_outsw_swapw(volatile u16 __iomem *port, const u16 *buf,
- 
- 
- #if defined(CONFIG_ATARI_ROM_ISA)
--static inline void raw_rom_insb(volatile u8 __iomem *port, u8 *buf, unsigned int len)
-+static inline void raw_rom_insb(const volatile u8 __iomem *port, u8 *buf,
-+				unsigned int len)
- {
- 	unsigned int i;
- 
-@@ -430,7 +432,7 @@ static inline void raw_rom_outsb(volatile u8 __iomem *port, const u8 *buf,
- 		rom_out_8(port, *buf++);
- }
- 
--static inline void raw_rom_insw(volatile u16 __iomem *port, u16 *buf,
-+static inline void raw_rom_insw(const volatile u16 __iomem *port, u16 *buf,
- 				   unsigned int nr)
- {
- 	unsigned int i;
-@@ -448,7 +450,7 @@ static inline void raw_rom_outsw(volatile u16 __iomem *port, const u16 *buf,
- 		rom_out_be16(port, *buf++);
- }
- 
--static inline void raw_rom_insw_swapw(volatile u16 __iomem *port, u16 *buf,
-+static inline void raw_rom_insw_swapw(const volatile u16 __iomem *port, u16 *buf,
- 				   unsigned int nr)
- {
- 	unsigned int i;
+ struct rtllib_txb {
+ 	u8 nr_frags;
 -- 
 2.39.2
 
