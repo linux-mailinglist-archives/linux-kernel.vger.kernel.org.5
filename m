@@ -2,202 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D937AD61B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CED7AD615
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbjIYKfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
+        id S231897AbjIYKfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbjIYKfL (ORCPT
+        with ESMTP id S231276AbjIYKfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:35:11 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB60CAB
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:35:04 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59bc956b029so72323917b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:35:04 -0700 (PDT)
+        Mon, 25 Sep 2023 06:35:04 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0CAAB
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:34:57 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso764940766b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695638104; x=1696242904; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gaXJJ8nVHztTAIAYbpwSJZ/6Vi3Ys0Sfbd7EeBK57WQ=;
-        b=dH6OTN9qTcVJqF8/C4TY2H6ccOgxG+nQXZXYepqBleICuEhYkLs+s2YXwks+N1+vAW
-         x5d9JesnspHobFrDgsR4aFHiv0riRVHe+asmDQOkeUJgMy+er8q6y1510R8wrNPGb+qD
-         iVGHAIYvIem7IO6emdOIy4gsDKwdqDfDCIKohp8+BoCzE8TYFAt4TrikorhzunCuyoyN
-         kwad1ilEwct+2YqY9uYxG1VYulBK9nD35n+ulHrkjO0pjNSEGeStjtDCmpqA1oGqicU0
-         fBXIYL2obU3XRbNAnoORtJt4Yg67O116TbykHVNPDv4D/Wdp+n/O9O471rXWIOV9gDEf
-         1aMg==
+        d=linaro.org; s=google; t=1695638095; x=1696242895; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QeiscEmudwX6iiv93Ap/+0Zo6O9kpRXW1Uvz3CHutP8=;
+        b=jSkc+fCfLAsecscoLI9FBb97bcdHrzluVoezWRD9ytOAEMmqAm+/cYRV0pVLc3cxQf
+         iHos+aTmOnGinypCVd8kEvk7GVz25f+0jfOZ4T1ivhq0qNwQSELO3oDqVi8LaIuhRfW6
+         FcgaX3OkLA+jBdSHc7ZdRKVgd/RXXhDLeyspeO0B8qLjCHckfVTrwRXGd8Wga8lkPYa7
+         tsb9LsoPl/CLeowOfdrMdDRoy+NbEm9Sgqv4IThG/cKYjR9gwr2M6szt/Hec7qHiq6ur
+         PMfwtn9XQRPS3P4+IFwBoRpi6cTuQTTl1riaV8SMyACdPBaMmYqbPSKMzzS+tOJImxQa
+         miXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695638104; x=1696242904;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gaXJJ8nVHztTAIAYbpwSJZ/6Vi3Ys0Sfbd7EeBK57WQ=;
-        b=BvFPpGrUr2R7TzPQG1DRKDuoPnB78brRb44Ixwk6y1OW6v5F/t2jTlOM3DgAL28x+S
-         qlkAvbZdLB68vsPsbNH9hfYaRVyvs25lX/hTc7jgxRCb0WZASXc6DqUp8w46mCzAUyAD
-         qR0el4ORuEyRMoS+CplT/PLOh3jgp5OOBJ5wm5rSWQSy6hRbPi5wpfZFC0zG41zfBkAE
-         RSFa6vk7ndIgFLeUNTy8tnHRGW/Q4okSC/DywLQAYQrTkViZdwGjG2bw7Pc/Zzha6C/P
-         uAlbzSUKOmtdXUHNHPj46Cox6VIACpIqt3Q0DjL5RUHDX6LnjSfbgbPOfeWCt52pJb34
-         Zeug==
-X-Gm-Message-State: AOJu0Yx3CK2ul8ZUKu46bgT1hWelmsd8/xhPhR6hEviMPpf9VhLPVVfk
-        hwahJLoAsDyaL89ZVyLPkV06o7zymt+gFjfPDxfBLA==
-X-Google-Smtp-Source: AGHT+IGrbyEUltQPUjUpCD+BkCXyKLkEZTcGnoTcl/FQO2ImgXXXiStiF0PC1jRl1ouEnQ0iEZat0qQwZavSoOSosbU=
-X-Received: by 2002:a05:690c:e1c:b0:59f:4e6d:b56a with SMTP id
- cp28-20020a05690c0e1c00b0059f4e6db56amr5547142ywb.2.1695638103990; Mon, 25
- Sep 2023 03:35:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695638096; x=1696242896;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QeiscEmudwX6iiv93Ap/+0Zo6O9kpRXW1Uvz3CHutP8=;
+        b=MV40U7dI2ijb8O5ik3fEXdT0shSJpUUMf2+l08ID3EAJXjB5b9fVQqWVJdxbc8hnzJ
+         yQLzUoL6muJ+fCd36oMPoJGttQSBWF4y4AMRXkuQJuc9CFIqqDLWM21DvI06OZoc9JAN
+         +7zrOa5REeUMPFiZ+lreLg8fhf9YMjAVkcIGLNKfWp4htv7vfijVbQMMpj6U0MxdbhjL
+         kforAJhOz4cikTbpicEXZYjbytPEeU8oMGLtUoO5pnsVhb2GAr9zI1WpgBLfZIM+N2BI
+         rATfliVz/aXduB6fS18W6BJ383Laui44bixZs+JGGMbmUk5/l0CT3LwuDLhLHwKyjhiS
+         9Pew==
+X-Gm-Message-State: AOJu0Yw0GE0DYf7hooitQdqP82KWjBwpuqZGu5/A+FY1QzchNWud077w
+        anqQvS6GxsQXsN5PrjRdOze+nA==
+X-Google-Smtp-Source: AGHT+IGdzJ6S3kHEtt5ckQm/BFopsVoBenSBgYO4j82KZW7pQYgzunIacFQVVb6Aw/MiRKZqZq16pg==
+X-Received: by 2002:a17:907:77c7:b0:9ae:5a9f:6aa0 with SMTP id kz7-20020a17090777c700b009ae5a9f6aa0mr5178905ejc.33.1695638095705;
+        Mon, 25 Sep 2023 03:34:55 -0700 (PDT)
+Received: from [192.168.101.165] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id g13-20020a170906594d00b009a1b857e3a5sm6120674ejr.54.2023.09.25.03.34.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 03:34:55 -0700 (PDT)
+Message-ID: <18635bed-b7e3-4acb-b176-cd9f87a35c7f@linaro.org>
+Date:   Mon, 25 Sep 2023 12:34:53 +0200
 MIME-Version: 1.0
-References: <20230828-solid-fill-v6-0-a820efcce852@quicinc.com> <20230828-solid-fill-v6-9-a820efcce852@quicinc.com>
-In-Reply-To: <20230828-solid-fill-v6-9-a820efcce852@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 25 Sep 2023 13:34:43 +0300
-Message-ID: <CAA8EJpq4FE5AxOAYN+cQM3PB+cvvEVHTn25GONjT7R4d6J1U6A@mail.gmail.com>
-Subject: Re: [PATCH RFC v6 09/10] drm/msm/dpu: Use DRM solid_fill property
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
-        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
-        sebastian.wick@redhat.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        wayland-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] PCI: qcom: Add interconnect bandwidth for PCIe Gen4
+Content-Language: en-US
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lpieralisi@kernel.org, kw@linux.com, andersson@kernel.org,
+        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
+ <f49d0543-17bb-4105-9cdf-3df8c116481a@linaro.org>
+ <ZRFiD3EXwZI/B8JB@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ZRFiD3EXwZI/B8JB@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 03:06, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
->
-> Drop DPU_PLANE_COLOR_FILL_FLAG and check the DRM solid_fill property to
-> determine if the plane is solid fill. In addition drop the DPU plane
-> color_fill field as we can now use drm_plane_state.solid_fill instead,
-> and pass in drm_plane_state.alpha to _dpu_plane_color_fill_pipe() to
-> allow userspace to configure the alpha value for the solid fill color.
->
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 37 +++++++++++++++++++++----------
->  1 file changed, 25 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index 114c803ff99b..639ecbeeacf8 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -42,7 +42,6 @@
->  #define SHARP_SMOOTH_THR_DEFAULT       8
->  #define SHARP_NOISE_THR_DEFAULT        2
->
-> -#define DPU_PLANE_COLOR_FILL_FLAG      BIT(31)
->  #define DPU_ZPOS_MAX 255
->
->  /*
-> @@ -82,7 +81,6 @@ struct dpu_plane {
->
->         enum dpu_sspp pipe;
->
-> -       uint32_t color_fill;
->         bool is_error;
->         bool is_rt_pipe;
->         const struct dpu_mdss_cfg *catalog;
-> @@ -606,19 +604,35 @@ static void _dpu_plane_color_fill_pipe(struct dpu_plane_state *pstate,
->         _dpu_plane_setup_scaler(pipe, fmt, true, &pipe_cfg, pstate->rotation);
->  }
->
-> +static uint32_t _dpu_plane_get_abgr_fill_color(struct drm_plane_state *state)
-> +{
-> +       struct drm_solid_fill solid_fill = state->solid_fill;
-> +
-> +       uint32_t ret = 0;
-> +       uint8_t a = state->alpha & 0xFF;
-> +       uint8_t b = solid_fill.b >> 24;
-> +       uint8_t g = solid_fill.g >> 24;
-> +       uint8_t r = solid_fill.r >> 24;
-> +
-> +       ret |= a << 24;
-> +       ret |= b << 16;
-> +       ret |= g << 8;
-> +       ret |= r;
-> +
-> +       return ret;
-> +}
-> +
->  /**
->   * _dpu_plane_color_fill - enables color fill on plane
->   * @pdpu:   Pointer to DPU plane object
->   * @color:  RGB fill color value, [23..16] Blue, [15..8] Green, [7..0] Red
->   * @alpha:  8-bit fill alpha value, 255 selects 100% alpha
+On 25.09.2023 12:33, Abel Vesa wrote:
+> On 23-09-25 10:57:47, Konrad Dybcio wrote:
+>> On 24.09.2023 18:07, Manivannan Sadhasivam wrote:
+>>> PCIe Gen4 supports the interconnect bandwidth of 1969 MBps. So let's add
+>>> the bandwidth support in the driver. Otherwise, the default bandwidth of
+>>> 985 MBps will be used.
+>>>
+>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> ---
+>>>  drivers/pci/controller/dwc/pcie-qcom.c | 7 +++++--
+>>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+>>> index 297442c969b6..6853123f92c1 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>>> @@ -1384,11 +1384,14 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>>>  	case 2:
+>>>  		bw = MBps_to_icc(500);
+>>>  		break;
+>>> +	case 3:
+>>> +		bw = MBps_to_icc(985);
+>>> +		break;
+>>>  	default:
+>>>  		WARN_ON_ONCE(1);
+>>>  		fallthrough;
+>>> -	case 3:
+>>> -		bw = MBps_to_icc(985);
+>>> +	case 4:
+>>> +		bw = MBps_to_icc(1969);
+>>>  		break;
+>> Are you adding case 4 under `default`? That looks.. bizzare..
+> 
+> That's intentional. You want it to use 1969MBps if there is a different
+> gen value. AFAIU.
+Gah right, then the commit message is wrong.
 
-drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:632: warning: Excess
-function parameter 'alpha' description in '_dpu_plane_color_fill'
-
-
->   */
-> -static void _dpu_plane_color_fill(struct dpu_plane *pdpu,
-> -               uint32_t color, uint32_t alpha)
-> +static void _dpu_plane_color_fill(struct dpu_plane *pdpu, uint32_t color)
->  {
->         const struct dpu_format *fmt;
->         const struct drm_plane *plane = &pdpu->base;
->         struct dpu_plane_state *pstate = to_dpu_plane_state(plane->state);
-> -       u32 fill_color = (color & 0xFFFFFF) | ((alpha & 0xFF) << 24);
->
->         DPU_DEBUG_PLANE(pdpu, "\n");
->
-> @@ -633,11 +647,11 @@ static void _dpu_plane_color_fill(struct dpu_plane *pdpu,
->
->         /* update sspp */
->         _dpu_plane_color_fill_pipe(pstate, &pstate->pipe, &pstate->pipe_cfg.dst_rect,
-> -                                  fill_color, fmt);
-> +                                  color, fmt);
->
->         if (pstate->r_pipe.sspp)
->                 _dpu_plane_color_fill_pipe(pstate, &pstate->r_pipe, &pstate->r_pipe_cfg.dst_rect,
-> -                                          fill_color, fmt);
-> +                                          color, fmt);
->  }
->
->  static int dpu_plane_prepare_fb(struct drm_plane *plane,
-> @@ -976,10 +990,9 @@ void dpu_plane_flush(struct drm_plane *plane)
->          */
->         if (pdpu->is_error)
->                 /* force white frame with 100% alpha pipe output on error */
-> -               _dpu_plane_color_fill(pdpu, 0xFFFFFF, 0xFF);
-> -       else if (pdpu->color_fill & DPU_PLANE_COLOR_FILL_FLAG)
-> -               /* force 100% alpha */
-> -               _dpu_plane_color_fill(pdpu, pdpu->color_fill, 0xFF);
-> +               _dpu_plane_color_fill(pdpu, 0xFFFFFFFF);
-> +       else if (drm_plane_solid_fill_enabled(plane->state))
-> +               _dpu_plane_color_fill(pdpu, _dpu_plane_get_abgr_fill_color(plane->state));
->         else {
->                 dpu_plane_flush_csc(pdpu, &pstate->pipe);
->                 dpu_plane_flush_csc(pdpu, &pstate->r_pipe);
-> @@ -1024,7 +1037,7 @@ static void dpu_plane_sspp_update_pipe(struct drm_plane *plane,
->         }
->
->         /* override for color fill */
-> -       if (pdpu->color_fill & DPU_PLANE_COLOR_FILL_FLAG) {
-> +       if (drm_plane_solid_fill_enabled(plane->state)) {
->                 _dpu_plane_set_qos_ctrl(plane, pipe, false);
->
->                 /* skip remaining processing on color fill */
->
-> --
-> 2.42.0
->
-
-
--- 
-With best wishes
-Dmitry
+Konrad
