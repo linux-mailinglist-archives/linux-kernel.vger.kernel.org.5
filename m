@@ -2,193 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42AE7ADD7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ED17ADD7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbjIYQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        id S231983AbjIYQ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbjIYQzA (ORCPT
+        with ESMTP id S230230AbjIYQ53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:55:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E42EE;
-        Mon, 25 Sep 2023 09:54:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CF6DC433C8;
-        Mon, 25 Sep 2023 16:54:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695660893;
-        bh=SyZT2A0CSmuW9Kq1aYtg9sgERqEPr88gupKNQgHSb2c=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=fkHWlzi9pmmigRvIWcuLohwLaC39obOuitaBHnwMBw0C7SWKSUkhWo7CbjagnyhJg
-         EGFpQcY7ss044NVRWoIQNeRHn7YTvigivtrXVIvu5lFRM6A+rBiKTDAECNjI/fy4yf
-         WYKX80igbTpFFa3+DRYeZHj0oFLkBmgDOOvLz6TjTE53HTYWSQGjWLbeE5mjXLOcoQ
-         PtwepnxjXg0nG9wPGoTnh9D8F5E372z+wvt1H9DsQET6kOE4nFFJBkBmFFnHh2jvFu
-         uH5+FIKfR8RsJkTxiBgkdb54d9xvHmukr6CPgYYqP39cs9l3wzo3LY1ez3YVTgczfb
-         U6CoYHs22x9Gw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 25 Sep 2023 19:54:50 +0300
-Message-Id: <CVS5MB3X82Q8.8KDB4346ROR5@suppilovahvero>
-Cc:     "dhowells@redhat.com" <dhowells@redhat.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] certs: Add option to disallow non-CA certificates in
- secondary trusted keying
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Denis Glazkov" <d.glazkov@omp.ru>,
-        "Sergey Shtylyov" <s.shtylyov@omp.ru>
-X-Mailer: aerc 0.14.0
-References: <f5a1d856-0482-a2c3-0e62-3ca911ce3dd2@omp.ru>
- <20230908121330.4076-1-d.glazkov@omp.ru>
- <CVGEE9ODRR8I.1RIVO2MVE2UAX@suppilovahvero>
- <3bc6b569be0beff9f70d58b751088fd2cc798e93.camel@omp.ru>
-In-Reply-To: <3bc6b569be0beff9f70d58b751088fd2cc798e93.camel@omp.ru>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 12:57:29 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C699EBE;
+        Mon, 25 Sep 2023 09:57:22 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-692a885f129so3797714b3a.0;
+        Mon, 25 Sep 2023 09:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695661042; x=1696265842; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KNPKfLP0E+UkNkw5CTvEwC/Bj3Ev7o9rQHtsP3/MgPM=;
+        b=GtrLMCGa6q5uMUkTjANg1YwZxyinihngCu4qQQvnQvafv9JM/ybIBOYowUgJkYUYWk
+         ZjSWbPcieMdnvmaiz7X8bkhsY+pYs45gjvhmVpsHMZlHKe0D+uWs9Uf7t4tewSpG863Q
+         we6oFK3e1tJmnxmsGPgUM95IqrURqvqc98sYfHxjxgBppxPjJ4Tg6w/QQp7/3/QTKwY2
+         NyMhfnt5UeHVk0T+zsPURaa4bmRDbAlWSpyxRIihachph5qwacpZ7pS9s13DxJw+FHNP
+         x8VMQQ0xNt4iAxz8zTvsO6G7MSXOm2Lb4HahRiHUOc1WcD2bbhCjaDoG6hdDunJ7YOEe
+         NEVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695661042; x=1696265842;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KNPKfLP0E+UkNkw5CTvEwC/Bj3Ev7o9rQHtsP3/MgPM=;
+        b=acLFFApWWcHiveuQnUwxX0Ww0sEPbxPAPMbSl42suVSo5gdqpfr0Sm8pav75dXCTPJ
+         /2+hwh/S5ppFJwerlV1IDxkwiBoztAo80EHYxqzKUNyPNgzc61sVbCEZ/klTPNFKEosN
+         /Zr//ikEHQibN3tOn6reWqXk/3sCbRSZv2qc6msKFoXzbi94cSxQ77sKhArv9YmV/UGd
+         49GP6NHlk6a4WXeRLeb90UH82TfaZo3hHeA4K+w1BmGgwUY7Fha1txY5fD3xd9XZ19ug
+         7Besr3WUkFBkkApTcCy/bVC09GvTE4JRrzfbQZRNq+FlGWrJGDk29fa3k3X4XyRFx9Ob
+         h/fw==
+X-Gm-Message-State: AOJu0Yy+dcWAow3F5kYhUZnhXEE633mJInU/ap1JXM4mIyjKMhwQ051j
+        rwevfnP2v2zPCuj8w6Qkywk=
+X-Google-Smtp-Source: AGHT+IGgAIdPUxAnztT0fJPj4/tqnX0ygspeJDX0q+y8/ITWvnKA6PxrzpaVbgnvmtZnsupmDazAKA==
+X-Received: by 2002:a05:6a21:601:b0:155:5c28:ea74 with SMTP id ll1-20020a056a21060100b001555c28ea74mr5201556pzb.12.1695661042173;
+        Mon, 25 Sep 2023 09:57:22 -0700 (PDT)
+Received: from brag-vm.localdomain ([27.4.138.218])
+        by smtp.gmail.com with ESMTPSA id jw1-20020a170903278100b001c452f827casm9158507plb.257.2023.09.25.09.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 09:57:21 -0700 (PDT)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: rt5616: Convert to dtschema
+Date:   Mon, 25 Sep 2023 22:27:15 +0530
+Message-Id: <20230925165715.34883-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Sep 15, 2023 at 8:50 PM EEST, Denis Glazkov wrote:
-> On Tue, Sep 12 2023 at 01:15 AM +0300, Jarkko Sakkinen wrote:
-> > On Fri Sep 8, 2023 at 3:14 PM EEST, Denis Glazkov wrote:
-> > > The Linux kernel has an IMA (Integrity Measurement Architecture)
-> > > subsystem to check the integrity of the file system based on digital
-> > > signatures. IMA uses certificates in `.ima` keying to check integrity=
-.
-> > >=20
-> > > Only certificates issued by one of the trusted CA (Certificate Author=
-ity)
-> > > certificates can be added to the `.ima` keying.
-> > >=20
-> > > The Linux kernel now has a secondary trusted keying to which trusted
-> > > certificates from user space can be added if you have superuser
-> > > privileges. Previously, all trusted certificates were in the built-in
-> > > trusted keying, which could not be modified from user space.
-> > > Trusted certificates were placed in the built-in trusted keying at
-> > > kernel compile time.
-> > >=20
-> > > The secondary trusted keying is designed so that any certificates tha=
-t
-> > > are signed by one of the trusted CA certificates in the built-in or
-> > > secondary trusted keyring can be added to it.
-> > >=20
-> > > Let's imagine that we have the following certificate trust chain:
-> > >=20
-> > >              =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=AC=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=90
-> > >              =E2=94=82                           =E2=94=82     =E2=94=
-=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90=
-       =E2=94=82
-> > >              =E2=94=82                           =E2=94=82     =E2=94=
-=82       =E2=94=82       =E2=94=82
-> > > =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BC=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90    =E2=94=
-=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BC=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=96=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=90  =E2=94=82 =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=B4=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
-> > > =E2=94=82.builtin_trusted_keys=E2=94=82=E2=97=84=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=A4.secondary_trusted_keys =E2=94=9C=E2=94=80=E2=94=80=E2=94=98=
- =E2=94=82   .ima    =E2=94=82
-> > > =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4    =E2=94=
-=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=A4    =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4
-> > > =E2=94=82     Root CA Cert    =E2=94=82-----=E2=96=BA Intermediate CA=
- Cert  =E2=94=82-----=E2=96=BA IMA Cert =E2=94=82
-> > > =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98    =E2=94=
-=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=98    =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
-> > >=20
-> > >                 Issues                  Restricted by
-> > >             -------------=E2=96=BA             =E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BA
-> > >=20
-> > > Since the IMA certificate is signed by a CA certificate from a second=
-ary
-> > > trusted keying, an attacker with superuser privileges will be able to
-> > > add the IMA certificate to the secondary trusted keying. That is, the=
- IMA
-> > > certificate will become trusted.
-> > >=20
-> > > Since, with `CONFIG_MODULE_SIG` option enabled, modules can only be
-> > > loaded into kernel space if they are signed with one of the trusted
-> > > certificates, an attacker could sign untrusted kernel modules with
-> > > the private key corresponding to the IMA certificate and successfully
-> > > load the untrusted modules into kernel space.
-> > >=20
-> > > This patch adds the configuration that once enabled, only
-> > > certificates that meet the following requirements can be added
-> > > to the secondary trusted keying:
-> > >=20
-> > > 1. The certificate is a CA (Certificate Authority)
-> > > 2. The certificate must be used for verifying a CA's signatures
-> > > 3. The certificate must not be used for digital signatures
-> > >=20
-> > > Signed-off-by: Denis Glazkov <d.glazkov@omp.ru>
-> >=20
-> > s/keying/keyring/ (multiple)
-> >=20
-> > Have you considered instead making mod_verify_sig() more robust?
-> > Obviously this would mean making selection of keys in
-> > verify_pkcs7_signature() more robust (see the documentation of
-> > 'trusted_keys').
-> >=20
-> > The this would be also less niche feature to pick for distributors
-> > if it was just concerning module loading, and have associated config
-> > flag over there.
-> >=20
-> > BR, Jarkko
->
-> Jarkko, thank you for your suggestion.
->
-> This patch was created not to solve only the problem of loading
-> untrusted kernel modules, but to make it possible to use a secondary
-> trusted keying only as a part of a chain of trust containing only
-> CA certificates with no digital signature capability.
->
-> Let's imagine that tomorrow we have a new kernel feature, similar
-> to kernel modules in terms of its impact on system security, which
-> also uses trusted certificates for signature verification.
->
-> If at this point we solve only the problem of loading untrusted
-> kernel modules, and not the problem of the entire trusted keys
-> system, we will need to add a new kernel option each time to solve
-> a similar problem for each new kernel feature that uses trusted
-> certificates.
+Convert the rt5616 audio CODEC bindings to DT schema
+No error/warning seen when running make dt_binding_check
 
-Ok, I guessed so but given what I read from commit message I had to ask :-)
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+---
+ .../bindings/sound/realtek,rt5616.yaml        | 53 +++++++++++++++++++
+ .../devicetree/bindings/sound/rt5616.txt      | 32 -----------
+ 2 files changed, 53 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/realtek,rt5616.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/rt5616.txt
 
-The description is very detailed and of good quality, and also what you
-say CONFIG_MODULE_SIG is just fine but for completeness it would be good
-to mention that purpose and goal is to fully close the gap with any
-possible feature that might go without CA certificates (*in addition*).
+diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5616.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5616.yaml
+new file mode 100644
+index 000000000000..00ff9b4e3c7e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/realtek,rt5616.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/realtek,rt5616.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Realtek rt5616 ALSA SoC audio codec driver
++
++description: |
++  Pins on the device (for linking into audio routes) for RT5616:
++
++      * IN1P
++      * IN2P
++      * IN2N
++      * LOUTL
++      * LOUTR
++      * HPOL
++      * HPOR
++
++maintainers:
++  - Bard Liao <bardliao@realtek.com>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: realtek,rt5616
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        codec@1b {
++            compatible = "realtek,rt5616";
++            reg = <0x1b>;
++            #sound-dai-cells = <0>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
+deleted file mode 100644
+index 540a4bf252e4..000000000000
+--- a/Documentation/devicetree/bindings/sound/rt5616.txt
++++ /dev/null
+@@ -1,32 +0,0 @@
+-RT5616 audio CODEC
+-
+-This device supports I2C only.
+-
+-Required properties:
+-
+-- compatible : "realtek,rt5616".
+-
+-- reg : The I2C address of the device.
+-
+-Optional properties:
+-
+-- clocks: The phandle of the master clock to the CODEC.
+-
+-- clock-names: Should be "mclk".
+-
+-Pins on the device (for linking into audio routes) for RT5616:
+-
+-  * IN1P
+-  * IN2P
+-  * IN2N
+-  * LOUTL
+-  * LOUTR
+-  * HPOL
+-  * HPOR
+-
+-Example:
+-
+-rt5616: codec@1b {
+-	compatible = "realtek,rt5616";
+-	reg = <0x1b>;
+-};
+-- 
+2.34.1
 
-> BR, Denis
-
-BR, Jarkko
