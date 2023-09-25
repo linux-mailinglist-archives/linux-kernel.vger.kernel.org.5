@@ -2,156 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF9C7ADF8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723B17ADF8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbjIYT1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 15:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S233278AbjIYT1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 15:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjIYT1A (ORCPT
+        with ESMTP id S229481AbjIYT1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 15:27:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63556BE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:26:53 -0700 (PDT)
+        Mon, 25 Sep 2023 15:27:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD09BBE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695670013; x=1727206013;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=o3S8VpIU/WXBzUlDHT5mjEoSw91wa+EQX36ffJ8VjwU=;
-  b=Hl8QobTuG3hqB1JEPus+AG9eEpvjSbaJNwbzUcIFopM9La1NYvXJu9Ht
-   SmZKZrDHN61FUnNRuy78+1wt1pEJnBtANr7ifvtRWRGaLDRiMC+LinBWE
-   ot3J3nRmhfTFRJT05gYBB+Ne4J30OH8WebNMRQhQYErS1f1ATYljdOM0f
-   s8XJdlt5+b/ggf7p3XijBulgjk59dbHjbMMawSZYosvyN6CUUv6g3eVl9
-   lnCo/9BQOGXu1nf+9bJ5NuHMdqnsxMvFRDd6z8soURajSITgWyOijEg6r
-   ns6ffpr37gkE2qpSiI6bCMMZp1urL176fATSJV14keYHYhXATgl84xkpD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="360734809"
+  t=1695670067; x=1727206067;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=A3sAmeA9292bh0iXBSq3MZRnFSFlKwFmnHPJzzhYKQA=;
+  b=NBB7dNpMpeMCtwRTotpSyUqMw+L7V/ncfsjlvCmDtf5hOrfN0jC0derj
+   U2/BZIbP47Aklqwo1nCD0o+HYSR3TLkYbqXhRpfNsuwXj1SjaOumCqDdt
+   p9k9gZNlxPqyz0w4vMb52z/m+IsvBYat/rUNSJdNapHcoUGHV83vxg6pO
+   vyC6Wa4djp2dolFiVt6QlnSjzmbGoJ0+PGcoHcxnB5UVKV0ziWrR48hTg
+   AWlePTXvVb4Wfva6Hd2snM+yjuDdcV+Arfc95F9HtzXzWd/cHhDrq+80T
+   fr42ms5XmtLfWOD+MnHvQtV0H82SdcsSjn8WgLIGr16FczMQqPji7gPzL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="380225518"
 X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="360734809"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 12:26:52 -0700
+   d="scan'208";a="380225518"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 12:27:47 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="864060544"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="751853009"
 X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="864060544"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Sep 2023 12:26:52 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 25 Sep 2023 12:26:52 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 25 Sep 2023 12:26:52 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 25 Sep 2023 12:26:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D9U1SWCYdgOcFMHRLaLIH4a8r6sVkoXtyE9fTyT8RJKedk5o32aPGg7Zt9IXSgjzMey2B4wOtW/WQy8voG4aX5H8vCfa5NU3T9HLBBWy2Wevc8ORGldfIO96fHoY3j0UcYfErFrR52jWuYDfT8LByv3Jrjsc4WAJc7K7nshAyvKRjUYSoEFCVoD1oK34IuYEtzIN6Nk4NfSZPq+ojtSwaZsatnK3LJ03q9mEf2zVt02aSEIPDPqAiU2WoCUt/jpdicbUtHPxQzaqXDzgPrLQDs4Y3FIQHJB0BpMRspbWT5F/aft/p+ZvpherYZiV0cm1StulZYZ2bTirw5Nu1j7oOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QOZml55dGps6H9RddZNO0ANTCkWZxOl23gCJiwj8upo=;
- b=mEe0CHqTE/UG47DJMlGg9sYl7Rz4gDw7rocH5fjQBgy40V3h1BBixhew3iaoNMvfeIB4fXBG6s5za/T4iotqybuv+gEMJt3hhIwc+N5SDKAxQ1myLFsXpW8nva4C+OLotqr0arxntBM0G10S2q1qmP+5obBpukx59OttqdSRQTlRRKaUD9swcJUA7JeRySuy2OX+nt/Xk1uGdm5Uwzni5hSRXZW4vTFz2EbutyLrgBU8omxpJ8oEuZZuLRQjVNFvC36xS8nPnnMiiFdJMf6Ayvlmjf8pyPegyReLsGl4V7Z2t7Aexv/lw0L9yqs2HO8+RfGYV+U3jFip3wK/KL/svw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SA0PR11MB4654.namprd11.prod.outlook.com (2603:10b6:806:98::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 19:26:50 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992%5]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
- 19:26:49 +0000
-Date:   Mon, 25 Sep 2023 12:26:46 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Samuel Ortiz <sameo@rivosinc.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        <linux-coco@lists.linux.dev>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Gonda <pgonda@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
-        <lukas@wunner.de>
-Subject: Re: [PATCH v3 0/5] configfs-tsm: Attestation Report ABI
-Message-ID: <6511def636f90_acca29486@dwillia2-xfh.jf.intel.com.notmuch>
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
- <080d834d-9ca0-437f-8f18-b7a311af0060@linux.microsoft.com>
- <64f2169e5c381_4c1f329451@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <ZPmD/xJic2QrfIf5@vermeer>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZPmD/xJic2QrfIf5@vermeer>
-X-ClientProxiedBy: MW4PR04CA0125.namprd04.prod.outlook.com
- (2603:10b6:303:84::10) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+   d="scan'208";a="751853009"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 25 Sep 2023 12:27:46 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qkrFA-0001xV-0I;
+        Mon, 25 Sep 2023 19:27:44 +0000
+Date:   Tue, 26 Sep 2023 03:27:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: drivers/net/wireless/atmel/atmel.c:2654:17: warning: 'strncpy'
+ output may be truncated copying 31 bytes from a string of length 31
+Message-ID: <202309260305.LRL7ALTy-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SA0PR11MB4654:EE_
-X-MS-Office365-Filtering-Correlation-Id: a062241b-bf7b-463f-4dec-08dbbdfd5d55
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /DCSCysfAxAyMOaQTjQ3gt5x6JhGID9BSbfcf3kzuf3gZo3KDpZJLrYRHncFBd8+48IBuNxILAJ7n909MzSwiHry3odHL/Z4hYAjtNNJGJhu5z2/Q5HQ80u8OZaXpehsqmfFeblhke2P2mkYJHN6YmxQfF4ytASGKENJLF/ZRA/JIdMEFkRlySpt3RGEVRCSgrwy9zrQ6DHX9l09lQbQUPooMusTvuPrGTkqyeJLh8hVdSalzmPixObdWsF/O+o5OVaBpA4L6gqX1gpi3EvDKEKH05+KwPioH7KJuf2tRkHa8PiGYXa8Nt6lN/UdIfqVkcWtB8ilVqbijU4ISb8XrHyGHipvUHPFnmoPwYiwmy/pSKTdXfXG1j+4RK8FK5ieA+jgklTT6LNQ+VoWjhsBPpj5bpnbpg1G8E+tWrhTQq5hmvTO8GM+m1+ifKwbwbInWGOPrUL1S/ndV2w15a35Vcqmdrs4lKPhtWRhQ4zV03t5Hy+D50F3QHMHOEMAoCKRx20mAR+ROWfs+Z+Fe2upTuin09pIMJbQHZkQPyWuGcPmAmPJpZ6X+Yn4wzyQ5gvS
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(396003)(366004)(230922051799003)(451199024)(1800799009)(186009)(6486002)(7416002)(83380400001)(8936002)(26005)(5660300002)(478600001)(8676002)(4326008)(2906002)(86362001)(6666004)(38100700002)(66556008)(316002)(54906003)(66476007)(110136005)(66946007)(41300700001)(9686003)(6506007)(6512007)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?z7vwb7T+2XOolzWX9ckSRxXt7vw9P8ypbuq7RppFhpcmT93tqzHr4NPXkJNP?=
- =?us-ascii?Q?/vRk5pM2Q747Q5Fv9UyEWYQqA6pEXfM3GJ1iO7zFzW3KnQSpVL41mx8EY4TO?=
- =?us-ascii?Q?X0U6iiLzBCEVW9SP49JEeUG1f5sp29k4Zi8I559eY7PZ4jHy5Sf8LEs/LgtS?=
- =?us-ascii?Q?DDRJPFRaYV/yvNC02Cyd7f2ctywGreFEmJiQlPiGa0iK92lsyQpit5gkuOpv?=
- =?us-ascii?Q?RpdOusYtN4RB3YYq7VRrtidiFFp2RX8/TiarVfslB1PO1T++zMYj4jBdJ7QV?=
- =?us-ascii?Q?VfUEkyJwl2aHfcyiRTfH3LveR+weWhoDNZKB6hVnxKVKF9LEU/g2SOkMXvni?=
- =?us-ascii?Q?USV+wkmwWuMEgIK+Mm3DnbRbhwUGxq6FZi2+p4HBwEp69nmLAi9cGgsrI4NG?=
- =?us-ascii?Q?6E6mRdHQzcWXsjUphEAmZ06kc9j9u/5zxCMTMUetw110XYFnLepT9VS7RFDE?=
- =?us-ascii?Q?4ZgQ1Yumepe9kJiHRITXqhuUQ7X8KULuPkHLhTE2thfxScG8SEkqFJ5+JVHk?=
- =?us-ascii?Q?E02BNc3riX7TIxc2Rhp2rnFQAf5izyPmnsJBOpvWYaY9UwsxC60Vs0lu0qd5?=
- =?us-ascii?Q?9rEacT7vXtYwBgDJRaefwWJxUOb/2S2fHxslY9HQBfPJDaUvQ9iv0Mrl8Bgr?=
- =?us-ascii?Q?gvrRY9ZZ1BRfUCft9ksdqTw74rg/03WJhiGG4bgjXJpmkcnrpQ3NIykZLv0U?=
- =?us-ascii?Q?cgmfnmpBNwO5CuNpP7E95ZjHcvs4VVTZN/ASSlcCTlHlkwvmKWeHRv5I+Atl?=
- =?us-ascii?Q?xQAGWs1s5aAy2NxRj6ROugzrly1e5Md/79Bp3qlNejO23CL9h3wEYgFUyLtd?=
- =?us-ascii?Q?7kew4w7X9SDStQeEeQZOCo5pHh8AhJNg/D3z1iKFZ2yL538KzkfS+8+Td3zv?=
- =?us-ascii?Q?lFAi+AgNld1HtIVSRm2F8hpbE9UUse8D0t5nkl/YfWsth5zLsBDF24CKsqXW?=
- =?us-ascii?Q?VQwTEzmAqB3namSVJECtgezZlWVfvhFaLW9exlIms0pivz7BX/aCVqb55O23?=
- =?us-ascii?Q?Xd7hfRKP2xX7a3mGYBc8UQx/9AqSbZGSDmIIiruF1f2sg7q+ZoUKtviuFtsH?=
- =?us-ascii?Q?ZoCrNvNB7PwKJXpkKNDe9E7Hiw9uA1f9s5fMBvDdmMccFLIKLsMlN+UC9/p/?=
- =?us-ascii?Q?1dmeklQf4V2w4H6w52lTb+HyZKbLoSmkhm1kwlDmcHN/S2sL70PQGXMrBZwC?=
- =?us-ascii?Q?bdJaoCLYQJcRNpL93IJsitKiQSBTICOW8cgvADt8mpN9kZBND1N+m4/+cyUU?=
- =?us-ascii?Q?2Mkb5KIJn58LAdXbqVJzUClIqgU40TGdfY2K7hxItCd14e3WqEiyhGe4OfjT?=
- =?us-ascii?Q?R5LyJp42L6epTEFG41mAEoNznpVcSjmVbDYn6eif4EMjpEPlwGnocV+BWqD/?=
- =?us-ascii?Q?yrg3dyJ2nDTjubAfH1Jg+zz1fDFZpljHGMiL48chTbuX7UrZYmgvBGl9gxM4?=
- =?us-ascii?Q?5rlpJVR6CynHx497N+DF5xxl506EossD0nwtV1hw4Bs4pUSVCHT7OTrYHL6r?=
- =?us-ascii?Q?rei/aT7Y3DPX53wcpsXY2ZLMllCVkg75nqsNe95SPVJfqzeSEEKGdHiXT3c/?=
- =?us-ascii?Q?Wuq2iKD2HWbR7Ap79G9srqsCYjkkkjc5VfjxxqXvx7IxtVpnInBBVLTRyfwl?=
- =?us-ascii?Q?/Q=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a062241b-bf7b-463f-4dec-08dbbdfd5d55
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 19:26:49.7616
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3f3DKVV7HErn+ZRxQDPX+mhU+KXFABEFspANgYtyUYgSDOa50UFAucHJ4kZ2Hji8Q/bzL035Sc249Vi3HW0yBKMFYn77hJFdfAtbmu5vErU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4654
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -161,99 +62,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Samuel Ortiz wrote:
-> On Fri, Sep 01, 2023 at 09:51:42AM -0700, Dan Williams wrote:
-> > [ Add Lukas since 'SPDM' was mentioned ]
-> > 
-> > Jeremi Piotrowski wrote:
-> > [..]
-> > > > An attestation report is signed evidence of how a Trusted Virtual
-> > > > Machine (TVM) was launched and its current state. A verifying party uses
-> > > > the report to make judgements of the confidentiality and integrity of
-> > > > that execution environment. Upon successful attestation the verifying
-> > > > party may, for example, proceed to deploy secrets to the TVM to carry
-> > > > out a workload. Multiple confidential computing platforms share this
-> > > > similar flow.
-> > > 
-> > > Besides the platform (cpu) attestation report, there are also attestation
-> > > reports from individual secure PCIe devices that we'd want to fetch. This
-> > > uses the SPDM protocol[1]. There is a CHALLENGE command which (too me)
-> > > roughly maps to an attestation request, but also separate interfaces to
-> > > fetch individual measurements and certificates (like the SNP extended
-> > > report interface allows).
-> > 
-> > Yes, but I am not yet convinced this configfs-tsm interface would get
-> > involved there.
-> 
-> User space will want to get those devices attestation reports, and those
-> would be carried through the TSM. It would be nice to be able to use a
-> common ABI for this. A CPU/platform attestation report is not that
-> different from a device one.
-> 
-> > > 
-> > > If this is to become the one attestation interface then we'll need to
-> > > consider that. That will probably require adding a second level
-> > > directory: /sys/kernel/config/tsm/<device path>.
-> > 
-> > The SPDM situation is different in my mind in that the kernel has an
-> > interest in being able to attest a device itself. Think of cases like
-> > power management where userspace is frozen, but the kernel needs to
-> > validate the device in the resume flow.
-> > 
-> > For TVMs the kernel would validate devices
-> 
-> That means the TVM kernel would be provisioned with reference values and
-> policies that are likely to be tenant specific. The same TVM kernel,
-> running the same user space stack, getting the same PCIe device
-> attached, could either accept or reject such device, depending on the
-> tenant/workload owner policies and acceptable reference values. That
-> means each tenant would have to build its own guest images, and maintain
-> and update them with potentially each new device or new device stack it
-> wants to support.
-> Keeping most of the device attestation stack (similar to where the
-> platform attestation stack lives today) in user space seems more
-> flexible to me, and allows for tenant to use single guest images.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6465e260f48790807eef06b583b38ca9789b6072
+commit: 5aa4ac64e6add3e40d5049e31275b2822daf885d LoongArch: Add KASAN (Kernel Address Sanitizer) support
+date:   3 weeks ago
+config: loongarch-randconfig-002-20230926 (https://download.01.org/0day-ci/archive/20230926/202309260305.LRL7ALTy-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230926/202309260305.LRL7ALTy-lkp@intel.com/reproduce)
 
-I am not seeing how moving the verification mechanism into the kernel
-makes this less flexible. For an analogy the kernel supports firewall
-policy without requiring userspace network stacks.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309260305.LRL7ALTy-lkp@intel.com/
 
-Userspace still has a role play in dynamically updating device
-validation policy, but the design is such that the kernel can be
-independent of userspace in scenarios like power management where it is
-awkward to round trip to userspace.
+All warnings (new ones prefixed by >>):
 
-> 
-> > and the verifying party would
-> > validate the kernel as part of the guest measurement.
-> > 
-> > The main difficulty again here is evidence format differentiation. My
-> > hope is that there is some standardization
-> 
-> FWIW there are IETF driven standardization efforts like e.g. EAT [1]
-> that go into the right directions imho. The latest CC implementations
-> (CCA, CoVE) follow those specs (EAT, CWT/JWT).
-> 
-> DMTF (driving the SPDM spec) defines also its own format, through its
-> measurement format spec. Device vendors may choose to implement that or
-> to e.g. add their EAT formatted attestation report in the reported
-> certificate chain. Realistically, we'll have to support all of those
-> flows.
+   drivers/net/wireless/atmel/atmel.c: In function 'atmel_ioctl':
+>> drivers/net/wireless/atmel/atmel.c:2654:17: warning: 'strncpy' output may be truncated copying 31 bytes from a string of length 31 [-Wstringop-truncation]
+    2654 |                 strncpy(priv->firmware_id, com.id, 31);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Yes, but hopefully the differentiation here converges to a static or
-slowly moving set of evidence types. If Linux makes it painful for new
-evidence types to be invented that seems like a *good* thing from a
-maintenance perspective.
 
-> 
-> > or otherwise a way to update
-> > the kernel's verification logic for per-device evidence-formats.  Maybe
-> > eBPF has a role to play in that story, but that's a converstation for a
-> > different patch set.
-> 
-> This conversation will hopefully include a user space architecture.
-> Potentially something we could talk about at the CC LPC microconference?
+vim +/strncpy +2654 drivers/net/wireless/atmel/atmel.c
 
-Definitely. I have been distracted from submitting a formal topic
-proposal here, but I definitely think LPC is a chance to converge on a
-direction here.
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2618  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2619  static int atmel_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2620  {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2621  	int i, rc = 0;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2622  	struct atmel_private *priv = netdev_priv(dev);
+f0db82a5775d1c drivers/net/wireless/atmel.c       Himangi Saraogi  2014-08-09  2623  	struct atmel_priv_ioctl com;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2624  	struct iwreq *wrq = (struct iwreq *) rq;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2625  	unsigned char *new_firmware;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2626  	char domain[REGDOMAINSZ + 1];
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2627  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2628  	switch (cmd) {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2629  	case ATMELIDIFC:
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2630  		wrq->u.param.value = ATMELMAGIC;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2631  		break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2632  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2633  	case ATMELFWL:
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2634  		if (copy_from_user(&com, rq->ifr_data, sizeof(com))) {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2635  			rc = -EFAULT;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2636  			break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2637  		}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2638  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2639  		if (!capable(CAP_NET_ADMIN)) {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2640  			rc = -EPERM;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2641  			break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2642  		}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2643  
+8668f9a57c8c55 drivers/net/wireless/atmel/atmel.c YueHaibing       2018-06-04  2644  		new_firmware = memdup_user(com.data, com.len);
+8668f9a57c8c55 drivers/net/wireless/atmel/atmel.c YueHaibing       2018-06-04  2645  		if (IS_ERR(new_firmware)) {
+8668f9a57c8c55 drivers/net/wireless/atmel/atmel.c YueHaibing       2018-06-04  2646  			rc = PTR_ERR(new_firmware);
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2647  			break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2648  		}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2649  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2650  		kfree(priv->firmware);
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2651  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2652  		priv->firmware = new_firmware;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2653  		priv->firmware_length = com.len;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16 @2654  		strncpy(priv->firmware_id, com.id, 31);
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2655  		priv->firmware_id[31] = '\0';
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2656  		break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2657  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2658  	case ATMELRD:
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2659  		if (copy_from_user(domain, rq->ifr_data, REGDOMAINSZ)) {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2660  			rc = -EFAULT;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2661  			break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2662  		}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2663  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2664  		if (!capable(CAP_NET_ADMIN)) {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2665  			rc = -EPERM;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2666  			break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2667  		}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2668  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2669  		domain[REGDOMAINSZ] = 0;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2670  		rc = -EINVAL;
+b4341135794fda drivers/net/wireless/atmel.c       Dmitry Torokhov  2006-10-08  2671  		for (i = 0; i < ARRAY_SIZE(channel_table); i++) {
+908414af255ea9 drivers/net/wireless/atmel.c       Rasmus Villemoes 2015-01-21  2672  			if (!strcasecmp(channel_table[i].name, domain)) {
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2673  				priv->config_reg_domain = channel_table[i].reg_domain;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2674  				rc = 0;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2675  			}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2676  		}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2677  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2678  		if (rc == 0 &&  priv->station_state != STATION_STATE_DOWN)
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2679  			rc = atmel_open(dev);
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2680  		break;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2681  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2682  	default:
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2683  		rc = -EOPNOTSUPP;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2684  	}
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2685  
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2686  	return rc;
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2687  }
+^1da177e4c3f41 drivers/net/wireless/atmel.c       Linus Torvalds   2005-04-16  2688  
+
+:::::: The code at line 2654 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
