@@ -2,123 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961FA7AD62C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E867AD633
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjIYKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
+        id S232149AbjIYKjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjIYKiD (ORCPT
+        with ESMTP id S231472AbjIYKje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:38:03 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDA4B3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:37:56 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5310a63cf7bso7112543a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:37:55 -0700 (PDT)
+        Mon, 25 Sep 2023 06:39:34 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7CCBE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:39:25 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3214d4ecd39so5101465f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:39:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695638274; x=1696243074; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LGghZheFgcUR7dMTyW2af1MMF9tD2msZKaFdfOnW2ak=;
-        b=sLcW81cd/ojgWDKhXAyU8Jbg8Rg+b7Rj5PywDiQvG/iu4XNltDOMjNuv1Yj7G3cGL/
-         WhDH9MF52fFM1VKPaK4AMs1I6sqKbMgAnYHRwf4msFaXikT2L36gJYK7uOF1NaYELq+9
-         SVVRL3LfoZbVXx1mXP0pYGYHLSryT0ALHuo4VoHugci3qxdw5E7TiY/RT/s1UCwcbkp8
-         YsXyX9EVzbFMnScpK7NsaMZSOgeLhsFF+nqasFE4jQW9VmJfKEOVtNjzIziSMZoxiAjN
-         AZ2sIRui+IVTZ45dvycqyHWu3QlTBAjrGdCtV76wgcQjooIMms0GVxv6aoP7Rm9X/oe3
-         cvYA==
+        d=linaro.org; s=google; t=1695638364; x=1696243164; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OsiyRxcUh3c8bygX93xCcQ6MCwYrHzAWJfbBkC3skO0=;
+        b=hoFy9EHr4ym1C5t0vQm3KJ7Yw+MIeqpjJmjhSiFuAlB6DX002yjjDur25sPsFZsbBk
+         w4r0+M2SyFDR/aFoOOSema+u+3QB+ZE3ML2YCKiOzchZVbD3Br7MGnl4hslKYpuqmPN/
+         W6tAy6Gu/x7Pb8gDbTR3lqJiKLS0oM8HWOlh9xjyJFjKvGhrMgLo9kERCTUZpW/yh1NL
+         MeDHqrTWthwP5TyBQ4XHevIapRqtG/OsnrBBMAfitplUjlFafESGbG892o4c/fa7MzlM
+         IGJjuSiGD04AJN1G4YlgNuG46UV9LmhsSXeDkyLWHtFi3iyzJz84UVgUfH/UVGWiKDco
+         lUEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695638274; x=1696243074;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LGghZheFgcUR7dMTyW2af1MMF9tD2msZKaFdfOnW2ak=;
-        b=FneqGxDkMj2olBfPNQ62JBmXtpVwsSR7Np51kKUBZSfr8qeeCwYfWAFbPbo6MX5Nvl
-         zvxCT9Rad4mqp4BH9bdv2UrLMUw2+zvynECINMZtLs7UkKuh1QkuZnL+ECKk36B+GOmW
-         kcn3Tw9hKKmxB7eA2sTuSIIj8GB/dG+2NkGdYju06HpLduhsEv4SsjXlK2a6dqwt+hPF
-         PebCh1tTdqi3xGaedU34rY+DE43FL/edgS4JqzPQpkdWtHizRZSQqvnP1c2c+nN9trXm
-         n8bgtH0XCJmfXNM96B3O8LPQC+GgS4pVJ1HMU5FoN9XYE3x+Qo4jCJM9tTW1XyZs+5lP
-         ArCQ==
-X-Gm-Message-State: AOJu0Yw1xgfuctGSn7c6NuAYYBWSuosvwpGj0UXH3zAVosELvD/dGutH
-        QzwTGflK6pkuO46PU0tRo26JFQ==
-X-Google-Smtp-Source: AGHT+IH7VjXImbBigUelVhM0Z5rngKqZswAbcFnmM/TfO1kxTwisUcU0a7eAZcoTIRvst0CAQFzYjA==
-X-Received: by 2002:aa7:c481:0:b0:52c:b469:bafd with SMTP id m1-20020aa7c481000000b0052cb469bafdmr4504674edq.41.1695638274456;
-        Mon, 25 Sep 2023 03:37:54 -0700 (PDT)
-Received: from linaro.org ([86.120.16.169])
-        by smtp.gmail.com with ESMTPSA id y11-20020aa7cccb000000b005331f6d4a30sm5325436edt.56.2023.09.25.03.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 03:37:54 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 13:37:52 +0300
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        lpieralisi@kernel.org, kw@linux.com, andersson@kernel.org,
-        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Add interconnect bandwidth for PCIe Gen4
-Message-ID: <ZRFjAIYQQZnbNIdt@linaro.org>
-References: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
- <f49d0543-17bb-4105-9cdf-3df8c116481a@linaro.org>
- <ZRFiD3EXwZI/B8JB@linaro.org>
- <18635bed-b7e3-4acb-b176-cd9f87a35c7f@linaro.org>
+        d=1e100.net; s=20230601; t=1695638364; x=1696243164;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OsiyRxcUh3c8bygX93xCcQ6MCwYrHzAWJfbBkC3skO0=;
+        b=e2N3FWubG9RkqUru83afBTK3VHgOb8vvJd86SBScUtrWWmlmWFS3X8EekaaYC8RGPQ
+         3rJ1Qd2CiG+M8fnQmehftSbCyaZn6xvRbSXuz2p+TusFoK8hsbxUK0+KKeasGO+K9lLh
+         4XD8AakAiu3mKHSuLJBR+QrPa33yEX/GeyIsZGVZo12wBClnRAOG8zddUsomgFXdfg8V
+         fMXd7ApYk7X8L5Wa7gWN1NgmWhGwLbjeBKapAaBoo2rGPe6GVcugQ4GiG17CeAbFs7Qi
+         0ZwNStsA3cUAYgiectZllpQ4SSCeVGRF9oOz8NxnB1OgJRs+jR7o3b72ga+dg3UnjweL
+         W0VA==
+X-Gm-Message-State: AOJu0YyyD4MFtbmZ7k96fNZccg+0Bwp1mxG14gVYIEOaRCXxNpquJTea
+        RDvrBfXta7V6NACDR9XduGfnGEO46E1U7SpqXvA=
+X-Google-Smtp-Source: AGHT+IHG3cK+trWhc/bSHPhl8vg0r2dS2O0bbLXkCuWR58l0R9MtnBjzMiJRrRNXaX+EqWdLfCOHKA==
+X-Received: by 2002:adf:e586:0:b0:31f:b138:5a0 with SMTP id l6-20020adfe586000000b0031fb13805a0mr5113468wrm.48.1695638363351;
+        Mon, 25 Sep 2023 03:39:23 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id x11-20020a5d650b000000b00318147fd2d3sm11486283wru.41.2023.09.25.03.39.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 03:39:22 -0700 (PDT)
+Message-ID: <1b328720-7774-4bc1-8f7f-ad40aa1794b7@linaro.org>
+Date:   Mon, 25 Sep 2023 12:39:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18635bed-b7e3-4acb-b176-cd9f87a35c7f@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 18/40] soc/qcom: icc-bwmon: Convert to platform remove
+ callback returning void
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+ <20230925095532.1984344-19-u.kleine-koenig@pengutronix.de>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230925095532.1984344-19-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-09-25 12:34:53, Konrad Dybcio wrote:
-> On 25.09.2023 12:33, Abel Vesa wrote:
-> > On 23-09-25 10:57:47, Konrad Dybcio wrote:
-> >> On 24.09.2023 18:07, Manivannan Sadhasivam wrote:
-> >>> PCIe Gen4 supports the interconnect bandwidth of 1969 MBps. So let's add
-> >>> the bandwidth support in the driver. Otherwise, the default bandwidth of
-> >>> 985 MBps will be used.
-> >>>
-> >>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >>> ---
-> >>>  drivers/pci/controller/dwc/pcie-qcom.c | 7 +++++--
-> >>>  1 file changed, 5 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> >>> index 297442c969b6..6853123f92c1 100644
-> >>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> >>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> >>> @@ -1384,11 +1384,14 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> >>>  	case 2:
-> >>>  		bw = MBps_to_icc(500);
-> >>>  		break;
-> >>> +	case 3:
-> >>> +		bw = MBps_to_icc(985);
-> >>> +		break;
-> >>>  	default:
-> >>>  		WARN_ON_ONCE(1);
-> >>>  		fallthrough;
-> >>> -	case 3:
-> >>> -		bw = MBps_to_icc(985);
-> >>> +	case 4:
-> >>> +		bw = MBps_to_icc(1969);
-> >>>  		break;
-> >> Are you adding case 4 under `default`? That looks.. bizzare..
-> > 
-> > That's intentional. You want it to use 1969MBps if there is a different
-> > gen value. AFAIU.
-> Gah right, then the commit message is wrong.
-
-Yep, should be: "Otherwise, the default bandwidth of 1969 MBps will be
-used."
-
-But maybe we should not default to that. Maybe we should still default
-to 985 MBps.
-
+On 25/09/2023 11:55, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new() which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
 > 
-> Konrad
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
