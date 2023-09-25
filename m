@@ -2,240 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D0B7ADD65
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC7E7ADD6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbjIYQsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S232721AbjIYQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYQsv (ORCPT
+        with ESMTP id S232469AbjIYQvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:48:51 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5B5A3;
-        Mon, 25 Sep 2023 09:48:43 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bffc55af02so110705511fa.2;
-        Mon, 25 Sep 2023 09:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695660522; x=1696265322; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OgBsAd/QWJQgGJNC3m+4R0/2TnVRrjSUYCfTXHiq3R0=;
-        b=CeNOiIpxlGo/qqEoOTMXgWc9mkaiLstxCE7aIvIndpegv5loU7zsHFEV0ywsN/sVCZ
-         VURvy1XVOGfNzYjekM1oYR/fO1nGYauGogu29lGv/ZK9Z8rhyagXMJwt6uD4/b/w0SVz
-         xJeoRXJz1HPOXxDeJ6X3DJUq6e85xUGbfjTFKY7oHVrj9atPK8cLQKI8gd6y7L1hC7Hi
-         sbDKI0AE3u2dVFWqGBq4CJIrsmMh0gNBY9N4IBBFDRm6o1eBRZVt8s+Q8zAv3Uu5L0//
-         Pqo29x/yaOAnj4E8c27KG//R9dHC3EUs9ERDJ//A+iySfFBGqdcVsPwuDKcAAjk91Me8
-         rFMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695660522; x=1696265322;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OgBsAd/QWJQgGJNC3m+4R0/2TnVRrjSUYCfTXHiq3R0=;
-        b=tDjtKcKmB4+Vfye++hH35zJho+kSsxI/e/EafyrqxZBj+2fKsOB+sWzrz0SwvzwtQq
-         0Mhbr/I6EpAitrI0oPNqogFFouf1M4bClZ6eSq3vIBgOEljCSyen3HanhO/Qvk4/7kfS
-         8HNVzua4/hM2aam6orrWrc/toepFbt0K0o07qDyIfWcDAnx+t8vCWSnW7MvcjSFm47Jw
-         tvT5M8CCvUOqqbzD4LqcWID83jSh+LkvymSklsgbsDxz9lgcMEDAjvJIGfAVxw4oMdvT
-         fYluhY2hO1ZkvBy8j3aYxq7AMPD2wovCAJ/7dUJY83aPxJT4CmcMIdiwFYXLZb0nnRvg
-         FJPQ==
-X-Gm-Message-State: AOJu0YxJTCPTMtAVMqmZ/o2pQmw2EbwUte94GPKfRauuO95XIMs2dFy2
-        rM7eH8jhxE+YGZJua/imDdk=
-X-Google-Smtp-Source: AGHT+IFza5MB8Jk1iCt4fMZi9+1R0Nd9dmGgy/HoAlNgj3C7VZ7/bNvxWVPNh8U3bwD7JlXE0Vtbng==
-X-Received: by 2002:a2e:320b:0:b0:2bc:f39b:d1a8 with SMTP id y11-20020a2e320b000000b002bcf39bd1a8mr5832755ljy.46.1695660521516;
-        Mon, 25 Sep 2023 09:48:41 -0700 (PDT)
-Received: from [192.168.1.161] ([46.31.31.132])
-        by smtp.gmail.com with ESMTPSA id j8-20020a2e8008000000b002bcc303bbffsm2172830ljg.104.2023.09.25.09.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 09:48:41 -0700 (PDT)
-Message-ID: <f8735a6d81d485eb8e822e4fd55a00269ae688c2.camel@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: adc: provide max34408/9 device tree
- binding document
-From:   Ivan Mikhaylov <fr0st61te@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Date:   Mon, 25 Sep 2023 19:48:39 +0300
-In-Reply-To: <20230924135359.6404a867@jic23-huawei>
-References: <20230917211143.7094-1-fr0st61te@gmail.com>
-         <20230917211143.7094-2-fr0st61te@gmail.com>
-         <20230924135359.6404a867@jic23-huawei>
+        Mon, 25 Sep 2023 12:51:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725A59F;
+        Mon, 25 Sep 2023 09:50:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13BEEC433C7;
+        Mon, 25 Sep 2023 16:50:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695660658;
+        bh=BpKjGJDg3rOpzfcXTucA8GSwnu0Z6eKivzwSXV+BT6w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KVte+oKFDGNOMESiUdM0cBhpjHlGl+U0OtqqtF9/s2w6/+Xstf26AEuEgTF3sYeol
+         6Eo4bBuVURoLvTn2qU2ebhTeGIQ1VeKwcONqD+WKazRg0tQAPT0I893xJp1HL5cQvs
+         e4NcIQjucRUOb9H1LyG/eTWONuAmDPldcSEqRb4hniwobafsJn33XUXjWyxkPcKpXY
+         1JNjHeeGYHTy0ORhD/ykNy/vcHkHInOBBoxdDYccDAnd6+K0Cv3J39A0P57wa1bkYu
+         cMICcWIPXRfzi7v98cr5Uiqv2mBrzjXc+Lsc1lL9p1es05jUXRv0s1FnoPfPhJzKaw
+         ZhoqD6laX1JBA==
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6c4b7e90e99so3399544a34.0;
+        Mon, 25 Sep 2023 09:50:58 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzO3jF9OQK9HHrlACR5hikmM1cGHVQD7rGv/cP2OtraogefhGHy
+        8sYUAr3N8SQoudupct8taNMsXIpl1YK9f27MYvg=
+X-Google-Smtp-Source: AGHT+IGAK1848QgAncxQqsakKUapLjRgv7Jb1Fe358g7b9fLCNObr2RnAZcJYLnInYiG+nzjNwk9G0e4/tQ9yTZRUwU=
+X-Received: by 2002:a05:6870:5b8b:b0:1d5:4fb0:105 with SMTP id
+ em11-20020a0568705b8b00b001d54fb00105mr8930862oab.20.1695660657483; Mon, 25
+ Sep 2023 09:50:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230914131225.13415-1-will@kernel.org> <20230914131225.13415-4-will@kernel.org>
+In-Reply-To: <20230914131225.13415-4-will@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 26 Sep 2023 01:50:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQimVFOofEN5dNtPMWZ1m0Jh_3KawNU04kpmnSaUn3MKQ@mail.gmail.com>
+Message-ID: <CAK7LNAQimVFOofEN5dNtPMWZ1m0Jh_3KawNU04kpmnSaUn3MKQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] scripts/faddr2line: Skip over mapping symbols in
+ output from readelf
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-09-24 at 13:53 +0100, Jonathan Cameron wrote:
-> On Mon, 18 Sep 2023 00:11:42 +0300
-> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
->=20
-> > The i2c driver with Rsense option for current monitoring.
-> >=20
-> > Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
->=20
-> Hi Ivan,
->=20
-> Welcome to IIO!
->=20
-> Looks good, but there are a few things I'd add to make this describe
-> the device
-> a little more fully and flexibly.=C2=A0 Ideally we want a binding to full=
-y
-> describe
-> a device, even if the particular driver for Linux doesn't use all the
-> features.
-> Some are easy though such as enabling regulators (that are probably
-> turned on
-> already on your board)
->=20
-> Thanks,
->=20
-> Jonathan
->=20
-> > ---
-> > =C2=A0.../bindings/iio/adc/maxim,max34408.yaml=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 63
-> > +++++++++++++++++++
-> > =C2=A01 file changed, 63 insertions(+)
-> > =C2=A0create mode 100644
-> > Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> >=20
-> > diff --git
-> > a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > new file mode 100644
-> > index 000000000000..ae7c6ddb13d8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > @@ -0,0 +1,63 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Two- and four-channel current monitors with overcurrent
-> > control.
-> > +
-> > +maintainers:
-> > +=C2=A0 - Ivan Mikhaylov <fr0st61te@gmail.com>
-> > +
-> > +description: |
-> > +=C2=A0 The MAX34408/MAX34409 are two- and four-channel current monitor=
-s
-> > that are
-> > +=C2=A0 configured and monitored with a standard I2C/SMBus serial
-> > interface. Each
-> > +=C2=A0 unidirectional current sensor offers precision high-side
-> > operation with a
-> > +=C2=A0 low full-scale sense voltage. The devices automatically sequenc=
-e
-> > through
-> > +=C2=A0 two or four channels and collect the current-sense samples and
-> > average them
-> > +=C2=A0 to reduce the effect of impulse noise. The raw ADC samples are
-> > compared to
-> > +=C2=A0 user-programmable digital thresholds to indicate overcurrent
-> > conditions.
-> > +=C2=A0 Overcurrent conditions trigger a hardware output to provide an
-> > immediate
-> > +=C2=A0 indication to shut down any necessary external circuitry.
-> > +
-> > +=C2=A0 Specifications about the devices can be found at:
-> > +=C2=A0
-> > https://www.analog.com/media/en/technical-documentation/data-sheets/MAX=
-34408-MAX34409.pdf
-> > +
-> > +properties:
-> > +=C2=A0 compatible:
-> > +=C2=A0=C2=A0=C2=A0 enum:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - maxim,max34408
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - maxim,max34409
-> > +
-> > +=C2=A0 reg:
-> > +=C2=A0=C2=A0=C2=A0 maxItems: 1
-> > +
-> > +=C2=A0 interrupts:
-> > +=C2=A0=C2=A0=C2=A0 maxItems: 1
-> > +
-> > +=C2=A0 maxim,rsense-val-micro-ohms:
-> From the datasheet you link, it looks like this could be different
-> for
-> the inputs?
+On Thu, Sep 14, 2023 at 10:12=E2=80=AFPM Will Deacon <will@kernel.org> wrot=
+e:
+>
+> Mapping symbols emitted in the readelf output can confuse the
+> 'faddr2line' symbol size calculation, resulting in the erroneous
+> rejection of valid offsets. This is especially prevalent when building
+> an arm64 kernel with CONFIG_CFI_CLANG=3Dy, where most functions are
+> prefixed with a 32-bit data value in a '$d.n' section. For example:
+>
+> 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcal=
+l
+>    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
+>    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
+>    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
+>    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
+>     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_proce=
+ss
+>
+> Adding a warning to do_one_initcall() results in:
+>
+>   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
+>
+> Which 'faddr2line' refuses to accept:
+>
+> $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
+> skipping do_one_initcall address at 0xffff800080014c74 due to size mismat=
+ch (0x260 !=3D 0x224)
+> no match for do_one_initcall+0xf4/0x260
+>
+> Filter out these entries from readelf using a shell reimplementation of
+> is_mapping_symbol(), so that the size of a symbol is calculated as a
+> delta to the next symbol present in ksymtab.
+>
+> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> Cc: John Stultz <jstultz@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  scripts/faddr2line | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/scripts/faddr2line b/scripts/faddr2line
+> index 6b8206802157..20d9b3d37843 100755
+> --- a/scripts/faddr2line
+> +++ b/scripts/faddr2line
+> @@ -179,6 +179,11 @@ __faddr2line() {
+>                         local cur_sym_elf_size=3D${fields[2]}
+>                         local cur_sym_name=3D${fields[7]:-}
+>
+> +                       # is_mapping_symbol(cur_sym_name)
+> +                       if [[ ${cur_sym_name} =3D~ ^((\.L)|(L0)|(\$[adtx]=
+(\.|$))) ]]; then
+> +                               continue
+> +                       fi
+> +
 
-Hi Jonathan, "maxim,input1-rsense-val-micro-ohms", "maxim,input2-
-rsense-val-micro-ohms" and etc would be better?
 
->=20
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Adjust the Rsense value to monitor high=
-er or lower current
-> > levels.
-> > +=C2=A0=C2=A0=C2=A0 enum: [250, 500, 1000, 5000, 10000, 50000, 100000, =
-200000,
-> > 500000]
->=20
-> These come from Table 18 which is example values I think?=C2=A0 Not sure
-> there
-> is anything limiting us to those particular values given the equation
-> given
-> just above that table should apply more generally.
->=20
-> > +=C2=A0=C2=A0=C2=A0 default: 1000
->=20
-> Please add regulator definitions.
->=20
-> supply-vdd: true
-> and add it to the required properties. It might be provided by a stub
-> regulator
-> but we still list that as required.
->=20
-> Also good to add bindings for the other control pins that might be
-> wired to be
-> in the binding from the start - no need for the driver to use them
-> though.
-> Looks like we have SHTDN and ENA here that could be wired to GPIOs on
-> the host.
->=20
-> > +
-> > +required:
-> > +=C2=A0 - compatible
-> > +=C2=A0 - reg
-> > +=C2=A0 - maxim,rsense-val-micro-ohms
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +=C2=A0 - |
-> > +=C2=A0=C2=A0=C2=A0 i2c {
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #address-cells =3D <1>;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #size-cells =3D <0>;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 adc@1e {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 compatible =3D "maxim,max34409";
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 reg =3D <0x1e>;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 maxim,rsense-val-micro-ohms =3D <1000>;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
-> > +=C2=A0=C2=A0=C2=A0 };
->=20
+Too many parentheses.
 
-Rob, Jonathan, thanks for review, will do the changes which you asked.
 
+The latest include/linux/module_symbol.h looks like this.
+
+static inline int is_mapping_symbol(const char *str)
+{
+        if (str[0] =3D=3D '.' && str[1] =3D=3D 'L')
+                return true;
+        if (str[0] =3D=3D 'L' && str[1] =3D=3D '0')
+                return true;
+        return str[0] =3D=3D '$';
+}
+
+
+
+
+
+
+Does this work?
+
+if [[ ${cur_sym_name} =3D~ ^(\.L|L0|\$) ]]; then
+        continue
+fi
+
+
+
+
+
+
+
+
+>                         if [[ $cur_sym_addr =3D $sym_addr ]] &&
+>                            [[ $cur_sym_elf_size =3D $sym_elf_size ]] &&
+>                            [[ $cur_sym_name =3D $sym_name ]]; then
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
