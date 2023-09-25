@@ -2,140 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEACC7ADB6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3F47ADB6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbjIYPaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S231674AbjIYPbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjIYPaR (ORCPT
+        with ESMTP id S230292AbjIYPbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:30:17 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B5D90;
-        Mon, 25 Sep 2023 08:30:10 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id ACC555C26A7;
-        Mon, 25 Sep 2023 11:30:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 25 Sep 2023 11:30:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ryhl.io; h=cc:cc
-        :content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1695655809; x=1695742209; bh=TgAuFtIu6cq6sGedGPSBpY1cujauqO84fvC
-        BuUD8cl0=; b=kXW43laceJenWVuo6y4LI4rWzr2fzjlUy+wFE9mUe7lI6wtTuEQ
-        O+GlgygxiI58JYlsOJo85VB+J1BsLHTOZ+rjkQKyKXqKG3FLxstDBbAYxr9vpU/c
-        UahN5mq97X+z4diXwEmzkVUlY7k7Zv2L15WMhuTnDvoFdulaxON98KqhbG4033TI
-        nUCNQPVJHCoN3ssCxRXNr3QAuRy2Z3EswSCS+dlFW+5zaIg1VklcmboeALwzRsxG
-        mZVGIGMHONvQ72h8NOg8jQjNE3hnlzGj3xYSqrDHxxdHSzQXobSiBFpzrX+tVgEF
-        xcNSyj9syr1aawFsgFebgrl+GmKq8x4Eo+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1695655809; x=1695742209; bh=TgAuFtIu6cq6sGedGPSBpY1cujauqO84fvC
-        BuUD8cl0=; b=eqa9Pe/iz9+IhSailMcc0FYrcWXTuJjj943pDey/aqsnZJ/ZIUH
-        MvBuLeVNUsdP/yRnFSbNvu4qZnOmJ++pVLO0Rf3uUW1reEoFOd5/ReyAk038hxLL
-        vpT0zk5D/xaWP3iz/J0YVu3EEwM9+8JR5qRFNULwAM+ooC9ok0mU68Qh2sp8LUhd
-        pcK2TAqpXK9yS0eL0YAqErm+I2IfLcWr9NhsMzasw/ndwXr8rF5EUvaHjlq8wr6e
-        s+thtAWKEY/f/VCCSKSAGGKnZ6T0WYAZ/jqYO4PJvxlNdKF/Ptcj8yanqQUUzDdk
-        2rtpUNgecMSDlR3yseCrGCgZsK2sRBzsF3w==
-X-ME-Sender: <xms:gacRZVtl8U-yMgwwY3Bh9bERuAaDR4UhMu6pSosUnWCU-nx7IjcExQ>
-    <xme:gacRZecFsozXhr0-yGYjn0MY2mp83SssOqx9r8rOHrkWOBcdK4aWH-XC_Wd8FawZ_
-    kz4EQbP-IkGXlUXBg>
-X-ME-Received: <xmr:gacRZYxlbpPARpNXaCPHJHIEksTG7ZuSdBqiGF_li6tbsQ870UFSEZ6Pv7c6oTfRcTasfz7a4hKYI3MH1h_p0-YVvCnbUC_t4Hq1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeetlhhi
-    tggvucfthihhlhcuoegrlhhitggvsehrhihhlhdrihhoqeenucggtffrrghtthgvrhhnpe
-    efgfeugfdtgefhueeiudffjefhveeuheeuheekvdetfefgheehtdffuddtgfdujeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhitggvse
-    hrhihhlhdrihho
-X-ME-Proxy: <xmx:gacRZcNwMD8U3k_m4hPPv__PTrkAgxAoSHs4-9CpEhRYDUFYYp5GHA>
-    <xmx:gacRZV_59radWZgSSahsDqZbhcuP-9M9X-Gd0YPb4h2d27GdC0muTw>
-    <xmx:gacRZcUjrpEY_c607O_pUQwD4ox2_cNcLbcxKTezyqv7b_doL13ybQ>
-    <xmx:gacRZW2hGpIvZ6xkiZ3LgfKVgV-rIgEOQdC_1-ilpT5za1KsM5Eqjw>
-Feedback-ID: i56684263:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Sep 2023 11:30:07 -0400 (EDT)
-Message-ID: <0b7fc71c-b3c7-4c29-92a9-587daa46ad59@ryhl.io>
-Date:   Mon, 25 Sep 2023 17:30:05 +0200
+        Mon, 25 Sep 2023 11:31:47 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD8F101
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:31:40 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3231df054c4so2873383f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695655898; x=1696260698; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CwhduR0PBRru9TfBtXmQap3pf9B8mygp5A+8/TOKmUE=;
+        b=awwcrCyQO7bkOawFnDPA6xPJXMnMEw/6sfCd/ioG43ktoQFomEMydjIG2L+wMiz07+
+         7ppkFXSVzwuygrPTBep1m+SlAjRZNw39FkFGYPPUY3LbYm4MyPsfVn00blmx16qcErnc
+         wkXEpRd3sWIymEcmgI/Z+JE4SB0/C4PCOpqIxvMwhpmijPIscqdcTjC7UqjFek4+FmIs
+         Rerl6NlHBmYBqBq4up0dW0f6kj1fuyIqhffCg71poBCqEYPJ3qCiaG0GGYXuYLUBz5yd
+         mx3a8oCitdg1Pb7DLkh57bXWvxKwMWN2Ijn08+Pbt7yC5Hj/HDBMd/jIOtes+JZVdtJ2
+         WUlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695655898; x=1696260698;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CwhduR0PBRru9TfBtXmQap3pf9B8mygp5A+8/TOKmUE=;
+        b=Ctq9Kinua7XRmoe7qgAMAPpCQriGoJH0LJsah836Jk16u0kwSoylhQjK1IVTpZCa93
+         zRlBPE2tgxtj1jYbd6UE5Mvud4RHOqtfvsLBcYNsA/3xAiN+TzzynRNLRioSfCuNNhAW
+         RdCkQil03+T7ZK8zgvNkDDl2LnNvk7SldYJEpOsOgjiHxRGntR5uDL85I45hbJDdQwNQ
+         HQgdWtlp9W5ldHo7nPMDcZoPEQ/33dbDcFAg3jPZ7n5yeX8EV/IpAu+nIN24T++pUVAw
+         eVdnkFn0OgaXbMmssUJ7a7vSllam071cwNlm2Rm/8ZYhpiG3wONQ+Drve0nnPqjyToay
+         mOqw==
+X-Gm-Message-State: AOJu0YxAWHr84JJh2UVTiGlo0qapfaVoFsxlqVfmDbaAk7+5lbWZKo8B
+        P2FMXUInA2rPZco0sKdcGacqZg==
+X-Google-Smtp-Source: AGHT+IElg9Lgcl2vkKFmDLvL1YGhqWu9vGNT9vdBSUuBJMDElnomzw7h19XWAu7SzeScUhISgbwCbA==
+X-Received: by 2002:a5d:440a:0:b0:319:83e4:bbbf with SMTP id z10-20020a5d440a000000b0031983e4bbbfmr6739536wrq.20.1695655898528;
+        Mon, 25 Sep 2023 08:31:38 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c0e1:63ab:648b:6287? ([2a05:6e02:1041:c10:c0e1:63ab:648b:6287])
+        by smtp.googlemail.com with ESMTPSA id x11-20020a5d650b000000b00318147fd2d3sm12144144wru.41.2023.09.25.08.31.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 08:31:37 -0700 (PDT)
+Message-ID: <06ca2e6b-13ce-f097-b17c-8287e2130e52@linaro.org>
+Date:   Mon, 25 Sep 2023 17:31:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
- `WithRef`
-Content-Language: en-US-large
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, walmeida@microsoft.com,
-        wedsonaf@gmail.com
-References: <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
- <20230925150047.1961646-1-aliceryhl@google.com>
- <ZRGknJCB6tFgX3Gr@Boquns-Mac-mini.home>
-From:   Alice Ryhl <alice@ryhl.io>
-In-Reply-To: <ZRGknJCB6tFgX3Gr@Boquns-Mac-mini.home>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/9] ACPI: thermal: Fold acpi_thermal_get_info() into
+ its caller
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <5708760.DvuYhMxLoT@kreacher> <2296248.ElGaqSPkdT@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <2296248.ElGaqSPkdT@kreacher>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/23 17:17, Boqun Feng wrote:
-> On Mon, Sep 25, 2023 at 03:00:47PM +0000, Alice Ryhl wrote:
->>>>> I'm concerned about this change, because an `&WithRef<T>` only has
->>>>> immutable permissions for the allocation. No pointer derived from it
->>>>> may be used to modify the value in the Arc, however, the drop
->>>>> implementation of Arc will do exactly that.
->>>>
->>>> That is indeed a problem. We could put the value in an `UnsafeCell`, but
->>>> that would lose us niche optimizations and probably also other optimizations.
->>>>
->>>
->>> Not sure I understand the problem here, why do we allow modifying the
->>> value in the Arc if you only have a shared ownership?
->>
->> Well, usually it's when you have exclusive access even though the value
->> is in an `Arc`.
->>
->> The main example of this is the destructor of the `Arc`. When the last
->> refcount drops to zero, this gives you exclusive access. This lets you
->> run the destructor. The destructor requires mutable access.
->>
->> Another example would be converting the `Arc` back into an `UniqueArc`
->> by checking that the refcount is 1. Once you have a `UniqueArc`, you can
->> use it to mutate the inner value.
->>
->> Finally, there are methods like `Arc::get_mut_unchecked`, where you
->> unsafely assert that nobody else is using the value while you are
->> modifying it. We don't have that in our version of `Arc` right now, but
->> we might want to add it later.
->>
+On 12/09/2023 20:36, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Hmm.. but the only way to get an `Arc` from `&WithRef` is
+> There is only one caller of acpi_thermal_get_info() and the code from
+> it can be folded into its caller just fine, so do that.
 > 
-> 	impl From<&WithRef<T>> for Arc<T> {
-> 	    ...
-> 	}
+> No intentional functional impact.
 > 
-> , and we clone `Arc` in the that function (i.e. copying the raw
-> pointer), so we are still good?
-> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-No, the raw pointer in the Arc was created from the immutable reference, 
-so the raw pointer has the same restrictions as the immutable reference did.
+Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-Alice
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
