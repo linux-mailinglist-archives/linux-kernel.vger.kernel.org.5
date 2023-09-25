@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9427AD009
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69107AD010
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjIYGV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        id S232299AbjIYGVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbjIYGUR (ORCPT
+        with ESMTP id S231993AbjIYGUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Sep 2023 02:20:17 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68C1127;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BA513A;
         Sun, 24 Sep 2023 23:20:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1695622809; x=1727158809;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HSVcQCsEs+cq3MBrBOv3aGr6miQQ/ewQSBJV5aYalwQ=;
-  b=ZzjRSLNJ1ASt9wua36TSSqWCAjeC6lgtJwpN9WkEoL+AzrD845MrmfgF
-   voIs/YdGDkgOQ+8dCaimdJsg8xk51jbejMVZD3C3dnOs5TP1NmPHpFcuY
-   +43LxUPBFpe77VjClLZ0lA2+/xGGx4IezvqCDbBj0iAxBszkUncAeunTR
-   cHMDNTw1n5nmPp6pfpSSAPDWmrZTIEaT7kDFg87cfPfzB84gQh6Hnc1NE
-   J3035i5iprbLRRjp+kpGcqa0DvmsV0bEUS8rMIS/8Mb8SXghSNCgRNsNc
-   378f3jva6gkcvlz6o74ZD0PP0YotGnicXpWDX50FasqgJvwBlBH836tjG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445279560"
+  bh=I5V/buEAfvb6fu9N9WAFdvgwgtWYdT9HlyKiL8iOkic=;
+  b=VpRD9ZYSFyZkzkQcpFUBxsTNixSB18VhhyuH/V0tpoL/VXMRwcYJU7Qq
+   NX/UjXDAOySymQs2NaBt/Z9mqfpSDTxMpF/4oEVO3/bmizmS7vNl8oXM5
+   cPc+04CNNfirckRap8j4iuG0UKsMuCYd1SvNV/5JfVB5DPOd8kJZdMicX
+   YyL54Ky1h/HcmhQNj91pwUkC2Q512uRdysYWw6g6tMwADO+gRKAu/e8wE
+   r2UGz+twgfEIFaEjdRji8cJ7tCYfkHafBo/TDJRFIJeKmWyVa2Hm83/bH
+   eBsh091sIPWqqZEHPcU9OWJRmVGLvjcpFwHpVYsgbEZCgqBbaUcnBULN5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445279563"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="445279560"
+   d="scan'208";a="445279563"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 23:19:26 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 23:19:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818494435"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818494442"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="818494435"
+   d="scan'208";a="818494442"
 Received: from b49691a75598.jf.intel.com ([10.54.34.22])
   by fmsmga004.fm.intel.com with ESMTP; 24 Sep 2023 23:19:24 -0700
 From:   weilin.wang@intel.com
@@ -54,9 +54,9 @@ Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         Samantha Alt <samantha.alt@intel.com>,
         Caleb Biggers <caleb.biggers@intel.com>,
         Mark Rutland <mark.rutland@arm.com>
-Subject: [RFC PATCH 22/25] perf stat: Add TSC support in hardware-grouping
-Date:   Sun, 24 Sep 2023 23:18:21 -0700
-Message-Id: <20230925061824.3818631-23-weilin.wang@intel.com>
+Subject: [RFC PATCH 23/25] perf stat: Fix a return error issue in hardware-grouping
+Date:   Sun, 24 Sep 2023 23:18:22 -0700
+Message-Id: <20230925061824.3818631-24-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230925061824.3818631-1-weilin.wang@intel.com>
 References: <20230925061824.3818631-1-weilin.wang@intel.com>
@@ -73,65 +73,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-Add TSC check and create new event for it the same way as how we handle
-topdown-* for now since it is not listed in an event json file either. Need
-TSC to support TopdownL4-L5.
+Update the hw_aware_parse_ids() goto to improve error handling.
 
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/util/metricgroup.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ tools/perf/util/metricgroup.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index d10f6afb0..07a82fa21 100644
+index 07a82fa21..6a4404226 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -321,6 +321,14 @@ static int setup_metric_events(const char *pmu, struct hashmap *ids,
- 		}
- 	}
- 	if (matched_events < ids_size) {
-+		struct hashmap_entry *cur;
-+		size_t bkt;
-+
-+		hashmap__for_each_entry(ids, cur, bkt) {
-+			const char *id = cur->pkey;
-+
-+			pr_debug("Need event %s\n", id);
-+		}
- 		free(metric_events);
- 		return -EINVAL;
- 	}
-@@ -2106,11 +2114,16 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx,
- #define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
- 	hashmap__for_each_entry(ctx->ids, cur, bkt) {
- 		const char *id = cur->pkey;
--		const char *special_pattern = "topdown-";
-+		const char *pattern1 = "topdown-";
-+		const char *pattern2 = "TSC";
+@@ -2196,11 +2196,11 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+ 	*out_evlist = NULL;
+ 	ret = hw_aware_build_grouping(ids, &grouping);
+ 	if (ret)
+-		goto err_out;
++		goto out;
+ 	ret = hw_aware_metricgroup__build_event_string(&grouping_str, modifier,
+ 						      tool_events, &grouping);
+ 	if (ret)
+-		goto err_out;
++		goto out;
  
- 		pr_debug("found event %s\n", id);
--		if (!strncmp(id, special_pattern, strlen(special_pattern))) {
-+		if (!strncmp(id, pattern1, strlen(pattern1)) ||
-+		    !strncmp(id, pattern2, strlen(pattern2))) {
- 			struct metricgroup__event_info *event;
-+			/* topdown-* and TSC use dedicated registers, set as free
-+			 * counter here for grouping
-+			 */
- 			event = event_info__new(id, "default_core", "0", false,
- 						/*free_counter=*/true);
- 			if (!event) {
-@@ -2602,8 +2615,10 @@ int metricgroup__parse_groups(struct evlist *perf_evlist,
- 		ret = hw_aware_parse_groups(perf_evlist, pmu, str,
- 			    metric_no_threshold, user_requested_cpu_list, system_wide,
- 			    /*fake_pmu=*/NULL, metric_events, table);
--		if (!ret)
-+		if (!ret) {
-+			pr_info("Hardware aware grouping completed\n");
- 			return 0;
-+		}
- 	}
+ 	parsed_evlist = evlist__new();
+ 	if (!parsed_evlist) {
+@@ -2225,10 +2225,11 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+ 	*out_evlist = parsed_evlist;
+ 	parsed_evlist = NULL;
+ err_out:
+-	metricgroup__free_group_list(&grouping);
+-	metricgroup__free_grouping_strs(&grouping_str);
+ 	parse_events_error__exit(&parse_error);
+ 	evlist__delete(parsed_evlist);
++out:
++	metricgroup__free_group_list(&grouping);
++	metricgroup__free_grouping_strs(&grouping_str);
+ 	return ret;
+ }
  
- 	return parse_groups(perf_evlist, pmu, str, metric_no_group, metric_no_merge,
 -- 
 2.39.3
 
