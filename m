@@ -2,170 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ED47AD35E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B1C7AD35F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjIYIbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
+        id S232664AbjIYIbv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 04:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232890AbjIYIbE (ORCPT
+        with ESMTP id S230435AbjIYIbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:31:04 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805EB10A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:30:55 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59bf1dde73fso73722417b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695630654; x=1696235454; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ulgX9THEbQN3dQQC629PIbXmK6AWD1UO9BuCeRr1HmQ=;
-        b=hAuFfZwGzDzbP92DfXsFO5VvWvyyotdTRX0i+PghfBePGRAZv4PMQ8eh5m8KUenAkL
-         7w+9ciXDiU0DP9t0Cv2PGYfQ4NTUWgG7naUhQ8YGrVyle1El3BwdY34AsoDjxqpCZJiQ
-         V2upxJ3Kx4bgX2kIwMExNWoAVFEL32/1PQ9OXXHd/GCeXFxweW9P0N72XRwL0mk1prME
-         IQSbrDlZcNoh+PGPisual4uY+Erw12fgkjEW1OIWPKdrkjdbT9OxbpmX6Y80r+RDarKd
-         rDx0DN04esdCT3FwkSMPJdd2tmXFfGrdp7IB6hM5xFyBZdOJ6bhWjhQU6YvzHvnXCwsK
-         idfw==
+        Mon, 25 Sep 2023 04:31:50 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AF3D3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:31:43 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-579de633419so69876887b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:31:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695630654; x=1696235454;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ulgX9THEbQN3dQQC629PIbXmK6AWD1UO9BuCeRr1HmQ=;
-        b=GAHlaIPKsXV7jYGbezsVy5ubraRWMy0wnkxfEmGioeR0UVS/x05h+Ca8pEOAw5u0vM
-         VfiOt0wrs57uS9mBPLrqE6flDKXsuelbLEC6rpaK4wdtzdhp42Z763vZMsuIgtnd9Bcq
-         1w5uTUFxDSIJOW4QUMDy2ms40NyO1MqqhVmroYl3C0om+XbtZNKrvP7slp/tqNfeCE6y
-         CiH6a3WSTbjBd8qNUtGEw7IK21C1VOYou/SnWdWzoUikeM29ER1JMUzJPOQWeSCXGckC
-         mPiIN7HJAU4/MlqLwQhiY2or8rLxmQlqmQIe/X6kDMhT9CHNsgFvfKCFHkw8p1Ow9/BL
-         HtQA==
-X-Gm-Message-State: AOJu0YxCCg/4YxZDrUqq28h4PxmTHa8YjEs3AoFflHVa05sH27M2VzZh
-        ULD+Ee3M58QXtkds64PrmQJHTw==
-X-Google-Smtp-Source: AGHT+IEGFXRC2nnrJxyRas7mIKt1ska0D212eRm9P7TUFWDSpRyUl8E9tDZ9Nksk92zJ5nQ/VXHlUQ==
-X-Received: by 2002:a05:690c:3603:b0:571:11ea:b2dd with SMTP id ft3-20020a05690c360300b0057111eab2ddmr5723589ywb.32.1695630654594;
-        Mon, 25 Sep 2023 01:30:54 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id j185-20020a816ec2000000b00592236855cesm2259304ywc.61.2023.09.25.01.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 01:30:53 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 01:30:51 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 08/12] mempolicy: remove confusing MPOL_MF_LAZY dead code
-In-Reply-To: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
-Message-ID: <2cb8b08a-a96c-2a61-94dd-4cd51ad0605d@google.com>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
+        d=1e100.net; s=20230601; t=1695630702; x=1696235502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vB1LBu4o6bMIXucGS6mAqjqjGGW52MUcUdGXILWOzEw=;
+        b=TDO22XGbJZ2kyw/zmsPVLviuE+2rZgacKrTseRf72lDThukfULhYw2Jc1jzlc1qIoi
+         xq4Uz3NDYlSZUae0rTYtRP+G0IYVqgiRqLuOXdXdsnlX+EwCQIRPS/fGvm97U26N0udA
+         Z5iNNl0axDSm23mqy9eUPGf85Nuq3PpyJlcPnZNKWeTo4IZTF9xU3qQSQ/n9yxIJepbP
+         1EOJb8jQGBzxaxsK91scrQ5ccNwuDwj6bNfI1U76XPYt+ShtbZUUX5ie4OK3sngWB4fd
+         5PO7AXxPmWRLYehBMeuEGmAaVN3ntLehTcF4EbW0NvLd6IO1uuxyuSEorDWzVN2J9svR
+         VNFQ==
+X-Gm-Message-State: AOJu0YyA2lNnEziqnmLxuk4yCUwm3b/Yd6/HOeEZdwj0LAZOan5QVXid
+        ogbvGx5wygursYVBU4VulasH5vuO+bcQSA==
+X-Google-Smtp-Source: AGHT+IGAp/qAkfAmxQC67N/+YoxR+i1QUvz9ugkYuvl+jq3o8Du68YZclDxzAEoqu4e+Ss2p8Vv7nQ==
+X-Received: by 2002:a81:4e8a:0:b0:569:479f:6d7f with SMTP id c132-20020a814e8a000000b00569479f6d7fmr5445636ywb.43.1695630702183;
+        Mon, 25 Sep 2023 01:31:42 -0700 (PDT)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id c64-20020a0dc143000000b0059a34cfa2a5sm2260604ywd.67.2023.09.25.01.31.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 01:31:41 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59bc956b029so69986677b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:31:41 -0700 (PDT)
+X-Received: by 2002:a0d:c9c6:0:b0:586:e50:fb50 with SMTP id
+ l189-20020a0dc9c6000000b005860e50fb50mr5106146ywd.28.1695630701614; Mon, 25
+ Sep 2023 01:31:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230905021209.1412987-1-zhangshida@kylinos.cn>
+ <20230920095248.GC13143@google.com> <CAMuHMdXVqLdWdbVKU+nj2=jVDyFh9gD6rvuTpjdQehjqTr56mw@mail.gmail.com>
+ <20230925075620.GC9999@google.com>
+In-Reply-To: <20230925075620.GC9999@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 25 Sep 2023 10:31:29 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWnv4-qUjNCHOTNhJNkTT6mSWLQAJ9XSQ5RVesXK1W86w@mail.gmail.com>
+Message-ID: <CAMuHMdWnv4-qUjNCHOTNhJNkTT6mSWLQAJ9XSQ5RVesXK1W86w@mail.gmail.com>
+Subject: Re: [PATCH] mfd: cs42l43: fix defined but not used warnings
+To:     Lee Jones <lee@kernel.org>
+Cc:     zhangshida <starzhangzsd@gmail.com>, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn, k2ci <kernel-bot@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3.8 commit b24f53a0bea3 ("mm: mempolicy: Add MPOL_MF_LAZY") introduced
-MPOL_MF_LAZY, and included it in the MPOL_MF_VALID flags; but a720094ded8
-("mm: mempolicy: Hide MPOL_NOOP and MPOL_MF_LAZY from userspace for now")
-immediately removed it from MPOL_MF_VALID flags, pending further review.
-"This will need to be revisited", but it has not been reinstated.
+Hi Lee,
 
-The present state is confusing: there is dead code in mm/mempolicy.c to
-handle MPOL_MF_LAZY cases which can never occur.  Remove that: it can be
-resurrected later if necessary.  But keep the definition of MPOL_MF_LAZY,
-which must remain in the UAPI, even though it always fails with EINVAL.
+On Mon, Sep 25, 2023 at 9:56 AM Lee Jones <lee@kernel.org> wrote:
+> On Fri, 22 Sep 2023, Geert Uytterhoeven wrote:
+> > On Wed, Sep 20, 2023 at 12:07 PM Lee Jones <lee@kernel.org> wrote:
+> > > On Tue, 05 Sep 2023, zhangshida wrote:
+> > > > From: Shida Zhang <zhangshida@kylinos.cn>
+> > > >
+> > > > Warnings were generated during compiling for functions like
+> > > > cs42l43_*_{resume,suspend}:
+> > > >
+> > > > ../drivers/mfd/cs42l43.c:1138:12: error: ‘cs42l43_runtime_resume’ defined but not used [-Werror=unused-function]
+> > > >  1138 | static int cs42l43_runtime_resume(struct device *dev)
+> > > >       |            ^~~~~~~~~~~~~~~~~~~~~~
+> > > > ../drivers/mfd/cs42l43.c:1124:12: error: ‘cs42l43_runtime_suspend’ defined but not used [-Werror=unused-function]
+> > > >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
+> > > >       |            ^~~~~~~~~~~~~~~~~~~~~~~
+> > > > ../drivers/mfd/cs42l43.c:1106:12: error: ‘cs42l43_resume’ defined but not used [-Werror=unused-function]
+> > > >  1106 | static int cs42l43_resume(struct device *dev)
+> > > >       |            ^~~~~~~~~~~~~~
+> > > > ../drivers/mfd/cs42l43.c:1076:12: error: ‘cs42l43_suspend’ defined but not used [-Werror=unused-function]
+> > > >  1076 | static int cs42l43_suspend(struct device *dev)
+> > > >
+> > > > Fix it by guarding it with CONFIG_PM/CONFIG_PM_SLEEP.
+> > > >
+> > > > Reported-by: k2ci <kernel-bot@kylinos.cn>
+> > > > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> > > > ---
+> > > >  drivers/mfd/cs42l43.c | 4 ++++
+> > > >  1 file changed, 4 insertions(+)
+> > > >
+> > > > diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
+> > > > index 37b23e9bae82..e589a61c118d 100644
+> > > > --- a/drivers/mfd/cs42l43.c
+> > > > +++ b/drivers/mfd/cs42l43.c
+> > > > @@ -1073,6 +1073,7 @@ void cs42l43_dev_remove(struct cs42l43 *cs42l43)
+> > > >  }
+> > > >  EXPORT_SYMBOL_NS_GPL(cs42l43_dev_remove, MFD_CS42L43);
+> > > >
+> > > > +#ifdef CONFIG_PM_SLEEP
+> > > >  static int cs42l43_suspend(struct device *dev)
+> > > >  {
+> > > >       struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
+> > > > @@ -1120,7 +1121,9 @@ static int cs42l43_resume(struct device *dev)
+> > > >
+> > > >       return 0;
+> > > >  }
+> > > > +#endif
+> > > >
+> > > > +#ifdef CONFIG_PM
+> > > >  static int cs42l43_runtime_suspend(struct device *dev)
+> > > >  {
+> > > >       struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
+> > > > @@ -1176,6 +1179,7 @@ static int cs42l43_runtime_resume(struct device *dev)
+> > > >
+> > > >       return ret;
+> > > >  }
+> > > > +#endif
+> > > >
+> > > >  EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
+> > > >       SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
+> > >
+> > > I see a bunch of drivers using PM helpers and not many of them are
+> > > are being guarded by ugly #ifery.  Please find out what they're doing to
+> > > solve the same issue and replicate that instead.
+> > >
+> > > Here's a really big hint:
+> > >
+> > >   `git log --oneline 02313a90095fb`
+> >
+> > And there's no need to create another fix, as a Good Old fix is
+> > available (and still not upstream):
+> > https://lore.kernel.org/all/20230822114914.340359-1-ckeepax@opensource.cirrus.com
+>
+> I beg to differ;
+>
+>   eb72d5207008d ("mfd: cs42l43: Use correct macro for new-style PM runtime ops")
+>
+> :)
 
-https://lore.kernel.org/linux-mm/1553041659-46787-1-git-send-email-yang.shi@linux.alibaba.com/
-links to a previous request to remove MPOL_MF_LAZY.
+Commit:     Linus Torvalds <torvalds@linux-foundation.org>
+CommitDate: Sat Sep 23 11:10:23 2023 -0700
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- include/uapi/linux/mempolicy.h |  2 +-
- mm/mempolicy.c                 | 18 ------------------
- 2 files changed, 1 insertion(+), 19 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-index 046d0ccba4cd..a8963f7ef4c2 100644
---- a/include/uapi/linux/mempolicy.h
-+++ b/include/uapi/linux/mempolicy.h
-@@ -48,7 +48,7 @@ enum {
- #define MPOL_MF_MOVE	 (1<<1)	/* Move pages owned by this process to conform
- 				   to policy */
- #define MPOL_MF_MOVE_ALL (1<<2)	/* Move every page to conform to policy */
--#define MPOL_MF_LAZY	 (1<<3)	/* Modifies '_MOVE:  lazy migrate on fault */
-+#define MPOL_MF_LAZY	 (1<<3)	/* UNSUPPORTED FLAG: Lazy migrate on fault */
- #define MPOL_MF_INTERNAL (1<<4)	/* Internal flags start here */
- 
- #define MPOL_MF_VALID	(MPOL_MF_STRICT   | 	\
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index a22b641cfd6b..7ab6102d7da4 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -632,12 +632,6 @@ unsigned long change_prot_numa(struct vm_area_struct *vma,
- 
- 	return nr_updated;
- }
--#else
--static unsigned long change_prot_numa(struct vm_area_struct *vma,
--			unsigned long addr, unsigned long end)
--{
--	return 0;
--}
- #endif /* CONFIG_NUMA_BALANCING */
- 
- static int queue_pages_test_walk(unsigned long start, unsigned long end,
-@@ -676,14 +670,6 @@ static int queue_pages_test_walk(unsigned long start, unsigned long end,
- 	if (endvma > end)
- 		endvma = end;
- 
--	if (flags & MPOL_MF_LAZY) {
--		/* Similar to task_numa_work, skip inaccessible VMAs */
--		if (!is_vm_hugetlb_page(vma) && vma_is_accessible(vma) &&
--			!(vma->vm_flags & VM_MIXEDMAP))
--			change_prot_numa(vma, start, endvma);
--		return 1;
--	}
--
- 	/*
- 	 * Check page nodes, and queue pages to move, in the current vma.
- 	 * But if no moving, and no strict checking, the scan can be skipped.
-@@ -1271,9 +1257,6 @@ static long do_mbind(unsigned long start, unsigned long len,
- 	if (IS_ERR(new))
- 		return PTR_ERR(new);
- 
--	if (flags & MPOL_MF_LAZY)
--		new->flags |= MPOL_F_MOF;
--
- 	/*
- 	 * If we are using the default policy then operation
- 	 * on discontinuous address spaces is okay after all
-@@ -1318,7 +1301,6 @@ static long do_mbind(unsigned long start, unsigned long len,
- 
- 	if (!err) {
- 		if (!list_empty(&pagelist)) {
--			WARN_ON_ONCE(flags & MPOL_MF_LAZY);
- 			nr_failed |= migrate_pages(&pagelist, new_folio, NULL,
- 				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND, NULL);
- 		}
+                        Geert
+
 -- 
-2.35.3
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
