@@ -2,175 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03977ADF9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5991D7ADFA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233319AbjIYTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 15:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        id S229920AbjIYTkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 15:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbjIYTfO (ORCPT
+        with ESMTP id S229481AbjIYTkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 15:35:14 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC24410C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:35:05 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65b05a45046so18506746d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695670505; x=1696275305; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mnh3O7m7W6nR87RF4zMqQvhpvq8Z7yUQbT+7w28c04o=;
-        b=b3zQmM8gxDtRP6zeMLQgOeMZ3eSkwU/ORZUdOaEfVtAmv67h5O/8JCM7xs2L/W80mI
-         On8jIRKXR3uuSaCEDC9cxcvysQ/+bl6nL3AJXkICWQ+N6B55xUVS502grqznMvAaOg1n
-         LuNAxA5HAa339YXhcCtlCwvz15h/O/Hr9r+3AEYC4wHD8ZRQ18duHZ5no8dnSvhySjiF
-         Q0Q5FcQ+fXvnVmqEWu9kFCklqN3Vs4mLg/jNceC5HLNmWS6ghRSRJ3bFk9qofNFw1zyx
-         wZi07NT7mAZESczb12h5PA13hDNat65PC5U0NVxrIEMP3XTd2JcLajUEKcdyzYyOdZMX
-         xwNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695670505; x=1696275305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Mnh3O7m7W6nR87RF4zMqQvhpvq8Z7yUQbT+7w28c04o=;
-        b=lPr3UaZqSPjpNz/rKfqaCPVuxdwc3VQVwnNJkiBViUYBmHPuQQSLNOZYo5ABNnUY0T
-         jgeIJifU6qCuwIZvTFquGdQKZ+mRtLXLWMjYIB4gJkm5eo0cddWq4L/OQLf876F+zKwr
-         HNAryqEsMyxbJXJ0u43RR9CTe3vI8HV4Q3mWM+iCaTBvF6/s7bB31Xf7CoISoRjdjvZ9
-         bRvqjLNkT1C9hLOPEb5C//NLprzfdQwqlpCzaP7s9TAGPfThnGm3VxHliwU0+8U8XX7D
-         CCRYF8D7/MpcfR/9yEGty2VSwEn23i9KKmGUXcoJdjGBSn0Zve/8HaYkJ/0k7UULa7I5
-         NLOg==
-X-Gm-Message-State: AOJu0Yw9a7GgNH6b1oHhRTb8sa6ItTxA9tlaLWO9wUERgFgedJaJoRak
-        tsC8rAZSYfUpWMLW6ar3/hT4ZoICo48N6vgYkXfO4g==
-X-Google-Smtp-Source: AGHT+IHdN5SBGMHA0vFraankTBd+lcn3bhRYs72NLxucA4dDw3khM1sIZr29W6/HnxBbR/6FLJoeNrCH83R5x9/noTg=
-X-Received: by 2002:a05:6214:33c7:b0:658:3af3:3d9a with SMTP id
- mw7-20020a05621433c700b006583af33d9amr7933187qvb.1.1695670504618; Mon, 25 Sep
- 2023 12:35:04 -0700 (PDT)
+        Mon, 25 Sep 2023 15:40:14 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01olkn2046.outbound.protection.outlook.com [40.92.64.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8B9101;
+        Mon, 25 Sep 2023 12:40:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nlz6ugNUKeTCgUyepL2qJgkraoGSPfXK9vIIkQzgAViYv1OG0MAnwcGQbFCl5huJ2lZEZfAquN29cpLIXiangpCnJ16PiGoLu6OQ6ZZINM5g8+n+RNBzfzHzmbBL+7CIe5tsKLbaXv6ihfOwYxV0ei7biTs52HmjB2TTRcYFMVzWB1qYqHNVhnnhY0T19L1B38Oc3ZSNQHHQbbHjrRDkorTWy6S4AQ59wgChnTJUl3pLpvBkAMKSx6TL/szOXRSJ1xBBCeKAN/PcXp2XG7VMOWaEk5F1ys/8xRooOQqKE5ob20v+CsxYzi9A16grg6sNrxmwkX18C8/dUV2cpedABA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+CVD3Q27nJ01Fi3J203j4E6t6HvjGWGCK3DuwnLbYCo=;
+ b=UZbJA0kxBn6ecM1RAMYB1lrQkyh0x7A4aL6XLqF7UNaFATBurVr6aMfkE5/xueCel6Oy+tm44TkDc9XqD6oOafG96wTNrOblMWhtL6dSS/24HdV/5jgOBzKySDXZ5K2Dj0a1JOhzMo8y7S1shDW5yN8YtTjwB/auMG0I18UkaUNJWMmbyk6bUfQtzlAi2/MFBI5unWgXu3PDnPYiDq3Q+BrAmWzz9p4tVu/vSV7mvs9Jcg14hbGZdXE1lFQ+xsLcn+oX43bnTxQjxnKA+ifpmQR/4UWrwyrAW3ZRvrl7ZCKprkWI8HmZ71muD4lsKq1XDqyisAF6usPfoCtq1V9kgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+CVD3Q27nJ01Fi3J203j4E6t6HvjGWGCK3DuwnLbYCo=;
+ b=D8EQyz4jg/6CC4JQm/FP5pf4VTLA59h3U2ePZ6fJdQvanEzYQMDI4fDgrYAbqYNTBBaGzd7QPPmoMFc176wHOXK2hiXswA3WEwVd9kDRKcmkUEo2Y7VlEKo6t7cBR0nuTDxZx/5dBEPixwdvX/F6P9ap9CNkcJRKvolB4EI8yk53NtIW4KTWstKaArEParXravT0wu0Q/F05+Zkl5P4Mmokpc2YYYfICVtQAl00cqyjeZXPc3Pf3lcu0ztiKSKubM140/fEObSFz+LyJ9bt/RfqYKaGoe8CuNBQ81yrSsa9H6mWHzKS/z3z9q7IVyv9vDeqw5EoOSU/cVnuHZv/mIw==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by AS8P193MB1207.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:33b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 19:40:04 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Mon, 25 Sep 2023
+ 19:40:04 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     longman@redhat.com, lizefan.x@bytedance.com, tj@kernel.org,
+        hannes@cmpxchg.org, shuah@kernel.org
+Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] selftests/cgroup: Fix awk usage in test_cpuset_prs.sh that may cause error
+Date:   Tue, 26 Sep 2023 03:38:19 +0800
+Message-ID: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [Q1FYZPJYQuqtuAZ0vMiCQViRc0oaC9I1]
+X-ClientProxiedBy: AS4PR09CA0001.eurprd09.prod.outlook.com
+ (2603:10a6:20b:5e0::7) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20230925193819.6603-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-References: <20230925173448.3518223-1-mizhang@google.com> <20230925173448.3518223-3-mizhang@google.com>
- <ZRHIyUEUeXnw7hii@google.com>
-In-Reply-To: <ZRHIyUEUeXnw7hii@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 25 Sep 2023 12:34:28 -0700
-Message-ID: <CAL715WJ2AQ8G1cps_xquqcerDJ5H2Vq=DGZhdSff5ft=2uxY4w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Mask LVTPC when handling a PMI
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Like Xu <likexu@tencent.com>, Roman Kagan <rkagan@amazon.de>,
-        Kan Liang <kan.liang@intel.com>,
-        Dapeng1 Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AS8P193MB1207:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f3ef119-0c17-40ad-8e14-08dbbdff3734
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rh6O9R7gcPbGz2f0EnL3urW8Um8l7GqeWqbVkLguPjfnMvebqm4/ORzyJ1bYNs59ZXzG9bECHvMECy83R7QPXZ0zOPeyM+WNT6mRPRSKqtYHqPdynZM9VEZKPZ1ewG4q2h7npHUvrXeC4UbVfmdF4vocmuTzMe5qAGMqQaMa+kXd9xllqOzLsZyU+2emsr8hUNb9CYUS96TLjGwgRoKQSKDeFkFgL+EJEkOpEwDJpmjYzIZ2ros78Bo+9enoGt9qX40bUu5Jl6XRgQjF41PNWGkSaNpGk3VbVO51tec4CmTTeqJ/Spa3tdddAUK0109eDUDUORljrIJfXV01yLoZnK1CA2UXbDqhslR2LbUD7PlhrIJz89S7lRdKeSU7cOzAL+qMRZkBAQ59xIOX1Rj5xpYX/sdgTczCkMUqOlXxdz6K/M1WYIMQhBZQM8afw1G1Bk53PDCwpPJk/RcLZMM5P6cL5TYiUY9OMqtBVUARXeH4DjofjIobMQvylE2Q1/5qrnSY/HOs7pPmTzvw3IWfNBm8cQWKO52tP7lznbVgej8mgYP/w/bENvfZP75cHAtB
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RMbnDoI0ZvOB9E6cLBGpBS7bT8PnpuMfRLvL2JAzElvBpwJlprOQiEz2B9ux?=
+ =?us-ascii?Q?AHkPKgi4qkUCTVf+19iCkPBlTWFOsiUjCTIdtYC4D5ANkZWaw/NaBxEwi6R5?=
+ =?us-ascii?Q?zUpqgnoxLDsrlWa+/D8359HeOPtgyUBETwJTZL2gwjKcfI+ZB9DzklrwmV4f?=
+ =?us-ascii?Q?slVlv1qmbAq1mZ0veyFwW1JKZ4X8ErlLd67q3q7Z+BgW+MriuoPEyHdiVRXi?=
+ =?us-ascii?Q?EYXMahFNVtlhlW5x30hoIJlfbNdeg71QvqcqNi8wYMwKHNRIKeaUBh5unIuK?=
+ =?us-ascii?Q?vj7tnLw3HhaBJE4V8HtW0EoYe/CKl3Ll1Uhw1wvf3/FBAMn7rvN91SMF8qEY?=
+ =?us-ascii?Q?LlvlgI+TtqrdBpWBF3HKFOM5YPsmsv7048PfgApAMUoRbV+tLdoc+VRJvVEJ?=
+ =?us-ascii?Q?rmdH9GEcOLcVtdwumOoFqOkfYfMg7MNPi6icpJHjf5ZFZkoTEOHuSDx4en9P?=
+ =?us-ascii?Q?1y7G+DMoIF78MJD7Q6IKKf2FKZPv4e2ZukC9E9qp6MryyA5RANmPdSOnv/iF?=
+ =?us-ascii?Q?601aSmZI/KDWHYbPogpBuhZItCXx4TFV9O5H9UyWRSdOli7DDC2ZdGP5kmUE?=
+ =?us-ascii?Q?/PcE0qRJHVBBKlyCocVtmykA+A9OaS/gGWTP3ujlmbNow7dax0SkvW7XAFZz?=
+ =?us-ascii?Q?M3ae3EwYvhv3z5OalNcawtjfV1EiGRjfdViqxKek4KqTPlH+Wg+9QdiK1tll?=
+ =?us-ascii?Q?nHquVQKoQmABlVo1trZPtvs59r4xIqti9U4BvmPcN+WCaPHDB/qZjWuf+Vta?=
+ =?us-ascii?Q?XtUzPyGo1fyQhQif+Qz3QTUZf/cVVOwOPSqYGVlzQAbShn34Brfl3v71uH+8?=
+ =?us-ascii?Q?+aivyW6y8h+InSOl4xCzWYaKZp+xPMy86bxrk2KljZ8pJb/iYot+bS4mBHui?=
+ =?us-ascii?Q?cUNRLOHkyLDQ2XnedeAFsdxKNPjLw66ZHqUz83Zcu0nBjfBx/BW+xRYQHJ1P?=
+ =?us-ascii?Q?AShT5eisDAkhqAPcMkGuHlfKNmDqFX31ItjY31fdCxg+aWoyXqu8UPgG6+Oq?=
+ =?us-ascii?Q?kBYL4NYrLPjDOVUtyCIjdiis6yfm3G5YRLvv8U6/w5xtS6hbhbQK0mHq4H3h?=
+ =?us-ascii?Q?Nqy2csAtYLjbrD8FQ/vntuh5/mr/rGdgzKHGEZ9Msvp6MWc0+VpnPJjFQ9Fj?=
+ =?us-ascii?Q?0yUt6u1PX9PrvIGNWH2I9N/x9Ce4iy87xb+3ydzC94S0cVEUDp1rYjnDPMCC?=
+ =?us-ascii?Q?WsNvUTfMfnGct2mQi4HVJPupP8+0f8Cs14smmZ39427IeoPCMGaubu+uxQM?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f3ef119-0c17-40ad-8e14-08dbbdff3734
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 19:40:04.6035
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1207
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:52=E2=80=AFAM Sean Christopherson <seanjc@google=
-.com> wrote:
->
-> On Mon, Sep 25, 2023, Mingwei Zhang wrote:
-> > From: Jim Mattson <jmattson@google.com>
-> >
-> > Per the SDM, "When the local APIC handles a performance-monitoring
-> > counters interrupt, it automatically sets the mask flag in the LVT
-> > performance counter register."
-> >
-> > Add this behavior to KVM's local APIC emulation, to reduce the
-> > incidence of "dazed and confused" spurious NMI warnings in Linux
-> > guests (at least, those that use a PMI handler with "late_ack").
-> >
-> > Fixes: 23930f9521c9 ("KVM: x86: Enable NMI Watchdog via in-kernel PIT s=
-ource")
->
-> This Fixes is wrong.  Prior to commit f5132b01386b ("KVM: Expose a versio=
-n 2
-> architectural PMU to a guests"), KVM didn't ever deliver interrupts via t=
-he LVTPC
-> entry.  E.g. prior to that commit, the only reference to APIC_LVTPC is in
-> kvm_lapic_reg_write:
->
->   arch/x86/kvm $ git grep APIC_LVTPC f5132b01386b^
->   f5132b01386b^:lapic.c:  case APIC_LVTPC:
->
-> Commit 23930f9521c9 definitely set the PMU support up to fail, but the bu=
-g would
-> never have existed if kvm_deliver_pmi() had been written as:
->
-> void kvm_deliver_pmi(struct kvm_vcpu *vcpu)
-> {
->         struct kvm_lapic *apic =3D vcpu->arch.apic;
->
->         if (apic && kvm_apic_local_deliver(apic, APIC_LVTPC))
->                 kvm_lapic_set_reg(apic, APIC_LVTPC,
->                                   kvm_lapic_get_reg(apic, LVTPC) | APIC_L=
-VT_MASKED);
-> }
->
-> And this needs an explicit Cc: to stable because KVM opts out of AUTOSEL.
->
-> So
->
->   Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a gu=
-ests")
->   Cc: stable@vger.kernel.org
->
-> > Signed-off-by: Jim Mattson <jmattson@google.com>
-> > Tested-by: Mingwei Zhang <mizhang@google.com>
->
-> When posting patches on behalf of others, you need to provide your SoB.
->
-> > ---
-> >  arch/x86/kvm/lapic.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > index 113ca9661ab2..1f3d56a1f45f 100644
-> > --- a/arch/x86/kvm/lapic.c
-> > +++ b/arch/x86/kvm/lapic.c
-> > @@ -2729,13 +2729,17 @@ int kvm_apic_local_deliver(struct kvm_lapic *ap=
-ic, int lvt_type)
-> >  {
-> >       u32 reg =3D kvm_lapic_get_reg(apic, lvt_type);
-> >       int vector, mode, trig_mode;
-> > +     int r;
-> >
-> >       if (kvm_apic_hw_enabled(apic) && !(reg & APIC_LVT_MASKED)) {
-> >               vector =3D reg & APIC_VECTOR_MASK;
-> >               mode =3D reg & APIC_MODE_MASK;
-> >               trig_mode =3D reg & APIC_LVT_LEVEL_TRIGGER;
-> > -             return __apic_accept_irq(apic, mode, vector, 1, trig_mode=
-,
-> > -                                     NULL);
-> > +
-> > +             r =3D __apic_accept_irq(apic, mode, vector, 1, trig_mode,=
- NULL);
-> > +             if (r && lvt_type =3D=3D APIC_LVTPC)
-> > +                     kvm_lapic_set_reg(apic, lvt_type, reg | APIC_LVT_=
-MASKED);
->
-> Belated feedback, I think I'd prefer to write this as
->
->                         kvm_lapic_set_reg(apic, APIC_LVTPC, reg | APIC_LV=
-T_MASKED);
->
-> so that this code will show up when searching for APIC_LVTPC.
->
-> > +             return r;
-> >       }
-> >       return 0;
-> >  }
-> > --
-> > 2.42.0.515.g380fc7ccd1-goog
-> >
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
+According to the awk manual, the -e option does not need to be specified
+in front of 'program' (unless you need to mix program-file).
+
+The redundant -e option can cause error when users use awk tools other
+than gawk (for example, mawk does not support the -e option).
+
+Error Example:
+awk: not an option: -e
+Cgroup v2 mount point not found!
+
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index 4afb132e4e4f..6820653e8432 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -20,7 +20,7 @@ skip_test() {
+ WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
+ 
+ # Find cgroup v2 mount point
+-CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
++CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
+ [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
+ 
+ CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
+-- 
+2.39.2
+
