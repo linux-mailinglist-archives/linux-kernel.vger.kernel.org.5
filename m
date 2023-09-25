@@ -2,332 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11067ACD94
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AE67ACD99
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbjIYBbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 21:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
+        id S231534AbjIYBfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 21:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIYBbL (ORCPT
+        with ESMTP id S229561AbjIYBfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 21:31:11 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD19C6;
-        Sun, 24 Sep 2023 18:31:03 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rv4x50X9LzMlpr;
-        Mon, 25 Sep 2023 09:27:21 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 25 Sep 2023 09:31:00 +0800
-Message-ID: <f2b30203-1a67-4533-eddc-b380044e2e68@huawei.com>
-Date:   Mon, 25 Sep 2023 09:31:00 +0800
+        Sun, 24 Sep 2023 21:35:01 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B8ECA;
+        Sun, 24 Sep 2023 18:34:53 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rv55d6bZtz4f3jrc;
+        Mon, 25 Sep 2023 09:34:45 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgDHXd244xBlPSFKBQ--.7589S3;
+        Mon, 25 Sep 2023 09:34:50 +0800 (CST)
+Subject: Re: [PATCH -next v2 02/28] md: use 'mddev->suspended' for
+ is_md_suspended()
+To:     Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
+        song@kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
+ <20230828020021.2489641-3-yukuai1@huaweicloud.com>
+ <CALTww29iHX_GHogGFEfzdaDjohBr8ycfiz2=E_ru4JYvmrTYdA@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <1407f90d-d608-6059-7381-adb230585e3d@huaweicloud.com>
+Date:   Mon, 25 Sep 2023 09:34:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v10 2/4] fpga: add an initial KUnit suite for the FPGA
- Bridge
-Content-Language: en-US
-To:     Marco Pagani <marpagan@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>
-References: <20230718130304.87048-1-marpagan@redhat.com>
- <20230718130304.87048-3-marpagan@redhat.com>
-From:   Ruan Jinjie <ruanjinjie@huawei.com>
-In-Reply-To: <20230718130304.87048-3-marpagan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500008.china.huawei.com (7.221.188.139)
+In-Reply-To: <CALTww29iHX_GHogGFEfzdaDjohBr8ycfiz2=E_ru4JYvmrTYdA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHXd244xBlPSFKBQ--.7589S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF1rKrW5AF15ZrWUurW5trb_yoW5KF17p3
+        yIqFWYyrWUJF9Ik3yDtw1kua45uwn8KrW0yr9xW3W7C3W3Wr1rGF4furs8Xr1vk3Z3Gw1D
+        Ja1Ut34fAF109FJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 2023/7/18 21:03, Marco Pagani wrote:
-> The suite tests the basic behaviors of the FPGA Bridge including
-> the functions that operate on a list of bridges.
+在 2023/09/20 16:46, Xiao Ni 写道:
+> On Mon, Aug 28, 2023 at 10:04 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> 'pers->prepare_suspend' is introduced to prevent a deadlock for raid456,
+>> this change prepares to clean this up in later patches while refactoring
+>> mddev_suspend(). Specifically allow reshape to make progress while
+>> waiting for 'active_io' to be 0.
 > 
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
-> Acked-by: Xu Yilun <yilun.xu@intel.com>
-> ---
->  drivers/fpga/tests/fpga-bridge-test.c | 175 ++++++++++++++++++++++++++
->  1 file changed, 175 insertions(+)
->  create mode 100644 drivers/fpga/tests/fpga-bridge-test.c
+> Hi Kuai
 > 
-> diff --git a/drivers/fpga/tests/fpga-bridge-test.c b/drivers/fpga/tests/fpga-bridge-test.c
-> new file mode 100644
-> index 000000000000..1d258002cdd7
-> --- /dev/null
-> +++ b/drivers/fpga/tests/fpga-bridge-test.c
-> @@ -0,0 +1,175 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KUnit test for the FPGA Bridge
-> + *
-> + * Copyright (C) 2023 Red Hat, Inc.
-> + *
-> + * Author: Marco Pagani <marpagan@redhat.com>
-> + */
-> +
-> +#include <kunit/test.h>
-> +#include <linux/device.h>
-> +#include <linux/fpga/fpga-bridge.h>
-> +#include <linux/module.h>
-> +#include <linux/types.h>
-> +
-> +struct bridge_stats {
-> +	bool enable;
-> +};
-> +
-> +struct bridge_ctx {
-> +	struct fpga_bridge *bridge;
-> +	struct platform_device *pdev;
-> +	struct bridge_stats stats;
-> +};
-> +
-> +static int op_enable_set(struct fpga_bridge *bridge, bool enable)
-> +{
-> +	struct bridge_stats *stats = bridge->priv;
-> +
-> +	stats->enable = enable;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Fake FPGA bridge that implements only the enable_set op to track
-> + * the state.
-> + */
-> +static const struct fpga_bridge_ops fake_bridge_ops = {
-> +	.enable_set = op_enable_set,
-> +};
-> +
-> +/**
-> + * register_test_bridge() - Register a fake FPGA bridge for testing.
-> + * @test: KUnit test context object.
-> + *
-> + * Return: Context of the newly registered FPGA bridge.
-> + */
-> +static struct bridge_ctx *register_test_bridge(struct kunit *test)
-> +{
-> +	struct bridge_ctx *ctx;
-> +
-> +	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-> +
-> +	ctx->pdev = platform_device_register_simple("bridge_pdev", PLATFORM_DEVID_AUTO, NULL, 0);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->pdev);
-> +
-> +	ctx->bridge = fpga_bridge_register(&ctx->pdev->dev, "Fake FPGA bridge", &fake_bridge_ops,
-> +					   &ctx->stats);
-> +	KUNIT_ASSERT_FALSE(test, IS_ERR_OR_NULL(ctx->bridge));
-> +
-> +	return ctx;
-> +}
-> +
-> +static void unregister_test_bridge(struct bridge_ctx *ctx)
-> +{
-> +	fpga_bridge_unregister(ctx->bridge);
-> +	platform_device_unregister(ctx->pdev);
-> +}
-> +
-> +static void fpga_bridge_test_get(struct kunit *test)
-> +{
-> +	struct bridge_ctx *ctx = test->priv;
-> +	struct fpga_bridge *bridge;
-> +
-> +	bridge = fpga_bridge_get(&ctx->pdev->dev, NULL);
-> +	KUNIT_EXPECT_PTR_EQ(test, bridge, ctx->bridge);
-> +
-> +	bridge = fpga_bridge_get(&ctx->pdev->dev, NULL);
-> +	KUNIT_EXPECT_EQ(test, PTR_ERR(bridge), -EBUSY);
-> +
-> +	fpga_bridge_put(ctx->bridge);
-> +}
+>>From my side, I can't understand the comments. The change has
+> relationship with pers->prepare_suspend? And why this change can
+> affect reshape? If this change indeed can affect these two things, can
+> you explain more?
 
+First of all, 'prepare_suspend' is used to fix a deadlock in raid456:
 
-modprobe fpga-bridge-test and then the below null-ptr-deref occurs.
-It seems that ctx->pdev->dev->driver is NULL and the pdev->dev need
-to be associated with a platform driver.
+1) suspend is waiting for normal io to be done.
 
-     general protection fault, probably for non-canonical address
-0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-     KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-     CPU: 7 PID: 1864 Comm: kunit_try_catch Tainted: G                 N
-6.6.0-rc2+ #49
-     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.15.0-1 04/01/2014
-     RIP: 0010:__fpga_bridge_get+0xca/0x160 [fpga_bridge]
-     Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 86 00 00 00 48 b8 00
-00 00 00 00 fc ff df 48 8b 5b 68 48 8d 7b 10 48 89 fa 48 c1 ea 03 <80>
-3c 02 00 75 71 48 8b 7b 10 e8 a7 5e 1a e1 84 c0 74 34 66 90 48
-     RSP: 0018:ffff888106b0fe08 EFLAGS: 00010202
-     RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8409be0f
-     RDX: 0000000000000002 RSI: 0000000000000008 RDI: 0000000000000010
-     RBP: ffff8881011bc008 R08: 0000000000000001 R09: ffffed1020d61fb3
-     R10: ffff888106b0fd9f R11: ffff888106b0f850 R12: ffff8881011bc000
-     R13: ffff8881011bc2e8 R14: ffff888104b675a8 R15: ffff88810868b080
-     FS:  0000000000000000(0000) GS:ffff888119f80000(0000)
-knlGS:0000000000000000
-     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-     CR2: 00007fad255ed8a0 CR3: 0000000005086006 CR4: 0000000000770ee0
-     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-     PKRU: 55555554
-     Call Trace:
-      <TASK>
-      ? die_addr+0x3d/0xa0
-      ? exc_general_protection+0x144/0x220
-      ? asm_exc_general_protection+0x22/0x30
-      ? mutex_trylock+0xcf/0x150
-      ? __fpga_bridge_get+0xca/0x160 [fpga_bridge]
-      ? __fpga_bridge_get+0x4e/0x160 [fpga_bridge]
-      fpga_bridge_test_get+0xb0/0x240 [fpga_bridge_test]
-      ? _raw_spin_lock_irqsave+0x8d/0xe0
-      ? op_enable_set+0x90/0x90 [fpga_bridge_test]
-      ? __sched_text_end+0xa/0xa
-      ? fpga_bridge_test_init+0x12/0x50 [fpga_bridge_test]
-      ? kunit_try_run_case+0xdd/0x250
-      ? kunit_try_run_case_cleanup+0xe0/0xe0
-      kunit_generic_run_threadfn_adapter+0x4a/0x90
-      ? kunit_try_catch_throw+0x80/0x80
-      kthread+0x2b5/0x380
-      ? kthread_complete_and_exit+0x20/0x20
-      ret_from_fork+0x2d/0x70
-      ? kthread_complete_and_exit+0x20/0x20
-      ret_from_fork_asm+0x11/0x20
-      </TASK>
-     Modules linked in: fpga_bridge_test(+) fpga_bridge
-     Dumping ftrace buffer:
-        (ftrace buffer empty)
-     ---[ end trace 0000000000000000 ]---
-     RIP: 0010:__fpga_bridge_get+0xca/0x160 [fpga_bridge]
-     Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 86 00 00 00 48 b8 00
-00 00 00 00 fc ff df 48 8b 5b 68 48 8d 7b 10 48 89 fa 48 c1 ea 03 <80>
-3c 02 00 75 71 48 8b 7b 10 e8 a7 5e 1a e1 84 c0 74 34 66 90 48
-     RSP: 0018:ffff888106b0fe08 EFLAGS: 00010202
-     RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8409be0f
-     RDX: 0000000000000002 RSI: 0000000000000008 RDI: 0000000000000010
-     RBP: ffff8881011bc008 R08: 0000000000000001 R09: ffffed1020d61fb3
-     R10: ffff888106b0fd9f R11: ffff888106b0f850 R12: ffff8881011bc000
-     R13: ffff8881011bc2e8 R14: ffff888104b675a8 R15: ffff88810868b080
-     FS:  0000000000000000(0000) GS:ffff888119f80000(0000)
-knlGS:0000000000000000
-     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-     CR2: 00007fad255ed8a0 CR3: 0000000005086006 CR4: 0000000000770ee0
-     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-     PKRU: 55555554
-     Kernel panic - not syncing: Fatal exception
-     Dumping ftrace buffer:
-        (ftrace buffer empty)
-     Kernel Offset: disabled
-     Rebooting in 1 seconds..
+mddev_suspend
+  mddev->suspended++ -> new sync_thread can't start
+  percpu_ref_kill(active_io)
+  wait_event(percpu_ref_is_zero(active_io))
 
-    Fixes: 9e6823481e5f ("fpga: add an initial KUnit suite for the FPGA
-Bridge")
-    Reported-by: Jinjie Ruan <ruanjinjie@huawei.com>
+2) normal io is waiting for reshape to make progress.
+3) reshape is waiting for suspended array to be resumed.
 
-> +
-> +static void fpga_bridge_test_toggle(struct kunit *test)
-> +{
-> +	struct bridge_ctx *ctx = test->priv;
-> +	int ret;
-> +
-> +	ret = fpga_bridge_disable(ctx->bridge);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +	KUNIT_EXPECT_FALSE(test, ctx->stats.enable);
-> +
-> +	ret = fpga_bridge_enable(ctx->bridge);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +	KUNIT_EXPECT_TRUE(test, ctx->stats.enable);
-> +}
-> +
-> +/* Test the functions for getting and controlling a list of bridges */
-> +static void fpga_bridge_test_get_put_list(struct kunit *test)
-> +{
-> +	struct list_head bridge_list;
-> +	struct bridge_ctx *ctx_0, *ctx_1;
-> +	int ret;
-> +
-> +	ctx_0 = test->priv;
-> +	ctx_1 = register_test_bridge(test);
-> +
-> +	INIT_LIST_HEAD(&bridge_list);
-> +
-> +	/* Get bridge 0 and add it to the list */
-> +	ret = fpga_bridge_get_to_list(&ctx_0->pdev->dev, NULL, &bridge_list);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	KUNIT_EXPECT_PTR_EQ(test, ctx_0->bridge,
-> +			    list_first_entry_or_null(&bridge_list, struct fpga_bridge, node));
-> +
-> +	/* Get bridge 1 and add it to the list */
-> +	ret = fpga_bridge_get_to_list(&ctx_1->pdev->dev, NULL, &bridge_list);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	KUNIT_EXPECT_PTR_EQ(test, ctx_1->bridge,
-> +			    list_first_entry_or_null(&bridge_list, struct fpga_bridge, node));
-> +
-> +	/* Disable an then enable both bridges from the list */
-> +	ret = fpga_bridges_disable(&bridge_list);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	KUNIT_EXPECT_FALSE(test, ctx_0->stats.enable);
-> +	KUNIT_EXPECT_FALSE(test, ctx_1->stats.enable);
-> +
-> +	ret = fpga_bridges_enable(&bridge_list);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	KUNIT_EXPECT_TRUE(test, ctx_0->stats.enable);
-> +	KUNIT_EXPECT_TRUE(test, ctx_1->stats.enable);
-> +
-> +	/* Put and remove both bridges from the list */
-> +	fpga_bridges_put(&bridge_list);
-> +
-> +	KUNIT_EXPECT_TRUE(test, list_empty(&bridge_list));
-> +
-> +	unregister_test_bridge(ctx_1);
-> +}
-> +
-> +static int fpga_bridge_test_init(struct kunit *test)
-> +{
-> +	test->priv = register_test_bridge(test);
-> +
-> +	return 0;
-> +}
-> +
-> +static void fpga_bridge_test_exit(struct kunit *test)
-> +{
-> +	unregister_test_bridge(test->priv);
-> +}
-> +
-> +static struct kunit_case fpga_bridge_test_cases[] = {
-> +	KUNIT_CASE(fpga_bridge_test_get),
-> +	KUNIT_CASE(fpga_bridge_test_toggle),
-> +	KUNIT_CASE(fpga_bridge_test_get_put_list),
-> +	{}
-> +};
-> +
-> +static struct kunit_suite fpga_bridge_suite = {
-> +	.name = "fpga_bridge",
-> +	.init = fpga_bridge_test_init,
-> +	.exit = fpga_bridge_test_exit,
-> +	.test_cases = fpga_bridge_test_cases,
-> +};
-> +
-> +kunit_test_suite(fpga_bridge_suite);
-> +
-> +MODULE_LICENSE("GPL");
+md_check_recovery
+  if (is_md_suspended(mddev))
+   return
+
+Then prepare_suspend will failed the io that is waiting for reshape to
+make progress:
+
+mddev_suspend
+  mddev->suspended++
+  percpu_ref_kill(active_io)
+   -> new io will be stuck in md_handle_request
+  pers->prepare_suspend() -> raid5_prepare_suspend
+   -> wake_up(wait_for_overlap)
+		// woke up
+		raid5_make_request
+		 make_stripe_request
+		  !reshape_inprogress(mddev) && reshape_disabled(mddev)
+		   // return io error for the io that is waiting for
+		   // reshape to make progress
+
+  wait_event(percpu_ref_is_zero(active_io))
+
+With this patch and the new api to suspend array:
+
+mddev_suspend
+  percpu_ref_kill(active_io)
+  wait_event(percpu_ref_is_zero(active_io))
+  -> while waiting for normal io to be done, new sync_thread can still
+     start, and reshape can still make progress.
+  mddev->suspended++
+
+> 
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/md.c | 2 +-
+>>   drivers/md/md.h | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 9d8dff9d923c..7fa311a14317 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -355,7 +355,7 @@ static DEFINE_SPINLOCK(all_mddevs_lock);
+>>    */
+>>   static bool is_suspended(struct mddev *mddev, struct bio *bio)
+>>   {
+>> -       if (is_md_suspended(mddev))
+>> +       if (is_md_suspended(mddev) || percpu_ref_is_dying(&mddev->active_io))
+> 
+> If we use mddev->suspended to judge if the raid is suspended, it
+> should be enough? Because mddev->suspended must be true when active_io
+> is dying.
+
+In the new api, active_io is killed before increasing suspended, and the
+difference is that the timing that array is suspended will be delayed
+from the start of mddev_suspend() to when all dispatched io is done.
+
+I think this is OK because this doesn't change behaviour when
+mddev_suspend() returns.
+
+Thanks,
+Kuai
+`
+> 
+> Best Regards
+> Xiao
+>>                  return true;
+>>          if (bio_data_dir(bio) != WRITE)
+>>                  return false;
+>> diff --git a/drivers/md/md.h b/drivers/md/md.h
+>> index b628c292506e..fb3b123f16dd 100644
+>> --- a/drivers/md/md.h
+>> +++ b/drivers/md/md.h
+>> @@ -584,7 +584,7 @@ static inline bool md_is_rdwr(struct mddev *mddev)
+>>
+>>   static inline bool is_md_suspended(struct mddev *mddev)
+>>   {
+>> -       return percpu_ref_is_dying(&mddev->active_io);
+>> +       return READ_ONCE(mddev->suspended);
+>>   }
+>>
+>>   static inline int __must_check mddev_lock(struct mddev *mddev)
+>> --
+>> 2.39.2
+>>
+> 
+> .
+> 
+
