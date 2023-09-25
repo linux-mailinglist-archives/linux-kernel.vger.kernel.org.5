@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C46F7AD3BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC447AD3BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbjIYItx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        id S233071AbjIYItz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233057AbjIYIti (ORCPT
+        with ESMTP id S232979AbjIYItv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:49:38 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 470F3103;
-        Mon, 25 Sep 2023 01:49:25 -0700 (PDT)
-Received: from dinghao.liu$zju.edu.cn ( [10.190.70.223] ) by
- ajax-webmail-mail-app2 (Coremail) ; Mon, 25 Sep 2023 16:48:53 +0800
- (GMT+08:00)
-X-Originating-IP: [10.190.70.223]
-Date:   Mon, 25 Sep 2023 16:48:53 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc:     "Alexander Aring" <alex.aring@gmail.com>,
-        "Stefan Schmidt" <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Marcel Holtmann" <marcel@holtmann.org>,
-        "Harry Morris" <harrymorris12@gmail.com>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ieee802154: ca8210: Fix a potential UAF in ca8210_probe
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230925102919.356b45ab@xps-13>
-References: <20230925072423.24772-1-dinghao.liu@zju.edu.cn>
- <20230925102919.356b45ab@xps-13>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Mon, 25 Sep 2023 04:49:51 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14C1D3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:49:43 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 19B2CFF803;
+        Mon, 25 Sep 2023 08:49:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695631782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=INBNCslwxKAO9zA0oLb6M4ySYAmug40tgKE1H/MmE0A=;
+        b=TYej/Qhs2tQt0X2X/1RpcZsO4PzpvkrHD6BxUtce/kqEyax4ZxRj1S/sEYcWjqB0CO7TOK
+        HwaElyLLqzCZdL56EkdOOuZy6SXYGOEK7VBY9yirkxT/jTHZdITbC7qWW9+K1T9RHH3PMY
+        JsKw3fQpnhmU+Xi8dCW88Y/WNNrhqDjfBoyZiz9uJtT04NQiy3CvxGZo3g9QC9utv3rz26
+        grC+poafNhzfdTSS1R2PAgHR3MPF/KLR++jSqhXpz+P9tjBLbQLmhAJZtg7fznHcedhviv
+        yQzPzPnn6QubeEZoxgSR9rRNwUqgUaHQ5DkaCsZHYycaOk1f1VBRO/ouHIH81Q==
+Date:   Mon, 25 Sep 2023 10:49:38 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     ZhaoLong Wang <wangzhaolong1@huawei.com>
+Cc:     <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>
+Subject: Re: [RFC] mtd: Fix error code loss in mtdchar_read() function.
+Message-ID: <20230925104938.3f7b4284@xps-13>
+In-Reply-To: <20230923005856.2538223-1-wangzhaolong1@huawei.com>
+References: <20230923005856.2538223-1-wangzhaolong1@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <42b77efb.28ab5.18acb86f1c3.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgDHibR1SRFlXhL4AA--.21623W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEJBmUQRiAzPQAAsR
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWlxdcOobCwKCj4gPiBpbmRleCBhZWJiMTlmMWIzYTQuLjFkNTQ1ODc5YzAwMCAxMDA2NDQK
-PiA+IC0tLSBhL2RyaXZlcnMvbmV0L2llZWU4MDIxNTQvY2E4MjEwLmMKPiA+ICsrKyBiL2RyaXZl
-cnMvbmV0L2llZWU4MDIxNTQvY2E4MjEwLmMKPiA+IEBAIC0yNzYwLDYgKzI3NjAsNyBAQCBzdGF0
-aWMgaW50IGNhODIxMF9yZWdpc3Rlcl9leHRfY2xvY2soc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkK
-PiA+ICAJcmV0ID0gb2ZfY2xrX2FkZF9wcm92aWRlcihucCwgb2ZfY2xrX3NyY19zaW1wbGVfZ2V0
-LCBwcml2LT5jbGspOwo+ID4gIAlpZiAocmV0KSB7Cj4gPiAgCQljbGtfdW5yZWdpc3Rlcihwcml2
-LT5jbGspOwo+ID4gKwkJcHJpdi0+Y2xrID0gTlVMTDsKPiAKPiBUaGlzIGZ1bmN0aW9uIGlzIGEg
-Yml0IGNvbnZvbHV0ZWQuIFlvdSBjb3VsZCBqdXN0IHJldHVybiB0aGUgcmVzdWx0IG9mCj4gb2Zf
-Y2xrX2FkZF9wcm92aWRlcigpIChrZWVwIHRoZSBwcmludGsncyBpZiB5b3Ugd2FudCwgdGhleSBk
-b24ndCBzZWVtCj4gdmVyeSB1c2VmdWwpIGFuZCBsZXQgY2E4MjEwX3VucmVnaXN0ZXJfZXh0X2Ns
-b2NrKCkgZG8gdGhlIGNsZWFudXAuCgpUaGFua3MgZm9yIHlvdXIgYWR2aWNlISBJIHdpbGwgcmVz
-ZW5kIGEgbmV3IHBhdGNoIGFzIHN1Z2dlc3RlZC4KCj4gCj4gPiAgCQlkZXZfY3JpdCgKPiA+ICAJ
-CQkmc3BpLT5kZXYsCj4gPiAgCQkJIkZhaWxlZCB0byByZWdpc3RlciBleHRlcm5hbCBjbG9jayBh
-cyBjbG9jayBwcm92aWRlclxuIgo+ID4gQEAgLTI3ODAsNyArMjc4MSw3IEBAIHN0YXRpYyB2b2lk
-IGNhODIxMF91bnJlZ2lzdGVyX2V4dF9jbG9jayhzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpKQo+ID4g
-IHsKPiA+ICAJc3RydWN0IGNhODIxMF9wcml2ICpwcml2ID0gc3BpX2dldF9kcnZkYXRhKHNwaSk7
-Cj4gPiAgCj4gPiAtCWlmICghcHJpdi0+Y2xrKQo+ID4gKwlpZiAoSVNfRVJSX09SX05VTEwocHJp
-di0+Y2xrKSkKPiAKPiBEb2VzIG5vdCBsb29rIHVzZWZ1bCBhcyB5b3UgYXJlIGVuZm9yY2luZyBw
-cml2LT5jbG9jayB0byBiZSB2YWxpZCBvcgo+IE5VTEwsIGl0IGNhbm5vdCBiZSBhbiBlcnJvciBj
-b2RlLgoKSSBmaW5kIHRoYXQgY2E4MjEwX3JlZ2lzdGVyX2V4dF9jbG9jaygpIHVzZXMgSVNfRVJS
-IHRvIGNoZWNrIHByaXYtPmNsawphZnRlciBjYWxsaW5nIGNsa19yZWdpc3Rlcl9maXhlZF9yYXRl
-KCkuIFNvIEkgdGhpbmsgcHJpdi0+Y2xrIGNvdWxkIGJlCmEgbm9uLW51bGwgcG9pbnRlciBldmVu
-IG9uIGZhaWx1cmUuIEFuZCBhIG51bGwgcG9pbnRlciBjaGVjayBtYXkgbWlzcwp0aGlzIGNhc2Ug
-aW4gY2E4MjEwX3VucmVnaXN0ZXJfZXh0X2Nsb2NrKCkuIAoKUmVnYXJkcywKRGluZ2hhbw==
+Hello,
+
+Richard, your advice is welcome here.
+
+wangzhaolong1@huawei.com wrote on Sat, 23 Sep 2023 08:58:56 +0800:
+
+> In the first while loop, if the mtd_read() function returns -EBADMSG
+
+			      s/the//	     s/function//
+			      ,
+
+> and 'retlen' returns 0, the loop break and the function returns value
+
+s/and//		remains to 0. The loop breaks and the function
+returns 'total_retlen' which is 0 instead of the error code.
+
+> 'total_retlen' is 0, not the error code.
+
+Actually after looking at the code, I have no strong opinion
+regarding whether we should return 0 or an error code in this case.=20
+
+There is this comment right above, and I'm not sure it is still up to
+date because I believe many drivers just don't provide the data upon
+ECC error:
+
+                /* Nand returns -EBADMSG on ECC errors, but it returns
+                 * the data. For our userspace tools it is important
+                 * to dump areas with ECC errors!
+                 * For kernel internal usage it also might return -EUCLEAN
+                 * to signal the caller that a bitflip has occurred and has
+                 * been corrected by the ECC algorithm.
+                 * Userspace software which accesses NAND this way
+                 * must be aware of the fact that it deals with NAND
+                 */
+
+> This problem causes the user-space program to encounter EOF when it has
+> not finished reading the mtd partion, and this also violates the read
+> system call standard in POSIX.
+>=20
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D217939
+> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+> ---
+>  drivers/mtd/mtdchar.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 8dc4f5c493fc..ba60dc6bef98 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -211,7 +211,7 @@ static ssize_t mtdchar_read(struct file *file, char _=
+_user *buf, size_t count,
+>  	}
+> =20
+>  	kfree(kbuf);
+> -	return total_retlen;
+> +	return total_retlen ? total_retlen : ret;
+
+This is kind of wrong, if ret is 0 then you return ret while you should
+return total_retlen. In practice it does not really matter, the result
+is the same, but it makes it harder to understand the code IMHO.
+
+>  } /* mtdchar_read */
+> =20
+>  static ssize_t mtdchar_write(struct file *file, const char __user *buf, =
+size_t count,
+
+
+Thanks,
+Miqu=C3=A8l
