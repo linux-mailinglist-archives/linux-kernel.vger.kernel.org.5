@@ -2,363 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29707AE1A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69697AE1A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbjIYW0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S232395AbjIYW0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbjIYW0L (ORCPT
+        with ESMTP id S232466AbjIYW0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:26:11 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6EA11F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:26:03 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PLOksi022167;
-        Mon, 25 Sep 2023 22:25:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=8V3oM+xtvqbP92aVNpNxdgova9/jG8Jjaw22ZXyXX5g=;
- b=x62sL/zyZjnwnHlxRNj/BQhNYOCpW5bWefWYkp/cX/QUieIPpv3JRkjMZNc1+rfW/xYP
- sR4InZXq0eFjYXQ24ckBTBOI1LjW7bJa6pvZjotC1y489uDnoGA3SX8Wa41StZ7J4J6y
- 2YyCcQ4ssJjPPIA+D0rlvPmDqjrCNjtbgYFoVj3jK3DXrYRm3FK05mYN86qzRfYFFc9G
- l8y62HB+pDQ3Y5B9wZSMl9V3w3maP9dgcjsPU5Nua9GFfbHzdXYRmIvHbStuQy2udw3B
- 7aORmldXQSLbxyM1OEUjUxqw4Ef5+ZlXKNr6xeZe/+uy/X50oyEMbV5XUc7tRWtcJtIN yA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9rjud3t9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Sep 2023 22:25:46 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38PMGOrb017976;
-        Mon, 25 Sep 2023 22:25:45 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfb7h4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Sep 2023 22:25:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hQHSva51Ado+6MXAHRCfnsl/JD9VcLZZEdQ2w/clxLnD5hpBx0ISyz0nBcIuDyJFsLTcL7wiavRVqJxVi7YWAP+Q4kMFxheHPn8nl0FGaRvbY3CVq6YVyKsRGB5m4Hl1OHr1pSeuUR/s2vU8sQImAq30met28JbUnvksoRoxKvuFVIsS/+gLWqlJKl+zN0SrdAqKiiv6X41hyLRCOiz2kCFROIMTUYQwY4hu9U8o80v2Ps3um2b3rydDDbq2tFHb3xnWlbQ5/EAz2h7w3SGGLlF8EAj0EcgwJ+cs0v6U2JjyGEbLayRHOCrlFvICAr6rdfxKhW05cn71p9BleQdnug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8V3oM+xtvqbP92aVNpNxdgova9/jG8Jjaw22ZXyXX5g=;
- b=d9lBHBEqDrkzhxnQ8nLA1a/NoxeojJPwqGpkjsdz39Ax8ejmIPcuhJyZBjyWbDKYx8Kx/EQTlFMlXsGAwO8Sig3+yloGEn2lmx0ln5Tmug9KHEawi1+URDMmTlfOGyojZDDIgLCag2voYppbi176Yvte2zVADonlgUVGEKZQxuG+L9c++vPoZMLBmyN4Ot3ZmOc9dR9UjiA7oMVmGfUSPyCWq/bhgftD3n+497/Am1r6sWlQKeyJyrWKXF4neP9j9I+XemgTPDD7IjX/qt40FBn/0f0XhvoviGocHaEihoFXAJGLgoVhx7Dxq+DrvE1AYOb9wZ6HwXtEzCI97z2hEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 25 Sep 2023 18:26:16 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F1D124
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:26:07 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50435ad51bbso10126062e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8V3oM+xtvqbP92aVNpNxdgova9/jG8Jjaw22ZXyXX5g=;
- b=llJZFZDeHEID5rP0/cuF2/5yUcvVnfxxKcAk3X3knl+gGbKtUQlHS1FZhIwhw/Lc+JpYc7/mm5pLMeLOeux2M7DHlZEPzrXZ6Ttknpd0rpuNIBjjYW8o2g1AOkF3fZEBcko7dbLC/RTrEFrehln328g4d7TK4HxMmnMXEX8ZE+c=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by IA0PR10MB7229.namprd10.prod.outlook.com (2603:10b6:208:400::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.27; Mon, 25 Sep
- 2023 22:25:43 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::c621:12ca:ba40:9054]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::c621:12ca:ba40:9054%5]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 22:25:42 +0000
-Date:   Mon, 25 Sep 2023 15:25:39 -0700
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     riel@surriel.com
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
-Subject: Re: [PATCH 2/3] hugetlbfs: close race between MADV_DONTNEED and page
- fault
-Message-ID: <20230925222539.GC11309@monkey>
-References: <20230925203030.703439-1-riel@surriel.com>
- <20230925203030.703439-3-riel@surriel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925203030.703439-3-riel@surriel.com>
-X-ClientProxiedBy: MW4PR03CA0313.namprd03.prod.outlook.com
- (2603:10b6:303:dd::18) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        d=chromium.org; s=google; t=1695680766; x=1696285566; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sHB5IL1T88qgL4XItKYJYwf3rmjKIe0AB+bW8EbZuVY=;
+        b=a+nPRwEC5WTW2GbZZZ1pZz9Ckiy7GWuHWrI5okDn7U2YKr/jUHtxS54QPgTRGqvsAr
+         Uzao2s5zDykm4bE7DRP6aDLlyZY/PB/gWBPCKLa4fSUfOcXdvf2/Zrc9hnTGlyUrq0DO
+         /snjOxezBf3OjkKIa2J5Yo7+sQ9S2I/vfLvlA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695680766; x=1696285566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sHB5IL1T88qgL4XItKYJYwf3rmjKIe0AB+bW8EbZuVY=;
+        b=kbgld4Qf1Ow55HnvgY9/Floh8XH9FW8YW8UWsuUxE1s2cPXfKsa8Z5D04flYQEB9fv
+         GJ9P5keLO+Y5MB2fBuH4qQoEPo1ddYftTloFfASF9Cy5AKK2cQtRadtKxS3DmrUCbgj6
+         hbX7Lvh0pPL8hribXfnGBrj0meC7IbIIwSlZG0hmSGx6aP+NLKNEHHHPSBGFfxRdZAln
+         ZjF5WB4MfbMr6hcLSOimXOqtqO7JjokOClyI11MpzzgMtl6boKihevCABYWLMrsQywNw
+         p/F+1kVQ10OINrri8Cqrft+o251pa09A37NUcqNwlAbvq5NsF3GN5pNtPlN9u8qZ/Pge
+         3Naw==
+X-Gm-Message-State: AOJu0YzD01Fg3NU3XMeOS9hYEKpqVUHk2/TCaFEcVfa99V3OvKQK4NEz
+        OtYehQsrsun3HF/NfaXZDI7ZhwhGLfoA8HbD903Cjw==
+X-Google-Smtp-Source: AGHT+IFuDsUZ/C+JOgCrSAxNKjCJEH0stsapm18e9nwK4naev+5fQkTG+WFNiy9706sZDwBh+w1k4UJRO29flm15igk=
+X-Received: by 2002:a05:6512:3b12:b0:4fa:da4f:636f with SMTP id
+ f18-20020a0565123b1200b004fada4f636fmr8482017lfv.32.1695680765816; Mon, 25
+ Sep 2023 15:26:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|IA0PR10MB7229:EE_
-X-MS-Office365-Filtering-Correlation-Id: b62405aa-eb81-40d0-f47b-08dbbe165af9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KOeFOA96gl9PB27A0gFp/Cyv+IlQhMe5n8vAj1ryy8up+qNZO7I6dsP8GSlE57P80PdZ4RdiZnoJWYu7pnpdeyS97SxHEWvUcN2POlTYm5FWjkzOOZcZnPpKKY3qYsWqxpbpWYYwTeoI7Egk7KyOV5uftDLTTO0SdWO1jqJXN90j8zfHPLYUMj+euWezzkMSBwCGAytQ14G7xXlzHOqJx+ouWC6kUEIJlepmVbedEBYYhWhEHxNrBSeaRh9UHpCBHB2/oDywhpKjSDHGgqTfYq35F86ZzJUQ0vJ5dJL/LIIQehgA1li/fZJPyiRLvNfiwDqjAmgxIj3zR8L5puJeTlLUTQbuaSmsR2TbVv53baFtMgpwABg/CqAHJdvLbL2yo5sLUURlKmeJcV72UlDYI1jwRB4OBTJlP1aKuxI9mi9f5DwKQ6vM8j/S+AS3XkWGIAG8dJzFPwjdWa9a5QO0zA6ubrih4etTL37eJCsrOO6MBoIcyt4XYbmdubq6FejlQvRLHdhpb5qZmGNgDoWbJxnHVdZQX00zhX/vkbzbfa8HLZekNG6PjQe3AnMJj6Sh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(2906002)(5660300002)(66946007)(66476007)(44832011)(66556008)(478600001)(6666004)(33716001)(6512007)(53546011)(9686003)(1076003)(26005)(6506007)(6486002)(6916009)(316002)(8676002)(4326008)(8936002)(41300700001)(83380400001)(86362001)(38100700002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pJD/Jvua3GJZ3EzfAMtHF9uvss1RrK7kRM2ia9aSScsxzfhnx404I+2aXUYz?=
- =?us-ascii?Q?zKAolpJTNUB9CwmdAMXNYQicBG1dJJAdm2Jgg4XoVREZoMnz5SEcoxf4tsT5?=
- =?us-ascii?Q?VDd3lK25nO6askK9jgcM2/rM2p8oDb7cLdxbPf9ZDhjnbTBQyVOKDMEhRw6p?=
- =?us-ascii?Q?chQ8eUSnRru1Q8VOBL8RBzBM+PZj5fVa/MmEUYylBis9LJWrV6Bm8umd4uZx?=
- =?us-ascii?Q?9aJfsLvft0GpjBrCozauI1MsE2SoWU6Zsz4pKlfEH+ah9Q3sWK68CT9I/v/J?=
- =?us-ascii?Q?yVDniylm/32b37ERryiAtQ5YjZFJp3oifUwHQTI9XPVft+LFS3WbJjvYoO8a?=
- =?us-ascii?Q?ozFMCY0+hr4nvB017ow5yGmA/NOCClKYq/lEkPCe0acOpLSQkVst2oCqx6BE?=
- =?us-ascii?Q?3Oo9ZcFmCbfnoNGJdzQr6z0e03X6by+kZmbemr/4QfVkKiIjgERz1BzsigBo?=
- =?us-ascii?Q?82r/2y2gPKyx+TK7U//eHZ86OlisdSwl+VIA+J0/1v4iokKV/MO/9k9wsTuW?=
- =?us-ascii?Q?Fl5UulbZlk88j18d/Vg+L5ZRc4SOFZRWv2y5/itGctn9DlAbaw7XBKQSqPyS?=
- =?us-ascii?Q?R9B6N/RtvltjIwcWpb7GLX5gjNePFxSDF+i79Of4HxPki4b9C3dUYGPz3afn?=
- =?us-ascii?Q?NZo/X5J6EmAwGOdZnjV5o/O6jund8GeJhX3Yj0bx1v+NiRc1/sGIXDfDRcE6?=
- =?us-ascii?Q?17QxPWH4CLzY0cx2UvZTERnjd9XImGMzQ4vjnepI0JiOQQP8y5RFix8EK8Pd?=
- =?us-ascii?Q?jU6v6HnjAYXQLz0qJmcTey2Asjq0HzpeIPjfklaBg0WjCWJudPR7fTml4lYI?=
- =?us-ascii?Q?MkqU5/hl5G+ekKyhLff+agcq51N0BucKsTEfNxQ+n/1u0MvQSz/FSjzcMSVK?=
- =?us-ascii?Q?6nOHmMynqUBncQtAG24j2+jTMZL/9B5djMxSnJoU9AsKuP3tHeRqLz44aBgQ?=
- =?us-ascii?Q?I2QLCmvdXPHHxUGx4r9BPGyk3SavNQxQ6AyFXHujRPTuWJZ+WPWiuaD0ltuH?=
- =?us-ascii?Q?eBVHdf8x+Lcw0J6niBOz//hwW9GSvwZhv/xH92CCpKaN0fS0RUwKTtiUs45Q?=
- =?us-ascii?Q?XdNDU4ioQv2vcbn2I+C/SRo9ywB50bKPyGOTqfH9Phm1w/Q/iaoB6put+jDY?=
- =?us-ascii?Q?LCCjnc/jN6YlGBGbr+RKcqJjyNP3vErj3RyajJlmxTXbhZXi54boBVIj7N/2?=
- =?us-ascii?Q?3TJnjvc/KEB0auuMe94BcbSx1kLS0F9qMbCoCdrIvQkaxEw0fJXwau4gsWc4?=
- =?us-ascii?Q?JT9uiwb4w9MxljQwWaS4wOPA+WhFZOiLoSlvpY2+EgeJxpeMadpLKmOiAX2z?=
- =?us-ascii?Q?VoICfTzz7xgZaU76rOP/5zWrsiJZLRYS+fVZv7njzWEYnuEGQ0D6frfuah9Y?=
- =?us-ascii?Q?8TyFjAYvrruKT/5CGyG0CiOueplihrT1ULOdpYmk2yWajTyZ9aNbV6dm9VjX?=
- =?us-ascii?Q?zXIpEhVM/Q7Iwel4muuTjImpxxX2pTFywhqhlFX25a4m0TBRb/F12C4Libx5?=
- =?us-ascii?Q?SGTLOQBL6eSVUpbfzwLaiSGhnQJYdnJggWEv/MSXd+3lPzpQ6aAOSc9CaMl0?=
- =?us-ascii?Q?5GjX/qZlEA1fHgy3RNj2o00dbVxQwGUcLw+Zm6UuQx5ZSyns7M4bXxRkgk6Q?=
- =?us-ascii?Q?Bg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?cVEX45iaFcrr4BYRu3cLs6mM2+imq/s3G5bnSYhjmgh0rCsUuGMYNxWnqgHO?=
- =?us-ascii?Q?GftnCBfE9FbYQ/YUsWLi3WKLgzqitfzLtzL94TSh/W1hjWFglefTpB4/2z6x?=
- =?us-ascii?Q?DmzewEBmxXAZvG0BOFVR8xBNIqboktwJNSVNS1Wm8K+WlIN7Eniu6hxSF7KI?=
- =?us-ascii?Q?eRP4NkBTUY4IRdyUKt3wiaFvStO0ZciYoMTXwJ9RMzz/8IJGqlsBJi8S5Z2l?=
- =?us-ascii?Q?QOVqQvXVhFViXbhK3QPal24sHauZ1Ls/zPQ4xRyOpXpS/dwbA5EfMgFYOMlJ?=
- =?us-ascii?Q?0KkBWXM9sLnzNPUvnZ8W96BfJlswfdslUgfcYokhNtQw6eiE315RzNMUFxJ7?=
- =?us-ascii?Q?itff93SC6H5+PK58osnYQvPe+jBca6Tb/zXC9UbJr4NOeWhMvMX9WysJ0pUa?=
- =?us-ascii?Q?2t5daYk5EA3DIBRVlqMafrvlMYiUmDSViHU5aQ5dOKPmiwqWC1zWEqsr+CI2?=
- =?us-ascii?Q?WAMZa7yi+N/lADT1NobCb5mGu4Un4/AhA8eh5bBZ0dgAOXpetvMO6oFNja4O?=
- =?us-ascii?Q?mP0Q5QMCT+SpXzT/QGz6WyWHH5FmbtcRPU+XDdUa9F2wPlACJ0m9mbLG21b2?=
- =?us-ascii?Q?6X9mXBUnLvfI2ToGLrbjehWbD80lbJDlT1VdVMs8YSeY679CM4tyBv7CXv+b?=
- =?us-ascii?Q?4ZtdtlJ0fdINFKHNWWsb8odfsgkwyYtNQK06ScqrCFfDUl2rfd4rLkRQhB/g?=
- =?us-ascii?Q?cjr8DCbaHJjE173KarIdvx+Zb5cbbDo78iImLwdS2W1K9Ka0306quLIXrVDY?=
- =?us-ascii?Q?iuR9mVFkK/q1TnovFY6Bc/mn/c4W6ADIt4hojPowTNhf7LsDB9835vmfwWg/?=
- =?us-ascii?Q?a3zNHw1dPHRurofCGpUjkHpnlIBesl8fLIfRizHOeTiqXjDOI0HYlonn+hyf?=
- =?us-ascii?Q?5ww6SZOVs4LJ5hAhpj8k/Kw9+W6MeiEJY8jYGYP9RrLszpdBWQtsb4iJ5JLk?=
- =?us-ascii?Q?7LpWSPcagc0r6Tehdp+Wjw=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b62405aa-eb81-40d0-f47b-08dbbe165af9
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 22:25:42.8948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v/qHjQVgs40cgabgF7xA8FfTuHLPGQtz7EhOhqnUnGOOZbwcIGKJyxH1+J69angkK7Ny2KoKTLZPhxwO2Ss/jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7229
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_18,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=576 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309250172
-X-Proofpoint-ORIG-GUID: mGt3tDjxmUyJ_pd6jv_mz4lN_ms9AOWU
-X-Proofpoint-GUID: mGt3tDjxmUyJ_pd6jv_mz4lN_ms9AOWU
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+ <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
+ <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
+ <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
+ <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
+ <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
+ <20230925092122.0b615f25@xps-13> <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
+ <20230925164736.5efbf4c0@xps-13> <CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
+ <20230925172447.43dcef88@xps-13> <CAPnjgZ20c9FsYVjSrQ9qbFy9Y67BqDP2zxMyATx===PFhO69Ew@mail.gmail.com>
+ <CAL_JsqJfjHqtTB2qfLmNxmQtn1rZewNyNe+Knu_Z4UCdPoPhSQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqJfjHqtTB2qfLmNxmQtn1rZewNyNe+Knu_Z4UCdPoPhSQ@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Mon, 25 Sep 2023 16:25:47 -0600
+Message-ID: <CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
+To:     Rob Herring <robh@kernel.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        devicetree@vger.kernel.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dhruva Gole <d-gole@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/25/23 16:28, riel@surriel.com wrote:
-> From: Rik van Riel <riel@surriel.com>
-> 
-> Malloc libraries, like jemalloc and tcalloc, take decisions on when
-> to call madvise independently from the code in the main application.
-> 
-> This sometimes results in the application page faulting on an address,
-> right after the malloc library has shot down the backing memory with
-> MADV_DONTNEED.
-> 
-> Usually this is harmless, because we always have some 4kB pages
-> sitting around to satisfy a page fault. However, with hugetlbfs
-> systems often allocate only the exact number of huge pages that
-> the application wants.
-> 
-> Due to TLB batching, hugetlbfs MADV_DONTNEED will free pages outside of
-> any lock taken on the page fault path, which can open up the following
-> race condition:
-> 
->        CPU 1                            CPU 2
-> 
->        MADV_DONTNEED
->        unmap page
->        shoot down TLB entry
->                                        page fault
->                                        fail to allocate a huge page
->                                        killed with SIGBUS
->        free page
-> 
-> Fix that race by pulling the locking from __unmap_hugepage_final_range
-> into helper functions called from zap_page_range_single. This ensures
-> page faults stay locked out of the MADV_DONTNEED VMA until the
-> huge pages have actually been freed.
-> 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> ---
->  include/linux/hugetlb.h | 35 +++++++++++++++++++++++++++++++++--
->  mm/hugetlb.c            | 20 +++++++++++---------
->  mm/memory.c             |  7 +++----
->  3 files changed, 47 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 694928fa06a3..d9ec500cfef9 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -139,7 +139,7 @@ struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
->  void unmap_hugepage_range(struct vm_area_struct *,
->  			  unsigned long, unsigned long, struct page *,
->  			  zap_flags_t);
-> -void __unmap_hugepage_range_final(struct mmu_gather *tlb,
-> +void __unmap_hugepage_range(struct mmu_gather *tlb,
->  			  struct vm_area_struct *vma,
->  			  unsigned long start, unsigned long end,
->  			  struct page *ref_page, zap_flags_t zap_flags);
-> @@ -246,6 +246,25 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
->  void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
->  				unsigned long *start, unsigned long *end);
->  
-> +extern void __hugetlb_zap_begin(struct vm_area_struct *vma,
-> +				unsigned long *begin, unsigned long *end);
-> +extern void __hugetlb_zap_end(struct vm_area_struct *vma,
-> +			      struct zap_details *details);
-> +
-> +static inline void hugetlb_zap_begin(struct vm_area_struct *vma,
-> +				     unsigned long *start, unsigned long *end)
-> +{
-> +	if (is_vm_hugetlb_page(vma))
-> +		__hugetlb_zap_begin(vma, start, end);
-> +}
-> +
-> +static inline void hugetlb_zap_end(struct vm_area_struct *vma,
-> +				   struct zap_details *details)
-> +{
-> +	if (is_vm_hugetlb_page(vma))
-> +		__hugetlb_zap_end(vma, details);
-> +}
-> +
->  void hugetlb_vma_lock_read(struct vm_area_struct *vma);
->  void hugetlb_vma_unlock_read(struct vm_area_struct *vma);
->  void hugetlb_vma_lock_write(struct vm_area_struct *vma);
-> @@ -297,6 +316,18 @@ static inline void adjust_range_if_pmd_sharing_possible(
->  {
->  }
->  
-> +static inline void hugetlb_zap_begin(
-> +				struct vm_area_struct *vma,
-> +				unsigned long *start, unsigned long *end)
-> +{
-> +}
-> +
-> +static inline void hugetlb_zap_end(
-> +				struct vm_area_struct *vma,
-> +				struct zap_details *details)
-> +{
-> +}
-> +
->  static inline struct page *hugetlb_follow_page_mask(
->      struct vm_area_struct *vma, unsigned long address, unsigned int flags,
->      unsigned int *page_mask)
-> @@ -442,7 +473,7 @@ static inline long hugetlb_change_protection(
->  	return 0;
->  }
->  
-> -static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
-> +static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
->  			struct vm_area_struct *vma, unsigned long start,
->  			unsigned long end, struct page *ref_page,
->  			zap_flags_t zap_flags)
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index e859fba5bc7d..5f8b82e902a8 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -5306,9 +5306,9 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
->  	return len + old_addr - old_end;
->  }
->  
-> -static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
-> -				   unsigned long start, unsigned long end,
-> -				   struct page *ref_page, zap_flags_t zap_flags)
-> +void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
-> +			    unsigned long start, unsigned long end,
-> +			    struct page *ref_page, zap_flags_t zap_flags)
->  {
->  	struct mm_struct *mm = vma->vm_mm;
->  	unsigned long address;
-> @@ -5435,16 +5435,18 @@ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct
->  		tlb_flush_mmu_tlbonly(tlb);
->  }
->  
-> -void __unmap_hugepage_range_final(struct mmu_gather *tlb,
-> -			  struct vm_area_struct *vma, unsigned long start,
-> -			  unsigned long end, struct page *ref_page,
-> -			  zap_flags_t zap_flags)
-> +void __hugetlb_zap_begin(struct vm_area_struct *vma,
-> +			 unsigned long *start, unsigned long *end)
->  {
-> +	adjust_range_if_pmd_sharing_possible(vma, start, end);
->  	hugetlb_vma_lock_write(vma);
->  	i_mmap_lock_write(vma->vm_file->f_mapping);
-> +}
+Hi Rob,
 
-__unmap_hugepage_range_final() was called from unmap_single_vma.
-unmap_single_vma has two callers, zap_page_range_single and unmap_vmas.
+On Mon, 25 Sept 2023 at 12:49, Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Sep 25, 2023 at 11:25=E2=80=AFAM Simon Glass <sjg@chromium.org> w=
+rote:
+> >
+> > Hi Miquel,
+> >
+> > On Mon, 25 Sept 2023 at 09:24, Miquel Raynal <miquel.raynal@bootlin.com=
+> wrote:
+> > >
+> > > Hi Simon,
+> > >
+> > > > > > > > > > > > I was assuming that I should create a top-level com=
+patible =3D "binman"
+> > > > > > > > > > > > node, with subnodes like compatible =3D "binman,bl3=
+1-atf", for example.
+> > > > > > > > > > > > I should use the compatible string to indicate the =
+contents, right?
+> > > > > > > > > > >
+> > > > > > > > > > > Yes for subnodes, and we already have some somewhat s=
+tandard ones for
+> > > > > > > > > > > "u-boot" and "u-boot-env". Though historically, "labe=
+l" was used.
+> > > > > > > > > >
+> > > > > > > > > > Binman has common properties for all entries, including=
+ "compress"
+> > > > > > > > > > which sets the compression algorithm.
+> > > > > > > > >
+> > > > > > > > > I see no issue with adding that. It seems useful and some=
+thing missing
+> > > > > > > > > in the existing partition schemas.
+> > > > > > > >
+> > > > > > > > OK I sent a patch with that.
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > > So perhaps I should start by defining a new binman,bl31=
+-atf which has
+> > > > > > > > > > common properties from an "binman,entry" definition?
+> > > > > > > > >
+> > > > > > > > > I don't understand the binman prefix. The contents are AT=
+F (or TF-A
+> > > > > > > > > now). Who wrote it to the flash image is not relevant.
+> > > > > > > >
+> > > > > > > > Are you suggesting just "atf-bl31", or "arm,atf-bl31" ? Or =
+should we
+> > > > > > > > change it to "tfa-bl31"?
+> > > > > > >
+> > > > > > > I don't really understand the relationship with TF-A here. Ca=
+n't we
+> > > > > > > just have a kind of fixed-partitions with additional properti=
+es like
+> > > > > > > the compression?
+> > > > > >
+> > > > > > Binman needs to know what to put in there, which is the purpose=
+ of the
+> > > > > > compatible string.
+> > > > >
+> > > > > But "what" should be put inside the partition is part of the inpu=
+t
+> > > > > argument, not the output. You said (maybe I got this wrong) that =
+the
+> > > > > schema would apply to the output of binman. If you want to let us=
+er
+> > > > > know what's inside, maybe it is worth adding a label, but otherwi=
+se I
+> > > > > don't like the idea of a compatible for that, which for me would =
+mean:
+> > > > > "here is how to handle that specific portion of the flash/here is=
+ how
+> > > > > the flash is organized".
+> > > >
+> > > > But I thought that the compatible string was for that purpose? See =
+for
+> > > > example "brcm,bcm4908-firmware" and "brcm,bcm963xx-imagetag" and
+> > > > "linksys,ns-firmware".
+> > >
+> > > These three examples apparently need specific handling, the partition=
+s
+> > > contain meta-data that a parser needs to check or something like that=
+.
+> > > And finally it looks like partition names are set depending on the
+> > > content that was discovered, so yes, the partition name is likely the
+> > > good location to tell users/OSes what's inside.
+> > >
+> > > > > > > Also, I still don't understand the purpose of this schema. So=
+ binman
+> > > > > > > generates an image, you want to flash this image and you woul=
+d like the
+> > > > > > > tool to generate the corresponding (partition) DT snippet aut=
+omatically.
+> > > > > > > Do I get this right? I don't get why you would need new compa=
+tibles for
+> > > > > > > that.
+> > > > > >
+> > > > > > It is actually the other way around. The schema tells Binman ho=
+w to
+> > > > > > build the image (what goes in there and where). Then outputs an
+> > > > > > updated DT which describes where everything ended up, for use b=
+y other
+> > > > > > tools, e.g. firmware update. It is a closed loop in that sense.=
+ See
+> > > > > > the references for more information.
+> > > > >
+> > > > > Maybe I fail to see why you would want these description to be
+> > > > > introduced here, if they are not useful to the OS.
+> > > >
+> > > > Well I was asked to send them to Linux since they apparently don't
+> > > > belong in dt-schema.
+>
+> That is not what I said. I said fixed-partitions should be extended. I
+> prefer they are extended in-place before moving them rather than the
+> other way around.
 
-When the locking was moved into hugetlb_zap_begin, it was only added to the
-zap_page_range_single call path.  Calls from unmap_vmas are missing the
-locking.
--- 
-Mike Kravetz
+OK.
 
+>
+> > > > These are firmware bindings, as indicated, but I
+> > > > took them out of the /firmware node since that is for a different
+> > > > purpose. Rob suggested that partitions was a good place. We have fw=
+upd
+> > > > using DT to hold the firmware-update information, so I expect it wi=
+ll
+> > > > move to use these bindings too.
+> > >
+> > > I would definitely use fixed partitions as that's what you need then:
+> > > registering where everything starts and ends. If you have "in-band"
+> > > meta data you might require a compatible, but I don't think you
+> > > do, in this case you should probably carry the content through a labe=
+l
+> > > (which will become the partition name) and we can discuss additional
+> > > properties if needed.
+> >
+> > I believe I am going to need a compatible string at the 'partitions'
+> > level to indicate that this is the binman scheme. But we can leave
+> > that until later.
+>
+> Perhaps:
+>
+> compatible =3D "binman", "fixed-partitions";
+>
+> Though I don't understand why binman couldn't just understand what
+> "fixed-partitions" means rather than "binman".
 
+Well so long as we don't add any binman things in here, you are right.
 
->  
-> -	/* mmu notification performed in caller */
-> -	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
-> +void __hugetlb_zap_end(struct vm_area_struct *vma,
-> +		       struct zap_details *details)
-> +{
-> +	zap_flags_t zap_flags = details ? details->zap_flags : 0;
->  
->  	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
->  		/*
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 6c264d2f969c..a07ae3b60530 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1683,7 +1683,7 @@ static void unmap_single_vma(struct mmu_gather *tlb,
->  			if (vma->vm_file) {
->  				zap_flags_t zap_flags = details ?
->  				    details->zap_flags : 0;
-> -				__unmap_hugepage_range_final(tlb, vma, start, end,
-> +				__unmap_hugepage_range(tlb, vma, start, end,
->  							     NULL, zap_flags);
->  			}
->  		} else
-> @@ -1753,9 +1753,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
->  	lru_add_drain();
->  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma->vm_mm,
->  				address, end);
-> -	if (is_vm_hugetlb_page(vma))
-> -		adjust_range_if_pmd_sharing_possible(vma, &range.start,
-> -						     &range.end);
-> +	hugetlb_zap_begin(vma, &range.start, &range.end);
->  	tlb_gather_mmu(&tlb, vma->vm_mm);
->  	update_hiwater_rss(vma->vm_mm);
->  	mmu_notifier_invalidate_range_start(&range);
-> @@ -1766,6 +1764,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
->  	unmap_single_vma(&tlb, vma, address, end, details, false);
->  	mmu_notifier_invalidate_range_end(&range);
->  	tlb_finish_mmu(&tlb);
-> +	hugetlb_zap_end(vma, details);
->  }
->  
->  /**
-> -- 
-> 2.41.0
-> 
+But the eventual goal is parity with current Binman functionality,
+which writes the entire (augmented) description to the DT, allowing
+tools to rebuild / repack / replace pieces later, maintaining the same
+alignment constraints, etc. I am assuming that properties like 'align
+=3D <16>' would not fit with fixed-partitions. But if we don't preserve
+these properties then Binman cannot do repacking reliably. Perhaps for
+now I could put the augmented DT in its own section somewhere, but I
+am just not sure if that will work in a real system. E.g. with VBE the
+goal is to use the DT to figure out how to access the firmware, update
+it, etc.
+
+Is it not possible to have my own node with whatever things Binman
+needs in it (subject to review of course)? i.e. could we discuss how
+to encode it, but argue less about whether things are needed? I
+kind-of feel I know what is needed, since I wrote the tool.
+
+>
+>
+> > So you are suggesting 'label' for the contents. Rob suggested
+> > 'compatible' [1], so what should I do?
+>
+> "label" is for consumption by humans, not tools/software. Compatible
+> values are documented, label values are not. Though the partition
+> stuff started out using label long ago and it's evolved to preferring
+> compatible.
+
+OK so we are agreed that we are going with 'compatible'.
+
+>
+> > With this schema, would every node be called 'partition@...' or is
+> > there flexibility to use other names?
+>
+> The preference is to use generic names. Do you mean without a
+> unit-address or different from "partition"? The need for the input
+> side of binman to have dynamic addresses seems like the biggest issue.
+> That's allowed in other cases with "partition-N" or "partition-foo"
+> IIRC. I don't think we want to allow that for "fixed-partitions" at
+> least in the DTB (i.e. the output side of binman).
+
+OK I suppose this is the problem with starting small. I was hoping to
+build up the schema piece by piece but now I am wondering whether
+every little detail will get redirected and I'll end up with something
+that Binman cannot use.
+
+So far all I have is that I can add a 'compress' property and a
+'compatible' which describes the contents. I suppose it is a start.
+
+Regards,
+Simon
