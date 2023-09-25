@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784947ACD67
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEEA7ACD6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbjIYBHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 21:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S231402AbjIYBHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 21:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjIYBHS (ORCPT
+        with ESMTP id S231397AbjIYBHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 21:07:18 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13956C4;
-        Sun, 24 Sep 2023 18:07:11 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rv4Tg10FLz4f3kGF;
-        Mon, 25 Sep 2023 09:07:03 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgD3jd063RBlXnxIBQ--.63700S3;
-        Mon, 25 Sep 2023 09:07:07 +0800 (CST)
-Subject: Re: [PATCH -next] md: simplify md_seq_ops
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230911065010.3530461-1-yukuai1@huaweicloud.com>
- <20230911160540.0000060e@linux.intel.com>
- <b2754d8e-dfe7-ffff-66ac-052f366530e4@huaweicloud.com>
- <CAPhsuW59JAy7q2B1DeCbKGVAap4pOrfXuyzs9T9KOnaM-4VSdA@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <d4f63e49-b5a9-3972-4232-94ffe10ceb2d@huaweicloud.com>
-Date:   Mon, 25 Sep 2023 09:07:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 24 Sep 2023 21:07:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0508210B;
+        Sun, 24 Sep 2023 18:07:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3E8EC433C8;
+        Mon, 25 Sep 2023 01:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695604046;
+        bh=coaiAchQMsEq2hDF0NdLoATIJS2cXKE/cInWLVljyEU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CykAAj+3eVl5p+dzexmGkzSUND0ijiy1jBQBxG2OAy4jM4VRKkbK2CMo+U6ZgI5MI
+         6/1qJ5/MvcsVxOISJUYVPTB5UFRmBRgyLC07USkXDipeGnOP6kiC+UNmuzy4seMvpo
+         8AKSdRKYU+toZ7k5rEjjh3dQD22xuQ822BMLk4f0QUip+a55LZ8ZdyiIOtg+GfLQ/T
+         gfL5xULgfrEeWlIbEvYHbw1Qnx0uonTt3z8ySWtV4qIxbEUm//hFMA2rtvSj0eedwG
+         JJzLxnjCTU6y82g/9DC5gvivpAcdYiLpgXseYhcmUGmqarVAQtwaOGemLyKNlnQufG
+         /wXMzj94V7KxQ==
+Date:   Mon, 25 Sep 2023 09:07:13 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, marex@denx.de,
+        aford@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH V3 1/3] arm64: dts: imx8mp: Add easrc node
+Message-ID: <20230925010713.GC7231@dragon>
+References: <20230831044431.250338-1-aford173@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW59JAy7q2B1DeCbKGVAap4pOrfXuyzs9T9KOnaM-4VSdA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3jd063RBlXnxIBQ--.63700S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF1fWrW8Cr4UGr4fGF1DGFg_yoW8Wr1DpF
-        Z8XFZYyr4UZry8Xws2qw4q9rn3tws7WrZ3Wrn3G3y3J34qqr93A3W3X3W7uFykZr4fGrn0
-        vw4qgr9xGrWrCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DU
-        UUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831044431.250338-1-aford173@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-在 2023/09/23 5:22, Song Liu 写道:
-> On Mon, Sep 11, 2023 at 6:02 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
-> [...]
->>>> +static void *md_seq_start(struct seq_file *seq, loff_t *pos)
->>>> +{
->>>> +    struct md_personality *pers;
->>>> +
->>>> +    seq_puts(seq, "Personalities : ");
->>>> +    spin_lock(&pers_lock);
->>>> +    list_for_each_entry(pers, &pers_list, list)
->>>> +            seq_printf(seq, "[%s] ", pers->name);
->>>> +
->>>> +    spin_unlock(&pers_lock);
->>>> +    seq_puts(seq, "\n");
->>>> +    seq->poll_event = atomic_read(&md_event_count);
->>>> +
->>>> +    spin_lock(&all_mddevs_lock);
->>>
->>> I would prefer to increase "active" instead holding lock when enumerating over
->>> the devices. the main reason is that parsing mdstat is implemented in mdadm, so
->>> it could kind of blocker action- for example mdmon follows mdstat so it is read
->>> frequently. The time of getting other actions done can highly increase because
->>> every open or sysfs_read/write requires this lock.
+On Wed, Aug 30, 2023 at 11:44:29PM -0500, Adam Ford wrote:
+> The i.MX8MP has an asynchronous sample rate converter which seems
+> to be the same as what is available on the i.MX8M Nano.
 > 
-> Existing code holds pers_lock can seq_printf() in md_seq_show(). Do we see
-> issues with this?
-
-before this patch, in each loop:
-- hold lock, get mddev, drop lock
-- md_seq_show
-
-and after this patch:
-- hold lock in start, drop lock in stop
-- lock is always held in each loop
-
-And mariusz is concerned that lock time is increased and may cause some
-performance regression.
-
-We've discussed in slack, and decided to keep this behaviour. I'll
-update this in v2.
-
-Thanks,
-Kuai
-
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V3:  No Change.  The dt-binding update was already accepted into the sound tree, so that patch
+>      was dropped from the series
 > 
-> Hi Kuai,
-> 
-> This patch doesn't apply cleanly to md-next now. Please rebase and send v2.
-> 
-> Thanks,
-> Song
-> .
-> 
+> V2:  No Change.
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> index 83d907294fbc..3167706d81e1 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -1459,6 +1459,26 @@ sai7: sai@30c80000 {
+>  					interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+>  					status = "disabled";
+>  				};
+> +
+> +				easrc: easrc@30c90000 {
+> +					compatible = "fsl,imx8mp-easrc", "fsl,imx8mn-easrc";
+> +					reg = <0x30c90000 0x10000>;
+> +					interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
+> +					clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_ASRC_IPG>;
+> +					clock-names = "mem";
+> +					dmas = <&sdma2 16 23 0> , <&sdma2 17 23 0>,
+> +					       <&sdma2 18 23 0> , <&sdma2 19 23 0>,
+> +					       <&sdma2 20 23 0> , <&sdma2 21 23 0>,
+> +					       <&sdma2 22 23 0> , <&sdma2 23 23 0>;
+> +					dma-names = "ctx0_rx", "ctx0_tx",
+> +						    "ctx1_rx", "ctx1_tx",
+> +						    "ctx2_rx", "ctx2_tx",
+> +						    "ctx3_rx", "ctx3_tx";
+> +					firmware-name = "imx/easrc/easrc-imx8mn.bin";
+> +					fsl,asrc-rate  = <8000>;
 
+One space before =
+
+Shawn
+
+> +					fsl,asrc-format = <2>;
+> +					status = "disabled";
+> +				};
+>  			};
+>  
+>  			sdma3: dma-controller@30e00000 {
+> -- 
+> 2.39.2
+> 
