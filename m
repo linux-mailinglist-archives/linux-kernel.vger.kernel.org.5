@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B19D47ACE7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804B07ACE82
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjIYCwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        id S229770AbjIYCx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjIYCwi (ORCPT
+        with ESMTP id S229495AbjIYCx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:52:38 -0400
+        Sun, 24 Sep 2023 22:53:57 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84E692;
-        Sun, 24 Sep 2023 19:52:31 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P1lY9K019900;
-        Mon, 25 Sep 2023 02:52:19 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D5492;
+        Sun, 24 Sep 2023 19:53:50 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P2VNUN023321;
+        Mon, 25 Sep 2023 02:53:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=qcppdkim1;
- bh=IKvp8yDyksUBVW5kQOdWE+D/FLN6W4EvfEnabZevTUc=;
- b=TN7F9e82Gt/dBVOE1lWM0s2k5p82Lix9sZBaZWUKjnDaozhYV50m+zpGvcBPKUcFKrfP
- jaxckecuMUhIvd+o+Ewxn/+xNW7p4AjpWGV//yoxYofVynHcNOci8Qilq2oqdt023946
- fr/bi9bjkECg1nfkU7zV5Gz6yb2Wh5CHzamu4kbgAWXe68M7fH4WMMpC9TDV4U285uol
- cWst2G4VYl8cBArutUY/xVunN+iu+QzIRXbE6YncSnmwHM4Q5EFH7YxH0GuEN1K9iIER
- N7UCkD93L9cazfxZ/aic8c1AF706EAevpLKGZ1GkLuaJJTx8GUf9KfYRZQh9Bhs/DuKR Bw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9r41jgec-1
+ bh=bByjAe7L/WqvD+rMPel3o+Dc3rj51SEpxwc1ET0qT/8=;
+ b=QlwAjeac52gJeQcJJTvzkb3U9kQie+YnsHhHz5fuorRD1FR9RbMHlxOT7aIhEdsj0bAx
+ +N+TYp6ObwthG/8i4JYuBAnwFBvVZB4VGxOGC2zkndITd9goa5rvURsS6VWGZaugySL3
+ 89GHlOKT4SLujhjwIDTQeOtaVrWtCqTkBHiNMqxjKPmI/ky1/MJNN3puY7nDU4XPzH8X
+ hpnBLmrmeHfilnniHAFD4Ab6zHPv5AyAiqX4WjAkqNdGDHiTk+5yjDhCJr+4ma/eU9R1
+ rNWzmgUqwbT95SwABCKkTzKurruUwObj7uNBtJz9rYOWisYR5b0JMFhu3bgGPfCgAKYV BQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9rddag13-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 02:52:19 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38P2qIoX028588
+        Mon, 25 Sep 2023 02:53:47 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38P2rkSa004802
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 02:52:18 GMT
-Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 24 Sep
- 2023 19:52:14 -0700
-Message-ID: <36e3719d-ef38-5209-2cd4-7de88257474d@quicinc.com>
-Date:   Mon, 25 Sep 2023 10:52:12 +0800
+        Mon, 25 Sep 2023 02:53:46 GMT
+Received: from [10.110.53.84] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 24 Sep
+ 2023 19:53:45 -0700
+Message-ID: <44a46324-d01a-99a4-f358-aad3be1f4a45@quicinc.com>
+Date:   Sun, 24 Sep 2023 19:53:44 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH v6 1/3] input: pm8xxx-vib: refactor to easily
- support new SPMI vibrator
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
+ Thunderbird/102.6.1
+Subject: Re: [PATCH V2] firmware: qcom_scm: use the SCM_CONVENTION based on
+ ARM / ARM64
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kathiravan T <quic_kathirav@quicinc.com>
+CC:     Trilok Soni <quic_tsoni@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>, <quic_collinsd@quicinc.com>,
-        <quic_subbaram@quicinc.com>, <quic_kamalw@quicinc.com>,
-        <jestar@qti.qualcomm.com>
-References: <20230922083801.3056724-1-quic_fenglinw@quicinc.com>
- <20230922083801.3056724-2-quic_fenglinw@quicinc.com>
- <CAA8EJpo7puWxNte5YHiy6=3GdQSeTYCZMe024-b4N0vnxCV0dQ@mail.gmail.com>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <CAA8EJpo7puWxNte5YHiy6=3GdQSeTYCZMe024-b4N0vnxCV0dQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20230607045345.25049-1-quic_kathirav@quicinc.com>
+ <rzxxoofebcyuoktsl72diwv575md62bxqse4uizfns247gyklp@tdoixme3qrjq>
+ <CAA8EJprVQZXXVnNCULDYeUha0-mSyLZr1r6axbmw1MUiP_O9zg@mail.gmail.com>
+ <ww5rr5okemzevgdvueok5k5uaqakmqdtdtjtw4jur2cdgfsep7@hz2y7qfat5jv>
+Content-Language: en-US
+From:   Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <ww5rr5okemzevgdvueok5k5uaqakmqdtdtjtw4jur2cdgfsep7@hz2y7qfat5jv>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 84rhqi-wIj0zN_q87bvYHoIwHW1EQus_
-X-Proofpoint-GUID: 84rhqi-wIj0zN_q87bvYHoIwHW1EQus_
+X-Proofpoint-GUID: lI6vKl781blDsY8ayNuwTJnWJzTlfiQz
+X-Proofpoint-ORIG-GUID: lI6vKl781blDsY8ayNuwTJnWJzTlfiQz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-24_21,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 mlxscore=0 phishscore=0 spamscore=0
- mlxlogscore=489 malwarescore=0 adultscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309250016
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 priorityscore=1501
+ adultscore=0 suspectscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309250016
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -90,31 +90,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/24/2023 3:05 AM, Dmitry Baryshkov wrote:
->> +#define SSBL_VIB_DRV_REG               0x4A
-> SSBI_VIB....
+On 9/19/2023 8:29 AM, Bjorn Andersson wrote:
+> On Fri, Sep 15, 2023 at 10:10:32PM +0300, Dmitry Baryshkov wrote:
+>> On Fri, 15 Sept 2023 at 18:17, Bjorn Andersson <andersson@kernel.org> wrote:
+>>>
+>>> On Wed, Jun 07, 2023 at 10:23:45AM +0530, Kathiravan T wrote:
+>>>> During SCM probe, to identify the SCM convention, scm call is made with
+>>>> SMC_CONVENTION_ARM_64 followed by SMC_CONVENTION_ARM_32. Based on the
+>>>> result what convention to be used is decided.
+>>>>
+>>>> IPQ chipsets starting from IPQ807x, supports both 32bit and 64bit kernel
+>>>> variants, however TZ firmware runs in 64bit mode. When running on 32bit
+>>>> kernel, scm call is made with SMC_CONVENTION_ARM_64 is causing the
+>>>> system crash, due to the difference in the register sets between ARM and
+>>>> AARCH64, which is accessed by the TZ.
+>>>>
+>>>> To avoid this, use SMC_CONVENTION_ARM_64 only on ARM64 builds.
+>>>>
+>>>
+>>> My memory of this is cloudy, but I feel the logic is complicated because
+>>> early 64-bit boards all used 32-bit TZ. So, I really would like Elliot's
+>>> input before picking this change.
+>>
+>> But this codepath is not changed by this patch. Only the 32-bit
+>> codepath is altered.
+>>
+> 
+> Ohh, you're right, sorry about that. Would still be nice to see some
+> feedback from the team here...
+> 
+> 
+> The commit message is talking about the convention check crashing the
+> system, the only part of the convention checker that seems to matter to
+> me is the "calling convention" bit in the smc call.
+> 
+> Per the "SMC calling convention specification", the 64-bit calling
+> convention bit can only be used when the client is 64-bit. So perhaps
+> this is the actual problem?
+> 
+> Beyond that, another practical problem I can see is if we pass more than
+> 4 arguments to a call the layout of the extra arguments will not match
+> between the two worlds (as Linux will pass an array of unsigned long).
+> 
+> 
+> With this in mind, I'd like the commit message to be more specific.
+> 
+> Afaict, this is not an issue with the convention detection, but rather
+> the invalid to call __scm_smc_call() with 64-bit convention on a 32-bit
+> system. Working around this by having an undocumented #if ARM64 in
+> another part of the driver isn't clear enough, IMHO.
+> 
+> Moving the check to __scm_smc_call(), or at least documenting the
+> behavior there (and next to the #if) seems reasonable.
 > 
 
-Thanks for catching the typo, I will fix it in next patch.
+In terms of disallowing 64-bit convention to be probed on a 32-bit kernel:
 
->> +#define SSBI_VIB_DRV_EN_MANUAL_MASK    GENMASK(7, 2)
->> -       /* operate in manual mode */
->> -       error = regmap_read(vib->regmap, regs->drv_addr, &val);
->> -       if (error < 0)
->> -               return error;
->> +       if (data->hw_type != SSBI_VIB) {
-> You can drop this condition, if ssbi_vib_data.drv_addr is 0.
+Reviewed-By: Elliot Berman <quic_eberman@quicinc.com>
 
-I am not sure if I understood this comment: 1st, ssbi_vib_data.drv_addr 
-is defined as a constant value 0x4A, so it would never be 0. 2nd, The 
-condition check here is to ignore reading the register base address for 
-SSBI_VIB HW, so we should do the check based on the HW type.
+I first thought moving the check to __scm_smc_call() would be better but
+then I realized we would be adding an extra runtime check for each SCM call
+that either always passes or always fails. I think the current #if is best
+as-is, although it would be good to add some comments explaining why as
+Bjorn mentioned.
 
+> Regards,
+> Bjorn
 > 
->> +               error = fwnode_property_read_u32(pdev->dev.fwnode, "reg", &reg_base);
->> +               if (error < 0) {
->> +                       dev_err(&pdev->dev, "Failed to read reg address, rc=%d\n", error);
->> +                       return error;
->> +               }
->> +
->> +               vib->reg_base += reg_base;
+> 
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>>> Cc: stable@vger.kernel.org
+>>>> Fixes: 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and legacy conventions")
+>>>> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+>>>> ---
+>>>> Changes in V2:
+>>>>       - Added the Fixes tag and cc'd stable mailing list
+>>>>
+>>>>  drivers/firmware/qcom_scm.c | 2 ++
+>>>>  1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+>>>> index fde33acd46b7..db6754db48a0 100644
+>>>> --- a/drivers/firmware/qcom_scm.c
+>>>> +++ b/drivers/firmware/qcom_scm.c
+>>>> @@ -171,6 +171,7 @@ static enum qcom_scm_convention __get_convention(void)
+>>>>       if (likely(qcom_scm_convention != SMC_CONVENTION_UNKNOWN))
+>>>>               return qcom_scm_convention;
+>>>>
+>>>> +#if IS_ENABLED(CONFIG_ARM64)
+>>>>       /*
+>>>>        * Device isn't required as there is only one argument - no device
+>>>>        * needed to dma_map_single to secure world
+>>>> @@ -191,6 +192,7 @@ static enum qcom_scm_convention __get_convention(void)
+>>>>               forced = true;
+>>>>               goto found;
+>>>>       }
+>>>> +#endif
+>>>>
+>>>>       probed_convention = SMC_CONVENTION_ARM_32;
+>>>>       ret = __scm_smc_call(NULL, &desc, probed_convention, &res, true);
+>>>> --
+>>>> 2.17.1
+>>>>
+>>
+>>
+>>
+>> -- 
+>> With best wishes
+>> Dmitry
