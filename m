@@ -2,284 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0A47ADF02
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22E07ADF0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjIYSfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 14:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        id S233366AbjIYSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 14:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233326AbjIYSfX (ORCPT
+        with ESMTP id S233202AbjIYSge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:35:23 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E305E1733
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:34:29 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RvWgj5xjwz9vCC;
-        Mon, 25 Sep 2023 20:32:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id w06IP2b_9jGx; Mon, 25 Sep 2023 20:32:17 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RvWg80ctCz9v2F;
-        Mon, 25 Sep 2023 20:31:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 116358B78C;
-        Mon, 25 Sep 2023 20:31:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id zZwLTLzqyG9N; Mon, 25 Sep 2023 20:31:47 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.137])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C8B528B763;
-        Mon, 25 Sep 2023 20:31:47 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 38PIVctW1499308
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 20:31:38 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 38PIVcR51499279;
-        Mon, 25 Sep 2023 20:31:38 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Russell Currey <ruscur@russell.cc>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH v2 37/37] powerpc: Support execute-only on all powerpc
-Date:   Mon, 25 Sep 2023 20:31:51 +0200
-Message-ID: <4283ea9cbef9ff2fbee468904800e1962bc8fc18.1695659959.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1695659959.git.christophe.leroy@csgroup.eu>
-References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
+        Mon, 25 Sep 2023 14:36:34 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706D6211E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:35:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RwvOXMm5vjMSX7X+ZUJV4zpOS7Ja1I/WfZWI6V2gEew9kmDfTq7nTuj/ae1/O6HhrtaVxQAJO21YgCB/Yxua8IYXikOzp8DYKTfh7D784NkSiQxtE0Uxrpeuk3RulvWn/RncPfT49DW8H/7dA4eCDDQiAdhkTt2luAZUJXzy+RS48PiOpbrwk5hru927DSFzhWihzW4YVikmb35fyjrEcsLNdvyHvtUnifkr2R58noM51mE32BZYBDCO8v6qLsduuqzbNBedOrUubsHN3kLz+C5skX9hLVK0S1cZZVb6dGHnjdPyt5l5zujvDJ72ai45tUDDelRdjy3sl1k3JJhILQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fEOxq62bgI2lhrHjM4fnL5vIJAEBYGkH1TMeqqY/DfI=;
+ b=dVrbRY6Z2AmhwblJofiyuR77WEt3rQ2vL5ScTx6nNvDrif7LWSG5EwhA0MObjZOqXjX8g01u4H6gcbfqoU4Ga98oJrm8YATbXK22BqzdVV4YLQl3E7kCUWyUPWnJlwTB4pWm/pvfU/KSbfHiDBgSENm2P4Qg9Wo/Nyycsk6zjL4z+m12KhfEUVQaLfdXWClwMTvE8HIB+VAZLwcrVooJjVQZdPHeCFM7wQMwFoMvOZgIfQJ0uID/KHV6feK8dxAaBYO+E4y9oDbf5bTo/v7pXXhE/SFNYQyeZD3To/XlPTp/B2H0cDZjozj/iiA6GscrBpxliKu65YA63NX4r97f5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fEOxq62bgI2lhrHjM4fnL5vIJAEBYGkH1TMeqqY/DfI=;
+ b=VmogJ0vrU65LoM11F41CrZ5H71yRw7t/nuCxlY8RhyTzi5o9OSl1HZIUbjHZx2M6Gws8i4feNvtBJ+Jtrc+LPuzjH4Ns5PdQ0bBJ0HRk/tU31x9PFO+6xX9bnuZAW586cIyPEdndgMvuzijUQjJ9t47JE19GLOpCMymD+i3KHxzwnb40ImHYvXyVRbr/5l9/G1zimFWIkLrFD3ucF0DrHj+Fdrx0GztdqMhi68GqEdkF7JbeU2LDxmqRMjYXaFuuHR04Oz7nREHfNNk4lrq9a1nW0AnkQlZehcfiJgHWhnUVLErnJMg8+cTH4FVR2r7i3M2Q6oJvBmzxfo06dUMPGQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CY5PR12MB6599.namprd12.prod.outlook.com (2603:10b6:930:41::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Mon, 25 Sep
+ 2023 18:35:25 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
+ 18:35:24 +0000
+Date:   Mon, 25 Sep 2023 15:35:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        jean-philippe@linaro.org, mshavit@google.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev
+Subject: Re: [PATCH v4 2/2] iommu/arm-smmu-v3: Refactor
+ arm_smmu_write_strtab_ent()
+Message-ID: <20230925183523.GJ13733@nvidia.com>
+References: <cover.1695242337.git.nicolinc@nvidia.com>
+ <6e1fdea8ab43ea28e7e3c79eb6605dea71548c53.1695242337.git.nicolinc@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e1fdea8ab43ea28e7e3c79eb6605dea71548c53.1695242337.git.nicolinc@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0371.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::16) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695666677; l=9003; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=FVim9qpC8yu8zbHE5Y+NQgvWgaWzX0CPJgVT3bS0s5w=; b=3Mn8VNqS7ZHvgjZMiNAnh1e608hmFpDa/mnq1jF5vZATlOtqtlVXO3+059lbn63mpN2OT6Eh2 4nZKUzp3SaUD2loiZKmYh351JPvXj9A9aXOW9qFXwoZ0WKdGIIr2b0B
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY5PR12MB6599:EE_
+X-MS-Office365-Filtering-Correlation-Id: 45782ecf-a96a-4a3e-0182-08dbbdf62ebf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xo6x4x81XQuIN3KCCxACotY7OzXpzpGlzarfEFPwf75IMIjngyYkCwtKKKuk7BpNSj6IoLMqoVetaPCHc7SpzIsi8enKC40IBh4A9BmyzHQAon6ApyijGkmkXl0RiHhIo4r3Xgy3haY/1Gf+RN12FMPzBvGu2nsVx5pFkwLUGmFsuafsDgmfR4+8JXmmf3FT1UxKd15M1+KKYpIekciGkMuyRONlGKAbDTGC2YCAIoDVPBOsl/tPIfJLWxHYKTgDtjY2/EpX7tl1su0v28OiGZJJLWx1kFSQ/p0lu9TMmtUmitnm2vZp0yByzJ2LWx95zH+YoVpbuf6gTEhxp/twvtP9JRLysMaJvYaK9H9vc4qSibRob0tN5fV1IKzqOE5kEx7vtPiYARmF4wAkll9T0iwKFJLHRFDy3RbtkUMG+3fsg3dP6EctpOP7nM0UhG+3pPpD2VD7wgp8jEAnpGqExw0la6aOxXcuCkUEBkKK1skKhNqrltr84myDA765NDdgUw+a1w4WIh3LCd592eJWPVEEVa0eBimiiTKbJKf23dovkQllbyStJiBfnqkT+lLVj/uI5ae2A8KAaAUkxFs0UZvv+9z8gM4DI9ktbr3/WLXdudjc+rcQDVGiTkwC2enf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(39860400002)(396003)(230922051799003)(451199024)(1800799009)(186009)(316002)(86362001)(8676002)(8936002)(6636002)(4326008)(66556008)(41300700001)(66476007)(66946007)(5660300002)(6862004)(37006003)(83380400001)(38100700002)(478600001)(6506007)(2906002)(2616005)(6512007)(26005)(1076003)(6486002)(36756003)(33656002)(473944003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o+ZiIwn2260ncGFdKmgEXP1cJ8pWBsER616CJFitkQ+Ry/bu+iVePg2CT0Mc?=
+ =?us-ascii?Q?bChk0Qs0EpedfH0bUzltHy1VhPIVRXf9Uf+V2obva7Z0Q2m3cEAiapIsGwtJ?=
+ =?us-ascii?Q?p4bv04nbHBrce0sueLW0kAZhhJ9kI3tnpV6phEBsImCiGIIBk2C7lSm0Wf2+?=
+ =?us-ascii?Q?pXG1TAB0Gw7mqJti+GEqFBl08w6ng1lCLDhEuMf7tObbN6ZhmP6Wq4d1ZwTK?=
+ =?us-ascii?Q?iVygkuH7RWe95WYYpg1Qdxsf+8YyxYVz6tNBvLye4fdU1lRkZz598PXV2K/P?=
+ =?us-ascii?Q?HosxTZ+U6dVZKgNlLa4Li0T+3wLFOvSdCutcNwGMe38fJAMk0bNyt5egH28l?=
+ =?us-ascii?Q?fnrfBQ5lvVqDDtrI3v7NzFwBsSa3ZpMSQBqax/FtoDwiqgxAib0tp56krmXV?=
+ =?us-ascii?Q?t9ELxlxZsfVrP9hR0q7j6UfQdSfSodssOFHXEcsWGuI5F2WqeFM6hGawZz1V?=
+ =?us-ascii?Q?uqzII9hKy2fEfiy13GcElxaEsCeaYMAI02DJE7prwYM5dZBzMfFbzRe9Xkac?=
+ =?us-ascii?Q?w7DIOjP1T4km89aYZTxQm5BIbEl4NHyjK5VBTs92oSWTq0Bf1Hd0A30vxvzX?=
+ =?us-ascii?Q?rsRizLmGU755w+oVWP4qhffjMrIHlbJvCTneTdgoF8xdbv8sMAWEM1rQTa2u?=
+ =?us-ascii?Q?IbGKQGNuH8LrjsvXM9wBZ/vEuTUsQkmkTYMb1EPX5gOWZu0VkFQWHPQGXJ4d?=
+ =?us-ascii?Q?ydV6tdKlJ7KUoqicJhkYkFdK1PwuIW/6lekbx1x+ZkmTEQ9RF5MAi0bl9bXl?=
+ =?us-ascii?Q?nNkDLlu5CeROJ8sMPI+1VnNX1GnCLcQrUBACwzYymiKc34YMsGx7rwsb7Obd?=
+ =?us-ascii?Q?Zg470r6RTP2OnikoqnsWdvOBvLmMUGGzGlJIgFfl9czLsqfWcRWTqHV0vEeM?=
+ =?us-ascii?Q?zkbI4SfFqdfpVbHXAO9jZf3D9N3rOEfQiQ/IRqveAoqna4A2WbwMt8A55F+3?=
+ =?us-ascii?Q?jEPUnkcwuCEV/LInKBl4tBYjM1W2vAswSwHCt8vJGlyc0svnem5nGZmWPqOo?=
+ =?us-ascii?Q?mcLQrdYHNpwJ8u43bFy4EWYAhBZyIyO75xWqH9A5N+56DmwysyRAQ59Q0LgP?=
+ =?us-ascii?Q?9GUx8MiqM3kjnxt9DvWO0uL85/+ytzoG8JTgHw6aWJViSh0xEo141d4g3icj?=
+ =?us-ascii?Q?ohQKRS3UxH79uue+S8PUgCIxDIUp4lD0ah4LEzG/h5Xkaf2KLP651dK9CTAS?=
+ =?us-ascii?Q?47BZjqrAZMdfSxSxE/+MRGv8gHgvH74cYpXIKDixhv+m/W7N2hXNKUGudrnA?=
+ =?us-ascii?Q?Awiu0jUP3TTt+Ur7LI3XTa0mZQc58m4I7bFE7g4SZgwYWW2S/DBJkioIghVG?=
+ =?us-ascii?Q?ComeRc8OV1i0gaazRh+cdHir+5ZvbccXPBKAhLDiUe06+zbD+DarMMO0V+ns?=
+ =?us-ascii?Q?mSwb159VXMdEHLL6OYirjWHW5AoRlSNGM27Wx6P/bqPSRN68uNIJEzV4Gsa8?=
+ =?us-ascii?Q?yImSawOa8J+wyrWCb8gJQkM51s2R912yzGwelfgq1HgJFAp+DXKAZZb3UvjT?=
+ =?us-ascii?Q?fF4JVfxgVDTEmZhZzTTmpv5VztK4D46GHr+ipMVlMzW78PgX/4vO+7TP6jvT?=
+ =?us-ascii?Q?x6E+LDXf9nB78P1+7UnofWFKsB9lLsnpb47GSj5I?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45782ecf-a96a-4a3e-0182-08dbbdf62ebf
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 18:35:24.8344
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1kvSaIau8tMJoiCLf8a342sN1/wBJFz68k9VKuoEEvH7Sk8PWVu0Jn84zYNIseA5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6599
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce PAGE_EXECONLY_X macro which provides exec-only rights.
-The _X may be seen as redundant with the EXECONLY but it helps
-keep consistancy, all macros having the EXEC right have _X.
+On Wed, Sep 20, 2023 at 01:52:04PM -0700, Nicolin Chen wrote:
+>  
+> +static void arm_smmu_ste_stage2_translate(struct arm_smmu_master *master,
+> +					  u64 *ste)
+> +{
+> +	struct arm_smmu_domain *smmu_domain = master->domain;
+> +	struct arm_smmu_device *smmu = master->smmu;
+> +	struct arm_smmu_s2_cfg *s2_cfg;
+> +
+> +	switch (smmu_domain->stage) {
+> +	case ARM_SMMU_DOMAIN_NESTED:
+> +	case ARM_SMMU_DOMAIN_S2:
+> +		s2_cfg = &smmu_domain->s2_cfg;
+> +		break;
+> +	default:
+> +		WARN_ON(1);
+> +		return;
+> +	}
+> +
+> +	ste[0] |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S2_TRANS);
+> +
+> +	if (smmu->features & ARM_SMMU_FEAT_STALLS && !master->stall_enabled)
+> +		ste[1] |= STRTAB_STE_1_S1STALLD;
+> +
+> +	if (master->ats_enabled)
+> +		ste[1] |= FIELD_PREP(STRTAB_STE_1_EATS, STRTAB_STE_1_EATS_TRANS);
 
-And put it next to PAGE_NONE as PAGE_EXECONLY_X is
-somehow PAGE_NONE + EXEC just like all other SOMETHING_X are
-just SOMETHING + EXEC.
+These master bits probably belong in their own function 'setup ste for master'
 
-On book3s/64 PAGE_EXECONLY becomes PAGE_READONLY_X.
+The s1 and s2 cases are duplicating these things.
 
-On book3s/64, as PAGE_EXECONLY is only valid for Radix add
-VM_READ flag in vm_get_page_prot() for non-Radix.
+> +
+> +	ste[2] |= FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
+> +		  FIELD_PREP(STRTAB_STE_2_VTCR, s2_cfg->vtcr) |
+> +#ifdef __BIG_ENDIAN
+> +		  STRTAB_STE_2_S2ENDI |
+> +#endif
+> +		  STRTAB_STE_2_S2PTW | STRTAB_STE_2_S2AA64 | STRTAB_STE_2_S2R;
+> +
+> +	ste[3] |= s2_cfg->vttbr & STRTAB_STE_3_S2TTB_MASK;
+> +}
+> +
+> +static void arm_smmu_ste_stage1_translate(struct arm_smmu_master *master,
+> +					  u64 *ste)
+> +{
 
-And update access_error() so that a non exec fault on a VM_EXEC only
-mapping is always invalid, even when the underlying layer don't
-always generate a fault for that.
+Lets stop calling the cdtable 'stage 1' please, it is confusing.
 
-For 8xx, set PAGE_EXECONLY_X as _PAGE_NA | _PAGE_EXEC.
-For others, only set it as just _PAGE_EXEC
+arm_smmu_ste_cdtable()
 
-With that change, 8xx, e500 and 44x fully honor execute-only
-protection.
+> +	struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
+> +	struct arm_smmu_device *smmu = master->smmu;
+> +	__le64 *cdptr = arm_smmu_get_cd_ptr(master, 0);
+> +
+> +	WARN_ON_ONCE(!cdptr);
+> +
+> +	ste[0] |= (cd_table->cdtab_dma & STRTAB_STE_0_S1CTXPTR_MASK) |
+> +		  FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S1_TRANS) |
+> +		  FIELD_PREP(STRTAB_STE_0_S1CDMAX, cd_table->s1cdmax) |
+> +		  FIELD_PREP(STRTAB_STE_0_S1FMT, cd_table->s1fmt);
+> +
+> +	if (FIELD_GET(CTXDESC_CD_0_ASID, le64_to_cpu(cdptr[0])))
 
-On 40x that is a partial implementation of execute-only. The
-implementation won't be complete because once a TLB has been loaded
-via the Instruction TLB miss handler, it will be possible to read
-the page. But at least it can't be read unless it is executed first.
+Reading the CD like that seems like a hacky way to detect that the RID
+domain is bypass, just do it directly:
 
-On 603 MMU, TLB missed are handled by SW and there are separate
-DTLB and ITLB. Execute-only is therefore now supported by not loading
-DTLB when read access is not permitted.
+if (master->domain->stage == ARM_SMMU_DOMAIN_BYPASS)
+		ste[1] |= FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_BYPASS);
+else
+		ste[1] |= FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0);
 
-On hash (604) MMU it is more tricky because hash table is common to
-load/store and execute. Nevertheless it is still possible to check
-whether _PAGE_READ is set before loading hash table for a load/store
-access. At least it can't be read unless it is executed first.
+> +	ste[1] |= FIELD_PREP(STRTAB_STE_1_SHCFG, STRTAB_STE_1_SHCFG_INCOMING) |
+> +		  FIELD_PREP(STRTAB_STE_1_S1CIR, STRTAB_STE_1_S1C_CACHE_WBRA) |
+> +		  FIELD_PREP(STRTAB_STE_1_S1COR, STRTAB_STE_1_S1C_CACHE_WBRA) |
+> +		  FIELD_PREP(STRTAB_STE_1_S1CSH, ARM_SMMU_SH_ISH);
+> +
+> +	if (smmu->features & ARM_SMMU_FEAT_E2H)
+> +		ste[1] |= FIELD_PREP(STRTAB_STE_1_STRW, STRTAB_STE_1_STRW_EL2);
+> +	else
+> +		ste[1] |= FIELD_PREP(STRTAB_STE_1_STRW, STRTAB_STE_1_STRW_NSEL1);
+> +
+> +	if (smmu->features & ARM_SMMU_FEAT_STALLS && !master->stall_enabled)
+> +		ste[1] |= STRTAB_STE_1_S1STALLD;
+> +
+> +	if (master->ats_enabled)
+> +		ste[1] |= FIELD_PREP(STRTAB_STE_1_EATS, STRTAB_STE_1_EATS_TRANS);
+> +
+> +	if (master->domain->stage == ARM_SMMU_DOMAIN_NESTED)
+> +		arm_smmu_ste_stage2_translate(master, ste);
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Russell Currey <ruscur@russell.cc>
-Cc: Kees Cook <keescook@chromium.org>
----
- arch/powerpc/include/asm/book3s/32/pgtable.h |  2 +-
- arch/powerpc/include/asm/book3s/64/pgtable.h |  4 +---
- arch/powerpc/include/asm/nohash/32/pte-8xx.h |  1 +
- arch/powerpc/include/asm/nohash/pgtable.h    |  2 +-
- arch/powerpc/include/asm/nohash/pte-e500.h   |  1 +
- arch/powerpc/include/asm/pgtable-masks.h     |  2 ++
- arch/powerpc/mm/book3s64/pgtable.c           | 10 ++++------
- arch/powerpc/mm/fault.c                      |  9 +++++----
- arch/powerpc/mm/pgtable.c                    |  4 ++--
- 9 files changed, 18 insertions(+), 17 deletions(-)
+I think this needs a comment
 
-diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-index 244621c88510..52971ee30717 100644
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -425,7 +425,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
- {
- 	/*
- 	 * A read-only access is controlled by _PAGE_READ bit.
--	 * We have _PAGE_READ set for WRITE and EXECUTE
-+	 * We have _PAGE_READ set for WRITE
- 	 */
- 	if (!pte_present(pte) || !pte_read(pte))
- 		return false;
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-index 0fd12bdc7b5e..751b01227e36 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -18,6 +18,7 @@
- #define _PAGE_WRITE		0x00002 /* write access allowed */
- #define _PAGE_READ		0x00004	/* read access allowed */
- #define _PAGE_NA		_PAGE_PRIVILEGED
-+#define _PAGE_NAX		_PAGE_EXEC
- #define _PAGE_RO		_PAGE_READ
- #define _PAGE_ROX		(_PAGE_READ | _PAGE_EXEC)
- #define _PAGE_RW		(_PAGE_READ | _PAGE_WRITE)
-@@ -141,9 +142,6 @@
- 
- #include <asm/pgtable-masks.h>
- 
--/* Radix only, Hash uses PAGE_READONLY_X + execute-only pkey instead */
--#define PAGE_EXECONLY	__pgprot(_PAGE_BASE | _PAGE_EXEC)
--
- /* Permission masks used for kernel mappings */
- #define PAGE_KERNEL	__pgprot(_PAGE_BASE | _PAGE_KERNEL_RW)
- #define PAGE_KERNEL_NC	__pgprot(_PAGE_BASE_NC | _PAGE_KERNEL_RW | _PAGE_TOLERANT)
-diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-index 1ee38befd29a..137dc3c84e45 100644
---- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-+++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-@@ -48,6 +48,7 @@
- 
- #define _PAGE_HUGE	0x0800	/* Copied to L1 PS bit 29 */
- 
-+#define _PAGE_NAX	(_PAGE_NA | _PAGE_EXEC)
- #define _PAGE_ROX	(_PAGE_RO | _PAGE_EXEC)
- #define _PAGE_RW	0
- #define _PAGE_RWX	_PAGE_EXEC
-diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/include/asm/nohash/pgtable.h
-index f922c84b23eb..a50be1de9f83 100644
---- a/arch/powerpc/include/asm/nohash/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/pgtable.h
-@@ -203,7 +203,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
- {
- 	/*
- 	 * A read-only access is controlled by _PAGE_READ bit.
--	 * We have _PAGE_READ set for WRITE and EXECUTE
-+	 * We have _PAGE_READ set for WRITE
- 	 */
- 	if (!pte_present(pte) || !pte_read(pte))
- 		return false;
-diff --git a/arch/powerpc/include/asm/nohash/pte-e500.h b/arch/powerpc/include/asm/nohash/pte-e500.h
-index 31d2c3ea7df8..f516f0b5b7a8 100644
---- a/arch/powerpc/include/asm/nohash/pte-e500.h
-+++ b/arch/powerpc/include/asm/nohash/pte-e500.h
-@@ -57,6 +57,7 @@
- #define _PAGE_KERNEL_ROX	(_PAGE_BAP_SR | _PAGE_BAP_SX)
- 
- #define _PAGE_NA	0
-+#define _PAGE_NAX	_PAGE_BAP_UX
- #define _PAGE_RO	_PAGE_READ
- #define _PAGE_ROX	(_PAGE_READ | _PAGE_BAP_UX)
- #define _PAGE_RW	(_PAGE_READ | _PAGE_WRITE)
-diff --git a/arch/powerpc/include/asm/pgtable-masks.h b/arch/powerpc/include/asm/pgtable-masks.h
-index 808a3b9e8fc0..6e8e2db26a5a 100644
---- a/arch/powerpc/include/asm/pgtable-masks.h
-+++ b/arch/powerpc/include/asm/pgtable-masks.h
-@@ -4,6 +4,7 @@
- 
- #ifndef _PAGE_NA
- #define _PAGE_NA	0
-+#define _PAGE_NAX	_PAGE_EXEC
- #define _PAGE_RO	_PAGE_READ
- #define _PAGE_ROX	(_PAGE_READ | _PAGE_EXEC)
- #define _PAGE_RW	(_PAGE_READ | _PAGE_WRITE)
-@@ -20,6 +21,7 @@
- 
- /* Permission masks used to generate the __P and __S table */
- #define PAGE_NONE	__pgprot(_PAGE_BASE | _PAGE_NA)
-+#define PAGE_EXECONLY_X	__pgprot(_PAGE_BASE | _PAGE_NAX)
- #define PAGE_SHARED	__pgprot(_PAGE_BASE | _PAGE_RW)
- #define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_RWX)
- #define PAGE_COPY	__pgprot(_PAGE_BASE | _PAGE_RO)
-diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-index 8f8a62d3ff4d..be229290a6a7 100644
---- a/arch/powerpc/mm/book3s64/pgtable.c
-+++ b/arch/powerpc/mm/book3s64/pgtable.c
-@@ -635,12 +635,10 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
- 	unsigned long prot;
- 
- 	/* Radix supports execute-only, but protection_map maps X -> RX */
--	if (radix_enabled() && ((vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)) {
--		prot = pgprot_val(PAGE_EXECONLY);
--	} else {
--		prot = pgprot_val(protection_map[vm_flags &
--						 (VM_ACCESS_FLAGS | VM_SHARED)]);
--	}
-+	if (!radix_enabled() && ((vm_flags & VM_ACCESS_FLAGS) == VM_EXEC))
-+		vm_flags |= VM_READ;
-+
-+	prot = pgprot_val(protection_map[vm_flags & (VM_ACCESS_FLAGS | VM_SHARED)]);
- 
- 	if (vm_flags & VM_SAO)
- 		prot |= _PAGE_SAO;
-diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-index b1723094d464..9e49ede2bc1c 100644
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -266,14 +266,15 @@ static bool access_error(bool is_write, bool is_exec, struct vm_area_struct *vma
- 	}
- 
- 	/*
--	 * VM_READ, VM_WRITE and VM_EXEC all imply read permissions, as
--	 * defined in protection_map[].  Read faults can only be caused by
--	 * a PROT_NONE mapping, or with a PROT_EXEC-only mapping on Radix.
-+	 * VM_READ, VM_WRITE and VM_EXEC may imply read permissions, as
-+	 * defined in protection_map[].  In that case Read faults can only be
-+	 * caused by a PROT_NONE mapping. However a non exec access on a
-+	 * VM_EXEC only mapping is invalid anyway, so report it as such.
- 	 */
- 	if (unlikely(!vma_is_accessible(vma)))
- 		return true;
- 
--	if (unlikely(radix_enabled() && ((vma->vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)))
-+	if ((vma->vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)
- 		return true;
- 
- 	/*
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index 781a68c69c2f..79508c1d15d7 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -492,7 +492,7 @@ const pgprot_t protection_map[16] = {
- 	[VM_READ]					= PAGE_READONLY,
- 	[VM_WRITE]					= PAGE_COPY,
- 	[VM_WRITE | VM_READ]				= PAGE_COPY,
--	[VM_EXEC]					= PAGE_READONLY_X,
-+	[VM_EXEC]					= PAGE_EXECONLY_X,
- 	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
- 	[VM_EXEC | VM_WRITE]				= PAGE_COPY_X,
- 	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
-@@ -500,7 +500,7 @@ const pgprot_t protection_map[16] = {
- 	[VM_SHARED | VM_READ]				= PAGE_READONLY,
- 	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
- 	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_X,
-+	[VM_SHARED | VM_EXEC]				= PAGE_EXECONLY_X,
- 	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
- 	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_X,
- 	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
--- 
-2.41.0
+/*
+ * SMMUv3 does not support using a S2 domain and a CD table for anything 
+ * other than nesting where the S2 is the translation for the CD
+ * table, and all associated S1s.
+ */
 
+> +	if (le64_to_cpu(dst[0]) & STRTAB_STE_0_V) {
+> +		switch (FIELD_GET(STRTAB_STE_0_CFG, le64_to_cpu(dst[0]))) {
+>  		case STRTAB_STE_0_CFG_BYPASS:
+>  			break;
+>  		case STRTAB_STE_0_CFG_S1_TRANS:
+
+This thing could go into a function 'ste_is_live' too
+
+> +	ste[0] = STRTAB_STE_0_V;
+>  
+> +	if (master->cd_table.cdtab && master->domain) {
+
+I think the weirdness in arm_smmu_detach_dev() causes trouble here?
+Despite the name the function is some sort of preperation to
+attach_dev.
+
+So if we change attachments while a cdtab is active we should not
+remove the cdtab.
+
+Basically, no master->domain check..
+
+IMHO, I still don't like how this is structured. We have
+arm_smmu_detach_dev() which really just wants to invalidate the STE.
+Now that you shifted some of the logic to functions this might be
+better overall:
+
+static void arm_smmu_store_ste(struct arm_smmu_master *master,
+				      __le64 *dst, u64 *src)
+{
+	bool ste_sync_all = false;
+
+	for (i = 1; i < 4; i++) {
+		if (dst[i] == cpu_to_le64(ste[i]))
+			continue;
+		dst[i] = cpu_to_le64(ste[i]);
+		ste_sync_all = true;
+	}
+
+	if (ste_sync_all)
+		arm_smmu_sync_ste_for_sid(smmu, sid);
+	/* See comment in arm_smmu_write_ctx_desc() */
+	WRITE_ONCE(dst[0], cpu_to_le64(ste[0]));
+	arm_smmu_sync_ste_for_sid(smmu, sid);
+}
+
+static void arm_smmu_clear_strtab_ent(struct arm_smmu_master *master,
+				      __le64 *dst)
+{
+	u64 ste[4] = {};
+
+	ste[0] = STRTAB_STE_0_V;
+	if (disable_bypass)
+		arm_smmu_ste_abort(ste);
+	else
+		arm_smmu_ste_bypass(ste);
+	arm_smmu_store_ste(master, dst, &ste);
+}
+
+And use clear_strtab_ent from detach ??
+
+(but then I wonder why not set V=0 instead of STE.Config = abort?)
+
+> +		arm_smmu_ste_stage1_translate(master, ste);
+> +	} else if (master->domain &&
+> +		   master->domain->stage == ARM_SMMU_DOMAIN_S2) {
+>  		BUG_ON(ste_live);
+> +		arm_smmu_ste_stage2_translate(master, ste);
+
+This whole bit looks nicer as one if
+
+} else if (master->domain) {
+       	   if (master->domain->stage == ARM_SMMU_DOMAIN_S2)
+		arm_smmu_ste_stage2_translate(master, ste);
+	   else if (master->domain->domain.type == IOMMU_DOMAIN_IDENTITY)
+		arm_smmu_ste_bypass(ste);
+	   else
+		BUG_ON()
+} else {
+    // Ugh, removing this case requires more work
+}
+
+(Linus will not like the bug_on's btw, the function really should
+fail)
+
+> +	for (i = 1; i < 4; i++) {
+> +		if (dst[i] == cpu_to_le64(ste[i]))
+> +			continue;
+> +		dst[i] = cpu_to_le64(ste[i]);
+> +		ste_sync_all = true;
+> +	}
+
+This isn't going to work if the transition is from a fully valid STE
+to an invalid one, it will corrupt the still in-use bytes.
+
+Though current code does this:
+
+		dst[0] = cpu_to_le64(val);
+		dst[1] = cpu_to_le64(FIELD_PREP(STRTAB_STE_1_SHCFG,
+						STRTAB_STE_1_SHCFG_INCOMING));
+		dst[2] = 0; /* Nuke the VMID */
+
+Which I don't really understand either? Why is it OK to wipe the VMID
+out of order with the STE.Config change?
+
+Be sure to read the part of the SMMU spec talking about how to update
+these things, 3.21.3.1 Configuration structure update procedure and
+nearby.
+
+Regardless there are clearly two orders in the existing code
+
+Write 0,1,2,flush (translation -> bypass/fault)
+
+Write 3,2,1,flush,0,flush (bypass/fault -> translation)
+
+You still have to preserve both behaviors.
+
+(interestingly neither seem to follow the guidance of the ARM manual,
+so huh)
+
+Still, I think this should be able to become more robust in general..
+You have a current and target STE and you just need to figure out what
+order to write the bits and if a V=0 transition is needed.
+
+The bigger question is does this have to be more generic to handle
+S1DSS which is it's original design goal?
+
+Jason
