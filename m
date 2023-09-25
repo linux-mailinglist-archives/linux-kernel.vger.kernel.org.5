@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F037ADF6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CCC7ADF76
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbjIYTL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 15:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        id S232970AbjIYTQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 15:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbjIYTLY (ORCPT
+        with ESMTP id S229481AbjIYTQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 15:11:24 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CB895
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:11:17 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3216b83c208so875729f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:11:17 -0700 (PDT)
+        Mon, 25 Sep 2023 15:16:41 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69DDB8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:16:34 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c2ca3bcf9so133147297b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:16:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695669076; x=1696273876; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XhJ34cUYsYlf3XC7vsPt+CX9AqV2ARPhgcXKTo4+p2g=;
-        b=RxHVMYMNukqdMDo9r4YL0LZ/zvBdA4haKFlbohjSUaO0Uz3Ny6NEJgbgRKCMAgXxi9
-         IWlCOq6U9Li+ZmTGl1RNaLSZQ3Y4Z8JLNfyshr87LXsA5k3F8TOZK39V9vmMpvp7cHPu
-         QLP8KxsNh/A2apaSYa/QpNWKAnrCCCVhqafeq1rRS5bkKDBvYPzd++Bl9u4J+6JtH0RN
-         /zWD1m26bsi/PtM/d4Vcf93S7U808iLGAEmgb1JwZYiIcoc1qqh9NR8bnw/cyP+9+9BE
-         DvBnmLdhOwVDc83Hfsga24fEkLCI7AsMiAw6SeMs53Shi3IDG29xyRgqq6XL+fiSTUZy
-         Cn8A==
+        d=google.com; s=20230601; t=1695669394; x=1696274194; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MBb7/o1IRk0JElBFa4klbTWLM6mKvJph/LCCzFiKFTQ=;
+        b=bdCxsRsuc6E/4uG33ZbF7h9ni1HZOQM67sMu51HAfAAS4zlgo0HSPBU3eLq6NvdHpf
+         yjN0QQGHskEmGy+HP27CJ/F/tGOWGfsy9UMQIoIZXmzw/ERJC46aAxPQgQLo9QtAdu8I
+         uH36WitWtQ56nNGynkpDOORRFY0pJ/jd/80aCC2oStQUk7tSKM3pIdGZmrj17B7t+g0U
+         d3Xt9YTEPFoH9cjWZ7uw9WCS5CJJmfeNad75bUq5PCntCq2auPuftVKV0ocyTzrwNFeH
+         P6whpXQkW7rOz5QRmyXtO65yxc3GxX9M6ctx+OJ1RgVDIikob2tve+p9hBGwtMdzDleJ
+         gKsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695669076; x=1696273876;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XhJ34cUYsYlf3XC7vsPt+CX9AqV2ARPhgcXKTo4+p2g=;
-        b=tAmLiBEOEBB/eMlSxWAovu+iIOo8BE1S26cIm0KkZEzfz07tkVqHoOVbYZc9vQhfg1
-         HrgnkAB9oo/SaTHv+Z0hQMIjlG4xCldQPA5iboJOiIAOPv10rnVbRsEfHe4u7BQ2ZKoO
-         rqrN+znxfStBzEcCElWlYq//ZfyEqQvI92icZsgibAVI1zUhjNn/N+kVOOLk/iLf6kJr
-         ZSuNoM+Um1+pWM++9JkY2LYOcn2ZDUJZ7bpPu068k01LoFGDkz2DMjIbWC5t8yxhVSk4
-         t8z6b1x3yXjbp9rombVG7smgMVnAYBIP6bmC/IhP5aBTxaHkvQLuan9QP4zspvaKiHoK
-         Ieng==
-X-Gm-Message-State: AOJu0YxgRxD93KPRRbv6heFvSIaE7j1MoFNSGLvSxzpQZqCRDPMNqb39
-        GkBHT11FuOzOPoBhIrwaCa0=
-X-Google-Smtp-Source: AGHT+IF0cJgUXjIsYdHE+rY2bl8HxtFhHE4Z0Clq8pxBo0sE2Aj/9MtEkxye0rmKLJhF3oUMmFUc2Q==
-X-Received: by 2002:a5d:4210:0:b0:320:8f0:b93d with SMTP id n16-20020a5d4210000000b0032008f0b93dmr6064271wrq.3.1695669075782;
-        Mon, 25 Sep 2023 12:11:15 -0700 (PDT)
-Received: from [192.168.0.102] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id r2-20020adfe682000000b0031ff89af0e4sm12562071wrm.99.2023.09.25.12.11.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 12:11:15 -0700 (PDT)
-Message-ID: <9d96db4f-0b79-0940-ef95-d9bd70dc9a18@gmail.com>
-Date:   Mon, 25 Sep 2023 21:11:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] staging: rtl8192e: fix structure alignment
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tree Davies <tdavies@darkphysics.net>,
-        Yogesh Hegde <yogi.kernel@gmail.com>,
-        Sumitra Sharma <sumitraartsy@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20230925155413.471287-1-arnd@kernel.org>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20230925155413.471287-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20230601; t=1695669394; x=1696274194;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MBb7/o1IRk0JElBFa4klbTWLM6mKvJph/LCCzFiKFTQ=;
+        b=XxXRXUoYCqnVUu0ceH/TUSmsEPdgoVxQbinxsPdeuZdlqkcFoXiqCxsc168/cqq1X0
+         2bh7jcNkisCWGzuXNvbRXvMFOFSjE0l76lMvJJkJKyZXYpCt4oROYUnINvtAFJkSHV+G
+         fhQLnTh5qsc0jvkD1W2NOmZOkpNPdlbd6DmJ7FHIYbpMMr5Fy4eGvKv32CrWaWl30GcE
+         ZnAyGSREmnMLvRCJjZAhlpe5C6qdCyEIOKMX5ot8mQ7DJ3KUYtESDLfxzxrN+YZCq6IM
+         BJzUYHpllrkQQXMQmaxS5lplo2+NZRu0zBS7dXVUPxQsCu6hhmvGxS4/0IepXXg/F3iu
+         XOhQ==
+X-Gm-Message-State: AOJu0YwMTyaN5IPLw8MmUga47V+XUnzy68pbYQOSwuJsHg4YlsBm9dLp
+        fiz9zzFxBGNm+r12ypHtJAiBQ1CW8Us=
+X-Google-Smtp-Source: AGHT+IHwqJPElF/D6RnFeZcgh5HTfyZNmRDOTT6D2UxYulQBeoscMRWpl5d03Kc5Cj4wlAC1nyC02Ad7ufI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ec12:0:b0:589:a5c6:4a8e with SMTP id
+ j18-20020a81ec12000000b00589a5c64a8emr88716ywm.1.1695669394067; Mon, 25 Sep
+ 2023 12:16:34 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 12:16:32 -0700
+In-Reply-To: <8c6a1fc8-2ac5-4767-8b02-9ef56434724e@maciej.szmigiero.name>
+Mime-Version: 1.0
+References: <0ffde769702c6cdf6b6c18e1dcb28b25309af7f7.1695659717.git.maciej.szmigiero@oracle.com>
+ <ZRHRsgjhOmIrxo0W@google.com> <8c6a1fc8-2ac5-4767-8b02-9ef56434724e@maciej.szmigiero.name>
+Message-ID: <ZRHckCMwOv3jfSs7@google.com>
+Subject: Re: [PATCH] KVM: x86: Ignore MSR_AMD64_BU_CFG access
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,58 +70,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/23 17:54, Arnd Bergmann wrote:
-> From: Arnd Bergmann<arnd@arndb.de>
++Tom
+
+On Mon, Sep 25, 2023, Maciej S. Szmigiero wrote:
+> On 25.09.2023 20:30, Sean Christopherson wrote:
+> >>
+> >> Hyper-V enabled Windows Server 2022 KVM VM cannot be started on Zen1 Ryzen
+> >> since it crashes at boot with SYSTEM_THREAD_EXCEPTION_NOT_HANDLED +
+> >> STATUS_PRIVILEGED_INSTRUCTION (in other words, because of an unexpected #GP
+> >> in the guest kernel).
+> >>
+> >> This is because Windows tries to set bit 8 in MSR_AMD64_BU_CFG and can't
+> >> handle receiving a #GP when doing so.
+> >
+> > Any idea why?
+>
+> I guess it is trying to set some chicken bit?
+>
+> By the way, I tested Windows Server 2019 now - it has the same problem.
+>
+> So likely Windows 11 and newer version of Windows 10 have it, too.
+
+...
+
+> > > diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> > > index 1d111350197f..c80a5cea80c4 100644
+> > > --- a/arch/x86/include/asm/msr-index.h
+> > > +++ b/arch/x86/include/asm/msr-index.h
+> > > @@ -553,6 +553,7 @@
+> > >   #define MSR_AMD64_CPUID_FN_1		0xc0011004
+> > >   #define MSR_AMD64_LS_CFG		0xc0011020
+> > >   #define MSR_AMD64_DC_CFG		0xc0011022
+> > > +#define MSR_AMD64_BU_CFG		0xc0011023
+> > 
+> > What document actually defines this MSR?  All of the PPRs I can find for Family 17h
+> > list it as:
+> > 
+> >     MSRC001_1023 [Table Walker Configuration] (Core::X86::Msr::TW_CFG)
 > 
-> A recent cleanup changed the rtl8192e from using the custom misaligned
-> rtllib_hdr_3addr structure to the generic ieee80211_hdr_3addr definition
-> that enforces 16-bit structure alignment in memory.
-> 
-> This causes a gcc warning about conflicting alignment requirements:
-> 
-> drivers/staging/rtl8192e/rtllib.h:645:1: error: alignment 1 of 'struct rtllib_authentication' is less than 2 [-Werror=packed-not-aligned]
->    645 | } __packed;
->        | ^
-> rtllib.h:650:1: error: alignment 1 of 'struct rtllib_disauth' is less than 2 [-Werror=packed-not-aligned]
-> rtllib.h:655:1: error: alignment 1 of 'struct rtllib_disassoc' is less than 2 [-Werror=packed-not-aligned]
-> rtllib.h:661:1: error: alignment 1 of 'struct rtllib_probe_request' is less than 2 [-Werror=packed-not-aligned]
-> rtllib.h:672:1: error: alignment 1 of 'struct rtllib_probe_response' is less than 2 [-Werror=packed-not-aligned]
-> rtllib.h:683:1: error: alignment 1 of 'struct rtllib_assoc_request_frame' is less than 2 [-Werror=packed-not-aligned]
-> rtllib.h:691:1: error: alignment 1 of 'struct rtllib_assoc_response_frame' is less than 2 [-Werror=packed-not-aligned]
-> 
-> Change all of the structure definitions that include this one to also
-> use 16-bit alignment. This assumes that the objects are actually aligned
-> in memory, but that is normally guaranteed by the slab allocator already.
-> 
-> All members of the structure definitions are already 16-bit aligned,
-> so the layouts do not change. As an added benefit, 16-bit accesses are
-> generally faster than 8-bit accesses, so architectures without unaligned
-> load/store instructions can produce better code now by avoiding byte-wise
-> accesses.
-> 
-> Fixes: 71ddc43ed7c71 ("staging: rtl8192e: Replace struct rtllib_hdr_3addr in structs of rtllib.h")
-> Signed-off-by: Arnd Bergmann<arnd@arndb.de>
+> It's partially documented in various AMD BKDGs, however I couldn't find
+> any definition for this particular bit (8) - other than that it is reserved.
 
-Hi,
+I found it as MSR_AMD64_BU_CFG for Model 16h, but that's Jaguar/Puma, not Zen1.
+My guess is that Windows is trying to write this thing:
 
-thanks for your support.
+  MSRC001_1023 [Table Walker Configuration] (Core::X86::Msr::TW_CFG)
+  Read-write. Reset: 0000_0000_0000_0000h.
+  _lthree0_core[3,1]; MSRC001_1023
 
-your patches cannot be applied on top of the 24 patches which are in the 
-queue. But may be Greg will not accept all of the patches send in.
+  Bits   Description
+  63:50  Reserved.
+  49     TwCfgCombineCr0Cd: combine CR0_CD for both threads of a core. Read-write. Reset: 0. Init: BIOS,1.
+         1=The host Cr0_Cd values from the two threads are OR'd together and used by both threads.
+  48:0   Reserved.
 
-Will see what happens when Greg sorts them out.
+Though that still doesn't explain bit 8...  Perhaps a chicken-bit related to yet
+another speculation bug?
 
-I tried your patches on hardware without the 24 patches send in. All OK
-
-Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-
-
-
-I use the following command to compile. Why I am not seeing the issue above?
-make "KCFLAGS=-pipe -Wpacked-not-aligned" -C . M=drivers/staging /rtl8192e
-
-Thanks
-
-Bye Philipp
-
-
+Boris or Tom, any idea what Windows is doing?  I doubt it changes our options in
+terms of "fixing" this in KVM, but having a somewhat accurate/helpful changelog
+would be nice.
