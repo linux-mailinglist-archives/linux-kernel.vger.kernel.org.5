@@ -2,585 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4A87AE054
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22F67AE058
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbjIYUbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 16:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
+        id S232152AbjIYUhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 16:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbjIYUbo (ORCPT
+        with ESMTP id S229513AbjIYUhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 16:31:44 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31C510F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 13:31:36 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qksDy-0006Gb-0f;
-        Mon, 25 Sep 2023 16:30:34 -0400
-From:   riel@surriel.com
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@meta.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, muchun.song@linux.dev,
-        mike.kravetz@oracle.com, leit@meta.com, willy@infradead.org,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with invalidate_lock
-Date:   Mon, 25 Sep 2023 16:28:52 -0400
-Message-ID: <20230925203030.703439-4-riel@surriel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230925203030.703439-1-riel@surriel.com>
-References: <20230925203030.703439-1-riel@surriel.com>
-MIME-Version: 1.0
+        Mon, 25 Sep 2023 16:37:06 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2018.outbound.protection.outlook.com [40.92.91.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE26AFF;
+        Mon, 25 Sep 2023 13:36:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OD2P3qzQ2scGFT1ddnvi++zDHsC/crGKP4hHVm7bfQMzA4OgcWls4lK95wanBs+1RxUFZElosoEDj9zD88eHqN/SJu/U2ZlG3xJsflZnv5uDdgy8WYgVN1Jl9KFQ4sKaW4uSu4mVI9gZLkGIzVsNgcpOc9aN7pY4GwfDqrw7dMboUsCWCthkIsjZ9nTh053LavioWVt/xCmn1vuhZ51UiGWPu536eQyhpgJ3H4lAlcXRUND0uuX8gUZKpkH8IBDZzatQiNVWVDtkH0+gbjzXUeF7DhNk9eXMEe97i+ewtBhJmG59HzE6Vsuv8nNd++66dS3fqsIsa0aB3JPsAYC7Fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H+N1/eapPVSUeaY8xeEctebKxPS5SKr3WxRHfNZThbA=;
+ b=FE1/vm2SGWY/B+ol6BOroZVV/I+KzNLCvqgWUqGYT4qOCIgFcw/0876JISWEjQMnWyOxditHfm0wgS9hkflzbpgquJi51SYgRmSyX8wijez/cXkr7nC3A+uGNcy/KEa+aI3gr2d01H9CPFgHZfGAvg8y4ekTvj/PR4Fv1i9KwSIrWu3nUCaI6NAEuW/HCNhSuvOUQm57QBVvrEJb52KIZJsk7JzQFOaQVKmMU3RE9pYpsUJ+I9T+VpKqtznr3NogA6UFVbXE60K3/dunbwRmsD979asQmc+gM8oVcQHpYg8QZGebX2iEBRGe5EugUnQo0TT8nDbNRqrlQGVPyLxgIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H+N1/eapPVSUeaY8xeEctebKxPS5SKr3WxRHfNZThbA=;
+ b=T6fh1W09oFAcLb5tUcux8p0o7u2GoOXpZ4ElnHO1yGAu4i21HITgadwoc/XGuxkx0TwqJ+8RrKzQPJEFykeulZ7fQ52T/d1BaTrvmT503Pfc297CUOdqhJz7qZWbU0tLJvep3xkX2Lrdna7R9LsV4CngGvLDTDkielans4w38MDoEKpZaWsGG0t3Emea5BgGDE/zDwLusxbVa9+iiWAX+v98iIPvRcs/dRiJ/xKNnz6Q7dfJvdNs11GHLwtfsP+4DoaSebHcWDtJFWIsy32k1EERdeOuD7wiWfsQUBTDjt84EXIbxY16QdpiJVcKYAAO56WyaEHLAsfT8M6gHOQNJA==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by AM9P193MB0904.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:1f9::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 20:36:57 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Mon, 25 Sep 2023
+ 20:36:57 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     sj@kernel.org, shuah@kernel.org
+Cc:     damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] selftests/damon: Add executable permission to test scripts
+Date:   Tue, 26 Sep 2023 04:35:52 +0800
+Message-ID: <VI1P193MB07529234393616AE94D58C7B99FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
 Content-Transfer-Encoding: 8bit
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TMN:  [t5+2B58/31xcaF0fSebiYT11R15AdCyZ]
+X-ClientProxiedBy: AM8P251CA0027.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21b::32) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20230925203552.54855-1-juntong.deng@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AM9P193MB0904:EE_
+X-MS-Office365-Filtering-Correlation-Id: ad8e3bea-608a-4ba2-24fd-08dbbe07299a
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dnt/xKB1VRpAoAoQ8C11syznRH81ivesrOCEdb/LmPkzCBID0YzjYtXMcfTUnb9VHmZPf7sEBJoMxxRWPX8xoRxA2w7HhjkEs8mA71X1OilUbf/mKcT2KcFL80lQ5vozXQ1+BTEPXQpaEh7AT37Z/KRqoIfa8gAD8GmJs/pMLcICXMLavqlotFV5dd+jQgKZofPl6PJaRDOlTq7E8WpiQzMGeQScsO5oBAF6fRqKIChijQ3EMuQOcscaUeWEOvnmDpqcFtjjqBdt+dbhUkcv8kKxuISOgy4E8ebcXKjFZJzhi/3NUY+ppAXM6Cy4uwqFcCTWJV/WimCBURKd8zi5B9tJlzULL6cTf2sMbE2DSv6y/EpMJcGLSQYl9VLmYUrK2j2/J+baJYY5YzbUt+zMZ+peEGvVRipgEyoVSEOa4ayS1e2ptFrId7thB3Uehs/Ew8Aenk71GFNU0W4CcSCeptUYPHLaX9SdT0uuaTpRcPT8hx67aw0tA5Xg/Fgdhxankb9kTTwaC59Hw/lyEQFYLYfcF0zOem+Qu+7W/zRB9vdFlmsNCFb1pX7kWNmBX/5S
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JeNlVTIsuLrsWcF6Qw47kFXKxvIlZZyUPn3+mSPLt1KNwfAnR02uTe1QdpiH?=
+ =?us-ascii?Q?JZfA5a7m6Uter/7kbPfr/g1BzsTJ35VjiW15J46zw9qHopYORo+N4aosjWmc?=
+ =?us-ascii?Q?IWZPgaJQCa1zhpCezTpyspiROBubV+gjwbf46blwU7INXJQJa7T7mq5VKBhC?=
+ =?us-ascii?Q?5ta321FD4/eGXx8QiKm8lhUUZXL1YLvwWeuXOT1dJLQKdzS6NUGyrji9RnkD?=
+ =?us-ascii?Q?EjtiiicsMugtaRy6ER2vvn/ZOt9+HDpGfWB+mgMvRGR8pSTCdI1G+V26fsoi?=
+ =?us-ascii?Q?HSceDNqPcsxv5mJ05F33b2rACqSBJJpOqhIAyN+XRePCJFSZ1dQo6JIh/43j?=
+ =?us-ascii?Q?LOkC4e0e0WFgvvcOWkbn5JLccwCvJESxJkLFY3HiwiW/NxlmNa2IJo1D8N6m?=
+ =?us-ascii?Q?ZHJPtru/BeaV8+LOdebXWm1t9VOkhgNwmFDtm5z0xhH02824esv5pjfUEq/S?=
+ =?us-ascii?Q?9HUnLEh9I5iKVUC9jW3QU3f8+lyAYINLOUNq33FYQ2vUZDmwkOen2VYGoEbE?=
+ =?us-ascii?Q?/r7D3aXlVgmbviY3Xixb21PjKoobT3Nm59VfL09E2JVO9y1LXaIirA24v/0x?=
+ =?us-ascii?Q?wLE2tR50LgOZ06h5QLh6ha1rqzJ1KDl7a9tMagSU2pjiHVMaiidpIbc34F1S?=
+ =?us-ascii?Q?nCKRh51HIVI6LK2ZSGkolXBe/hpWj5MjzLej52Ld0w4uZkNzrCz/cT8JT/i7?=
+ =?us-ascii?Q?xA/odJRFKWED8QG4j5EqU64dr/h2+wZ+HCMBaNnpMZAp6LUL9eIzEYrHoQtO?=
+ =?us-ascii?Q?xji8x6XSyKyElEpiThMvZGc/1UIdLR1kmzCl/fbGSRrzrkDuwTIrGHSBdl76?=
+ =?us-ascii?Q?2K3QL66Tzx2bnUWcAqVbo0SZ/aQsfCrZZNCoZpEJXo5v1224jMAxYVZ8vnhJ?=
+ =?us-ascii?Q?WmyLrgxjIfaQIUm8jy87Mvl1awsyqIH5jqb54Dwu5dSTvT73dZzG9vGShBk6?=
+ =?us-ascii?Q?D75v3NgljkKXSZzdx+HfEtU3kjRG+w8+ICEMkMg6mavl/dWkG7YMGCyS1Ctg?=
+ =?us-ascii?Q?RykgKUil9GhQLHxaIH5OrvXFbONyRo9QwOBrXnCMU/Fx3xAS8bg3ot2dX6SV?=
+ =?us-ascii?Q?6G6f99rS+k5kbNmQQW3yvDFhnZumFVCxgXNbsXAdpqnd4jFxNmvL06Bl+Szz?=
+ =?us-ascii?Q?+cXU6qcLBslUrc2R3YrSMGj6XLv3+vH/YK8bdO4M2GKJPT8Tj5lrMou2QELQ?=
+ =?us-ascii?Q?7WqEmsNCreURRKZiXk4y7kE3VCqbEhFGhw47mTvwRIiwJLrDaVMEKWHrV9A?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad8e3bea-608a-4ba2-24fd-08dbbe07299a
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 20:36:57.6927
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P193MB0904
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rik van Riel <riel@surriel.com>
+When running the test for the damon subsystem, there are a lot of
+warnings because test scripts do not have executable permission,
+for example:
 
-Replace the custom hugetlbfs VMA locking code with the recently
-introduced invalidate_lock. This greatly simplifies things.
+Warning: file debugfs_attrs.sh is not executable
+Warning: file debugfs_schemes.sh is not executable
+Warning: file debugfs_target_ids.sh is not executable
+...
 
-However, this is a large enough change that it should probably go in
-separately from the other changes.
+This patch adds executable permission to test scripts to eliminate
+these warnings.
 
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- fs/hugetlbfs/inode.c    |  68 +-----------
- include/linux/fs.h      |   6 ++
- include/linux/hugetlb.h |  21 +---
- mm/hugetlb.c            | 225 +++-------------------------------------
- 4 files changed, 30 insertions(+), 290 deletions(-)
+ tools/testing/selftests/damon/debugfs_attrs.sh                    | 0
+ .../testing/selftests/damon/debugfs_duplicate_context_creation.sh | 0
+ tools/testing/selftests/damon/debugfs_empty_targets.sh            | 0
+ tools/testing/selftests/damon/debugfs_huge_count_read_write.sh    | 0
+ tools/testing/selftests/damon/debugfs_rm_non_contexts.sh          | 0
+ tools/testing/selftests/damon/debugfs_schemes.sh                  | 0
+ tools/testing/selftests/damon/debugfs_target_ids.sh               | 0
+ tools/testing/selftests/damon/lru_sort.sh                         | 0
+ tools/testing/selftests/damon/reclaim.sh                          | 0
+ tools/testing/selftests/damon/sysfs.sh                            | 0
+ tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh  | 0
+ 11 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_attrs.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_duplicate_context_creation.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_empty_targets.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_huge_count_read_write.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_rm_non_contexts.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_schemes.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_target_ids.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/lru_sort.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/reclaim.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/sysfs.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 316c4cebd3f3..5ff18b0933bc 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -485,7 +485,6 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 					struct folio *folio, pgoff_t index)
- {
- 	struct rb_root_cached *root = &mapping->i_mmap;
--	struct hugetlb_vma_lock *vma_lock;
- 	struct page *page = &folio->page;
- 	struct vm_area_struct *vma;
- 	unsigned long v_start;
-@@ -496,8 +495,8 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 	end = (index + 1) * pages_per_huge_page(h);
- 
- 	i_mmap_lock_write(mapping);
--retry:
--	vma_lock = NULL;
-+	filemap_invalidate_lock(mapping);
-+
- 	vma_interval_tree_foreach(vma, root, start, end - 1) {
- 		v_start = vma_offset_start(vma, start);
- 		v_end = vma_offset_end(vma, end);
-@@ -505,62 +504,13 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 		if (!hugetlb_vma_maps_page(vma, v_start, page))
- 			continue;
- 
--		if (!hugetlb_vma_trylock_write(vma)) {
--			vma_lock = vma->vm_private_data;
--			/*
--			 * If we can not get vma lock, we need to drop
--			 * immap_sema and take locks in order.  First,
--			 * take a ref on the vma_lock structure so that
--			 * we can be guaranteed it will not go away when
--			 * dropping immap_sema.
--			 */
--			kref_get(&vma_lock->refs);
--			break;
--		}
--
- 		unmap_hugepage_range(vma, v_start, v_end, NULL,
- 				     ZAP_FLAG_DROP_MARKER);
- 		hugetlb_vma_unlock_write(vma);
- 	}
- 
-+	filemap_invalidate_unlock(mapping);
- 	i_mmap_unlock_write(mapping);
--
--	if (vma_lock) {
--		/*
--		 * Wait on vma_lock.  We know it is still valid as we have
--		 * a reference.  We must 'open code' vma locking as we do
--		 * not know if vma_lock is still attached to vma.
--		 */
--		down_write(&vma_lock->rw_sema);
--		i_mmap_lock_write(mapping);
--
--		vma = vma_lock->vma;
--		if (!vma) {
--			/*
--			 * If lock is no longer attached to vma, then just
--			 * unlock, drop our reference and retry looking for
--			 * other vmas.
--			 */
--			up_write(&vma_lock->rw_sema);
--			kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--			goto retry;
--		}
--
--		/*
--		 * vma_lock is still attached to vma.  Check to see if vma
--		 * still maps page and if so, unmap.
--		 */
--		v_start = vma_offset_start(vma, start);
--		v_end = vma_offset_end(vma, end);
--		if (hugetlb_vma_maps_page(vma, v_start, page))
--			unmap_hugepage_range(vma, v_start, v_end, NULL,
--					     ZAP_FLAG_DROP_MARKER);
--
--		kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--		hugetlb_vma_unlock_write(vma);
--
--		goto retry;
--	}
- }
- 
- static void
-@@ -578,20 +528,10 @@ hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end,
- 		unsigned long v_start;
- 		unsigned long v_end;
- 
--		if (!hugetlb_vma_trylock_write(vma))
--			continue;
--
- 		v_start = vma_offset_start(vma, start);
- 		v_end = vma_offset_end(vma, end);
- 
- 		unmap_hugepage_range(vma, v_start, v_end, NULL, zap_flags);
--
--		/*
--		 * Note that vma lock only exists for shared/non-private
--		 * vmas.  Therefore, lock is not held when calling
--		 * unmap_hugepage_range for private vmas.
--		 */
--		hugetlb_vma_unlock_write(vma);
- 	}
- }
- 
-@@ -726,9 +666,11 @@ static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
- 
- 	i_size_write(inode, offset);
- 	i_mmap_lock_write(mapping);
-+	filemap_invalidate_lock(mapping);
- 	if (!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
- 		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0,
- 				      ZAP_FLAG_DROP_MARKER);
-+	filemap_invalidate_unlock(mapping);
- 	i_mmap_unlock_write(mapping);
- 	remove_inode_hugepages(inode, offset, LLONG_MAX);
- }
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 4aeb3fa11927..b455a8913db4 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -847,6 +847,12 @@ static inline void filemap_invalidate_lock(struct address_space *mapping)
- 	down_write(&mapping->invalidate_lock);
- }
- 
-+static inline int filemap_invalidate_trylock(
-+					struct address_space *mapping)
-+{
-+	return down_write_trylock(&mapping->invalidate_lock);
-+}
-+
- static inline void filemap_invalidate_unlock(struct address_space *mapping)
- {
- 	up_write(&mapping->invalidate_lock);
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index d9ec500cfef9..2908c47e7bf2 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -60,7 +60,6 @@ struct resv_map {
- 	long adds_in_progress;
- 	struct list_head region_cache;
- 	long region_cache_count;
--	struct rw_semaphore rw_sema;
- #ifdef CONFIG_CGROUP_HUGETLB
- 	/*
- 	 * On private mappings, the counter to uncharge reservations is stored
-@@ -107,12 +106,6 @@ struct file_region {
- #endif
- };
- 
--struct hugetlb_vma_lock {
--	struct kref refs;
--	struct rw_semaphore rw_sema;
--	struct vm_area_struct *vma;
--};
--
- extern struct resv_map *resv_map_alloc(void);
- void resv_map_release(struct kref *ref);
- 
-@@ -1277,17 +1270,9 @@ hugetlb_walk(struct vm_area_struct *vma, unsigned long addr, unsigned long sz)
- {
- #if defined(CONFIG_HUGETLB_PAGE) && \
- 	defined(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) && defined(CONFIG_LOCKDEP)
--	struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--	/*
--	 * If pmd sharing possible, locking needed to safely walk the
--	 * hugetlb pgtables.  More information can be found at the comment
--	 * above huge_pte_offset() in the same file.
--	 *
--	 * NOTE: lockdep_is_held() is only defined with CONFIG_LOCKDEP.
--	 */
--	if (__vma_shareable_lock(vma))
--		WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-+	if (vma->vm_file)
-+		WARN_ON_ONCE(!lockdep_is_held(
-+				 &vma->vm_file->f_mapping->invalidate_lock) &&
- 			     !lockdep_is_held(
- 				 &vma->vm_file->f_mapping->i_mmap_rwsem));
- #endif
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 5f8b82e902a8..f726f39df47e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -92,9 +92,6 @@ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
- 
- /* Forward declaration */
- static int hugetlb_acct_memory(struct hstate *h, long delta);
--static void hugetlb_vma_lock_free(struct vm_area_struct *vma);
--static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma);
--static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma);
- static void hugetlb_unshare_pmds(struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end);
- static struct resv_map *vma_resv_map(struct vm_area_struct *vma);
-@@ -264,170 +261,41 @@ static inline struct hugepage_subpool *subpool_vma(struct vm_area_struct *vma)
-  */
- void hugetlb_vma_lock_read(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_read(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		down_read(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_lock_shared(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_unlock_read(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		up_read(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		up_read(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_unlock_shared(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_lock_write(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_write(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		down_write(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_lock(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_unlock_write(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		up_write(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		up_write(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_unlock(vma->vm_file->f_mapping);
- }
- 
- int hugetlb_vma_trylock_write(struct vm_area_struct *vma)
- {
- 
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		return down_write_trylock(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		return down_write_trylock(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		return filemap_invalidate_trylock(vma->vm_file->f_mapping);
- 
- 	return 1;
- }
- 
- void hugetlb_vma_assert_locked(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		lockdep_assert_held(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		lockdep_assert_held(&resv_map->rw_sema);
--	}
--}
--
--void hugetlb_vma_lock_release(struct kref *kref)
--{
--	struct hugetlb_vma_lock *vma_lock = container_of(kref,
--			struct hugetlb_vma_lock, refs);
--
--	kfree(vma_lock);
--}
--
--static void __hugetlb_vma_unlock_write_put(struct hugetlb_vma_lock *vma_lock)
--{
--	struct vm_area_struct *vma = vma_lock->vma;
--
--	/*
--	 * vma_lock structure may or not be released as a result of put,
--	 * it certainly will no longer be attached to vma so clear pointer.
--	 * Semaphore synchronizes access to vma_lock->vma field.
--	 */
--	vma_lock->vma = NULL;
--	vma->vm_private_data = NULL;
--	up_write(&vma_lock->rw_sema);
--	kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--}
--
--static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
--{
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		__hugetlb_vma_unlock_write_put(vma_lock);
--	} else {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		/* no free for anon vmas, but still need to unlock */
--		up_write(&resv_map->rw_sema);
--	}
--}
--
--static void hugetlb_vma_lock_free(struct vm_area_struct *vma)
--{
--	/*
--	 * Only present in sharable vmas.
--	 */
--	if (!vma || !__vma_shareable_lock(vma))
--		return;
--
--	if (vma->vm_private_data) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_write(&vma_lock->rw_sema);
--		__hugetlb_vma_unlock_write_put(vma_lock);
--	}
--}
--
--static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma)
--{
--	struct hugetlb_vma_lock *vma_lock;
--
--	/* Only establish in (flags) sharable vmas */
--	if (!vma || !(vma->vm_flags & VM_MAYSHARE))
--		return;
--
--	/* Should never get here with non-NULL vm_private_data */
--	if (vma->vm_private_data)
--		return;
--
--	vma_lock = kmalloc(sizeof(*vma_lock), GFP_KERNEL);
--	if (!vma_lock) {
--		/*
--		 * If we can not allocate structure, then vma can not
--		 * participate in pmd sharing.  This is only a possible
--		 * performance enhancement and memory saving issue.
--		 * However, the lock is also used to synchronize page
--		 * faults with truncation.  If the lock is not present,
--		 * unlikely races could leave pages in a file past i_size
--		 * until the file is removed.  Warn in the unlikely case of
--		 * allocation failure.
--		 */
--		pr_warn_once("HugeTLB: unable to allocate vma specific lock\n");
--		return;
--	}
--
--	kref_init(&vma_lock->refs);
--	init_rwsem(&vma_lock->rw_sema);
--	vma_lock->vma = vma;
--	vma->vm_private_data = vma_lock;
-+	if (vma->vm_file)
-+		lockdep_assert_held(&vma->vm_file->f_mapping->invalidate_lock);
- }
- 
- /* Helper that removes a struct file_region from the resv_map cache and returns
-@@ -1100,7 +968,6 @@ struct resv_map *resv_map_alloc(void)
- 	kref_init(&resv_map->refs);
- 	spin_lock_init(&resv_map->lock);
- 	INIT_LIST_HEAD(&resv_map->regions);
--	init_rwsem(&resv_map->rw_sema);
- 
- 	resv_map->adds_in_progress = 0;
- 	/*
-@@ -1195,22 +1062,11 @@ void hugetlb_dup_vma_private(struct vm_area_struct *vma)
- 	VM_BUG_ON_VMA(!is_vm_hugetlb_page(vma), vma);
- 	/*
- 	 * Clear vm_private_data
--	 * - For shared mappings this is a per-vma semaphore that may be
--	 *   allocated in a subsequent call to hugetlb_vm_op_open.
--	 *   Before clearing, make sure pointer is not associated with vma
--	 *   as this will leak the structure.  This is the case when called
--	 *   via clear_vma_resv_huge_pages() and hugetlb_vm_op_open has already
--	 *   been called to allocate a new structure.
- 	 * - For MAP_PRIVATE mappings, this is the reserve map which does
- 	 *   not apply to children.  Faults generated by the children are
- 	 *   not guaranteed to succeed, even if read-only.
- 	 */
--	if (vma->vm_flags & VM_MAYSHARE) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		if (vma_lock && vma_lock->vma != vma)
--			vma->vm_private_data = NULL;
--	} else
-+	if (!(vma->vm_flags & VM_MAYSHARE))
- 		vma->vm_private_data = NULL;
- }
- 
-@@ -4846,25 +4702,6 @@ static void hugetlb_vm_op_open(struct vm_area_struct *vma)
- 		resv_map_dup_hugetlb_cgroup_uncharge_info(resv);
- 		kref_get(&resv->refs);
- 	}
--
--	/*
--	 * vma_lock structure for sharable mappings is vma specific.
--	 * Clear old pointer (if copied via vm_area_dup) and allocate
--	 * new structure.  Before clearing, make sure vma_lock is not
--	 * for this vma.
--	 */
--	if (vma->vm_flags & VM_MAYSHARE) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		if (vma_lock) {
--			if (vma_lock->vma != vma) {
--				vma->vm_private_data = NULL;
--				hugetlb_vma_lock_alloc(vma);
--			} else
--				pr_warn("HugeTLB: vma_lock already exists in %s.\n", __func__);
--		} else
--			hugetlb_vma_lock_alloc(vma);
--	}
- }
- 
- static void hugetlb_vm_op_close(struct vm_area_struct *vma)
-@@ -4875,8 +4712,6 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
- 	unsigned long reserve, start, end;
- 	long gbl_reserve;
- 
--	hugetlb_vma_lock_free(vma);
--
- 	resv = vma_resv_map(vma);
- 	if (!resv || !is_vma_resv_set(vma, HPAGE_RESV_OWNER))
- 		return;
-@@ -5446,24 +5281,8 @@ void __hugetlb_zap_begin(struct vm_area_struct *vma,
- void __hugetlb_zap_end(struct vm_area_struct *vma,
- 		       struct zap_details *details)
- {
--	zap_flags_t zap_flags = details ? details->zap_flags : 0;
--
--	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
--		/*
--		 * Unlock and free the vma lock before releasing i_mmap_rwsem.
--		 * When the vma_lock is freed, this makes the vma ineligible
--		 * for pmd sharing.  And, i_mmap_rwsem is required to set up
--		 * pmd sharing.  This is important as page tables for this
--		 * unmapped range will be asynchrously deleted.  If the page
--		 * tables are shared, there will be issues when accessed by
--		 * someone else.
--		 */
--		__hugetlb_vma_unlock_write_free(vma);
--		i_mmap_unlock_write(vma->vm_file->f_mapping);
--	} else {
--		i_mmap_unlock_write(vma->vm_file->f_mapping);
--		hugetlb_vma_unlock_write(vma);
--	}
-+	i_mmap_unlock_write(vma->vm_file->f_mapping);
-+	hugetlb_vma_unlock_write(vma);
- }
- 
- void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
-@@ -6706,12 +6525,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
- 		return false;
- 	}
- 
--	/*
--	 * vma specific semaphore used for pmd sharing and fault/truncation
--	 * synchronization
--	 */
--	hugetlb_vma_lock_alloc(vma);
--
- 	/*
- 	 * Only apply hugepage reservation if asked. At fault time, an
- 	 * attempt will be made for VM_NORESERVE to allocate a page
-@@ -6834,7 +6647,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
- 	hugetlb_cgroup_uncharge_cgroup_rsvd(hstate_index(h),
- 					    chg * pages_per_huge_page(h), h_cg);
- out_err:
--	hugetlb_vma_lock_free(vma);
- 	if (!vma || vma->vm_flags & VM_MAYSHARE)
- 		/* Only call region_abort if the region_chg succeeded but the
- 		 * region_add failed or didn't run.
-@@ -6904,13 +6716,10 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
- 	/*
- 	 * match the virtual addresses, permission and the alignment of the
- 	 * page table page.
--	 *
--	 * Also, vma_lock (vm_private_data) is required for sharing.
- 	 */
- 	if (pmd_index(addr) != pmd_index(saddr) ||
- 	    vm_flags != svm_flags ||
--	    !range_in_vma(svma, sbase, s_end) ||
--	    !svma->vm_private_data)
-+	    !range_in_vma(svma, sbase, s_end))
- 		return 0;
- 
- 	return saddr;
-@@ -6930,8 +6739,6 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
- 	 */
- 	if (!(vma->vm_flags & VM_MAYSHARE))
- 		return false;
--	if (!vma->vm_private_data)	/* vma lock required for sharing */
--		return false;
- 	if (!range_in_vma(vma, start, end))
- 		return false;
- 	return true;
+diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_duplicate_context_creation.sh b/tools/testing/selftests/damon/debugfs_duplicate_context_creation.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_empty_targets.sh b/tools/testing/selftests/damon/debugfs_empty_targets.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_huge_count_read_write.sh b/tools/testing/selftests/damon/debugfs_huge_count_read_write.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_rm_non_contexts.sh b/tools/testing/selftests/damon/debugfs_rm_non_contexts.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_schemes.sh b/tools/testing/selftests/damon/debugfs_schemes.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_target_ids.sh b/tools/testing/selftests/damon/debugfs_target_ids.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/lru_sort.sh b/tools/testing/selftests/damon/lru_sort.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/reclaim.sh b/tools/testing/selftests/damon/reclaim.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/sysfs.sh b/tools/testing/selftests/damon/sysfs.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh b/tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh
+old mode 100644
+new mode 100755
 -- 
-2.41.0
+2.39.2
 
