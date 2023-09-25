@@ -2,127 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1DE7AD325
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3145C7AD328
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbjIYISR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S232616AbjIYISb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjIYISP (ORCPT
+        with ESMTP id S232665AbjIYIS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:18:15 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE122CC0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:18:08 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59f7cc71e2eso14934157b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695629888; x=1696234688; darn=vger.kernel.org;
-        h=mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NBmOlGTl5TRsP+Q0MLYqRc364ZkZEmNojcMBhSc9Luo=;
-        b=QFEIUnzat192jRh6l59PXjdvzxEXJ+aHHsmItlIwRQcJbcq5UCgpPAGhmHem6nAw3j
-         cgIP6DgyMDCPnfj5/L5lSq3oUfAMCJNWWfqP2cF4zIjV1/8t5uS5oh8y8MBZSJu/FWdc
-         3Ny4LPMcP2QexmYStjkAwZu7pcy8SzFS7eRKTepY5aEdZc6pXQEuuhMAw7+KW/OcA4x1
-         2obuvpSYlR2f10yl6T6w/Sk0/ureI62NSaYna/v4hIget70+28xdEX9wGsbaoiVY4Igt
-         ieo3e1Jpm81VEghoetHXzjYDGAwhwUAYjY2GNCZbP1YDAxfsKr2SpKIrjvxvKjQdfQrZ
-         LQRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695629888; x=1696234688;
-        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NBmOlGTl5TRsP+Q0MLYqRc364ZkZEmNojcMBhSc9Luo=;
-        b=roZEnP8Lw8JOHFm25hgKxOEmAMjC+DAajoL5Clg6qLoYmsQ3ty6Upz8DrBPcguYMx/
-         8TzJbUJuBY/titysKgUMkZe6C1EJ0vQaR/ZW0FcziMEPktOX0xtAKeWr21jxmgadkUh2
-         tDPVrdOltCNCXsxkUMAK2yrlcfKDGH1xVSgtzs/FGm3Vioekb1Zr47JHBh8/n2AIcvB0
-         +PtjPWv3Nal9vhko8o5opxr4TzcMIcMZrxJCUkiZf/oBrm4qRFZ9Kbe1QlAITYsixk2T
-         gxl+tIcFZJ1OvW3RLfj7y5fsvmVPnLhQVbyBz1clOT2PXiEhaI6BlY6J7Hap486rfBrg
-         tX2Q==
-X-Gm-Message-State: AOJu0Yz38QLenlI0HFLR4z2oAet0LbuEfCN1+93YBa+1zSHSigvtglKI
-        qTy+R9+X4WDyQT5SjUpnj9BL+w==
-X-Google-Smtp-Source: AGHT+IHk64F5xQuSLEF9sz4jxS2L97eNKDzUKnZl1CJ4U3doCZv5KJbiwxw4GXizbkI9eoylPyi6+A==
-X-Received: by 2002:a81:4e42:0:b0:59b:14ca:4316 with SMTP id c63-20020a814e42000000b0059b14ca4316mr5843751ywb.43.1695629887900;
-        Mon, 25 Sep 2023 01:18:07 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x187-20020a81a0c4000000b0058c55d40765sm2267762ywg.106.2023.09.25.01.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 01:18:06 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 01:17:51 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 00/12] mempolicy: cleanups leading to NUMA mpol without vma
-Message-ID: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
+        Mon, 25 Sep 2023 04:18:27 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DC7E73
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:18:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LvmdatgX4CQVCy6LBbFwmoIafqCE1fPegSCAtFsohoAqXI6jrBSAcY4zMxImZZR9jqUUDCyoGgcw/0/TWEl9DhQ8n2NnTMW1lFfn4QmM4OjAJ69jdxQ4CMrtHlnOHtFdMbr0tXKtQlCBAnRyDpkB8Kotvyh8lGx3AetxR1wGs4HJJ2NgQRL+Jo8pUn39PcO4VvyJYIQBI0IlelgSGhVb/gNI4/yrcfrRYK6DkqPNFCH5UroKZkELrrEfMjuFf1Rj4qHko/z01+4dtydUxiuOgdfo6gQFyZZ46OERn2E+L+9nXYdS7rcobGeLkWNN8fcKZTAtqNZp4zbDaZtAZhFmKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bzMfrURqQjlqbBcs9MBTXo1dmQpen9EUPgS5JdkirTo=;
+ b=LF4SfB/sd7bM9jN98SVUo9IZpUE8MO6lCHWCj8Z96f+qXszy9L2um2I5pVDcuPkAT4kGPMxzPCPAGiCF5+B3sx0F1rk7EQT6ZxGp9HOQIUO0p1IDJVETF+Gb9QbSwckMRF3wRFpAauwcKI0T/zqDZ6e0yxWE/ujh04S9vsN4ctvkbgAQvxINJrKmULXdl9H1k6B6oadKPaUfRaqh8P1HM2XHLJPZRBOM0SEUzUAlaBOpiG24KD5kGB7NPsY6ZSkkweq/YU2t0XxhXMv31v/yTRHiLpttXWqjZRuyWGaaAmzsh1HLu1ytEZk6jA/XGT9NsmOQbYnRE9lGWg6uaSbuvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bzMfrURqQjlqbBcs9MBTXo1dmQpen9EUPgS5JdkirTo=;
+ b=gj6p7oi3Hv9FNR9IC/3z8GJVeAQbBkgy2o8OyinWzXQLqxhFz0gmjr2VTex+i5FKi4MdeBQVsZsAc35YBpCW4G9iiVTdvAEV8LFyoJoyf79bZOf6HThIRb3k6nk/LLf3lsGD2rUT5FmAUF3oEOk5RQsC+WIddl7v8FkxiHlD69o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW6PR12MB8898.namprd12.prod.outlook.com (2603:10b6:303:246::8)
+ by DM6PR12MB4926.namprd12.prod.outlook.com (2603:10b6:5:1bb::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 08:18:19 +0000
+Received: from MW6PR12MB8898.namprd12.prod.outlook.com
+ ([fe80::a67a:d5d:8219:56ce]) by MW6PR12MB8898.namprd12.prod.outlook.com
+ ([fe80::a67a:d5d:8219:56ce%3]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 08:18:19 +0000
+Date:   Mon, 25 Sep 2023 16:18:07 +0800
+From:   Lang Yu <Lang.Yu@amd.com>
+To:     Juntong Deng <juntong.deng@outlook.com>
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        aurabindo.pillai@amd.com, shiwu.zhang@amd.com,
+        Bhawanpreet.Lakha@amd.com, harry.wentland@amd.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amdgpu: Add description for AMD_IP_BLOCK_TYPE_VPE
+Message-ID: <ZRFCP23GbTLjig5u@lang-desktop>
+References: <VI1P193MB07528C2081A3A8BBDFAF2BED99FDA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VI1P193MB07528C2081A3A8BBDFAF2BED99FDA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-ClientProxiedBy: PS2PR02CA0050.apcprd02.prod.outlook.com
+ (2603:1096:300:5a::14) To MW6PR12MB8898.namprd12.prod.outlook.com
+ (2603:10b6:303:246::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW6PR12MB8898:EE_|DM6PR12MB4926:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f8aaaa3-d41c-4852-8543-08dbbd9ff95e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1ljQkcsQNwHsHplr36qkKvzteJrOscPShPM7WaCH9F78oo0vxo1SpXZilKoJFlmneSK+JrMOKX0y2nwNuAmeDEJIKo7c/UB1HW8gQ4d4vFDtKzrdy+QGtBfJVMXVkeDSGPOiC4DEHRWbZboauHA0eDOQULuOKPyAAZ3TCRX9kF+pWI0zGtKeIW3HUN2Bc3o2FZ53hr3WqZe1kpw0Xi+wphn01l9Ei/f8AJNCuk48WXiQy1Ell3Mt9DQ7G9EZbxu/t/QOBL117MBiVm1aCbQ8K0GYot8hVxDySQHh7Ybaa5336IsHjQRsFRth1296P8LTqPLUSnOFLwswd31msz6BEyNbzlvLAJfkLoRTR+7pFNO8x9V94g5UujUD4bHEUZOfF08IZU3CJR2OXO0zrfH7x7yIJQNzO4lNIvPkmfQ3GrHlGmmkryccJGZXyZfjlBm+aaQjsJ6h02bSgiyaPW0AXEqVkgoWxLesJcdS4F+gMAefPiV2E9qPSkySzcsvM04ARIELn7A1bX82AyzMLjcq9bywkXbaXAe/GbJe6+ZAFgH3PlWkLRN7hFunAbDC62rv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW6PR12MB8898.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(396003)(136003)(346002)(376002)(230922051799003)(451199024)(186009)(1800799009)(83380400001)(2906002)(5660300002)(316002)(6916009)(41300700001)(8676002)(8936002)(4326008)(66476007)(66556008)(66946007)(86362001)(45080400002)(6486002)(9686003)(6512007)(6666004)(6506007)(26005)(38100700002)(478600001)(33716001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pd/u2xLbVcl7C7Gbo8IFaB59z1RWqBUwSBgQEu0jlOC/NDrAF5wfDOGNRIzl?=
+ =?us-ascii?Q?UKWB+j1LYFxdW7QB6lD8/RWNzbx30wzPYYkPLVlrtQcj9Yl6VqMwxs8EXNKu?=
+ =?us-ascii?Q?rzLgsKv9GCp48+0mQwcjZy4/XbXV4LsV73tNTbV8t5+1fbYsN1NSdvF8TxaM?=
+ =?us-ascii?Q?G93Tgu0BR/bJuxC16QB283NoNb3E9zZvt5Zia+9CyIoK8ddvaWwbcohnVOYA?=
+ =?us-ascii?Q?DEG+FibidPhEwANUD8idO3+NHgGZ3Xl518UdtWCp1JrAzutvzIOV0NKeDfXm?=
+ =?us-ascii?Q?2nHoaFzzwr1NI5BWkYsugFBVLnPsslxcJwTBuqRIbzF+Sg/viasg7GTQNV12?=
+ =?us-ascii?Q?kkLVWVgDP6Yng3V01PVxiHnxDB8QgAfP0OTmXO6fWTMTj3VzmW6WxWmuULCr?=
+ =?us-ascii?Q?WI/bYGB17rmZoxGU09LP/GhP84YKg6W32hKMyRnoCixzqjicurdIUDWVH7bO?=
+ =?us-ascii?Q?yYm4SE2tU7WQjFGojJsl6CUlFMDYDtYT9gURZ+uIIRjYNg5FyXfHB6u4+wYb?=
+ =?us-ascii?Q?mT3nkRN1bqmoEC/0WocILe5CTucGEuzckF0voyBDHcLRMveW2+y/WXNL22Fe?=
+ =?us-ascii?Q?1Ql97EhrCKwYVsv0u0yYNXvWCP5B1bnyu4CbU3orHegPmeRIK7g48f8+Nld3?=
+ =?us-ascii?Q?ofbCKCPbZWpuSzACm8ZoTFJwZZgJSJIqMkG84lUnuXtBgJQHa4whps8R6LEw?=
+ =?us-ascii?Q?0LegOm1M19d02H2p+laK/KQCayJlunD2AKiab6pWG9zH/MmRxA5sxJRfXZFv?=
+ =?us-ascii?Q?O1u3Cd65XA4R9xNOJYcXWEF3q7aytjlN2/KrEgL57YhwiSKSUGynPzOnzGFU?=
+ =?us-ascii?Q?0P20RtfpHyWVkKswsKTZoRjTyDdRCGCC/MZfH0DNS647Pleabea4jdkXth/7?=
+ =?us-ascii?Q?5R3AYKR72zpUo8seJzTtQDuN+CtLxcVdSTGdxW5CIi1nu4aZRBqaCdK/YmE/?=
+ =?us-ascii?Q?QkP+3g9UuQOY2hu2qI6B1T7m0xyhIY1zXlZQnLUhLyTOH9SevgSdDJ46Pjgs?=
+ =?us-ascii?Q?Bgf1r4UmqJX41N4Q07R98ILQEduKaaUdaRmOtys/GBY+WTjdSl4MXp/YiDhG?=
+ =?us-ascii?Q?HibGrelIT7HYlOpN39QPI9Spix67K2QZLLYYWJmKVpgi/GYmUQd4HOY7AcxS?=
+ =?us-ascii?Q?GZvi1qkK8Rwj3mHI+yVgGRxqF3dPBOGl298CzMzz08KSYJ3lUuTNZkl9VmZ1?=
+ =?us-ascii?Q?1zN2OHVRL1/r1MI5+aaqYQuxx3ppuOpO+pvY9b3qFFT/N8JzKFLZobxJVaGx?=
+ =?us-ascii?Q?4aRElwelUdS0uGILX1zg4HdF0Bly9bEmmyE13Jrs/qvJVAAunGuo7+6j9PAh?=
+ =?us-ascii?Q?7/cOl7phUvNAgnyTjOLG8PDNIh9NFmxEoVnB2FDgyQQkPp9HUxE0tgQch2F3?=
+ =?us-ascii?Q?3edQXZg05QDcsfo68MPM+uXx6MzZULQwttFqsVUnlAiTWyRuFXDVq9SU4lRH?=
+ =?us-ascii?Q?4ju0zRewI28Q6eCO5XC33j7Repjy4Db2Hbt1A4m+JYqESAqgmimATRNUSA9+?=
+ =?us-ascii?Q?CGmHLx7gN5W+tPtOfEt4VXzszmzBObBC3BixDifVKAqtGootTrDSZGAVpYn8?=
+ =?us-ascii?Q?YCbfNoGHh/Y/8u0E47XXfZAuwiO+OL+7mlQaO3LE?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f8aaaa3-d41c-4852-8543-08dbbd9ff95e
+X-MS-Exchange-CrossTenant-AuthSource: MW6PR12MB8898.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 08:18:18.7280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3pmGjq+skjkV9jUlB0GW4YpyGBwgkDnTDerlJLPYslpWQuRJUISIHpurxWU0/nQBB075TxY8y+CtWHdyznsaFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4926
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a series of patches based on v6.6-rc3: mostly cleanups in
-mm/mempolicy.c, but finally removing the pseudo-vma from shmem folio
-allocation, and removing the mmap_lock around folio migration for
-mbind and migrate_pages syscalls.
+On 09/24/ , Juntong Deng wrote:
+> AMD_IP_BLOCK_TYPE_VPE is a new IP BLOCK type for Video Processing Engine,
+> but currently lacks description.
+> 
+> Fix the documentation warning:
+> warning: Enum value 'AMD_IP_BLOCK_TYPE_VPE' not described in
+> enum 'amd_ip_block_type'
+> 
+> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 
-Applies cleanly to any v6.6-rc so far, but not quite to mm-unstable or
-linux-next: a couple of rejects in mm/mempolicy.c (clashing with the
-vma_start_write() in do_mbind() and the foliation in mpol_misplaced())
-and in mm/swap_state.c (clashing with zswap mods).  Adjustments will
-also be needed if hugetlb page->index changes to PAGE_SIZE: interleave
-has to co-operate with that.  After some review, a v2 will probably be
-issued, based then on mm-unstable.
+Thanks!
 
-01/12 hugetlbfs: drop shared NUMA mempolicy pretence
-02/12 kernfs: drop shared NUMA mempolicy hooks
-03/12 mempolicy: fix migrate_pages(2) syscall return
-04/12 mempolicy trivia: delete those ancient pr_debug()s
-05/12 mempolicy trivia: slightly more consistent naming
-06/12 mempolicy trivia: use pgoff_t in shared mempolicy tree
-07/12 mempolicy: mpol_shared_policy_init() without pseudo-vma
-08/12 mempolicy: remove confusing MPOL_MF_LAZY dead code
-09/12 mm: add page_rmappable_folio() wrapper
-10/12 mempolicy: alloc_pages_mpol() for NUMA policy without vma
-11/12 mempolicy: mmap_lock is not needed while migrating folios
-12/12 mempolicy: migration attempt to match interleave nodes
+Reviewed-by: Lang Yu <lang.yu@amd.com>
 
- fs/hugetlbfs/inode.c           |  41 +-
- fs/kernfs/file.c               |  49 --
- fs/proc/task_mmu.c             |   5 +-
- include/linux/gfp.h            |  10 +-
- include/linux/huge_mm.h        |  13 +
- include/linux/hugetlb.h        |  11 -
- include/linux/mempolicy.h      |  36 +-
- include/linux/mm.h             |   2 +-
- include/uapi/linux/mempolicy.h |   2 +-
- ipc/shm.c                      |  21 +-
- mm/hugetlb.c                   |  38 +-
- mm/mempolicy.c                 | 952 ++++++++++++++++-------------------
- mm/page_alloc.c                |   8 +-
- mm/shmem.c                     | 102 ++--
- mm/swap.h                      |   9 +-
- mm/swap_state.c                |  86 ++--
- 16 files changed, 617 insertions(+), 768 deletions(-)
-
-Hugh
+> ---
+>  drivers/gpu/drm/amd/include/amd_shared.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/amd/include/amd_shared.h b/drivers/gpu/drm/amd/include/amd_shared.h
+> index 63e2153c00c4..314fd44ec018 100644
+> --- a/drivers/gpu/drm/amd/include/amd_shared.h
+> +++ b/drivers/gpu/drm/amd/include/amd_shared.h
+> @@ -83,6 +83,7 @@ enum amd_apu_flags {
+>  * @AMD_IP_BLOCK_TYPE_VCN: Video Core/Codec Next
+>  * @AMD_IP_BLOCK_TYPE_MES: Micro-Engine Scheduler
+>  * @AMD_IP_BLOCK_TYPE_JPEG: JPEG Engine
+> +* @AMD_IP_BLOCK_TYPE_VPE: Video Processing Engine
+>  * @AMD_IP_BLOCK_TYPE_UMSCH_MM: User Mode Schduler for Multimedia
+>  * @AMD_IP_BLOCK_TYPE_NUM: Total number of IP block types
+>  */
+> -- 
+> 2.39.2
+> 
