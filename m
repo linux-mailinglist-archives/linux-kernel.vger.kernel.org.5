@@ -2,113 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 063237AD6B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186C97AD6B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjIYLIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        id S230401AbjIYLJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjIYLIl (ORCPT
+        with ESMTP id S230341AbjIYLIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:08:41 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3ACC0;
-        Mon, 25 Sep 2023 04:08:35 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57b72cef02bso2620197eaf.2;
-        Mon, 25 Sep 2023 04:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695640114; x=1696244914; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KhksRDH5+3gqX7xxC5k77QH+a4l6ggBxkAUvbHIGKz0=;
-        b=nEQLn/FDGU+Iop6gChSODERS3OcXfZmBewzE+Y1vdp5NPoKv2C9GwO6b2iv6p3FXb/
-         AbrOpukAzvCXxEssVjmVvkXZ/XPViYgW8guqngZSQ4oKvODeEZ63NqezU5L32SL4t8Ig
-         J19UOUYBOsF8ny/Uuz0Zr8jmo7wxo2LW0mOqwV1ZLW4K/y5AF6CzI780jFXmlnjk23XU
-         l0K54k9K8uFtdmvgaw7f30yNsnMr8TrCG5GIqqX/RKyC/8eIWZzno8rkldPQep5TWjqV
-         jPpMWaU/PLpVo3NjZBQYzny1wl33z2h6Tz8l2HExoqqmZeEz+fx5Dg8JKzg69ApYhbFL
-         FMpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695640114; x=1696244914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KhksRDH5+3gqX7xxC5k77QH+a4l6ggBxkAUvbHIGKz0=;
-        b=YeprHjTkbZUdADGe9NKzaaS+cBwA61rVXiahdWDjp7mc6ghsFjum3BgmeKPJFYxpUD
-         Ua4CPMNgV2FvgTZuRb5CfD3hiEn+f7f25We+0Aqj7FzDHwdBQG7NexFh+41G8dFyLbQs
-         fMs12uAmTYPZeEQguxkhQhrtX485PTvmKq+3CmfCqaLfuZh7WkCP0/iUqs2bNqJUHWD8
-         JYjctfrfzMs4fHkToCpRPCkYfBgOFWeoUXUHGL8UyPGwXUOxX/EEKtak1GW1dXirGFE8
-         WpUgB4M5GWoi0V3vDVLV5vdjgCbJ+ETNxVnLIp59Iy9yfz+sGc3zjoJS+Jk/st+cqShe
-         +siQ==
-X-Gm-Message-State: AOJu0YxxATgr/uB8dMk5cwM8AHjdyazxYJ0DtHZahki3OhhAhOLyYVj8
-        bvQY+uX8cQNv5qxvdWBE29fcGKzzIFinLcfAV08=
-X-Google-Smtp-Source: AGHT+IFBgmxC31xNGXnzyqamskZ+s2s9UQR4bCjAqXcXs6+kWLWrWojSJeEx88cBC3xxQ/DWK8+ElGzFm+N4jg4xWsE=
-X-Received: by 2002:a4a:6c03:0:b0:57b:cbc2:79ff with SMTP id
- q3-20020a4a6c03000000b0057bcbc279ffmr1999532ooc.4.1695640114280; Mon, 25 Sep
- 2023 04:08:34 -0700 (PDT)
+        Mon, 25 Sep 2023 07:08:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78906D3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695640124; x=1727176124;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=9p+XqtzXvIJ3hJIh/2hgy3YcmayjqQFoFDHhEcEBbDk=;
+  b=KmHHfcb5g91IPuWi6XO94KkeSowm8yY0aWCV8q3zLwsfYAEF5K8UPCkv
+   n9mNbrkuu92qHjzGQPkPUMnk9wOtgQS5h+6WWJN+1kG92rwMk6uvPJ8C4
+   3itvL9SGHVbhGDADYffqVCFxfiuCofCHIUpmOMgKKJeC65asKJrXStVYV
+   wZ8efo6QVHSlvB9ARotFZzeu5lkrawehWsca6wJm42cO8wxTAtSQca5n9
+   vidopMgvxU8lk/YlUm4sIjh2SHNOz5Wk91kEzIKWYw4IsW9ligtoOO+/v
+   WXwmTxfEgxxvxAe/8kAcpaI4ssN+IuL/Jj8++d1wr2COXCRZCU0cp6iaS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="467510679"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="467510679"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 04:08:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="838536484"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="838536484"
+Received: from smgotth-mobl.ger.corp.intel.com (HELO localhost) ([10.252.40.46])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 04:08:27 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Robert Foss <rfoss@kernel.org>,
+        Yang Li <yang.lee@linux.alibaba.com>
+Cc:     neil.armstrong@linaro.org, jonas@kwiboo.se,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        jernej.skrabec@gmail.com, Laurent.pinchart@ideasonboard.com,
+        andrzej.hajda@intel.com
+Subject: Re: [PATCH -next] drm/bridge: clean up some inconsistent indentings
+In-Reply-To: <CAN6tsi44s3h3Ox3mK2pi+Mw8pGCB9fgMcoWmJhCenHoK9=t=-w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230920004400.81091-1-yang.lee@linux.alibaba.com>
+ <CAN6tsi44s3h3Ox3mK2pi+Mw8pGCB9fgMcoWmJhCenHoK9=t=-w@mail.gmail.com>
+Date:   Mon, 25 Sep 2023 14:08:25 +0300
+Message-ID: <87a5tao6hi.fsf@intel.com>
 MIME-Version: 1.0
-References: <20230924222559.2038721-1-andreas@kemnade.info> <20230924222559.2038721-3-andreas@kemnade.info>
-In-Reply-To: <20230924222559.2038721-3-andreas@kemnade.info>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 25 Sep 2023 14:07:58 +0300
-Message-ID: <CAHp75VfvmED4ZsmrH4B6m9kGsH=68-zjQd5JMszb6UBTtbF0bw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] iio: imu: mpu6050: add level shifter flag
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        bcousson@baylibre.com, tony@atomide.com,
-        jean-baptiste.maneyrol@tdk.com, chenhuiz@axis.com,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 1:26=E2=80=AFAM Andreas Kemnade <andreas@kemnade.in=
-fo> wrote:
+On Mon, 25 Sep 2023, Robert Foss <rfoss@kernel.org> wrote:
+> NAK
+
+Feels a bit harsh.
+
+> Personally I value maintaining a simple to follow `git blame` history
+> over correcting indentation.
 >
-> Some boards fail in magnetometer probe if flag is not set.
+> Ideally bad indentation should never be committed in the first place.
 
-Which flag? Can you elaborate a bit more?
+Agreed, but when that inevitably happens, do you really want it to be
+cast in stone? To me leaving bad indent (or style, or whatever) in place
+indicates we don't care, while the opposite is true.
 
-Does it deserve the Fixes tag?
+Maybe look into tooling that lets you easily git blame the parent commit
+of a line in git blame? (For example, in emacs vc-annotate, it's just a
+matter of hitting 'a'.)
 
-...
 
->         unsigned int val;
->         int ret;
+BR,
+Jani.
 
-> +       ret =3D regmap_update_bits(st->map, 0x1, 0x80,
-> +                                st->level_shifter ? 0x80 : 0);
 
-This is a bit cryptic, what does 1 stand for?
+>
+> On Wed, Sep 20, 2023 at 2:44=E2=80=AFAM Yang Li <yang.lee@linux.alibaba.c=
+om> wrote:
+>>
+>> drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:336 dw_hdmi_cec_suspend() =
+warn: inconsistent indenting
+>>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>> ---
+>>  drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu=
+/drm/bridge/synopsys/dw-hdmi-cec.c
+>> index 673661160e54..fe2ff4984fc5 100644
+>> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+>> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+>> @@ -333,9 +333,9 @@ static int __maybe_unused dw_hdmi_cec_suspend(struct=
+ device *dev)
+>>         struct dw_hdmi_cec *cec =3D dev_get_drvdata(dev);
+>>
+>>         /* store interrupt status/mask registers */
+>> -        cec->regs_polarity =3D dw_hdmi_read(cec, HDMI_CEC_POLARITY);
+>> -        cec->regs_mask =3D dw_hdmi_read(cec, HDMI_CEC_MASK);
+>> -        cec->regs_mute_stat0 =3D dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STA=
+T0);
+>> +       cec->regs_polarity =3D dw_hdmi_read(cec, HDMI_CEC_POLARITY);
+>> +       cec->regs_mask =3D dw_hdmi_read(cec, HDMI_CEC_MASK);
+>> +       cec->regs_mute_stat0 =3D dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT=
+0);
+>>
+>>         return 0;
+>>  }
+>> --
+>> 2.20.1.7.g153144c
+>>
 
-Also
-
-  unsigned int mask =3D BIT(7);
-  ...
-  val =3D st->level_shifter ? mask : 0;
-
-> +       if (ret)
-> +               return ret;
-
-...
-> +       st->level_shifter =3D device_property_present(dev,
-> +                                                   "invensense,level-shi=
-fter");
-
-It was a recommendation to use _read_bool() when reading the value,
-while the result will be the same.
-
---
-With Best Regards,
-Andy Shevchenko
+--=20
+Jani Nikula, Intel
