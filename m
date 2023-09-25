@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FACB7AD5AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10397AD5B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjIYKQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        id S230419AbjIYKRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjIYKQh (ORCPT
+        with ESMTP id S229564AbjIYKRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:16:37 -0400
+        Mon, 25 Sep 2023 06:17:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FFF9F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:16:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DC835C433C7;
-        Mon, 25 Sep 2023 10:16:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED309F;
+        Mon, 25 Sep 2023 03:17:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BC36C433C8;
+        Mon, 25 Sep 2023 10:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695636990;
-        bh=KVvlpa4bYGBggQD4XcK3KvcDv12hAr51NXqGZaUuzMg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ibImPGBafs9tjLpDiOv/cHZ68mLPdBE6XI97Mr/1zsVjV5c3jqm5nowXINFXMSoeX
-         UmGH72RSAmBb9yizxk3KXUgcv8PYRYXU4wkNmO7O9uyZA/rDU0f3VVpAqXCn86ebWO
-         QdZtg5AjADSsHU95ondSQWLU0AbEBQqVDP8ecFcxEFw3hkfOEW/ED5sLAtxiSkmZCR
-         ue8dOudRyk9ivqfLIMvc6l11ZIIpEd1p7hfXQgskDb8/8dqHngVWD5IWGZlkG3Hsfu
-         8dTMFz0dmzw0wHhbhklJWvZKfC8rnnO+RvgKowFEBg3GWz6pIBUAZOJDp8Pe6tm0Ex
-         DzzLz8qoIGLjQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BCD46E29B00;
-        Mon, 25 Sep 2023 10:16:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1695637037;
+        bh=iRlJHmpvIWYSQoj21tvtV2DoXT4u3L4h+gWlWYry4PM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NIfRXmW1lLGxqAV/3eDoSAlnVOJLZ47aAU/jKqo58kbnYax2KcWGFD2loAF340lGJ
+         sFIB23H5PgnpEhlFlj1gFBkIhw+0As+UPG1MLX3Gj1H4jM6VkUOyRkf8tv/GeGI9HH
+         wZDSUZTCY+UdvbGFdSFtWPzEEcVKwfLOSNpiYUm2U8/MPSCmqp2waTGLv3H+UJJZre
+         ARpA0/puvMLsKXBC5yWqfaH770rGku8aA3R7DBpURcYI1Iihb0mjWqqTZ4HzIutDX+
+         DggWMd4j+g2WtmHR5gnN0TvTiLkHmayeP81udlLo8BZsmg9sPvcH97J0augzlIDXyD
+         xcklk5YYnYzOg==
+Message-ID: <9b81a1f52b4dc777dbb5259b2e12e90eba0ff507.camel@kernel.org>
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>, Christian Brauner <brauner@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Mon, 25 Sep 2023 06:17:14 -0400
+In-Reply-To: <169559548777.19404.13247796879745924682@noble.neil.brown.name>
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+        , <20230924-mitfeiern-vorladung-13092c2af585@brauner>
+         <169559548777.19404.13247796879745924682@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] platform/chrome: wilco_ec: Annotate struct ec_event_queue
- with __counted_by
-From:   patchwork-bot+chrome-platform@kernel.org
-Message-Id: <169563699076.31071.3693415146979727291.git-patchwork-notify@kernel.org>
-Date:   Mon, 25 Sep 2023 10:16:30 +0000
-References: <20230922175146.work.219-kees@kernel.org>
-In-Reply-To: <20230922175146.work.219-kees@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     bleung@chromium.org, tzungbi@kernel.org, set_pte_at@outlook.com,
-        dmitry.torokhov@gmail.com, luzmaximilian@gmail.com,
-        u.kleine-koenig@pengutronix.de, gregkh@linuxfoundation.org,
-        jiangjian@cdjrlc.com, chrome-platform@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        hdegoede@redhat.com, lee@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,29 +60,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, 2023-09-25 at 08:44 +1000, NeilBrown wrote:
+> On Sun, 24 Sep 2023, Christian Brauner wrote:
+> > > My initial goal was to implement multigrain timestamps on most major
+> > > filesystems, so we could present them to userland, and use them for
+> > > NFSv3, etc.
+> >=20
+> > If there's no clear users and workloads depending on this other than fo=
+r
+> > the sake of NFS then we shouldn't expose this to userspace. We've tried
+> > this and I'm not convinced we're getting anything other than regression=
+s
+> > out of it. Keep it internal and confined to the filesystem that actuall=
+y
+> > needs this.
+> >=20
+>=20
+> Some NFS servers run in userspace, and they would a "clear user" of this
+> functionality.
+>=20
 
-This patch was applied to chrome-platform/linux.git (for-next)
-by Tzung-Bi Shih <tzungbi@kernel.org>:
+Indeed. Also, all of the programs that we're concerned about breaking
+here (make, rsync, etc.) could benefit from proper fine-grained
+timestamps:
 
-On Fri, 22 Sep 2023 10:51:47 -0700 you wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct ec_event_queue.
-> 
-> [...]
-
-Here is the summary with links:
-  - platform/chrome: wilco_ec: Annotate struct ec_event_queue with __counted_by
-    https://git.kernel.org/chrome-platform/c/1aa8df90f456
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Today, when they see two identical timestamps on files, these programs
+have to assume the worst: rsync has to do the copy, make has to update
+the target, etc. With a real distinguishable fine-grained timestamps,
+these programs would likely be more efficient and some of these unneeded
+operations would be avoided.
+--=20
+Jeff Layton <jlayton@kernel.org>
