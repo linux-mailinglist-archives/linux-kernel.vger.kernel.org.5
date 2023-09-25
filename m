@@ -2,198 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CABC67AD9DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81B87AD9DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbjIYOOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S232195AbjIYOOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbjIYOOq (ORCPT
+        with ESMTP id S232054AbjIYOOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:14:46 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366D8CE;
-        Mon, 25 Sep 2023 07:14:40 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3add255c88aso4061859b6e.1;
-        Mon, 25 Sep 2023 07:14:40 -0700 (PDT)
+        Mon, 25 Sep 2023 10:14:45 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF83A107
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:14:38 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c008d8fd07so107888381fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:14:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695651279; x=1696256079; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MJfyUt1ShfjZl6t8cnVtNZYV0Rqi3aBl3H7mr80x/Gw=;
-        b=JbWQ5Iz/GUZz9GMC8qoI3gy9GFRjgwCAZ4qS84sY4F9B+a/8vDDRrFDUpyGBNMmtYI
-         Fc6wfuRYySfTSfDhM9KnOs/6k0QxO9XL8bQnVXZQaQ4WIyKV+yx8fPoSRGSJ8OOC7nCO
-         2gd4j97YohuNZGLOnBuDVNmfHSJrBdzjCReQpIhwVxdemgNHmqP7AQhaww7ZkH/Sf1ze
-         B+7EU6/1FDBDYP4Shrzj42np3547VTJfcwqj6dMnl3zx/t02nheTJG9iLJuD+iQ2i7bi
-         olWG/yAeK6T4x9ggobE8nrByRrYuuXeRLHfFLTvSdtVmre4c2ENeBwh0TcLrc1sCDsWe
-         D2GQ==
+        d=tuxon.dev; s=google; t=1695651277; x=1696256077; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pdnJlM7JF+2moVzvS9KjkKRpM+IbzLyByhBc3qmxTkk=;
+        b=PKHGfQxGT/tP6UD0QTtbwCY/3v7q9/i5nGv22ya9Ob3Dq+qE1DQYWviKu9WYUQh34V
+         4SUU4Kr83hls+ojtFBPQOMrKF9hnDUVES18U1ShHdSaH6B7Fq8oZg+dP3m5Ts2/5qJ53
+         D1Z5g48lHweCJDC6iz8OlchTM0+0ukPtnrJe33xBmN2ts//jDLBfY1k1C22KoxPxlv+s
+         d99QYKXZNtunN+BU5icdoxp2xI65xnpDhqgH09TRx0orA1dipwprJUrlyHFdnYGAKyHP
+         YGUJkDL26DL7ZcnZoOgl03j6x0GK9a1mIyEUA7yiMKKtWeKPELo6e49srAeGL/4BlLbF
+         /3UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695651279; x=1696256079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MJfyUt1ShfjZl6t8cnVtNZYV0Rqi3aBl3H7mr80x/Gw=;
-        b=TJtdqz9qahgu/Vd9GVYX5gspgktM7sQi+OLl4H4fIaoARYBt01NHsa+x1DfVWDIio0
-         9hoZOajFRzTY9Hq7NHkX0UQag3i8e3HMSsNQ1ZnQ21zjbcyxRR2jAQsICN2KV50XqN1F
-         Gtay9Olrsgh5SM/6NybBSPX05SaJqMZJr/Zh9r8OazCKXaK6bCGMA5DfG/81dNufohgl
-         dj4d+deONp+ylbwnJZDvvpyjlHiSV7qM4k0JNviR1/KMKn3QZV6W0FpbhYfXBLG2+aSL
-         iR0OEtnxqLWGfGGf0x6Up94B01zLLERSFe6z73fddgDp4B0yCtRwlZFBOLkP4W0QTZBE
-         gC8Q==
-X-Gm-Message-State: AOJu0YzoSCghnomtSDg3nDneI1CRjnf6sJ30wMuJj8CT2K3lZIXO6pWz
-        aJ7x8vDO0KpyQHPBXX/Jebh63GrnBz8YJJyVgZk=
-X-Google-Smtp-Source: AGHT+IGzozeIAKQxxu15vnXC4O0U2/wFx2Ttdhu1Ykj7GBRveGIst2ctDf9dvYvaREsBKdttLh7p7tRIuZBiTVLnOX8=
-X-Received: by 2002:a05:6871:c10:b0:1dc:dcf9:18d8 with SMTP id
- ve16-20020a0568710c1000b001dcdcf918d8mr4061353oab.24.1695651279489; Mon, 25
- Sep 2023 07:14:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695651277; x=1696256077;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pdnJlM7JF+2moVzvS9KjkKRpM+IbzLyByhBc3qmxTkk=;
+        b=spqbz4sI0t2p3RyAnajpRa09Qoetl++1tB/M4zr6aTerl+JJ6Bv3/5s6hhhvPyqeWB
+         qMhk9bssG5HnsUVbtNm+/rjE9K2cMNKfY7hl4+3VnLK3Yg+Sj9nwvbXuIzRYZ4wAPjx3
+         4T3bsK0z1e6YD2Mgnk9LyKlGLrcJbb4Y6sGKfw7U4O3Qle3bkYWOJnhiKhmHBSXvJgxl
+         EGRl132T8Upjs+tDBIPNpnrhFIxXX/Tqdrn3UQimgzfa4Phv8H2HYP1WL70y/GNbAo5z
+         XyQSur478p1JZS+TB1QaACbsMSugE9cWJ/wOABphHEmTAaWf+wTYjiPuEKnOJrQIDa1l
+         lK4w==
+X-Gm-Message-State: AOJu0YyukgmviKXnOiyacgyHpkjOY9y/4bcYKZL13ThRGygpq/h8Vu3M
+        OKF/EyUs80yScN+VkVOEx0XViA==
+X-Google-Smtp-Source: AGHT+IGhaYzxMKF7ZSmvAOx7GaYoTLNfcicvBe0KzT7q28wHCznj4BobprovMg1GbwAPzPjv4Mw60g==
+X-Received: by 2002:a2e:b04c:0:b0:2c0:240:b564 with SMTP id d12-20020a2eb04c000000b002c00240b564mr5478516ljl.15.1695651276877;
+        Mon, 25 Sep 2023 07:14:36 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.177])
+        by smtp.gmail.com with ESMTPSA id n17-20020a170906089100b0099ccee57ac2sm6343849eje.194.2023.09.25.07.14.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 07:14:36 -0700 (PDT)
+Message-ID: <3ad5d3e4-dee1-74b5-6bb2-4a4fa3d2e071@tuxon.dev>
+Date:   Mon, 25 Sep 2023 17:14:34 +0300
 MIME-Version: 1.0
-References: <20230922173110.work.084-kees@kernel.org> <20230922173216.3823169-1-keescook@chromium.org>
- <CADnq5_P2p3bmczci=pU+pG6f9+hqn=-xp1EynP2345CJZRW08w@mail.gmail.com>
- <2635922e-f52a-4e91-40c6-4f1358972786@amd.com> <CADnq5_P1tg2-rWUmsRAy3aPJLT7ZmaZORMSOrPa6t6oSc5xS3g@mail.gmail.com>
-In-Reply-To: <CADnq5_P1tg2-rWUmsRAy3aPJLT7ZmaZORMSOrPa6t6oSc5xS3g@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 25 Sep 2023 10:14:28 -0400
-Message-ID: <CADnq5_P3xDDi-MS2PkAA7paAOQ3f7DQ8+sL6W7O5HcWTFQ0BSg@mail.gmail.com>
-Subject: Re: [PATCH 1/9] drm/amd/pm: Annotate struct smu10_voltage_dependency_table
- with __counted_by
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        David Airlie <airlied@gmail.com>,
-        Tejas Upadhyay <tejas.upadhyay@intel.com>,
-        Emma Anholt <emma@anholt.net>, Tom Rix <trix@redhat.com>,
-        llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Prike Liang <Prike.Liang@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        amd-gfx@lists.freedesktop.org,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        nouveau@lists.freedesktop.org, David Airlie <airlied@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-hardening@vger.kernel.org, Lijo Lazar <lijo.lazar@amd.com>,
-        Yifan Zhang <yifan1.zhang@amd.com>,
-        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        Kevin Wang <kevin1.wang@amd.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Evan Quan <evan.quan@amd.com>, Sean Paul <sean@poorly.run>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>, Le Ma <le.ma@amd.com>,
-        freedreno@lists.freedesktop.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nirmoy Das <nirmoy.das@intel.com>, Lang Yu <Lang.Yu@amd.com>,
-        John Harrison <john.c.harrison@intel.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 3/8] drm: atmel-hlcdc: add LCD controller layer
+ definition for sam9x75
+Content-Language: en-US
+To:     Manikandan Muralidharan <manikandan.m@microchip.com>,
+        sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
+        daniel@ffwll.ch, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, lee@kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Hari.PrasathGE@microchip.com,
+        Balamanikandan.Gunasundar@microchip.com,
+        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
+        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
+        Balakrishnan.S@microchip.com
+References: <20230915104849.187146-1-manikandan.m@microchip.com>
+ <20230915104849.187146-4-manikandan.m@microchip.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230915104849.187146-4-manikandan.m@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:07=E2=80=AFAM Alex Deucher <alexdeucher@gmail.co=
-m> wrote:
->
-> On Mon, Sep 25, 2023 at 2:30=E2=80=AFAM Christian K=C3=B6nig
-> <christian.koenig@amd.com> wrote:
-> >
-> > Am 22.09.23 um 19:41 schrieb Alex Deucher:
-> > > On Fri, Sep 22, 2023 at 1:32=E2=80=AFPM Kees Cook <keescook@chromium.=
-org> wrote:
-> > >> Prepare for the coming implementation by GCC and Clang of the __coun=
-ted_by
-> > >> attribute. Flexible array members annotated with __counted_by can ha=
-ve
-> > >> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_=
-BOUNDS
-> > >> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-fa=
-mily
-> > >> functions).
-> > >>
-> > >> As found with Coccinelle[1], add __counted_by for struct smu10_volta=
-ge_dependency_table.
-> > >>
-> > >> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examp=
-les/counted_by.cocci
-> > >>
-> > >> Cc: Evan Quan <evan.quan@amd.com>
-> > >> Cc: Alex Deucher <alexander.deucher@amd.com>
-> > >> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> > >> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> > >> Cc: David Airlie <airlied@gmail.com>
-> > >> Cc: Daniel Vetter <daniel@ffwll.ch>
-> > >> Cc: Xiaojian Du <Xiaojian.Du@amd.com>
-> > >> Cc: Huang Rui <ray.huang@amd.com>
-> > >> Cc: Kevin Wang <kevin1.wang@amd.com>
-> > >> Cc: amd-gfx@lists.freedesktop.org
-> > >> Cc: dri-devel@lists.freedesktop.org
-> > >> Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > Acked-by: Alex Deucher <alexander.deucher@amd.com>
-> >
-> > Mhm, I'm not sure if this is a good idea. That is a structure filled in
-> > by the firmware, isn't it?
-> >
-> > That would imply that we might need to byte swap count before it is
-> > checkable.
->
-> True. Good point.  Same for the other amdgpu patch.
 
-Actually the other patch is fine.  That's just a local structure.
 
-Alex
+On 15.09.2023 13:48, Manikandan Muralidharan wrote:
+> Add the LCD controller layer definition and descriptor structure for
+> sam9x75 for the following layers,
 
->
-> Alex
->
-> >
-> > Regards,
-> > Christian.
-> >
-> > >
-> > >> ---
-> > >>   drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h | 2 +-
-> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h b/=
-drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
-> > >> index 808e0ecbe1f0..42adc2a3dcbc 100644
-> > >> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
-> > >> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
-> > >> @@ -192,7 +192,7 @@ struct smu10_clock_voltage_dependency_record {
-> > >>
-> > >>   struct smu10_voltage_dependency_table {
-> > >>          uint32_t count;
-> > >> -       struct smu10_clock_voltage_dependency_record entries[];
-> > >> +       struct smu10_clock_voltage_dependency_record entries[] __cou=
-nted_by(count);
-> > >>   };
-> > >>
-> > >>   struct smu10_clock_voltage_information {
-> > >> --
-> > >> 2.34.1
-> > >>
-> >
+s/,/:
+
+> - Base Layer
+> - Overlay1 Layer
+> - Overlay2 Layer
+> - High End Overlay
+> 
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> ---
+>  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c | 97 ++++++++++++++++++++
+>  1 file changed, 97 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
+> index fa0f9a93d50d..d30aec174aa2 100644
+> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
+> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
+> @@ -462,6 +462,99 @@ static const struct atmel_hlcdc_dc_desc atmel_hlcdc_dc_sam9x60 = {
+>  	.layers = atmel_hlcdc_sam9x60_layers,
+>  };
+>  
+> +static const struct atmel_hlcdc_layer_desc atmel_xlcdc_sam9x75_layers[] = {
+> +	{
+> +		.name = "base",
+> +		.formats = &atmel_hlcdc_plane_rgb_formats,
+> +		.regs_offset = 0x60,
+> +		.id = 0,
+> +		.type = ATMEL_HLCDC_BASE_LAYER,
+> +		.cfgs_offset = 0x1c,
+> +		.layout = {
+> +			.xstride = { 2 },
+> +			.default_color = 3,
+> +			.general_config = 4,
+> +			.disc_pos = 5,
+> +			.disc_size = 6,
+> +		},
+> +		.clut_offset = 0x700,
+> +	},
+> +	{
+> +		.name = "overlay1",
+> +		.formats = &atmel_hlcdc_plane_rgb_formats,
+> +		.regs_offset = 0x160,
+> +		.id = 1,
+> +		.type = ATMEL_HLCDC_OVERLAY_LAYER,
+> +		.cfgs_offset = 0x1c,
+> +		.layout = {
+> +			.pos = 2,
+> +			.size = 3,
+> +			.xstride = { 4 },
+> +			.pstride = { 5 },
+> +			.default_color = 6,
+> +			.chroma_key = 7,
+> +			.chroma_key_mask = 8,
+> +			.general_config = 9,
+> +		},
+> +		.clut_offset = 0xb00,
+> +	},
+> +	{
+> +		.name = "overlay2",
+> +		.formats = &atmel_hlcdc_plane_rgb_formats,
+> +		.regs_offset = 0x260,
+> +		.id = 2,
+> +		.type = ATMEL_HLCDC_OVERLAY_LAYER,
+> +		.cfgs_offset = 0x1c,
+> +		.layout = {
+> +			.pos = 2,
+> +			.size = 3,
+> +			.xstride = { 4 },
+> +			.pstride = { 5 },
+> +			.default_color = 6,
+> +			.chroma_key = 7,
+> +			.chroma_key_mask = 8,
+> +			.general_config = 9,
+> +		},
+> +		.clut_offset = 0xf00,
+> +	},
+> +	{
+> +		.name = "high-end-overlay",
+> +		.formats = &atmel_hlcdc_plane_rgb_and_yuv_formats,
+> +		.regs_offset = 0x360,
+> +		.id = 3,
+> +		.type = ATMEL_HLCDC_OVERLAY_LAYER,
+> +		.cfgs_offset = 0x30,
+> +		.layout = {
+> +			.pos = 2,
+> +			.size = 3,
+> +			.memsize = 4,
+> +			.xstride = { 5, 7 },
+> +			.pstride = { 6, 8 },
+> +			.default_color = 9,
+> +			.chroma_key = 10,
+> +			.chroma_key_mask = 11,
+> +			.general_config = 12,
+> +			.csc = 16,
+> +			.scaler_config = 23,
+> +		},
+> +		.clut_offset = 0x1300,
+> +	},
+> +};
+> +
+> +static const struct atmel_hlcdc_dc_desc atmel_xlcdc_dc_sam9x75 = {
+> +	.min_width = 0,
+> +	.min_height = 0,
+> +	.max_width = 2048,
+> +	.max_height = 2048,
+> +	.max_spw = 0xff,
+> +	.max_vpw = 0xff,
+> +	.max_hpw = 0x3ff,
+> +	.fixed_clksrc = true,
+> +	.is_xlcdc = true,
+> +	.nlayers = ARRAY_SIZE(atmel_xlcdc_sam9x75_layers),
+> +	.layers = atmel_xlcdc_sam9x75_layers,
+> +};
+> +
+>  static const struct of_device_id atmel_hlcdc_of_match[] = {
+>  	{
+>  		.compatible = "atmel,at91sam9n12-hlcdc",
+> @@ -487,6 +580,10 @@ static const struct of_device_id atmel_hlcdc_of_match[] = {
+>  		.compatible = "microchip,sam9x60-hlcdc",
+>  		.data = &atmel_hlcdc_dc_sam9x60,
+>  	},
+> +	{
+> +		.compatible = "microchip,sam9x75-xlcdc",
+> +		.data = &atmel_xlcdc_dc_sam9x75,
+> +	},
+>  	{ /* sentinel */ },
+>  };
+>  MODULE_DEVICE_TABLE(of, atmel_hlcdc_of_match);
