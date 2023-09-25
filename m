@@ -2,234 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8277AD3CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138167AD3CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbjIYIwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        id S233105AbjIYIwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbjIYIwC (ORCPT
+        with ESMTP id S233035AbjIYIwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:52:02 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2103.outbound.protection.outlook.com [40.107.113.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762B6AB;
-        Mon, 25 Sep 2023 01:51:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M6yvftVHmR12yl3o4Y4Jo4IBV7FeM4jYd57ZTIb+FFUzHnw/CySZayZA39wfVysT9FvkCD5blsCvHz4i9UAhzyTJb1v51UqVj7qZbscJKdS/p8473Ll0i3f1lkEZYQt1D1+/qXCFBvbV+Tc6spN8vFk1XaqsWE7lJ4mbG1jewhTCNEbq6S6HzDpne5Dm/F3KHo/yLg9hASLB0JW0YXJMcQcfkvOPuzxQ9oitwX6CLo028hmXxQObf6GEt3orGoS0FQ1KYCXINsHLlHBPPiO9j390d0+cZr7vIsjhqwOdC+gfX4JxwKtqiSwjt0HZLX/DL88LVGOI/tBLt4Gyu75tQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xgLM5HQHJrWJ/XvH/PowRg+BmNP6m6Bu7Jk/o9Ej61A=;
- b=G5I6/UOlwGQJcahhhVMb4Qww3iYfU+1pVcRzggWbyMvSLMSF1/5LHuufuo1mSti9IdL9EMtbNvNhHdyT3US/1QhGYq9ok0TNlSZjT2Hux9VCiJLtFuWX8tUQIxziFpembtCUhgoHq31Y2BsvQaE/bb8RaBIRfaA9Uba/RgOeWZoXabLMY8cmevwChCDaFoWTZtIBo91vFtfO1FiGbGCrICdtuhApy2c+M+r7SCdUhGHEj0XhH056f1AxnuenDru4Nqj70yUjIrtLq+AL3eD+F/d5Py/WuWExRHQOWzxFqix3SqEzyAbT0d7JwzFuSbRXJ7ouzLIRJsvMkovGYx03EA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xgLM5HQHJrWJ/XvH/PowRg+BmNP6m6Bu7Jk/o9Ej61A=;
- b=MhEdEiGq3ZjShiuPhKBkzh2zqmYbEoneoAeoTzhCz7W8mL61yTeP2gE57eyr+hmwkbA3L8Koiv7TAuNW7wSVeqApI9CRfbpJa08GWRYgoTIcFWJTnsoZJM5b+zfNx1NiMzbA+M2/Z69g5AfNI9gOYimXEvkcjWFTcS8fMVuetK0=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYWPR01MB10322.jpnprd01.prod.outlook.com (2603:1096:400:1e6::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 08:51:50 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::fb78:2e8c:f7f9:5629]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::fb78:2e8c:f7f9:5629%6]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 08:51:50 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.au@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: RE: [PATCH 2/3] irqchip: renesas-rzg2l: Mask interrupts for changing
- interrupt settings
-Thread-Topic: [PATCH 2/3] irqchip: renesas-rzg2l: Mask interrupts for changing
- interrupt settings
-Thread-Index: AQHZ6isQu3885mmag0K4fbtCicuaxbApvkOAgAGGVSA=
-Date:   Mon, 25 Sep 2023 08:51:50 +0000
-Message-ID: <OS0PR01MB5922FA104CE23A02A3CFD0D186FCA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230918122411.237635-1-biju.das.jz@bp.renesas.com>
-        <20230918122411.237635-3-biju.das.jz@bp.renesas.com>
- <87wmwf53bi.wl-maz@kernel.org>
-In-Reply-To: <87wmwf53bi.wl-maz@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYWPR01MB10322:EE_
-x-ms-office365-filtering-correlation-id: 0e960588-da6f-49c4-223d-08dbbda4a89a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ezJAPZJZo2OZLwEAzliY/EOxZevjxTcUkIF/Te9rdojN0wlFSseLXqM8I2/TzF00PrnhD8Zgjvs+s/4VUxq2M1PGMEpRp3H0bGyscAKj9puxmKJghrNDlYDLRCaMUKEwfh83PPEIChNtg/qoY/HZ6A1eOCdC1DnxzQqABUimTC2siNO7s3LRwcNRdyoC2grmI7tV+e/XMHI9TUeG3t3X4yWIoaaZHn7D40CAuEA/TfWPI/F208uii811itXwC9Ee5RQqfPYz8trjqbZMB0hM30sCOCk5jIOaTqJJ7GwmebdzoK3+qbhu0ImOeXPdJsSoAnpSIZ8DLIzQq5kmZzZHt0QTP3zjGgwBk8vpGD4zZgadBKSE+mFtnnERGa7ZgNpnEfHTuNQBs0cHW9yxgoJbHOQOqGdJQCxUXDP1OMxeCGOIHwX8lchorJ+yNtZoanOSkbauwGUuLolnJNkz5iI8pOp+f+/CEkLcyEf0ol230RgwhxG+Z6mzC85qd1Ft4Tbq+5Ry9o6/OTX0535SpZEs1RzDVfumSI72iiYIwEDVldqzgUD+tEAoIsg0Mg6LzdDkT8Yjmur3s8bh/2NOGdTOhQlzz6M40hFKpwvKviBtQTDcxWfDy6Xam40pqT6ayS4u
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(366004)(376002)(396003)(230922051799003)(1800799009)(186009)(451199024)(33656002)(122000001)(38100700002)(38070700005)(86362001)(55016003)(5660300002)(9686003)(2906002)(66476007)(478600001)(41300700001)(52536014)(76116006)(316002)(66556008)(54906003)(64756008)(66446008)(6916009)(66946007)(71200400001)(6506007)(7696005)(83380400001)(4326008)(8676002)(8936002)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iqIynDs6SfNsEemdhTp5lpBdB7QEWAZuzQyAza5JeNuinaVMzCaC7Pcwjq/x?=
- =?us-ascii?Q?R1n3qd6LDy1Tyqeyv4yNx1dX1KRqBXGKezkhDlM0eK6nT/qa25LA5kulsVze?=
- =?us-ascii?Q?TXh13SHyxSUOz4Yyv0YcM+hHPOxE/vf/aDU1TUrOEhFC461Bl0cAIAW8AFEQ?=
- =?us-ascii?Q?eUIcjXomvV3nJrzX9lfcjECXkAl/AOi3pciQq1rqc6dfeOJTUGI1u37VfDeC?=
- =?us-ascii?Q?2oZMh9UGHM/m1kl2faFDrfXz7xzOjCnuH5IPSub6WxaxV/8npo4nis7OW6GY?=
- =?us-ascii?Q?V+ZfsCkDviciFg1gPhl1AgoBAM9cI/XEZ1Q++hv3drCqcvDQw7VTwEaHrbkc?=
- =?us-ascii?Q?944pwWh/Vwi/1Vvp+5a1Cja3nSb2TD6FUiHybPLEerDBM9QcXcjPm3tqzMZ+?=
- =?us-ascii?Q?5JEypMgSSewj5R2jKQI3Agcwf5y4fHgZgjTdCdnYJKtRCROXzcTeacwZEZHA?=
- =?us-ascii?Q?u1euyW4h8xJ/em89lkzVsvfAMr0Rcbt1k2CKGkW6w7GgwLNT8ED6pFCzgTi8?=
- =?us-ascii?Q?WJrRNvLkLl8zJn5Jx9gKMyQtZE6K6H6rvmjU4gAX9Cpaq36amIYsD0xsgynB?=
- =?us-ascii?Q?zmwnB88dREiSxuRmjzpZ6ahwu3b3KLWmShszjfp8d8wnJDj/TBhL0VKfaV3U?=
- =?us-ascii?Q?3atMisVL195V2eXBjWXNwOKytTWWOA9/bkejuiQSBe5RrALhC/LwsxeOBqd7?=
- =?us-ascii?Q?GO3SQh1ZlM2BiBDDRTqV8kKXbFz+xUlhJUGC0DuAIL7seZEOgL9fcVEs/Spa?=
- =?us-ascii?Q?mTEIfdgzpVygBr03sv274nPBwGeJ3K2HQ1jxp7gaHICxnH/l/1SfyVP+mAQc?=
- =?us-ascii?Q?5iMoUSWdnwyISPznbWkT0aowIE0/3XVVTRj+1lXYuf60QeqEjRioRXbcMFb0?=
- =?us-ascii?Q?wjySUg8pejYJ6T0Up2e99oaZK4iyPYMycKZmJ40TLysyb/LIYtR2a0I9V3L+?=
- =?us-ascii?Q?gqbCOyWIiGGUBdfXtjjE9vO20naSASc7Gt2A0mPfN/Q1rBHNwgC9bI+4vbET?=
- =?us-ascii?Q?7Tn/OmBKEeFjQKP+xGY0gOvqmwzxFHayePptoQdsxmwZ++GytlXe2QMahrD8?=
- =?us-ascii?Q?1vx/BqsP53mxHtKaCnBQtBzPKP5l8n7dOn2pzB/8zMalZiebYDnYp/PIwEVx?=
- =?us-ascii?Q?t5wn+pN35KS9h5ZaBxHYMgh44YTr7m/dQ6ttr9JPFLKKENH8Zo8bX6frUqUO?=
- =?us-ascii?Q?QuxNxU7jdIi8an0KlQB++8TiA0KZQTnPfnMJuhQNdq7vpx9646N9VolaB9O0?=
- =?us-ascii?Q?QrksQ+4eBozS9cx3/YX5/Ru0P+OZv9eFLrfRjfMOI0KczhVA1ZQH0eu9wTbM?=
- =?us-ascii?Q?LAd1ojQSezMP630SZwYvLIiX+kV7E3Y/o1LU8GB3tne79JIXGwfv9UbzUz1N?=
- =?us-ascii?Q?DVnQUgeztYU9K+66NtT/Sry37RHF2GCyfUH0FN82+XipANDYpUymVMicyLdT?=
- =?us-ascii?Q?2eyjkZ2uxafbNUojNSqJ8sRnxDYOP9GAxebJRa4J8XcANKNJXmgesavC2c23?=
- =?us-ascii?Q?KnCjPXD6KsMicab2W3DraJd9L3/9s1xX3lkwzZDZGwKcc+LEB3+4Sj2yPrLi?=
- =?us-ascii?Q?EgvV73mRpdg1seplqV6CKvlWvF87L9RCZtvOpVLwxLonwFXG4RXDr3ej2jsY?=
- =?us-ascii?Q?xQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 25 Sep 2023 04:52:19 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D02E3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:52:12 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so3260988a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695631931; x=1696236731; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gLPIK/6A0OdvTUmgqW6fMGOpG0vd/sid0O/dWoZpXFk=;
+        b=O+ik+tdH2Au3yfXyzSQtplnu87GviBuuEzuxmRa4RVFbNGR/lrlU71y7A0XBBoqZor
+         zhAZI6ZSkJU57gXyC/9mELHaxTKj8boJn8QmFi+wKv1f1DDmf7OHUDh1v16W4SAk4Ln5
+         e30LwoyUKnbM8QZOic31PMUhT5LB4H540Nc0Icr6P1GJk+q55CRt686PiE8dQOi4f5Ip
+         XFI+5WxdxfifCSsCnjmZa0PU/lgCl3CSieWG9wJSW7892+i2LrwyT1nQCl3CzZIG143k
+         O5od/okmgqMiGvsGzmYFd2E7hrkc2rFu7dRsUwLqvc9SIkwvMXAfJ7/QRMwjZ8rACpOf
+         dC1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695631931; x=1696236731;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gLPIK/6A0OdvTUmgqW6fMGOpG0vd/sid0O/dWoZpXFk=;
+        b=fBv1fZq5/bYTrqueRWrTLbpYyF0mzDPog79BZ9mCPZwetw4HzEFdTQbid6qp3dJUqj
+         Fl+W5QaxoGqZwSAheNuxpKTowxSEiv4NMxGGiqRK3fFZkanvF99u48VwkQPayuURvcHK
+         9Gj0Dzz30Z3mMgAVwbv0Q2bOFELjIiqaxWkCP6WTmrX3ByL7jI4l4dEIO/E+DHJ+rJXB
+         sbTIuivM9oVRivciiBiQp6cvPWN1gDN8zNghViULV31bN8IPtRyNiPC7h6E2A4+i/Uaw
+         nEcmFftFEBwvz/sP3EPQCNO13TqflomViLedDDthUA0B7lYjaE5OSnV1wbmEGP1PYMei
+         BRDA==
+X-Gm-Message-State: AOJu0YyIwLWJh6nDRZTIs3d90SUYO204kmbYy4oV+pJeyw24aJEcY5hS
+        R4EBuNE5yDAG1XrWxNNK+DVWdCVbzSqI2ykmwsJNcw==
+X-Google-Smtp-Source: AGHT+IEknGXpUcjCFhyykhoIm20lhyrc7fXegdvuAII0uwwwGWRrkN5jwyVbotbwFuNd+lYoXvXe+g==
+X-Received: by 2002:aa7:c38d:0:b0:530:8d55:9c6f with SMTP id k13-20020aa7c38d000000b005308d559c6fmr5184794edq.2.1695631930980;
+        Mon, 25 Sep 2023 01:52:10 -0700 (PDT)
+Received: from [192.168.101.165] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id v4-20020a056402174400b0053424352ab3sm663625edx.19.2023.09.25.01.52.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 01:52:10 -0700 (PDT)
+Message-ID: <a983d891-74ef-48e0-9de1-d3d000cbf415@linaro.org>
+Date:   Mon, 25 Sep 2023 10:52:09 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e960588-da6f-49c4-223d-08dbbda4a89a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 08:51:50.3483
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kpEsXIAkKc5IRRHTlA1XJUx22QsOHLz12Qtayum72/3LSb45QlCb4kXCh6ApMy6HzbaaKkGxvMWUbKH5C20LomJbR4u7T0pW1MxpbwHBhZM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB10322
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] arm64: boot: dts: qcom: sc8280xp: Add in CAMCC for
+ sc8280xp
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230923150045.1068556-1-bryan.odonoghue@linaro.org>
+ <20230923150045.1068556-5-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230923150045.1068556-5-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc Zyngier,
+On 23.09.2023 17:00, Bryan O'Donoghue wrote:
+> Add in CAMCC for sc8280xp. The sc8280xp Camera Clock Controller looks
+> similar to most of the sdmX, smX and now scX controllers.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> index cad59af7ccef..dad4894f358c 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> @@ -3450,6 +3450,21 @@ usb_1_role_switch: endpoint {
+>  			};
+>  		};
+>  
+> +		camcc: clock-controller@ad00000 {
+> +			compatible = "qcom,sc8280xp-camcc";
+> +			reg = <0 0x0ad00000 0 0x20000>;
+> +			clocks = <&gcc GCC_CAMERA_AHB_CLK>,
+> +				 <&rpmhcc RPMH_CXO_CLK>,
+> +				 <&rpmhcc RPMH_CXO_CLK_A>,
+> +				 <&sleep_clk>;
+This does not match what you added in the clock driver
 
-Thanks for the feedback.
+> +			clock-names = "iface", "bi_tcxo", "bi_tcxo_ao", "sleep_clk";
+And with using .index there, clock-names will become redundant
 
-> Subject: Re: [PATCH 2/3] irqchip: renesas-rzg2l: Mask interrupts for
-> changing interrupt settings
->=20
-> On Mon, 18 Sep 2023 13:24:10 +0100,
-> Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> >
-> > As per RZ/G2L hardware manual Rev.1.30 section 8.8.3 Precaution when
-> > changing interrupt settings,  we need to mask the interrupts for any
-> > changes in below settings:
-> >
-> >  * When changing the noise filter settings.
-> >  * When switching the GPIO pins to IRQ or GPIOINT.
-> >  * When changing the source of TINT.
-> >  * When changing the interrupt detection method.
-> >
-> > This patch masks the interrupts when there is a change in the
-> > interrupt detection method and changing the source of TINT.
-> >
-> > Fixes: 3fed09559cd8 ("irqchip: Add RZ/G2L IA55 Interrupt Controller
-> > driver")
-> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> > ---
-> >  drivers/irqchip/irq-renesas-rzg2l.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
-> > b/drivers/irqchip/irq-renesas-rzg2l.c
-> > index 2cee5477be6b..33a22bafedcd 100644
-> > --- a/drivers/irqchip/irq-renesas-rzg2l.c
-> > +++ b/drivers/irqchip/irq-renesas-rzg2l.c
-> > @@ -116,11 +116,13 @@ static void rzg2l_irqc_irq_disable(struct irq_dat=
-a
-> *d)
-> >  		u8 tssr_index =3D TSSR_INDEX(offset);
-> >  		u32 reg;
-> >
-> > +		irq_chip_mask_parent(d);
-> >  		raw_spin_lock(&priv->lock);
-> >  		reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
-> >  		reg &=3D ~(TSSEL_MASK << TSSEL_SHIFT(tssr_offset));
-> >  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
-> >  		raw_spin_unlock(&priv->lock);
-> > +		irq_chip_unmask_parent(d);
->=20
-> What guarantees that the parent irqchip state has been correctly restored=
-?
-> Nothing refcounts the nesting of mask/unmask.
->=20
-> >  	}
-> >  	irq_chip_disable_parent(d);
->=20
-> I'd rather you start by *disabling* the parent, and then none of that
-> matters at all.
-
-Agreed. Will do this in next version.
-
->=20
-> >  }
-> > @@ -137,11 +139,13 @@ static void rzg2l_irqc_irq_enable(struct irq_data
-> *d)
-> >  		u8 tssr_index =3D TSSR_INDEX(offset);
-> >  		u32 reg;
-> >
-> > +		irq_chip_mask_parent(d);
-> >  		raw_spin_lock(&priv->lock);
-> >  		reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
-> >  		reg |=3D (TIEN | tint) << TSSEL_SHIFT(tssr_offset);
-> >  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
-> >  		raw_spin_unlock(&priv->lock);
-> > +		irq_chip_unmask_parent(d);
-> >  	}
-> >  	irq_chip_enable_parent(d);
->=20
-> Same thing: if the parent was disabled, why do we need to do anything?
-
-OK. It is not required.
-
->=20
->=20
-> >  }
-> > @@ -226,10 +230,12 @@ static int rzg2l_irqc_set_type(struct irq_data *d=
-,
-> unsigned int type)
-> >  	unsigned int hw_irq =3D irqd_to_hwirq(d);
-> >  	int ret =3D -EINVAL;
-> >
-> > +	irq_chip_mask_parent(d);
-> >  	if (hw_irq >=3D IRQC_IRQ_START && hw_irq <=3D IRQC_IRQ_COUNT)
-> >  		ret =3D rzg2l_irq_set_type(d, type);
-> >  	else if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ)
-> >  		ret =3D rzg2l_tint_set_edge(d, type);
-> > +	irq_chip_unmask_parent(d);
->=20
-> This one is the only interesting one: why don't you mask the interrupt at
-> the local level rather than on the parent? And this should be conditioned
-> on the interrupt state itself (enabled or disabled), not done
-> unconditionally.
-
-OK. Will do this locally by conditioned on the interrupt state.
-
-Cheers,
-Biju
+Konrad
