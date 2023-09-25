@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC917AD895
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096B27AD89E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjIYNGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60214 "EHLO
+        id S231629AbjIYNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjIYNGb (ORCPT
+        with ESMTP id S231603AbjIYNIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:06:31 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82E3115
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:06:23 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690d8c05784so4612488b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695647183; x=1696251983; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mXglc8opTBOxqxBVnbKKZEfOjkArzaJ5mbcscFyV/Wo=;
-        b=E9p/DdAhQv/UcBbrSHqMLXHKKFmTmAEugjpfcAaJIi0oAhHW91Fn3L148iHyI9tq6y
-         1AXxdfTrMhS72Zy9gDH3x6BZX047nWgHv5SIYLenoGYIxmyhv/3Z0OHCspeSEWUjv/Dr
-         5v3ZlzF9MCgA6c4GY0EVCOxSXAvWL66AAIUVTzUcrOiHt1xQuSXO/meOJiZwKRblOuuE
-         cKIGL6pARcFlHbPhB2iJsp7kw3Bog0Y/ZW5yTM9A3tyq5lZSSMxCvErvB3dVJ9fa+G8q
-         yvN079Vrw4bkbbYAlPNEYfEE1Ty6s7Y2UpwRLImeV4hkPd1Mji5zfoNrzlvslblzeye5
-         9Qew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695647183; x=1696251983;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mXglc8opTBOxqxBVnbKKZEfOjkArzaJ5mbcscFyV/Wo=;
-        b=EuJec0ksvmDuo5rbpLWFIkAAg644J7BBhpv1uvUYt9HSiKlHYmPTuGbb6t2Lv9ARyB
-         zj4NCEYlsTMEyB5pqYMWrRjIFPwiGZp5nBiW9DEvAQ8g3vs9i2vFkCu/gXYw5H+9Gyw1
-         Gry4HFamCxIJIZCh8xACqvB3ezgd9KPH7rffsEJLZoklF8JwpCtImig9cNw98zyXWcUr
-         Re5T+z2DIU1AmtWThOCtHFgTIXA0btZ9rTarjOXV7ovMLP8uUnWpf76xXRkTbwqnILEZ
-         hHMlXFSM4B/P1RIXjaaxF45cCTP0cHtu0qAGFPnDuivmx2mWiRhEfk0eBnWjyA0/KyvY
-         uVHQ==
-X-Gm-Message-State: AOJu0YzPRcu9YB2egtyHo+VK+2DnXSVhCHBXzYofZ1hmp+M0eaPodgwB
-        vY95rHwqUmz8Xy9kWKUL36aBfmUAE16O1ApGpBw=
-X-Google-Smtp-Source: AGHT+IFXiu+hIuGpbMGnryBZPI9zrQcfgcwULkxd1ATRGTszst7B+kzsc3FXYgt1Oi/EhIFKc10wDAE9O22h3BLnnC4=
-X-Received: by 2002:a17:90b:33cc:b0:268:553f:1938 with SMTP id
- lk12-20020a17090b33cc00b00268553f1938mr4364657pjb.4.1695647182818; Mon, 25
- Sep 2023 06:06:22 -0700 (PDT)
+        Mon, 25 Sep 2023 09:08:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 485019F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:07:55 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEE8CDA7;
+        Mon, 25 Sep 2023 06:08:32 -0700 (PDT)
+Received: from [10.57.0.188] (unknown [10.57.0.188])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 832CE3F5A1;
+        Mon, 25 Sep 2023 06:07:53 -0700 (PDT)
+Message-ID: <ade90cd5-bbf1-f4f9-0511-75e0e18d1a83@arm.com>
+Date:   Mon, 25 Sep 2023 14:07:50 +0100
 MIME-Version: 1.0
-Sender: mr.isaiahnwabudike01@gmail.com
-Received: by 2002:a05:6a10:4410:b0:4e6:519f:124c with HTTP; Mon, 25 Sep 2023
- 06:06:22 -0700 (PDT)
-From:   "Mrs. Rita Hassan" <ritahassan02@gmail.com>
-Date:   Mon, 25 Sep 2023 06:06:22 -0700
-X-Google-Sender-Auth: yeq3_xtuipO1P77d2qeKwPgsd4c
-Message-ID: <CAN0kuD_Mb6r_ybPEbbHkv8BKeKwvyedgB_EOczj0YvEYjcG2ZQ@mail.gmail.com>
-Subject: Please I need your help,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,MONEY_FRAUD_5,MONEY_NOHTML,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        T_MONEY_PERCENT,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/2] iommu/virtio: Make use of ops->iotlb_sync_map
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20230918-viommu-sync-map-v2-0-f33767f6cf7a@linux.ibm.com>
+ <20230918-viommu-sync-map-v2-1-f33767f6cf7a@linux.ibm.com>
+ <ae7e513b-eb86-97e2-bed0-3cca91b8c959@arm.com>
+ <20230919081519.GA3860249@myrica> <20230919144649.GT13795@ziepe.ca>
+ <20230922075719.GB1361815@myrica> <20230922124130.GD13795@ziepe.ca>
+ <900b644e-6e21-1038-2252-3dc86cbf0a32@arm.com>
+ <20230922162714.GH13795@ziepe.ca>
+ <123c53c3-d259-9c20-9aa6-0c216d7eb3c0@arm.com>
+ <20230922233309.GI13795@ziepe.ca>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230922233309.GI13795@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please I need your help,
+On 2023-09-23 00:33, Jason Gunthorpe wrote:
+> On Fri, Sep 22, 2023 at 07:07:40PM +0100, Robin Murphy wrote:
+> 
+>> virtio isn't setting ops->pgsize_bitmap for the sake of direct mappings
+>> either; it sets it once it's discovered any instance, since apparently it's
+>> assuming that all instances must support identical page sizes, and thus once
+>> it's seen one it can work "normally" per the core code's assumptions. It's
+>> also I think the only driver which has a "finalise" bodge but *can* still
+>> properly support map-before-attach, by virtue of having to replay mappings
+>> to every new endpoint anyway.
+> 
+> Well it can't quite do that since it doesn't know the geometry - it
+> all is sort of guessing and hoping it doesn't explode on replay. If it
+> knows the geometry it wouldn't need finalize...
 
+I think it's entirely reasonable to assume that any direct mappings 
+specified for a device are valid for that device and its IOMMU. However, 
+in the particular case of virtio, it really shouldn't ever have direct 
+mappings anyway, since even if the underlying hardware did have any, the 
+host can enforce the actual direct-mapping aspect itself, and just 
+present them as unusable regions to the guest.
 
-Please forgive me for stressing you with my predicaments as I know
-that this letter may come to you as big surprise. Actually, I came
-across your E-mail from my personal search afterward I decided to
-email you directly believing that you will be honest to fulfill my
-final wish before i die.
+>>> What do you think about something like this to replace
+>>> iommu_create_device_direct_mappings(), that does enforce things
+>>> properly?
+>>
+>> I fail to see how that would make any practical difference. Either the
+>> mappings can be correctly set up in a pagetable *before* the relevant device
+>> is attached to that pagetable, or they can't (if the driver doesn't have
+>> enough information to be able to do so) and we just have to really hope
+>> nothing blows up in the race window between attaching the device to an empty
+>> pagetable and having a second try at iommu_create_device_direct_mappings().
+>> That's a driver-level issue and has nothing to do with pgsize_bitmap either
+>> way.
+> 
+> Except we don't detect this in the core code correctly, that is my
+> point. We should detect the aperture conflict, not pgsize_bitmap to
+> check if it is the first or second try.
 
-Meanwhile, I Am Mrs. Rita, 62 years old,I am suffering from a long
-time cancer and from all indication my condition is really
-deteriorating as my doctors have confirmed and courageously advised me
-that I may not live beyond two months from now for the reason that my
-tumor has reached a critical stage which has defiled all forms of
-medical treatment.
+Again, that's irrelevant. It can only be about whether the actual 
+->map_pages call succeeds or not. A driver could well know up-front that 
+all instances support the same pgsize_bitmap and aperture, and set both 
+at ->domain_alloc time, yet still be unable to handle an actual mapping 
+without knowing which instance(s) that needs to interact with (e.g. 
+omap-iommu).
 
-As a matter of fact, registered nurse by profession while my husband
-was dealing on Gold Dust and Gold Dory Bars till his sudden death the
-year 2019 then I took over his business till date. In fact, at this
-moment I have a deposit sum of $5.5million dollars with one of the
-leading bank  but unfortunately I cannot visit the bank since I am
-critically sick and powerless to do anything myself but my bank
-account officer advised me to assign any of my trustworthy relative,
-friends or partner with authorization letter to stand as the recipient
-of my money but sorrowfully I don t have any reliable relative and no
-child.
-
-Therefore, I want you to receive the money and take 30% to take care
-of yourself and family while 70% should be use basically on
-humanitarian purposes mostly to orphanages home, Motherless babies
-home, less privileged and disable citizens and widows around the
-world. and as soon as I receive your respond I shall send you my
-pictures, banking records and with full contacts of my banking
-institution If you are interested in carrying out this task please
-contact me for more details on this email. ( ritahassan02@gmail.com )
-
-Hope to hear from you soon.
-
-Yours Faithfully
-
-Mrs. Rita Hassan
+Thanks,
+Robin.
