@@ -2,138 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9ED7ADA33
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925D47ADA30
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjIYOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
+        id S229537AbjIYOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjIYOmz (ORCPT
+        with ESMTP id S229522AbjIYOlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:42:55 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2070.outbound.protection.outlook.com [40.107.102.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F58101;
-        Mon, 25 Sep 2023 07:42:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R4ou1ETS7GeQPgV4OnNo2Yen3I73IMKlzXBCjTwlMgDBkucdfSPUFc7Pqu5rg/RNJplIuoHZuWOkOZRSEQ6ZrlWGFNlT+7R1WHIRVb7dfUz06v99KZyBWNG59OQst7/QrjHhWxSwocf2E83zPnWXs655qkXch/EMxKBdeuJC+jw/ypD+8cjCblxqMgZwguxZxV0v6mfNqYDuuy+J4hUh/rYlzOC4/B+F+sgLoXiA0mJ7whHwpYpGaTEfOWGUBFPrnUzqzmoUA83t+/QZBt+tB2FLINJ+JNu/gQZisb41mktRkf/G7gYgXllGckHjZVD7V20YJTWfNssLcBhzjIkcbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LyllHnJEB7RQZ70NaFJPAtYlATXRgWs83bRdXCVdKxI=;
- b=KlWI/8//SteEkKt31bDGi3Mt6RE5ZZgoAlLz1XlVPEJUndeuJWBhJvLTPh3il/Y3jb1bSyZ172yEjS1E1I7Ny3p5sXLfVrzoN1otJY0TqvwndOmYmx78d3rRXMVhAts6SaG/koEIlAkcsxajq9XYGge1lGAZm8/L6ErwytrBdTaSG7zneGPtagHnZ3VEF0uxaVoYRJiegdpUjXMLLyie7ANBc4V2csxob+5dvRhBLUmOh8QxEkn0f+TkEbf7jW4fEKQrjyecDKspW397ElmZ8ngtkVRx2tv7wr2mARRtzRsttyki1aF7E1NaSCB79Teiw5YW3znOyDNzQ7IhVbwCMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LyllHnJEB7RQZ70NaFJPAtYlATXRgWs83bRdXCVdKxI=;
- b=VRIHKVKJlPrheXbBy3MnVzqxI8hmI2scUHh/F7a20geY67Nyk6SulwVRJFvmu7GQXj8e+abhoVyw6Sp7o9z2xod7/J8PoDWq1YghXhXafBjiumcbzJfVONghgHred96fq+kRHUi37ooYiBPg9VpWm7GmQgyWcNRUHJ9b4ib0r0TbuL3CFtVDwpyQnlLWsrJ2AVJsTJjQ0En7SGKY0NoiRYBfABH2pmeR8ytIha1tYXzgV/xH66i7G8tMh7+sKVrIa94XuLG08F7fMJ+AP6F8Kz0FgZdwy8+/WXWEXMoT2a4v/XKt52veeNwZNlT1QFsF6Kj234jKwDfIM9Sgcnil9w==
-Received: from MW4PR03CA0238.namprd03.prod.outlook.com (2603:10b6:303:b9::33)
- by IA0PR12MB7531.namprd12.prod.outlook.com (2603:10b6:208:43f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Mon, 25 Sep
- 2023 14:42:45 +0000
-Received: from CO1PEPF000044F3.namprd05.prod.outlook.com
- (2603:10b6:303:b9:cafe::8e) by MW4PR03CA0238.outlook.office365.com
- (2603:10b6:303:b9::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.35 via Frontend
- Transport; Mon, 25 Sep 2023 14:42:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CO1PEPF000044F3.mail.protection.outlook.com (10.167.241.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.14 via Frontend Transport; Mon, 25 Sep 2023 14:42:44 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Sep
- 2023 07:42:31 -0700
-Received: from yaviefel (10.126.230.35) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Sep
- 2023 07:42:29 -0700
-References: <20230925085318.1228225-1-nichen@iscas.ac.cn>
-User-agent: mu4e 1.8.11; emacs 28.2
-From:   Petr Machata <petrm@nvidia.com>
-To:     Chen Ni <nichen@iscas.ac.cn>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <izumi.taku@jp.fujitsu.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fjes: Add missing check for vzalloc
-Date:   Mon, 25 Sep 2023 16:40:24 +0200
-In-Reply-To: <20230925085318.1228225-1-nichen@iscas.ac.cn>
-Message-ID: <87r0mms4a5.fsf@nvidia.com>
+        Mon, 25 Sep 2023 10:41:47 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8919A103
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:41:40 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-404fbfac998so73866165e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:41:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695652899; x=1696257699; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZnQkb6b5eXRZq2LrytU5CtIWVTHEXBAeVcMvdSE/Rjs=;
+        b=RgrjnsBAhL6Gsfqefnw2S4Nddo2drXSwMMH3mHDEhVQILMGP2SstZN882aVhsvu3Dx
+         jEU5hGPGMuOS96AWyEsw5yI2nSuXu36pR6so+ZjVD2GO26joIZ+xPZMEq2dBTqIeXiC4
+         0PoLZfHkDnK1fCiPeiOuAo/3G3gpDbezpoiqq/4iP7X6Dc/TFjEwSR6PlyvEk6Djrhjd
+         CdCI2Ir1ClAcaXdrObTwAZswQVphBhq2PZd5Z0mJ7Dv/d7/n80+bcQIpqTeMm6hUvjAQ
+         h+NPxqixVADe3HyJnaitXq7qVHoOiu7vTjPvpgmTeYfA8+k5kjSlVua3f87IZrcpBFCD
+         XZrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695652899; x=1696257699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZnQkb6b5eXRZq2LrytU5CtIWVTHEXBAeVcMvdSE/Rjs=;
+        b=sdlrxp1gUqQDXEdDrO7i5fhvUMJjI2IaGUxoHBJtr+nqclG8Y/sj1ORWNpWXIDB0LW
+         5oKlaH9Q3J/llP6Ox9d9fofEJ1l/Xt/zZuK6kRWlS1okVyKUnPk1VlkSnfR0CviuL78i
+         A6VwZtxXzwBc9mIpsDKvtY/TbR/CDgDcHd8HdYkYeHngC/wPKFspAMLV9FA7kPxQ1Ajq
+         b+g4tXEBrrbYMlq8yeKvmfIVDcBj6hOo5/pdrOWZgPIdAaXzl+BTNhZLYZJMLHVB8nEO
+         6ChH3orBz9B2xASORxY5hxoKCHZEmy492+QBZ31pOzJeEmRTbs+qdgnl72Faur8KMAZE
+         iccw==
+X-Gm-Message-State: AOJu0Yyyqw/S6IZrEfvpvrV1HNDm9RDuLP/Vg7ECjpXo01zmKeGJX9YQ
+        hPEApCVqVPeuq669pOxRVNcZaA==
+X-Google-Smtp-Source: AGHT+IHPb8vKchvFnY0s05TsviFcSJxnsXgmrDWlqO7Le6/fH+Zwot+4Ces80LRgrG4M+d5CjIT0Lw==
+X-Received: by 2002:adf:f205:0:b0:31f:8a6d:e527 with SMTP id p5-20020adff205000000b0031f8a6de527mr6030302wro.45.1695652898924;
+        Mon, 25 Sep 2023 07:41:38 -0700 (PDT)
+Received: from x1 ([193.52.24.5])
+        by smtp.gmail.com with ESMTPSA id bt14-20020a056000080e00b003200c918c81sm5683354wrb.112.2023.09.25.07.41.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 07:41:38 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 16:41:30 +0200
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
+        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 2/6] mmc: sdhci: add __sdhci_execute_tuning() to header
+Message-ID: <ZRGcGnl8N80yblkw@x1>
+References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
+ <20230921-th1520-mmc-v1-2-49f76c274fb3@baylibre.com>
+ <4ef60ffd-3661-4bca-91a3-b49d6189c71b@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail202.nvidia.com (10.129.68.7)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F3:EE_|IA0PR12MB7531:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef323bfb-c31e-46be-dab1-08dbbdd5adec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yi7VUzGbgmbBuvKu7HvM9mxES6pfP5wE4pcRTgQ7UOLOiX9FmCM/rxVLUVD/Re5LyPJa2X52/P1WgJRo0pinqC4YzJftKbj/nxINt/t6nO1Ajol5O2D5SAp11fcCYRPO3zSj9gMt428QWdIjo72rTxxTVOcET239n65jsEMtYNTpeVbqol9yOCfBdmxvhViauqekajeyXparJLR2v9iTWRGSqh50qktfaiiCLy33PstT3PSOxQvZuVabAgo1t7qjQa6bKcANJnjG/Sx+nQWfXDl0PAsp+NLhbm4WXihGkz4ctvcx3KXQ4Jtnd8/098MQYGwP5vjExnT0rUTVDrFKZvnNu8o1a2p7iVpoc6aTZtQ2gc94rwFxUFqZZHY3TdNrxBGHr+7kSkP1MDPWyW/POyF8tFbqVwhEhtmfHA9L4OmepHJMBv6NQ0+jAbkQQTQOV1ozPH3kWR3qSJKw+86M/OWGe3BdYmlMx4ouYcxnfua3BdqpRrEZCmTG3lRL10Av9Gtxt+q7VaA+aAUHcM6VxWkgisbLl3CQ2L6Iuf1nO9M2C5D1nzFbGtrER40V5IeRyYiGylgc725ZcVnp551Sg4WJzEJGMeUxLTiGS5SAo4g7azmrv1D7k19uIeTtLGqPoEQbhEW6hHndVxzK9XjNWjLG44RbBYFJ+uB24aebN1pqkNPr83M3zvXO4hkfHvE7H168WeXebQrrphaByMiqpqk/4CqxJVN/v4DN6dM1iaw=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(39860400002)(346002)(230922051799003)(1800799009)(451199024)(186009)(82310400011)(40470700004)(36840700001)(46966006)(2616005)(40460700003)(36756003)(86362001)(356005)(40480700001)(7636003)(82740400003)(36860700001)(16526019)(26005)(4744005)(2906002)(426003)(336012)(6666004)(478600001)(47076005)(83380400001)(8936002)(4326008)(5660300002)(8676002)(41300700001)(70206006)(54906003)(6916009)(316002)(70586007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 14:42:44.5784
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef323bfb-c31e-46be-dab1-08dbbdd5adec
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F3.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7531
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ef60ffd-3661-4bca-91a3-b49d6189c71b@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 25, 2023 at 01:21:05PM +0300, Adrian Hunter wrote:
+> On 22/09/23 04:49, Drew Fustini wrote:
+> > Expose __sdhci_execute_tuning() so that it can be called from the
+> > mmc host controller drivers.
+> > 
+> > In the sdhci-of-dwcmshc driver, sdhci_dwcmshc_th1520_ops sets
+> > platform_execute_tuning to th1520_execute_tuning(). That function has
+> > to manipulate phy registers before tuning can be performed. To avoid
+> > copying the code verbatim from __sdhci_execute_tuning() into
+> > th1520_execute_tuning(), make it possible for __sdhci_execute_tuning()
+> > to be called from sdhci-of-dwcmshc.
+> > 
+> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> > ---
+> >  drivers/mmc/host/sdhci.c | 2 +-
+> >  drivers/mmc/host/sdhci.h | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index ff41aa56564e..fd607058d176 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -2841,7 +2841,7 @@ void sdhci_send_tuning(struct sdhci_host *host, u32 opcode)
+> >  }
+> >  EXPORT_SYMBOL_GPL(sdhci_send_tuning);
+> >  
+> > -static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+> > +int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+> 
+> Also need
+> 	EXPORT_SYMBOL_GPL(__sdhci_execute_tuning);
 
-Chen Ni <nichen@iscas.ac.cn> writes:
+Thank, I will add that.
 
-> Because of the potential failure of the vzalloc(), the hw->hw_info.trace
-> could be NULL.
-> Therefore, we need to check it and return -ENOMEM in order to transfer
-> the error.
->
-> Fixes: b6ba737d0b29 ("fjes: ethtool -w and -W support for fjes driver")
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
->  drivers/net/fjes/fjes_hw.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/net/fjes/fjes_hw.c b/drivers/net/fjes/fjes_hw.c
-> index 704e949484d0..3a06a3cf021d 100644
-> --- a/drivers/net/fjes/fjes_hw.c
-> +++ b/drivers/net/fjes/fjes_hw.c
-> @@ -330,6 +330,9 @@ int fjes_hw_init(struct fjes_hw *hw)
->  	ret = fjes_hw_setup(hw);
->  
->  	hw->hw_info.trace = vzalloc(FJES_DEBUG_BUFFER_SIZE);
-> +	if (!hw->hw_info.trace)
-> +		return -ENOMEM;
-> +
+I wasn't sure if making __sdhci_execute_tuning() available outside of
+sdhci.c was going to be seen as an acceptable solution.
 
-I'm not sure, but shouldn't this call fjes_hw_cleanup() to mirror the
-setup() above? Also only if ret=0 I suppose.
+Do you think my apporach is acceptable (once I add EXPORT_SYMBOL_GPL)?
 
->  	hw->hw_info.trace_size = FJES_DEBUG_BUFFER_SIZE;
->  
->  	return ret;
-
+Thanks,
+Drew
