@@ -2,153 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216327ADAFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFBB7ADB01
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232647AbjIYPIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S232520AbjIYPKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbjIYPIt (ORCPT
+        with ESMTP id S231263AbjIYPKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:08:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C492120;
-        Mon, 25 Sep 2023 08:08:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695654523; x=1727190523;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=xqajMAeo9FklI77B0Q+uzt8n4v+u75LktqHbw8btNgM=;
-  b=cQXeQZ9r2bvdusu/erE0OEq6A7QuVsVY7iraBF2H9GVF3u+YS86VaeRO
-   pspcJyMv2eFc4fdQwgqTFFllplbA/AFPce5z9IYjCPkIhxTJId0bf4r2h
-   G225Xa6Q/rxQ94F2e66VzkabDmJGSd8pnuZkvU9z6QyAhnKH3yfkWo0v7
-   VTvW6Fq+VmOn7zEZfzYhOEbVtOByApj0Qmt5QCT3VojJh86t+LHW4Ih5E
-   2vVUhnkmULLahH1HwHVlpdXkuN7UfBVN0Itek9rWhbKUldPzogScJcEYn
-   /yR43nFEMgMYn99pH1buThc6CipYWRey9MT9jMfkkg3NCWcnD5ww/QMba
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="371596723"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="371596723"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:08:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="814007768"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="814007768"
-Received: from stamengx-mobl1.ger.corp.intel.com ([10.249.32.149])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:08:26 -0700
-Date:   Mon, 25 Sep 2023 18:08:24 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Jithu Joseph <jithu.joseph@intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
-        ravi.v.shankar@intel.com, pengfei.xu@intel.com
-Subject: Re: [PATCH v2 1/9] platform/x86/intel/ifs: Store IFS generation
- number
-In-Reply-To: <20230922232606.1928026-2-jithu.joseph@intel.com>
-Message-ID: <9c405d3c-3376-5a35-3a4a-62b59f764043@linux.intel.com>
-References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230922232606.1928026-1-jithu.joseph@intel.com> <20230922232606.1928026-2-jithu.joseph@intel.com>
+        Mon, 25 Sep 2023 11:10:01 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A46103
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:09:55 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b0168a9e05so578748366b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:09:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695654594; x=1696259394; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eC20xI+X56Gh8DNv6Zud5IHxjD2gnnvulA3kJH1zjMo=;
+        b=V7um3RNHEMlI2ENEsAM54gm8G28JaVKxoFXWP6yCulk6LnB4NycUE+5/qnn6ySKLgo
+         Uo0tuBTgMX3Tc4U9TIt0RKHeSJgG8drrpq96DeKS52GNqZgx21u5xULvz7bzgZ99xNYt
+         a1GKpuhasaMXQwwlLw8IoNe+Dd28rojetOlUID14Jk0TbWNabA3Wl9kmFmdadQG6jnm2
+         Xri7LihKtPh3hpvy5TkvyQzpLsFlqCpXqGx3XzSZdyWI5wNefS3kdYbqbLqEFy/ARkpi
+         Fn97pN83ikW3j2Yrjx+sD8Jk9i9ZNfv/B/vNxslCrDrkTWrJI5ycmssPcipvGlYvyR5J
+         KgIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695654594; x=1696259394;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eC20xI+X56Gh8DNv6Zud5IHxjD2gnnvulA3kJH1zjMo=;
+        b=I/MjlfyiMIwMYQcCrDG/E55g4HnxC9FRxp+9jegFaWJ1eac/YlGd43ecd51rYt4kQD
+         If4GkdszALM4TLYgLit2NJtnEhLuguocjukXCCtdzQI2VJ3FBkOkW6lFYE/wCf1Wg0my
+         T9WkYct25epaBbbGzlXd9IhAxu9nWkdB7/2YLTG6gHeyfK4NzETA2wyPhMNXh3mv/Gws
+         5SCx/+KG1mzN8qnGw1Bx4WS4bSCR1kGQfZGrXvx7HvF78NY5vuzViJvU1/xIFBHpzvyL
+         ie0kRfvNVX64rDYcwbvKZ0+lQEJG1+6JOurGca4Csp1FSYFaD2jByfMUikowWxs3w5Dn
+         Yh2w==
+X-Gm-Message-State: AOJu0YxOl08DKwqVuzhhArH38O80YaeS/PGmINtVTCaXxPBF1hd/bj4H
+        B2Htgl9GzyG0E2bdm53YXKL+dHbV0Fb4FA==
+X-Google-Smtp-Source: AGHT+IGFWeaotCAhz9Xjbbcp2IWjzMJpFu60qvFPlN+y2YfqFLnFW7OTz+bN7V8dbaLe5I/3E2I1YQ==
+X-Received: by 2002:a17:906:9a:b0:9ae:56b5:619d with SMTP id 26-20020a170906009a00b009ae56b5619dmr6161137ejc.16.1695654593710;
+        Mon, 25 Sep 2023 08:09:53 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id i13-20020a1709061ccd00b00989828a42e8sm6442191ejh.154.2023.09.25.08.09.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 08:09:53 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [RESEND PATCH 2/2] locking/x86: Wire up sync_try_cmpxchg
+Date:   Mon, 25 Sep 2023 17:08:24 +0200
+Message-ID: <20230925150905.54842-2-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230925150905.54842-1-ubizjak@gmail.com>
+References: <20230925150905.54842-1-ubizjak@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2019316765-1695654510=:2147"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Implement target specific support for sync_try_cmpxchg.
 
---8323329-2019316765-1695654510=:2147
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ arch/x86/include/asm/cmpxchg.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On Fri, 22 Sep 2023, Jithu Joseph wrote:
-
-> IFS generation number is reported via MSR_INTEGRITY_CAPS.  As IFS
-> support gets added to newer CPUs, some differences are expected during
-> IFS image loading and test flows.
-> 
-> Define MSR bitmasks to extract and store the generation in driver data,
-> so that driver can modify its MSR interaction appropriately.
-> 
-> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-> ---
->  arch/x86/include/asm/msr-index.h      | 1 +
->  drivers/platform/x86/intel/ifs/ifs.h  | 2 ++
->  drivers/platform/x86/intel/ifs/core.c | 3 +++
->  3 files changed, 6 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 1d111350197f..838e5a013a07 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -222,6 +222,7 @@
->  #define MSR_INTEGRITY_CAPS_ARRAY_BIST          BIT(MSR_INTEGRITY_CAPS_ARRAY_BIST_BIT)
->  #define MSR_INTEGRITY_CAPS_PERIODIC_BIST_BIT	4
->  #define MSR_INTEGRITY_CAPS_PERIODIC_BIST	BIT(MSR_INTEGRITY_CAPS_PERIODIC_BIST_BIT)
-> +#define MSR_INTEGRITY_CAPS_SAF_GEN_MASK	GENMASK_ULL(10, 9)
->  
->  #define MSR_LBR_NHM_FROM		0x00000680
->  #define MSR_LBR_NHM_TO			0x000006c0
-> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-> index 93191855890f..d666aeed20fc 100644
-> --- a/drivers/platform/x86/intel/ifs/ifs.h
-> +++ b/drivers/platform/x86/intel/ifs/ifs.h
-> @@ -229,6 +229,7 @@ struct ifs_test_caps {
->   * @status: it holds simple status pass/fail/untested
->   * @scan_details: opaque scan status code from h/w
->   * @cur_batch: number indicating the currently loaded test file
-> + * @generation: IFS test generation enumerated by hardware
->   */
->  struct ifs_data {
->  	int	loaded_version;
-> @@ -238,6 +239,7 @@ struct ifs_data {
->  	int	status;
->  	u64	scan_details;
->  	u32	cur_batch;
-> +	u32	generation;
->  };
->  
->  struct ifs_work {
-> diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-> index 306f886b52d2..4ff2aa4b484b 100644
-> --- a/drivers/platform/x86/intel/ifs/core.c
-> +++ b/drivers/platform/x86/intel/ifs/core.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /* Copyright(c) 2022 Intel Corporation. */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/module.h>
->  #include <linux/kdev_t.h>
->  #include <linux/semaphore.h>
-> @@ -94,6 +95,8 @@ static int __init ifs_init(void)
->  	for (i = 0; i < IFS_NUMTESTS; i++) {
->  		if (!(msrval & BIT(ifs_devices[i].test_caps->integrity_cap_bit)))
->  			continue;
-> +		ifs_devices[i].rw_data.generation = FIELD_GET(MSR_INTEGRITY_CAPS_SAF_GEN_MASK,
-> +							      msrval);
->  		ret = misc_register(&ifs_devices[i].misc);
->  		if (ret)
->  			goto err_exit;
-> 
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
+diff --git a/arch/x86/include/asm/cmpxchg.h b/arch/x86/include/asm/cmpxchg.h
+index d53636506134..5612648b0202 100644
+--- a/arch/x86/include/asm/cmpxchg.h
++++ b/arch/x86/include/asm/cmpxchg.h
+@@ -221,12 +221,18 @@ extern void __add_wrong_size(void)
+ #define __try_cmpxchg(ptr, pold, new, size)				\
+ 	__raw_try_cmpxchg((ptr), (pold), (new), (size), LOCK_PREFIX)
+ 
++#define __sync_try_cmpxchg(ptr, pold, new, size)			\
++	__raw_try_cmpxchg((ptr), (pold), (new), (size), "lock; ")
++
+ #define __try_cmpxchg_local(ptr, pold, new, size)			\
+ 	__raw_try_cmpxchg((ptr), (pold), (new), (size), "")
+ 
+ #define arch_try_cmpxchg(ptr, pold, new) 				\
+ 	__try_cmpxchg((ptr), (pold), (new), sizeof(*(ptr)))
+ 
++#define arch_sync_try_cmpxchg(ptr, pold, new) 				\
++	__sync_try_cmpxchg((ptr), (pold), (new), sizeof(*(ptr)))
++
+ #define arch_try_cmpxchg_local(ptr, pold, new)				\
+ 	__try_cmpxchg_local((ptr), (pold), (new), sizeof(*(ptr)))
+ 
 -- 
- i.
+2.41.0
 
---8323329-2019316765-1695654510=:2147--
