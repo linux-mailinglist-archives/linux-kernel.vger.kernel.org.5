@@ -2,194 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9007ADD01
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFF07ADD05
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjIYQZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
+        id S230081AbjIYQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbjIYQZ4 (ORCPT
+        with ESMTP id S230049AbjIYQ1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:25:56 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AB1BE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:25:46 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5334d78c5f6so7581424a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695659145; x=1696263945; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=I7B0RUifDFieWMfWXnkwhXX401TR2vA2nTDQCCR8Y30=;
-        b=Y1Ic8RsUXEpmhdgtb9A3nFR9cXfyCorfKqvsjPEgnIvi9BP0rpKzUKLv4bThvySiqW
-         qtvkfpmTF3UZHTwOMBn2cClBYpMxFTfRT/levEThj02YlTUpgIkTZAVqNeeLI2PNG0wd
-         Ebp5MKmJ/9Cy3INR5/x9PP4FVHrXgupVDr1oc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695659145; x=1696263945;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I7B0RUifDFieWMfWXnkwhXX401TR2vA2nTDQCCR8Y30=;
-        b=MIQXL1p6iDdchzdTOu+5+879hpykcWm6xqRHRdqaPNan3j4Tv8NVI9PSD2xegUHi9l
-         PHAzaLTtscMHScIdxVghgLPsx5PmsWi8WiAiQRUSv501lMVnyQLk/fm04le7saKlYDWt
-         vNYHCUK4Iihdl3mGj98ytmzvzcz9Ys/6sXKQ4LqQdTMdy8jZlbbpmpqeF6mwOh6DcFM/
-         xcaZPcAqP/N7RKbZI0ZUm40kSBxWY74yP2Qq9XJesHppNxUksN6Bkbi+HtnIY8UNRkmh
-         TbC/OBOBwi7U94NxC0Co5UcuEybVfzitZlWKJWtHYzW2cfPiltzfHKpqAiNaXi0VGzdK
-         /+Jw==
-X-Gm-Message-State: AOJu0Yy6lsPeMQCPbGiRmFxTmBlJvu10xbacW8+DczkGZR3Hrsrt882g
-        MrtamDR/SFFC40RtGdHLQCD6692nR/j59Dr1W21zTw==
-X-Google-Smtp-Source: AGHT+IFpDPy47xvBsLVS3qz0xwzjWQQKDNvGB22OhGv49Ye4weixbW/ojGlV0Tkpm1x70z/zgeZpESgzUMe3S9sc8UQ=
-X-Received: by 2002:aa7:c543:0:b0:530:c363:449c with SMTP id
- s3-20020aa7c543000000b00530c363449cmr5877025edr.40.1695659144735; Mon, 25 Sep
- 2023 09:25:44 -0700 (PDT)
+        Mon, 25 Sep 2023 12:27:03 -0400
+Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57FEB8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:26:54 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id koQ6q3Yk8DuGykoQ6q06qm; Mon, 25 Sep 2023 18:26:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695659211;
+        bh=bqF3lbG0kh1bVAZBrRIplUrNJ8DhjKKRSQSx2fty2V0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=OkHLq97M1aXHkJYZD8y4nPXi5uJJJzBTnQTJHMkVqdde8rtX3Eje3PNapDsW9TQ/a
+         6uYvQQsmyKopFlG87IIc28UPfubipI7y0mSEKZIv1N8X6GlpuT+6fVQUUHSKWbGVVv
+         4A7bNtXHeejeiXGvFUQICEsw0egoUTZA4/0nWMJcgWqrkaBFLplSwg/vHHQL3Kkyqx
+         ZY2gisEycvYzR1TUerI928arUdUUhy8YU3cGnrZq8wh+SKPuEUcDfS4R3yy/o3ji7U
+         ScU7TnjYanEelaovZjtUA2fltxxLiLSRylCHUeA9NDlz9i5kEfe0LaSZXI2sVjwFMd
+         9JUn79JwI4Nag==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 25 Sep 2023 18:26:51 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <f705117e-41dd-cb2f-ed06-6c47876fd6a2@wanadoo.fr>
+Date:   Mon, 25 Sep 2023 18:26:50 +0200
 MIME-Version: 1.0
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
- <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
- <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
- <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
- <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
- <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
- <20230925092122.0b615f25@xps-13> <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
- <20230925164736.5efbf4c0@xps-13> <CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
- <20230925172447.43dcef88@xps-13>
-In-Reply-To: <20230925172447.43dcef88@xps-13>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Mon, 25 Sep 2023 10:25:33 -0600
-Message-ID: <CAPnjgZ20c9FsYVjSrQ9qbFy9Y67BqDP2zxMyATx===PFhO69Ew@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH net-next] udp_tunnel: Use flex array to simplify code
+Content-Language: fr, en-CA
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <4a096ba9cf981a588aa87235bb91e933ee162b3d.1695542544.git.christophe.jaillet@wanadoo.fr>
+ <65105d3a8e70e_12c73e29410@willemb.c.googlers.com.notmuch>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <65105d3a8e70e_12c73e29410@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+Le 24/09/2023 à 18:00, Willem de Bruijn a écrit :
+> Christophe JAILLET wrote:
+>> 'n_tables' is small, UDP_TUNNEL_NIC_MAX_TABLES	= 4 as a maximum. So there
+>> is no real point to allocate the 'entries' pointers array with a dedicate
+>> memory allocation.
+>>
+>> Using a flexible array for struct udp_tunnel_nic->entries avoids the
+>> overhead of an additional memory allocation.
+>>
+>> This also saves an indirection when the array is accessed.
+>>
+>> Finally, __counted_by() can be used for run-time bounds checking if
+>> configured and supported by the compiler.
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   net/ipv4/udp_tunnel_nic.c | 11 ++---------
+>>   1 file changed, 2 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/net/ipv4/udp_tunnel_nic.c b/net/ipv4/udp_tunnel_nic.c
+>> index 029219749785..b6d2d16189c0 100644
+>> --- a/net/ipv4/udp_tunnel_nic.c
+>> +++ b/net/ipv4/udp_tunnel_nic.c
+>> @@ -47,7 +47,7 @@ struct udp_tunnel_nic {
+>>   
+>>   	unsigned int n_tables;
+>>   	unsigned long missed;
+>> -	struct udp_tunnel_nic_table_entry **entries;
+>> +	struct udp_tunnel_nic_table_entry *entries[] __counted_by(n_tables);
+>>   };
+>>   
+>>   /* We ensure all work structs are done using driver state, but not the code.
+>> @@ -725,16 +725,12 @@ udp_tunnel_nic_alloc(const struct udp_tunnel_nic_info *info,
+>>   	struct udp_tunnel_nic *utn;
+>>   	unsigned int i;
+>>   
+>> -	utn = kzalloc(sizeof(*utn), GFP_KERNEL);
+>> +	utn = kzalloc(struct_size(utn, entries, n_tables), GFP_KERNEL);
+>>   	if (!utn)
+>>   		return NULL;
+>>   	utn->n_tables = n_tables;
+> 
+> Should utn->n_tables be initialized before first use of
+> struct_size(utn, entries, n_tables)?
+> 
 
-On Mon, 25 Sept 2023 at 09:24, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Simon,
->
-> > > > > > > > > > I was assuming that I should create a top-level compatible = "binman"
-> > > > > > > > > > node, with subnodes like compatible = "binman,bl31-atf", for example.
-> > > > > > > > > > I should use the compatible string to indicate the contents, right?
-> > > > > > > > >
-> > > > > > > > > Yes for subnodes, and we already have some somewhat standard ones for
-> > > > > > > > > "u-boot" and "u-boot-env". Though historically, "label" was used.
-> > > > > > > >
-> > > > > > > > Binman has common properties for all entries, including "compress"
-> > > > > > > > which sets the compression algorithm.
-> > > > > > >
-> > > > > > > I see no issue with adding that. It seems useful and something missing
-> > > > > > > in the existing partition schemas.
-> > > > > >
-> > > > > > OK I sent a patch with that.
-> > > > > >
-> > > > > > >
-> > > > > > > > So perhaps I should start by defining a new binman,bl31-atf which has
-> > > > > > > > common properties from an "binman,entry" definition?
-> > > > > > >
-> > > > > > > I don't understand the binman prefix. The contents are ATF (or TF-A
-> > > > > > > now). Who wrote it to the flash image is not relevant.
-> > > > > >
-> > > > > > Are you suggesting just "atf-bl31", or "arm,atf-bl31" ? Or should we
-> > > > > > change it to "tfa-bl31"?
-> > > > >
-> > > > > I don't really understand the relationship with TF-A here. Can't we
-> > > > > just have a kind of fixed-partitions with additional properties like
-> > > > > the compression?
-> > > >
-> > > > Binman needs to know what to put in there, which is the purpose of the
-> > > > compatible string.
-> > >
-> > > But "what" should be put inside the partition is part of the input
-> > > argument, not the output. You said (maybe I got this wrong) that the
-> > > schema would apply to the output of binman. If you want to let user
-> > > know what's inside, maybe it is worth adding a label, but otherwise I
-> > > don't like the idea of a compatible for that, which for me would mean:
-> > > "here is how to handle that specific portion of the flash/here is how
-> > > the flash is organized".
-> >
-> > But I thought that the compatible string was for that purpose? See for
-> > example "brcm,bcm4908-firmware" and "brcm,bcm963xx-imagetag" and
-> > "linksys,ns-firmware".
->
-> These three examples apparently need specific handling, the partitions
-> contain meta-data that a parser needs to check or something like that.
-> And finally it looks like partition names are set depending on the
-> content that was discovered, so yes, the partition name is likely the
-> good location to tell users/OSes what's inside.
->
-> > > > > Also, I still don't understand the purpose of this schema. So binman
-> > > > > generates an image, you want to flash this image and you would like the
-> > > > > tool to generate the corresponding (partition) DT snippet automatically.
-> > > > > Do I get this right? I don't get why you would need new compatibles for
-> > > > > that.
-> > > >
-> > > > It is actually the other way around. The schema tells Binman how to
-> > > > build the image (what goes in there and where). Then outputs an
-> > > > updated DT which describes where everything ended up, for use by other
-> > > > tools, e.g. firmware update. It is a closed loop in that sense. See
-> > > > the references for more information.
-> > >
-> > > Maybe I fail to see why you would want these description to be
-> > > introduced here, if they are not useful to the OS.
-> >
-> > Well I was asked to send them to Linux since they apparently don't
-> > belong in dt-schema. These are firmware bindings, as indicated, but I
-> > took them out of the /firmware node since that is for a different
-> > purpose. Rob suggested that partitions was a good place. We have fwupd
-> > using DT to hold the firmware-update information, so I expect it will
-> > move to use these bindings too.
->
-> I would definitely use fixed partitions as that's what you need then:
-> registering where everything starts and ends. If you have "in-band"
-> meta data you might require a compatible, but I don't think you
-> do, in this case you should probably carry the content through a label
-> (which will become the partition name) and we can discuss additional
-> properties if needed.
+It can't be.
+struct_size() is used to compute the memory size to allocate.
 
-I believe I am going to need a compatible string at the 'partitions'
-level to indicate that this is the binman scheme. But we can leave
-that until later.
+Before the kzalloc() call, utn does not exist, so we can't write 
+anything to utn->n_tables. It is undefined at this point.
 
-So you are suggesting 'label' for the contents. Rob suggested
-'compatible' [1], so what should I do?
+It is initialized the line just after, after the allocation, but before 
+any use.
 
-With this schema, would every node be called 'partition@...' or is
-there flexibility to use other names?
 
-One other point to note is that some entry types will eventually need
-other properties, which vary depending on the type. For example a
-signature entry will need to hold the algorithm name used to generate
-(and therefore at runtime check) the signature.
-
->
-> > > > [1] https://u-boot.readthedocs.io/en/latest/develop/package/index.html
-> > > > [2] https://pretalx.com/media/osfc2019/submissions/Y7EN9V/resources/Binman_-_A_data-controlled_firmware_packer_for_U-B_pFU3n2K.pdf
-> > > > [3] https://www.youtube.com/watch?v=L84ujgUXBOQ
-> > >
-> >
-> > Regards,
-> > Simon
-
-Regards,
-Simon
-
-[1] https://github.com/devicetree-org/dt-schema/pull/110
+CJ
