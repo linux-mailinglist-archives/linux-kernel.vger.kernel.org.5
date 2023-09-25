@@ -2,87 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B16A7AD1CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310757AD1D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbjIYHei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
+        id S231644AbjIYHgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 03:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbjIYHeh (ORCPT
+        with ESMTP id S229709AbjIYHgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:34:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032DED3;
-        Mon, 25 Sep 2023 00:34:30 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="381096807"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="381096807"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 00:34:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="863766764"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="863766764"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 00:34:09 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andy@kernel.org>)
-        id 1qkg6Y-00000000HRL-0NDd;
-        Mon, 25 Sep 2023 10:34:06 +0300
-Date:   Mon, 25 Sep 2023 10:34:05 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH RFC 4/6] ARM: pxa: Convert reset driver to GPIO
- descriptors
-Message-ID: <ZRE37eil+4DnHmVC@smile.fi.intel.com>
-References: <20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr>
- <20230924-pxa-gpio-v1-4-2805b87d8894@skole.hr>
+        Mon, 25 Sep 2023 03:36:19 -0400
+Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B42DA;
+        Mon, 25 Sep 2023 00:36:10 -0700 (PDT)
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4RvF492VnMz9xk16;
+        Mon, 25 Sep 2023 15:34:01 +0800 (CST)
+Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 25 Sep
+ 2023 15:35:59 +0800
+Date:   Mon, 25 Sep 2023 15:35:58 +0800
+From:   Wang Jinchao <wangjinchao@xfusion.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <stone.xulei@xfusion.com>
+Subject: [PATCH] padata: Fix the UAF issue related to parallel_data
+Message-ID: <ZRE4XvOOhz4HSOgR@fedora>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230924-pxa-gpio-v1-4-2805b87d8894@skole.hr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.82.147.3]
+X-ClientProxiedBy: wuxshcsitd00601.xfusion.com (10.32.135.241) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 06:42:57PM +0200, Duje Mihanović wrote:
-> The PXA reset driver still uses the legacy GPIO interface for
-> configuring and asserting the reset pin.
-> 
-> Convert it to use the GPIO descriptor interface.
+In a high-load arm64 environment, the pcrypt_aead01 test in LTP can lead to
+system UAF (Use-After-Free) issues. Due to the lengthy analysis of the
+pcrypt_aead01 function call, I'll describe the problem scenario using a
+simplified model:
 
-...
+Suppose there's a user of padata named `user_function` that adheres to
+the padata requirement of calling `padata_free_shell` after `serial()`
+has been invoked, as demonstrated in the following code:
 
-> +	reset_gpio = gpiod_get(NULL, "reset generator", GPIOD_ASIS);
-> +	if (IS_ERR(reset_gpio)) {
-> +		printk(KERN_ERR "Can't request reset_gpio: %ld\n",
-> +				PTR_ERR(reset_gpio));
+```c
+struct request {
+    struct padata_priv padata;
+    struct completion *done;
+};
 
-pr_err()
+void parallel(struct padata_priv *padata) {
+    do_something();
+}
 
-> +		return PTR_ERR(reset_gpio);
->  	}
+void serial(struct padata_priv *padata) {
+    struct request *request = container_of(padata, struct request, padata);
+    complete(request->done);
+}
 
+void user_function() {
+    DECLARE_COMPLETION(done)
+    padata->parallel = parallel()
+    padata_do_parallel();
+    wait_for_completion(&done);
+    padata_free_shell();
+}
+```
+
+In the corresponding padata.c file, there's the following code:
+
+```c
+static void padata_serial_worker(struct work_struct *serial_work) {
+    ...
+    cnt = 0;
+
+    while (!list_empty(&local_list)) {
+        ...
+        padata->serial(padata);
+        cnt++;
+    }
+
+    local_bh_enable();
+
+    if (refcount_sub_and_test(cnt, &pd->refcnt))
+        padata_free_pd(pd);
+}
+```
+
+Because of the high system load and the accumulation of unexecuted
+softirq at this moment, `local_bh_enable()` in padata takes longer
+to execute than usual. Subsequently, when accessing `pd->refcnt`,
+`pd` has already been released by `padata_free_shell()`, resulting
+in a UAF issue with `pd->refcnt`.
+
+The fix is straightforward: add `refcount_dec_and_test` before calling
+`padata_free_pd` in `padata_free_shell`.
+
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+---
+ kernel/padata.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 222d60195de6..15dbcf7ce623 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -1107,7 +1107,8 @@ void padata_free_shell(struct padata_shell *ps)
+ 
+ 	mutex_lock(&ps->pinst->lock);
+ 	list_del(&ps->list);
+-	padata_free_pd(rcu_dereference_protected(ps->pd, 1));
++	if (refcount_dec_and_test(&ps->pd->refcnt))
++		padata_free_pd(rcu_dereference_protected(ps->pd, 1));
+ 	mutex_unlock(&ps->pinst->lock);
+ 
+ 	kfree(ps);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.40.0
 
