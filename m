@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 404C57AD4E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D827AD4E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbjIYJzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
+        id S229490AbjIYJzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYJzp (ORCPT
+        with ESMTP id S229584AbjIYJzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:55:45 -0400
+        Mon, 25 Sep 2023 05:55:46 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4DAA3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CD2CE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:40 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-0007n8-Ri; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJW-0007nL-IL; Mon, 25 Sep 2023 11:55:38 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-008pyz-Ei; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJV-008pz8-Lt; Mon, 25 Sep 2023 11:55:37 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-004dks-5Z; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJV-004dkw-Cg; Mon, 25 Sep 2023 11:55:37 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>
+To:     Huisong Li <lihuisong@huawei.com>
 Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 08/40] soc/fujitsu: a64fx-diag: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:54:59 +0200
-Message-Id: <20230925095532.1984344-9-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 09/40] soc/hisilicon: kunpeng_hccs: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:00 +0200
+Message-Id: <20230925095532.1984344-10-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1878; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=saXqsLDHKnHalVQxew/MdBsH6YDXz3ImTwJq8YFGrKw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhIlQMyzfP/6okjPblsvnLY5ljbi40E89BdP TdBef3YVZSJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYSAAKCRCPgPtYfRL+ TuRZB/9CAMDp4N6XKzi15yXUJ/0r+i6UjQAowApyp9OWmLwTPlhqHOLe5KtbxMmkeJpAYcOqxt+ UjEinBWWG3DXy36ZISIk9ggwuKVIQunoOXY6Cp9FH1dDUacIjWGDi4FgoIJ9c+s2Y7eD6EVxd/p bGcE4jDmYkpXwLA5I//CvB1LnXgkBAqImvd+TVqoW+OuexRkt+xF87LW71Qni39hupQi7Zq9fO8 YxkBLLxX/NqUuFb7km3fR+8l51WEXfVlLFOrWBe5DtPjHjHNbQtGV7mLC9LRGxyVUhbWGGYemCS j+g54ccFCLwqUBA+ObaRwRVKaPcAbLZts80N4Etx27+/tLRr
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1787; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=ply7/qctArKFDggIXfdSLlnu/GsdOcRz3LcmV8XoP6g=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhK684tGxb/mAjBX0IdDbHleZ0yNFtJqs02u 9jfVpu77X6JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYSgAKCRCPgPtYfRL+ TtAMB/9nctyFm3rLBo6SLcMnVXPeyBYuK/vaBuiIMyy2tRBYKlzn8cGBgkLdM2PWsGPDJMz8z9W q+uwVFYpbfrxNts67D2NOAA4wKbfFGwBAKFWO+nD7+SXC3NDuyQtxhNuSPAt/KBNaZ/FuvBtkQw 955873tg+0hatk5SIQsbUU1By2XxSeXYc/Ugs3Lk6VcHNfy7V4tJ+bJeGaSxlt9J69T9/umK6Vb n3DgPRUdlXW+AvCT/AOYjiO0gGW8FTQJ7YAeg0/GjkOnLzyVbQx7Pbx8iUHNkSrWU8f7xWFuiki i5T1kKXUF62XZhhB0Qxiu7y4AGxgxR6UarsLdDVBjOIYvZIM
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,40 +70,38 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/fujitsu/a64fx-diag.c | 6 ++----
+ drivers/soc/hisilicon/kunpeng_hccs.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/fujitsu/a64fx-diag.c b/drivers/soc/fujitsu/a64fx-diag.c
-index 524fbfeb94e3..330901893577 100644
---- a/drivers/soc/fujitsu/a64fx-diag.c
-+++ b/drivers/soc/fujitsu/a64fx-diag.c
-@@ -116,7 +116,7 @@ static int a64fx_diag_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
+index f3810d9d1caa..01aec0df98ec 100644
+--- a/drivers/soc/hisilicon/kunpeng_hccs.c
++++ b/drivers/soc/hisilicon/kunpeng_hccs.c
+@@ -1244,14 +1244,12 @@ static int hccs_probe(struct platform_device *pdev)
+ 	return rc;
  }
  
--static int a64fx_diag_remove(struct platform_device *pdev)
-+static void a64fx_diag_remove(struct platform_device *pdev)
+-static int hccs_remove(struct platform_device *pdev)
++static void hccs_remove(struct platform_device *pdev)
  {
- 	struct a64fx_diag_priv *priv = platform_get_drvdata(pdev);
+ 	struct hccs_dev *hdev = platform_get_drvdata(pdev);
  
-@@ -127,8 +127,6 @@ static int a64fx_diag_remove(struct platform_device *pdev)
- 		free_nmi(priv->irq, NULL);
- 	else
- 		free_irq(priv->irq, NULL);
+ 	hccs_remove_topo_dirs(hdev);
+ 	hccs_unregister_pcc_channel(hdev);
 -
 -	return 0;
  }
  
- static const struct acpi_device_id a64fx_diag_acpi_match[] = {
-@@ -144,7 +142,7 @@ static struct platform_driver a64fx_diag_driver = {
- 		.acpi_match_table = ACPI_PTR(a64fx_diag_acpi_match),
- 	},
- 	.probe = a64fx_diag_probe,
--	.remove = a64fx_diag_remove,
-+	.remove_new = a64fx_diag_remove,
- };
+ static const struct acpi_device_id hccs_acpi_match[] = {
+@@ -1262,7 +1260,7 @@ MODULE_DEVICE_TABLE(acpi, hccs_acpi_match);
  
- module_platform_driver(a64fx_diag_driver);
+ static struct platform_driver hccs_driver = {
+ 	.probe = hccs_probe,
+-	.remove = hccs_remove,
++	.remove_new = hccs_remove,
+ 	.driver = {
+ 		.name = "kunpeng_hccs",
+ 		.acpi_match_table = hccs_acpi_match,
 -- 
 2.40.1
 
