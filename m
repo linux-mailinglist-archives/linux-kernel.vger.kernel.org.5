@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8638E7AD51E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2277AD519
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjIYJ6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        id S230366AbjIYJ5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbjIYJ4X (ORCPT
+        with ESMTP id S230411AbjIYJ4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Sep 2023 05:56:23 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6D0BE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6E919C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:52 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJa-00081g-Bl; Mon, 25 Sep 2023 11:55:42 +0200
+        id 1qkiJa-00082M-Do; Mon, 25 Sep 2023 11:55:42 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJZ-008q0L-Ov; Mon, 25 Sep 2023 11:55:41 +0200
+        id 1qkiJZ-008q0P-WC; Mon, 25 Sep 2023 11:55:42 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJZ-004dmA-Fk; Mon, 25 Sep 2023 11:55:41 +0200
+        id 1qkiJZ-004dmE-Mr; Mon, 25 Sep 2023 11:55:41 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Andy Gross <agross@kernel.org>,
@@ -35,15 +35,15 @@ To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 28/40] soc/qcom: smsm: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:55:19 +0200
-Message-Id: <20230925095532.1984344-29-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 29/40] soc/qcom: socinfo: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:20 +0200
+Message-Id: <20230925095532.1984344-30-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1874; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=z/W3uxTlGbd0Hm50wr5opUq80z5rVkc5dSSX+BBq0wM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhfUTSzppz+UyUZkBjVYnRFg9b67hFbOM0PE CExnpBm1p2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYXwAKCRCPgPtYfRL+ Tgt0B/4uGFdEp9P4aoL87ZCyVsQBO5BPkmdjlzTW0cPdeFm3uCnMPFUD2s563FtLWPA03FeMitr uPoHOrosi72mlJSqkF0yVuL0FgxZSA3wsEjeN0NbGBdob9MPWsOIIMt/bkW+AfJ4hcfdxWWsMsv BDETeZoiEcrS5VqlQvmo0LKcGM4fCDT2h6dZJZ0e6yyGvbzfyjheDlcIhnVw0GeMQZvXJUz5gy7 7n/H/WJF7HAMYvkUP3ahNHxtrR3WwgDfBsK1O2ZpEffPjZY/xoEfjnSnxRzMcjyCV76V+yT/jLS 0CeSXV82SwKllE7eNRBlmUTlWl/CqRnGMQtNMRleLd8xLIxc
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1630; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=90uOlJONh9cylIs5vvjXRa6sCUvXWA1OmhyJBs1pNUc=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhg6iTi/gMVsP6JrDUpRAeFkHFSftL4SAAaA 3n+u6WR9L+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYYAAKCRCPgPtYfRL+ ThxwB/4q6F2zaDWOKrgbtmZdtPznLSspMmFtvuD7MCdqvCTYp/YcywPAIkDk++k0eXVcilqqBKK 7d3eWAjk5yLjzyVo3OvFUBcdxauLQDdZsYn+4T+WsCfS5d9WmAJojYJ9mo7NMrUejJMQ6DHOcJd Y8U5wgoa31qlBwBK1ryUbMI7CW0XdCKngadGw9WimIIL4MlebBwzNJ/ZQgc5399uy71iPlNdkQl Rz7e1k9MxdMSfwnN8J6uPlzpg7Ck2btwbDZKS5Iipkhur6pGBS+Suw4pbGyaAlMByHyAuP51l1q HdnPUtkCU8si6cnxlUyL7flM8/wwMC5Jvzvcvuijpx4GjdUw
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -73,40 +73,36 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/qcom/smsm.c | 6 ++----
+ drivers/soc/qcom/socinfo.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/qcom/smsm.c b/drivers/soc/qcom/smsm.c
-index c58cfff64856..e7c7e9a640a6 100644
---- a/drivers/soc/qcom/smsm.c
-+++ b/drivers/soc/qcom/smsm.c
-@@ -613,7 +613,7 @@ static int qcom_smsm_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index 2a15983d9f60..51e05bec5bfc 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -787,20 +787,18 @@ static int qcom_socinfo_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int qcom_smsm_remove(struct platform_device *pdev)
-+static void qcom_smsm_remove(struct platform_device *pdev)
+-static int qcom_socinfo_remove(struct platform_device *pdev)
++static void qcom_socinfo_remove(struct platform_device *pdev)
  {
- 	struct qcom_smsm *smsm = platform_get_drvdata(pdev);
- 	unsigned id;
-@@ -623,8 +623,6 @@ static int qcom_smsm_remove(struct platform_device *pdev)
- 			irq_domain_remove(smsm->entries[id].domain);
+ 	struct qcom_socinfo *qs = platform_get_drvdata(pdev);
  
- 	qcom_smem_state_unregister(smsm->state);
+ 	soc_device_unregister(qs->soc_dev);
+ 
+ 	socinfo_debugfs_exit(qs);
 -
 -	return 0;
  }
  
- static const struct of_device_id qcom_smsm_of_match[] = {
-@@ -635,7 +633,7 @@ MODULE_DEVICE_TABLE(of, qcom_smsm_of_match);
- 
- static struct platform_driver qcom_smsm_driver = {
- 	.probe = qcom_smsm_probe,
--	.remove = qcom_smsm_remove,
-+	.remove_new = qcom_smsm_remove,
+ static struct platform_driver qcom_socinfo_driver = {
+ 	.probe = qcom_socinfo_probe,
+-	.remove = qcom_socinfo_remove,
++	.remove_new = qcom_socinfo_remove,
  	.driver  = {
- 		.name  = "qcom-smsm",
- 		.of_match_table = qcom_smsm_of_match,
+ 		.name = "qcom-socinfo",
+ 	},
 -- 
 2.40.1
 
