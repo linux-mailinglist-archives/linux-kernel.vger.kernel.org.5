@@ -2,200 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8227B7AE1A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29707AE1A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbjIYWZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
+        id S232032AbjIYW0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbjIYWZt (ORCPT
+        with ESMTP id S232395AbjIYW0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:25:49 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2060.outbound.protection.outlook.com [40.107.237.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598D1107;
-        Mon, 25 Sep 2023 15:25:43 -0700 (PDT)
+        Mon, 25 Sep 2023 18:26:11 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6EA11F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:26:03 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PLOksi022167;
+        Mon, 25 Sep 2023 22:25:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=8V3oM+xtvqbP92aVNpNxdgova9/jG8Jjaw22ZXyXX5g=;
+ b=x62sL/zyZjnwnHlxRNj/BQhNYOCpW5bWefWYkp/cX/QUieIPpv3JRkjMZNc1+rfW/xYP
+ sR4InZXq0eFjYXQ24ckBTBOI1LjW7bJa6pvZjotC1y489uDnoGA3SX8Wa41StZ7J4J6y
+ 2YyCcQ4ssJjPPIA+D0rlvPmDqjrCNjtbgYFoVj3jK3DXrYRm3FK05mYN86qzRfYFFc9G
+ l8y62HB+pDQ3Y5B9wZSMl9V3w3maP9dgcjsPU5Nua9GFfbHzdXYRmIvHbStuQy2udw3B
+ 7aORmldXQSLbxyM1OEUjUxqw4Ef5+ZlXKNr6xeZe/+uy/X50oyEMbV5XUc7tRWtcJtIN yA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9rjud3t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Sep 2023 22:25:46 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38PMGOrb017976;
+        Mon, 25 Sep 2023 22:25:45 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfb7h4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Sep 2023 22:25:44 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jc4FDgQ/lgTerOHdg5f4zZfvaka13I2u32SiCZvSbU/ZxTNZbsm98ov8OB4qaBnJQfQYF5QEjp57yDWxDkA3URJoEvE6ldnXwOEDCz02+/tkeJxUuW1EOl8rC3Bli6YXRz4hB02iobBmFSUdpnYk7nx41kglGlQeR1wnAAmiMjdiqxE6zvXMJeFDdQl9Bwrtd1qscUzQnbn5xmmYMTJUFd4AhXoD601G8+pq8rTo9iEfyE9vyFf6ttwxFbO1kS1CgYYtw4PAdITcSjKT9Ji6eezKcVYn433pOqznBCrHeKx+MVsZg5aakYMFD60OdWNwIyWzYrSh062lTNER+jOmKQ==
+ b=hQHSva51Ado+6MXAHRCfnsl/JD9VcLZZEdQ2w/clxLnD5hpBx0ISyz0nBcIuDyJFsLTcL7wiavRVqJxVi7YWAP+Q4kMFxheHPn8nl0FGaRvbY3CVq6YVyKsRGB5m4Hl1OHr1pSeuUR/s2vU8sQImAq30met28JbUnvksoRoxKvuFVIsS/+gLWqlJKl+zN0SrdAqKiiv6X41hyLRCOiz2kCFROIMTUYQwY4hu9U8o80v2Ps3um2b3rydDDbq2tFHb3xnWlbQ5/EAz2h7w3SGGLlF8EAj0EcgwJ+cs0v6U2JjyGEbLayRHOCrlFvICAr6rdfxKhW05cn71p9BleQdnug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t6HgBcnTCXD8TARrarXon6ji+h+GRRruuSa+X163nKY=;
- b=HPfX3CJnpodTl52C0lKCUgI4WUO52JF1nTQn8lnW3wQy/tbkIh6KnVVZFd5rdpaJF7rXFtwCfg4FL8dx7FQZVXexJr+5W8eRL3EC275dUWpDsZjppYVlTec54LpBvg1JE1WK2OHDJaCiij/gIn9o07uX1ZFQB2nCAWOkDmGM2ZHunrF+ItiYjOl5yVxG+1rBnpm/VS6wUF5bc8YWjHzFDlbNHOP0kwDaBI41kDWAXihsmvIYLz097SiUe9bHTFVUclb9HWd+jt4lLP9ZYNupVcrAepTc00/jQYhE+KBI2eQgFuRXfar2zXSjzECDh1zpJV5sZ53tX83miDunQqfvvw==
+ bh=8V3oM+xtvqbP92aVNpNxdgova9/jG8Jjaw22ZXyXX5g=;
+ b=d9lBHBEqDrkzhxnQ8nLA1a/NoxeojJPwqGpkjsdz39Ax8ejmIPcuhJyZBjyWbDKYx8Kx/EQTlFMlXsGAwO8Sig3+yloGEn2lmx0ln5Tmug9KHEawi1+URDMmTlfOGyojZDDIgLCag2voYppbi176Yvte2zVADonlgUVGEKZQxuG+L9c++vPoZMLBmyN4Ot3ZmOc9dR9UjiA7oMVmGfUSPyCWq/bhgftD3n+497/Am1r6sWlQKeyJyrWKXF4neP9j9I+XemgTPDD7IjX/qt40FBn/0f0XhvoviGocHaEihoFXAJGLgoVhx7Dxq+DrvE1AYOb9wZ6HwXtEzCI97z2hEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t6HgBcnTCXD8TARrarXon6ji+h+GRRruuSa+X163nKY=;
- b=ksOwo+1QkcBgh4IrkYo6B+UW+c1DjDj8Udt6Nuv2ScbKZwPKDTjlC+fXc8c2epLZdy8GThS5MQ/n4qIEEgi9kLr9l2wbQkgG1cV3nQwuvyNgikDodAEb7H5YblNq30QEeyrTXflb7LGBcGY52WVS52tI/mdGAii6SMGV8T0I07g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5221.namprd12.prod.outlook.com (2603:10b6:208:30b::9)
- by MN2PR12MB4341.namprd12.prod.outlook.com (2603:10b6:208:262::24) with
+ bh=8V3oM+xtvqbP92aVNpNxdgova9/jG8Jjaw22ZXyXX5g=;
+ b=llJZFZDeHEID5rP0/cuF2/5yUcvVnfxxKcAk3X3knl+gGbKtUQlHS1FZhIwhw/Lc+JpYc7/mm5pLMeLOeux2M7DHlZEPzrXZ6Ttknpd0rpuNIBjjYW8o2g1AOkF3fZEBcko7dbLC/RTrEFrehln328g4d7TK4HxMmnMXEX8ZE+c=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by IA0PR10MB7229.namprd10.prod.outlook.com (2603:10b6:208:400::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 22:25:41 +0000
-Received: from BL1PR12MB5221.namprd12.prod.outlook.com
- ([fe80::29d3:8fd9:55f0:aee9]) by BL1PR12MB5221.namprd12.prod.outlook.com
- ([fe80::29d3:8fd9:55f0:aee9%7]) with mapi id 15.20.6813.017; Mon, 25 Sep 2023
- 22:25:41 +0000
-Message-ID: <ac402dd4-8bf3-87a8-7ade-50d62997ce97@amd.com>
-Date:   Mon, 25 Sep 2023 17:25:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] KVM: x86: Ignore MSR_AMD64_BU_CFG access
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <0ffde769702c6cdf6b6c18e1dcb28b25309af7f7.1695659717.git.maciej.szmigiero@oracle.com>
- <ZRHRsgjhOmIrxo0W@google.com>
- <8c6a1fc8-2ac5-4767-8b02-9ef56434724e@maciej.szmigiero.name>
- <ZRHckCMwOv3jfSs7@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <ZRHckCMwOv3jfSs7@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0068.namprd05.prod.outlook.com
- (2603:10b6:803:41::45) To BL1PR12MB5221.namprd12.prod.outlook.com
- (2603:10b6:208:30b::9)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.27; Mon, 25 Sep
+ 2023 22:25:43 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::c621:12ca:ba40:9054]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::c621:12ca:ba40:9054%5]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 22:25:42 +0000
+Date:   Mon, 25 Sep 2023 15:25:39 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     riel@surriel.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
+Subject: Re: [PATCH 2/3] hugetlbfs: close race between MADV_DONTNEED and page
+ fault
+Message-ID: <20230925222539.GC11309@monkey>
+References: <20230925203030.703439-1-riel@surriel.com>
+ <20230925203030.703439-3-riel@surriel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925203030.703439-3-riel@surriel.com>
+X-ClientProxiedBy: MW4PR03CA0313.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::18) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5221:EE_|MN2PR12MB4341:EE_
-X-MS-Office365-Filtering-Correlation-Id: c35c71e9-1348-4a4f-d180-08dbbe1659b7
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|IA0PR10MB7229:EE_
+X-MS-Office365-Filtering-Correlation-Id: b62405aa-eb81-40d0-f47b-08dbbe165af9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c74fbf1QhwT5quncUlimZqlO6nDsAQkMk0C612UUQVPztCqnC+OJsfx8ZVod0JBKlF67b6JgXCnLqKn1XC1kshlxuyWZroXvYBPxNvJ5Bhb1i2Jy4BP670kejE7rdC0YKsypCh0RHrNCJY0YRjYNAOZGCB7Pn3jeHaxgOw2PWghBqNWE9AyzQ4mG/Lhm3GLxp2jCVyJQ3RdF6c/q05ekoIu25PWzBVq+t2Nul78O2zfcGjOD2YR0HTRZ9C3zhBqM2x/WxldoPhV/vhhRg0k7Io5lKmzG27leKden1QC3ghMJBiwPrNrSaUCU40kctBRHQLlt8Ca2VOkQmgo1QkPV1cBnw/4hDLyZZO3yyMHL6jkBbMAnvhE64jIM5F8dYxhtpofVBauoqVvBjvtyeyE4qmCWwDWY6YhlnikjcNH6Kv4UR0JQshrpajlp7mdxhhhrpL1O/HXbh6ycMb6mary1436DYIb7xTQw12DKuqN65XHE2N5dvuWS2oFVvqIEY2w0d9YrJL2tr1obT3pln8GWav+tTc0ftXbQGMcK40+Vupztdju3ecv+SnwjsJZWA17L8BB6lIOWpN+DzSWPZFfw1i43BXjV9O0SQ5TN5D+l2fwIWJfRs2CSS/bPfEh1hl6zYTzZ1qV9U6Agnd/Xv2HYSw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5221.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(376002)(346002)(366004)(230922051799003)(1800799009)(186009)(451199024)(6512007)(6506007)(53546011)(6486002)(6666004)(31696002)(86362001)(38100700002)(36756003)(2616005)(26005)(2906002)(110136005)(31686004)(8936002)(8676002)(4326008)(41300700001)(66556008)(66946007)(54906003)(316002)(66476007)(5660300002)(478600001)(45080400002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: KOeFOA96gl9PB27A0gFp/Cyv+IlQhMe5n8vAj1ryy8up+qNZO7I6dsP8GSlE57P80PdZ4RdiZnoJWYu7pnpdeyS97SxHEWvUcN2POlTYm5FWjkzOOZcZnPpKKY3qYsWqxpbpWYYwTeoI7Egk7KyOV5uftDLTTO0SdWO1jqJXN90j8zfHPLYUMj+euWezzkMSBwCGAytQ14G7xXlzHOqJx+ouWC6kUEIJlepmVbedEBYYhWhEHxNrBSeaRh9UHpCBHB2/oDywhpKjSDHGgqTfYq35F86ZzJUQ0vJ5dJL/LIIQehgA1li/fZJPyiRLvNfiwDqjAmgxIj3zR8L5puJeTlLUTQbuaSmsR2TbVv53baFtMgpwABg/CqAHJdvLbL2yo5sLUURlKmeJcV72UlDYI1jwRB4OBTJlP1aKuxI9mi9f5DwKQ6vM8j/S+AS3XkWGIAG8dJzFPwjdWa9a5QO0zA6ubrih4etTL37eJCsrOO6MBoIcyt4XYbmdubq6FejlQvRLHdhpb5qZmGNgDoWbJxnHVdZQX00zhX/vkbzbfa8HLZekNG6PjQe3AnMJj6Sh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(2906002)(5660300002)(66946007)(66476007)(44832011)(66556008)(478600001)(6666004)(33716001)(6512007)(53546011)(9686003)(1076003)(26005)(6506007)(6486002)(6916009)(316002)(8676002)(4326008)(8936002)(41300700001)(83380400001)(86362001)(38100700002)(33656002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXdjcTVEbmtid3pEVmpUZGJzemMyQUFnRERNdkFrLzhzOExZTEFtSlNxcG8x?=
- =?utf-8?B?Q1czN1lnZk81bVhndVZsQjJ1OXJoQVlhcklNYWNwb2hhL3B4U2V2QjloVTdG?=
- =?utf-8?B?MmZaM0xYSHNEWGdObEZOR2NFV3ROSU9BUzgvUmtTOS9VcjJuT2NBcUVLU0kx?=
- =?utf-8?B?VUdidEVYakMxeGZ1dHpWNlY1bWdUNmRxSUVYV3AzL2dYZVpWa0w5aDcrRkU2?=
- =?utf-8?B?cER2QVJyUStnR0VpYzNjUnRFOUI3QldkWTlUR2lwS3NiZnJ6alNtZGM1L0hX?=
- =?utf-8?B?QjFNNTR1S2xKalcrZ1NrK2RINGd3cG1FdkE3ZW1CMFl1U0pHSWNDUDkwQ1lZ?=
- =?utf-8?B?Z0FSdDNobkdGYWhVQS9XSHNEbG91WGcxTUh3eCtOTzZSaWQ2VldEV2dXL1d0?=
- =?utf-8?B?YjBwcHJudmFqSUVHdWdhaXNKLytNOVR2emt6RVA5d1ZwRHZaRGFmQThsTmtU?=
- =?utf-8?B?bVliTVBNV3B2eVdJS1htQ2EyKzZkL3lXYzQ0RHlqRWp5SkVhZzRObTBxYWxi?=
- =?utf-8?B?UnMyeXhUbFlDZFUreXltRWpyNVhtbVFDVmlLYTlUM3pLcWF5TUR0UlpIZVNp?=
- =?utf-8?B?VWVpMG55KzF1eEVwaFZPUXpoaStLS3VSOWI3d1ZpcENFVFJTRHRFMTU3VU9O?=
- =?utf-8?B?Q1JUSm90dHdJb0NwdUdzRy9pN3JVRnF5TFJ5SHVqUnFIbmU0cTRGanpBRlFt?=
- =?utf-8?B?L2IrVFJlMHdxT3dnejNYd0h2ejFrMU5ORDFrd1lnMmZWNExkSGk5dmZPaVhp?=
- =?utf-8?B?WERrZkptd3lrWThzb2E1RVlxSm9KZGltS09Rbmg4QlBnNmthUmNzQ0JWbGhR?=
- =?utf-8?B?aDdsMktYbk9DRVhCMkF1Qndac2ZPUWZPVFptNHY5RnNtQ0x5QTZ5bXY5OEVC?=
- =?utf-8?B?NDRXaTd3TndSNDhTdjRxbGdsdTlydGNZS3NpWCtvY1M0NXRPSUFtUlV0TVVB?=
- =?utf-8?B?NFppM2JSb1JWVnJtUHhydDVHTzU0Tkt2Y1o3NWxIUnpMOGlqUVZqTDVJcUpp?=
- =?utf-8?B?VHlkdlgzQ2d0Q0JybVNtNUdZVGk4TkU4MHZyTTdFenZvSWxsbHI0dmd4LzJE?=
- =?utf-8?B?NVF3bEtSSDViUFNyU1pxT2dqdkpZZ2RaczUzTXVkQ2srK21KUCtCOFlsYWND?=
- =?utf-8?B?RzNRQnh5UTVFOEdtT3NjVkdCOVhyU1lZUCtUYlE4TFVYcDB2UnQrWE41NFNr?=
- =?utf-8?B?VWJMUHBBeWJ2R0lGZVUwNTduNzFlNVU2ZUdnRlVjbGZRSm5HUFB5eHZjeTc3?=
- =?utf-8?B?TWlJenZNN1Z3V1RyNFRzemF1UVlBV2lJcC9DMFRjaDRNL3JRVDVDRStSTmhJ?=
- =?utf-8?B?QUk4Zzd3U28yekhQcnlrZmlrd3ErNmRNTnhZS0xNTFROcmRKYlRWVkZFRGJD?=
- =?utf-8?B?dHQ4UUk1ajJJdXlPNU9FbC9NSW1CMUZVWnpndWxqTXJKbnRrZUY4cHZhWkps?=
- =?utf-8?B?Q0RpelZsd0ZrMSsxTHAyM1Y0SmtzWjN3czdqbkFBYmVDQTgyYlhpVXRDTU5q?=
- =?utf-8?B?ajFvdm5mcmJWbUd6emJPZVFuZlZhYTE0TXBuUUxrdHpkbk91VDBsZ1J4ZzNu?=
- =?utf-8?B?ZzRsckxPbFZxWUxaQlVDNVQzelJqRjlPWGtYNTRPL0F1K0xFaTBNdzUzQ0h6?=
- =?utf-8?B?NzNMOGhFWXNUdTB6bGtKcXN3M0RMZkRMZmZpaG9DMmN2ZkJBMkZDdlRMUW5k?=
- =?utf-8?B?N3Q5TFN4b0ROanBBSEFQWElXY0o2Y2gyWkNsNVBXTlRjbFV1bUJJNWF2SHNn?=
- =?utf-8?B?eWRUaUtYR1FUYStEUWJRaVlIRTdtQTNjR1pCNG5zUXpzUFVtYmo4YXdPQXZC?=
- =?utf-8?B?aWx4RTRnUGREbC9Gc3hnWUZtaW8xVDkzTHM4eWxlQ3p0VmVCYndyelM5VUNH?=
- =?utf-8?B?MEtIOGNHSitoVmZkMXJRSlNnbEhpMXJtTTRVMWV2NEdKWXN6WC9BYTJyMnBx?=
- =?utf-8?B?bGxwbFlxL2pXTllnOFh0SEx5UU5DQkI3QUk1MHlXbWs1bVJpZTBFWHBGdGdQ?=
- =?utf-8?B?UE12dEZVdXAxYXdjeUZsb1hVYjhBbllQZmdCOHVDVGxPSzJsWEYwdThPb1lp?=
- =?utf-8?B?c04yNDBvdEQ0WmIxREROUThXZXcxbU05SUJabnVpMzZ3T21JMFZ1UXkrM2ZO?=
- =?utf-8?Q?AJ3Yh5UDaYHsowbzSrdMKF/mv?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c35c71e9-1348-4a4f-d180-08dbbe1659b7
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5221.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pJD/Jvua3GJZ3EzfAMtHF9uvss1RrK7kRM2ia9aSScsxzfhnx404I+2aXUYz?=
+ =?us-ascii?Q?zKAolpJTNUB9CwmdAMXNYQicBG1dJJAdm2Jgg4XoVREZoMnz5SEcoxf4tsT5?=
+ =?us-ascii?Q?VDd3lK25nO6askK9jgcM2/rM2p8oDb7cLdxbPf9ZDhjnbTBQyVOKDMEhRw6p?=
+ =?us-ascii?Q?chQ8eUSnRru1Q8VOBL8RBzBM+PZj5fVa/MmEUYylBis9LJWrV6Bm8umd4uZx?=
+ =?us-ascii?Q?9aJfsLvft0GpjBrCozauI1MsE2SoWU6Zsz4pKlfEH+ah9Q3sWK68CT9I/v/J?=
+ =?us-ascii?Q?yVDniylm/32b37ERryiAtQ5YjZFJp3oifUwHQTI9XPVft+LFS3WbJjvYoO8a?=
+ =?us-ascii?Q?ozFMCY0+hr4nvB017ow5yGmA/NOCClKYq/lEkPCe0acOpLSQkVst2oCqx6BE?=
+ =?us-ascii?Q?3Oo9ZcFmCbfnoNGJdzQr6z0e03X6by+kZmbemr/4QfVkKiIjgERz1BzsigBo?=
+ =?us-ascii?Q?82r/2y2gPKyx+TK7U//eHZ86OlisdSwl+VIA+J0/1v4iokKV/MO/9k9wsTuW?=
+ =?us-ascii?Q?Fl5UulbZlk88j18d/Vg+L5ZRc4SOFZRWv2y5/itGctn9DlAbaw7XBKQSqPyS?=
+ =?us-ascii?Q?R9B6N/RtvltjIwcWpb7GLX5gjNePFxSDF+i79Of4HxPki4b9C3dUYGPz3afn?=
+ =?us-ascii?Q?NZo/X5J6EmAwGOdZnjV5o/O6jund8GeJhX3Yj0bx1v+NiRc1/sGIXDfDRcE6?=
+ =?us-ascii?Q?17QxPWH4CLzY0cx2UvZTERnjd9XImGMzQ4vjnepI0JiOQQP8y5RFix8EK8Pd?=
+ =?us-ascii?Q?jU6v6HnjAYXQLz0qJmcTey2Asjq0HzpeIPjfklaBg0WjCWJudPR7fTml4lYI?=
+ =?us-ascii?Q?MkqU5/hl5G+ekKyhLff+agcq51N0BucKsTEfNxQ+n/1u0MvQSz/FSjzcMSVK?=
+ =?us-ascii?Q?6nOHmMynqUBncQtAG24j2+jTMZL/9B5djMxSnJoU9AsKuP3tHeRqLz44aBgQ?=
+ =?us-ascii?Q?I2QLCmvdXPHHxUGx4r9BPGyk3SavNQxQ6AyFXHujRPTuWJZ+WPWiuaD0ltuH?=
+ =?us-ascii?Q?eBVHdf8x+Lcw0J6niBOz//hwW9GSvwZhv/xH92CCpKaN0fS0RUwKTtiUs45Q?=
+ =?us-ascii?Q?XdNDU4ioQv2vcbn2I+C/SRo9ywB50bKPyGOTqfH9Phm1w/Q/iaoB6put+jDY?=
+ =?us-ascii?Q?LCCjnc/jN6YlGBGbr+RKcqJjyNP3vErj3RyajJlmxTXbhZXi54boBVIj7N/2?=
+ =?us-ascii?Q?3TJnjvc/KEB0auuMe94BcbSx1kLS0F9qMbCoCdrIvQkaxEw0fJXwau4gsWc4?=
+ =?us-ascii?Q?JT9uiwb4w9MxljQwWaS4wOPA+WhFZOiLoSlvpY2+EgeJxpeMadpLKmOiAX2z?=
+ =?us-ascii?Q?VoICfTzz7xgZaU76rOP/5zWrsiJZLRYS+fVZv7njzWEYnuEGQ0D6frfuah9Y?=
+ =?us-ascii?Q?8TyFjAYvrruKT/5CGyG0CiOueplihrT1ULOdpYmk2yWajTyZ9aNbV6dm9VjX?=
+ =?us-ascii?Q?zXIpEhVM/Q7Iwel4muuTjImpxxX2pTFywhqhlFX25a4m0TBRb/F12C4Libx5?=
+ =?us-ascii?Q?SGTLOQBL6eSVUpbfzwLaiSGhnQJYdnJggWEv/MSXd+3lPzpQ6aAOSc9CaMl0?=
+ =?us-ascii?Q?5GjX/qZlEA1fHgy3RNj2o00dbVxQwGUcLw+Zm6UuQx5ZSyns7M4bXxRkgk6Q?=
+ =?us-ascii?Q?Bg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?cVEX45iaFcrr4BYRu3cLs6mM2+imq/s3G5bnSYhjmgh0rCsUuGMYNxWnqgHO?=
+ =?us-ascii?Q?GftnCBfE9FbYQ/YUsWLi3WKLgzqitfzLtzL94TSh/W1hjWFglefTpB4/2z6x?=
+ =?us-ascii?Q?DmzewEBmxXAZvG0BOFVR8xBNIqboktwJNSVNS1Wm8K+WlIN7Eniu6hxSF7KI?=
+ =?us-ascii?Q?eRP4NkBTUY4IRdyUKt3wiaFvStO0ZciYoMTXwJ9RMzz/8IJGqlsBJi8S5Z2l?=
+ =?us-ascii?Q?QOVqQvXVhFViXbhK3QPal24sHauZ1Ls/zPQ4xRyOpXpS/dwbA5EfMgFYOMlJ?=
+ =?us-ascii?Q?0KkBWXM9sLnzNPUvnZ8W96BfJlswfdslUgfcYokhNtQw6eiE315RzNMUFxJ7?=
+ =?us-ascii?Q?itff93SC6H5+PK58osnYQvPe+jBca6Tb/zXC9UbJr4NOeWhMvMX9WysJ0pUa?=
+ =?us-ascii?Q?2t5daYk5EA3DIBRVlqMafrvlMYiUmDSViHU5aQ5dOKPmiwqWC1zWEqsr+CI2?=
+ =?us-ascii?Q?WAMZa7yi+N/lADT1NobCb5mGu4Un4/AhA8eh5bBZ0dgAOXpetvMO6oFNja4O?=
+ =?us-ascii?Q?mP0Q5QMCT+SpXzT/QGz6WyWHH5FmbtcRPU+XDdUa9F2wPlACJ0m9mbLG21b2?=
+ =?us-ascii?Q?6X9mXBUnLvfI2ToGLrbjehWbD80lbJDlT1VdVMs8YSeY679CM4tyBv7CXv+b?=
+ =?us-ascii?Q?4ZtdtlJ0fdINFKHNWWsb8odfsgkwyYtNQK06ScqrCFfDUl2rfd4rLkRQhB/g?=
+ =?us-ascii?Q?cjr8DCbaHJjE173KarIdvx+Zb5cbbDo78iImLwdS2W1K9Ka0306quLIXrVDY?=
+ =?us-ascii?Q?iuR9mVFkK/q1TnovFY6Bc/mn/c4W6ADIt4hojPowTNhf7LsDB9835vmfwWg/?=
+ =?us-ascii?Q?a3zNHw1dPHRurofCGpUjkHpnlIBesl8fLIfRizHOeTiqXjDOI0HYlonn+hyf?=
+ =?us-ascii?Q?5ww6SZOVs4LJ5hAhpj8k/Kw9+W6MeiEJY8jYGYP9RrLszpdBWQtsb4iJ5JLk?=
+ =?us-ascii?Q?7LpWSPcagc0r6Tehdp+Wjw=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b62405aa-eb81-40d0-f47b-08dbbe165af9
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 22:25:40.9080
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 22:25:42.8948
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pFYFtz4kNwwQxSJhtg14GzMKpMqIlkO7U5FA43C2ZTeBfyCWqMtypUwBMtxXSJnRxrUvve4O9LZ6ENH5bczxTg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4341
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: v/qHjQVgs40cgabgF7xA8FfTuHLPGQtz7EhOhqnUnGOOZbwcIGKJyxH1+J69angkK7Ny2KoKTLZPhxwO2Ss/jw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7229
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-25_18,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=576 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309250172
+X-Proofpoint-ORIG-GUID: mGt3tDjxmUyJ_pd6jv_mz4lN_ms9AOWU
+X-Proofpoint-GUID: mGt3tDjxmUyJ_pd6jv_mz4lN_ms9AOWU
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/23 14:16, Sean Christopherson wrote:
-> +Tom
+On 09/25/23 16:28, riel@surriel.com wrote:
+> From: Rik van Riel <riel@surriel.com>
 > 
-> On Mon, Sep 25, 2023, Maciej S. Szmigiero wrote:
->> On 25.09.2023 20:30, Sean Christopherson wrote:
->>>>
->>>> Hyper-V enabled Windows Server 2022 KVM VM cannot be started on Zen1 Ryzen
->>>> since it crashes at boot with SYSTEM_THREAD_EXCEPTION_NOT_HANDLED +
->>>> STATUS_PRIVILEGED_INSTRUCTION (in other words, because of an unexpected #GP
->>>> in the guest kernel).
->>>>
->>>> This is because Windows tries to set bit 8 in MSR_AMD64_BU_CFG and can't
->>>> handle receiving a #GP when doing so.
->>>
->>> Any idea why?
->>
->> I guess it is trying to set some chicken bit?
->>
->> By the way, I tested Windows Server 2019 now - it has the same problem.
->>
->> So likely Windows 11 and newer version of Windows 10 have it, too.
+> Malloc libraries, like jemalloc and tcalloc, take decisions on when
+> to call madvise independently from the code in the main application.
 > 
-> ...
+> This sometimes results in the application page faulting on an address,
+> right after the malloc library has shot down the backing memory with
+> MADV_DONTNEED.
 > 
->>>> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
->>>> index 1d111350197f..c80a5cea80c4 100644
->>>> --- a/arch/x86/include/asm/msr-index.h
->>>> +++ b/arch/x86/include/asm/msr-index.h
->>>> @@ -553,6 +553,7 @@
->>>>    #define MSR_AMD64_CPUID_FN_1		0xc0011004
->>>>    #define MSR_AMD64_LS_CFG		0xc0011020
->>>>    #define MSR_AMD64_DC_CFG		0xc0011022
->>>> +#define MSR_AMD64_BU_CFG		0xc0011023
->>>
->>> What document actually defines this MSR?  All of the PPRs I can find for Family 17h
->>> list it as:
->>>
->>>      MSRC001_1023 [Table Walker Configuration] (Core::X86::Msr::TW_CFG)
->>
->> It's partially documented in various AMD BKDGs, however I couldn't find
->> any definition for this particular bit (8) - other than that it is reserved.
+> Usually this is harmless, because we always have some 4kB pages
+> sitting around to satisfy a page fault. However, with hugetlbfs
+> systems often allocate only the exact number of huge pages that
+> the application wants.
 > 
-> I found it as MSR_AMD64_BU_CFG for Model 16h, but that's Jaguar/Puma, not Zen1.
-> My guess is that Windows is trying to write this thing:
+> Due to TLB batching, hugetlbfs MADV_DONTNEED will free pages outside of
+> any lock taken on the page fault path, which can open up the following
+> race condition:
 > 
->    MSRC001_1023 [Table Walker Configuration] (Core::X86::Msr::TW_CFG)
->    Read-write. Reset: 0000_0000_0000_0000h.
->    _lthree0_core[3,1]; MSRC001_1023
+>        CPU 1                            CPU 2
 > 
->    Bits   Description
->    63:50  Reserved.
->    49     TwCfgCombineCr0Cd: combine CR0_CD for both threads of a core. Read-write. Reset: 0. Init: BIOS,1.
->           1=The host Cr0_Cd values from the two threads are OR'd together and used by both threads.
->    48:0   Reserved.
+>        MADV_DONTNEED
+>        unmap page
+>        shoot down TLB entry
+>                                        page fault
+>                                        fail to allocate a huge page
+>                                        killed with SIGBUS
+>        free page
 > 
-> Though that still doesn't explain bit 8...  Perhaps a chicken-bit related to yet
-> another speculation bug?
+> Fix that race by pulling the locking from __unmap_hugepage_final_range
+> into helper functions called from zap_page_range_single. This ensures
+> page faults stay locked out of the MADV_DONTNEED VMA until the
+> huge pages have actually been freed.
 > 
-> Boris or Tom, any idea what Windows is doing?  I doubt it changes our options in
-> terms of "fixing" this in KVM, but having a somewhat accurate/helpful changelog
-> would be nice.
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> ---
+>  include/linux/hugetlb.h | 35 +++++++++++++++++++++++++++++++++--
+>  mm/hugetlb.c            | 20 +++++++++++---------
+>  mm/memory.c             |  7 +++----
+>  3 files changed, 47 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 694928fa06a3..d9ec500cfef9 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -139,7 +139,7 @@ struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
+>  void unmap_hugepage_range(struct vm_area_struct *,
+>  			  unsigned long, unsigned long, struct page *,
+>  			  zap_flags_t);
+> -void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+> +void __unmap_hugepage_range(struct mmu_gather *tlb,
+>  			  struct vm_area_struct *vma,
+>  			  unsigned long start, unsigned long end,
+>  			  struct page *ref_page, zap_flags_t zap_flags);
+> @@ -246,6 +246,25 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+>  void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+>  				unsigned long *start, unsigned long *end);
+>  
+> +extern void __hugetlb_zap_begin(struct vm_area_struct *vma,
+> +				unsigned long *begin, unsigned long *end);
+> +extern void __hugetlb_zap_end(struct vm_area_struct *vma,
+> +			      struct zap_details *details);
+> +
+> +static inline void hugetlb_zap_begin(struct vm_area_struct *vma,
+> +				     unsigned long *start, unsigned long *end)
+> +{
+> +	if (is_vm_hugetlb_page(vma))
+> +		__hugetlb_zap_begin(vma, start, end);
+> +}
+> +
+> +static inline void hugetlb_zap_end(struct vm_area_struct *vma,
+> +				   struct zap_details *details)
+> +{
+> +	if (is_vm_hugetlb_page(vma))
+> +		__hugetlb_zap_end(vma, details);
+> +}
+> +
+>  void hugetlb_vma_lock_read(struct vm_area_struct *vma);
+>  void hugetlb_vma_unlock_read(struct vm_area_struct *vma);
+>  void hugetlb_vma_lock_write(struct vm_area_struct *vma);
+> @@ -297,6 +316,18 @@ static inline void adjust_range_if_pmd_sharing_possible(
+>  {
+>  }
+>  
+> +static inline void hugetlb_zap_begin(
+> +				struct vm_area_struct *vma,
+> +				unsigned long *start, unsigned long *end)
+> +{
+> +}
+> +
+> +static inline void hugetlb_zap_end(
+> +				struct vm_area_struct *vma,
+> +				struct zap_details *details)
+> +{
+> +}
+> +
+>  static inline struct page *hugetlb_follow_page_mask(
+>      struct vm_area_struct *vma, unsigned long address, unsigned int flags,
+>      unsigned int *page_mask)
+> @@ -442,7 +473,7 @@ static inline long hugetlb_change_protection(
+>  	return 0;
+>  }
+>  
+> -static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+> +static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
+>  			struct vm_area_struct *vma, unsigned long start,
+>  			unsigned long end, struct page *ref_page,
+>  			zap_flags_t zap_flags)
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index e859fba5bc7d..5f8b82e902a8 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5306,9 +5306,9 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
+>  	return len + old_addr - old_end;
+>  }
+>  
+> -static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+> -				   unsigned long start, unsigned long end,
+> -				   struct page *ref_page, zap_flags_t zap_flags)
+> +void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+> +			    unsigned long start, unsigned long end,
+> +			    struct page *ref_page, zap_flags_t zap_flags)
+>  {
+>  	struct mm_struct *mm = vma->vm_mm;
+>  	unsigned long address;
+> @@ -5435,16 +5435,18 @@ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct
+>  		tlb_flush_mmu_tlbonly(tlb);
+>  }
+>  
+> -void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+> -			  struct vm_area_struct *vma, unsigned long start,
+> -			  unsigned long end, struct page *ref_page,
+> -			  zap_flags_t zap_flags)
+> +void __hugetlb_zap_begin(struct vm_area_struct *vma,
+> +			 unsigned long *start, unsigned long *end)
+>  {
+> +	adjust_range_if_pmd_sharing_possible(vma, start, end);
+>  	hugetlb_vma_lock_write(vma);
+>  	i_mmap_lock_write(vma->vm_file->f_mapping);
+> +}
 
-It's definitely not related to a speculation bug, but I'm unsure what was 
-told to Microsoft that has them performing that WRMSR. The patch does the 
-proper thing, though, as a guest shouldn't be updating that setting.
+__unmap_hugepage_range_final() was called from unmap_single_vma.
+unmap_single_vma has two callers, zap_page_range_single and unmap_vmas.
 
-And TW_CFG is the proper name of that MSR for Zen.
+When the locking was moved into hugetlb_zap_begin, it was only added to the
+zap_page_range_single call path.  Calls from unmap_vmas are missing the
+locking.
+-- 
+Mike Kravetz
 
-Thanks,
-Tom
+
+
+>  
+> -	/* mmu notification performed in caller */
+> -	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
+> +void __hugetlb_zap_end(struct vm_area_struct *vma,
+> +		       struct zap_details *details)
+> +{
+> +	zap_flags_t zap_flags = details ? details->zap_flags : 0;
+>  
+>  	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
+>  		/*
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 6c264d2f969c..a07ae3b60530 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1683,7 +1683,7 @@ static void unmap_single_vma(struct mmu_gather *tlb,
+>  			if (vma->vm_file) {
+>  				zap_flags_t zap_flags = details ?
+>  				    details->zap_flags : 0;
+> -				__unmap_hugepage_range_final(tlb, vma, start, end,
+> +				__unmap_hugepage_range(tlb, vma, start, end,
+>  							     NULL, zap_flags);
+>  			}
+>  		} else
+> @@ -1753,9 +1753,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
+>  	lru_add_drain();
+>  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma->vm_mm,
+>  				address, end);
+> -	if (is_vm_hugetlb_page(vma))
+> -		adjust_range_if_pmd_sharing_possible(vma, &range.start,
+> -						     &range.end);
+> +	hugetlb_zap_begin(vma, &range.start, &range.end);
+>  	tlb_gather_mmu(&tlb, vma->vm_mm);
+>  	update_hiwater_rss(vma->vm_mm);
+>  	mmu_notifier_invalidate_range_start(&range);
+> @@ -1766,6 +1764,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
+>  	unmap_single_vma(&tlb, vma, address, end, details, false);
+>  	mmu_notifier_invalidate_range_end(&range);
+>  	tlb_finish_mmu(&tlb);
+> +	hugetlb_zap_end(vma, details);
+>  }
+>  
+>  /**
+> -- 
+> 2.41.0
+> 
