@@ -2,157 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625BE7ADDE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BAD7ADDEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbjIYRh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 13:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S229933AbjIYRoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 13:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbjIYRhv (ORCPT
+        with ESMTP id S229533AbjIYRoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:37:51 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BD410E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:37:44 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d817775453dso9995357276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:37:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695663464; x=1696268264; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4OSNJSuzGEyn2eFVxut8UHIn8mk8UoHB1vJTBDeWUjg=;
-        b=vHOkqRox53qWWq1w+Y3R/aBAcsqP2f0/LNwJwmzxBUBvbELxtAJ6WQLQ4COw481jWg
-         5XpcRTOL103TSrAzZNlnTMG1Cf+eOC0WZxF+FCAwmbRRdVNuLepHIOBdWyDB08n5YCSe
-         jlJtH2FuqegQqHwVchEEPTST2X8ZE5G4nYrRSKwHxa5x5HM0vMXNJ87VZ0aQtzsS9kdv
-         jAQqIus3+oLXkGka3TY1JEsJ79dwBXNI8OvA2hAUtIPbElxcF8AXME0DcJe+DbcurUGr
-         L+0oTtRH3YdccuVR3DF+3bqDuzvatC7Ug4oeHYoRIb1aOoKvXGwV8mY7IhxF6UXG9hwd
-         1UMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695663464; x=1696268264;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4OSNJSuzGEyn2eFVxut8UHIn8mk8UoHB1vJTBDeWUjg=;
-        b=qIy2XfMFSsAnG60cvIqMrnLqzJgKL2Bj5Q56RnS4wusBWDpEeX56Ns7LwY6TjnLv3N
-         5MeRRM3KgYU5HiMwkImRBoj7fIPBF/catklLb7RdyDBNEKhnqf4mtxXPiCupx1BtT8va
-         +oFGR7GcboX0wOymTVyFK2xe07MLLt84UxR8+y/U63IOmCQyPXAS9XgoWNMdsCIsYdm0
-         POg63ERP554JD7Z6cY42qgvG+51VcRqrPd2xZp6ZHbJdgtmTyrl+mA0sSXwVaonOZLQC
-         Se5mOuaRsNr/mATHfdhRzSNtfwTtmYWYAN4JH3Iv0CrqfTKfKdRqR/ccASfBrT9YgQYU
-         rUmA==
-X-Gm-Message-State: AOJu0YxHrKM4RFhzCVQjwyj14w7icvzTXEbID0nAUmalz4TvaGG9BhYM
-        sXuBO9fWEj/7N8oDdOQRfHjj+MPwOgg=
-X-Google-Smtp-Source: AGHT+IFbdNqdQBINXaKsxLFNsbPAlNsb64v79jTXlms6OpZDsyyWIMsDvfLKOISLOkUltg3c0KbHgHQxQwM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:abac:0:b0:d81:fc08:29ea with SMTP id
- v41-20020a25abac000000b00d81fc0829eamr67094ybi.2.1695663463860; Mon, 25 Sep
- 2023 10:37:43 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 10:37:42 -0700
-In-Reply-To: <ZQuahXpq2fy8rMDV@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
- <ZQP6ZqXH81V24Lj/@yzhao56-desk.sh.intel.com> <ZQtdZmJ3SekURjiQ@google.com> <ZQuahXpq2fy8rMDV@yzhao56-desk.sh.intel.com>
-Message-ID: <ZRHFZmaa/6HQnZD1@google.com>
-Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 13:44:16 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0CB10D;
+        Mon, 25 Sep 2023 10:44:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lwsRBKTQSU/FGAOCt+7BhforhzxtOks+y+3B2j40qETNaGAWHW4eb5MPUJWz2oIz7bFVJLx6zLrwPdo9znOgYkHZqSBEwWxmm3PMN+Yb537zBF0j2YB4qdIhpfJWO/slXXWDKNn7lbLYlnMe71L7woeHC5vqMLb+btaC/Ez4AyLPChV2EY82V7YBN3HLj+wcXxSIhXXwD/VnVFZJLUi0CCCGx1C77UcblXvlDFqC4zRhFy7RqaxXYYcjHCzaj+UY4mIeec+q+flDBfIx49LZPEVxD6GEgCvUhRqfy1ysWTvFEEwoxW0D/CnLhYhqPVZjuxRjGYUdt4tvo8F9Tr07fQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qebci4ddA9IEgx+nuBYmn6erSfL1iI/kCSQ6K6stPcU=;
+ b=jcT1wPSEsMjFnFY3Oaa2TQZpP4h3B2FpLtvKWdiWakNoAuBmX23rDljxbxIlbLNHHzGfXZutFCzgwBWtjvXq8veH65HKAnijctK4LlrJXKUvtCys5Q/0dw+KvKd642tOwATGilnO2gfSu14pczXwOD7qDC/nrYmxf4wY5D0CeMRFEFPGu21UOvYAyZR7/4GU9SzVhhjBY5Xz7L5YX8Dmft8xu60ZdLiX0G9ZYbPSbLf6LPVPGNdjDIF1QpTBh2pvZiFOqRXFIGlhVntj0c+dchLJ79J5tTRMt/Cc0tdJMaw/iBAqBvul5kejGzzXnJQhLMAAL3DCowUCsV0rSVQgAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qebci4ddA9IEgx+nuBYmn6erSfL1iI/kCSQ6K6stPcU=;
+ b=mMWSMt43UwcbTlgTvGM7ZoGmlQKraB4AeLsJ1MUmyMkaxVBN466srunVK9SldQ18A39XltHqfGAySd5J9O9ZbVSBeY5NtNKrAoim1weIEtEiXG0GB+lDFvB5Bk4sCmAgYq+79nzpeA94YRTOIO1FZwmsJtaLT+7ChwWZAYwAvNc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by MW4PR12MB5668.namprd12.prod.outlook.com (2603:10b6:303:16b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Mon, 25 Sep
+ 2023 17:44:06 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::3e65:d396:58fb:27d4]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::3e65:d396:58fb:27d4%3]) with mapi id 15.20.6813.017; Mon, 25 Sep 2023
+ 17:44:06 +0000
+Message-ID: <5f753ef4-caec-479a-bff4-43c16fb3317b@amd.com>
+Date:   Mon, 25 Sep 2023 12:44:03 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: s2idle stopped working with 6.6-rc on Thinkpad T14 G1 (AMD)
+Content-Language: en-US
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <0d84fb59-4628-4c7f-ab1a-f58889ef2c9b@leemhuis.info>
+ <e556ae63-0539-4b34-b33f-5f5beb4183d1@amd.com>
+ <e049aa41-b136-4071-850f-d06b47fe67a1@leemhuis.info>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <e049aa41-b136-4071-850f-d06b47fe67a1@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN7PR18CA0021.namprd18.prod.outlook.com
+ (2603:10b6:806:f3::12) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW4PR12MB5668:EE_
+X-MS-Office365-Filtering-Correlation-Id: 97e9b8fd-b7dc-43d3-4af3-08dbbdef03e2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ba2U4qxrMB3EnsGae3XTWtYUikCQltsDAEBkmJj60YkD7xFqSUxgjzmeTR/twSIwd7FDZn7hJ4QOvFaNkELs3vJmMPbcchC3MyhGFxfU3fSxPqCT4HJ8iRXdGtWfdnn9tLU0vGuy/4Qi36JBQT5QUsP64TAirkoZR4UuOtHZG6K2ADOwGwsdGSibSAo4ADPk982ZGCBL5v75AqHmSxI4joAZZkD2zt/QlT2fjyeIWSn19dg59NPxxnDwtJzN/dOZjNRtiPglqKJwMPomw+zYt2x70GCjabzz6Baed0erKBhVGElTlGHnLa+NOiJQRRud4Le4BPmsVQFhOcT+YtijEkZhuVtgoPyy+9HRMTDHCqoKJiwvBnPdfZ33fBxvaK44LP6V7PVta6c/GnEd3rhOTtNYYn/WA7CgPYNrxrA//41ueddSzzu2w1lQGwreHK85LuSETZqc6Z8ZHEgAP1jP2SzqVsA6shNfRAcy57MCkcNnsLJ0rDw4U9Aa9+FOoayL9w3ClfLaTqeX3OhinGRG3DoERLxk4e08NkmUGGY+OUF6KBmls8qpPBse0bYHkZa1H+t3Rv0eZ0lWMA6xmiagSu7zfFaJUlbgSuXTpEIwx35M2mBRU221lD1vhoLqi6gMq6TmAW8v26tTUlEJeFBdYw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(366004)(376002)(346002)(230922051799003)(1800799009)(451199024)(186009)(966005)(53546011)(6666004)(6506007)(6486002)(6512007)(44832011)(8936002)(83380400001)(478600001)(54906003)(66476007)(31686004)(66946007)(8676002)(6916009)(316002)(66556008)(5660300002)(2616005)(26005)(36756003)(38100700002)(4326008)(86362001)(31696002)(2906002)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L1o4eXRkSnRMWTc1NzRXTHlvaGJZWHpORlZsT2dvdkV1VERpRHlTL2tSelJP?=
+ =?utf-8?B?ZmRpekY5UEtNSUc1dHhZRXVDV01oRFo4eUU2T01GNlFkeVBNRFNzMUtrVWUw?=
+ =?utf-8?B?U2YyTW5kUU8wQjFxb1NMMlFRVllOQm9Ya1pqSS9hTjZwMVJjMGovWXJuM2Uv?=
+ =?utf-8?B?cUVJSXhLRUY3RzBzbG1yaWFiZDFINnptZHpGN1NPei9WdnpsRkZyMytRUTcr?=
+ =?utf-8?B?ZHZldHRuNFRkZDVoNEZXSnYxMGJUYTUyNGF6YVlkeGlyclpjZmRCZWFVeEZ5?=
+ =?utf-8?B?WWpTeDM1WnpxRmZOeWNhUytQdXF2WWs1eC9pcFhDZ3VoSGVpYUVyRHdyRXQ1?=
+ =?utf-8?B?Uk1qK2Fvem9lQzZyMXpZSXl4MElab3QwRGFkaXY5d2MvYXRhYWtyNkhWeVpE?=
+ =?utf-8?B?V3dGU2tEMEovWUJwWnZRQzJmUjNEVGdQaExJYmlncmVnVTR0dUZyMGd6NzRy?=
+ =?utf-8?B?T1lIMFNBWDZVUXlQdzZYOXFZdmdlQnV4OVM4bFJValJCUS92RWxIRjJiajho?=
+ =?utf-8?B?bHdIVWU4Zld0WW4xdno4SDkwanZJa1dRVTFZSXFmK1RVT04zQUhRZVV5THRT?=
+ =?utf-8?B?cnZiVEthbE1nd0JETmVwbVJCeVU3dE12N3pqcWU1L3R1YjNHNkZDdzU2b05m?=
+ =?utf-8?B?WGJTT2FNcjhDanhNQXkwRWZJeHd0K1VWQ3FuZEVDSk1hRno1Znl2MGY0QW95?=
+ =?utf-8?B?NGhSL3RwQ1NNVDNKUGJ1TjJhTEpNeHBmQzhFQTVyNzl4VW1SMEVSeExIOGZF?=
+ =?utf-8?B?N1VCdVFYZ3lnR0xFV0FEOU1nbU5STTh1dHF1amNQWm1aU3lGVUh6NElVT1px?=
+ =?utf-8?B?eVUvdEtZeXhlRlNlYTBsd0lVMzQ1amc2eUJPaGhoK1Q3YWZKVSszdkN6WTlF?=
+ =?utf-8?B?eVlGbHdKNitITG9IcmgyWnVUMGpwNDA5M3lTd0xLY25CNGVxOVFOSGN0eUlE?=
+ =?utf-8?B?ZkNUL1kvUlltQmwwMzZFc2ljWUhVeGVwM3h2RE5MdEo3OXQ3TTE0dHRKb0J6?=
+ =?utf-8?B?LytRY0RyVWRYRVhsK2VjN3dKVUxobnFYMDNlM1NzTUJnem1BejNmeVVQSUtB?=
+ =?utf-8?B?cEZzSDJMaWozeTJlNWZZR280M2V5SmZoVWVRK29RVldPczdiT0k4VWU5QmJx?=
+ =?utf-8?B?ZTh1S3FWOUVqeFFBVW1vMEU4K08vN20wZld3NnhDd2FUYXo4eDVDWDRWRzg1?=
+ =?utf-8?B?bVFHVjlsMk81NVFUT210aFhsdmVaSVZ5WTN3Tyt1RU9UeGQyZUFlU2p5ZXJv?=
+ =?utf-8?B?ZVhKMEZ1QTJTTTh4YnBMNkRuWEJzTk95OE9hdnVRZVplN3NYZ2x3blRndm0z?=
+ =?utf-8?B?b2RMMlpodHpDSVJnelVjVWM3S3I2bWxyUkFVSStNQXNMMnBoZjlPd1owMXhJ?=
+ =?utf-8?B?SnFHRjdLUHl4S1JHTks2TXZvV3p0Mi9iMG1lQUoreStEOGE5OWR0UjVJT2Vn?=
+ =?utf-8?B?V3BXZEJxSWdpMEwzaklDbGZrMkVtbGhqL1NlS0s3NWlSU3VEMFhzNk9jakRr?=
+ =?utf-8?B?STFlWWgrNWYraXNvZjlmNE9oWVRBWTJvZXRqb0grc0I4ZDZtN1JGdm5WUG16?=
+ =?utf-8?B?R2J6WVlSNnV3YmpoSkd1RXJuYnNLTDBOWnpHQXFHcDY1cy9SQWpmNkVqMSs4?=
+ =?utf-8?B?eVB4ZUFmb0tvaXpldFVvUzhqbmVkSXdWM3EyU3FTU1FEWit5eFJVNXpxd3dT?=
+ =?utf-8?B?OHF2VU4yYWE0YkFjM3hmMURIVXJoMjJZaTExTmlDTE03dDZ2TENCYnAyOEJn?=
+ =?utf-8?B?N1RFSjUvWEtCMDl3NzJ5L0wzTURwRlFCVjlHN0pkNlo4TGQrd2ZrTURYOUJ5?=
+ =?utf-8?B?YWVyK3liRldWdFQ5U1JGWDBTVzg5Mk9NTytaOXBRWWNTdVlQSmVMbjdOVUpj?=
+ =?utf-8?B?RFBhMnRPTk5wd1NmMCtSK3U4ZitlZHl6eExCTzNySHN1YzBQU1FIMkZzZWVS?=
+ =?utf-8?B?T0VJSkRSZW11d2Q0eU1LOVVlYVljY3R2a1ovQjNoU0p5VVhzWTlCNWVlVkNJ?=
+ =?utf-8?B?anMrRTNqZkNCVzIyQWhPaFh3dW9IaWNicWJlMGFRMU5FVHRQUnFJcFprblJm?=
+ =?utf-8?B?anZtUUdTMVNtUGxjYkpBaytrTXpkdVpRMWMyTUJmeTFJS1QreXJpZ0lWZHdD?=
+ =?utf-8?Q?//Tbq+yVnKqvnGnr8XdqIKDEV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97e9b8fd-b7dc-43d3-4af3-08dbbdef03e2
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 17:44:06.5844
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ugtj4FuO+CWmMuMVEN6bKdMHQjZ3iTAFXq9q32LqSHQGKQOSsu0LAMlbEMl54+GwvK+Euxcf5g5bNm/Z4q4xpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5668
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023, Yan Zhao wrote:
-> On Wed, Sep 20, 2023 at 02:00:22PM -0700, Sean Christopherson wrote:
-> > On Fri, Sep 15, 2023, Yan Zhao wrote:
-> > > On Wed, Sep 13, 2023 at 06:55:09PM -0700, Sean Christopherson wrote:
-> > > > +/* Set @attributes for the gfn range [@start, @end). */
-> > > > +static int kvm_vm_set_mem_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
-> > > > +				     unsigned long attributes)
-> > > > +{
-> > > > +	struct kvm_mmu_notifier_range pre_set_range = {
-> > > > +		.start = start,
-> > > > +		.end = end,
-> > > > +		.handler = kvm_arch_pre_set_memory_attributes,
-> > > > +		.on_lock = kvm_mmu_invalidate_begin,
-> > > > +		.flush_on_ret = true,
-> > > > +		.may_block = true,
-> > > > +	};
-> > > > +	struct kvm_mmu_notifier_range post_set_range = {
-> > > > +		.start = start,
-> > > > +		.end = end,
-> > > > +		.arg.attributes = attributes,
-> > > > +		.handler = kvm_arch_post_set_memory_attributes,
-> > > > +		.on_lock = kvm_mmu_invalidate_end,
-> > > > +		.may_block = true,
-> > > > +	};
-> > > > +	unsigned long i;
-> > > > +	void *entry;
-> > > > +	int r = 0;
-> > > > +
-> > > > +	entry = attributes ? xa_mk_value(attributes) : NULL;
-> > > Also here, do we need to get existing attributes of a GFN first ?
-> > 
-> > No?  @entry is the new value that will be set for all entries.  This line doesn't
-> > touch the xarray in any way.  Maybe I'm just not understanding your question.
-> Hmm, I thought this interface was to allow users to add/remove an attribute to a GFN
-> rather than overwrite all attributes of a GFN. Now I think I misunderstood the intention.
+On 9/25/2023 08:45, Thorsten Leemhuis wrote:
+> On 25.09.23 15:25, Mario Limonciello wrote:
+>> On 9/25/2023 05:55, Thorsten Leemhuis wrote:
+>>> Hi Mario! Did you by chance hear anything about lock-ups on resume with
+>>> mainline affecting AMD systems? I'm asking, as s2idle stopped working
+>>> for me with 6.6-rc on my Thinkpad T14 G1 (AMD).
+>> You're the first report I've heard of this.
 > 
-> But I wonder if there is a way for users to just add one attribute, as I don't find
-> ioctl like KVM_GET_MEMORY_ATTRIBUTES for users to get current attributes and then to
-> add/remove one based on that. e.g. maybe in future, KVM wants to add one attribute in
-> kernel without being told by userspace ?
+> Thx for taking the time and replying.
+> 
+>> Yeah not too much useful stuff here unfortunately.  Can you check
+>> /var/lib/systemd/pstore to see if you got a traceback for whatever
+>> caused the problem?
+> 
+> Sadly nothing there.
+> 
+>>> Dmesg for 6.6-rc3 (with a USB-C dock, but problem happens without it,
+>>> too):
+>>> https://www.leemhuis.info/files/misc/dmesg-6.6_rc3
+>>
+>> Being G1, can you try "amdgpu.mcbp=0" on kernel command line?
+> 
+> Just tried it, but didn't help.
+> 
+> Guess it bisection time then...
+> 
+> Thx again for your reply. Ciao, Thorsten
 
-The plan is that memory attributes will be 100% userspace driven, i.e. that KVM
-will never add its own attributes.  That's why there is (currently) no
-KVM_GET_MEMORY_ATTRIBUTES, the intended usage model is that userspace is fully
-responsible for managing attributes, and so should never need to query information
-that it already knows.  If there's a compelling case for getting attributes then
-we could certainly add such an ioctl(), but I hope we never need to add a GET
-because that likely means we've made mistakes along the way.
+FWIW your email prompted me to double check the two other Lenovo systems 
+I have on hand at my desk:
+* P14s Gen 1
+* L14 Gen2a
 
-Giving userspace full control of attributes allows for a simpler uAPI, e.g. if
-userspace doesn't have full control, then setting or clearing bits requires a RMW
-operation, which means creating a more complex ioctl().  That's why its a straight
-SET operation and not an OR type operation.
+One of them had a Ubuntu userspace (20.04 IIRC) and the other a Fedora 
+38.  I built 6.6-rc3 and couldn't reproduce any issues with s2idle.
+
+So yes; bisect is the next step, thanks.
