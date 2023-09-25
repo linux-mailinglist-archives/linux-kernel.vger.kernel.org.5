@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95537AE1F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF897AE1F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbjIYWyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        id S233393AbjIYW4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIYWyL (ORCPT
+        with ESMTP id S229585AbjIYW4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:54:11 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7240A3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:54:04 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso1599977a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:54:04 -0700 (PDT)
+        Mon, 25 Sep 2023 18:56:03 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F539101;
+        Mon, 25 Sep 2023 15:55:57 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5045cb9c091so5553965e87.3;
+        Mon, 25 Sep 2023 15:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695682441; x=1696287241; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695682555; x=1696287355; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qDlt8685IO8EfILel9/XklmeSwJWvdU7kfcz0SQh0FU=;
-        b=ZXgPygvEB7wgRoLt7fFyMeQPzEf6+OurFXUC+J0Awl6AlIbKWlIFC+9TGGKSaUrCSo
-         DTEeMC8X2kKHM8pdkYgF54JB/v0axj+BNVIORX/jS0s3oeHtZtgDuR0qiwgc0hi3C7vv
-         wGQaelEQu5OtVpzgAYIN8jNyui7SNAWqPgK08=
+        bh=Ns7ZEArTE1BO39sjKDu0VPQj937rLVJ+UOWzKiwxhK0=;
+        b=dU8fdycnK6zg32sU5NgvslIrefjuvnuh7HC5eRg71jzxv6kA13y6HD5BN+2xwoT5zI
+         K+HKxFAmANmWo/i0E3qLA6A04r6xvJ8sVfsR9p4QwwLKax3GGIrzVLagqXgppWvEE3DE
+         hG6VL+KCLut1LbFegyfezuxfRPpNGStlhJ7c+cUpxlUOuyg0f0z3YA2RHQEMiV/leY6H
+         RGYEmbOK5QYrUM0Dk6Ua9xfwzcprfEMjzGmHjFNLR5rgMSiAWo7qh5B62ed6cN7GGVQu
+         8JuKqgxIbiLsvOLYZtzO4iHWq3nWc9Sd4aKRM9jg4ASzhE4FR5Sw52AmfTkzVv+zQFG1
+         TUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695682441; x=1696287241;
+        d=1e100.net; s=20230601; t=1695682555; x=1696287355;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qDlt8685IO8EfILel9/XklmeSwJWvdU7kfcz0SQh0FU=;
-        b=cx8J7IVar2+0liUyWBdAOqDL5cZtSU4zYhoeMLOpKd4+Q7lOj1ekZ/M6am5CHOTTPp
-         5eOUohL9i6c983Ph1amRptsmm1amzsUng6wttRCUEdPHeoEea43pXA92XK2SsGP8BWiY
-         94+NdRbM07nr4+txfWwRx+r+g1tTLIuCvUmhi/xP0vHUfuqK6g7OaTC7Tj6vpBtF2YG6
-         +r59jx4vWFm00i6ltZq/Dnx7TROHN+o3d1kLuRmEtiKgsfFJI1FIl8PXLm9bbnbh+uLi
-         E64cEsw13QwKrjk6i1rNOXD7pX4n3JQLpY5uf7IZS5mEad5AcQzLchPHGyV3GckcHpav
-         WfIQ==
-X-Gm-Message-State: AOJu0YztLnUeoUW3Q0XEg8v2lUQ2sPfSJaZ5naX+5/1/IDyeiIdYCL4G
-        AsNGiHe187GAEU5okLjoKWngIEqIWB2mkTZkb8j5G4FB
-X-Google-Smtp-Source: AGHT+IE6+9/oMorIzbeksu6Nj31MTuUvnSmgudOspoCkBuhBzNRwvrWekmFd5voDECq+cvcSMuVlDA==
-X-Received: by 2002:a05:6402:b33:b0:523:33eb:1103 with SMTP id bo19-20020a0564020b3300b0052333eb1103mr7164515edb.14.1695682441259;
-        Mon, 25 Sep 2023 15:54:01 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id q3-20020aa7d443000000b0052576969ef8sm5989808edr.14.2023.09.25.15.54.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 15:54:00 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53317e29b00so7892a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:54:00 -0700 (PDT)
-X-Received: by 2002:a50:c04f:0:b0:525:573c:643b with SMTP id
- u15-20020a50c04f000000b00525573c643bmr16866edd.7.1695682440096; Mon, 25 Sep
- 2023 15:54:00 -0700 (PDT)
+        bh=Ns7ZEArTE1BO39sjKDu0VPQj937rLVJ+UOWzKiwxhK0=;
+        b=jmr9qsEUs+6a9a8Q0ETr1koATy9w4by5tQPsdk1t2W6r9W9ZsFMPTV3MXXhQWEJ25+
+         flfJ3+dAxOt8qLXtWJQQjKEDqGJfGm2tw13er4vLHrCAo0HB9uXmr1sj51IFk8ib2Qg7
+         TMirQ7P9LuJk7PP+qUe5R9eNvOZpo0W0xBVX2cxlxhnINK2OsEsii4vzd3ku4atTYfQ2
+         E9C0oGKPPK2D9dTBAU83rOXizk+clKa6vWBaE10iF8r5G4y6R1ygm5svnEPaf0SC8ULu
+         a3Kevoh9npRZWPcuphHEpB5L0ccV+nVziG6F9cFZnSeATGNWcm48QUj8PfbAz1QivRpy
+         fYzQ==
+X-Gm-Message-State: AOJu0YwUvsDbAZr9rwNfhSjotwh/jrZPHrEOgS1D5CO/dPgBR7uV26Nt
+        Xn5+yVZ7YQv+8PgaPIbOyu8xpuxK7pqsucMC0MM=
+X-Google-Smtp-Source: AGHT+IEoPsnqkNoSwbveI2pV7v6ITpQkKQVTfdMSq6RV6I51JKONyhAkoGY+gDqo8UW32GHv0kFdF+T97NIDzpUc7ac=
+X-Received: by 2002:a19:7009:0:b0:502:adbb:f9db with SMTP id
+ h9-20020a197009000000b00502adbbf9dbmr6403156lfc.65.1695682554861; Mon, 25 Sep
+ 2023 15:55:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230921192749.1542462-1-dianders@chromium.org>
- <20230921122641.RFT.v2.1.I134336fce7eac5a63bdac46d57b0888858fc8081@changeid>
- <20230922075610.ekrzyz6hfcd3rjsm@fsr-ub1664-121.ea.freescale.net>
- <CAD=FV=ViV-n2T1Bup+XScsWD11yWpTmW3qEOLTTDj3kTtTY4Cg@mail.gmail.com> <20230925054710.r3guqn5jzdl4giwd@fsr-ub1664-121.ea.freescale.net>
-In-Reply-To: <20230925054710.r3guqn5jzdl4giwd@fsr-ub1664-121.ea.freescale.net>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 25 Sep 2023 15:53:43 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XSzVx2aoTshrh-ZmaQ-uFqhzw6iZPSBzmeMenjvTs2Zw@mail.gmail.com>
-Message-ID: <CAD=FV=XSzVx2aoTshrh-ZmaQ-uFqhzw6iZPSBzmeMenjvTs2Zw@mail.gmail.com>
-Subject: Re: [RFT PATCH v2 01/12] drm/imx/dcss: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, airlied@gmail.com,
-        daniel@ffwll.ch, festevam@gmail.com, kernel@pengutronix.de,
-        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        shawnguo@kernel.org
+References: <20230925020528.777578-1-yury.norov@gmail.com> <20230925020528.777578-3-yury.norov@gmail.com>
+ <49c0fa46-3787-99c5-2b8b-3da71ce33216@intel.com>
+In-Reply-To: <49c0fa46-3787-99c5-2b8b-3da71ce33216@intel.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Mon, 25 Sep 2023 15:55:43 -0700
+Message-ID: <CAAH8bW_Lu_wk7q6eu6evV-ejVXJZn0s3ikw=e=r_tJfYOvqg0Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] Revert "sched/topology: Introduce for_each_numa_hop_mask()"
+To:     Jacob Keller <jacob.e.keller@intel.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Yury Norov <ynorov@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Sep 24, 2023 at 10:47=E2=80=AFPM Laurentiu Palcu
-<laurentiu.palcu@oss.nxp.com> wrote:
+On Mon, Sep 25, 2023 at 3:46=E2=80=AFPM Jacob Keller <jacob.e.keller@intel.=
+com> wrote:
 >
-> Hi Doug,
 >
-> On Fri, Sep 22, 2023 at 08:44:16AM -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Fri, Sep 22, 2023 at 12:56=E2=80=AFAM Laurentiu Palcu
-> > <laurentiu.palcu@oss.nxp.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Thu, Sep 21, 2023 at 12:26:44PM -0700, Douglas Anderson wrote:
-> > > > Based on grepping through the source code this driver appears to be
-> > > > missing a call to drm_atomic_helper_shutdown() at system shutdown
-> > > > time. Among other things, this means that if a panel is in use that=
- it
-> > > > won't be cleanly powered off at system shutdown time.
-> > > >
-> > > > The fact that we should call drm_atomic_helper_shutdown() in the ca=
-se
-> > > > of OS shutdown/restart comes straight out of the kernel doc "driver
-> > > > instance overview" in drm_drv.c.
-> > > >
-> > > > Suggested-by: Maxime Ripard <mripard@kernel.org>
-> > > > Reviewed-by: Maxime Ripard <mripard@kernel.org>
-> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > >
-> > > No issues found on i.MX8MQ.
-> > >
-> > > Tested-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-> > > Reviewed-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-> >
-> > Thanks! Would you expect this patch to land through drm-misc? If so,
-> > I'm happy to commit it there with your tags.
 >
-> Yes, please do. The i.MX8MQ DCSS patches go through drm-misc.
-
-OK, landed in drm-misc-next:
-
-89755ee1d593 drm/imx/dcss: Call drm_atomic_helper_shutdown() at shutdown ti=
-me
-
-
-> > If patches to this driver normally flow through drm-misc, I'm also
-> > happy to post a patch to MAINTAINERS (or review a patch you post)
-> > adding this to the entry for "NXP i.MX 8MQ DCSS DRIVER":
+> On 9/24/2023 7:05 PM, Yury Norov wrote:
+> > Now that the only user of for_each_numa_hop_mask() is switched to using
+> > cpumask_local_spread(), for_each_numa_hop_mask() is a dead code. Thus,
+> > revert commit 06ac01721f7d ("sched/topology: Introduce
+> > for_each_numa_hop_mask()").
 > >
-> > T:     git git://anongit.freedesktop.org/drm/drm-misc
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Signed-off-by: Yury Norov <ynorov@nvidia.com>
+> > ---
+> >  include/linux/topology.h | 18 ------------------
+> >  1 file changed, 18 deletions(-)
 > >
-> > ...which would make it obvious in the future that things should land
-> > through drm-misc.
+> > diff --git a/include/linux/topology.h b/include/linux/topology.h
+> > index fea32377f7c7..344c2362755a 100644
+> > --- a/include/linux/topology.h
+> > +++ b/include/linux/topology.h
+> > @@ -261,22 +261,4 @@ sched_numa_hop_mask(unsigned int node, unsigned in=
+t hops)
+> >  }
+> >  #endif       /* CONFIG_NUMA */
+> >
 >
-> Thanks, that sounds good.
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+>
+> I might have squashed all of 2 through 4 into a single patch but not a
+> big deal.
 
-https://lore.kernel.org/r/20230925154929.1.I3287e895ce8e68d41b458494a49a1b5=
-ec5c71013@changeid
+I just wanted to keep the changes more trackable. No objections to squash 2=
+-4,
+whatever maintainers will feel better.
+
+Thanks,
+Yury
