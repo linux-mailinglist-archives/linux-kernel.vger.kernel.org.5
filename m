@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7523A7AD827
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898E67AD82A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjIYMhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
+        id S229927AbjIYMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjIYMg4 (ORCPT
+        with ESMTP id S229450AbjIYMj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:36:56 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2062.outbound.protection.outlook.com [40.107.101.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157F6196;
-        Mon, 25 Sep 2023 05:36:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dJ81iAmVM9zK2cBR1UBSXMcoXwch6p+HnWEXT/1h3GqWwuzOseHSxcyYxZ1YNVaf49A3K3Coq2Lrsj+UnwwGaHrTe7DOIfYYpmDwN6vfz9TYeE/AtvNpZzCVO7AY8iSdKqa5S4J7KVzXQSZBFV3qfGV1AoZjkmvRzr/P+/0c+ZWgNX3tTyz42DiZmoab9v2iS3f3fwDoHdcW7Agk/lqKmzNji2z6AdkQXvpICXZNhTHhCR6kUR16RL2AHTkinL2HNTXZk54Ap3BiatRLzcf+KovlVWl3aM4W/Y0z5PZTi/ONrQvy84yo/5sHpjy7ZeFV4ltopo2mYqQnuQcnP538BA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Fwe2msUXZKiapJQgvhzmeZFyXeal5jRNVuzAo7FCQ6g=;
- b=S3pGf2RO+IzXVHAiAmM8ufgV9CGgqI9vkisxTMef9Yv7mCrwHxCahBqpQRbrN7Nm712tPKRzdwfWUTO0mCWYbiqjzPZf3dlvnZfaRE7zo+YWfB+HWmuTiwG5Idz/ZUEieQytI6e/I4IWjguK9Cgr0sIQxb9CwmxG1X41KVx0n6hsqTCBD4PtZ1RGaS8dloaL6rUbPpnQ7///R/Z1G4afAG2NSj2nxFDwEhwCKoKYOWLvAhSzswFr9Wjo2wYxTwXbpq+j+udJ2UB1/cJOWnxgmJ/bayC4p33gn4J3GgWsHpbAH9v33OLJDWtz77Z/EOzB2mulXBwQIexz7x3T2+3fVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fwe2msUXZKiapJQgvhzmeZFyXeal5jRNVuzAo7FCQ6g=;
- b=Jcry3DQxkZi0kAeiGscpIRSy8bV/1teeMCQ6k3yX9DRzR16JcfI+s0Slpnx8BxuK4Ne/5dULNXZE2H0MU8u0H/CglHySu8fhvs8WF75ZP8kYOP1FVlLzLEExY1/6IZ/4GCQslr4zGo8J/AOhjzE3ax4fAo2NNN06xVNd0LNiOjPwaYAGRxzExK7xtbfUQRgf2k5j5PGZylLZaM6B1JAa4kAdzqOrCKepKSqro5XMOQjvV/WKtIPw8e7/H9U7P2Q4/y38FCpnF9suahQXVX4KHUR8jtNbdM13xP2w1CELLkVqvbyDvW1DeWbTLJMsZanMKtkZeWknI916mFt60jp7hw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BY5PR12MB4276.namprd12.prod.outlook.com (2603:10b6:a03:20f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 12:36:44 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
- 12:36:42 +0000
-Date:   Mon, 25 Sep 2023 09:36:41 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     ankita@nvidia.com, aniketa@nvidia.com, cjia@nvidia.com,
-        kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com,
-        acurrid@nvidia.com, anuaggarwal@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
-        alex.williamson@redhat.com, akpm@linux-foundation.org,
-        tony.luck@intel.com, bp@alien8.de, naoya.horiguchi@nec.com
-Subject: Re: [PATCH v1 1/4] mm: handle poisoning of pfn without struct pages
-Message-ID: <20230925123641.GX13733@nvidia.com>
-References: <20230920140210.12663-1-ankita@nvidia.com>
- <20230920140210.12663-2-ankita@nvidia.com>
- <878264ae-f6f6-04d9-2d52-fb7ae29dca85@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878264ae-f6f6-04d9-2d52-fb7ae29dca85@huawei.com>
-X-ClientProxiedBy: BL0PR0102CA0060.prod.exchangelabs.com
- (2603:10b6:208:25::37) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 25 Sep 2023 08:39:27 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B25CE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:39:21 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qkkrs-0002iA-UL; Mon, 25 Sep 2023 14:39:16 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qkkro-008sBk-4H; Mon, 25 Sep 2023 14:39:12 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qkkrn-004fbH-Qd; Mon, 25 Sep 2023 14:39:11 +0200
+Date:   Mon, 25 Sep 2023 14:39:08 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     William Qiu <william.qiu@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v5 2/4] pwm: starfive: Add PWM driver support
+Message-ID: <20230925123908.4hohhjarviwattgw@pengutronix.de>
+References: <20230922092848.72664-1-william.qiu@starfivetech.com>
+ <20230922092848.72664-3-william.qiu@starfivetech.com>
+ <CAJM55Z8d368MAQPpnRO8giKmasN5XETP40i3JVdW_0gTF3Ktqg@mail.gmail.com>
+ <ade1c061-63d8-8b48-b8e2-69416cd8aa48@starfivetech.com>
+ <CAJM55Z83VUkoTNCMbd9GJ7NpwgeQqMjCxPmYonEAXBjr5Tx9Zg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BY5PR12MB4276:EE_
-X-MS-Office365-Filtering-Correlation-Id: cbc7a267-591d-45ab-3ee9-08dbbdc4127a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bFR9peb8PE0v2XjEx01yoPXRbXXXTrMRLC2Dk99RQeZYFjd3O+TiKMrh4r8gKtU+PsCOpnBHotxANBY38Abj0v6TnE+I3ENvS6ux7jbvlprHIWu8kyHB0FOLNbcGx2TEJ07aXQOm+t4/SwTCqsYMco9JL11xeEiW1qFBN2v7DjFWL0UMVhLhUPNbduq2bjLUD2yxdGjItgwwdJKrpo/csBHlXyzeNpuDnyPssCA67A0vIsMSOh/TA7YIFxK/aPc08GTic2/MC5zZGEZQBh1ON6/JlgdLlQlNOJS2W0X3mcB+9gmwqNh1ZmV/5nyFxZEz9OCXPvlYSuEk04QiOuSM3NRIAIa/AkUsTOfKgCnKN4MKYVMkpBk3WoFGB1xlWjMG5+BWVQR8ytkmP+WoIJk7xcaYGLOTqEfhBILCC5H+orXEWyD56hUz7hl9p1tPcwEZSpoKZ90zSfIOHer6aPcWy7eCwMDFZJCFTxsXeR84YvF6mSUlrPqYPsbLpCA5j5Vs3B9/85pIl61Hed30+qDGCUFLEGvngdsWmRnnhkvH4pFt/ZT8FJVHAeSqRaxTIu2j
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39850400004)(396003)(376002)(346002)(366004)(230922051799003)(451199024)(1800799009)(186009)(7416002)(26005)(83380400001)(4744005)(2906002)(5660300002)(316002)(6916009)(41300700001)(8676002)(8936002)(36756003)(4326008)(2616005)(66476007)(66556008)(66946007)(33656002)(1076003)(86362001)(6486002)(6512007)(6506007)(38100700002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kAJkv1iUAWXbRU+GcSdIJgWjiftCX4DneZgjN9D0bBwz2IP1XdGr4YtleY7A?=
- =?us-ascii?Q?afVO6erBAJnE46fhL9on885ep+ulKTeGmf0P6ByGKWyL+ZOSbxHRLVDheppz?=
- =?us-ascii?Q?46P8cW6PRvaoZ0OBrUpxCrwAqzyKFfapJY1+u3uJDDYs5MBe0JwxDHLMJRW6?=
- =?us-ascii?Q?JNlc5jSpfogAvI2J0ZQsIMmGW8PDr4GkxQcyYJpFp+Rg0p/kb6lCsvFnQTfD?=
- =?us-ascii?Q?AnkVUybC7Bg75W2JRxb8bzVXbFWCVwwr4xTFJMJmXYOtsFlWou4EbJb6tSZq?=
- =?us-ascii?Q?IhaMMsugvrYdti00Uq+Y2WeBrNqUvMxHjRqPVfGjxCg93utIfl5Uy4Q5pB52?=
- =?us-ascii?Q?McQPBbiJoevgKI3QjH+4Dqcw+GsUaFPHhJPOIMtGDuCJQI/i0LaHhIN3rj+/?=
- =?us-ascii?Q?DosqFjyQNqyLtTTZJwkLR7XOSB3Vtm6YlTlvmG0BZtDJW6fWqaLzDz1pkFl+?=
- =?us-ascii?Q?NHkNGRXacZWvXCXar2eRBPk4UDlgpVvSsRpVWLQhqK64fIKr+hcsyACbO+kh?=
- =?us-ascii?Q?v1dw+OfLXj5iiu08WejqntzHKxiem6hG5DWAwYcb4lwAfMkakMhAasi05ryg?=
- =?us-ascii?Q?B0koTXX3taWc5FbWc38CT+2reCihAiRk8j1A+nFbzCEebFmXw5C6hL1qPcDv?=
- =?us-ascii?Q?1PThtlrL9NRpcKSDZDq1uL1evAXTx3h4Uf76el1oj8QGjRBHj2dp/yqyCd7b?=
- =?us-ascii?Q?2mDdQtPF6xH9anZROH/oNKKCtV5/EyUlCrDMJXoC0hqkccUZ885UUJaGqbp3?=
- =?us-ascii?Q?EvJndIg0To4qA4mCTR5FWEOOL4mdNX9JAIjAUEghgQ5eisKKPQzcwyARsgGE?=
- =?us-ascii?Q?Y5JPsNU3A8+zclpHcgP03EXTgasFNlD2UKkC2fzp9OlfpRprJRV7Ld2lt9jS?=
- =?us-ascii?Q?jCz/OouDYDFUgb3ut5yMf4/a87AwMBRNRsYn+oYw8Gy1iNw7T2BP6Qzwracw?=
- =?us-ascii?Q?IiUa31bc4PpuOwHzqy0RAAnxQMl805o6zuE9NSXoA1iGCIJzHZUKbnCdkiCq?=
- =?us-ascii?Q?HPJeues0z8Si+Y0Uqx0lW72UfP1KQrgC6NmpRwSR41VmHBHLoAR57aozRI1R?=
- =?us-ascii?Q?6gqVyVKqIiAayh+SQDuFdquprR4AMuUscGdLSWo9OC+NPhZBuK0qyRBMlRgi?=
- =?us-ascii?Q?PieeVaQr45Dlo+Kox/8pRY68KBegHPMFtX7N0e7p+NSaJJ0hNEckmOmphfcO?=
- =?us-ascii?Q?6Bl0vCw2ZhQWZ53c8InPtKEaAD7aox6d82J3/98/4INXwLgI5Lt/BAsTfr1a?=
- =?us-ascii?Q?FesdsaiEHctKHFu0isSVsrBFV4F+/Z2fibHIWToVHk2CSsRXAmxqWKKvqOyQ?=
- =?us-ascii?Q?nUi1AS5Ns1DY6xZb5UkffxWB2GWuju7ZQuJI4XwxEXAQgnoMvGHWpLRkxG2c?=
- =?us-ascii?Q?DfjK3w7oGD/u8zvrvumo5LYXRZqgUpy6gdCR3FQp7i9nD/SP2d4GyJBXj3V0?=
- =?us-ascii?Q?ogwuW9SLzSeT4MQui2C2sLdcqimHVz3ELQnZH+e0IhsbynXeIAQmmNrKU+42?=
- =?us-ascii?Q?PyzE79M8DOegvbE3oye/b+o+p6hgwq+KjXGMXC1eRGRUFr+WhWv44wAtGppd?=
- =?us-ascii?Q?fl7VtHlAq4M9cpgnPfE=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbc7a267-591d-45ab-3ee9-08dbbdc4127a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 12:36:42.6785
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WHXSUcOaMPoHQaoeDEDvZAGOYksj7Oz0+nRYVhwF2Doqktcj1fVxaLi9sgAGn4pA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4276
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xq7ehyumhkwfir4g"
+Content-Disposition: inline
+In-Reply-To: <CAJM55Z83VUkoTNCMbd9GJ7NpwgeQqMjCxPmYonEAXBjr5Tx9Zg@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 11:20:19AM +0800, Miaohe Lin wrote:
 
-> >  /**
-> >   * memory_failure - Handle memory failure of a page.
-> >   * @pfn: Page Number of the corrupted page
-> > @@ -2183,6 +2271,11 @@ int memory_failure(unsigned long pfn, int flags)
-> >  	if (!(flags & MF_SW_SIMULATED))
-> >  		hw_memory_failure = true;
-> >  
-> > +	if (!pfn_valid(pfn) && !arch_is_platform_page(PFN_PHYS(pfn))) {
-> 
-> Could it be better to add a helper here to detect the pfns without
-> struct page?
+--xq7ehyumhkwfir4g
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-pfn_valid is supposed to do that.
+Hello,
 
-This arch_is_platform_page stuff is actually detecting Intel SGX
-memory and routing it to arch_memory_failure()
+On Mon, Sep 25, 2023 at 10:31:49AM +0000, Emil Renner Berthing wrote:
+> William Qiu wrote:
+> > The PTC, short for PWM/TIMER/CONUTER, comes from OpenCore's ip, but onl=
+y PWM
+> > mode is used in the JH7110. So the register still has the word "PTC".
+> > s the best way to change all the prefix to STARFIVE?
+>=20
+> I see. Yeah, since you're only using the P from PTC the PTC name doesn't =
+make a
+> lot of sense anymore. I'd just call this whole driver
+> STARFIVE_PWM_/starfive_pwm_ consistently.
 
-It would have been more accurately named
-arch_is_arch_memory_failure_pfn() or something
+I don't care much how the driver is named iff there is only a single
+type of hardware unit on this platform that can be used as a PWM.
+However if the hardware manual calls this unit PTC I'd at least mention
+that in a comment at the top of the driver.
 
-Actually that SGX stuff could probably be changed over to use the
-interval tree of this series. Modify sgx_setup_epc_section() to
-register tree nodes per-section and remove all this arch stuff
-entirely.
+Thanks
+Uwe
 
-Jason
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xq7ehyumhkwfir4g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmURf2wACgkQj4D7WH0S
+/k6D+Af/UurV0zRPp6nHaILWU8arJcTP6K/TCv9XK/rO3ubSZPfvesG/KvvgwhAL
+NdrQu6EKqRNNIh8gXlBP7VXgQgDlot+E9fNz10BKinKi7i7VFQvJ/W+rzZ91me1+
+Z7uxb+hvVa+GZMdc6VTeosGlnuSjugyggCwjGohFanhF6QqGMxn5hpS1/ZrKlCM+
+gUDVk5fLhLnT/Mo8GlsQEcbULJnmyZ9JSnoif+XJLvs5F55GUlQOlua9PxXegP4p
+Jsp5Oxx+wuy5BTkgVm+y1dwV3p4XNjjS/K29nn6ggZNPolFqm1Hx169DIUqE8Zqg
+YZRA5euMXw7FxnPNLsMic9EoBOzFXw==
+=M19j
+-----END PGP SIGNATURE-----
+
+--xq7ehyumhkwfir4g--
