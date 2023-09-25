@@ -2,99 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 136CD7AD9B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311037AD9BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjIYOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
+        id S232147AbjIYOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjIYOHa (ORCPT
+        with ESMTP id S232067AbjIYOHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:07:30 -0400
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C0CCE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1695650840; x=1698242840;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MEYxuz1Uw+VReTSa6PXtiqg+xBQ1tt+ZjnGvZk0sYws=;
-        b=a8l0irkyH0tn3osUvH57okwDktBI5iEMP3HQBVhH/oM5euNy6qpHI3G0oetRVBau
-        PgDqfG4Nh84oMChggAElbWvRP1giJKaRm7ZysfUVrpuOY0I82OmInqU1fXJBYhPV
-        YlxYH2gcGR65t6gewHobru3Q8GfSN7cSJvdJRuBx7yY=;
-X-AuditID: ac14000a-6d65670000001e37-fb-65119417c4c9
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 9E.91.07735.71491156; Mon, 25 Sep 2023 16:07:20 +0200 (CEST)
-Received: from augenblix2.phytec.de (172.25.0.11) by Berlix.phytec.de
- (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 25 Sep
- 2023 16:07:19 +0200
-From:   Wadim Egorov <w.egorov@phytec.de>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <keescook@chromium.org>,
-        <tony.luck@intel.com>, <gpiccoli@igalia.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <upstream@lists.phytec.de>
-Subject: [PATCH] arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops reg
-Date:   Mon, 25 Sep 2023 16:07:10 +0200
-Message-ID: <20230925140710.478027-1-w.egorov@phytec.de>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Sep 2023 10:07:46 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8F5C0;
+        Mon, 25 Sep 2023 07:07:39 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1dcedc832d4so1596272fac.3;
+        Mon, 25 Sep 2023 07:07:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695650859; x=1696255659; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eOm71FSa/a54JWdPxFTdFQYbsSYB0XKCvLJel7l+Bek=;
+        b=jpP9f+SoKQVqdTnEQFoH5+vMmHrMw0e/70zsHfZH/xpE97jLfDgqAHah88ugAV0rnN
+         2abK60Jt4jELKdCt/4ejxbl/HvUUPl0eYNToTSNFZNMpYHecr2+qKLW57q6NeNoVfuy0
+         O+Zski8i8p1tE+ZhSDi+y+iK9sgwLoLqFf7uDMqUB85m0wLCmoMVp3ijoHEFafFCm7L+
+         hE6O616wGt0zbqORXyYHqQwyLLn/4+GMP8VInbs9Sb9Y7Mn/6OFKR5VJ+NJddMRmdnHO
+         bDirD2rZA8i7dqUwEQdRYqpTBDu2bejN8pAqDKDF+nzQgxkXLNk6I+vwhRDSFLELji32
+         ZpdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695650859; x=1696255659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eOm71FSa/a54JWdPxFTdFQYbsSYB0XKCvLJel7l+Bek=;
+        b=um0ZjABdcpWgOfuqigQtnzpgcpSIN7joQYjrmG/Vds25nR0FNlGiGIBOkSnbH+KEDI
+         /68OvvuO7TahZRsBTWyt60y5CJjNKN3ibJUPitnDpvbmlBHLxECAPrydizwHapx8gaCn
+         qHTP8DOTksdSkd4mdKaUr45GfYqKSpNvH54fhMM3Zi7tOg3FKXeMoA3A42IswNUE/bb+
+         t+dVwgNHFKzfkD6+L+9R4PiUoSKhQZf+eaVEku8rh1smOXTooTQ7PCz+uOxXpnS6LK/F
+         i9BOz4o+6oa2zhGawmH/cl8XdtrbOLV0LP5MkyGpcEjfBgtOKK71gpdqXg3DX8eum3qR
+         nDgg==
+X-Gm-Message-State: AOJu0YyK/5RVyHaJ0pfuiyLO0XgzxV7c99+uS/99j9rs8gdW2M76EIkU
+        yaPuwfnax9Cd55Wd74MHAO3Emzd9u4u/X3dOrUs=
+X-Google-Smtp-Source: AGHT+IEAGihrK0Fxy+zmQS+jCavrD8i0S0F6RPaTyUWR0Tsr+swWkiWj17Z4gpkbPnpNw9W+uaTcvGPHY2GFxPPQ6jk=
+X-Received: by 2002:a05:6870:b68b:b0:19e:fa1f:fc2f with SMTP id
+ cy11-20020a056870b68b00b0019efa1ffc2fmr7668945oab.38.1695650859043; Mon, 25
+ Sep 2023 07:07:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.25.0.11]
-X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWyRpKBR1diimCqwYmzTBZr9p5jsph/5Byr
-        xbzzh9ktznTnWiz/PJvdou/FQ2aLTY+vAcXX/2S0uLxrDpvFmx9ADa17j7BbvLlwj8Wi+526
-        xf+zH9gd+DxmN1xk8Zgwu5vNY/Gel0wem1Z1snncubaHzWPzknqP/u4WVo/jN7YzeXzeJBfA
-        GcVlk5Kak1mWWqRvl8CVcfLdScaCQ2wV/ZcDGxh3sHYxcnJICJhI3H/5nKmLkYtDSGAJk8Sq
-        g3uZIZwnjBJXT19nA6liE1CXuLPhGytIQkTgCqPElgNz2EEcZoHVjBKz3m5nAqkSFvCVuHa1
-        jxHEZhFQlXi7rh2og4ODV8BCon1vCMQ6eYmZl76zg9i8AoISJ2c+YQGxmYHizVtnM0PYEhIH
-        X7wAs4WA4i8uLWeB6Z127jUzhB0qsfXLdqYJjAKzkIyahWTULCSjFjAyr2IUys1Mzk4tyszW
-        K8ioLElN1ktJ3cQIiiQRBq4djH1zPA4xMnEwHmKU4GBWEuH99YwvVYg3JbGyKrUoP76oNCe1
-        +BCjNAeLkjjv/R6mRCGB9MSS1OzU1ILUIpgsEwenVAOj+CxN3WWJXB9Pn525KUz3IAdPu7no
-        GwOGZSJa/zxvH72vdaLyXUDPX8N77VYSVwrXfp7PNfnUs9gV7kYNDN6fL7/8qxPArLjJZaLT
-        B/u1nMYpxeJrNLiCy5NL9rPKHtVbsbHTTvBryclljHvzSj6LcE1d7mP157xYYaYik/2iW1cT
-        2cw85jopsRRnJBpqMRcVJwIA2fvwtpICAAA=
+References: <20230922173110.work.084-kees@kernel.org> <20230922173216.3823169-1-keescook@chromium.org>
+ <CADnq5_P2p3bmczci=pU+pG6f9+hqn=-xp1EynP2345CJZRW08w@mail.gmail.com> <2635922e-f52a-4e91-40c6-4f1358972786@amd.com>
+In-Reply-To: <2635922e-f52a-4e91-40c6-4f1358972786@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 25 Sep 2023 10:07:27 -0400
+Message-ID: <CADnq5_P1tg2-rWUmsRAy3aPJLT7ZmaZORMSOrPa6t6oSc5xS3g@mail.gmail.com>
+Subject: Re: [PATCH 1/9] drm/amd/pm: Annotate struct smu10_voltage_dependency_table
+ with __counted_by
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        David Airlie <airlied@gmail.com>,
+        Tejas Upadhyay <tejas.upadhyay@intel.com>,
+        Emma Anholt <emma@anholt.net>, Tom Rix <trix@redhat.com>,
+        llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Prike Liang <Prike.Liang@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        amd-gfx@lists.freedesktop.org,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        nouveau@lists.freedesktop.org, David Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-hardening@vger.kernel.org, Lijo Lazar <lijo.lazar@amd.com>,
+        Yifan Zhang <yifan1.zhang@amd.com>,
+        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Melissa Wen <mwen@igalia.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Evan Quan <evan.quan@amd.com>, Sean Paul <sean@poorly.run>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>, Le Ma <le.ma@amd.com>,
+        freedreno@lists.freedesktop.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nirmoy Das <nirmoy.das@intel.com>, Lang Yu <Lang.Yu@amd.com>,
+        John Harrison <john.c.harrison@intel.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Seems like the address value of the reg property was mistyped.
-Update reg to 0x9ca00000 to match node's definition.
+On Mon, Sep 25, 2023 at 2:30=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 22.09.23 um 19:41 schrieb Alex Deucher:
+> > On Fri, Sep 22, 2023 at 1:32=E2=80=AFPM Kees Cook <keescook@chromium.or=
+g> wrote:
+> >> Prepare for the coming implementation by GCC and Clang of the __counte=
+d_by
+> >> attribute. Flexible array members annotated with __counted_by can have
+> >> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BO=
+UNDS
+> >> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-fami=
+ly
+> >> functions).
+> >>
+> >> As found with Coccinelle[1], add __counted_by for struct smu10_voltage=
+_dependency_table.
+> >>
+> >> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/example=
+s/counted_by.cocci
+> >>
+> >> Cc: Evan Quan <evan.quan@amd.com>
+> >> Cc: Alex Deucher <alexander.deucher@amd.com>
+> >> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> >> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> >> Cc: David Airlie <airlied@gmail.com>
+> >> Cc: Daniel Vetter <daniel@ffwll.ch>
+> >> Cc: Xiaojian Du <Xiaojian.Du@amd.com>
+> >> Cc: Huang Rui <ray.huang@amd.com>
+> >> Cc: Kevin Wang <kevin1.wang@amd.com>
+> >> Cc: amd-gfx@lists.freedesktop.org
+> >> Cc: dri-devel@lists.freedesktop.org
+> >> Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Acked-by: Alex Deucher <alexander.deucher@amd.com>
+>
+> Mhm, I'm not sure if this is a good idea. That is a structure filled in
+> by the firmware, isn't it?
+>
+> That would imply that we might need to byte swap count before it is
+> checkable.
 
-Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
----
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+True. Good point.  Same for the other amdgpu patch.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-index 7cfdf562b53b..2de74428a8bd 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-@@ -58,7 +58,7 @@ reserved-memory {
- 
- 		ramoops: ramoops@9ca00000 {
- 			compatible = "ramoops";
--			reg = <0x00 0x9c700000 0x00 0x00100000>;
-+			reg = <0x00 0x9ca00000 0x00 0x00100000>;
- 			record-size = <0x8000>;
- 			console-size = <0x8000>;
- 			ftrace-size = <0x00>;
--- 
-2.25.1
+Alex
 
+>
+> Regards,
+> Christian.
+>
+> >
+> >> ---
+> >>   drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h b/dr=
+ivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
+> >> index 808e0ecbe1f0..42adc2a3dcbc 100644
+> >> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
+> >> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.h
+> >> @@ -192,7 +192,7 @@ struct smu10_clock_voltage_dependency_record {
+> >>
+> >>   struct smu10_voltage_dependency_table {
+> >>          uint32_t count;
+> >> -       struct smu10_clock_voltage_dependency_record entries[];
+> >> +       struct smu10_clock_voltage_dependency_record entries[] __count=
+ed_by(count);
+> >>   };
+> >>
+> >>   struct smu10_clock_voltage_information {
+> >> --
+> >> 2.34.1
+> >>
+>
