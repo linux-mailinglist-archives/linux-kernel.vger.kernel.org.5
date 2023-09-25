@@ -2,94 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124987AE23D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6962A7AE253
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbjIYX2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        id S231915AbjIYXfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjIYX16 (ORCPT
+        with ESMTP id S229485AbjIYXfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:27:58 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025F010C;
-        Mon, 25 Sep 2023 16:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695684470;
-        bh=3Uf9jupJpw2wOBTKLPB0kwH5uFijHtGgkTTexntVOLs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CqOvB8oxvfDfQs9MHRnCYrxCBKUT4DeTOVJo+Ndw1OVsoP0ZabKxLVJg1nMj6y60t
-         AKJK0MNgCi1CVw15XSLYyrv2HWH0/tA5gffjNeOjT5E3aJiL1Z4GBmqYswgZYp3feE
-         Dl8cMQ/gnZBGQqhEBI7BKKvXim24AMlTN9jbXC1u9vDNXaPTbm0G/GIFwIJMJz9J4r
-         Yxs430dgoI0jLgJTPQUABGuX4+eUAfMjJ7PfqZ6Mkt+OV4tz/5nqqQeJG1lDj/Gi7N
-         uEK9+hrY4MGTkcsisUxg20vIcdW5mOQpy4ayxC7ZYc1mXXMhKDk5IOT00fSZuT/mWB
-         jHMTv6J0eRyhQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RvfDj675rz4x5k;
-        Tue, 26 Sep 2023 09:27:49 +1000 (AEST)
-Date:   Tue, 26 Sep 2023 09:27:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the mm tree
-Message-ID: <20230926092749.649bf24f@canb.auug.org.au>
+        Mon, 25 Sep 2023 19:35:13 -0400
+Received: from mo-csw.securemx.jp (mo-csw1801.securemx.jp [210.130.202.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A495010A;
+        Mon, 25 Sep 2023 16:35:05 -0700 (PDT)
+Received: by mo-csw.securemx.jp (mx-mo-csw1801) id 38PNYYKI916596; Tue, 26 Sep 2023 08:34:34 +0900
+X-Iguazu-Qid: 2yAaOS3aFSpfO9O1tT
+X-Iguazu-QSIG: v=2; s=0; t=1695684873; q=2yAaOS3aFSpfO9O1tT; m=7wX4E90bFd4ma85p1R3YT6pZKoeimqEkQGdwTD8cSwU=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1802) id 38PNYWHb3789012
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 Sep 2023 08:34:33 +0900
+X-SA-MID: 8623328
+From:   Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/5] Add Toshiba Visconti Video Input Interface driver
+Date:   Tue, 26 Sep 2023 08:28:01 +0900
+X-TSB-HOP2: ON
+Message-Id: <20230925232806.950683-1-yuji2.ishikawa@toshiba.co.jp>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0=SngUnXw2KzLh4NAkOrH65";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0=SngUnXw2KzLh4NAkOrH65
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This series is the Video Input Interface driver
+for Toshiba's ARM SoC, Visconti.
+This provides DT binding documentation,
+device driver, documentation and MAINTAINER files.
 
-Hi all,
+A visconti VIIF driver instance exposes
+1 media control device file and 3 video device files
+for a VIIF hardware.
+Detailed HW/SW are described in documentation directory.
+The VIIF hardware has CSI2 receiver,
+image signal processor and DMAC inside.
+The subdevice for image signal processor provides
+vendor specific V4L2 controls.
 
-After merging the mm tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+The device driver depends on two other drivers under development;
+clock framework driver and IOMMU driver.
+Corresponding features will be added later.
 
-fs/proc/task_mmu.c:2022:13: warning: 'pagemap_scan_backout_range' defined b=
-ut not used [-Wunused-function]
- 2022 | static void pagemap_scan_backout_range(struct pagemap_scan_private =
-*p,
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+Best regards,
+Yuji
 
-Introduced by commit
+Changelog v2:
+- Resend v1 because a patch exceeds size limit.
 
-  93538f467c0f ("fs/proc/task_mmu: implement IOCTL to get and optionally cl=
-ear info about PTEs")
+Changelog v3:
+- Add documentation to describe SW and HW
+- Adapted to media control framework
+- Introduced ISP subdevice, capture device
+- Remove private IOCTLs and add vendor specific V4L2 controls
+- Change function name avoiding camelcase and uppercase letters
 
---=20
-Cheers,
-Stephen Rothwell
+Changelog v4:
+- Split patches because a patch exceeds size limit
+- fix dt-bindings document
+- stop specifying ID numbers for driver instance explicitly at device tree
+- use pm_runtime to trigger initialization of HW
+  along with open/close of device files.
+- add a entry for a header file at MAINTAINERS file
 
---Sig_/0=SngUnXw2KzLh4NAkOrH65
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changelog v5:
+- Fix coding style problem in viif.c (patch 2/6)
 
------BEGIN PGP SIGNATURE-----
+Changelog v6:
+- add register definition of BUS-IF and MPU in dt-bindings
+- add CSI2RX subdevice (separeted from ISP subdevice)
+- change directory layout (moved to media/platform/toshiba/visconti)
+- change source file layout (removed hwd_xxxx.c)
+- pointer to userland memory is removed from uAPI parameters
+- change register access (from struct style to macro style)
+- remove unused macros
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUSF3UACgkQAVBC80lX
-0Gwzjgf8Da7+UicbYH6BXKtfbxyvBtPmEtmZb2fRWgyelK+d/n4+drKBRlTLex8C
-muoB3IQf6JgkVTuVE6AHZTXsUJZRSkQcL2/wMsyeLGsHSmbn2aEUvg2CtzorNtak
-EOy6lLz7tXmEgehgHrHt9FTHRt4dTvQ5G49Lwasj4oJpCrGwkkYTFeE7NRPgScFN
-/d1rRCq2Ycy7de00Nf+Q7O7JO4/5IfF8JzkwKALrP2RKftpteS8wrSasOnjg8Y/K
-P9ELm5f097JMW5I4DDKv9T3eT0ec+fc2qVQjrm2sMTM/RgXpq8gzANO3IuS/QdBo
-1GPNBhoxb/XnVxESeRo8yGHNO4RNOw==
-=PwGt
------END PGP SIGNATURE-----
+Changelog v7:
+- remove redundant "bindings" from header and description text
+- fix multiline text of "description"
+- change "compatible" to "visconti5-viif"
+- explicitly define allowed properties for port::endpoint
+- remove unused variables
+- update kerneldoc comments
+- update references to headers
 
---Sig_/0=SngUnXw2KzLh4NAkOrH65--
+Changelog v8:
+- rename bindings description file
+- remove/simplify items in bindings
+- update operations around v4l2_async_notifier
+- use v4l2_async_connection instead of v4l2_async_subdev
+- use dev_err_probe()
+- better error handling at probe
+- remove redundant mutex
+- add V4L2_CTRL_TYPE_VISCONTI_ISP constant
+
+Yuji Ishikawa (5):
+  dt-bindings: media: platform: visconti: Add Toshiba Visconti Video
+    Input Interface
+  media: platform: visconti: Add Toshiba Visconti Video Input Interface
+    driver
+  media: add V4L2 vendor specific control handlers
+  documentation: media: add documentation for Toshiba Visconti Video
+    Input Interface driver
+  MAINTAINERS: Add entries for Toshiba Visconti Video Input Interface
+
+ .../media/toshiba,visconti5-viif.yaml         |  105 +
+ .../driver-api/media/drivers/index.rst        |    1 +
+ .../media/drivers/visconti-viif.rst           |  462 +++
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
+ .../media/v4l/vidioc-queryctrl.rst            |    5 +
+ MAINTAINERS                                   |    4 +
+ drivers/media/platform/Kconfig                |    1 +
+ drivers/media/platform/Makefile               |    1 +
+ drivers/media/platform/toshiba/Kconfig        |    6 +
+ drivers/media/platform/toshiba/Makefile       |    2 +
+ .../media/platform/toshiba/visconti/Kconfig   |   18 +
+ .../media/platform/toshiba/visconti/Makefile  |    8 +
+ .../media/platform/toshiba/visconti/viif.c    |  650 ++++
+ .../media/platform/toshiba/visconti/viif.h    |  374 ++
+ .../platform/toshiba/visconti/viif_capture.c  | 1489 ++++++++
+ .../platform/toshiba/visconti/viif_capture.h  |   22 +
+ .../platform/toshiba/visconti/viif_common.c   |  199 +
+ .../platform/toshiba/visconti/viif_common.h   |   38 +
+ .../platform/toshiba/visconti/viif_controls.c | 3394 +++++++++++++++++
+ .../platform/toshiba/visconti/viif_controls.h |   18 +
+ .../platform/toshiba/visconti/viif_csi2rx.c   |  691 ++++
+ .../platform/toshiba/visconti/viif_csi2rx.h   |   24 +
+ .../toshiba/visconti/viif_csi2rx_regs.h       |  102 +
+ .../platform/toshiba/visconti/viif_isp.c      | 1259 ++++++
+ .../platform/toshiba/visconti/viif_isp.h      |   24 +
+ .../platform/toshiba/visconti/viif_regs.h     |  716 ++++
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |    7 +-
+ include/uapi/linux/v4l2-controls.h            |    6 +
+ include/uapi/linux/videodev2.h                |    2 +
+ include/uapi/linux/visconti_viif.h            | 1800 +++++++++
+ 30 files changed, 11431 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/media/toshiba,visconti5-viif.yaml
+ create mode 100644 Documentation/driver-api/media/drivers/visconti-viif.rst
+ create mode 100644 drivers/media/platform/toshiba/Kconfig
+ create mode 100644 drivers/media/platform/toshiba/Makefile
+ create mode 100644 drivers/media/platform/toshiba/visconti/Kconfig
+ create mode 100644 drivers/media/platform/toshiba/visconti/Makefile
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif.c
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.c
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.c
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.c
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.c
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx_regs.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.c
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.h
+ create mode 100644 drivers/media/platform/toshiba/visconti/viif_regs.h
+ create mode 100644 include/uapi/linux/visconti_viif.h
+
+-- 
+2.34.1
+
+
