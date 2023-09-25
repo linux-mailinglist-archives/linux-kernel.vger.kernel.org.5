@@ -2,280 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72AC7AD48E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D1E7AD491
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbjIYJdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S233230AbjIYJdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbjIYJdE (ORCPT
+        with ESMTP id S233216AbjIYJdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:33:04 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5531ADA;
-        Mon, 25 Sep 2023 02:32:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RvHjJ6gBlz4f3pC8;
-        Mon, 25 Sep 2023 17:32:52 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgBn+djEUxFlNbFlBQ--.26897S3;
-        Mon, 25 Sep 2023 17:32:53 +0800 (CST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Donald Buczek <buczek@molgen.mpg.de>,
-        Yu Kuai <yukuai1@huaweicloud.com>,
-        Dragan Stancevic <dragan@stancevic.com>, song@kernel.org
-Cc:     guoqing.jiang@linux.dev, it+raid@molgen.mpg.de,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        msmith626@gmail.com, "yangerkun@huawei.com" <yangerkun@huawei.com>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <CAPhsuW6R11y6vETeZ4vmFGmV6DRrj2gwhp1-Nm+csvtHb2nQYg@mail.gmail.com>
- <20230822211627.1389410-1-dragan@stancevic.com>
- <ab757e2b-3ff0-33d9-d30c-61669b738664@huaweicloud.com>
- <2061b123-6332-1456-e7c3-b713752527fb@stancevic.com>
- <07d5c7c2-c444-8747-ed6d-ca24231decd8@huaweicloud.com>
- <cf765117-7270-1b98-7e82-82a1ca1daa2a@stancevic.com>
- <0d79d1f9-00e8-93be-3c7c-244030521cd7@huaweicloud.com>
- <ff996ffb-cba5-cc9b-2740-49ba4a1869b5@huaweicloud.com>
- <07ef7b78-66d4-d3de-4e25-8a889b902e14@stancevic.com>
- <63c63d93-30fc-0175-0033-846b93fe9eff@molgen.mpg.de>
- <de7f6fba-c6e0-7549-199e-36548b68a862@stancevic.com>
- <d48c6c4a-9b0e-20bc-7d40-2a88aa37524a@molgen.mpg.de>
- <f79867f5-befb-0d7d-0c01-a42caa5d1466@molgen.mpg.de>
- <fb261b77-4859-07bb-e586-8589741e0c9e@molgen.mpg.de>
- <80e0f8aa-6d53-3109-37c0-b07c5a4b558c@huaweicloud.com>
- <aef8af9e-a9bb-20ac-12b4-3e57e6062bd8@molgen.mpg.de>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <326fefc1-93a1-8dd8-e9ca-36d87d3c1c23@huaweicloud.com>
-Date:   Mon, 25 Sep 2023 17:32:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 25 Sep 2023 05:33:54 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C12C0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:33:48 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40528376459so60211675e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695634426; x=1696239226; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UdmpywfRI/Hg+yCb9vcWDENrhgdZMFiT1/XKTzVxxv0=;
+        b=TejdYCXM1lkpW3k4917uMADaNOzjp3aU4JttUti6I/njVC5sLqiUakfjJNJm8dtpkG
+         NbY9ga9gUHIF9GUnRs0471yhnZnQdIsYsB8YPxCRAKQd+OEMXYi7OIYBDaSsZifJJeK9
+         UaSF3asMtJcsp//xCUYOl/8yjSSb0NJ+TppcjFAIlzDtYks6sGeXSt+m+PEuBLnqaHUD
+         LSjo4HArnIz+9C54Do8Wpsp4Xg5P3jqqjS2CrDdloIz+redbh9LtbiW2WiKJs9d41rRa
+         +rv4E9BQiScg+0pjwq+JvkG+LtDpE1LAAO7fWsav/y7lBTV51TLx9hAKa3+FUg+3Ggmv
+         spFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695634426; x=1696239226;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UdmpywfRI/Hg+yCb9vcWDENrhgdZMFiT1/XKTzVxxv0=;
+        b=j0OJunbkMavMlJI/MvMDiv4E4ByR++EeJrlDI2zKZsRq1VGt3KtP5byxg3Ofug/ZEv
+         3wzUusgjb5aoLHvtgiVefp2xTmu9IAoF25hDa4tSWHwRMwEKAGKvkp/qgUQ2w/ueuKx0
+         UJsP1S1OiBD3vgL1qiCC6Xg5pGIa2JLyKOQtcY6r94hruZu9hcu3XEWVgwQT1cdrBSRT
+         moxSyC8cZwnvc5M+4sWIhkU5G+nPlEwC1XopoIAI8dmhozy/RIf266qz729vveWeYDhc
+         iWa9ZkxWGWiEGIF5Xp6oSQTUEzaYV9bJDKrSnUeMoa5GFuO4khq1Y8q/e1ErmHUqRynR
+         uB6g==
+X-Gm-Message-State: AOJu0YyFlJ3whetsszR9iM9dOp3d7bLrfhqPXGBoZL9LIQxjtHbP4Xca
+        roZsStkFsKq5Z5bFluhmEg41uQ==
+X-Google-Smtp-Source: AGHT+IGxVcARyOlA3b4U7FsNKSvcyT62IMXpxRPLD5N86x4QEm8gTzkUJuoRa+gkNspQNatMPboAFg==
+X-Received: by 2002:a7b:cd13:0:b0:405:3251:47a1 with SMTP id f19-20020a7bcd13000000b00405325147a1mr5116168wmj.40.1695634426612;
+        Mon, 25 Sep 2023 02:33:46 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id h16-20020adffd50000000b0031ad5fb5a0fsm11395139wrs.58.2023.09.25.02.33.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 02:33:46 -0700 (PDT)
+Message-ID: <51470d7a-65a7-44c7-856b-53ca4b065553@linaro.org>
+Date:   Mon, 25 Sep 2023 11:33:44 +0200
 MIME-Version: 1.0
-In-Reply-To: <aef8af9e-a9bb-20ac-12b4-3e57e6062bd8@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBn+djEUxFlNbFlBQ--.26897S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtFWxurW7Gw13ArWrGF4fGrg_yoW3Jr4fpr
-        ySqF15Kr4kArW8Zw4jkwn7X340qa1kXw15Wr93Jr13Kan09ryFvrW3ZayY9a4UAw4rWFy7
-        XFW5GasxZrWDJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
-        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-        BIdaVFxhVjvjDU0xZFpf9x0JUq38nUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: Add watchdog node for Amlogic-C3 SoCs
+Content-Language: en-US
+To:     Huqiang Qin <huqiang.qin@amlogic.com>, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230925090641.1185942-1-huqiang.qin@amlogic.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230925090641.1185942-1-huqiang.qin@amlogic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 25/09/2023 11:06, Huqiang Qin wrote:
+> Add watchdog device.
+> 
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> index 998f5050795c..106f4dd09a1b 100644
+> --- a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> @@ -81,6 +81,12 @@ apb4: bus@fe000000 {
+>  			#size-cells = <2>;
+>  			ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
+>  
+> +			watchdog@2100 {
+> +				compatible = "amlogic,t7-wdt";
 
-在 2023/09/25 17:11, Donald Buczek 写道:
-> On 9/25/23 03:11, Yu Kuai wrote:
->> Hi,
->>
->> 在 2023/09/24 22:35, Donald Buczek 写道:
->>> On 9/17/23 10:55, Donald Buczek wrote:
->>>> On 9/14/23 08:03, Donald Buczek wrote:
->>>>> On 9/13/23 16:16, Dragan Stancevic wrote:
->>>>>> Hi Donald-
->>>>>> [...]
->>>>>> Here is a list of changes for 6.1:
->>>>>>
->>>>>> e5e9b9cb71a0 md: factor out a helper to wake up md_thread directly
->>>>>> f71209b1f21c md: enhance checking in md_check_recovery()
->>>>>> 753260ed0b46 md: wake up 'resync_wait' at last in 
->>>>>> md_reap_sync_thread()
->>>>>> 130443d60b1b md: refactor idle/frozen_sync_thread() to fix deadlock
->>>>>> 6f56f0c4f124 md: add a mutex to synchronize idle and frozen in 
->>>>>> action_store()
->>>>>> 64e5e09afc14 md: refactor action_store() for 'idle' and 'frozen'
->>>>>> a865b96c513b Revert "md: unlock mddev before reap sync_thread in 
->>>>>> action_store"
->>>>>
->>>>> Thanks!
->>>>>
->>>>> I've put these patches on v6.1.52. I've started a script which 
->>>>> transitions the three md-devices of a very active backup server 
->>>>> through idle->check->idle every 6 minutes a few ours ago.  It went 
->>>>> through ~400 iterations till now. No lock-ups so far.
->>>>
->>>> Oh dear, looks like the deadlock problem is _not_fixed with these 
->>>> patches.
->>>
->>> Some more info after another incident:
->>>
->>> - We've hit the deadlock with 5.15.131 (so it is NOT introduced by 
->>> any of the above patches)
->>> - The symptoms are not exactly the same as with the original year-old 
->>> problem. Differences:
->>> - - mdX_raid6 is NOT busy looping
->>> - - /sys/devices/virtual/block/mdX/md/array_state says "active" not 
->>> "write pending"
->>> - - `echo active > /sys/devices/virtual/block/mdX/md/array_state` 
->>> does not resolve the deadlock
->>> - - After hours in the deadlock state the system resumed operation 
->>> when a script of mine read(!) lots of sysfs files.
->>> - But in both cases, `echo idle > 
->>> /sys/devices/virtual/block/mdX/md/sync_action` hangs as does all I/O 
->>> operation on the raid.
->>>
->>> The fact that we didn't hit the problem for many month on 5.15.94 
->>> might hint that it was introduced between 5.15.94 and 5.15.131
->>>
->>> We'll try to reproduce the problem on a test machine for analysis, 
->>> but this make take time (vacation imminent for one...).
->>>
->>> But its not like these patches caused the problem. Any maybe they 
->>> _did_ fix the original problem, as we didn't hit that one.
->>
->> Sorry for the late reply, yes, this looks like a different problem. I'm
->> pretty confident that the orignal problem is fixed since that echo
->> idle/frozen doesn't hold the lock 'reconfig_mutex' to wait for
->> sync_thread to be done.
->>
->> I'll check patches between 5.15.94 and 5.15.131.
-> 
-> We've got another event today. Some more information to save you work. 
-> I'm sorry, this comes dripping in, but as I said, currently we can't 
-> reproduce it and hit it on production machines only, where we have 
-> limited time to analyze:
+This is c3, not t7. Why do you use t7 compatible alone?
 
-There is a way to clarify if io is stuck in underlying disks:
-
-Once the problem is triggered and there are no disk activity:
-
-cat /sys/kernel/debug/block/[disk]/hctx*/sched_tags | grep busy
-cat /sys/kernel/debug/block/[disk]/hctx*/tags | grep busy
-
-If busy is not 0, means that io is stuck in underlying disk, then this
-problem is not related to raid, otherwise raid doesn't issue any io to
-underlyiung dikss and this problem is related to raid.
-
-> 
-> * In the last two events, "echo idle > 
-> sys/devices/virtual/block/mdX/md/sync_action" was not even executing. 
-> This is not a trigger, but was a random victim when it happened the 
-> first time. This deceived me to believe this is some variation of the 
-> old problem.
-> 
-> * It's not filesystem related, yesterday `blkid -o value -s LABEL 
-> /dev/md1` was hanging, too, and today, for example, `df`.
-> 
-> * /sys/devices/virtual/block/md0/inflight today was (frozen at) "2      
-> 579"
-> 
-> * iotop showed no disk activity (on the raid) at all. Only a single 
-> member device had activity from time to time (usually after ~30 seconds, 
-> but sometimes after a few seconds) with usually 1-4 tps, but sometimes 
-> more, max 136 tps.
-> 
-> * As I said, I use a script to take a snapshot of various /sys and /proc 
-> information and running this script resolved the deadlock twice.
-> 
-> * The recorded stack traces of mdX_raid6 of the hanging raid recorded in 
-> the two events were
-> 
->      [<0>] md_bitmap_unplug.part.0+0xce/0x100
->      [<0>] raid5d+0xe4/0x5a0
->      [<0>] md_thread+0xab/0x160
->      [<0>] kthread+0x127/0x150
->      [<0>] ret_from_fork+0x22/0x30
-> 
-> and
-> 
->      [<0>] md_super_wait+0x72/0xa0
->      [<0>] md_bitmap_unplug.part.0+0xce/0x100
->      [<0>] raid5d+0xe4/0x5a0
->      [<0>] md_thread+0xab/0x160
->      [<0>] kthread+0x127/0x150
->      [<0>] ret_from_fork+0x22/0x30
-
-Above stack shows that raid issue bitmap io to underlying disk and is
-waiting for such io to be done, except for bitmap io is broken in raid,
-this problem should not related to raid, above debugfs can help to
-clarify this.
-
-Thanks,
-Kuai
-
-> 
-> But note, that these probably were taken after the previous commands in 
-> the script already unfroze the system. Today I've manually looked at the 
-> stack while the system was still frozen, and it was just
-> 
->      [<0>] md_thread+0x122/0x160
->      [<0>] kthread+0x127/0x150
->      [<0>] ret_from_fork+0x22/0x30
-> 
-> * Because I knew that my script seems to unblock the system, I've run it 
-> slowly line by line to see what actually unfreezes the system. There is 
-> one loop which takes "comm" "cmdline" and "stack" of all threads:
-> 
->      for task in /proc/*/task/*; do
->          echo  "# # $task: $(cat $task/comm) : $(cat $task/cmdline | 
-> xargs -0 echo)"
->          cmd cat $task/stack
->      done
-> 
-> I've added a few "read" to single-step it. Unfortunately, when it came 
-> to the 64 nfsd threads, I've got a bit impatient and hit "return" faster 
-> then I should have and when the unfreeze happened, I couldn't say 
-> exactly were it was triggered. But it must have been somewhere in this 
-> tail:
-> 
-> # # /proc/1299/task/1299: nfsd
-> 
-> [<0>] svc_recv+0x7a7/0x8c0 [sunrpc]
-> [<0>] nfsd+0xd6/0x140 [nfsd]
-> [<0>] kthread+0x127/0x150
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> # # /proc/13/task/13: ksoftirqd/0
-> 
-> [<0>] smpboot_thread_fn+0xf3/0x140
-> [<0>] kthread+0x127/0x150
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> # # /proc/130/task/130: cpuhp/22
-> 
-> [<0>] smpboot_thread_fn+0xf3/0x140
-> [<0>] kthread+0x127/0x150
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> # # /proc/1300/task/1300: nfsd
-> 
-> [<0>] svc_recv+0x7a7/0x8c0 [sunrpc]
-> [<0>] nfsd+0xd6/0x140 [nfsd]
-> [<0>] kthread+0x127/0x150
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> ## (3 more repetitions of other nfsd threads which exactly the same 
-> stack skipped here ##
-> 
-> So it appears, that possibly a cat /proc/PID/stack of a "ksoftirqd" or a 
-> (maybe) a "cpuhp" thread unblocks the system. "nfsd" seems unlikely, as 
-> there shouldn't and wasn't anything nfs-mounted from this system.
-> 
-> Conclusion: This is probably not related to mdraid at all and might be a 
-> problem of the block or some infrastructure subsystem. Do you agree?
-> 
-> Best
-> 
->    Donald
+Best regards,
+Krzysztof
 
