@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1471C7AD018
+	by mail.lfdr.de (Postfix) with ESMTP id 61AF17AD019
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbjIYGXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        id S232240AbjIYGXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjIYGXd (ORCPT
+        with ESMTP id S232135AbjIYGXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:23:33 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFED226A0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:21:39 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40471c054f9so18560645e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:21:39 -0700 (PDT)
+        Mon, 25 Sep 2023 02:23:38 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDC1E48
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:21:51 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-493542a25dfso1744073e0c.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695622897; x=1696227697; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1695622910; x=1696227710; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lGoflC/MDGiByLKpoE4UCpKhG9wCXgC3jrpF9mnawmc=;
-        b=ECMthtLkjF0hBBM6O/lZvvlfnDcHj5vR4Lxe+D45C7tZDbaykHERGtOEudoribQwOl
-         Fte35//cCpWckzrS07O64yvry6jMO7VfOKtLeD/nXLDiv4Ysfkf+H89g1LNrj1z+yqOT
-         2I18D6Y96LGQEkTX0YHq8CBhSFjxCwXQXdq3HR3fjFYO2ESM8TMMf2E8WFwpGpGwdPup
-         XZLZmKwIZdtOhxGa5aszprHKFkSXUEiPr/yUWolFA3Ywh6qOHjxnGhu8WpG7cMtjaH2c
-         2AkCOgUwfisfgx/0KcsWXaeaUjfgFWCRkxWW6LnHiDTfwMkT8kuRNTF18tyYP5NqQBI2
-         LJzA==
+        bh=YLHjhG4Jgg46eldzbxhJ6TWX0/Um9RrKLUKna1Lh+yI=;
+        b=p5cesLcpOa8ybp8vAECV+k0cYJG4lW36uZ52482URfrq86dl95NnETn231tutDYPUP
+         G5I/lILyW7dYo3Xd3Dw3xzM/Fb+FEzKb6lhigiSJ2o3tlA0m/g5HFQrOp+b25+hGxV7t
+         42sSBylZeo+O1DS6oFHB84lr81Oex70gSF/XYg4e0XweeiWFJhvf+yrHVntr2uL8isLM
+         bXY/jxKWl7UTzccIPflh+hmPXOvRhjOEGXBYloHwXV3saalkZZsX6fA2nbbgQkrR+Qer
+         qprOeHjiXBLS41w9sDLqtmmzg8VSZk4Ne/xpJxcikyRjMkVPGbIOXe1bm0FRYpnaPxuk
+         a2OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695622897; x=1696227697;
-        h=content-transfer-encoding:cc:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lGoflC/MDGiByLKpoE4UCpKhG9wCXgC3jrpF9mnawmc=;
-        b=HBAT1djwmFrZLhAKp0bUfZ20k6k+WLIbR9mvxHHuozFTZLGJ5MrtPI1wqpRPd6VVz3
-         9kpx3ghen5/yvZrCq31FzIGyJdM5kMhmXAejp+lxiUWTty6mo74O70dA0fpMHzZUJraz
-         RXcKcoYIiTMbOYImbXnhbySj5BOmzKIfqQzqzsOLv+5HfyGX4XtOaDQXky46AOc/X6KU
-         MlLHbEPvbribZ7HRmRQo2eKRTCgiyba94qEdjWLS/Wv9DvquGmC1ILS3Nsypg1dZ88kq
-         Ap2wOiSBpPB8LlEvF3PsW1cEtW5TIWc+F1L6eY9rgW+pYMrlXLVVFNys5Wx9XkkeyKJi
-         us2Q==
-X-Gm-Message-State: AOJu0YxAViUFHrHMIoJHKPP8DdccOIJfJzFXrx5iJ2LYFCAjGUe3rrG1
-        Bn3sppw0eTNQ9/bw5rTe/ruTSQ==
-X-Google-Smtp-Source: AGHT+IHHKt7P8p/soHCBdqvFETlHa38Td/2/3ju/wDTL8KeMQizTMtjs/G1nKdI1QABkE1BOVrDTEw==
-X-Received: by 2002:a05:600c:4e05:b0:405:3cc1:e115 with SMTP id b5-20020a05600c4e0500b004053cc1e115mr5041954wmq.3.1695622896458;
-        Sun, 24 Sep 2023 23:21:36 -0700 (PDT)
-Received: from [172.20.13.88] ([45.147.210.162])
-        by smtp.gmail.com with ESMTPSA id u23-20020a05600c211700b004042dbb8925sm14054942wml.38.2023.09.24.23.21.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 23:21:35 -0700 (PDT)
-Message-ID: <71897125-e570-46ce-946a-d4729725e28f@kernel.dk>
-Date:   Mon, 25 Sep 2023 00:21:35 -0600
+        d=1e100.net; s=20230601; t=1695622910; x=1696227710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YLHjhG4Jgg46eldzbxhJ6TWX0/Um9RrKLUKna1Lh+yI=;
+        b=LwgJ6dI/e4N06Tm8xEcM0tqed9e+K5oDqiRFI4eOsybDcKIXUrTxAoA8ibiZUIBcdg
+         v1l8AcxV1q3p8niAyQcXnR8/T0YO5SLCtwjTot7M1SNTdUUxxgU/YdnaJTSeI777TCtk
+         ra1I5al2FbdCmO28SLXoacRYaQcxpm+PXdjxVanU2QA5M2mb0VVbZ6BAi5z5P3Ht5RK2
+         kzOb0Bl4Ef3QoFowYPdfWpF7AMksP8NiinPnHOYYZXnT/M7sC28SquTRWLLqANlJD1P7
+         dMNe+4lVt99KmwaaTdhUQXUC74SvMEGhlbKFCaqcXPs0UIjOTIB8nCVvbydJphlmefzd
+         3Irg==
+X-Gm-Message-State: AOJu0Yy6WD4ofvbmPlyMW/FRzspA00ZQ6R16lJwv2cggklthmLNOLgYi
+        H1TnSHaXpI4xkaNGtzdkadctqhPXtd4ao/4cfj1QCw==
+X-Google-Smtp-Source: AGHT+IHpmREQJdbNmA1t9SJ1rozZcrM0ZQpmHgFOzejqaCZOu3l0fZSDYVwVWivumeTttRNf3O9Immav5TvwGj7SsHI=
+X-Received: by 2002:a05:6122:1781:b0:49a:3d72:fe7c with SMTP id
+ o1-20020a056122178100b0049a3d72fe7cmr704324vkf.15.1695622910216; Sun, 24 Sep
+ 2023 23:21:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Amir Goldstein <amir73il@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] ovl: disable IOCB_DIO_CALLER_COMP
-Cc:     Zorro Lang <zlang@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230923144938.219517-1-wedsonaf@gmail.com> <20230923144938.219517-2-wedsonaf@gmail.com>
+In-Reply-To: <20230923144938.219517-2-wedsonaf@gmail.com>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Mon, 25 Sep 2023 08:21:38 +0200
+Message-ID: <CAH5fLgiMiynY+EnKChEhcc3MeHW=bpvriOG2CFkprnGASGy=Cg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] rust: arc: rename `ArcInner` to `WithRef`
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-overlayfs copies the kiocb flags when it sets up a new kiocb to handle
-a write, but it doesn't properly support dealing with the deferred
-caller completions of the kiocb. This means it doesn't get the final
-write completion value, and hence will complete the write with '0' as
-the result.
+On Sat, Sep 23, 2023 at 4:49=E2=80=AFPM Wedson Almeida Filho <wedsonaf@gmai=
+l.com> wrote:
+>
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>
+> This is in preparation for removing `ArcBorrow` and making `WithRef`
+> public.
+>
+> This is a pure name change with no functional changes intended.
+>
+> Suggested-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> ---
+>  rust/kernel/sync/arc.rs            | 20 ++++++++++----------
+>  rust/kernel/sync/arc/std_vendor.rs |  4 ++--
+>  2 files changed, 12 insertions(+), 12 deletions(-)
 
-We could support the caller completions in overlayfs, but for now let's
-just disable them in the generated write kiocb.
-
-Reported-by: Zorro Lang <zlang@redhat.com>
-Link: https://lore.kernel.org/io-uring/20230924142754.ejwsjen5pvyc32l4@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
-Fixes: 8c052fb3002e ("iomap: support IOCB_DIO_CALLER_COMP")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-
----
-
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index 4193633c4c7a..693971d20280 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -391,6 +391,12 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	if (!ovl_should_sync(OVL_FS(inode->i_sb)))
- 		ifl &= ~(IOCB_DSYNC | IOCB_SYNC);
- 
-+	/*
-+	 * Overlayfs doesn't support deferred completions, don't copy
-+	 * this property in case it is set by the issuer.
-+	 */
-+	ifl &= ~IOCB_DIO_CALLER_COMP;
-+
- 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
- 	if (is_sync_kiocb(iocb)) {
- 		file_start_write(real.file);
-
--- 
-Jens Axboe
-
-	
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
