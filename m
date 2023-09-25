@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966B27ACDAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921F87ACDAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbjIYBoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 21:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
+        id S231598AbjIYBol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 21:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjIYBoG (ORCPT
+        with ESMTP id S229480AbjIYBok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 21:44:06 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA62CF;
-        Sun, 24 Sep 2023 18:43:57 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vsjl30y_1695606232;
-Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vsjl30y_1695606232)
-          by smtp.aliyun-inc.com;
-          Mon, 25 Sep 2023 09:43:54 +0800
-Message-ID: <f70e93c6-ba5b-a71c-4b82-33b279c76b0e@linux.alibaba.com>
-Date:   Mon, 25 Sep 2023 09:43:52 +0800
+        Sun, 24 Sep 2023 21:44:40 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8C8BD
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 18:44:33 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so44436675e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 18:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695606272; x=1696211072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m/CGTipvVjSZ3BP+G1gXdYpyR8CRzYcGoUaEJ1H1ROo=;
+        b=cH1nibGsEno7h53G+HUXEX5DY7YxWwe8icKDDNkvLsmIHNHnSCgf83RsN2ovsBNdp1
+         jCQ5TKOWTgC5TbwESp06TSMaS0dcY3gS/RJNc+RITyNDfJLb+syN5xXT0X3nROTZfV2A
+         waN8NNhtxQ6rWvkk+qPna2/+l2RMpqrcu+kgKF26UdOUnBCjezvopykY3wvS3Jn2m5eH
+         90JZnKpKYFwCp57pnbnHVxDx16cFxK1v5wT0hkaBAUbVzjiBKxsrjihNscfS7sYj6yMZ
+         Tc4MGs+WkVDNwMx+Iqp/7cbz1NQKgbEYl7Vf0dv9i1QtwEDpZNMh/OCdtnh5nx2d6XGA
+         mcMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695606272; x=1696211072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m/CGTipvVjSZ3BP+G1gXdYpyR8CRzYcGoUaEJ1H1ROo=;
+        b=ejwl98ZVqI9qVYO1NrPoE/webx9IrBXAz+gFky7T6ifhtbCfgffDeXAcAeAG/MUODi
+         YgCnrDc52RYo8j/mjy0x7h6ls9+BpqhuNfdB9arUhNx5ckbQAmPDCp6p03GzN4Dj1G/x
+         yP78yZF7V75WZ4pJiBdsqzNFkCqfPbuaEkQPTI4suG8Psk+NgdctcUJBgqfzMVC5u0K6
+         MXabHuVWkYurfe1FD7mKyCgouGaxSziN0JRtenmPvClvqd6+PPHFMW35OxFbhPiRIKpN
+         wqwUq/xIhMKtdV6IYUQlG+g+PUKkS0y3RuTNEDoKqK+0zpQ2rpIC3osxHHXM0DlBxDnD
+         pbTg==
+X-Gm-Message-State: AOJu0YzwXgVfsIKvBQNz0cBzLrVBbZg/qLiSq97257J2oBElpCq+0CS8
+        ZrtlDzhLuy2oZSl/WU+WQA5OXHsuR/gEDVwA1uLjJw==
+X-Google-Smtp-Source: AGHT+IEto/nIwajWxdPEL+t63YAllqUl92DqGJqCOKkzzSeGUIbaehdRQ2XaCYWirPmYDwHDzZuTwM3EKoch6oDtrY4=
+X-Received: by 2002:adf:ec4b:0:b0:313:f4e2:901d with SMTP id
+ w11-20020adfec4b000000b00313f4e2901dmr5880997wrn.22.1695606271729; Sun, 24
+ Sep 2023 18:44:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: Questions: Should kernel panic when PCIe fatal error occurs?
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "mahesh@linux.ibm.com" <mahesh@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "lenb@kernel.org" <lenb@kernel.org>
-References: <20230920230257.GA280837@bhelgaas>
- <d84b6d17-7fe9-222a-c874-798af4d9faea@linux.alibaba.com>
- <2e5870e416f84e8fad8340061ec303e2@AcuMS.aculab.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <2e5870e416f84e8fad8340061ec303e2@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
+ <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
+ <20230919-70b2f1e368a8face73468dfa@fedora> <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
+ <20230919-cc4646dbfb953bd34e05658c@fedora> <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
+ <20230922-unclothed-bottom-5531329f9724@spud> <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
+ <20230922-removable-footwork-f1d4d96d38dd@spud>
+In-Reply-To: <20230922-removable-footwork-f1d4d96d38dd@spud>
+From:   yang tylor <tylor_yang@himax.corp-partner.google.com>
+Date:   Mon, 25 Sep 2023 09:44:21 +0800
+Message-ID: <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI device
+To:     Conor Dooley <conor@kernel.org>
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
+        "jingyliang@chromium.org" <jingyliang@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
+> > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@kernel.org>=
+ wrote:
+> > >
+> > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
+> > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@kernel.=
+org> wrote:
+> > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
+> > >
+> > > > > > The behavior of "himax,boot_time_fw_upgrade" seems not stable a=
+nd
+> > > > > > should be removed. "himax,fw_in_flash", I use the kernel config=
+ for
+> > > > > > user to select.
+> > > > >
+> > > > > That seems like a bad idea, we want to be able to build one kerne=
+l that
+> > > > > works for all hardware at the same time.
+> > > > >
+> > > > I see, so I should take that back?
+> > > > I'll explain more about it.
+> > >
+> > > Are there particular ICs where the firmware would always be in flash =
+and
+> > > others where it would never be? Or is this a choice made by the board=
+ or
+> > > system designer?
+> > >
+> > Most cases it's about the system designer's decision. But some ICs may =
+be forced
+> > to use flash because of its architecture(multiple IC inside, need to
+> > load firmware to
+> > multiple IC's sram by master IC). But if there is no limitation on
+> > this part, most system
+> > designers will prefer flashless.
+>
+> Forgive me if I am not understanding correctly, there are some ICs that
+> will need to load the firmware from flash and there are some where it
+> will be a decision made by the designer of the board. Is the flash part
+> of the IC or is it an external flash chip?
+>
+
+Both are possible, it depends on the IC type. For TDDI, the IC is long
+and thin, placed on panel PCB, flash will be located at the external
+flash chip. For the OLED TP, IC is usually placed at FPC and its flash
+is embedded, thus the IC size is large compared to TDDI. But from the
+driver's perspective either external flash or embedded flash, the IC
+itself will load firmware from flash automatically when reset pin is
+released. Only if firmware is loading from the host storage system,
+the driver needs to operate the IC in detail.
+
+> Cheers,
+> Conor.
 
 
-On 2023/9/21 21:20, David Laight wrote:
-> ...
-> I've got a target to generate AER errors by generating read cycles
-> that are inside the address range that the bridge forwards but
-> outside of any BAR because there are 2 different sized BARs.
-> (Pretty easy to setup.)
-> On the system I was using they didn't get propagated all the way
-> to the root bridge - but were visible in the lower bridge.
-
-So how did you observe it? If the error message does not propagate
-to the root bridge, I think no AER interrupt will be trigger.
-
-> It would be nice for a driver to be able to detect/clear such
-> a flag if it gets an unexpected ~0u read value.
-> (I'm not sure an error callback helps.)
-
-IMHO, a general model is that error detected at endpoint should be
-routed to upstream port for example: RCiEP route error message to RCEC,
-so that the AER port service could handle the error, the device driver
-only have to implement error handler callback.
-
-> 
-> OTOH a 'nebs compliant' server routed any kind of PCIe link error
-> through to some 'system management' logic that then raised an NMI.
-> I'm not sure who thought an NMI was a good idea - they are pretty
-> impossible to handle in the kernel and too late to be of use to
-> the code performing the access.
-
-I think it is the responsibility of the device to prevent the spread of
-errors while reporting that errors have been detected. For example, drop
-the current, (drain submit queue) and report error in completion record.
-Both NMI and MSI are asynchronous interrupts.
-
-> 
-> In any case we were getting one after 'echo 1 >xxx/remove' and
-> then taking the PCIe link down by reprogramming the fpga.
-> So the link going down was entirely expected, but there seemed
-> to be nothing we could do to stop the kernel crashing.
-> 
-> I'm sure 'nebs compliant' ought to contain some requirements for
-> resilience to hardware failures!
-
-How the kernel crash after a link down? Did the system detect a surprise
-down error?
-
-Best Regards,
-Shuai
+Thanks,
+Tylor
