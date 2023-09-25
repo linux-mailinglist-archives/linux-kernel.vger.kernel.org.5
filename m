@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAF67ADAA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694D77ADAA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbjIYOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
+        id S231916AbjIYOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbjIYOxM (ORCPT
+        with ESMTP id S231865AbjIYOxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:53:12 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61934192
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:53:00 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so107906551fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695653578; x=1696258378; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=12lvvZVko7HwcFd7BVr7FRaCYZcG3/6yf/N02oFBsK8=;
-        b=znnFwVGn+zck2eznawy53HuyrlhwhEcgK90aK6K8nOemWEjHO5lc1uOQYuVTiZaTwf
-         shGOESxGUXmzoqCzqUkLzDn5KjK/kGSnjqkLWxL/rrgzkK7axQq9kJT62xROgrazZV8L
-         Er9u6sq3F1fGoca3K4gY33FCwvRvS2VO3gsjnyOX90CiRsCfrQkRbHgXeXP6tzQFH7Ic
-         x48he8NVvebbENIMVc2Bjkgu3WOkf/3YSW5jR4CaJkI4uxu0tsktnlNbIuqq8ZSO/8Ac
-         22Xwd0Mlnot3pcqemqLyIbSQfGHee6RYyUB1DJbYhIDvseBqgQtMD+SX4pPm65govz9u
-         /06g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695653578; x=1696258378;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=12lvvZVko7HwcFd7BVr7FRaCYZcG3/6yf/N02oFBsK8=;
-        b=M1kitVELBoXkg/HVz+gKIatlACQYbVJ88umenxMh+XbpbhkixgvVVP939oFYXPHhHG
-         QbVmzmirG1L7ZQkIxrNbPeoEE3BDiWfvXR+tqGesG/DzB5M6skseNabpeSqW8Sp1YEZ6
-         A5IITwvWfpTWkwNPXYjIvWqTHGKeOkpz5eH7rjWU+e+1om6OWByYGqgO3/4jRaFntKM5
-         dKoH1b82R695j0JHFtHMWbY9esB6Q1jN7CwWj0RsKv4rSMcgLRk9/0B3DYrwYH3yJ1I/
-         MIdK/lXdijK0lMwZ9WMnAP2GMdW+l0GnIt4UU8m9tAjXPD0yTK9AX1UPuOHGdEcEOVGu
-         ISbQ==
-X-Gm-Message-State: AOJu0YyX/3duTI80rMbZpHciHZW08LNOIIl6xYvwu1OLRHrAfblKJ4Gy
-        KGk2fyeZr2HMAdSGGeNhyIo1Lg==
-X-Google-Smtp-Source: AGHT+IFDQpUk2VXmAw55MR/ZBzMc5xEwHe1FQv75sipuCMabU5D0JcaGYP7gRdWeBjtjiRNoVPTmdA==
-X-Received: by 2002:a2e:984e:0:b0:2bc:eceb:6a4b with SMTP id e14-20020a2e984e000000b002bceceb6a4bmr5683898ljj.28.1695653578381;
-        Mon, 25 Sep 2023 07:52:58 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id md1-20020a170906ae8100b009a1be9c29d7sm6455357ejb.179.2023.09.25.07.52.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 07:52:57 -0700 (PDT)
-Message-ID: <a16e1b9e-06b7-0dce-124e-f13c672d779d@baylibre.com>
-Date:   Mon, 25 Sep 2023 16:52:56 +0200
+        Mon, 25 Sep 2023 10:53:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA01107
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:53:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3366AC433C7;
+        Mon, 25 Sep 2023 14:53:40 +0000 (UTC)
+Date:   Mon, 25 Sep 2023 10:53:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Subject: Re: [GIT PULL] tracing: Fixes for 6.6-rc2
+Message-ID: <20230925105335.5d8f6af0@rorschach.local.home>
+In-Reply-To: <CAHk-=wh=aOhPAJn-E8T+GofoBeCtXuoEXZcw6A009MO4s3mNAA@mail.gmail.com>
+References: <20230923191420.10c42e4f@rorschach.local.home>
+        <CAHk-=wh=aOhPAJn-E8T+GofoBeCtXuoEXZcw6A009MO4s3mNAA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 2/5] thermal/drivers/mediatek/lvts_thermal: Add suspend
- and resume
-Content-Language: en-US
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        rafael@kernel.org, amitk@kernel.org, rui.zhang@intel.com,
-        matthias.bgg@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, rdunlap@infradead.org,
-        ye.xingchen@zte.com.cn, p.zabel@pengutronix.de
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        wenst@chromium.org, james.lo@mediatek.com,
-        rex-bc.chen@mediatek.com, nfraprado@collabora.com,
-        abailon@baylibre.com, khilman@baylibre.com
-References: <20230530195132.2286163-1-bero@baylibre.com>
- <20230530195132.2286163-3-bero@baylibre.com>
- <371790cd-5a7c-8fa6-cc38-3a3680525092@collabora.com>
- <b544e079-c9de-23d3-80f7-cff89293eeb5@linaro.org>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <b544e079-c9de-23d3-80f7-cff89293eeb5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 24 Sep 2023 14:09:04 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
+> On Sat, 23 Sept 2023 at 16:14, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > - Fix a bug in eventfs where reading a dynamic event directory (open) and then
+> >   creating a dynamic event that goes into that diretory screws up the accounting.  
+> 
+> Honestly, I'm getting more and more convinced that you just need to
+> stop this eventfs stuff.
+> 
+> This is just *incredibly* ugly:
+> 
+>   /*
+>    * This just sets the file->private_data back to the cursor and back.
+>    */
+>   static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
+>   {
+>         struct dentry_list *dlist = file->private_data;
+>         int ret;
+> 
+>         file->private_data = dlist->cursor;
+>         ret = dcache_readdir(file, ctx);
+>         dlist->cursor = file->private_data;
+>         file->private_data = dlist;
+>         return ret;
+>   }
+> 
+> I guess it works by the f_pos locking magic, but by christ is this
+> ugly beyond words.
+> 
+> Honestly, now, are the eventfs changes *really* making up for this
+> kind of continual "this is crazy" garbage? We had the whole "this is
+> undebuggable" discussion, now there's stuff like this.
 
-On 23/08/2023 09:48, Daniel Lezcano wrote:
-> On 31/05/2023 10:05, AngeloGioacchino Del Regno wrote:
-> 
-> [ ... ]
-> 
->>>   static const struct lvts_ctrl_data mt8195_lvts_mcu_data_ctrl[] = {
->>>       {
->>>           .cal_offset = { 0x04, 0x07 },
->>> @@ -1268,6 +1300,8 @@ MODULE_DEVICE_TABLE(of, lvts_of_match);
->>>   static struct platform_driver lvts_driver = {
->>>       .probe = lvts_probe,
->>>       .remove = lvts_remove,
->>> +    .suspend = lvts_suspend,
->>
->> Should we do that in noirq handlers?
->> We're risking to miss a thermal interrupt.
-> 
-> I'm not sure missing a thermal interrupt is a problem in this context 
-> but we may go in the irq routine with an undefined state sensor setup 
-> (eg. the internal clock stopped in the suspend and then read the sensor 
-> in the isr).
-> 
-> IMO, using suspend_noirq and resume_noirq may be required here.
-> 
-> Alexandre are you taking over the next iteration?
-> 
-> 
+I never said "this is undebuggable". That show_event_dentries just
+showed ref counts and what was allocated. Not that it was "undebuggable".
+When ls is done on eventfs, the dentries are created. When the memory
+is tight, any dentry that is not open should be reclaimed. The
+show_event_dentries was to see if they were reclaimed or are still
+around and taking up memory. It is also showing the ref counts, where
+you can see if closing the file/directory would decrement the ref count
+properly. It was used here because I found a way to dec a dentry
+without first upping the refcount, as I explain below.
 
-Hi Daniel,
+The purpose of eventfs here is that the /sys/kernel/tracing/events
+directory currently allocates dentries and inodes for all existing
+events in the kernel. Since there are now over a thousand events in the
+kernel, and each event has several files created for them, and these
+files are seldom looked at, why should they be allocated when not used?
 
-Sorry I missed your message...
-I don't think taking over the next iteration, Bernhard should continue. 
-Let me check internally to be sure. As I understood, the next change 
-should be heavy.
+These dentries and inodes are allocated for the top level directory and
+wasting memory for most users. When an instance is created it makes
+matters even worse.
 
--- 
-Regards,
-Alexandre
+ mkdir /sys/kernel/trace/instance/foo
+
+Which creates an entire copy of the events directory to maintain state
+(you can enable events for this instance and not for other instances),
+all those dentries and inodes for the events are allocated again (like
+20MB worth).
+
+And we plan on using many instances in production, we rather not waste
+all that memory. That was the reason for doing this in the first place.
+
+Now, I presented this at LSFMM where I learned about /proc doing
+something similar (and you pointed that out too) but when I looked at
+that code I couldn't figure out how to easily make that work with
+tracefs, so this work came out instead.
+
+I'm not an FS developer so there may be a better way to do this. I
+would be happy to hear about better alternatives.
+
+> 
+> Were people even *aware* of the f_pos locking, or did this just happen to work?
+
+I looked at the implementation of dcache_dir_open(), dcache_readdir()
+and dcache_dir_close() and saw how it allocated, modified, and freed
+the file->private_data / cursor. I came to the conclusion that if
+there wasn't protection around them then it would not work. In fact,
+it's abstracted out enough that I could have just simply copied the
+code and just use my struct dlist_entry directly. But instead of
+copying of that code, I did it this way to reuse the existing code.
+
+Would you prefer that I just copy that code (there's really not much)
+and implement it less "ugly" by using my own cursor? Which would
+require that f_pos locking magic just like any other implementation of
+.iterate_shared and friends.
+
+> 
+> And that's entirely ignoring the disgusting thing that is that
+> "allocate an array of every dentry we looked at" issue. Which honestly
+> also looks disgusting.
+
+How is it disgusting? How else would you do it?
+
+You open a directory to read the files which creates the dentries and
+ups their ref counts, in the mean time, a new file is created (it's OK
+not to see it, as it's similar to RCU, only new opens will see the new
+file), but when you close it, you only do the dput on the files you
+opened and not the new file. The current code used just the link list
+of all the files which also included the new file that wasn't updated
+on open.
+
+> 
+> I beg of you: think hard about just reverting all the eventfs changes
+> that moved away from using dentries natively, and instead started
+> doing these *incredibly* hacky and ugly things.
+
+And bring back all that wasted memory?
+
+If there's a better way to achieve the same thing, I'll happily do it.
+
+-- Steve
