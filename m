@@ -2,137 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FC57AD0BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABA37AD0C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbjIYGzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        id S232331AbjIYGzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbjIYGy7 (ORCPT
+        with ESMTP id S232142AbjIYGzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:54:59 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC25A9;
-        Sun, 24 Sep 2023 23:54:52 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b0168a9e05so463708166b.3;
-        Sun, 24 Sep 2023 23:54:52 -0700 (PDT)
+        Mon, 25 Sep 2023 02:55:00 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57DFCA3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:54:53 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c240e637aso111927637b3.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:54:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695624891; x=1696229691; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+        d=google.com; s=20230601; t=1695624892; x=1696229692; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=pf0aQ+Sv6KbDPHkAJ+ayk0XpSbN6luZYg+Z+TqWeS98=;
-        b=kEOdFUX3m28fZ2Jv041Nmu+gOi1Q+8AbwD8VQS3hbtYn3pSMSWjtSyCusKkxRyvwra
-         uyuovicU0NNU98tUVlTIA4NocjiX1wOIDHFpPQxJOEtI1tJY0cX6G777lcRVa2HLDNh3
-         RSoKw56Yp3hcAjCHSc6MaG9R/wnJ1boowsFeyqzXt3ghewO6J96pb40paVGZIYdPBVi/
-         ziYbnw4uS8LVwybObZpW8/Og9BrU8ERE3TVunehy/yiSf1/b/24Dxe5QUQ6a86Cwd3gd
-         d2+ww1K1th9V7bqbMP9/C7+uueZXz7Z2VOdRuVxRM+mctiKsnOsoSyIVNrT1RlH5u7ei
-         pEGg==
+        bh=4qgvAyWUZmvKSaJjAnRidu6a0XvqHy58yVMteTj637s=;
+        b=yaaDKnLtZH+/Tdt5STGdY7QN9HpFrnMcDTZ7+8j+vB6hNUFPMxaskBleGmnRDIsC53
+         TyAtAtb9HVcv6/chkhEzJ3tENFxFw+dMH4FLu/EM3MiNZZ5DLoWHjsK1aOB4RD4oyKbw
+         3YWYfz58ySprNjHDCdHsXw20AgBNBRDMyCGw6OFFdTk6zyhaXZ3HtkInWsA24F8xpz84
+         ukbUwPfkAZqn6zzrLgkKoqTM7WqOx9zqWRRReacQVtRzTGU3mLD5LOu5EDWNo5TJdJyH
+         Xy5J5AjETqH0JBG1hBxZXqBr1kQ2vd5ViXdOxkcSe9t0R+7v311JJvrLAPxWoK90BFhB
+         09VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695624891; x=1696229691;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20230601; t=1695624892; x=1696229692;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pf0aQ+Sv6KbDPHkAJ+ayk0XpSbN6luZYg+Z+TqWeS98=;
-        b=V1XUH7R9zuWHJYYTihmRqIFcQfLuLWfTJ4ETIzO/dxYP184xWRUwkO8P6JYCoBX0J6
-         HTI8MexUd/lsbFN5HmGKUD4guu5dxg6v/yIoEzDN/PwsQnzZZ7FiNohjOb8XhegfVp6N
-         Zip5fZN7K8RTqPazzsDbqrRKFQr0ijnOehVpkLU6WAHZFvbInfv5Udb1wlp73zwbPQQw
-         6MYMmFmZ2RxWOi47E+ejxCiwKuIXEv6/zwnPP+KhW0+bz0u61iTUNo7CfQYiPk4yHT1n
-         9QyO+QeA4LPyv1ugb+xxQj2kL2ov6ZcVN3E2LhBOmnNgejnhTzjN46EMsRqFFjoFtTlU
-         DSfg==
-X-Gm-Message-State: AOJu0YwofE2JVjYbvTEWjUqEWKrwESqX8tqS1JXquEJpwX2yaZlWRHd8
-        PIBX9x9qxC56+jl2F4lTarg=
-X-Google-Smtp-Source: AGHT+IHU3XpLf8k6c9a+n9uMpp/2ubpuORfBRoVNOhfxz1vRej8uHibjAflU73vELK4WGQFMwOPLRQ==
-X-Received: by 2002:a17:907:b15:b0:9ad:a4be:3c46 with SMTP id h21-20020a1709070b1500b009ada4be3c46mr5263378ejl.0.1695624891171;
-        Sun, 24 Sep 2023 23:54:51 -0700 (PDT)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id x18-20020a170906b09200b0099c53c44083sm5876949ejy.79.2023.09.24.23.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 23:54:50 -0700 (PDT)
-Message-ID: <430aff196be793003b96fd544f9f64c2eba3ca78.camel@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: hwmon: max31827: use supply pin name
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "Matyas, Daniel" <Daniel.Matyas@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 25 Sep 2023 08:54:49 +0200
-In-Reply-To: <0cb70677-6dfd-43e0-a3c5-cae3b861a7d1@roeck-us.net>
-References: <20230921142005.102263-1-antoniu.miclaus@analog.com>
-         <20230922211201.GA3600661-robh@kernel.org>
-         <CY4PR03MB3399B818487F87D7297EC33F9BFEA@CY4PR03MB3399.namprd03.prod.outlook.com>
-         <0cb70677-6dfd-43e0-a3c5-cae3b861a7d1@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        bh=4qgvAyWUZmvKSaJjAnRidu6a0XvqHy58yVMteTj637s=;
+        b=h/44zBk8tHgdOIa2WtskwOjUzKttPsCQuI0z9cwj2SYZrIePQrvB6ZJknDLfvTPajJ
+         zK7R+C4bVkeT1p303skOiTLgQ8rHLqe6JuU1zuTjAcCttR3bkBOhv+tcuTrc+094rz+r
+         W1AscMaEiUxKqc31reuEYA/6FZhsqjiD3KgUhhFLMC43vz5CoJFnSppLinVP687ICGmJ
+         xFlL0wxE6/Sup2R+k0FwT1+GznFDaVVgowZm1E0Ifom9FTkTIjNQA3qnXcRXdbMuDOd/
+         aUrS5zJgKjMWelh2ATBuSWFjnAu9VO6JDx78c8+3mLDl+PhdQ1shEr/0Y6tNbGb2h3iq
+         owlQ==
+X-Gm-Message-State: AOJu0YwpmmsMHQd7iZp1zOqYkWznlGFSdex+yRKGzIRGhWLeHBUH2/nc
+        K3zkyHuHap3x7ZkcdSCkMtLG++QZnH54l5VcSw==
+X-Google-Smtp-Source: AGHT+IHh3Z2bhRl8t+p0wMHkCiMSmYA+8DreMQdFY+BpQD4KVns1eJVE9TT9Fv/XfJ0JWH6G9aD58bYeO2ylB6HfLQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:abac:0:b0:d81:fc08:29ea with SMTP
+ id v41-20020a25abac000000b00d81fc0829eamr50788ybi.2.1695624892658; Sun, 24
+ Sep 2023 23:54:52 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 06:54:51 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALouEWUC/x3MQQqEMAwAwK9Izgbaiqj7lcWDpFEDWiUR2UX8u
+ 8XjXOYCYxU2+BQXKJ9isqUMXxZA85AmRonZEFyoXBdqtEMT7X+MKier4RoxrigbHQsS8lCTd9w 0XeshH7vyKL/3//b3/QDRb0d9bwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695624891; l=2033;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=Xzkm/GfG5TixyIwt6w7TZiwEMeENCaF2BkA9N23/JYw=; b=Pll71UQQ271YXI/KDgT1SxB3YKLk0+/ZGgantJ+FeHwnT8xz+5ogZmc5HFnm704SlWm1akCpq
+ lljdGZ0RX37DLGe4jPvoXlZJ0ncg6zPG3SltsZPVIXUsB9kS4PDBH/N
+X-Mailer: b4 0.12.3
+Message-ID: <20230925-strncpy-drivers-md-dm-ioctl-c-v1-1-f0bfa093ef14@google.com>
+Subject: [PATCH] dm ioctl: replace deprecated strncpy with strscpy_pad
+From:   Justin Stitt <justinstitt@google.com>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-09-24 at 05:02 -0700, Guenter Roeck wrote:
-> On Sat, Sep 23, 2023 at 02:19:45PM +0000, Miclaus, Antoniu wrote:
-> >=20
-> >=20
-> > > On Thu, Sep 21, 2023 at 05:20:03PM +0300, Antoniu Miclaus wrote:
-> > > > The actual hardware pin name for the supply of max31827 is vdd.
-> > > > Update the dt-binding to reflect the hardware properties accordingl=
-y.
-> > >=20
-> > > Changing this breaks the ABI. I see the old one wasn't used by the
-> > > driver, but that's just one driver potentially. You need some
-> > > justification here why it's okay to break the ABI.
-> > >=20
-> > As I mentioned also in the commit description, the supply should match =
-the
-> > actual hardware pin name. Otherwise it might create confusion. Usually =
-vref
-> > refers to an external voltage reference pin used for ADC/DACs which is =
-not
-> > exactly the case for this part, taking into account that there is no "r=
-eference"
-> > word mentioned in the datasheet at all. VREF and VDD are usually separa=
-te
-> > hardware pins. There is a hint indeed in the dts example that the vref-=
-supply=20
-> > might be referenced to a vdd regulator node, but from my point of view
-> > that is not enough. Moreover the current vref-supply is not handled at =
-all in
-> > the driver, it is only mentioned in the dt-binding (That's why I added =
-a second
-> > patch in the series handling the supply).
-> >=20
-> > If the justification is not enough to apply this change, then I can kee=
-p only the
-> > second patch, which handles the regulator in the driver and use the=C2=
-=A0 old `vref`
-> > naming which currently appears only in the dt-binding.
-> >=20
->=20
-> That would have been a good argument when the property was introduced, bu=
-t if
-> there are any systems with existing bindings out there they will use the =
-old
-> name and fail after this change is applied.
->=20
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-How about introducing the new property and add 'deprecated: true' to the ol=
-d one. I
-guess the second patch would still remain as-is. Or is this just not worth =
-the noise?
+We expect `spec->target_type` to be NUL-terminated based on its use with
+a format string after `dm_table_add_target()` is called
+| 	r = dm_table_add_target(table, spec->target_type,
+| 				(sector_t) spec->sector_start,
+| 				(sector_t) spec->length,
+| 				target_params);
+... wherein `spec->target_type` is passed as parameter `type` and later
+printed with DMERR:
+|       DMERR("%s: %s: unknown target type", dm_device_name(t->md), type);
 
-- Nuno S=C3=A1
+It appears that `spec` is not zero-allocated and thus NUL-padding may be
+required in this ioctl context.
+
+Considering the above, a suitable replacement is `strscpy_pad` due to
+the fact that it guarantees NUL-termination whilst maintaining the
+NUL-padding behavior that strncpy provides.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/md/dm-ioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
+index 21ebb6c39394..e65058e0ed06 100644
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -1295,8 +1295,8 @@ static void retrieve_status(struct dm_table *table,
+ 		spec->status = 0;
+ 		spec->sector_start = ti->begin;
+ 		spec->length = ti->len;
+-		strncpy(spec->target_type, ti->type->name,
+-			sizeof(spec->target_type) - 1);
++		strscpy_pad(spec->target_type, ti->type->name,
++			sizeof(spec->target_type));
+ 
+ 		outptr += sizeof(struct dm_target_spec);
+ 		remaining = len - (outptr - outbuf);
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230925-strncpy-drivers-md-dm-ioctl-c-ea5c10e77981
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
