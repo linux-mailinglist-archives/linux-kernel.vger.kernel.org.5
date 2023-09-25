@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 113B57ACED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1F27ACED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbjIYD6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 23:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        id S231555AbjIYD6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 23:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbjIYD6O (ORCPT
+        with ESMTP id S230194AbjIYD6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 23:58:14 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93249E1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:57:45 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690d8c05784so3890471b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:57:45 -0700 (PDT)
+        Sun, 24 Sep 2023 23:58:00 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE1AFF
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:57:52 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3aca1543608so3779882b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695614265; x=1696219065; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZL8oS6h/SMWhCHncu4CSFCmNusM3zUoiub5E91Pn6TA=;
-        b=X05cR9gbgpWsd0WxF7LzGEEkNoOB2lSNWyHrgCKsLdSkUQ9GPgk24OxyjUfmJWf+5s
-         X+wclKE2/DDG+aH5gtS8YgXFfLgsezLkaLA2Q+xHgmd4FP8o0P7l4pRe1wlNj/HrlG7M
-         uNRHOHBniyUAQ5pKWf+Lvl51Dan7sRanpbPU35oWE8HMrBuPJjJMsXEX05vLeSEKFrL4
-         tADUkI6Eiyh7QQ/FMZGb3G3yOP9+Vb3i/P8xb06KjZ0uVxVAx1g1CjFHPgUMoqy9ujnd
-         0c6jUq5F4xQ+bIBFtrEWXFS3BP8A+HzNt8nVnfAo8bJUkvfNiyp1/SPde6pqk6PpTvIl
-         FTgw==
+        d=bytedance.com; s=google; t=1695614272; x=1696219072; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N+yL99gNcpn5/1bA5Ytv+b9WTtrbhVjUMVj2M753OVQ=;
+        b=Xhc8+8CCFVgq8M4fkhioYGXr0xqfY4HsZHOyHLy8IDVBp3L8OA7eySBcvMY2qitjwc
+         KLJMzPgkSFwtG+oM5PTp4X+0ct2tqU1Wk1C31UZdGp9euwLA5yiinszOmB+z9Z3HJwi/
+         qlXpqj1mxWKgrUBk89XLRypOpBrjPyilwCsGF+NprTTt3sKuRuqoP7fmUcuaLiPVbxcD
+         TWFy8/CtNGwVzVY/fyS0odH/DOvEfCASLl7UaJWuSPAvTufb00yMzq2zSjifdjjJdui1
+         PEiW7JlK8xpmd/oVDigBc9MMsAj5HvoTonyZCLNkXG7m0ge/2Lvz+n0Kr0rXSMojmI0Z
+         0ToQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695614265; x=1696219065;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZL8oS6h/SMWhCHncu4CSFCmNusM3zUoiub5E91Pn6TA=;
-        b=bOOmahBcHCFUZNTh799yzFpCJuh1N1pzUMpugVyaReiI9yfKwhqd0F/h7YOfn6XGMz
-         W8yxB4pUSiOZE/w9uDoMqKSWpPPcjx+FaCLMyrb38PQ05EWNsjhsiN0BVH+qWcS+tMdR
-         BsERQ+44S42L1xkStiJcCwhYR+jm+mU/OU1Tg4KIRNYywCksPjXjnP45gf3fRotWZced
-         62gv6fKuFIuPIwIeTSPTAMmYxuH6KZrtixF8huIDFW4qQcY9UhFOKBG50ZnEHUc04EBD
-         qSzN5UThbkWhTPnS7lACZALK1QIKdN01MDdGZBfZN9OSnvWtBsULsSBtZqVqf7L9hudg
-         5uhw==
-X-Gm-Message-State: AOJu0Yz/2COGooZdgzp8zDtrrbolD1m9YRPU/xnVbA+7K7bcp+TG6qEl
-        Pr40YSmOvLDqumOvXevV83nfCDo6kggl8To3doM=
-X-Google-Smtp-Source: AGHT+IFP1hfquosoj31qZFLIMz20MNEzlSyLXJoKN6SESAMuexDGVnApQHVkteHWucUZMl8Lpc79LA==
-X-Received: by 2002:a05:6a00:1990:b0:68b:fdfe:76c2 with SMTP id d16-20020a056a00199000b0068bfdfe76c2mr4715925pfl.20.1695614264958;
-        Sun, 24 Sep 2023 20:57:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695614272; x=1696219072;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N+yL99gNcpn5/1bA5Ytv+b9WTtrbhVjUMVj2M753OVQ=;
+        b=V0pGTwL3ijt7/kyLD7/1oSYZEhli0tH+jTMRifqOlyi1CKZg+WvUHnCfiIV5MPMsmS
+         FbZNrskG9jPM15WVwIH4vi6i974vRxwcQTI2cw+BcBwUhKvVaugfMmj+1iRV7MsLxT6g
+         cBxjMnvmjbmAQ2A95aZFbadZk6fGHfaeIhdOWlvY86lYIHgxOvILlZH0oefChwq/S5Tw
+         A9AF2kW7fH98vXLRgwVZqGVZ+pvqO1Ua4nMihtoWeslnJPaTjSoGGZdMC0RvJJWKkjM3
+         NRWOIHzwiK/HhNrWy3pE81kHTTk7qyjggnCJ0kjBCf8uRx8uy2G5Jdz8P6KVR9rx8Zbn
+         gbPA==
+X-Gm-Message-State: AOJu0YxIt+d5EdD6s4teY7tdmlWfpPA3/e/WM6i/0UxTDVaIZY9NGKYN
+        o/A2j9RmeAIhOFV5F7E3+5pPAA==
+X-Google-Smtp-Source: AGHT+IGG/pGqZzmPoaP75aVcvq8nPu3sTd6h1U/TptNp61/MFYSLV+D+w14uPTsm2angOH/I6VmfIA==
+X-Received: by 2002:a05:6808:4d8:b0:3ae:2b43:dd52 with SMTP id a24-20020a05680804d800b003ae2b43dd52mr7344221oie.22.1695614271943;
+        Sun, 24 Sep 2023 20:57:51 -0700 (PDT)
 Received: from GL4FX4PXWL.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id fm1-20020a056a002f8100b00679a4b56e41sm7025387pfb.43.2023.09.24.20.57.37
+        by smtp.gmail.com with ESMTPSA id fm1-20020a056a002f8100b00679a4b56e41sm7025387pfb.43.2023.09.24.20.57.45
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 24 Sep 2023 20:57:43 -0700 (PDT)
+        Sun, 24 Sep 2023 20:57:51 -0700 (PDT)
 From:   Peng Zhang <zhangpeng.00@bytedance.com>
 To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
         willy@infradead.org, brauner@kernel.org, surenb@google.com,
@@ -58,98 +59,70 @@ To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
 Cc:     zhangpeng.00@bytedance.com, maple-tree@lists.infradead.org,
         linux-mm@kvack.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 0/9] Introduce __mt_dup() to improve the performance of fork()
-Date:   Mon, 25 Sep 2023 11:56:08 +0800
-Message-Id: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
+Subject: [PATCH v3 1/9] maple_tree: Add mt_free_one() and mt_attr() helpers
+Date:   Mon, 25 Sep 2023 11:56:09 +0800
+Message-Id: <20230925035617.84767-2-zhangpeng.00@bytedance.com>
 X-Mailer: git-send-email 2.37.0 (Apple Git-136)
+In-Reply-To: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
+References: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Add two helpers:
+1. mt_free_one(), used to free a maple node.
+2. mt_attr(), used to obtain the attributes of maple tree.
 
-This series introduces __mt_dup() to improve the performance of fork(). During
-the duplication process of mmap, all VMAs are traversed and inserted one by one
-into the new maple tree, causing the maple tree to be rebalanced multiple times.
-Balancing the maple tree is a costly operation. To duplicate VMAs more
-efficiently, mtree_dup() and __mt_dup() are introduced for the maple tree. They
-can efficiently duplicate a maple tree. By applying __mt_dup() to dup_mmap(),
-better performance is achieved compared to the original method. After using this
-method, the average time complexity decreases from O(n * log(n)) to O(n).
+Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+---
+ lib/maple_tree.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-Here are some algorithmic details about {mtree, __mt}_dup(). We perform a DFS
-pre-order traversal of all nodes in the source maple tree. During this process,
-we fully copy the nodes from the source tree to the new tree. This involves
-memory allocation, and when encountering a new node, if it is a non-leaf node,
-all its child nodes are allocated at once.
-Some previous discussions can be referred to as [1].
-
-There is a "spawn" in byte-unixbench[2], which can be used to test the
-performance of fork(). I modified it slightly to make it work with
-different number of VMAs.
-
-Below are the test results. By default, there are 21 VMAs. The first row
-shows the number of additional VMAs added on top of the default. The last
-two rows show the number of fork() calls per ten seconds. The test results
-were obtained with CPU binding to avoid scheduler load balancing that
-could cause unstable results. There are still some fluctuations in the
-test results, but at least they are better than the original performance.
-
-Increment of VMAs: 0      100     200     400     800     1600    3200    6400
-next-20230921:     112326 75469   54529   34619   20750   11355   6115    3183
-Apply this:        116505 85971   67121   46080   29722   16665   9050    4805
-                   +3.72% +13.92% +23.09% +33.11% +43.24% +46.76% +48.00% +50.96%
-
-Thanks to kernel test robot <oliver.sang@intel.com> for reporting the warning
-about nested locks.
-
-Thanks to Liam for all the suggestions.
-
-Changes since v2:
- - Some minor modifications to mtree_dup(), __mt_dup() and their test code.
- - Introduce {mtree, mas}_lock_nested() to address lockdep warnings.
- - Update the documentation for maple tree.
- - Introduce undo_dup_mmap() to address the failure of dup_mmap().
- - Performance data was retested based on the latest next-20230921, and there
-   were some fluctuations in the results which were expected.
-
-[1] https://lore.kernel.org/lkml/463899aa-6cbd-f08e-0aca-077b0e4e4475@bytedance.com/
-[2] https://github.com/kdlucas/byte-unixbench/tree/master
-
-v1: https://lore.kernel.org/lkml/20230726080916.17454-1-zhangpeng.00@bytedance.com/
-v2: https://lore.kernel.org/lkml/20230830125654.21257-1-zhangpeng.00@bytedance.com/
-
-Peng Zhang (9):
-  maple_tree: Add mt_free_one() and mt_attr() helpers
-  maple_tree: Introduce {mtree,mas}_lock_nested()
-  maple_tree: Introduce interfaces __mt_dup() and mtree_dup()
-  maple_tree: Add test for mtree_dup()
-  maple_tree: Update the documentation of maple tree
-  maple_tree: Skip other tests when BENCH is enabled
-  maple_tree: Update check_forking() and bench_forking()
-  maple_tree: Preserve the tree attributes when destroying maple tree
-  fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
-
- Documentation/core-api/maple_tree.rst |   4 +
- include/linux/maple_tree.h            |   7 +
- include/linux/mm.h                    |   1 +
- kernel/fork.c                         |  34 ++-
- lib/maple_tree.c                      | 300 ++++++++++++++++++++-
- lib/test_maple_tree.c                 |  69 +++--
- mm/internal.h                         |   3 +-
- mm/memory.c                           |   7 +-
- mm/mmap.c                             |  52 +++-
- tools/include/linux/spinlock.h        |   1 +
- tools/testing/radix-tree/maple.c      | 363 ++++++++++++++++++++++++++
- 11 files changed, 787 insertions(+), 54 deletions(-)
-
+diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+index b0229271c24e..3fe5652a8c6c 100644
+--- a/lib/maple_tree.c
++++ b/lib/maple_tree.c
+@@ -165,6 +165,11 @@ static inline int mt_alloc_bulk(gfp_t gfp, size_t size, void **nodes)
+ 	return kmem_cache_alloc_bulk(maple_node_cache, gfp, size, nodes);
+ }
+ 
++static inline void mt_free_one(struct maple_node *node)
++{
++	kmem_cache_free(maple_node_cache, node);
++}
++
+ static inline void mt_free_bulk(size_t size, void __rcu **nodes)
+ {
+ 	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
+@@ -205,6 +210,11 @@ static unsigned int mas_mt_height(struct ma_state *mas)
+ 	return mt_height(mas->tree);
+ }
+ 
++static inline unsigned int mt_attr(struct maple_tree *mt)
++{
++	return mt->ma_flags & ~MT_FLAGS_HEIGHT_MASK;
++}
++
+ static inline enum maple_type mte_node_type(const struct maple_enode *entry)
+ {
+ 	return ((unsigned long)entry >> MAPLE_NODE_TYPE_SHIFT) &
+@@ -5520,7 +5530,7 @@ void mas_destroy(struct ma_state *mas)
+ 			mt_free_bulk(count, (void __rcu **)&node->slot[1]);
+ 			total -= count;
+ 		}
+-		kmem_cache_free(maple_node_cache, node);
++		mt_free_one(ma_mnode_ptr(node));
+ 		total--;
+ 	}
+ 
 -- 
 2.20.1
 
