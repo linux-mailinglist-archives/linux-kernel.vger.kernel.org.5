@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB3C7AD501
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED337AD508
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjIYJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        id S231165AbjIYJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjIYJzx (ORCPT
+        with ESMTP id S230132AbjIYJz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:55:53 -0400
+        Mon, 25 Sep 2023 05:55:56 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE713E8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D76103
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:48 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJb-00088E-Ah; Mon, 25 Sep 2023 11:55:43 +0200
+        id 1qkiJb-00088k-Ik; Mon, 25 Sep 2023 11:55:43 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJa-008q0h-TZ; Mon, 25 Sep 2023 11:55:42 +0200
+        id 1qkiJb-008q0l-5j; Mon, 25 Sep 2023 11:55:43 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJa-004dmT-KN; Mon, 25 Sep 2023 11:55:42 +0200
+        id 1qkiJa-004dmY-SW; Mon, 25 Sep 2023 11:55:42 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Nishanth Menon <nm@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         kernel@pengutronix.de
-Subject: [PATCH 33/40] soc/ti: k3-ringacc: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:55:24 +0200
-Message-Id: <20230925095532.1984344-34-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 34/40] soc/ti: knav_dma: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:25 +0200
+Message-Id: <20230925095532.1984344-35-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1696; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=hlwfHmXrVPpoUA6HQvorzbxZ+wVHWipEdQuyoYdBV0k=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhlVFfuEe2s8yzgLrMDIqb7suMbNJw8ygZ86 nDZkEJWesOJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYZQAKCRCPgPtYfRL+ TpUEB/9jnSCqzUu3P1MFhGYE6gKOTj94efDqWml5vzmoAJQUEYcKuuGw75sXiVQOo2J4JRcN1IM G/0Q4ApYlUzZkqGbV3MvgrjnM9O0YIF4zWK3+rlpJ7SQT9xo/dAnZhzHmbiwgh2rn9HviFvUFJ1 v8u6Swskv5DobZsmnb02DQNreSG59l/CKndoFyOcjuGRhugM7u8TNJkSgquN9OAENQqbPQXfnPm 8D/CfD+Hzzs3kGADN86pEEWdJw2G7Pzpm8oyR8k/zXaF5GzQVqrC5DvhQmBLbw/H4q+Llgq8vxn CxjbnyIrHf1VgypDRhbGIPre/2Uh2RihkQ47ToXk4HDWrXly
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1792; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=dh69mYFR4egmQPe5mzBDjMQ4mx/++UfHvxZ/Uiregas=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhm5EBdm/9vZUJsuOCEfsIrnQ0tb63Zgo3D5 qY3Qz1ktIWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYZgAKCRCPgPtYfRL+ TgjQCAC5JeA5F/+ij1LEKrRjIRPwuHFcPLZh7epJ7fyS/uyW/ZWnboMCmRCFDToziZTi3mu4CpT i29Yks7ZtxuYCiD8TzVK6mal/7N8AKCjEIb73yt4wGecf+PZBlAcXUio9lNiWwW0UqoRoauYgei TfkpJ5gM2s4W8TACWjnWDWTgbh+rP8Ii8Wid2s7cckVyN7F9L7V1QuxOFKw1nfe3ob1a3y+lzqI Qyib16oG7GZ/UOo/XsyAtCZXBMRmn2yJWHYslQUk+CKoRVgnsijWMyYsPZpW4mnu0yRkhxFOens 6sH36RS/3vvF5IWVv8Nut2LVqwnxuSOfU5JWiwTPrL29ZU8g
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -71,35 +71,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/ti/k3-ringacc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/soc/ti/knav_dma.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
-index 148f54d9691d..fd4251d75935 100644
---- a/drivers/soc/ti/k3-ringacc.c
-+++ b/drivers/soc/ti/k3-ringacc.c
-@@ -1551,19 +1551,18 @@ static int k3_ringacc_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
+index 0fbc37cd5123..6023006685fc 100644
+--- a/drivers/soc/ti/knav_dma.c
++++ b/drivers/soc/ti/knav_dma.c
+@@ -773,7 +773,7 @@ static int knav_dma_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int k3_ringacc_remove(struct platform_device *pdev)
-+static void k3_ringacc_remove(struct platform_device *pdev)
+-static int knav_dma_remove(struct platform_device *pdev)
++static void knav_dma_remove(struct platform_device *pdev)
  {
- 	struct k3_ringacc *ringacc = dev_get_drvdata(&pdev->dev);
+ 	struct knav_dma_device *dma;
  
- 	mutex_lock(&k3_ringacc_list_lock);
- 	list_del(&ringacc->list);
- 	mutex_unlock(&k3_ringacc_list_lock);
+@@ -784,8 +784,6 @@ static int knav_dma_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+-
 -	return 0;
  }
  
- static struct platform_driver k3_ringacc_driver = {
- 	.probe		= k3_ringacc_probe,
--	.remove		= k3_ringacc_remove,
-+	.remove_new	= k3_ringacc_remove,
- 	.driver		= {
- 		.name	= "k3-ringacc",
- 		.of_match_table = k3_ringacc_of_match,
+ static struct of_device_id of_match[] = {
+@@ -797,7 +795,7 @@ MODULE_DEVICE_TABLE(of, of_match);
+ 
+ static struct platform_driver knav_dma_driver = {
+ 	.probe	= knav_dma_probe,
+-	.remove	= knav_dma_remove,
++	.remove_new = knav_dma_remove,
+ 	.driver = {
+ 		.name		= "keystone-navigator-dma",
+ 		.of_match_table	= of_match,
 -- 
 2.40.1
 
