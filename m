@@ -2,242 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 735D27AD58A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE867AD58B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjIYKLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S230498AbjIYKLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjIYKLD (ORCPT
+        with ESMTP id S231359AbjIYKLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Sep 2023 06:11:03 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EDACC0;
-        Mon, 25 Sep 2023 03:10:51 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P9WaoX014344;
-        Mon, 25 Sep 2023 10:10:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=1Dg1AF+QNqKPLVes4rcD/6Z3XXkbKJBsfaWUKNHAO5Y=;
- b=fu9qhDcSxbfQKytaDCjBqpM+0yuFkVRgTbb5RWs/YgDy0SNxlRE35Ds1C/4ubIIxc72b
- 1xHlIBPXGpF86pcs09XuJAvcqNfOqi8IoEx94d/CBPOUvehbWpdA3S1QC1lhFaQkSW+/
- fjaUL1Rp0ONvb9g/cIASg93A4ufBU5tJ2XtRzBL1Ft/ryXebH+6inHC7UOWcy0J2etfm
- eFDyNOAVClOFWd0MGaCuYBV85G+dPNRtjF5PB7vo2K99KL0WH3rGXEGj62ZlDdPOjnyK
- Ti4o2N5OafPnMMRdGSuj7ulMJjQLUy/wuetH91jxt9pNG4Qvi75J1Ytw6yxIvKHKTBAf MQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb3hfruh8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 10:10:45 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38PAAiDl031058
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 10:10:44 GMT
-Received: from [10.216.42.228] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 25 Sep
- 2023 03:10:39 -0700
-Message-ID: <ae3a4224-ddf1-4a48-8fff-001318070b67@quicinc.com>
-Date:   Mon, 25 Sep 2023 15:40:34 +0530
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4A51BB
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:10:48 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-533d9925094so3360811a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695636647; x=1696241447; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xr0WnodR6L9SeYdsFuEWMgBEBiAtYzrQsEO7pPjODfo=;
+        b=LLvqwFYEcuEwB6Clv6i7RqhS3VxA53t/rEwdrDIH1WGg5V4eEGcrLdyYEzxyAhqVVY
+         UxKd4X/tBW0aHsx3lI3BDcDkSt8wLtz6qTNexnpLE2E+ofxbbhqKlc8axeqlvqauO5a8
+         YQWVj+Efve2XvFQxPL89OeTrQ61dQSj/78k7MXMW/YkfklIlxht1S4y/k1V6jN3T01o/
+         Q4JscRWgIIZFp4GKsAVcDPGM38RYLCo2aep3n3Een/h6bjYM9ErHstnwq/42DR/+VHb9
+         b3NP7W+1LPf6OhgDzxO++tV3f+EBNwHI+Nwk/Xvfj7M79BboD+VqCgsEY8zyr86m9mh8
+         aVew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695636647; x=1696241447;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xr0WnodR6L9SeYdsFuEWMgBEBiAtYzrQsEO7pPjODfo=;
+        b=plLeJ511ta6gsOcwHrYEcDHll8hmy5psvvsB1C3AZRSvRp4NvVIait/sZONnlh+ksy
+         NhXouq2sYwzppGAfUkohtucb882b4+vId4mJtY+4w2UinCUEYq6gw4gOYidI709Jkogh
+         drtfg4QoAOwqJqdcxvzNbI8gljNOBqPLjlfEn8v9FfO1AtC21tYYl13j0x1ohWaQwzRy
+         H5h5FEbvRPsK5mTdGR0M+zNRPW/TnKAiUKhl6uIgqgpE4PdZ8qfXLtsnupfaHPvPYpm2
+         68wirFyFbgJnR73ov5xxIIzJKN/UW4cuEch79sR8Eybze/5kWeMUIJqgPORIQTTrjPNG
+         rWPQ==
+X-Gm-Message-State: AOJu0YyN5u6PohYEMBCxjvHaTcXQUldY0qsl4bQ4QWdxVY+2S/qqnPfx
+        m8dvdSLk18ByxSiTEh6aW6dABQ==
+X-Google-Smtp-Source: AGHT+IFjmOoaGth1rXZEF8N96U9x/BOcopq9M+OEXGmLEt9p2sYbcNz+OXbdqBHaG3CqmkcJXNkfNw==
+X-Received: by 2002:aa7:c98b:0:b0:533:310b:a8aa with SMTP id c11-20020aa7c98b000000b00533310ba8aamr5114170edt.13.1695636646962;
+        Mon, 25 Sep 2023 03:10:46 -0700 (PDT)
+Received: from [192.168.101.165] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id u7-20020a05640207c700b005311e934765sm5349942edy.27.2023.09.25.03.10.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 03:10:46 -0700 (PDT)
+Message-ID: <3b48f232-501a-4adb-b6fe-0c62415c3caa@linaro.org>
+Date:   Mon, 25 Sep 2023 12:10:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: Add USB3 and PHY support
+Subject: Re: [PATCH v5 3/7] arm64: dts: qcom: sm4450: Add RPMH and Global
+ clock
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1695383434-24705-1-git-send-email-quic_rohiagar@quicinc.com>
- <1695383434-24705-3-git-send-email-quic_rohiagar@quicinc.com>
- <29b774d4-3759-4b49-926e-551c92d3f8c7@linaro.org>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <29b774d4-3759-4b49-926e-551c92d3f8c7@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: cwei_RV7itqWXPrPcoHvSqmGbRNnn_k_
-X-Proofpoint-ORIG-GUID: cwei_RV7itqWXPrPcoHvSqmGbRNnn_k_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_07,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- adultscore=0 suspectscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309250074
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, tglx@linutronix.de, maz@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org
+Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20230925064927.26448-1-quic_tengfan@quicinc.com>
+ <20230925064927.26448-4-quic_tengfan@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230925064927.26448-4-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25.09.2023 08:49, Tengfei Fan wrote:
+> Add device node for RPMH and Global clock controller on Qualcomm
+> SM4450 platform.
+> 
+> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-On 9/24/2023 12:49 AM, Dmitry Baryshkov wrote:
-> On 22/09/2023 14:50, Rohit Agarwal wrote:
->> Add devicetree nodes for enabling USB3 controller, Qcom QMP PHY and
->> HS PHY on SDX75.
->
-> Please fix the subject to mention the platform.
->
-> Other than that, LGTM.
-Oh missed it.
-
-Thanks,
-Rohit.
->
->>
->> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sdx75.dtsi | 116 
->> ++++++++++++++++++++++++++++++++++++
->>   1 file changed, 116 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi 
->> b/arch/arm64/boot/dts/qcom/sdx75.dtsi
->> index dd3a525..c44cdd1 100644
->> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
->> @@ -473,6 +473,47 @@
->>               };
->>           };
->>   +        usb_hsphy: phy@ff4000 {
->> +            compatible = "qcom,sdx75-snps-eusb2-phy", 
->> "qcom,sm8550-snps-eusb2-phy";
->> +            reg = <0x0 0x00ff4000 0x0 0x154>;
->> +            #phy-cells = <0>;
->> +
->> +            clocks = <&rpmhcc RPMH_CXO_CLK>;
->> +            clock-names = "ref";
->> +
->> +            resets = <&gcc GCC_QUSB2PHY_BCR>;
->> +
->> +            status = "disabled";
->> +        };
->> +
->> +        usb_qmpphy: phy@ff6000 {
->> +            compatible = "qcom,sdx75-qmp-usb3-uni-phy";
->> +            reg = <0x0 0x00ff6000 0x0 0x2000>;
->> +
->> +            clocks = <&gcc GCC_USB3_PHY_AUX_CLK>,
->> +                 <&gcc GCC_USB2_CLKREF_EN>,
->> +                 <&gcc GCC_USB_PHY_CFG_AHB2PHY_CLK>,
->> +                 <&gcc GCC_USB3_PHY_PIPE_CLK>;
->> +            clock-names = "aux",
->> +                      "ref",
->> +                      "cfg_ahb",
->> +                      "pipe";
->> +
->> +            power-domains = <&gcc GCC_USB3_PHY_GDSC>;
->> +
->> +            resets = <&gcc GCC_USB3_PHY_BCR>,
->> +                 <&gcc GCC_USB3PHY_PHY_BCR>;
->> +            reset-names = "phy",
->> +                      "phy_phy";
->> +
->> +            #clock-cells = <0>;
->> +            clock-output-names = "usb3_uni_phy_pipe_clk_src";
->> +
->> +            #phy-cells = <0>;
->> +
->> +            status = "disabled";
->> +        };
->> +
->>           system_noc: interconnect@1640000 {
->>               compatible = "qcom,sdx75-system-noc";
->>               reg = <0x0 0x01640000 0x0 0x4b400>;
->> @@ -493,6 +534,81 @@
->>               #hwlock-cells = <1>;
->>           };
->>   +        usb: usb@a6f8800 {
->> +            compatible = "qcom,sdx75-dwc3", "qcom,dwc3";
->> +            reg = <0x0 0x0a6f8800 0x0 0x400>;
->> +            #address-cells = <2>;
->> +            #size-cells = <2>;
->> +            ranges;
->> +
->> +            clocks = <&gcc GCC_USB30_SLV_AHB_CLK>,
->> +                 <&gcc GCC_USB30_MASTER_CLK>,
->> +                 <&gcc GCC_USB30_MSTR_AXI_CLK>,
->> +                 <&gcc GCC_USB30_SLEEP_CLK>,
->> +                 <&gcc GCC_USB30_MOCK_UTMI_CLK>;
->> +            clock-names = "cfg_noc",
->> +                      "core",
->> +                      "iface",
->> +                      "sleep",
->> +                      "mock_utmi";
->> +
->> +            assigned-clocks = <&gcc GCC_USB30_MOCK_UTMI_CLK>,
->> +                      <&gcc GCC_USB30_MASTER_CLK>;
->> +            assigned-clock-rates = <19200000>, <200000000>;
->> +
->> +            interrupts-extended = <&intc GIC_SPI 131 
->> IRQ_TYPE_LEVEL_HIGH>,
->> +                          <&pdc 17 IRQ_TYPE_LEVEL_HIGH>,
->> +                          <&pdc 9 IRQ_TYPE_EDGE_RISING>,
->> +                          <&pdc 10 IRQ_TYPE_EDGE_RISING>;
->> +            interrupt-names = "hs_phy_irq",
->> +                      "ss_phy_irq",
->> +                      "dm_hs_phy_irq",
->> +                      "dp_hs_phy_irq";
->> +
->> +            power-domains = <&gcc GCC_USB30_GDSC>;
->> +
->> +            resets = <&gcc GCC_USB30_BCR>;
->> +
->> +            interconnects = <&system_noc MASTER_USB3_0 0 &mc_virt 
->> SLAVE_EBI1 0>,
->> +                    <&gem_noc MASTER_APPSS_PROC 0 &system_noc 
->> SLAVE_USB3 0>;
->> +            interconnect-names = "usb-ddr",
->> +                         "apps-usb";
->> +
->> +            status = "disabled";
->> +
->> +            usb_dwc3: usb@a600000 {
->> +                compatible = "snps,dwc3";
->> +                reg = <0x0 0x0a600000 0x0 0xcd00>;
->> +                interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
->> +                iommus = <&apps_smmu 0x80 0x0>;
->> +                snps,dis_u2_susphy_quirk;
->> +                snps,dis_enblslpm_quirk;
->> +                phys = <&usb_hsphy>,
->> +                       <&usb_qmpphy>;
->> +                phy-names = "usb2-phy",
->> +                        "usb3-phy";
->> +
->> +                ports {
->> +                    #address-cells = <1>;
->> +                    #size-cells = <0>;
->> +
->> +                    port@0 {
->> +                        reg = <0>;
->> +
->> +                        usb_1_dwc3_hs: endpoint {
->> +                        };
->> +                    };
->> +
->> +                    port@1 {
->> +                        reg = <1>;
->> +
->> +                        usb_1_dwc3_ss: endpoint {
->> +                        };
->> +                    };
->> +                };
->> +            };
->> +        };
->> +
->>           pdc: interrupt-controller@b220000 {
->>               compatible = "qcom,sdx75-pdc", "qcom,pdc";
->>               reg = <0x0 0xb220000 0x0 0x30000>,
->
+Konrad
