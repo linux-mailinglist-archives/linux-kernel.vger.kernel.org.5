@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E07567AD7F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F9B7AD802
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbjIYMZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S231545AbjIYM1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjIYMZX (ORCPT
+        with ESMTP id S229450AbjIYM07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:25:23 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1A0FC
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:25:15 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-658967a5334so39862966d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695644715; x=1696249515; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YfegDYKBT6wkjhbo8Ou4Wlol6W+gElO2eBlC6j3i9zc=;
-        b=xr+riMFD0A1PYWMPoEX+VxIAVJ68dg8dwCBgjPgJMRYhvyagfnW2yy577521U7A0iZ
-         uXKPPRDIPwpYjI7+Ven/b8MbCg1/Y9GartgX0g9KioHhIC2oJtEYs15ZYMCs0bMUfeqG
-         HVdC45E5ZMhp2zxRgk8OMtND5csb+6y9Jm0BINcNFg8Z4SbGKDzWQ5Cj/zjR8Ajha3q1
-         MgLtUdCElFWB+nYhpRB4gBy1u2g5icX7SJOBQ+89ttlSpIjhkLRCuMKgbl8zmxMB1gCD
-         V9AFe1z0dt/Ww8NnKyGAPcK6nbXz4AKcynMzHkNC8fizLJDi5xGpQA4qb6hCfcSwnVD8
-         UHCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695644715; x=1696249515;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YfegDYKBT6wkjhbo8Ou4Wlol6W+gElO2eBlC6j3i9zc=;
-        b=o/EFQYc7ocdthMhBTpbfTpLb8w78BnBDVCe6GhwDCng4Jtl+71GkTKx+Br6Qf62Tvc
-         kl2o7z45QN4SD6MgwJxZkavSgt4I7kkOy31k8eLVrhIu2/p7fErCcFt6PGcXt9nzkWKC
-         As1VPvlU2sp22ySox9Wx351xUMY/m1KoJFXFkoixKbG9AcICrwltGMliR3ncgQBfiUH8
-         BHAvyzTebPrefh974RNx4jxQruGZbGq3jhEB6nr8dyxt+jBXEEaNkZBpCkxzH2w5979k
-         NTOFvTDajqyc2w2tlLENlfYoZpbuKY4HjohL/ecjNZhzYPYk+AWSmu1VbFsLcvkEXP6K
-         IyWQ==
-X-Gm-Message-State: AOJu0YwOqstDYGoxMurWrsy3Oyih5k1zNYKRVR2avSrjmJfJBHhi6yPo
-        ZSz3kxAEc8m2lU5pp0MCH531Rg==
-X-Google-Smtp-Source: AGHT+IE0HQi6fewMm+p89bKgS2wyZhegjV0VPfXglDGQjZ3Ga/xG8IlIvVqHzJPZevS7sicmbehZHA==
-X-Received: by 2002:a0c:f512:0:b0:65b:748:cdd3 with SMTP id j18-20020a0cf512000000b0065b0748cdd3mr3188605qvm.29.1695644714927;
-        Mon, 25 Sep 2023 05:25:14 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ba06])
-        by smtp.gmail.com with ESMTPSA id e27-20020a0caa5b000000b0065b0d2f9121sm1012863qvb.68.2023.09.25.05.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 05:25:14 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 08:25:13 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        akpm@linux-foundation.org, nphamcs@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH] mm: zswap: fix potential memory corruption on duplicate
- store
-Message-ID: <20230925122513.GA347250@cmpxchg.org>
-References: <20230922172211.1704917-1-cerasuolodomenico@gmail.com>
- <20230922174225.GF124289@cmpxchg.org>
- <CA+CLi1hT30jtGGVwWh8LBoLq3ijRoYdxiMB301Jc97Z9=JLHGA@mail.gmail.com>
+        Mon, 25 Sep 2023 08:26:59 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2057.outbound.protection.outlook.com [40.107.22.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A0ACE;
+        Mon, 25 Sep 2023 05:26:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CyS34+UL77Hgr9CMvKTBL3OvwM8PC4nZsEUCeei7jhpuiAoE6pRmb/xniahCgRkjFv/EuyDpKNVh0cPd+50aT0S8vA9/U+nYEUrul+kZ10gDb4FgK+gls07kzSqKf/1w5mz5qJ6bOz0kUixQHd9Fdp5QG/584o79vJ29ZB5oD7Vzss9a6rJX2/ScOTeTrVgwCWvT8n+26uiZD09N+Dg6d1RaMqA12qRsHf43zBce0XGISc5CArpu1R1Ea1ZO/mHGw1ZjWPe/mAWGgwojXSw6d0g3LsYfuBPeSjxry15+K+kTs3rhlZxGR9wHpBKkXLT+d27qd0KF+7p8vDYJOum5sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uyd0o4JvcjRjUAoyozcpPdzoVoil7+iWwK4OY683CF8=;
+ b=e8Gv3oLMTjl3NjzFjtSHR0Qi1uoA5R0UJVtMbxjzLil8XUXBogOEsrX1Qt68D9z/ODHzyhp906/ciWZM6IUBmmiCGsVfFaX1VGxmBta9rra4C/jG3pazXknLg7MsctW2fXhqi0e3y865P9294nnONZVLsHL6Mi6WiOjSK6RZq1bRM7BEoeJuzfKHE2N7H8KVciwWE7r7Hu7dBUMNoBXOgbfLfJP6DhWQvAhoLu1HRrY3B79AF1MPNYGrAW0AWW0fElC+PgFrRP546qcyNwsw8vLmdkuWKJT2Fcb//YjrD+UiF2yYUbqBq0q4D9iuYD8QrUv9JvhfbuGy9gZGoc923g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 151.1.184.193) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=asem.it;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=asem.it;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uyd0o4JvcjRjUAoyozcpPdzoVoil7+iWwK4OY683CF8=;
+ b=KOXHQdASZIIIQ2PrczIowdeXlxIlkYXJfOaExtaH5oWJBO28icn2r44ZKZpsUGBCISLAQeWOxrizkJAB9IRLqiKi8Lvkra0GdHyH5OMk7NNDzdp54f5cN0baStHNQDWA47SP+QG8mrxC2HyKjXQLS2eubONtRzTfY73cr3gcTXg=
+Received: from AS9PR06CA0223.eurprd06.prod.outlook.com (2603:10a6:20b:45e::11)
+ by PAXPR01MB9147.eurprd01.prod.exchangelabs.com (2603:10a6:102:2be::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.18; Mon, 25 Sep
+ 2023 12:26:47 +0000
+Received: from AM3PEPF00009BA2.eurprd04.prod.outlook.com
+ (2603:10a6:20b:45e:cafe::1e) by AS9PR06CA0223.outlook.office365.com
+ (2603:10a6:20b:45e::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.35 via Frontend
+ Transport; Mon, 25 Sep 2023 12:26:47 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 151.1.184.193) smtp.mailfrom=asem.it; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=asem.it;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ asem.it discourages use of 151.1.184.193 as permitted sender)
+Received: from asas054.asem.intra (151.1.184.193) by
+ AM3PEPF00009BA2.mail.protection.outlook.com (10.167.16.27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.14 via Frontend Transport; Mon, 25 Sep 2023 12:26:47 +0000
+Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with Microsoft SMTPSVC(10.0.14393.4169);
+         Mon, 25 Sep 2023 14:26:46 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Flavio Suligoi <f.suligoi@asem.it>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
+Date:   Mon, 25 Sep 2023 14:26:08 +0200
+Message-Id: <20230925122609.78849-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+CLi1hT30jtGGVwWh8LBoLq3ijRoYdxiMB301Jc97Z9=JLHGA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-OriginalArrivalTime: 25 Sep 2023 12:26:46.0637 (UTC) FILETIME=[8CE479D0:01D9EFAB]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM3PEPF00009BA2:EE_|PAXPR01MB9147:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: dd9efa45-51e0-477f-eedc-08dbbdc2afc6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sVZlxzJn6sWGaThX4Qxv00unpHhn8IRpCqnFae+ayMJ0EuGOGZAFK1cvXcJCYaHBQJiPIAMgYBA2z84osD5qbwDTXdt12WVBGqBhTtuQg3byxmgaN305VTEy0VaJGaMne2qmLi88N+WLpYHE0dYqEvgOMEXiqAogm5rPQv0c0w0URIWlrATAD/pKXXg0AW+8XVjPw9UrtY+dYtB9DASQm/1I146YTUr5VKmS8GDxAGNVRbGV8+UgzYEciBINR84bomJFjNgSY043emVYdpMPQrRP3urSQLEz4IYE35U5FTn7iWLPg6saH9saJW67KXtCLU7j2ZwhmAp6nSDxaTjGdozBJfo+sCoki7JOmBrsjFKL8PzNZA3KTZTFfhZZLBoc8IEyS/AuXaiDvknXC4fNjDPiZ3W+VLpPtPsIVQYUXGmdtttr98QpgeQHiqhBeAA3ofDI8RTey6DK5e3hZUz66CcKIU8a9ai78HpCIps1DymsUAkKWuylHhZZQ2rWC06BebadvTXtyr+Jsj1+cZgZ3mQBrar1T1suOplao0YYugnLWefsDg4YC/evNHfB8Qx8Hw9cPwdw7jEaKZy+eWBW7eJxV12VHeFryu85dLNFB6B5ZnbdVqoA2JkZTZ3DmtOSHJ5bUNgnzEEO0MG1+/2hfxQDkJ6SrmabRFHJJU28Sgz51fuTjYUoPJGRKKrUxzIisOHvug/xTxzeFg6qdEhAg2k1ruxKYi9+KqxU7Mc97oc=
+X-Forefront-Antispam-Report: CIP:151.1.184.193;CTRY:IT;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:asas054.asem.intra;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(39850400004)(136003)(376002)(396003)(346002)(230922051799003)(186009)(1800799009)(451199024)(82310400011)(46966006)(36840700001)(6666004)(70586007)(82740400003)(26005)(336012)(1076003)(2616005)(70206006)(86362001)(110136005)(966005)(478600001)(47076005)(36860700001)(81166007)(356005)(54906003)(2906002)(8936002)(8676002)(4326008)(36756003)(5660300002)(40480700001)(450100002)(316002)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 12:26:47.1537
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd9efa45-51e0-477f-eedc-08dbbdc2afc6
+X-MS-Exchange-CrossTenant-Id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d0a766c6-7992-4344-a4a2-a467a7bb1ed2;Ip=[151.1.184.193];Helo=[asas054.asem.intra]
+X-MS-Exchange-CrossTenant-AuthSource: AM3PEPF00009BA2.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR01MB9147
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,96 +100,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:36:06AM +0200, Domenico Cerasuolo wrote:
-> On Fri, Sep 22, 2023 at 7:42 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Fri, Sep 22, 2023 at 07:22:11PM +0200, Domenico Cerasuolo wrote:
-> > > While stress-testing zswap a memory corruption was happening when writing
-> > > back pages. __frontswap_store used to check for duplicate entries before
-> > > attempting to store a page in zswap, this was because if the store fails
-> > > the old entry isn't removed from the tree. This change removes duplicate
-> > > entries in zswap_store before the actual attempt.
-> > >
-> > > Based on commit ce9ecca0238b ("Linux 6.6-rc2")
-> > >
-> > > Fixes: 42c06a0e8ebe ("mm: kill frontswap")
-> > > Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> >
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> >
-> > > @@ -1218,6 +1218,19 @@ bool zswap_store(struct folio *folio)
-> > >       if (!zswap_enabled || !tree)
-> > >               return false;
-> > >
-> > > +     /*
-> > > +      * If this is a duplicate, it must be removed before attempting to store
-> > > +      * it, otherwise, if the store fails the old page won't be removed from
-> > > +      * the tree, and it might be written back overriding the new data.
-> > > +      */
-> > > +     spin_lock(&tree->lock);
-> > > +     dupentry = zswap_rb_search(&tree->rbroot, offset);
-> > > +     if (dupentry) {
-> > > +             zswap_duplicate_entry++;
-> > > +             zswap_invalidate_entry(tree, dupentry);
-> > > +     }
-> > > +     spin_unlock(&tree->lock);
-> >
-> > Do we still need the dupe handling at the end of the function then?
-> >
-> > The dupe store happens because a page that's already in swapcache has
-> > changed and we're trying to swap_writepage() it again with new data.
-> >
-> > But the page is locked at this point, pinning the swap entry. So even
-> > after the tree lock is dropped I don't see how *another* store to the
-> > tree at this offset could occur while we're compressing.
-> 
-> My reasoning here was that frontswap used to invalidate a dupe right before
-> calling store(), so I thought that the check at the end of zswap_store() was
-> actually needed.
+The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
+programmable switching frequency to optimize efficiency.
+The brightness can be controlled either by I2C commands (called "analog"
+mode) or by a PWM input signal (PWM mode).
+This driver supports both modes.
 
-Ok the git history is actually really enlightening of how this came to
-be. Initially, frontswap didn't invalidate. Only zswap did. Then
-someone ran into exactly the scenario that you encountered:
+For device driver details, please refer to:
+- drivers/video/backlight/mp3309c_bl.c
 
-commit fb993fa1a2f669215fa03a09eed7848f2663e336
-Author: Weijie Yang <weijie.yang@samsung.com>
-Date:   Tue Dec 2 15:59:25 2014 -0800
+The datasheet is available at:
+- https://www.monolithicpower.com/en/mp3309c.html
 
-    mm: frontswap: invalidate expired data on a dup-store failure
-    
-    If a frontswap dup-store failed, it should invalidate the expired page
-    in the backend, or it could trigger some data corruption issue.
-    Such as:
-     1. use zswap as the frontswap backend with writeback feature
-     2. store a swap page(version_1) to entry A, success
-     3. dup-store a newer page(version_2) to the same entry A, fail
-     4. use __swap_writepage() write version_2 page to swapfile, success
-     5. zswap do shrink, writeback version_1 page to swapfile
-     6. version_2 page is overwrited by version_1, data corrupt.
-    
-    This patch fixes this issue by invalidating expired data immediately
-    when meet a dup-store failure.
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
 
-This split the invalidation duty: On store success, zswap would
-invalidate. On store failure, frontswap would.
+v3:
+ - add default value for mps,overvoltage-protection-microvolt property
+ - fix the example, changing from "mps,mp3309c-backlight" to "mps,mp3309c" in
+   compatible property
+v2:
+ - remove useless properties (dimming-mode, pinctrl-names, pinctrl-0,
+   switch-on-delay-ms, switch-off-delay-ms, reset-gpios, reset-on-delay-ms,
+   reset-on-length-ms)
+ - add common.yaml#
+ - remove already included properties (default-brightness, max-brightness)
+ - substitute three boolean properties, used for the overvoltage-protection
+   values, with a single enum property
+ - remove some conditional definitions
+ - remove the 2nd example
+v1:
+ - first version
 
-Then this patch moved the invalidate in frontswap to before the store:
+ .../bindings/leds/backlight/mps,mp3309c.yaml  | 73 +++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
 
-commit d1dc6f1bcf1e998e7ce65fc120da371ab047a999
-Author: Dan Streetman <ddstreet@ieee.org>
-Date:   Wed Jun 24 16:58:18 2015 -0700
+diff --git a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+new file mode 100644
+index 000000000000..4191e33626f5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/backlight/mps,mp3309c.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MPS MP3309C backlight
++
++maintainers:
++  - Flavio Suligoi <f.suligoi@asem.it>
++
++description: |
++  The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
++  programmable switching frequency to optimize efficiency.
++  It supports two different dimming modes:
++
++  - analog mode, via I2C commands (default)
++  - PWM controlled mode.
++
++  The datasheet is available at:
++  https://www.monolithicpower.com/en/mp3309c.html
++
++allOf:
++  - $ref: common.yaml#
++
++properties:
++  compatible:
++    const: mps,mp3309c
++
++  reg:
++    maxItems: 1
++
++  pwms:
++    description: if present, the backlight is controlled in PWM mode.
++    maxItems: 1
++
++  enable-gpios:
++    description: GPIO used to enable the backlight in "analog-i2c" dimming mode.
++    maxItems: 1
++
++  mps,overvoltage-protection-microvolt:
++    description: Overvoltage protection (13.5V, 24V or 35.5V).
++    enum: [ 13500000, 24000000, 35500000 ]
++    default: 35500000
++
++  mps,no-sync-mode:
++    description: disable synchronous rectification mode
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - max-brightness
++  - default-brightness
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        /* Backlight with PWM control */
++        backlight_pwm: backlight@17 {
++            compatible = "mps,mp3309c";
++            reg = <0x17>;
++            pwms = <&pwm1 0 3333333 0>; /* 300 Hz --> (1/f) * 1*10^9 */
++            max-brightness = <100>;
++            default-brightness = <80>;
++            mps,overvoltage-protection-microvolt = <24000000>;
++        };
++    };
+-- 
+2.34.1
 
-    frontswap: allow multiple backends
-
-at which point the after-store invalidate in zswap became unnecessary.
-
-> Since we acquire the tree lock anyway to add the new entry to the LRU, wouldn't
-> checking the result of zswap_rb_insert be a very cheap sanity check? We could
-> treat it as an error and fail the store(), or just add a warning and still
-> invalidate the dupe?
-
-Yeah, it's less about performance and more about code clarity.
-
-A warning probably makes the most sense. It gives us the sanity check
-and an opportunity to document expectations wrt the swapcache, while
-keeping the code resilient against data corruption.
