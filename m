@@ -2,103 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D46CD7AD700
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E47A7AD701
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjIYLbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        id S229619AbjIYLcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjIYLbu (ORCPT
+        with ESMTP id S229632AbjIYLca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:31:50 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29ECC6;
-        Mon, 25 Sep 2023 04:31:42 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RvLFz4vpqzNnnZ;
-        Mon, 25 Sep 2023 19:27:51 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
- 2023 19:31:40 +0800
-Subject: Re: [PATCH net-next v8 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <brouer@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20230912083126.65484-1-linyunsheng@huawei.com>
- <20230912083126.65484-2-linyunsheng@huawei.com>
- <84282e55-519c-0e17-30c5-b6de54d1001c@redhat.com>
- <15f95505-dba9-4afd-6980-5bdf0a64d507@huawei.com>
- <CAC_iWjL_u=R+UK-6rhnv=32qX2P9SY72LFu928Y64u11EVoOPQ@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b0388db7-d4b2-443b-12f0-fbe6ae4002cd@huawei.com>
-Date:   Mon, 25 Sep 2023 19:31:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 25 Sep 2023 07:32:30 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815E5C6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:32:23 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ee18:727e:6235:2ac2])
+        by laurent.telenet-ops.be with bizsmtp
+        id qBYM2A0044XpEKH01BYM7E; Mon, 25 Sep 2023 13:32:21 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qkjoi-004Xns-Un
+        for linux-kernel@vger.kernel.org;
+        Mon, 25 Sep 2023 13:32:20 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qkjp6-00FDZW-TB
+        for linux-kernel@vger.kernel.org;
+        Mon, 25 Sep 2023 13:32:20 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v6.6-rc3
+Date:   Mon, 25 Sep 2023 13:32:20 +0200
+Message-Id: <20230925113220.3627083-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
+References: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjL_u=R+UK-6rhnv=32qX2P9SY72LFu928Y64u11EVoOPQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/25 18:37, Ilias Apalodimas wrote:
-> Hi
-> 
-> On Wed, 20 Sept 2023 at 11:59, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/9/15 16:28, Jesper Dangaard Brouer wrote:
->>> Hi Lin,
->>>
->>> This looks reasonable, but given you are changing struct-page
->>> (include/linux/mm_types.h) we need to MM-list <linux-mm@kvack.org>.
->>> Also Cc Wilcox.
->>>
->>> I think it was Ilias and Duyck that validated the assumptions, last time
->>> this patch was discussed. Thus I want to see their review before this is
->>> applied.
->>
->> FWIW, PAGE_SIZE aligned buffer being PAGE_SIZE aligned in DMA is
->> validated by Duyck:
->> https://lore.kernel.org/all/CAKgT0UfeUAUQpEffxnkc+gzXsjOrHkuMgxU_Aw0VXSJYKzaovQ@mail.gmail.com/
->>
->> And I had done researching to find out there seems to be no combination of
->> the above arch with an address space >16TB:
->> https://lore.kernel.org/all/2b570282-24f8-f23b-1ff7-ad836794baa9@huawei.com/
-> 
-> Apologies for the late reply.  I just saw you sent a v9, I'll review
-> that instead, but I am traveling right now, will take a while
+Below is the list of build error/warning regressions/improvements in
+v6.6-rc3[1] compared to v6.5[2].
 
-Actually there is a newer v10, see:
-https://lore.kernel.org/all/20230922091138.18014-2-linyunsheng@huawei.com/
+Summarized:
+  - build errors: +4/-5
+  - build warnings: +36/-6
 
-Thanks for the time reviewing.
+JFYI, when comparing v6.6-rc3[1] to v6.6-rc2[3], the summaries are:
+  - build errors: +11/-4
+  - build warnings: +1479/-1
 
-> 
-> Thanks
-> /Ilias
+Note that there may be false regressions, as some logs are incomplete.
+Still, they're build errors/warnings.
 
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6465e260f48790807eef06b583b38ca9789b6072/ (all 239 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2dde18cd1d8fac735875f2e4987f11817cc0bc2c/ (234 out of 239 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ce9ecca0238b140b88f43859b211c9fdfd8e5b70/ (237 out of 239 configs)
+
+
+*** ERRORS ***
+
+4 error regressions:
+  + error: modpost: ".L872" [drivers/mtd/nand/raw/nand.ko] undefined!:  => N/A
+  + {standard input}: Error: expected comma after name `xpcs_co' in .size directive:  => 1100
+  + {standard input}: Error: expected symbol name:  => 1095
+  + {standard input}: Error: pcrel too far:  => 932, 939, 940
+
+5 error improvements:
+  - error: modpost: ".L856" [drivers/mtd/nand/raw/nand.ko] undefined!: N/A => 
+  - {standard input}: Error: Missing symbol name in directive: 1096 => 
+  - {standard input}: Error: unknown opcode: 1091 => 
+  - {standard input}: Error: unknown pseudo-op: `.glo': 1097 => 
+  - {standard input}: Error: unrecognized symbol type "": 1096 => 
+
+
+*** WARNINGS ***
+
+36 warning regressions:
+  + /kisskb/src/fs/btrfs/volumes.c: warning: 'dev_offset' may be used uninitialized [-Wmaybe-uninitialized]:  => 5245:48
+  + /kisskb/src/fs/btrfs/volumes.c: warning: 'dev_offset' may be used uninitialized in this function [-Wmaybe-uninitialized]:  => 5245:34
+  + /kisskb/src/fs/btrfs/volumes.c: warning: 'max_avail' may be used uninitialized in this function [-Wmaybe-uninitialized]:  => 5246:33
+  + modpost: WARNING: modpost: "__ashldi3" [fs/ext2/ext2.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__lshrdi3" [drivers/block/ublk_drv.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/qcom_nandc.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/geode-rng.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/ingenic-rng.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/intel-rng.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/mxc-rnga.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/xgene-rng.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/adl_pci9118.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/amplc_pci230.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_das16_cs.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_pcidas.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/das800.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/mpc624.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_atmio.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_labpc_common.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl812.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl816.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl818.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/rti800.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/hwmon/hs3001.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/qcom_nandc.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/net/ethernet/broadcom/asp2/bcm-asp.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt792x-lib.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/phy/qualcomm/phy-qcom-m31.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb2.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb3.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/phy/rockchip/phy-rockchip-inno-usb2.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/pmdomain/amlogic/meson-ee-pwrc.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/pmdomain/amlogic/meson-gx-pwrc-vpu.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/watchdog/gxp-wdt.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/watchdog/smsc37b787_wdt.ko] has no CRC!:  => N/A
+  + {standard input}: Warning: end of file not at end of a line; newline inserted:  => 1094
+
+6 warning improvements:
+  - modpost: WARNING: modpost: "__udelay" [drivers/hwmon/smm665.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt7921/mt7921-common.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt7996/mt7996e.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/soc/amlogic/meson-ee-pwrc.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/soc/amlogic/meson-gx-pwrc-vpu.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-l3.ko] has no CRC!: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
