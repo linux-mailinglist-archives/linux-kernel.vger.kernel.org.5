@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 074B17ADFC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B058D7ADFC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbjIYTn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 15:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S233354AbjIYTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 15:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbjIYTnz (ORCPT
+        with ESMTP id S233315AbjIYTn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 15:43:55 -0400
+        Mon, 25 Sep 2023 15:43:56 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284EC101;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20BF107;
         Mon, 25 Sep 2023 12:43:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1695671029; x=1727207029;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Qc58uCA2qyiU/pC/xc6SIaVgCU5JFHqYtmabPIVw1Kw=;
-  b=DR7rfQY77zqh4ix3iOI29fThoKIpQtkCKqcPjfd7ZfJGZOZef/LBqhYc
-   Hdv26A1EJ1XzkV0CXqjZn3RMuM8w8+GEL0jfqksePUOEi6WgyyRWQIhRh
-   iaAWad+wgZowrzPrx/14EH0qDKRvY06k4+8ncqPFXNalpSZBcBCiva2r4
-   1uRHjkZZHvzQ3NUSKkawMxwGzFR0UWaTV9Yia8MUNtNeQ6bD+EVTl5YyL
-   f3devJweahoNx8UTods8np6A+LNTCITD0wsSiv71IB6skQMBQNsi9Gv7P
-   iXkvex6UVUDOs0NPGbWuak0uZaK2qlhkMm6xbBBBtfc/QAnTAZa9eVMfK
+  bh=FzGXYJzua9BF2gVVYPV7cyhWIVoAmAwcBTCIDmW0JcQ=;
+  b=lebiT1f1DOewuSPXL3eh+6gT1GRQ/E0Wig2GfvVQxODyBDv2f4qnZBiI
+   s+aYM1ZcdzsRw/Y6OVoeGROMvaky2lTxyu5hzbYzufoSDWoHImYTbZA8l
+   ihE/awRPaFLjJZRw1mofh0PEqAtcNodb1Hulj+IpJxS4ULcN9rOnWn2h8
+   lkGAY4c5cDyTfXWbP3SjrIqDy2IW2kyc5fdfudDsM4eYffJoncDd3bDKp
+   OVugdeXbUGoZ1fYdCs8siLgsBnezIPkrThApfw3+A34EULjIdGHELzmnC
+   VbQkhcK6+NPy2WUwYBtpkjy0Yx2Ok/xElPFN63nU89r+NVTLh35Xk3GDa
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="360743071"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="360743073"
 X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="360743071"
+   d="scan'208";a="360743073"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 12:43:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="872194750"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="872194751"
 X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="872194750"
+   d="scan'208";a="872194751"
 Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
   by orsmga004.jf.intel.com with ESMTP; 25 Sep 2023 12:43:39 -0700
 From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
@@ -44,9 +44,9 @@ To:     hdegoede@redhat.com, markgross@kernel.org,
         ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH 2/3] platform/x86: ISST : Check major minor version
-Date:   Mon, 25 Sep 2023 12:43:37 -0700
-Message-Id: <20230925194338.966639-3-srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 3/3] platform/x86/intel-uncore-freq: Check major minor version
+Date:   Mon, 25 Sep 2023 12:43:38 -0700
+Message-Id: <20230925194338.966639-4-srinivas.pandruvada@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925194338.966639-1-srinivas.pandruvada@linux.intel.com>
 References: <20230925194338.966639-1-srinivas.pandruvada@linux.intel.com>
@@ -71,46 +71,47 @@ structures of TPMI fields.
 
 Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 ---
- .../x86/intel/speed_select_if/isst_tpmi_core.c   | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ .../uncore-frequency/uncore-frequency-tpmi.c    | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-index 63faa2ea8327..37f17e229419 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-@@ -30,7 +30,8 @@
- #include "isst_if_common.h"
+diff --git a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c
+index 7d0a67f8b517..4d63ee6bc6d2 100644
+--- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c
++++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c
+@@ -28,7 +28,8 @@
  
- /* Supported SST hardware version by this driver */
--#define ISST_HEADER_VERSION		1
-+#define ISST_MAJOR_VERSION	0
-+#define ISST_MINOR_VERSION	1
+ #include "uncore-frequency-common.h"
  
- /*
-  * Used to indicate if value read from MMIO needs to get multiplied
-@@ -352,12 +353,19 @@ static int sst_main(struct auxiliary_device *auxdev, struct tpmi_per_power_domai
- 	pd_info->sst_header.cp_offset *= 8;
- 	pd_info->sst_header.pp_offset *= 8;
+-#define	UNCORE_HEADER_VERSION		1
++#define	UNCORE_MAJOR_VERSION		0
++#define	UNCORE_MINOR_VERSION		1
+ #define UNCORE_HEADER_INDEX		0
+ #define UNCORE_FABRIC_CLUSTER_OFFSET	8
  
--	if (pd_info->sst_header.interface_version != ISST_HEADER_VERSION) {
--		dev_err(&auxdev->dev, "SST: Unsupported version:%x\n",
--			pd_info->sst_header.interface_version);
-+	if (pd_info->sst_header.interface_version == TPMI_VERSION_INVALID)
-+		return -ENODEV;
+@@ -302,12 +303,20 @@ static int uncore_probe(struct auxiliary_device *auxdev, const struct auxiliary_
+ 		/* Check for version and skip this resource if there is mismatch */
+ 		header = readq(pd_info->uncore_base);
+ 		pd_info->ufs_header_ver = header & UNCORE_VERSION_MASK;
+-		if (pd_info->ufs_header_ver != UNCORE_HEADER_VERSION) {
+-			dev_info(&auxdev->dev, "Uncore: Unsupported version:%d\n",
+-				pd_info->ufs_header_ver);
 +
-+	if (TPMI_MAJOR_VERSION(pd_info->sst_header.interface_version) != ISST_MAJOR_VERSION) {
-+		dev_err(&auxdev->dev, "SST: Unsupported major version:%lx\n",
-+			TPMI_MAJOR_VERSION(pd_info->sst_header.interface_version));
- 		return -ENODEV;
- 	}
- 
-+	if (TPMI_MINOR_VERSION(pd_info->sst_header.interface_version) != ISST_MINOR_VERSION)
-+		dev_err(&auxdev->dev, "SST: Ignore: Unsupported minor version:%lx\n",
-+			TPMI_MINOR_VERSION(pd_info->sst_header.interface_version));
++		if (pd_info->ufs_header_ver == TPMI_VERSION_INVALID)
++			continue;
 +
- 	/* Read SST CP Header */
- 	*((u64 *)&pd_info->cp_header) = readq(pd_info->sst_base + pd_info->sst_header.cp_offset);
++		if (TPMI_MAJOR_VERSION(pd_info->ufs_header_ver) != UNCORE_MAJOR_VERSION) {
++			dev_info(&auxdev->dev, "Uncore: Unsupported major version:%lx\n",
++				 TPMI_MAJOR_VERSION(pd_info->ufs_header_ver));
+ 			continue;
+ 		}
  
++		if (TPMI_MINOR_VERSION(pd_info->ufs_header_ver) != UNCORE_MINOR_VERSION)
++			dev_info(&auxdev->dev, "Uncore: Ignore: Unsupported minor version:%lx\n",
++				 TPMI_MINOR_VERSION(pd_info->ufs_header_ver));
++
+ 		/* Get Cluster ID Mask */
+ 		cluster_mask = FIELD_GET(UNCORE_LOCAL_FABRIC_CLUSTER_ID_MASK, header);
+ 		if (!cluster_mask) {
 -- 
 2.41.0
 
