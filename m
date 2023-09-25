@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C949B7AD516
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6967AD50E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjIYJ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44712 "EHLO
+        id S230446AbjIYJ5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjIYJ4W (ORCPT
+        with ESMTP id S230387AbjIYJ4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:56:22 -0400
+        Mon, 25 Sep 2023 05:56:20 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16750193
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16207180
         for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:51 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJY-0007xa-P4; Mon, 25 Sep 2023 11:55:40 +0200
+        id 1qkiJY-0007xz-UL; Mon, 25 Sep 2023 11:55:40 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJX-008pzj-R4; Mon, 25 Sep 2023 11:55:39 +0200
+        id 1qkiJY-008pzn-1H; Mon, 25 Sep 2023 11:55:40 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJX-004dla-I2; Mon, 25 Sep 2023 11:55:39 +0200
+        id 1qkiJX-004dle-OF; Mon, 25 Sep 2023 11:55:39 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Andy Gross <agross@kernel.org>,
@@ -35,15 +35,15 @@ To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 19/40] soc/qcom: llcc-qcom: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:55:10 +0200
-Message-Id: <20230925095532.1984344-20-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 20/40] soc/qcom: ocmem: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:11 +0200
+Message-Id: <20230925095532.1984344-21-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1770; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=GR3kItzTF2lF2zXGuL6lkmNa7DVlgJ27EVeQzbqFRn0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhVilH0/uHBUcMXkElclHTtm9Sh2Mk6dGZzT 8Rh5UsxPqKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYVQAKCRCPgPtYfRL+ TrwgCACLBGz7Uj+cZ36TV3m2AxZ0+NF0u1+JbKpucDB4Yn0U6k+/+ZYgufPcvrIlCadHJJDlsb4 LpfHf2/aKVMz4iA5Ju/e6Qdrq328+QXao5d/ZSxo5gbZahpg+fwWAsdvGVM13gJGMrYyPFof2XR R79r2NT05AKYl/wyykxI7EM1F43CMA5LeC2sxLuxVMIbEd2q5erJpsUaY9IVc0O4n9nAUpFgLc7 o5QgHATSTCoPQ2q+KONMQz+ZzkUh1iQpio5DE/zoMXAEZsIvhUw5NNRXGpu1hvznbTypzDQd9PC Ow4K8o8BulKC51SANFguXad/1kze21ts4l9j7FHDing2AmeR
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1755; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=KObOGlqJibcEwTxRmEgjOwAj9untrpQ8ilKXu7wa5hM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhWk9EthmEyuGyAcgE9Wj5Kqe8FcaAa5iY0q 7LiNSe5O7KJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYVgAKCRCPgPtYfRL+ TtK9CACvJQTcafJCCwkC+MZB3DTo+1XaoOUxcUrCpou8CfjDX8a7B1fIPX24SSzqudqSUekatTd sU2Oe7wwMuvnmdwE37nKoEsU/wOTkOthAsYZUWtgf3uLOvncnfL0tjQzHT5+l20znpyTYsgBtwL d41yJj/Nxdga3J9pvwAilw2vJ0CW40xffkUTV0FC/ACYEXRdqNcJQSvgJ709bmyKpuXidPQ++2N sy2QdZBlqWqT6f+uQG7M3Yn3f8sjCI3ALVnsjde8/d1sunxI95iG4xn1S3d1qKlPetCoFX0yK+/ F3BAstM58QT/6BFPyA2t/Hw1aRWrOeiSGOU9sJQBdnvI6JQN
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -73,35 +73,38 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/qcom/llcc-qcom.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/soc/qcom/ocmem.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index feb21637ac20..2a71548d2dc9 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -1080,11 +1080,10 @@ static int qcom_llcc_get_cfg_index(struct platform_device *pdev, u8 *cfg_index,
+diff --git a/drivers/soc/qcom/ocmem.c b/drivers/soc/qcom/ocmem.c
+index 20f5461d46b9..5e9f2c1fd305 100644
+--- a/drivers/soc/qcom/ocmem.c
++++ b/drivers/soc/qcom/ocmem.c
+@@ -416,14 +416,12 @@ static int ocmem_dev_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int qcom_llcc_remove(struct platform_device *pdev)
-+static void qcom_llcc_remove(struct platform_device *pdev)
+-static int ocmem_dev_remove(struct platform_device *pdev)
++static void ocmem_dev_remove(struct platform_device *pdev)
  {
- 	/* Set the global pointer to a error code to avoid referencing it */
- 	drv_data = ERR_PTR(-ENODEV);
+ 	struct ocmem *ocmem = platform_get_drvdata(pdev);
+ 
+ 	clk_disable_unprepare(ocmem->core_clk);
+ 	clk_disable_unprepare(ocmem->iface_clk);
+-
 -	return 0;
  }
  
- static struct regmap *qcom_llcc_init_mmio(struct platform_device *pdev, u8 index,
-@@ -1257,7 +1256,7 @@ static struct platform_driver qcom_llcc_driver = {
- 		.of_match_table = qcom_llcc_of_match,
- 	},
- 	.probe = qcom_llcc_probe,
--	.remove = qcom_llcc_remove,
-+	.remove_new = qcom_llcc_remove,
- };
- module_platform_driver(qcom_llcc_driver);
+ static const struct ocmem_config ocmem_8226_config = {
+@@ -446,7 +444,7 @@ MODULE_DEVICE_TABLE(of, ocmem_of_match);
  
+ static struct platform_driver ocmem_driver = {
+ 	.probe = ocmem_dev_probe,
+-	.remove = ocmem_dev_remove,
++	.remove_new = ocmem_dev_remove,
+ 	.driver = {
+ 		.name = "ocmem",
+ 		.of_match_table = ocmem_of_match,
 -- 
 2.40.1
 
