@@ -2,110 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDD17ACF06
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79EB7ACF0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjIYEJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 00:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S229900AbjIYEQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 00:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjIYEJG (ORCPT
+        with ESMTP id S229907AbjIYEQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 00:09:06 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E04492;
-        Sun, 24 Sep 2023 21:09:00 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P3aZtM031137;
-        Mon, 25 Sep 2023 04:08:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=h+QparGQTfIJiFmNIANr44K4zJ5QDRsLnD5BNsEpy5g=;
- b=HLU/1lPxh3eOYnxhYhgDVjLkMS3GoXdiX5oq5YNpqPCuV5yEKa7+cfoEh+vG7eMq8zAM
- AcPfCJumP+CEY7bZUmZRJ9e7eGhMoNjjPb/V7P4RaDKI1BPfnoC6Z541JixEPNgwPG8o
- 6tvKBQwJxQLUyKuBmClroQGwVHj35qylw39t2lpvnfmOPjuOFS0NmrjMtVMyrxh0KD7x
- qTxxp8u9qNHHAovntjhFpb6lZkbOtTI2jMOjLchwyzovxG2MOa/GRNmSfGf1L21EiGLa
- xbjOQlRsOQ3PJnKJnjxWiss4JaiyuWcc2ZgX9bofKrdhk6VvQC3MhFQ/gktIZ00uwygw GQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t9r88jwka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 04:08:50 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38P48nub022964
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 04:08:49 GMT
-Received: from [10.253.15.18] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 24 Sep
- 2023 21:08:47 -0700
-Message-ID: <a82e188e-2d0e-7c0f-de54-79bbc4b6957b@quicinc.com>
-Date:   Mon, 25 Sep 2023 12:08:44 +0800
+        Mon, 25 Sep 2023 00:16:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67417E8
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695615348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ruu6yd/F7PRRg3zU9933sMPG2y+61a3R2Ou0YGttbMk=;
+        b=BzyL8BnvDMZM3MwXeVufFBXbkJPyO0gztoOXDezQbU6Ots6F6fULVGojr/8Zf+ESbo+8cp
+        6vZiaRUmgNS0JetbRb3EBsehFp6PVRQDBCF8tIfY3ewXWXu9YRmkoFoW1FnTMXxbgkn4aQ
+        2CuPqgv0qcGkXNYHu9XD10YSdShoyns=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-673-_B98rVRaNU2HLEKrG1NEuA-1; Mon, 25 Sep 2023 00:15:46 -0400
+X-MC-Unique: _B98rVRaNU2HLEKrG1NEuA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3231fceb811so1324838f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:15:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695615346; x=1696220146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ruu6yd/F7PRRg3zU9933sMPG2y+61a3R2Ou0YGttbMk=;
+        b=PzppKS0mICMU9/E9r898BnNPJVtkftcgi0UnzDBT6/j/9PbChPVb4uk5ahZgmcq0bH
+         EbKCkVDAQJDCLEmUOJz5BeoNYMMsoqt6Gr7NJMerPK286aJyMd72y60OuNG4KbKj9fOU
+         71Lk0XTS5tNYu00pMXCn7/tEvI2WMmcb3DYFFMCeeyYDx7C23QBtf6mlbBKvBLwJDeCU
+         9oSuOJyUkTi4d3Q/ksqk3ugEot1xWPOnRTGl2cfVMDfhZ7Hy9xp6D1HCMfLIssVCY+ji
+         9/isiteHzvHSUrIPu4NgRIquQPemOMz6SlPsg0FmZYu/k4V4NI1r5U3/nQcC5YD6k08N
+         mUhw==
+X-Gm-Message-State: AOJu0YwbgsI/dQpUHqLoMyToz+bBy1AO3d0TGd8LtqCsUYdDUqyNuHGV
+        UKEcCjELk0ftIdi24tSIqgBxWfS9E3NNrwQ3gAK9Abx4bnlQleHLVLmUVP4WIACbntADWtk74OO
+        1KiJZOoTqWzm651ukyipjPXu9oy0McRKzCQOyi/Qa
+X-Received: by 2002:adf:e508:0:b0:321:64a6:e417 with SMTP id j8-20020adfe508000000b0032164a6e417mr5651728wrm.1.1695615345913;
+        Sun, 24 Sep 2023 21:15:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnA4ZFQjTUBgTF/yRHLzrWbDlET+Op3hd/JEQz2wnKypNLgRCsF6S3FP3xbZGRGT0UII1pqjFKnSqeq1FS/AQ=
+X-Received: by 2002:adf:e508:0:b0:321:64a6:e417 with SMTP id
+ j8-20020adfe508000000b0032164a6e417mr5651717wrm.1.1695615345660; Sun, 24 Sep
+ 2023 21:15:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/2] bus: mhi: host: Take irqsave lock after TRE is
- generated
-Content-Language: en-US
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>, <mani@kernel.org>
-CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>, Hemant Kumar <quic_hemantk@quicinc.com>,
-        "Lazarus Motha" <quic_lmotha@quicinc.com>
-References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
- <1694594861-12691-3-git-send-email-quic_qianyu@quicinc.com>
- <e40a1dca-f23e-af32-320e-bf66a894bc6c@quicinc.com>
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <e40a1dca-f23e-af32-320e-bf66a894bc6c@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: VqtJn1SGVwMN2sEuurqh-VWrsL-mbU0P
-X-Proofpoint-GUID: VqtJn1SGVwMN2sEuurqh-VWrsL-mbU0P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_01,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=771 adultscore=0
- impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309250027
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-4-lulu@redhat.com>
+ <CACGkMEuKcgH0kdLPmWZ69fL6SYvoVPfeGv11QwhQDW2sr9DZ3Q@mail.gmail.com>
+In-Reply-To: <CACGkMEuKcgH0kdLPmWZ69fL6SYvoVPfeGv11QwhQDW2sr9DZ3Q@mail.gmail.com>
+From:   Cindy Lu <lulu@redhat.com>
+Date:   Mon, 25 Sep 2023 12:15:08 +0800
+Message-ID: <CACLfguVRPV_8HOy3mQbKvpWRGpM_tnjmC=oQqrEbvEz6YkMi0w@mail.gmail.com>
+Subject: Re: [RFC v2 3/4] vduse: update the vq_info in ioctl
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
+        xieyongji@bytedance.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/22/2023 10:50 PM, Jeffrey Hugo wrote:
-> On 9/13/2023 2:47 AM, Qiang Yu wrote:
->> From: Hemant Kumar <quic_hemantk@quicinc.com>
->>
->> Take irqsave lock after TRE is generated to avoid deadlock due to core
->> getting interrupts enabled as local_bh_enable must not be called with
->> irqs disabled based on upstream patch.
+On Tue, Sep 12, 2023 at 3:39=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
+ote:
 >
-> Where is local_bh_enable() being called?  What patch?  What is 
-> upstream of the codebase you submitted this to?  Why is it safe to 
-> call mhi_gen_tre() without the lock?
+> On Tue, Sep 12, 2023 at 11:00=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote=
+:
+> >
+> > In VDUSE_VQ_GET_INFO, the driver will sync the last_avail_idx
+> > with reconnect info, After mapping the reconnect pages to userspace
+> > The userspace App will update the reconnect_time in
+> > struct vhost_reconnect_vring, If this is not 0 then it means this
+> > vq is reconnected and will update the last_avail_idx
+> >
+> > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > ---
+> >  drivers/vdpa/vdpa_user/vduse_dev.c | 13 +++++++++++++
+> >  include/uapi/linux/vduse.h         |  6 ++++++
+> >  2 files changed, 19 insertions(+)
+> >
+> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_use=
+r/vduse_dev.c
+> > index 2c69f4004a6e..680b23dbdde2 100644
+> > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > @@ -1221,6 +1221,8 @@ static long vduse_dev_ioctl(struct file *file, un=
+signed int cmd,
+> >                 struct vduse_vq_info vq_info;
+> >                 struct vduse_virtqueue *vq;
+> >                 u32 index;
+> > +               struct vdpa_reconnect_info *area;
+> > +               struct vhost_reconnect_vring *vq_reconnect;
+> >
+> >                 ret =3D -EFAULT;
+> >                 if (copy_from_user(&vq_info, argp, sizeof(vq_info)))
+> > @@ -1252,6 +1254,17 @@ static long vduse_dev_ioctl(struct file *file, u=
+nsigned int cmd,
+> >
+> >                 vq_info.ready =3D vq->ready;
+> >
+> > +               area =3D &vq->reconnect_info;
+> > +
+> > +               vq_reconnect =3D (struct vhost_reconnect_vring *)area->=
+vaddr;
+> > +               /*check if the vq is reconnect, if yes then update the =
+last_avail_idx*/
+> > +               if ((vq_reconnect->last_avail_idx !=3D
+> > +                    vq_info.split.avail_index) &&
+> > +                   (vq_reconnect->reconnect_time !=3D 0)) {
+> > +                       vq_info.split.avail_index =3D
+> > +                               vq_reconnect->last_avail_idx;
+> > +               }
+> > +
+> >                 ret =3D -EFAULT;
+> >                 if (copy_to_user(argp, &vq_info, sizeof(vq_info)))
+> >                         break;
+> > diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
+> > index 11bd48c72c6c..d585425803fd 100644
+> > --- a/include/uapi/linux/vduse.h
+> > +++ b/include/uapi/linux/vduse.h
+> > @@ -350,4 +350,10 @@ struct vduse_dev_response {
+> >         };
+> >  };
+> >
+> > +struct vhost_reconnect_vring {
+> > +       __u16 reconnect_time;
+> > +       __u16 last_avail_idx;
+> > +       _Bool avail_wrap_counter;
+>
+> Please add a comment for each field.
+>
+Sure will do
 
-This patch is to fix the issue included by  "[PATCH v2 1/2] bus: mhi: 
-host: Add spinlock to protect WP access when queueing TREs". In that 
-patch, we add write_lock_bh/write_unlock_bh in mhi_gen_tre().
+> And I never saw _Bool is used in uapi before, maybe it's better to
+> pack it with last_avail_idx into a __u32.
+>
+Thanks will fix this
+> Btw, do we need to track inflight descriptors as well?
+>
+I will check this
+Thanks
 
-However, before mhi_gen_tre() is invoked, mhi_cntrl->pm_lock is getted, 
-line 1125, and it is a spin lock. So it becomes we want to get and 
-release bh lock after spin lock.  __local_bh_enable_ip is called as part 
-of write_unlock_bh
-
-and local_bh_enable. When CONFIG_TRACE_IRQFLAGS is enabled, irq will be 
-enabled once __local_bh_enable_ip is called. The commit message is not 
-clear and confusing, will change it in [patch v3].
+cindy
+> Thanks
+>
+> > +};
+> > +
+> >  #endif /* _UAPI_VDUSE_H_ */
+> > --
+> > 2.34.3
+> >
+>
 
