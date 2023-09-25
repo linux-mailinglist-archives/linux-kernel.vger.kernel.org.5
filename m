@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550C07ACEA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAF47ACEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 05:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjIYDQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 23:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        id S230241AbjIYDTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 23:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjIYDQS (ORCPT
+        with ESMTP id S229634AbjIYDTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 23:16:18 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42FDA3;
-        Sun, 24 Sep 2023 20:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695611768;
-        bh=IbOLLWCtNmvTBpTRJAEhO2mJOGjVP6fyeHq9AFXzBaw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jN1jvs+lcyBnjETK8LI2jW5JEFSXWx4vXlNnnhb9sgh47lYIguC4dlWq/zwTemq0c
-         pWISYSHBOpFEHoBkAeBM9NYtARRAI/1f9PtJuhxQO0qwKsKNixi4Y/wDaE1JIgZ/0M
-         SMCme8p4s30pXqllMbCAIt5Hopad2t+7QWDlPaE4z7xQ6QbgU6UpUBlwtTFKis/gYd
-         lWj75nWfOCUjQCJLJeutlpKxT6uraQ3BxwR2qCpGp+2s0xPGGEtSi7lPuAO9z7Q09M
-         /PAXAmBap5HCbyZMECFuQQwYbjnnAddr1pOSj2UZZRGhE4+/GUzYJ08EIAPWfQOMKd
-         wG9+UndlPLMug==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rv7Lc4wZqz4xGR;
-        Mon, 25 Sep 2023 13:16:08 +1000 (AEST)
-Date:   Mon, 25 Sep 2023 13:16:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Adrien Thierry <athierry@redhat.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the phy-next tree with the phy tree
-Message-ID: <20230925131607.7a71254f@canb.auug.org.au>
+        Sun, 24 Sep 2023 23:19:45 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D7AA3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:19:39 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c60778a3bfso18499105ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 20:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695611978; x=1696216778; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tun3obuVK7/qfAB+oJbmril64B5dSAF0AnmI6yjr2CE=;
+        b=zvjUjFuBBHybX92Nzh3F0VOJ/HOrJ1qJ8w+TxdRo6+J6UIOyaon8lOyTo2QFb7STdT
+         G2TtfhWw4Krn8GSs5MdV1BG3cehPm0kPHC7e3GJ3YykjdIo2OcTrRt9sSpxgvG95q9JW
+         KUynJlDVAZ/4cojeMQJwOb2XwjrDQcd8Eb+1wTQ3PmJZEDxHqPySZvHrYgcxgktTnQjG
+         o/MVTefNL0QseqjJ/BNiy75ODjDkRYIdPosB0RRBSug5K1/CK2Sx2VegVS6/nR2PrVwk
+         VU1KEud86X9I4kdBBVgtuSwyeZUL/5S9+OKAo/32nug0+I58aZJM/1180zQOHlJ3T1os
+         LqdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695611978; x=1696216778;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tun3obuVK7/qfAB+oJbmril64B5dSAF0AnmI6yjr2CE=;
+        b=anSAfZtr81mcPUaz+IVCU01YiFp6N7S1vHayH3v7Y40jQhzFTx5D8GMY3PyjgLT/6n
+         WHW712Xyt1tNGJu9FPh/S+nWmTYV3wK2mHMxLdIfT/8KsuE/P5gKjsgm0lgnNGFUvJ2y
+         Ka3lQRVJfEueAzsu70tif3UGMsjaxyijPJ7+U/g2NdWCXklYwpgVnrA2tZK+mgDAhxN2
+         +HUhZXFxcR06RP2qPAXx1YC+DusI8lwP/SA3q338yluw0Cdbs01YdWOSvcK4byENvPqe
+         fRT11dlzzO14NGHuRX/S7c9oQmVks4rzpHHod/3byntIerZWJEC8lZVsNJCOXL50ZKwN
+         XXxQ==
+X-Gm-Message-State: AOJu0YxWxfI2zcfE66/W1yICKMBiq9zi5dox7LD7xAvX82bjHUfdroxF
+        tlb89H5AdKFDJlQnAeOBspWUTQ==
+X-Google-Smtp-Source: AGHT+IHNh3CDHzKHWP352efmB+pht1EDZ+muot20T/hrn57jAEllX7kZO6Ss70OKhS9xW4BgM6UwEA==
+X-Received: by 2002:a17:902:cec1:b0:1c4:4dbc:92a3 with SMTP id d1-20020a170902cec100b001c44dbc92a3mr6737645plg.29.1695611978659;
+        Sun, 24 Sep 2023 20:19:38 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:ecfd:15f5:ab42:52dd])
+        by smtp.gmail.com with ESMTPSA id u6-20020a170902b28600b001c61acd5bd2sm934195plr.112.2023.09.24.20.19.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 20:19:38 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 20:19:35 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Andrew Jones <ajones@ventanamicro.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Jessica Clarke <jrtc27@jrtc27.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC] riscv: Script to autogenerate instruction handling code
+Message-ID: <ZRD8RzBeA2RMrcki@ghost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.gR1P+1sU_QRornL/vSKo5+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.gR1P+1sU_QRornL/vSKo5+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+I have heeded Andrew Jones' advice and written a script to generate the
+instruction handling code. It is still in development, but currently
+lives on a fork of riscv-opcodes [1]. I am interested if what I have
+produced so far is in line with what people would want to see.
 
-Hi all,
+An insn.h file can be generated by running the following in the repo:
 
-Today's linux-next merge of the phy-next tree got a conflict in:
+make
+python3 parse_linux.py instr_dict.yaml insn.h opcodes_config variable_field_data.yaml
 
-  drivers/phy/qualcomm/phy-qcom-qmp-usb.c
+I have pushed the generated files to the repo so people do not need to
+run the script.
 
-between commit:
+Each instruction has "variable fields" such as registers and immediates.
+For each variable field that appears in any provided instruction 3 functions
+are provided: extract a variable field from an instruction, insert a value into
+a variable field of an instruction, update a value into a variable field of an
+instruction. Update first clears the previous value of the variable field of the
+instruction. Then for each instruction, the script generates a function to check if an
+arbitrary 32-bit value matches the given instruction, and a function to
+generate the binary for the instruction given the required variable
+fields.
 
-  c599dc5cca4d ("phy: qcom-qmp-usb: split PCS_USB init table for sc8280xp a=
-nd sa8775p")
+I was able to use riscv-opcodes to parse the instruction files, but
+needed to create a new data structure in variable_field_data.py [2] which
+holds the positioning of immediates inside of an instruction.
 
-from the phy tree and commits:
+I envision that opcodes_config [3] would live inside of the kernel alongside
+a simple script to call riscv-opcodes (that resides somewhere in the
+user's file system) with appropriate parameters. When somebody wants to
+add a new instruction, they can add an instruction to opcodes_config,
+run the script, and commit the resulting generated file.
 
-  7233090aba54 ("phy: qcom-qmp-usb: simplify clock handling")
-  fcf63482f6a9 ("phy: qcom-qmp-usb: rework reset handling")
+If this script is in a direction that people like, I will continue to
+fix up the issues in it and try to get it upstreamed to riscv-opcodes
+before I send a kernel patch.
 
-from the phy-next tree.
+- Charlie
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-index c69577601ae0,2a094f2345f0..000000000000
---- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-@@@ -1389,12 -1378,6 +1384,10 @@@ static const struct qmp_phy_cfg sa8775p
-  	.rx_tbl_num		=3D ARRAY_SIZE(sc8280xp_usb3_uniphy_rx_tbl),
-  	.pcs_tbl		=3D sa8775p_usb3_uniphy_pcs_tbl,
-  	.pcs_tbl_num		=3D ARRAY_SIZE(sa8775p_usb3_uniphy_pcs_tbl),
- +	.pcs_usb_tbl		=3D sa8775p_usb3_uniphy_pcs_usb_tbl,
- +	.pcs_usb_tbl_num	=3D ARRAY_SIZE(sa8775p_usb3_uniphy_pcs_usb_tbl),
- +	.clk_list		=3D qmp_v4_phy_clk_l,
- +	.num_clks		=3D ARRAY_SIZE(qmp_v4_phy_clk_l),
-- 	.reset_list		=3D qcm2290_usb3phy_reset_l,
-- 	.num_resets		=3D ARRAY_SIZE(qcm2290_usb3phy_reset_l),
-  	.vreg_list		=3D qmp_phy_vreg_l,
-  	.num_vregs		=3D ARRAY_SIZE(qmp_phy_vreg_l),
-  	.regs			=3D qmp_v5_usb3phy_regs_layout,
-@@@ -1413,12 -1396,6 +1406,10 @@@ static const struct qmp_phy_cfg sc8280x
-  	.rx_tbl_num		=3D ARRAY_SIZE(sc8280xp_usb3_uniphy_rx_tbl),
-  	.pcs_tbl		=3D sc8280xp_usb3_uniphy_pcs_tbl,
-  	.pcs_tbl_num		=3D ARRAY_SIZE(sc8280xp_usb3_uniphy_pcs_tbl),
- +	.pcs_usb_tbl		=3D sc8280xp_usb3_uniphy_pcs_usb_tbl,
- +	.pcs_usb_tbl_num	=3D ARRAY_SIZE(sc8280xp_usb3_uniphy_pcs_usb_tbl),
- +	.clk_list		=3D qmp_v4_phy_clk_l,
- +	.num_clks		=3D ARRAY_SIZE(qmp_v4_phy_clk_l),
-- 	.reset_list		=3D qcm2290_usb3phy_reset_l,
-- 	.num_resets		=3D ARRAY_SIZE(qcm2290_usb3phy_reset_l),
-  	.vreg_list		=3D qmp_phy_vreg_l,
-  	.num_vregs		=3D ARRAY_SIZE(qmp_phy_vreg_l),
-  	.regs			=3D qmp_v5_usb3phy_regs_layout,
-
---Sig_/.gR1P+1sU_QRornL/vSKo5+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUQ+3cACgkQAVBC80lX
-0Gzr7gf/SDBymukcauQCxmZPkk30Pd55cRmiiHHK7a4HqyFHIW2LFjzEqJtX3tT9
-mgPGdJRbk8v/wdBNBj0NEbcna2pK9lQAlr7bEutj/vrv35ye0yZwxKfwj+wO7sMX
-D767sr8NcilpCQ2wTBoMHwpnpd0j6Mb4/hfSQuwYTZI23cqI5m38opTpBPjWWW9b
-c6R+cqwAukgr7K7xK/c0az1szMwsKv4rirXEE0DPuSP0tiaDmT+oz4pM52tKgvw6
-WBezMt/lyp4bgBqwkd2AMXsTUGLWvcoVdakThtnUZOqhSSX12c3iuxd9C+FmhRdF
-ml4DAmEWytcQWTUtq8crYzAQCn74MQ==
-=ombW
------END PGP SIGNATURE-----
-
---Sig_/.gR1P+1sU_QRornL/vSKo5+--
+[1] https://github.com/charlie-rivos/riscv-opcodes/tree/linux_parsing
+[2] https://github.com/charlie-rivos/riscv-opcodes/blob/linux_parsing/variable_field_data.py
+[3] https://github.com/charlie-rivos/riscv-opcodes/blob/linux_parsing/opcodes_config
