@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E06077ADA11
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39A37ADA17
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbjIYO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
+        id S232307AbjIYO2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232204AbjIYO2V (ORCPT
+        with ESMTP id S232192AbjIYO2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:28:21 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F59EE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:28:14 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32003aae100so5276599f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aceart.de; s=google; t=1695652093; x=1696256893; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=o3p8nJzBx02DNMJ+7EnZtFgR5MAZSx4FbGOUUlLpYxw=;
-        b=d9Lkph9E3pMO4GQYRdiuYmhfuCQRo0HYu2OVHL7mzNYBTBpuRd0DftyfFmVJ5F5Wm1
-         N/kcJQtI7m54vukvj6tNBZpFPCqWY8PfyxnlGREn1IYM/Lo9gkfMCHcGu5GX5GsfgOyR
-         hV4g+AP56ngrIZZxshO46d+Hz1D0jtn+Qoq+alBkAafHdb18uvWcgu3kfYMdrUq12nTy
-         mmJvQi1R8tdUnMtRITfbzTHmXXw7T2q6RcO1D1Wws7b1U7hijbEYS5uI00PlomE4ZMZt
-         nVZBdAIbvr26Kc49OOxUd54kPMOfIp4ROU4wJ4Nx7BxKZ4gi/IkfCM+Kfc4nHuwOvigR
-         mTSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695652093; x=1696256893;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o3p8nJzBx02DNMJ+7EnZtFgR5MAZSx4FbGOUUlLpYxw=;
-        b=HuHmS9wIhsMVSZ7DAmwBI3MMKr882Hqtw4M2LnAZWZELQyQCxb919DD1+wXt+JB22D
-         R5n+2SxDL7j8WzEAae0luYxYmKMkDN3m/R+Wrtvmv+zIQ9yr5tj9aXQYEx1d9dGirJ2o
-         o/3TY0uoYzyOzn19Ve4tYQvRzs1F3mQqKPV3Hwdl96u5xX3i8SKoOW7JZ7uQ6F2l7e3X
-         NWXzMA8EeHnCLk7o8BgrlnbEVHjIDuegEs45qwL6Me9S/nXP8EWhjqgfe0NjzXPdMXBv
-         10B6PBiBKgX4tYGqPbs5EeSMHuDFCmROHJ57QFAbit+Y/5yVYTGikrhC/zD4OSbBi8Tf
-         YsNQ==
-X-Gm-Message-State: AOJu0YwKpVNKxPp4WI0SdM5y+XwIvM/l63pXFAnCD0LYvDSTi4GPAdC3
-        DDQj5BKAhVmMBE68gZK2jnVavw==
-X-Google-Smtp-Source: AGHT+IHyhLLHIMrxMT5+MjTuP9mXxsxsvs3bZXzseRBVbE5hWbY+ZOUden2sS//p4i8tzLc8BaX4jw==
-X-Received: by 2002:adf:ef0b:0:b0:316:fc03:3c66 with SMTP id e11-20020adfef0b000000b00316fc033c66mr5604701wro.3.1695652093259;
-        Mon, 25 Sep 2023 07:28:13 -0700 (PDT)
-Received: from [192.168.2.171] ([94.186.212.25])
-        by smtp.gmail.com with ESMTPSA id o9-20020a5d6849000000b0031989784d96sm12043993wrw.76.2023.09.25.07.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 07:28:12 -0700 (PDT)
-Message-ID: <9ca32137e42a22b016d8d417ee9e0dc024ef2aa9.camel@aceart.de>
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial
- device tree
-From:   lukas walter <lukas.walter@aceart.de>
-To:     konrad.dybcio@linaro.org
-Cc:     agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukas.walter@aceart.de, phone-devel@vger.kernel.org,
-        raymondhackley@protonmail.com, robh+dt@kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Mon, 25 Sep 2023 16:28:12 +0200
-In-Reply-To: <44a00fc6-d700-4713-34f0-36b172d8cb90@linaro.org>
-Organization: aceArt GmbH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Mon, 25 Sep 2023 10:28:45 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FB410E;
+        Mon, 25 Sep 2023 07:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1695652103; x=1696256903; i=w_armin@gmx.de;
+ bh=CWO8T4kiHhHdhar2QuYz55rr18W5ysgSFVePDmC1eZ8=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=iE7msq3LGeEFPXbFBZfp09mOJOFfvsE+9+HFggjMWFqU42n/9KVRE4nmTXB+4eh8b2w0pQ8H+8N
+ JAbaOb3/NBxENicnoJrL4Ans8x+B7M3Z4Vic+zDlqA1ktngt1YLCcoAG5MYa+DAWG/asBr+ox8M3F
+ SAVTmk955PhM4eNEGeYUAKqE5o3OwF0jQKhNaMPnx9rNAurWnYAgdZDrUP/HvLVbqJJ9qblRAShoq
+ o9eJ6R0YPjqefb/P6iLxNmbkAeiMDfm77GyppLs50osjaLXP6yAWYSI1xxX3eL1t2G3b28NuX1eDV
+ 7eb8AZUGELVqv6StJBH89E6VgHq+1riJ2xLA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MhU9Z-1rFhbw2VH9-00eeyy; Mon, 25 Sep 2023 16:28:23 +0200
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     markpearson@lenovo.com, jorge.lopez2@hp.com
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] platform/x86: Fix reference leaks
+Date:   Mon, 25 Sep 2023 16:28:17 +0200
+Message-Id: <20230925142819.74525-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HQPXnywH2xZZbhsTK890/raUxJkTkUb7Fv39TFUAFG73wFE1oxS
+ iw175gaQnMRrREeeOOhLy65ORORNqWnWqifE9c0gMcrE2bSGkB2FVcwZ6u7aGwcxd2zmM6H
+ tdeKKRNFPLmUt3RvVcW9ExkuOm79qp/9LmakfZy8BR7+agaMGPJBL1PPh3q1axgB9DPhrxD
+ fFpg00Rtv6m5jmmjhco9g==
+UI-OutboundReport: notjunk:1;M01:P0:iZ542rEmHXA=;e+TNDwZ5hRC0vlET3hTVp6gKna2
+ s9/vbFZBY5k0Nm3DZgnrHOAdt88aH5INE5uwM+hmhc12EFe5sJXiapSeiwIEaA6DdYTKrxw2q
+ o01ZzFEJK5lvjoEjCmr0I5E1vnjX+srpiDwn5qYzNvciAF/wvQ7KQVffzsjrL0oYqkoFzb8zO
+ KU7yWdCIxTNusDAOFuEhIfEXtYOO1DEdPLrSHL4xbiZqGf2ek8fpwQ1dEjIVs+j3NeHsy5w6V
+ ihzyvisJs0G4ceDqwPWu0xTuy/PRseqLfBQqaYMrCoVl1qxlV3ECt6sgOOpRegjdxw6U0dSQg
+ FsJDBliAopAR/Epp7qnmiTNrTp0U0wF43blKoi/EawiGshNmdItOohH4XZ7SA7UgUWwX0y6Tj
+ 3QyBjTYQKuBg303/UzXDMzH14csw+5HzOyfml8TaW6np6lWWr0xg/YiMSDTHFa7FEZerif+7k
+ Uc4+UJkVPk5F+Kpuam/YdYSFQPKgaxiNXALkmNLQV86aGNZaj1macH4MsiOFjdj5B0mhY/TWD
+ nSO96mm0yBK91zIXuG7n7fkqrmu6dyEbwW9izOinmNZRlKQMYdcm/bVxkvnoWM/34aKUOFCxQ
+ A4KmQhxbgScHvzugG0nTZQFID0a6OLfElRci6hpyKmy1FdgnLu9hF31YKQmqSE2SlxMIJlpWX
+ fjfH2Y8kDa80bmDOg8kWk33ylQ5o18vS3SisNE0Q/s3bEfFWWxZ9yKk14wir620tBtSgLqy+e
+ nE+qctvQG4pRDHOgEEOFrqZifhOjddNeh2XPPtfwp0Tbs1xbF9N0cXihG1Ms/Nc1CttK2sCV+
+ zZJsd4oEP/2Pfn98BCLGzyS/4Nd48QYQdCTTu5hkIFB/jMyfRqTDPMhE4uwl0FsUzH6wsCx4u
+ yUWEHy85oAE2gCtWk++Z5dBiCYG/0S2Xlt2aF97BuQf1mfbT8lAnKdcSSYAvOVzfPTYvU5jeZ
+ UOwA31aApfnqntWe0TDE+4/UAbU=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,48 +69,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Date: Wed, 20 Sep 2023 16:47:30 +0200
+If a duplicate attribute is found using kset_find_obj(), a reference
+to that attribute is returned which needs to be disposed accordingly
+using kobject_put(). This issue likely first appeared inside the
+dell-wmi-sysman driver, see
+commit 7295a996fdab ("platform/x86: dell-sysman: Fix reference leak").
+However, it also seems that the bug was copied from this driver into
+the think-lmi and hp-bioscfg drivers. Maybe a more abstract
+fw_attr_class could prevent such issues in the future by abstracting
+away the kobject handling?
 
->> +
->> +	reserved-memory {
->> +		reserved@84a00000 {
->> +			reg =3D <0x0 0x84a00000 0x0 0x1600000>;
->> +			no-map;
->> +		};
->Do we know what this is for?
+Armin Wolf (2):
+  platform/x86: think-lmi: Fix reference leak
+  platform/x86: hp-bioscfg: Fix reference leak
 
-This seems to be some QSEE/TrustZone memory required to boot.
-I would name it `qseecom_mem: qseecom@84a00000` like other phones
-currently have it.
+ drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 14 ++++++++----
+ drivers/platform/x86/think-lmi.c             | 24 ++++++++++++++++----
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
-`[    1.162115] QSEECOM: qseecom_probe: secure app region
-addr=3D0x84a00000 size=3D0x1900000`
+=2D-
+2.39.2
 
->> +	};
->> +
->> +	gpio-hall-sensor {
->> +		compatible =3D "gpio-keys";
->> +
->> +		pinctrl-0 =3D <&gpio_hall_sensor_default>;
->> +		pinctrl-names =3D "default";
->> +
->> +		label =3D "GPIO Hall Effect Sensor";
->I think we can have both hall sensor and V+ under gpio-keys
->
->And then I am not sure how useful the label is for the container
->node, maybe you or somebody else can tell me whether it's used
->anywhere
->> +
->> +		event-hall-sensor {
->> +			label =3D "Hall Effect Sensor";
->> +			gpios =3D <&tlmm 69 GPIO_ACTIVE_LOW>;
->> +			linux,input-type =3D <EV_SW>;
->> +			linux,code =3D <SW_LID>;
->> +			linux,can-disable;
->Should this not be a wakeup-source btw?
-
-I am not sure how to change this. I would like to leave this as many
-other hall sensors seem to be configured identically.
-
-Is this fine?
-Should I send a V2 with the signoff and reserved-memory changes?
