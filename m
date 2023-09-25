@@ -2,179 +2,699 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D22F67AE058
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816797AE05B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 22:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbjIYUhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 16:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S232255AbjIYUic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 16:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjIYUhG (ORCPT
+        with ESMTP id S230517AbjIYUib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 16:37:06 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2018.outbound.protection.outlook.com [40.92.91.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE26AFF;
-        Mon, 25 Sep 2023 13:36:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OD2P3qzQ2scGFT1ddnvi++zDHsC/crGKP4hHVm7bfQMzA4OgcWls4lK95wanBs+1RxUFZElosoEDj9zD88eHqN/SJu/U2ZlG3xJsflZnv5uDdgy8WYgVN1Jl9KFQ4sKaW4uSu4mVI9gZLkGIzVsNgcpOc9aN7pY4GwfDqrw7dMboUsCWCthkIsjZ9nTh053LavioWVt/xCmn1vuhZ51UiGWPu536eQyhpgJ3H4lAlcXRUND0uuX8gUZKpkH8IBDZzatQiNVWVDtkH0+gbjzXUeF7DhNk9eXMEe97i+ewtBhJmG59HzE6Vsuv8nNd++66dS3fqsIsa0aB3JPsAYC7Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H+N1/eapPVSUeaY8xeEctebKxPS5SKr3WxRHfNZThbA=;
- b=FE1/vm2SGWY/B+ol6BOroZVV/I+KzNLCvqgWUqGYT4qOCIgFcw/0876JISWEjQMnWyOxditHfm0wgS9hkflzbpgquJi51SYgRmSyX8wijez/cXkr7nC3A+uGNcy/KEa+aI3gr2d01H9CPFgHZfGAvg8y4ekTvj/PR4Fv1i9KwSIrWu3nUCaI6NAEuW/HCNhSuvOUQm57QBVvrEJb52KIZJsk7JzQFOaQVKmMU3RE9pYpsUJ+I9T+VpKqtznr3NogA6UFVbXE60K3/dunbwRmsD979asQmc+gM8oVcQHpYg8QZGebX2iEBRGe5EugUnQo0TT8nDbNRqrlQGVPyLxgIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H+N1/eapPVSUeaY8xeEctebKxPS5SKr3WxRHfNZThbA=;
- b=T6fh1W09oFAcLb5tUcux8p0o7u2GoOXpZ4ElnHO1yGAu4i21HITgadwoc/XGuxkx0TwqJ+8RrKzQPJEFykeulZ7fQ52T/d1BaTrvmT503Pfc297CUOdqhJz7qZWbU0tLJvep3xkX2Lrdna7R9LsV4CngGvLDTDkielans4w38MDoEKpZaWsGG0t3Emea5BgGDE/zDwLusxbVa9+iiWAX+v98iIPvRcs/dRiJ/xKNnz6Q7dfJvdNs11GHLwtfsP+4DoaSebHcWDtJFWIsy32k1EERdeOuD7wiWfsQUBTDjt84EXIbxY16QdpiJVcKYAAO56WyaEHLAsfT8M6gHOQNJA==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by AM9P193MB0904.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:1f9::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 20:36:57 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Mon, 25 Sep 2023
- 20:36:57 +0000
-From:   Juntong Deng <juntong.deng@outlook.com>
-To:     sj@kernel.org, shuah@kernel.org
-Cc:     damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] selftests/damon: Add executable permission to test scripts
-Date:   Tue, 26 Sep 2023 04:35:52 +0800
-Message-ID: <VI1P193MB07529234393616AE94D58C7B99FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [t5+2B58/31xcaF0fSebiYT11R15AdCyZ]
-X-ClientProxiedBy: AM8P251CA0027.EURP251.PROD.OUTLOOK.COM
- (2603:10a6:20b:21b::32) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <20230925203552.54855-1-juntong.deng@outlook.com>
+        Mon, 25 Sep 2023 16:38:31 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AEDBE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 13:38:23 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9adca291f99so889829366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 13:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695674301; x=1696279101; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U9yrS8gunfmz0/bBl0AHyXVMwljZuXx6c9uSbi/gXkk=;
+        b=B9mU2LdR9YUgXlVjdoGLDH5JKsC2+4mNjaQzs0YyQVDyO/GHuz7FtNwAVSpys+PYYh
+         HaLtl5QSdjwcf4d/5aA16mZ7YmtXeVIonTry3SzCtJ7OSKypWOnkq4aFjgXNQzMGzGDA
+         6C5qWZoJmUhbqTr71gOe+Sbr2ju3HZY4KOnqm25uX4srF21xnCx+D0V08YDxKcD5fr22
+         EmAFQKZYO7Qwf9oT6CEX/k7B3Jduo+O6NO77k+VMihJYCckzzfgwMrhdDuqFZ1LtR+M0
+         xHX0tFewpZuQFbMP8IL9VT2vA71P2riQ4vByG+t8Fq3jyhfQpCQZxg4RRqY8I+D5NgL9
+         YMXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695674301; x=1696279101;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U9yrS8gunfmz0/bBl0AHyXVMwljZuXx6c9uSbi/gXkk=;
+        b=pHRfaaxW/jXKzkmCRZeM8Xvr7odPHhgj6RimsHzpGRRHXBZerAUp+byqdrbCcBllvh
+         VxIxvdMhY1mZ6Wb3+mEJCmR5Mi2RVLkWSgaU4UTV/yBZ1SLzUlRikIElCXljSHJs3A74
+         MtfQvTIxixYYlT90DxVi7hj/dvS7IFdOW8WFvID22qWDN7I5JZ0Jf+/2NrAXXaftPIA/
+         fe7nUzJg5yUH4q0AgrCdZoKmouzizU8KY1JLrxc097M3b7tkSspKFsUkvmv81fmimGbM
+         f5I8dR0uX5g+A/m4Okuh5UWE9cItIdN544QUH9hTACxkQy2Ih2D0CI7n/9EfKIVVhR+R
+         0Z1w==
+X-Gm-Message-State: AOJu0YzqM9zFFkLa5nhOlsEHV0s3dGgxpfqBd3PbcQ36VJSrg60QSX+t
+        FSwxVadncgmjFiXd641tvC63DjW3egeELhaVKGjj3w==
+X-Google-Smtp-Source: AGHT+IH0lW3O/U80XTWgVRqPXaM6D828rKLbnUkPDsflsxGC7iRa6kQIoG6kKpYQtkt6A9tMVGQAWHRLq/P3mUSQhsA=
+X-Received: by 2002:a17:907:2ccb:b0:9a5:7ade:b5e9 with SMTP id
+ hg11-20020a1709072ccb00b009a57adeb5e9mr6319246ejc.51.1695674301145; Mon, 25
+ Sep 2023 13:38:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AM9P193MB0904:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad8e3bea-608a-4ba2-24fd-08dbbe07299a
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dnt/xKB1VRpAoAoQ8C11syznRH81ivesrOCEdb/LmPkzCBID0YzjYtXMcfTUnb9VHmZPf7sEBJoMxxRWPX8xoRxA2w7HhjkEs8mA71X1OilUbf/mKcT2KcFL80lQ5vozXQ1+BTEPXQpaEh7AT37Z/KRqoIfa8gAD8GmJs/pMLcICXMLavqlotFV5dd+jQgKZofPl6PJaRDOlTq7E8WpiQzMGeQScsO5oBAF6fRqKIChijQ3EMuQOcscaUeWEOvnmDpqcFtjjqBdt+dbhUkcv8kKxuISOgy4E8ebcXKjFZJzhi/3NUY+ppAXM6Cy4uwqFcCTWJV/WimCBURKd8zi5B9tJlzULL6cTf2sMbE2DSv6y/EpMJcGLSQYl9VLmYUrK2j2/J+baJYY5YzbUt+zMZ+peEGvVRipgEyoVSEOa4ayS1e2ptFrId7thB3Uehs/Ew8Aenk71GFNU0W4CcSCeptUYPHLaX9SdT0uuaTpRcPT8hx67aw0tA5Xg/Fgdhxankb9kTTwaC59Hw/lyEQFYLYfcF0zOem+Qu+7W/zRB9vdFlmsNCFb1pX7kWNmBX/5S
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JeNlVTIsuLrsWcF6Qw47kFXKxvIlZZyUPn3+mSPLt1KNwfAnR02uTe1QdpiH?=
- =?us-ascii?Q?JZfA5a7m6Uter/7kbPfr/g1BzsTJ35VjiW15J46zw9qHopYORo+N4aosjWmc?=
- =?us-ascii?Q?IWZPgaJQCa1zhpCezTpyspiROBubV+gjwbf46blwU7INXJQJa7T7mq5VKBhC?=
- =?us-ascii?Q?5ta321FD4/eGXx8QiKm8lhUUZXL1YLvwWeuXOT1dJLQKdzS6NUGyrji9RnkD?=
- =?us-ascii?Q?EjtiiicsMugtaRy6ER2vvn/ZOt9+HDpGfWB+mgMvRGR8pSTCdI1G+V26fsoi?=
- =?us-ascii?Q?HSceDNqPcsxv5mJ05F33b2rACqSBJJpOqhIAyN+XRePCJFSZ1dQo6JIh/43j?=
- =?us-ascii?Q?LOkC4e0e0WFgvvcOWkbn5JLccwCvJESxJkLFY3HiwiW/NxlmNa2IJo1D8N6m?=
- =?us-ascii?Q?ZHJPtru/BeaV8+LOdebXWm1t9VOkhgNwmFDtm5z0xhH02824esv5pjfUEq/S?=
- =?us-ascii?Q?9HUnLEh9I5iKVUC9jW3QU3f8+lyAYINLOUNq33FYQ2vUZDmwkOen2VYGoEbE?=
- =?us-ascii?Q?/r7D3aXlVgmbviY3Xixb21PjKoobT3Nm59VfL09E2JVO9y1LXaIirA24v/0x?=
- =?us-ascii?Q?wLE2tR50LgOZ06h5QLh6ha1rqzJ1KDl7a9tMagSU2pjiHVMaiidpIbc34F1S?=
- =?us-ascii?Q?nCKRh51HIVI6LK2ZSGkolXBe/hpWj5MjzLej52Ld0w4uZkNzrCz/cT8JT/i7?=
- =?us-ascii?Q?xA/odJRFKWED8QG4j5EqU64dr/h2+wZ+HCMBaNnpMZAp6LUL9eIzEYrHoQtO?=
- =?us-ascii?Q?xji8x6XSyKyElEpiThMvZGc/1UIdLR1kmzCl/fbGSRrzrkDuwTIrGHSBdl76?=
- =?us-ascii?Q?2K3QL66Tzx2bnUWcAqVbo0SZ/aQsfCrZZNCoZpEJXo5v1224jMAxYVZ8vnhJ?=
- =?us-ascii?Q?WmyLrgxjIfaQIUm8jy87Mvl1awsyqIH5jqb54Dwu5dSTvT73dZzG9vGShBk6?=
- =?us-ascii?Q?D75v3NgljkKXSZzdx+HfEtU3kjRG+w8+ICEMkMg6mavl/dWkG7YMGCyS1Ctg?=
- =?us-ascii?Q?RykgKUil9GhQLHxaIH5OrvXFbONyRo9QwOBrXnCMU/Fx3xAS8bg3ot2dX6SV?=
- =?us-ascii?Q?6G6f99rS+k5kbNmQQW3yvDFhnZumFVCxgXNbsXAdpqnd4jFxNmvL06Bl+Szz?=
- =?us-ascii?Q?+cXU6qcLBslUrc2R3YrSMGj6XLv3+vH/YK8bdO4M2GKJPT8Tj5lrMou2QELQ?=
- =?us-ascii?Q?7WqEmsNCreURRKZiXk4y7kE3VCqbEhFGhw47mTvwRIiwJLrDaVMEKWHrV9A?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad8e3bea-608a-4ba2-24fd-08dbbe07299a
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 20:36:57.6927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P193MB0904
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230919171447.2712746-1-nphamcs@gmail.com> <20230919171447.2712746-3-nphamcs@gmail.com>
+In-Reply-To: <20230919171447.2712746-3-nphamcs@gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 25 Sep 2023 13:37:42 -0700
+Message-ID: <CAJD7tkY2-S0+NgGvMZMv6YBO1Z8aLAgbQ2KCR6gJm2BuAy9BKw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] zswap: shrinks zswap pool based on memory pressure
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running the test for the damon subsystem, there are a lot of
-warnings because test scripts do not have executable permission,
-for example:
+On Tue, Sep 19, 2023 at 10:14=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> Currently, we only shrink the zswap pool when the user-defined limit is
+> hit. This means that if we set the limit too high, cold data that are
+> unlikely to be used again will reside in the pool, wasting precious
+> memory. It is hard to predict how much zswap space will be needed ahead
+> of time, as this depends on the workload (specifically, on factors such
+> as memory access patterns and compressibility of the memory pages).
+>
+> This patch implements a memcg- and NUMA-aware shrinker for zswap, that
+> is initiated when there is memory pressure. The shrinker does not
+> have any parameter that must be tuned by the user, and can be opted in
+> or out on a per-memcg basis.
 
-Warning: file debugfs_attrs.sh is not executable
-Warning: file debugfs_schemes.sh is not executable
-Warning: file debugfs_target_ids.sh is not executable
-...
+What's the use case for having per-memcg opt-in/out?
 
-This patch adds executable permission to test scripts to eliminate
-these warnings.
+If there is memory pressure, reclaiming swap-backed pages will push
+pages out of zswap anyway, regardless of this patch. With this patch,
+any sort of reclaim can push pages out of zswap. Wouldn't that be
+preferable to reclaiming memory that is currently resident in memory
+(so arguably hotter than the pages in zswap)? Why would this decision
+be different per-memcg?
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- tools/testing/selftests/damon/debugfs_attrs.sh                    | 0
- .../testing/selftests/damon/debugfs_duplicate_context_creation.sh | 0
- tools/testing/selftests/damon/debugfs_empty_targets.sh            | 0
- tools/testing/selftests/damon/debugfs_huge_count_read_write.sh    | 0
- tools/testing/selftests/damon/debugfs_rm_non_contexts.sh          | 0
- tools/testing/selftests/damon/debugfs_schemes.sh                  | 0
- tools/testing/selftests/damon/debugfs_target_ids.sh               | 0
- tools/testing/selftests/damon/lru_sort.sh                         | 0
- tools/testing/selftests/damon/reclaim.sh                          | 0
- tools/testing/selftests/damon/sysfs.sh                            | 0
- tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh  | 0
- 11 files changed, 0 insertions(+), 0 deletions(-)
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_attrs.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_duplicate_context_creation.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_empty_targets.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_huge_count_read_write.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_rm_non_contexts.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_schemes.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_target_ids.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/lru_sort.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/reclaim.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/sysfs.sh
- mode change 100644 => 100755 tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh
+>
+> Furthermore, to make it more robust for many workloads and prevent
+> overshrinking (i.e evicting warm pages that might be refaulted into
+> memory), we build in the following heuristics:
+>
+> * Estimate the number of warm pages residing in zswap, and attempt to
+>   protect this region of the zswap LRU.
+> * Scale the number of freeable objects by an estimate of the memory
+>   saving factor. The better zswap compresses the data, the fewer pages
+>   we will evict to swap (as we will otherwise incur IO for relatively
+>   small memory saving).
+> * During reclaim, if the shrinker encounters a page that is also being
+>   brought into memory, the shrinker will cautiously terminate its
+>   shrinking action, as this is a sign that it is touching the warmer
+>   region of the zswap LRU.
 
-diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/debugfs_duplicate_context_creation.sh b/tools/testing/selftests/damon/debugfs_duplicate_context_creation.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/debugfs_empty_targets.sh b/tools/testing/selftests/damon/debugfs_empty_targets.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/debugfs_huge_count_read_write.sh b/tools/testing/selftests/damon/debugfs_huge_count_read_write.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/debugfs_rm_non_contexts.sh b/tools/testing/selftests/damon/debugfs_rm_non_contexts.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/debugfs_schemes.sh b/tools/testing/selftests/damon/debugfs_schemes.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/debugfs_target_ids.sh b/tools/testing/selftests/damon/debugfs_target_ids.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/lru_sort.sh b/tools/testing/selftests/damon/lru_sort.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/reclaim.sh b/tools/testing/selftests/damon/reclaim.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/sysfs.sh b/tools/testing/selftests/damon/sysfs.sh
-old mode 100644
-new mode 100755
-diff --git a/tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh b/tools/testing/selftests/damon/sysfs_update_removed_scheme_dir.sh
-old mode 100644
-new mode 100755
--- 
-2.39.2
+I don't have an opinion about the reclaim heuristics here, I will let
+reclaim experts chip in.
 
+>
+> On a benchmark that we have run:
+
+Please add more details (as much as possible) about the benchmarks used her=
+e.
+
+>
+> (without the shrinker)
+> real -- mean: 153.27s, median: 153.199s
+> sys -- mean: 541.652s, median: 541.903s
+> user -- mean: 4384.9673999999995s, median: 4385.471s
+>
+> (with the shrinker)
+> real -- mean: 151.4956s, median: 151.456s
+> sys -- mean: 461.14639999999997s, median: 465.656s
+> user -- mean: 4384.7118s, median: 4384.675s
+>
+> We observed a 14-15% reduction in kernel CPU time, which translated to
+> over 1% reduction in real time.
+>
+> On another benchmark, where there was a lot more cold memory residing in
+> zswap, we observed even more pronounced gains:
+>
+> (without the shrinker)
+> real -- mean: 157.52519999999998s, median: 157.281s
+> sys -- mean: 769.3082s, median: 780.545s
+> user -- mean: 4378.1622s, median: 4378.286s
+>
+> (with the shrinker)
+> real -- mean: 152.9608s, median: 152.845s
+> sys -- mean: 517.4446s, median: 506.749s
+> user -- mean: 4387.694s, median: 4387.935s
+>
+> Here, we saw around 32-35% reduction in kernel CPU time, which
+> translated to 2.8% reduction in real time. These results confirm our
+> hypothesis that the shrinker is more helpful the more cold memory we
+> have.
+>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  Documentation/admin-guide/mm/zswap.rst |  12 ++
+>  include/linux/memcontrol.h             |   1 +
+>  include/linux/mmzone.h                 |  14 ++
+>  mm/memcontrol.c                        |  33 +++++
+>  mm/swap_state.c                        |  31 ++++-
+>  mm/zswap.c                             | 180 ++++++++++++++++++++++++-
+>  6 files changed, 263 insertions(+), 8 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin=
+-guide/mm/zswap.rst
+> index 45b98390e938..ae8597a67804 100644
+> --- a/Documentation/admin-guide/mm/zswap.rst
+> +++ b/Documentation/admin-guide/mm/zswap.rst
+> @@ -153,6 +153,18 @@ attribute, e. g.::
+>
+>  Setting this parameter to 100 will disable the hysteresis.
+>
+> +When there is a sizable amount of cold memory residing in the zswap pool=
+, it
+> +can be advantageous to proactively write these cold pages to swap and re=
+claim
+> +the memory for other use cases. By default, the zswap shrinker is disabl=
+ed.
+> +User can enable it by first switching on the global knob:
+> +
+> +  echo Y > /sys/module/zswap/par meters/shrinker_enabled
+> +
+> +When the kernel is compiled with CONFIG_MEMCG_KMEM, user needs to furthe=
+r turn
+> +it on for each cgroup that the shrinker should target:
+> +
+> +  echo 1 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.shrinker.enabled
+> +
+>  A debugfs interface is provided for various statistic about pool size, n=
+umber
+>  of pages stored, same-value filled pages and various counters for the re=
+asons
+>  pages are rejected.
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 05d34b328d9d..f005ea667863 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -219,6 +219,7 @@ struct mem_cgroup {
+>
+>  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+>         unsigned long zswap_max;
+> +       atomic_t zswap_shrinker_enabled;
+>  #endif
+>
+>         unsigned long soft_limit;
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 4106fbc5b4b3..81f4c5ea3e16 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -637,6 +637,20 @@ struct lruvec {
+>  #ifdef CONFIG_MEMCG
+>         struct pglist_data *pgdat;
+>  #endif
+> +#ifdef CONFIG_ZSWAP
+> +       /*
+> +        * Number of pages in zswap that should be protected from the shr=
+inker.
+> +        * This number is an estimate of the following counts:
+> +        *
+> +        * a) Recent page faults.
+> +        * b) Recent insertion to the zswap LRU. This includes new zswap =
+stores,
+> +        *    as well as recent zswap LRU rotations.
+> +        *
+> +        * These pages are likely to be warm, and might incur IO if the a=
+re written
+> +        * to swap.
+> +        */
+> +       unsigned long nr_zswap_protected;
+> +#endif
+
+Would this be better abstracted in a zswap lruvec struct?
+
+>  };
+>
+>  /* Isolate unmapped pages */
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 9f84b3f7b469..1a2c97cf396f 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5352,6 +5352,8 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *pa=
+rent_css)
+>         WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
+>  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+>         memcg->zswap_max =3D PAGE_COUNTER_MAX;
+> +       /* Disable the shrinker by default */
+> +       atomic_set(&memcg->zswap_shrinker_enabled, 0);
+>  #endif
+>         page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
+>         if (parent) {
+> @@ -7877,6 +7879,31 @@ static ssize_t zswap_max_write(struct kernfs_open_=
+file *of,
+>         return nbytes;
+>  }
+>
+> +static int zswap_shrinker_enabled_show(struct seq_file *m, void *v)
+> +{
+> +       struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
+> +
+> +       seq_printf(m, "%d\n", atomic_read(&memcg->zswap_shrinker_enabled)=
+);
+> +       return 0;
+> +}
+> +
+> +static ssize_t zswap_shrinker_enabled_write(struct kernfs_open_file *of,
+> +                              char *buf, size_t nbytes, loff_t off)
+> +{
+> +       struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
+> +       int zswap_shrinker_enabled;
+> +       ssize_t parse_ret =3D kstrtoint(strstrip(buf), 0, &zswap_shrinker=
+_enabled);
+> +
+> +       if (parse_ret)
+> +               return parse_ret;
+> +
+> +       if (zswap_shrinker_enabled < 0 || zswap_shrinker_enabled > 1)
+> +               return -ERANGE;
+> +
+> +       atomic_set(&memcg->zswap_shrinker_enabled, zswap_shrinker_enabled=
+);
+> +       return nbytes;
+> +}
+> +
+>  static struct cftype zswap_files[] =3D {
+>         {
+>                 .name =3D "zswap.current",
+> @@ -7889,6 +7916,12 @@ static struct cftype zswap_files[] =3D {
+>                 .seq_show =3D zswap_max_show,
+>                 .write =3D zswap_max_write,
+>         },
+> +       {
+> +               .name =3D "zswap.shrinker.enabled",
+> +               .flags =3D CFTYPE_NOT_ON_ROOT,
+> +               .seq_show =3D zswap_shrinker_enabled_show,
+> +               .write =3D zswap_shrinker_enabled_write,
+> +       },
+>         { }     /* terminate */
+>  };
+>  #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 1c826737aacb..788e36a06c34 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -618,6 +618,22 @@ static unsigned long swapin_nr_pages(unsigned long o=
+ffset)
+>         return pages;
+>  }
+>
+> +#ifdef CONFIG_ZSWAP
+> +/*
+> + * Refault is an indication that warmer pages are not resident in memory=
+.
+> + * Increase the size of zswap's protected area.
+> + */
+> +static void inc_nr_protected(struct page *page)
+> +{
+> +       struct lruvec *lruvec =3D folio_lruvec(page_folio(page));
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&lruvec->lru_lock, flags);
+> +       lruvec->nr_zswap_protected++;
+> +       spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+> +}
+> +#endif
+> +
+
+A few questions:
+- Why is this function named in such a generic way?
+- Why is this function here instead of in mm/zswap.c?
+- Why is this protected by the heavily contested lruvec lock instead
+of being an atomic?
+
+>  /**
+>   * swap_cluster_readahead - swap in pages in hope we need them soon
+>   * @entry: swap entry of this memory
+> @@ -686,7 +702,12 @@ struct page *swap_cluster_readahead(swp_entry_t entr=
+y, gfp_t gfp_mask,
+>         lru_add_drain();        /* Push any new pages onto the LRU now */
+>  skip:
+>         /* The page was likely read above, so no need for plugging here *=
+/
+> -       return read_swap_cache_async(entry, gfp_mask, vma, addr, NULL);
+> +       page =3D read_swap_cache_async(entry, gfp_mask, vma, addr, NULL);
+> +#ifdef CONFIG_ZSWAP
+> +       if (page)
+> +               inc_nr_protected(page);
+> +#endif
+> +       return page;
+>  }
+>
+>  int init_swap_address_space(unsigned int type, unsigned long nr_pages)
+> @@ -853,8 +874,12 @@ static struct page *swap_vma_readahead(swp_entry_t f=
+entry, gfp_t gfp_mask,
+>         lru_add_drain();
+>  skip:
+>         /* The page was likely read above, so no need for plugging here *=
+/
+> -       return read_swap_cache_async(fentry, gfp_mask, vma, vmf->address,
+> -                                    NULL);
+> +       page =3D read_swap_cache_async(fentry, gfp_mask, vma, vmf->addres=
+s, NULL);
+> +#ifdef CONFIG_ZSWAP
+> +       if (page)
+> +               inc_nr_protected(page);
+> +#endif
+> +       return page;
+>  }
+>
+>  /**
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 1a469e5d5197..79cb18eeb8bf 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -145,6 +145,26 @@ module_param_named(exclusive_loads, zswap_exclusive_=
+loads_enabled, bool, 0644);
+>  /* Number of zpools in zswap_pool (empirically determined for scalabilit=
+y) */
+>  #define ZSWAP_NR_ZPOOLS 32
+>
+> +/*
+> + * Global flag to enable/disable memory pressure-based shrinker for all =
+memcgs.
+> + * If CONFIG_MEMCG_KMEM is on, we can further selectively disable
+> + * the shrinker for each memcg.
+> + */
+> +static bool zswap_shrinker_enabled;
+> +module_param_named(shrinker_enabled, zswap_shrinker_enabled, bool, 0644)=
+;
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static bool is_shrinker_enabled(struct mem_cgroup *memcg)
+> +{
+> +       return zswap_shrinker_enabled &&
+> +               atomic_read(&memcg->zswap_shrinker_enabled);
+> +}
+> +#else
+> +static bool is_shrinker_enabled(struct mem_cgroup *memcg)
+> +{
+> +       return zswap_shrinker_enabled;
+> +}
+> +#endif
+> +
+>  /*********************************
+>  * data structures
+>  **********************************/
+> @@ -174,6 +194,8 @@ struct zswap_pool {
+>         char tfm_name[CRYPTO_MAX_ALG_NAME];
+>         struct list_lru list_lru;
+>         struct mem_cgroup *next_shrink;
+> +       struct shrinker *shrinker;
+> +       atomic_t nr_stored;
+>  };
+>
+>  /*
+> @@ -273,17 +295,26 @@ static bool zswap_can_accept(void)
+>                         DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
+>  }
+>
+> +static u64 get_zswap_pool_size(struct zswap_pool *pool)
+> +{
+> +       u64 pool_size =3D 0;
+> +       int i;
+> +
+> +       for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
+> +               pool_size +=3D zpool_get_total_size(pool->zpools[i]);
+> +
+> +       return pool_size;
+> +}
+> +
+>  static void zswap_update_total_size(void)
+>  {
+>         struct zswap_pool *pool;
+>         u64 total =3D 0;
+> -       int i;
+>
+>         rcu_read_lock();
+>
+>         list_for_each_entry_rcu(pool, &zswap_pools, list)
+> -               for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
+> -                       total +=3D zpool_get_total_size(pool->zpools[i]);
+> +               total +=3D get_zswap_pool_size(pool);
+>
+>         rcu_read_unlock();
+>
+> @@ -318,8 +349,23 @@ static bool zswap_lru_add(struct list_lru *list_lru,=
+ struct zswap_entry *entry)
+>  {
+>         struct mem_cgroup *memcg =3D entry->objcg ?
+>                 get_mem_cgroup_from_objcg(entry->objcg) : NULL;
+> +       struct lruvec *lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(entr=
+y->nid));
+>         bool added =3D __list_lru_add(list_lru, &entry->lru, entry->nid, =
+memcg);
+> +       unsigned long flags, lru_size;
+> +
+> +       if (added) {
+> +               lru_size =3D list_lru_count_one(list_lru, entry->nid, mem=
+cg);
+> +               spin_lock_irqsave(&lruvec->lru_lock, flags);
+> +               lruvec->nr_zswap_protected++;
+>
+> +               /*
+> +                * Decay to avoid overflow and adapt to changing workload=
+s.
+> +                * This is based on LRU reclaim cost decaying heuristics.
+> +                */
+> +               if (lruvec->nr_zswap_protected > lru_size / 4)
+> +                       lruvec->nr_zswap_protected /=3D 2;
+> +               spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+> +       }
+>         mem_cgroup_put(memcg);
+>         return added;
+>  }
+> @@ -420,6 +466,7 @@ static void zswap_free_entry(struct zswap_entry *entr=
+y)
+>         else {
+>                 zswap_lru_del(&entry->pool->list_lru, entry);
+>                 zpool_free(zswap_find_zpool(entry), entry->handle);
+> +               atomic_dec(&entry->pool->nr_stored);
+>                 zswap_pool_put(entry->pool);
+>         }
+>         zswap_entry_cache_free(entry);
+> @@ -461,6 +508,98 @@ static struct zswap_entry *zswap_entry_find_get(stru=
+ct rb_root *root,
+>         return entry;
+>  }
+>
+> +/*********************************
+> +* shrinker functions
+> +**********************************/
+> +static enum lru_status shrink_memcg_cb(struct list_head *item, struct li=
+st_lru_one *l,
+> +                                      spinlock_t *lock, void *arg);
+> +
+> +static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+> +               struct shrink_control *sc)
+> +{
+> +       struct zswap_pool *pool =3D shrinker->private_data;
+> +       unsigned long shrink_ret, nr_zswap_protected, flags,
+> +               lru_size =3D list_lru_shrink_count(&pool->list_lru, sc);
+> +       struct lruvec *lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DATA(=
+sc->nid));
+> +       bool encountered_page_in_swapcache =3D false;
+> +
+> +       spin_lock_irqsave(&lruvec->lru_lock, flags);
+> +       nr_zswap_protected =3D lruvec->nr_zswap_protected;
+> +       spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+> +
+> +       /*
+> +        * Abort if the shrinker is disabled or if we are shrinking into =
+the
+> +        * protected region.
+> +        */
+> +       if (!is_shrinker_enabled(sc->memcg) ||
+> +                       nr_zswap_protected >=3D lru_size - sc->nr_to_scan=
+) {
+> +               sc->nr_scanned =3D 0;
+> +               return SHRINK_STOP;
+> +       }
+> +
+> +       shrink_ret =3D list_lru_shrink_walk(&pool->list_lru, sc, &shrink_=
+memcg_cb,
+> +               &encountered_page_in_swapcache);
+> +
+> +       if (encountered_page_in_swapcache)
+> +               return SHRINK_STOP;
+> +
+> +       return shrink_ret ? shrink_ret : SHRINK_STOP;
+> +}
+> +
+> +static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+> +               struct shrink_control *sc)
+> +{
+> +       struct zswap_pool *pool =3D shrinker->private_data;
+> +       struct mem_cgroup *memcg =3D sc->memcg;
+> +       struct lruvec *lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(sc->=
+nid));
+> +       unsigned long nr_backing, nr_stored, nr_freeable, flags;
+> +
+> +#ifdef CONFIG_MEMCG_KMEM
+> +       cgroup_rstat_flush(memcg->css.cgroup);
+> +       nr_backing =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHI=
+FT;
+> +       nr_stored =3D memcg_page_state(memcg, MEMCG_ZSWAPPED);
+> +#else
+> +       /* use pool stats instead of memcg stats */
+> +       nr_backing =3D get_zswap_pool_size(pool) >> PAGE_SHIFT;
+> +       nr_stored =3D atomic_read(&pool->nr_stored);
+> +#endif
+> +
+> +       if (!is_shrinker_enabled(memcg) || !nr_stored)
+> +               return 0;
+> +
+> +       nr_freeable =3D list_lru_shrink_count(&pool->list_lru, sc);
+> +       /*
+> +        * Subtract the lru size by an estimate of the number of pages
+> +        * that should be protected.
+> +        */
+> +       spin_lock_irqsave(&lruvec->lru_lock, flags);
+> +       nr_freeable =3D nr_freeable > lruvec->nr_zswap_protected ?
+> +               nr_freeable - lruvec->nr_zswap_protected : 0;
+> +       spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+> +
+> +       /*
+> +        * Scale the number of freeable pages by the memory saving factor=
+.
+> +        * This ensures that the better zswap compresses memory, the fewe=
+r
+> +        * pages we will evict to swap (as it will otherwise incur IO for
+> +        * relatively small memory saving).
+> +        */
+> +       return mult_frac(nr_freeable, nr_backing, nr_stored);
+> +}
+> +
+> +static void zswap_alloc_shrinker(struct zswap_pool *pool)
+> +{
+> +       pool->shrinker =3D
+> +               shrinker_alloc(SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE=
+, "mm-zswap");
+> +       if (!pool->shrinker)
+> +               return;
+> +
+> +       pool->shrinker->private_data =3D pool;
+> +       pool->shrinker->scan_objects =3D zswap_shrinker_scan;
+> +       pool->shrinker->count_objects =3D zswap_shrinker_count;
+> +       pool->shrinker->batch =3D 0;
+> +       pool->shrinker->seeks =3D DEFAULT_SEEKS;
+> +}
+> +
+>  /*********************************
+>  * per-cpu code
+>  **********************************/
+> @@ -656,11 +795,14 @@ static enum lru_status shrink_memcg_cb(struct list_=
+head *item, struct list_lru_o
+>                                        spinlock_t *lock, void *arg)
+>  {
+>         struct zswap_entry *entry =3D container_of(item, struct zswap_ent=
+ry, lru);
+> +       bool *encountered_page_in_swapcache =3D (bool *)arg;
+>         struct mem_cgroup *memcg;
+>         struct zswap_tree *tree;
+> +       struct lruvec *lruvec;
+>         pgoff_t swpoffset;
+>         enum lru_status ret =3D LRU_REMOVED_RETRY;
+>         int writeback_result;
+> +       unsigned long flags;
+>
+>         /*
+>          * Once the lru lock is dropped, the entry might get freed. The
+> @@ -696,8 +838,24 @@ static enum lru_status shrink_memcg_cb(struct list_h=
+ead *item, struct list_lru_o
+>                 /* we cannot use zswap_lru_add here, because it increment=
+s node's lru count */
+>                 list_lru_putback(&entry->pool->list_lru, item, entry->nid=
+, memcg);
+>                 spin_unlock(lock);
+> -               mem_cgroup_put(memcg);
+>                 ret =3D LRU_RETRY;
+> +
+> +               /*
+> +                * Encountering a page already in swap cache is a sign th=
+at we are shrinking
+> +                * into the warmer region. We should terminate shrinking =
+(if we're in the dynamic
+> +                * shrinker context).
+> +                */
+> +               if (writeback_result =3D=3D -EEXIST && encountered_page_i=
+n_swapcache) {
+> +                       ret =3D LRU_SKIP;
+> +                       *encountered_page_in_swapcache =3D true;
+> +               }
+> +               lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(entry->nid)=
+);
+> +               spin_lock_irqsave(&lruvec->lru_lock, flags);
+> +               /* Increment the protection area to account for the LRU r=
+otation. */
+> +               lruvec->nr_zswap_protected++;
+> +               spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+> +
+> +               mem_cgroup_put(memcg);
+>                 goto put_unlock;
+>         }
+>
+> @@ -828,6 +986,11 @@ static struct zswap_pool *zswap_pool_create(char *ty=
+pe, char *compressor)
+>                                        &pool->node);
+>         if (ret)
+>                 goto error;
+> +
+> +       zswap_alloc_shrinker(pool);
+> +       if (!pool->shrinker)
+> +               goto error;
+> +
+>         pr_debug("using %s compressor\n", pool->tfm_name);
+>
+>         /* being the current pool takes 1 ref; this func expects the
+> @@ -836,12 +999,17 @@ static struct zswap_pool *zswap_pool_create(char *t=
+ype, char *compressor)
+>         kref_init(&pool->kref);
+>         INIT_LIST_HEAD(&pool->list);
+>         INIT_WORK(&pool->shrink_work, shrink_worker);
+> -       list_lru_init_memcg(&pool->list_lru, NULL);
+> +       if (list_lru_init_memcg(&pool->list_lru, pool->shrinker))
+> +               goto lru_fail;
+> +       shrinker_register(pool->shrinker);
+>
+>         zswap_pool_debug("created", pool);
+>
+>         return pool;
+>
+> +lru_fail:
+> +       list_lru_destroy(&pool->list_lru);
+> +       shrinker_free(pool->shrinker);
+>  error:
+>         if (pool->acomp_ctx)
+>                 free_percpu(pool->acomp_ctx);
+> @@ -899,6 +1067,7 @@ static void zswap_pool_destroy(struct zswap_pool *po=
+ol)
+>
+>         zswap_pool_debug("destroying", pool);
+>
+> +       shrinker_free(pool->shrinker);
+>         cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->no=
+de);
+>         free_percpu(pool->acomp_ctx);
+>         list_lru_destroy(&pool->list_lru);
+> @@ -1431,6 +1600,7 @@ bool zswap_store(struct folio *folio)
+>         if (entry->length) {
+>                 INIT_LIST_HEAD(&entry->lru);
+>                 zswap_lru_add(&pool->list_lru, entry);
+> +               atomic_inc(&pool->nr_stored);
+>         }
+>         spin_unlock(&tree->lock);
+>
+> --
+> 2.34.1
