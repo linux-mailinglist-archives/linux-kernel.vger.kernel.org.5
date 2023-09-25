@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CA07ACFF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0DB7AD004
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbjIYGUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        id S230141AbjIYGU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbjIYGUK (ORCPT
+        with ESMTP id S232062AbjIYGUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:20:10 -0400
+        Mon, 25 Sep 2023 02:20:12 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1020E124;
-        Sun, 24 Sep 2023 23:19:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47044CC4;
+        Sun, 24 Sep 2023 23:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695622786; x=1727158786;
+  t=1695622797; x=1727158797;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cpOxK0cbSJ1AoAD+ngouuP4Gz/cdaCym5yu9W8Vz95E=;
-  b=S1YiZSI4HOk0o6DBmZVQ1xOLs2CGNKGkqfUiq0CLrEzqBXBZwa+5AN8k
-   6HkDelSxoLKwyIAF6JEsX/iamF0ziRl2ukq4zIsBCcaaa6wt2Oqu3Bk/U
-   S1wzlidYPfJSbXTMGj0lIdxxTz+Qp/Ni7Kff093THar7ex5WORuBjC2pZ
-   w4EhWBjF4S+KXE6b5TQmJ3Wm9MAF6K5XciVbfFdt3lEP9o74i3s71l/04
-   oRsEkvNIbn1BuUcemnGQJXn3cK7pYS/sMV0D+4/9yqlsIHJYyNHCWr0GV
-   R5O8QiNlrAnuz3iRC/rhYDn5xxg1XEGHaYW5PxYq4mzKlLiioGVeD0d+7
+  bh=qG1e1YClORB9MUuLJIL/q/m6xLgbd/H000c70OIVGno=;
+  b=WwYgouzY2Q0ZVggO/4okx++7M4dbn3hJ4+b6WnY7wxgTdIyIpd/WKJc4
+   waROqpxbBOcGCd5HvpStC1ac/kX+mIVOTr5aA0bJBcwUoeVLWLz6gjc/h
+   65/FsgXv1cMpsLKnWe6+vqIjrTMp4PBjbLyvxV8oVpiyixPFZTTm8mwDn
+   iIHJaqS8T+KDA3PNpKOoRHiFxe5m6RdGVAEXh2gptRw+OBULR3SVCJdgy
+   g4Lmmv09hIQ9mMiyYMYhp+M/0uvxpe3CQ4TNkEoOMDSvUKTk5ughReu05
+   Hhwcq02nGtkenWjuglf8LdIogt5vNO6UlZBixYLvfv1jOLaj8gk0f8OoZ
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445279447"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445279459"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="445279447"
+   d="scan'208";a="445279459"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 23:19:17 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 23:19:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818494356"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818494360"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="818494356"
+   d="scan'208";a="818494360"
 Received: from b49691a75598.jf.intel.com ([10.54.34.22])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Sep 2023 23:19:16 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 24 Sep 2023 23:19:17 -0700
 From:   weilin.wang@intel.com
 To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -54,9 +54,9 @@ Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         Samantha Alt <samantha.alt@intel.com>,
         Caleb Biggers <caleb.biggers@intel.com>,
         Mark Rutland <mark.rutland@arm.com>
-Subject: [RFC PATCH 10/25] perf stat: Add helper functions to hardware-grouping method
-Date:   Sun, 24 Sep 2023 23:18:09 -0700
-Message-Id: <20230925061824.3818631-11-weilin.wang@intel.com>
+Subject: [RFC PATCH 11/25] perf stat: Add utility functions to hardware-grouping method
+Date:   Sun, 24 Sep 2023 23:18:10 -0700
+Message-Id: <20230925061824.3818631-12-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230925061824.3818631-1-weilin.wang@intel.com>
 References: <20230925061824.3818631-1-weilin.wang@intel.com>
@@ -73,162 +73,188 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-Add struct metricgroup__pmu_group_list to hold the lists of groups from
-different PMUs. Each PMU has one separate list.
-
-Add struct metricgroup__group as one node (one group in the grouping
-result) of the metricgroup__pmu_group_list. It uses two bitmaps to log
-counter availabilities(gp counters and fixed counters).
-
-Add functions to create group and assign event into the groups based on the
-event restrictions (struct metricgroup__event_info) and counter
-availability (pmu_info_list and bitmaps). New group is inserted into the
-list groups.
+Add functions to handle counter bitmaps. Add functions do find and insert
+operations to handle inserting event into groups.
 
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/util/metricgroup.c | 72 +++++++++++++++++++++++++++++++++++
- tools/perf/util/metricgroup.h | 37 ++++++++++++++++++
- 2 files changed, 109 insertions(+)
+ tools/lib/bitmap.c            |  20 ++++++
+ tools/perf/util/metricgroup.c | 115 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 133 insertions(+), 2 deletions(-)
 
+diff --git a/tools/lib/bitmap.c b/tools/lib/bitmap.c
+index c3e487196..a96dbf001 100644
+--- a/tools/lib/bitmap.c
++++ b/tools/lib/bitmap.c
+@@ -100,3 +100,23 @@ bool __bitmap_intersects(const unsigned long *bitmap1,
+ 			return true;
+ 	return false;
+ }
++
++void bitmap_clear(unsigned long *map, unsigned int start, int len)
++{
++	unsigned long *p = map + BIT_WORD(start);
++	const unsigned int size = start + len;
++	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
++	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
++
++	while (len - bits_to_clear >= 0) {
++		*p &= ~mask_to_clear;
++		len -= bits_to_clear;
++		bits_to_clear = BITS_PER_LONG;
++		mask_to_clear = ~0UL;
++		p++;
++	}
++	if (len) {
++		mask_to_clear &= BITMAP_LAST_WORD_MASK(size);
++		*p &= ~mask_to_clear;
++	}
++}
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 0ca885a42..de6a6a1d7 100644
+index de6a6a1d7..68d56087b 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -1681,6 +1681,76 @@ static int get_pmu_counter_layouts(struct list_head *pmu_info_list,
+@@ -1450,6 +1450,27 @@ static int set_counter_bitmap(int pos, unsigned long *bitmap)
+ 	return 0;
+ }
+ 
++static int find_counter_bitmap(unsigned long *addr1,
++			      unsigned long *addr2,
++			      unsigned long *bit)
++{
++	unsigned long find_bit = find_next_and_bit(addr1, addr2, NR_COUNTERS, 0);
++
++	if (find_bit == NR_COUNTERS)
++		return -ERANGE;
++	*bit = find_bit;
++	return 0;
++}
++
++static int use_counter_bitmap(unsigned long *bitmap,
++			     unsigned long find_bit)
++{
++	if (find_bit >= NR_COUNTERS)
++		return -EINVAL;
++	bitmap_clear(bitmap, find_bit, 1);
++	return 0;
++}
++
+ static int parse_fixed_counter(const char *counter,
+ 			      unsigned long *bitmap,
+ 			      bool *fixed)
+@@ -1681,12 +1702,102 @@ static int get_pmu_counter_layouts(struct list_head *pmu_info_list,
  	return ret;
  }
  
 +/**
-+ * assign_event_grouping - Assign an event into a group. If existing group
-+ * cannot include it, create a new group and insert the event to it.
++ * Find if there is a counter available for event e in current_group. If a
++ * counter is available, use this counter by fill the bit in the correct counter
++ * bitmap. Otherwise, return error (-ERANGE).
 + */
-+static int assign_event_grouping(struct metricgroup__event_info *e,
-+				struct list_head *pmu_info_list __maybe_unused,
-+				struct list_head *groups)
++static int find_and_set_counters(struct metricgroup__event_info *e,
++				struct metricgroup__group *current_group)
 +{
-+	int ret = 0;
++	int ret;
++	unsigned long find_bit = 0;
 +
-+	struct metricgroup__pmu_group_list *g = NULL;
-+	struct metricgroup__pmu_group_list *pmu_group_head = NULL;
-+
-+	list_for_each_entry(g, groups, nd) {
-+		if (!strcasecmp(g->pmu_name, e->pmu_name)) {
-+			pr_debug("found group for event %s in pmu %s\n", e->name, g->pmu_name);
-+			pmu_group_head = g;
-+			break;
-+		}
++	if (e->free_counter)
++		return 0;
++	if (e->fixed_counter) {
++		ret = find_counter_bitmap(current_group->fixed_counters, e->counters,
++					 &find_bit);
++		if (ret)
++			return ret;
++		pr_debug("found counter for [event]=%s [e->fixed_counters]=%lu\n",
++			e->name, *current_group->fixed_counters);
++		ret = use_counter_bitmap(current_group->fixed_counters, find_bit);
++	} else {
++		ret = find_counter_bitmap(current_group->gp_counters, e->counters,
++					 &find_bit);
++		if (ret)
++			return ret;
++		pr_debug("found counter for [event]=%s [e->gp_counters]=%lu\n",
++			e->name, *current_group->gp_counters);
++		ret = use_counter_bitmap(current_group->gp_counters, find_bit);
 +	}
-+	if (!pmu_group_head) {
-+		struct metricgroup__pmu_counters *p;
-+
-+		pmu_group_head = malloc(sizeof(struct metricgroup__pmu_group_list));
-+		INIT_LIST_HEAD(&pmu_group_head->group_head);
-+		pr_debug("create new group for event %s in pmu %s ", e->name, e->pmu_name);
-+		pmu_group_head->pmu_name = e->pmu_name;
-+		list_for_each_entry(p, pmu_info_list, nd) {
-+			if (!strcasecmp(p->name, e->pmu_name)) {
-+				pmu_group_head->size = p->size;
-+				pmu_group_head->fixed_size = p->fixed_size;
-+			}
-+		}
-+		list_add_tail(&pmu_group_head->nd, groups);
-+	}
-+
-+	//ret = insert_event_to_group(e, pmu_group_head, pmu_info_list);
 +	return ret;
 +}
 +
-+/**
-+ * create_grouping - Create a list of groups and place all the events of
-+ * event_info_list into these groups.
-+ * @pmu_info_list: the list of PMU units info based on pmu-events data, used for
-+ * creating new groups.
-+ * @event_info_list: the list of events to be grouped.
-+ * @groupings: the list of groups with events placed in.
-+ * @modifier: any modifiers added to the events.
-+ */
-+static int create_grouping(struct list_head *pmu_info_list,
-+			  struct list_head *event_info_list,
-+			  struct list_head *groupings __maybe_unused,
-+			  const char *modifier __maybe_unused)
++static int _insert_event(struct metricgroup__event_info *e,
++			struct metricgroup__group *group)
 +{
-+	int ret = 0;
-+	struct metricgroup__event_info *e;
-+	LIST_HEAD(groups);
-+	char *bit_buf = malloc(NR_COUNTERS);
++	struct metricgroup__group_events *event = malloc(sizeof(struct metricgroup__group_events));
 +
-+	//TODO: for each new core group, we should consider to add events that uses fixed counters
-+	list_for_each_entry(e, event_info_list, nd) {
-+		bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
-+		pr_debug("Event name %s, [pmu]=%s, [counters]=%s\n", e->name,
-+			e->pmu_name, bit_buf);
-+		ret = assign_event_grouping(e, pmu_info_list, &groups);
++	if (!event)
++		return -ENOMEM;
++	event->event_name = e->name;
++	if (e->fixed_counter)
++		list_add(&event->nd, &group->event_head);
++	else
++		list_add_tail(&event->nd, &group->event_head);
++	return 0;
++}
++
++/**
++ * Insert event e into a group capable to include it
++ *
++ */
++static int insert_event_to_group(struct metricgroup__event_info *e,
++				struct metricgroup__pmu_group_list *pmu_group_head)
++{
++	struct metricgroup__group *g;
++	int ret;
++	//struct list_head *head;
++
++	list_for_each_entry(g, &pmu_group_head->group_head, nd) {
++		ret = find_and_set_counters(e, g);
++		if (!ret) { /* return if successfully find and set counter*/
++			ret = _insert_event(e, g);
++			return ret;
++		}
++	}
++	/*
++	 * We were not able to find an existing group to insert this event.
++	 * Continue to create a new group and insert the event in it.
++	 */
++	{
++		struct metricgroup__group *current_group = malloc(sizeof(struct metricgroup__group));
++		if (!current_group)
++			return -ENOMEM;
++		pr_debug("create_new_group for [event] %s\n", e->name);
++
++		//head = &pmu_group_head->group_head;
++		//ret = create_new_group(head, current_group, pmu_group_head->size,
++		//			pmu_group_head->fixed_size);
++		if (ret)
++			return ret;
++		ret = find_and_set_counters(e, current_group);
++		if (ret)
++			return ret;
++		ret = _insert_event(e, current_group);
 +	}
 +
 +	return ret;
-+};
++}
 +
  /**
-  * hw_aware_build_grouping - Build event groupings by reading counter
-  * requirement of the events and counter available on the system from
-@@ -1714,6 +1784,8 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
- 	ret = get_pmu_counter_layouts(&pmu_info_list, ltable);
- 	if (ret)
- 		goto err_out;
-+	ret = create_grouping(&pmu_info_list, &event_info_list, groupings,
-+			     modifier);
- 
- err_out:
- 	metricgroup__free_event_info(&event_info_list);
-diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index 8ee7b434e..f9f8b7498 100644
---- a/tools/perf/util/metricgroup.h
-+++ b/tools/perf/util/metricgroup.h
-@@ -100,6 +100,43 @@ struct metricgroup__pmu_counters {
- 	size_t fixed_size;
- };
- 
-+/**
-+ * A list of groups for this pmu.
-+ * This is updated during the grouping.
-+ */
-+struct metricgroup__pmu_group_list {
-+	struct list_head nd;
-+	/** The name of the pmu(/core) the events collected on. */
-+	const char *pmu_name;
-+	/** The number of gp counters in the pmu(/core). */
-+	size_t size;
-+	/** The number of fixed counters in the pmu(/core) if applicable. */
-+	size_t fixed_size;
-+	/** Head to the list of groups using this pmu(/core)*/
-+	struct list_head group_head;
-+};
-+
-+/**
-+ * This is one node in the metricgroup__pmu_group_list.
-+ * It represents on group.
-+ */
-+struct metricgroup__group {
-+	struct list_head nd;
-+	/** The bitmaps represent availability of the counters.
-+	 *  They are updated once the corresponding counter is used by
-+	 *  an event (event inserted into the group).
-+	 */
-+	DECLARE_BITMAP(gp_counters, NR_COUNTERS);
-+	DECLARE_BITMAP(fixed_counters, NR_COUNTERS);
-+	/** Head to the list of event names in this group*/
-+	struct list_head event_head;
-+};
-+
-+struct metricgroup__group_events {
-+	struct list_head nd;
-+	const char *event_name;
-+};
-+
- /**
-  * Each group is one node in the group string list.
+  * assign_event_grouping - Assign an event into a group. If existing group
+  * cannot include it, create a new group and insert the event to it.
   */
+ static int assign_event_grouping(struct metricgroup__event_info *e,
+-				struct list_head *pmu_info_list __maybe_unused,
++				struct list_head *pmu_info_list,
+ 				struct list_head *groups)
+ {
+ 	int ret = 0;
+@@ -1717,7 +1828,7 @@ static int assign_event_grouping(struct metricgroup__event_info *e,
+ 		list_add_tail(&pmu_group_head->nd, groups);
+ 	}
+ 
+-	//ret = insert_event_to_group(e, pmu_group_head, pmu_info_list);
++	ret = insert_event_to_group(e, pmu_group_head);
+ 	return ret;
+ }
+ 
 -- 
 2.39.3
 
