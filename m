@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642267ACF35
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97077ACF3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 06:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjIYEgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 00:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S229984AbjIYElQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 00:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjIYEgV (ORCPT
+        with ESMTP id S229449AbjIYElP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 00:36:21 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5536492
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:36:13 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53368df6093so9677a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695616572; x=1696221372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=utpCVSnKwmUjnI78nqFvLGOx8w1hMljEMO2FokBLE1I=;
-        b=ybr6RM4CPXpwC9LRY3DBeFzRR8xUW4feAfauDPvuNqGD1XTEgTZJ6PysV1BcIGUkUW
-         YpPV4a1uIofNpKwJGKIAfmzVso2/MAKtqv9JruN5CBBgnotdlr2lHuyMX1lB71iVsovG
-         U/DSoEXgp/YIsyIPnhIsjH8h0SsTWPfJ/j5TEABPMYSUa9VXHeJObZ1U//c60mvSXaAg
-         Uyzfyc0JGX5Df0HeGB5VSwYoZ02krp79yhq9F1wpQIqpxGAD/zrR+ITeyQmSJ8xE1pQY
-         5wKjCRB2yRF4+Gi3Kaxg2BbJo8xffQCdHyjmzOzzwR9xP8YYllbzMcnr9xwnj4Azy0LH
-         qYLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695616572; x=1696221372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=utpCVSnKwmUjnI78nqFvLGOx8w1hMljEMO2FokBLE1I=;
-        b=M95d5oeHaKoNUrStWgvRwIDEx95awZih7kSSXSVYpALeQbnx3jc3RQq2O30rrS4m0s
-         29re5F8YirRN4Z+UXNQBe5PhmuBLJ0VFZWN9j1VPWX9p7sYQEhPL3PhRUtEckZ4thvel
-         33bIhu0a9tfJA8TIS+Y/s0R7bbAsllv9hoskbx30tYlR1Rx0TN+DEJ9Amh1thqyrNWLg
-         3XMbRg8low4IqIaFIPIQjmdrxa33Eo5FTQpXq4smNnsWGuqPubecS87mBvltZNV8SPl+
-         NmZKdTyA0d0n/vtS3AU4OINwugjn1N3iT9vY2S0TPir/LZjp9mtnipxBbHvJqBSME/2s
-         sFFw==
-X-Gm-Message-State: AOJu0YyWp8CaQckb9y2Vk9VTuiwg+sXgPXIRB9FVhTftMG52enJkcetw
-        J3FG37WAnQ9CZjCpNTA5exDW2g3NF2r5Ofc7ErZyug==
-X-Google-Smtp-Source: AGHT+IHKR23zBujhctNddZ7OKF7KZBJFI4TepLmmMkO/RSku8CnURNUbVfdbS2tNLuBfQcREKCgWH/+nVYtyPrKezTY=
-X-Received: by 2002:a50:9fc5:0:b0:525:573c:6444 with SMTP id
- c63-20020a509fc5000000b00525573c6444mr23731edf.1.1695616571593; Sun, 24 Sep
- 2023 21:36:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230922210530.2045146-1-i.maximets@ovn.org>
-In-Reply-To: <20230922210530.2045146-1-i.maximets@ovn.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 25 Sep 2023 06:35:58 +0200
-Message-ID: <CANn89iJgeCvJbcapir8WkJv6nYop5CcfxgBrx3BoxEuwp0WA_w@mail.gmail.com>
-Subject: Re: [PATCH net] ipv6: tcp: add a missing nf_reset_ct() in 3WHS handling
-To:     Ilya Maximets <i.maximets@ovn.org>
-Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        Madhu Koriginja <madhu.koriginja@nxp.com>,
-        Frode Nordahl <frode.nordahl@canonical.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 25 Sep 2023 00:41:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CA3BC
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 21:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695616869; x=1727152869;
+  h=date:from:to:cc:subject:message-id;
+  bh=SJ133odI03+wSP8JHXp3wpgFuKXdTsSx5472u/eLS9U=;
+  b=E+W9kLOF5lW4YntJrcCDSUAhs2ucpyIC+UPxgAlUVFIX3525ESN6150R
+   t+UN2Uyeu2Be8OlJf/hB2Ad2HwyeIs8Qqu3a5/EHY6w/zjKTeDNU+iHPg
+   sdnQvAhBqKDuvJl4qlvn04hQYr5ZJN7dTG2KI5CfWvfEFK5TQYyysfUIC
+   iI2b6IYt4OIpqaZ2dR2IgR3T6ilFK7u2LO9nZKE5SklG6mZl3Rbz1EtUe
+   NaEzSopWsOh5d2+FMuF1FenstkuwDRR9kY6+xbdg7LykyRUyDR3kKW3zY
+   oZVG1KYDj+GpEVSH4KSQuXFBlE7mUvEyWflkD86D0VOneYVAjl26grsaI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="384994793"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="384994793"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 21:41:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="838456845"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="838456845"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Sep 2023 21:41:06 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qkdP5-0001CL-3D;
+        Mon, 25 Sep 2023 04:41:03 +0000
+Date:   Mon, 25 Sep 2023 12:40:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/mm] BUILD SUCCESS
+ f4c5ca9850124fb5715eff06cffb1beed837500c
+Message-ID: <202309251209.PvyBb7B4-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,36 +60,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 11:04=E2=80=AFPM Ilya Maximets <i.maximets@ovn.org>=
- wrote:
->
-> Commit b0e214d21203 ("netfilter: keep conntrack reference until
-> IPsecv6 policy checks are done") is a direct copy of the old
-> commit b59c270104f0 ("[NETFILTER]: Keep conntrack reference until
-> IPsec policy checks are done") but for IPv6.  However, it also
-> copies a bug that this old commit had.  That is: when the third
-> packet of 3WHS connection establishment contains payload, it is
-> added into socket receive queue without the XFRM check and the
-> drop of connection tracking context.
->
-> That leads to nf_conntrack module being impossible to unload as
-> it waits for all the conntrack references to be dropped while
-> the packet release is deferred in per-cpu cache indefinitely, if
-> not consumed by the application.
->
-> The issue for IPv4 was fixed in commit 6f0012e35160 ("tcp: add a
-> missing nf_reset_ct() in 3WHS handling") by adding a missing XFRM
-> check and correctly dropping the conntrack context.  However, the
-> issue was introduced to IPv6 code afterwards.  Fixing it the
-> same way for IPv6 now.
->
-> Fixes: b0e214d21203 ("netfilter: keep conntrack reference until IPsecv6 p=
-olicy checks are done")
-> Link: https://lore.kernel.org/netdev/d589a999-d4dd-2768-b2d5-89dec64a4a42=
-@ovn.org/
-> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
+branch HEAD: f4c5ca9850124fb5715eff06cffb1beed837500c  x86_64: Show CR4.PSE on auxiliaries like on BSP
 
-Nica catch, thanks a lot.
+elapsed time: 1016m
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+configs tested: 199
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                   randconfig-001-20230924   gcc  
+arc                   randconfig-001-20230925   gcc  
+arc                        vdk_hs38_defconfig   gcc  
+arc                    vdk_hs38_smp_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                       aspeed_g4_defconfig   clang
+arm                         bcm2835_defconfig   clang
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20230924   gcc  
+arm                   randconfig-001-20230925   gcc  
+arm                           u8500_defconfig   gcc  
+arm                         vf610m4_defconfig   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230924   gcc  
+i386         buildonly-randconfig-001-20230925   gcc  
+i386         buildonly-randconfig-002-20230924   gcc  
+i386         buildonly-randconfig-002-20230925   gcc  
+i386         buildonly-randconfig-003-20230924   gcc  
+i386         buildonly-randconfig-003-20230925   gcc  
+i386         buildonly-randconfig-004-20230924   gcc  
+i386         buildonly-randconfig-004-20230925   gcc  
+i386         buildonly-randconfig-005-20230924   gcc  
+i386         buildonly-randconfig-005-20230925   gcc  
+i386         buildonly-randconfig-006-20230924   gcc  
+i386         buildonly-randconfig-006-20230925   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230924   gcc  
+i386                  randconfig-001-20230925   gcc  
+i386                  randconfig-002-20230924   gcc  
+i386                  randconfig-002-20230925   gcc  
+i386                  randconfig-003-20230924   gcc  
+i386                  randconfig-003-20230925   gcc  
+i386                  randconfig-004-20230924   gcc  
+i386                  randconfig-004-20230925   gcc  
+i386                  randconfig-005-20230924   gcc  
+i386                  randconfig-005-20230925   gcc  
+i386                  randconfig-006-20230924   gcc  
+i386                  randconfig-006-20230925   gcc  
+i386                  randconfig-011-20230924   gcc  
+i386                  randconfig-011-20230925   gcc  
+i386                  randconfig-012-20230924   gcc  
+i386                  randconfig-012-20230925   gcc  
+i386                  randconfig-013-20230924   gcc  
+i386                  randconfig-013-20230925   gcc  
+i386                  randconfig-014-20230924   gcc  
+i386                  randconfig-014-20230925   gcc  
+i386                  randconfig-015-20230924   gcc  
+i386                  randconfig-015-20230925   gcc  
+i386                  randconfig-016-20230924   gcc  
+i386                  randconfig-016-20230925   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230924   gcc  
+loongarch             randconfig-001-20230925   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                           ip32_defconfig   gcc  
+mips                           rs90_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                       maple_defconfig   gcc  
+powerpc                     mpc83xx_defconfig   gcc  
+powerpc                      pmac32_defconfig   clang
+powerpc                     stx_gp3_defconfig   gcc  
+powerpc                     tqm8548_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                 randconfig-001-20230924   gcc  
+riscv                 randconfig-001-20230925   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230924   gcc  
+s390                  randconfig-001-20230925   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         apsh4a3a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
+sh                           se7206_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230924   gcc  
+sparc                 randconfig-001-20230925   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230924   gcc  
+x86_64       buildonly-randconfig-001-20230925   gcc  
+x86_64       buildonly-randconfig-002-20230924   gcc  
+x86_64       buildonly-randconfig-002-20230925   gcc  
+x86_64       buildonly-randconfig-003-20230924   gcc  
+x86_64       buildonly-randconfig-003-20230925   gcc  
+x86_64       buildonly-randconfig-004-20230924   gcc  
+x86_64       buildonly-randconfig-004-20230925   gcc  
+x86_64       buildonly-randconfig-005-20230924   gcc  
+x86_64       buildonly-randconfig-005-20230925   gcc  
+x86_64       buildonly-randconfig-006-20230924   gcc  
+x86_64       buildonly-randconfig-006-20230925   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20230925   gcc  
+x86_64                randconfig-002-20230925   gcc  
+x86_64                randconfig-003-20230925   gcc  
+x86_64                randconfig-004-20230925   gcc  
+x86_64                randconfig-005-20230925   gcc  
+x86_64                randconfig-006-20230925   gcc  
+x86_64                randconfig-011-20230924   gcc  
+x86_64                randconfig-011-20230925   gcc  
+x86_64                randconfig-012-20230924   gcc  
+x86_64                randconfig-012-20230925   gcc  
+x86_64                randconfig-013-20230924   gcc  
+x86_64                randconfig-013-20230925   gcc  
+x86_64                randconfig-014-20230924   gcc  
+x86_64                randconfig-014-20230925   gcc  
+x86_64                randconfig-015-20230924   gcc  
+x86_64                randconfig-015-20230925   gcc  
+x86_64                randconfig-016-20230924   gcc  
+x86_64                randconfig-016-20230925   gcc  
+x86_64                randconfig-071-20230925   gcc  
+x86_64                randconfig-072-20230925   gcc  
+x86_64                randconfig-073-20230925   gcc  
+x86_64                randconfig-074-20230925   gcc  
+x86_64                randconfig-075-20230925   gcc  
+x86_64                randconfig-076-20230925   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
+xtensa                    smp_lx200_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
