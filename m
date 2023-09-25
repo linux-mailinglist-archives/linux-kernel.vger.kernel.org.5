@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4053F7AD7D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7327AD7D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbjIYMST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S231363AbjIYMSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIYMSR (ORCPT
+        with ESMTP id S229450AbjIYMSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:18:17 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB17ACE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:18:11 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3adf06730c4so4029058b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695644290; x=1696249090; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zOnVN1rOFVajKAbeVV2zdOVaxv00+S/fJ9PzfWMptxI=;
-        b=mbotxPjS3WmjMnBbou1Y2jk2/8BoMY3mvlmsnDJsbPFEuxs20F56gDnKAyjm3Jpw5v
-         3Paweu4LhBfgdk4qKNURJWn1onGDnq8ACHokjg4opIZalyqkQIHvyqwXV2TVyDuLAJk6
-         OVA8zzaFMADK2Se94TVuwrm+2PY1MnCgueR3ckCN3ALZijUXR2Tc7yb3kMLSEnwNSXFa
-         plLhoqNnPufg4sleNJ40efo+1FLSzX+qXnzKyl+HVrHSzaF8uJ6R+/D2EwafFm5G0nLm
-         fguMlP36trOElubUObk0OvGlFSXDlSZvYcmCbiffTtanyKX2dFQO69U4bx+PwAL023sQ
-         e41w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695644290; x=1696249090;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zOnVN1rOFVajKAbeVV2zdOVaxv00+S/fJ9PzfWMptxI=;
-        b=iz/mLpYxiiy+4To07U57Xj5XiXiw8y074niVc3DTgIy5cAzrLFWTHmbyvbiBE6YeWq
-         E/Hu9iZaBbDzpkLORAdOXm3B9M4yaz6/J0qPlxpjXL8dKp7z75qYzAutMKkX4Jh7ITX2
-         vcySflLOpj1CDfnPbbXYx/UTbjT4UC1bMay/KqS/BwfxCsHqRN+9SaqOjaH/I63cG4Zk
-         nQRQb6Qs5aBO6EWeELEYcTtxUF3YvrtpEoyuX7uhlOlfhpRp9N9iwb5gFDNB7PmPsG8Y
-         3Ra5VFVxVyJbzySAAuaktI+uEwOlq1AYOUC52fgjYyc63LWalYraSy20vrqVOVH3NM7c
-         +Iow==
-X-Gm-Message-State: AOJu0YxtCMXGAUK2FZJtd7UrwFh06MHqt81VS1P8t5MEIdGhEfw/eh9b
-        EsV4fPKOYCjRJNTFdvz8ZjbNMFVrPSnmXw==
-X-Google-Smtp-Source: AGHT+IHc2C+1GCW2kpICDog9+xeLilUnvwGiOlFDt1eRvD2+Nz6+mDh8uyUFd+ERzSvogC4JT9xIVA==
-X-Received: by 2002:a05:6808:18a1:b0:3ad:f866:39bd with SMTP id bi33-20020a05680818a100b003adf86639bdmr9199813oib.27.1695644290598;
-        Mon, 25 Sep 2023 05:18:10 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id q26-20020a62ae1a000000b00689f1ce7dacsm7992426pff.23.2023.09.25.05.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 05:18:10 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH] irq/generic-chip: fix the irq_chip name for /proc/interrupts
-Date:   Mon, 25 Sep 2023 20:17:34 +0800
-Message-Id: <20230925121734.93017-1-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 25 Sep 2023 08:18:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF82ACE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:18:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF963C433C8;
+        Mon, 25 Sep 2023 12:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695644319;
+        bh=+JXbgHqUQ0aKUPdu2YpA/gNhZEobY1Ib1Js2eZ6C4y4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VSFJXhqMU2CPq714eb0uq2pEc9nv8j/cwX+sX0cQkJMfFGxsIUDvhY5cV5xmCjd/M
+         E1Hxf1DTQu5ojdO+6Wag6OTSsxYBgjPYjej15Hg5GhS4f+28eePgmg59pIKGs/1DHj
+         upDFAiWEv+IkeCUZczfxORA8SP1okbOUkEs63qVemIMTACFYGMrdRuFSM4CX5eBNG6
+         IuG3MXPG31SSkyJi6STlJMcc3lZZo/h6r1SmCr4xHEHAY51n6ljSYHevI4vqxMVU4m
+         EgebJXe+2nOqKz+eHk1JiT/RppNwmHnbVrMUVsStzmkQi4tFfD/2Mpoo5cUc8mYHXF
+         xZRyr7aR78lwA==
+Date:   Mon, 25 Sep 2023 14:18:33 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v3 07/12] regulator: mt6358: Add supply names for MT6358
+ regulators
+Message-ID: <ZRF6mbpswWoxdJsl@finisterre.sirena.org.uk>
+References: <20230919104357.3971512-1-wenst@chromium.org>
+ <20230919104357.3971512-8-wenst@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="C03nZbIMQ4GsEMUt"
+Content-Disposition: inline
+In-Reply-To: <20230919104357.3971512-8-wenst@chromium.org>
+X-Cookie: I had pancake makeup for brunch!
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_init_generic_chip() only sets name for the first chip type,
-which will lead to empty names for other chip types.
-Eventually, these names will be shown as "-" /proc/interrupts.
 
-This patch sets name for all chip types by default.
+--C03nZbIMQ4GsEMUt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
----
- kernel/irq/generic-chip.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Tue, Sep 19, 2023 at 06:43:50PM +0800, Chen-Yu Tsai wrote:
+> The DT bindings for MT6358 regulator now defines the supply names for the
+> PMIC.
+>=20
+> Add support for them by adding .supply_name field settings for each
+> regulator.
 
-diff --git a/kernel/irq/generic-chip.c b/kernel/irq/generic-chip.c
-index c653cd31548d..81ecca08caad 100644
---- a/kernel/irq/generic-chip.c
-+++ b/kernel/irq/generic-chip.c
-@@ -219,11 +219,15 @@ void irq_init_generic_chip(struct irq_chip_generic *gc, const char *name,
- 			   int num_ct, unsigned int irq_base,
- 			   void __iomem *reg_base, irq_flow_handler_t handler)
- {
-+	struct irq_chip_type *ct = gc->chip_types;
-+	int i;
-+
- 	raw_spin_lock_init(&gc->lock);
- 	gc->num_ct = num_ct;
- 	gc->irq_base = irq_base;
- 	gc->reg_base = reg_base;
--	gc->chip_types->chip.name = name;
-+	for (i = 0; i < num_ct; i++)
-+		ct[i].chip.name = name;
- 	gc->chip_types->handler = handler;
- }
- 
+This doesn't apply against current code, please check and resend (I was
+using -rc3).
 
-base-commit: 8fff9184d1b5810dca5dd1a02726d4f844af88fc
--- 
-2.39.2
+--C03nZbIMQ4GsEMUt
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmURepIACgkQJNaLcl1U
+h9CZBgf7BZ9QaFpLALkLChBSjjaoNvvXZz88PigXkOGFHH1EzKUeQg2iA35QMiZU
+5+HHyO01EtSiVuAAB7Ih/f1QjLgnaRc5rooaBYYgO2oy8TO7CDIs+zi58f5Rj3gq
+ifKFsw/u3yfhd28Cg55RLbKugC/VmCjRD8fPthvhpSH9d4uKCwSwca4m5k48dUQ6
+RuHHUSIr1lEbrL3cpsPUg65EYV2TQYFDPSZjLnqfpXvfna+a+JOnmYzT4WNBvwzy
+wx0pVsbA5L+9FFuTPWWZlAbPL1gqnxaCVx4jnfaraolAciq53by4g59tbg4mkNoH
+MFOeJQpe9yDMJaFeC1cWs0L6IZU4IQ==
+=q4Ky
+-----END PGP SIGNATURE-----
+
+--C03nZbIMQ4GsEMUt--
