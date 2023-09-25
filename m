@@ -2,222 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA8B7ACE73
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ABB7ACE76
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbjIYCtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+        id S229571AbjIYCvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjIYCty (ORCPT
+        with ESMTP id S229526AbjIYCvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:49:54 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2045.outbound.protection.outlook.com [40.107.105.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB51A7;
-        Sun, 24 Sep 2023 19:49:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HJvDcwgggC5mXY7iSwvC6qBmr/ffqkJU+nCE8fgbHRsnFNFhPfk9T6RYMZvdQLM/FKNbaB2kZHkLLylHCEGZp9IvKtXEy7PG+E5+PX51jADKaQDGDmVP3IcroLE4BKqTsmlan2HBwop2cTJHlE/CzPQQ8mCFnbyBNjZkONctRvk+ElghSN1n5dK7rns9ozWT5ICW0QmPSCaTvQf0sZzPww4jaHIBuUVca7dvHGhc9Mip+hY55wApcYlDHrmYS4OfIee1kgK4IQaYEoNJedQjVeBvznT+h/+c154ToKsWJgDjNUYuXyhrZ4iuXwkcsle02BxA5wiG+WQszoAxvdC9xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L815y72ZKLd8Q6n13OC96EtIhZ75mN/FqznbXbkA6rg=;
- b=kXmAJlliFstQxP4YfGvMzDc3av2B0rpYrzYS8xykfJdyj6KOHGm4/9Lu1OcMQ46yTzwZwE+dt9LYBUK5z0MpIzGvS+M9S10w3JA1oSq7fIuCCTlBmWRsNK5YnR7XqVPQryIJhmoSSlDWk4id1LhW4Hs2Th17EPJ4Xd4YdfrY7LGFXZArl2k1ojtjF9iZjrYxrvJEANhSCJZEmw5JnWn2zsmU8LhQwQlbj6SGDm5e6G36wBhqSWzFC6OIP/Tg5Ogla9v/dBzwbsigt0AJ2vyopS9D31PoxRiAsleiX1lL3BZHd64avy6H4E22SIjAWWIqYr5UIZyD0JRld0WI5AoNDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L815y72ZKLd8Q6n13OC96EtIhZ75mN/FqznbXbkA6rg=;
- b=cuu2YzNB6GW51cMAAlF/rXB3zhwTrqy3It79FOT+SCGMVzITxxqQbTwDhbZhkV6a3zaqpaTC/4l7ZjUiwJuuvLLg4sedyUEtlcaWCDSD2WJ4+MdjcznzfsQzfjflLWbwjk/yHHrqfgEL/6ZowIFqh+v9W1mQOUFzZaBgshAdtKQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by AS8PR04MB8232.eurprd04.prod.outlook.com (2603:10a6:20b:3b2::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 02:49:43 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 02:49:43 +0000
-From:   Chancel Liu <chancel.liu@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        Sun, 24 Sep 2023 22:51:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79FD9E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:51:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37CF8C433C7;
+        Mon, 25 Sep 2023 02:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695610267;
+        bh=eEnE+E+YbvrX1hAE7s8/RxswnX8+mLTgwcg7qFx1qME=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DdcSpMEQ5grzOpBF7pzMISDNt7KfswBtnME75jG3pbGTc4gm7zSWL+lsqu+H+Bq6x
+         778Nn0Cfsnd2vH6WZe3peINmlt4AHVYuouem5zkWP2E6fJZjdbXxrgc6tzxrs/YtRI
+         d0yQCK1eXa3UvPujgcdII3Z8zzIdDNgwZLLMsV89Vv/8Pfn8FJeoC+TOFvL+pZVyVl
+         eS9PZFXbksnVDxKrQDj69rO61FzyvdaGvdXOz51he97HQaOkc+5ecnRtTR9+mZbXEE
+         HqssQQqbzZhAsTQUblyFNT/QX1v9XcYUSp9MDltwv22p3H1V0aSgq8PSrHI1fiamLM
+         hg6Y5L5Gh+jGw==
+Date:   Mon, 25 Sep 2023 10:50:58 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH 2/2] ASoC: imx-rpmsg: Force codec power on in low power audio mode
-Date:   Mon, 25 Sep 2023 10:48:47 +0800
-Message-Id: <20230925024847.2971421-2-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230925024847.2971421-1-chancel.liu@nxp.com>
-References: <20230925024847.2971421-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGXP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::36)
- To DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: ls208xa: use a pseudo-bus to constrain
+ usb dma size
+Message-ID: <20230925025058.GE7231@dragon>
+References: <20230914155935.6042-1-laurentiu.tudor@nxp.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|AS8PR04MB8232:EE_
-X-MS-Office365-Filtering-Correlation-Id: d245b4e4-e2d9-4e9e-ab46-08dbbd72123d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A93I2m3XNfqNq2imK78yIWNa0cKcy0xQ9R022nA1LuS7dlheaY2sVtmb2ZLxMQUAnVN/HP7LnuzOu6DMCrlHavKmj1zexpuUNRyPSXqpz2hODZXtqIK/WBqpExEwpEjrXyHavABtZDrDC/xjo/u4I0GSE45gErrfHFOMl2h9UUq9f/hwkZcQBEh9PPrT1auDk9Vs7R5qL3bj9eofGNytveqjTBQHZIKD001kP4As8Zgp9DEQtIuL5EEYJCto53lM3nGTDjdeeZH7Ow10edmNUb7gD6Me/y6IbJUNWAJt9JHITrniBNPDp7CSoriWDTbjC/jCreEMEH+6nYhHJIgZLno/ejcnkUCRZKjdnREDl1amgMGXSOVxatH4KDaRRADAU19g79eUIcRTzFx3OrAK1+ly02lUcJrxHQYUF6MjKoRvz3ido1HRZYToH2eDkHWpnifuZmL5aauOgLDhjdQ3MaSUYjMadkMFNrZXpz0VfldEuwCstZo9/g2kyb6xsHZvE41XkAdGVUKMq3VoHe7ezc+dY8Fn2vb5xVDfAx8WHrTuZZyYG0itm6ChxIi466JVm5j6ANPBtCJatVyGkZnK8rnzT+IRm+xqnSlmxmc1twFgOV73s0j5AtPlnMsVgk97v1HVpoXBXEmK9Wlwa2LFKuMk8MnvNxS0csrEYslE2x8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(366004)(346002)(376002)(230922051799003)(1800799009)(451199024)(186009)(478600001)(6512007)(52116002)(41300700001)(38350700002)(921005)(38100700002)(316002)(2013699003)(26005)(1076003)(2616005)(44832011)(83380400001)(5660300002)(66946007)(66476007)(66556008)(6506007)(6486002)(8676002)(8936002)(4326008)(2906002)(7416002)(86362001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oJyj8wOp0l9pHCMb0PuZjDe68pKVBQBjeU7XNjpkPtb4a3pHYQhVW7YBzDgW?=
- =?us-ascii?Q?oAOQ8jIGeyQ9Fqj8yN5c5OqNDptuRV954V6MwmItDhOMim7Db4EqU/bzQDKG?=
- =?us-ascii?Q?d4+0EURkHHquUH2Ok0efUEVs4d0Q6eiKPvjBZiAbXfXVnbVT1QMjl0cj03rT?=
- =?us-ascii?Q?ehJtKE+xjrLKqk4HcXXGCxp/v+0c8UVAY+PGaWEvvBs+IqFvU/s07qHEeqKo?=
- =?us-ascii?Q?xNcIW3yVwAhIW3Om8MjBpkKIruO/J++Kzd2RS2dr2btlnIiNcGJZMmyt0sEb?=
- =?us-ascii?Q?jp6YpTbSG9NFkJyBWQ4zlOsiVxJ5TaFLf6JF31O66PQcRj/82z3qC2RM3bDf?=
- =?us-ascii?Q?PUIcxYDL+d02Y1eAVRR+XfxwA1bEq2R5uz/vnpSzxDkd1DZBHBV5v4oCTDut?=
- =?us-ascii?Q?0QMbYtEmZr589HZMK2XfGCDx7sAVcieTbwBwvHZdlVAT7zNkSipci6KAFiZ8?=
- =?us-ascii?Q?uvCglBo7JYd2GZk0gsqvB4QvSvNMomPnI7UWsx6MNtDmwxG2mkhom6IKqkj0?=
- =?us-ascii?Q?KGvxZS+JOZ5QLEYYrtIUxdjcAJWMyJXz6caw2ExAe2CGeGvzHpYLTkx5gj7A?=
- =?us-ascii?Q?C1fJsbyQH/IUhQxlkQdvWWgE/D4iTT2uIPgG4xocwKDgmXBT9Io52HKtAycQ?=
- =?us-ascii?Q?qZMmAiIw6q3xwl/3whcJvbeDb89Z5Jd0Jd2A4GB0RCtFBJ43sSXUaR2wxf0p?=
- =?us-ascii?Q?Y/60unDvN/5/O+EJlnMuq1t1AIyeZf6a71fjgp8E3cT9OhNIJCmFzlO6Kdgu?=
- =?us-ascii?Q?lsbAmkuDhSJz6XJN3tEw8Z7ARa22CLUkmT46t5dfXnIrQ2f3s9hWfNdw2sn0?=
- =?us-ascii?Q?Cbhr4QsJjG1Z4Ai7NAzTKeD/FK+TK4P00DzQi4jIDsBegOWiKsdLd1E12DDQ?=
- =?us-ascii?Q?LrFYZhqf8Ija6FAS3kvJhwLeNze8S4NvOIsQzefwM2qopgIJJTPZH2ZrDSWn?=
- =?us-ascii?Q?rCHSO+bzZpuziYcmrsynNncJoBc3bBsfghVSD4pwlREKF7mIDsC/TojcKkY8?=
- =?us-ascii?Q?AXuYXYGV0fYN5upMm5rJta2s985puwigO3wGqUpn0VIqtgeRMQ1DwpXQBiGf?=
- =?us-ascii?Q?gJRCFIU5r9OTK+YW3fIcHzBx8J/xcmL2YIeHJkWfradW7ZJd6hRhd1lp+nmh?=
- =?us-ascii?Q?AHF2mnbwJTILx48DdR6gH+/mdnwPtMjWh09n6GAWxtlYZtQI49CS1vz4vJsr?=
- =?us-ascii?Q?hhqRJeBeEzdP7mTcnGn0OjWhIB4RdH/tW9LKaBgAz66UInQ2qOml4nRAkJvg?=
- =?us-ascii?Q?OSChNe1UDd1hXNXi1jtQqWlNLr+TEgJqMIwAiq9GMnkR0KAYOjCSYzp2ldnQ?=
- =?us-ascii?Q?jWSpGYCOYjMeR1Qidysr/o1Y8HrIu9L7YmkKSg8bh+r/LG5dnuuh2uRQhErl?=
- =?us-ascii?Q?qH6Ddy+XjI6IDeYo9UN/MC9qVS36YJToyAh0Yba7ggUK6WfSiJfF8vcPS4IV?=
- =?us-ascii?Q?dfqnLjSn7CgZSV7uLZezWSvvqJX1gnzmE7Pbyx2MHSCk/m5R7f5OwEV8+m1l?=
- =?us-ascii?Q?vxRxWsWH1Kuw9TIwBn4TNrH41ALIxVI08S/LdA9PGqTYgf25QyBMkgHk2R1U?=
- =?us-ascii?Q?A6VysJVtrPPqzv26mVfsoiUuQ2zDNdQq+0o70gSb?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d245b4e4-e2d9-4e9e-ab46-08dbbd72123d
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 02:49:43.4517
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OMqaidMqB5DSOkwlW5ATRr2J9mYZu4tgZ3Ptxmmm7A9syRxJoCjlijzmwaXHlFh77gGjvyXEZiVQxNH/I7rWWA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8232
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914155935.6042-1-laurentiu.tudor@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Low power audio mode requires binding codec still power on while Acore
-enters into suspend so Mcore can continue playback music.
+On Thu, Sep 14, 2023 at 06:59:35PM +0300, Laurentiu Tudor wrote:
+> Wrap the usb controllers in an intermediate simple-bus and use it to
+> constrain the dma address size of these usb controllers to the 40b
+> that they generate toward the interconnect. This is required because
+> the SoC uses 48b address sizes and this mismatch would lead to smmu
+> context faults [1] because the usb generates 40b addresses while the
+> smmu page tables are populated with 48b wide addresses.
+> 
+> [1]
+> xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
+> xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 1
+> xhci-hcd xhci-hcd.0.auto: hcc params 0x0220f66d hci version 0x100 quirks 0x0000000002000010
+> xhci-hcd xhci-hcd.0.auto: irq 108, io mem 0x03100000
+> xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
+> xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 2
+> xhci-hcd xhci-hcd.0.auto: Host supports USB 3.0 SuperSpeed
+> arm-smmu 5000000.iommu: Unhandled context fault: fsr=0x402, iova=0xffffffb000, fsynr=0x0, cbfrsynra=0xc01, cb=3
+> 
+> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> ---
+> Changes in v2:
+>  - renamed pseudo-bus from 'aux_bus' to just 'bus'
+> 
+>  .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 46 +++++++++++--------
+>  1 file changed, 27 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> index d2f5345d0560..6c311c61c5bc 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> @@ -1186,26 +1186,34 @@
+>  			dma-coherent;
+>  		};
+>  
+> -		usb0: usb@3100000 {
+> -			status = "disabled";
+> -			compatible = "snps,dwc3";
+> -			reg = <0x0 0x3100000 0x0 0x10000>;
+> -			interrupts = <0 80 0x4>; /* Level high type */
+> -			dr_mode = "host";
+> -			snps,quirk-frame-length-adjustment = <0x20>;
+> -			snps,dis_rxdet_inp3_quirk;
+> -			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+> -		};
+> +		bus: bus {
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			compatible = "simple-bus";
+> +			ranges;
+> +			dma-ranges = <0x0 0x0 0x0 0x0 0x100 0x00000000>;
+> +
+> +			usb0: usb@3100000 {
+> +				status = "disabled";
 
-ASoC machine driver acquires DAPM endpoints through reading
-"fsl,lpa-widgets" property from DT and then forces the path between
-these endpoints ignoring suspend.
+While you are at it, could you move 'status' to end of the property
+list?
 
-If the rpmsg sound card is in low power audio mode, the suspend/resume
-callback of binding codec is overridden to disable the suspend/resume.
+Shawn
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- sound/soc/fsl/imx-rpmsg.c | 58 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
-
-diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-index b578f9a32d7f..0568a3420aae 100644
---- a/sound/soc/fsl/imx-rpmsg.c
-+++ b/sound/soc/fsl/imx-rpmsg.c
-@@ -20,8 +20,11 @@ struct imx_rpmsg {
- 	struct snd_soc_dai_link dai;
- 	struct snd_soc_card card;
- 	unsigned long sysclk;
-+	bool lpa;
- };
- 
-+static struct dev_pm_ops lpa_pm;
-+
- static const struct snd_soc_dapm_widget imx_rpmsg_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-@@ -38,6 +41,58 @@ static int imx_rpmsg_late_probe(struct snd_soc_card *card)
- 	struct device *dev = card->dev;
- 	int ret;
- 
-+	if (data->lpa) {
-+		struct snd_soc_component *codec_comp;
-+		struct device_node *codec_np;
-+		struct device_driver *codec_drv;
-+		struct device *codec_dev = NULL;
-+
-+		codec_np = data->dai.codecs->of_node;
-+		if (codec_np) {
-+			struct platform_device *codec_pdev;
-+			struct i2c_client *codec_i2c;
-+
-+			codec_i2c = of_find_i2c_device_by_node(codec_np);
-+			if (codec_i2c)
-+				codec_dev = &codec_i2c->dev;
-+			if (!codec_dev) {
-+				codec_pdev = of_find_device_by_node(codec_np);
-+				if (codec_pdev)
-+					codec_dev = &codec_pdev->dev;
-+			}
-+		}
-+		if (codec_dev) {
-+			codec_comp = snd_soc_lookup_component_nolocked(codec_dev, NULL);
-+			if (codec_comp) {
-+				int i, num_widgets;
-+				const char *widgets;
-+				struct snd_soc_dapm_context *dapm;
-+
-+				num_widgets = of_property_count_strings(data->card.dev->of_node,
-+									"fsl,lpa-widgets");
-+				for (i = 0; i < num_widgets; i++) {
-+					of_property_read_string_index(data->card.dev->of_node,
-+								      "fsl,lpa-widgets",
-+								      i, &widgets);
-+					dapm = snd_soc_component_get_dapm(codec_comp);
-+					snd_soc_dapm_ignore_suspend(dapm, widgets);
-+				}
-+			}
-+			codec_drv = codec_dev->driver;
-+			if (codec_drv->pm) {
-+				memcpy(&lpa_pm, codec_drv->pm, sizeof(lpa_pm));
-+				lpa_pm.suspend = NULL;
-+				lpa_pm.resume = NULL;
-+				lpa_pm.freeze = NULL;
-+				lpa_pm.thaw = NULL;
-+				lpa_pm.poweroff = NULL;
-+				lpa_pm.restore = NULL;
-+				codec_drv->pm = &lpa_pm;
-+			}
-+			put_device(codec_dev);
-+		}
-+	}
-+
- 	if (!data->sysclk)
- 		return 0;
- 
-@@ -137,6 +192,9 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
- 
-+	if (of_property_read_bool(np, "fsl,enable-lpa"))
-+		data->lpa = true;
-+
- 	data->card.dev = &pdev->dev;
- 	data->card.owner = THIS_MODULE;
- 	data->card.dapm_widgets = imx_rpmsg_dapm_widgets;
--- 
-2.25.1
-
+> +				compatible = "snps,dwc3";
+> +				reg = <0x0 0x3100000 0x0 0x10000>;
+> +				interrupts = <0 80 0x4>; /* Level high type */
+> +				dr_mode = "host";
+> +				snps,quirk-frame-length-adjustment = <0x20>;
+> +				snps,dis_rxdet_inp3_quirk;
+> +				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+> +			};
+>  
+> -		usb1: usb@3110000 {
+> -			status = "disabled";
+> -			compatible = "snps,dwc3";
+> -			reg = <0x0 0x3110000 0x0 0x10000>;
+> -			interrupts = <0 81 0x4>; /* Level high type */
+> -			dr_mode = "host";
+> -			snps,quirk-frame-length-adjustment = <0x20>;
+> -			snps,dis_rxdet_inp3_quirk;
+> -			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+> +			usb1: usb@3110000 {
+> +				status = "disabled";
+> +				compatible = "snps,dwc3";
+> +				reg = <0x0 0x3110000 0x0 0x10000>;
+> +				interrupts = <0 81 0x4>; /* Level high type */
+> +				dr_mode = "host";
+> +				snps,quirk-frame-length-adjustment = <0x20>;
+> +				snps,dis_rxdet_inp3_quirk;
+> +				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+> +			};
+>  		};
+>  
+>  		ccn@4000000 {
+> -- 
+> 2.17.1
+> 
