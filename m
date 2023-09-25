@@ -2,141 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 149177AE182
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405057AE186
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjIYWFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S231533AbjIYWHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjIYWFj (ORCPT
+        with ESMTP id S229459AbjIYWHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:05:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056E7180
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:05:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A5D5C433C8;
-        Mon, 25 Sep 2023 22:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695679532;
-        bh=FmZZfIJ7IjqsgMWeiyIf/YJBP5eLlOuuOdfPlbttg+A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c4+YavJePbk5XQhufDOKssIq1IW9tGV2SLanMeov18NhO3LjgeJSUdunp+PCdUPid
-         cv6cNmJubZL8ILBF8xH3B9XfYk3Epuj212eYufl9Z3GBSGCaWPJ2Y924Ftlif9vhST
-         JFp6ozAm1b+YgUOl5QeIamrwJ2spycsWUBPhLIQTP2IJE9iRqY1KR+DiviCyZyOW7i
-         GvlMAIMvxBNT7LGNXXu+MrY9uKnrq+6zNLdGHwCWem90eIqJ/ew9VaKt8x6V8kNh+D
-         ivOOj6JOuYTIrtAiCV8UZusUZLTFS0iyvQZOgirkJt7JF+yUXTFLYmaiFmhG2vXIoc
-         qJv/N3jqi16gA==
-Received: (nullmailer pid 2027056 invoked by uid 1000);
-        Mon, 25 Sep 2023 22:05:30 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: arm,coresight-cti: Add missing additionalProperties on child nodes
-Date:   Mon, 25 Sep 2023 17:05:06 -0500
-Message-Id: <20230925220511.2026514-2-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230925220511.2026514-1-robh@kernel.org>
-References: <20230925220511.2026514-1-robh@kernel.org>
+        Mon, 25 Sep 2023 18:07:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B90116
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695679574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tY5bcSFTLxhrJq0wnGX1DBWHzjbAl0iR3STf9o5hxaQ=;
+        b=Pn62VgF9Hwhu/sZjPC7xQUyVIjjudYclDHUsjKggn1m7/c6QypemzGU1Hh/t0SxwqXFkhM
+        37sNW/bbwPKGCjBmJwgrCU96hvefEJf+zntZYgSSGpkMY2D3TUAjM2Qu91Zanb5EpqmH2F
+        ofrl6vdcptNo7b0kpKSfhicDhxPG/3Y=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-39-uCiVlFosO9GeqtQbA_SEMg-1; Mon, 25 Sep 2023 18:06:11 -0400
+X-MC-Unique: uCiVlFosO9GeqtQbA_SEMg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32320b3ee93so2838091f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:06:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695679570; x=1696284370;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tY5bcSFTLxhrJq0wnGX1DBWHzjbAl0iR3STf9o5hxaQ=;
+        b=Cy4kEHbtjTIB7Db9aBIlHSXLuijylFHv1uhKWKqUOmLm1h3bRFqeOa/s5fWWrv4wyb
+         Njizo9EOCURkmvpXFIIbPFK0j+C385Hi1JpQiPJSq3ytzMQPQH2oBHX5kvpvmcLkTW31
+         cfMvDOxYfgQp1uVwV/4bVkzGjj1U4q6Hp9XWITVig662FkUj4itlbFrRQjYcyG6WLoyC
+         QIPl6HjDfFwcvPUX0nxVwgiLmkNxZiEPORxngy7qZKvlxS1vSRGVHOu6UTVEbK25bfqg
+         8AZj7nXRsd7vq1aY9LWXjwjdh+zTaKlG4//CMPm8VUvw8EK9tUg03ieM0VWljUFEzGif
+         rezQ==
+X-Gm-Message-State: AOJu0YxyfdkLv9T8F0UR9f4UFd2/ijl4uv4elG8NA3PV8XPRK565T0YA
+        WnGMB8l8dWij01j5zw2R5d3BESZzaUaHdhUe5oifGdsSo8J8YToEGxUp6x/f/NQzw+zZ7t0YN6w
+        1UhL6u84G4X5tXRhwjn7CkbwW
+X-Received: by 2002:a5d:6382:0:b0:319:8c35:378 with SMTP id p2-20020a5d6382000000b003198c350378mr6912291wru.44.1695679570581;
+        Mon, 25 Sep 2023 15:06:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHmeSIEMwFLWmZGGbq/ZzwRhXqWOvyeod0GnC31lUWRsM0brD8Xc2qSB7EvUpkx5KUb+zHPbw==
+X-Received: by 2002:a5d:6382:0:b0:319:8c35:378 with SMTP id p2-20020a5d6382000000b003198c350378mr6912272wru.44.1695679570272;
+        Mon, 25 Sep 2023 15:06:10 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id b12-20020a5d634c000000b0031773a8e5c4sm12875356wrw.37.2023.09.25.15.06.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 15:06:09 -0700 (PDT)
+Message-ID: <e2072b46-11a4-a146-e984-70be30514fe1@redhat.com>
+Date:   Tue, 26 Sep 2023 00:06:08 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Nouveau] [PATCH] drm/nouveau/kms/nv50: hide unused variables
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
+        Wayne Lin <Wayne.Lin@amd.com>, Danilo Krummrich <me@dakr.org>
+References: <20230925155930.677620-1-arnd@kernel.org>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20230925155930.677620-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just as unevaluatedProperties or additionalProperties are required at
-the top level of schemas, they should (and will) also be required for
-child node schemas. That ensures only documented properties are
-present for any node.
+On 9/25/23 17:59, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> After a recent change, two variables are only used in an #ifdef:
+> 
+> drivers/gpu/drm/nouveau/dispnv50/disp.c: In function 'nv50_sor_atomic_disable':
+> drivers/gpu/drm/nouveau/dispnv50/disp.c:1569:13: error: unused variable 'ret' [-Werror=unused-variable]
+>   1569 |         int ret;
+>        |             ^~~
+> drivers/gpu/drm/nouveau/dispnv50/disp.c:1568:28: error: unused variable 'aux' [-Werror=unused-variable]
+>   1568 |         struct drm_dp_aux *aux = &nv_connector->aux;
+>        |                            ^~~
+> 
+> Move them into the same conditional block, along with the nv_connector variable
+> that becomes unused during that fix.
+> 
+> Fixes: 757033808c95b ("drm/nouveau/kms/nv50-: fixup sink D3 before tearing down link")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Adding additionalProperties constraint on 'trig-conns' nodes results in
-warnings that 'cpu' and 'arm,cs-dev-assoc' are not allowed. These are
-already defined for the parent node, but need to be duplicated for the
-child node. Drop the free form description that the properties also apply
-to the child nodes.
+Reviewed-by: Danilo Krummrich <dakr@redhat.com>
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/arm/arm,coresight-cti.yaml       | 33 ++++++++++++++-----
- 1 file changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml
-index b9bdfc8969cd..2d5545a2b49c 100644
---- a/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml
-@@ -93,9 +93,7 @@ properties:
- 
-   cpu:
-     description:
--      Handle to cpu this device is associated with. This must appear in the
--      base cti node if compatible string arm,coresight-cti-v8-arch is used,
--      or may appear in a trig-conns child node when appropriate.
-+      Handle to cpu this CTI is associated with.
- 
-   power-domains:
-     maxItems: 1
-@@ -112,12 +110,12 @@ properties:
-     description:
-       defines a phandle reference to an associated CoreSight trace device.
-       When the associated trace device is enabled, then the respective CTI
--      will be enabled. Use in a trig-conns node, or in CTI base node when
--      compatible string arm,coresight-cti-v8-arch used. If the associated
--      device has not been registered then the node name will be stored as
--      the connection name for later resolution. If the associated device is
--      not a CoreSight device or not registered then the node name will remain
--      the connection name and automatic enabling will not occur.
-+      will be enabled. Use in CTI base node when compatible string
-+      arm,coresight-cti-v8-arch used. If the associated device has not been
-+      registered then the node name will be stored as the connection name for
-+      later resolution. If the associated device is not a CoreSight device or
-+      not registered then the node name will remain the connection name and
-+      automatic enabling will not occur.
- 
-   # size cells and address cells required if trig-conns node present.
-   "#size-cells":
-@@ -129,6 +127,8 @@ properties:
- patternProperties:
-   '^trig-conns@([0-9]+)$':
-     type: object
-+    additionalProperties: false
-+
-     description:
-       A trigger connections child node which describes the trigger signals
-       between this CTI and another hardware device. This device may be a CPU,
-@@ -140,6 +140,21 @@ patternProperties:
-       reg:
-         maxItems: 1
- 
-+      cpu:
-+        description:
-+          Handle to cpu this trigger connection is associated with.
-+
-+      arm,cs-dev-assoc:
-+        $ref: /schemas/types.yaml#/definitions/phandle
-+        description:
-+          defines a phandle reference to an associated CoreSight trace device.
-+          When the associated trace device is enabled, then the respective CTI
-+          will be enabled. If the associated device has not been registered
-+          then the node name will be stored as the connection name for later
-+          resolution. If the associated device is not a CoreSight device or
-+          not registered then the node name will remain the connection name
-+          and automatic enabling will not occur.
-+
-       arm,trig-in-sigs:
-         $ref: /schemas/types.yaml#/definitions/uint32-array
-         minItems: 1
--- 
-2.40.1
+> ---
+>   drivers/gpu/drm/nouveau/dispnv50/disp.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index 52f1569ee37c1..a0ac8c258d9ff 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -1560,15 +1560,13 @@ nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *st
+>   {
+>   	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+>   	struct nv50_head *head = nv50_head(nv_encoder->crtc);
+> -	struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
+>   #ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
+> +	struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
+>   	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+>   	struct nouveau_backlight *backlight = nv_connector->backlight;
+> -#endif
+>   	struct drm_dp_aux *aux = &nv_connector->aux;
+>   	int ret;
+>   
+> -#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
+>   	if (backlight && backlight->uses_dpcd) {
+>   		ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
+>   		if (ret < 0)
 
