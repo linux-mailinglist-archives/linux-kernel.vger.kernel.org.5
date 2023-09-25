@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE587AD4D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACA97AD4DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbjIYJvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        id S229660AbjIYJxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjIYJvq (ORCPT
+        with ESMTP id S229437AbjIYJx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:51:46 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95519C0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:51:39 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c45c45efeeso5698335ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:51:39 -0700 (PDT)
+        Mon, 25 Sep 2023 05:53:29 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FE1BE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:53:22 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53339349956so6600424a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:53:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695635499; x=1696240299; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6bDaROXosZFbxypZ/HbsqMYiNAkcfxciw+tGlY+rYeU=;
-        b=Ww/3LeLdNSzMKLAkpPz0gj2FXArrYdSEqlsL3mQ9swSfmvzwNLykiKmrf/azIT/3fC
-         qD1Yyaw8AXq421+VU15G5zhW9yo+fq+I8wf7c/I5N6c0xe52sdXzE2zypn414MeORGtN
-         vYF/3CnaXOdkwSV31z0mEZ9ZlPAb3qq+RDONBiNdLJGBQVYdRRb7yQZfjg6glTh0ti1A
-         cgM2+dsrOzAN/+SppAkPCWv+iIL+9yQ/WSC/6UI+MUXjt6AJddm5Ti9TvO7sLkmL316I
-         D1/wBnk7xtaUqCosXKiHElN0qbZN88NUKEwKwgVUer6SVYbSQdUuIEnBhCuJElf+wyrs
-         rcIg==
+        d=linaro.org; s=google; t=1695635600; x=1696240400; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nIrqv9oq5sNWvOZMSPBXexVhTAp4lRyjI5nZVEYm+7g=;
+        b=rv5VU0Bt/GgtwoxlX3M4IMi0uCLcVpvjlKxW2quO4A1iDK33EB+JV8orMu+t+/Lgp2
+         uF6NezbOr+BF02AaDAYCTsiugx3Lbhc8qcuut3mbcuUa2omqoZG+qGct0XOERd4dwXX4
+         +t0NfvGLJ6CIMU0Y2QI8tA0u002HrF9lTRqDm2wiRjJSkagXYp1jCJzChk/AwAYf5Mov
+         I4LQVyDQmBIZ1PdxMKGiuvIPuyISp/YXw39lh+RsOyyloVneIG/4aRS4x52tnhXiIwCB
+         u6oi8Th0KO9Us76lrnf4XmOOf5jz5/JWOyLwPZxJAht2F12PylrRH8MpO23KqScvAhYv
+         GIQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695635499; x=1696240299;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6bDaROXosZFbxypZ/HbsqMYiNAkcfxciw+tGlY+rYeU=;
-        b=xJ0QxvoVTcOUMEvOaTcShFG5Cffba3BfaXOZVmAgNGyEzRO3eew1jUE4BjdsL3/0HP
-         1yWNNxEDCF8ShbdeveKDokVA5mL1Fm+TiGbHNFkxz+HRB5issO5K6IuZjxfG+BnsZ+8o
-         X/6K1QmwRnFB9Yh9HW7VFlGF8mMv/zUVyV02ViQyJto4UBCA5L+A3p7MpPEnP2XM+jnv
-         hLWYoaLGyDoym0/YH225E/LU62Yqs9nkLjjjmpg1NOYQq6kKRcLK8vIzI3h7vaa+YZi0
-         7crVqh8LXXOMWspJsgTwMeYvzVgldmDJ4NcAJRVuFS2Oe/jhBuAWla5YrrunimhE/55e
-         sRpA==
-X-Gm-Message-State: AOJu0YwekffM9y6HLQ1WrpnriQyVcwocm2fwH4Gg+n1rjq6cycjxREcu
-        XWeuIg4DHpzhzSOKYOhPrvlaHQ==
-X-Google-Smtp-Source: AGHT+IEL4SKPtQ8PAes8V97jql6XtLNcHPyUdJHnX/z3vjsVjPb+hoPuhUEeKkfGy/a39JaX+7fVTw==
-X-Received: by 2002:a17:902:ecce:b0:1c4:1e65:1e5e with SMTP id a14-20020a170902ecce00b001c41e651e5emr8550430plh.0.1695635498999;
-        Mon, 25 Sep 2023 02:51:38 -0700 (PDT)
-Received: from smtpclient.apple (mobile-166-171-251-202.mycingular.net. [166.171.251.202])
-        by smtp.gmail.com with ESMTPSA id l19-20020a170902d35300b001bc6e6069a6sm8424373plk.122.2023.09.25.02.51.37
+        d=1e100.net; s=20230601; t=1695635600; x=1696240400;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nIrqv9oq5sNWvOZMSPBXexVhTAp4lRyjI5nZVEYm+7g=;
+        b=he3BTeyVR9MdBOcQWRdeIlYmJu9SUjziu1wn0MxJNfT6KDD49OZW3Uky9FfFuzb3QQ
+         wi/xuecn4EdbXfDleaeoYE6pScocj3ObAnXDZfQ5AWTFi+PDCXgG0sVOhFbt/jJLV9fo
+         hC54WWPLJx2QfKK11ag0nh9TRr/EUXC5yF+7cVS3IEImu2H2Z7qjNSRPhSJpHhiH6ixP
+         3cxEZuS2KtTwSPddF47498GkYZH21rrWxrZVGHHioTNE0GssM/DdyZUzWqpTB0dIaTT+
+         mTVbM0xHivQhJNxvPv76LEOLx5kSQADODWEyZvZEF33JHXqsOcJEERqhduwshOQ5kXrT
+         Ropw==
+X-Gm-Message-State: AOJu0YyGMoeZi3XGet3A9q5kRE1AMVs4xsku6jQJuFehYhp3e9LCWLRd
+        foYUFQXZFQnoKu5eHBEtV4DbyA==
+X-Google-Smtp-Source: AGHT+IHBaAZK0STsyHakY9uDVflJt2b3NulBoMQ4GrOP7s4xI7pdP1qk+MD0+lJX1avXJEM3BzeN8w==
+X-Received: by 2002:a17:907:985b:b0:992:c8d7:b66f with SMTP id jj27-20020a170907985b00b00992c8d7b66fmr6063940ejc.75.1695635600128;
+        Mon, 25 Sep 2023 02:53:20 -0700 (PDT)
+Received: from [192.168.101.165] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id a19-20020a170906275300b0099290e2c163sm6011915ejd.204.2023.09.25.02.53.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 02:51:38 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Jens Axboe <axboe@kernel.dk>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] ovl: disable IOCB_DIO_CALLER_COMP
-Date:   Mon, 25 Sep 2023 11:51:25 +0200
-Message-Id: <10D8C1CC-07FB-47B1-8326-5EDEA53E166B@kernel.dk>
-References: <20230925-desorientiert-fahrverbot-d95744ccc37f@brauner>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org, Zorro Lang <zlang@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>
-In-Reply-To: <20230925-desorientiert-fahrverbot-d95744ccc37f@brauner>
-To:     Christian Brauner <brauner@kernel.org>
-X-Mailer: iPhone Mail (21A340)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 02:53:19 -0700 (PDT)
+Message-ID: <83552cff-b490-4c7e-9fef-e05bb6bdc75a@linaro.org>
+Date:   Mon, 25 Sep 2023 11:53:17 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/7] arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db
+ node
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, tglx@linutronix.de, maz@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org
+Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20230925064927.26448-1-quic_tengfan@quicinc.com>
+ <20230925064927.26448-3-quic_tengfan@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230925064927.26448-3-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 25, 2023, at 11:39=E2=80=AFAM, Christian Brauner <brauner@kernel.org>=
- wrote:
->=20
-> =EF=BB=BF
->>=20
->> No problem - and thanks, maybe Christian can pick this one up? I
->=20
-> Snatched it I've got a pile I need to send to Linus this week anyway.
-> (Thanks for the Cc, Amir!)
+On 25.09.2023 08:49, Tengfei Fan wrote:
+> From: Ajit Pandey <quic_ajipan@quicinc.com>
+> 
+> Add apps_rsc node and cmd_db memory region for sm4450.
+> 
+> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Perfect, thanks!
-
+Konrad
