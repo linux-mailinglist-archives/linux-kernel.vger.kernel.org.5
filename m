@@ -2,90 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26DF7AD595
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8965B7AD5A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjIYKNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        id S230387AbjIYKOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjIYKNE (ORCPT
+        with ESMTP id S230415AbjIYKOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:13:04 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034118E;
-        Mon, 25 Sep 2023 03:12:58 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvJXv2kWNz6D8q7;
-        Mon, 25 Sep 2023 18:10:39 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
- 2023 11:12:55 +0100
-Date:   Mon, 25 Sep 2023 11:12:54 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jeongtae Park <jtp.park@samsung.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ben Widawsky" <bwidawsk@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Fan Ni <fan.ni@samsung.com>, <linux-cxl@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyungsan Kim <ks0204.kim@samsung.com>,
-        "Wonjae Lee" <wj28.lee@samsung.com>,
-        Hojin Nam <hj96.nam@samsung.com>,
-        Junhyeok Im <junhyeok.im@samsung.com>,
-        Jehoon Park <jehoon.park@samsung.com>,
-        "Jeongtae Park" <jeongtae.park@gmail.com>
-Subject: Re: [PATCH v2 7/7] cxl/memdev: Fix a whitespace warning
-Message-ID: <20230925111254.00001567@Huawei.com>
-In-Reply-To: <20230922113650.3301992-1-jtp.park@samsung.com>
-References: <CGME20230922113404epcas2p3995ec7890319931c33b0a549214c95ca@epcas2p3.samsung.com>
-        <20230922113650.3301992-1-jtp.park@samsung.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 25 Sep 2023 06:14:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1559E116;
+        Mon, 25 Sep 2023 03:14:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 909CAC433C8;
+        Mon, 25 Sep 2023 10:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695636848;
+        bh=7UV6bur4/QbQSym5hYiqkarACmXRkYQqnW4c6Ky8HHk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=N5rsiOvxZ9rtknK+hvXctsMkbyoCnEqMoS8lNpGJUVLJW7353GaQiTDk9W7a4qcIs
+         zHyUednk5p/K/8loD6WBphpKUlx//FitRFDl4D1pab37ZLZL7MxK2/UCst9M7569HZ
+         kJMCVcxUj6lgKcqFFxWY4Yr0rMMDA8l9geqykI1+cVIXoZvjnXuxB0iBvGk6Rdyr1W
+         kGAWEOoL3iiMv58qJHx1uc/Q/eVqlbOwjsHLhPfc3K3egIyaK+hwiRZfLVOcalpGH2
+         XT/gDaODgksxsYULm8lpw3YpwETgU7of4BOihV8QtSZC7y+C5zs/lQQPOMM4aiA3Wy
+         PbWv8aL7DtQPw==
+Message-ID: <77d33282068035a3b42ace946b1be57457d2b60b.camel@kernel.org>
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Mon, 25 Sep 2023 06:14:05 -0400
+In-Reply-To: <ZRC1pjwKRzLiD6I3@dread.disaster.area>
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+         <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
+         <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
+         <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
+         <ZRC1pjwKRzLiD6I3@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 20:36:50 +0900
-Jeongtae Park <jtp.park@samsung.com> wrote:
+On Mon, 2023-09-25 at 08:18 +1000, Dave Chinner wrote:
+> On Sat, Sep 23, 2023 at 05:52:36PM +0300, Amir Goldstein wrote:
+> > On Sat, Sep 23, 2023 at 1:46=E2=80=AFPM Jeff Layton <jlayton@kernel.org=
+> wrote:
+> > >=20
+> > > On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
+> > > > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@kernel=
+.org> wrote:
+> > > > >=20
+> > > > > My initial goal was to implement multigrain timestamps on most ma=
+jor
+> > > > > filesystems, so we could present them to userland, and use them f=
+or
+> > > > > NFSv3, etc.
+> > > > >=20
+> > > > > With the current implementation however, we can't guarantee that =
+a file
+> > > > > with a coarse grained timestamp modified after one with a fine gr=
+ained
+> > > > > timestamp will always appear to have a later value. This could co=
+nfuse
+> > > > > some programs like make, rsync, find, etc. that depend on strict
+> > > > > ordering requirements for timestamps.
+> > > > >=20
+> > > > > The goal of this version is more modest: fix XFS' change attribut=
+e.
+> > > > > XFS's change attribute is bumped on atime updates in addition to =
+other
+> > > > > deliberate changes. This makes it unsuitable for export via nfsd.
+> > > > >=20
+> > > > > Jan Kara suggested keeping this functionality internal-only for n=
+ow and
+> > > > > plumbing the fine grained timestamps through getattr [1]. This se=
+t takes
+> > > > > a slightly different approach and has XFS use the fine-grained at=
+tr to
+> > > > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+> > > > >=20
+> > > > > While we keep fine-grained timestamps in struct inode, when prese=
+nting
+> > > > > the timestamps via getattr, we truncate them at a granularity of =
+number
+> > > > > of ns per jiffy,
+> > > >=20
+> > > > That's not good, because user explicitly set granular mtime would b=
+e
+> > > > truncated too and booting with different kernels (HZ) would change
+> > > > the observed timestamps of files.
+> > > >=20
+> > >=20
+> > > Thinking about this some more, I think the first problem is easily
+> > > addressable:
+> > >=20
+> > > The ctime isn't explicitly settable and with this set, we're already =
+not
+> > > truncating the atime. We haven't used any of the extra bits in the mt=
+ime
+> > > yet, so we could just carve out a flag in there that says "this mtime
+> > > was explicitly set and shouldn't be truncated before presentation".
+> > >=20
+> >=20
+> > I thought about this option too.
+> > But note that the "mtime was explicitly set" flag needs
+> > to be persisted to disk so you cannot store it in the high nsec bits.
+> > At least XFS won't store those bits if you use them - they have to
+> > be translated to an XFS inode flag and I don't know if changing
+> > XFS on-disk format was on your wish list.
+>=20
+> Remember: this multi-grain timestamp thing was an idea to solve the
+> NFS change attribute problem without requiring *any* filesystem with
+> sub-jiffie timestamp capability to change their on-disk format to
+> implement a persistent change attribute that matches the new
+> requires of the kernel nfsd.
+>=20
+> If we now need to change the on-disk format to support
+> some whacky new timestamp semantic to do this, then people have
+> completely lost sight of what problem the multi-grain timestamp idea
+> was supposed to address.
+>=20
 
-> WARNING: please, no spaces at the start of a line
-> 
-> Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Yep. The main impetus for all of this was to fix XFS's change attribute
+without requiring an on-disk format change. If we have to rev the on-
+disk format, we're probably better off plumbing in a proper i_version
+counter and tossing this idea aside.
 
-> ---
->  drivers/cxl/core/memdev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
-> index 7e8fca4707c0..ce67df163452 100644
-> --- a/drivers/cxl/core/memdev.c
-> +++ b/drivers/cxl/core/memdev.c
-> @@ -1010,7 +1010,7 @@ static int cxl_memdev_security_init(struct cxl_memdev *cxlmd)
->  	}
->  
->  	return devm_add_action_or_reset(cxlds->dev, put_sanitize, mds);
-> - }
-> +}
->  
->  struct cxl_memdev *devm_cxl_add_memdev(struct cxl_dev_state *cxlds)
->  {
-
+That said, I think all we'd need for this scheme is a single flag per
+inode (to indicate that the mtime shouldn't be truncated before
+presentation). If that's possible to do without fully revving the inode
+format, then we could still pursue this. I take it that's probably not
+the case though.
+--=20
+Jeff Layton <jlayton@kernel.org>
