@@ -2,57 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528BC7AD4AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AFF7AD4B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjIYJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        id S230364AbjIYJlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjIYJk4 (ORCPT
+        with ESMTP id S230173AbjIYJlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:40:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AABBE;
-        Mon, 25 Sep 2023 02:40:49 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 09:40:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695634847;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=89QGxiAnkMO5e/O0iPpXiUamYcNaTnIQNHMFTNCzS/Y=;
-        b=qWDCdjV18rDyY4ZwhIaDaTewkCKoGNRyPDEYy15NWOpjDMJZFijDWPL3llArYzxtXtJsF5
-        LeIWS8sVoT9n8Dcf1xERqa7X7Ur6HoxJdXzhK//Lx97rl5TV8VwWcO/UjI2sFmYSWWEuCM
-        plHtvWtMmfnUC3yUHK9YIrgcbZuuTQRRm5n/f3vOd8Zmbs5WvzsXIExbXhcWBdU4jJ/4pU
-        02XgGwVOd3Xa52yCVbUnBAVMaTGyZ27KrxlKuXYhyKF7Sh1jealA1ECM71DyFSE0CiTCS5
-        QD1XfTLFvGa9q1mq4Ws79LKuDN/IJ0qe/a1QXcVQrjl1f6DouJYflMkqDU1q5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695634847;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=89QGxiAnkMO5e/O0iPpXiUamYcNaTnIQNHMFTNCzS/Y=;
-        b=BLlQjiQrJHeC5ajKDREQOuW9idwblwEvgfToLIasQp5UBT5uGfx+DfywDFXNBYlaWD8QBc
-        +yF78+JeZXhSwxDQ==
-From:   "tip-bot2 for Breno Leitao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/amd: Do not WARN() on every IRQ
-Cc:     Jirka Hladky <jhladky@redhat.com>,
-        Breno Leitao <leitao@debian.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <169563484702.27769.17534862657597994839.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Mon, 25 Sep 2023 05:41:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540EF115;
+        Mon, 25 Sep 2023 02:40:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E281CC433C7;
+        Mon, 25 Sep 2023 09:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695634856;
+        bh=9Y5s5dKINe7oEtHzTXF73tYS8713PuiQMueQX6bZOPA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k+upIy2X5ZwP6S4r1bv0vjtzxBdaUJkdI/m/NRTBqTYMsm1p37QYLUR3Ov9YMIGv6
+         4rzfXLPFxGcoEiy/XLmY7DzKYVsyFdM2hqUA20A69TSiXWgg536Qyw2e7uX7BrhM7C
+         11slhaTiUEf8vKfQi03MvF9NX494e2fev+QTTLtnL/oGqLOwfziW0LMHkNjE3QwfIO
+         OjsefkJOZkL0dC6tKwozgZGIdXi8hmsjH3+gelIK+a1PZ2dpnrOkWTUoblimPYhNhA
+         ch2cl0XoK8eUnZtZ+9NOVL2iTgfbB124TgZ/FQSqb6mED/cRfXrqn52zQyhvnnAqBI
+         TJ4xBrz8BC8EQ==
+Received: from [148.252.128.169] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qki5F-00Fuof-9b;
+        Mon, 25 Sep 2023 10:40:53 +0100
+Date:   Mon, 25 Sep 2023 10:40:48 +0100
+Message-ID: <87o7hqmvz3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Toan Le <toan@os.amperecomputing.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, Duc Dang <dhdang@apm.com>,
+        Tanmay Inamdar <tinamdar@apm.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: xgene-msi: Fix a potential UAF in xgene_msi_probe
+In-Reply-To: <20230925062133.14170-1-dinghao.liu@zju.edu.cn>
+References: <20230925062133.14170-1-dinghao.liu@zju.edu.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 148.252.128.169
+X-SA-Exim-Rcpt-To: dinghao.liu@zju.edu.cn, toan@os.amperecomputing.com, lpieralisi@kernel.org, kw@linux.com, robh@kernel.org, bhelgaas@google.com, dhdang@apm.com, tinamdar@apm.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,89 +65,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+On Mon, 25 Sep 2023 07:21:32 +0100,
+Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+> 
+> xgene_allocate_domains() will call irq_domain_remove() to free
+> msi->inner_domain on failure. However, its caller, xgene_msi_probe(),
+> will also call irq_domain_remove() through xgene_msi_remove() on the
+> same failure, which may lead to a use-after-free. Set the freed pointer
+> to NULL to fix this issue.
+> 
+> Fixes: dcd19de36775 ("PCI: xgene: Add APM X-Gene v1 PCIe MSI/MSIX termination driver")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/pci/controller/pci-xgene-msi.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+> index 3ce38dfd0d29..c0192c5ff0f3 100644
+> --- a/drivers/pci/controller/pci-xgene-msi.c
+> +++ b/drivers/pci/controller/pci-xgene-msi.c
+> @@ -253,6 +253,7 @@ static int xgene_allocate_domains(struct xgene_msi *msi)
+>  
+>  	if (!msi->msi_domain) {
+>  		irq_domain_remove(msi->inner_domain);
+> +		msi->inner_domain = NULL;
+>  		return -ENOMEM;
+>  	}
 
-Commit-ID:     599522d9d2e19d6240e4312577f1c5f3ffca22f6
-Gitweb:        https://git.kernel.org/tip/599522d9d2e19d6240e4312577f1c5f3ffc=
-a22f6
-Author:        Breno Leitao <leitao@debian.org>
-AuthorDate:    Thu, 14 Sep 2023 19:58:40 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 25 Sep 2023 11:30:31 +02:00
+Why can't we just drop the irq_domain_remove() call here instead, and
+simply rely on xgene_msi_remove() to do the right thing? Something
+like the untested patch below.
 
-perf/x86/amd: Do not WARN() on every IRQ
+Thanks,
 
-Zen 4 systems running buggy microcode can hit a WARN_ON() in the PMI
-handler, as shown below, several times while perf runs. A simple
-`perf top` run is enough to render the system unusable:
+	M.
 
-  WARNING: CPU: 18 PID: 20608 at arch/x86/events/amd/core.c:944 amd_pmu_v2_ha=
-ndle_irq+0x1be/0x2b0
+diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+index 0234e528b9a5..f98c9eb7bebf 100644
+--- a/drivers/pci/controller/pci-xgene-msi.c
++++ b/drivers/pci/controller/pci-xgene-msi.c
+@@ -251,10 +251,8 @@ static int xgene_allocate_domains(struct xgene_msi *msi)
+ 						    &xgene_msi_domain_info,
+ 						    msi->inner_domain);
+ 
+-	if (!msi->msi_domain) {
+-		irq_domain_remove(msi->inner_domain);
++	if (!msi->msi_domain)
+ 		return -ENOMEM;
+-	}
+ 
+ 	return 0;
+ }
 
-This happens because the Performance Counter Global Status Register
-(PerfCntGlobalStatus) has one or more bits set which are considered
-reserved according to the "AMD64 Architecture Programmer=E2=80=99s Manual,
-Volume 2: System Programming, 24593":
-
-  https://www.amd.com/system/files/TechDocs/24593.pdf
-
-To make this less intrusive, warn just once if any reserved bit is set
-and prompt the user to update the microcode. Also sanitize the value to
-what the code is handling, so that the overflow events continue to be
-handled for the number of counters that are known to be sane.
-
-Going forward, the following microcode patch levels are recommended
-for Zen 4 processors in order to avoid such issues with reserved bits:
-
-  Family=3D0x19 Model=3D0x11 Stepping=3D0x01: Patch=3D0x0a10113e
-  Family=3D0x19 Model=3D0x11 Stepping=3D0x02: Patch=3D0x0a10123e
-  Family=3D0x19 Model=3D0xa0 Stepping=3D0x01: Patch=3D0x0aa00116
-  Family=3D0x19 Model=3D0xa0 Stepping=3D0x02: Patch=3D0x0aa00212
-
-Commit f2eb058afc57 ("linux-firmware: Update AMD cpu microcode") from
-the linux-firmware tree has binaries that meet the minimum required
-patch levels.
-
-  [ sandipan: - add message to prompt users to update microcode
-              - rework commit message and call out required microcode levels ]
-
-Fixes: 7685665c390d ("perf/x86/amd/core: Add PerfMonV2 overflow handling")
-Reported-by: Jirka Hladky <jhladky@redhat.com>
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Signed-off-by: Sandipan Das <sandipan.das@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/all/3540f985652f41041e54ee82aa53e7dbd55739ae.16=
-94696888.git.sandipan.das@amd.com/
----
- arch/x86/events/amd/core.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index ed626bf..e249765 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -886,7 +886,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
- 	struct hw_perf_event *hwc;
- 	struct perf_event *event;
- 	int handled =3D 0, idx;
--	u64 status, mask;
-+	u64 reserved, status, mask;
- 	bool pmu_enabled;
-=20
- 	/*
-@@ -911,6 +911,14 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
- 		status &=3D ~GLOBAL_STATUS_LBRS_FROZEN;
- 	}
-=20
-+	reserved =3D status & ~amd_pmu_global_cntr_mask;
-+	if (reserved)
-+		pr_warn_once("Reserved PerfCntrGlobalStatus bits are set (0x%llx), please =
-consider updating microcode\n",
-+			     reserved);
-+
-+	/* Clear any reserved bits set by buggy microcode */
-+	status &=3D amd_pmu_global_cntr_mask;
-+
- 	for (idx =3D 0; idx < x86_pmu.num_counters; idx++) {
- 		if (!test_bit(idx, cpuc->active_mask))
- 			continue;
+-- 
+Without deviation from the norm, progress is not possible.
