@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FFB7ADC3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E237ADC2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbjIYPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S230243AbjIYPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbjIYPrc (ORCPT
+        with ESMTP id S232845AbjIYPrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:47:32 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131E91A7;
-        Mon, 25 Sep 2023 08:47:21 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 750045C1F9F;
-        Mon, 25 Sep 2023 11:47:20 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Mon, 25 Sep 2023 11:47:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695656840; x=1695743240; bh=+v
-        KhvI/Ayw8ZF2UMd/3KHjztbHQPAFx3voTEU49nlf4=; b=WkfjzfyYFriipTXDab
-        kMvNOuVMtPiVAVxp5nPRHIiz3sc424JdoohsczIhiRYO5u8KboaEnDTSxZCHqqr3
-        1YbKC3t5TdnBCovjgaRL553v4McpdnCsdq6sa34kS/dIYlEPhRyOgDKXKFW1Zxnu
-        WRI5VM41w83BSEFH4JCsDQbCfD5LqeE9ydf4nAbaehkz79Fgh7x3C2KML72OMuuV
-        JIbtidNR6OmswPAoiFlie2nyo5g/U4Wb7ZRYTx2rx/n5ohbFSO3d15X3wD+QpmrJ
-        PWcFqM0I264rUBA4fLGicgMyiRDCCoz7+Mwa1RKvsnqyKArBJ1lFPpe+S/7y8+dv
-        ReOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695656840; x=1695743240; bh=+vKhvI/Ayw8ZF
-        2UMd/3KHjztbHQPAFx3voTEU49nlf4=; b=qhW3cYQzCW1SmMCDtbbaOAlLC8MLF
-        uRpPar5Pu7DFJzrZsNsD2GTnINJvmscfADFXTQvL/v9Kf9vv7tp2gmaMkZAq3f/H
-        QojF0lZ2MEjOxto+IGA/EqxAlogl2gaNie22+Ui6nTrd0Lw8PxhIAx1+rqkvv3u/
-        /MhFTeE8CXWcG6zunhRUJGNcCR72d8ru++yvF8gV2KEfBby2Z5LxrLBs1d+0+ttn
-        /xD3X8rx5t6UE8dlPxOaR5M5j8u6D8rIOAG1zFRkJvbInpMzoe1AnphDE4yTrDPL
-        SicNdoK7VPSGkillo4uyg77GuandCkLZaMz9twEh2AUfUu7WOtycfXe4Q==
-X-ME-Sender: <xms:h6sRZd7JelL0FGWIpCurmNpmDBV7yL3sUj2xm2eS2D-hqUMyIAVW3w>
-    <xme:h6sRZa6DQ1QsHVJKCHhqEqzJ23j6G15ltitzFpG9yeL98VoeGsoOvPGlU8p-AYOK0
-    asvEUCoq2bIu1kU2pQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:h6sRZUe91cjMxwK0fX14VR2KnvHzScL0VG5VvLXnMaYRiVetzrUEZQ>
-    <xmx:h6sRZWLNZt-HSEc3gc8zdbLiRVUi6puW7dMZPnjUipnHI833MWl9Pg>
-    <xmx:h6sRZRJD5wkBjw2mr5X1HQZCfB6GUTYnpji-oNQ6ft6sZpiUIU6LYA>
-    <xmx:iKsRZbBbK3gU_S6YiUCjqDqmuYcB5C_8_NqaxbYi7RFwj4gqQjX64w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6F8A9B60089; Mon, 25 Sep 2023 11:47:19 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
+        Mon, 25 Sep 2023 11:47:33 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB9B1B6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:47:22 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-405524e6768so44432755e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695656840; x=1696261640; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/FNhGMWyAqnTDmM0T1BgOt5wrTJ6u2MeyoOMIg65gD0=;
+        b=lqizoEq/FP8ekp2IT6uQ7TZWuakSu6fVuj3Z5IUAoZlMH1SmU6CLRgfSOS4PQ8Ip/u
+         ez70MLj70fgl3Rc9aRqmFd+CBmkzqMP2aDYA78Wr0QywX/+cNA+vKtiurihKPEgH64Mm
+         bgLk+q2MWwTu6cUbQidCi3S1bSfWvMvboSaGIy5fJpWQGadlRWEhvhYLMUuff6qELhSe
+         0qC2O/Bl6WnRBJfqJBYoiEhd9JGAIIkH/dHXiYocez+KkQtTYyk5tISDpFYCGmxDX64F
+         Po3B94ny2n1rWDAbp/rGNw5vtcehBD81zQfpnlS8l5WUeXobTJ6rqxGR1WW99eQBE47l
+         c/Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695656840; x=1696261640;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/FNhGMWyAqnTDmM0T1BgOt5wrTJ6u2MeyoOMIg65gD0=;
+        b=Yr0G0h6W4BHVna5wbdenyDtWaLX3iSmaWk4UV41EBjBxJ6XFbIqbyJVuZzpBz2/fyc
+         FoSRS/v81cZvTpGjIIxgMWNvX3gKEuT2cdurXresCVheecItyFn9RzmxXAEAkwYz0ZkL
+         h2pws39Gy6H0AT1Xf0bwHEm5wXe2/6/4OCohtg+kXaU5Dsmvleik2z1NPbiqxhtuhQ5b
+         fCzVG9OF57UjZq56JPI9bLLkgbTQBcgNfZhoTPqeJgUqMEFxEsvRtsDKW/4Akbvxepw+
+         SpSlpakRJDkChQW+z1ntZ/4nC5VJITFQ89aispFeJgxsw7Xy6ED0BNbxUE+jyG+kwmO7
+         OnCw==
+X-Gm-Message-State: AOJu0YwfSepd06hF1lwX4vQDLdCd+3caWKwg+RneNRxARYd2km8wWBD6
+        5oWlRndteNz4mdfggKhyyaoQ6g==
+X-Google-Smtp-Source: AGHT+IHPewfmUTn3VJZZkJ1LALUg4OCR6Ppp1kOmtKKZJ1+1wkDuA12DIwYUZw2q4FtqMfpboyjMMg==
+X-Received: by 2002:a05:600c:b42:b0:3f6:58ad:ed85 with SMTP id k2-20020a05600c0b4200b003f658aded85mr5876872wmr.10.1695656840766;
+        Mon, 25 Sep 2023 08:47:20 -0700 (PDT)
+Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id d4-20020adffd84000000b0031f34a395e7sm12077536wrr.45.2023.09.25.08.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 08:47:20 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [RESEND PATCH v6 09/17] media: qcom: camss: Remove special case for VFE get/put
+Date:   Mon, 25 Sep 2023 16:46:59 +0100
+Message-ID: <20230925154707.837542-10-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230925154707.837542-1-bryan.odonoghue@linaro.org>
+References: <20230925154707.837542-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-Message-Id: <15fb406a-0f12-4708-abe7-91a464fecbc2@app.fastmail.com>
-In-Reply-To: <CAJfpegvAVJUhgKZH2Dqo1s1xyT3nSopUg6J+8pEFYOnFDssH8g@mail.gmail.com>
-References: <20230913152238.905247-1-mszeredi@redhat.com>
- <20230913152238.905247-3-mszeredi@redhat.com>
- <44631c05-6b8a-42dc-b37e-df6776baa5d4@app.fastmail.com>
- <20230925-total-debatten-2a1f839fde5a@brauner>
- <CAJfpegvUCoKebYS=_3eZtCH49nObotuWc=_khFcHshKjRG8h6Q@mail.gmail.com>
- <20230925-wahlrecht-zuber-3cdc5a83d345@brauner>
- <CAJfpegvAVJUhgKZH2Dqo1s1xyT3nSopUg6J+8pEFYOnFDssH8g@mail.gmail.com>
-Date:   Mon, 25 Sep 2023 17:46:59 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Christian Brauner" <brauner@kernel.org>
-Cc:     "Miklos Szeredi" <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        "Karel Zak" <kzak@redhat.com>, "Ian Kent" <raven@themaw.net>,
-        "David Howells" <dhowells@redhat.com>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Alexander Viro" <viro@zeniv.linux.org.uk>,
-        "Christian Brauner" <christian@brauner.io>,
-        "Amir Goldstein" <amir73il@gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023, at 15:20, Miklos Szeredi wrote:
-> On Mon, 25 Sept 2023 at 15:19, Christian Brauner <brauner@kernel.org> wrote:
->>
->> > How about passing u64 *?
->>
->> struct statmnt_req {
->>         __u64 mnt_id;
->>         __u64 mask;
->> };
->>
->> ?
->
-> I'm fine with that as well.
+From sdm845 onwards we need to ensure the VFE is powered on prior to
+switching on the CSID.
 
-Yes, this looks fine for the compat syscall purpose.
+Currently the code tests for sdm845, sm8250 and then does get/set. This is
+not extensible and it turns out is not necessary either since vfe_get and
+vfe_set reference count.
 
-Not sure if losing visibility of the mnt_id and mask in ptrace
-or seccomp/bpf is a problem though.
+Remove the over-conservative SoC version check.
 
-    Arnd
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # rb3 # db410c
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ drivers/media/platform/qcom/camss/camss-csid.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+index 99f651e2021cb..95873f988f7e2 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.c
++++ b/drivers/media/platform/qcom/camss/camss-csid.c
+@@ -159,15 +159,17 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+ 	struct camss *camss = csid->camss;
+ 	struct device *dev = camss->dev;
+ 	struct vfe_device *vfe = &camss->vfe[csid->id];
+-	u32 version = camss->res->version;
+ 	int ret = 0;
+ 
+ 	if (on) {
+-		if (version == CAMSS_8250 || version == CAMSS_845) {
+-			ret = vfe_get(vfe);
+-			if (ret < 0)
+-				return ret;
+-		}
++		/*
++		 * From SDM845 onwards, the VFE needs to be powered on before
++		 * switching on the CSID. Do so unconditionally, as there is no
++		 * drawback in following the same powering order on older SoCs.
++		 */
++		ret = vfe_get(vfe);
++		if (ret < 0)
++			return ret;
+ 
+ 		ret = pm_runtime_resume_and_get(dev);
+ 		if (ret < 0)
+@@ -217,8 +219,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+ 		regulator_bulk_disable(csid->num_supplies,
+ 				       csid->supplies);
+ 		pm_runtime_put_sync(dev);
+-		if (version == CAMSS_8250 || version == CAMSS_845)
+-			vfe_put(vfe);
++		vfe_put(vfe);
+ 	}
+ 
+ 	return ret;
+-- 
+2.42.0
+
