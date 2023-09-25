@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACAE7ADDFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21A87ADDFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjIYRsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 13:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S230454AbjIYRsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 13:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjIYRsJ (ORCPT
+        with ESMTP id S230304AbjIYRsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:48:09 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F79111
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:48:02 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso857361966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:48:02 -0700 (PDT)
+        Mon, 25 Sep 2023 13:48:23 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6A010D
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:48:15 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c0c6d4d650so61706955ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:48:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695664081; x=1696268881; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1/UN+h0syPysLtxsvFcqWbygnTfY7kE0+mV4pd8zbOE=;
-        b=RYEr9cYaG57l52hf6D92FVsynybyMfC04x1z06kXcMPBIFTgkV3pwcPmmyEh6CHsmZ
-         k9CFkgieBKsHcaSx4R3liGCSX28LEbeboiK6HiPvLpc3mbsX5BoMREGE+yark4ZU3Se3
-         VJxat/ofNc+oYjiaENTdqRdcvyCkWWctYItLGqsHgn0EUopDDxjbN6Mym/OnxCnTFgci
-         d58HDyP4YLN3C8hXPz7utdfofyPoHVPy9lWxenzQJSsJQ0YLBxQ2aZ/fwf4G4dQoJ1UQ
-         5nXUnkFKlAgaAglDfKOysQpm/JFwVkhIaP4uidAO8XxBrxUfw7/wjSsqM/Sx4fqXv9q5
-         QFHQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695664095; x=1696268895; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3tuJIIS1l1SOVzZtlVmqa55J+BZPRUyU2VUwqVvswg=;
+        b=mWLJe+X2mp6TIEqIacDBG3NvBPzUhYGh+J3cGWEmK/YufkcCNHyWbFHEojC12NKRnP
+         HdraPi3WjUYsDoWpM3/ONzuD3jxhs39lQAYlPfntg0ft85J9LpmsQdiuqnWwOvIjzySM
+         A6a3gqvDTYbr9WgMWeO6NVHUf11NlkqQOyGXMbka36B0J/bUyK3Y6NK1eB0mLiyuJEDr
+         Pkh9RJgrLEDiWmzdD69VAk7/LRmbV+YD+9o9ua2u/l6gCSNuGhaYzp0s1QZE5/Ii7iID
+         95r7BTF2T+fkV8D5ZnlmnX2BdmdMzlZi/tBXMKk7CnRck7ybC9eIRuubezDMX1hTsE/t
+         UhPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695664081; x=1696268881;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1/UN+h0syPysLtxsvFcqWbygnTfY7kE0+mV4pd8zbOE=;
-        b=Z95iR5yLvh/NNZ1fsBjRxcdqa7qrr38gwTMBgwA+KUJ23bw+ngyToMXzTg9WSvpJI0
-         j+R4YqNg5GyZ2xaDc8/VzOWCJtasiazOi9+Ip4Ogj7mMrqvH149speZN2iRwvSw049rH
-         YwBxoXrk8eYL8aA0kZ1ONivL7VidlZgzAci0UmuAk9V3OZL9MGdVNe9DnMmxtUNysgFr
-         zYHiQLe6t3yUEgDt+Q0jexmqkNNVQ+/BakaYBI1C0BIobp7wjBg25LMZvWlzhnQmziaF
-         LZSUxA/msrF6eab9LROo4yy2KtC2ENUNA9nrXY9J02wGIjniLbWRaaDGj6KbJ4msoj05
-         DXBg==
-X-Gm-Message-State: AOJu0Yz1DhtrHgZ31SXDZMZtMqwr5xVmmED+Kor9TObj2nwnxnLfVrqu
-        bgo6U2kqv/wbPUmNFFyBnKZFX4an+5YQR70ZhB9+Qw==
-X-Google-Smtp-Source: AGHT+IFopHnRoAlyF6POHIUhcvwlhiL61OgNYhhH4qY+wuY7Lc/f7rCYUm4UIz9VvEggFLjrRogYHi+m9F2UFzb7uQQ=
-X-Received: by 2002:a17:906:2189:b0:9a1:e941:6f49 with SMTP id
- 9-20020a170906218900b009a1e9416f49mr6620490eju.44.1695664081274; Mon, 25 Sep
- 2023 10:48:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230921144400.62380-1-dlechner@baylibre.com> <20230921144400.62380-2-dlechner@baylibre.com>
- <20230924175720.3be2540b@jic23-huawei>
-In-Reply-To: <20230924175720.3be2540b@jic23-huawei>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Mon, 25 Sep 2023 12:47:50 -0500
-Message-ID: <CAMknhBF56CWKNZ-xvsiaC3c+av8Dvyh+i-op1YxvXv2g8BPYWg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/19] dt-bindings: iio: resolver: add devicetree
- bindings for ad2s1210
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1695664095; x=1696268895;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3tuJIIS1l1SOVzZtlVmqa55J+BZPRUyU2VUwqVvswg=;
+        b=v/6LcyCxxjaRPzXOhxCQGgd+5t+zTKaN4M6EVZFY0xSTC/IH/rwzuWym71MQviX5cy
+         RINP46EqRachN3HDq9hIFcye2QKctbelJXcraRQFF8MXHmqlLrCKzNuuzCXPa58A0g4H
+         4XyqrbI9JoXMUHW3C15bkt+5A0u7nt79nL7ACwj0Vdg71cHk6S7Z9pK7OPcfFuXq8ZAI
+         vAjXy9jQSseye04QDlQ3kL682vrvxeNL3R4R/TcGQF61mEfNaehSKE6m44TomKFlGOpF
+         lWDCnkpPV0+fgT9uNEs9MtZ9/60NX08UWNVO3QJUWQPIVbOqLrs9dZY4e4mWUzgdB6et
+         xMow==
+X-Gm-Message-State: AOJu0YyvAbCROsb39GSV+sO8MxMO4XAoya/TJDAbjVqFMkjQnZIF3Hl6
+        8q1l8eezHv2lAjn6HZbmsG0yfQ==
+X-Google-Smtp-Source: AGHT+IGvqV00K1g0/ZodkrKU5PL2uuUghZiRtw/5AJYE/blsphF6S3mDHOM5cs0FDHZM3+gOY2KwWg==
+X-Received: by 2002:a17:902:f548:b0:1c5:d354:93b6 with SMTP id h8-20020a170902f54800b001c5d35493b6mr8832777plf.67.1695664094936;
+        Mon, 25 Sep 2023 10:48:14 -0700 (PDT)
+Received: from ghost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id s23-20020a170902989700b001c5de2f1686sm8260228plp.99.2023.09.25.10.48.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 10:48:14 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 10:48:11 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Conor Dooley <conor@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        Apelete Seketeli <aseketeli@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/9] RISC-V: Detect XVentanaCondOps from ISA string
+Message-ID: <ZRHH25IyJJLWSolC@ghost>
+References: <20230925133859.1735879-1-apatel@ventanamicro.com>
+ <20230925133859.1735879-3-apatel@ventanamicro.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925133859.1735879-3-apatel@ventanamicro.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -78,32 +82,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 11:57=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
-> wrote:
->
-> On Thu, 21 Sep 2023 09:43:42 -0500
-> David Lechner <dlechner@baylibre.com> wrote:
->
-...
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - spi-cpha
-> > +  - clocks
-> > +  - sample-gpios
-> > +  - assigned-resolution-bits
-> > +
-> > +oneOf:
-> > +  - required:
-> > +      - mode-gpios
-> > +  - required:
-> > +      - adi,fixed-mode
-> I think this allows for both.  It's fiddlier to exclude that but would be=
- a nice
-> to have perhaps rather than relying on text above that says 'don't do it'=
-.
->
+On Mon, Sep 25, 2023 at 07:08:52PM +0530, Anup Patel wrote:
+> The Veyron-V1 CPU supports custom conditional arithmetic and
+> conditional-select/move operations referred to as XVentanaCondOps
+> extension. In fact, QEMU RISC-V also has support for emulating
+> XVentanaCondOps extension.
+> 
+> Let us detect XVentanaCondOps extension from ISA string available
+> through DT or ACPI.
+> 
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> ---
+>  arch/riscv/include/asm/hwcap.h | 1 +
+>  arch/riscv/kernel/cpufeature.c | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+> index 0f520f7d058a..b7efe9e2fa89 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -59,6 +59,7 @@
+>  #define RISCV_ISA_EXT_ZIFENCEI		41
+>  #define RISCV_ISA_EXT_ZIHPM		42
+>  #define RISCV_ISA_EXT_SMSTATEEN		43
+> +#define RISCV_ISA_EXT_XVENTANACONDOPS	44
+>  
+>  #define RISCV_ISA_EXT_MAX		64
+>  
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index 3755a8c2a9de..3a31d34fe709 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+>  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+>  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+> +	__RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDOPS),
+>  };
+>  
+>  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
+> -- 
+> 2.34.1
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-example-schema.yaml says that oneOf is XOR (anyOf is OR and would
-allow both).
+I worry about storing vendor extensions in this file. Because vendor
+extensions are not standardized, they can only be expected to have the
+desired behavior on hardware with the appropriate vendor id. A couple
+months ago I sent a patch to address this by handling vector extensions
+independently for each vendor [1]. I dropped the patch because it
+relied upon Heiko's T-Head vector extension support that he stopped
+working on. However, I can revive this patch so you can build off of it.
+
+This scheme has the added benefit that vendors do not have to worry
+about conficting extensions, and the kernel does not have to act as a
+key registry for vendors.
+
+What are your thoughts?
+
+- Charlie
+
+[1] https://lore.kernel.org/lkml/20230705-thead_vendor_extensions-v1-2-ad6915349c4d@rivosinc.com/
+
