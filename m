@@ -2,54 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD74F7ADB00
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9420D7ADAF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbjIYPJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        id S232634AbjIYPIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbjIYPJp (ORCPT
+        with ESMTP id S232636AbjIYPH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:09:45 -0400
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E710C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=y7eej5fl4jd6vjgp4a2o7ly5qi.protonmail; t=1695654576; x=1695913776;
-        bh=FHZe6kdKIqazFPSKKhdkgcbV19fe0HcjGBTZ7ywLRWA=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=a2uK+brsqwOWC0ALmAmVM/RFq1+BFpG5Z6GFcrllZWUa9DLTRMbFO4oRS8TzVEUW5
-         vj1Cm8b/jq5SbdtapHFsHxLuWHuGp6XuslwziMeiCx1X+BpaptCBhQbIscjwQPRRVD
-         Al3FA+HnOcqsn2kEq3bSc6jAWVth0pjGNSNHhk67EFcn/rp8K7hje9nBbIiTkYmcIk
-         yLQImqY1n660lJge1/5HabzqAiUW+E0TGnLljLzsCv1kNimdTmGdxr+ZzTj3npvCXE
-         xp8L5sRHQqSmi3KnZy6wYeoIGq6kF8N4lk6CMhA27R5cqTa1o0k5aRzUHvcprMpVjp
-         BfDz5mTnuQrvA==
-Date:   Mon, 25 Sep 2023 15:07:44 +0000
-To:     Boqun Feng <boqun.feng@gmail.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Alice Ryhl <aliceryhl@google.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of `WithRef`
-Message-ID: <14513589-cc31-8985-8ff6-a97d2882f593@proton.me>
-In-Reply-To: <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
-References: <20230923144938.219517-1-wedsonaf@gmail.com> <20230923144938.219517-3-wedsonaf@gmail.com> <CAH5fLggxsewmtzXjehbawDCTHO0C7kteU_CLnh80eMNj=QyP9Q@mail.gmail.com> <969eab7f-ad40-0dfb-18b9-6002fc54e12b@proton.me> <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
-Feedback-ID: 71780778:user:proton
+        Mon, 25 Sep 2023 11:07:57 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2B1120
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:07:50 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c93638322so1513033266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695654469; x=1696259269; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tEZ5TYqKj7Xpyqh7LsqYS+cjUynAUZpYFGDV9Q2kYbI=;
+        b=B6TL+lhWqinETXItX4Ekol+r6/1S5l4o9ko60wHi48LRTUuAE7vA7z9vQmGsPV01AD
+         rDSZJ9hCw80d8D54zHPQTDlxdrzk0ZKtQSDIBEJYn7mRYMcUqkkMkr2BN5c0PyYgHnuT
+         KOEPc3gwRI69RTQpZCpWBIev7q3epAcu5bywrOWyH7jm9M3cGDJrz7VZIxzTaPQwgvX/
+         i1a3j4lXKr8cnI4SOUek/FJ82au/hM/pZYRuIrgAAvj2Zplke97id3RGZE+Rdhxhhaqh
+         ti+XT7qsGgJ2M73vR66y6DzS+ke0je6i5bQbHs785iEJKWrLbXdb8ojgDPCpPi92WVgT
+         zm4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695654469; x=1696259269;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tEZ5TYqKj7Xpyqh7LsqYS+cjUynAUZpYFGDV9Q2kYbI=;
+        b=dMnh1pCOfC6xzJ0dcDwNa86WA4slq688OzaWJO4DfdZmwr+nKCcgtAcLlmFKpWvZ+X
+         DsIECVuCWF48xJzppAJkpU0Pgj4v0GYWeLW0+D5HPMMSs2YUO+o1lhgcY09FoG9sJ4i3
+         LaoflNCRjZOHMYscfhbHxiBlRQ8WBxB1H9+bI7G53/XMDRFoAgwWWEdlMX0sHm6di65C
+         Wm5+sgm8icbDNcZ06t+XJs1FBCd+XL44FzHTNR+18kXXF/4y2KTB8BS2vG5dw4zZsYk5
+         hoGDxT3inKQzMhRiGabmDMa0J5Dh+7lM00+F0JZ5SMgRZgZ0LECQYyooTJe+5UuedOYt
+         2ikQ==
+X-Gm-Message-State: AOJu0YxnMKMUaNyLkdHgFNYlK3fH6g75PSOXkC7A5s7UpihPgqzT4XAL
+        qHYu/2Okz0Y6ushgwvUc4iM=
+X-Google-Smtp-Source: AGHT+IHuvDsUyVa2O8phaopW7XqF8puZjg9QRjHcigLXniRoG9KatTQvuRnfy0vTM9Vw7eaMxEcKbQ==
+X-Received: by 2002:a17:907:7288:b0:9ae:50ec:bd81 with SMTP id dt8-20020a170907728800b009ae50ecbd81mr15679987ejc.21.1695654468639;
+        Mon, 25 Sep 2023 08:07:48 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id s4-20020a170906168400b009ad829ed144sm6409010ejd.130.2023.09.25.08.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 08:07:48 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     wens@csie.org, airlied@gmail.com, daniel@ffwll.ch,
+        samuel@sholland.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] drm/sun4i: dw-hdmi: Split driver registration
+Date:   Mon, 25 Sep 2023 17:07:45 +0200
+Message-ID: <3441738.QJadu78ljV@jernej-laptop>
+In-Reply-To: <rvqcfohw4i4y7amod3a5e4u4tkorqmaekvikyqg3fibvy53dsd@be4lk4ae35hq>
+References: <20230924192604.3262187-1-jernej.skrabec@gmail.com>
+ <20230924192604.3262187-6-jernej.skrabec@gmail.com>
+ <rvqcfohw4i4y7amod3a5e4u4tkorqmaekvikyqg3fibvy53dsd@be4lk4ae35hq>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,70 +76,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.23 16:49, Boqun Feng wrote:
-> On Mon, Sep 25, 2023 at 09:14:50AM +0000, Benno Lossin wrote:
->> On 25.09.23 08:29, Alice Ryhl wrote:
->>> On Sat, Sep 23, 2023 at 4:50=E2=80=AFPM Wedson Almeida Filho <wedsonaf@=
-gmail.com> wrote:
->>>>
->>>> From: Wedson Almeida Filho <walmeida@microsoft.com>
->>>>
->>>> With GATs, we don't need a separate type to represent a borrowed objec=
-t
->>>> with a refcount, we can just use Rust's regular shared borrowing. In
->>>> this case, we use `&WithRef<T>` instead of `ArcBorrow<'_, T>`.
->>>>
->>>> Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
->>>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
->>>> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
->>>> ---
->>>>    rust/kernel/sync.rs     |   2 +-
->>>>    rust/kernel/sync/arc.rs | 134 ++++++++++++-------------------------=
----
->>>>    2 files changed, 39 insertions(+), 97 deletions(-)
->>>
->>> I'm concerned about this change, because an `&WithRef<T>` only has
->>> immutable permissions for the allocation. No pointer derived from it
->>> may be used to modify the value in the Arc, however, the drop
->>> implementation of Arc will do exactly that.
->>
->> That is indeed a problem. We could put the value in an `UnsafeCell`, but
->> that would lose us niche optimizations and probably also other optimizat=
-ions.
->>
->=20
-> Not sure I understand the problem here, why do we allow modifying the
-> value in the Arc if you only have a shared ownership? Also I fail to see
-> why `ArcBorrow` doesn't have the problem. Maybe I'm missing something
-> subtle here? Could you provide an example?
+Dne ponedeljek, 25. september 2023 ob 09:47:15 CEST je Maxime Ripard napisal(a):
+> On Sun, Sep 24, 2023 at 09:26:02PM +0200, Jernej Skrabec wrote:
+> > There is no reason to register two drivers in same place. Using macro
+> > lowers amount of boilerplate code.
+> 
+> There's one actually: you can't have several module_init functions in
+> the some module, and both files are compiled into the same module.
 
-Sure, here is the problem:
+Yeah, I figured as much. However, I think code clean up is good enough reason
+to add hidden option in Kconfig and extra entry in Makefile (in v2).
 
-```rust
-struct MutatingDrop {
-     value: i32,
-}
+Do you agree?
 
-impl Drop for MutatingDrop {
-     fn drop(&mut self) {
-         self.value =3D 0;
-     }
-}
+Best regards,
+Jernej 
 
-let arc =3D Arc::new(MutatingDrop { value: 42 });
-let wr =3D arc.as_with_ref(); // this creates a shared `&` reference to the=
- MutatingDrop
-let arc2: Arc<MutatingDrop> =3D wr.into(); // increments the reference coun=
-t to 2
-drop(arc); // this decrements the reference count to 1
-drop(arc2); // this decrements the reference count to 0, so it will drop it
-```
-When dropping `arc2` it will run the destructor for `MutatingDrop`,
-which mutates `value`. This is a problem, because the mutable reference
-supplied was derived from a `&`, that is not allowed in Rust.
 
---=20
-Cheers,
-Benno
 
 
