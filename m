@@ -2,156 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28E47ADE0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1947ADE11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjIYRwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 13:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
+        id S231214AbjIYRwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 13:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjIYRwR (ORCPT
+        with ESMTP id S230193AbjIYRwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:52:17 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E87101
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:52:11 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c09bcf078so127458987b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:52:11 -0700 (PDT)
+        Mon, 25 Sep 2023 13:52:44 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093C511F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:52:35 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c47309a8ccso58795055ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:52:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695664330; x=1696269130; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xwtabOILnRbm1S1bansxkRjSqy6X1y7X1zW3DO+l2dQ=;
-        b=uKDRSiXW9WTM2I+lNJmv/zcE8ux7VzL0hmLgGO2ZpaWwWxj/jR+gkulY+lG7fMuuPD
-         Led3euO9hHRvjF06YsdGr+uB0G55ZIn0E5CxdYxuqmOw49e41wboHSGUaps3GT/qJpzo
-         S598GOj07VhBFm4TuM9ZLtIATvpwitZVOcWnng/onr9PUZZGJIIEWH1BEVMPfr3tdqxK
-         wDOxukCspQjPTPXp3rRRlU/uHD+o/UidVjsC60Ykns7srxb0VqRzB7yDv57ABW6xKxZp
-         t+LGUcl6+XDy+lsgzZnd19N1zCmyLGfA2XDFVl3FQbsb8FPJQNH6uGCTK6Fyl9xvlwFa
-         7drw==
+        d=chromium.org; s=google; t=1695664354; x=1696269154; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YKkjlOQ/GPkFrKX9bDbfTnpErQ+3hoiSxDUiC5xM1v4=;
+        b=M3fRbwNKJs/vD2DbQRvOwnUx2tVgK38v4iSmjDxmw8vepMoxpGzAvG5zM5/YGSVBFm
+         18wo93lzSHyfC8NkQRSAlkDoSifPfFJT/iqECR1NEX8JA/XkpZLsxbfAA1+v8GeHhaMf
+         T9eoup+Jok6EoLs8xCCJgk9qeMKF1QGtOCTes=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695664330; x=1696269130;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xwtabOILnRbm1S1bansxkRjSqy6X1y7X1zW3DO+l2dQ=;
-        b=HvsLcJq7R4NkLYk3O/kqFaangEDyBVOuUeRCcX5Hyf/eRNzdAgSUELFCQXwV2t611e
-         EDm3tRqsD1fLOEOVJgGap9A3PWYO+6uGqZ6fhW3AcM0YvjyVO4UgPITT1cjOqdG3YfDz
-         v2wAZXxgZ++0LtK/hoz5MjbMIy50/aOc4U0u0uPjsPngTX7YuAnL2HEP80wzT8PNRayC
-         nfCmdD5qaWWaUAlvErgx3haIvf+6Unb1aLYlfIYltnFbSiv+tDtfar2+cNwrkeIng5E1
-         pjWzRfhNom2RTbZyiIyVxnRY//u1zVsbQQByBPqStHa6yn653kmLl95m/1sTnUk8RsGX
-         YlXg==
-X-Gm-Message-State: AOJu0YzJMDEKU4hzIngcZAQqTAf6FDLdwoioc17jG5ZDvMFKoxZD1OhU
-        oA811mM//h3U+xigf+7Dh56SQvF6K44=
-X-Google-Smtp-Source: AGHT+IGMCxoYYjlsby/3TkrnKyNMbXZVi8P2B3hrc+nEK9RGzqOsug/VxBijCqfw+gGQ7bIh7lZuWGjl/Rc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:d003:0:b0:59b:ccba:1249 with SMTP id
- v3-20020a81d003000000b0059bccba1249mr100541ywi.10.1695664330689; Mon, 25 Sep
- 2023 10:52:10 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 10:52:09 -0700
-In-Reply-To: <20230925173448.3518223-3-mizhang@google.com>
-Mime-Version: 1.0
-References: <20230925173448.3518223-1-mizhang@google.com> <20230925173448.3518223-3-mizhang@google.com>
-Message-ID: <ZRHIyUEUeXnw7hii@google.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Mask LVTPC when handling a PMI
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Like Xu <likexu@tencent.com>, Roman Kagan <rkagan@amazon.de>,
-        Kan Liang <kan.liang@intel.com>,
-        Dapeng1 Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695664354; x=1696269154;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YKkjlOQ/GPkFrKX9bDbfTnpErQ+3hoiSxDUiC5xM1v4=;
+        b=YZMCwIoEa23eRzc6WM4vYVjtkSFaozOZ6nNqczlCRw5pf1eVirIt2hTaReI9RiBPGV
+         MyNUK9vGHAGx4wb/ZfYf5Eu8ZPWhL8l++asECIKhFwthpWcqx3IXfKQ6Mktx5rvX82XG
+         sU885bWOG7ipQ4kyABA1paJmKTrArEoHKNYaqyp+qmwZz3CC9lZjuhWddp7EVIrpb06L
+         WLc5PH5jHoqKFzv8HZYbycEEvU6YoGkHKnSDGNv1gmDJ4+g6g817OrGff6b/n/QKAz4g
+         grNiNfaPZ+t5oq/ySkdS/AcjRoVl4JAFxDi0raT5pGDMsevluTHSOZPQnL17zr+OdIBg
+         yQUg==
+X-Gm-Message-State: AOJu0YwsYedls8ZS3+V4GrJLxlFTDtUANBvFpj8fN71KAQGGmvyrWkiG
+        F4XGhiQozKSJQ8SF2gVCb2/X5oZE27+R6qBl3ck=
+X-Google-Smtp-Source: AGHT+IGb2sjCfgiB4MDLQ4+6eqHIAz1MPyfkRmwtnYXAap4msCEkggCpsTKyt2Yxw0aBiRoszpn32Q==
+X-Received: by 2002:a17:902:c94d:b0:1c6:e1d:8be0 with SMTP id i13-20020a170902c94d00b001c60e1d8be0mr424044pla.2.1695664354493;
+        Mon, 25 Sep 2023 10:52:34 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t18-20020a170902d21200b001bdc208ab82sm9138120ply.97.2023.09.25.10.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 10:52:33 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 10:52:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Tejas Upadhyay <tejas.upadhyay@intel.com>,
+        Emma Anholt <emma@anholt.net>, Tom Rix <trix@redhat.com>,
+        llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Prike Liang <Prike.Liang@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        amd-gfx@lists.freedesktop.org,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        nouveau@lists.freedesktop.org, David Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-hardening@vger.kernel.org, Lijo Lazar <lijo.lazar@amd.com>,
+        Yifan Zhang <yifan1.zhang@amd.com>,
+        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Melissa Wen <mwen@igalia.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Evan Quan <evan.quan@amd.com>, Sean Paul <sean@poorly.run>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>, Le Ma <le.ma@amd.com>,
+        freedreno@lists.freedesktop.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nirmoy Das <nirmoy.das@intel.com>, Lang Yu <Lang.Yu@amd.com>,
+        John Harrison <john.c.harrison@intel.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Subject: Re: [PATCH 1/9] drm/amd/pm: Annotate struct
+ smu10_voltage_dependency_table with __counted_by
+Message-ID: <202309251051.EE3ECE7B@keescook>
+References: <20230922173110.work.084-kees@kernel.org>
+ <20230922173216.3823169-1-keescook@chromium.org>
+ <CADnq5_P2p3bmczci=pU+pG6f9+hqn=-xp1EynP2345CJZRW08w@mail.gmail.com>
+ <2635922e-f52a-4e91-40c6-4f1358972786@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2635922e-f52a-4e91-40c6-4f1358972786@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023, Mingwei Zhang wrote:
-> From: Jim Mattson <jmattson@google.com>
+On Mon, Sep 25, 2023 at 08:30:30AM +0200, Christian König wrote:
+> Am 22.09.23 um 19:41 schrieb Alex Deucher:
+> > On Fri, Sep 22, 2023 at 1:32 PM Kees Cook <keescook@chromium.org> wrote:
+> > > Prepare for the coming implementation by GCC and Clang of the __counted_by
+> > > attribute. Flexible array members annotated with __counted_by can have
+> > > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> > > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> > > functions).
+> > > 
+> > > As found with Coccinelle[1], add __counted_by for struct smu10_voltage_dependency_table.
+> > > 
+> > > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> > > 
+> > > Cc: Evan Quan <evan.quan@amd.com>
+> > > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > > Cc: "Christian König" <christian.koenig@amd.com>
+> > > Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> > > Cc: David Airlie <airlied@gmail.com>
+> > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > Cc: Xiaojian Du <Xiaojian.Du@amd.com>
+> > > Cc: Huang Rui <ray.huang@amd.com>
+> > > Cc: Kevin Wang <kevin1.wang@amd.com>
+> > > Cc: amd-gfx@lists.freedesktop.org
+> > > Cc: dri-devel@lists.freedesktop.org
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Acked-by: Alex Deucher <alexander.deucher@amd.com>
 > 
-> Per the SDM, "When the local APIC handles a performance-monitoring
-> counters interrupt, it automatically sets the mask flag in the LVT
-> performance counter register."
+> Mhm, I'm not sure if this is a good idea. That is a structure filled in by
+> the firmware, isn't it?
 > 
-> Add this behavior to KVM's local APIC emulation, to reduce the
-> incidence of "dazed and confused" spurious NMI warnings in Linux
-> guests (at least, those that use a PMI handler with "late_ack").
-> 
-> Fixes: 23930f9521c9 ("KVM: x86: Enable NMI Watchdog via in-kernel PIT source")
+> That would imply that we might need to byte swap count before it is
+> checkable.
 
-This Fixes is wrong.  Prior to commit f5132b01386b ("KVM: Expose a version 2
-architectural PMU to a guests"), KVM didn't ever deliver interrupts via the LVTPC
-entry.  E.g. prior to that commit, the only reference to APIC_LVTPC is in
-kvm_lapic_reg_write:
+The script found this instance because of this:
 
-  arch/x86/kvm $ git grep APIC_LVTPC f5132b01386b^
-  f5132b01386b^:lapic.c:  case APIC_LVTPC:
-
-Commit 23930f9521c9 definitely set the PMU support up to fail, but the bug would
-never have existed if kvm_deliver_pmi() had been written as:
-
-void kvm_deliver_pmi(struct kvm_vcpu *vcpu)
+static int smu10_get_clock_voltage_dependency_table(struct pp_hwmgr *hwmgr,
+                        struct smu10_voltage_dependency_table **pptable,
+                        uint32_t num_entry, const DpmClock_t *pclk_dependency_table)
 {
-	struct kvm_lapic *apic = vcpu->arch.apic;
+        uint32_t i;
+        struct smu10_voltage_dependency_table *ptable;
 
-	if (apic && kvm_apic_local_deliver(apic, APIC_LVTPC))
-		kvm_lapic_set_reg(apic, APIC_LVTPC,
-				  kvm_lapic_get_reg(apic, LVTPC) | APIC_LVT_MASKED);
-}
+        ptable = kzalloc(struct_size(ptable, entries, num_entry), GFP_KERNEL);
+        if (NULL == ptable)
+                return -ENOMEM;
 
-And this needs an explicit Cc: to stable because KVM opts out of AUTOSEL.
+        ptable->count = num_entry;
 
-So
+So the implication is that it's native byte order... but you tell me! I
+certainly don't want this annotation if it's going to break stuff. :)
 
-  Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests")
-  Cc: stable@vger.kernel.org
-
-> Signed-off-by: Jim Mattson <jmattson@google.com>
-> Tested-by: Mingwei Zhang <mizhang@google.com>
-
-When posting patches on behalf of others, you need to provide your SoB.
-
-> ---
->  arch/x86/kvm/lapic.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 113ca9661ab2..1f3d56a1f45f 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2729,13 +2729,17 @@ int kvm_apic_local_deliver(struct kvm_lapic *apic, int lvt_type)
->  {
->  	u32 reg = kvm_lapic_get_reg(apic, lvt_type);
->  	int vector, mode, trig_mode;
-> +	int r;
->  
->  	if (kvm_apic_hw_enabled(apic) && !(reg & APIC_LVT_MASKED)) {
->  		vector = reg & APIC_VECTOR_MASK;
->  		mode = reg & APIC_MODE_MASK;
->  		trig_mode = reg & APIC_LVT_LEVEL_TRIGGER;
-> -		return __apic_accept_irq(apic, mode, vector, 1, trig_mode,
-> -					NULL);
-> +
-> +		r = __apic_accept_irq(apic, mode, vector, 1, trig_mode, NULL);
-> +		if (r && lvt_type == APIC_LVTPC)
-> +			kvm_lapic_set_reg(apic, lvt_type, reg | APIC_LVT_MASKED);
-
-Belated feedback, I think I'd prefer to write this as
-
-			kvm_lapic_set_reg(apic, APIC_LVTPC, reg | APIC_LVT_MASKED);
-
-so that this code will show up when searching for APIC_LVTPC.
-
-> +		return r;
->  	}
->  	return 0;
->  }
-> -- 
-> 2.42.0.515.g380fc7ccd1-goog
-> 
+-- 
+Kees Cook
