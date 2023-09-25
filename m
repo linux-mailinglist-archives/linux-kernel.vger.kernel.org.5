@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 072BF7AE294
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427117AE2A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbjIYXte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        id S233580AbjIYXu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjIYXtd (ORCPT
+        with ESMTP id S233600AbjIYXuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:49:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1F4FB;
-        Mon, 25 Sep 2023 16:49:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695685767; x=1727221767;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=o4UGOstkYMKSTDEBD6eiJUra05gPDpzN03VLDsHK1nc=;
-  b=nY7+VvuSlNZ0kFr1jP73gX6lmmsqdOloct2+Rdo7xbsVuePUNp2QHw3E
-   PT79OfwORX3ana0IFMjIqEJKR2Z74ulB7q7GCZjnsmc3dwNHXaO/mV1R3
-   OsxlIRWnQVk7KELmFin4lG4DhistgeRVD2KQQrVva/DqNzHoDGFtZ2o/x
-   qBND82iGhpt73wIcJQWNWg7SG+OYxUZtZBmCdbbeBUYPhRVwrG5Yruvoq
-   iQRxgBl1GT325WsRQ/07scE8HUKwcAuFXl5rqcFEarwtFz8lRHJ+A7VPz
-   V8KFsvd77aJAPpVxuqxGH+Hb88CpFXxOOO3khF+EkSXtcI8+kux4YnkdV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="360821167"
-X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="360821167"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 16:49:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="922200708"
-X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
-   d="scan'208";a="922200708"
-Received: from jbuzinsk-mobl1.amr.corp.intel.com (HELO vcostago-mobl3) ([10.212.11.99])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 16:49:26 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Mateusz Guzik <mjguzik@gmail.com>,
-        John Johansen <john.johansen@canonical.com>
-Cc:     linux-security-module@vger.kernel.org, apparmor@lists.ubuntu.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [apparmor] use per-cpu refcounts for apparmor labels?
-In-Reply-To: <CAGudoHFfG7mARwSqcoLNwV81-KX4Bici5FQHjoNG4f9m83oLyg@mail.gmail.com>
-References: <CAGudoHFfG7mARwSqcoLNwV81-KX4Bici5FQHjoNG4f9m83oLyg@mail.gmail.com>
-Date:   Mon, 25 Sep 2023 16:49:25 -0700
-Message-ID: <87a5t9bypm.fsf@intel.com>
+        Mon, 25 Sep 2023 19:50:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8ABBCD4;
+        Mon, 25 Sep 2023 16:50:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 052A6C433C7;
+        Mon, 25 Sep 2023 23:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695685810;
+        bh=ssvRcYJRbvcBMwmXbSD5F1sToCHWJRiM/v4IspFc1LE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M9Bo/yI7d/Y+3iaOC0FmpbSUs5mfLVWWByKDGW8mSSurOYXek9ZHvcxuWd03BA80t
+         Z/yXBGU7tkILaRTXrMGZZXuTHeeTnimx0Bjbg4MIyFMYlmIS39WbJBs/rzri/D54YT
+         e/uFqiGYm0TTnBhixhuOvme8Df+PEAEefJf+LSOul+Qo2XC6vknrgMNM5lqmJG108J
+         hs4NFSV0LOXlK4LUyOfbXWZEFfDwrfqXPCsXe/q7hhnivoYBKYEuKVq2Ikn9sgkYXE
+         KgRvox2P4IDkItuvf2Ecc6FSxnoI+l0UjyubrS1ntxluEt0IrUQbelzLZA+ke5ac5B
+         tjCh2V1+WDkzQ==
+Date:   Tue, 26 Sep 2023 01:50:06 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/10] ioctl_userfaultfd.2: describe missing UFFDIO_API
+ feature flags
+Message-ID: <4a6utza2kwlghdrgpoc2p56gfzwb4lwpp6rsqed4gaecvbfdxt@f2gw6c737te6>
+References: <20230919190206.388896-1-axelrasmussen@google.com>
+ <20230919190206.388896-7-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cjrue5kcslvl7m5p"
+Content-Disposition: inline
+In-Reply-To: <20230919190206.388896-7-axelrasmussen@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mateusz,
 
-Mateusz Guzik <mjguzik@gmail.com> writes:
+--cjrue5kcslvl7m5p
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 06/10] ioctl_userfaultfd.2: describe missing UFFDIO_API
+ feature flags
+MIME-Version: 1.0
 
-> I'm sanity-checking perf in various microbenchmarks and I found
-> apparmor to be the main bottleneck in some of them.
->
-> For example: will-it-scale open1_processes -t 16, top of the profile:
->   20.17%  [kernel]                   [k] apparmor_file_alloc_security
->   20.08%  [kernel]                   [k] apparmor_file_open
->   20.05%  [kernel]                   [k] apparmor_file_free_security
->   18.39%  [kernel]                   [k] apparmor_current_getsecid_subj
-> [snip]
->
-> This serializes on refing/unrefing apparmor objs, sounds like a great
-> candidate for per-cpu refcounting instead (I'm assuming they are
-> expected to be long-lived).
->
-> I would hack it up myself, but I failed to find a clear spot to switch
-> back from per-cpu to centalized operation and don't want to put
-> serious effort into it.
->
-> Can you sort this out?
+On Tue, Sep 19, 2023 at 12:02:02PM -0700, Axel Rasmussen wrote:
+> Several new features have been added to the kernel recently, and the man
+> page wasn't updated to describe these new features. So, add in
+> descriptions of any missing features.
+>=20
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
 
-I was looking at this same workload, and proposed a patch[1] some time
-ago, see if it helps:
+Patch applied.
 
-https://lists.ubuntu.com/archives/apparmor/2023-August/012914.html
+Thanks,
+Alex
 
-But my idea was different, in many cases, we are looking at the label
-associated with the current task, and there's no need to take the
-refcount.
+>  man2/ioctl_userfaultfd.2 | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>=20
+> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+> index e91a1dfc8..53b1f473f 100644
+> --- a/man2/ioctl_userfaultfd.2
+> +++ b/man2/ioctl_userfaultfd.2
+> @@ -204,6 +204,13 @@ If this feature bit is set,
+>  .I uffd_msg.pagefault.feat.ptid
+>  will be set to the faulted thread ID for each page-fault message.
+>  .TP
+> +.BR UFFD_FEATURE_PAGEFAULT_FLAG_WP " (since Linux 5.10)"
+> +If this feature bit is set,
+> +userfaultfd supports write-protect faults
+> +for anonymous memory.
+> +(Note that shmem / hugetlbfs support
+> +is indicated by a separate feature.)
+> +.TP
+>  .BR UFFD_FEATURE_MINOR_HUGETLBFS " (since Linux 5.13)"
+>  If this feature bit is set,
+>  the kernel supports registering userfaultfd ranges
+> @@ -221,6 +228,22 @@ will be set to the exact page-fault address that was=
+ reported by the hardware,
+>  and will not mask the offset within the page.
+>  Note that old Linux versions might indicate the exact address as well,
+>  even though the feature bit is not set.
+> +.TP
+> +.BR UFFD_FEATURE_WP_HUGETLBFS_SHMEM " (since Linux 5.19)"
+> +If this feature bit is set,
+> +userfaultfd supports write-protect faults
+> +for hugetlbfs and shmem / tmpfs memory.
+> +.TP
+> +.BR UFFD_FEATURE_WP_UNPOPULATED " (since Linux 6.4)"
+> +If this feature bit is set,
+> +the kernel will handle anonymous memory the same way as file memory,
+> +by allowing the user to write-protect unpopulated ptes.
+> +.TP
+> +.BR UFFD_FEATURE_POISON " (since Linux 6.6)"
+> +If this feature bit is set,
+> +the kernel supports resolving faults with the
+> +.B UFFDIO_POISON
+> +ioctl.
+>  .PP
+>  The returned
+>  .I ioctls
+> --=20
+> 2.42.0.459.ge4e396fd5e-goog
+>=20
 
->
-> Thanks,
-> -- 
-> Mateusz Guzik <mjguzik gmail.com>
->
+--cjrue5kcslvl7m5p
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers,
--- 
-Vinicius
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUSHK4ACgkQnowa+77/
+2zKijg//Y70CRLE5sfeTvnRPNP9o+9cOLE60z1NZTTXAVlvBpJM6ag1S6Hivd/lQ
+KBq3W7eOZEA5k04InXcQhLaTcuf+eeBCNgRz9oIeUvuy6yNbjo47NKT/ojX381zq
+j8dq6LzhPdHAJB4jmYiZJS5FAvGEOBdIzLQ0dxJPk1i2BEcLfnqOKQ0dU7g8BB6S
+mpEduHSlxKciyWOQNvOcl2oMsSqFDWbICejaov8zYdruEIWXS7nSJOTI3lLlYcKF
+YiHTLc0J0SAv00F3uygTRASFR9FQt3xzlY6ponV4JKp0LIxMMQz/U24mTM6p8wF2
+zpdyuckSc5IUpr5z0iVbSSWRZb5fy1Ky5xZtsTXK9ghcSEiAvt73VZRbR6zvAtg4
+3WWcJSgYCvBQYA+gCWBLq+3C/RER0MFO8GCv1gXSWZ4KoBQtnwS5MYJSm+sUwj1U
+BXk4Bm8EUATI1VcpJmQg5bgkyKG8kLzO9L0ONYVULBYgiYceEU2yTgXlzNGHVW4A
+8OWNsqoB+AmSTuUUWcQNe1cZNz3aB/SZs0J95Zi8CntwcMCqtQBkumNY1aNJC1fQ
+xR9ZEHeq5PtR5jpXQYK0YovY4MO5bTCJHM9Eig+37xMOM1q2pdx9u0nWCILsfGV7
+VrdWUt+3QckgLnRRnvITNa67CQ05C2wKmSaGzrnN+WeKswqfSVQ=
+=u08m
+-----END PGP SIGNATURE-----
+
+--cjrue5kcslvl7m5p--
