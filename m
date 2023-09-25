@@ -2,239 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBED7AD835
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F627AD844
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjIYMps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S231274AbjIYMuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIYMpq (ORCPT
+        with ESMTP id S230373AbjIYMuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:45:46 -0400
-Received: from meesny.iki.fi (meesny.iki.fi [IPv6:2001:67c:2b0:1c1::201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C589C0;
-        Mon, 25 Sep 2023 05:45:36 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (dkzdf0gkyyyyyyyyyyyyt-3.rev.dnainternet.fi [IPv6:2001:14ba:4506:4f15::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 4RvMzd5wzczydx;
-        Mon, 25 Sep 2023 15:45:33 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1695645934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sOPSJoeX7lk4kXBOKjD/0wfOKeVMRnEcwVPmunfpKUY=;
-        b=etTO8CaUtGre4HA13jKDvEibGyIkV/g2M7wfUnKJj/piX4+IYLB8kqnD8f5aY64HCFkV0+
-        m8Ojoy3o+9y+7HpvjgYLy3ngjXHxAUoaRhXppuYyYaL/gMpvoBymYdrGdCZ1XIXJTjuSik
-        MExHosh9GHI27eCs5TDCAxgeCkP210A=
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1695645934; a=rsa-sha256; cv=none;
-        b=RmLO0wjM5kKI727YC8aF5MeHLcROGLg+t1HUp6NCkmHhyJUizdGj/+bvfMl2S12xW3/Wvm
-        T/Ncd2j75rON+IeiYqJ2AXcVQ3zmy1TjOf7fi8rwiRwRgq56wCLJq2pXEZfF/h5hjd509R
-        Go+cqnfXn2xL5YnoqpyvixcIBZD5vTM=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1695645934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sOPSJoeX7lk4kXBOKjD/0wfOKeVMRnEcwVPmunfpKUY=;
-        b=jhL//sv6B8BrmUUrCl+JChbWnzCcrV90pxHZAHTJvyZU9xFySDZBAJhjYSClOreoLfhq5f
-        qzGdnjM0vPIOkkznY1jSVdZkuvGv2r2rHAq0G5fETHxrN/9AUEamRIFR9iKlc3cgqdR30y
-        +SZ/W3UVnfqG7rJiDZ5s+HLwJ8k6B6w=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 2D10B634C93;
-        Mon, 25 Sep 2023 15:45:33 +0300 (EEST)
-Date:   Mon, 25 Sep 2023 12:45:32 +0000
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Benjamin Bara <bbara93@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        laurent.pinchart@ideasonboard.com, jacopo.mondi@ideasonboard.com,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>
-Subject: Re: [PATCH WIP RFC v2 1/2] media: uapi: Add V4L2_CID_{V,H}TOTAL
- controls
-Message-ID: <ZRGA7DLdHDc07ztS@valkosipuli.retiisi.eu>
-References: <20230609-v4l2-vtotal-v2-0-cf29925f4517@skidata.com>
- <20230609-v4l2-vtotal-v2-1-cf29925f4517@skidata.com>
+        Mon, 25 Sep 2023 08:50:14 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B35D3;
+        Mon, 25 Sep 2023 05:50:00 -0700 (PDT)
+X-UUID: 06bd380c5ba211eea33bb35ae8d461a2-20230925
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=5ucnnm7ou7TDJUI2qM1XF6W4sbZ+cwhD0NGzYmMPVxo=;
+        b=fOT1Q+POd6VyK5DRXliuA5/EojO6BGkcPr13WtI2sZzpovcKpolmWeDfx2l525FESUPsYE1EbHxPJIue+Dd2ZhagVJWuCi+lLjqDFXWbwQrlFMaPldsLq6wWQnWGso0r7B9K4GA7bZJSG+iFk/YpQyOGRJusW6CAcdAiFt709r4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:84a1459d-6d27-445c-9016-79d4e9591514,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:8db43fbf-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 06bd380c5ba211eea33bb35ae8d461a2-20230925
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1245616241; Mon, 25 Sep 2023 20:49:55 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 25 Sep 2023 20:49:53 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 25 Sep 2023 20:49:53 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mnvzG5ZdtlD/2d0tdRn0uxBbCIcOYUpGSmDg0S/us36Gh5McaYc1dFJ5kfChsE/G2NaHZpLkWoeVsB0vEeepe5uZ4TO7sTBpbfh9Cvbr2ADyyJIVHewQ4l2zxtcWPscNU4s7yh8UvbLmQD6F5eTIQU9ba6XNH1SUi8IfZMTeLg8CGlEn0SZo2Y7MmwcNqDcXJRaUUDF1hQqJG1ZCbtR/rLVwm2gsPFcGBCzgftvHw2/zAz4EICCDW4zTPskh8Pi8HHDu8vxO53tK3f7SLuFOjxCuaiYnuAcrIve6t0k6ff24y4idMtXugtGujyaIySZgn5j8wikYxfO5XVphVBuWLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5ucnnm7ou7TDJUI2qM1XF6W4sbZ+cwhD0NGzYmMPVxo=;
+ b=dpYpacP6//D2/f0o4YkSD1s86lvrctcp65GWchVIPc+UdgaetJE2Wvu2bs0qRQ5sZSMmwdFgfRlH5U00FlWStFFU7CMgDHHF0gNvmWW6UwpbPqgorXXLbIn4oRftZFOlADTaxUDqoA3kvyE0alskzLXVD+//9Hd2g97lGT+0yJqWxK5wP5y0Gdz5Xo8+2n00ZH8pSRT7GDs+bW8ZtaUpKXXN4R/FZIugQzzWCdtnfZ9aWBfBaCGBeP4AHxuhxjhCgKrv2D8/WIImHO1F9tM9IdMDV98OV1qEB3Vqw8oF6C5FGSTtxIvQGu500vXY35YmB9arJq+qOenJbZqXvwVNVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5ucnnm7ou7TDJUI2qM1XF6W4sbZ+cwhD0NGzYmMPVxo=;
+ b=NgObBTCLLgaVTpqxT15smXVJMNQ9uqfxAATvFpEWf054XEiF81kW0FqeF4VqERxDVmlorhs0j51FPqhL1o0DChxr+VNoda8GGz1a28Gx+E51gh0xwv7vvnsGVR5w5PI2Co35VbqgTTIW83qDvX2iuYvK1syq/fESI09vnwHmf5c=
+Received: from SI2PR03MB5885.apcprd03.prod.outlook.com (2603:1096:4:142::7) by
+ TYZPR03MB6820.apcprd03.prod.outlook.com (2603:1096:400:200::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 12:49:51 +0000
+Received: from SI2PR03MB5885.apcprd03.prod.outlook.com
+ ([fe80::e148:3390:1eb2:28e3]) by SI2PR03MB5885.apcprd03.prod.outlook.com
+ ([fe80::e148:3390:1eb2:28e3%7]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 12:49:50 +0000
+From:   =?utf-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>
+To:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "jstultz@google.com" <jstultz@google.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?utf-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
+        <Jianjiao.Zeng@mediatek.com>,
+        =?utf-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
+        <kuohong.wang@mediatek.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "tjmercier@google.com" <tjmercier@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
+Thread-Topic: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
+Thread-Index: AQHZ5FgkdSQ5OiqhjEmEvtpYDF+5QrAVXDQAgAFcr4CAADZ+gIAUpXiA
+Date:   Mon, 25 Sep 2023 12:49:50 +0000
+Message-ID: <a4ecc2792f3a4d3159e34415be984ff7d5f5e263.camel@mediatek.com>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+         <20230911023038.30649-6-yong.wu@mediatek.com>
+         <d0373c02-9b22-661f-9930-ca720053c2a0@collabora.com>
+         <a115a2a5d3ac218e6db65ccdb0a1876f9cfca02b.camel@mediatek.com>
+         <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com>
+In-Reply-To: <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SI2PR03MB5885:EE_|TYZPR03MB6820:EE_
+x-ms-office365-filtering-correlation-id: d0e2d02a-eecb-4fc4-23bb-08dbbdc5e853
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IMN/6nZTOaiMqJWoYZV1B5tWJi4LeoT1hViAwNZmgny4ltrDhJPwVUhOLjFsMMVJlj1/VqKZ8XAbp1FBEzmIxvFJh2EAwy5gf1Ptepo1GYnnLsxaR94IPY6TJ3UnY4WMSGgf1jeEcGpfMy/b8GUDBJTeDqUOhEfPqZQe1C2FdkXoXQgz2JTK1HBQzxvmcz+kZaXQpfc+JHaE6xkmrml+523HuEfgheQdBn3qiB9LTWftS14V2GD4eMUlZocsxwrYZmOqfG5Js0SGZ5wavsQ9AWvDRU01LuKOQ2GYsd/EXDTAHLR4sdEcSHRmc9wuYyfFpRVj0lxVa5kTLEeNj6JrA5hdiGbxEOdlkqaEznoCHSYRI09VZWfQvd7z8JDuV+XLN8+8X1o/CAqtflw8QCnuvLJR9GGsOsAcsTbGYumJawUYBiTkrN7cZXeQbny8F8/gPhgkBEkml2z0HvJOpyPOCwfNyJbj/5yaFCWm4l5s+RrePC23xHbM8fXVfRZbtFs1Zss5bgSeW/MmA7jAgpttqHMAVCnrowbKxEnCR6JgAO0mQTUc2+7ZPdsuoY6qoiRDrmdyg1IiCppP1sE4lleaICxdx0H4PFIrmtYBVYshQl63Pa8Fp4ypeYX06dbrlnWyxKwGvxl1U5qfS1phwi5liDZkQbTfHQKyXt565dZIi98tXmMY6kcWRikJvUSirdrh
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR03MB5885.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(366004)(39860400002)(376002)(230922051799003)(1800799009)(186009)(451199024)(26005)(71200400001)(478600001)(2616005)(83380400001)(85182001)(36756003)(86362001)(122000001)(38070700005)(5660300002)(6486002)(38100700002)(6506007)(6512007)(2906002)(4326008)(8676002)(41300700001)(54906003)(316002)(91956017)(110136005)(66946007)(64756008)(66446008)(66476007)(66556008)(76116006)(7416002)(8936002)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1RWY0FOSnA4TkhXRmxCdHhyRm9PNzFZT2Q5VFNxVHBCbE5ab2FZbnNyWkhY?=
+ =?utf-8?B?YUx0Z0tNWllpMWR3aUt5TXM0eDZrNVJidmdZeFRTZ0I0cEliencwVng1Wmlm?=
+ =?utf-8?B?ZzlJM25ObXlsOU1ZUWRMWW5lZnd2UmxSOUEzbEZXQXk5eWdVQTFMWTRXZ1k5?=
+ =?utf-8?B?SXN0cFEvVHhDbmJ2clREdXRZQmdBVE96WnlRb1lObXFsZkJiM2Z5eUlMeDNL?=
+ =?utf-8?B?T3RCTi9OYzVnUGFiZGN6RFNXSlRNUmxMaE1XZWRMUDhqbU13d3B5L3BZcUcv?=
+ =?utf-8?B?bERPMXFkUU9PK2p0Tkl2b0JmYldZTFVaZDRKK3gvSmp4TkUxMzAxSEVEYmlz?=
+ =?utf-8?B?OFQyck5VTUVobGdsUy84dTFTSzkvSzlZSStJQjZrWVhySlBJb1Z6ZlFBakNR?=
+ =?utf-8?B?RlZLVXpRbk1TMmdvZzJ6R0VvK2pkQzNSY1lLTTZlS29mWVJ1VTEwS0c1eXhW?=
+ =?utf-8?B?OUd6Z2FXdnR0SEloY01pc3VZanFjbnRSL1pqVVUwWXNSTlowM1Y5STUvQjRr?=
+ =?utf-8?B?a2dnaUFOY0Qzd1ZBSEY3SFRPanBtUFp0ZkxMMWhqU1p3VHd4VU1sTStSSUl4?=
+ =?utf-8?B?K1VONy94eXNkWFRNdHlKNjlBR2VqRVVlSEdRUWhtbk1SNGwxVlMvdDhlRWhW?=
+ =?utf-8?B?SDJ3Sk8ySlNJS2VJNCs4TUJkeXVVSHV0QVRzL1J1anQ5bUZFci9sbU9KM2JF?=
+ =?utf-8?B?QTh1NnZocEhSUFlTZm54SlA5MjZ3cnRuQ2FBV0RPRmFBTVFoUVhvVE9xaEJO?=
+ =?utf-8?B?bXBIaUVGMXFXTDMxdXR0TlhDVWpuTG1PdWduM2Qxbmw3MGRRUnRyVHNwbXpq?=
+ =?utf-8?B?dmkveFZ2MTc5Q0xGR0ZLTC93UDVsTXdrSTZWcnluOFJqR2k5UWxiWFdlVzBr?=
+ =?utf-8?B?WXFqMnUvMGo0SkY3REpIMEJBMEMwTGZsWWU5VVRwcG4xeTJ1RmZQWWpoOTZM?=
+ =?utf-8?B?Nk5qOUI3OUJ1dEcrRUJhb1NnTWJpMG1UOVFaYW1sMzVrQWJ2eERIdXJrdFVx?=
+ =?utf-8?B?b3ZJZ1d1cHhRcThTZEpGN3RXbGQrSzJiMWJtQmU0ODMwcC80T2R0dTdtcWtH?=
+ =?utf-8?B?dEFFR3QrTEx0S3BwZCtFNDJScGJMUG81N3pleUFOUTRod1JZSjVnN0RwTFlM?=
+ =?utf-8?B?TitIaUV5NWEyWmdpWXgyK2prNDF5cnRJS00rcGQ0alovT0VKbWRFNDJaYmpH?=
+ =?utf-8?B?YkRudms5Y3JERTJkdENNcVRhbWN0emRGUWkyakV2TGU3cnEvOUFlWURJODdh?=
+ =?utf-8?B?WEs5K3ZaWkVpUmE2QnplZVlwOXdMVU85N0RiWkpmcG13TXRGcERENnBLMkRv?=
+ =?utf-8?B?aitiaDJFL0MzUVpEZmpCWm5TQ2orcWZ5V1Evd3NMc0JqWnhpT1FKRFdWeTY1?=
+ =?utf-8?B?WUZ4VytxSHFHK3NaRWdtd1lodWVFb2tMZG0ra1QxS1ZPQUZvTi9qQXRwQ2lV?=
+ =?utf-8?B?aE0wTlp2UVdrMWVEQ1RrbG02dkNTN3FuU3ZjQkRJcHMyWXBIdnVtYTRsRVJH?=
+ =?utf-8?B?L2hBMmxQS2ZOcGQwaEVyNlJ4UlFUdFlSemNQS1BuWC95aUt1QVNQa1hqbGxC?=
+ =?utf-8?B?c293Qzg1aFVHWFh5dThyYkdGdHUxc0daNVRSWmJOL3JKQ2xDS2gwZm1JbHNl?=
+ =?utf-8?B?L2RmR1dqWVNqblJCSjczOHdHYU8yOUFqZUwyS09xSjJncDNhRnBRa2E5dGYv?=
+ =?utf-8?B?eHB2UWRXQWZsOHRwRmE1ZUd5emtCdldha1R5M1hkZTgxek90a0FxQzR2bGV5?=
+ =?utf-8?B?QlBFM3lCNkpKL3pOVnYvNTU5elNCUUUraU44OEVTNEc0dlBab1pxdlpsV1A1?=
+ =?utf-8?B?bUJxeSt6T1F0Q3hMVGZCMG9DZDdQTWtSSGFVaEJyQkV2eVdZaUdhVlZSN25q?=
+ =?utf-8?B?U2hUZ2lUY2xacDRpQjJxTWM2UnN5REhVc3lHNTR3eVZYZWp1RnBvaFVBcmln?=
+ =?utf-8?B?SlYxTGkxczFVZndmd1IrTklNclhLUU1aYlk0U2QrWTYxai9qL0tOZHZ5c2li?=
+ =?utf-8?B?UUJ4VERYNXNoeWxLV2k4d2dhNnhwQmhrVVBEVnZxMXI4aklIcG1SUElleXdy?=
+ =?utf-8?B?anBvN1ZycEdwenNnWDNnVC9YM0ZyUzNxMnBYRVltQnRkZEdJL3VzSlVSU09l?=
+ =?utf-8?Q?XXgeH/hxrp61PDY+mcLdVoZDf?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AB8E6A2D4F5D7E4CBE3594C777063463@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230609-v4l2-vtotal-v2-1-cf29925f4517@skidata.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR03MB5885.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0e2d02a-eecb-4fc4-23bb-08dbbdc5e853
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 12:49:50.6487
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vJbhOkflBFjP/ncwB2v43FsqmTHr6u1Qt3J87a7GY9LnzgX42PY/EcSKNYufvaONB1HoIPhdf8ClwDyLHxtEUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB6820
+X-MTK:  N
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_TEMPERROR,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
-
-Thank you for the patchset and my apologies for reviewing this so late.
-
-On Thu, Jun 22, 2023 at 09:12:23AM +0200, Benjamin Bara wrote:
-> From: Benjamin Bara <benjamin.bara@skidata.com>
-> 
-> Currently, V4L2_CID_{V,H}BLANK can be used to control the frame duration
-> of a stream. However, camera sensors usually have a register for the
-> total size (image data + blanking), e.g. {V,H}MAX on the imx290. As the
-> user space also typically wants to set a frame size, both sides
-> currently have to calculate with values they actually don't care about.
-> 
-> The dependency between format height and vertical blanking also results
-> to a change of the vertical blanking value and limits whenever the
-> format of the frame is changed and therefore makes it harder for user
-> space to do calculations, e.g. the frame duration.
-> V4L2_CID_{V,H}TOTAL do not depend on the format and therefore simplify
-> calculations. Additionally, they represent the hardware "better" and
-> therefore also simplify calculations on the driver side.
-> 
-> Add additional documentation about V4L2_CID_HTOTAL to have a control
-> which enables the user space to express its intends to the driver. The
-> driver can then update its controls and limits accordingly, and can do
-> possible re-calculations during mode switches in a defined behaviour.
-> This increases compatibility between different camera sensors.
-> 
-> Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
-> ---
-> v2:
-> - add HTOTAL
-> - add documentation about expectations
-> ---
->  Documentation/driver-api/media/camera-sensor.rst         | 11 +++++++++--
->  .../userspace-api/media/v4l/ext-ctrls-image-source.rst   | 16 ++++++++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c                |  2 ++
->  include/uapi/linux/v4l2-controls.h                       |  2 ++
->  4 files changed, 29 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/media/camera-sensor.rst b/Documentation/driver-api/media/camera-sensor.rst
-> index c7d4891bd24e..3ddeb0533728 100644
-> --- a/Documentation/driver-api/media/camera-sensor.rst
-> +++ b/Documentation/driver-api/media/camera-sensor.rst
-> @@ -85,12 +85,14 @@ a result of the configuration of a number of camera sensor implementation
->  specific parameters. Luckily, these parameters tend to be the same for more or
->  less all modern raw camera sensors.
->  
-> -The frame interval is calculated using the following equation::
-> +The frame interval is calculated using one of the following equations::
->  
->  	frame interval = (analogue crop width + horizontal blanking) *
->  			 (analogue crop height + vertical blanking) / pixel rate
->  
-> -The formula is bus independent and is applicable for raw timing parameters on
-> +	frame interval = horizontal total size * vertical total size / pixel rate
-> +
-> +The formulas are bus independent and are applicable for raw timing parameters on
-
-I think we should continue to have a single formula, but that the values
-could be obtained different ways, depending on the driver.
-
-For the user space it should be easier to use the controls you're
-proposing but existing drivers will still continue to use the existing
-controls.
-
-In particular, you should add something like:
-
-``V4L2_CID_VTOTAL`` value equals to analogue crop height + value of the
-``V4L2_CID_VBLANK``. Similarly, ``V4L2_CID_HTOTAL`` value equals to
-analogue crop width + value of the ``V4L2_CID_HBLANK``.
-
-New drivers shall and existing drivers should implement ``V4L2_CID_VTOTAL``
-and ``V4L2_CID_HTOTAL`` whereas existing drivers shall continue to
-implement ``V4L2_CID_VBLANK`` and ``V4L2_CID_HBLANK``.
-
-Implementing both in drivers can be a little bit painful. It'd be good to
-add driver support for this and use this as an example (e.g. CCS). I'll see
-if I could provide a patch, this will take some time still though.
-
-I wonder what Laurent thinks.
-
->  large variety of devices beyond camera sensors. Devices that have no analogue
->  crop, use the full source image size, i.e. pixel array size.
->  
-> @@ -100,6 +102,11 @@ is pixels and the unit of the ``V4L2_CID_VBLANK`` is lines. The pixel rate in
->  the sensor's **pixel array** is specified by ``V4L2_CID_PIXEL_RATE`` in the same
->  sub-device. The unit of that control is pixels per second.
->  
-> +Additionally, the horizontal and vertical total sizes are specified by
-> +``V4L2_CID_HTOTAL`` and ``V4L2_CID_VTOTAL``, respectively. The unit of the
-> +``V4L2_CID_HTOTAL`` control is pixels and the unit of the ``V4L2_CID_VTOTAL`` is
-> +lines, analogous to the blanking.
-
-Add "controls" before the period.
-
-> +
->  Register list based drivers need to implement read-only sub-device nodes for the
->  purpose. Devices that are not register list based need these to configure the
->  device's internal processing pipeline.
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-image-source.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-image-source.rst
-> index 71f23f131f97..5451fa0223cd 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-image-source.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-image-source.rst
-> @@ -59,6 +59,22 @@ Image Source Control IDs
->      non-sensitive.
->      This control is required for automatic calibration of sensors/cameras.
->  
-> +``V4L2_CID_VTOTAL (integer)``
-> +    Number of total lines per frame, including data and idle lines (blanking).
-> +    The unit of the vertical total size is a line. Every line has length of the
-> +    image width plus horizontal blanking at the pixel rate defined by
-> +    ``V4L2_CID_PIXEL_RATE`` control in the same sub-device.
-> +
-> +``V4L2_CID_HTOTAL (integer)``
-> +    Number of total pixels per line, including data and idle pixels (blanking).
-> +    The unit of the horizontal total size is pixels. The default value of this
-> +    control is set to a value which allows a constant total size for every
-> +    supported mode of the sensor. The control can be used to indicate the driver
-> +    if a high frame rate (value < default) or a high exposure (value > default)
-> +    should be achieved. With value = default, a constant frame size across the
-> +    different modes is targeted. Note that the actual frame rate depends on the
-> +    ``V4L2_CID_PIXEL_RATE`` control, which might vary between mode switches.
-> +
->  .. c:type:: v4l2_area
->  
->  .. flat-table:: struct v4l2_area
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> index 564fedee2c88..34e17e1faa7a 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -1112,6 +1112,8 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_TEST_PATTERN_BLUE:	return "Blue Pixel Value";
->  	case V4L2_CID_TEST_PATTERN_GREENB:	return "Green (Blue) Pixel Value";
->  	case V4L2_CID_NOTIFY_GAINS:		return "Notify Gains";
-> +	case V4L2_CID_VTOTAL:			return "Vertical Total Size";
-> +	case V4L2_CID_HTOTAL:			return "Horizontal Total Size";
->  
->  	/* Image processing controls */
->  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 5e80daa4ffe0..a4bbd91b8aef 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -1117,6 +1117,8 @@ enum v4l2_jpeg_chroma_subsampling {
->  #define V4L2_CID_TEST_PATTERN_GREENB		(V4L2_CID_IMAGE_SOURCE_CLASS_BASE + 7)
->  #define V4L2_CID_UNIT_CELL_SIZE			(V4L2_CID_IMAGE_SOURCE_CLASS_BASE + 8)
->  #define V4L2_CID_NOTIFY_GAINS			(V4L2_CID_IMAGE_SOURCE_CLASS_BASE + 9)
-> +#define V4L2_CID_VTOTAL				(V4L2_CID_IMAGE_SOURCE_CLASS_BASE + 10)
-> +#define V4L2_CID_HTOTAL				(V4L2_CID_IMAGE_SOURCE_CLASS_BASE + 11)
->  
->  
->  /* Image processing controls */
-> 
-
--- 
-Kind regards,
-
-Sakari Ailus
+T24gVHVlLCAyMDIzLTA5LTEyIGF0IDExOjMyICswMjAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
+ZWdubyB3cm90ZToNCj4gSWwgMTIvMDkvMjMgMDg6MTcsIFlvbmcgV3UgKOWQtOWLhykgaGEgc2Ny
+aXR0bzoNCj4gPiBPbiBNb24sIDIwMjMtMDktMTEgYXQgMTE6MjkgKzAyMDAsIEFuZ2Vsb0dpb2Fj
+Y2hpbm8gRGVsIFJlZ25vDQo+ID4gd3JvdGU6DQo+ID4gPiBJbCAxMS8wOS8yMyAwNDozMCwgWW9u
+ZyBXdSBoYSBzY3JpdHRvOg0KPiA+ID4gPiBUaGUgVEVFIHByb2JlIGxhdGVyIHRoYW4gZG1hLWJ1
+ZiBoZWFwLCBhbmQgUFJPQkVfREVERVIgZG9lc24ndA0KPiA+ID4gPiB3b3JrDQo+ID4gPiA+IGhl
+cmUgc2luY2UgdGhpcyBpcyBub3QgYSBwbGF0Zm9ybSBkcml2ZXIsIHRoZXJlZm9yZSBpbml0aWFs
+aXNlDQo+ID4gPiA+IHRoZQ0KPiA+ID4gPiBURUUNCj4gPiA+ID4gY29udGV4dC9zZXNzaW9uIHdo
+aWxlIHdlIGFsbG9jYXRlIHRoZSBmaXJzdCBzZWN1cmUgYnVmZmVyLg0KPiA+ID4gPiANCj4gPiA+
+ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9uZy53dUBtZWRpYXRlay5jb20+DQo+ID4gPiA+
+IC0tLQ0KPiA+ID4gPiAgICBkcml2ZXJzL2RtYS1idWYvaGVhcHMvbXRrX3NlY3VyZV9oZWFwLmMg
+fCA2MQ0KPiA+ID4gPiArKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gPiA+ICAgIDEgZmls
+ZSBjaGFuZ2VkLCA2MSBpbnNlcnRpb25zKCspDQo+ID4gPiA+IA0KPiA+ID4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9kbWEtYnVmL2hlYXBzL210a19zZWN1cmVfaGVhcC5jDQo+ID4gPiA+IGIvZHJp
+dmVycy9kbWEtDQo+ID4gPiA+IGJ1Zi9oZWFwcy9tdGtfc2VjdXJlX2hlYXAuYw0KPiA+ID4gPiBp
+bmRleCBiYmYxYzhkY2UyM2UuLmUzZGEzM2EzZDA4MyAxMDA2NDQNCj4gPiA+ID4gLS0tIGEvZHJp
+dmVycy9kbWEtYnVmL2hlYXBzL210a19zZWN1cmVfaGVhcC5jDQo+ID4gPiA+ICsrKyBiL2RyaXZl
+cnMvZG1hLWJ1Zi9oZWFwcy9tdGtfc2VjdXJlX2hlYXAuYw0KPiA+ID4gPiBAQCAtMTAsNiArMTAs
+MTIgQEANCj4gPiA+ID4gICAgI2luY2x1ZGUgPGxpbnV4L2Vyci5oPg0KPiA+ID4gPiAgICAjaW5j
+bHVkZSA8bGludXgvbW9kdWxlLmg+DQo+ID4gPiA+ICAgICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+
+DQo+ID4gPiA+ICsjaW5jbHVkZSA8bGludXgvdGVlX2Rydi5oPg0KPiA+ID4gPiArI2luY2x1ZGUg
+PGxpbnV4L3V1aWQuaD4NCj4gPiA+ID4gKw0KPiA+ID4gPiArI2RlZmluZSBUWl9UQV9NRU1fVVVJ
+RAkJIjQ0Nzc1ODhhLTg0NzYtMTFlMi1hZDE1LQ0KPiA+ID4gPiBlNDFmMTM5MGQ2NzYiDQo+ID4g
+PiA+ICsNCj4gPiA+IA0KPiA+ID4gSXMgdGhpcyBVVUlEIHRoZSBzYW1lIGZvciBhbGwgU29DcyBh
+bmQgYWxsIFRaIHZlcnNpb25zPw0KPiA+IA0KPiA+IFllcy4gSXQgaXMgdGhlIHNhbWUgZm9yIGFs
+bCBTb0NzIGFuZCBhbGwgVFogdmVyc2lvbnMgY3VycmVudGx5Lg0KPiA+IA0KPiANCj4gVGhhdCdz
+IGdvb2QgbmV3cyENCj4gDQo+IElzIHRoaXMgVVVJRCB1c2VkIGluIGFueSB1c2Vyc3BhY2UgY29t
+cG9uZW50PyAoZXhhbXBsZTogQW5kcm9pZA0KPiBIQUxzPykNCg0KTm8uIFVzZXJzcGFjZSBuZXZl
+ciB1c2UgaXQuIElmIHVzZXJzcGFjZSB3b3VsZCBsaWtlIHRvIGFsbG9jYXRlIHRoaXMNCnNlY3Vy
+ZSBidWZmZXIsIGl0IGNhbiBhY2hpZXZlIHRocm91Z2ggdGhlIGV4aXN0aW5nIGRtYWJ1ZiBJT0NU
+TCB2aWENCi9kZXYvZG1hX2hlYXAvbXRrX3N2cCBub2RlLg0KDQoNCj4gSWYgaXQgaXMgKGFuZCBJ
+IHNvbWVob3cgZXhwZWN0IHRoYXQgaXQgaXMpLCB0aGVuIHRoaXMgZGVmaW5pdGlvbg0KPiBzaG91
+bGQgZ28NCj4gdG8gYSBVQVBJIGhlYWRlciwgYXMgc3VnZ2VzdGVkIGJ5IENocmlzdGlhbi4NCj4g
+DQo+IENoZWVycyENCj4gDQo+ID4gPiANCj4gPiA+IFRoYW5rcywNCj4gPiA+IEFuZ2Vsbw0KPiA+
+ID4gDQo+ID4gPiANCj4gPiA+ID4gKyNkZWZpbmUgTVRLX1RFRV9QQVJBTV9OVU0JCTQNCj4gPiA+
+ID4gICAgDQo+ID4gPiA+ICAgIC8qDQo+ID4gPiA+ICAgICAqIE1lZGlhVGVrIHNlY3VyZSAoY2h1
+bmspIG1lbW9yeSB0eXBlDQo+ID4gPiA+IEBAIC0yOCwxNyArMzQsNzIgQEAgc3RydWN0IG10a19z
+ZWN1cmVfaGVhcF9idWZmZXIgew0KPiA+ID4gPiAgICBzdHJ1Y3QgbXRrX3NlY3VyZV9oZWFwIHsN
+Cj4gPiA+ID4gICAgCWNvbnN0IGNoYXIJCSpuYW1lOw0KPiA+ID4gPiAgICAJY29uc3QgZW51bSBr
+cmVlX21lbV90eXBlIG1lbV90eXBlOw0KPiA+ID4gPiArCXUzMgkJCSBtZW1fc2Vzc2lvbjsNCj4g
+PiA+ID4gKwlzdHJ1Y3QgdGVlX2NvbnRleHQJKnRlZV9jdHg7DQo+ID4gPiA+ICAgIH07DQo+ID4g
+PiA+ICAgIA0KPiA+ID4gPiArc3RhdGljIGludCBtdGtfb3B0ZWVfY3R4X21hdGNoKHN0cnVjdCB0
+ZWVfaW9jdGxfdmVyc2lvbl9kYXRhDQo+ID4gPiA+ICp2ZXIsDQo+ID4gPiA+IGNvbnN0IHZvaWQg
+KmRhdGEpDQo+ID4gPiA+ICt7DQo+ID4gPiA+ICsJcmV0dXJuIHZlci0+aW1wbF9pZCA9PSBURUVf
+SU1QTF9JRF9PUFRFRTsNCj4gPiA+ID4gK30NCj4gPiA+ID4gKw0KPiA+ID4gPiArc3RhdGljIGlu
+dCBtdGtfa3JlZV9zZWN1cmVfc2Vzc2lvbl9pbml0KHN0cnVjdCBtdGtfc2VjdXJlX2hlYXANCj4g
+PiA+ID4gKnNlY19oZWFwKQ0KPiA+ID4gPiArew0KPiA+ID4gPiArCXN0cnVjdCB0ZWVfcGFyYW0g
+dF9wYXJhbVtNVEtfVEVFX1BBUkFNX05VTV0gPSB7MH07DQo+ID4gPiA+ICsJc3RydWN0IHRlZV9p
+b2N0bF9vcGVuX3Nlc3Npb25fYXJnIGFyZyA9IHswfTsNCj4gPiA+ID4gKwl1dWlkX3QgdGFfbWVt
+X3V1aWQ7DQo+ID4gPiA+ICsJaW50IHJldDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArCXNlY19oZWFw
+LT50ZWVfY3R4ID0gdGVlX2NsaWVudF9vcGVuX2NvbnRleHQoTlVMTCwNCj4gPiA+ID4gbXRrX29w
+dGVlX2N0eF9tYXRjaCwNCj4gPiA+ID4gKwkJCQkJCSAgICBOVUxMLA0KPiA+ID4gPiBOVUxMKTsN
+Cj4gPiA+ID4gKwlpZiAoSVNfRVJSKHNlY19oZWFwLT50ZWVfY3R4KSkgew0KPiA+ID4gPiArCQlw
+cl9lcnIoIiVzOiBvcGVuIGNvbnRleHQgZmFpbGVkLCByZXQ9JWxkXG4iLA0KPiA+ID4gPiBzZWNf
+aGVhcC0NCj4gPiA+ID4gPiBuYW1lLA0KPiA+ID4gPiANCj4gPiA+ID4gKwkJICAgICAgIFBUUl9F
+UlIoc2VjX2hlYXAtPnRlZV9jdHgpKTsNCj4gPiA+ID4gKwkJcmV0dXJuIC1FTk9ERVY7DQo+ID4g
+PiA+ICsJfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICsJYXJnLm51bV9wYXJhbXMgPSBNVEtfVEVFX1BB
+UkFNX05VTTsNCj4gPiA+ID4gKwlhcmcuY2xudF9sb2dpbiA9IFRFRV9JT0NUTF9MT0dJTl9QVUJM
+SUM7DQo+ID4gPiA+ICsJcmV0ID0gdXVpZF9wYXJzZShUWl9UQV9NRU1fVVVJRCwgJnRhX21lbV91
+dWlkKTsNCj4gPiA+ID4gKwlpZiAocmV0KQ0KPiA+ID4gPiArCQlnb3RvIGNsb3NlX2NvbnRleHQ7
+DQo+ID4gPiA+ICsJbWVtY3B5KCZhcmcudXVpZCwgJnRhX21lbV91dWlkLmIsIHNpemVvZih0YV9t
+ZW1fdXVpZCkpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsJcmV0ID0gdGVlX2NsaWVudF9vcGVuX3Nl
+c3Npb24oc2VjX2hlYXAtPnRlZV9jdHgsICZhcmcsDQo+ID4gPiA+IHRfcGFyYW0pOw0KPiA+ID4g
+PiArCWlmIChyZXQgPCAwIHx8IGFyZy5yZXQpIHsNCj4gPiA+ID4gKwkJcHJfZXJyKCIlczogb3Bl
+biBzZXNzaW9uIGZhaWxlZCwgcmV0PSVkOiVkXG4iLA0KPiA+ID4gPiArCQkgICAgICAgc2VjX2hl
+YXAtPm5hbWUsIHJldCwgYXJnLnJldCk7DQo+ID4gPiA+ICsJCXJldCA9IC1FSU5WQUw7DQo+ID4g
+PiA+ICsJCWdvdG8gY2xvc2VfY29udGV4dDsNCj4gPiA+ID4gKwl9DQo+ID4gPiA+ICsJc2VjX2hl
+YXAtPm1lbV9zZXNzaW9uID0gYXJnLnNlc3Npb247DQo+ID4gPiA+ICsJcmV0dXJuIDA7DQo+ID4g
+PiA+ICsNCj4gPiA+ID4gK2Nsb3NlX2NvbnRleHQ6DQo+ID4gPiA+ICsJdGVlX2NsaWVudF9jbG9z
+ZV9jb250ZXh0KHNlY19oZWFwLT50ZWVfY3R4KTsNCj4gPiA+ID4gKwlyZXR1cm4gcmV0Ow0KPiA+
+ID4gPiArfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICAgIHN0YXRpYyBzdHJ1Y3QgZG1hX2J1ZiAqDQo+
+ID4gPiA+ICAgIG10a19zZWNfaGVhcF9hbGxvY2F0ZShzdHJ1Y3QgZG1hX2hlYXAgKmhlYXAsIHNp
+emVfdCBzaXplLA0KPiA+ID4gPiAgICAJCSAgICAgIHVuc2lnbmVkIGxvbmcgZmRfZmxhZ3MsIHVu
+c2lnbmVkIGxvbmcNCj4gPiA+ID4gaGVhcF9mbGFncykNCj4gPiA+ID4gICAgew0KPiA+ID4gPiAr
+CXN0cnVjdCBtdGtfc2VjdXJlX2hlYXAgKnNlY19oZWFwID0NCj4gPiA+ID4gZG1hX2hlYXBfZ2V0
+X2RydmRhdGEoaGVhcCk7DQo+ID4gPiA+ICAgIAlzdHJ1Y3QgbXRrX3NlY3VyZV9oZWFwX2J1ZmZl
+ciAqc2VjX2J1ZjsNCj4gPiA+ID4gICAgCURFRklORV9ETUFfQlVGX0VYUE9SVF9JTkZPKGV4cF9p
+bmZvKTsNCj4gPiA+ID4gICAgCXN0cnVjdCBkbWFfYnVmICpkbWFidWY7DQo+ID4gPiA+ICAgIAlp
+bnQgcmV0Ow0KPiA+ID4gPiAgICANCj4gPiA+ID4gKwkvKg0KPiA+ID4gPiArCSAqIFRFRSBwcm9i
+ZSBtYXkgYmUgbGF0ZS4gSW5pdGlhbGlzZSB0aGUgc2VjdXJlIHNlc3Npb24NCj4gPiA+ID4gaW4g
+dGhlDQo+ID4gPiA+IGZpcnN0DQo+ID4gPiA+ICsJICogYWxsb2NhdGluZyBzZWN1cmUgYnVmZmVy
+Lg0KPiA+ID4gPiArCSAqLw0KPiA+ID4gPiArCWlmICghc2VjX2hlYXAtPm1lbV9zZXNzaW9uKSB7
+DQo+ID4gPiA+ICsJCXJldCA9IG10a19rcmVlX3NlY3VyZV9zZXNzaW9uX2luaXQoc2VjX2hlYXAp
+Ow0KPiA+ID4gPiArCQlpZiAocmV0KQ0KPiA+ID4gPiArCQkJcmV0dXJuIEVSUl9QVFIocmV0KTsN
+Cj4gPiA+ID4gKwl9DQo+ID4gPiA+ICsNCj4gPiA+ID4gICAgCXNlY19idWYgPSBremFsbG9jKHNp
+emVvZigqc2VjX2J1ZiksIEdGUF9LRVJORUwpOw0KPiA+ID4gPiAgICAJaWYgKCFzZWNfYnVmKQ0K
+PiA+ID4gPiAgICAJCXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOw0KPiA+ID4gDQo+ID4gPiANCj4g
+DQo+IA0K
