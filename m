@@ -2,154 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2E57ACD75
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3E97ACD7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 03:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjIYBLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 21:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S231497AbjIYBMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 21:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbjIYBLW (ORCPT
+        with ESMTP id S230360AbjIYBMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 21:11:22 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0BBEE;
-        Sun, 24 Sep 2023 18:11:16 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rv4ZS1yQLz4f3kJs;
-        Mon, 25 Sep 2023 09:11:12 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAnvdww3hBllLtIBQ--.16291S3;
-        Mon, 25 Sep 2023 09:11:13 +0800 (CST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Donald Buczek <buczek@molgen.mpg.de>,
-        Dragan Stancevic <dragan@stancevic.com>,
-        Yu Kuai <yukuai1@huaweicloud.com>, song@kernel.org
-Cc:     guoqing.jiang@linux.dev, it+raid@molgen.mpg.de,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        msmith626@gmail.com, "yangerkun@huawei.com" <yangerkun@huawei.com>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <CAPhsuW6R11y6vETeZ4vmFGmV6DRrj2gwhp1-Nm+csvtHb2nQYg@mail.gmail.com>
- <20230822211627.1389410-1-dragan@stancevic.com>
- <ab757e2b-3ff0-33d9-d30c-61669b738664@huaweicloud.com>
- <2061b123-6332-1456-e7c3-b713752527fb@stancevic.com>
- <07d5c7c2-c444-8747-ed6d-ca24231decd8@huaweicloud.com>
- <cf765117-7270-1b98-7e82-82a1ca1daa2a@stancevic.com>
- <0d79d1f9-00e8-93be-3c7c-244030521cd7@huaweicloud.com>
- <ff996ffb-cba5-cc9b-2740-49ba4a1869b5@huaweicloud.com>
- <07ef7b78-66d4-d3de-4e25-8a889b902e14@stancevic.com>
- <63c63d93-30fc-0175-0033-846b93fe9eff@molgen.mpg.de>
- <de7f6fba-c6e0-7549-199e-36548b68a862@stancevic.com>
- <d48c6c4a-9b0e-20bc-7d40-2a88aa37524a@molgen.mpg.de>
- <f79867f5-befb-0d7d-0c01-a42caa5d1466@molgen.mpg.de>
- <fb261b77-4859-07bb-e586-8589741e0c9e@molgen.mpg.de>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <80e0f8aa-6d53-3109-37c0-b07c5a4b558c@huaweicloud.com>
-Date:   Mon, 25 Sep 2023 09:11:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 24 Sep 2023 21:12:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513AAC4;
+        Sun, 24 Sep 2023 18:12:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BECFEC433C8;
+        Mon, 25 Sep 2023 01:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695604343;
+        bh=8DMO9QhTO8hdhH/g8TUVE19NRm9egrw1zRvnF4MPE2I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sPSNb+vNMc9QnwG25HKq5OiwaCM2UmdIPIME8yp0jY4nhQwvRndPF0j9i6DJjE5Gz
+         YXXMVUoFhO5Yvk78oEU9jPk1sqI874xdB0APq+/pC4h0/65orwtIFVID2cH0eTuZ8R
+         QXw88y/w1baXPG6Oh1Du2v6JwfjlTFV7M0+B5+2KIQMfnB2evjD1pizx1SIa7qPDSg
+         VLKLqApnLEJHi2xflFR9Ks5VsnKtRGX9UMYBX0Zz5E+e2yKYkxVlNem1gE4hTg7or4
+         TqJnKPfkYvWre8xZ2kyZINcqcEdcW+UyNojqnHDBdzUWVnKjObHINweFP+PyJIgXeZ
+         eCrOr+k2eDWxA==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50336768615so9099682e87.0;
+        Sun, 24 Sep 2023 18:12:23 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw3HsoOsXQssctVRVGgjl+joQN4y4Aq81qRbgZ8b6ZgsTVclQou
+        L39RYA4YNUb6zBgD8wUdjbmZfZvlvb3t8WFs2S4=
+X-Google-Smtp-Source: AGHT+IGtkyHqNUBAqTMyj6w0bSnn7CPiKL+Pz7C5RhSxxT4RvENMsrQLGRHxmNuQ78GwqtiPLnfA8OKWSqQwHR7IqSY=
+X-Received: by 2002:a19:ee15:0:b0:503:31dc:7d64 with SMTP id
+ g21-20020a19ee15000000b0050331dc7d64mr3820113lfb.21.1695604341958; Sun, 24
+ Sep 2023 18:12:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <fb261b77-4859-07bb-e586-8589741e0c9e@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnvdww3hBllLtIBQ--.16291S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF45AF4rtF4DGrW8uFyxuFg_yoW5GF15p3
-        4Fv3W5tr4DJr1kuws2qw48uay0yw1xXay5GrykuwnYk3WY9rZYvFy5AF45ua4DC3Z3uF1I
-        vFy5JFZxXFyUZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
-        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUouWlDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230831044431.250338-1-aford173@gmail.com> <20230925010713.GC7231@dragon>
+In-Reply-To: <20230925010713.GC7231@dragon>
+From:   Shawn Guo <shawnguo@kernel.org>
+Date:   Mon, 25 Sep 2023 09:12:08 +0800
+X-Gmail-Original-Message-ID: <CAJBJ56KZNtbfdY1F0fTytzaKrqvASYD6XfiUKQptV-AvY=_kCw@mail.gmail.com>
+Message-ID: <CAJBJ56KZNtbfdY1F0fTytzaKrqvASYD6XfiUKQptV-AvY=_kCw@mail.gmail.com>
+Subject: Re: [PATCH V3 1/3] arm64: dts: imx8mp: Add easrc node
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, marex@denx.de,
+        aford@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Sep 25, 2023 at 9:07=E2=80=AFAM Shawn Guo <shawnguo@kernel.org> wro=
+te:
+>
+> On Wed, Aug 30, 2023 at 11:44:29PM -0500, Adam Ford wrote:
+> > The i.MX8MP has an asynchronous sample rate converter which seems
+> > to be the same as what is available on the i.MX8M Nano.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> > V3:  No Change.  The dt-binding update was already accepted into the so=
+und tree, so that patch
+> >      was dropped from the series
+> >
+> > V2:  No Change.
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boo=
+t/dts/freescale/imx8mp.dtsi
+> > index 83d907294fbc..3167706d81e1 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > @@ -1459,6 +1459,26 @@ sai7: sai@30c80000 {
+> >                                       interrupts =3D <GIC_SPI 111 IRQ_T=
+YPE_LEVEL_HIGH>;
+> >                                       status =3D "disabled";
+> >                               };
+> > +
+> > +                             easrc: easrc@30c90000 {
+> > +                                     compatible =3D "fsl,imx8mp-easrc"=
+, "fsl,imx8mn-easrc";
+> > +                                     reg =3D <0x30c90000 0x10000>;
+> > +                                     interrupts =3D <GIC_SPI 122 IRQ_T=
+YPE_LEVEL_HIGH>;
+> > +                                     clocks =3D <&audio_blk_ctrl IMX8M=
+P_CLK_AUDIOMIX_ASRC_IPG>;
+> > +                                     clock-names =3D "mem";
+> > +                                     dmas =3D <&sdma2 16 23 0> , <&sdm=
+a2 17 23 0>,
+> > +                                            <&sdma2 18 23 0> , <&sdma2=
+ 19 23 0>,
+> > +                                            <&sdma2 20 23 0> , <&sdma2=
+ 21 23 0>,
+> > +                                            <&sdma2 22 23 0> , <&sdma2=
+ 23 23 0>;
+> > +                                     dma-names =3D "ctx0_rx", "ctx0_tx=
+",
+> > +                                                 "ctx1_rx", "ctx1_tx",
+> > +                                                 "ctx2_rx", "ctx2_tx",
+> > +                                                 "ctx3_rx", "ctx3_tx";
+> > +                                     firmware-name =3D "imx/easrc/easr=
+c-imx8mn.bin";
+> > +                                     fsl,asrc-rate  =3D <8000>;
+>
+> One space before =3D
 
-在 2023/09/24 22:35, Donald Buczek 写道:
-> On 9/17/23 10:55, Donald Buczek wrote:
->> On 9/14/23 08:03, Donald Buczek wrote:
->>> On 9/13/23 16:16, Dragan Stancevic wrote:
->>>> Hi Donald-
->>>> [...]
->>>> Here is a list of changes for 6.1:
->>>>
->>>> e5e9b9cb71a0 md: factor out a helper to wake up md_thread directly
->>>> f71209b1f21c md: enhance checking in md_check_recovery()
->>>> 753260ed0b46 md: wake up 'resync_wait' at last in md_reap_sync_thread()
->>>> 130443d60b1b md: refactor idle/frozen_sync_thread() to fix deadlock
->>>> 6f56f0c4f124 md: add a mutex to synchronize idle and frozen in 
->>>> action_store()
->>>> 64e5e09afc14 md: refactor action_store() for 'idle' and 'frozen'
->>>> a865b96c513b Revert "md: unlock mddev before reap sync_thread in 
->>>> action_store"
->>>
->>> Thanks!
->>>
->>> I've put these patches on v6.1.52. I've started a script which 
->>> transitions the three md-devices of a very active backup server 
->>> through idle->check->idle every 6 minutes a few ours ago.  It went 
->>> through ~400 iterations till now. No lock-ups so far.
->>
->> Oh dear, looks like the deadlock problem is _not_fixed with these 
->> patches.
-> 
-> Some more info after another incident:
-> 
-> - We've hit the deadlock with 5.15.131 (so it is NOT introduced by any 
-> of the above patches)
-> - The symptoms are not exactly the same as with the original year-old 
-> problem. Differences:
-> - - mdX_raid6 is NOT busy looping
-> - - /sys/devices/virtual/block/mdX/md/array_state says "active" not 
-> "write pending"
-> - - `echo active > /sys/devices/virtual/block/mdX/md/array_state` does 
-> not resolve the deadlock
-> - - After hours in the deadlock state the system resumed operation when 
-> a script of mine read(!) lots of sysfs files.
-> - But in both cases, `echo idle > 
-> /sys/devices/virtual/block/mdX/md/sync_action` hangs as does all I/O 
-> operation on the raid.
-> 
-> The fact that we didn't hit the problem for many month on 5.15.94 might 
-> hint that it was introduced between 5.15.94 and 5.15.131
-> 
-> We'll try to reproduce the problem on a test machine for analysis, but 
-> this make take time (vacation imminent for one...).
-> 
-> But its not like these patches caused the problem. Any maybe they _did_ 
-> fix the original problem, as we didn't hit that one.
-
-Sorry for the late reply, yes, this looks like a different problem. I'm
-pretty confident that the orignal problem is fixed since that echo
-idle/frozen doesn't hold the lock 'reconfig_mutex' to wait for
-sync_thread to be done.
-
-I'll check patches between 5.15.94 and 5.15.131.
-
-Thanks,
-Kuai
-
-> 
-> Best
-> 
->    Donald
-> 
-
+I fixed it up and applied, thanks!
