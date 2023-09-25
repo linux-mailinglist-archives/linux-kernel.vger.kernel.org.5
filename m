@@ -2,179 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9637AE11B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 23:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878DB7AE171
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbjIYV7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 17:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
+        id S231358AbjIYWBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjIYV7A (ORCPT
+        with ESMTP id S229459AbjIYWBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 17:59:00 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F39AF;
-        Mon, 25 Sep 2023 14:58:53 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4E7415C0152;
-        Mon, 25 Sep 2023 17:58:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 25 Sep 2023 17:58:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ryhl.io; h=cc:cc
-        :content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1695679131; x=1695765531; bh=kUnVeKR6NPzam27Z8wdb0Fiy0PexlWX7F9q
-        WzLELfaw=; b=TiJYuPI+QfPcppWOD0lBVoZo9nqssKqzgw7Eh9vnsgI+CdLpKr1
-        QXs9bFpgEOiKo3FcQ6sohoN3IWDvu2dNHcGoL17L8fpSpEBWZbhKnK53pjnObQfY
-        l0nDthoMRCKih/avUk1xe283HbXCsW/+dSziAu+PTNPCWaKxU/VKb78QP61fPdkK
-        ejooTcxnrckeEp57zGO3gtUTk42QZYvUR6IqIFDbHS3EDvcJPnu22IYqO/i2gI/d
-        BE5peWAkAxinydwYAzothp9u78+66VLxnJFMV0A8du06jsX28fOeqTvsruKhfbR3
-        rEKsr+f0BzyqM5dxkzxesw1aPIPATjxjqhw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1695679131; x=1695765531; bh=kUnVeKR6NPzam27Z8wdb0Fiy0PexlWX7F9q
-        WzLELfaw=; b=bM6SeA6rOT9sCg21OHnkrZP8OA7AS7SezWXHgRFh9h4tB+cnPGL
-        aiUR6S8PoieScU6VXbBr5dQY5w8+vzEztX51i+ACxLFDlqoiQLr0wMNBCT1NJWB9
-        ENSANK1cdGoAtm0sk0G48kerxV7cyn+N4Hcq4kcWkdd37ULBwIqiNsRt8NupZee/
-        jvUBxxaVZ/Klm48ZQIKFHZ2MvvgV45HOWBV0Z5xdezU0nrakCJ7n8cC2QkOUvZFg
-        CPuAoYCTYo63CrTFXH/fBN+ykL33y44rDRTeHexc/zdOo3Wyq+t+rE2qGd7b2xgD
-        WTk3a8pnia7E+UjVHC2MmvSmw29FGb06Paw==
-X-ME-Sender: <xms:mwISZaAGCNFa8dIEUnXKg9LH0e9hczy1ple76AQad9kk6L_x0Msacg>
-    <xme:mwISZUiu1FlyPwwWXHf1YHLgHsmSbXWP_P3Vm3hrjiD_JqwAiY4jf3ov4E_Vrnw67
-    G4IVS9WzaG2NOVIuA>
-X-ME-Received: <xmr:mwISZdk842Vw-kkuDLGgtjzcltAre9WR2gwucXSUyzmk_dMVCukxyyQw_vZGMAi1SCKQvRgqbmyb-jbiG9EATtfIZFosxpYY4C0G>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelhedgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeetlhhi
-    tggvucfthihhlhcuoegrlhhitggvsehrhihhlhdrihhoqeenucggtffrrghtthgvrhhnpe
-    efgfeugfdtgefhueeiudffjefhveeuheeuheekvdetfefgheehtdffuddtgfdujeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhitggvse
-    hrhihhlhdrihho
-X-ME-Proxy: <xmx:mwISZYxKWxWWEb7YM1SCybbxZN0s3sITsbsXjX3EvzFz0PkBiU1a5w>
-    <xmx:mwISZfRJLHo8DGVp523CkCegaZaj_W_A1V5toniCmU1kJVSa7d1VWQ>
-    <xmx:mwISZTZRIxV5WytNZHNbUf4h_NY6JSKCjJFdE2TZSU4L_SKsuyyfgg>
-    <xmx:mwISZUJByfAqM57HBrvam5s5NCF4MrIvcce7GZywZDmv7x7dudnN8Q>
-Feedback-ID: i56684263:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Sep 2023 17:58:49 -0400 (EDT)
-Message-ID: <edc0b599-c5d1-4e9c-a51b-eb8ceaef7acc@ryhl.io>
-Date:   Mon, 25 Sep 2023 23:58:46 +0200
+        Mon, 25 Sep 2023 18:01:21 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BA4112
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:01:12 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3adf06730c4so4631018b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695679272; x=1696284072; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f56JQlsSAmLM+rWl8eVCaUJ/LY2QFxeZQE+QgWmGsq0=;
+        b=YoRyRJ9Giht3eW/Q610XE3F2Ud3rrWCyPsdIRd3z37dSf+q8+/GbTO7oIOYkm68NHD
+         Um0RxXgS1al6+JEyF4ESYIb5DuJljtFqBzPpMsUTJUIAkqviGSrkvTidAx8m0dUuvVPZ
+         y8vohGcTvi8Tbym221c1rZIrbnGTLHHYq6utw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695679272; x=1696284072;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f56JQlsSAmLM+rWl8eVCaUJ/LY2QFxeZQE+QgWmGsq0=;
+        b=dHCStC753U4JnnVSsCxsYdxLZ61PqQ7inYAatetmC/fkJEgHR3exPv79k2hG6Yju/b
+         yjU1pi+kboHtykrWwjiNAGR3SXDG7L3Ucu9oHRqqaxNLx/gNB3GGoe1ES4c99viRkm3L
+         OIlLLVYQQMPKttAcBMaFnc/7/UztDyj4dmH+P+vQAwqFGD0wNDg6ZFHgq+eHknaihDvK
+         zCqVP+al+wChNw3Q0ToB4dxTIsiTCWuulHrwNzu7x8DUziTpZUW4nEqOZoRbvvu7coKw
+         caT3kzX3mNQqYFt9+EC/6JVXUuN1mvZWrAK+J22ROGDBO+sp6yAJVa0j8cmIFMqt9tsd
+         ifOA==
+X-Gm-Message-State: AOJu0YxEcojLXJAIgch1woAQ7+imlkCzdhsxcLbly0vWE32mYzwH7vTb
+        62uKTCaNYIGTDOnLmt/v2Mbbng==
+X-Google-Smtp-Source: AGHT+IF1Hh6HqLLdCLMtBH4MBn5gTyDegFYkgrOxkSx/P6oII1rExFDnHQGDyN9+FIpRz6er1CzuVQ==
+X-Received: by 2002:a05:6808:1386:b0:3a7:38c5:bc18 with SMTP id c6-20020a056808138600b003a738c5bc18mr11073698oiw.32.1695679272043;
+        Mon, 25 Sep 2023 15:01:12 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:f75d:a4e1:226a:3071])
+        by smtp.gmail.com with ESMTPSA id x23-20020a62fb17000000b00690f622d3cdsm8549874pfm.126.2023.09.25.15.01.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 15:01:11 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-samsung-soc@vger.kernel.org,
+        Hsin-Yi Wang <hsinyi@chromium.org>, matthias.bgg@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Douglas Anderson <dianders@chromium.org>, airlied@gmail.com,
+        daniel@ffwll.ch, jitao.shi@mediatek.com, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
+        quic_jesszhan@quicinc.com, sam@ravnborg.org
+Subject: [PATCH] drm/panel: Move AUX B116XW03 out of panel-edp back to panel-simple
+Date:   Mon, 25 Sep 2023 15:00:11 -0700
+Message-ID: <20230925150010.1.Iff672233861bcc4cf25a7ad0a81308adc3bda8a4@changeid>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
- `WithRef`
-Content-Language: en-US-large
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Benno Lossin <benno.lossin@proton.me>
-Cc:     Alice Ryhl <aliceryhl@google.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-References: <20230923144938.219517-1-wedsonaf@gmail.com>
- <20230923144938.219517-3-wedsonaf@gmail.com>
- <CAH5fLggxsewmtzXjehbawDCTHO0C7kteU_CLnh80eMNj=QyP9Q@mail.gmail.com>
- <969eab7f-ad40-0dfb-18b9-6002fc54e12b@proton.me>
- <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
- <14513589-cc31-8985-8ff6-a97d2882f593@proton.me>
- <ZRGyRQuBcWvgtdNR@Boquns-Mac-mini.home>
- <9d6d6c94-5da6-a56d-4e85-fbf8da26a0b0@proton.me>
- <ZRHWqbvYlXBXEOh-@boqun-archlinux>
- <c5134a1a-a60d-73bb-9faa-aa1dfc3bc30d@proton.me>
- <ZRIB0hXNvmJtmyak@boqun-archlinux>
-From:   Alice Ryhl <alice@ryhl.io>
-In-Reply-To: <ZRIB0hXNvmJtmyak@boqun-archlinux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/23 23:55, Boqun Feng wrote:
-> On Mon, Sep 25, 2023 at 09:03:52PM +0000, Benno Lossin wrote:
->> On 25.09.23 20:51, Boqun Feng wrote:
->>> On Mon, Sep 25, 2023 at 05:00:45PM +0000, Benno Lossin wrote:
->>>> On 25.09.23 18:16, Boqun Feng wrote:
->>>>> On Mon, Sep 25, 2023 at 03:07:44PM +0000, Benno Lossin wrote:
->>>>>> ```rust
->>>>>> struct MutatingDrop {
->>>>>>         value: i32,
->>>>>> }
->>>>>>
->>>>>> impl Drop for MutatingDrop {
->>>>>>         fn drop(&mut self) {
->>>>>>             self.value = 0;
->>>>>>         }
->>>>>> }
->>>>>>
->>>>>> let arc = Arc::new(MutatingDrop { value: 42 });
->>>>>> let wr = arc.as_with_ref(); // this creates a shared `&` reference to the MutatingDrop
->>>>>> let arc2: Arc<MutatingDrop> = wr.into(); // increments the reference count to 2
->>>>>
->>>>> More precisely, here we did a
->>>>>
->>>>> 	&WithRef<_> -> NonNull<WithRef<_>>
->>>>>
->>>>> conversion, and later on, we may use the `NonNull<WithRef<_>>` in
->>>>> `drop` to get a `Box<WithRef<_>>`.
->>>>
->>>> Indeed.
->>>>
->>>
->>> Can we workaround this issue by (ab)using the `UnsafeCell` inside
->>> `WithRef<T>`?
->>>
->>> impl<T: ?Sized> From<&WithRef<T>> for Arc<T> {
->>>       fn from(b: &WithRef<T>) -> Self {
->>>           // SAFETY: The existence of the references proves that
->>> 	// `b.refcount.get()` is a valid pointer to `WithRef<T>`.
->>> 	let ptr = unsafe { NonNull::new_unchecked(b.refcount.get().cast::<WithRef<T>>()) };
->>>
->>> 	// SAFETY: see the SAFETY above `let ptr = ..` line.
->>>           ManuallyDrop::new(unsafe { Arc::from_inner(ptr) })
->>>               .deref()
->>>               .clone()
->>>       }
->>> }
->>>
->>> This way, the raw pointer in the new Arc no longer derives from the
->>> reference of `WithRef<T>`.
->>
->> No, the code above only obtains a pointer that has provenance valid
->> for a `bindings::refcount_t` (or type with the same layout, such as
->> `Opaque<bindings::refcount_t>`). But not the whole `WithRef<T>`, so accessing
->> it by reading/writing will still be UB.
->>
-> 
-> Hmm... but we do the similar thing in `Arc::from_raw()`, right?
-> 
->      	pub unsafe fn from_raw(ptr: *const T) -> Self {
-> 	    ..
-> 	}
-> 
-> , what we have is a pointer to T, and we construct a pointer to
-> `ArcInner<T>/WithRef<T>`, in that function. Because the `sub` on pointer
-> gets away from provenance? If so, we can also do a sub(0) in the above
-> code.
+In commit 5f04e7ce392d ("drm/panel-edp: Split eDP panels out of
+panel-simple") I moved a pile of panels out of panel-simple driver
+into the newly created panel-edp driver. One of those panels, however,
+shouldn't have been moved.
 
-Not sure what you mean. Operations on raw pointers leave provenance 
-unchanged.
+As is clear from commit e35e305eff0f ("drm/panel: simple: Add AUO
+B116XW03 panel support"), AUX B116XW03 is an LVDS panel. It's used in
+exynos5250-snow and exynos5420-peach-pit where it's clear that the
+panel is hooked up with LVDS. Furthermore, searching for datasheets I
+found one that makes it clear that this panel is LVDS.
 
-Alice
+As far as I can tell, I got confused because in commit 88d3457ceb82
+("drm/panel: auo,b116xw03: fix flash backlight when power on") Jitao
+Shi added "DRM_MODE_CONNECTOR_eDP". That seems wrong. Looking at the
+downstream ChromeOS trees, it seems like some Mediatek boards are
+using a panel that they call "auo,b116xw03" that's an eDP panel. The
+best I can guess is that they actually have a different panel that has
+similar timing. If so then the proper panel should be used or they
+should switch to the generic "edp-panel" compatible.
+
+When moving this back to panel-edp, I wasn't sure what to use for
+.bus_flags and .bus_format and whether to add the extra "enable" delay
+from commit 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash
+backlight when power on"). I've added formats/flags/delays based on my
+(inexpert) analysis of the datasheet. These are untested.
+
+NOTE: if/when this is backported to stable, we might run into some
+trouble. Specifically, before 474c162878ba ("arm64: dts: mt8183:
+jacuzzi: Move panel under aux-bus") this panel was used by
+"mt8183-kukui-jacuzzi", which assumed it was an eDP panel. I don't
+know what to suggest for that other than someone making up a bogus
+panel for jacuzzi that's just for the stable channel.
+
+Fixes: 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash backlight when power on")
+Fixes: 5f04e7ce392d ("drm/panel-edp: Split eDP panels out of panel-simple")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+I haven't had a snow or peach-pit hooked up for debugging / testing
+for years. I presume that they must be broken and hope that this fixes
+them.
+
+ drivers/gpu/drm/panel/panel-edp.c    | 29 -----------------------
+ drivers/gpu/drm/panel/panel-simple.c | 35 ++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
+index feb665df35a1..95c8472d878a 100644
+--- a/drivers/gpu/drm/panel/panel-edp.c
++++ b/drivers/gpu/drm/panel/panel-edp.c
+@@ -976,32 +976,6 @@ static const struct panel_desc auo_b116xak01 = {
+ 	},
+ };
+ 
+-static const struct drm_display_mode auo_b116xw03_mode = {
+-	.clock = 70589,
+-	.hdisplay = 1366,
+-	.hsync_start = 1366 + 40,
+-	.hsync_end = 1366 + 40 + 40,
+-	.htotal = 1366 + 40 + 40 + 32,
+-	.vdisplay = 768,
+-	.vsync_start = 768 + 10,
+-	.vsync_end = 768 + 10 + 12,
+-	.vtotal = 768 + 10 + 12 + 6,
+-	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+-};
+-
+-static const struct panel_desc auo_b116xw03 = {
+-	.modes = &auo_b116xw03_mode,
+-	.num_modes = 1,
+-	.bpc = 6,
+-	.size = {
+-		.width = 256,
+-		.height = 144,
+-	},
+-	.delay = {
+-		.enable = 400,
+-	},
+-};
+-
+ static const struct drm_display_mode auo_b133han05_mode = {
+ 	.clock = 142600,
+ 	.hdisplay = 1920,
+@@ -1725,9 +1699,6 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "auo,b116xa01",
+ 		.data = &auo_b116xak01,
+-	}, {
+-		.compatible = "auo,b116xw03",
+-		.data = &auo_b116xw03,
+ 	}, {
+ 		.compatible = "auo,b133han05",
+ 		.data = &auo_b133han05,
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index bb89e6d047bc..439d26928938 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -919,6 +919,38 @@ static const struct panel_desc auo_b101xtn01 = {
+ 	},
+ };
+ 
++static const struct drm_display_mode auo_b116xw03_mode = {
++	.clock = 70589,
++	.hdisplay = 1366,
++	.hsync_start = 1366 + 40,
++	.hsync_end = 1366 + 40 + 40,
++	.htotal = 1366 + 40 + 40 + 32,
++	.vdisplay = 768,
++	.vsync_start = 768 + 10,
++	.vsync_end = 768 + 10 + 12,
++	.vtotal = 768 + 10 + 12 + 6,
++	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
++};
++
++static const struct panel_desc auo_b116xw03 = {
++	.modes = &auo_b116xw03_mode,
++	.num_modes = 1,
++	.bpc = 6,
++	.size = {
++		.width = 256,
++		.height = 144,
++	},
++	.delay = {
++		.prepare = 1,
++		.enable = 200,
++		.disable = 200,
++		.unprepare = 500,
++	},
++	.bus_format = MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
++	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
++	.connector_type = DRM_MODE_CONNECTOR_LVDS,
++};
++
+ static const struct display_timing auo_g070vvn01_timings = {
+ 	.pixelclock = { 33300000, 34209000, 45000000 },
+ 	.hactive = { 800, 800, 800 },
+@@ -4128,6 +4160,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "auo,b101xtn01",
+ 		.data = &auo_b101xtn01,
++	}, {
++		.compatible = "auo,b116xw03",
++		.data = &auo_b116xw03,
+ 	}, {
+ 		.compatible = "auo,g070vvn01",
+ 		.data = &auo_g070vvn01,
+-- 
+2.42.0.515.g380fc7ccd1-goog
 
