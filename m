@@ -2,154 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A4F7ADEB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8521C7ADEC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjIYSaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 14:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
+        id S233205AbjIYSbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 14:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbjIYSaT (ORCPT
+        with ESMTP id S232848AbjIYSbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:30:19 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945ABFB
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:30:12 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f61a639b9so74302467b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695666612; x=1696271412; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=q4/VvgJsZhmZcNt+Jb9cwBm667cAz2SsHu7xD+9HLQQ=;
-        b=OJ9R9y7xDnvgRJqaaBJDz+6kvUORYJqSKGqM7ypDOZwbK/XVoPLv+rDdqtJ4zZ2TUw
-         vH0xbchsGY4NbEXuRnBUISwQrHIKnW4n+TrDiohlkma4sm4x1drUMva029FoJomrB9bP
-         m+nLklpxUuWFTlTn3fviPbAx1Egtm+rJjTvBNegCuY/unGyKfbjlpouhJh/R9Bil7WE0
-         DExTs+YeJuSQuoKewYcgrrZvK7E0e9notJYXuqh6te+VUihdiUuBIvwlFN7981jbOiMg
-         Ly7uCWRpmg7PnhZOCi3yBitkgallqkyojXKNOIyQQJe/m9qjKLHB1L9iBiGfAsn2K/4i
-         xLng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695666612; x=1696271412;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q4/VvgJsZhmZcNt+Jb9cwBm667cAz2SsHu7xD+9HLQQ=;
-        b=jrro+SflVVpMvTGDrDaZHXO9DNlFz5UA/sZNwR4qu7/tMApEMZ50EzAcs7I4B4jAuK
-         1ccPLrGgDxt7Drl3oxb3iHVP2QJed/RKkgUl4bw/Lp2eGLAs3UD4YUQpO6KyhAX1lEM5
-         GgumW1j0UrVMo3Std4eb8ozoNfz6GABJWYEbkBNkddBSZdVhDVsbOA3WD6QGbFgPbQQu
-         bVy4FSyAzGmtJRmNiEOebdVLtEHlLhn4YcbvnulVFw5DX9S6P5MgLQT9pStJG5T18mEP
-         95EKtAUpFfl4B2vroyHQ+p9Og3Vlzbk8Ti3XzfpgziRRd4uIcP/VuSECLqXxs59nLjZh
-         +bOw==
-X-Gm-Message-State: AOJu0YyNsce0TbVIbfSsCFjeFomVejRJqkcGl5a8trckkwnxu+oLt80B
-        FtEI46PtnZh86e8Ao/yQc9L8zfr+LQU=
-X-Google-Smtp-Source: AGHT+IEhT5VXT0vCcSofd7Ug07kgwzFWVTMm7KTtnD8JkrbF8xhK8ifjDU5yukAatNO361XSlcjxta1gE/o=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:cacd:0:b0:d7f:2cb6:7d8a with SMTP id
- a196-20020a25cacd000000b00d7f2cb67d8amr74861ybg.11.1695666611883; Mon, 25 Sep
- 2023 11:30:11 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 11:30:10 -0700
-In-Reply-To: <0ffde769702c6cdf6b6c18e1dcb28b25309af7f7.1695659717.git.maciej.szmigiero@oracle.com>
-Mime-Version: 1.0
-References: <0ffde769702c6cdf6b6c18e1dcb28b25309af7f7.1695659717.git.maciej.szmigiero@oracle.com>
-Message-ID: <ZRHRsgjhOmIrxo0W@google.com>
-Subject: Re: [PATCH] KVM: x86: Ignore MSR_AMD64_BU_CFG access
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 14:31:48 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF30126
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:31:41 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RvWfv3d16z9v2F;
+        Mon, 25 Sep 2023 20:31:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lzDSs0ZPbu5A; Mon, 25 Sep 2023 20:31:35 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RvWfs3ypKz9v53;
+        Mon, 25 Sep 2023 20:31:33 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 811308B763;
+        Mon, 25 Sep 2023 20:31:33 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id RIJaMQ3W-tD1; Mon, 25 Sep 2023 20:31:33 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.137])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3BCFF8B78C;
+        Mon, 25 Sep 2023 20:31:33 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 38PIVQuO1499129
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 20:31:26 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 38PIVO8P1499128;
+        Mon, 25 Sep 2023 20:31:24 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2 00/37] Implement execute-only protection on powerpc
+Date:   Mon, 25 Sep 2023 20:31:14 +0200
+Message-ID: <cover.1695659959.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695666673; l=5464; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=7nZh0WO2/BaZaATtvhUmLJNVHAy8we948o8I7rD7dYY=; b=qqNWaTHwTLjgjSLIIJHFiyPt+85pQyPWpF5nF354FG14i/O5efyD1+E5+0ggYPvDPvDos3nKF fBYuF/Q8ndtD/DuNc8REUe1Ck0E4OAIE4Pbjv6XuVBX1H9XjHGnegLM
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> Hyper-V enabled Windows Server 2022 KVM VM cannot be started on Zen1 Ryzen
-> since it crashes at boot with SYSTEM_THREAD_EXCEPTION_NOT_HANDLED +
-> STATUS_PRIVILEGED_INSTRUCTION (in other words, because of an unexpected #GP
-> in the guest kernel).
-> 
-> This is because Windows tries to set bit 8 in MSR_AMD64_BU_CFG and can't
-> handle receiving a #GP when doing so.
+This series reworks _PAGE_FLAGS on all platforms in order
+to implement execute-only protection on all powerpc.
 
-Any idea why?
+For all targets except 40x and 604 it will be a real execute-only
+protection as the hardware and/or software allows a distinct protection.
 
-> Give this MSR the same treatment that commit 2e32b7190641
-> ("x86, kvm: Add MSR_AMD64_BU_CFG2 to the list of ignored MSRs") gave
-> MSR_AMD64_BU_CFG2 under justification that this MSR is baremetal-relevant
-> only.
+For 40x and 604 that's a poor's man execute-only protection in the
+way that once the page is in the TLB it can be executed. But it's
+better than nothing and allows to have a similar implementation for
+all sorts of powerpc.
 
-Ugh, that commit set a terrible example.  The kernel change should have been
-conditioned on !X86_FEATURE_HYPERVISOR if the MSR only has meaning for bare metal.
+Patches 1 and 2 are fixes that should also be back-ported to stable
+version.
 
-> Although apparently it was then needed for Linux guests, not Windows as in
-> this case.
-> 
-> With this change, the aforementioned guest setup is able to finish booting
-> successfully.
-> 
-> This issue can be reproduced either on a Summit Ridge Ryzen (with
-> just "-cpu host") or on a Naples EPYC (with "-cpu host,stepping=1" since
-> EPYC is ordinarily stepping 2).
+Patches 3 to 7 are generic trivial cleanups.
 
-This seems like it needs to be tagged for stable?
+Patches 8 to 19 are a cleanup of pgtable.h for nohash. Main purpose
+is to refactor a lot of common code between nohash/32 and nohash/64.
 
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
->  arch/x86/include/asm/msr-index.h | 1 +
->  arch/x86/kvm/x86.c               | 2 ++
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 1d111350197f..c80a5cea80c4 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -553,6 +553,7 @@
->  #define MSR_AMD64_CPUID_FN_1		0xc0011004
->  #define MSR_AMD64_LS_CFG		0xc0011020
->  #define MSR_AMD64_DC_CFG		0xc0011022
-> +#define MSR_AMD64_BU_CFG		0xc0011023
+Patches 20 to 37 do the real work on PAGE flags in order to
+switch all platforms to _PAGE_READ and _PAGE_WRITE like book3s/64
+today. Once that is done it is easy to implement execute-only
+protection.
 
-What document actually defines this MSR?  All of the PPRs I can find for Family 17h
-list it as:
+Patch 1 to 19 were already sent-out as v1 of series
+named "cleanup/refactor pgtable.h". Problems reported by robots
+are fixed here.
 
-   MSRC001_1023 [Table Walker Configuration] (Core::X86::Msr::TW_CFG)
+Christophe Leroy (37):
+  powerpc/8xx: Fix pte_access_permitted() for PAGE_NONE
+  powerpc/64e: Fix wrong test in __ptep_test_and_clear_young()
+  powerpc/40x: Remove stale PTE_ATOMIC_UPDATES macro
+  powerpc: Remove pte_ERROR()
+  powerpc: Deduplicate prototypes of ptep_set_access_flags() and
+    phys_mem_access_prot()
+  powerpc: Refactor update_mmu_cache_range()
+  powerpc: Untangle fixmap.h and pgtable.h and mmu.h
+  powerpc/nohash: Remove {pte/pmd}_protnone()
+  powerpc/nohash: Refactor declaration of {map/unmap}_kernel_page()
+  powerpc/nohash: Move 8xx version of pte_update() into pte-8xx.h
+  powerpc/nohash: Replace #ifdef CONFIG_44x by IS_ENABLED(CONFIG_44x) in
+    pgtable.h
+  powerpc/nohash: Refactor pte_update()
+  powerpc/nohash: Refactor checking of no-change in pte_update()
+  powerpc/nohash: Deduplicate _PAGE_CHG_MASK
+  powerpc/nohash: Deduplicate pte helpers
+  powerpc/nohash: Refactor ptep_test_and_clear_young()
+  powerpc/nohash: Deduplicate ptep_set_wrprotect() and
+    ptep_get_and_clear()
+  powerpc/nohash: Refactor pte_clear()
+  powerpc/nohash: Refactor __ptep_set_access_flags()
+  powerpc/e500: Simplify pte_mkexec()
+  powerpc: Implement and use pgprot_nx()
+  powerpc: Fail ioremap() instead of silently ignoring flags when
+    PAGE_USER is set
+  powerpc: Remove pte_mkuser() and pte_mkpriviledged()
+  powerpc: Rely on address instead of pte_user()
+  powerpc: Refactor permission masks used for __P/__S table and kernel
+    memory flags
+  powerpc/8xx: Use generic permission masks
+  powerpc/64s: Use generic permission masks
+  powerpc/nohash: Add _PAGE_WRITE to supplement _PAGE_RW
+  powerpc/nohash: Replace pte_user() by pte_read()
+  powerpc/e500: Introduce _PAGE_READ and remove _PAGE_USER
+  powerpc/44x: Introduce _PAGE_READ and remove _PAGE_USER
+  powerpc/40x: Introduce _PAGE_READ and remove _PAGE_USER
+  powerpc/32s: Add _PAGE_WRITE to supplement _PAGE_RW
+  powerpc/32s: Introduce _PAGE_READ and remove _PAGE_USER
+  powerpc/ptdump: Display _PAGE_READ and _PAGE_WRITE
+  powerpc: Finally remove _PAGE_USER
+  powerpc: Support execute-only on all powerpc
 
->  #define MSR_AMD64_DE_CFG		0xc0011029
->  #define MSR_AMD64_DE_CFG_LFENCE_SERIALIZE_BIT	 1
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9f18b06bbda6..2f3cdd798185 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3639,6 +3639,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  	case MSR_IA32_UCODE_WRITE:
->  	case MSR_VM_HSAVE_PA:
->  	case MSR_AMD64_PATCH_LOADER:
-> +	case MSR_AMD64_BU_CFG:
+ arch/powerpc/include/asm/book3s/32/pgtable.h  |  83 +++----
+ arch/powerpc/include/asm/book3s/64/pgtable.h  |  35 +--
+ arch/powerpc/include/asm/book3s/pgtable.h     |  33 ---
+ arch/powerpc/include/asm/fixmap.h             |  16 +-
+ arch/powerpc/include/asm/nohash/32/mmu-8xx.h  |   1 -
+ arch/powerpc/include/asm/nohash/32/pgtable.h  | 201 +---------------
+ arch/powerpc/include/asm/nohash/32/pte-40x.h  |  21 +-
+ arch/powerpc/include/asm/nohash/32/pte-44x.h  |  20 +-
+ arch/powerpc/include/asm/nohash/32/pte-85xx.h |  20 +-
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h  |  99 +++++---
+ arch/powerpc/include/asm/nohash/64/pgtable.h  | 120 +---------
+ arch/powerpc/include/asm/nohash/pgtable.h     | 216 ++++++++++++------
+ arch/powerpc/include/asm/nohash/pte-e500.h    |  41 +---
+ arch/powerpc/include/asm/pgtable-masks.h      |  32 +++
+ arch/powerpc/include/asm/pgtable.h            |  35 +++
+ arch/powerpc/kernel/head_40x.S                |  19 +-
+ arch/powerpc/kernel/head_44x.S                |  40 ++--
+ arch/powerpc/kernel/head_85xx.S               |  12 +-
+ arch/powerpc/kernel/head_book3s_32.S          |  63 ++---
+ arch/powerpc/mm/book3s32/hash_low.S           |  32 ++-
+ arch/powerpc/mm/book3s32/mmu.c                |   6 +-
+ arch/powerpc/mm/book3s64/pgtable.c            |  10 +-
+ arch/powerpc/mm/fault.c                       |   9 +-
+ arch/powerpc/mm/init_32.c                     |   1 +
+ arch/powerpc/mm/ioremap.c                     |   6 +-
+ arch/powerpc/mm/mem.c                         |   1 +
+ arch/powerpc/mm/nohash/40x.c                  |  19 +-
+ arch/powerpc/mm/nohash/8xx.c                  |   2 +
+ arch/powerpc/mm/nohash/book3e_pgtable.c       |   2 +-
+ arch/powerpc/mm/nohash/e500.c                 |   6 +-
+ arch/powerpc/mm/nohash/e500_hugetlbpage.c     |   3 +-
+ arch/powerpc/mm/pgtable.c                     |  26 +--
+ arch/powerpc/mm/ptdump/8xx.c                  |   5 -
+ arch/powerpc/mm/ptdump/shared.c               |  14 +-
+ arch/powerpc/platforms/83xx/misc.c            |   2 +
+ arch/powerpc/platforms/8xx/cpm1.c             |   1 +
+ 36 files changed, 511 insertions(+), 741 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/pgtable-masks.h
 
-I am sorely tempted to say that this should be solved in userspace via MSR
-filtering.  IIUC, the MSR truly is model specific, and I don't love the idea of
-effectively ignoring accesses to unknown MSRs.  And I really, really don't want
-KVM to pivot on FMS.
+-- 
+2.41.0
 
-Paolo, is punting to userspace reasonable, or should we just bite the bullet in
-KVM and commit to ignoring MSRs like this?
-
->  	case MSR_AMD64_BU_CFG2:
->  	case MSR_AMD64_DC_CFG:
->  	case MSR_F15H_EX_CFG:
-> @@ -4062,6 +4063,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  	case MSR_K8_INT_PENDING_MSG:
->  	case MSR_AMD64_NB_CFG:
->  	case MSR_FAM10H_MMIO_CONF_BASE:
-> +	case MSR_AMD64_BU_CFG:
->  	case MSR_AMD64_BU_CFG2:
->  	case MSR_IA32_PERF_CTL:
->  	case MSR_AMD64_DC_CFG:
