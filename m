@@ -2,157 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694D77ADAA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C0D7ADAA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjIYOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        id S232424AbjIYOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbjIYOxs (ORCPT
+        with ESMTP id S231715AbjIYOyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:53:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA01107
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:53:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3366AC433C7;
-        Mon, 25 Sep 2023 14:53:40 +0000 (UTC)
-Date:   Mon, 25 Sep 2023 10:53:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: Re: [GIT PULL] tracing: Fixes for 6.6-rc2
-Message-ID: <20230925105335.5d8f6af0@rorschach.local.home>
-In-Reply-To: <CAHk-=wh=aOhPAJn-E8T+GofoBeCtXuoEXZcw6A009MO4s3mNAA@mail.gmail.com>
-References: <20230923191420.10c42e4f@rorschach.local.home>
-        <CAHk-=wh=aOhPAJn-E8T+GofoBeCtXuoEXZcw6A009MO4s3mNAA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 25 Sep 2023 10:54:25 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B93103
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:54:17 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d776e1f181bso7740276276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695653657; x=1696258457; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gAs/h3x9h+77khWIK3iPvQFPgGZ4y9rDhC59IFJZTGw=;
+        b=fnQcBfjLLh1mKBUQWy7wvpr1QOrrcCchV0wcyAN7AUSm8NlJQcsaEireWheIiExX5Z
+         z3tlSyziRTJ4IXVYkWUuRMVoDIdgrk/fVfI81HH6WAXCfrIAlBd7i3rh5VNob5SI11xF
+         6pQBnAN3Jg23SSQ2MXBLEIZ+q52pZIU5ysQ3A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695653657; x=1696258457;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gAs/h3x9h+77khWIK3iPvQFPgGZ4y9rDhC59IFJZTGw=;
+        b=ojd6nCPsVJl61K6jlTsI+FHwwd2TZTpKedXy00CP/PMOrbhhKxtJzgpDYWB+e17cxK
+         AxKOq38oVCsUDtOsxGWXN+ag2d1PAhYxw9z1sr436BENrqIys4Sn9gGesHOq5uUOFUOL
+         W+0X7nBjIl4vu/bBQdka4SF4mwLuhFodrT18duEpDUyMw0pvdxtqjJ48rJ4cRQyoIu2r
+         FNAw1lA2/xCBXYRWn39auw42FUaYgAaGXB69pxZ7tojxVfwOSej6rQ1qNh7oIAsp+aAX
+         tRzDQUt+aJt+M7hFChoSR7MdzcXlLixb3mY6Y3zA5hHEtIgtzp/FoEYB5fskCiSTUy6N
+         ytpw==
+X-Gm-Message-State: AOJu0Yyl/YT2cJNL2gy20RvLt3tRwux+UbOtU0YRGihl3Wtkr8MjBCFg
+        RufM8H2p1ie247mYj0d93VVDQWCiiBOBc5/IMCvbwA==
+X-Google-Smtp-Source: AGHT+IHzjHIDz/yn/ztOldBZssnouHhhnprKKe22wtVgmt4CE9tlbt9a7WbVTOT55WwDR4WjkXVN84l//rbWRTHR4cI=
+X-Received: by 2002:a25:77c7:0:b0:d7b:9bd7:f280 with SMTP id
+ s190-20020a2577c7000000b00d7b9bd7f280mr7664332ybc.0.1695653656597; Mon, 25
+ Sep 2023 07:54:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+ <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
+ <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
+ <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
+ <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
+ <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
+ <20230925092122.0b615f25@xps-13> <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
+ <20230925164736.5efbf4c0@xps-13>
+In-Reply-To: <20230925164736.5efbf4c0@xps-13>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Mon, 25 Sep 2023 08:53:59 -0600
+Message-ID: <CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dhruva Gole <d-gole@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Sep 2023 14:09:04 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hi Miquel,
 
-> On Sat, 23 Sept 2023 at 16:14, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 25 Sept 2023 at 08:47, Miquel Raynal <miquel.raynal@bootlin.com> wr=
+ote:
+>
+> Hi Simon,
+>
+> sjg@chromium.org wrote on Mon, 25 Sep 2023 06:33:14 -0600:
+>
+> > Hi Miquel,
 > >
-> > - Fix a bug in eventfs where reading a dynamic event directory (open) and then
-> >   creating a dynamic event that goes into that diretory screws up the accounting.  
-> 
-> Honestly, I'm getting more and more convinced that you just need to
-> stop this eventfs stuff.
-> 
-> This is just *incredibly* ugly:
-> 
->   /*
->    * This just sets the file->private_data back to the cursor and back.
->    */
->   static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
->   {
->         struct dentry_list *dlist = file->private_data;
->         int ret;
-> 
->         file->private_data = dlist->cursor;
->         ret = dcache_readdir(file, ctx);
->         dlist->cursor = file->private_data;
->         file->private_data = dlist;
->         return ret;
->   }
-> 
-> I guess it works by the f_pos locking magic, but by christ is this
-> ugly beyond words.
-> 
-> Honestly, now, are the eventfs changes *really* making up for this
-> kind of continual "this is crazy" garbage? We had the whole "this is
-> undebuggable" discussion, now there's stuff like this.
+> > On Mon, 25 Sept 2023 at 01:21, Miquel Raynal <miquel.raynal@bootlin.com=
+> wrote:
+> > >
+> > > Hi Simon,
+> > >
+> > > sjg@chromium.org wrote on Fri, 22 Sep 2023 13:51:14 -0600:
+> > >
+> > > > Hi Rob,
+> > > >
+> > > > On Fri, 22 Sept 2023 at 13:43, Rob Herring <robh@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, Sep 22, 2023 at 1:12=E2=80=AFPM Simon Glass <sjg@chromium=
+.org> wrote:
+> > > > > >
+> > > > > > Hi Rob,
+> > > > > >
+> > > > > > On Fri, 22 Sept 2023 at 11:46, Rob Herring <robh@kernel.org> wr=
+ote:
+> > > > > > >
+> > > > > > > On Fri, Sep 22, 2023 at 11:01:18AM -0600, Simon Glass wrote:
+> > > > > > > > Hi Rob,
+> > > > > > > >
+> > > > > > > > On Fri, 22 Sept 2023 at 10:00, Rob Herring <robh@kernel.org=
+> wrote:
+> > > > > > > > >
+> > > > > > > > > On Thu, Sep 21, 2023 at 1:45=E2=80=AFPM Simon Glass <sjg@=
+chromium.org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > Binman[1] is a tool for creating firmware images. It al=
+lows you to
+> > > > > > > > > > combine various binaries and place them in an output fi=
+le.
+> > > > > > > > > >
+> > > > > > > > > > Binman uses a DT schema to describe an image, in enough=
+ detail that
+> > > > > > > > > > it can be automatically built from component parts, dis=
+assembled,
+> > > > > > > > > > replaced, listed, etc.
+> > > > > > > > > >
+> > > > > > > > > > Images are typically stored in flash, which is why this=
+ binding is
+> > > > > > > > > > targeted at mtd. Previous discussion is at [2] [3].
+> > > > > > > > > >
+> > > > > > > > > > [1] https://u-boot.readthedocs.io/en/stable/develop/pac=
+kage/binman.html
+> > > > > > > > > > [2] https://lore.kernel.org/u-boot/20230821180220.27240=
+80-3-sjg@chromium.org/
+> > > > > > > > > > [3] https://www.spinics.net/lists/devicetree/msg626149.=
+html
+> > > > > > > > >
+> > > > > > > > > You missed:
+> > > > > > > > >
+> > > > > > > > > https://github.com/devicetree-org/dt-schema/pull/110
+> > > > > > > > >
+> > > > > > > > > where I said: We certainly shouldn't duplicate the existi=
+ng partitions
+> > > > > > > > > bindings. What's missing from them (I assume we're mostly=
+ talking
+> > > > > > > > > about "fixed-partitions" which has been around forever I =
+think (before
+> > > > > > > > > me))?
+> > > > > > > > >
+> > > > > > > > > To repeat, unless there is some reason binman partitions =
+conflict with
+> > > > > > > > > fixed-partitions, you need to start there and extend it. =
+From what's
+> > > > > > > > > posted here, it neither conflicts nor needs extending.
+> > > > > > > >
+> > > > > > > > I think at this point I am just hopelessly confused. Have y=
+ou taken a
+> > > > > > > > look at the binman schema? [1]
+> > > > > > >
+> > > > > > > Why do I need to? That's used for some tool and has nothing t=
+o do with a
+> > > > > > > device's DTB. However, I thought somewhere in this discussion=
+ you showed
+> > > > > > > it under a flash device node.
+> > > > > >
+> > > > > > Yes, that is the intent (under a flash node).
+> > > > > >
+> > > > > > > Then I care because then it overlaps with
+> > > > > > > what we already have for partitions. If I misunderstood that,=
+ then just
+> > > > > > > put your schema with your tool. Only users of the tool should=
+ care about
+> > > > > > > the tool's schema.
+> > > > > >
+> > > > > > OK. I believe that binman will fit into both camps, since its i=
+nput is
+> > > > > > not necessarily fully formed. E.g. if you don't specify the off=
+set of
+> > > > > > an entry, then it will be packed automatically. But the output =
+is
+> > > > > > fully formed, in that Binman now knows the offset so can write =
+it to
+> > > > > > the DT.
+> > > > >
+> > > > > I suppose it could take its own format as input and then write ou=
+t
+> > > > > something different for the "on the device" format (i.e.
+> > > > > fixed-partitions). At least for the dynamic offsets, we may need
+> > > > > something allowed for binman input, but not allowed on device. In
+> > > > > general, there is support for partitions without addresses/offset=
+s,
+> > > > > but only for partitions that have some other way to figure that o=
+ut
+> > > > > (on disk partition info).
+> > > > >
+> > > > > There's also the image filename which doesn't really belong in th=
+e on
+> > > > > device partitions. So maybe the input and output schemas should b=
+e
+> > > > > separate.
+> > > >
+> > > > OK, I'll focus on the output schema for now. I suspect this will be=
+ a
+> > > > grey area though.
+> > > >
+> > > > As an example, if you replace a binary in the firmware, Binman can
+> > > > repack the firmware to make room, respecting the alignment and size
+> > > > constraints. So these need to be in the output schema somehow.
+> > > >
+> > > > >
+> > > > > > > > I saw this file, which seems to extend a partition.
+> > > > > > > >
+> > > > > > > > Documentation/devicetree/bindings/mtd/partitions/brcm,bcm49=
+08-partitions.yaml
+> > > > > > >
+> > > > > > > IIRC, that's a different type where partition locations are s=
+tored in
+> > > > > > > the flash, so we don't need location and size in DT.
+> > > > > >
+> > > > > > OK.
+> > > > > >
+> > > > > > >
+> > > > > > > >
+> > > > > > > > I was assuming that I should create a top-level compatible =
+=3D "binman"
+> > > > > > > > node, with subnodes like compatible =3D "binman,bl31-atf", =
+for example.
+> > > > > > > > I should use the compatible string to indicate the contents=
+, right?
+> > > > > > >
+> > > > > > > Yes for subnodes, and we already have some somewhat standard =
+ones for
+> > > > > > > "u-boot" and "u-boot-env". Though historically, "label" was u=
+sed.
+> > > > > >
+> > > > > > Binman has common properties for all entries, including "compre=
+ss"
+> > > > > > which sets the compression algorithm.
+> > > > >
+> > > > > I see no issue with adding that. It seems useful and something mi=
+ssing
+> > > > > in the existing partition schemas.
+> > > >
+> > > > OK I sent a patch with that.
+> > > >
+> > > > >
+> > > > > > So perhaps I should start by defining a new binman,bl31-atf whi=
+ch has
+> > > > > > common properties from an "binman,entry" definition?
+> > > > >
+> > > > > I don't understand the binman prefix. The contents are ATF (or TF=
+-A
+> > > > > now). Who wrote it to the flash image is not relevant.
+> > > >
+> > > > Are you suggesting just "atf-bl31", or "arm,atf-bl31" ? Or should w=
+e
+> > > > change it to "tfa-bl31"?
+> > >
+> > > I don't really understand the relationship with TF-A here. Can't we
+> > > just have a kind of fixed-partitions with additional properties like
+> > > the compression?
+> >
+> > Binman needs to know what to put in there, which is the purpose of the
+> > compatible string.
+>
+> But "what" should be put inside the partition is part of the input
+> argument, not the output. You said (maybe I got this wrong) that the
+> schema would apply to the output of binman. If you want to let user
+> know what's inside, maybe it is worth adding a label, but otherwise I
+> don't like the idea of a compatible for that, which for me would mean:
+> "here is how to handle that specific portion of the flash/here is how
+> the flash is organized".
 
-I never said "this is undebuggable". That show_event_dentries just
-showed ref counts and what was allocated. Not that it was "undebuggable".
-When ls is done on eventfs, the dentries are created. When the memory
-is tight, any dentry that is not open should be reclaimed. The
-show_event_dentries was to see if they were reclaimed or are still
-around and taking up memory. It is also showing the ref counts, where
-you can see if closing the file/directory would decrement the ref count
-properly. It was used here because I found a way to dec a dentry
-without first upping the refcount, as I explain below.
+But I thought that the compatible string was for that purpose? See for
+example "brcm,bcm4908-firmware" and "brcm,bcm963xx-imagetag" and
+"linksys,ns-firmware".
 
-The purpose of eventfs here is that the /sys/kernel/tracing/events
-directory currently allocates dentries and inodes for all existing
-events in the kernel. Since there are now over a thousand events in the
-kernel, and each event has several files created for them, and these
-files are seldom looked at, why should they be allocated when not used?
+What mechanism do you suggest be used here?
 
-These dentries and inodes are allocated for the top level directory and
-wasting memory for most users. When an instance is created it makes
-matters even worse.
+>
+> > > > > We already have some compatibles in use. We should reuse them if
+> > > > > possible. Not sure about TF-A though.
+> > > >
+> > > > OK.
+> > > >
+> > >
+> > > Also, I still don't understand the purpose of this schema. So binman
+> > > generates an image, you want to flash this image and you would like t=
+he
+> > > tool to generate the corresponding (partition) DT snippet automatical=
+ly.
+> > > Do I get this right? I don't get why you would need new compatibles f=
+or
+> > > that.
+> >
+> > It is actually the other way around. The schema tells Binman how to
+> > build the image (what goes in there and where). Then outputs an
+> > updated DT which describes where everything ended up, for use by other
+> > tools, e.g. firmware update. It is a closed loop in that sense. See
+> > the references for more information.
+>
+> Maybe I fail to see why you would want these description to be
+> introduced here, if they are not useful to the OS.
 
- mkdir /sys/kernel/trace/instance/foo
+Well I was asked to send them to Linux since they apparently don't
+belong in dt-schema. These are firmware bindings, as indicated, but I
+took them out of the /firmware node since that is for a different
+purpose. Rob suggested that partitions was a good place. We have fwupd
+using DT to hold the firmware-update information, so I expect it will
+move to use these bindings too.
 
-Which creates an entire copy of the events directory to maintain state
-(you can enable events for this instance and not for other instances),
-all those dentries and inodes for the events are allocated again (like
-20MB worth).
+>
+> > [1] https://u-boot.readthedocs.io/en/latest/develop/package/index.html
+> > [2] https://pretalx.com/media/osfc2019/submissions/Y7EN9V/resources/Bin=
+man_-_A_data-controlled_firmware_packer_for_U-B_pFU3n2K.pdf
+> > [3] https://www.youtube.com/watch?v=3DL84ujgUXBOQ
+>
 
-And we plan on using many instances in production, we rather not waste
-all that memory. That was the reason for doing this in the first place.
-
-Now, I presented this at LSFMM where I learned about /proc doing
-something similar (and you pointed that out too) but when I looked at
-that code I couldn't figure out how to easily make that work with
-tracefs, so this work came out instead.
-
-I'm not an FS developer so there may be a better way to do this. I
-would be happy to hear about better alternatives.
-
-> 
-> Were people even *aware* of the f_pos locking, or did this just happen to work?
-
-I looked at the implementation of dcache_dir_open(), dcache_readdir()
-and dcache_dir_close() and saw how it allocated, modified, and freed
-the file->private_data / cursor. I came to the conclusion that if
-there wasn't protection around them then it would not work. In fact,
-it's abstracted out enough that I could have just simply copied the
-code and just use my struct dlist_entry directly. But instead of
-copying of that code, I did it this way to reuse the existing code.
-
-Would you prefer that I just copy that code (there's really not much)
-and implement it less "ugly" by using my own cursor? Which would
-require that f_pos locking magic just like any other implementation of
-.iterate_shared and friends.
-
-> 
-> And that's entirely ignoring the disgusting thing that is that
-> "allocate an array of every dentry we looked at" issue. Which honestly
-> also looks disgusting.
-
-How is it disgusting? How else would you do it?
-
-You open a directory to read the files which creates the dentries and
-ups their ref counts, in the mean time, a new file is created (it's OK
-not to see it, as it's similar to RCU, only new opens will see the new
-file), but when you close it, you only do the dput on the files you
-opened and not the new file. The current code used just the link list
-of all the files which also included the new file that wasn't updated
-on open.
-
-> 
-> I beg of you: think hard about just reverting all the eventfs changes
-> that moved away from using dentries natively, and instead started
-> doing these *incredibly* hacky and ugly things.
-
-And bring back all that wasted memory?
-
-If there's a better way to achieve the same thing, I'll happily do it.
-
--- Steve
+Regards,
+Simon
