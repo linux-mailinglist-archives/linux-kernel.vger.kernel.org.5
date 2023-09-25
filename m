@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B6B7AD726
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2CB7AD72B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjIYLnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
+        id S230045AbjIYLoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjIYLnb (ORCPT
+        with ESMTP id S229456AbjIYLob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:43:31 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B12101;
-        Mon, 25 Sep 2023 04:43:24 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EC3322C6;
-        Mon, 25 Sep 2023 13:41:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1695642102;
-        bh=7drmX4x0568COQ3pmzKZZ5GBj/TdmLP8mLIm57UxoTk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kdMLdujFa+CaEAZgea7ohvBwyIGATOAD46fquHT85pDVPg8wfFfhb0E4VPru3Eiky
-         TP6THd4p+RNmisuYDj1FxIsv93yIne1grVH2+/odWIVVe45WP0Hs9IVJPHlO4+eVUt
-         RB4GmJgmkL1P+o0QWWp8EhRUF7D7dboQvBwuSg70=
-Date:   Mon, 25 Sep 2023 14:43:32 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
-Message-ID: <20230925114332.GC8583@pendragon.ideasonboard.com>
-References: <20230901155732.252436-1-alain.volmat@foss.st.com>
- <20230901155732.252436-5-alain.volmat@foss.st.com>
- <20230905090258.GC31594@pendragon.ideasonboard.com>
- <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
- <20230922160818.GJ19112@pendragon.ideasonboard.com>
- <20230925113542.GA646870@gnbcxd0016.gnb.st.com>
+        Mon, 25 Sep 2023 07:44:31 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3259F;
+        Mon, 25 Sep 2023 04:44:24 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RvLXf0ww1zNngh;
+        Mon, 25 Sep 2023 19:40:34 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 25 Sep 2023 19:44:22 +0800
+Message-ID: <a1ae1bc0-0677-8284-9f18-1171e1dcb175@huawei.com>
+Date:   Mon, 25 Sep 2023 19:44:22 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230925113542.GA646870@gnbcxd0016.gnb.st.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] tracing: document buffer_size_kb more precisely
+Content-Language: en-US
+To:     Christian Loehle <christian.loehle@arm.com>, <rostedt@goodmis.org>,
+        <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+References: <cee6d5cd-e15b-3bb1-f867-de467d96d6b5@arm.com>
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+In-Reply-To: <cee6d5cd-e15b-3bb1-f867-de467d96d6b5@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.218]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 01:35:42PM +0200, Alain Volmat wrote:
-> On Fri, Sep 22, 2023 at 07:08:18PM +0300, Laurent Pinchart wrote:
-> > On Fri, Sep 22, 2023 at 06:02:27PM +0200, Alain Volmat wrote:
-> > > On Tue, Sep 05, 2023 at 12:02:58PM +0300, Laurent Pinchart wrote:
-> > > > On Fri, Sep 01, 2023 at 05:57:23PM +0200, Alain Volmat wrote:
-> > > > > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> > > > > 
-> > > > > Add dcmipp support to STM32MP135.
-> > > > > 
-> > > > > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> > > > > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> > > > > ---
-> > > > >  arch/arm/boot/dts/st/stm32mp135.dtsi | 8 ++++++++
-> > > > >  1 file changed, 8 insertions(+)
-> > > > > 
-> > > > > diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-> > > > > index abf2acd37b4e..beee9ec7ed0d 100644
-> > > > > --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
-> > > > > +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
-> > > > > @@ -8,5 +8,13 @@
-> > > > >  
-> > > > >  / {
-> > > > >  	soc {
-> > > > > +		dcmipp: dcmipp@5a000000 {
-> > > > > +			compatible = "st,stm32mp13-dcmipp";
-> > > > > +			reg = <0x5a000000 0x400>;
-> > > > > +			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
-> > > > > +			resets = <&rcc DCMIPP_R>;
-> > > > > +			clocks = <&rcc DCMIPP_K>;
-> > > > > +			status = "disabled";
-> > > > 
-> > > > This needs a port, as it's marked as required in the bindings. You can
-> > > > leave the endpoint out.
-> > > 
-> > > I first agreed with your comment but, having done the check (make
-> > > CHECK_DTBS=y  ...) this doesn't seem to be required because the dcmipp
-> > > node is kept disabled within our dtsi.
-> > 
-> > Interesting.
-> > 
-> > > (it is later on only enabled in dts file which as well have the port
-> > > property).
-> > > Indeed, to check this I changed it to okay and DTC_CHK complained about
-> > > missing port property.
-> > > 
-> > > Hence, I'd think that port doesn't have to be added in this dtsi file.
-> > > Would you agree with that ?
-> > 
-> > I still think the port belongs here, as it's an intrinsic property of
-> > the dcmipp, not a property of the board. Does it cause any issue to add
-> > a port in the .dtsi ?
+On 2023/9/25 18:02, Christian Loehle wrote:
+> buffer_size_kb no longer shows the requested amount, but the one that
+> is actually used internally for the ring buffer.
 > 
-> I agree that the port refers more to the SoC (hence dtsi) rather than
-> the board (hence dts), however I am wondering if this is really
-> something usually done.  I had a look at other dtsi with node related
-> to similar kind of devices and it seems to me that there is no such case
-> of a dtsi with a port having nothing in it.  Did I missed something ?
+> commit 6d98a0f2ac3c ("tracing: Set actual size after ring buffer resize")
+> changed the sysfs behavior such that value read will always show the
+> actual size, while previously it showed the size that was requested
+> through the sysfs interface, even if it was rounded up to fulfill
+> the request.
+> So the documentation can state that more precisely now.
+> 
+> Signed-off-by: Christian Loehle <christian.loehle@arm.com>
+> ---
+>   Documentation/trace/ftrace.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index 23572f6697c0..2e066b3b6edc 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -191,7 +191,7 @@ of ftrace. Here is a list of some of the key files:
+>   	A few extra pages may be allocated to accommodate buffer management
+>   	meta-data. If the last page allocated has room for more bytes
+>   	than requested, the rest of the page will be used,
+> -	making the actual allocation bigger than requested or shown.
+> +	making the actual allocation bigger than requested.
 
-Look at the csi@32e4000 and csi@32e5000 nodes in
-arch/arm64/boot/dts/freescale/imx8mp.dtsi for instance. There are quite
-a few other examples.
+Hi, the actual allocation should still be bigger than shown due to the
+loss of accuracy when doing unit conversion from bytes to kilobytes (see
+tracing_entries_read()).
 
-> > > > With this fixed,
-> > > > 
-> > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > 
-> > > > > +		};
-> > > > >  	};
-> > > > >  };
+--
 
--- 
-Regards,
+Thanks,
+Zheng Yejian
 
-Laurent Pinchart
+>   	( Note, the size may not be a multiple of the page size
+>   	due to buffer management meta-data. )
+>   
+
