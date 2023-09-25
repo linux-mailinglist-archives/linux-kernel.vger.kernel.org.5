@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2217ADE76
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D74D7ADE7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 20:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbjIYSR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 14:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
+        id S232554AbjIYSSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 14:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjIYSRw (ORCPT
+        with ESMTP id S231741AbjIYSRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:17:52 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CB111
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:17:46 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50444e756deso7501458e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:17:46 -0700 (PDT)
+        Mon, 25 Sep 2023 14:17:54 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944759B
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:17:47 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso854088066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 11:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695665864; x=1696270664; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695665866; x=1696270666; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dK9svkzd5BTaKwxJw9fwDjaSrOwG+HEsVIjgOVFtfuE=;
-        b=wVYGdpMzvBXl32Hz46MVOksWUbFwwcojmQ3CpHBEIqfzJtznZRYLxgAiG1hNZRK6NB
-         nIzGqRFoBWe0K0rVLKfew+2fYj/iuPYEXJE2mJKtfy6PZpQx1ReDiRDexQBxd3EZGFN6
-         VtUUliAl0kVrvAixOh98UssvVM0GPne1aDoPM62I/qFJ9nfEhLxhvIewnYjzZ+zpkMYa
-         LIsQCnnh+Y7iIvi81iiqOlqZQrguOlHIyU7f68SCbj93+5gJjAKieLjjwPx57xps7FIA
-         vUblkStX0gnIrxypiBpQyqD4OcX6xz2nwW4MXxaNTFZJG/8UMGuE87RCvMA8I3HhoJ/n
-         FZEA==
+        bh=9ru/MdFcC19oEZdBkk7TP7Nyhe6O+16jZBwSrBv3JVY=;
+        b=2HcN/DGQ4/o8xCTifIWnH1JhNVHamcJOJGJn18rceLIeHDnA6gHi9Xn3nusiLgg88z
+         kaZJZ4YlZFE0Tqy3+DWweYpgmKoPqaODQAmJT+rkXts5BAWbX0RZ6vO1+ns5Q4RVOYLB
+         f/5jPQs50FobN9JknyeVjMrQFQlA5yYyFfo9VOCv05adD7D9YM4T19gkMHUOIbPiiiLN
+         AavO0eM0YUitYoCke8tmdNnXjts2afne88UeoUvf3Wi1kCbOkePo9f8dX6rrS24EvJuM
+         gTt6w0z9l1vTa8Ue+E5fxbFZPwfwYoYiIjP5DLLP5km101KR7jIdzXFn7DeygPogJpWM
+         +FgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695665864; x=1696270664;
+        d=1e100.net; s=20230601; t=1695665866; x=1696270666;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dK9svkzd5BTaKwxJw9fwDjaSrOwG+HEsVIjgOVFtfuE=;
-        b=by3bu1a7dCIxwRVU4bn4cYoHBahbdJgOAAD00q1EJbC3UHj3jwGWtZSgZCre//qEWT
-         vt8Ab+Pu0qRhIa6WEQy9chjeh+dPYEa8h4KwEpmFF1gSYmng/Yrr5kUYIhYwckeY/4Rb
-         A/Et98xHsXX4oAM47BzN/57phCBC9FayyYO9dE3Nui+wa00bvYfLn3sIMnjfw2jz/kfB
-         Fg/n2NsV+3FtP82VeClg3WAqceznKqNlw3wDUK/YCfSvv38pb4MgL9RmSO99ARXQ7TqV
-         FSuQaCq9hDxnzCiKkBL8TEHVqfjtdfLRJeuBRXHYLV+if0w55WYoZpqCX1bBOQDrU02R
-         b6Ow==
-X-Gm-Message-State: AOJu0Yzgq6vblUoXf/ixOaBEWuLK/x4rDc93yfAUsmNB9voHkLUbmqc1
-        Y2er6mV7SgcxL8fMjolJWgkLQQ==
-X-Google-Smtp-Source: AGHT+IH4f3Zy45N7aooSzTaDzz2tjwmrYrkiJtIrcuiwsXrjJTqM/3pRDFGwNrPlGO4oCd1gP3JB9A==
-X-Received: by 2002:a19:6746:0:b0:503:35bb:1e74 with SMTP id e6-20020a196746000000b0050335bb1e74mr6085356lfj.61.1695665864466;
-        Mon, 25 Sep 2023 11:17:44 -0700 (PDT)
+        bh=9ru/MdFcC19oEZdBkk7TP7Nyhe6O+16jZBwSrBv3JVY=;
+        b=AFk+9eFAYwO+yVKHQNDtQXxc/4kMFie+o/bopltuNsd2/FQ4SJCg+vmg/Wz6o9dFgR
+         0DMPIMKPLs0IOVj/JuvduGxVBNzlmoNDlEcPWU8Qpap2FsnmiYUE+5NNw4NnveevDjm4
+         7tBSimCmel3EtkukTldRWCP0waXuLHrITvJfXereauFhiMk5kvy20nlj4HPRAm55eErz
+         c56GDImcC2oFnWddNU2SYbG5256EN2kAbNeaKPSfokz+0jqd91gHjHWggG0JXdstV9Cs
+         hv6PYxm/rZTz6MQaDwkWe41Pg/ZnV4LfQQsRyvf4jVGIeRqfOOTGbMtYzCbTJYJGdRXp
+         E/1g==
+X-Gm-Message-State: AOJu0YzZjT5bNeaB6LAlp7F9AgSg5sCxKhodFHdcJUTJfuo2D+w/9RPf
+        6Y8ottRvP0a9GQC9mpYHzc02kA==
+X-Google-Smtp-Source: AGHT+IHGP5tHvdelrtnH/VblVMJTWJ0HstjyNqWVh7KRRITlIZNsm6r9NPQRTYI0sF9q2peBjRhBHg==
+X-Received: by 2002:a17:906:8b:b0:9a2:474:4aa0 with SMTP id 11-20020a170906008b00b009a204744aa0mr6854027ejc.48.1695665865822;
+        Mon, 25 Sep 2023 11:17:45 -0700 (PDT)
 Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id j26-20020a170906831a00b00997d7aa59fasm6793962ejx.14.2023.09.25.11.17.42
+        by smtp.googlemail.com with ESMTPSA id j26-20020a170906831a00b00997d7aa59fasm6793962ejx.14.2023.09.25.11.17.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 11:17:43 -0700 (PDT)
+        Mon, 25 Sep 2023 11:17:45 -0700 (PDT)
 From:   Alexandre Mergnat <amergnat@baylibre.com>
-Date:   Mon, 25 Sep 2023 20:17:35 +0200
-Subject: [PATCH v6 1/7] arm64: dts: mediatek: add mmsys support for mt8365
+Date:   Mon, 25 Sep 2023 20:17:36 +0200
+Subject: [PATCH v6 2/7] arm64: dts: mediatek: add camsys support for mt8365
  SoC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230207-iommu-support-v6-1-24453c8625b3@baylibre.com>
+Message-Id: <20230207-iommu-support-v6-2-24453c8625b3@baylibre.com>
 References: <20230207-iommu-support-v6-0-24453c8625b3@baylibre.com>
 In-Reply-To: <20230207-iommu-support-v6-0-24453c8625b3@baylibre.com>
 To:     Yong Wu <yong.wu@mediatek.com>,
@@ -72,19 +72,19 @@ Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Alexandre Mergnat <amergnat@baylibre.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1263; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=3xFs1OXjad0XvE1yvI1YsSmmgVc5j01QOJdhl+XL6SI=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBlEc7FZEar/ON4sXpZXeINtiOHvT/onNcfUSIdLTxU
- fqzezeuJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZRHOxQAKCRArRkmdfjHURU3wD/
- 0XoPzDUgXjVNvenXE5P7hb9zlHSrFtmlDaKfEWNHzM47z9dKN+JRhCkBjWJmZCTf74kIJkgiOTpHUC
- VGnL9yPp3fTnTlLIh0xYC7Dt0f1vuEWcFDu9WVH8hWGZGDK8jAXi9TYI6nu259zx7Ay7pV4OqK4jQh
- j6K+NnkTuwKB4qy5SGbSDgwLAbsNUx8n6rHCEaJulCr0EGgCLDAXVoQqLL9/ZnfgRMJ0zUvI81rSnN
- PCtvlu2BGrC0i9AMAShgw6JRsVfAUl6awqnJEp+hwQqBFoHQGRH604SSBHX1odm9YULfV0zV+Oc3iF
- xFHqEAWpSMwPjJ/8+EdG+pvEBBeSfy9DhY8fBj4YK5756jmsq4KWdaHPNpWCHdfzTnnfMzv1apcj7k
- wHEoXB7A5NVuRZsCYk2FQUpevCVyLdUsJQc9xomaQqvsl/BArj2nzul0CvlaLySnkaRRkVRyffBLvs
- munBn8Ui7EX+uMKnOX2ItFVQNeNBMqr1XyLYyxKYZyhOX5Qas4V/L2qtEmj4XBxm8G+ES6YipHNj9T
- /YyeYIy9IQ8lKh5LqAqHpGve4b8pBvLwv+OFqm6rFYmKiUIOhJqYBJxfUMdDhrrYc9UfE1CjWofOCP
- C8eiGlfEqsOmO1QpZZrxfxwCoMfDoPxnn77o86u0D4JD7qvNsWXe+gKaxjhg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1126; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=Lk6qSks1FWZtF7N0V2O1kU7gpoVtoT/NLAYxbDBGin0=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBlEc7FC2MRtrQZWUwmVtFlhUOQbXLAvvGEUpOZLh/U
+ 6M5lCGiJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZRHOxQAKCRArRkmdfjHURdCZD/
+ 9ufYH/c6b4zcV+X9wOd10BpsBn386LElzmNxHU7oHBraV7lvrDcSEPAnobUSFN8FMlXXl+74YOgV9g
+ TIFRuEFIjHJSnR8p3bLlObNC4WYAhQbNk1wSrGT+AuY8AXPq9a88xBoWBlipOGYocbrlrK6yfsAHsV
+ D9XftEKtH72m2MHxP+zPcIMlRCcOVemuwX74sWCIA/K4QgHVFpxrGYgcBbBreMbObA/SsVmV7y0BnD
+ 8uz0hm0ImK6jFjvQAU28ks1ewKZc79K2DfWBPHU7r7v7K4G/cQ2yTqOoM+yaY3BgWVeywtbVPVi3Ke
+ 6lnoudCNW/D1BxtLWCQgZJyz438o6+Gz7RVc7o6rzam3pa5bMTprZ+ir1/giQjqcO58e2fQtmxd9/b
+ D+gRtfikktXS2tQ5mC+MDo5JpINx4UUvxv8VSVj/pjbbsyyHdonKv/X/T1GApJVWy5LRq39DqwJ06Q
+ z9argNbzVuBLUUkoOKLvqNgd/iN3CXzrvWznOluPH1ptwFgmY4wdvYG0Rm7cfI3PLXH9inRUIGWrH+
+ ArnbifQa9yXLWoKo5xvNLqUoRzvf/LS2ysO7gswHvVpYSmnL4LxccZbZIJh9Ox8muDT30E4d8vTZ8i
+ lUxBc4LxYlZrCYa07VgApwqM7xnun3a8JvSJF3w8qutpafLy1+Dn+GvoNKBg==
 X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
  fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -96,12 +96,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multimedia subsystem (MMsys) contains multimedia controller, Multimedia
-Data Path v2.0 (MDP 2.0) and Display (DISP). The multimedia controller
-includes bus fabric control, Smart Memory Interface (SMI) control,
-memory access second-level arbiter, and multimedia configuration. It
-plays the key role in handling different handshakings between infra
-subsystem, video subsystem, image subsystem and G3D subsystem.
+Camera System (CamSys) incorporates an enhanced feature based image
+signal processor to connect a variety of image sensor components. This
+processor consists of timing generated unit (TG), lens/sensor
+compensation unit and image process unit.
 
 For more detail, ask Mediatek for the MT8365 IoT application processor
 functional specification.
@@ -113,17 +111,17 @@ Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-index 413496c92069..bcabc2b89a94 100644
+index bcabc2b89a94..f9cddce5bd9d 100644
 --- a/arch/arm64/boot/dts/mediatek/mt8365.dtsi
 +++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-@@ -603,6 +603,12 @@ u2port1: usb-phy@1000 {
- 				#phy-cells = <1>;
- 			};
+@@ -609,6 +609,12 @@ mmsys: syscon@14000000 {
+ 			reg = <0 0x14000000 0 0x1000>;
+ 			#clock-cells = <1>;
  		};
 +
-+		mmsys: syscon@14000000 {
-+			compatible = "mediatek,mt8365-mmsys", "syscon";
-+			reg = <0 0x14000000 0 0x1000>;
++		camsys: syscon@15000000 {
++			compatible = "mediatek,mt8365-imgsys", "syscon";
++			reg = <0 0x15000000 0 0x1000>;
 +			#clock-cells = <1>;
 +		};
  	};
