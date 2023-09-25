@@ -2,119 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4793A7ADD94
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D897ADD98
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 19:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbjIYRGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 13:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        id S232139AbjIYRJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 13:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjIYRGK (ORCPT
+        with ESMTP id S229437AbjIYRJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:06:10 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539F110F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:06:03 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c465d59719so46061215ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695661563; x=1696266363; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=d5xMja9yFkheQHqE/iXRfDYgX6Arhzs6tk3qD/XhCzk=;
-        b=lmbPPhmzMhFZBmbhpZJM7/G3wWI2zHz4tWe06inVvBywhiINdVthCsbUCMVLMEM0y9
-         KTwwfucFgIlW+09Mfrv8iqdCPrD5Ksk+M+OF3Mi/PcTEeIdn06v8RoEAQchPHslLD/Xx
-         VURoXtTCmhjGe07NtZRrmeYLbM9ZRunrqG7zs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695661563; x=1696266363;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d5xMja9yFkheQHqE/iXRfDYgX6Arhzs6tk3qD/XhCzk=;
-        b=M10z+Pm2+KvOUzSG1h6J31lWZaEfmx7bsg1sz68ErUauluNPT1zeOyqjkS2fsjWKOs
-         jXfXmpMP6RaJPEj1SBiLa/+3iMGcnv4sMf6K1wIunOYUqTqP4QdzzITn83ratM1xtTjt
-         V+x6sKOLMvEPaUkyOSSlyWreCZT3xBobMgN+BvzYVfXKvIbmxp06Z35lOJDbnSeLJqdu
-         PemQtu4n3nySju7QmXs4+Q52jEfDpY9at9YsLsGYPpSHLNwFh6/Hf864C6phzPwLqniD
-         A1sIG6+0bYcfoFrDrPkemJKwSd0FsFHy8OG5L4D3RftXrViBDRVIxapOy6r0ZQzioeKI
-         CPMw==
-X-Gm-Message-State: AOJu0YwQejPuhcAMf9NKPVauRcW+3V+Wpb9t7xyChetVc75QvRs4LPpd
-        wKofeA6DLEWzdiI5Uu+K3oIBnQ==
-X-Google-Smtp-Source: AGHT+IHpX/s355Isj57+S+omPh8sCxTjLdauW2heADkSvyIbh1n4SyJZJ9E+Cl2v/svT8YApVibwpg==
-X-Received: by 2002:a17:902:934a:b0:1bc:10cf:50d8 with SMTP id g10-20020a170902934a00b001bc10cf50d8mr4663367plp.23.1695661562783;
-        Mon, 25 Sep 2023 10:06:02 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170902cec200b001c5fc11c085sm5222785plg.264.2023.09.25.10.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 10:06:02 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 10:06:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sebastian Ott <sebott@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Pedro Falcato <pedro.falcato@gmail.com>
-Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        sam@gentoo.org, Rich Felker <dalias@libc.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] binfmt_elf: Support segments with 0 filesz and
- misaligned starts
-Message-ID: <202309251001.C050864@keescook>
-References: <20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net>
- <36e93c8e-4384-b269-be78-479ccc7817b1@redhat.com>
- <87zg1bm5xo.fsf@email.froward.int.ebiederm.org>
- <37d3392c-cf33-20a6-b5c9-8b3fb8142658@redhat.com>
- <87jzsemmsd.fsf_-_@email.froward.int.ebiederm.org>
- <84e974d3-ae0d-9eb5-49b2-3348b7dcd336@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <84e974d3-ae0d-9eb5-49b2-3348b7dcd336@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 13:09:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2688ABC;
+        Mon, 25 Sep 2023 10:09:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1E4DC433C7;
+        Mon, 25 Sep 2023 17:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695661767;
+        bh=p6AzNXPdHriEeTlj5yWJ1nJYbwWDrFUzUL7AtEgJGzM=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=Rb57uamRYmdcgr+E9zoGsXBzpmzv/veQrH19wWJksDsp7SCwfr8QNfo91IbyIwlAi
+         vUvSWHrqtcbHFH3jKgQEb1Sp1WvEEiKBpnLKgwLeB0DIYOt8WjigfyOuYKS1U5w2sa
+         lNiYTHsjCWxtY3T36p26/qrL7CtC7ESUnjgQttsgFpImVpu044JCrt0An0XNXtT2er
+         r/fqJa9NCk4bn5FviDfTYHqYod3kAR3CJR7OGn1qUcpEIHMDqefAg6fBdETBDvq2rr
+         cyrZVyS3K9sWaWv3zjHvMCeeAJ3mri9QhCnHwKCd/pphO5WL5+Ts6ZZieqdEndkTwr
+         ANLbSJkRngJwQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 25 Sep 2023 20:09:21 +0300
+Message-Id: <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
+ CSS events
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+X-Mailer: aerc 0.14.0
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+In-Reply-To: <20230923030657.16148-2-haitao.huang@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 05:27:12PM +0200, Sebastian Ott wrote:
-> On Mon, 25 Sep 2023, Eric W. Biederman wrote:
-> > 
-> > Implement a helper elf_load that wraps elf_map and performs all
-> > of the necessary work to ensure that when "memsz > filesz"
-> > the bytes described by "memsz > filesz" are zeroed.
-> > 
-> > Link: https://lkml.kernel.org/r/20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net
-> > Reported-by: Sebastian Ott <sebott@redhat.com>
-> > Reported-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> > ---
-> > fs/binfmt_elf.c | 111 +++++++++++++++++++++---------------------------
-> > 1 file changed, 48 insertions(+), 63 deletions(-)
-> > 
-> > Can you please test this one?
+On Sat Sep 23, 2023 at 6:06 AM EEST, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>
+> The misc cgroup controller (subsystem) currently does not perform
+> resource type specific action for Cgroups Subsystem State (CSS) events:
+> the 'css_alloc' event when a cgroup is created and the 'css_free' event
+> when a cgroup is destroyed, or in event of user writing the max value to
+> the misc.max file to set the usage limit of a specific resource
+> [admin-guide/cgroup-v2.rst, 5-9. Misc].
+>
+> Define callbacks for those events and allow resource providers to
+> register the callbacks per resource type as needed. This will be
+> utilized later by the EPC misc cgroup support implemented in the SGX
+> driver:
+> - On css_alloc, allocate and initialize necessary structures for EPC
+> reclaiming, e.g., LRU list, work queue, etc.
+> - On css_free, cleanup and free those structures created in alloc.
+> - On max_write, trigger EPC reclaiming if the new limit is at or below
+> current usage.
+>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> ---
+> V5:
+> - Remove prefixes from the callback names (tj)
+> - Update commit message (Jarkko)
+>
+> V4:
+> - Moved this to the front of the series.
+> - Applies on cgroup/for-6.6 with the overflow fix for misc.
+>
+> V3:
+> - Removed the released() callback
+> ---
+>  include/linux/misc_cgroup.h |  5 +++++
+>  kernel/cgroup/misc.c        | 32 +++++++++++++++++++++++++++++---
+>  2 files changed, 34 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> index e799b1f8d05b..96a88822815a 100644
+> --- a/include/linux/misc_cgroup.h
+> +++ b/include/linux/misc_cgroup.h
+> @@ -37,6 +37,11 @@ struct misc_res {
+>  	u64 max;
+>  	atomic64_t usage;
+>  	atomic64_t events;
+> +
+> +	/* per resource callback ops */
+> +	int (*alloc)(struct misc_cg *cg);
+> +	void (*free)(struct misc_cg *cg);
+> +	void (*max_write)(struct misc_cg *cg);
+>  };
+> =20
+>  /**
+> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+> index 79a3717a5803..62c9198dee21 100644
+> --- a/kernel/cgroup/misc.c
+> +++ b/kernel/cgroup/misc.c
+> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct kernfs_open=
+_file *of, char *buf,
+> =20
+>  	cg =3D css_misc(of_css(of));
+> =20
+> -	if (READ_ONCE(misc_res_capacity[type]))
+> +	if (READ_ONCE(misc_res_capacity[type])) {
+>  		WRITE_ONCE(cg->res[type].max, max);
+> -	else
+> +		if (cg->res[type].max_write)
+> +			cg->res[type].max_write(cg);
+> +	} else {
+>  		ret =3D -EINVAL;
+> +	}
+> =20
+>  	return ret ? ret : nbytes;
+>  }
+> @@ -383,23 +386,39 @@ static struct cftype misc_cg_files[] =3D {
+>  static struct cgroup_subsys_state *
+>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+>  {
+> +	struct misc_cg *parent_cg;
+>  	enum misc_res_type i;
+>  	struct misc_cg *cg;
+> +	int ret;
+> =20
+>  	if (!parent_css) {
+>  		cg =3D &root_cg;
+> +		parent_cg =3D &root_cg;
+>  	} else {
+>  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
+>  		if (!cg)
+>  			return ERR_PTR(-ENOMEM);
+> +		parent_cg =3D css_misc(parent_css);
+>  	}
+> =20
+>  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
+>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+>  		atomic64_set(&cg->res[i].usage, 0);
+> +		if (parent_cg->res[i].alloc) {
+> +			ret =3D parent_cg->res[i].alloc(cg);
+> +			if (ret)
+> +				goto alloc_err;
+> +		}
+>  	}
+> =20
+>  	return &cg->css;
+> +
+> +alloc_err:
+> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> +		if (parent_cg->res[i].free)
+> +			cg->res[i].free(cg);
+> +	kfree(cg);
+> +	return ERR_PTR(ret);
+>  }
+> =20
+>  /**
+> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state *parent_css=
+)
+>   */
+>  static void misc_cg_free(struct cgroup_subsys_state *css)
+>  {
+> -	kfree(css_misc(css));
+> +	struct misc_cg *cg =3D css_misc(css);
+> +	enum misc_res_type i;
+> +
+> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> +		if (cg->res[i].free)
+> +			cg->res[i].free(cg);
+> +
+> +	kfree(cg);
+>  }
+> =20
+>  /* Cgroup controller callbacks */
+> --=20
+> 2.25.1
 
-Eric thanks for doing this refactoring! This does look similar to the
-earlier attempt:
-https://lore.kernel.org/lkml/20221106021657.1145519-1-pedro.falcato@gmail.com/
-and it's a bit easier to review.
+Since the only existing client feature requires all callbacks, should
+this not have that as an invariant?
 
-> That one did the trick! The arm box booted successful, ran the binaries
-> that were used for the repo of this issue, and ran the nolibc compiled
-> binaries from kselftests that initially triggered the loader issues.
+I.e. it might be better to fail unless *all* ops are non-nil (e.g. to
+catch issues in the kernel code).
 
-Thanks for testing! I need to dig out the other "weird" binaries (like
-the mentioned ppc32 case) and see if I can get those tested too.
-
-Pedro, are you able to test ppc64le musl libc with this patch too?
-
--Kees
-
--- 
-Kees Cook
+BR, Jarkko
