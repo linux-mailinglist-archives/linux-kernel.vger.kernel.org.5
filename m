@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1AB7AD379
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FBE7AD37A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbjIYIfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
+        id S232714AbjIYIg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjIYIfP (ORCPT
+        with ESMTP id S230435AbjIYIg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:35:15 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B299D
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:35:07 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d86574d9bcaso4056726276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:35:07 -0700 (PDT)
+        Mon, 25 Sep 2023 04:36:27 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ABA9D
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:36:20 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3231df68584so2080225f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695630907; x=1696235707; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ezzNrLDnqV/k6jp9dH7Pe4D9g9Anl40AHbeIOwXqGUY=;
-        b=SaBXJB1aKffZAvXpoDnGUErfY3LnH8PquRQ/9iH/krsoaxMMyvBhBhwWQogbksXKkm
-         8TH2P98NSQv1LhnfKsD82hvOaRf4ynwQJPOMZAgbZyvs+JqaPd6m3U/zL+TYOYjnxhF3
-         ii7SrPG/1AMeTCgroBMTbYUhu3v+1ewJD/3cFnLUUJNMAHEhL4/mvpijsDNe5CPseBI4
-         nDAiE/0ZmPlrV8HYwPVLHGgETExfYGjskV2OxZWJYOgOO6Z5sc2SwswZ14FNPgfPdg9a
-         2ymjRWqounhxyUyayp64lUKxvxzc9+IWEf/d+QrLo4Q2DU9BeMKjd4WcPbUEBk7AKECZ
-         RWjw==
+        d=gmail.com; s=20230601; t=1695630979; x=1696235779; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aeqAQlatwdDujYhPSrHB+qQb56NZMAb9DgwinqxqIEs=;
+        b=GFwn8pRVFsPh+IbPHLfU7XmGbRI99PNir3GN+Skt0h/Lg10It2R3c4BjP/WIZAacYS
+         3BvQK1Hc2Uz8y2EhPtUCu/rwSPgovvh3pqEHb6nUXNkmwWQkzrQd4YaVIiwSEU07IY/G
+         rny8eg2gRe5Aot0S5rFC/JDz9cR3B6HP27x4ESbnBlnkrKX7vrknMeBWRhHnZeLl/uCV
+         EUxwefNAhKFrSOG83cxUkRfLRtvdhQuChtKRbj1/20q4mzQrcdZw6YOsTGC/+g5mEmQ3
+         c24bRKZnl9GNzkHA+DD9S+/hWI1AT7jE/klxZ1fOSK2sD6Pi3Lg2cxCbR4+JqGJpMkaz
+         URrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695630907; x=1696235707;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ezzNrLDnqV/k6jp9dH7Pe4D9g9Anl40AHbeIOwXqGUY=;
-        b=Qn0t21wpRh5QEIbKgVVAJAnVez3chxI5OkKTjvLRgb6EMya2UsXMwxPvWpU6ko4898
-         kcfE3bXGl16TSWR/MThw69qUxVL58A5A8L0+UWPCNW4uTXB8Kb4/3fxsDhSShvHUKMA2
-         K8QgasJ8NIUQHM115HLXCbisHO3NgdNN5pcSucgmLgUsHLtAmgG1wcPc7d2qFN7Xf1v/
-         lPn3kd5FhVCmU9TEVCNDXIsIbWXV2jBcJWfxaqhYgxs46CQIqe5gvCu6uph2+2Kx82e0
-         y8Kxi87x7Xi1CylNhEVInI4/W+9+sey+XmyWZ3zK51Y3apJrr3WMlIIYI5N6yvelzWbf
-         XsqQ==
-X-Gm-Message-State: AOJu0YwPXrO50MTjCGvbm+NnJAQOiLDAsXoKnsRVeBpOpmxzDvi2doYS
-        SN9jrntUTAlj4D4omOLwg3q5Qg==
-X-Google-Smtp-Source: AGHT+IFp0uZwCYh9f6Ww0ZKvnQPx4qXewNgiqFJbqCBgiDfI2aX3U5liWK+g0EmK6zec2o4LhHt/pg==
-X-Received: by 2002:a05:690c:d93:b0:59f:8026:4260 with SMTP id da19-20020a05690c0d9300b0059f80264260mr2238947ywb.24.1695630906593;
-        Mon, 25 Sep 2023 01:35:06 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id c188-20020a0df3c5000000b0059293c8d70csm2293994ywf.132.2023.09.25.01.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 01:35:05 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 01:35:03 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 11/12] mempolicy: mmap_lock is not needed while migrating
- folios
-In-Reply-To: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
-Message-ID: <73183de1-6529-b146-f2cc-fcd5b812166@google.com>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
+        d=1e100.net; s=20230601; t=1695630979; x=1696235779;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aeqAQlatwdDujYhPSrHB+qQb56NZMAb9DgwinqxqIEs=;
+        b=uQkefk7vBpLzrl7uTOCWQezmK9WSs5W3D7i7j1lK+UO15sqQ+h4eScD5t8kPQjJtP4
+         psl6zctH3LCKSQ9sERgUkcfQ0IjdyIUJXhbYQVoqMoBA3vPvfy115D9MEf4eT52PqeKW
+         VsozoZssuncw+cMUA/viHrEUGQqWNFPJ3piBvWQdcJUFBZwOl0sKhdt8raULgFBGkA1/
+         H/dHz1YYYpmA//rtlGTJ7TbkriC65/H5FCICoDaX4r0HgPz+yRN+DH3azbKNDqwn2ECV
+         RvaUHDriN+m1AvmsHo21P7UfnYe2KrytmPk2UH4fJk9O+sNrnO12YbgRPrpF96QtUWeD
+         KKDw==
+X-Gm-Message-State: AOJu0YyPeeebliM1lFRGPzwHYG5Aj/ZWNR6+OMYnHH/kD/8g5Y5aUVHA
+        5u5lkQ8bWj0FVp4mud/WYST1L9P8uUWvyytS+lc=
+X-Google-Smtp-Source: AGHT+IGPt5Irg12cqRt6/lQ24N6F1G7U2LNqzKgwK5lhjGj0AbzqmGGQUuBEcXRDN6KwCV91ET3d6rijl2xGviDexbw=
+X-Received: by 2002:a5d:6682:0:b0:31f:9838:dfc4 with SMTP id
+ l2-20020a5d6682000000b0031f9838dfc4mr5220361wru.33.1695630978949; Mon, 25 Sep
+ 2023 01:36:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+References: <20230922172211.1704917-1-cerasuolodomenico@gmail.com> <20230922174225.GF124289@cmpxchg.org>
+In-Reply-To: <20230922174225.GF124289@cmpxchg.org>
+From:   Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Date:   Mon, 25 Sep 2023 10:36:06 +0200
+Message-ID: <CA+CLi1hT30jtGGVwWh8LBoLq3ijRoYdxiMB301Jc97Z9=JLHGA@mail.gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix potential memory corruption on duplicate store
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        akpm@linux-foundation.org, nphamcs@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,294 +70,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mbind(2) holds down_write of current task's mmap_lock throughout
-(exclusive because it needs to set the new mempolicy on the vmas);
-migrate_pages(2) holds down_read of pid's mmap_lock throughout.
+On Fri, Sep 22, 2023 at 7:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Fri, Sep 22, 2023 at 07:22:11PM +0200, Domenico Cerasuolo wrote:
+> > While stress-testing zswap a memory corruption was happening when writi=
+ng
+> > back pages. __frontswap_store used to check for duplicate entries befor=
+e
+> > attempting to store a page in zswap, this was because if the store fail=
+s
+> > the old entry isn't removed from the tree. This change removes duplicat=
+e
+> > entries in zswap_store before the actual attempt.
+> >
+> > Based on commit ce9ecca0238b ("Linux 6.6-rc2")
+> >
+> > Fixes: 42c06a0e8ebe ("mm: kill frontswap")
+> > Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> > @@ -1218,6 +1218,19 @@ bool zswap_store(struct folio *folio)
+> >       if (!zswap_enabled || !tree)
+> >               return false;
+> >
+> > +     /*
+> > +      * If this is a duplicate, it must be removed before attempting t=
+o store
+> > +      * it, otherwise, if the store fails the old page won't be remove=
+d from
+> > +      * the tree, and it might be written back overriding the new data=
+.
+> > +      */
+> > +     spin_lock(&tree->lock);
+> > +     dupentry =3D zswap_rb_search(&tree->rbroot, offset);
+> > +     if (dupentry) {
+> > +             zswap_duplicate_entry++;
+> > +             zswap_invalidate_entry(tree, dupentry);
+> > +     }
+> > +     spin_unlock(&tree->lock);
+>
+> Do we still need the dupe handling at the end of the function then?
+>
+> The dupe store happens because a page that's already in swapcache has
+> changed and we're trying to swap_writepage() it again with new data.
+>
+> But the page is locked at this point, pinning the swap entry. So even
+> after the tree lock is dropped I don't see how *another* store to the
+> tree at this offset could occur while we're compressing.
 
-They both hold mmap_lock across the internal migrate_pages(), under which
-all new page allocations (huge or small) are made.  I'm nervous about it;
-and migrate_pages() certainly does not need mmap_lock itself.  It's done
-this way for mbind(2), because its page allocator is vma_alloc_folio() or
-alloc_hugetlb_folio_vma(), both of which depend on vma and address.
-
-Now that we have alloc_pages_mpol(), depending on (refcounted) memory
-policy and interleave index, mbind(2) can be modified to use that or
-alloc_hugetlb_folio_nodemask(), and then not need mmap_lock across the
-internal migrate_pages() at all: add alloc_migration_target_by_mpol()
-to replace mbind's new_page().
-
-(After that change, alloc_hugetlb_folio_vma() is used by nothing but a
-userfaultfd function: move it out of hugetlb.h and into the #ifdef.)
-
-migrate_pages(2) has chosen its target node before migrating, so can
-continue to use the standard alloc_migration_target(); but let it take
-and drop mmap_lock just around migrate_to_node()'s queue_pages_range():
-neither the node-to-node calculations nor the page migrations need it.
-
-It seems unlikely, but it is conceivable that some userspace depends on
-the kernel's mmap_lock exclusion here, instead of doing its own locking:
-more likely in a testsuite than in real life.  It is also possible, of
-course, that some pages on the list will be munmapped by another thread
-before they are migrated, or a newer memory policy applied to the range
-by that time: but such races could happen before, as soon as mmap_lock
-was dropped, so it does not appear to be a concern.
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- include/linux/hugetlb.h |  9 -----
- mm/hugetlb.c            | 38 +++++++++---------
- mm/mempolicy.c          | 85 +++++++++++++++++++++--------------------
- 3 files changed, 64 insertions(+), 68 deletions(-)
-
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 6522eb3cd007..9c4265c73f76 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -714,8 +714,6 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 				unsigned long addr, int avoid_reserve);
- struct folio *alloc_hugetlb_folio_nodemask(struct hstate *h, int preferred_nid,
- 				nodemask_t *nmask, gfp_t gfp_mask);
--struct folio *alloc_hugetlb_folio_vma(struct hstate *h, struct vm_area_struct *vma,
--				unsigned long address);
- int hugetlb_add_to_page_cache(struct folio *folio, struct address_space *mapping,
- 			pgoff_t idx);
- void restore_reserve_on_error(struct hstate *h, struct vm_area_struct *vma,
-@@ -1024,13 +1022,6 @@ alloc_hugetlb_folio_nodemask(struct hstate *h, int preferred_nid,
- 	return NULL;
- }
- 
--static inline struct folio *alloc_hugetlb_folio_vma(struct hstate *h,
--					       struct vm_area_struct *vma,
--					       unsigned long address)
--{
--	return NULL;
--}
--
- static inline int __alloc_bootmem_huge_page(struct hstate *h)
- {
- 	return 0;
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ba6d39b71cb1..1af54dbbd7cc 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2479,24 +2479,6 @@ struct folio *alloc_hugetlb_folio_nodemask(struct hstate *h, int preferred_nid,
- 	return alloc_migrate_hugetlb_folio(h, gfp_mask, preferred_nid, nmask);
- }
- 
--/* mempolicy aware migration callback */
--struct folio *alloc_hugetlb_folio_vma(struct hstate *h, struct vm_area_struct *vma,
--		unsigned long address)
--{
--	struct mempolicy *mpol;
--	nodemask_t *nodemask;
--	struct folio *folio;
--	gfp_t gfp_mask;
--	int node;
--
--	gfp_mask = htlb_alloc_mask(h);
--	node = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
--	folio = alloc_hugetlb_folio_nodemask(h, node, nodemask, gfp_mask);
--	mpol_cond_put(mpol);
--
--	return folio;
--}
--
- /*
-  * Increase the hugetlb pool such that it can accommodate a reservation
-  * of size 'delta'.
-@@ -6225,6 +6207,26 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
- }
- 
- #ifdef CONFIG_USERFAULTFD
-+/*
-+ * Can probably be eliminated, but still used by hugetlb_mfill_atomic_pte().
-+ */
-+static struct folio *alloc_hugetlb_folio_vma(struct hstate *h,
-+		struct vm_area_struct *vma, unsigned long address)
-+{
-+	struct mempolicy *mpol;
-+	nodemask_t *nodemask;
-+	struct folio *folio;
-+	gfp_t gfp_mask;
-+	int node;
-+
-+	gfp_mask = htlb_alloc_mask(h);
-+	node = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
-+	folio = alloc_hugetlb_folio_nodemask(h, node, nodemask, gfp_mask);
-+	mpol_cond_put(mpol);
-+
-+	return folio;
-+}
-+
- /*
-  * Used by userfaultfd UFFDIO_* ioctls. Based on userfaultfd's mfill_atomic_pte
-  * with modifications for hugetlb pages.
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index d74df1e1b14a..74b1894d29c1 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -417,6 +417,8 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 
- static bool migrate_folio_add(struct folio *folio, struct list_head *foliolist,
- 				unsigned long flags);
-+static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *pol,
-+				pgoff_t ilx, int *nid);
- 
- static bool strictly_unmovable(unsigned long flags)
- {
-@@ -1040,6 +1042,8 @@ static long migrate_to_node(struct mm_struct *mm, int source, int dest,
- 	node_set(source, nmask);
- 
- 	VM_BUG_ON(!(flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL)));
-+
-+	mmap_read_lock(mm);
- 	vma = find_vma(mm, 0);
- 
- 	/*
-@@ -1050,6 +1054,7 @@ static long migrate_to_node(struct mm_struct *mm, int source, int dest,
- 	 */
- 	nr_failed = queue_pages_range(mm, vma->vm_start, mm->task_size, &nmask,
- 				      flags | MPOL_MF_DISCONTIG_OK, &pagelist);
-+	mmap_read_unlock(mm);
- 
- 	if (!list_empty(&pagelist)) {
- 		err = migrate_pages(&pagelist, alloc_migration_target, NULL,
-@@ -1078,8 +1083,6 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- 
- 	lru_cache_disable();
- 
--	mmap_read_lock(mm);
--
- 	/*
- 	 * Find a 'source' bit set in 'tmp' whose corresponding 'dest'
- 	 * bit in 'to' is not also set in 'tmp'.  Clear the found 'source'
-@@ -1159,7 +1162,6 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- 		if (err < 0)
- 			break;
- 	}
--	mmap_read_unlock(mm);
- 
- 	lru_cache_enable();
- 	if (err < 0)
-@@ -1168,44 +1170,38 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- }
- 
- /*
-- * Allocate a new page for page migration based on vma policy.
-- * Start by assuming the page is mapped by the same vma as contains @start.
-- * Search forward from there, if not.  N.B., this assumes that the
-- * list of pages handed to migrate_pages()--which is how we get here--
-- * is in virtual address order.
-+ * Allocate a new folio for page migration, according to NUMA mempolicy.
-  */
--static struct folio *new_folio(struct folio *src, unsigned long start)
-+static struct folio *alloc_migration_target_by_mpol(struct folio *src,
-+						    unsigned long private)
- {
--	struct vm_area_struct *vma;
--	unsigned long address;
--	VMA_ITERATOR(vmi, current->mm, start);
--	gfp_t gfp = GFP_HIGHUSER_MOVABLE | __GFP_RETRY_MAYFAIL;
--
--	for_each_vma(vmi, vma) {
--		address = page_address_in_vma(&src->page, vma);
--		if (address != -EFAULT)
--			break;
--	}
--
--	/*
--	 * __get_vma_policy() now expects a genuine non-NULL vma. Return NULL
--	 * when the page can no longer be located in a vma: that is not ideal
--	 * (migrate_pages() will give up early, presuming ENOMEM), but good
--	 * enough to avoid a crash by syzkaller or concurrent holepunch.
--	 */
--	if (!vma)
--		return NULL;
-+	struct mempolicy *pol = (struct mempolicy *)private;
-+	pgoff_t ilx = 0;	/* improve on this later */
-+	struct page *page;
-+	unsigned int order;
-+	int nid = numa_node_id();
-+	gfp_t gfp;
- 
- 	if (folio_test_hugetlb(src)) {
--		return alloc_hugetlb_folio_vma(folio_hstate(src),
--				vma, address);
-+		nodemask_t *nodemask;
-+		struct hstate *h;
-+
-+		ilx += src->index;	/* HugeTLBfs indexes in hpage_size */
-+		h = folio_hstate(src);
-+		gfp = htlb_alloc_mask(h);
-+		nodemask = policy_nodemask(gfp, pol, ilx, &nid);
-+		return alloc_hugetlb_folio_nodemask(h, nid, nodemask, gfp);
- 	}
- 
- 	if (folio_test_large(src))
- 		gfp = GFP_TRANSHUGE;
-+	else
-+		gfp = GFP_HIGHUSER_MOVABLE | __GFP_RETRY_MAYFAIL | __GFP_COMP;
- 
--	return vma_alloc_folio(gfp, folio_order(src), vma, address,
--			folio_test_large(src));
-+	order = folio_order(src);
-+	ilx += src->index >> order;
-+	page = alloc_pages_mpol(gfp, order, pol, ilx, nid);
-+	return page_rmappable_folio(page);
- }
- #else
- 
-@@ -1221,7 +1217,8 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- 	return -ENOSYS;
- }
- 
--static struct folio *new_folio(struct folio *src, unsigned long start)
-+static struct folio *alloc_migration_target_by_mpol(struct folio *src,
-+						    unsigned long private)
- {
- 	return NULL;
- }
-@@ -1295,6 +1292,7 @@ static long do_mbind(unsigned long start, unsigned long len,
- 
- 	if (nr_failed < 0) {
- 		err = nr_failed;
-+		nr_failed = 0;
- 	} else {
- 		vma_iter_init(&vmi, mm, start);
- 		prev = vma_prev(&vmi);
-@@ -1305,19 +1303,24 @@ static long do_mbind(unsigned long start, unsigned long len,
- 		}
- 	}
- 
--	if (!err) {
--		if (!list_empty(&pagelist)) {
--			nr_failed |= migrate_pages(&pagelist, new_folio, NULL,
--				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND, NULL);
-+	mmap_write_unlock(mm);
-+
-+	if (!err && !list_empty(&pagelist)) {
-+		/* Convert MPOL_DEFAULT's NULL to task or default policy */
-+		if (!new) {
-+			new = get_task_policy(current);
-+			mpol_get(new);
- 		}
--		if (nr_failed && (flags & MPOL_MF_STRICT))
--			err = -EIO;
-+		nr_failed |= migrate_pages(&pagelist,
-+				alloc_migration_target_by_mpol, NULL,
-+				(unsigned long)new, MIGRATE_SYNC,
-+				MR_MEMPOLICY_MBIND, NULL);
- 	}
- 
-+	if (nr_failed && (flags & MPOL_MF_STRICT))
-+		err = -EIO;
- 	if (!list_empty(&pagelist))
- 		putback_movable_pages(&pagelist);
--
--	mmap_write_unlock(mm);
- mpol_out:
- 	mpol_put(new);
- 	if (flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL))
--- 
-2.35.3
-
+My reasoning here was that frontswap used to invalidate a dupe right before
+calling store(), so I thought that the check at the end of zswap_store() wa=
+s
+actually needed.
+Since we acquire the tree lock anyway to add the new entry to the LRU, woul=
+dn't
+checking the result of zswap_rb_insert be a very cheap sanity check? We cou=
+ld
+treat it as an error and fail the store(), or just add a warning and still
+invalidate the dupe?
