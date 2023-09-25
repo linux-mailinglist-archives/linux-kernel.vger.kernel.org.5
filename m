@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEA27AD2F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F517AD2F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbjIYIMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
+        id S232732AbjIYIMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbjIYIL6 (ORCPT
+        with ESMTP id S232836AbjIYIMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:11:58 -0400
+        Mon, 25 Sep 2023 04:12:00 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0DD4112;
-        Mon, 25 Sep 2023 01:11:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA983121;
+        Mon, 25 Sep 2023 01:11:53 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D917BDA7;
-        Mon, 25 Sep 2023 01:12:28 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A5C2DA7;
+        Mon, 25 Sep 2023 01:12:31 -0700 (PDT)
 Received: from e129166.arm.com (unknown [10.57.93.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3BAB73F5A1;
-        Mon, 25 Sep 2023 01:11:48 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F3B753F5A1;
+        Mon, 25 Sep 2023 01:11:50 -0700 (PDT)
 From:   Lukasz Luba <lukasz.luba@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         rafael@kernel.org
@@ -29,9 +29,9 @@ Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, rui.zhang@intel.com,
         daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
         len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
         qyousef@layalina.io, wvw@google.com
-Subject: [PATCH v4 14/18] PM: EM: Add performance field to struct em_perf_state
-Date:   Mon, 25 Sep 2023 09:11:35 +0100
-Message-Id: <20230925081139.1305766-15-lukasz.luba@arm.com>
+Subject: [PATCH v4 15/18] PM: EM: Adjust performance with runtime modification callback
+Date:   Mon, 25 Sep 2023 09:11:36 +0100
+Message-Id: <20230925081139.1305766-16-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230925081139.1305766-1-lukasz.luba@arm.com>
 References: <20230925081139.1305766-1-lukasz.luba@arm.com>
@@ -46,137 +46,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The performance doesn't scale linearly with the frequency. Also, it may
-be different in different workloads. Some CPUs are designed to be
-particularly good at some applications e.g. images or video processing
-and other CPUs in different. When those different types of CPUs are
-combined in one SoC they should be properly modeled to get max of the HW
-in Energy Aware Scheduler (EAS). The Energy Model (EM) provides the
-power vs. performance curves to the EAS, but assumes the CPUs capacity
-is fixed and scales linearly with the frequency. This patch allows to
-adjust the curve on the 'performance' axis as well.
+The performance value may be modified at runtime together with the
+power value for each OPP. They both would form a different power
+and performance profile in the EM. Modify the callback interface
+to make this possible.
 
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- include/linux/energy_model.h | 11 ++++++-----
- kernel/power/energy_model.c  | 27 +++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 5 deletions(-)
+ include/linux/energy_model.h | 24 +++++++++++++++---------
+ kernel/power/energy_model.c  |  7 ++++---
+ 2 files changed, 19 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index 41290ee2cdd0..37fc8490709d 100644
+index 37fc8490709d..65a8794d1565 100644
 --- a/include/linux/energy_model.h
 +++ b/include/linux/energy_model.h
-@@ -12,6 +12,7 @@
+@@ -174,24 +174,29 @@ struct em_data_callback {
+ 			unsigned long *cost);
  
- /**
-  * struct em_perf_state - Performance state of a performance domain
-+ * @performance:	Non-linear CPU performance at a given frequency
-  * @frequency:	The frequency in KHz, for consistency with CPUFreq
-  * @power:	The power consumed at this level (by 1 CPU or by a registered
-  *		device). It can be a total power: static and dynamic.
-@@ -20,6 +21,7 @@
-  * @flags:	see "em_perf_state flags" description below.
-  */
- struct em_perf_state {
-+	unsigned long performance;
- 	unsigned long frequency;
- 	unsigned long power;
- 	unsigned long cost;
-@@ -223,14 +225,14 @@ void em_dev_unregister_perf_domain(struct device *dev);
-  */
- static inline int
- em_pd_get_efficient_state(struct em_perf_state *table, int nr_perf_states,
--			  unsigned long freq, unsigned long pd_flags)
-+			  unsigned long max_util, unsigned long pd_flags)
- {
- 	struct em_perf_state *ps;
- 	int i;
- 
- 	for (i = 0; i < nr_perf_states; i++) {
- 		ps = &table[i];
--		if (ps->frequency >= freq) {
-+		if (ps->performance >= max_util) {
- 			if (pd_flags & EM_PERF_DOMAIN_SKIP_INEFFICIENCIES &&
- 			    ps->flags & EM_PERF_STATE_INEFFICIENT)
- 				continue;
-@@ -262,8 +264,8 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 				unsigned long allowed_cpu_cap)
- {
- 	struct em_perf_table *runtime_table;
--	unsigned long freq, scale_cpu;
- 	struct em_perf_state *ps;
-+	unsigned long scale_cpu;
- 	int cpu, i;
- 
- 	if (!sum_util)
-@@ -290,14 +292,13 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 
- 	max_util = map_util_perf(max_util);
- 	max_util = min(max_util, allowed_cpu_cap);
--	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
- 
- 	/*
- 	 * Find the lowest performance state of the Energy Model above the
- 	 * requested frequency.
+ 	/**
+-	 * update_power() - Provide new power at the given performance state of
+-	 *		a device
++	 * update_power_perf() - Provide new power and performance at the given
++	 *		performance state of a device
+ 	 * @dev		: Device for which we do this operation (can be a CPU)
+ 	 * @freq	: Frequency at the performance state in kHz
+ 	 * @power	: New power value at the performance state
+ 	 *		(modified)
++	 * @perf	: New performance value at the performance state
++	 *		(modified)
+ 	 * @priv	: Pointer to private data useful for tracking context
+ 	 *		during runtime modifications of EM.
+ 	 *
+-	 * The update_power() is used by runtime modifiable EM. It aims to
+-	 * provide updated power value for a given frequency, which is stored
+-	 * in the performance state. The power value provided by this callback
+-	 * should fit in the [0, EM_MAX_POWER] range.
++	 * The update_power_perf() is used by runtime modifiable EM. It aims to
++	 * provide updated power and performance value for a given frequency,
++	 * which is stored in the performance state. The power value provided
++	 * by this callback should fit in the [0, EM_MAX_POWER] range. The
++	 * performance value should be lower or equal to the CPU max capacity
++	 * (1024).
+ 	 *
+ 	 * Return 0 on success, or appropriate error value in case of failure.
  	 */
- 	i = em_pd_get_efficient_state(runtime_table->state, pd->nr_perf_states,
--				      freq, pd->flags);
-+				      max_util, pd->flags);
- 	ps = &runtime_table->state[i];
+-	int (*update_power)(struct device *dev, unsigned long freq,
+-			    unsigned long *power, void *priv);
++	int (*update_power_perf)(struct device *dev, unsigned long freq,
++				 unsigned long *power, unsigned long *perf,
++				 void *priv);
+ };
+ #define EM_SET_ACTIVE_POWER_CB(em_cb, cb) ((em_cb).active_power = cb)
+ #define EM_ADV_DATA_CB(_active_power_cb, _cost_cb)	\
+@@ -199,7 +204,8 @@ struct em_data_callback {
+ 	  .get_cost = _cost_cb }
+ #define EM_DATA_CB(_active_power_cb)			\
+ 		EM_ADV_DATA_CB(_active_power_cb, NULL)
+-#define EM_UPDATE_CB(_update_power_cb) { .update_power = &_update_power_cb }
++#define EM_UPDATE_CB(_update_pwr_perf_cb)		\
++	{ .update_power_perf = &_update_pwr_perf_cb }
  
- 	/*
+ struct em_perf_domain *em_cpu_get(int cpu);
+ struct em_perf_domain *em_pd_get(struct device *dev);
 diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index 78e1495dc87e..c7ad42b42c46 100644
+index c7ad42b42c46..17a59a7717f7 100644
 --- a/kernel/power/energy_model.c
 +++ b/kernel/power/energy_model.c
-@@ -46,6 +46,7 @@ static void em_debug_create_ps(struct em_perf_state *ps, struct dentry *pd)
- 	debugfs_create_ulong("frequency", 0444, d, &ps->frequency);
- 	debugfs_create_ulong("power", 0444, d, &ps->power);
- 	debugfs_create_ulong("cost", 0444, d, &ps->cost);
-+	debugfs_create_ulong("performance", 0444, d, &ps->performance);
- 	debugfs_create_ulong("inefficient", 0444, d, &ps->flags);
- }
+@@ -217,11 +217,11 @@ int em_dev_update_perf_domain(struct device *dev, struct em_data_callback *cb,
+ 			      void *priv)
+ {
+ 	struct em_perf_table *runtime_table;
+-	unsigned long power, freq;
++	unsigned long power, freq, perf;
+ 	struct em_perf_domain *pd;
+ 	int ret, i;
  
-@@ -133,6 +134,30 @@ static void em_perf_runtime_table_set(struct device *dev,
- 		call_rcu(&tmp->rcu, em_destroy_rt_table_rcu);
- }
+-	if (!cb || !cb->update_power)
++	if (!cb || !cb->update_power_perf)
+ 		return -EINVAL;
  
-+static void em_init_performance(struct device *dev, struct em_perf_domain *pd,
-+				struct em_perf_state *table, int nr_states)
-+{
-+	u64 fmax, max_cap;
-+	int i, cpu;
-+
-+	/* This is needed only for CPUs and EAS skip other devices */
-+	if (!_is_cpu_device(dev))
-+		return;
-+
-+	cpu = cpumask_first(em_span_cpus(pd));
-+
-+	/*
-+	 * Calculate the performance value for each frequency with
-+	 * linear relationship. The final CPU capacity might not be ready at
-+	 * boot time, but the EM will be updated a bit later with correct one.
-+	 */
-+	fmax = (u64) table[nr_states - 1].frequency;
-+	max_cap = (u64) arch_scale_cpu_capacity(cpu);
-+	for (i = 0; i < nr_states; i++)
-+		table[i].performance = div64_u64(max_cap * table[i].frequency,
-+						 fmax);
-+}
-+
- static int em_compute_costs(struct device *dev, struct em_perf_state *table,
- 			    struct em_data_callback *cb, int nr_states,
- 			    unsigned long flags)
-@@ -317,6 +342,8 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
- 		table[i].frequency = prev_freq = freq;
+ 	/*
+@@ -262,13 +262,14 @@ int em_dev_update_perf_domain(struct device *dev, struct em_data_callback *cb,
+ 		 * Call driver callback to get a new power value for
+ 		 * a given frequency.
+ 		 */
+-		ret = cb->update_power(dev, freq, &power, priv);
++		ret = cb->update_power_perf(dev, freq, &power, &perf, priv);
+ 		if (ret) {
+ 			dev_dbg(dev, "EM: runtime update error: %d\n", ret);
+ 			goto free_runtime_state_table;
+ 		}
+ 
+ 		runtime_table->state[i].power = power;
++		runtime_table->state[i].performance = perf;
  	}
  
-+	em_init_performance(dev, pd, table, nr_states);
-+
- 	ret = em_compute_costs(dev, table, cb, nr_states, flags);
- 	if (ret)
- 		goto free_ps_table;
+ 	ret = em_compute_costs(dev, runtime_table->state, cb,
 -- 
 2.25.1
 
