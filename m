@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7917ADC70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB2F7ADC72
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjIYPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        id S232464AbjIYP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjIYPzw (ORCPT
+        with ESMTP id S231736AbjIYP4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:55:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7887BBE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:55:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE9A6C433C8;
-        Mon, 25 Sep 2023 15:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695657345;
-        bh=rN0uGksTsjjZcDvJoDF3ojsWN3x8dp/ouj45xZwSJk0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZeSxKHD8awdCQpyc+AmXEnCINpiHWRHmuxMjQHRNleoNgUimp12V6NimZJ5leP2Dl
-         VigvkgTW4Z4na1THj7U3QaABkK7I5SMzHdb3EK6rm7R/6/EDXS/GIGMn2QS/hRtDl0
-         JLVSRoBLUooPh6JdJpwCXonRKeNCtnO/qXVjAP5QFzVvL+cgMD2JD3X1ugwDCLciYF
-         XPKTF9DSiXymyKdPKn8pskySFsg1hlX96ZJsKpsczl0LwtB9DZcPLJZgsoedO6eqYY
-         lFZP4DpxMe0Zr3itYNaBICeggTRwyqEVDvs+MZFrHon2+XX4JJLZPx/hZ1t8DCnwB4
-         ah8irPdxmaw7g==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Michal Michalik <michal.michalik@intel.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Joshua Hay <joshua.a.hay@intel.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ice: require PTP clock for building
-Date:   Mon, 25 Sep 2023 17:55:24 +0200
-Message-Id: <20230925155538.526317-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 25 Sep 2023 11:56:15 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1DEC0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:55:59 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RvSCK6vZ7z9v2F;
+        Mon, 25 Sep 2023 17:55:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HsMsA_o4T0Gr; Mon, 25 Sep 2023 17:55:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RvSCK6BKgz9v26;
+        Mon, 25 Sep 2023 17:55:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D11C98B78D;
+        Mon, 25 Sep 2023 17:55:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id dXB25KsCgd1Q; Mon, 25 Sep 2023 17:55:57 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BA5FE8B763;
+        Mon, 25 Sep 2023 17:55:57 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 38PFtqF51492430
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 25 Sep 2023 17:55:53 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 38PFtqAq1492429;
+        Mon, 25 Sep 2023 17:55:52 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/85xx: Fix math emulation exception
+Date:   Mon, 25 Sep 2023 17:55:51 +0200
+Message-ID: <066caa6d9480365da9b8ed83692d7101e10ac5f8.1695657339.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695657351; l=1257; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Gqvr+bgJ0qNPYaA9Xdu3Ijfr4pVH9xgAqrxOwYJYMRo=; b=GF/CoTj6pH3Yre2nZ2Qp4226FjxjCrH3E05eJ5fFZbxts/VvBDggdp/NjLgEaqcPx/Yfcsoaj 7IwwMSgV9q1CeuyAVOQMW4VpzhghoqsoAOBACtaQMTEr2ysIQHlEKZM
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_DNS_FOR_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Booting mpc85xx_defconfig kernel on QEMU leads to:
 
-A previous fix added PTP as an optional dependency, which was correct as
-of commit 87758511075ec ("igc: fix build errors for PTP"), but this
-has recently changed with the PTP code getting more deeply integrated
-into the ICE driver.
+Bad trap at PC: fe9bab0, SR: 2d000, vector=800
+awk[82]: unhandled trap (5) at 0 nip fe9bab0 lr fe9e01c code 5 in libc-2.27.so[fe5a000+17a000]
+awk[82]: code: 3aa00000 3a800010 4bffe03c 9421fff0 7ca62b78 38a00000 93c10008 83c10008
+awk[82]: code: 38210010 4bffdec8 9421ffc0 7c0802a6 <fc00048e> d8010008 4815190d 93810030
+Trace/breakpoint trap
+WARNING: no useful console
 
-Trying to build ICE when PTP is disabled results in this internal link failure
-as the local functions are left out of the driver:
+This is because allthough CONFIG_MATH_EMULATION is selected,
+Exception 800 calls unknown_exception().
 
-ERROR: modpost: "ice_is_clock_mux_present_e810t" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_is_phy_rclk_present" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_cgu_get_pin_name" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_get_cgu_state" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_is_cgu_present" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_get_cgu_rclk_pin_info" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_cgu_get_pin_type" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_cgu_get_pin_freq_supp" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+Call emulation_assist_interrupt() instead.
 
-I tried rearranging the code to allow building it again, but this was getting
-too complicated for an outsider, so just enforce the dependency to fix randconfig
-builds again, until someone wants to clean this up again.
-
-In practice, any configuration that includes this driver is also going to
-want PTP clocks anyway.
-
-Fixes: 8a3a565ff210a ("ice: add admin commands to access cgu configuration")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/net/ethernet/intel/Kconfig | 2 +-
+ arch/powerpc/kernel/head_85xx.S | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
-index e6684f3cc0ce0..c452ecf89b984 100644
---- a/drivers/net/ethernet/intel/Kconfig
-+++ b/drivers/net/ethernet/intel/Kconfig
-@@ -278,7 +278,7 @@ config ICE
- 	tristate "Intel(R) Ethernet Connection E800 Series Support"
- 	default n
- 	depends on PCI_MSI
--	depends on PTP_1588_CLOCK_OPTIONAL
-+	depends on PTP_1588_CLOCK
- 	depends on GNSS || GNSS = n
- 	select AUXILIARY_BUS
- 	select DIMLIB
+diff --git a/arch/powerpc/kernel/head_85xx.S b/arch/powerpc/kernel/head_85xx.S
+index 97e9ea0c7297..0f1641a31250 100644
+--- a/arch/powerpc/kernel/head_85xx.S
++++ b/arch/powerpc/kernel/head_85xx.S
+@@ -395,7 +395,7 @@ interrupt_base:
+ #ifdef CONFIG_PPC_FPU
+ 	FP_UNAVAILABLE_EXCEPTION
+ #else
+-	EXCEPTION(0x0800, FP_UNAVAIL, FloatingPointUnavailable, unknown_exception)
++	EXCEPTION(0x0800, FP_UNAVAIL, FloatingPointUnavailable, emulation_assist_interrupt)
+ #endif
+ 
+ 	/* System Call Interrupt */
 -- 
-2.39.2
+2.41.0
 
