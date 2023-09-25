@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB307ADF96
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1988D7ADF9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 21:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjIYT2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 15:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S229970AbjIYTen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 15:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233308AbjIYT2E (ORCPT
+        with ESMTP id S232165AbjIYTek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 15:28:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF0B10C;
-        Mon, 25 Sep 2023 12:27:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695670078; x=1727206078;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=G+AzBDEkkM1eADSIyN25cfwmNNwetV4UoEJVlZExwOM=;
-  b=Pl+pSi3ZUIbM1xn4IahcvgUD+Fbz4qkphC/Z5UTzEQA5AlIr/ZKf7bxg
-   /KehrDltwLEQUX3IyNUZRxslf4ejTB41g7c8Wr2WG4Yobe9MuQEOJDbWb
-   V3Gb5RC/RfqqJUBCkbNAQMzYLCKeM+gKM7gFiFSgQhaTXu6TH0a9Lwzmt
-   QtWj0QQU+FPibRpY6Eb6UVhOIwWSALEw3Ta6IIuzj1lBssAvjef4T3x4s
-   uTR489LmPu4Q/s9VTQfoU1c8RfARWhz+iaTjQjlsZaDzW86NnN7n0Jhjm
-   O2cJX4Iakm6QVAHCKlr2/K0yf0vjPNvNv1Ycs453q1YW5vHvQjVycdav1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="384123235"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="384123235"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 12:27:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="995506037"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="995506037"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 12:27:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qkrFG-00000000Q7q-3Fmf;
-        Mon, 25 Sep 2023 22:27:50 +0300
-Date:   Mon, 25 Sep 2023 22:27:50 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "pmalani@chromium.org" <pmalani@chromium.org>,
-        "chrome-platform@lists.linux.dev" <chrome-platform@lists.linux.dev>,
-        "bleung@chromium.org" <bleung@chromium.org>
-Subject: Re: [PATCH v4 4/5] platform/chrome: cros_ec_typec: Add Displayport
- Alternatemode 2.1 Support
-Message-ID: <ZRHfNoiDazz1ZDtD@smile.fi.intel.com>
-References: <20230920023243.2494410-1-utkarsh.h.patel@intel.com>
- <20230920023243.2494410-5-utkarsh.h.patel@intel.com>
- <ZQsE5hgm4qYpr/My@smile.fi.intel.com>
- <CY4PR11MB0037E70612B8067062AC1C40A9FCA@CY4PR11MB0037.namprd11.prod.outlook.com>
+        Mon, 25 Sep 2023 15:34:40 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04580107
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:34:24 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-65b179b9baeso10010256d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 12:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695670463; x=1696275263; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7fmgf2gQ/swm4Nxw1H65fys4tXrr/aZSzb+qRx0CMW0=;
+        b=Msr0c0tPb26iAavkBmsWxmIgflapT8QmH8VFR1U5eUtXKZUJ/5Qn9A96wbOv0jmJXK
+         FzxTnUKdHbG9/gJDZsRXRD3tcLFtHRCq7TPJ+3rqsMfCnp+jKbBKzGSOCtyrQAtc8CSr
+         VDImr/PBkxuMty5lgzLyx/oMUQbVcm+4IRTW0ynEg/WmDx4V5447bIpygwPjW3SqRojK
+         YHjG+dCK/FTSbvkz47L0xSjucGR67nbsyuUMVqdv+tbFXDfOAmvzPKoH6ufwegyvJpyN
+         0l0heGnaLhpGPuvJjBdL5EdLM9qmKBQN6A5zh062JnLWyYHTClYGPTathVAHS3oC192E
+         ONlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695670463; x=1696275263;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7fmgf2gQ/swm4Nxw1H65fys4tXrr/aZSzb+qRx0CMW0=;
+        b=R2L+4UmF2XGxrAZBPvqTdGX8HWKIkrlXrYaibPlLr/YHpv3rc0cPVWAD/YXHsHXkyz
+         PvXEKWsmoQ9AbwR0oUEt6nZ5u9ZrQEn/OaqYmJLqcAQBND3mblOzreSX09O2/vnCj3PI
+         Cdcsvws3prbnmDG7rgmYHCdz23vJZ0+qLc8jiPe4M+dSaDRPc/0MKkiUhrc48uEz8Vni
+         zx6YHzx6XlNVg23KHCniuaACz6b5EeNCOUP6OX43D8jd5lOrUFM0MjOIhsmoyo3T8jnt
+         PEV0cFbFf/1oz5Lu1fZZQXxHCJH0d63jL1Z97I1EYuI0ikvna3xPcJvBjAwgnK7SAGbh
+         g5SQ==
+X-Gm-Message-State: AOJu0Yy2lYDEwIz+08b6gWj9d5Y1NFyk/0viX1CKYO/4txpHhk4pOVWw
+        vjot4kdY/mWwUVlI5xWBWi3SBoY6aqGaGL+cuoVzUQ==
+X-Google-Smtp-Source: AGHT+IFy77IozmuzoIETfXqPTevBy12STCpp81ZoYY5O0nwBH+8t6d4No22oMNKw4YFBbp6qBgZcO4peb4w3MQLO1lo=
+X-Received: by 2002:a0c:cc03:0:b0:65b:21f2:5573 with SMTP id
+ r3-20020a0ccc03000000b0065b21f25573mr746644qvk.58.1695670462945; Mon, 25 Sep
+ 2023 12:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR11MB0037E70612B8067062AC1C40A9FCA@CY4PR11MB0037.namprd11.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230925173448.3518223-1-mizhang@google.com> <20230925173448.3518223-2-mizhang@google.com>
+ <ZRHKcW6hvujNIYS5@google.com>
+In-Reply-To: <ZRHKcW6hvujNIYS5@google.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 25 Sep 2023 12:33:47 -0700
+Message-ID: <CAL715WJgFg=c0-nT6n8Gy=wxh39MyKa7r04oDi-bwHCiNy=9JQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: x86: Synthesize at most one PMI per VM-exit
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Like Xu <likexu@tencent.com>, Roman Kagan <rkagan@amazon.de>,
+        Kan Liang <kan.liang@intel.com>,
+        Dapeng1 Mi <dapeng1.mi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 03:54:40PM +0000, Patel, Utkarsh H wrote:
+On Mon, Sep 25, 2023 at 10:59=E2=80=AFAM Sean Christopherson <seanjc@google=
+.com> wrote:
+>
+> On Mon, Sep 25, 2023, Mingwei Zhang wrote:
+> > From: Jim Mattson <jmattson@google.com>
+> >
+> > When the irq_work callback, kvm_pmi_trigger_fn(), is invoked during a
+> > VM-exit that also invokes __kvm_perf_overflow() as a result of
+> > instruction emulation, kvm_pmu_deliver_pmi() will be called twice
+> > before the next VM-entry.
+> >
+> > That shouldn't be a problem. The local APIC is supposed to
+> > automatically set the mask flag in LVTPC when it handles a PMI, so the
+> > second PMI should be inhibited. However, KVM's local APIC emulation
+> > fails to set the mask flag in LVTPC when it handles a PMI, so two PMIs
+> > are delivered via the local APIC. In the common case, where LVTPC is
+> > configured to deliver an NMI, the first NMI is vectored through the
+> > guest IDT, and the second one is held pending. When the NMI handler
+> > returns, the second NMI is vectored through the IDT. For Linux guests,
+> > this results in the "dazed and confused" spurious NMI message.
+> >
+> > Though the obvious fix is to set the mask flag in LVTPC when handling
+> > a PMI, KVM's logic around synthesizing a PMI is unnecessarily
+> > convoluted.
+>
+> Unless Jim outright objects, I strongly prefer placing this patch second,=
+ with
+> the above two paragraphs replaced with my suggestion (or something simila=
+r):
+>
+>   Calling kvm_pmu_deliver_pmi() twice is unlikely to be problematic now t=
+hat
+>   KVM sets the LVTPC mask bit when delivering a PMI.  But using IRQ work =
+to
+>   trigger the PMI is still broken, albeit very theoretically.
+>
+>   E.g. if the self-IPI to trigger IRQ work is be delayed long enough for =
+the
+>   vCPU to be migrated to a different pCPU, then it's possible for
+>   kvm_pmi_trigger_fn() to race with the kvm_pmu_deliver_pmi() from
+>   KVM_REQ_PMI and still generate two PMIs.
+>
+>   KVM could set the mask bit using an atomic operation, but that'd just b=
+e
+>   piling on unnecessary code to workaround what is effectively a hack.  T=
+he
+>   *only* reason KVM uses IRQ work is to ensure the PMI is treated as a wa=
+ke
+>   event, e.g. if the vCPU just executed HLT.
+>
+> I understand Jim's desire for the patch to be more obviously valuable, bu=
+t the
+> people that need convincing are already convinced that the patch is worth=
+ taking.
+>
+> > Remove the irq_work callback for synthesizing a PMI, and all of the
+> > logic for invoking it. Instead, to prevent a vcpu from leaving C0 with
+> > a PMI pending, add a check for KVM_REQ_PMI to kvm_vcpu_has_events().
+> >
+> > Fixes: 9cd803d496e7 ("KVM: x86: Update vPMCs when retiring instructions=
+")
+> > Signed-off-by: Jim Mattson <jmattson@google.com>
+> > Tested-by: Mingwei Zhang <mizhang@google.com>
+> > Tested-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+>
+> Needs your SoB
 
-...
-
-> > > +	/**
-> > 
-> > Are you sure?
-> > 
-> > > +	 * Get cable VDO for thunderbolt cables and cables with DPSID but
-> > does not
-> > > +	 * support DPAM2.1.
-> > > +	 */
-> > 
-> Yes, there are TBT3 cables which advertise DPSID but does not provide any DP
-> capabilities in the DP discover mode VDO but does support UHBR.  In that
-> case, need to use TBTSID and use capabilities from TBT discover mode VDO.
-
-My comment was against the style of the comment, not about content.
-
-...
-
-> > You can also make it a bit more readable with (use better names if you think it's
-> > needed)
-> > 
-> > 	u32 signalling = 0;
-> > 	u32 cable_type = 0;
-> 
-> In v2 version of this patch I had them but there was feedback to remove extra
-> variables and use them inline. 
-
-OK!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
