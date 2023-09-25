@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4B27AD810
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7537AD812
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbjIYMaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        id S231480AbjIYMbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIYMaS (ORCPT
+        with ESMTP id S229877AbjIYMbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:30:18 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC510C0;
-        Mon, 25 Sep 2023 05:30:12 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38PBObSo027417;
-        Mon, 25 Sep 2023 08:29:56 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tad5feqd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 08:29:55 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 38PCTss9063111
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Sep 2023 08:29:54 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Mon, 25 Sep 2023 08:29:53 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Mon, 25 Sep 2023 08:29:53 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Mon, 25 Sep 2023 08:29:53 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.172])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38PCTfV2020584;
-        Mon, 25 Sep 2023 08:29:44 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     Daniel Matyas <daniel.matyas@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v4] drivers: hwmon: max31827: handle vref regulator
-Date:   Mon, 25 Sep 2023 15:29:28 +0300
-Message-ID: <20230925122929.10610-1-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 25 Sep 2023 08:31:14 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3558C0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:31:07 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d857847be8cso6751562276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695645067; x=1696249867; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4d5TkM4wqAm2oqOAlR3gzptkgtI79OgpV/vOvlphjaQ=;
+        b=XTZdBlYKYNyka74NqQkpAQERM9WVCd5bXNu9j4ac7jgaGL8rlcCQ0292Hn1Ry0AM15
+         RXXJM+JZp+qRbW/DTMYHbrtlH3xiFXwwS5awMVpb6ITf9xGCtNEVw6zbELwx6WEFQ3S5
+         XSsIoNheUx/VtjvQ0+78ULtGkAqovdLalHvWi4pEAg3TTRyWZG3ZEZ94tAP2l+N/U2Fp
+         9YDamHdeerwLJ6JKaIoFzip4rkkKuP1QSuFRDf3OVasWczDWjPg2QJj2ub4Vq1NuFTSj
+         YddDMGMzKyXSVyGhbalBdNcCsL1WjY+1tlrb32y307iNVGRrNWoLe8Rs1UhpRU9RIR3S
+         xZaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695645067; x=1696249867;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4d5TkM4wqAm2oqOAlR3gzptkgtI79OgpV/vOvlphjaQ=;
+        b=YURoMQTfimVUb1Mjxs9igztqsnprDiawGYeAjB89P3eZtDkWxZAplIQw/5Awn0EHbU
+         OqcppG59ODh8BPEX/q7ifvCoAFoMCxMmJFjx8M2BfCawJOcCYXT9efLyW9jgSg9HhKW8
+         Jpzy55MRilIAxlfh2kFTawBqGgFjmr+bhbFu3wosKleBnTggi4IKf3Ycn8hJbCdOHyju
+         uPrVudCNSsIuu6sbmSpdzPFSjZNMolihMAGjq4BmNN99ESH6mdRhXAmb6PFwN42MYkQ7
+         PgTeiHMgldn3Z6JdYvgzat0XT4l9R7EFvvnpXDZWI33Ylg+e3pFiYDUBg8Ro1IYpdyPA
+         1xzg==
+X-Gm-Message-State: AOJu0YyCtX5EhUhe7r7725+/w9eGwsvN47K3VDbG3G2nBQvXbQtAfuXA
+        bNqtfLt3HjzAJg0vh5oQtlytFv6A0vZ5pwwGmaw=
+X-Google-Smtp-Source: AGHT+IGgPhhscAdQQ+2GKTTv1TjS7rvGD6bqdXMwRVW+LN+U5bniHo4jxk29efMZoyWRQDvoOTnGyg==
+X-Received: by 2002:a25:ec0c:0:b0:d0c:9ab2:72d3 with SMTP id j12-20020a25ec0c000000b00d0c9ab272d3mr5971327ybh.14.1695645067233;
+        Mon, 25 Sep 2023 05:31:07 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:ba06])
+        by smtp.gmail.com with ESMTPSA id b14-20020a0cc98e000000b006564bba15cdsm4048964qvk.128.2023.09.25.05.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 05:31:06 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 08:31:06 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     surenb@google.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/psi: bail out early from irq time accounting
+Message-ID: <20230925123106.GB347250@cmpxchg.org>
+References: <20230925102143.462545-1-haifeng.xu@shopee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: OaQ_Y4r6A72vnxIVElSJQH4IrUSTg87U
-X-Proofpoint-ORIG-GUID: OaQ_Y4r6A72vnxIVElSJQH4IrUSTg87U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_08,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 spamscore=0 mlxlogscore=757 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2309250093
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925102143.462545-1-haifeng.xu@shopee.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing implementation for the max31827 supply regulator.
-This is a hardware required property that is not handled.
+On Mon, Sep 25, 2023 at 10:21:43AM +0000, Haifeng Xu wrote:
+> We could bail out early when psi was disabled.
+> 
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-changes in v4:
- - remove "vref" from the dev_err_probe string.
- drivers/hwmon/max31827.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
-index 602f4e4f81ff..0508b020a408 100644
---- a/drivers/hwmon/max31827.c
-+++ b/drivers/hwmon/max31827.c
-@@ -427,6 +427,10 @@ static int max31827_probe(struct i2c_client *client)
- 		return dev_err_probe(dev, PTR_ERR(st->regmap),
- 				     "Failed to allocate regmap.\n");
- 
-+	err = devm_regulator_get_enable(dev, "vref");
-+	if (err)
-+		return dev_err_probe(dev, err, "failed to enable regulator\n");
-+
- 	err = max31827_init_client(st);
- 	if (err)
- 		return err;
--- 
-2.42.0
-
+Can you please resend this with Peter Ziljstra <peterz@infradead.org>
+in CC? Thanks
