@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CAC7AD2CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E347AD2C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbjIYILV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        id S232635AbjIYILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbjIYILP (ORCPT
+        with ESMTP id S232617AbjIYILH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:11:15 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF6AD3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:11:05 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c6052422acso265655ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:11:05 -0700 (PDT)
+        Mon, 25 Sep 2023 04:11:07 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B91A9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:11:00 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4051d33af1fso18138725e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:11:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695629465; x=1696234265; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0NKbf24bNvP0D/RfBWBt2avTfFTOlwhX9Npr4nrglv4=;
-        b=H/G6uBqZ74aycw8cwD5GJSQcKu3RJ1khbjaMXFMKzEqGyWUD0Q6nIjBjVoi9DykCVN
-         CQYZ7i1p7zRPJkMaPjW43U6hxavvZqamrDx8QhhVCfVVp4AxXFC8jRAoAQYR3U+EQLLK
-         YMT8V1kPkiSpEylYkM6wDjsJ5cGc6qA9YmqbgmSg+5Ad0lO/zC+MJglga0D8ue1vEz28
-         /moT7hAp3omjrOiaDPdWSqZEy21+ulW5jQjVYVrToDFoTXea+pk7l9uWWplSBFB/scEv
-         rWoUcRyHjJ2WXJyydW4YCJ9ZEJZY0I4m0WMgIcjYkirfxvSYjq89YJTpWRRhJsgXDDKr
-         v3Xg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695629459; x=1696234259; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HlO0BFPodxqQgy/xN/pC3ASctYK0Q/f9lDJvY2Seqdc=;
+        b=x9m+PTS6xKJK5l1FaSEoaOSEqEOLJibRxs1cVn1gFCWfOHmYOcdDhPtQpYReM0Bbf3
+         mhFoQ4FL+QixRdg26k3oxsCtUCp2pT6hCUZxXuGjcIjLCA/GC2blTatWbYh8KK+WkyWc
+         jE3hpjL1KE3ZPjLUIlcYW3rAcUddhtkogDbBxwcxNLbnChnTVssvsG5WdTWcNKQvjDo3
+         gw4qpfILb7UNoqIsGADGGWVmsYEu2+glX/yvCaSU3TANWCHx7B8MB+jvypkcQKEvSJgM
+         VANesZOty7HAOBIs6B+Hf9+BcEi5D9eBAxSCDaiuOZPlDEYl4Wu4JNdo8GmwlIBr1sDN
+         4qaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695629465; x=1696234265;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0NKbf24bNvP0D/RfBWBt2avTfFTOlwhX9Npr4nrglv4=;
-        b=OGHVWS0ieqDU8RLXs0Ml/mWQ/Dd40TL1flDlWgnQ0sVCtGS/NK5Qsy/H5PX+Gh7/+4
-         so713fO2L5ccUp9arBHXgNXcdeseMYtWDoLeTJNiqET42Ybl5xUT720c04WN+Iq6pJAg
-         iuJ3GyJ/WQkdUMzqBbkLcdccg4Qf1bkQOZqhMQccKZ/GlskVHgXKMeHZ/JeLVUAb4DEE
-         rrfPtuKksUKWeRkWVsRfjjvxXY915x7BE2XoBAy84kTABSldlSV2DKCsRyFEKxlUDA90
-         qe8mOOOzYd/iO1QAnga3I2dPQl9geth4k0+nAVkBm0GL8AWxspAMFLl6XsJQgCUyn2qd
-         nE7A==
-X-Gm-Message-State: AOJu0YxsRZIz9OQuGUeNNgvjm31O0z4pKbfz1JOloa8+dZZPZ58559ws
-        MQfB8Jy56r97WW7PFHZGWnA2HCExwadVD6CHiPZ5Zg==
-X-Google-Smtp-Source: AGHT+IE+w+w7FisAIKMCvVvdSU7Kdj+p72iJcD6MKJoVENHTMobP+6ZpHG0BZJUOkJ1HCgoTl47F61X72+oxWFSetsc=
-X-Received: by 2002:a17:902:ce89:b0:1c3:35c8:e55a with SMTP id
- f9-20020a170902ce8900b001c335c8e55amr273492plg.28.1695629464753; Mon, 25 Sep
- 2023 01:11:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695629459; x=1696234259;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HlO0BFPodxqQgy/xN/pC3ASctYK0Q/f9lDJvY2Seqdc=;
+        b=f13nvy7Ddv+abLG2DMZgRmK17XH3HnPdyMefcLs1q4a75TS5HIsLUe0dbx/u9L69fp
+         b55uVZctP84Bs/7650y7SrXMbuDSjTnEiA2WBNLlTIfL/blXY77g2di9RC4fE28EEy4m
+         Qic4Z/nYlBxq7t81nR423EIHtdCGNvztJxDF6tIRGd2fxMS8eLxdSwOdufJ24XTeo5D8
+         4V+MyhPAN6rNeWAfAdtLySupRGjTDcgqJpG5chooz0lD/0BIj37k1t8Dk+4n4S2y5SqZ
+         81zma2L+x18i0U7HhsB18FeHSVX59SfPFgSbCwgRYLAWm2om8UBEgfN9prm4uNmKkBuS
+         gjBw==
+X-Gm-Message-State: AOJu0YwfxPB1caUl8xyoL+LA0o3ZlhS+RU/+pWlTQtW3mn3rCm44FQAj
+        XA/kZ1liB8HTKxvMPtM7jkHJPICdsMxRq1aQEjI8Hg==
+X-Google-Smtp-Source: AGHT+IG6Wm4n3niNWbqpvHgjzURFEXYyn/kqXs/CLOQ9lKrclVE0BGPfD/NzTxMcHKmkToirIL5oWg==
+X-Received: by 2002:a05:600c:4f50:b0:405:39bb:38a8 with SMTP id m16-20020a05600c4f5000b0040539bb38a8mr4953600wmq.2.1695629459073;
+        Mon, 25 Sep 2023 01:10:59 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:3df1:f103:36a9:423d? ([2a01:e0a:999:a3a0:3df1:f103:36a9:423d])
+        by smtp.gmail.com with ESMTPSA id k3-20020a05600c0b4300b003fe1fe56202sm11596335wmr.33.2023.09.25.01.10.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 01:10:58 -0700 (PDT)
+Message-ID: <bda1393a-9e11-4d51-8911-f038918d2ddb@rivosinc.com>
+Date:   Mon, 25 Sep 2023 10:10:57 +0200
 MIME-Version: 1.0
-References: <20230915224227.1336967-1-babu.moger@amd.com> <20230915224227.1336967-11-babu.moger@amd.com>
- <CALPaoCj46dDCFruHW3EcqRQ90SZpOsKK2UVPzb+88rzs5aTTJg@mail.gmail.com> <51ff0094-5c7b-824b-8b3c-2439e5477725@intel.com>
-In-Reply-To: <51ff0094-5c7b-824b-8b3c-2439e5477725@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Mon, 25 Sep 2023 10:10:53 +0200
-Message-ID: <CALPaoCi+dqg-D6Ebn8UAoMPpdmPyVDZ_fUhWiwfUW0S9N6rZOg@mail.gmail.com>
-Subject: Re: [PATCH v10 10/10] x86/resctrl: Display RMID of resource group
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Babu Moger <babu.moger@amd.com>, corbet@lwn.net,
-        reinette.chatre@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
-        quic_neeraju@quicinc.com, rdunlap@infradead.org,
-        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
-        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
-        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
-        jmattson@google.com, daniel.sneddon@linux.intel.com,
-        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bagasdotme@gmail.com, eranian@google.com,
-        christophe.leroy@csgroup.eu, jarkko@kernel.org,
-        adrian.hunter@intel.com, quic_jiles@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
+ alignment
+Content-Language: en-US
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230914131102.179100-1-cleger@rivosinc.com>
+ <20230914131700.0ba3ee80@gandalf.local.home>
+ <20230914132956.569dad45@gandalf.local.home>
+ <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
+ <20230922200042.GA1981-beaub@linux.microsoft.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230922200042.GA1981-beaub@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,57 +79,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 7:59=E2=80=AFPM Fenghua Yu <fenghua.yu@intel.com> w=
-rote:
-> On 9/22/23 07:36, Peter Newman wrote:
-> > On Sat, Sep 16, 2023 at 12:42=E2=80=AFAM Babu Moger <babu.moger@amd.com=
-> wrote:
-> >>
-> >> In x86, hardware uses RMID to identify a monitoring group. When a user
-> >> creates a monitor group these details are not visible. These details
-> >> can help resctrl debugging.
-> >>
-> >> Add RMID(mon_hw_id) to the monitor groups display in resctrl interface=
-.
-> >> Users can see these details when resctrl is mounted with "-o debug" op=
-tion.
-> >
-> > When I reviewed this, I went through the whole series second-guessing
-> > the wording above and wondering whether "monitoring groups" applied to
-> > CTRL_MON groups.
-> >
-> > I was able to confirm that mon_hw_id did appear and had a believable
-> > value in CTRL_MON groups which had allocated monitors. (and I added
-> > some comma-separated PID lists to the tasks node)
-> >
-> > for the series:
-> > Tested-By: Peter Newman <peternewman@google.com>
->
-> Please use "Tested-by" instead of "Tested-By" (the "By" is wrong).
 
-Tested-by: Peter Newman <peternewman@google.com>
 
-> >
-> >> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/=
-cpu/resctrl/internal.h
-> >> index a07fa4329b65..b4910892b0a6 100644
-> >> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> >> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> >> @@ -296,6 +296,11 @@ struct rdtgroup {
-> >>    *     --> RFTYPE_BASE (Files common for both MON and CTRL groups)
-> >>    *         Files: cpus, cpus_list, tasks
-> >>    *
-> >> + *             --> RFTYPE_MON (Files only for MON group)
-> >
-> > If monitoring is supported, all groups are MON groups. I think the
-> > "only" above caused me to second guess whether this takes into account
-> > CTRL_MON groups getting the RFTYPE_MON flag set dynamically.
-> >
-> > However, I think the documentation above is still technically accurate.
-> >
-> > for the series:
-> > Reviewed-By: Peter Newman <peternewman@google.com>
->
-> Please use "Reviewed-by" instead of "Reviewed-By" (the "By" is wrong).
+On 22/09/2023 22:00, Beau Belgrave wrote:
+> On Tue, Sep 19, 2023 at 02:59:12PM +0200, Clément Léger wrote:
+>>
+>>
+>> On 14/09/2023 19:29, Steven Rostedt wrote:
+>>> On Thu, 14 Sep 2023 13:17:00 -0400
+>>> Steven Rostedt <rostedt@goodmis.org> wrote:
+>>>
+>>>> Now lets look at big endian layout:
+>>>>
+>>>>  uaddr = 0xbeef0004
+>>>>  enabler = 1;
+>>>>
+>>>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>>>                                     ^
+>>>>                                     addr: 0xbeef0004
+>>>>
+>>>> 				(enabler is set )
+>>>>
+>>>> 	bitoffset = uaddr & (sizeof(unsigned long) - 1); bitoffset = 4
+>>>> 	bit_offset *= 8;				 bitoffset = 32
+>>>> 	uaddr &= ~(sizeof(unsigned long) - 1);		 uaddr = 0xbeef0000
+>>>>
+>>>> 	ptr = kaddr + (uaddr & ~PAGE_MASK);
+>>>>
+>>>> 	clear_bit(1 + 32, ptr);
+>>>>
+>>>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>>>                                   ^
+>>>> 				bit 33 of 0xbeef0000
+>>>>
+>>>> I don't think that's what you expected!
+>>>
+>>> I believe the above can be fixed with:
+>>>
+>>> 	bit_offset = uaddr & (sizeof(unsigned long) - 1);
+>>> 	if (bit_offset) {
+>>> #ifdef CONFIG_CPU_BIG_ENDIAN
+>>> 		bit_offest = 0;
+>>> #else
+>>> 		bit_offset *= BITS_PER_BYTE;
+>>> #endif
+>>> 		uaddr &= ~(sizeof(unsigned long) - 1);
+>>> 	}
+>>>
+>>> -- Steve
+>>
+>>
+>> Actually, after looking more in depth at that, it seems like there are
+>> actually 2 problems that can happen.
+>>
+>> First one is atomic access misalignment due to enable_size == 4 and
+>> uaddr not being aligned on a (long) boundary on 64 bits architecture.
+>> This can generate misaligned exceptions on various architectures. This
+>> can be fixed in a more general way according to Masami snippet.
+>>
+>> Second one that I can see is on 64 bits, big endian architectures with
+>> enable_size == 4. In that case, the bit provided by the userspace won't
+>> be correctly set since this code kind of assume that the atomic are done
+>> on 32bits value. Since the kernel assume long sized atomic operation, on
+>> big endian 64 bits architecture, the updated bit will actually be in the
+>> next 32 bits word.
+>>
+>> Can someone confirm my understanding ?
+>>
+> 
+> Actually, I take back some of what I said [1]. If a 32-bit on a 64-bit
+> kernel comes in on BE, and is aligned, we do need to offset the bits as
+> well (just verified on my ppc64 BE VM).
 
-Reviewed-by: Peter Newman <peternewman@google.com>
+Yes, that is what I meant in my previous comment. I'll resend my series
+which handles that properly (and which includes generic
+set_bit_unaligned()).
+
+Thanks,
+
+Clément
+
+> 
+> You should be able to use that patch as a base though and add a flag to
+> struct user_event_enabler when this case occurs. Then in the
+> align_addr_bit() adjust the bits as well upon aligned cases.
+> 
+> Thanks,
+> -Beau
+> 
+> 1. https://lore.kernel.org/linux-trace-kernel/20230922192231.GA1828-beaub@linux.microsoft.com/
+> 
+>> Clément
