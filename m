@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D827AD4E4
+	by mail.lfdr.de (Postfix) with ESMTP id 8699D7AD4E3
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229490AbjIYJzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        id S229983AbjIYJzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjIYJzq (ORCPT
+        with ESMTP id S229579AbjIYJzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Sep 2023 05:55:46 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CD2CE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01E2C2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:39 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJW-0007nL-IL; Mon, 25 Sep 2023 11:55:38 +0200
+        id 1qkiJW-0007nR-9J; Mon, 25 Sep 2023 11:55:38 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-008pz8-Lt; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJV-008pzC-SL; Mon, 25 Sep 2023 11:55:37 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-004dkw-Cg; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJV-004dl0-J3; Mon, 25 Sep 2023 11:55:37 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Huisong Li <lihuisong@huawei.com>
+To:     Krzysztof Halasa <khalasa@piap.pl>
 Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 09/40] soc/hisilicon: kunpeng_hccs: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:55:00 +0200
-Message-Id: <20230925095532.1984344-10-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 10/40] soc/ixp4xx: ixp4xx-npe: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:01 +0200
+Message-Id: <20230925095532.1984344-11-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1787; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=ply7/qctArKFDggIXfdSLlnu/GsdOcRz3LcmV8XoP6g=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhK684tGxb/mAjBX0IdDbHleZ0yNFtJqs02u 9jfVpu77X6JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYSgAKCRCPgPtYfRL+ TtAMB/9nctyFm3rLBo6SLcMnVXPeyBYuK/vaBuiIMyy2tRBYKlzn8cGBgkLdM2PWsGPDJMz8z9W q+uwVFYpbfrxNts67D2NOAA4wKbfFGwBAKFWO+nD7+SXC3NDuyQtxhNuSPAt/KBNaZ/FuvBtkQw 955873tg+0hatk5SIQsbUU1By2XxSeXYc/Ugs3Lk6VcHNfy7V4tJ+bJeGaSxlt9J69T9/umK6Vb n3DgPRUdlXW+AvCT/AOYjiO0gGW8FTQJ7YAeg0/GjkOnLzyVbQx7Pbx8iUHNkSrWU8f7xWFuiki i5T1kKXUF62XZhhB0Qxiu7y4AGxgxR6UarsLdDVBjOIYvZIM
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1795; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=nCrJKabnsqX9H53lylFo464Y3PbUHfbxoonMWHYMvkE=; b=owGbwMvMwMXY3/A7olbonx/jabUkhlTBCO/tvFlXHs77uTr0SoxW0lMNdosz6b3ro1N1rmYKG 8t5TLnRyWjMwsDIxSArpshi37gm06pKLrJz7b/LMINYmUCmMHBxCsBEQhay/xVotDtfoPXNI+8i b0roj3UGfOXXWRbeMfGoy1rOzpD0IHrelnXx+Q+Xp4iv6Kr7dSI3z6WSobYpw3eaqFpKpJ2shfh qWYVLZhrTbj6/qJbbxLSw57Danebpgd5H2YOi52bsFjVetlY2Pt6grsTmIm/Dmxr/S3cFZTnfRG 7J8DP6UJ3l6eT34SzL7nXXZz65KPqkXbk6W9jl044VbJtL1zqfbT8od2fLyZUsx7au+HQ1NG5ll sMlfs8tqwNuhoXMykw1DNaI2sPAtHWimOnhVbkyFQWCQsYtR+bZTL/OoC/zKFJfImteT4vFd615 d3lVE3/dXnTDw/l0x0HeC5IiDdp9LN/TDDcm79KSeqUBAA==
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,38 +70,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/hisilicon/kunpeng_hccs.c | 6 ++----
+ drivers/soc/ixp4xx/ixp4xx-npe.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
-index f3810d9d1caa..01aec0df98ec 100644
---- a/drivers/soc/hisilicon/kunpeng_hccs.c
-+++ b/drivers/soc/hisilicon/kunpeng_hccs.c
-@@ -1244,14 +1244,12 @@ static int hccs_probe(struct platform_device *pdev)
- 	return rc;
+diff --git a/drivers/soc/ixp4xx/ixp4xx-npe.c b/drivers/soc/ixp4xx/ixp4xx-npe.c
+index 5be9988f30ce..35825ee95dff 100644
+--- a/drivers/soc/ixp4xx/ixp4xx-npe.c
++++ b/drivers/soc/ixp4xx/ixp4xx-npe.c
+@@ -736,7 +736,7 @@ static int ixp4xx_npe_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int hccs_remove(struct platform_device *pdev)
-+static void hccs_remove(struct platform_device *pdev)
+-static int ixp4xx_npe_remove(struct platform_device *pdev)
++static void ixp4xx_npe_remove(struct platform_device *pdev)
  {
- 	struct hccs_dev *hdev = platform_get_drvdata(pdev);
+ 	int i;
  
- 	hccs_remove_topo_dirs(hdev);
- 	hccs_unregister_pcc_channel(hdev);
+@@ -744,8 +744,6 @@ static int ixp4xx_npe_remove(struct platform_device *pdev)
+ 		if (npe_tab[i].regs) {
+ 			npe_reset(&npe_tab[i]);
+ 		}
 -
 -	return 0;
  }
  
- static const struct acpi_device_id hccs_acpi_match[] = {
-@@ -1262,7 +1260,7 @@ MODULE_DEVICE_TABLE(acpi, hccs_acpi_match);
+ static const struct of_device_id ixp4xx_npe_of_match[] = {
+@@ -761,7 +759,7 @@ static struct platform_driver ixp4xx_npe_driver = {
+ 		.of_match_table = ixp4xx_npe_of_match,
+ 	},
+ 	.probe = ixp4xx_npe_probe,
+-	.remove = ixp4xx_npe_remove,
++	.remove_new = ixp4xx_npe_remove,
+ };
+ module_platform_driver(ixp4xx_npe_driver);
  
- static struct platform_driver hccs_driver = {
- 	.probe = hccs_probe,
--	.remove = hccs_remove,
-+	.remove_new = hccs_remove,
- 	.driver = {
- 		.name = "kunpeng_hccs",
- 		.acpi_match_table = hccs_acpi_match,
 -- 
 2.40.1
 
