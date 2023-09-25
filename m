@@ -2,45 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A92137AD32A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2D57AD330
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbjIYITB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
+        id S232643AbjIYIUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjIYIS5 (ORCPT
+        with ESMTP id S230250AbjIYIUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:18:57 -0400
-Received: from TWMBX02.aspeed.com (mail.aspeedtech.com [211.20.114.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A560CA3;
-        Mon, 25 Sep 2023 01:18:49 -0700 (PDT)
-Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Sep
- 2023 16:18:46 +0800
-Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Sep 2023 16:18:46 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <billy_tsai@aspeedtech.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <Potin.Lai@quantatw.com>, <patrickw3@meta.com>
-Subject: [PATCH v1] iio: adc: aspeed: Support deglitch feature.
-Date:   Mon, 25 Sep 2023 16:18:45 +0800
-Message-ID: <20230925081845.4147424-1-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Sep 2023 04:20:32 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2077.outbound.protection.outlook.com [40.107.6.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E269109;
+        Mon, 25 Sep 2023 01:20:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q+OcDYGkq1fqU7sSruc3gEgNX+ic9HEQ4UPI2QBWv6bmnzn6Q0zkD4zwmKBI7VP6zcDpqPMDiUPfVg4YMNH26dv2lKCGzz443bNI3hvWFPzV/oErpL1lSrkFd2L9drj4e9sBL2pDtrVNCashDlmlbFOlT6XC8uvbfzOYKdh+SwLLxMmlqXmaw/oP6eKEAzxt6Ft8ozOGAzVnjMWsuveFeegdCYj1FZlRAS0unRSXGcrqJFTbD+ZZUMZTadqDqntgup9Rgm2oflFbMDOfr2fCuwxaxJaa+lp7y7rgmaQQDAWXrtwsjesIWjtks5vVZFd9QzzOJFR1Jb3DDpfbOAGyaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hsbTZwhmBhknzQpsIhAztasVbWWX2D+1wzuucc1cchw=;
+ b=MPzM3faGhEWLDpYO8fL+oghpSb0LQJkyQZ4TvtPI7N2mKJ+mwvRc9+2YtkWyTK+JgiGVmMBx4Mx/DpB9fNMFy86va7UDE6+T16K30rgOdlPFwgYOeSB9W7Kl6k90wSFHMRMdh0O0cBEzacz+XLziLbl91jwp0kWUVhIwzo3FOG0mqB2gaLcPITQFCKaY3zcd6n22/cuOE3KaWAkJAnjQXgxZ5iLpIHdokQlVHUCK8qUmXr1Xfqw/BDADjqW+nYHtohzjLWoPhHqCyTvs6Umb4AhtfpINE1nAzxq1vlwI/inJh1s0bXhuqUf9XBcKWeZbHQ17MZTRXPqygIgyuAuZcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hsbTZwhmBhknzQpsIhAztasVbWWX2D+1wzuucc1cchw=;
+ b=pBbqG4wHy2ypfgabv+QAD2HTo3J2DjJDsnqlIk/ptWpfX+NbPDuZZnWsX5jon7y5WyY8a+MNF+DJ9CfVK+i4A/4adWCcxVbTCZW651zwUTeF6wlQET8MQwubhRkbmgUKDDq+nqaBRVa8TMGY50XSkhBks2xFu13QnnRO1Cdai3E=
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by AS4PR04MB9265.eurprd04.prod.outlook.com (2603:10a6:20b:4e0::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 08:20:22 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
+ 08:20:22 +0000
+From:   Chancel Liu <chancel.liu@nxp.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
+        "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: Re: [PATCH 1/2] ASoC: dt-bindings: fsl_rpmsg: List DAPM endpoints
+ ignoring suspend
+Thread-Topic: Re: [PATCH 1/2] ASoC: dt-bindings: fsl_rpmsg: List DAPM
+ endpoints ignoring suspend
+Thread-Index: AQHZ74kg+W63O6UsJkOYi1GFBVoScQ==
+Date:   Mon, 25 Sep 2023 08:20:22 +0000
+Message-ID: <DB9PR04MB9498338014461E28A9988538E3FCA@DB9PR04MB9498.eurprd04.prod.outlook.com>
+References: <20230925024847.2971421-1-chancel.liu@nxp.com>
+ <c3e682dd-7bb7-4662-b97d-872df1ff879d@linaro.org>
+In-Reply-To: <c3e682dd-7bb7-4662-b97d-872df1ff879d@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR04MB9498:EE_|AS4PR04MB9265:EE_
+x-ms-office365-filtering-correlation-id: 3715e79d-92a7-41d7-c4b5-08dbbda04371
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 94BjIEOUxiJCs0lcvOkU7wKnvS1YeaJ88V6+jDIgqsElg/EiVrj5GUWOVz1tg7ffLUx2E7VDdUInSeoh8Wwd7gc+VDu2UhBv1CpluNYOV8Uvfn4YnNSFbEITpSMKy+Ow9NtpUmVS1xDaeXjZ/qZVxj8gndzP4NdvCyZYkPcipJKQFWOxX6Mzlct2c0Pm/OmxVDvljIh77J/TuVUrktxN09ETGAMU0/SgkJy+wlqF68BE+l2fmrKgL1hxzUpj01dlv4FahwsrWmSX5OVGmByIS8CTb+ufKXQsz7u5q3D7Zq4K/WIzv5CPTwXCFpP7c1ncc374o6Bvfih8GniV+9OBxbgVxqzNfcxr73bVEZmZ8d9l/c6AgPMkFfTdzT9N2vxId9kkLD1yCM0ThEgjQhd80AvhPlz3l4+XBT+0vzmpNrnIQ2hM32Z11o2NsJ/21kW5r+1n2/Y26WtTBmB746QG9ViLaG1bHFQTCQ4sS9Ld0lnkeqUvbXY86TU9+nQQGrgWmMyVrPiCFJ9jOfaHQEVwzGJdrz4QIyXkykbkrqLD3E3dKHKQTpgQMYIRiArT0Kph31irF9oNNDCekrwpf8Z6OM+ZD9VdMMiuZtsTF4BkDgVdfBQgVpdc1xrt+coKYEPQIs4Ud3vgF9nwsNUvuyqfUg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(376002)(346002)(136003)(230922051799003)(1800799009)(451199024)(186009)(26005)(71200400001)(478600001)(83380400001)(86362001)(122000001)(921005)(38100700002)(38070700005)(33656002)(5660300002)(55016003)(7696005)(6506007)(9686003)(2906002)(8936002)(8676002)(41300700001)(316002)(110136005)(64756008)(66946007)(66446008)(66476007)(66556008)(76116006)(7416002)(15650500001)(44832011)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WDN3K085N0xLbVR2dVN0TFUzcm1Lc2xGV3Z1WWkrenhIQTVpMTAvcUxvNDdC?=
+ =?utf-8?B?SHJVejZNT0FnYVlVcXlZTktvTG9ySjBnUXhIaWxEWktqOWU2ejBtdnJ5V2py?=
+ =?utf-8?B?dUdJeVRKd0xWUDZ5YVlhMndnd1MrcUVkdSsvVnJNZWVXS2xZOWxWZFBNY2Js?=
+ =?utf-8?B?V1F4V2hhWTVjOHhCWVNWK0FqZjY0NUIweXFGeDQyK1FUOXRLdzh0K1Zsa1dv?=
+ =?utf-8?B?NW9CWHdRc0RUKzlpVnBxVDVEeVN3Q29lZ0RBRmRnQlM0UU5XVGtzYWhxdnRJ?=
+ =?utf-8?B?RS9XQzhIOEltRUkyVUQyOERMMHpaRTBHVHFCRmpSS1VFWkg1bURCVE5kSFpX?=
+ =?utf-8?B?NUVtckFSeGRNblJINnhJSVNTb051L2NHTGNUVnNDRUVSbDIxSnlZU3NiRkZX?=
+ =?utf-8?B?WFBvdWFhNzY2blBmZWwzcGljQ3pHZGl4VkZTdkJkc095WFhpNkwvdFVQREJq?=
+ =?utf-8?B?QWhNZm9OLy85Yk5wQ2t4L0IxbXBvQ3I1UjM2TFBJN0FtRU96MzA5UjVhNjBs?=
+ =?utf-8?B?TDlUTWtHdTRlTnYra1RtUUM0c0l5SlhNMnhuU3dtQXB3SWhyc05MTXFLTnhC?=
+ =?utf-8?B?b2xZbHR4endWcmYrOWV1K1BxN0NhclpmNzZBd0YzaTN2eG9INFd5QmJ3Yk81?=
+ =?utf-8?B?VTFVNHUyRXUzTGdsaUZTVmJXc0UyTE9rT2hhOVFHNHNodndETENiV050WVhH?=
+ =?utf-8?B?QmdMV0NvOEVhU1dBb2RkbFJ2Mld2eWdOTzI4MXE1cEVYN3lnR2F5SkRIZVdv?=
+ =?utf-8?B?bUlTQkx4V203cmM1Ny83ak9YYlQzTnpGblZqUDFTdkhIdWpYVDU0VlNnWHFz?=
+ =?utf-8?B?SndGanZ4TFJMekVsQ3lLemh6dExadkFLUVNqUmErekM2YjUrRzl0YjhFbWtC?=
+ =?utf-8?B?NE1PT0ZGV0RJTUluR2lFS0RGNVJsSDZkdEdQRTdCbkZoT1hERkVnbHYzVEtu?=
+ =?utf-8?B?YWF3dHA3aDczNHBPNHBTT2o0V0xxMm9JZm1ESkZhMGhSNUdTTzE3VEo2OXU5?=
+ =?utf-8?B?TG0rc0JYMGdkUDVjUnVYSVBUUkhPUzVmNHdsWEg3VVZwL0NPUC91ZHREL3A5?=
+ =?utf-8?B?dktiNlJpN2FSR3FkSjg0eE9TbTRGVEdxWDZYK2tqWHZOeXNkc1dBc2NjQW91?=
+ =?utf-8?B?bThPYmNpdHY4ellLaFRiL0Z5L1EyYlVkdzY3MmpBdUJyZXNYZTJTSEhOQTVt?=
+ =?utf-8?B?ZHdMSThNZHZPb2V5eFhRUTNtTUV1TFB6eHJObW1zNlAvcDRRdXR4QkJPdlg1?=
+ =?utf-8?B?cXVzUmlIVjJQWlc2T0NaSmVidmdHUW1DeStnV251a1dVOG4yMjVMZHpKVWdO?=
+ =?utf-8?B?dGFHNzMyWTlQejBtY0trT05BZThTTVdNRFhtallJcCtkeFJScmNEMVh1djk3?=
+ =?utf-8?B?dnBaV094cFk1UUg2OGdPRWNHcXBHRHhCVnRxdW84MU0wMlBWNFh6T3JJazRr?=
+ =?utf-8?B?ay9GRUU3T0pnNmFtSmJmM1VnRTc1eTRjcEF0cHg0cnJONWIzTndFY3NVNDhS?=
+ =?utf-8?B?ZXU1aUIwN3FlY2w0eUNuWEdDaXpmU0NXUEVTK2NMYVZ2V2RxUHR6T0E2S1pn?=
+ =?utf-8?B?cXNydHlZVVE3d25CMlNhdnM0Ky9FdmVVbTVvTFk2OWxsNkpQcjY3ZkprVTN1?=
+ =?utf-8?B?eDdwcjU3ZlFpbWtTOTFmTndOM3E1WEJBNjdFaXQ3TVJzUTdoNlBuMjY3amp2?=
+ =?utf-8?B?c0lkeGd6dE5IdW0zOXI3bWxHQXFsL1pFeGc0ZGR2Rm1BREtCeHpNYW5wK2RO?=
+ =?utf-8?B?aGpYODQ0RytwaWxGVXNJQXh0SDdZdENYK0dHSmhCdHc4Z21BNnh5VjluZDIr?=
+ =?utf-8?B?L01ESTNoRzZlRTd6dWc2Z0hvUDlPeTFqSVN5ZzlOWkFwbEtyeHNqZG1FYmU1?=
+ =?utf-8?B?Vjl5czhUSFBtR2tRUnNpemxqSGdJQXlVSUx1ZVRPZHJ1akxUU3FCQ0ErSkVa?=
+ =?utf-8?B?QUFValgrQXdwc2Y4aWlYekdrRGJ1MFhnMzhMeHhUY2xsNmNCNGwyZXNNVW8v?=
+ =?utf-8?B?U1FkTjFxRXpoV2pEaGIvRkh6akxXRDZGZmRKaVd1NWNkUGsrN0hraFpkWGRF?=
+ =?utf-8?B?M0pOZFlEWUV5QndpcElrd0dyQmlxdGtpempLZExFZ0EyeGhzS1ZrZzNlMVB3?=
+ =?utf-8?Q?3dbs7a3N2UVG25J9IMXv3Vc8l?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: Fail (TWMBX02.aspeed.com: domain of billy_tsai@aspeedtech.com
- does not designate 192.168.10.10 as permitted sender)
- receiver=TWMBX02.aspeed.com; client-ip=192.168.10.10;
- helo=twmbx02.aspeed.com;
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_FAIL,SPF_PASS autolearn=ham
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3715e79d-92a7-41d7-c4b5-08dbbda04371
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 08:20:22.6821
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: R8vLQeLsOVveX7AfhVAkIYPAw4koYkfJY6IfXhJ193NO66mOhbReRDFP6HEG8pMrNRgdUs5EJdMoLK0FcRtTeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9265
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,308 +146,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create event sysfs for applying the deglitch condition. When
-in_voltageY_thresh_rising_en/in_voltageY_thresh_falling_en is set to true,
-the driver will use the in_voltageY_thresh_rising_value and
-in_voltageY_thresh_falling_value as threshold values. If the ADC value
-falls outside this threshold, the driver will wait for the ADC sampling
-period and perform an additional read once to achieve the deglitching
-purpose.
-
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 193 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 189 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index 998e8bcc06e1..9e746c81d916 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -95,6 +95,7 @@ struct aspeed_adc_model_data {
- 	bool wait_init_sequence;
- 	bool need_prescaler;
- 	bool bat_sense_sup;
-+	bool require_extra_eoc;
- 	u8 scaler_bit_width;
- 	unsigned int num_channels;
- 	const struct aspeed_adc_trim_locate *trim_locate;
-@@ -120,6 +121,26 @@ struct aspeed_adc_data {
- 	int			cv;
- 	bool			battery_sensing;
- 	struct adc_gain		battery_mode_gain;
-+	unsigned int		required_eoc_num;
-+	u16			*upper_bound;
-+	u16			*lower_bound;
-+	bool			*upper_en;
-+	bool			*lower_en;
-+};
-+
-+static const struct iio_event_spec aspeed_adc_events[] = {
-+	{
-+		.type = IIO_EV_TYPE_THRESH,
-+		.dir = IIO_EV_DIR_RISING,
-+		.mask_separate =
-+			BIT(IIO_EV_INFO_VALUE) | BIT(IIO_EV_INFO_ENABLE),
-+	},
-+	{
-+		.type = IIO_EV_TYPE_THRESH,
-+		.dir = IIO_EV_DIR_FALLING,
-+		.mask_separate =
-+			BIT(IIO_EV_INFO_VALUE) | BIT(IIO_EV_INFO_ENABLE),
-+	},
- };
- 
- #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
-@@ -131,6 +152,8 @@ struct aspeed_adc_data {
- 	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |	\
- 				BIT(IIO_CHAN_INFO_SAMP_FREQ) |	\
- 				BIT(IIO_CHAN_INFO_OFFSET),	\
-+	.event_spec = aspeed_adc_events,			\
-+	.num_event_specs = ARRAY_SIZE(aspeed_adc_events),	\
- }
- 
- static const struct iio_chan_spec aspeed_adc_iio_channels[] = {
-@@ -277,6 +300,35 @@ static int aspeed_adc_set_sampling_rate(struct iio_dev *indio_dev, u32 rate)
- 	return 0;
- }
- 
-+static int aspeed_adc_get_voltage_raw(struct aspeed_adc_data *data,
-+				      struct iio_chan_spec const *chan)
-+{
-+	int val;
-+
-+	val = readw(data->base + chan->address);
-+	dev_dbg(data->dev,
-+		"%d upper_bound: %d %x, lower_bound: %d %x, delay: %d * %d ns",
-+		chan->channel, data->upper_en[chan->channel],
-+		data->upper_bound[chan->channel], data->lower_en[chan->channel],
-+		data->lower_bound[chan->channel], data->sample_period_ns,
-+		data->required_eoc_num);
-+	if (data->upper_en[chan->channel]) {
-+		if (val >= data->upper_bound[chan->channel]) {
-+			ndelay(data->sample_period_ns *
-+			       data->required_eoc_num);
-+			val = readw(data->base + chan->address);
-+		}
-+	}
-+	if (data->lower_en[chan->channel]) {
-+		if (val <= data->lower_bound[chan->channel]) {
-+			ndelay(data->sample_period_ns *
-+			       data->required_eoc_num);
-+			val = readw(data->base + chan->address);
-+		}
-+	}
-+	return val;
-+}
-+
- static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
- 			       struct iio_chan_spec const *chan,
- 			       int *val, int *val2, long mask)
-@@ -299,14 +351,15 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
- 			 * Experiment result is 1ms.
- 			 */
- 			mdelay(1);
--			*val = readw(data->base + chan->address);
-+			*val = aspeed_adc_get_voltage_raw(data, chan);
- 			*val = (*val * data->battery_mode_gain.mult) /
- 			       data->battery_mode_gain.div;
- 			/* Restore control register value */
- 			writel(adc_engine_control_reg_val,
- 			       data->base + ASPEED_REG_ENGINE_CONTROL);
--		} else
--			*val = readw(data->base + chan->address);
-+		} else {
-+			*val = aspeed_adc_get_voltage_raw(data, chan);
-+		}
- 		return IIO_VAL_INT;
- 
- 	case IIO_CHAN_INFO_OFFSET:
-@@ -369,9 +422,106 @@ static int aspeed_adc_reg_access(struct iio_dev *indio_dev,
- 	return 0;
- }
- 
-+static int aspeed_adc_read_event_config(struct iio_dev *indio_dev,
-+					const struct iio_chan_spec *chan,
-+					enum iio_event_type type,
-+					enum iio_event_direction dir)
-+{
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	switch (dir) {
-+	case IIO_EV_DIR_RISING:
-+		return data->upper_en[chan->channel];
-+	case IIO_EV_DIR_FALLING:
-+		return data->lower_en[chan->channel];
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int aspeed_adc_write_event_config(struct iio_dev *indio_dev,
-+					 const struct iio_chan_spec *chan,
-+					 enum iio_event_type type,
-+					 enum iio_event_direction dir,
-+					 int state)
-+{
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	switch (dir) {
-+	case IIO_EV_DIR_RISING:
-+		data->upper_en[chan->channel] = state ? 1 : 0;
-+		break;
-+	case IIO_EV_DIR_FALLING:
-+		data->lower_en[chan->channel] = state ? 1 : 0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int aspeed_adc_write_event_value(struct iio_dev *indio_dev,
-+					const struct iio_chan_spec *chan,
-+					enum iio_event_type type,
-+					enum iio_event_direction dir,
-+					enum iio_event_info info, int val,
-+					int val2)
-+{
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	if (info != IIO_EV_INFO_VALUE)
-+		return -EINVAL;
-+
-+	switch (dir) {
-+	case IIO_EV_DIR_RISING:
-+		if (val >= BIT(ASPEED_RESOLUTION_BITS))
-+			return -EINVAL;
-+		data->upper_bound[chan->channel] = val;
-+		break;
-+	case IIO_EV_DIR_FALLING:
-+		data->lower_bound[chan->channel] = val;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int aspeed_adc_read_event_value(struct iio_dev *indio_dev,
-+				       const struct iio_chan_spec *chan,
-+				       enum iio_event_type type,
-+				       enum iio_event_direction dir,
-+				       enum iio_event_info info, int *val,
-+				       int *val2)
-+{
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	if (info != IIO_EV_INFO_VALUE)
-+		return -EINVAL;
-+
-+	switch (dir) {
-+	case IIO_EV_DIR_RISING:
-+		*val = data->upper_bound[chan->channel];
-+		break;
-+	case IIO_EV_DIR_FALLING:
-+		*val = data->lower_bound[chan->channel];
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return IIO_VAL_INT;
-+}
-+
- static const struct iio_info aspeed_adc_iio_info = {
- 	.read_raw = aspeed_adc_read_raw,
- 	.write_raw = aspeed_adc_write_raw,
-+	.read_event_config = &aspeed_adc_read_event_config,
-+	.write_event_config = &aspeed_adc_write_event_config,
-+	.read_event_value = &aspeed_adc_read_event_value,
-+	.write_event_value = &aspeed_adc_write_event_value,
- 	.debugfs_reg_access = aspeed_adc_reg_access,
- };
- 
-@@ -502,6 +652,30 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	if (IS_ERR(data->base))
- 		return PTR_ERR(data->base);
- 
-+	data->upper_bound = devm_kzalloc(&pdev->dev,
-+					 sizeof(data->upper_bound) *
-+						 data->model_data->num_channels,
-+					 GFP_KERNEL);
-+	if (!data->upper_bound)
-+		return -ENOMEM;
-+	data->upper_en = devm_kzalloc(&pdev->dev,
-+				      sizeof(data->upper_en) *
-+					      data->model_data->num_channels,
-+				      GFP_KERNEL);
-+	if (!data->upper_en)
-+		return -ENOMEM;
-+	data->lower_bound = devm_kzalloc(&pdev->dev,
-+					 sizeof(data->lower_bound) *
-+						 data->model_data->num_channels,
-+					 GFP_KERNEL);
-+	if (!data->lower_bound)
-+		return -ENOMEM;
-+	data->lower_en = devm_kzalloc(&pdev->dev,
-+				      sizeof(data->lower_en) *
-+					      data->model_data->num_channels,
-+				      GFP_KERNEL);
-+	if (!data->lower_en)
-+		return -ENOMEM;
- 	/* Register ADC clock prescaler with source specified by device tree. */
- 	spin_lock_init(&data->clk_lock);
- 	snprintf(clk_parent_name, ARRAY_SIZE(clk_parent_name), "%s",
-@@ -632,7 +806,14 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	adc_engine_control_reg_val |= ASPEED_ADC_CTRL_CHANNEL;
- 	writel(adc_engine_control_reg_val,
- 	       data->base + ASPEED_REG_ENGINE_CONTROL);
--
-+	adc_engine_control_reg_val =
-+		FIELD_GET(ASPEED_ADC_CTRL_CHANNEL,
-+			  readl(data->base + ASPEED_REG_ENGINE_CONTROL));
-+	data->required_eoc_num = hweight_long(adc_engine_control_reg_val);
-+	if (data->model_data->require_extra_eoc &&
-+	    (adc_engine_control_reg_val &
-+	     BIT(data->model_data->num_channels - 1)))
-+		data->required_eoc_num += 12;
- 	indio_dev->name = data->model_data->model_name;
- 	indio_dev->info = &aspeed_adc_iio_info;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-@@ -668,6 +849,7 @@ static const struct aspeed_adc_model_data ast2400_model_data = {
- 	.need_prescaler = true,
- 	.scaler_bit_width = 10,
- 	.num_channels = 16,
-+	.require_extra_eoc = 0,
- };
- 
- static const struct aspeed_adc_model_data ast2500_model_data = {
-@@ -680,6 +862,7 @@ static const struct aspeed_adc_model_data ast2500_model_data = {
- 	.scaler_bit_width = 10,
- 	.num_channels = 16,
- 	.trim_locate = &ast2500_adc_trim,
-+	.require_extra_eoc = 0,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
-@@ -691,6 +874,7 @@ static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
- 	.trim_locate = &ast2600_adc0_trim,
-+	.require_extra_eoc = 1,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
-@@ -702,6 +886,7 @@ static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
- 	.trim_locate = &ast2600_adc1_trim,
-+	.require_extra_eoc = 1,
- };
- 
- static const struct of_device_id aspeed_adc_matches[] = {
--- 
-2.25.1
-
+PiA+IEFkZCBhIHByb3BlcnR5IHRvIGxpc3QgREFQTSBlbmRwb2ludHMgd2hpY2ggbWFyayBwYXRo
+cyBiZXR3ZWVuIHRoZXNlDQo+ID4gZW5kcG9pbnRzIGlnbm9yaW5nIHN1c3BlbmQuIFRoZXNlIERB
+UE0gcGF0aHMgY2FuIHN0aWxsIGJlIHBvd2VyIG9uDQo+ID4gd2hlbiBzeXN0ZW0gZW50ZXJzIGlu
+dG8gc3VzcGVuZC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENoYW5jZWwgTGl1IDxjaGFuY2Vs
+LmxpdUBueHAuY29tPg0KPiA+IC0tLQ0KPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvZnNsLHJwbXNnLnlhbWwgfCA2ICsrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdl
+ZCwgNiBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2ZzbCxycG1zZy55YW1sDQo+ID4gYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLHJwbXNnLnlhbWwNCj4gPiBpbmRleCAx
+ODhmMzhiYWRkZWMuLmVjNmUwOWVhYjQyNyAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLHJwbXNnLnlhbWwNCj4gPiArKysgYi9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLHJwbXNnLnlhbWwNCj4gPiBA
+QCAtOTEsNiArOTEsMTIgQEAgcHJvcGVydGllczoNCj4gPiAgICAgICAgLSBycG1zZy1hdWRpby1j
+aGFubmVsDQo+ID4gICAgICAgIC0gcnBtc2ctbWljZmlsLWNoYW5uZWwNCj4gPg0KPiA+ICsgIGZz
+bCxscGEtd2lkZ2V0czoNCj4gDQo+IFdoYXQgaXMgTFBBPyBJdCdzIG5vdCBleHBsYWluZWQgaW4g
+cHJvcGVydHkgZGVzY3JpcHRpb24uDQo+IA0KDQpPbiBhc3ltbWV0cmljIG11bHRpcHJvY2Vzc29y
+LCB0aGVyZSBhcmUgQ29ydGV4LUEgY29yZSBhbmQgQ29ydGV4LU0gY29yZSwgTGludXgNCmlzIHJ1
+bm5pbmcgb24gQ29ydGV4LUEgY29yZSwgUlRPUyBvciBvdGhlciBPUyBpcyBydW5uaW5nIG9uIENv
+cnRleC1NIGNvcmUuIFRoZQ0KYXVkaW8gaGFyZHdhcmUgZGV2aWNlcyBjYW4gYmUgY29udHJvbGxl
+ZCBieSBDb3J0ZXgtTS4gTFBBIG1lYW5zIGxvdyBwb3dlciBhdWRpbw0KY2FzZS4gVGhlIG1lY2hh
+bmlzbSBjYW4gYmUgZXhwbGFpbmVkIHRoYXQgQ29ydGV4LUEgYWxsb2NhdGVzIGEgbGFyZ2UgYnVm
+ZmVyIGFuZA0KZmlsbCBhdWRpbyBkYXRhLCB0aGVuIENvcnRleC1BIGNhbiBlbnRlciBpbnRvIHN1
+c3BlbmQgZm9yIHRoZSBwdXJwb3NlIG9mIHBvd2VyDQpzYXZpbmcuIENvcnRleC1NIGNvbnRpbnVl
+cyB0byBwbGF5IHRoZSBzb3VuZCBkdXJpbmcgc3VzcGVuZCBwaGFzZSBvZiBDb3J0ZXgtQS4NCldo
+ZW4gdGhlIGRhdGEgaW4gYnVmZmVyIGlzIGNvbnN1bWVkLCBDb3J0ZXgtTSB3aWxsIHRyaWdnZXIg
+dGhlIENvcnRleC1BIHRvDQp3YWtldXAgdG8gZmlsbCBkYXRhLg0KDQpJIGNhbiBhZGQgYWJvdmUg
+ZXhwbGFuYXRpb24gdG8gTFBBIGluIHBhdGNoIHYyLg0KDQo+ID4gKyAgICAkcmVmOiAvc2NoZW1h
+cy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9ub24tdW5pcXVlLXN0cmluZy1hcnJheQ0KPiA+ICsg
+ICAgZGVzY3JpcHRpb246IHwNCj4gPiArICAgICAgQSBsaXN0IG9mIERBUE0gZW5kcG9pbnRzIHdo
+aWNoIG1hcmsgcGF0aHMgYmV0d2VlbiB0aGVzZSBlbmRwb2ludHMNCj4gPiArICAgICAgaWdub3Jp
+bmcgc3VzcGVuZC4NCj4gDQo+IEFuZCBob3cgZG9lcyBpdCBkaWZmZXIgZnJvbSBhdWRpby1yb3V0
+aW5nPyBBbHNvLCB5b3UgbmVlZCB0byBleHBsYWluIHdoYXQgaXMNCj4gInN1c3BlbmQiIGluIHRo
+aXMgY29udGV4dC4gQmluZGluZ3MgYXJlIGluZGVwZW5kZW50IG9mIExpbnV4Lg0KPiANCg0KTm9y
+bWFsbHkgYXVkaW8gcGF0aHMgd2lsbCBiZSBkaXNhYmxlZCBieSBBU29DIGR5bmFtaWMgYXVkaW8g
+cG93ZXIgbWFuYWdlbWVudCBpZg0KTGludXggZW50ZXJzIGludG8gc3VzcGVuZC4gTFBBIHJlcXVp
+cmVzIHNvbWUgYXVkaW8gcGF0aHMgZW5hYmxlZCB3aGVuIENvcnRleC1BDQplbnRlcnMgaW50byBz
+dXNwZW5kLiBXZSBjYW4gcmVhZCBEQVBNIGVuZHBvaW50cyBmcm9tIHRoZSAiZnNsLGxwYS13aWRn
+ZXRzIg0KcHJvcGVydHkgYW5kIGtlZXAgdGhlIHBhdGhzIGJldHdlZW4gdGhlc2UgZW5kcG9pbnRz
+IGVuYWJsZWQgZHVyaW5nIHN1c3BlbmQNCnBoYXNlIG9mIENvcnRleC1BLiBQcm9wZXJ0eSAiYXVk
+aW8tcm91dGluZyIganVzdCBkZWNsYXJlcyB0aGUgY29ubmVjdGlvbg0KYmV0d2VlbiB3aWRnZXRz
+IGFuZCBkb2Vzbid0IGhhdmUgc3VjaCBmZWF0dXJlLg0KDQpJIHdpbGwgbW9kaWZ5IHRoZSBkZXNj
+cmlwdGlvbiBhcyBmb2xsb3dpbmc6DQoiQSBsaXN0IG9mIERBUE0gZW5kcG9pbnRzIHdoaWNoIG1h
+cmsgcGF0aHMgYmV0d2VlbiB0aGVzZSBlbmRwb2ludHMgc3RpbGwgZW5hYmxlZA0Kd2hlbiBzeXN0
+ZW0gZW50ZXJzIGludG8gc3VzcGVuZC4iDQoNCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YN
+Cg0KUmVnYXJkcywgDQpDaGFuY2VsIExpdQ0KDQo=
