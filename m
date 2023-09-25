@@ -2,149 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD8E7AD34B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1627AD34E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbjIYI1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S232793AbjIYI20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjIYI1r (ORCPT
+        with ESMTP id S230250AbjIYI2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:27:47 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE22A9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:27:41 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9adca291f99so716360966b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:27:41 -0700 (PDT)
+        Mon, 25 Sep 2023 04:28:24 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CA9D3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:28:18 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59c215f2f4aso73611007b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695630460; x=1696235260; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1JLzJEEtCTsx2ytyqcpgNQTyqzlBd0CFplvaB4DOG0o=;
-        b=Q3paE99ZlpkNhvAelrP1/lOGJnh1xjU7eaNJ4E/VWyaVONZiH7OJ6SKV549ELYOO37
-         5D77S8kEFlUHTb1yusnc4RcvUZcFkY4UL7km5BnLhGkQPl/tSnC3RwD6pLRbMcuMY+aO
-         iENtrXQXfF1st9muQtAhdbX2qQe7INEDeg6PAlu46Qu/MCFLU3rxWuWsCXvUsyy24Q6q
-         UHeJXn2C+UAjSZmifKTwAl7dlAsdFw5287JJ87tSQKcBFEhUS+EGEhCbdOMIR77imrlG
-         UFp9Daa9FvNU8fH3g0loZ7qq1va2OUEylM+EUDDoyN52JT16JVY88yw2LcUDFsqXQwHV
-         uhFg==
+        d=google.com; s=20230601; t=1695630497; x=1696235297; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ny+Jruw5kljLWGVDgFi/c0BN4bXVfRfudV3E3SL5ba0=;
+        b=YJehBPjLRrzsJRRRxYwf5k2fr3z5ZmoQcsUDS7Yt/XX6Q5ZsOznEI/tgaNd1g3+X0r
+         RUllEWlxZlWzYbS/SqaaCAP/7qpaV11Kc65h9obAOZqv/mtmVXQ6FbEMRs2gctaucrLA
+         C11XFIPvhAUpqJ4ad3s17FV1mZSc2nGKYIVVdn4/WHmqRWTcE6+k308S3dlTQDmPf8HV
+         LLzJqT21h6vZnwmBpyIvG2wTIppvcdXQIXav6xAcxd4oEZ8Hh60UAQg8mBWrIVmFGgBG
+         Fl1SGnSEUvnJWHtY0mT07kZyF7xb85p9/JAGNT+o1144rjy9VA/DsI43fOL+AxC03Mxy
+         eqPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695630460; x=1696235260;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1JLzJEEtCTsx2ytyqcpgNQTyqzlBd0CFplvaB4DOG0o=;
-        b=IzWA+IXWwqvmCNpPJKlk3ev0SJlMgJVBRHjYxQEzTnh8wmdpsBhBbWAUtUtp3HQ+Ci
-         ZDmvizkOdPhWahsievhkNwAtaxq95wZvBuiSkL263/PacRzpXRR44+ta0rWo2+NqjhfC
-         CsXJzneu3vXURDsZ8f+mCX1Z7Pr2U/ZObNUM4ClXo8YQB8lm4U0jDVEUs71uZhFtB+4l
-         2t2eX7DVO59pIrhvfRJYROYgGs3i52ZBEF5DVMxMirpLY3rbYqiMLEJRLAeEGbh60bkV
-         VB5mjlE4WwwsAnOqwxCok7I3Qq5ZKyhPGBUxaFyaqGfezALYylXv1GO3o+gQEovDIE8/
-         YL0A==
-X-Gm-Message-State: AOJu0YxGKrdnXVBKx47v5oEGCRqd+m+g5wBOjNxaTYdS9iIV/DEkQxZz
-        pciuyj5rFZgolwAuATKMyCU=
-X-Google-Smtp-Source: AGHT+IFh+TVlkqcS0O/lodW9E+1sdnFkbIasPXR+XiBPis0qvM4nsNnjhL3J7ejp2jny/ctr8CgZvQ==
-X-Received: by 2002:a17:907:3da8:b0:9ae:420e:73a0 with SMTP id he40-20020a1709073da800b009ae420e73a0mr7544575ejc.69.1695630459561;
-        Mon, 25 Sep 2023 01:27:39 -0700 (PDT)
-Received: from gmail.com (195-38-113-94.pool.digikabel.hu. [195.38.113.94])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099df2ddfc37sm5980616ejc.165.2023.09.25.01.27.38
+        d=1e100.net; s=20230601; t=1695630497; x=1696235297;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ny+Jruw5kljLWGVDgFi/c0BN4bXVfRfudV3E3SL5ba0=;
+        b=Wv6snQhmxruoKABYf4NilPhirw7I300GbUpv8BtuvLvAmtiR5a0RIY6mCmu27jS0J3
+         tgOO0h2oxMSbHil5KHuLrj6R1/DmxpsOKWMkqPikWzwnCC0mk7pNo16tzpPzFvH/svXL
+         tdZWionY5zyfuqGP/1avyso35+lAV1RvbUb6nOi0IbNry3qdaLaBP+48CNRxau3gdDau
+         5bgKJ5Q+H351r0tbRtm2TZM06IxtzNQQgRc928tsdu+XYuxz4BgPTsRUblnQOUy0Yh+w
+         r80zYEIgw/svH2hIE6jdwrDS/+KQBSVu9UCCeqSpEszu3BqQRvPU7C52mI8wU/xeNFA6
+         8LAQ==
+X-Gm-Message-State: AOJu0Yy7/mopuarUWw3oMlmrWC4s/DUKue1r80D1dc5gJwlHZnA5dFvC
+        7NlEgwW2Yb1JtfY0DsPIUM0TOw==
+X-Google-Smtp-Source: AGHT+IH7TByv+2j1g6DH4DUwI+5DujRbEJ2kgtwKlcyesipljkA02KuVspk813qm/mayffaiCSX9vQ==
+X-Received: by 2002:a0d:f2c7:0:b0:599:b59f:5280 with SMTP id b190-20020a0df2c7000000b00599b59f5280mr5636415ywf.28.1695630497424;
+        Mon, 25 Sep 2023 01:28:17 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x187-20020a81a0c4000000b0058c55d40765sm2270742ywg.106.2023.09.25.01.28.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 01:27:38 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 25 Sep 2023 10:27:36 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched/rt: Make rt_rq->pushable_tasks updates drive
- rto_mask
-Message-ID: <ZRFEeGKGzE+dY6n6@gmail.com>
-References: <20230811112044.3302588-1-vschneid@redhat.com>
- <20230815142121.MoZplZUr@linutronix.de>
+        Mon, 25 Sep 2023 01:28:16 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 01:28:14 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH 06/12] mempolicy trivia: use pgoff_t in shared mempolicy
+ tree
+In-Reply-To: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
+Message-ID: <d09b9c35-2856-f749-6a13-64dfe6415ef1@google.com>
+References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230815142121.MoZplZUr@linutronix.de>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Prefer the more explicit "pgoff_t" to "unsigned long" when dealing with
+a shared mempolicy tree.  Delete confusing comment about pseudo mm vmas.
 
-* Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ include/linux/mempolicy.h | 12 +++---------
+ mm/mempolicy.c            |  8 ++++----
+ 2 files changed, 7 insertions(+), 13 deletions(-)
 
-> On 2023-08-11 12:20:44 [+0100], Valentin Schneider wrote:
-> > Sebastian noted that the rto_push_work IRQ work can be queued for a CPU
-> > that has an empty pushable_tasks list, which means nothing useful will be
-> > done in the IPI other than queue the work for the next CPU on the rto_mask.
-> > 
-> > rto_push_irq_work_func() only operates on tasks in the pushable_tasks list,
-> > but the conditions for that irq_work to be queued (and for a CPU to be
-> > added to the rto_mask) rely on rq_rt->nr_migratory instead.
-> > 
-> > nr_migratory is increased whenever an RT task entity is enqueued and it has
-> > nr_cpus_allowed > 1. Unlike the pushable_tasks list, nr_migratory includes a
-> > rt_rq's current task. This means a rt_rq can have a migratible current, N
-> > non-migratible queued tasks, and be flagged as overloaded / have its CPU
-> > set in the rto_mask, despite having an empty pushable_tasks list.
-> > 
-> > Make an rt_rq's overload logic be driven by {enqueue,dequeue}_pushable_task().
-> > Since rt_rq->{rt_nr_migratory,rt_nr_total} become unused, remove them.
-> > 
-> > Note that the case where the current task is pushed away to make way for a
-> > migration-disabled task remains unchanged: the migration-disabled task has
-> > to be in the pushable_tasks list in the first place, which means it has
-> > nr_cpus_allowed > 1.
-> > 
-> > Link: http://lore.kernel.org/r/20230801152648._y603AS_@linutronix.de
-> > Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> > ---
-> > This is lightly tested, this looks to be working OK but I don't have nor am
-> > I aware of a test case for RT balancing, I suppose we want something that
-> > asserts we always run the N highest prio tasks for N CPUs, with a small
-> > margin for migrations?
-> 
-> I don't see the storm of IPIs I saw before. So as far that goes:
->    Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index 8013d716dc46..12f7dc74a457 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -107,18 +107,12 @@ static inline bool mpol_equal(struct mempolicy *a, struct mempolicy *b)
+ 
+ /*
+  * Tree of shared policies for a shared memory region.
+- * Maintain the policies in a pseudo mm that contains vmas. The vmas
+- * carry the policy. As a special twist the pseudo mm is indexed in pages, not
+- * bytes, so that we can work with shared memory segments bigger than
+- * unsigned long.
+  */
+-
+ struct sp_node {
+ 	struct rb_node nd;
+-	unsigned long start, end;
++	pgoff_t start, end;
+ 	struct mempolicy *policy;
+ };
+-
+ struct shared_policy {
+ 	struct rb_root root;
+ 	rwlock_t lock;
+@@ -130,7 +124,7 @@ int mpol_set_shared_policy(struct shared_policy *sp,
+ 			   struct vm_area_struct *vma, struct mempolicy *mpol);
+ void mpol_free_shared_policy(struct shared_policy *sp);
+ struct mempolicy *mpol_shared_policy_lookup(struct shared_policy *sp,
+-					    unsigned long idx);
++					    pgoff_t idx);
+ 
+ struct mempolicy *get_task_policy(struct task_struct *p);
+ struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
+@@ -216,7 +210,7 @@ static inline void mpol_free_shared_policy(struct shared_policy *sp)
+ }
+ 
+ static inline struct mempolicy *
+-mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
++mpol_shared_policy_lookup(struct shared_policy *sp, pgoff_t idx)
+ {
+ 	return NULL;
+ }
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 121bb490481b..065e886ec9b6 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2444,7 +2444,7 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+  * reading or for writing
+  */
+ static struct sp_node *
+-sp_lookup(struct shared_policy *sp, unsigned long start, unsigned long end)
++sp_lookup(struct shared_policy *sp, pgoff_t start, pgoff_t end)
+ {
+ 	struct rb_node *n = sp->root.rb_node;
+ 
+@@ -2499,7 +2499,7 @@ static void sp_insert(struct shared_policy *sp, struct sp_node *new)
+ 
+ /* Find shared policy intersecting idx */
+ struct mempolicy *
+-mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
++mpol_shared_policy_lookup(struct shared_policy *sp, pgoff_t idx)
+ {
+ 	struct mempolicy *pol = NULL;
+ 	struct sp_node *sn;
+@@ -2665,8 +2665,8 @@ static struct sp_node *sp_alloc(unsigned long start, unsigned long end,
+ }
+ 
+ /* Replace a policy range. */
+-static int shared_policy_replace(struct shared_policy *sp, unsigned long start,
+-				 unsigned long end, struct sp_node *new)
++static int shared_policy_replace(struct shared_policy *sp, pgoff_t start,
++				 pgoff_t end, struct sp_node *new)
+ {
+ 	struct sp_node *n;
+ 	struct sp_node *n_new = NULL;
+-- 
+2.35.3
 
-I've applied Valentin's initial fix to tip:sched/core, for an eventual
-v6.7 merge, as it addresses the IPI storm bug. Let me know if merging
-this is not desirable for some reason.
-
-> What I still observe is:
-> - CPU0 is idle. CPU0 gets a task assigned from CPU1. That task receives
->   a wakeup. CPU0 returns from idle and schedules the task.
->   pull_rt_task() on CPU1 and sometimes on other CPU observe this, too.
->   CPU1 sends irq_work to CPU0 while at the time rto_next_cpu() sees that
->   has_pushable_tasks() return 0. That bit was cleared earlier (as per
->   tracing).
-> 
-> - CPU0 is idle. CPU0 gets a task assigned from CPU1. The task on CPU0 is
->   woken up without an IPI (yay). But then pull_rt_task() decides that
->   send irq_work and has_pushable_tasks() said that is has tasks left
->   so….
->   Now: rto_push_irq_work_func() run once once on CPU0, does nothing,
->   rto_next_cpu() return CPU0 again and enqueues itself again on CPU0.
->   Usually after the second or third round the scheduler on CPU0 makes
->   enough progress to remove the task/ clear the CPU from mask.
-
-Just curious, any progress on solving this?
-
-Thanks,
-
-	Ingo
