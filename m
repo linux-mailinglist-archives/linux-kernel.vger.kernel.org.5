@@ -2,94 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9247ACE67
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2745E7ACE6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbjIYCnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
+        id S231834AbjIYCnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjIYCnU (ORCPT
+        with ESMTP id S231720AbjIYCny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:43:20 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A68692;
-        Sun, 24 Sep 2023 19:43:12 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 707CF32009E2;
-        Sun, 24 Sep 2023 22:43:07 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute6.internal (MEProxy); Sun, 24 Sep 2023 22:43:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695609786; x=1695696186; bh=Uq
-        jDrarA+shRfC8ltMwHAr+TUFm7nNOSDNsd970tbLw=; b=RcK132xuzObTUxcJHj
-        mtGTHR8mL/CpJNmGrJByJFEQZ0Ifrln/vtjoUSEnPyumebLrZsOfpBz4CVzrqXL1
-        JSqtLwbn9Vuy/bwrvU/0/nvMvzQstLMrASo0YKkjPTq6+FOuFoGcDvnYcdMnRbdg
-        lnrGVRU/tp1sXO/kaUi2aGs0+v0REVCggPushe5k+id/VEH7trEfsBrzhgYqPN0t
-        Auov+5t7haL4VvAX+DOn0RmsOc7+QpVKrKIIoWsK9BvFvsIkkyWnjvhW3Klpcqmc
-        G9LnsUrwU/XHTCMG4clVWZOPq4h2cSdzN9Nq28nCdRQdBmKtCPhzKNcRs9QIWO6l
-        mncw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695609786; x=1695696186; bh=UqjDrarA+shRf
-        C8ltMwHAr+TUFm7nNOSDNsd970tbLw=; b=b6SNUx6Zq9Bd/AlDRQxfxa630kKvx
-        wi3BsWPfm5OPxf+tK4hoafLUs+Hm71TpohijG9w+4AMtciNcPsROigv54FJMtlYl
-        046taGoiYYhNFg6GB6+frndhQggqUAexQoBmphd723CQ8AXZo4rz/YugZgBUxm9L
-        Q7P/1blq1Sqe31CIFsmS+a7baWPGCLajU61eeYRvX1li/Z//jAQ9ICipnqdY0L3P
-        34AbfD7nPTIJTCHcYvkF31u6HjGl2mMNLugkUKAtQckeKlGeQPGgThhiprveLibp
-        LHeie6Fhu9NHRWYinzta/snfiCzdcvBSvC3/rcx4iyVU7EM38svgFsAGQ==
-X-ME-Sender: <xms:ufMQZQwYYayUQhLi9Yn5f6270PhrGkYiwtYO0LTrkFg4Mi33iTSvHA>
-    <xme:ufMQZUQh-Ht4wo777KGBlXOBfb2JiandNG948u4Bot5c3OfScfGyyGRATqYD1deNM
-    kcMZXenB9fy580rFA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelfedgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpeekvdekjeekgfejudffteetgeejkeetteduvedtffdtledutdfhheev
-    feetkeeiteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:ufMQZSWamVBQ5SZlQlh3m3x79FXuTIZhC5gNJp3Tu51JsN9assMxtg>
-    <xmx:ufMQZehL48Yik-Qnd78EfYrN4SB0svmrgKI2NRDygVd3tQgD0RgMgw>
-    <xmx:ufMQZSCGHUtY1vZi9RxmRbNEEg35P5GKxtAat6WqB8c1q6e_ykR4ag>
-    <xmx:uvMQZaZc87wi0MoakXrq8nH4hs4cWEHOUTKF-JPKC0f8FuT9yDIb_A>
-Feedback-ID: idfb84289:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B7A451700090; Sun, 24 Sep 2023 22:43:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        Sun, 24 Sep 2023 22:43:54 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E6092
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:43:46 -0700 (PDT)
+Received: from dggpemm500016.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rv6Y00FB5zMlpJ;
+        Mon, 25 Sep 2023 10:40:04 +0800 (CST)
+Received: from huawei.com (10.67.174.58) by dggpemm500016.china.huawei.com
+ (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
+ 2023 10:43:44 +0800
+From:   Chen Jiahao <chenjiahao16@huawei.com>
+To:     <bhe@redhat.com>, <thunder.leizhen@huawei.com>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <conor.dooley@microchip.com>,
+        <alexghiti@rivosinc.com>, <ajones@ventanamicro.com>,
+        <jszhang@kernel.org>, <sunilvl@ventanamicro.com>,
+        <robh@kernel.org>, <bjorn@rivosinc.com>, <zephray@outlook.com>,
+        <akpm@linux-foundation.org>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <chenjiahao16@huawei.com>
+Subject: [PATCH -next v2] riscv: kdump: fix crashkernel reserving problem on RISC-V
+Date:   Mon, 25 Sep 2023 10:43:33 +0800
+Message-ID: <20230925024333.730964-1-chenjiahao16@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-Id: <6df088a6-75ab-42f2-ba39-3f155714ed2d@app.fastmail.com>
-In-Reply-To: <20230922104231.1434-5-zev@bewilderbeest.net>
-References: <20230922104231.1434-4-zev@bewilderbeest.net>
- <20230922104231.1434-5-zev@bewilderbeest.net>
-Date:   Mon, 25 Sep 2023 12:12:45 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zev@bewilderbeest.net>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Guenter Roeck" <linux@roeck-us.net>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Milton D. Miller II" <mdmii@outlook.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Wim Van Sebroeck" <wim@linux-watchdog.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, openbmc@lists.ozlabs.org
-Cc:     "Eddie James" <eajames@linux.ibm.com>,
-        "Ivan Mikhaylov" <i.mikhaylov@yadro.com>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: aspeed-wdt: Add aspeed,reset-mask
- property
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.58]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,170 +52,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When testing on risc-v QEMU environment with "crashkernel="
+parameter enabled, a problem occurred with the following
+message:
 
+[    0.000000] crashkernel low memory reserved: 0xf8000000 - 0x100000000 (128 MB)
+[    0.000000] crashkernel reserved: 0x0000000177e00000 - 0x0000000277e00000 (4096 MB)
+[    0.000000] ------------[ cut here ]------------
+[    0.000000] WARNING: CPU: 0 PID: 0 at kernel/resource.c:779 __insert_resource+0x8e/0xd0
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc2-next-20230920 #1
+[    0.000000] Hardware name: riscv-virtio,qemu (DT)
+[    0.000000] epc : __insert_resource+0x8e/0xd0
+[    0.000000]  ra : insert_resource+0x28/0x4e
+[    0.000000] epc : ffffffff80017344 ra : ffffffff8001742e sp : ffffffff81203db0
+[    0.000000]  gp : ffffffff812ece98 tp : ffffffff8120dac0 t0 : ff600001f7ff2b00
+[    0.000000]  t1 : 0000000000000000 t2 : 3428203030303030 s0 : ffffffff81203dc0
+[    0.000000]  s1 : ffffffff81211e18 a0 : ffffffff81211e18 a1 : ffffffff81289380
+[    0.000000]  a2 : 0000000277dfffff a3 : 0000000177e00000 a4 : 0000000177e00000
+[    0.000000]  a5 : ffffffff81289380 a6 : 0000000277dfffff a7 : 0000000000000078
+[    0.000000]  s2 : ffffffff81289380 s3 : ffffffff80a0bac8 s4 : ff600001f7ff2880
+[    0.000000]  s5 : 0000000000000280 s6 : 8000000a00006800 s7 : 000000000000007f
+[    0.000000]  s8 : 0000000080017038 s9 : 0000000080038ea0 s10: 0000000000000000
+[    0.000000]  s11: 0000000000000000 t3 : ffffffff80a0bc00 t4 : ffffffff80a0bc00
+[    0.000000]  t5 : ffffffff80a0bbd0 t6 : ffffffff80a0bc00
+[    0.000000] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+[    0.000000] [<ffffffff80017344>] __insert_resource+0x8e/0xd0
+[    0.000000] ---[ end trace 0000000000000000 ]---
+[    0.000000] Failed to add a Crash kernel resource at 177e00000
 
-On Fri, 22 Sep 2023, at 20:12, Zev Weiss wrote:
-> This property configures the Aspeed watchdog timer's reset mask, which
-> controls which peripherals are reset when the watchdog timer expires.
-> Some platforms require that certain devices be left untouched across a
-> reboot; aspeed,reset-mask can now be used to express such constraints.
->
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  .../bindings/watchdog/aspeed-wdt.txt          | 18 +++-
->  include/dt-bindings/watchdog/aspeed-wdt.h     | 92 +++++++++++++++++++
->  2 files changed, 109 insertions(+), 1 deletion(-)
->  create mode 100644 include/dt-bindings/watchdog/aspeed-wdt.h
->
-> diff --git a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt 
-> b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> index a8197632d6d2..3208adb3e52e 100644
-> --- a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> +++ b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> @@ -47,7 +47,15 @@ Optional properties for AST2500-compatible watchdogs:
->  			   is configured as push-pull, then set the pulse
->  			   polarity to active-high. The default is active-low.
-> 
-> -Example:
-> +Optional properties for AST2500- and AST2600-compatible watchdogs:
-> + - aspeed,reset-mask: A bitmask indicating which peripherals will be reset if
-> +		      the watchdog timer expires.  On AST2500 this should be a
-> +		      single word defined using the AST2500_WDT_RESET_* macros;
-> +		      on AST2600 this should be a two-word array with the first
-> +		      word defined using the AST2600_WDT_RESET1_* macros and the
-> +		      second word defined using the AST2600_WDT_RESET2_* macros.
-> +
-> +Examples:
-> 
->  	wdt1: watchdog@1e785000 {
->  		compatible = "aspeed,ast2400-wdt";
-> @@ -55,3 +63,11 @@ Example:
->  		aspeed,reset-type = "system";
->  		aspeed,external-signal;
->  	};
-> +
-> +	#include <dt-bindings/watchdog/aspeed-wdt.h>
-> +	wdt2: watchdog@1e785040 {
-> +		compatible = "aspeed,ast2600-wdt";
-> +		reg = <0x1e785040 0x40>;
-> +		aspeed,reset-mask = <AST2600_WDT_RESET1_DEFAULT
-> +				     (AST2600_WDT_RESET2_DEFAULT & ~AST2600_WDT_RESET2_LPC)>;
-> +	};
+The crashkernel memory has been allocated successfully, whereas
+it failed to insert into iomem_resource. This is due to the
+unique reserving logic in risc-v arch specific code, i.e.
+crashk_res/crashk_low_res will be added into iomem_resource
+later in init_resources(), which is not aligned with current
+unified reserving logic in reserve_crashkernel_{generic,low}()
+and therefore leads to the failure of crashkernel reservation.
 
-Rob has acked your current approach already, but I do wonder about an alternative that aligns more with the clock/reset/interrupt properties. Essentially, define a new generic watchdog property that is specified on the controllers to be reset by the watchdog (or even on just the watchdog node itself, emulating what you've proposed here):
+Removing the arch specific code within #ifdef CONFIG_KEXEC_CORE
+in init_resources() to fix above problem.
 
-watchdog-resets = <phandle index>;
+Fixes: 31549153088e ("riscv: kdump: use generic interface to simplify crashkernel reservation")
+Signed-off-by: Chen Jiahao <chenjiahao16@huawei.com>
+---
+ arch/riscv/kernel/setup.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-The phandle links to the watchdog of interest, and the index specifies the controller associated with the configuration. It might even be useful to do:
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index e600aab116a4..aac853ae4eb7 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -173,19 +173,6 @@ static void __init init_resources(void)
+ 	if (ret < 0)
+ 		goto error;
+ 
+-#ifdef CONFIG_KEXEC_CORE
+-	if (crashk_res.start != crashk_res.end) {
+-		ret = add_resource(&iomem_resource, &crashk_res);
+-		if (ret < 0)
+-			goto error;
+-	}
+-	if (crashk_low_res.start != crashk_low_res.end) {
+-		ret = add_resource(&iomem_resource, &crashk_low_res);
+-		if (ret < 0)
+-			goto error;
+-	}
+-#endif
+-
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (elfcorehdr_size > 0) {
+ 		elfcorehdr_res.start = elfcorehdr_addr;
+-- 
+2.34.1
 
-watchdog-resets = <phandle index enable>;
-
-"enable" could provide explicit control over whether somethings should be reset or not (as a way to prevent reset if the controller targeted by the provided index would otherwise be reset in accordance with the default reset value in the watchdog controller).
-
-The macros from the dt-bindings header can then use macros to name the indexes rather than define a mask tied to the register layout. The index may still in some way represent the mask position. This has the benefit of hiding the issue of one vs two configuration registers between the AST2500 and AST2600 while also allowing other controllers to exploit the binding (Nuvoton BMCs? Though maybe it's generalising too early?).
-
-It'd probably need a new function exported from the watchdog subsystem for the drivers to call through, though I don't think that's too much of a hurdle?
-
-Andrew
-
-> diff --git a/include/dt-bindings/watchdog/aspeed-wdt.h 
-> b/include/dt-bindings/watchdog/aspeed-wdt.h
-> new file mode 100644
-> index 000000000000..7ae6d84b2bd9
-> --- /dev/null
-> +++ b/include/dt-bindings/watchdog/aspeed-wdt.h
-> @@ -0,0 +1,92 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> +
-> +#ifndef DT_BINDINGS_ASPEED_WDT_H
-> +#define DT_BINDINGS_ASPEED_WDT_H
-> +
-> +#define AST2500_WDT_RESET_CPU		(1 << 0)
-> +#define AST2500_WDT_RESET_COPROC	(1 << 1)
-> +#define AST2500_WDT_RESET_SDRAM		(1 << 2)
-> +#define AST2500_WDT_RESET_AHB		(1 << 3)
-> +#define AST2500_WDT_RESET_I2C		(1 << 4)
-> +#define AST2500_WDT_RESET_MAC0		(1 << 5)
-> +#define AST2500_WDT_RESET_MAC1		(1 << 6)
-> +#define AST2500_WDT_RESET_GRAPHICS	(1 << 7)
-> +#define AST2500_WDT_RESET_USB2_HOST_HUB	(1 << 8)
-> +#define AST2500_WDT_RESET_USB_HOST	(1 << 9)
-> +#define AST2500_WDT_RESET_HID_EHCI	(1 << 10)
-> +#define AST2500_WDT_RESET_VIDEO		(1 << 11)
-> +#define AST2500_WDT_RESET_HAC		(1 << 12)
-> +#define AST2500_WDT_RESET_LPC		(1 << 13)
-> +#define AST2500_WDT_RESET_SDIO		(1 << 14)
-> +#define AST2500_WDT_RESET_MIC		(1 << 15)
-> +#define AST2500_WDT_RESET_CRT		(1 << 16)
-> +#define AST2500_WDT_RESET_PWM		(1 << 17)
-> +#define AST2500_WDT_RESET_PECI		(1 << 18)
-> +#define AST2500_WDT_RESET_JTAG		(1 << 19)
-> +#define AST2500_WDT_RESET_ADC		(1 << 20)
-> +#define AST2500_WDT_RESET_GPIO		(1 << 21)
-> +#define AST2500_WDT_RESET_MCTP		(1 << 22)
-> +#define AST2500_WDT_RESET_XDMA		(1 << 23)
-> +#define AST2500_WDT_RESET_SPI		(1 << 24)
-> +#define AST2500_WDT_RESET_SOC_MISC	(1 << 25)
-> +
-> +#define AST2500_WDT_RESET_DEFAULT 0x023ffff3
-> +
-> +#define AST2600_WDT_RESET1_CPU		(1 << 0)
-> +#define AST2600_WDT_RESET1_SDRAM	(1 << 1)
-> +#define AST2600_WDT_RESET1_AHB		(1 << 2)
-> +#define AST2600_WDT_RESET1_SLI		(1 << 3)
-> +#define AST2600_WDT_RESET1_SOC_MISC0	(1 << 4)
-> +#define AST2600_WDT_RESET1_COPROC	(1 << 5)
-> +#define AST2600_WDT_RESET1_USB_A	(1 << 6)
-> +#define AST2600_WDT_RESET1_USB_B	(1 << 7)
-> +#define AST2600_WDT_RESET1_UHCI		(1 << 8)
-> +#define AST2600_WDT_RESET1_GRAPHICS	(1 << 9)
-> +#define AST2600_WDT_RESET1_CRT		(1 << 10)
-> +#define AST2600_WDT_RESET1_VIDEO	(1 << 11)
-> +#define AST2600_WDT_RESET1_HAC		(1 << 12)
-> +#define AST2600_WDT_RESET1_DP		(1 << 13)
-> +#define AST2600_WDT_RESET1_DP_MCU	(1 << 14)
-> +#define AST2600_WDT_RESET1_GP_MCU	(1 << 15)
-> +#define AST2600_WDT_RESET1_MAC0		(1 << 16)
-> +#define AST2600_WDT_RESET1_MAC1		(1 << 17)
-> +#define AST2600_WDT_RESET1_SDIO0	(1 << 18)
-> +#define AST2600_WDT_RESET1_JTAG0	(1 << 19)
-> +#define AST2600_WDT_RESET1_MCTP0	(1 << 20)
-> +#define AST2600_WDT_RESET1_MCTP1	(1 << 21)
-> +#define AST2600_WDT_RESET1_XDMA0	(1 << 22)
-> +#define AST2600_WDT_RESET1_XDMA1	(1 << 23)
-> +#define AST2600_WDT_RESET1_GPIO0	(1 << 24)
-> +#define AST2600_WDT_RESET1_RVAS		(1 << 25)
-> +
-> +#define AST2600_WDT_RESET1_DEFAULT 0x030f1ff1
-> +
-> +#define AST2600_WDT_RESET2_CPU		(1 << 0)
-> +#define AST2600_WDT_RESET2_SPI		(1 << 1)
-> +#define AST2600_WDT_RESET2_AHB2		(1 << 2)
-> +#define AST2600_WDT_RESET2_SLI2		(1 << 3)
-> +#define AST2600_WDT_RESET2_SOC_MISC1	(1 << 4)
-> +#define AST2600_WDT_RESET2_MAC2		(1 << 5)
-> +#define AST2600_WDT_RESET2_MAC3		(1 << 6)
-> +#define AST2600_WDT_RESET2_SDIO1	(1 << 7)
-> +#define AST2600_WDT_RESET2_JTAG1	(1 << 8)
-> +#define AST2600_WDT_RESET2_GPIO1	(1 << 9)
-> +#define AST2600_WDT_RESET2_MDIO		(1 << 10)
-> +#define AST2600_WDT_RESET2_LPC		(1 << 11)
-> +#define AST2600_WDT_RESET2_PECI		(1 << 12)
-> +#define AST2600_WDT_RESET2_PWM		(1 << 13)
-> +#define AST2600_WDT_RESET2_ADC		(1 << 14)
-> +#define AST2600_WDT_RESET2_FSI		(1 << 15)
-> +#define AST2600_WDT_RESET2_I2C		(1 << 16)
-> +#define AST2600_WDT_RESET2_I3C_GLOBAL	(1 << 17)
-> +#define AST2600_WDT_RESET2_I3C0		(1 << 18)
-> +#define AST2600_WDT_RESET2_I3C1		(1 << 19)
-> +#define AST2600_WDT_RESET2_I3C2		(1 << 20)
-> +#define AST2600_WDT_RESET2_I3C3		(1 << 21)
-> +#define AST2600_WDT_RESET2_I3C4		(1 << 22)
-> +#define AST2600_WDT_RESET2_I3C5		(1 << 23)
-> +#define AST2600_WDT_RESET2_ESPI		(1 << 26)
-> +
-> +#define AST2600_WDT_RESET2_DEFAULT 0x03fffff1
-> +
-> +#endif
-> -- 
-> 2.40.0.5.gf6e3b97ba6d2.dirty
