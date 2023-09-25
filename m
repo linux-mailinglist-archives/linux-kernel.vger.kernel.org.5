@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147B27AD8CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9431E7AD8CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjIYNSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        id S231743AbjIYNSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbjIYNSD (ORCPT
+        with ESMTP id S231706AbjIYNSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:18:03 -0400
+        Mon, 25 Sep 2023 09:18:05 -0400
 Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5315910D
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:17:57 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50306b2920dso7864593e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:17:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB332FE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:17:58 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50305abe5f0so9987684e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:17:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695647875; x=1696252675; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695647877; x=1696252677; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8U5TCt8PhKvPqkMPolS3qJOc5aJpgLowONzlvaY1uCA=;
-        b=tuTQwHZ3oOn7V7MGJ5JUH4g8KpgW0WWW0vedNhA8gBr9qhL+69mUbIxuFHDZk8Bz/C
-         Pgs0kwULmf15uV8diwpywTMAco385WfGQTM0c3bzlEIc2aitgPU7/EY+fCooUZx9y2bW
-         5T1h15ufuDjgJsjY9ipnn/g7Ts0uE8Y+YvsKyOLyBvLenRoAWaPmZjBQd8NzglL0R5H8
-         GOL5x6kHAtijhCU+LwQXJkDH5l86JGE8y8N2aLyLpaqBqHbvKuaL3Po+Yk3u8l9ugeN2
-         XkRkvMLYlXy2spqhmvR+x6j4Frb7CGdLwL+DXNTtdVJxthnOLwgkjYdOKCLrCDj4lYtl
-         25Bg==
+        bh=167tdHqooI6VpzhOKyy9DJn5EBlj5nE8zbkLsDZ7woM=;
+        b=WBP4+Kknvb5kO7n8iUdyddmGhNYDy76agy14hEc9Lzsiq56UTzfZxCY+r8ln6rlItd
+         scyX0Zdfo0L4pkQ4HFFpFBHhmu+jio7i3aHE7kdfcWu5WaubjK2T/KTDZzN2rjROsCr7
+         xyyt2iuivX2VXXvE6MuqGm9TSHvoq+4pSUAzbHXtrw/ivXtVMVaX7AQY4ErlsBjSiigc
+         iP0UdG0nQxN49PjugAJe5kl2AdxA5pR/VDanP6bLT6Y6Rt527DDW49AAfPNZYbXFlDsM
+         169VaJzgHwt/qqncQgmcxn5L9En0/SBleLQovZZ/66eTsm9yqKNyrz/PqTrSZV/iYEEQ
+         W0hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695647875; x=1696252675;
+        d=1e100.net; s=20230601; t=1695647877; x=1696252677;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8U5TCt8PhKvPqkMPolS3qJOc5aJpgLowONzlvaY1uCA=;
-        b=XN+i0vZBXORgYIVR8Pft28GcKJiIfYo0uTh6zY1DQZ4kVtTPqtMKwsjDAFtS7CmXxu
-         tJ0E8cWwpSQE19QGIFgLusrw+t9xCFNi9sbw70CHmQfpk6QOgm5HAEtvXYEojspjaGjG
-         wQPT8hUojrwP14B8mZFK/hRmR6IK33T8YrrQilVEg7UzdetvvEvyARcW0o0zyH3urilc
-         HaDt6hwuVNEEkRKeJbu9q+7hHzpgBk3/+pkKfQ0mzfB6kIZpRSaBJMVuCTUlpu+CzZQV
-         O1xTuHgzpQ3aUheDZaPw3q6XTb1XqaOZo/+AGRFWvYR4LMozgrnJb28FBt0hWzju5lLB
-         OVSA==
-X-Gm-Message-State: AOJu0YzSfoEbgX5adtBIqmBbAcYMiyJ6+vExIfRWxF/IEMmxLvvcJjXX
-        QQbVcF/i/ttMqWqDJKHfCdfo/g==
-X-Google-Smtp-Source: AGHT+IHKbJtqXxLpoL/3TxVjGxZPgSGBoxzRkGP+PUJOzo30gCEuhg29mQ3rnnoMG3KuUNvxb6UVyg==
-X-Received: by 2002:a05:6512:acd:b0:4f9:dac6:2f3d with SMTP id n13-20020a0565120acd00b004f9dac62f3dmr3152406lfu.13.1695647875663;
-        Mon, 25 Sep 2023 06:17:55 -0700 (PDT)
+        bh=167tdHqooI6VpzhOKyy9DJn5EBlj5nE8zbkLsDZ7woM=;
+        b=BNiS+1unUY0jrNXPCkZtj34Xh3SiJzBLggA14M9fwyXJxPjJjRz2/DDENwgs4wy8f9
+         /Bid4AhTMZgiI7+k4aspYJoaWA9SsYhgWyT+BiWoK2BvHk7A4P4+qZIqO9exFgf3RD1a
+         S4PU+K2dXuNyMRIPpLLgxThwa5W8Q2/nagUqjLcREOhY1o21oP/SMxn1uezhuzAEpi/J
+         r2+ffzMinRHT/OdjfDdrfoDo+eM1zsWSl9UMVsaFnfXvSTcihKUZqnr2qy2O/OjdpnoC
+         nriYISLTKX/XVMbYfYiofqvbEXbFe7Xpgpcl2LMfvor8+b48lk9LFggFcJ7/fPtOpxDF
+         HzTQ==
+X-Gm-Message-State: AOJu0YzrSR+dYMHtZrMzih5h+sDRCZhEsic4mc5cQad23X7njviUmGE4
+        PWWgtOve7M5a9v3GL05uXPNFVw==
+X-Google-Smtp-Source: AGHT+IGW4oEnJvWuWsg6MhO9Pq9fqGlgU2jo7ZRrJDKiypMdNYI0ToxsC3DaNm/vfTBYyFn4mfZ5Bw==
+X-Received: by 2002:a05:6512:328b:b0:4fb:8bab:48b6 with SMTP id p11-20020a056512328b00b004fb8bab48b6mr4881662lfe.52.1695647876928;
+        Mon, 25 Sep 2023 06:17:56 -0700 (PDT)
 Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id m29-20020a056512015d00b004fe10276bbfsm1823583lfo.296.2023.09.25.06.17.54
+        by smtp.gmail.com with ESMTPSA id m29-20020a056512015d00b004fe10276bbfsm1823583lfo.296.2023.09.25.06.17.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 06:17:55 -0700 (PDT)
+        Mon, 25 Sep 2023 06:17:56 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     Sudeep Holla <sudeep.holla@arm.com>,
         Cristian Marussi <cristian.marussi@arm.com>,
@@ -61,9 +61,9 @@ Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/9] PM: domains: Introduce dev_pm_domain_set_performance_state()
-Date:   Mon, 25 Sep 2023 15:17:07 +0200
-Message-Id: <20230925131715.138411-2-ulf.hansson@linaro.org>
+Subject: [PATCH 2/9] PM: domains: Implement the ->set_performance_state() callback for genpd
+Date:   Mon, 25 Sep 2023 15:17:08 +0200
+Message-Id: <20230925131715.138411-3-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230925131715.138411-1-ulf.hansson@linaro.org>
 References: <20230925131715.138411-1-ulf.hansson@linaro.org>
@@ -79,100 +79,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The generic PM domain is currently the only PM domain variant that supports
-performance scaling. To allow performance scaling to be supported through a
-common interface, let's add an optional callback ->set_performance_state(),
-in the struct dev_pm_domain.
+To enable generic support for performance scaling for PM domains, let's
+implement the ->set_performance_state() callback for genpd.
 
-Moreover, let's add a function, dev_pm_domain_set_performance_state(), that
-may be called by consumers to request a new performance state for a device
-through its PM domain.
-
-Note that, in most cases it's preferred that a consumer use the OPP library
-to request a new performance state for its device. Although, this requires
-some additional changes to be supported, which are being implemented from
-subsequent changes.
+Beyond this change, users of the corresponding genpd specific API,
+dev_pm_genpd_set_performance_state() are encouraged to switch to the common
+dev_pm_domain_set_performance_state() API.
 
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/base/power/common.c | 21 +++++++++++++++++++++
- include/linux/pm.h          |  2 ++
- include/linux/pm_domain.h   |  6 ++++++
- 3 files changed, 29 insertions(+)
+ drivers/base/power/domain.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/base/power/common.c b/drivers/base/power/common.c
-index 72115917e0bd..44ec20918a4d 100644
---- a/drivers/base/power/common.c
-+++ b/drivers/base/power/common.c
-@@ -228,3 +228,24 @@ void dev_pm_domain_set(struct device *dev, struct dev_pm_domain *pd)
- 	device_pm_check_callbacks(dev);
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index c74edf80417f..da1777e39eaa 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -420,6 +420,25 @@ static void genpd_restore_performance_state(struct device *dev,
+ 		genpd_set_performance_state(dev, state);
  }
- EXPORT_SYMBOL_GPL(dev_pm_domain_set);
-+
-+/**
-+ * dev_pm_domain_set_performance_state - Request a new performance state.
-+ * @dev: The device to make the request for.
-+ * @state: Target performance state for the device.
-+ *
-+ * This function should be called when a new performance state needs to be
-+ * requested for a device that is attached to a PM domain. Note that, the
-+ * support for performance scaling for PM domains is optional.
-+ *
-+ * Returns 0 on success and when performance scaling isn't supported, negative
-+ * error code on failure.
-+ */
-+int dev_pm_domain_set_performance_state(struct device *dev, unsigned int state)
-+{
-+	if (dev->pm_domain && dev->pm_domain->set_performance_state)
-+		return dev->pm_domain->set_performance_state(dev, state);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_domain_set_performance_state);
-diff --git a/include/linux/pm.h b/include/linux/pm.h
-index 1400c37b29c7..4c9f571609c8 100644
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -719,6 +719,7 @@ extern void dev_pm_put_subsys_data(struct device *dev);
-  * @activate: Called before executing probe routines for bus types and drivers.
-  * @sync: Called after successful driver probe.
-  * @dismiss: Called after unsuccessful driver probe and after driver removal.
-+ * @set_performance_state: Called to request a new performance state.
-  *
-  * Power domains provide callbacks that are executed during system suspend,
-  * hibernation, system resume and during runtime PM transitions instead of
-@@ -731,6 +732,7 @@ struct dev_pm_domain {
- 	int (*activate)(struct device *dev);
- 	void (*sync)(struct device *dev);
- 	void (*dismiss)(struct device *dev);
-+	int (*set_performance_state)(struct device *dev, unsigned int state);
- };
  
- /*
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 05ad8cefdff1..34663d0d5c55 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -435,6 +435,7 @@ struct device *dev_pm_domain_attach_by_name(struct device *dev,
- void dev_pm_domain_detach(struct device *dev, bool power_off);
- int dev_pm_domain_start(struct device *dev);
- void dev_pm_domain_set(struct device *dev, struct dev_pm_domain *pd);
-+int dev_pm_domain_set_performance_state(struct device *dev, unsigned int state);
- #else
- static inline int dev_pm_domain_attach(struct device *dev, bool power_on)
++static int genpd_dev_pm_set_performance_state(struct device *dev,
++					      unsigned int state)
++{
++	struct generic_pm_domain *genpd = dev_to_genpd(dev);
++	int ret = 0;
++
++	genpd_lock(genpd);
++	if (pm_runtime_suspended(dev)) {
++		dev_gpd_data(dev)->rpm_pstate = state;
++	} else {
++		ret = genpd_set_performance_state(dev, state);
++		if (!ret)
++			dev_gpd_data(dev)->rpm_pstate = 0;
++	}
++	genpd_unlock(genpd);
++
++	return ret;
++}
++
+ /**
+  * dev_pm_genpd_set_performance_state- Set performance state of device's power
+  * domain.
+@@ -438,7 +457,6 @@ static void genpd_restore_performance_state(struct device *dev,
+ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
  {
-@@ -457,6 +458,11 @@ static inline int dev_pm_domain_start(struct device *dev)
- }
- static inline void dev_pm_domain_set(struct device *dev,
- 				     struct dev_pm_domain *pd) {}
-+static inline int dev_pm_domain_set_performance_state(struct device *dev,
-+						      unsigned int state)
-+{
-+	return 0;
-+}
- #endif
+ 	struct generic_pm_domain *genpd;
+-	int ret = 0;
  
- #endif /* _LINUX_PM_DOMAIN_H */
+ 	genpd = dev_to_genpd_safe(dev);
+ 	if (!genpd)
+@@ -448,17 +466,7 @@ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
+ 		     !dev->power.subsys_data->domain_data))
+ 		return -EINVAL;
+ 
+-	genpd_lock(genpd);
+-	if (pm_runtime_suspended(dev)) {
+-		dev_gpd_data(dev)->rpm_pstate = state;
+-	} else {
+-		ret = genpd_set_performance_state(dev, state);
+-		if (!ret)
+-			dev_gpd_data(dev)->rpm_pstate = 0;
+-	}
+-	genpd_unlock(genpd);
+-
+-	return ret;
++	return genpd_dev_pm_set_performance_state(dev, state);
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_genpd_set_performance_state);
+ 
+@@ -2080,6 +2088,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+ 	genpd->domain.ops.restore_noirq = genpd_restore_noirq;
+ 	genpd->domain.ops.complete = genpd_complete;
+ 	genpd->domain.start = genpd_dev_pm_start;
++	genpd->domain.set_performance_state = genpd_dev_pm_set_performance_state;
+ 
+ 	if (genpd->flags & GENPD_FLAG_PM_CLK) {
+ 		genpd->dev_ops.stop = pm_clk_suspend;
 -- 
 2.34.1
 
