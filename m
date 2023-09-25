@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045047AD1E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BC57AD1EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbjIYHlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
+        id S232259AbjIYHle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 03:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbjIYHlP (ORCPT
+        with ESMTP id S229561AbjIYHld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:41:15 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4013D3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:41:08 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7ab9ad973e6so946637241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695627667; x=1696232467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tiYZdX9DU54hlyCL6A/xG5cg0RmJhcg6NNDUibAVUyM=;
-        b=T+SWuozF8p5UNcF4T8GwMGauc784jE2iIkm53erAQQ30lNHY8u3xAUjX6P2uPLyWee
-         rbXYSdDrsy3uHF1ClYhkxlw7wEhRX4ckShYHTrKfegTvOtLHoVtis8DHD6geh/XsrW5x
-         vJVwN9uFuZYZx3YSReBnawR8jg0OyugWDMPuKUuK0pmU//MSffcj0+xOH2MMrJzgoxYA
-         JOZCGtqf57WdeJ+XEH33FP/PKAnUNzYnv3WtJ00JjgUi/bGBdVr7hGe3d0hoh3rbwOqq
-         HPZMp24PtdeYQTGZ3nV3T7ZyL0ekt1GMjP5RMQi7lFqXtyK1kG3w75m5LFUWoZ99SnwH
-         O24Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695627667; x=1696232467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tiYZdX9DU54hlyCL6A/xG5cg0RmJhcg6NNDUibAVUyM=;
-        b=xVEyzOhZaYgeyjbYUYdn9XxLxW9y1mjU2GNL0L3CKMqHDAn9r4ZlOOLYI+RFuVOK4+
-         4Dmar699MQP8md9Ww8Y874cxZthf2rsITzA9u1I/ELNwbFhP3tn6g1RG9Mzk5Ug8BB29
-         6y/0mNbbwK+WbgNc6xToVwnMBhbCB8orYr+3FXYSNn7PUfNBnu8/DWrPku/Zdq8ctDbX
-         k6lagFaTFa8FO922myPumsfAVU037AtyxLSwn1ttHq17+1sqg4Q9Nz48FvryumA56q/D
-         yx0EGI7jU85xjDwNiGuj4bQBen2sI9IE+l2BP2TezVHoZUrMAGm1fAR9mLFCH5OZs7eC
-         0PNA==
-X-Gm-Message-State: AOJu0YyN+p/ixy1jHKBd251cgirYzZQvwFVNdlvQCjn/PUOByQ2qeidM
-        OSE7BUKg2lO2+SxEWkSXVQ09zYyyYVoKbVUnIlqsUg==
-X-Google-Smtp-Source: AGHT+IFx82zmsxjoLuNTPGGd8GrhippPyNF9FQn3hKIpX7aWK+Ny/ek0o4jNsCfrxS8J3MiCNYA4klx50t41kyL94KQ=
-X-Received: by 2002:a67:fb89:0:b0:44e:e7d7:6847 with SMTP id
- n9-20020a67fb89000000b0044ee7d76847mr2800971vsr.7.1695627667358; Mon, 25 Sep
- 2023 00:41:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230922175155.work.872-kees@kernel.org>
-In-Reply-To: <20230922175155.work.872-kees@kernel.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 25 Sep 2023 09:40:56 +0200
-Message-ID: <CAMRc=Md+BM0fGoO9SrnmKOKAmXmMBNJ9aBvuOCfKpT94rhv+zQ@mail.gmail.com>
-Subject: Re: [PATCH] eeprom: at24: Annotate struct at24_data with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Mon, 25 Sep 2023 03:41:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F28103;
+        Mon, 25 Sep 2023 00:41:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E87051F38D;
+        Mon, 25 Sep 2023 07:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695627684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CQnJityth03MjKwOvKQL0o16b7IPcbMBFQLaKRocuTI=;
+        b=kj08/0h41LkrVpFjzbRDfKtPyfb8A9wff/lNCGoZORwH3/vbR7S1O0z7SQg/WlPBzlzRF9
+        psrRMbPTeardaGcQnl1uLAlznmSm7WRdR2+NiBarxr0RZup33ctRJwZsZWbILA95SR/1N7
+        2JSgKrJckBdee7P9tpf6LgjjwHT79jQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C775913A67;
+        Mon, 25 Sep 2023 07:41:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QMWyLaQ5EWXuQQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 25 Sep 2023 07:41:24 +0000
+Date:   Mon, 25 Sep 2023 09:41:24 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <muchun.song@linux.dev>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-i2c@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
+ kmem.limit_in_bytes
+Message-ID: <ZRE5pHgr28SaOmMC@dhcp22.suse.cz>
+References: <20230917191040.964416434@linuxfoundation.org>
+ <20230917191042.204185566@linuxfoundation.org>
+ <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
+ <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
+ <ZQrSXh+riB7NnZuE@dhcp22.suse.cz>
+ <4eb47d6a-b127-4aad-af30-896c3b9505b4@linux.microsoft.com>
+ <ZQr3+YfcBM2Er6F7@dhcp22.suse.cz>
+ <ZQ4cjqQLhgX1pOVX@P9FQF9L96D.corp.robot.car>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQ4cjqQLhgX1pOVX@P9FQF9L96D.corp.robot.car>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 7:51=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
-y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
-S
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
->
-> As found with Coccinelle[1], add __counted_by for struct at24_data.
->
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
-ounted_by.cocci
->
-> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-i2c@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/misc/eeprom/at24.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> index af83aca452b7..7dfd7fdb423e 100644
-> --- a/drivers/misc/eeprom/at24.c
-> +++ b/drivers/misc/eeprom/at24.c
-> @@ -92,7 +92,7 @@ struct at24_data {
->          * them for us.
->          */
->         u8 bank_addr_shift;
-> -       struct regmap *client_regmaps[];
-> +       struct regmap *client_regmaps[] __counted_by(num_addresses);
->  };
->
->  /*
-> --
-> 2.34.1
->
+On Fri 22-09-23 16:00:30, Roman Gushchin wrote:
+> On Wed, Sep 20, 2023 at 03:47:37PM +0200, Michal Hocko wrote:
+> > On Wed 20-09-23 15:25:23, Jeremi Piotrowski wrote:
+> > > On 9/20/2023 1:07 PM, Michal Hocko wrote:
+> > [...]
+> > > > I mean, normally I would be just fine reverting this API change because
+> > > > it is disruptive but the only way to have the file available and not
+> > > > break somebody is to revert 58056f77502f ("memcg, kmem: further
+> > > > deprecate kmem.limit_in_bytes") as well. Or to ignore any value written
+> > > > there but that sounds rather dubious. Although one could argue this
+> > > > would mimic nokmem kernel option.
+> > > > 
+> > > 
+> > > I just want to make sure we don't introduce yet another new behavior in this legacy
+> > > system. I have not seen breakage due to 58056f77502f. Mimicing nokmem sounds good but
+> > > does this mean "don't enforce limits" (that should be fine) or "ignore writes to the limit"
+> > > (=don't event store the written limit). The latter might have unintended consequences.
+> > 
+> > Yes it would mean that the limit is never enforced. Bad as it is the
+> > thing is that the hard limit on kernel memory is broken by design and
+> > unfixable.  This causes all sorts of unexpected kernel allocation
+> > failures that this is simply unsafe to use.
+> > 
+> > All that being said I can see the following options
+> > 1) keep the current upstream status and not export the file
+> > 2) revert both 58056f77502f and 86327e8eb94 and make it clear
+> >    that kmem.limit_in_bytes is unsupported so failures or misbehavior
+> >    as a result of the limit being hit are likely not going to be
+> >    investigated or fixed.
+> > 3) reverting like in 2) but never inforce the limit (so basically nokmem
+> >    semantic)
+> 
+> Since it's a part of cgroup v1 interface, which is in a frozen state as a whole,
+> and there is no significant (performance, code complexity) benefit of
+> additionally deprecating kmem.limit_in_bytes, I vote for 2).
+> 1) is also an option.
 
-Applied, thanks!
+We have a stronger agrement over 3)
+http://lkml.kernel.org/r/ZRE5VJozPZt9bRPy@dhcp22.suse.cz. Please speak
+up if you disagree.
 
-Bart
+-- 
+Michal Hocko
+SUSE Labs
