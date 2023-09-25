@@ -2,119 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F177ADCDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A107ADCE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbjIYQOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51188 "EHLO
+        id S233152AbjIYQQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 12:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYQOR (ORCPT
+        with ESMTP id S229437AbjIYQQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 12:14:17 -0400
-Received: from sonic304-20.consmr.mail.sg3.yahoo.com (sonic304-20.consmr.mail.sg3.yahoo.com [106.10.242.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7514410C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.in; s=s2048; t=1695658447; bh=pXV/R2SyjuGd7opptvW7hVPSPNpc6bC5lFOXnck7eDE=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=IVfMJEX2RlicrSwRjpywW2H3HudUcZF1nMt7dYWxuKzc5g+avbTpa3ELuddFy+nFMJd3vk+sAc3IcZIOLdQ17uHvGCxnBg0mC6c9c0EAJNt6zolriciSO0PMuPqeZooDIdAFSXKRGwKwNpEcQbL6KWGE6k353X/IE7ndIkBV/kmXLkCMCX/eUjI7eCCk3/n7HcPOhAo9WGUdm/iCoYbnlSBBI5qvNkm5khsDjlmJpWn3Yl1xljNHD2e/qjZxLGmObkXnn/z7NP9/XbwzvJrpe++ES/TCNTADX+1OCqmcHkybB3mlDJxbP45PGp7LcPgDp4LopbLFD9buutaFFbWLRw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1695658447; bh=Ba31dePcxMvXIVsmTeHj5WzBvogH3sedoUpH3gwepMT=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=X2hiHwz2RFuuCR1Z1N8Z1YlRRkh1sVQtvn6valtmL4QjTYVUSZK8LA8q9TfgvEga0o48TmVWi2VpH/7lz0JWarfvc85BKV4fCJZsQYV6ayU4nmdrpIvwpxgjt2n2/iZrK4ebqQ2LvSOKrCoT58a39A3IzFDu6HrRswOxjJpooLI3GBATmKZnSK9Nt4Q/cIcXckirodA9MTgcfzErtqG0BVy1AUaPYvT0nx7ixSbqh8V6W+lYXgTIdsy+BbH+0S3V8dtzlyPKOQzRTLYDi/HnlmDfZbB8DfCSIKzKMRgZ363zs+UvwNpdzwKQ//eTFDSNw6yKDFFqMc1zCrfTq32Ymg==
-X-YMail-OSG: DTKVQT4VM1lQE6BFK7D53Sgd8gJKqyUebGn53xvGOb.B2L.Fl7wU2a4Tt43iYLb
- bK2dVA7Ajql.6KApBMaFvnwKxRGbPdRu2tM_bNLJbcWM985Oje63nb1b56p0gN.dKCauOvHqrAHS
- Rjwt3zJTBCd4vY9tuAM9NfkCgub6nIcVH1rbHwUrnXn0m.nojpWe1v67sZ_YzTwRJBSiLYeVmedd
- Uo5yFXwZivU45AYhYBc4sDF.KBbQ5IrqvoF552mQUziQvo3cKF58qECvb8yEjriAkHtjBcJTvaij
- rWIfNuwADEyOn7jcT85RxSYIlxeSU8dE3pNk40pG.9tEJDtf906OKiyxgNTnpADKl7KI_zcEhBIA
- NabhmKykVK3lODMSUOOz6sjvBhBg2Et8jZ607Z0Wrdp1VJfpQ_uFx39j0PV7HLpY_Qi5pLbN.Bvp
- hIrYHM7U92Mqq7G7eMepSNEwVTTll_bItHfPCoY2yryAf6K7O1oB4jDwpxhqHopro7SLs5YC7b9g
- 9i1NzIvtiGiCyzAVoLIjOzvNBucg4zO8c3yjRStZDML9_NGqY4WWYEpQ7cGb6.HBr.GH605ITznB
- SahXDUFRgcg866qN0D7jrHBZAFWdVIVPBUhYFZ54EXqOhTSlOCaTXMXAwHj46RQK0T_l.yyvUTsA
- I14rbSX4rctYUwm_EC8g7Ozgaj7Hlq5Fll4YlPSG9YaD.mcXKZQD.bXyjPSM1k8CmUG093A6Y3Hl
- tI6mENz7FQ_wtGV0vQUNQgv.HR8KHEgm6dKnUepgZjC.vwOGVuREIerLEIBdMorOdZ4ntAtBaRDW
- 6tIR9NxGPYnkB1dRF6BJyN0jJVoZow3l98m64C.eC5iTdC24K55iQ9hhmeUM9U3TnkcBRF34fDcN
- FAxKFPBlNqlTPnvwGh7y08J6MI59NUNYGqeSmwFOmnO2cliwha5dq_3QTLMel__T7F7PmEzpU2LC
- geuiQTRggYkk5Y3NFpiynPCjG8H_LdFZzjYR37snKR_RfLD45djmnVTOuLuXpLtR.TNyr.biXUsq
- LVmVkcsdnF10zHi6IvvvXvCRQ3rJW47m1Eqe7jCYDrNqocmL1KurloSaDEPdC.g8ggySNVWzfghL
- fNlTcPnp9CIZm8n5_ShejhhnyjEfpiQCGmfyTRdBdCxBD26h4I45wEAWtAOu2.g9en1AMOD.ezkc
- BSqtMYVkZQpGX0aPtkAQ4LrdM4OvL2z1rcpJMa0Nh6lHgpmHXY8KDa6vgc4AjMpsyEvgYDYDDZAU
- Nj5ed5RNTFnUttijeuasIcONnXhUoPDl.h_x5GUQhsw8tvOFYEXQXc9hfisocQ3FgDGqm84RRdG6
- dVwKpvVseO5CMJU9D_w626vZHKFugwPrARDHedc5zlooi3PVwUeef4JGrYXkKKTdcYZhqfqSobQa
- O6_xs0MK27xA2xrtW6gxRRfjPWVnM3s6750fK1Zj7.KBrzywYjyoij4fetEL0mjRixb2DrqtUEKh
- QhG4UZjvviD068iynBQyVuev4QivSA_VoWK0EwnUzFRq2rK1g1Q88V_gyT0oAQNPKcxabDPW.KYu
- xqrxfXqZxwoqCvEOcm_XRyu.GdsGQeRJzPc.8axnhimME2AGiP.GXJncXeAw.dKCL5kIsQOkkMmb
- 58UxTcJss2ImLVVjZCfYCfHX0UaViT1ka9aNVS7utcdsdWrVQ_0l_03iyDc419OvH_pdyk8Qagy9
- m.9IzsHXR3Q6YqhFT7BUucxsBRjYCvA.3CXwUlcXzM0Jp.kvyFBmaI3jjcm06pg4VBayf2cWiTgg
- xfqhn28O85jfNLZbhZUzRh30LBP3.GZBeSi73hzAJZrUrili6RqjAvuojTT7exne8N6.U8Ptch2O
- RtKmzzCR.IlWtZaDLMs3cuHTUyBbH4dScjV5wYqAlZvK3y9.2EXopUIPDpNSHIBBlx30iv1tk_Gw
- SNmIBassg5PNSQA45r3bPteGUHPKWDQC9DDR0TJfVLCRxFwrpzqYKitXu1QHEB8F1fbre2C34hY9
- 2mWt6kYbNRui.gx1J4eA8GbHJwUC_NXZA_6rUOejWEzHilHoAFBAEOqSwt1bV8G02.gRQdkdo3du
- HIR7gGA8OTNt5Csn3bG_dyLcPoHEAB8uOP.TRz.n1uvJ1R034ZAhKe1JYp.59WpPIDzs_O.vvfKm
- QxaVTZs0tQ_5xf9V_gBm04h9lCmLXN08_gCctW.6L3J7Lep_ol2a5n_EOSSzb3Q.En8aVj1yK.sU
- WQMq_Zca42NQkvkRwVBYCkFsxCnhUJD_Df1WpyQrulVS.WPb0Y8Dx0WbBxA--
-X-Sonic-MF: <coolgoose54@yahoo.in>
-X-Sonic-ID: 0523619f-5a15-44a2-9b06-3469b98f5e13
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.sg3.yahoo.com with HTTP; Mon, 25 Sep 2023 16:14:07 +0000
-Date:   Mon, 25 Sep 2023 16:14:02 +0000 (UTC)
-From:   Cool Goose <coolgoose54@yahoo.in>
-To:     Kalle Valo <kvalo@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux ath10k <ath10k@lists.infradead.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <1242733089.791333.1695658442201@mail.yahoo.com>
-In-Reply-To: <cafad11a-d7c7-4b68-880a-d6e05578fa5c@gmail.com>
-References: <1209906123.2716993.1695416371605.ref@mail.yahoo.com> <1209906123.2716993.1695416371605@mail.yahoo.com> <ZQ4vQNe3XsArwWQT@debian.me> <87a5taa7lp.fsf@kernel.org> <cafad11a-d7c7-4b68-880a-d6e05578fa5c@gmail.com>
-Subject: Re: Atheros QCA6174 ath10k_pci fimware crashing
+        Mon, 25 Sep 2023 12:16:20 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6768B6;
+        Mon, 25 Sep 2023 09:16:11 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-503f39d3236so11014625e87.0;
+        Mon, 25 Sep 2023 09:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695658570; x=1696263370; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=D91jQq70A+URlVXyjILvwYovkk9Wp5hFZGtxcOFay7A=;
+        b=EC8fU5vkRwxGW6Z6Uc7zN6K9D3+NrL80ZrcpUWUocAz46uuYdqjn5HBpfC2qy7eRN2
+         RxL0Fvrrco0B5h3Nzsm2QzFQ/U+usDxCoEKWFn98xSCQaeJqLerl3AgYUypvQYz0QXcj
+         iGV/9sSl6qJ9dGPdSf05JkbA2KQ2k/uN9mrB3TbT6nGvSP503XcGrbqTg3wMYEHNrY3O
+         wnUIV7UkcBLZQcIjMOXd8ukxzSzwcG+xaebhQ2nhtoBgMOj7mrhE7H98xvMx3T1HN5DO
+         dnoCI0xuQdKbYa6P/zYMZQ6i/+pr+soMWRTZXJ2TEV31O3L0kDcdmyOfIOws9JPj6L5q
+         7JYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695658570; x=1696263370;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D91jQq70A+URlVXyjILvwYovkk9Wp5hFZGtxcOFay7A=;
+        b=hy0rtXgD9Iu9jzv7U2SqmmaDx8ziH1tzD8ZnHysHPjiKjdsY+8DS9GVPMb29wEcHP6
+         9E4IeAUDP4tMOKg+6ci/vFhnWyNDb4kCC+x23xu+ttWrA3BMx9Thdt5ICQg+k6hNB2tk
+         vcnth8O6Ma8pxfuwbXpmtFmiYc1DupLXtSmf/RPLKjF1iygH4YGIHkc0RP7zKCldHHMB
+         feCMsYiiu7EHIFHs0D1zj5gogLgWux+MGFQ7dF/8a8+uNcRj4WWAksmML9D44hX2UQGd
+         7fSGLOvPDYv0VZ4T6mb+7ey2IQdpY7Z1z0rtlRjE8n2MJOxAzxtgON4/UbSagwVh8WAN
+         uguA==
+X-Gm-Message-State: AOJu0YxtaBky5vrKvWJT0LKkESWHWZDb2gTGr9JfoDc/PXTx1whdrc+Y
+        52jBQDoSuBd5eBbHHbwMrnM=
+X-Google-Smtp-Source: AGHT+IGCEOgS/Z/w8MtXGH9JZoCDRF1+VgOi1yWA8by7GrwOA4CgcAXcZIVASyx6qNwvmJOX94G0TA==
+X-Received: by 2002:ac2:5f52:0:b0:503:5d8:da33 with SMTP id 18-20020ac25f52000000b0050305d8da33mr5035699lfz.20.1695658569742;
+        Mon, 25 Sep 2023 09:16:09 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id d7-20020aa7ce07000000b0050488d1d376sm5739920edv.0.2023.09.25.09.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 09:16:09 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 6653727C0054;
+        Mon, 25 Sep 2023 12:16:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 25 Sep 2023 12:16:07 -0400
+X-ME-Sender: <xms:R7IRZQVhfKf4creTvnddbYA_WR-pFrZ9seKGqxKslKdqvqvnMRuKVw>
+    <xme:R7IRZUnpsR31SFAt08O8oQGqHom8LZuDRuOcfgIQs1UwF9tJysDAYs7tzjpu5nm4b
+    YLPO5oGwsmR1lBw5A>
+X-ME-Received: <xmr:R7IRZUZCBNF9bqQxG2LlX0CEZDsjsDIP48_wqxq98P270DC-b-sYdH4Mtw4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeortddttdejnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhepffelkeefudethfekhfehkefhledvjefggedvjeejffduleektdffieev
+    jeettedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:R7IRZfWHxuNn3a-DGIuF_8vkKidbnXs390gKVSqSE7kyt_CIfCKXEQ>
+    <xmx:R7IRZanFzWEWbQf09YO095d2ogc9ULmxDJp21aNslC8lPLN4x2ibKA>
+    <xmx:R7IRZUeb5cq82GjBacIw2PdCudSnIt3OyIODWmHmZfgW2HGvAkMFEg>
+    <xmx:R7IRZTcUxfGWpEKDXK12cwgwFP9j9UOfqiN0yXKhT1GfJTaHHHUxfQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Sep 2023 12:16:06 -0400 (EDT)
+Date:   Mon, 25 Sep 2023 09:16:05 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
+ `WithRef`
+Message-ID: <ZRGyRQuBcWvgtdNR@Boquns-Mac-mini.home>
+References: <20230923144938.219517-1-wedsonaf@gmail.com>
+ <20230923144938.219517-3-wedsonaf@gmail.com>
+ <CAH5fLggxsewmtzXjehbawDCTHO0C7kteU_CLnh80eMNj=QyP9Q@mail.gmail.com>
+ <969eab7f-ad40-0dfb-18b9-6002fc54e12b@proton.me>
+ <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
+ <14513589-cc31-8985-8ff6-a97d2882f593@proton.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21797 YMailNorrin
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14513589-cc31-8985-8ff6-a97d2882f593@proton.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Laptop model : Lenovo Flex 5, running Arch Linux since Dec 2019. No issues til around late 2022 when I would just disable wireless and reenable from GNOME system tray NetworkManager applet and then things would work fine. But for almost a couple of months, constant firmware crashes and device cannot be recovered even after disable-renabling wireless. If I remember correctly the transition to constant crashes coincided with me upgrading system, thus I am reporting here.
-
-Just in case it helps, I tried looking for a small system journal from the laptop where the firmware crash was included, and posted that here. http://ix.io/4Hpr
-
-I am trying to find out if this actually looks like a hardware failure becuase in that case I can call it non-recoverable issue and look for a wifi adapter.
-If it is hardware failure, I am trying to find out if there are any card settings I can tweak in may be BIOS that would make it work in say a restricted mode.
-
-Thanks.
-
-
-On Monday, 25 September, 2023 at 06:15:27 am GMT-4, Bagas Sanjaya <bagasdotme@gmail.com> wrote: 
-
-
-
-
-
-On 25/09/2023 17:08, Kalle Valo wrote:
-
-> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+On Mon, Sep 25, 2023 at 03:07:44PM +0000, Benno Lossin wrote:
+> On 25.09.23 16:49, Boqun Feng wrote:
+> > On Mon, Sep 25, 2023 at 09:14:50AM +0000, Benno Lossin wrote:
+> >> On 25.09.23 08:29, Alice Ryhl wrote:
+> >>> On Sat, Sep 23, 2023 at 4:50 PM Wedson Almeida Filho <wedsonaf@gmail.com> wrote:
+> >>>>
+> >>>> From: Wedson Almeida Filho <walmeida@microsoft.com>
+> >>>>
+> >>>> With GATs, we don't need a separate type to represent a borrowed object
+> >>>> with a refcount, we can just use Rust's regular shared borrowing. In
+> >>>> this case, we use `&WithRef<T>` instead of `ArcBorrow<'_, T>`.
+> >>>>
+> >>>> Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
+> >>>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> >>>> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> >>>> ---
+> >>>>    rust/kernel/sync.rs     |   2 +-
+> >>>>    rust/kernel/sync/arc.rs | 134 ++++++++++++----------------------------
+> >>>>    2 files changed, 39 insertions(+), 97 deletions(-)
+> >>>
+> >>> I'm concerned about this change, because an `&WithRef<T>` only has
+> >>> immutable permissions for the allocation. No pointer derived from it
+> >>> may be used to modify the value in the Arc, however, the drop
+> >>> implementation of Arc will do exactly that.
+> >>
+> >> That is indeed a problem. We could put the value in an `UnsafeCell`, but
+> >> that would lose us niche optimizations and probably also other optimizations.
+> >>
+> > 
+> > Not sure I understand the problem here, why do we allow modifying the
+> > value in the Arc if you only have a shared ownership? Also I fail to see
+> > why `ArcBorrow` doesn't have the problem. Maybe I'm missing something
+> > subtle here? Could you provide an example?
 > 
->>> Sep 19 09:01:11 hostname kernel: ath10k_warn: 149 callbacks suppressed
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>>
->>
->> Looks like hardware issue, right?
-> 
-> It could be a hardware issue (for example a problem with the PCI bus
-> communication) but also simply a firmware crash. These kind of reports
-> come time to time but root cause is unknown.
-
+> Sure, here is the problem:
 > 
 
-The reporter said on Arch Linux forum (see TS) that trying older
-linux-firmware package doesn't help, so I suspect this as hardware issue.
+Thanks, Benno.
 
-Cool Goose, what is your laptop model?
+> ```rust
+> struct MutatingDrop {
+>      value: i32,
+> }
+> 
+> impl Drop for MutatingDrop {
+>      fn drop(&mut self) {
+>          self.value = 0;
+>      }
+> }
+> 
+> let arc = Arc::new(MutatingDrop { value: 42 });
+> let wr = arc.as_with_ref(); // this creates a shared `&` reference to the MutatingDrop
+> let arc2: Arc<MutatingDrop> = wr.into(); // increments the reference count to 2
 
--- 
-An old man doll... just what I always wanted! - Clara
+More precisely, here we did a
 
+	&WithRef<_> -> NonNull<WithRef<_>>
 
+conversion, and later on, we may use the `NonNull<WithRef<_>>` in
+`drop` to get a `Box<WithRef<_>>`.
+
+> drop(arc); // this decrements the reference count to 1
+> drop(arc2); // this decrements the reference count to 0, so it will drop it
+> ```
+> When dropping `arc2` it will run the destructor for `MutatingDrop`,
+> which mutates `value`. This is a problem, because the mutable reference
+> supplied was derived from a `&`, that is not allowed in Rust.
+> 
+
+Is this an UB? I kinda wonder what's the real damage we can get, because
+in this case, we just use a reference to carry a value of a pointer,
+i.e.
+
+	ptr -> reference -> ptr
+
+I cannot think of any real damage compiler can make, but I'm happy to be
+surprised ;-)
+
+Regards,
+Boqun
+
+> -- 
+> Cheers,
+> Benno
+> 
+> 
